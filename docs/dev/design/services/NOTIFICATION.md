@@ -47,6 +47,10 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+- [In-app notifications](#in-app-notifications)
+- [Preferences](#preferences)
+- [Push devices](#push-devices)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -107,7 +111,20 @@ internal/service/notification/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Background notification delivery
+- `net/smtp` - Email delivery
+- `firebase.google.com/go/v4/messaging` - Firebase Cloud Messaging (FCM)
+- `text/template` - Template rendering
+- `net/http` - Webhook delivery
+- `go.uber.org/fx`
+
+**External Services**:
+- SMTP server for email
+- Firebase Cloud Messaging (FCM) for push notifications
+
 
 ### Provides
 <!-- Service provides -->
@@ -125,11 +142,60 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type NotificationService interface {
+  // Send notifications
+  Send(ctx context.Context, notification Notification) error
+  SendToUser(ctx context.Context, userID uuid.UUID, notification Notification) error
+  SendBulk(ctx context.Context, userIDs []uuid.UUID, notification Notification) error
+
+  // In-app notifications
+  GetNotifications(ctx context.Context, userID uuid.UUID, filters NotificationFilters) ([]InAppNotification, error)
+  MarkAsRead(ctx context.Context, notificationID uuid.UUID) error
+  MarkAllAsRead(ctx context.Context, userID uuid.UUID) error
+  DeleteNotification(ctx context.Context, notificationID uuid.UUID) error
+
+  // Preferences
+  GetPreferences(ctx context.Context, userID uuid.UUID) (map[string]NotificationPreference, error)
+  UpdatePreference(ctx context.Context, userID uuid.UUID, eventType string, pref NotificationPreference) error
+
+  // Push devices
+  RegisterPushDevice(ctx context.Context, userID uuid.UUID, fcmToken, deviceType string) error
+  UnregisterPushDevice(ctx context.Context, fcmToken string) error
+}
+
+type Notification struct {
+  EventType string                 `json:"event_type"`
+  Title     string                 `json:"title"`
+  Body      string                 `json:"body"`
+  ActionURL *string                `json:"action_url,omitempty"`
+  Data      map[string]interface{} `json:"data,omitempty"`
+  Priority  string                 `json:"priority"`
+}
+
+type NotificationChannel interface {
+  Name() string
+  Send(ctx context.Context, recipient User, notification Notification) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Background notification delivery
+- `net/smtp` - Email delivery
+- `firebase.google.com/go/v4/messaging` - Firebase Cloud Messaging (FCM)
+- `text/template` - Template rendering
+- `net/http` - Webhook delivery
+- `go.uber.org/fx`
+
+**External Services**:
+- SMTP server for email
+- Firebase Cloud Messaging (FCM) for push notifications
+
 
 
 
@@ -138,12 +204,84 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+NOTIFICATION_SMTP_HOST=smtp.gmail.com
+NOTIFICATION_SMTP_PORT=587
+NOTIFICATION_SMTP_USER=noreply@example.com
+NOTIFICATION_SMTP_PASSWORD=your_password
+NOTIFICATION_FCM_CREDENTIALS_FILE=/config/fcm-service-account.json
+NOTIFICATION_DELIVERY_WORKERS=5
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+notification:
+  email:
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    smtp_user: noreply@example.com
+    smtp_password: your_password
+    from_address: Revenge <noreply@example.com>
+  push:
+    fcm_credentials_file: /config/fcm-service-account.json
+  webhook:
+    timeout: 10s
+  delivery:
+    workers: 5
+    retry_attempts: 3
+    retry_delay: 5m
+```
 
+
+
+## API Endpoints
+```
+# In-app notifications
+GET    /api/v1/notifications              # List notifications
+GET    /api/v1/notifications/unread/count # Get unread count
+PATCH  /api/v1/notifications/:id/read     # Mark as read
+POST   /api/v1/notifications/read-all     # Mark all as read
+DELETE /api/v1/notifications/:id          # Delete notification
+
+# Preferences
+GET    /api/v1/notifications/preferences  # Get preferences
+PUT    /api/v1/notifications/preferences/:event # Update preference
+
+# Push devices
+POST   /api/v1/notifications/devices      # Register push device
+DELETE /api/v1/notifications/devices/:token # Unregister device
+```
+
+**Example Notification Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "New Movie Added",
+  "body": "Inception (2010) has been added to your library",
+  "icon_url": "https://image.tmdb.org/t/p/w200/...",
+  "action_url": "/movies/27205",
+  "is_read": false,
+  "created_at": "2026-02-01T10:30:00Z"
+}
+```
+
+**Example Email Template**:
+```
+Subject: {{ .Title }}
+
+Hi {{ .UserDisplayName }},
+
+{{ .Body }}
+
+{{ if .ActionURL }}
+View: {{ .ActionURL }}
+{{ end }}
+
+--
+Revenge Media Server
+```
 
 
 

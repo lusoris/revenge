@@ -34,6 +34,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Simkl OAuth app credentials](#simkl-oauth-app-credentials)
+- [Sync settings](#sync-settings)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -55,7 +57,7 @@ design_refs:
 > Integration with Simkl
 
 > TV tracker and movie scrobbler (alternative to Trakt)
-**API Base URL**: `https://api.simkl.com/oauth/token`
+**API Base URL**: `https://api.simkl.com`
 **Authentication**: oauth
 
 ---
@@ -98,8 +100,6 @@ internal/integration/simkl/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -111,11 +111,56 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Simkl integration service
+type SimklService interface {
+  // OAuth (PIN-based)
+  GeneratePIN(ctx context.Context, userID uuid.UUID) (*PINResponse, error)
+  CheckPINStatus(ctx context.Context, userID uuid.UUID, userCode string) (*SimklConnection, error)
+
+  // Scrobbling
+  Checkin(ctx context.Context, userID uuid.UUID, contentType string, contentID uuid.UUID) error
+  Scrobble(ctx context.Context, userID uuid.UUID, contentType string, contentID uuid.UUID, watchedAt time.Time) error
+
+  // Sync
+  SyncHistory(ctx context.Context, connectionID uuid.UUID, direction string) error
+  SyncWatchlist(ctx context.Context, connectionID uuid.UUID) error
+
+  // Ratings
+  SetRating(ctx context.Context, connectionID uuid.UUID, contentType string, contentID uuid.UUID, rating int) error
+}
+
+// PIN OAuth response
+type PINResponse struct {
+  DeviceCode       string `json:"device_code"`
+  UserCode         string `json:"user_code"`
+  VerificationURL  string `json:"verification_url"`
+  ExpiresIn        int    `json:"expires_in"`
+  Interval         int    `json:"interval"`
+}
+
+// Scrobble item
+type ScrobbleItem struct {
+  Title  string                 `json:"title,omitempty"`
+  Year   int                    `json:"year,omitempty"`
+  IDs    map[string]interface{} `json:"ids"`
+  To     string                 `json:"to,omitempty"`  // Status: "watchlist", "watching", "completed"
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- Simkl account (free tier available)
+
 
 
 
@@ -124,11 +169,29 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Simkl OAuth app credentials
+SIMKL_CLIENT_ID=your_client_id
+SIMKL_CLIENT_SECRET=your_client_secret
+
+# Sync settings
+SIMKL_AUTO_SCROBBLE=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+integrations:
+  simkl:
+    client_id: ${SIMKL_CLIENT_ID}
+    client_secret: ${SIMKL_CLIENT_SECRET}
+
+    auto_scrobble: true
+    auto_sync_watchlist: true
+    sync_interval: 3600            # 1 hour
+```
+
 
 
 

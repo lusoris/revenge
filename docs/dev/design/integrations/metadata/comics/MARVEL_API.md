@@ -2,25 +2,27 @@
 
 ---
 sources:
+  - name: Marvel Developer Portal
+    url: https://developer.marvel.com/docs
+    note: Official Marvel API documentation
   - name: pgx PostgreSQL Driver
     url: ../../../../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
+  - name: golang.org/x/time
+    url: ../../../../sources/go/x/time.md
+    note: Rate limiting
   - name: River Job Queue
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: COMICS_MODULE
+    path: ../../../features/comics/COMICS_MODULE.md
+  - title: COMICVINE (PRIMARY for comics)
+    path: ./COMICVINE.md
+  - title: HTTP_CLIENT
+    path: ../../../services/HTTP_CLIENT.md
 ---
 
 ## Table of Contents
@@ -55,10 +57,11 @@ design_refs:
 **Category**: integration
 
 
-> Integration with Marvel API
+> Integration with Marvel Developer API
 
-> Official Marvel Comics metadata (Marvel Universe content only)
-**Authentication**: api_key
+> SUPPLEMENTARY official Marvel metadata - Marvel Universe content only
+**API Base URL**: `https://gateway.marvel.com/v1/public`
+**Authentication**: api_key_hash
 
 ---
 
@@ -87,7 +90,7 @@ design_refs:
 ### Integration Structure
 
 ```
-internal/integration/marvel_api/
+internal/integration/marvel/
 ├── client.go              # API client
 ├── types.go               # Response types
 ├── mapper.go              # Map external → internal types
@@ -100,8 +103,6 @@ internal/integration/marvel_api/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -113,11 +114,74 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Marvel API client
+type MarvelClient struct {
+  publicKey   string
+  privateKey  string
+  httpClient  *http.Client
+  rateLimiter *rate.Limiter
+}
+
+// Generate Marvel API authentication
+func (c *MarvelClient) generateAuth() (ts string, hash string) {
+  ts = strconv.FormatInt(time.Now().Unix(), 10)
+  data := ts + c.privateKey + c.publicKey
+  hash = fmt.Sprintf("%x", md5.Sum([]byte(data)))
+  return ts, hash
+}
+
+// Supplementary provider interface
+type MarvelProvider interface {
+  SearchComics(ctx context.Context, title string) ([]Comic, error)
+  GetComic(ctx context.Context, marvelID int) (*Comic, error)
+  GetSeriesComics(ctx context.Context, seriesID int) ([]Comic, error)
+  GetCharacter(ctx context.Context, characterID int) (*Character, error)
+  GetEvent(ctx context.Context, eventID int) (*Event, error)
+  Priority() int  // Returns 15 (between ComicVine and GCD)
+}
+
+// Marvel Comic
+type Comic struct {
+  ID          int       `json:"id"`
+  Title       string    `json:"title"`
+  IssueNumber int       `json:"issueNumber"`
+  Description string    `json:"description"`
+  UPC         string    `json:"upc"`
+  ISBN        string    `json:"isbn"`
+  Format      string    `json:"format"`
+  PageCount   int       `json:"pageCount"`
+  Thumbnail   Image     `json:"thumbnail"`
+  OnSaleDate  time.Time `json:"dates[0].date"`
+  Creators    []Creator `json:"creators.items"`
+  Characters  []Character `json:"characters.items"`
+  Events      []Event   `json:"events.items"`
+}
+
+// Marvel Character
+type Character struct {
+  ID          int    `json:"id"`
+  Name        string `json:"name"`
+  Description string `json:"description"`
+  Thumbnail   Image  `json:"thumbnail"`
+  ComicsAvailable int `json:"comics.available"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `crypto/md5` - Hash generation for auth
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - DI
+
+**External**:
+- Marvel Developer API (free account required)
+
 
 
 
@@ -126,11 +190,29 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+MARVEL_ENABLED=true
+MARVEL_PUBLIC_KEY=your_public_key
+MARVEL_PRIVATE_KEY=your_private_key
+MARVEL_CACHE_TTL=168h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    marvel:
+      enabled: true
+      public_key: ${MARVEL_PUBLIC_KEY}
+      private_key: ${MARVEL_PRIVATE_KEY}
+      cache_ttl: 168h
+      role: supplementary
+      priority: 15          # Between ComicVine (10) and GCD (20)
+      daily_limit: 3000     # API limit
+```
+
 
 
 
@@ -157,13 +239,14 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [COMICS_MODULE](../../../features/comics/COMICS_MODULE.md)
+- [COMICVINE (PRIMARY for comics)](./COMICVINE.md)
+- [HTTP_CLIENT](../../../services/HTTP_CLIENT.md)
 
 ### External Sources
+- [Marvel Developer Portal](https://developer.marvel.com/docs) - Official Marvel API documentation
 - [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
 - [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
 

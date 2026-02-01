@@ -67,3 +67,193 @@ design_refs:
 service_name: Fingerprint Service
 package_path: internal/service/fingerprint
 fx_module: fingerprint.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Scanner   │────▶│   Service    │────▶│  Repository │
+  │  (Library)  │     │   (Logic)    │     │   (sqlc)    │
+  └─────────────┘     └──────┬───────┘     └──────┬──────┘
+                             │                    │
+                             ▼                    ▼
+                      ┌─────────────┐      ┌─────────────┐
+                      │   FFmpeg    │      │ PostgreSQL  │
+                      │(go-astiav)  │      │   (pgx)     │
+                      └─────────────┘      └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Media fingerprints
+  CREATE TABLE media_fingerprints (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Content reference
+    content_type VARCHAR(50) NOT NULL,             -- 'movie', 'episode', 'track', 'image'
+    content_id UUID NOT NULL,
+    file_path TEXT NOT NULL,
+
+    -- Perceptual hash (for images/video frames)
+    phash BIGINT,                                  -- 64-bit perceptual hash
+
+    -- Acoustic fingerprint (for audio)
+    chromaprint TEXT,                              -- Chromaprint fingerprint
+    duration_seconds INTEGER,
+
+    -- File hash (for deduplication)
+    md5_hash VARCHAR(32),
+    sha256_hash VARCHAR(64),
+    file_size_bytes BIGINT,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_fingerprints_content ON media_fingerprints(content_type, content_id);
+  CREATE INDEX idx_fingerprints_phash ON media_fingerprints(phash) WHERE phash IS NOT NULL;
+  CREATE INDEX idx_fingerprints_md5 ON media_fingerprints(md5_hash) WHERE md5_hash IS NOT NULL;
+  CREATE INDEX idx_fingerprints_sha256 ON media_fingerprints(sha256_hash) WHERE sha256_hash IS NOT NULL;
+
+  -- Duplicate detection results
+  CREATE TABLE duplicate_files (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Original file
+    original_fingerprint_id UUID NOT NULL REFERENCES media_fingerprints(id) ON DELETE CASCADE,
+
+    -- Duplicate file
+    duplicate_fingerprint_id UUID NOT NULL REFERENCES media_fingerprints(id) ON DELETE CASCADE,
+
+    -- Similarity metrics
+    similarity_score FLOAT NOT NULL,               -- 0.0-1.0
+    match_type VARCHAR(50) NOT NULL,               -- 'exact_hash', 'perceptual', 'acoustic'
+
+    detected_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(original_fingerprint_id, duplicate_fingerprint_id)
+  );
+  CREATE INDEX idx_duplicates_original ON duplicate_files(original_fingerprint_id);
+  ```
+
+module_structure: |
+  ```
+  internal/service/fingerprint/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Fingerprinting service
+  ├── perceptual.go                # Perceptual hashing (pHash)
+  ├── acoustic.go                  # Acoustic fingerprinting (Chromaprint)
+  ├── hash.go                      # File hashing (MD5, SHA256)
+  ├── duplicate.go                 # Duplicate detection
+  ├── handler.go                   # HTTP API handlers
+  └── fingerprint_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type FingerprintService interface {
+    // Generate fingerprints
+    GenerateFingerprint(ctx context.Context, contentType string, contentID uuid.UUID, filePath string) (*Fingerprint, error)
+    GenerateBatch(ctx context.Context, files []FileInfo) error
+
+    // Query
+    GetFingerprint(ctx context.Context, contentType string, contentID uuid.UUID) (*Fingerprint, error)
+    FindSimilar(ctx context.Context, fingerprint Fingerprint, threshold float64) ([]Fingerprint, error)
+
+    // Duplicate detection
+    DetectDuplicates(ctx context.Context) ([]DuplicateMatch, error)
+    GetDuplicates(ctx context.Context, fingerprintID uuid.UUID) ([]DuplicateMatch, error)
+  }
+
+  type Fingerprint struct {
+    ID              uuid.UUID  `db:"id" json:"id"`
+    ContentType     string     `db:"content_type" json:"content_type"`
+    ContentID       uuid.UUID  `db:"content_id" json:"content_id"`
+    FilePath        string     `db:"file_path" json:"file_path"`
+    PHash           *int64     `db:"phash" json:"phash,omitempty"`
+    Chromaprint     *string    `db:"chromaprint" json:"chromaprint,omitempty"`
+    MD5Hash         *string    `db:"md5_hash" json:"md5_hash,omitempty"`
+    SHA256Hash      *string    `db:"sha256_hash" json:"sha256_hash,omitempty"`
+    FileSizeBytes   int64      `db:"file_size_bytes" json:"file_size_bytes"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/asticode/go-astiav` - FFmpeg for frame extraction
+  - `crypto/md5` - File hashing
+  - `crypto/sha256` - File hashing
+  - `github.com/riverqueue/river` - Background fingerprinting jobs
+  - `go.uber.org/fx`
+
+  **External Tools**:
+  - FFmpeg (for frame extraction)
+  - fpcalc (Chromaprint fingerprinting tool)
+
+env_vars: |
+  ```bash
+  FINGERPRINT_ENABLED=true
+  FINGERPRINT_AUTO_SCAN=true
+  FINGERPRINT_DUPLICATE_THRESHOLD=0.95
+  ```
+
+config_keys: |
+  ```yaml
+  fingerprint:
+    enabled: true
+    auto_scan: true
+    duplicate_threshold: 0.95
+    chromaprint_path: /usr/bin/fpcalc
+  ```
+
+component_interaction: |
+  **Fingerprint Generation** (on library scan):
+  1. Library scanner finds new video file
+  2. Queue fingerprint job via River
+  3. Background worker:
+     - Calculate MD5/SHA256 of file
+     - Extract keyframe with FFmpeg
+     - Generate perceptual hash (pHash)
+     - If audio, extract with fpcalc to get Chromaprint
+  4. Store in media_fingerprints
+  5. Check for duplicates based on hashes
+
+  **Duplicate Detection**:
+  1. Admin triggers: POST /api/v1/fingerprints/detect-duplicates
+  2. Query all fingerprints
+  3. For each pair with matching file size:
+     - Compare MD5/SHA256 (exact match = 1.0)
+     - Compare pHash (Hamming distance)
+     - Compare Chromaprint (similarity score)
+  4. If similarity > threshold, insert into duplicate_files
+  5. Return duplicate pairs
+
+api_endpoints: |
+  ```
+  POST   /api/v1/fingerprints/generate/:type/:id  # Generate fingerprint
+  GET    /api/v1/fingerprints/:type/:id           # Get fingerprint
+  POST   /api/v1/fingerprints/detect-duplicates   # Detect duplicates
+  GET    /api/v1/fingerprints/duplicates          # List all duplicates
+  DELETE /api/v1/fingerprints/duplicates/:id      # Mark as not duplicate
+  ```
+
+unit_tests: |
+  ```go
+  func TestFingerprintService_GenerateFingerprint(t *testing.T) {
+    // Test fingerprint generation
+  }
+
+  func TestPerceptualHash_Similarity(t *testing.T) {
+    // Test pHash similarity calculation
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestFingerprint_DuplicateDetection(t *testing.T) {
+    // Test full duplicate detection workflow
+  }
+  ```

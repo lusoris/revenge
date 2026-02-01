@@ -113,6 +113,9 @@ internal/content/{{ module_name }}/
 ### Content Management
 
 {%- if api_endpoints is defined and api_endpoints %}
+{%- if api_endpoints is string %}
+{{ api_endpoints }}
+{%- else %}
 {%- for endpoint in api_endpoints %}
 #### {{ endpoint.method }} {{ endpoint.path }}
 
@@ -138,6 +141,7 @@ internal/content/{{ module_name }}/
 ---
 
 {%- endfor %}
+{%- endif %}
 {%- else %}
 <!-- API endpoints placeholder -->
 {%- endif %}

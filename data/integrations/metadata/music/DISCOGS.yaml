@@ -16,13 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Music marketplace and database - vinyl releases, marketplace
-  data, detailed credits'
-wiki_tagline: '> Vinyl and CD release data from Discogs'
-wiki_overview: Discogs provides detailed release information for physical media collectors.
-  Track vinyl pressings, CD editions, and regional variations. Detailed credits list
-  every contributor. Marketplace data shows record values. Excellent for identifying
-  specific pressings and editions of albums.
+technical_summary: '> SUPPLEMENTARY enrichment provider (vinyl/CD releases, marketplace, credits)'
+wiki_tagline: '> Physical release metadata (vinyl/CD) - Supplementary to Lidarr'
+wiki_overview: 'SUPPLEMENTARY enrichment for physical music releases. Provides: (1) Vinyl/CD pressings and editions, (2) Regional variations, (3) Detailed credits (full contributor lists), (4) Marketplace data (record values/prices). OAuth authentication required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Ideal for collectors tracking specific pressings.'
 sources:
 - name: Discogs API
   url: https://www.discogs.com/developers
@@ -31,14 +27,315 @@ sources:
   url: https://www.last.fm/api/intro
   note: Auto-resolved from lastfm-api
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: LIDARR (PRIMARY for music)
+  path: ../../servarr/LIDARR.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: MUSIC_MODULE
+  path: ../../../features/music/MUSIC_MODULE.md
 integration_name: Discogs
 integration_id: discogs
 external_service: Discogs
 api_base_url: https://api.discogs.com
 auth_method: oauth
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Metadata   │────▶│   Discogs    │────▶│  Discogs    │
+  │  Service    │◀────│   Provider   │◀────│     API     │
+  └─────────────┘     └──────────────┘     └─────────────┘
+  ```
+
+api_details: |
+  **API Version**: v2
+  **Base URL**: `https://api.discogs.com`
+  **Authentication**: OAuth 1.0a or Personal Access Token
+  **Rate Limit**: 60 requests/minute (authenticated), 25 requests/minute (unauthenticated)
+
+  **Key Endpoints**:
+  - `/database/search` - Search for releases, artists
+  - `/releases/{release_id}` - Get release details
+  - `/masters/{master_id}` - Get master release (all versions)
+  - `/artists/{artist_id}` - Get artist details
+  - `/artists/{artist_id}/releases` - Get artist's releases
+
+  **Use Cases**:
+  - Detailed vinyl/CD pressing information
+  - Full credits (engineers, producers, musicians)
+  - Regional variations and editions
+  - Marketplace value data
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Discogs release mappings
+  CREATE TABLE discogs_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    content_type VARCHAR(50) NOT NULL,     -- 'artist', 'album'
+    content_id UUID NOT NULL,
+
+    discogs_id INTEGER NOT NULL,           -- Discogs release/artist ID
+    discogs_type VARCHAR(50) NOT NULL,     -- 'release', 'master', 'artist'
+
+    -- Additional data
+    country VARCHAR(10),
+    year INTEGER,
+    format VARCHAR(100),                   -- 'Vinyl, LP, Album', 'CD, Album'
+    label TEXT,
+
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(content_type, content_id)
+  );
+  CREATE INDEX idx_discogs_id ON discogs_mappings(discogs_id);
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/discogs/
+  ├── module.go                    # fx module
+  ├── client.go                    # Discogs API client
+  ├── auth.go                      # OAuth 1.0a implementation
+  ├── provider.go                  # Metadata provider interface impl
+  ├── releases.go                  # Release metadata methods
+  ├── artists.go                   # Artist metadata methods
+  └── discogs_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Discogs provider implementation
+  type DiscogsProvider struct {
+    client      *DiscogsClient
+    token       string  // Personal Access Token
+    cache       Cache
+  }
+
+  // Metadata provider interface
+  type MetadataProvider interface {
+    // Search
+    SearchRelease(ctx context.Context, artist, title string, year *int) ([]ReleaseSearchResult, error)
+    SearchArtist(ctx context.Context, name string) ([]ArtistSearchResult, error)
+
+    // Fetch details
+    GetRelease(ctx context.Context, releaseID int) (*ReleaseDetails, error)
+    GetMaster(ctx context.Context, masterID int) (*MasterRelease, error)
+    GetArtist(ctx context.Context, artistID int) (*ArtistDetails, error)
+  }
+
+  // Release details from Discogs
+  type ReleaseDetails struct {
+    ID          int      `json:"id"`
+    Title       string   `json:"title"`
+    Artists     []Artist `json:"artists"`
+    Year        int      `json:"year"`
+    Country     string   `json:"country"`
+    Genres      []string `json:"genres"`
+    Styles      []string `json:"styles"`
+    Formats     []Format `json:"formats"`
+    Labels      []Label  `json:"labels"`
+    Tracklist   []Track  `json:"tracklist"`
+    Credits     []Credit `json:"extraartists"`  // Full credits
+    Images      []Image  `json:"images"`
+  }
+
+  type Credit struct {
+    Name string `json:"name"`
+    Role string `json:"role"`  // "Producer", "Engineer", "Mastering"
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `github.com/google/uuid` - UUID support
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `go.uber.org/fx` - Dependency injection
+
+  **External APIs**:
+  - Discogs API v2 (free with registration)
+
+env_vars: |
+  ```bash
+  # Discogs API
+  DISCOGS_TOKEN=your_personal_access_token_here
+
+  # Rate limiting
+  DISCOGS_RATE_LIMIT=60  # requests per minute
+
+  # Caching
+  DISCOGS_CACHE_TTL=168h  # 7 days
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      discogs:
+        enabled: true
+        token: ${DISCOGS_TOKEN}
+        rate_limit: 60  # requests/minute
+        cache_ttl: 168h
+  ```
+
+api_request_examples: |
+  **Search Release**:
+  ```
+  GET https://api.discogs.com/database/search?artist=Pink%20Floyd&release_title=Dark%20Side&type=release&token=xxx
+  ```
+
+  **Response**:
+  ```json
+  {
+    "results": [
+      {
+        "id": 4246872,
+        "type": "release",
+        "title": "Pink Floyd - The Dark Side Of The Moon",
+        "year": "1973",
+        "country": "US",
+        "format": ["Vinyl", "LP", "Album"],
+        "label": ["Harvest"],
+        "genre": ["Rock"],
+        "style": ["Prog Rock", "Psychedelic Rock"]
+      }
+    ]
+  }
+  ```
+
+  **Get Release Details**:
+  ```
+  GET https://api.discogs.com/releases/4246872?token=xxx
+  ```
+
+  **Response** (includes full tracklist, credits):
+  ```json
+  {
+    "id": 4246872,
+    "title": "The Dark Side Of The Moon",
+    "artists": [{"name": "Pink Floyd", "id": 45467}],
+    "year": 1973,
+    "country": "US",
+    "genres": ["Rock"],
+    "styles": ["Prog Rock", "Psychedelic Rock"],
+    "formats": [
+      {
+        "name": "Vinyl",
+        "qty": "1",
+        "descriptions": ["LP", "Album", "Gatefold"]
+      }
+    ],
+    "tracklist": [
+      {
+        "position": "A1",
+        "title": "Speak To Me",
+        "duration": "1:07"
+      },
+      {
+        "position": "A2",
+        "title": "Breathe (In The Air)",
+        "duration": "2:48"
+      }
+    ],
+    "extraartists": [
+      {"name": "Alan Parsons", "role": "Engineer"},
+      {"name": "Chris Thomas", "role": "Producer"}
+    ]
+  }
+  ```
+
+use_cases: |
+  **Primary Use Cases**:
+  1. **Vinyl Collectors**: Track specific pressings (original vs reissue)
+  2. **Full Credits**: List all contributors (engineers, producers, session musicians)
+  3. **Regional Variations**: US vs UK vs Japan releases
+  4. **Physical Media Details**: Vinyl, CD, cassette, 8-track specifications
+  5. **Marketplace Value**: See what pressings are worth (optional integration)
+
+  **Display Example**:
+  ```
+  Album: The Dark Side of the Moon
+  Artist: Pink Floyd
+
+  Release Info:
+  Format: Vinyl LP, Gatefold
+  Country: US
+  Year: 1973
+  Label: Harvest
+
+  Credits:
+  Engineer: Alan Parsons
+  Producer: Chris Thomas
+  Mastering: Doug Sax
+  ```
+
+format_handling: |
+  **Format Types**:
+  - Vinyl (7", 10", 12")
+  - CD
+  - Cassette
+  - Digital File
+  - 8-Track
+
+  **Format Details**:
+  - Speed: 33 ⅓ RPM, 45 RPM
+  - Size: 12", 7"
+  - Special: Gatefold, Picture Disc, Colored Vinyl
+
+  **Example**:
+  ```json
+  {
+    "formats": [
+      {
+        "name": "Vinyl",
+        "qty": "2",
+        "descriptions": ["LP", "Album", "Gatefold", "180g"]
+      }
+    ]
+  }
+  ```
+
+credits_extraction: |
+  **Full Credits** (`extraartists`):
+  - Producer
+  - Engineer
+  - Mixing Engineer
+  - Mastering Engineer
+  - Session Musicians
+  - Artwork/Design
+  - Photography
+
+  **Storage**:
+  Store as JSONB in album metadata:
+  ```json
+  {
+    "credits": [
+      {"name": "Alan Parsons", "role": "Engineer"},
+      {"name": "Chris Thomas", "role": "Producer"},
+      {"name": "Hipgnosis", "role": "Artwork"}
+    ]
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestDiscogsProvider_SearchRelease(t *testing.T) {
+    // Test release search with mock HTTP client
+  }
+
+  func TestDiscogsProvider_CreditsParsing(t *testing.T) {
+    // Test parsing of complex credits
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestDiscogs_FullWorkflow(t *testing.T) {
+    // Use real Discogs API (with test token)
+    // Test search, fetch, credits extraction
+  }
+  ```

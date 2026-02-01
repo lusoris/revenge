@@ -32,3 +32,561 @@ design_refs:
 integration_name: DLNA/UPnP
 integration_id: dlnaupnp
 external_service: DLNA/UPnP
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐    SSDP Discovery    ┌─────────────────┐
+  │   Smart TV   │◀─────(UDP 1900)─────▶│    Revenge      │
+  │  DLNA Client │                      │  MediaServer    │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │  1. Discover servers (M-SEARCH)      │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │  2. Get device description (XML)     │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │  3. Browse content (SOAP)            │
+         │──────────────────────────────────────▶│
+         │   <Browse ObjectID="0"/>             │
+         │                                       │
+         │  4. Receive content list (DIDL-Lite) │
+         │◀──────────────────────────────────────│
+         │   <?xml version="1.0"?>              │
+         │   <DIDL-Lite>...</DIDL-Lite>         │
+         │                                       │
+         │  5. Request media URL                │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │  6. Stream media (HTTP)              │
+         │◀──────────────────────────────────────│
+         │                                       │
+  ┌──────▼───────┐                      ┌────────▼────────┐
+  │   Renderer   │                      │   AVTransport   │
+  │   (Playback) │◀──Control (SOAP)────│   Service       │
+  └──────────────┘                      └─────────────────┘
+  ```
+
+protocol_details: |
+  **UPnP/DLNA Protocols**:
+
+  **1. SSDP (Simple Service Discovery Protocol)**:
+  - Multicast UDP on 239.255.255.250:1900
+  - M-SEARCH requests for device discovery
+  - NOTIFY announcements from servers
+
+  **2. UPnP Device Architecture**:
+  - Device description via XML
+  - Service descriptions (ContentDirectory, AVTransport, ConnectionManager)
+  - SOAP for service control
+
+  **3. DIDL-Lite (Digital Item Declaration Language)**:
+  - XML format for content metadata
+  - Hierarchical folder structure
+  - Media item properties (codec, resolution, bitrate)
+
+  **4. HTTP Streaming**:
+  - Standard HTTP GET for media delivery
+  - Byte-range requests for seeking
+  - Optional transcoding for incompatible formats
+
+  **DLNA Profiles**:
+  - **MediaServer**: Provides content (Revenge implements this)
+  - **MediaRenderer**: Plays content (Smart TV implements this)
+  - **MediaController**: Remote control (optional)
+
+module_structure: |
+  ```
+  internal/
+    casting/
+      dlna/
+        server.go          # UPnP MediaServer implementation
+        discovery.go       # SSDP discovery responder
+        contentdir.go      # ContentDirectory service
+        avtransport.go     # AVTransport service (optional)
+        connmanager.go     # ConnectionManager service
+        didl.go            # DIDL-Lite XML generation
+        transcoder.go      # On-the-fly transcoding
+        module.go          # fx module definition
+        server_test.go
+
+  web/
+    src/
+      lib/
+        dlna/
+          useDLNAServer.ts     # Server status monitoring
+          DLNAStatus.svelte    # Admin UI component
+  ```
+
+key_interfaces: |
+  ```go
+  // DLNAServer implements UPnP MediaServer specification
+  type DLNAServer interface {
+      // Start DLNA server and SSDP discovery
+      Start(ctx context.Context) error
+
+      // Stop server and cleanup
+      Stop(ctx context.Context) error
+
+      // Get server status
+      GetStatus(ctx context.Context) (*ServerStatus, error)
+
+      // Get connected clients/renderers
+      GetClients(ctx context.Context) ([]DLNAClient, error)
+  }
+
+  // ContentDirectory service interface
+  type ContentDirectory interface {
+      // Browse folder by ObjectID
+      Browse(ctx context.Context, objectID string, browseFlag BrowseFlag) (*BrowseResult, error)
+
+      // Search content
+      Search(ctx context.Context, containerID string, searchCriteria string) (*SearchResult, error)
+
+      // Get system update ID (increments on content changes)
+      GetSystemUpdateID(ctx context.Context) (uint32, error)
+  }
+
+  type ServerStatus struct {
+      Running       bool
+      IPAddress     string
+      Port          int
+      FriendlyName  string
+      Clients       int
+      ItemsServed   int64
+      BytesServed   int64
+  }
+
+  type DLNAClient struct {
+      UUID          string
+      Name          string
+      Manufacturer  string
+      ModelName     string
+      IPAddress     string
+      LastSeen      time.Time
+  }
+
+  type BrowseFlag string
+
+  const (
+      BrowseMetadata      BrowseFlag = "BrowseMetadata"       // Get object info
+      BrowseDirectChildren BrowseFlag = "BrowseDirectChildren" // List folder contents
+  )
+
+  type BrowseResult struct {
+      NumberReturned  int
+      TotalMatches    int
+      UpdateID        uint32
+      Result          string  // DIDL-Lite XML
+  }
+
+  // DIDL-Lite container/item types
+  type DIDLContainer struct {
+      ID            string
+      ParentID      string
+      Title         string
+      Class         string           // object.container.storageFolder
+      ChildCount    int
+      Searchable    bool
+  }
+
+  type DIDLItem struct {
+      ID            string
+      ParentID      string
+      Title         string
+      Class         string           // object.item.videoItem.movie
+      Resources     []DIDLResource
+      Metadata      MediaMetadata
+  }
+
+  type DIDLResource struct {
+      URL           string
+      ProtocolInfo  string           // http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_HP_HD_AAC
+      Size          int64
+      Duration      time.Duration
+      Resolution    string           // 1920x1080
+      Bitrate       int
+      SampleRate    int
+      ColorDepth    int
+  }
+
+  // Transcoder interface for format conversion
+  type DLNATranscoder interface {
+      // Check if transcoding needed for device
+      NeedsTranscode(ctx context.Context, mediaFile string, deviceProfile DLNAProfile) (bool, error)
+
+      // Start transcoding session
+      StartTranscode(ctx context.Context, req *TranscodeRequest) (*TranscodeSession, error)
+
+      // Get transcoded stream URL
+      GetStreamURL(ctx context.Context, sessionID string) (string, error)
+  }
+
+  type DLNAProfile struct {
+      DeviceID      string
+      Manufacturer  string
+      ModelName     string
+      VideoCodecs   []string         // h264, hevc, mpeg2
+      AudioCodecs   []string         // aac, mp3, ac3
+      Containers    []string         // mp4, mkv, avi
+      MaxResolution string           // 1920x1080, 3840x2160
+      MaxBitrate    int
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/anacrolix/dms` - DLNA MediaServer implementation
+  - `github.com/koron/go-ssdp` - SSDP discovery
+  - `github.com/clbanning/mxj` - XML processing for DIDL-Lite
+  - `github.com/asticode/go-astiav` - FFmpeg for transcoding
+
+  **External Tools**:
+  - FFmpeg (for transcoding incompatible formats)
+
+env_vars: |
+  ```bash
+  # DLNA server configuration
+  REVENGE_DLNA_ENABLED=true
+  REVENGE_DLNA_PORT=8200
+  REVENGE_DLNA_FRIENDLY_NAME="Revenge Media Server"
+  REVENGE_DLNA_INTERFACE=eth0       # Network interface to bind
+  REVENGE_DLNA_ANNOUNCE_INTERVAL=30s
+  ```
+
+config_keys: |
+  ```yaml
+  casting:
+    dlna:
+      enabled: true
+      server:
+        port: 8200
+        friendly_name: "Revenge Media Server"
+        manufacturer: "Revenge Project"
+        model_name: "Revenge Media Server"
+        interface: ""                # Empty = all interfaces
+      discovery:
+        announce_interval: 30s       # SSDP NOTIFY interval
+        max_age: 1800                # Device cache expiration (seconds)
+      transcoding:
+        enabled: true
+        profiles:
+          - device_match: "Samsung.*TV"
+            video_codec: h264
+            audio_codec: aac
+            container: mp4
+            max_bitrate: 15000
+          - device_match: "LG.*webOS"
+            video_codec: h264
+            audio_codec: ac3
+            container: mp4
+          - device_match: ".*"        # Default profile
+            video_codec: h264
+            audio_codec: aac
+            container: mp4
+            max_bitrate: 10000
+      content:
+        expose_libraries: [movies, tvshows, music]
+        folder_structure: by_type    # by_type, by_library, flat
+        image_thumbnails: true
+  ```
+
+component_interaction: |
+  **Device Discovery & Browsing**:
+
+  1. **Server Startup**:
+     - DLNA server starts on configured port (default 8200)
+     - SSDP responder binds to multicast group (239.255.255.250:1900)
+     - Send initial SSDP NOTIFY announcements
+     - Periodically re-announce (every 30s)
+
+  2. **Client Discovery**:
+     - Smart TV sends M-SEARCH request to 239.255.255.250:1900
+     - DLNA server responds with device location (HTTP URL)
+     - Client fetches device description XML
+
+  3. **Browse Content**:
+     - Client calls ContentDirectory.Browse("0") for root
+     - Server returns DIDL-Lite XML with folder structure:
+       ```xml
+       <container id="movies" parentID="0">
+         <dc:title>Movies</dc:title>
+         <upnp:class>object.container.storageFolder</upnp:class>
+         <upnp:childCount>150</upnp:childCount>
+       </container>
+       ```
+
+  4. **List Movies**:
+     - Client browses "movies" folder
+     - Server returns DIDL-Lite with movie items:
+       ```xml
+       <item id="movie-123" parentID="movies">
+         <dc:title>Fight Club</dc:title>
+         <upnp:class>object.item.videoItem.movie</upnp:class>
+         <res protocolInfo="http-get:*:video/mp4:*"
+              size="2147483648"
+              duration="2:16:00"
+              resolution="1920x1080">
+           http://revenge.local:8200/media/movie/123.mp4
+         </res>
+       </item>
+       ```
+
+  5. **Play Media**:
+     - Client requests media URL from `<res>` tag
+     - Server streams file via HTTP
+     - If transcoding needed, start transcode session first
+
+content_hierarchy: |
+  **DLNA Folder Structure**:
+
+  ```
+  Root (0)
+  ├── Movies (movies)
+  │   ├── Action
+  │   ├── Comedy
+  │   ├── Drama
+  │   └── ...
+  ├── TV Shows (tvshows)
+  │   ├── Series A
+  │   │   ├── Season 1
+  │   │   └── Season 2
+  │   └── ...
+  ├── Music (music)
+  │   ├── Artist A
+  │   │   └── Album A
+  │   └── ...
+  └── Photos (photos)
+      ├── 2024
+      └── 2025
+  ```
+
+  **ObjectID Format**:
+  - Root: `"0"`
+  - Movies: `"movies"`
+  - Movie item: `"movie-{uuid}"`
+  - TV Show: `"tvshow-{uuid}"`
+  - Season: `"season-{uuid}"`
+  - Episode: `"episode-{uuid}"`
+
+didl_generation: |
+  **DIDL-Lite Example** (Movie):
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+             xmlns:dc="http://purl.org/dc/elements/1.1/"
+             xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+             xmlns:dlna="urn:schemas-dlna-org:metadata-1-0/">
+    <item id="movie-550" parentID="movies" restricted="1">
+      <dc:title>Fight Club</dc:title>
+      <dc:date>1999-10-15</dc:date>
+      <upnp:class>object.item.videoItem.movie</upnp:class>
+      <upnp:genre>Drama</upnp:genre>
+      <upnp:actor>Brad Pitt</upnp:actor>
+      <upnp:actor>Edward Norton</upnp:actor>
+      <upnp:director>David Fincher</upnp:director>
+      <upnp:longDescription>An insomniac office worker...</upnp:longDescription>
+      <upnp:rating>R</upnp:rating>
+      <upnp:albumArtURI>http://revenge.local:8200/images/fight-club-poster.jpg</upnp:albumArtURI>
+
+      <!-- Video resource -->
+      <res protocolInfo="http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_HP_HD_AAC;DLNA.ORG_OP=01;DLNA.ORG_FLAGS=01700000000000000000000000000000"
+           size="2147483648"
+           duration="2:16:00"
+           resolution="1920x1080"
+           bitrate="5000000">
+        http://revenge.local:8200/media/movie/550.mp4
+      </res>
+
+      <!-- Subtitle resource (optional) -->
+      <res protocolInfo="http-get:*:text/srt:*">
+        http://revenge.local:8200/media/movie/550/subtitles/en.srt
+      </res>
+    </item>
+  </DIDL-Lite>
+  ```
+
+transcoding: |
+  **On-the-Fly Transcoding**:
+
+  Many devices have limited codec support. DLNA server transcodes incompatible formats:
+
+  **Detection**:
+  1. Client connects, server identifies device (manufacturer/model from UPnP description)
+  2. Match against transcoding profiles in config
+  3. Check if media file codec compatible with profile
+  4. If incompatible, trigger transcode
+
+  **Process**:
+  1. Start FFmpeg transcode to target codec/container
+  2. Stream transcoded output via HTTP
+  3. Cache segments for repeat playback
+  4. Cleanup old transcode sessions
+
+  **Common Profiles**:
+  - **Samsung TV**: H.264/AAC in MP4, max 1080p
+  - **LG webOS**: H.264/AC3 in MP4, supports 4K
+  - **PlayStation**: H.264/AAC in MP4
+  - **Generic DLNA**: MPEG-2/MP3 in AVI (broadest compatibility)
+
+  **Fallback Chain**:
+  1. Direct play (no transcoding)
+  2. Remux (change container only, fast)
+  3. Transcode video (codec conversion, slow)
+  4. Transcode video + audio (slowest)
+
+api_endpoints: |
+  **DLNA Server Control** (Admin API):
+  ```
+  GET    /api/v1/dlna/status
+  POST   /api/v1/dlna/start
+  POST   /api/v1/dlna/stop
+  GET    /api/v1/dlna/clients
+  ```
+
+  **Example - Get Status**:
+  ```json
+  GET /api/v1/dlna/status
+
+  {
+    "running": true,
+    "ip_address": "192.168.1.100",
+    "port": 8200,
+    "friendly_name": "Revenge Media Server",
+    "connected_clients": [
+      {
+        "uuid": "uuid:12345678-1234-1234-1234-123456789abc",
+        "name": "Samsung TV Living Room",
+        "ip_address": "192.168.1.150",
+        "last_seen": "2026-02-01T12:00:00Z"
+      }
+    ],
+    "stats": {
+      "items_served": 1234,
+      "bytes_served": 12345678900,
+      "active_streams": 2
+    }
+  }
+  ```
+
+error_handling: |
+  **Common Issues**:
+
+  - **Device Not Discovering Server**:
+    - Firewall blocking multicast (UDP 1900) or HTTP port (8200)
+    - Server and client on different subnets/VLANs
+    - Solution: Allow UDP 1900, ensure same network
+
+  - **Playback Fails**:
+    - Codec incompatibility
+    - Network bandwidth insufficient
+    - Solution: Enable transcoding, check network quality
+
+  - **Subtitles Not Working**:
+    - Device doesn't support external subtitles
+    - Solution: Burn subtitles into video (transcode)
+
+  - **Seeking Not Working**:
+    - Server not supporting HTTP byte-range requests
+    - Solution: Ensure HTTP server supports Range header
+
+unit_tests: |
+  ```go
+  func TestDLNAServer_Browse(t *testing.T) {
+      tests := []struct {
+          name     string
+          objectID string
+          flag     BrowseFlag
+          wantItems int
+          wantErr  bool
+      }{
+          {
+              name:     "browse root",
+              objectID: "0",
+              flag:     BrowseDirectChildren,
+              wantItems: 4,  // movies, tvshows, music, photos
+          },
+          {
+              name:     "browse movies folder",
+              objectID: "movies",
+              flag:     BrowseDirectChildren,
+              wantItems: 150,
+          },
+      }
+
+      for _, tt := range tests {
+          t.Run(tt.name, func(t *testing.T) {
+              server := NewDLNAServer(mockRepo)
+              result, err := server.ContentDirectory().Browse(context.Background(), tt.objectID, tt.flag)
+
+              if tt.wantErr {
+                  require.Error(t, err)
+                  return
+              }
+
+              require.NoError(t, err)
+              assert.Equal(t, tt.wantItems, result.NumberReturned)
+          })
+      }
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestDLNA_FullWorkflow(t *testing.T) {
+      // Start DLNA server
+      server := NewDLNAServer(repo)
+      err := server.Start(context.Background())
+      require.NoError(t, err)
+      defer server.Stop(context.Background())
+
+      // Simulate SSDP M-SEARCH
+      resp, err := ssdp.Search("urn:schemas-upnp-org:device:MediaServer:1", 2*time.Second)
+      require.NoError(t, err)
+      assert.NotEmpty(t, resp)
+
+      // Fetch device description
+      deviceURL := resp[0].Location
+      desc, err := http.Get(deviceURL)
+      require.NoError(t, err)
+      assert.Equal(t, http.StatusOK, desc.StatusCode)
+
+      // Browse content (SOAP request)
+      browseReq := buildSOAPBrowse("0", "BrowseDirectChildren")
+      browseResp, err := http.Post(deviceURL+"/ContentDirectory/control", "text/xml", bytes.NewReader(browseReq))
+      require.NoError(t, err)
+
+      // Parse DIDL-Lite response
+      didl, err := parseDIDL(browseResp.Body)
+      require.NoError(t, err)
+      assert.Greater(t, len(didl.Containers), 0)
+  }
+  ```
+
+best_practices: |
+  **Network**:
+  - Use wired Ethernet for 4K streaming
+  - Ensure server and clients on same subnet
+  - Configure firewall to allow UDP 1900 and TCP 8200
+
+  **Performance**:
+  - Pre-transcode popular content to common formats
+  - Use hardware acceleration for real-time transcoding
+  - Cache DIDL-Lite responses for frequently browsed folders
+
+  **Compatibility**:
+  - Test with multiple device types (Samsung, LG, Sony, etc.)
+  - Provide transcoding profiles for popular brands
+  - Fallback to MPEG-2/MP3 for maximum compatibility
+
+  **Metadata**:
+  - Include rich metadata in DIDL-Lite (actors, genres, ratings)
+  - Provide poster/thumbnail images
+  - Use correct UPnP classes for content types
+
+  **Monitoring**:
+  - Log connected clients and their capabilities
+  - Track transcoding sessions and resource usage
+  - Monitor network bandwidth for streaming

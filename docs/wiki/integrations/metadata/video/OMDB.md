@@ -22,9 +22,9 @@
 
 # OMDb (Open Movie Database)
 
-> IMDb ratings and additional movie data
+> Multi-source ratings enrichment (IMDb, Rotten Tomatoes, Metacritic)
 
-OMDb provides supplementary metadata including IMDb ratings, Rotten Tomatoes scores, and Metacritic scores. Used as a fallback when TMDB lacks data. Requires free API key (limited requests per day). Particularly useful for displaying multiple rating sources on movie detail pages.
+SUPPLEMENTARY ratings enrichment for movies/TV shows. Provides: (1) IMDb ratings + vote counts, (2) Rotten Tomatoes scores (Tomatometer/Audience), (3) Metacritic scores, (4) Box office data, (5) Awards info. Free API with 1000 req/day limit. **Optional proxy/VPN routing** for restricted regions (via HTTP_CLIENT service). Primary use: Display multi-source ratings on detail pages.
 
 ---
 

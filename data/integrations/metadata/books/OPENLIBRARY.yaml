@@ -16,13 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Open book metadata database - primary metadata provider for
-  books (Goodreads alternative)'
-wiki_tagline: '> Free book metadata from Open Library'
-wiki_overview: Open Library provides free book metadata as part of the Internet Archive.
-  Covers millions of books with basic information, covers, and edition details. No
-  API key required. Primary book metadata source since Goodreads closed their API.
-  Links to Internet Archive for borrowable digital copies.
+technical_summary: '> SUPPLEMENTARY metadata provider (fallback + enrichment) for books/audiobooks'
+wiki_tagline: '> Open book metadata - Supplementary to Chaptarr'
+wiki_overview: 'SUPPLEMENTARY metadata source for books/audiobooks. Used as: (1) **Fallback** when Chaptarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. Free API (no key required) from Internet Archive. Millions of books with covers, editions, authors. Links to borrowable digital copies. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -31,12 +27,16 @@ sources:
   url: https://openlibrary.org/developers/api
   note: Auto-resolved from openlibrary
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: CHAPTARR (PRIMARY for books/audiobooks)
+  path: ../../servarr/CHAPTARR.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: BOOK_MODULE
+  path: ../../../features/book/BOOK_MODULE.md
+- title: AUDIOBOOK_MODULE
+  path: ../../../features/audiobook/AUDIOBOOK_MODULE.md
 integration_name: OpenLibrary
 integration_id: openlibrary
 external_service: OpenLibrary

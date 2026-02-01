@@ -93,13 +93,110 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/revenge___nsfw_toggle/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- User NSFW/QAR toggle preferences
+  CREATE TABLE user_nsfw_preferences (
+    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Toggle state
+    nsfw_enabled BOOLEAN DEFAULT false,
+    requires_pin BOOLEAN DEFAULT true,             -- Require PIN to enable
+    pin_hash TEXT,                                 -- Hashed PIN for verification
+
+    -- Session timeout
+    session_timeout_minutes INTEGER DEFAULT 60,    -- Auto-disable after X minutes
+
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- NSFW session tracking (temporary enable)
+  CREATE TABLE nsfw_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    enabled_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  CREATE INDEX idx_nsfw_sessions_user ON nsfw_sessions(user_id);
+  CREATE INDEX idx_nsfw_sessions_expires ON nsfw_sessions(expires_at);
+  ```
+module_structure: |
+  ```
+  internal/nsfw/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # NSFW toggle logic
+  ├── middleware.go                # HTTP middleware for filtering
+  ├── handler.go                   # HTTP API handlers
+  └── nsfw_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type NSFWService interface {
+    EnableNSFW(ctx context.Context, userID uuid.UUID, pin string) error
+    DisableNSFW(ctx context.Context, userID uuid.UUID) error
+    IsNSFWEnabled(ctx context.Context, userID uuid.UUID) (bool, error)
+    SetPIN(ctx context.Context, userID uuid.UUID, pin string) error
+    VerifyPIN(ctx context.Context, userID uuid.UUID, pin string) (bool, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `golang.org/x/crypto/bcrypt` - PIN hashing
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  NSFW_DEFAULT_SESSION_TIMEOUT=60
+  ```
+
+config_keys: |
+  ```yaml
+  nsfw:
+    default_session_timeout_minutes: 60
+    require_pin_by_default: true
+  ```
+
+component_interaction: |
+  **Toggle Flow**:
+  1. User clicks NSFW toggle in header
+  2. If requires_pin, prompt for PIN
+  3. Service verifies PIN hash
+  4. Create nsfw_sessions record with expiry
+  5. Frontend shows QAR/adult libraries
+
+  **Middleware Filter**:
+  1. HTTP request for QAR content
+  2. Middleware checks nsfw_sessions
+  3. If not enabled or expired, return 403
+  4. If enabled, allow access to qar.* schema
+
+api_endpoints: |
+  ```
+  POST /api/v1/nsfw/enable          # Enable NSFW mode
+  POST /api/v1/nsfw/disable         # Disable NSFW mode
+  GET  /api/v1/nsfw/status          # Get NSFW status
+  PUT  /api/v1/nsfw/pin             # Set/update PIN
+  ```
+
+unit_tests: |
+  ```go
+  func TestNSFWService_EnableDisable(t *testing.T) {
+    // Test enable/disable flow with PIN
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestNSFW_EndToEnd(t *testing.T) {
+    // Test full toggle workflow with session expiry
+  }
+  ```

@@ -53,3 +53,125 @@ design_refs:
 service_name: RBAC Service
 package_path: internal/service/rbac
 fx_module: rbac.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  Middleware  │────▶│   Casbin    │
+  │  (Web/App)  │◀────│   (Auth)     │◀────│  Enforcer   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                                                   ▼
+                                            ┌─────────────┐
+                                            │ PostgreSQL  │
+                                            │casbin_rule  │
+                                            └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  Note: Core schema defined in RBAC_CASBIN.yaml feature. Additional service-specific tables:
+
+  ```sql
+  -- Casbin rules (managed by casbin-pgx-adapter)
+  CREATE TABLE casbin_rule (
+    id SERIAL PRIMARY KEY,
+    ptype VARCHAR(100),
+    v0 VARCHAR(100),
+    v1 VARCHAR(100),
+    v2 VARCHAR(100),
+    v3 VARCHAR(100),
+    v4 VARCHAR(100),
+    v5 VARCHAR(100)
+  );
+  CREATE INDEX idx_casbin_rule_ptype ON casbin_rule(ptype);
+  ```
+
+module_structure: |
+  ```
+  internal/service/rbac/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── service.go                   # RBAC service logic
+  ├── enforcer.go                  # Casbin enforcer wrapper
+  ├── middleware.go                # HTTP auth middleware
+  ├── handler.go                   # HTTP API handlers
+  └── rbac_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type RBACService interface {
+    // Policy enforcement
+    Enforce(ctx context.Context, sub, obj, act string) (bool, error)
+    EnforceWithContext(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+
+    // Policy management
+    AddPolicy(ctx context.Context, sub, obj, act string) error
+    RemovePolicy(ctx context.Context, sub, obj, act string) error
+    GetPolicies(ctx context.Context) ([][]string, error)
+
+    // Role management
+    AssignRole(ctx context.Context, userID uuid.UUID, role string) error
+    RemoveRole(ctx context.Context, userID uuid.UUID, role string) error
+    GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/casbin/casbin/v2`
+  - `github.com/casbin/pgx-adapter`
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  RBAC_MODEL_PATH=/config/casbin_model.conf
+  RBAC_POLICY_RELOAD_INTERVAL=5m
+  ```
+
+config_keys: |
+  ```yaml
+  rbac:
+    model_path: /config/casbin_model.conf
+    policy_reload_interval: 5m
+  ```
+
+component_interaction: |
+  **Authorization Check**:
+  1. HTTP request with Bearer token
+  2. Middleware validates session
+  3. Extract user_id from session
+  4. Call RBAC.Enforce(user_id, resource, action)
+  5. Casbin checks policies in PostgreSQL
+  6. If allowed, proceed; if denied, return 403
+
+api_endpoints: |
+  ```
+  # Policy management (admin only)
+  GET    /api/v1/rbac/policies              # List policies
+  POST   /api/v1/rbac/policies              # Add policy
+  DELETE /api/v1/rbac/policies              # Remove policy
+
+  # Role management
+  POST   /api/v1/rbac/users/:id/roles       # Assign role
+  DELETE /api/v1/rbac/users/:id/roles/:role # Remove role
+  GET    /api/v1/rbac/users/:id/roles       # Get user roles
+  ```
+
+unit_tests: |
+  ```go
+  func TestRBACService_Enforce(t *testing.T) {
+    // Test policy enforcement
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestRBAC_MiddlewareIntegration(t *testing.T) {
+    // Test HTTP middleware auth flow
+  }
+  ```

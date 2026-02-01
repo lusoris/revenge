@@ -149,11 +149,25 @@ internal/content/revenge___nsfw_toggle/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type NSFWService interface {
+  EnableNSFW(ctx context.Context, userID uuid.UUID, pin string) error
+  DisableNSFW(ctx context.Context, userID uuid.UUID) error
+  IsNSFWEnabled(ctx context.Context, userID uuid.UUID) (bool, error)
+  SetPIN(ctx context.Context, userID uuid.UUID, pin string) error
+  VerifyPIN(ctx context.Context, userID uuid.UUID, pin string) (bool, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `golang.org/x/crypto/bcrypt` - PIN hashing
+- `go.uber.org/fx`
+
 
 
 
@@ -162,17 +176,31 @@ internal/content/revenge___nsfw_toggle/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+NSFW_DEFAULT_SESSION_TIMEOUT=60
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+nsfw:
+  default_session_timeout_minutes: 60
+  require_pin_by_default: true
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST /api/v1/nsfw/enable          # Enable NSFW mode
+POST /api/v1/nsfw/disable         # Disable NSFW mode
+GET  /api/v1/nsfw/status          # Get NSFW status
+PUT  /api/v1/nsfw/pin             # Set/update PIN
+```
+
 
 
 ## Testing Strategy

@@ -90,16 +90,21 @@
       "description": "Rate limiting information"
     },
     "provides_data": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "description"],
-        "properties": {
-          "name": {"type": "string"},
-          "description": {"type": "string"}
+      "oneOf": [
+        {"type": "string", "description": "Provides data as multiline string"},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "description"],
+            "properties": {
+              "name": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
         }
-      },
-      "description": "What data this integration provides"
+      ],
+      "description": "What data this integration provides (string or array format)"
     },
     "data_flow_diagram": {
       "type": "string",
@@ -122,31 +127,36 @@
       "description": "Rate limiting strategy"
     },
     "api_endpoints": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "method", "path", "purpose"],
-        "properties": {
-          "name": {"type": "string"},
-          "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
-          "path": {"type": "string"},
-          "purpose": {"type": "string"},
-          "parameters": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": ["name", "type", "description"],
-              "properties": {
-                "name": {"type": "string"},
-                "type": {"type": "string"},
-                "description": {"type": "string"}
-              }
+      "oneOf": [
+        {"type": "string", "description": "API endpoints as multiline string"},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "method", "path", "purpose"],
+            "properties": {
+              "name": {"type": "string"},
+              "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+              "path": {"type": "string"},
+              "purpose": {"type": "string"},
+              "parameters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "type", "description"],
+                  "properties": {
+                    "name": {"type": "string"},
+                    "type": {"type": "string"},
+                    "description": {"type": "string"}
+                  }
+                }
+              },
+              "response_example": {"type": "string"}
             }
-          },
-          "response_example": {"type": "string"}
+          }
         }
-      },
-      "description": "API endpoints"
+      ],
+      "description": "API endpoints (string or array format)"
     },
     "caching_strategy": {
       "type": "string",
@@ -174,9 +184,11 @@
       "description": "Fallback behavior"
     },
     "prerequisites": {
-      "type": "array",
-      "items": {"type": "string"},
-      "description": "Prerequisites for setup"
+      "oneOf": [
+        {"type": "string", "description": "Prerequisites as multiline string"},
+        {"type": "array", "items": {"type": "string"}}
+      ],
+      "description": "Prerequisites for setup (string or array format)"
     },
     "setup_steps": {
       "type": "string",

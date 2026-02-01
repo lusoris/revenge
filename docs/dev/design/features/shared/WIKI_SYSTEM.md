@@ -134,11 +134,30 @@ internal/content/internal_wiki_system/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type WikiService interface {
+  CreatePage(ctx context.Context, page CreatePageRequest) (*WikiPage, error)
+  GetPage(ctx context.Context, slug string) (*WikiPage, error)
+  UpdatePage(ctx context.Context, slug string, update PageUpdate) (*WikiPage, error)
+  DeletePage(ctx context.Context, slug string) error
+
+  ListPages(ctx context.Context, filters PageFilters) ([]WikiPage, error)
+  SearchPages(ctx context.Context, query string) ([]WikiPage, error)
+
+  GetVersions(ctx context.Context, pageID uuid.UUID) ([]WikiPageVersion, error)
+  RestoreVersion(ctx context.Context, pageID uuid.UUID, version int) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/gomarkdown/markdown` - Markdown rendering
+- `go.uber.org/fx`
+
 
 
 
@@ -147,17 +166,34 @@ internal/content/internal_wiki_system/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+WIKI_ENABLED=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+wiki:
+  enabled: true
+  allow_public_editing: false
+  require_review: false
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST   /api/v1/wiki/pages           # Create page
+GET    /api/v1/wiki/pages/:slug     # Get page
+PUT    /api/v1/wiki/pages/:slug     # Update page
+DELETE /api/v1/wiki/pages/:slug     # Delete page
+GET    /api/v1/wiki/pages/:slug/versions  # Get versions
+POST   /api/v1/wiki/pages/:slug/restore/:version  # Restore version
+```
+
 
 
 ## Testing Strategy

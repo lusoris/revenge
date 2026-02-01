@@ -22,9 +22,9 @@
 
 # Last.fm
 
-> Artist bios and similar artist recommendations
+> Artist enrichment metadata (bios, tags, similar) - Supplementary to Lidarr
 
-Last.fm provides artist biographies, tags, and similar artist recommendations. Supplements MusicBrainz with community-curated data. Scrobble your listening history to track what you play. See your listening stats and discover new music based on your taste. Free API key required.
+SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (2) Community tags/genres, (3) Similar artist recommendations, (4) Album/track playcount stats. Also scrobbling service (see SCROBBLING.yaml). Free API key required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).
 
 ---
 

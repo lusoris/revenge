@@ -14,13 +14,22 @@ sources:
   - name: Typesense Go Client
     url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
+  - name: golang.org/x/time
+    url: ../../../../sources/go/x/time.md
+    note: Rate limiting
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: WHISPARR (PRIMARY for QAR)
+    path: ../../servarr/WHISPARR.md
+  - title: STASHDB (also SUPPLEMENTARY)
+    path: ./STASHDB.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: ADULT_CONTENT_SYSTEM (QAR module)
+    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
+  - title: DATA_RECONCILIATION
+    path: ../../../features/adult/DATA_RECONCILIATION.md
 ---
 
 ## Table of Contents
@@ -37,6 +46,10 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [ThePornDB API](#theporndb-api)
+- [Rate limiting](#rate-limiting)
+- [Caching](#caching)
+- [Proxy/VPN (optional)](#proxyvpn-optional)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -57,8 +70,8 @@ design_refs:
 
 > Integration with ThePornDB
 
-> Alternative adult metadata provider with scene/performer/studio data
-**API Base URL**: `https://api.theporndb.net/docs`
+> SUPPLEMENTARY adult metadata provider (fallback + enrichment) for QAR content
+**API Base URL**: `https://api.theporndb.net`
 **Authentication**: api_key
 
 ---
@@ -101,8 +114,6 @@ internal/integration/theporndb/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -114,11 +125,100 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// ThePornDB provider implementation
+type ThePornDBProvider struct {
+  client       *TPDBClient
+  rateLimiter  *rate.Limiter
+  cache        Cache
+  httpFactory  httpclient.ClientFactory
+}
+
+// Provider interface for QAR metadata
+type QARMetadataProvider interface {
+  // Scene operations (treasure in QAR terms)
+  SearchScene(ctx context.Context, query string) ([]SceneResult, error)
+  GetSceneByID(ctx context.Context, id string) (*SceneMetadata, error)
+  MatchSceneByHash(ctx context.Context, hashType, hashValue string) (*SceneMetadata, error)
+
+  // Performer operations (crew in QAR terms)
+  SearchPerformer(ctx context.Context, query string) ([]PerformerResult, error)
+  GetPerformerByID(ctx context.Context, id string) (*PerformerMetadata, error)
+
+  // Studio operations (ship in QAR terms)
+  SearchStudio(ctx context.Context, query string) ([]StudioResult, error)
+  GetStudioByID(ctx context.Context, id string) (*StudioMetadata, error)
+
+  // Priority for metadata chain
+  Priority() int  // Returns 30 (after Whisparr=10, StashDB=20)
+}
+
+// Scene metadata (treasure)
+type SceneMetadata struct {
+  ID           string    `json:"id"`
+  Title        string    `json:"title"`
+  Description  string    `json:"description"`
+  Date         string    `json:"date"`
+  Duration     int       `json:"duration"`      // seconds
+  Performers   []Performer `json:"performers"`
+  Studio       *Studio   `json:"studio"`
+  Tags         []string  `json:"tags"`
+  PosterURL    string    `json:"poster"`
+  BackdropURL  string    `json:"background"`
+  ExternalURLs []string  `json:"external_urls"`
+  Hashes       []Hash    `json:"hashes"`        // For fingerprint matching
+}
+
+// Performer metadata (crew)
+type PerformerMetadata struct {
+  ID          string    `json:"id"`
+  Name        string    `json:"name"`
+  Aliases     []string  `json:"aliases"`
+  Bio         string    `json:"bio"`
+  Gender      string    `json:"gender"`
+  Birthdate   string    `json:"birthdate"`
+  Birthplace  string    `json:"birthplace"`
+  Ethnicity   string    `json:"ethnicity"`
+  Height      int       `json:"height"`         // cm
+  Weight      int       `json:"weight"`         // kg
+  Measurements string   `json:"measurements"`
+  ImageURL    string    `json:"image"`
+  SocialLinks []Link    `json:"socials"`
+  SceneCount  int       `json:"scene_count"`
+}
+
+// Studio metadata (ship)
+type StudioMetadata struct {
+  ID          string    `json:"id"`
+  Name        string    `json:"name"`
+  URL         string    `json:"url"`
+  Parent      string    `json:"parent"`         // Parent studio/network
+  ImageURL    string    `json:"logo"`
+  Description string    `json:"description"`
+  SceneCount  int       `json:"scene_count"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `golang.org/x/time/rate` - Rate limiting (10 req/sec)
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background jobs
+- `github.com/bbrks/go-blurhash` - Blurhash generation
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- ThePornDB API v1 (free with API key, ~10 req/sec)
+
+**Internal Services**:
+- HTTP_CLIENT - Proxy/VPN routing (optional)
+- Whisparr - PRIMARY metadata source
+- StashDB - Alternative supplementary source
+
 
 
 
@@ -127,11 +227,55 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# ThePornDB API
+TPDB_API_KEY=your_api_key_here
+TPDB_ENABLED=true
+
+# Rate limiting
+TPDB_RATE_LIMIT=10
+TPDB_RATE_WINDOW=1s
+
+# Caching
+TPDB_CACHE_TTL=24h
+
+# Proxy/VPN (optional)
+TPDB_PROXY_ENABLED=false
+TPDB_PROXY_URL=socks5://127.0.0.1:9050
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    theporndb:
+      enabled: true
+      api_key: ${TPDB_API_KEY}
+      rate_limit: 10
+      rate_window: 1s
+      cache_ttl: 24h
+
+      # SUPPLEMENTARY role configuration
+      role: supplementary
+      priority: 30               # After Whisparr (10) and StashDB (20)
+
+      # Proxy/VPN support (OPTIONAL - must be setup and enabled)
+      proxy:
+        enabled: false           # Must explicitly enable
+        type: tor                # 'http', 'socks5', 'tor', 'vpn'
+        url: socks5://127.0.0.1:9050
+
+      # Fingerprint matching settings
+      fingerprint:
+        enabled: true
+        hash_types:              # Which hashes to try for matching
+          - oshash               # Preferred (same as Stash/StashDB)
+          - md5
+          - phash                # Perceptual hash for similar scenes
+```
+
 
 
 
@@ -158,13 +302,17 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [WHISPARR (PRIMARY for QAR)](../../servarr/WHISPARR.md)
+- [STASHDB (also SUPPLEMENTARY)](./STASHDB.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
+- [DATA_RECONCILIATION](../../../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
 - [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
 - [ThePornDB API](../../../../sources/apis/theporndb.md) - Auto-resolved from theporndb
 - [Typesense API](../../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
 

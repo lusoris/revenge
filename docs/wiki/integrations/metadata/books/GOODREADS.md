@@ -22,9 +22,9 @@
 
 # Goodreads
 
-> Import reading data from Goodreads
+> Import Goodreads library data (CSV export)
 
-Import your Goodreads library and reading history into Revenge. Export your data from Goodreads and import it to track your book collection. Ratings and shelf assignments are preserved. Note: Goodreads API is closed, so only CSV import is supported, not live sync.
+Data import integration for Goodreads library. CSV-based import (Goodreads API is closed). Import: (1) Reading history, (2) Book ratings, (3) Shelf assignments (read/reading/to-read), (4) Reviews. One-time import or periodic refresh. Metadata matched against Chaptarr/OpenLibrary. **Note**: No live API sync, CSV export only.
 
 ---
 

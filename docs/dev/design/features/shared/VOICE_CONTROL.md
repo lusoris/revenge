@@ -52,6 +52,9 @@ design_refs:
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+- [Voice webhook endpoints (public, verified)](#voice-webhook-endpoints-public-verified)
+- [User management](#user-management)
+- [Command history](#command-history)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -128,11 +131,56 @@ internal/content/voice_control/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type VoiceService interface {
+  // Connections
+  ConnectAssistant(ctx context.Context, userID uuid.UUID, assistantType string, tokens OAuth2Tokens) error
+  DisconnectAssistant(ctx context.Context, connectionID uuid.UUID) error
+  GetConnections(ctx context.Context, userID uuid.UUID) ([]VoiceConnection, error)
+
+  // Command handling
+  ProcessAlexaRequest(ctx context.Context, request AlexaRequest) (*AlexaResponse, error)
+  ProcessGoogleRequest(ctx context.Context, request GoogleActionRequest) (*GoogleActionResponse, error)
+
+  // Intent parsing
+  ParseIntent(ctx context.Context, rawCommand string) (*VoiceIntent, error)
+  ExecuteIntent(ctx context.Context, userID uuid.UUID, intent VoiceIntent) (*IntentResult, error)
+}
+
+type VoiceIntent struct {
+  Intent   string                 `json:"intent"`    // 'play_media', 'pause', 'skip'
+  Entities map[string]interface{} `json:"entities"`  // {"title": "Inception", "type": "movie"}
+  Raw      string                 `json:"raw"`
+}
+
+type AlexaRequest struct {
+  Version string      `json:"version"`
+  Session AlexaSession `json:"session"`
+  Request struct {
+    Type   string `json:"type"`
+    Intent struct {
+      Name  string               `json:"name"`
+      Slots map[string]AlexaSlot `json:"slots"`
+    } `json:"intent"`
+  } `json:"request"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/aws/aws-sdk-go-v2` - Alexa skill verification
+- `google.golang.org/api/dialogflow/v2` - Google Assistant integration
+- `go.uber.org/fx`
+
+**External APIs**:
+- Amazon Alexa Skills Kit (ASK)
+- Google Assistant SDK / Dialogflow
+- Apple HomeKit (future)
+
 
 
 
@@ -141,17 +189,78 @@ internal/content/voice_control/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+VOICE_ALEXA_SKILL_ID=amzn1.ask.skill.xxxxx
+VOICE_GOOGLE_PROJECT_ID=revenge-voice-xxxxx
+VOICE_ENABLED=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+voice:
+  enabled: true
+  alexa:
+    skill_id: amzn1.ask.skill.xxxxx
+    verification_enabled: true
+  google:
+    project_id: revenge-voice-xxxxx
+    credentials_file: /config/google-service-account.json
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+# Voice webhook endpoints (public, verified)
+POST /api/v1/voice/alexa            # Alexa skill webhook
+POST /api/v1/voice/google           # Google Assistant webhook
+
+# User management
+GET  /api/v1/voice/connections      # List connections
+DELETE /api/v1/voice/connections/:id # Disconnect assistant
+
+# Command history
+GET  /api/v1/voice/commands         # Get command history
+```
+
+**Example Alexa Request**:
+```json
+{
+  "version": "1.0",
+  "session": {
+    "user": {"userId": "amzn1.ask.account.XXXXX"}
+  },
+  "request": {
+    "type": "IntentRequest",
+    "intent": {
+      "name": "PlayMediaIntent",
+      "slots": {
+        "title": {"value": "Inception"},
+        "type": {"value": "movie"}
+      }
+    }
+  }
+}
+```
+
+**Example Alexa Response**:
+```json
+{
+  "version": "1.0",
+  "response": {
+    "outputSpeech": {
+      "type": "PlainText",
+      "text": "Playing Inception"
+    },
+    "shouldEndSession": true
+  }
+}
+```
+
 
 
 ## Testing Strategy

@@ -25,7 +25,7 @@
 
 > Your complete music library with beautiful album art and metadata
 
-The Music Module provides a complete music library experience with support for artists, albums, and tracks. It integrates with Lidarr for automated music management and uses MusicBrainz and Last.fm for rich metadata. Stream your music in high quality with gapless playback, create playlists, and discover new music through smart collections.
+The Music Module provides a complete music library experience with support for artists, albums, and tracks. It uses Lidarr as the PRIMARY metadata source (aggregates from MusicBrainz locally), with direct MusicBrainz/Last.fm APIs as supplementary enrichment. Lidarr integration provides both metadata caching and download automation. Stream your music in high quality with gapless playback, create playlists, and discover new music through smart collections.
 
 ---
 

@@ -2,19 +2,24 @@
 
 ---
 sources:
-  - name: sqlc
-    url: ../../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
+  - name: PuerkitoBio/goquery
+    url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+    note: HTML parsing
+  - name: golang.org/x/time
+    url: ../../../../sources/go/x/time.md
+    note: Rate limiting
+  - name: River Job Queue
+    url: ../../../../sources/tooling/river.md
+    note: Background verification jobs
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: FREEONES
+    path: ./FREEONES.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: ADULT_CONTENT_SYSTEM (QAR module)
+    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
 ---
 
 ## Table of Contents
@@ -31,6 +36,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Instagram integration](#instagram-integration)
+- [Proxy (recommended due to aggressive blocking)](#proxy-recommended-due-to-aggressive-blocking)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -51,8 +58,8 @@ design_refs:
 
 > Integration with Instagram
 
-> Performer social media presence
-**Authentication**: oauth
+> LINK-ONLY performer social media profiles for QAR content
+**API Base URL**: `https://www.instagram.com`
 
 ---
 
@@ -94,8 +101,6 @@ internal/integration/instagram/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -107,11 +112,67 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Social profile link provider interface
+type SocialProfileProvider interface {
+  // Verify username exists on platform
+  VerifyUsername(ctx context.Context, username string) (*ProfileInfo, error)
+
+  // Get basic profile info (if publicly accessible)
+  GetProfileInfo(ctx context.Context, username string) (*ProfileInfo, error)
+
+  // Verify link is still valid
+  VerifyLink(ctx context.Context, url string) (bool, error)
+
+  // Provider metadata
+  Platform() string
+  BaseURL() string
+}
+
+// Profile information (what's publicly accessible)
+type ProfileInfo struct {
+  Platform     string `json:"platform"`
+  Username     string `json:"username"`
+  ProfileURL   string `json:"url"`
+  DisplayName  string `json:"display_name,omitempty"`
+  Bio          string `json:"bio,omitempty"`
+  ProfileImage string `json:"image,omitempty"`
+
+  // Metrics (may not always be available)
+  FollowerCount  *int64 `json:"followers,omitempty"`
+  FollowingCount *int64 `json:"following,omitempty"`
+  PostCount      *int   `json:"posts,omitempty"`
+
+  // Verification
+  IsVerified    bool      `json:"verified"`        // Platform badge
+  FetchedAt     time.Time `json:"fetched_at"`
+}
+
+// Instagram provider
+type InstagramProvider struct {
+  httpFactory httpclient.ClientFactory
+  rateLimiter *rate.Limiter
+  cache       Cache
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/PuerkitoBio/goquery` - HTML parsing
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External**:
+- Instagram website (very limited scraping)
+
+**Internal Services**:
+- HTTP_CLIENT - Proxy/VPN routing
+
 
 
 
@@ -120,11 +181,42 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Instagram integration
+INSTAGRAM_ENABLED=true
+INSTAGRAM_RATE_LIMIT=0.5
+INSTAGRAM_CACHE_TTL=168h
+
+# Proxy (recommended due to aggressive blocking)
+INSTAGRAM_PROXY_ENABLED=true
+INSTAGRAM_PROXY_URL=socks5://127.0.0.1:9050
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    instagram:
+      enabled: true
+      rate_limit: 0.5
+      rate_window: 1s
+      cache_ttl: 168h
+
+      role: link                   # LINK only
+      provides_content: false
+
+      proxy:
+        enabled: true              # Recommended
+        type: tor
+        url: socks5://127.0.0.1:9050
+
+      verification:
+        enabled: true
+        check_interval: 168h       # Weekly
+```
+
 
 
 
@@ -151,11 +243,13 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [FREEONES](./FREEONES.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
 
 ### External Sources
-- [sqlc](../../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery) - HTML parsing
+- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../../../sources/tooling/river.md) - Background verification jobs
 

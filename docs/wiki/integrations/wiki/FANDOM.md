@@ -22,9 +22,9 @@
 
 # FANDOM
 
-> Link to fan wikis on FANDOM
+> FANDOM - Links to fan wikis for movies, TV, games
 
-Connect your library to FANDOM fan wikis. Deep links to character pages, episode guides, and universe lore. Covers most major franchises (Star Wars, Marvel, Game of Thrones, etc.). Supplements official metadata with fan-curated details. Links appear on item detail pages.
+ENRICHMENT metadata source providing links to fan-curated wikis. Deep links to character pages, episode guides, and universe lore. Covers major franchises (Star Wars, Marvel, Game of Thrones, etc.). **No API key required** - uses MediaWiki API. Links appear on item detail pages for "Learn More" functionality.
 
 ---
 
@@ -65,6 +65,9 @@ Connect your library to FANDOM fan wikis. Deep links to character pages, episode
 ### Learn More
 
 Official documentation and guides:
+- [FANDOM API](https://community.fandom.com/wiki/Community_Central:API)
+- [MediaWiki API](../../../sources/wiki/mediawiki.md)
+- [golang.org/x/time](../../../sources/go/x/time.md)
 - [River Job Queue](../../../sources/tooling/river.md)
 
 

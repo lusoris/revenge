@@ -95,8 +95,6 @@ internal/integration/lastfm_scrobbling/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 

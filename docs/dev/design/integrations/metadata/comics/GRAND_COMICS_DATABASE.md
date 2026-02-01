@@ -2,25 +2,27 @@
 
 ---
 sources:
+  - name: GCD REST API
+    url: https://www.comics.org/api/
+    note: REST API documentation
   - name: pgx PostgreSQL Driver
     url: ../../../../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
+  - name: golang.org/x/time
+    url: ../../../../sources/go/x/time.md
+    note: Rate limiting
   - name: River Job Queue
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: COMICS_MODULE
+    path: ../../../features/comics/COMICS_MODULE.md
+  - title: COMICVINE (PRIMARY for comics)
+    path: ./COMICVINE.md
+  - title: HTTP_CLIENT
+    path: ../../../services/HTTP_CLIENT.md
 ---
 
 ## Table of Contents
@@ -55,10 +57,11 @@ design_refs:
 **Category**: integration
 
 
-> Integration with Grand Comics Database (GCD)
+> Integration with Grand Comics Database
 
-> Open-source historical comics database (Golden/Silver Age focus)
-**Authentication**: api_key
+> SUPPLEMENTARY historical comics database - Golden/Silver Age specialist
+**API Base URL**: `https://www.comics.org/api`
+**Authentication**: none
 
 ---
 
@@ -87,7 +90,7 @@ design_refs:
 ### Integration Structure
 
 ```
-internal/integration/grand_comics_database_gcd/
+internal/integration/gcd/
 ├── client.go              # API client
 ├── types.go               # Response types
 ├── mapper.go              # Map external → internal types
@@ -100,8 +103,6 @@ internal/integration/grand_comics_database_gcd/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -113,11 +114,63 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// GCD provider (supplementary to ComicVine)
+type GCDProvider struct {
+  client      *http.Client
+  rateLimiter *rate.Limiter
+  cache       Cache
+}
+
+// Supplementary comics metadata provider
+type ComicsSupplementaryProvider interface {
+  SearchSeries(ctx context.Context, query string, year int) ([]SeriesResult, error)
+  GetSeries(ctx context.Context, gcdID int) (*Series, error)
+  GetIssue(ctx context.Context, gcdID int) (*Issue, error)
+  MatchHistoricalComic(ctx context.Context, title string, year int, issueNum string) (*Issue, error)
+  Priority() int  // Returns 20 (after ComicVine=10)
+}
+
+// GCD Series
+type Series struct {
+  ID           int    `json:"id"`
+  Name         string `json:"name"`
+  YearBegan    int    `json:"year_began"`
+  YearEnded    int    `json:"year_ended,omitempty"`
+  Publisher    string `json:"publisher_name"`
+  Country      string `json:"country_code"`
+  Language     string `json:"language_code"`
+  IssueCount   int    `json:"issue_count"`
+  Notes        string `json:"notes,omitempty"`
+}
+
+// GCD Issue
+type Issue struct {
+  ID              int    `json:"id"`
+  SeriesID        int    `json:"series"`
+  Number          string `json:"number"`
+  PublicationDate string `json:"publication_date"`
+  Price           string `json:"price"`
+  PageCount       int    `json:"page_count"`
+  Notes           string `json:"notes,omitempty"`
+  Indicia         string `json:"indicia_publisher"`
+  EditorialCredit string `json:"editing"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `golang.org/x/time/rate` - Polite rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - DI
+
+**External**:
+- GCD REST API (free, no key required)
+
 
 
 
@@ -126,11 +179,31 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+GCD_ENABLED=true
+GCD_RATE_LIMIT=1
+GCD_CACHE_TTL=168h    # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    gcd:
+      enabled: true
+      rate_limit: 1
+      rate_window: 1s
+      cache_ttl: 168h
+      role: supplementary
+      priority: 20          # After ComicVine (10)
+      focus:
+        - golden_age        # 1938-1956
+        - silver_age        # 1956-1970
+        - defunct_publishers
+```
+
 
 
 
@@ -157,13 +230,14 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [COMICS_MODULE](../../../features/comics/COMICS_MODULE.md)
+- [COMICVINE (PRIMARY for comics)](./COMICVINE.md)
+- [HTTP_CLIENT](../../../services/HTTP_CLIENT.md)
 
 ### External Sources
+- [GCD REST API](https://www.comics.org/api/) - REST API documentation
 - [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
 - [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
 

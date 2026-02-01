@@ -112,8 +112,529 @@ exif_metadata_extraction:
   privacy_options:
     strip_location: Option to strip GPS on share
     strip_camera: Option to strip camera metadata
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+
+  ```sql
+  -- Photos table
+  CREATE TABLE photos (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title TEXT,
+      description TEXT,
+      file_path TEXT NOT NULL UNIQUE,
+      file_size_bytes BIGINT NOT NULL,
+      file_hash_sha256 TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      width INTEGER NOT NULL,
+      height INTEGER NOT NULL,
+      format TEXT NOT NULL,  -- 'jpeg', 'png', 'webp', 'heic', 'raw'
+
+      -- EXIF metadata
+      taken_at TIMESTAMPTZ,
+      camera_make TEXT,
+      camera_model TEXT,
+      lens_make TEXT,
+      lens_model TEXT,
+      focal_length_mm NUMERIC(6,2),
+      aperture_f_number NUMERIC(4,2),
+      shutter_speed TEXT,
+      iso INTEGER,
+      flash_fired BOOLEAN,
+      orientation INTEGER,
+      color_space TEXT,
+
+      -- GPS metadata
+      latitude NUMERIC(10,7),
+      longitude NUMERIC(10,7),
+      altitude_meters NUMERIC(8,2),
+      gps_location_name TEXT,  -- Reverse geocoded place name
+
+      -- Processing
+      blurhash TEXT,
+      thumbnails_generated BOOLEAN DEFAULT false,
+      raw_converted_path TEXT,  -- For RAW -> JPEG conversion
+
+      -- Organization
+      is_favorite BOOLEAN DEFAULT false,
+      tags TEXT[] DEFAULT '{}',
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      -- Indexes
+      CONSTRAINT photos_width_check CHECK (width > 0),
+      CONSTRAINT photos_height_check CHECK (height > 0)
+  );
+
+  CREATE INDEX idx_photos_user_id ON photos(user_id);
+  CREATE INDEX idx_photos_taken_at ON photos(taken_at DESC);
+  CREATE INDEX idx_photos_is_favorite ON photos(is_favorite) WHERE is_favorite = true;
+  CREATE INDEX idx_photos_tags_gin ON photos USING GIN(tags);
+  CREATE INDEX idx_photos_gps ON photos(latitude, longitude) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
+  CREATE INDEX idx_photos_camera ON photos(camera_make, camera_model);
+  CREATE INDEX idx_photos_file_hash ON photos(file_hash_sha256);
+
+  -- Full-text search
+  CREATE INDEX idx_photos_fts ON photos USING GIN(
+      to_tsvector('english', COALESCE(title, '') || ' ' || COALESCE(description, '') || ' ' || COALESCE(array_to_string(tags, ' '), ''))
+  );
+
+  -- Photo albums
+  CREATE TABLE photo_albums (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      description TEXT,
+      cover_photo_id UUID REFERENCES photos(id) ON DELETE SET NULL,
+      is_shared BOOLEAN DEFAULT false,
+      share_token TEXT UNIQUE,  -- For public sharing
+      album_type TEXT NOT NULL DEFAULT 'user',  -- 'user', 'smart'
+
+      -- Smart album filters (JSONB for flexibility)
+      smart_filters JSONB,  -- e.g., {"camera_make": "Canon", "year": 2024}
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photo_albums_user_id ON photo_albums(user_id);
+  CREATE INDEX idx_photo_albums_share_token ON photo_albums(share_token) WHERE share_token IS NOT NULL;
+  CREATE INDEX idx_photo_albums_type ON photo_albums(album_type);
+
+  -- Album photos (many-to-many)
+  CREATE TABLE album_photos (
+      album_id UUID NOT NULL REFERENCES photo_albums(id) ON DELETE CASCADE,
+      photo_id UUID NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+      position INTEGER NOT NULL DEFAULT 0,  -- For custom ordering
+      added_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      PRIMARY KEY (album_id, photo_id)
+  );
+
+  CREATE INDEX idx_album_photos_album_id ON album_photos(album_id, position);
+  CREATE INDEX idx_album_photos_photo_id ON album_photos(photo_id);
+
+  -- Album shares (permissions)
+  CREATE TABLE album_shares (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      album_id UUID NOT NULL REFERENCES photo_albums(id) ON DELETE CASCADE,
+      shared_with_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      permission TEXT NOT NULL DEFAULT 'read',  -- 'read', 'write'
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE(album_id, shared_with_user_id)
+  );
+
+  CREATE INDEX idx_album_shares_album_id ON album_shares(album_id);
+  CREATE INDEX idx_album_shares_user_id ON album_shares(shared_with_user_id);
+
+  -- People tagging
+  CREATE TABLE photo_people (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      avatar_photo_id UUID REFERENCES photos(id) ON DELETE SET NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE(user_id, name)
+  );
+
+  CREATE INDEX idx_photo_people_user_id ON photo_people(user_id);
+
+  -- Photo faces (many-to-many)
+  CREATE TABLE photo_faces (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      photo_id UUID NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+      person_id UUID REFERENCES photo_people(id) ON DELETE SET NULL,
+
+      -- Face bounding box (normalized 0-1)
+      bbox_x NUMERIC(5,4) NOT NULL,
+      bbox_y NUMERIC(5,4) NOT NULL,
+      bbox_width NUMERIC(5,4) NOT NULL,
+      bbox_height NUMERIC(5,4) NOT NULL,
+
+      -- ML confidence (future use)
+      confidence NUMERIC(4,3),
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CONSTRAINT photo_faces_bbox_check CHECK (
+          bbox_x BETWEEN 0 AND 1 AND
+          bbox_y BETWEEN 0 AND 1 AND
+          bbox_width BETWEEN 0 AND 1 AND
+          bbox_height BETWEEN 0 AND 1
+      )
+  );
+
+  CREATE INDEX idx_photo_faces_photo_id ON photo_faces(photo_id);
+  CREATE INDEX idx_photo_faces_person_id ON photo_faces(person_id);
+
+  -- Photo thumbnails tracking
+  CREATE TABLE photo_thumbnails (
+      photo_id UUID NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+      size TEXT NOT NULL,  -- 'thumb', 'small', 'medium', 'large'
+      file_path TEXT NOT NULL,
+      width INTEGER NOT NULL,
+      height INTEGER NOT NULL,
+      file_size_bytes BIGINT NOT NULL,
+      format TEXT NOT NULL,  -- 'webp', 'jpeg'
+      generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      PRIMARY KEY (photo_id, size)
+  );
+
+  CREATE INDEX idx_photo_thumbnails_photo_id ON photo_thumbnails(photo_id);
+  ```
+
+  **Indexes**: Optimized for:
+  - User photo listings
+  - Timeline browsing (taken_at DESC)
+  - GPS/map queries (spatial index on lat/lon)
+  - Full-text search (title, description, tags)
+  - Favorites filtering
+  - Camera/lens filtering
+  - Tag filtering (GIN index on array)
+  - Duplicate detection (file_hash_sha256)
+file_structure: |
+  ```
+  internal/content/photos/
+  ├── module.go                    # fx module registration
+  ├── repository.go                # Database operations (sqlc)
+  ├── queries.sql                  # SQL queries for sqlc
+  ├── service.go                   # Business logic
+  ├── handler.go                   # HTTP handlers (ogen-generated)
+  ├── types.go                     # Domain types
+  ├── cache.go                     # Caching layer (otter)
+  ├── processor.go                 # Image processing (govips)
+  ├── exif.go                      # EXIF extraction
+  ├── blurhash.go                  # Blurhash generation
+  ├── geocode.go                   # Reverse geocoding
+  ├── upload.go                    # Upload handling
+  ├── thumbnail.go                 # Thumbnail generation
+  ├── album_service.go             # Album management
+  ├── people_service.go            # People tagging
+  └── search.go                    # Photo search
+
+  cmd/server/
+  └── main.go                      # Server entry point with fx
+
+  migrations/
+  ├── 020_photos.up.sql            # Photo tables
+  └── 020_photos.down.sql          # Rollback
+
+  api/openapi/
+  └── photos.yaml                  # OpenAPI spec for photos
+
+  web/src/lib/components/photos/
+  ├── PhotoGrid.svelte             # Grid view
+  ├── PhotoLightbox.svelte         # Lightbox viewer
+  ├── PhotoUpload.svelte           # Upload UI
+  ├── PhotoTimeline.svelte         # Timeline view
+  ├── PhotoMap.svelte              # Map view
+  ├── AlbumManager.svelte          # Album management
+  └── PeopleTagging.svelte         # People tagging UI
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository interface for database operations
+  type Repository interface {
+      // Photos
+      CreatePhoto(ctx context.Context, params CreatePhotoParams) (*Photo, error)
+      GetPhotoByID(ctx context.Context, id uuid.UUID) (*Photo, error)
+      ListPhotos(ctx context.Context, userID uuid.UUID, filters PhotoFilters, limit, offset int) ([]*Photo, int64, error)
+      UpdatePhoto(ctx context.Context, id uuid.UUID, params UpdatePhotoParams) (*Photo, error)
+      DeletePhoto(ctx context.Context, id uuid.UUID) error
+
+      // Search
+      SearchPhotos(ctx context.Context, userID uuid.UUID, query string, limit, offset int) ([]*Photo, int64, error)
+      GetPhotosByTags(ctx context.Context, userID uuid.UUID, tags []string, limit, offset int) ([]*Photo, error)
+      GetPhotosByLocation(ctx context.Context, userID uuid.UUID, bounds GeoBounds) ([]*Photo, error)
+      GetPhotosByCamera(ctx context.Context, userID uuid.UUID, make, model string) ([]*Photo, error)
+      GetPhotosByDateRange(ctx context.Context, userID uuid.UUID, start, end time.Time) ([]*Photo, error)
+
+      // Favorites
+      ToggleFavorite(ctx context.Context, photoID uuid.UUID, isFavorite bool) error
+      GetFavorites(ctx context.Context, userID uuid.UUID, limit, offset int) ([]*Photo, error)
+
+      // Tags
+      UpdatePhotoTags(ctx context.Context, photoID uuid.UUID, tags []string) error
+      GetAllTags(ctx context.Context, userID uuid.UUID) ([]string, error)
+
+      // Albums
+      CreateAlbum(ctx context.Context, params CreateAlbumParams) (*PhotoAlbum, error)
+      GetAlbumByID(ctx context.Context, id uuid.UUID) (*PhotoAlbum, error)
+      ListAlbums(ctx context.Context, userID uuid.UUID, limit, offset int) ([]*PhotoAlbum, error)
+      UpdateAlbum(ctx context.Context, id uuid.UUID, params UpdateAlbumParams) (*PhotoAlbum, error)
+      DeleteAlbum(ctx context.Context, id uuid.UUID) error
+
+      AddPhotosToAlbum(ctx context.Context, albumID uuid.UUID, photoIDs []uuid.UUID) error
+      RemovePhotosFromAlbum(ctx context.Context, albumID uuid.UUID, photoIDs []uuid.UUID) error
+      GetAlbumPhotos(ctx context.Context, albumID uuid.UUID, limit, offset int) ([]*Photo, error)
+      ReorderAlbumPhotos(ctx context.Context, albumID uuid.UUID, photoOrder []uuid.UUID) error
+
+      // Album sharing
+      ShareAlbum(ctx context.Context, albumID, sharedWithUserID uuid.UUID, permission string) error
+      GetAlbumShares(ctx context.Context, albumID uuid.UUID) ([]*AlbumShare, error)
+      GetSharedAlbums(ctx context.Context, userID uuid.UUID) ([]*PhotoAlbum, error)
+
+      // People
+      CreatePerson(ctx context.Context, userID uuid.UUID, name string) (*PhotoPerson, error)
+      GetPersonByID(ctx context.Context, id uuid.UUID) (*PhotoPerson, error)
+      ListPeople(ctx context.Context, userID uuid.UUID) ([]*PhotoPerson, error)
+      UpdatePerson(ctx context.Context, id uuid.UUID, params UpdatePersonParams) error
+      DeletePerson(ctx context.Context, id uuid.UUID) error
+
+      // Faces
+      CreateFace(ctx context.Context, params CreateFaceParams) (*PhotoFace, error)
+      GetPhotoFaces(ctx context.Context, photoID uuid.UUID) ([]*PhotoFace, error)
+      GetPersonPhotos(ctx context.Context, personID uuid.UUID, limit, offset int) ([]*Photo, error)
+      UpdateFacePerson(ctx context.Context, faceID, personID uuid.UUID) error
+
+      // Thumbnails
+      RecordThumbnail(ctx context.Context, params ThumbnailParams) error
+      GetPhotoThumbnails(ctx context.Context, photoID uuid.UUID) ([]*PhotoThumbnail, error)
+      DeletePhotoThumbnails(ctx context.Context, photoID uuid.UUID) error
+  }
+
+  // Service interface for business logic
+  type Service interface {
+      // Photos
+      UploadPhoto(ctx context.Context, userID uuid.UUID, file io.Reader, filename string, metadata UploadMetadata) (*Photo, error)
+      GetPhoto(ctx context.Context, userID, photoID uuid.UUID) (*Photo, error)
+      ListPhotos(ctx context.Context, userID uuid.UUID, filters PhotoFilters, pagination Pagination) (*PhotoListResponse, error)
+      UpdatePhotoMetadata(ctx context.Context, userID, photoID uuid.UUID, updates PhotoUpdates) (*Photo, error)
+      DeletePhoto(ctx context.Context, userID, photoID uuid.UUID) error
+      DownloadPhoto(ctx context.Context, userID, photoID uuid.UUID) (io.ReadCloser, string, error)
+
+      // Search
+      SearchPhotos(ctx context.Context, userID uuid.UUID, query SearchQuery) (*PhotoListResponse, error)
+      GetPhotoTimeline(ctx context.Context, userID uuid.UUID, groupBy TimelineGrouping) (*TimelineResponse, error)
+      GetPhotoMap(ctx context.Context, userID uuid.UUID) (*MapDataResponse, error)
+
+      // Favorites
+      ToggleFavorite(ctx context.Context, userID, photoID uuid.UUID) (*Photo, error)
+
+      // Tags
+      UpdateTags(ctx context.Context, userID, photoID uuid.UUID, tags []string) (*Photo, error)
+      GetTagSuggestions(ctx context.Context, userID uuid.UUID, prefix string) ([]string, error)
+
+      // Albums
+      CreateAlbum(ctx context.Context, userID uuid.UUID, req CreateAlbumRequest) (*PhotoAlbum, error)
+      GetAlbum(ctx context.Context, userID, albumID uuid.UUID) (*AlbumDetailResponse, error)
+      ListAlbums(ctx context.Context, userID uuid.UUID, pagination Pagination) (*AlbumListResponse, error)
+      UpdateAlbum(ctx context.Context, userID, albumID uuid.UUID, updates AlbumUpdates) (*PhotoAlbum, error)
+      DeleteAlbum(ctx context.Context, userID, albumID uuid.UUID) error
+
+      AddPhotosToAlbum(ctx context.Context, userID, albumID uuid.UUID, photoIDs []uuid.UUID) error
+      RemovePhotosFromAlbum(ctx context.Context, userID, albumID uuid.UUID, photoIDs []uuid.UUID) error
+
+      // People
+      CreatePerson(ctx context.Context, userID uuid.UUID, name string) (*PhotoPerson, error)
+      ListPeople(ctx context.Context, userID uuid.UUID) ([]*PhotoPerson, error)
+      TagFaceInPhoto(ctx context.Context, userID, photoID, personID uuid.UUID, bbox BoundingBox) error
+      GetPersonPhotos(ctx context.Context, userID, personID uuid.UUID, pagination Pagination) (*PhotoListResponse, error)
+  }
+
+  // ImageProcessor interface for image operations
+  type ImageProcessor interface {
+      // Processing
+      GenerateThumbnails(ctx context.Context, sourceFile string, sizes []ThumbnailSize) ([]ThumbnailResult, error)
+      GenerateBlurhash(ctx context.Context, sourceFile string) (string, error)
+      ExtractEXIF(ctx context.Context, sourceFile string) (*EXIFData, error)
+      ConvertRAW(ctx context.Context, rawFile, outputFile string) error
+
+      // Format detection
+      DetectFormat(file io.Reader) (string, error)
+      GetImageDimensions(file string) (width, height int, err error)
+
+      // Validation
+      ValidateImage(file io.Reader) error
+      CalculateFileHash(file io.Reader) (string, error)
+  }
+
+  // GeocodingProvider interface for reverse geocoding
+  type GeocodingProvider interface {
+      ReverseGeocode(ctx context.Context, lat, lon float64) (string, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  ```go
+  require (
+      // Core
+      github.com/google/uuid v1.6.0
+      go.uber.org/fx v1.23.0
+
+      // Database
+      github.com/jackc/pgx/v5 v5.7.2
+      github.com/sqlc-dev/sqlc v1.28.0
+
+      // API
+      github.com/ogen-go/ogen v1.7.0
+
+      // Caching
+      github.com/maypok86/otter v1.2.4
+      github.com/redis/rueidis v1.0.50
+      github.com/philippgille/sturdyc v1.1.0
+
+      // Image processing
+      github.com/davidbyttow/govips/v2 v2.15.0
+      github.com/bbrks/go-blurhash v1.1.1
+      github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd
+
+      // Storage
+      github.com/minio/minio-go/v7 v7.0.82
+
+      // Job queue
+      github.com/riverqueue/river v0.15.0
+
+      // Testing
+      github.com/stretchr/testify v1.10.0
+      github.com/testcontainers/testcontainers-go v0.35.0
+  )
+  ```
+
+  **External Dependencies**:
+  - **libvips 8.16+**: Image processing library (C library)
+  - **libheif**: HEIC/HEIF image support
+  - **libraw**: RAW image format support
+  - **PostgreSQL 18+**: Database with PostGIS for spatial queries
+  - **MinIO/S3**: Object storage for photo files
+  - **Dragonfly**: Distributed cache (L2)
+
+  **Optional Services**:
+  - **Nominatim**: Reverse geocoding (self-hosted or public)
+  - **Photon**: Alternative geocoding service
+
+env_vars: |
+  ```bash
+  # Storage
+  PHOTOS_STORAGE_TYPE=s3                    # 's3' or 'filesystem'
+  PHOTOS_STORAGE_ENDPOINT=localhost:9000    # MinIO/S3 endpoint
+  PHOTOS_STORAGE_BUCKET=revenge-photos      # S3 bucket name
+  PHOTOS_STORAGE_ACCESS_KEY=minioadmin      # S3 access key
+  PHOTOS_STORAGE_SECRET_KEY=minioadmin      # S3 secret key
+  PHOTOS_STORAGE_USE_SSL=false              # Use HTTPS for S3
+  PHOTOS_STORAGE_BASE_PATH=/data/photos     # Filesystem base path
+
+  # Image processing
+  PHOTOS_VIPS_MAX_CACHE_MEM=100             # Max vips cache size (MB)
+  PHOTOS_VIPS_MAX_CACHE_SIZE=500            # Max vips cache operations
+  PHOTOS_MAX_UPLOAD_SIZE_MB=100             # Max photo upload size
+  PHOTOS_THUMBNAIL_QUALITY=85               # JPEG/WebP quality (1-100)
+  PHOTOS_THUMBNAIL_FORMAT=webp              # 'webp' or 'jpeg'
+
+  # Geocoding
+  PHOTOS_GEOCODING_ENABLED=true             # Enable reverse geocoding
+  PHOTOS_GEOCODING_PROVIDER=nominatim       # 'nominatim' or 'photon'
+  PHOTOS_GEOCODING_API_URL=https://nominatim.openstreetmap.org
+  PHOTOS_GEOCODING_RATE_LIMIT=1             # Requests per second
+
+  # Processing
+  PHOTOS_PROCESS_ON_UPLOAD=true             # Generate thumbnails on upload
+  PHOTOS_EXTRACT_EXIF=true                  # Extract EXIF metadata
+  PHOTOS_GENERATE_BLURHASH=true             # Generate blurhash placeholders
+  PHOTOS_CONVERT_RAW=true                   # Auto-convert RAW to JPEG
+
+  # Job queue
+  PHOTOS_ASYNC_PROCESSING=true              # Use River queue for processing
+  PHOTOS_WORKER_CONCURRENCY=4               # Concurrent processing jobs
+  ```
+
+config_keys: |
+  ```yaml
+  photos:
+    # Storage configuration
+    storage:
+      type: s3                           # 's3' or 'filesystem'
+      endpoint: localhost:9000
+      bucket: revenge-photos
+      access_key: ${PHOTOS_STORAGE_ACCESS_KEY}
+      secret_key: ${PHOTOS_STORAGE_SECRET_KEY}
+      use_ssl: false
+      base_path: /data/photos            # For filesystem storage
+
+    # Upload settings
+    upload:
+      max_size_mb: 100
+      allowed_formats:
+        - jpeg
+        - png
+        - webp
+        - heic
+        - raw
+      strip_gps_on_share: true           # Privacy option
+
+    # Image processing
+    processing:
+      vips:
+        max_cache_mem_mb: 100
+        max_cache_size: 500
+      thumbnails:
+        format: webp                     # 'webp' or 'jpeg'
+        quality: 85
+        sizes:
+          thumb: { width: 200, height: 200, crop: true }
+          small: { width: 400, height: 0 }
+          medium: { width: 800, height: 0 }
+          large: { width: 1600, height: 0 }
+      blurhash:
+        enabled: true
+        components_x: 4
+        components_y: 3
+      raw:
+        convert_on_upload: true
+        preserve_original: true
+
+    # EXIF extraction
+    exif:
+      enabled: true
+      extract_gps: true
+      extract_camera: true
+      extract_settings: true
+
+    # Geocoding
+    geocoding:
+      enabled: true
+      provider: nominatim                # 'nominatim' or 'photon'
+      api_url: https://nominatim.openstreetmap.org
+      rate_limit_per_second: 1
+      timeout_seconds: 5
+
+    # Job processing
+    jobs:
+      async_processing: true
+      worker_concurrency: 4
+      retry_attempts: 3
+
+    # Caching
+    cache:
+      ttl_photo_metadata: 1h
+      ttl_album_list: 5m
+      ttl_people_list: 10m
+  ```
+
+defaults: |
+  - **Storage Type**: S3 (MinIO) for scalability
+  - **Max Upload Size**: 100 MB per photo
+  - **Thumbnail Format**: WebP (better compression than JPEG)
+  - **Thumbnail Quality**: 85 (balance quality/size)
+  - **Blurhash Components**: 4x3 (good detail for placeholders)
+  - **RAW Conversion**: Enabled with original preservation
+  - **EXIF Extraction**: All fields enabled
+  - **Geocoding**: Enabled with Nominatim (1 req/sec rate limit)
+  - **Async Processing**: Enabled via River queue
+  - **Worker Concurrency**: 4 workers for image processing
+  - **Cache TTL**: 1h for photo metadata, 5m for album lists
+
 organization_features:
   albums:
     types:
@@ -183,6 +704,369 @@ image_processing:
     library: govips with libraw
     output: JPEG for web viewing
     preservation: Keep original RAW file
+request_examples: |
+  **Upload Photo**:
+  ```http
+  POST /api/v1/photos
+  Content-Type: multipart/form-data
+  Authorization: Bearer <token>
+
+  --boundary
+  Content-Disposition: form-data; name="file"; filename="IMG_1234.jpg"
+  Content-Type: image/jpeg
+
+  <binary image data>
+  --boundary
+  Content-Disposition: form-data; name="title"
+
+  Sunset at the beach
+  --boundary
+  Content-Disposition: form-data; name="description"
+
+  Beautiful sunset in Santa Monica
+  --boundary
+  Content-Disposition: form-data; name="tags"
+
+  ["sunset", "beach", "california"]
+  --boundary--
+  ```
+
+  **Create Album**:
+  ```json
+  POST /api/v1/photos/albums
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "title": "Summer Vacation 2024",
+    "description": "Our trip to California",
+    "album_type": "user"
+  }
+  ```
+
+  **Add Photos to Album**:
+  ```json
+  POST /api/v1/photos/albums/550e8400-e29b-41d4-a716-446655440000/photos
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "photo_ids": [
+      "123e4567-e89b-12d3-a456-426614174000",
+      "123e4567-e89b-12d3-a456-426614174001",
+      "123e4567-e89b-12d3-a456-426614174002"
+    ]
+  }
+  ```
+
+  **Update Photo Tags**:
+  ```json
+  PUT /api/v1/photos/123e4567-e89b-12d3-a456-426614174000/tags
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "tags": ["sunset", "beach", "california", "vacation"]
+  }
+  ```
+
+  **Toggle Favorite**:
+  ```json
+  PUT /api/v1/photos/123e4567-e89b-12d3-a456-426614174000/favorite
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "is_favorite": true
+  }
+  ```
+
+  **Create Person**:
+  ```json
+  POST /api/v1/photos/people
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "name": "John Doe"
+  }
+  ```
+
+  **Tag Face in Photo**:
+  ```json
+  POST /api/v1/photos/123e4567-e89b-12d3-a456-426614174000/faces
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "person_id": "550e8400-e29b-41d4-a716-446655440000",
+    "bbox": {
+      "x": 0.25,
+      "y": 0.30,
+      "width": 0.15,
+      "height": 0.20
+    }
+  }
+  ```
+
+  **Search Photos**:
+  ```json
+  GET /api/v1/photos?q=beach&tags=sunset,vacation&camera_make=Canon&limit=20&offset=0
+  Authorization: Bearer <token>
+  ```
+
+  **Get Map Data**:
+  ```json
+  GET /api/v1/photos/map?bounds=-118.5,33.5,-117.5,34.5
+  Authorization: Bearer <token>
+  ```
+
+response_examples: |
+  **Photo Object**:
+  ```json
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Sunset at the beach",
+    "description": "Beautiful sunset in Santa Monica",
+    "file_path": "/photos/2024/06/IMG_1234.jpg",
+    "file_size_bytes": 5242880,
+    "file_hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mime_type": "image/jpeg",
+    "width": 4032,
+    "height": 3024,
+    "format": "jpeg",
+    "taken_at": "2024-06-15T19:45:23Z",
+    "camera_make": "Canon",
+    "camera_model": "EOS R6",
+    "lens_make": "Canon",
+    "lens_model": "RF 24-105mm F4L IS USM",
+    "focal_length_mm": 50.0,
+    "aperture_f_number": 4.0,
+    "shutter_speed": "1/250",
+    "iso": 100,
+    "flash_fired": false,
+    "orientation": 1,
+    "color_space": "sRGB",
+    "latitude": 34.0195,
+    "longitude": -118.4912,
+    "altitude_meters": 5.0,
+    "gps_location_name": "Santa Monica, California",
+    "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+    "thumbnails_generated": true,
+    "is_favorite": false,
+    "tags": ["sunset", "beach", "california"],
+    "thumbnails": {
+      "thumb": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/thumb",
+      "small": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/small",
+      "medium": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/medium",
+      "large": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/large"
+    },
+    "created_at": "2024-06-15T20:00:00Z",
+    "updated_at": "2024-06-15T20:00:00Z"
+  }
+  ```
+
+  **List Photos Response**:
+  ```json
+  {
+    "photos": [
+      {
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "title": "Sunset at the beach",
+        "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+        "width": 4032,
+        "height": 3024,
+        "taken_at": "2024-06-15T19:45:23Z",
+        "is_favorite": false,
+        "thumbnails": {
+          "thumb": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/thumb"
+        }
+      }
+    ],
+    "pagination": {
+      "total": 1523,
+      "limit": 50,
+      "offset": 0,
+      "has_more": true
+    }
+  }
+  ```
+
+  **Album Object**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "660e8400-e29b-41d4-a716-446655440000",
+    "title": "Summer Vacation 2024",
+    "description": "Our trip to California",
+    "cover_photo": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "thumbnail": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/medium",
+      "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+    },
+    "is_shared": false,
+    "album_type": "user",
+    "photo_count": 47,
+    "created_at": "2024-06-01T10:00:00Z",
+    "updated_at": "2024-06-20T15:30:00Z"
+  }
+  ```
+
+  **Timeline Response**:
+  ```json
+  {
+    "groups": [
+      {
+        "date": "2024-06-15",
+        "label": "June 15, 2024",
+        "photo_count": 23,
+        "photos": [
+          {
+            "id": "123e4567-e89b-12d3-a456-426614174000",
+            "thumbnail": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/small",
+            "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+            "width": 4032,
+            "height": 3024
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+  **Map Data Response**:
+  ```json
+  {
+    "clusters": [
+      {
+        "latitude": 34.0195,
+        "longitude": -118.4912,
+        "photo_count": 15,
+        "location_name": "Santa Monica, California",
+        "sample_photos": [
+          {
+            "id": "123e4567-e89b-12d3-a456-426614174000",
+            "thumbnail": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/thumb",
+            "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+  **People List Response**:
+  ```json
+  {
+    "people": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "name": "John Doe",
+        "photo_count": 142,
+        "avatar": {
+          "thumbnail": "/api/v1/photos/123e4567-e89b-12d3-a456-426614174000/thumbnail/thumb",
+          "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH"
+        },
+        "created_at": "2024-01-01T00:00:00Z"
+      }
+    ]
+  }
+  ```
+
+unit_tests: |
+  **Repository Layer**:
+  - Test CRUD operations for photos, albums, people
+  - Test photo filtering (tags, camera, date range, GPS)
+  - Test full-text search queries
+  - Test album photo associations (add, remove, reorder)
+  - Test album sharing permissions
+  - Test people/face tagging
+  - Test thumbnail tracking
+  - Test smart album filter evaluation
+  - Test duplicate detection (file hash)
+  - Mock database with sqlc.Querier interface
+
+  **Service Layer**:
+  - Test photo upload flow (validation, storage, processing)
+  - Test EXIF extraction and metadata parsing
+  - Test thumbnail generation scheduling
+  - Test blurhash generation
+  - Test RAW conversion flow
+  - Test geocoding integration (mock provider)
+  - Test photo deletion (cascade to thumbnails, faces)
+  - Test album management (create, update, delete)
+  - Test smart album filter matching
+  - Test search ranking and relevance
+  - Mock repository and external dependencies
+
+  **Image Processor**:
+  - Test thumbnail generation for all formats (JPEG, PNG, WebP, HEIC)
+  - Test blurhash generation accuracy
+  - Test EXIF extraction from various cameras
+  - Test RAW conversion (mock libvips/libraw)
+  - Test format detection
+  - Test image validation (corrupted files, unsupported formats)
+  - Test file hash calculation
+  - Test dimension extraction
+  - Mock file I/O with in-memory buffers
+
+  **Handler Layer**:
+  - Test request validation (ogen schemas)
+  - Test authentication and authorization
+  - Test multipart upload handling
+  - Test pagination parameters
+  - Test error responses (404, 400, 500)
+  - Mock service layer
+
+  **Coverage Target**: 85%+ for critical paths (upload, processing, search)
+
+integration_tests: |
+  **Database Integration**:
+  - Test full photo lifecycle with real PostgreSQL (testcontainers)
+  - Test complex queries (joins, full-text search, spatial queries)
+  - Test concurrent uploads and processing
+  - Test transaction rollbacks on errors
+  - Test migration up/down
+
+  **Storage Integration**:
+  - Test S3/MinIO upload and download with testcontainers
+  - Test file deduplication (same hash)
+  - Test storage cleanup on photo deletion
+  - Test presigned URL generation for downloads
+
+  **Image Processing Integration**:
+  - Test end-to-end thumbnail generation with real libvips
+  - Test EXIF extraction from real photo samples
+  - Test RAW conversion with sample files (CR2, NEF, ARW)
+  - Test HEIC conversion
+  - Test blurhash accuracy with visual comparison
+
+  **Job Queue Integration**:
+  - Test async thumbnail generation with River
+  - Test job retries on transient failures
+  - Test job cancellation on photo deletion
+  - Test concurrent worker processing
+
+  **API Integration**:
+  - Test full upload flow (HTTP → storage → processing → database)
+  - Test download flow with authentication
+  - Test album management workflows
+  - Test search with real data sets
+  - Test map clustering with GPS coordinates
+
+  **Geocoding Integration** (optional):
+  - Test reverse geocoding with mock Nominatim server
+  - Test rate limiting and error handling
+
+  **Performance Tests**:
+  - Test bulk upload (100+ photos)
+  - Test timeline query performance (10k+ photos)
+  - Test map clustering performance
+  - Test full-text search performance
+
+test_coverage_target: "80%"
+
 api_endpoints:
 - method: GET
   path: /api/v1/photos

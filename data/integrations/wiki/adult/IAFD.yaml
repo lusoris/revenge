@@ -42,3 +42,445 @@ design_refs:
 integration_name: IAFD
 integration_id: iafd
 external_service: IAFD
+api_base_url: https://www.iafd.com
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  QAR Module  │
+  │  (Metadata)  │
+  └──────┬───────┘
+         │ Lookup request
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │    IAFD      │────▶│  Industry Data    │
+  │   Scraper    │     │  - Performer bio  │
+  └──────┬───────┘     │  - Filmography    │
+         │             │  - Scene credits  │
+  ┌──────┴───────┐     │  - Studio info    │
+  │ Rate Limiter │     │  - Release dates  │
+  │ + Proxy Pool │     └───────────────────┘
+  └──────────────┘
+
+  IAFD = Internet Adult Film Database
+  Industry standard reference for professional content
+  Integration Role: SUPPLEMENTARY (authoritative for filmography/scene credits)
+  ```
+
+api_details: |
+  **Method**: Web scraping (no official API)
+  **Base URL**: `https://www.iafd.com`
+  **Authentication**: None required
+  **Rate Limit**: Self-imposed (1 req/2sec)
+
+  **URL Patterns**:
+  - Performer: `/person.rme/perfid={perfid}/gender={m|f}`
+  - Scene/Film: `/title.rme/id={title_id}`
+  - Studio: `/studio.rme/studio={studio_id}`
+  - Search: `/results.asp?searchtype=comprehensive&searchstring={query}`
+
+  **Data Available**:
+  - **Performers**: Full name, aliases, birthdate, career span, measurements
+  - **Filmography**: Complete scene list with dates, studios, costars
+  - **Scenes**: Title, studio, release date, cast, director
+  - **Studios**: Name, aliases, parent company
+
+  **URL Structure Notes**:
+  - Performer IDs are name-based slugs (e.g., "johnsmith")
+  - Gender flag required for performer lookups
+  - Title IDs are studio-based slugs
+
+database_schema: |
+  ```sql
+  -- IAFD performer cache (QAR schema)
+  CREATE TABLE qar.iafd_performers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    iafd_id VARCHAR(100) UNIQUE NOT NULL,
+    performer_name VARCHAR(255) NOT NULL,
+    gender CHAR(1) NOT NULL,
+    aliases TEXT[],
+    birth_date DATE,
+    birthplace VARCHAR(255),
+    ethnicity VARCHAR(100),
+    height_cm INT,
+    measurements VARCHAR(50),
+    hair_color VARCHAR(50),
+    career_start INT,
+    career_end INT,
+    scene_count INT,
+    photo_url TEXT,
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  CREATE INDEX idx_iafd_performer_name ON qar.iafd_performers(performer_name);
+  CREATE INDEX idx_iafd_performer_id ON qar.iafd_performers(iafd_id);
+
+  -- IAFD scene/title cache
+  CREATE TABLE qar.iafd_titles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    iafd_title_id VARCHAR(200) UNIQUE NOT NULL,
+    title VARCHAR(500) NOT NULL,
+    studio VARCHAR(255),
+    release_year INT,
+    release_date DATE,
+    director VARCHAR(255),
+    cast_count INT,
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  CREATE INDEX idx_iafd_title ON qar.iafd_titles(title);
+
+  -- Performer to IAFD mapping
+  CREATE TABLE qar.performer_iafd_links (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    performer_id UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
+    iafd_id VARCHAR(100) NOT NULL,
+    gender CHAR(1) NOT NULL,
+    match_confidence FLOAT,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(performer_id)
+  );
+
+  -- Scene to IAFD mapping
+  CREATE TABLE qar.scene_iafd_links (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    scene_id UUID REFERENCES qar.scenes(id) ON DELETE CASCADE,
+    iafd_title_id VARCHAR(200) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(scene_id)
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/iafd/
+  ├── module.go                    # fx module
+  ├── client.go                    # HTTP client with proxy support
+  ├── scraper.go                   # HTML scraping logic
+  ├── performer.go                 # Performer page parsing
+  ├── title.go                     # Title/scene page parsing
+  ├── search.go                    # Search functionality
+  ├── provider.go                  # Metadata provider
+  ├── matching.go                  # Name/title matching
+  └── iafd_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // IAFD metadata provider
+  type IAFDProvider struct {
+    httpClient  *httpclient.Client  // From HTTP_CLIENT service
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  // Scene metadata provider interface
+  type SceneMetadataProvider interface {
+    SearchPerformer(ctx context.Context, name string, gender string) ([]PerformerResult, error)
+    GetPerformer(ctx context.Context, iafdID string, gender string) (*Performer, error)
+    SearchTitle(ctx context.Context, title string) ([]TitleResult, error)
+    GetTitle(ctx context.Context, iafdTitleID string) (*Title, error)
+    GetFilmography(ctx context.Context, iafdID string, gender string) ([]FilmCredit, error)
+    Priority() int  // Returns 40 (supplementary after wiki sources)
+  }
+
+  // IAFD Performer
+  type Performer struct {
+    IAFDID       string     `json:"iafd_id"`
+    Name         string     `json:"name"`
+    Gender       string     `json:"gender"`
+    Aliases      []string   `json:"aliases"`
+    BirthDate    *time.Time `json:"birth_date,omitempty"`
+    Birthplace   string     `json:"birthplace"`
+    Ethnicity    string     `json:"ethnicity"`
+    HeightCm     int        `json:"height_cm"`
+    Measurements string     `json:"measurements"`
+    HairColor    string     `json:"hair_color"`
+    CareerStart  int        `json:"career_start"`
+    CareerEnd    int        `json:"career_end,omitempty"`
+    SceneCount   int        `json:"scene_count"`
+    PhotoURL     string     `json:"photo_url"`
+    IAFDURL      string     `json:"iafd_url"`
+  }
+
+  // IAFD Title/Scene
+  type Title struct {
+    IAFDTitleID string     `json:"iafd_title_id"`
+    Title       string     `json:"title"`
+    Studio      string     `json:"studio"`
+    ReleaseYear int        `json:"release_year"`
+    ReleaseDate *time.Time `json:"release_date,omitempty"`
+    Director    string     `json:"director"`
+    Cast        []CastMember `json:"cast"`
+    IAFDURL     string     `json:"iafd_url"`
+  }
+
+  // Film credit from filmography
+  type FilmCredit struct {
+    TitleID     string `json:"title_id"`
+    Title       string `json:"title"`
+    Studio      string `json:"studio"`
+    Year        int    `json:"year"`
+    SceneNumber int    `json:"scene_number,omitempty"`
+  }
+
+  // HTML parsing for performer page
+  func (p *IAFDProvider) parsePerformer(doc *goquery.Document) (*Performer, error) {
+    performer := &Performer{}
+
+    // Extract bio data from structured page
+    doc.Find("#biodata tr").Each(func(i int, s *goquery.Selection) {
+      label := strings.TrimSpace(s.Find("td:first-child").Text())
+      value := strings.TrimSpace(s.Find("td:last-child").Text())
+
+      switch label {
+      case "Birthday":
+        performer.BirthDate = parseDateIAFD(value)
+      case "Birthplace":
+        performer.Birthplace = value
+      case "Height":
+        performer.HeightCm = parseHeightIAFD(value)
+      case "Hair Color":
+        performer.HairColor = value
+      // ... etc
+      }
+    })
+
+    // Extract filmography count
+    performer.SceneCount = doc.Find("#filmography tbody tr").Length()
+
+    return performer, nil
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/PuerkitoBio/goquery` - HTML parsing
+  - `golang.org/x/time/rate` - Rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - DI
+
+  **Internal**:
+  - `internal/service/httpclient` - Proxy-enabled HTTP client
+
+  **External**:
+  - IAFD website (no official API)
+
+env_vars: |
+  ```bash
+  IAFD_ENABLED=true
+  IAFD_RATE_LIMIT=0.5              # req/sec (1 every 2 seconds)
+  IAFD_CACHE_TTL=720h              # 30 days
+  IAFD_USE_PROXY=true              # Use proxy pool from HTTP_CLIENT
+  ```
+
+config_keys: |
+  ```yaml
+  qar:
+    metadata:
+      providers:
+        iafd:
+          enabled: true
+          rate_limit: 0.5
+          rate_window: 1s
+          cache_ttl: 720h
+          role: supplementary
+          priority: 40             # After StashDB, wiki sources
+          use_proxy: true
+          scrape_filmography: true
+  ```
+
+component_interaction: |
+  **Performer Lookup Flow**:
+  1. Performer identified via StashDB
+  2. Search IAFD by performer name
+  3. Match by name/aliases/date
+  4. Scrape performer page
+  5. Parse bio data and filmography
+  6. Store in cache with 30-day TTL
+  7. Link performer record to IAFD profile
+
+  **Scene Verification Flow**:
+  1. Scene identified via Whisparr/StashDB
+  2. Search IAFD by title/studio
+  3. Match by title, year, studio
+  4. Verify cast members against IAFD
+  5. Store scene-to-IAFD mapping
+  6. Cross-reference performer credits
+
+  **Filmography Enrichment**:
+  1. User views performer detail page
+  2. Fetch filmography from IAFD
+  3. Display career timeline
+  4. Link to scene records in library
+  5. Show co-star relationships
+
+supplementary_role: |
+  **SUPPLEMENTARY Metadata Provider**
+
+  IAFD provides authoritative industry data:
+  - Official filmography records
+  - Studio/production credits
+  - Scene cast verification
+  - Career timeline
+
+  **Role in Provider Hierarchy**:
+  - StashDB: PRIMARY (identity/fingerprinting)
+  - Whisparr: PRIMARY (library management)
+  - Wiki sources: ENRICHMENT (biography)
+  - IAFD: SUPPLEMENTARY (filmography/credits)
+
+  **Key Use Cases**:
+  - Verify scene cast lists
+  - Build filmography timelines
+  - Identify co-star relationships
+  - Track studio affiliations
+
+  **Priority Order**:
+  1. StashDB (10) - Identity
+  2. Boobpedia (20) - Bio
+  3. Babepedia (30) - Stats
+  4. IAFD (40) - Filmography
+
+scraping_implementation: |
+  **Performer Page Scraping**:
+  ```go
+  func (p *IAFDProvider) GetPerformer(ctx context.Context, iafdID string, gender string) (*Performer, error) {
+    // Build URL
+    url := fmt.Sprintf("%s/person.rme/perfid=%s/gender=%s",
+      p.baseURL, iafdID, gender)
+
+    // Rate limit
+    if err := p.rateLimiter.Wait(ctx); err != nil {
+      return nil, err
+    }
+
+    // Fetch page
+    resp, err := p.httpClient.Get(ctx, url)
+    if err != nil {
+      return nil, fmt.Errorf("fetch failed: %w", err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode == 404 {
+      return nil, ErrPerformerNotFound
+    }
+
+    // Parse HTML
+    doc, err := goquery.NewDocumentFromReader(resp.Body)
+    if err != nil {
+      return nil, fmt.Errorf("parse failed: %w", err)
+    }
+
+    performer, err := p.parsePerformer(doc)
+    if err != nil {
+      return nil, err
+    }
+
+    performer.IAFDID = iafdID
+    performer.Gender = gender
+    performer.IAFDURL = url
+
+    return performer, nil
+  }
+  ```
+
+  **Filmography Extraction**:
+  ```go
+  func (p *IAFDProvider) GetFilmography(ctx context.Context, iafdID string, gender string) ([]FilmCredit, error) {
+    performer, err := p.GetPerformer(ctx, iafdID, gender)
+    if err != nil {
+      return nil, err
+    }
+
+    var credits []FilmCredit
+
+    // Parse filmography table from performer page
+    doc.Find("#filmography tbody tr").Each(func(i int, s *goquery.Selection) {
+      credit := FilmCredit{
+        Title:  s.Find("td:nth-child(1) a").Text(),
+        Studio: s.Find("td:nth-child(2)").Text(),
+        Year:   parseYear(s.Find("td:nth-child(3)").Text()),
+      }
+      // Extract title ID from link
+      if href, ok := s.Find("td:nth-child(1) a").Attr("href"); ok {
+        credit.TitleID = extractTitleID(href)
+      }
+      credits = append(credits, credit)
+    })
+
+    return credits, nil
+  }
+  ```
+
+error_handling: |
+  **HTTP Errors**:
+  - 403 Forbidden → IP blocked, rotate proxy
+  - 404 Not Found → Performer/title not in IAFD
+  - 429 Too Many Requests → Rate limited, back off
+  - 5xx → Service error, retry with backoff
+
+  **Matching Errors**:
+  - Ambiguous name → Return multiple candidates
+  - No exact match → Try fuzzy matching
+  - Gender mismatch → Check both options
+
+  **Scraping Errors**:
+  - Page structure changed → Log and graceful degrade
+  - Missing filmography → Return performer without credits
+  - Malformed data → Skip field
+
+unit_tests: |
+  ```go
+  func TestIAFD_ParsePerformer(t *testing.T) {
+    html := `<table id="biodata">
+      <tr><td>Birthday</td><td>January 1, 1990</td></tr>
+      <tr><td>Birthplace</td><td>Los Angeles, CA</td></tr>
+      <tr><td>Height</td><td>5'6" (168 cm)</td></tr>
+    </table>
+    <table id="filmography"><tbody>
+      <tr><td><a href="/title.rme/id=test">Test Title</a></td><td>Studio</td><td>2020</td></tr>
+    </tbody></table>`
+
+    doc, _ := goquery.NewDocumentFromReader(strings.NewReader(html))
+    provider := NewIAFDProvider(nil)
+
+    performer, err := provider.parsePerformer(doc)
+
+    require.NoError(t, err)
+    assert.Equal(t, "Los Angeles, CA", performer.Birthplace)
+    assert.Equal(t, 168, performer.HeightCm)
+    assert.Equal(t, 1, performer.SceneCount)
+  }
+
+  func TestIAFD_BuildPerformerURL(t *testing.T) {
+    url := buildPerformerURL("johnsmith", "m")
+    assert.Equal(t, "https://www.iafd.com/person.rme/perfid=johnsmith/gender=m", url)
+  }
+  ```
+
+best_practices: |
+  **Scraping Etiquette**:
+  - Respect rate limits (1 req/2sec)
+  - Use proxy rotation
+  - Cache for 30 days (data rarely changes)
+  - Handle graceful degradation
+
+  **Data Quality**:
+  - Cross-reference with StashDB
+  - Verify against scene fingerprints
+  - Flag uncertain matches
+
+  **Filmography Usage**:
+  - Build career timelines
+  - Identify co-stars for recommendations
+  - Verify scene metadata accuracy
+
+  **Privacy**:
+  - All data flows through QAR access controls
+  - Requires `legacy:read` scope
+  - Data isolated in qar.* schema
+

@@ -76,6 +76,7 @@ design_refs:
 > Integration with Lidarr
 
 > Music management automation
+**API Base URL**: `http://localhost:8686/api/v1`
 **Authentication**: api_key
 
 ---
@@ -118,8 +119,6 @@ internal/integration/lidarr/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 

@@ -24,7 +24,7 @@
 
 > High-performance media transcoding with hardware acceleration
 
-The Transcoding Service converts media files on-demand to ensure compatibility across all devices. Primary transcoding offloads to Blackbeard service for maximum performance, with local FFmpeg fallback. Hardware acceleration via NVENC, QSV, or VAAPI dramatically reduces CPU usage. Generates HLS adaptive streams with multiple quality levels, caching results for faster subsequent playback.
+The Transcoding Service converts media files on-demand to ensure compatibility across all devices. **INTERNAL transcoding** uses go-astiav (FFmpeg Go bindings) with optional hardware acceleration (NVENC, QSV, VAAPI) and is always available. For heavy workloads, users can optionally configure **EXTERNAL offloading** to a Blackbeard service (third-party, not developed by us). Generates HLS adaptive streams with multiple quality levels, caching results for faster subsequent playback.
 
 ---
 

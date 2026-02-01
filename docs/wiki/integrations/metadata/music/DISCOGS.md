@@ -22,9 +22,9 @@
 
 # Discogs
 
-> Vinyl and CD release data from Discogs
+> Physical release metadata (vinyl/CD) - Supplementary to Lidarr
 
-Discogs provides detailed release information for physical media collectors. Track vinyl pressings, CD editions, and regional variations. Detailed credits list every contributor. Marketplace data shows record values. Excellent for identifying specific pressings and editions of albums.
+SUPPLEMENTARY enrichment for physical music releases. Provides: (1) Vinyl/CD pressings and editions, (2) Regional variations, (3) Detailed credits (full contributor lists), (4) Marketplace data (record values/prices). OAuth authentication required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Ideal for collectors tracking specific pressings.
 
 ---
 

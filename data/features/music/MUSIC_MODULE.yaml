@@ -33,10 +33,11 @@ technical_summary: '> Music content management with metadata enrichment from Mus
   - **Features**: Playlists, smart collections, album art, lyrics'
 wiki_tagline: '> Your complete music library with beautiful album art and metadata'
 wiki_overview: The Music Module provides a complete music library experience with
-  support for artists, albums, and tracks. It integrates with Lidarr for automated
-  music management and uses MusicBrainz and Last.fm for rich metadata. Stream your
-  music in high quality with gapless playback, create playlists, and discover new
-  music through smart collections.
+  support for artists, albums, and tracks. It uses Lidarr as the PRIMARY metadata
+  source (aggregates from MusicBrainz locally), with direct MusicBrainz/Last.fm APIs
+  as supplementary enrichment. Lidarr integration provides both metadata caching and
+  download automation. Stream your music in high quality with gapless playback, create
+  playlists, and discover new music through smart collections.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -72,6 +73,18 @@ design_refs:
   path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../architecture/03_METADATA_SYSTEM.md
+- title: LIDARR (PRIMARY metadata + downloads)
+  path: ../../integrations/servarr/LIDARR.md
+- title: MUSICBRAINZ (supplementary metadata)
+  path: ../../integrations/metadata/MUSICBRAINZ.md
+- title: LASTFM (scrobbling + enrichment)
+  path: ../../integrations/metadata/LASTFM.md
+- title: LISTENBRAINZ (open-source scrobbling)
+  path: ../../integrations/scrobbling/LISTENBRAINZ.md
+- title: DISCOGS (vinyl/CD metadata)
+  path: ../../integrations/metadata/DISCOGS.md
+- title: SPOTIFY (streaming metadata)
+  path: ../../integrations/metadata/SPOTIFY.md
 feature_name: Music Module
 module_name: music
 schema_name: public
@@ -125,8 +138,98 @@ metadata_sources:
   priority: 3
   fields: Play counts, user tags, artist bio, similar artists
   api_url: https://www.last.fm/api
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+  - `artists`: Artist/band metadata
+  - `artist_images`: Artist photos and promotional images
+  - `albums`: Album metadata
+  - `album_images`: Album cover art
+  - `tracks`: Individual track metadata
+  - `track_files`: Physical audio files
+  - `track_lyrics`: Synced and unsynced lyrics
+  - `artist_genres`: Genre associations for artists
+  - `album_genres`: Genre associations for albums
+  - `scrobbles`: Play history for Last.fm/ListenBrainz
+  - `music_metadata_cache`: Cached metadata from providers
+
+  **Key Columns** (`artists`):
+  - `id` (UUID): Primary key
+  - `musicbrainz_id` (UUID): MusicBrainz artist ID
+  - `name` (TEXT): Artist/band name
+  - `sort_name` (TEXT): Name for alphabetical sorting
+  - `disambiguation` (TEXT): Disambiguation comment
+  - `type` (TEXT): Artist type (person, group, orchestra, etc.)
+  - `country` (TEXT): Country of origin
+  - `begin_date` (DATE): Formation/birth date
+  - `end_date` (DATE): Dissolution/death date
+  - `biography` (TEXT): Artist biography (from Last.fm)
+  - `image_path` (TEXT): Primary artist image
+  - `lidarr_id` (INTEGER): Lidarr artist ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`albums`):
+  - `id` (UUID): Primary key
+  - `musicbrainz_id` (UUID): MusicBrainz release ID
+  - `artist_id` (UUID): Artist foreign key
+  - `title` (TEXT): Album title
+  - `release_date` (DATE): Original release date
+  - `release_type` (TEXT): Album, EP, Single, Compilation, etc.
+  - `release_status` (TEXT): Official, Promotion, Bootleg, etc.
+  - `country` (TEXT): Release country
+  - `barcode` (TEXT): Album barcode
+  - `label` (TEXT): Record label
+  - `cover_path` (TEXT): Album cover image
+  - `disc_count` (INTEGER): Number of discs
+  - `track_count` (INTEGER): Total tracks
+  - `duration` (INTEGER): Total duration in seconds
+  - `lidarr_id` (INTEGER): Lidarr album ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`tracks`):
+  - `id` (UUID): Primary key
+  - `musicbrainz_id` (UUID): MusicBrainz recording ID
+  - `album_id` (UUID): Album foreign key
+  - `title` (TEXT): Track title
+  - `track_number` (INTEGER): Track position on disc
+  - `disc_number` (INTEGER): Disc number
+  - `duration` (INTEGER): Duration in milliseconds
+  - `isrc` (TEXT): International Standard Recording Code
+  - `artist_credit` (TEXT): Artist credits (may differ from album artist)
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`track_files`):
+  - `id` (UUID): Primary key
+  - `track_id` (UUID): Track foreign key
+  - `file_path` (TEXT): Absolute file path
+  - `file_size` (BIGINT): Size in bytes
+  - `format` (TEXT): Audio format (MP3, FLAC, etc.)
+  - `codec` (TEXT): Audio codec
+  - `bitrate` (INTEGER): Bitrate in kbps
+  - `sample_rate` (INTEGER): Sample rate in Hz
+  - `channels` (INTEGER): Channel count (1=mono, 2=stereo, etc.)
+  - `bit_depth` (INTEGER): Bit depth (16, 24, etc.)
+  - `replay_gain` (DECIMAL): ReplayGain adjustment in dB
+  - `checksum` (TEXT): File checksum (SHA256)
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Indexes**:
+  - `idx_artists_musicbrainz_id` on `musicbrainz_id`
+  - `idx_artists_lidarr_id` on `lidarr_id`
+  - `idx_artists_name_trgm` (GIN trigram) for fuzzy search
+  - `idx_albums_artist_id` on `artist_id`
+  - `idx_albums_musicbrainz_id` on `musicbrainz_id`
+  - `idx_albums_release_date` on `release_date`
+  - `idx_tracks_album_id` on `album_id`
+  - `idx_tracks_musicbrainz_id` on `musicbrainz_id`
+  - `idx_track_files_track_id` on `track_id`
+  - `idx_scrobbles_user_track` on (`user_id`, `track_id`)
+  - `idx_scrobbles_timestamp` on `scrobbled_at`
 playback_features:
   streaming_protocol: HLS (HTTP Live Streaming)
   gapless_playback: true
@@ -204,6 +307,448 @@ module_structure: "```\n  internal/content/music/\n  ├── module.go        
   \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
   \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
   \              # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+component_interaction: |
+  1. **Request Flow**:
+     - Client sends HTTP request to `/api/v1/music/*`
+     - API handler (ogen) validates request and calls service
+     - Service checks cache for existing data
+     - If cache miss, service calls repository for database query
+     - Repository executes SQL via sqlc-generated code
+     - Results flow back through service → handler → client
+
+  2. **Metadata Enrichment**:
+     - Lidarr webhook triggers on new album download
+     - Service fetches metadata from Lidarr API (includes MusicBrainz data)
+     - Service stores artist, album, and track data
+     - Background job fetches additional metadata from Last.fm (bio, similar artists)
+     - Service updates database and invalidates cache
+
+  3. **Audio Streaming**:
+     - Client requests track stream via `/api/v1/music/tracks/{id}/stream`
+     - Service checks user permissions and track availability
+     - Service determines optimal format based on client capabilities
+     - If transcoding needed, FFmpeg worker job is created
+     - HLS manifest and segments are generated/served
+     - Client plays audio with gapless playback support
+
+  4. **Scrobbling Flow**:
+     - Client reports playback progress via websocket
+     - When scrobble threshold reached (50% or 4 min), event triggered
+     - Background job submits scrobble to Last.fm/ListenBrainz
+     - Scrobble stored locally for play count statistics
+     - If submission fails, queued for retry
+
+# Implementation
+file_structure: |
+  ```
+  internal/content/music/
+  ├── module.go              # fx.Module with all providers
+  ├── repository.go          # Database layer
+  ├── repository_test.go     # Repository tests (testcontainers)
+  ├── service.go             # Business logic
+  ├── service_test.go        # Service tests (mocks)
+  ├── handler.go             # HTTP handlers
+  ├── handler_test.go        # Handler tests (httptest)
+  ├── types.go               # Domain types
+  ├── cache.go               # Caching logic
+  ├── cache_test.go          # Cache tests
+  ├── streaming/
+  │   ├── transcoder.go      # FFmpeg transcoding logic
+  │   ├── transcoder_test.go # Transcoding tests
+  │   ├── hls.go             # HLS manifest generation
+  │   └── gapless.go         # Gapless playback handling
+  ├── metadata/
+  │   ├── provider.go        # Interface: MetadataProvider
+  │   ├── lidarr.go          # Lidarr API integration
+  │   ├── musicbrainz.go     # MusicBrainz API integration
+  │   ├── lastfm.go          # Last.fm API integration
+  │   ├── lastfm_test.go     # Last.fm integration tests
+  │   └── enricher.go        # Enrichment orchestration
+  └── scrobbling/
+      ├── scrobbler.go       # Scrobble submission logic
+      ├── queue.go           # Offline scrobble queue
+      └── scrobbler_test.go  # Scrobbling tests
+
+  migrations/
+  └── music/
+      ├── 001_artists.sql    # Artists schema
+      ├── 002_albums.sql     # Albums schema
+      ├── 003_tracks.sql     # Tracks schema
+      └── 004_scrobbles.sql  # Scrobbling schema
+
+  api/
+  └── openapi.yaml           # OpenAPI spec (music/* endpoints)
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository defines database operations for music content
+  type Repository interface {
+      // Artist CRUD
+      GetArtist(ctx context.Context, id uuid.UUID) (*Artist, error)
+      ListArtists(ctx context.Context, filters ListFilters) ([]Artist, error)
+      CreateArtist(ctx context.Context, artist *Artist) error
+      UpdateArtist(ctx context.Context, artist *Artist) error
+      DeleteArtist(ctx context.Context, id uuid.UUID) error
+
+      // Album CRUD
+      GetAlbum(ctx context.Context, id uuid.UUID) (*Album, error)
+      ListAlbums(ctx context.Context, filters ListFilters) ([]Album, error)
+      ListAlbumsByArtist(ctx context.Context, artistID uuid.UUID) ([]Album, error)
+      CreateAlbum(ctx context.Context, album *Album) error
+      UpdateAlbum(ctx context.Context, album *Album) error
+      DeleteAlbum(ctx context.Context, id uuid.UUID) error
+
+      // Track CRUD
+      GetTrack(ctx context.Context, id uuid.UUID) (*Track, error)
+      ListTracks(ctx context.Context, filters ListFilters) ([]Track, error)
+      ListTracksByAlbum(ctx context.Context, albumID uuid.UUID) ([]Track, error)
+      CreateTrack(ctx context.Context, track *Track) error
+      UpdateTrack(ctx context.Context, track *Track) error
+      DeleteTrack(ctx context.Context, id uuid.UUID) error
+
+      // Scrobbling
+      RecordScrobble(ctx context.Context, userID, trackID uuid.UUID, timestamp time.Time) error
+      GetRecentScrobbles(ctx context.Context, userID uuid.UUID, limit int) ([]Scrobble, error)
+      GetPlayCount(ctx context.Context, userID, trackID uuid.UUID) (int, error)
+  }
+
+  // Service defines business logic for music
+  type Service interface {
+      // Artist operations
+      GetArtist(ctx context.Context, id uuid.UUID) (*Artist, error)
+      SearchArtists(ctx context.Context, query string, filters SearchFilters) ([]Artist, error)
+      EnrichArtist(ctx context.Context, id uuid.UUID) error
+
+      // Album operations
+      GetAlbum(ctx context.Context, id uuid.UUID) (*Album, error)
+      SearchAlbums(ctx context.Context, query string, filters SearchFilters) ([]Album, error)
+      EnrichAlbum(ctx context.Context, id uuid.UUID) error
+
+      // Track operations
+      GetTrack(ctx context.Context, id uuid.UUID) (*Track, error)
+      GetStreamURL(ctx context.Context, trackID uuid.UUID, format string) (string, error)
+
+      // Scrobbling
+      SubmitScrobble(ctx context.Context, userID, trackID uuid.UUID) error
+  }
+
+  // MetadataProvider fetches music metadata from external sources
+  type MetadataProvider interface {
+      GetArtistByMBID(ctx context.Context, mbid string) (*ArtistMetadata, error)
+      GetAlbumByMBID(ctx context.Context, mbid string) (*AlbumMetadata, error)
+      GetTrackByMBID(ctx context.Context, mbid string) (*TrackMetadata, error)
+      SearchArtists(ctx context.Context, query string) ([]ArtistMetadata, error)
+      SearchAlbums(ctx context.Context, query string) ([]AlbumMetadata, error)
+  }
+
+  // Transcoder handles audio format conversion
+  type Transcoder interface {
+      // TranscodeToHLS creates HLS manifest and segments
+      TranscodeToHLS(ctx context.Context, inputPath string, opts TranscodeOptions) (*HLSManifest, error)
+
+      // SupportedFormats returns formats this transcoder can handle
+      SupportedFormats() []string
+
+      // GetCodecForFormat returns optimal codec for target format
+      GetCodecForFormat(format string) (string, error)
+  }
+
+  // Scrobbler submits playback events to external services
+  type Scrobbler interface {
+      // Scrobble submits a scrobble event
+      Scrobble(ctx context.Context, track *Track, timestamp time.Time) error
+
+      // UpdateNowPlaying updates "now playing" status
+      UpdateNowPlaying(ctx context.Context, track *Track) error
+
+      // QueueOffline queues scrobble for later submission
+      QueueOffline(track *Track, timestamp time.Time) error
+  }
+  ```
+
+dependencies: |
+  **Go Dependencies**:
+  - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+  - `github.com/google/uuid` - UUID generation
+  - `github.com/maypok86/otter` - In-memory cache
+  - `github.com/asticode/go-astiav` - FFmpeg bindings for transcoding
+  - `github.com/go-resty/resty/v2` - HTTP client for external APIs
+  - `go.uber.org/fx` - Dependency injection
+  - `github.com/riverqueue/river` - Background job queue
+  - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
+
+  **External APIs** (priority order):
+  - **Lidarr API v1** - PRIMARY metadata source (local MusicBrainz cache) + download automation
+  - **MusicBrainz API v2** - Supplementary metadata (via proxy/VPN when Lidarr lacks data)
+  - **Last.fm API v2.0** - Supplementary enrichment (via proxy/VPN): scrobbling, tags, similar artists
+  - **ListenBrainz API** - Open scrobbling alternative (via proxy/VPN)
+
+  **External Tools**:
+  - FFmpeg 7.0+ - Audio transcoding and format conversion
+
+  **Database**:
+  - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
+env_vars: |
+  **Environment Variables**:
+  - `REVENGE_MUSIC_CACHE_TTL` - Cache TTL duration (default: 15m)
+  - `REVENGE_MUSIC_CACHE_SIZE` - Cache size in MB (default: 150)
+  - `REVENGE_LIDARR_URL` - Lidarr instance URL (required)
+  - `REVENGE_LIDARR_API_KEY` - Lidarr API key (required)
+  - `REVENGE_METADATA_MUSICBRAINZ_RATE_LIMIT` - Rate limit per second (default: 1)
+  - `REVENGE_METADATA_LASTFM_API_KEY` - Last.fm API key (optional)
+  - `REVENGE_METADATA_LASTFM_API_SECRET` - Last.fm API secret (optional)
+  - `REVENGE_METADATA_LISTENBRAINZ_TOKEN` - ListenBrainz user token (optional)
+  - `REVENGE_MUSIC_TRANSCODE_ENABLED` - Enable audio transcoding (default: true)
+  - `REVENGE_MUSIC_TRANSCODE_QUALITY` - Transcode quality preset (low, medium, high, lossless)
+  - `REVENGE_MUSIC_GAPLESS_ENABLED` - Enable gapless playback (default: true)
+
+config_keys: |
+  **config.yaml keys**:
+  ```yaml
+  music:
+    cache:
+      ttl: 15m
+      size_mb: 150
+
+    metadata:
+      lidarr:
+        url: ${REVENGE_LIDARR_URL}
+        api_key: ${REVENGE_LIDARR_API_KEY}
+        sync_interval: 30m
+
+      musicbrainz:
+        rate_limit: 1  # Requests per second
+        user_agent: "Revenge/1.0 (your-email@example.com)"
+
+      lastfm:
+        api_key: ${REVENGE_METADATA_LASTFM_API_KEY}
+        api_secret: ${REVENGE_METADATA_LASTFM_API_SECRET}
+        scrobbling_enabled: true
+
+      listenbrainz:
+        token: ${REVENGE_METADATA_LISTENBRAINZ_TOKEN}
+        enabled: false
+
+      priority:
+        - lidarr        # PRIMARY: Local MusicBrainz cache
+        - musicbrainz   # Supplementary: Direct API (via proxy/VPN)
+        - lastfm        # Enrichment (via proxy/VPN)
+
+      musicbrainz:
+        proxy: tor  # Route through proxy/VPN (see HTTP_CLIENT service)
+
+      lastfm:
+        proxy: tor  # Route through proxy/VPN
+
+    streaming:
+      transcoding:
+        enabled: true
+        quality: high  # low, medium, high, lossless
+        formats:
+          - mp3: {bitrate: 320, codec: libmp3lame}
+          - aac: {bitrate: 256, codec: aac}
+          - opus: {bitrate: 128, codec: libopus}
+        cache_segments: true
+        segment_duration: 6  # seconds
+
+      gapless:
+        enabled: true
+        prebuffer_next_track: true
+
+      replaygain:
+        enabled: true
+        fallback_level: -18  # LUFS
+
+    scrobbling:
+      threshold_percent: 50
+      threshold_duration: 240  # seconds
+      services:
+        - lastfm
+        - listenbrainz
+      offline_queue_size: 1000
+  ```
+
+defaults: |
+  - Cache TTL: 15 minutes
+  - Cache size: 150 MB
+  - Lidarr sync interval: 30 minutes
+  - MusicBrainz rate limit: 1 request/second
+  - Transcoding quality: high
+  - Gapless playback: enabled
+  - Scrobble threshold: 50% or 4 minutes
+  - HLS segment duration: 6 seconds
+  - ReplayGain: enabled (-18 LUFS fallback)
+
+# API Endpoints (additional to those already listed)
+request_examples: |
+  **List artists with filters**:
+  ```http
+  GET /api/v1/music/artists?genre=rock&country=US&limit=20&offset=0
+  Authorization: Bearer {token}
+  ```
+
+  **Get artist with albums**:
+  ```http
+  GET /api/v1/music/artists/550e8400-e29b-41d4-a716-446655440000?include=albums
+  Authorization: Bearer {token}
+  ```
+
+  **Get album with tracks**:
+  ```http
+  GET /api/v1/music/albums/650e8400-e29b-41d4-a716-446655440000?include=tracks
+  Authorization: Bearer {token}
+  ```
+
+  **Stream a track**:
+  ```http
+  GET /api/v1/music/tracks/750e8400-e29b-41d4-a716-446655440000/stream?format=opus&quality=high
+  Authorization: Bearer {token}
+  ```
+
+  **Submit scrobble**:
+  ```http
+  POST /api/v1/music/scrobbles
+  Authorization: Bearer {token}
+  Content-Type: application/json
+
+  {
+    "track_id": "750e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+response_examples: |
+  **Artist details response**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "musicbrainz_id": "83d91898-7763-47d7-b03b-b92132375c47",
+    "name": "Pink Floyd",
+    "sort_name": "Pink Floyd",
+    "type": "Group",
+    "country": "GB",
+    "begin_date": "1965-01-01",
+    "biography": "British rock band formed in London...",
+    "image_path": "/artists/images/pink-floyd.jpg",
+    "genres": ["Progressive Rock", "Psychedelic Rock"],
+    "album_count": 15,
+    "track_count": 203,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+  **Album details response**:
+  ```json
+  {
+    "id": "650e8400-e29b-41d4-a716-446655440000",
+    "musicbrainz_id": "b84ee12a-09ef-421b-82de-0441a926375b",
+    "artist": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Pink Floyd"
+    },
+    "title": "The Dark Side of the Moon",
+    "release_date": "1973-03-01",
+    "release_type": "Album",
+    "cover_path": "/albums/covers/dark-side-of-the-moon.jpg",
+    "disc_count": 1,
+    "track_count": 10,
+    "duration": 2583,
+    "genres": ["Progressive Rock"],
+    "tracks": [
+      {
+        "id": "...",
+        "title": "Speak to Me",
+        "track_number": 1,
+        "duration": 90000
+      }
+    ],
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+  **Stream URL response**:
+  ```json
+  {
+    "stream_url": "https://revenge.example.com/stream/750e8400.../master.m3u8",
+    "format": "hls",
+    "codec": "opus",
+    "bitrate": 128,
+    "gapless_supported": true,
+    "expires_at": "2024-01-15T21:30:00Z"
+  }
+  ```
+
+# Testing
+unit_tests: |
+  **Repository Tests** (with testcontainers):
+  - Test CRUD operations for artists
+  - Test CRUD operations for albums
+  - Test CRUD operations for tracks
+  - Test scrobble recording
+  - Test play count aggregation
+  - Test search with filters
+  - Test concurrent access
+
+  **Service Tests** (with mocks):
+  - Test business logic with mocked repository
+  - Test metadata enrichment flow (Lidarr → MusicBrainz → Last.fm)
+  - Test cache hit/miss scenarios
+  - Test error handling
+  - Test rate limiting for MusicBrainz
+
+  **Handler Tests** (with httptest):
+  - Test HTTP request/response handling
+  - Test authentication/authorization
+  - Test request validation
+  - Test error responses
+  - Test pagination
+
+  **Transcoding Tests**:
+  - Test HLS manifest generation
+  - Test audio format detection
+  - Test codec selection
+  - Test gapless playback metadata
+  - Test ReplayGain application
+
+  **Scrobbling Tests**:
+  - Test scrobble threshold logic
+  - Test offline queue behavior
+  - Test retry logic for failed submissions
+  - Test concurrent scrobbles
+
+integration_tests: |
+  **Full Stack Tests**:
+  - Test complete request flow (client → database)
+  - Test metadata enrichment with real Lidarr API (mocked)
+  - Test Last.fm scrobbling (mocked)
+  - Test audio streaming end-to-end
+  - Test gapless playback transitions
+  - Test concurrent track streaming
+
+  **Database Tests**:
+  - Test migrations (up/down)
+  - Test indexes performance
+  - Test foreign key constraints
+  - Test transaction isolation
+  - Test trigram search performance
+
+  **Streaming Tests**:
+  - Test HLS playback with various formats
+  - Test transcoding quality levels
+  - Test segment caching
+  - Test bandwidth adaptation
+  - Test gapless transitions
+
+test_coverage_target: |
+  - **Overall**: 80% minimum
+  - **Repository**: 90% (critical path)
+  - **Service**: 85% (business logic)
+  - **Handler**: 75% (integration layer)
+  - **Metadata providers**: 70% (external dependency)
+  - **Transcoding**: 80% (complex audio processing)
+  - **Scrobbling**: 85% (important for user stats)

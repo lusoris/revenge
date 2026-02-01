@@ -52,6 +52,9 @@ design_refs:
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+- [Watchlist](#watchlist)
+- [Preferences](#preferences)
+- [Trending](#trending)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -128,11 +131,41 @@ internal/content/revenge___user_experience_features/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type UXService interface {
+  // Watchlist
+  AddToWatchlist(ctx context.Context, userID uuid.UUID, itemType string, itemID uuid.UUID) error
+  RemoveFromWatchlist(ctx context.Context, userID uuid.UUID, itemType string, itemID uuid.UUID) error
+  GetWatchlist(ctx context.Context, userID uuid.UUID) ([]WatchlistItem, error)
+
+  // Preferences
+  GetPreferences(ctx context.Context, userID uuid.UUID) (*UXPreferences, error)
+  UpdatePreferences(ctx context.Context, userID uuid.UUID, prefs UXPreferences) error
+
+  // Trending
+  GetTop10(ctx context.Context, listType, timePeriod string) (*Top10List, error)
+  GetTrending(ctx context.Context, limit int) ([]TrendingItem, error)
+  CalculateTrending(ctx context.Context) error  // Background job
+}
+
+type UXPreferences struct {
+  UserID             uuid.UUID `db:"user_id" json:"user_id"`
+  Theme              string    `db:"theme" json:"theme"`
+  AccentColor        string    `db:"accent_color" json:"accent_color"`
+  AutoplayPreviews   bool      `db:"autoplay_previews" json:"autoplay_previews"`
+  AutoplayNextEpisode bool     `db:"autoplay_next_episode" json:"autoplay_next_episode"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Background trending calculation
+- `go.uber.org/fx`
+
 
 
 
@@ -141,17 +174,42 @@ internal/content/revenge___user_experience_features/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+UX_TRENDING_UPDATE_INTERVAL=1h
+UX_TOP10_UPDATE_INTERVAL=6h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+ux:
+  trending_update_interval: 1h
+  top10_update_interval: 6h
+  default_theme: dark
+  default_accent_color: '#e50914'
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+# Watchlist
+POST   /api/v1/ux/watchlist          # Add to watchlist
+DELETE /api/v1/ux/watchlist/:type/:id # Remove from watchlist
+GET    /api/v1/ux/watchlist          # Get watchlist
+
+# Preferences
+GET    /api/v1/ux/preferences         # Get UX preferences
+PUT    /api/v1/ux/preferences         # Update preferences
+
+# Trending
+GET    /api/v1/ux/top10/:type/:period # Get Top 10 list
+GET    /api/v1/ux/trending            # Get trending content
+```
+
 
 
 ## Testing Strategy

@@ -73,6 +73,7 @@ design_refs:
 > Integration with Sonarr
 
 > TV show management automation
+**API Base URL**: `http://localhost:8989/api/v3`
 **Authentication**: api_key
 
 ---
@@ -115,8 +116,6 @@ internal/integration/sonarr/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -128,7 +127,47 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type SonarrService interface {
+  // Series management
+  AddSeries(ctx context.Context, tvdbID int, qualityProfileID int, rootFolder string) (*SonarrSeries, error)
+  DeleteSeries(ctx context.Context, sonarrID int, deleteFiles bool) error
+  SearchSeason(ctx context.Context, seriesID int, seasonNumber int) error
+
+  // Episode management
+  GetEpisodes(ctx context.Context, seriesID int) ([]SonarrEpisode, error)
+  GetCalendar(ctx context.Context, start, end time.Time) ([]CalendarEpisode, error)
+
+  // Sync
+  SyncLibrary(ctx context.Context, instanceID uuid.UUID) error
+}
+
+type SonarrSeries struct {
+  ID              int      `json:"id"`
+  Title           string   `json:"title"`
+  Year            int      `json:"year"`
+  TVDbID          int      `json:"tvdbId"`
+  TVRageID        int      `json:"tvRageId"`
+  IMDbID          string   `json:"imdbId"`
+  Monitored       bool     `json:"monitored"`
+  QualityProfile  int      `json:"qualityProfileId"`
+  SeasonFolder    bool     `json:"seasonFolder"`
+  Path            string   `json:"path"`
+  Seasons         []Season `json:"seasons"`
+}
+
+type SonarrEpisode struct {
+  ID              int      `json:"id"`
+  SeriesID        int      `json:"seriesId"`
+  SeasonNumber    int      `json:"seasonNumber"`
+  EpisodeNumber   int      `json:"episodeNumber"`
+  Title           string   `json:"title"`
+  AirDate         string   `json:"airDate"`
+  HasFile         bool     `json:"hasFile"`
+  Monitored       bool     `json:"monitored"`
+}
+```
+
 
 ### Dependencies
 

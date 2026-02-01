@@ -42,4 +42,383 @@ design_refs:
 integration_name: NextPVR
 integration_id: nextpvr
 external_service: NextPVR
+api_base_url: http://nextpvr.local:8866
 auth_method: api_key
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐    1. View EPG      ┌─────────────────┐
+  │   Revenge    │────────────────────▶│   EPG Service   │
+  │  Web Client  │                     │  (Revenge)      │
+  └──────┬───────┘                     └────────┬────────┘
+         │                                      │
+         │ 2. Select channel                   │ 3. Fetch EPG from
+         │                                      │    NextPVR
+         │                                      ▼
+         │                             ┌────────────────┐
+         │                             │  NextPVR API   │
+         │                             │  /service      │
+         │                             └────────┬───────┘
+         │                                      │
+         │ 4. Play live TV                     │ 5. Get stream URL
+         │    or recording                      │
+         ▼                                      ▼
+  ┌──────────────┐                     ┌────────────────┐
+  │   Player     │    6. Request       │  NextPVR       │
+  │  (Vidstack)  │────HLS stream──────▶│  Stream        │
+  └──────────────┘                     │  /live/...     │
+                                        │  /recording/...│
+                                        └────────┬───────┘
+                                                 │
+                                         7. Stream from
+                                            tuner/file
+                                                 ▼
+                                        ┌────────────────┐
+                                        │ TV Tuner/      │
+                                        │ Recordings     │
+                                        └────────────────┘
+  ```
+
+protocol_details: |
+  **NextPVR JSON-RPC API**:
+
+  **Base URL**: `http://nextpvr.local:8866`
+  **Format**: JSON-RPC 2.0
+  **Authentication**: API key (PIN-based)
+
+  **Key Methods**:
+  - `channel.list` - Get all channels
+  - `channel.listings` - Get EPG for channels
+  - `channel.stream.start` - Start live TV stream
+  - `recording.list` - Get recordings
+  - `recording.stream.start` - Start recording playback
+  - `recording.delete` - Delete recording
+  - `scheduled.list` - Get scheduled recordings
+  - `scheduled.save` - Schedule new recording
+
+  **Authentication**:
+  - PIN-based authentication
+  - MD5 hash of PIN + salt
+  - Included in all JSON-RPC requests
+
+  **Streaming**:
+  - Format: HLS or direct stream
+  - Transcode: Optional real-time transcoding
+  - Quality: Configurable profiles
+
+module_structure: |
+  ```
+  internal/
+    livetv/
+      nextpvr/
+        client.go         # JSON-RPC client
+        auth.go           # PIN authentication
+        channels.go       # Channel management
+        epg.go            # EPG data fetching
+        recordings.go     # Recording management
+        stream.go         # Stream handling
+        types.go          # Response types
+        module.go         # fx module
+        client_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // NextPVRClient manages NextPVR JSON-RPC API
+  type NextPVRClient interface {
+      // Get all channels
+      GetChannels(ctx context.Context) ([]Channel, error)
+
+      // Get EPG listings
+      GetListings(ctx context.Context, channelID int, startTime, endTime time.Time) ([]EPGEntry, error)
+
+      // Get recordings
+      GetRecordings(ctx context.Context) ([]Recording, error)
+
+      // Get scheduled recordings
+      GetScheduled(ctx context.Context) ([]ScheduledRecording, error)
+
+      // Start live stream
+      StartLiveStream(ctx context.Context, channelID int) (*StreamInfo, error)
+
+      // Start recording playback
+      StartRecordingStream(ctx context.Context, recordingID int) (*StreamInfo, error)
+
+      // Delete recording
+      DeleteRecording(ctx context.Context, recordingID int) error
+
+      // Schedule recording
+      ScheduleRecording(ctx context.Context, req *ScheduleRequest) error
+  }
+
+  type NextPVRConfig struct {
+      BaseURL      string
+      PIN          string  // NextPVR PIN for authentication
+      Enabled      bool
+      SyncInterval time.Duration
+  }
+
+  type Channel struct {
+      ID         int
+      Number     string
+      Name       string
+      Icon       string
+      Group      string
+      Epg        bool    // Has EPG data
+  }
+
+  type EPGEntry struct {
+      ID           int
+      ChannelID    int
+      Title        string
+      Description  string
+      Subtitle     string
+      StartTime    time.Time
+      EndTime      time.Time
+      Genre        string
+      Original     string
+      Rating       string
+  }
+
+  type Recording struct {
+      ID            int
+      Name          string
+      Description   string
+      ChannelName   string
+      StartTime     time.Time
+      EndTime       time.Time
+      Duration      int         // Seconds
+      FileSize      int64
+      Status        RecordingStatus
+      Playback      PlaybackStatus
+  }
+
+  type RecordingStatus string
+
+  const (
+      StatusPending   RecordingStatus = "pending"
+      StatusRecording RecordingStatus = "recording"
+      StatusCompleted RecordingStatus = "completed"
+      StatusFailed    RecordingStatus = "failed"
+  )
+
+  type ScheduledRecording struct {
+      ID          int
+      Name        string
+      ChannelID   int
+      StartTime   time.Time
+      EndTime     time.Time
+      Recurring   bool
+      Enabled     bool
+  }
+
+  type StreamInfo struct {
+      URL        string
+      Format     string  // hls, mpegts
+      Duration   int     // Seconds (0 for live)
+  }
+
+  type JSONRPCRequest struct {
+      Jsonrpc string        `json:"jsonrpc"`
+      Method  string        `json:"method"`
+      Params  interface{}   `json:"params,omitempty"`
+      ID      int           `json:"id"`
+  }
+
+  type JSONRPCResponse struct {
+      Jsonrpc string          `json:"jsonrpc"`
+      Result  json.RawMessage `json:"result,omitempty"`
+      Error   *JSONRPCError   `json:"error,omitempty"`
+      ID      int             `json:"id"`
+  }
+
+  type JSONRPCError struct {
+      Code    int    `json:"code"`
+      Message string `json:"message"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/bluenviron/gohlslib/v2` - HLS handling
+  - `github.com/riverqueue/river` - Background sync jobs
+  - `crypto/md5` - PIN authentication
+  - `encoding/json` - JSON-RPC
+
+  **External Services**:
+  - NextPVR server (https://github.com/sub3/NextPVR)
+
+env_vars: |
+  ```bash
+  REVENGE_NEXTPVR_ENABLED=true
+  REVENGE_NEXTPVR_BASE_URL=http://nextpvr.local:8866
+  REVENGE_NEXTPVR_PIN=0000
+  REVENGE_NEXTPVR_SYNC_INTERVAL=15m
+  ```
+
+config_keys: |
+  ```yaml
+  livetv:
+    nextpvr:
+      enabled: true
+      base_url: http://nextpvr.local:8866
+      pin: "0000"                # NextPVR PIN
+      sync_interval: 15m         # EPG/recording sync
+      transcode: false           # Enable transcoding
+      transcode_profile: "Default"
+  ```
+
+authentication: |
+  **PIN Authentication**:
+
+  ```go
+  func GenerateSid(pin string, salt string) string {
+      hasher := md5.New()
+      hasher.Write([]byte(pin + ":" + salt))
+      return hex.EncodeToString(hasher.Sum(nil))
+  }
+
+  func (c *NextPVRClient) Call(ctx context.Context, method string, params interface{}) (json.RawMessage, error) {
+      // 1. Get salt
+      salt := c.getSalt()
+
+      // 2. Generate SID
+      sid := GenerateSid(c.config.PIN, salt)
+
+      // 3. Build JSON-RPC request
+      req := JSONRPCRequest{
+          Jsonrpc: "2.0",
+          Method:  method,
+          Params:  params,
+          ID:      1,
+      }
+
+      // 4. Add SID to params
+      // ... implementation
+
+      // 5. Execute request
+      // ... implementation
+  }
+  ```
+
+component_interaction: |
+  **EPG Sync Workflow**:
+  1. Periodic River job (15min intervals)
+  2. Call `channel.list` to get channels
+  3. Call `channel.listings` for each channel
+  4. Parse and store EPG in database
+  5. Update channel metadata
+
+  **Live TV Playback**:
+  1. User selects channel
+  2. Call `channel.stream.start` with channel ID
+  3. Receive stream URL
+  4. Pass to Vidstack player
+  5. Player loads HLS/MPEGTS stream
+
+  **Recording Playback**:
+  1. User selects recording
+  2. Call `recording.stream.start` with recording ID
+  3. Receive stream URL or file path
+  4. Stream through Revenge or direct access
+
+api_endpoints: |
+  **Revenge API Endpoints**:
+
+  ```
+  GET  /api/v1/livetv/nextpvr/channels
+  GET  /api/v1/livetv/nextpvr/epg
+  GET  /api/v1/livetv/nextpvr/recordings
+  GET  /api/v1/livetv/nextpvr/scheduled
+  POST /api/v1/livetv/nextpvr/record
+  DELETE /api/v1/livetv/nextpvr/recordings/{id}
+  POST /api/v1/livetv/nextpvr/sync
+  ```
+
+error_handling: |
+  **Common Errors**:
+  - **Authentication Failed**: Wrong PIN
+  - **Channel Not Found**: Invalid channel ID
+  - **Tuner Busy**: All tuners in use
+  - **Recording Failed**: Disk space or permission issues
+
+unit_tests: |
+  ```go
+  func TestNextPVRClient_GetChannels(t *testing.T) {
+      mockServer := httptest.NewServer(...)
+      defer mockServer.Close()
+
+      client := NewNextPVRClient(mockServer.URL, "0000")
+      channels, err := client.GetChannels(context.Background())
+
+      require.NoError(t, err)
+      assert.NotEmpty(t, channels)
+  }
+
+  func TestGenerateSid(t *testing.T) {
+      sid := GenerateSid("0000", "test-salt")
+      assert.NotEmpty(t, sid)
+      assert.Len(t, sid, 32)  // MD5 hex string
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestNextPVR_FullWorkflow(t *testing.T) {
+      if testing.Short() {
+          t.Skip("skipping integration test")
+      }
+
+      baseURL := os.Getenv("NEXTPVR_URL")
+      pin := os.Getenv("NEXTPVR_PIN")
+      if baseURL == "" || pin == "" {
+          t.Skip("no NextPVR config provided")
+      }
+
+      client := NewNextPVRClient(baseURL, pin)
+
+      // Test get channels
+      channels, err := client.GetChannels(context.Background())
+      require.NoError(t, err)
+      require.NotEmpty(t, channels)
+
+      // Test get recordings
+      recordings, err := client.GetRecordings(context.Background())
+      require.NoError(t, err)
+      // May be empty if no recordings
+  }
+  ```
+
+best_practices: |
+  **Configuration**:
+  - Secure PIN with environment variables
+  - Use dedicated network for tuners
+  - Configure recording storage with ample space
+  - Set up post-processing scripts in NextPVR
+
+  **EPG**:
+  - Sync every 15 minutes (balances freshness vs load)
+  - Cache EPG for current day + 7 days future
+  - Index by channel_id + start_time
+
+  **Recordings**:
+  - Monitor disk space (alert at 90% full)
+  - Implement retention policies
+  - Clean up failed recordings automatically
+  - Provide recording conflict resolution
+
+  **Streaming**:
+  - Direct stream for better performance
+  - Transcode only for incompatible clients
+  - Use hardware acceleration if available
+
+  **Performance**:
+  - Connection pooling for JSON-RPC
+  - Cache channel list (refresh hourly)
+  - Batch EPG requests where possible
+
+  **Monitoring**:
+  - Track tuner usage
+  - Monitor recording success/failure rates
+  - Alert on disk space
+  - Log stream errors

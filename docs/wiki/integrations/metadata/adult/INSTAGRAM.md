@@ -22,9 +22,9 @@
 
 # Instagram
 
-> Performer Instagram links
+> Instagram - Performer profile links for QAR
 
-Links to performer Instagram profiles for the adult content system. Provides verified social media handles. Profile photos supplement metadata imagery. Links stored as part of performer records. No direct API access - handles only.
+LINK-ONLY integration for QAR performer profiles. Stores verified Instagram profile URLs. Extracts basic public metrics (followers, posts). **NO content access** - only profile links and public metrics. **Web scraping** with rate limiting. **Proxy/VPN recommended** (via HTTP_CLIENT service).
 
 ---
 
@@ -65,8 +65,9 @@ Links to performer Instagram profiles for the adult content system. Provides ver
 ### Learn More
 
 Official documentation and guides:
-- [sqlc](../../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../../sources/database/sqlc-config.md)
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [River Job Queue](../../../../sources/tooling/river.md)
 
 
 

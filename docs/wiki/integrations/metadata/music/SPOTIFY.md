@@ -22,9 +22,9 @@
 
 # Spotify
 
-> Album artwork and artist images from Spotify
+> High-quality artwork and popularity - Supplementary to Lidarr
 
-Spotify provides high-quality album artwork and artist images. Popularity scores help surface trending music. Used to supplement MusicBrainz metadata with better images. Does not provide playback or streaming - only metadata. Requires Spotify developer credentials.
+SUPPLEMENTARY enrichment for music metadata. Provides: (1) High-quality album artwork, (2) Artist images (HD quality), (3) Popularity scores (trending/popular music), (4) Spotify URIs (for linking). OAuth authentication required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Metadata-only (no playback/streaming).
 
 ---
 

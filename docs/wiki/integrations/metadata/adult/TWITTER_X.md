@@ -22,9 +22,9 @@
 
 # Twitter/X
 
-> Performer Twitter/X links
+> Twitter/X - Performer profile links for QAR
 
-Links to performer Twitter/X profiles in the adult content system. Tracks verified social media handles. Provides another way to discover performer content. Links stored as part of performer metadata records. No direct API integration - handles only.
+LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X profile URLs. Basic profile verification via web scraping. **NO Twitter API access** (expensive, restrictive). **Proxy/VPN recommended** (via HTTP_CLIENT service).
 
 ---
 
@@ -66,6 +66,8 @@ Links to performer Twitter/X profiles in the adult content system. Tracks verifi
 
 Official documentation and guides:
 - [River Job Queue](../../../../sources/tooling/river.md)
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 
 
 

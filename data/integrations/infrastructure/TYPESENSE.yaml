@@ -61,3 +61,345 @@ integration_name: Typesense
 integration_id: typesense
 external_service: Typesense
 auth_method: api_key
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│   Search     │────▶│  Typesense  │
+  │  (Search)   │◀────│   Service    │◀────│   Server    │
+  └─────────────┘     └──────┬───────┘     └─────────────┘
+                             │
+                      ┌──────┴───────┐
+                      │   Sync Job   │
+                      │ (PostgreSQL  │
+                      │   → Typesense)│
+                      └──────────────┘
+  ```
+
+connection_details: |
+  **Client**: typesense-go (official Go client)
+  **Protocol**: HTTP/HTTPS with API key authentication
+  **API Version**: v1
+  **Authentication**: X-TYPESENSE-API-KEY header
+
+  **Connection**:
+  ```go
+  client := typesense.NewClient(
+    typesense.WithServer("http://localhost:8108"),
+    typesense.WithAPIKey("xyz"),
+  )
+  ```
+
+search_architecture: |
+  **Data Flow**:
+  1. **Indexing**: PostgreSQL → River job → Typesense sync
+  2. **Searching**: Client → Search service → Typesense → Results
+  3. **Filtering**: Apply RBAC filters before returning results
+
+  **Collections** (indexes):
+  - `movies` - Movie metadata
+  - `tvshows` - TV show metadata
+  - `episodes` - Episode metadata
+  - `tracks` - Music track metadata
+  - `albums` - Music album metadata
+  - `performers` - QAR performers (adult content)
+  - `scenes` - QAR scenes (adult content)
+  - `epg_programs` - EPG program guide
+
+schema_definition: |
+  **Example Collection Schema** (movies):
+  ```json
+  {
+    "name": "movies",
+    "fields": [
+      {"name": "id", "type": "string"},
+      {"name": "title", "type": "string"},
+      {"name": "original_title", "type": "string", "optional": true},
+      {"name": "overview", "type": "string"},
+      {"name": "release_year", "type": "int32"},
+      {"name": "genres", "type": "string[]"},
+      {"name": "rating", "type": "float"},
+      {"name": "runtime_minutes", "type": "int32"},
+      {"name": "library_id", "type": "string"},
+      {"name": "user_accessible", "type": "bool"}
+    ],
+    "default_sorting_field": "rating"
+  }
+  ```
+
+module_structure: |
+  ```
+  internal/search/
+  ├── module.go                    # fx module
+  ├── typesense.go                 # Typesense client
+  ├── service.go                   # Search service
+  ├── sync.go                      # PostgreSQL sync (River job)
+  ├── collections.go               # Collection management
+  ├── schemas/                     # Collection schemas
+  │   ├── movies.json
+  │   ├── tvshows.json
+  │   ├── tracks.json
+  │   └── ...
+  └── search_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Search service interface
+  type SearchService interface {
+    // Multi-collection search
+    Search(ctx context.Context, query string, collections []string, filters SearchFilters) (*SearchResults, error)
+
+    // Index management
+    SyncCollection(ctx context.Context, collectionName string) error
+    IndexDocument(ctx context.Context, collectionName string, doc interface{}) error
+    DeleteDocument(ctx context.Context, collectionName string, docID string) error
+
+    // Collection management
+    CreateCollection(ctx context.Context, schema CollectionSchema) error
+    DropCollection(ctx context.Context, name string) error
+  }
+
+  type SearchFilters struct {
+    UserID      uuid.UUID
+    LibraryIDs  []uuid.UUID
+    Genres      []string
+    YearRange   *YearRange
+    RatingMin   *float64
+    SortBy      string
+    Page        int
+    PerPage     int
+  }
+
+  type SearchResults struct {
+    Hits       []SearchHit `json:"hits"`
+    Found      int         `json:"found"`
+    Page       int         `json:"page"`
+    TotalPages int         `json:"total_pages"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/typesense/typesense-go` - Official Typesense client
+  - `github.com/google/uuid` - UUID support
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/riverqueue/river` - Background sync jobs
+  - `go.uber.org/fx` - Dependency injection
+
+  **External Services**:
+  - Typesense server (required)
+
+env_vars: |
+  ```bash
+  # Typesense connection
+  TYPESENSE_HOST=localhost:8108
+  TYPESENSE_API_KEY=xyz123
+  TYPESENSE_PROTOCOL=http
+
+  # Search configuration
+  TYPESENSE_SYNC_INTERVAL=5m
+  TYPESENSE_BATCH_SIZE=100
+  ```
+
+config_keys: |
+  ```yaml
+  search:
+    typesense:
+      host: localhost:8108
+      api_key: ${TYPESENSE_API_KEY}
+      protocol: http
+      timeout: 10s
+
+      sync_interval: 5m
+      batch_size: 100
+  ```
+
+component_interaction: |
+  **Indexing Workflow** (background sync):
+  1. River job runs every 5 minutes
+  2. Query PostgreSQL for documents modified since last sync
+  3. Transform database rows to Typesense documents
+  4. Batch upsert to Typesense (100 docs at a time)
+  5. Update last_synced_at timestamp
+
+  **Search Workflow**:
+  1. User types "inception" in search box
+  2. Frontend calls: GET /api/v1/search?q=inception
+  3. Search service queries Typesense multi-search API
+  4. Apply RBAC filters (user_id, library_access)
+  5. Typesense returns ranked results
+  6. Hydrate with additional data from PostgreSQL (if needed)
+  7. Return results to frontend
+
+  **Real-time Indexing**:
+  1. Movie created in PostgreSQL
+  2. Service enqueues IndexDocumentJob
+  3. Background worker indexes document to Typesense immediately
+  4. Document searchable within seconds
+
+search_features: |
+  **Typo Tolerance**:
+  - Automatic typo correction (1-2 character edits)
+  - "inceptoin" → "inception"
+
+  **Faceted Search**:
+  - Filter by genre, year, rating, library
+  - Typesense returns facet counts
+
+  **Multi-Collection Search**:
+  - Search across movies, shows, music in single query
+  - Unified results with collection type
+
+  **Ranking**:
+  - BM25 text ranking
+  - Custom sorting (rating, release year)
+  - Boost fields (title > overview)
+
+  **Prefix Search**:
+  - As-you-type autocomplete
+  - "inc" → "Inception", "Incredibles"
+
+api_endpoints: |
+  **Search**:
+  ```
+  GET /api/v1/search?q=inception&collections=movies,tvshows&filter_by=release_year:>2010
+  ```
+
+  **Response**:
+  ```json
+  {
+    "hits": [
+      {
+        "document": {
+          "id": "uuid-123",
+          "title": "Inception",
+          "release_year": 2010,
+          "rating": 8.8,
+          "genres": ["Action", "Sci-Fi"]
+        },
+        "highlights": {
+          "title": {
+            "matched_tokens": ["Inception"]
+          }
+        },
+        "text_match": 8734987234
+      }
+    ],
+    "found": 1,
+    "page": 1
+  }
+  ```
+
+  **Autocomplete**:
+  ```
+  GET /api/v1/search/autocomplete?q=inc&collection=movies
+  ```
+
+sync_strategy: |
+  **Full Sync** (initial):
+  1. Drop existing collection
+  2. Create collection with schema
+  3. Query all documents from PostgreSQL
+  4. Batch insert to Typesense (1000 per batch)
+  5. Mark collection as synced
+
+  **Incremental Sync** (periodic):
+  1. Query documents with updated_at > last_synced_at
+  2. Upsert changed documents
+  3. Query deleted documents (soft delete flag)
+  4. Delete from Typesense
+  5. Update last_synced_at
+
+  **Real-time Sync** (immediate):
+  - On document create/update, enqueue IndexDocumentJob
+  - On document delete, enqueue DeleteDocumentJob
+  - Jobs execute within seconds
+
+unit_tests: |
+  ```go
+  func TestTypesenseClient_Connection(t *testing.T) {
+    // Test connection and API key
+  }
+
+  func TestSearchService_MultiCollection(t *testing.T) {
+    // Test multi-collection search
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestTypesense_FullWorkflow(t *testing.T) {
+    // Use testcontainers for Typesense
+    // Test indexing, search, filters, typo tolerance
+  }
+  ```
+
+rbac_integration: |
+  **Library Access Filtering**:
+  ```go
+  // Get user's accessible library IDs
+  libraryIDs := rbacService.GetUserLibraries(ctx, userID)
+
+  // Add filter to Typesense query
+  filterBy := fmt.Sprintf("library_id:[%s]", strings.Join(libraryIDs, ","))
+
+  // Execute search with filter
+  results := client.Collection("movies").Documents().Search(searchParams)
+  ```
+
+  **QAR Content Filtering**:
+  ```go
+  // Check if user has QAR access
+  if !rbacService.HasScope(ctx, userID, "legacy:read") {
+    // Exclude QAR collections from search
+    collections = []string{"movies", "tvshows", "tracks"}
+  } else {
+    // Include QAR collections
+    collections = []string{"movies", "tvshows", "tracks", "performers", "scenes"}
+  }
+  ```
+
+monitoring: |
+  **Metrics Exposed** (via Prometheus):
+  - `typesense_search_requests_total` - Total search requests
+  - `typesense_search_duration_seconds` - Search latency histogram
+  - `typesense_index_operations_total` - Indexing operations
+  - `typesense_sync_last_success` - Last successful sync timestamp
+  - `typesense_documents_indexed` - Total documents in Typesense
+
+  **Health Check**:
+  ```
+  GET /api/v1/health/search
+  ```
+
+  **Response**:
+  ```json
+  {
+    "status": "healthy",
+    "typesense": {
+      "connected": true,
+      "version": "27.0"
+    },
+    "collections": {
+      "movies": 1543,
+      "tvshows": 234,
+      "tracks": 8765
+    }
+  }
+  ```
+
+performance_tuning: |
+  **Indexing Performance**:
+  - Use batch upsert (100-1000 docs per batch)
+  - Increase sync interval for large datasets (30m - 1h)
+  - Use real-time indexing only for critical updates
+
+  **Search Performance**:
+  - Limit `per_page` to 50-100
+  - Use `query_by` to search specific fields only
+  - Cache frequent searches in Dragonfly (5-10 minute TTL)
+
+  **Memory Sizing**:
+  - Allocate ~1GB RAM per 1M documents
+  - Monitor memory usage with Typesense metrics API

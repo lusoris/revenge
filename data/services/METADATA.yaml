@@ -16,13 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> External metadata providers for media enrichment'
-wiki_tagline: '> External metadata providers for media enrichment'
-wiki_overview: The Metadata service fetches information about your media from external
-  sources like TMDb, TheTVDB, and MusicBrainz. Configure which providers to use per
-  library. Automatic matching uses filenames and folder structure. Manual matching
-  lets you fix incorrect matches. Metadata includes titles, descriptions, posters,
-  cast, crew, and ratings. Background jobs keep metadata fresh.
+technical_summary: '> Metadata aggregation with PRIMARY (Arr) and SUPPLEMENTARY (external) providers'
+wiki_tagline: '> Unified metadata service with Arr-first priority chain'
+wiki_overview: 'Metadata service orchestrates content enrichment using PRIMARY sources (Arr services - Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) that aggregate metadata locally, with SUPPLEMENTARY external APIs (TMDb, TheTVDB, MusicBrainz, etc.) as fallback and enrichment. Priority chain: L1 cache → L2 cache → Arr services (PRIMARY) → External APIs (SUPPLEMENTARY via optional proxy/VPN). Automatic filename matching, manual override, and scheduled background refresh jobs keep metadata current.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -34,14 +30,586 @@ sources:
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: services
-  path: INDEX.md
-- title: 01_ARCHITECTURE
-  path: ../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM (PRIMARY architecture doc)
   path: ../architecture/03_METADATA_SYSTEM.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ./HTTP_CLIENT.md
+- title: RADARR (PRIMARY for movies)
+  path: ../integrations/servarr/RADARR.md
+- title: SONARR (PRIMARY for TV shows)
+  path: ../integrations/servarr/SONARR.md
+- title: LIDARR (PRIMARY for music)
+  path: ../integrations/servarr/LIDARR.md
+- title: CHAPTARR (PRIMARY for books/audiobooks)
+  path: ../integrations/servarr/CHAPTARR.md
+- title: WHISPARR (PRIMARY for QAR/adult)
+  path: ../integrations/servarr/WHISPARR.md
 service_name: Metadata Service
-package_path: internal/service/metadata/
-fx_module: .Module
+package_path: internal/service/metadata
+fx_module: metadata.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│  Metadata   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   Service   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                                            ┌──────┴──────┐
+                                            │  Priority   │
+                                            │   Chain     │
+                                            └──────┬──────┘
+                                                   │
+                  ┌────────────────────────────────┼──────────────────────────┐
+                  │ L1 Cache                       │ L2 Cache                 │
+                  ▼                                ▼                          │
+            ┌──────────┐                    ┌──────────┐                     │
+            │  Otter   │                    │Dragonfly │                     │
+            │(in-mem)  │                    │(distrib) │                     │
+            └──────────┘                    └──────────┘                     │
+                                                   │                          │
+                  ┌────────────────────────────────┴──────────────────┐      │
+                  │ PRIMARY (local Arr services)                      │      │
+                  ▼                                                   ▼      │
+         ┌────────────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐       │
+         │ Radarr/Sonarr  │  │ Lidarr  │  │Chaptarr │  │ Whisparr │       │
+         │ (LOCAL cache)  │  │(music)  │  │(books)  │  │  (QAR)   │       │
+         └────────┬───────┘  └────┬────┘  └────┬────┘  └─────┬────┘       │
+                  │               │            │             │             │
+                  └───────────────┴────────────┴─────────────┘             │
+                                  │                                        │
+                  ┌───────────────┴───────────────────────┐                │
+                  │ SUPPLEMENTARY (external APIs)          │                │
+                  ▼                                        ▼                ▼
+         ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────┐
+         │  TMDb/TVDB   │  │ MusicBrainz  │  │ OpenLibrary  │  │ StashDB  │
+         │ (via proxy)  │  │ (via proxy)  │  │ (via proxy)  │  │(via proxy)│
+         └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └─────┬────┘
+                │                  │                 │                 │
+                └──────────────────┴─────────────────┴─────────────────┘
+                                   │
+                            ┌──────┴────────┐
+                            │ HTTP_CLIENT   │
+                            │ (optional     │
+                            │  proxy/VPN)   │
+                            └───────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Metadata provider configuration
+  CREATE TABLE metadata_providers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Provider details
+    name VARCHAR(100) NOT NULL UNIQUE,             -- 'tmdb', 'tvdb', 'musicbrainz', 'openlib'
+    type VARCHAR(50) NOT NULL,                     -- 'movie', 'tvshow', 'music', 'book'
+    api_url TEXT NOT NULL,
+
+    -- API credentials (encrypted)
+    api_key TEXT,
+    api_secret TEXT,
+
+    -- Configuration
+    enabled BOOLEAN DEFAULT true,
+    priority INTEGER DEFAULT 0,                    -- Higher priority = try first
+    rate_limit_per_second INTEGER DEFAULT 4,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_metadata_providers_type ON metadata_providers(type, enabled);
+
+  -- Metadata fetch jobs (background)
+  CREATE TABLE metadata_fetch_jobs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Content reference
+    content_type VARCHAR(50) NOT NULL,             -- 'movie', 'tvshow', 'album'
+    content_id UUID NOT NULL,
+
+    -- Provider
+    provider_name VARCHAR(100) NOT NULL,
+
+    -- Job status
+    status VARCHAR(20) DEFAULT 'pending',          -- 'pending', 'processing', 'completed', 'failed'
+    attempts INTEGER DEFAULT 0,
+    error_message TEXT,
+
+    queued_at TIMESTAMPTZ DEFAULT now(),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_metadata_jobs_status ON metadata_fetch_jobs(status, queued_at);
+  CREATE INDEX idx_metadata_jobs_content ON metadata_fetch_jobs(content_type, content_id);
+
+  -- External ID mappings (cross-provider)
+  CREATE TABLE external_ids (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Content reference
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+
+    -- External provider IDs
+    tmdb_id INTEGER,
+    imdb_id VARCHAR(20),
+    tvdb_id INTEGER,
+    musicbrainz_id UUID,
+    openlib_id VARCHAR(50),
+    stashdb_id UUID,
+
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_external_ids_content ON external_ids(content_type, content_id);
+  CREATE INDEX idx_external_ids_tmdb ON external_ids(tmdb_id) WHERE tmdb_id IS NOT NULL;
+  CREATE INDEX idx_external_ids_imdb ON external_ids(imdb_id) WHERE imdb_id IS NOT NULL;
+  CREATE INDEX idx_external_ids_tvdb ON external_ids(tvdb_id) WHERE tvdb_id IS NOT NULL;
+
+  -- Metadata refresh schedule
+  CREATE TABLE metadata_refresh_schedule (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+
+    -- Schedule
+    next_refresh_at TIMESTAMPTZ NOT NULL,
+    refresh_interval INTERVAL DEFAULT '7 days',
+
+    last_refreshed_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_metadata_refresh_next ON metadata_refresh_schedule(next_refresh_at);
+  ```
+
+module_structure: |
+  ```
+  internal/service/metadata/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Metadata service with priority chain logic
+  ├── matcher.go                   # Filename/title matching
+  ├── refresh.go                   # Metadata refresh jobs
+  ├── handler.go                   # HTTP API handlers
+  ├── priority_chain.go            # Priority chain resolver (L1→L2→Arr→External)
+  └── providers/
+      ├── provider.go              # Provider interface
+      │
+      ├── arr/                     # PRIMARY providers (local Arr services)
+      │   ├── radarr.go            # Radarr client (movies)
+      │   ├── sonarr.go            # Sonarr client (TV shows)
+      │   ├── lidarr.go            # Lidarr client (music)
+      │   ├── chaptarr.go          # Chaptarr client (books/audiobooks)
+      │   └── whisparr.go          # Whisparr client (QAR/adult)
+      │
+      └── external/                # SUPPLEMENTARY providers (via proxy/VPN)
+          ├── tmdb.go              # TMDb provider
+          ├── tvdb.go              # TheTVDB provider
+          ├── musicbrainz.go       # MusicBrainz provider
+          ├── openlib.go           # OpenLibrary provider
+          ├── stashdb.go           # StashDB provider
+          └── lastfm.go            # Last.fm provider
+  ```
+
+key_interfaces: |
+  ```go
+  type MetadataService interface {
+    // Fetch metadata
+    FetchMetadata(ctx context.Context, contentType string, contentID uuid.UUID, providerName string) error
+    SearchMetadata(ctx context.Context, providerName, query string) ([]MetadataSearchResult, error)
+    MatchMetadata(ctx context.Context, contentID uuid.UUID, externalID string, provider string) error
+
+    // Providers
+    ListProviders(ctx context.Context, contentType string) ([]MetadataProvider, error)
+    ConfigureProvider(ctx context.Context, providerName string, config ProviderConfig) error
+
+    // Refresh
+    ScheduleRefresh(ctx context.Context, contentID uuid.UUID, interval time.Duration) error
+    RefreshMetadata(ctx context.Context, contentID uuid.UUID) error
+  }
+
+  type MetadataProvider interface {
+    Name() string
+    Type() string
+    Search(ctx context.Context, query string) ([]MetadataSearchResult, error)
+    GetByID(ctx context.Context, externalID string) (*Metadata, error)
+    GetImages(ctx context.Context, externalID string) ([]Image, error)
+  }
+
+  type Metadata struct {
+    Title       string                 `json:"title"`
+    Overview    string                 `json:"overview"`
+    ReleaseDate *time.Time             `json:"release_date,omitempty"`
+    Runtime     *int                   `json:"runtime,omitempty"`
+    Genres      []string               `json:"genres"`
+    Cast        []CastMember           `json:"cast"`
+    Crew        []CrewMember           `json:"crew"`
+    Rating      *float64               `json:"rating,omitempty"`
+    PosterURL   string                 `json:"poster_url,omitempty"`
+    BackdropURL string                 `json:"backdrop_url,omitempty"`
+    ExternalIDs map[string]interface{} `json:"external_ids"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river` - Background metadata fetch jobs
+  - `github.com/maypok86/otter` - L1 cache (in-memory)
+  - `github.com/redis/rueidis` - L2 cache (Dragonfly)
+  - `net/http` - HTTP client base
+  - `golang.org/x/net/proxy` - SOCKS5 proxy support
+  - `go.uber.org/fx`
+
+  **PRIMARY APIs** (Arr services - local, no proxy):
+  - Radarr API v3 (http://localhost:7878/api/v3) - Movies
+  - Sonarr API v3 (http://localhost:8989/api/v3) - TV Shows
+  - Lidarr API v1 (http://localhost:8686/api/v1) - Music
+  - Chaptarr/Readarr API (http://localhost:8787/api/v1) - Books/Audiobooks
+  - Whisparr API v3 (http://localhost:6969/api/v3) - QAR/Adult
+
+  **SUPPLEMENTARY APIs** (external, via optional proxy/VPN):
+  - TMDb API v3 (https://api.themoviedb.org/3/)
+  - TheTVDB API v4 (https://api4.thetvdb.com/v4/)
+  - MusicBrainz API v2 (https://musicbrainz.org/ws/2/)
+  - OpenLibrary API (https://openlibrary.org/api/)
+  - StashDB GraphQL API (https://stashdb.org/graphql)
+  - Last.fm API (https://ws.audioscrobbler.com/2.0/)
+
+env_vars: |
+  ```bash
+  METADATA_TMDB_API_KEY=your_api_key
+  METADATA_TVDB_API_KEY=your_api_key
+  METADATA_LASTFM_API_KEY=your_api_key
+  METADATA_REFRESH_INTERVAL=168h  # 7 days
+  METADATA_CACHE_TTL=24h
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    # Priority chain configuration
+    priority:
+      - cache_l1      # Otter (in-memory)
+      - cache_l2      # Dragonfly (distributed)
+      - arr           # Arr services (PRIMARY)
+      - external      # External APIs (SUPPLEMENTARY)
+
+    # PRIMARY providers (Arr services)
+    arr:
+      radarr:
+        enabled: true
+        url: http://localhost:7878
+        api_key: ${RADARR_API_KEY}
+      sonarr:
+        enabled: true
+        url: http://localhost:8989
+        api_key: ${SONARR_API_KEY}
+      lidarr:
+        enabled: true
+        url: http://localhost:8686
+        api_key: ${LIDARR_API_KEY}
+      chaptarr:
+        enabled: true
+        url: http://localhost:8787
+        api_key: ${CHAPTARR_API_KEY}
+      whisparr:
+        enabled: true
+        url: http://localhost:6969
+        api_key: ${WHISPARR_API_KEY}
+
+    # SUPPLEMENTARY providers (external APIs)
+    external:
+      tmdb:
+        api_key: ${TMDB_API_KEY}
+        enabled: true
+        rate_limit: 40
+        proxy: tor  # Optional proxy/VPN routing
+      tvdb:
+        api_key: ${TVDB_API_KEY}
+        enabled: true
+        proxy: tor
+      musicbrainz:
+        enabled: true
+        rate_limit: 1
+        proxy: false  # No proxy needed
+      openlib:
+        enabled: true
+        proxy: false
+      stashdb:
+        enabled: true
+        proxy: tor  # Privacy for adult content
+
+    refresh:
+      interval: 168h
+      auto_refresh: true
+
+    cache:
+      l1_ttl: 5m   # Otter cache
+      l2_ttl: 24h  # Dragonfly cache
+  ```
+
+component_interaction: |
+  **Metadata Fetch** (new content with priority chain):
+  1. Library scanner finds new movie file
+  2. Extract title/year from filename: "Inception (2010).mkv"
+  3. Queue metadata fetch job via River
+  4. Background job (priority chain):
+     a. Check L1 cache (Otter) → Cache miss
+     b. Check L2 cache (Dragonfly) → Cache miss
+     c. Query PRIMARY (Radarr):
+        - GET http://localhost:7878/api/v3/movie/lookup?term=tmdb:27205
+        - If found: Return cached metadata from Radarr
+        - If not found: Continue to next step
+     d. Query SUPPLEMENTARY (TMDb via proxy/VPN):
+        - GET https://api.themoviedb.org/3/search/movie?query=Inception&year=2010 (via Tor)
+        - Match best result (score threshold)
+        - Fetch full details: GET /movie/{id}
+        - Download poster/backdrop images
+        - Extract cast, crew, genres
+     e. Add to Radarr for future queries (background):
+        - POST http://localhost:7878/api/v3/movie (monitored=false)
+        - Radarr caches metadata locally
+     f. Store in movies table
+     g. Insert external_ids mapping (tmdb_id, imdb_id)
+     h. Cache in L1 (5m TTL) and L2 (24h TTL)
+  5. Schedule refresh in 7 days
+
+  **Manual Match**:
+  1. User searches: POST /api/v1/metadata/search?provider=tmdb&query=Inception
+  2. Service queries TMDb API
+  3. Return search results with posters
+  4. User selects correct match
+  5. PUT /api/v1/content/movies/:id/match with TMDb ID
+  6. Fetch full metadata for that ID
+  7. Update content record
+
+  **Metadata Refresh** (background):
+  1. River job runs daily
+  2. Query metadata_refresh_schedule WHERE next_refresh_at < now
+  3. For each content item:
+     - Fetch updated metadata from provider
+     - Compare with existing data
+     - Update if changed (e.g., new poster, updated rating)
+     - Schedule next refresh
+
+api_endpoints: |
+  ```
+  # Search
+  GET    /api/v1/metadata/search?provider=tmdb&query=Inception # Search provider
+
+  # Match
+  POST   /api/v1/metadata/match            # Match content to external ID
+  DELETE /api/v1/metadata/match/:id        # Remove match
+
+  # Refresh
+  POST   /api/v1/metadata/refresh/:id      # Trigger metadata refresh
+
+  # Providers
+  GET    /api/v1/metadata/providers        # List providers
+  PUT    /api/v1/metadata/providers/:name  # Configure provider
+  ```
+
+  **Example Search Response**:
+  ```json
+  {
+    "results": [
+      {
+        "external_id": "27205",
+        "title": "Inception",
+        "release_date": "2010-07-16",
+        "overview": "A thief who steals corporate secrets...",
+        "poster_url": "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+        "rating": 8.4
+      }
+    ]
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestMetadataService_Search(t *testing.T) {
+    // Test TMDb search with mock API
+  }
+
+  func TestMetadataMatcher_FilenameExtraction(t *testing.T) {
+    // Test parsing "Inception (2010).mkv" -> title="Inception", year=2010
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestMetadata_FetchFlow(t *testing.T) {
+    // Test full metadata fetch workflow with real API (or VCR cassettes)
+  }
+
+  func TestMetadata_RefreshJob(t *testing.T) {
+    // Test background refresh job
+  }
+
+  func TestMetadata_PriorityChain(t *testing.T) {
+    // Test priority chain: L1 → L2 → Arr → External
+    // 1. Cache miss (L1 & L2)
+    // 2. Arr query success → Return
+    // 3. Arr query fail → External API (via proxy) → Return
+  }
+
+  func TestMetadata_ProxySupport(t *testing.T) {
+    // Test proxy routing for external APIs
+    // Verify Arr services bypass proxy (local)
+  }
+  ```
+
+dual_role_architecture: |
+  **Arr Services as PRIMARY Metadata Aggregators**:
+
+  **CRITICAL**: All Arr services (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) serve DUAL purposes:
+  1. **PRIMARY Metadata Aggregator**: Local cache of external metadata
+  2. **Download Automation Manager**: Content acquisition and organization
+
+  **Metadata Flow**:
+  ```
+  External API (TMDb/TVDB/MusicBrainz/etc.)
+         ↓
+  Arr Service (local aggregation + cache)
+         ↓
+  Revenge Metadata Service
+         ↓
+  (optional) Direct External API for enrichment/fallback
+  ```
+
+  **Why This Matters**:
+  - **Reduces external API calls**: Arr services cache metadata locally
+  - **Rate limiting protection**: First request hits external API, subsequent requests use Arr cache
+  - **Privacy**: Local metadata cache, especially important for adult content (Whisparr/StashDB)
+  - **Unified interface**: Arr APIs provide consistent metadata format
+  - **Availability**: Works even when external APIs are down (if Arr has cached data)
+
+  **Implementation**:
+  - Revenge queries Arr services FIRST for all metadata
+  - Direct external APIs used ONLY as fallback or enrichment
+  - External API results optionally added to Arr for future queries
+
+provider_priority_chain: |
+  **Priority Chain Resolution**:
+
+  ```go
+  type PriorityChainResolver struct {
+    l1Cache     otter.Cache           // L1: In-memory (5m TTL)
+    l2Cache     rueidis.Client        // L2: Distributed (24h TTL)
+    arrClients  map[string]ArrClient  // PRIMARY: Local Arr services
+    extClients  map[string]ExtClient  // SUPPLEMENTARY: External APIs
+  }
+
+  func (r *PriorityChainResolver) FetchMetadata(ctx context.Context, contentType, externalID string) (*Metadata, error) {
+    cacheKey := fmt.Sprintf("%s:%s", contentType, externalID)
+
+    // 1. L1 Cache (Otter - in-memory)
+    if cached, ok := r.l1Cache.Get(cacheKey); ok {
+      log.Debug("L1 cache hit", "key", cacheKey)
+      return cached.(*Metadata), nil
+    }
+
+    // 2. L2 Cache (Dragonfly - distributed)
+    if cached, err := r.l2Cache.Get(ctx, cacheKey).AsBytes(); err == nil {
+      var meta Metadata
+      json.Unmarshal(cached, &meta)
+      r.l1Cache.Set(cacheKey, &meta, 5*time.Minute) // Warm L1
+      log.Debug("L2 cache hit", "key", cacheKey)
+      return &meta, nil
+    }
+
+    // 3. PRIMARY: Arr Services (local, no proxy)
+    arrClient := r.getArrClient(contentType)
+    if arrClient != nil && arrClient.IsConfigured() {
+      meta, err := arrClient.LookupByID(ctx, externalID)
+      if err == nil {
+        r.cacheMetadata(ctx, cacheKey, meta) // Cache in L1 & L2
+        log.Info("Arr service hit", "service", arrClient.Name(), "id", externalID)
+        return meta, nil
+      }
+      log.Warn("Arr service miss, falling back to external API", "error", err)
+    }
+
+    // 4. SUPPLEMENTARY: External APIs (via optional proxy/VPN)
+    extClient := r.getExtClient(contentType)
+    if extClient == nil {
+      return nil, fmt.Errorf("no external provider for content type: %s", contentType)
+    }
+
+    meta, err := extClient.GetByID(ctx, externalID)
+    if err != nil {
+      return nil, fmt.Errorf("both PRIMARY (Arr) and SUPPLEMENTARY (external) failed: %w", err)
+    }
+
+    // 5. Cache the result
+    r.cacheMetadata(ctx, cacheKey, meta)
+
+    // 6. Optionally add to Arr service for future queries (background)
+    if arrClient != nil {
+      go r.addToArrIfNotExists(context.Background(), arrClient, externalID, meta)
+    }
+
+    log.Info("External API hit", "provider", extClient.Name(), "id", externalID)
+    return meta, nil
+  }
+
+  func (r *PriorityChainResolver) addToArrIfNotExists(ctx context.Context, arr ArrClient, id string, meta *Metadata) {
+    // Add to Arr in "monitoring" mode even if not downloaded yet
+    // This populates Arr's local metadata cache for future requests
+    _ = arr.AddItem(ctx, id, false) // monitored=false (metadata only)
+  }
+  ```
+
+  **Benefits**:
+  - **First request**: External API (slow, rate-limited, via proxy)
+  - **Subsequent requests**: Arr cache (fast, local, no proxy needed)
+  - **Cache builds over time**: More content = more Arr-cached metadata
+  - **Fallback safety**: If Arr unavailable, external APIs still work
+
+proxy_vpn_support: |
+  **Optional Proxy/VPN Routing for External APIs**:
+
+  **IMPORTANT**: Proxy/VPN is **OPTIONAL**
+  - Must be explicitly setup and enabled in config
+  - Disabled by default
+  - Only applies to SUPPLEMENTARY external APIs
+  - Arr services (PRIMARY) are local and bypass proxy
+
+  **Routing Rules**:
+  - **Arr services** (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr): **NO proxy** (local network)
+  - **External APIs** (TMDb, TheTVDB, MusicBrainz, StashDB): **Optional proxy/VPN** (see config)
+
+  **Configuration**:
+  ```yaml
+  metadata:
+    external:
+      tmdb:
+        proxy: tor        # Route through Tor SOCKS5
+      tvdb:
+        proxy: tor        # Route through Tor
+      musicbrainz:
+        proxy: false      # No proxy needed
+      stashdb:
+        proxy: tor        # Privacy for adult content
+  ```
+
+  **HTTP Client Factory** (via HTTP_CLIENT service):
+  ```go
+  // Get client for Arr service (no proxy)
+  radarrClient := httpClientFactory.GetClientForService(ctx, "radarr")
+
+  // Get client for external API (with optional proxy)
+  tmdbClient := httpClientFactory.GetClientForService(ctx, "tmdb") // Uses Tor if configured
+  ```
+
+  **Use Cases**:
+  - **Region restrictions**: Access TMDb/TVDB from restricted countries
+  - **Privacy**: Hide server IP from external metadata providers
+  - **Adult content**: Route Whisparr/StashDB calls through Tor for privacy
+
+  **See**: [HTTP_CLIENT.yaml](./HTTP_CLIENT.yaml) for proxy/VPN implementation details

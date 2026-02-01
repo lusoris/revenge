@@ -71,13 +71,264 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/voice_control/\n  ├── module.go       \
-  \       # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Voice assistant integrations
+  CREATE TABLE voice_assistant_connections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Assistant type
+    assistant_type VARCHAR(50) NOT NULL,           -- 'alexa', 'google', 'siri'
+
+    -- OAuth tokens (encrypted)
+    access_token TEXT,
+    refresh_token TEXT,
+    token_expires_at TIMESTAMPTZ,
+
+    -- Device info
+    device_id TEXT,
+    device_name TEXT,
+
+    -- Status
+    is_active BOOLEAN DEFAULT true,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_voice_connections_user ON voice_assistant_connections(user_id);
+  CREATE INDEX idx_voice_connections_type ON voice_assistant_connections(assistant_type);
+
+  -- Voice command history
+  CREATE TABLE voice_commands (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    connection_id UUID REFERENCES voice_assistant_connections(id) ON DELETE SET NULL,
+
+    -- Command details
+    assistant_type VARCHAR(50) NOT NULL,
+    raw_command TEXT NOT NULL,                     -- Original voice input
+    intent VARCHAR(100),                           -- 'play_media', 'pause', 'search', 'control_playback'
+    entities JSONB,                                -- Extracted entities: {"title": "Inception", "type": "movie"}
+
+    -- Execution
+    was_successful BOOLEAN DEFAULT false,
+    error_message TEXT,
+    response_text TEXT,                            -- Response sent to user
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_voice_commands_user ON voice_commands(user_id, created_at DESC);
+  CREATE INDEX idx_voice_commands_intent ON voice_commands(intent);
+
+  -- Voice-enabled devices
+  CREATE TABLE voice_devices (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Device info
+    device_type VARCHAR(50) NOT NULL,              -- 'echo_dot', 'google_home', 'homepod'
+    device_name TEXT NOT NULL,
+    device_id TEXT UNIQUE NOT NULL,
+
+    -- Capabilities
+    supports_playback BOOLEAN DEFAULT true,
+    supports_search BOOLEAN DEFAULT true,
+    supports_navigation BOOLEAN DEFAULT false,
+
+    last_used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_voice_devices_user ON voice_devices(user_id);
+  ```
+
+module_structure: |
+  ```
+  internal/voice/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Voice control logic
+  ├── alexa.go                     # Alexa skill handler
+  ├── google.go                    # Google Actions handler
+  ├── intent_parser.go             # Natural language parsing
+  ├── handler.go                   # HTTP API handlers
+  └── voice_test.go
+
+  skills/
+  ├── alexa/
+  │   ├── skill.json               # Alexa skill manifest
+  │   ├── interactionModel.json    # Alexa intents
+  │   └── lambda/                  # Lambda function (optional)
+  └── google/
+      ├── action.json              # Google Action manifest
+      └── intents.json             # Google intents
+  ```
+
+key_interfaces: |
+  ```go
+  type VoiceService interface {
+    // Connections
+    ConnectAssistant(ctx context.Context, userID uuid.UUID, assistantType string, tokens OAuth2Tokens) error
+    DisconnectAssistant(ctx context.Context, connectionID uuid.UUID) error
+    GetConnections(ctx context.Context, userID uuid.UUID) ([]VoiceConnection, error)
+
+    // Command handling
+    ProcessAlexaRequest(ctx context.Context, request AlexaRequest) (*AlexaResponse, error)
+    ProcessGoogleRequest(ctx context.Context, request GoogleActionRequest) (*GoogleActionResponse, error)
+
+    // Intent parsing
+    ParseIntent(ctx context.Context, rawCommand string) (*VoiceIntent, error)
+    ExecuteIntent(ctx context.Context, userID uuid.UUID, intent VoiceIntent) (*IntentResult, error)
+  }
+
+  type VoiceIntent struct {
+    Intent   string                 `json:"intent"`    // 'play_media', 'pause', 'skip'
+    Entities map[string]interface{} `json:"entities"`  // {"title": "Inception", "type": "movie"}
+    Raw      string                 `json:"raw"`
+  }
+
+  type AlexaRequest struct {
+    Version string      `json:"version"`
+    Session AlexaSession `json:"session"`
+    Request struct {
+      Type   string `json:"type"`
+      Intent struct {
+        Name  string               `json:"name"`
+        Slots map[string]AlexaSlot `json:"slots"`
+      } `json:"intent"`
+    } `json:"request"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/aws/aws-sdk-go-v2` - Alexa skill verification
+  - `google.golang.org/api/dialogflow/v2` - Google Assistant integration
+  - `go.uber.org/fx`
+
+  **External APIs**:
+  - Amazon Alexa Skills Kit (ASK)
+  - Google Assistant SDK / Dialogflow
+  - Apple HomeKit (future)
+
+env_vars: |
+  ```bash
+  VOICE_ALEXA_SKILL_ID=amzn1.ask.skill.xxxxx
+  VOICE_GOOGLE_PROJECT_ID=revenge-voice-xxxxx
+  VOICE_ENABLED=true
+  ```
+
+config_keys: |
+  ```yaml
+  voice:
+    enabled: true
+    alexa:
+      skill_id: amzn1.ask.skill.xxxxx
+      verification_enabled: true
+    google:
+      project_id: revenge-voice-xxxxx
+      credentials_file: /config/google-service-account.json
+  ```
+
+component_interaction: |
+  **Alexa Command Flow**:
+  1. User: "Alexa, ask Revenge to play Inception"
+  2. Alexa sends JSON request to POST /api/v1/voice/alexa
+  3. Service verifies request signature
+  4. Parse intent: "PlayMediaIntent" with slots {"title": "Inception"}
+  5. Search content database for "Inception"
+  6. Start playback session for user's default device
+  7. Return Alexa response: "Playing Inception"
+  8. Log command in voice_commands table
+
+  **Google Assistant Flow**:
+  1. User: "Hey Google, tell Revenge to pause"
+  2. Google sends request to POST /api/v1/voice/google
+  3. Parse intent: "PauseIntent"
+  4. Find active playback session for user
+  5. Send pause command to playback service
+  6. Return Google response: "Paused"
+  7. Log command
+
+  **Account Linking**:
+  1. User opens Alexa/Google app
+  2. Enable Revenge skill/action
+  3. Redirect to Revenge OAuth2 flow
+  4. User logs in and authorizes
+  5. Alexa/Google receives OAuth token
+  6. Store in voice_assistant_connections
+
+api_endpoints: |
+  ```
+  # Voice webhook endpoints (public, verified)
+  POST /api/v1/voice/alexa            # Alexa skill webhook
+  POST /api/v1/voice/google           # Google Assistant webhook
+
+  # User management
+  GET  /api/v1/voice/connections      # List connections
+  DELETE /api/v1/voice/connections/:id # Disconnect assistant
+
+  # Command history
+  GET  /api/v1/voice/commands         # Get command history
+  ```
+
+  **Example Alexa Request**:
+  ```json
+  {
+    "version": "1.0",
+    "session": {
+      "user": {"userId": "amzn1.ask.account.XXXXX"}
+    },
+    "request": {
+      "type": "IntentRequest",
+      "intent": {
+        "name": "PlayMediaIntent",
+        "slots": {
+          "title": {"value": "Inception"},
+          "type": {"value": "movie"}
+        }
+      }
+    }
+  }
+  ```
+
+  **Example Alexa Response**:
+  ```json
+  {
+    "version": "1.0",
+    "response": {
+      "outputSpeech": {
+        "type": "PlainText",
+        "text": "Playing Inception"
+      },
+      "shouldEndSession": true
+    }
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestVoiceService_ParseIntent(t *testing.T) {
+    // Test intent parsing from raw commands
+  }
+
+  func TestVoiceService_ProcessAlexaRequest(t *testing.T) {
+    // Test Alexa request handling
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestVoice_AlexaFlow(t *testing.T) {
+    // Test full Alexa command workflow
+  }
+
+  func TestVoice_GoogleFlow(t *testing.T) {
+    // Test full Google Assistant workflow
+  }
+  ```

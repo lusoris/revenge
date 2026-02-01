@@ -56,6 +56,12 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+- [User management (admin)](#user-management-admin)
+- [Current user (self)](#current-user-self)
+- [Profile](#profile)
+- [Notifications](#notifications)
+- [GDPR](#gdpr)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -116,7 +122,14 @@ internal/service/user/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Background data export jobs
+- `io` - File handling
+- `archive/zip` - Data export ZIP creation
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -134,11 +147,52 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type UserService interface {
+  // User management
+  GetUser(ctx context.Context, userID uuid.UUID) (*User, error)
+  ListUsers(ctx context.Context, filters UserFilters) ([]User, error)
+  UpdateUser(ctx context.Context, userID uuid.UUID, update UserUpdate) (*User, error)
+  DeleteUser(ctx context.Context, userID uuid.UUID) error
+
+  // Profile
+  GetProfile(ctx context.Context, userID uuid.UUID) (*UserProfile, error)
+  UpdateProfile(ctx context.Context, userID uuid.UUID, profile ProfileUpdate) (*UserProfile, error)
+  UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Reader) (string, error)
+
+  // Notifications
+  GetNotificationPreferences(ctx context.Context, userID uuid.UUID) (*NotificationPreferences, error)
+  UpdateNotificationPreferences(ctx context.Context, userID uuid.UUID, prefs NotificationPreferences) error
+
+  // GDPR
+  RequestDataExport(ctx context.Context, userID uuid.UUID) (*DataExport, error)
+  GetDataExport(ctx context.Context, exportID uuid.UUID) (*DataExport, error)
+  RequestAccountDeletion(ctx context.Context, userID uuid.UUID, reason string) error
+  CancelDeletion(ctx context.Context, requestID uuid.UUID) error
+}
+
+type UserProfile struct {
+  UserID            uuid.UUID  `db:"user_id" json:"user_id"`
+  Bio               *string    `db:"bio" json:"bio,omitempty"`
+  AvatarURL         *string    `db:"avatar_url" json:"avatar_url,omitempty"`
+  BannerURL         *string    `db:"banner_url" json:"banner_url,omitempty"`
+  Timezone          *string    `db:"timezone" json:"timezone,omitempty"`
+  Language          string     `db:"language" json:"language"`
+  ProfileVisibility string     `db:"profile_visibility" json:"profile_visibility"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Background data export jobs
+- `io` - File handling
+- `archive/zip` - Data export ZIP creation
+- `go.uber.org/fx`
+
 
 
 
@@ -147,12 +201,69 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+USER_DEFAULT_STORAGE_QUOTA_MB=100
+USER_MAX_AVATAR_SIZE_MB=5
+USER_DATA_EXPORT_EXPIRY=168h  # 7 days
+USER_DELETION_GRACE_PERIOD=720h  # 30 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+user:
+  storage:
+    default_quota_mb: 100
+    max_avatar_size_mb: 5
+    upload_path: /data/uploads/avatars
+  gdpr:
+    data_export_expiry: 168h
+    deletion_grace_period: 720h
+  profile:
+    default_visibility: private
+```
 
+
+
+## API Endpoints
+```
+# User management (admin)
+GET    /api/v1/users               # List users
+GET    /api/v1/users/:id           # Get user
+PUT    /api/v1/users/:id           # Update user
+DELETE /api/v1/users/:id           # Delete user
+
+# Current user (self)
+GET    /api/v1/users/me            # Get current user
+PUT    /api/v1/users/me            # Update current user
+
+# Profile
+GET    /api/v1/users/:id/profile   # Get profile
+PUT    /api/v1/users/me/profile    # Update profile
+POST   /api/v1/users/me/avatar     # Upload avatar
+
+# Notifications
+GET    /api/v1/users/me/notifications/preferences
+PUT    /api/v1/users/me/notifications/preferences
+
+# GDPR
+POST   /api/v1/users/me/data-export           # Request export
+GET    /api/v1/users/me/data-export/:id       # Get export status
+GET    /api/v1/users/me/data-export/:id/download  # Download export
+POST   /api/v1/users/me/delete                # Request deletion
+DELETE /api/v1/users/me/delete/:id            # Cancel deletion
+```
+
+**Example Profile Update Request**:
+```json
+{
+  "bio": "Movie enthusiast and avid reader",
+  "timezone": "America/New_York",
+  "language": "en",
+  "profile_visibility": "friends"
+}
+```
 
 
 

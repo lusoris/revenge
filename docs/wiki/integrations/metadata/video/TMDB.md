@@ -22,9 +22,9 @@
 
 # TMDb (The Movie Database)
 
-> Movie and TV metadata from TMDB
+> Direct TMDb API - Supplementary to Radarr/Sonarr
 
-The Movie Database (TMDB) provides rich metadata for movies and TV shows. Posters, backdrops, cast information, trailers, and descriptions are fetched automatically. Free API with generous rate limits. Community-curated data in multiple languages. Primary metadata source used by Revenge.
+SUPPLEMENTARY metadata source for movies/TV shows. Used as: (1) **Fallback** when Radarr/Sonarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Arr services. Free API with 40 req/10s rate limit. Supports multi-language metadata, images, cast, trailers. **Optional proxy/VPN routing** for regions with TMDb restrictions (via HTTP_CLIENT service).
 
 ---
 

@@ -86,13 +86,720 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `qar`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/adult_gallery_(qar:_treasures)/\n  ├──\
-  \ module.go              # fx module definition\n  ├── repository.go          #\
-  \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
-  \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
-  \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `qar`
+
+  ```sql
+  -- Adult image galleries (pirate theme: treasures)
+  CREATE TABLE qar.treasures (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    description TEXT,
+    folder_path TEXT NOT NULL UNIQUE,          -- /path/to/gallery
+    image_count INTEGER DEFAULT 0,
+    total_size_bytes BIGINT DEFAULT 0,
+    cover_image_path TEXT,                     -- Path to cover/thumbnail
+    cover_blurhash TEXT,                       -- Blurhash for cover
+    date_added TIMESTAMPTZ DEFAULT now(),
+    date_captured TIMESTAMPTZ,                 -- When photos were taken
+    photographer TEXT,
+
+    -- Organization
+    tags TEXT[] DEFAULT '{}',                  -- ['outdoor', 'beach', 'hd']
+    rating INTEGER CHECK (rating >= 0 AND rating <= 5),
+
+    -- Search
+    search_vector tsvector,                    -- Full-text search
+
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+    deleted_at TIMESTAMPTZ                     -- Soft delete
+  );
+  CREATE INDEX idx_treasures_date_added ON qar.treasures(date_added DESC);
+  CREATE INDEX idx_treasures_date_captured ON qar.treasures(date_captured DESC) WHERE date_captured IS NOT NULL;
+  CREATE INDEX idx_treasures_tags ON qar.treasures USING GIN(tags);
+  CREATE INDEX idx_treasures_search ON qar.treasures USING GIN(search_vector);
+  CREATE INDEX idx_treasures_rating ON qar.treasures(rating) WHERE rating IS NOT NULL;
+
+  -- Individual images in galleries
+  CREATE TABLE qar.treasure_images (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    treasure_id UUID NOT NULL REFERENCES qar.treasures(id) ON DELETE CASCADE,
+    file_path TEXT NOT NULL UNIQUE,
+    filename TEXT NOT NULL,
+    position INTEGER NOT NULL,                 -- Order in gallery
+
+    -- Image metadata
+    width INTEGER,
+    height INTEGER,
+    file_size_bytes BIGINT,
+    mime_type VARCHAR(100),
+    blurhash TEXT,
+
+    -- EXIF data
+    exif_data JSONB,                           -- Camera, lens, settings
+    date_taken TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(treasure_id, position)
+  );
+  CREATE INDEX idx_treasure_images_treasure ON qar.treasure_images(treasure_id, position);
+  CREATE INDEX idx_treasure_images_date_taken ON qar.treasure_images(date_taken) WHERE date_taken IS NOT NULL;
+
+  -- Gallery-performer relationships
+  CREATE TABLE qar.treasure_performers (
+    treasure_id UUID NOT NULL REFERENCES qar.treasures(id) ON DELETE CASCADE,
+    performer_id UUID NOT NULL REFERENCES qar.crew(id) ON DELETE CASCADE,
+    PRIMARY KEY (treasure_id, performer_id)
+  );
+  CREATE INDEX idx_treasure_performers_performer ON qar.treasure_performers(performer_id);
+
+  -- Gallery-studio relationships
+  CREATE TABLE qar.treasure_studios (
+    treasure_id UUID NOT NULL REFERENCES qar.treasures(id) ON DELETE CASCADE,
+    studio_id UUID NOT NULL REFERENCES qar.ports(id) ON DELETE CASCADE,
+    PRIMARY KEY (treasure_id, studio_id)
+  );
+  CREATE INDEX idx_treasure_studios_studio ON qar.treasure_studios(studio_id);
+
+  -- Prowlarr integration for gallery downloads
+  CREATE TABLE qar.treasure_prowlarr_indexers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    prowlarr_id INTEGER NOT NULL UNIQUE,       -- Prowlarr indexer ID
+    name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    enabled BOOLEAN DEFAULT true,
+    supports_galleries BOOLEAN DEFAULT false,  -- Indexer supports image galleries
+    categories INTEGER[] DEFAULT '{}',         -- Prowlarr category IDs
+    priority INTEGER DEFAULT 50,
+
+    -- Auth
+    api_key TEXT,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- Download queue for galleries
+  CREATE TABLE qar.treasure_downloads (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    indexer_id UUID REFERENCES qar.treasure_prowlarr_indexers(id),
+    download_url TEXT NOT NULL,
+
+    -- Status
+    status VARCHAR(20) DEFAULT 'queued',       -- 'queued', 'downloading', 'completed', 'failed'
+    progress_percent INTEGER DEFAULT 0,
+    downloaded_bytes BIGINT DEFAULT 0,
+    total_bytes BIGINT,
+
+    -- Result
+    treasure_id UUID REFERENCES qar.treasures(id),
+    error_message TEXT,
+
+    -- Timing
+    queued_at TIMESTAMPTZ DEFAULT now(),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_treasure_downloads_status ON qar.treasure_downloads(status) WHERE status IN ('queued', 'downloading');
+  CREATE INDEX idx_treasure_downloads_queued ON qar.treasure_downloads(queued_at DESC);
+
+  -- User favorites
+  CREATE TABLE qar.treasure_favorites (
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    treasure_id UUID NOT NULL REFERENCES qar.treasures(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (user_id, treasure_id)
+  );
+  CREATE INDEX idx_treasure_favorites_user ON qar.treasure_favorites(user_id, created_at DESC);
+  ```
+
+module_structure: |
+  ```
+  internal/content/adult/gallery/
+  ├── module.go                    # fx module with gallery dependencies
+  ├── types.go                     # Domain types
+  │   ├── Gallery                  # Gallery/treasure
+  │   ├── GalleryImage             # Individual image
+  │   ├── GalleryPerformer         # Gallery-performer link
+  │   ├── Download                 # Download queue entry
+  │   └── ProwlarrIndexer          # Prowlarr indexer config
+  ├── repository.go                # Database operations (sqlc)
+  │   ├── CreateGallery()          # Add new gallery
+  │   ├── GetGallery()             # Fetch gallery by ID
+  │   ├── ListGalleries()          # Paginated list with filters
+  │   ├── UpdateGallery()          # Update metadata
+  │   ├── DeleteGallery()          # Soft delete
+  │   ├── AddImage()               # Add image to gallery
+  │   ├── GetImages()              # Get all images in gallery
+  │   ├── LinkPerformer()          # Link gallery to performer
+  │   ├── GetByPerformer()         # Galleries for performer
+  │   └── QueueDownload()          # Add to download queue
+  ├── service.go                   # Business logic
+  │   ├── ScanFolder()             # Scan folder for galleries
+  │   ├── ExtractEXIF()            # Extract EXIF metadata
+  │   ├── GenerateThumbnails()     # Create thumbnails
+  │   ├── GenerateBlurhash()       # Create blurhash placeholders
+  │   ├── SearchGalleries()        # Full-text search
+  │   └── SyncProwlarr()           # Sync with Prowlarr indexers
+  ├── scanner/
+  │   ├── scanner.go               # Folder scanning logic
+  │   ├── exif.go                  # EXIF extraction
+  │   └── thumbnail.go             # Thumbnail generation
+  ├── prowlarr/
+  │   ├── client.go                # Prowlarr API client
+  │   ├── search.go                # Search for galleries
+  │   └── download.go              # Download management
+  ├── handler.go                   # HTTP API handlers (ogen)
+  │   ├── ListGalleries()          # GET /api/v1/legacy/treasures
+  │   ├── GetGallery()             # GET /api/v1/legacy/treasures/:id
+  │   ├── GetGalleryImages()       # GET /api/v1/legacy/treasures/:id/images
+  │   ├── UpdateGallery()          # PATCH /api/v1/legacy/treasures/:id
+  │   ├── DeleteGallery()          # DELETE /api/v1/legacy/treasures/:id
+  │   ├── SearchGalleries()        # GET /api/v1/legacy/treasures/search
+  │   └── DownloadGallery()        # POST /api/v1/legacy/treasures/download
+  ├── cache.go                     # L1 cache (otter)
+  │   └── CacheGalleryMetadata()   # Cache gallery objects
+  └── gallery_test.go              # Unit tests
+
+  migrations/
+  └── qar/
+      └── 015_galleries.sql        # Schema creation
+  ```
+
+file_structure: |
+  **Key Files**:
+  - `internal/content/adult/gallery/service.go` - Gallery management logic
+  - `internal/content/adult/gallery/scanner/*.go` - Folder scanning and EXIF extraction
+  - `internal/content/adult/gallery/prowlarr/*.go` - Prowlarr integration
+  - `migrations/qar/015_galleries.sql` - Database schema
+
+key_interfaces: |
+  ```go
+  // GalleryService manages adult image galleries
+  type GalleryService interface {
+    // Galleries
+    CreateGallery(ctx context.Context, gallery Gallery) (*Gallery, error)
+    GetGallery(ctx context.Context, id uuid.UUID) (*Gallery, error)
+    ListGalleries(ctx context.Context, filters GalleryFilters) ([]Gallery, int, error)
+    UpdateGallery(ctx context.Context, id uuid.UUID, updates GalleryUpdate) (*Gallery, error)
+    DeleteGallery(ctx context.Context, id uuid.UUID) error
+
+    // Images
+    GetGalleryImages(ctx context.Context, galleryID uuid.UUID) ([]GalleryImage, error)
+    GetImage(ctx context.Context, imageID uuid.UUID) (*GalleryImage, error)
+
+    // Scanning
+    ScanFolder(ctx context.Context, folderPath string) (*Gallery, error)
+    RescanGallery(ctx context.Context, galleryID uuid.UUID) error
+    ScanLibrary(ctx context.Context) (int, error) // Returns count of new galleries
+
+    // Search
+    SearchGalleries(ctx context.Context, query string, filters GalleryFilters) ([]Gallery, int, error)
+
+    // Performers/Studios
+    LinkPerformer(ctx context.Context, galleryID, performerID uuid.UUID) error
+    UnlinkPerformer(ctx context.Context, galleryID, performerID uuid.UUID) error
+    GetGalleriesByPerformer(ctx context.Context, performerID uuid.UUID) ([]Gallery, error)
+
+    // Prowlarr
+    SyncProwlarrIndexers(ctx context.Context) error
+    SearchProwlarr(ctx context.Context, query string) ([]ProwlarrResult, error)
+    QueueDownload(ctx context.Context, url string, indexerID uuid.UUID) (*Download, error)
+  }
+
+  // GalleryRepository handles database operations
+  type GalleryRepository interface {
+    // CRUD
+    Create(ctx context.Context, gallery Gallery) error
+    GetByID(ctx context.Context, id uuid.UUID) (*Gallery, error)
+    List(ctx context.Context, filters GalleryFilters, limit, offset int) ([]Gallery, int, error)
+    Update(ctx context.Context, gallery Gallery) error
+    Delete(ctx context.Context, id uuid.UUID) error
+
+    // Images
+    AddImage(ctx context.Context, image GalleryImage) error
+    GetImages(ctx context.Context, galleryID uuid.UUID) ([]GalleryImage, error)
+    UpdateImagePosition(ctx context.Context, imageID uuid.UUID, position int) error
+
+    // Relationships
+    LinkPerformer(ctx context.Context, galleryID, performerID uuid.UUID) error
+    UnlinkPerformer(ctx context.Context, galleryID, performerID uuid.UUID) error
+    GetPerformers(ctx context.Context, galleryID uuid.UUID) ([]Performer, error)
+    GetByPerformer(ctx context.Context, performerID uuid.UUID) ([]Gallery, error)
+
+    // Search
+    Search(ctx context.Context, query string, filters GalleryFilters, limit, offset int) ([]Gallery, int, error)
+
+    // Downloads
+    QueueDownload(ctx context.Context, download Download) error
+    GetQueuedDownloads(ctx context.Context, limit int) ([]Download, error)
+    UpdateDownloadStatus(ctx context.Context, downloadID uuid.UUID, status DownloadStatus) error
+  }
+
+  // Scanner extracts gallery metadata from filesystem
+  type Scanner interface {
+    // ScanFolder creates gallery from folder of images
+    ScanFolder(ctx context.Context, folderPath string) (*Gallery, []GalleryImage, error)
+
+    // ExtractEXIF extracts EXIF metadata from image
+    ExtractEXIF(ctx context.Context, imagePath string) (*EXIFData, error)
+
+    // GenerateThumbnail creates thumbnail for image
+    GenerateThumbnail(ctx context.Context, imagePath string, maxWidth, maxHeight int) ([]byte, error)
+
+    // GenerateBlurhash creates blurhash for image
+    GenerateBlurhash(ctx context.Context, imagePath string) (string, error)
+  }
+
+  // ProwlarrClient interacts with Prowlarr API
+  type ProwlarrClient interface {
+    // GetIndexers fetches all configured indexers
+    GetIndexers(ctx context.Context) ([]ProwlarrIndexer, error)
+
+    // Search searches for galleries across indexers
+    Search(ctx context.Context, query string, categories []int) ([]ProwlarrResult, error)
+
+    // Download queues a download
+    Download(ctx context.Context, downloadURL string) error
+  }
+
+  // Types
+  type Gallery struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    Title           string          `db:"title" json:"title"`
+    Description     *string         `db:"description" json:"description,omitempty"`
+    FolderPath      string          `db:"folder_path" json:"folder_path"`
+    ImageCount      int             `db:"image_count" json:"image_count"`
+    TotalSizeBytes  int64           `db:"total_size_bytes" json:"total_size_bytes"`
+    CoverImagePath  *string         `db:"cover_image_path" json:"cover_image_path,omitempty"`
+    CoverBlurhash   *string         `db:"cover_blurhash" json:"cover_blurhash,omitempty"`
+    DateAdded       time.Time       `db:"date_added" json:"date_added"`
+    DateCaptured    *time.Time      `db:"date_captured" json:"date_captured,omitempty"`
+    Photographer    *string         `db:"photographer" json:"photographer,omitempty"`
+    Tags            []string        `db:"tags" json:"tags"`
+    Rating          *int            `db:"rating" json:"rating,omitempty"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt       time.Time       `db:"updated_at" json:"updated_at"`
+
+    // Relationships (not in DB, loaded separately)
+    Performers      []Performer     `json:"performers,omitempty"`
+    Studios         []Studio        `json:"studios,omitempty"`
+  }
+
+  type GalleryImage struct {
+    ID            uuid.UUID       `db:"id" json:"id"`
+    TreasureID    uuid.UUID       `db:"treasure_id" json:"treasure_id"`
+    FilePath      string          `db:"file_path" json:"file_path"`
+    Filename      string          `db:"filename" json:"filename"`
+    Position      int             `db:"position" json:"position"`
+    Width         *int            `db:"width" json:"width,omitempty"`
+    Height        *int            `db:"height" json:"height,omitempty"`
+    FileSizeBytes *int64          `db:"file_size_bytes" json:"file_size_bytes,omitempty"`
+    MimeType      *string         `db:"mime_type" json:"mime_type,omitempty"`
+    Blurhash      *string         `db:"blurhash" json:"blurhash,omitempty"`
+    EXIFData      *EXIFData       `db:"exif_data" json:"exif_data,omitempty"`
+    DateTaken     *time.Time      `db:"date_taken" json:"date_taken,omitempty"`
+    CreatedAt     time.Time       `db:"created_at" json:"created_at"`
+  }
+
+  type EXIFData struct {
+    Camera       string  `json:"camera,omitempty"`
+    Lens         string  `json:"lens,omitempty"`
+    FocalLength  string  `json:"focal_length,omitempty"`
+    Aperture     string  `json:"aperture,omitempty"`
+    ShutterSpeed string  `json:"shutter_speed,omitempty"`
+    ISO          int     `json:"iso,omitempty"`
+    GPSLatitude  float64 `json:"gps_latitude,omitempty"`
+    GPSLongitude float64 `json:"gps_longitude,omitempty"`
+  }
+
+  type Download struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    Title           string          `db:"title" json:"title"`
+    IndexerID       *uuid.UUID      `db:"indexer_id" json:"indexer_id,omitempty"`
+    DownloadURL     string          `db:"download_url" json:"download_url"`
+    Status          string          `db:"status" json:"status"`
+    ProgressPercent int             `db:"progress_percent" json:"progress_percent"`
+    DownloadedBytes int64           `db:"downloaded_bytes" json:"downloaded_bytes"`
+    TotalBytes      *int64          `db:"total_bytes" json:"total_bytes,omitempty"`
+    TreasureID      *uuid.UUID      `db:"treasure_id" json:"treasure_id,omitempty"`
+    ErrorMessage    *string         `db:"error_message" json:"error_message,omitempty"`
+    QueuedAt        time.Time       `db:"queued_at" json:"queued_at"`
+    StartedAt       *time.Time      `db:"started_at" json:"started_at,omitempty"`
+    CompletedAt     *time.Time      `db:"completed_at" json:"completed_at,omitempty"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid` - UUID handling
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/maypok86/otter` - L1 in-memory cache
+  - `github.com/riverqueue/river` - Background job queue for downloads
+  - `go.uber.org/fx` - Dependency injection
+  - `go.uber.org/zap` - Structured logging
+  - `github.com/bbrks/go-blurhash` - Blurhash generation
+  - `github.com/disintegration/imaging` - Image processing
+  - `github.com/rwcarlsen/goexif` - EXIF extraction
+  - `github.com/typesense/typesense-go` - Search indexing
+
+  **External APIs**:
+  - Prowlarr API - Gallery indexing and downloads
+
+env_vars: |
+  ```bash
+  # Gallery settings
+  GALLERY_LIBRARY_PATH=/path/to/galleries           # Root path for galleries
+  GALLERY_THUMBNAIL_WIDTH=400                       # Thumbnail max width
+  GALLERY_THUMBNAIL_HEIGHT=400                      # Thumbnail max height
+  GALLERY_SCAN_INTERVAL=24h                         # Auto-scan interval
+  GALLERY_SUPPORTED_FORMATS=jpg,jpeg,png,webp,gif   # Supported image formats
+
+  # Prowlarr integration
+  PROWLARR_URL=http://localhost:9696                # Prowlarr URL
+  PROWLARR_API_KEY=your-api-key                     # Prowlarr API key
+  PROWLARR_ENABLED=true                             # Enable Prowlarr integration
+  PROWLARR_CATEGORIES=2030,2040                     # Adult image categories
+  ```
+
+config_keys: |
+  ```yaml
+  gallery:
+    library_path: /path/to/galleries
+    scan_interval: 24h
+    supported_formats:
+      - jpg
+      - jpeg
+      - png
+      - webp
+      - gif
+
+    thumbnails:
+      max_width: 400
+      max_height: 400
+      quality: 85                    # JPEG quality
+      format: webp                   # Thumbnail format
+
+    blurhash:
+      x_components: 4
+      y_components: 3
+
+    prowlarr:
+      enabled: true
+      url: http://localhost:9696
+      api_key: ${PROWLARR_API_KEY}
+      categories:
+        - 2030                       # Adult - Images
+        - 2040                       # Adult - Magazines
+      sync_interval: 1h
+      max_concurrent_downloads: 3
+  ```
+
+component_interaction: |
+  **Gallery Scan Flow**:
+  1. Background job triggers library scan (every 24h)
+  2. Scanner walks library_path recursively
+  3. For each folder with images:
+     a. Create Gallery record
+     b. For each image:
+        - Extract EXIF metadata
+        - Generate blurhash
+        - Create GalleryImage record
+     c. Select first image as cover
+  4. Update search_vector for full-text search
+  5. Index in Typesense for fast searching
+
+  **Browse Flow**:
+  1. Client requests galleries list (GET /api/v1/legacy/treasures)
+  2. Handler validates filters (performer, date range, tags)
+  3. Service checks cache for recent results
+  4. Repository queries PostgreSQL with filters
+  5. Results include cover image path and blurhash
+  6. Client displays grid with blurhash placeholders
+  7. Images lazy-load as user scrolls
+
+  **Slideshow Flow**:
+  1. Client requests gallery images (GET /api/v1/legacy/treasures/:id/images)
+  2. Service returns ordered list of images with blurhashes
+  3. Client displays full-screen slideshow
+  4. Images preloaded in background
+
+  **Prowlarr Download Flow**:
+  1. User searches Prowlarr (GET /api/v1/legacy/treasures/search?q=query)
+  2. Service calls Prowlarr API search endpoint
+  3. Results returned with indexer info
+  4. User selects result to download
+  5. Service queues download in treasure_downloads
+  6. River background job processes download
+  7. Downloaded files extracted to library_path
+  8. Gallery scanner detects new folder
+  9. Gallery created automatically
+
+api_endpoints: |
+  **Endpoints**:
+  ```
+  GET    /api/v1/legacy/treasures                    # List galleries
+  GET    /api/v1/legacy/treasures/:id                # Get gallery details
+  GET    /api/v1/legacy/treasures/:id/images         # Get gallery images
+  PATCH  /api/v1/legacy/treasures/:id                # Update gallery
+  DELETE /api/v1/legacy/treasures/:id                # Delete gallery
+  POST   /api/v1/legacy/treasures/:id/scan           # Rescan gallery
+
+  GET    /api/v1/legacy/treasures/search             # Search galleries
+  GET    /api/v1/legacy/treasures/performers/:id     # Galleries by performer
+
+  GET    /api/v1/legacy/treasures/prowlarr/search    # Search Prowlarr
+  POST   /api/v1/legacy/treasures/download           # Queue download
+  GET    /api/v1/legacy/treasures/downloads          # List downloads
+  ```
+
+  **Request/Response Examples**:
+
+  **List Galleries**:
+  ```http
+  GET /api/v1/legacy/treasures?limit=20&offset=0&sort=date_added&order=desc
+
+  Response 200 OK:
+  {
+    "treasures": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "title": "Beach Photoshoot 2024",
+        "description": "Summer beach session",
+        "folder_path": "/galleries/beach-2024",
+        "image_count": 45,
+        "total_size_bytes": 125829120,
+        "cover_image_path": "/galleries/beach-2024/IMG_001.jpg",
+        "cover_blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+        "date_added": "2024-06-15T10:00:00Z",
+        "date_captured": "2024-06-10T14:30:00Z",
+        "photographer": "John Doe",
+        "tags": ["outdoor", "beach", "summer"],
+        "rating": 5,
+        "performers": [
+          {
+            "id": "660e8400-e29b-41d4-a716-446655440001",
+            "name": "Jane Smith"
+          }
+        ]
+      }
+    ],
+    "total": 156,
+    "limit": 20,
+    "offset": 0
+  }
+  ```
+
+  **Get Gallery Images**:
+  ```http
+  GET /api/v1/legacy/treasures/550e8400-e29b-41d4-a716-446655440000/images
+
+  Response 200 OK:
+  {
+    "images": [
+      {
+        "id": "770e8400-e29b-41d4-a716-446655440002",
+        "treasure_id": "550e8400-e29b-41d4-a716-446655440000",
+        "file_path": "/galleries/beach-2024/IMG_001.jpg",
+        "filename": "IMG_001.jpg",
+        "position": 0,
+        "width": 4000,
+        "height": 3000,
+        "file_size_bytes": 2854912,
+        "mime_type": "image/jpeg",
+        "blurhash": "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+        "exif_data": {
+          "camera": "Canon EOS R5",
+          "lens": "RF 24-70mm f/2.8",
+          "focal_length": "50mm",
+          "aperture": "f/2.8",
+          "shutter_speed": "1/500",
+          "iso": 100,
+          "gps_latitude": 34.0522,
+          "gps_longitude": -118.2437
+        },
+        "date_taken": "2024-06-10T14:30:15Z"
+      }
+    ]
+  }
+  ```
+
+  **Search Prowlarr**:
+  ```http
+  GET /api/v1/legacy/treasures/prowlarr/search?q=photographer+name
+
+  Response 200 OK:
+  {
+    "results": [
+      {
+        "title": "Photographer Collection 2024",
+        "indexer": "ExampleIndexer",
+        "size_bytes": 1073741824,
+        "download_url": "magnet:?xt=urn:...",
+        "published_date": "2024-06-01T00:00:00Z",
+        "seeders": 10,
+        "leechers": 2
+      }
+    ]
+  }
+  ```
+
+  **Queue Download**:
+  ```http
+  POST /api/v1/legacy/treasures/download
+  {
+    "title": "Photographer Collection 2024",
+    "download_url": "magnet:?xt=urn:...",
+    "indexer_id": "880e8400-e29b-41d4-a716-446655440003"
+  }
+
+  Response 201 Created:
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440004",
+    "title": "Photographer Collection 2024",
+    "status": "queued",
+    "progress_percent": 0,
+    "queued_at": "2024-06-15T15:00:00Z"
+  }
+  ```
+
+unit_tests: |
+  ```go
+  // internal/content/adult/gallery/gallery_test.go
+
+  func TestGalleryService_ScanFolder(t *testing.T) {
+    tests := []struct {
+      name       string
+      folderPath string
+      wantImages int
+      wantErr    bool
+    }{
+      {
+        name:       "valid folder with images",
+        folderPath: "testdata/gallery1",
+        wantImages: 5,
+      },
+      {
+        name:       "folder with mixed files",
+        folderPath: "testdata/mixed",
+        wantImages: 3, // Only image files counted
+      },
+      {
+        name:       "empty folder",
+        folderPath: "testdata/empty",
+        wantImages: 0,
+        wantErr:    true,
+      },
+    }
+
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestScanner_ExtractEXIF(t *testing.T) {
+    scanner := NewScanner()
+    exif, err := scanner.ExtractEXIF(ctx, "testdata/image_with_exif.jpg")
+    require.NoError(t, err)
+
+    assert.Equal(t, "Canon EOS R5", exif.Camera)
+    assert.Equal(t, 100, exif.ISO)
+    assert.NotZero(t, exif.GPSLatitude)
+  }
+
+  func TestScanner_GenerateBlurhash(t *testing.T) {
+    scanner := NewScanner()
+    blurhash, err := scanner.GenerateBlurhash(ctx, "testdata/image.jpg")
+    require.NoError(t, err)
+
+    assert.NotEmpty(t, blurhash)
+    assert.Regexp(t, `^[A-Za-z0-9#$%*+,-.:;=?@\[\]^_{|}~]+$`, blurhash)
+  }
+  ```
+
+  **Coverage Target**: ≥85%
+
+  **Key Test Areas**:
+  - Folder scanning and image detection
+  - EXIF extraction
+  - Blurhash generation
+  - Thumbnail creation
+  - Performer linking
+  - Search filtering
+  - Prowlarr integration
+
+integration_tests: |
+  ```go
+  // tests/integration/adult/gallery_test.go
+
+  func TestGallery_EndToEnd(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    // Setup test gallery folder
+    tmpDir := t.TempDir()
+    createTestImages(t, tmpDir, 5)
+
+    // Scan folder
+    srv := setupGalleryService(t, db)
+    gallery, err := srv.ScanFolder(ctx, tmpDir)
+    require.NoError(t, err)
+    assert.Equal(t, 5, gallery.ImageCount)
+
+    // Get images
+    images, err := srv.GetGalleryImages(ctx, gallery.ID)
+    require.NoError(t, err)
+    assert.Len(t, images, 5)
+
+    // Verify EXIF
+    for _, img := range images {
+      assert.NotNil(t, img.Width)
+      assert.NotNil(t, img.Height)
+      assert.NotEmpty(t, img.Blurhash)
+    }
+
+    // Link performer
+    performerID := uuid.New()
+    err = srv.LinkPerformer(ctx, gallery.ID, performerID)
+    require.NoError(t, err)
+
+    // Search
+    results, total, err := srv.SearchGalleries(ctx, "test", GalleryFilters{})
+    require.NoError(t, err)
+    assert.Greater(t, total, 0)
+  }
+
+  func TestGallery_ProwlarrIntegration(t *testing.T) {
+    if testing.Short() {
+      t.Skip("Skipping Prowlarr integration test")
+    }
+
+    prowlarr := setupProwlarrClient(t)
+
+    // Search
+    results, err := prowlarr.Search(ctx, "test query", []int{2030})
+    require.NoError(t, err)
+
+    if len(results) > 0 {
+      // Queue download
+      err = prowlarr.Download(ctx, results[0].DownloadURL)
+      require.NoError(t, err)
+    }
+  }
+  ```
+
+  **Coverage Target**: ≥80%
+
+  **Integration Test Scenarios**:
+  - Full gallery scan workflow with real images
+  - EXIF extraction from various camera makes
+  - Blurhash and thumbnail generation
+  - PostgreSQL full-text search
+  - Typesense integration
+  - Prowlarr API calls
+  - Download queue processing with River

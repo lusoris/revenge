@@ -66,13 +66,183 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/release_calendar_system/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Calendar events (aggregated from multiple sources)
+  CREATE TABLE calendar_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_type VARCHAR(50) NOT NULL,           -- 'release', 'addition', 'premiere'
+    media_type VARCHAR(20) NOT NULL,           -- 'movie', 'episode', 'album'
+    content_id UUID,                           -- References movie/episode if exists
+    title TEXT NOT NULL,
+    series_title TEXT,                         -- For episodes
+    season_number INTEGER,                     -- For episodes
+    episode_number INTEGER,                    -- For episodes
+
+    -- Dates
+    air_date DATE,                             -- Original air/release date
+    physical_release_date DATE,                -- Physical media release
+    digital_release_date DATE,                 -- Digital release
+    in_cinemas_date DATE,                      -- Theatrical release
+
+    -- Source tracking
+    source VARCHAR(50) NOT NULL,               -- 'radarr', 'sonarr', 'lidarr', 'local'
+    source_id VARCHAR(255),                    -- External ID from source
+    monitored BOOLEAN DEFAULT true,            -- Is this being monitored for download?
+    downloaded BOOLEAN DEFAULT false,          -- Has it been downloaded?
+
+    -- Metadata
+    overview TEXT,
+    poster_url TEXT,
+    genres TEXT[] DEFAULT '{}',
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_calendar_events_air_date ON calendar_events(air_date DESC) WHERE air_date IS NOT NULL;
+  CREATE INDEX idx_calendar_events_media_type ON calendar_events(media_type, air_date DESC);
+  CREATE INDEX idx_calendar_events_source ON calendar_events(source, source_id);
+  CREATE INDEX idx_calendar_events_monitored ON calendar_events(monitored, air_date DESC) WHERE monitored = true;
+  CREATE INDEX idx_calendar_events_downloaded ON calendar_events(downloaded) WHERE downloaded = false;
+
+  -- User calendar subscriptions
+  CREATE TABLE calendar_subscriptions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    subscription_name TEXT NOT NULL,
+
+    -- Filters
+    media_types TEXT[] DEFAULT '{}',           -- ['movie', 'episode']
+    sources TEXT[] DEFAULT '{}',               -- ['radarr', 'sonarr']
+    genres TEXT[] DEFAULT '{}',                -- Filter by genre
+    monitored_only BOOLEAN DEFAULT true,       -- Only monitored content
+
+    -- Format
+    ical_url TEXT UNIQUE,                      -- Generated iCal URL
+    ical_token UUID DEFAULT gen_random_uuid(), -- Secret token for iCal feed
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_calendar_subscriptions_user ON calendar_subscriptions(user_id);
+  CREATE INDEX idx_calendar_subscriptions_ical_token ON calendar_subscriptions(ical_token);
+  ```
+
+module_structure: |
+  ```
+  internal/calendar/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Calendar logic
+  ├── sync/
+  │   ├── radarr.go                # Radarr calendar sync
+  │   ├── sonarr.go                # Sonarr calendar sync
+  │   ├── lidarr.go                # Lidarr calendar sync
+  │   └── readarr.go               # Readarr calendar sync
+  ├── ical/
+  │   ├── generator.go             # iCal feed generator
+  │   └── parser.go                # iCal parser
+  ├── handler.go                   # HTTP API handlers
+  └── calendar_test.go
+
+  web/src/routes/(app)/calendar/
+  ├── +page.svelte                 # Calendar view
+  ├── +page.ts                     # Data loading
+  └── components/
+      ├── MonthView.svelte         # Month calendar
+      ├── WeekView.svelte          # Week calendar
+      ├── DayView.svelte           # Day calendar
+      └── EventCard.svelte         # Event card
+  ```
+
+file_structure: |
+  **Key Files**:
+  - `internal/calendar/service.go` - Calendar aggregation logic
+  - `internal/calendar/sync/*.go` - Arr service sync
+  - `internal/calendar/ical/generator.go` - iCal feed generation
+  - `web/src/routes/(app)/calendar/+page.svelte` - Calendar UI
+
+key_interfaces: |
+  ```go
+  type CalendarService interface {
+    GetEvents(ctx context.Context, start, end time.Time, filters EventFilters) ([]CalendarEvent, error)
+    SyncFromSources(ctx context.Context) error
+    CreateSubscription(ctx context.Context, sub CalendarSubscription) (*CalendarSubscription, error)
+    GetICalFeed(ctx context.Context, token uuid.UUID) (string, error)
+  }
+
+  type CalendarEvent struct {
+    ID                  uuid.UUID   `db:"id" json:"id"`
+    EventType           string      `db:"event_type" json:"event_type"`
+    MediaType           string      `db:"media_type" json:"media_type"`
+    Title               string      `db:"title" json:"title"`
+    AirDate             *time.Time  `db:"air_date" json:"air_date,omitempty"`
+    Source              string      `db:"source" json:"source"`
+    Monitored           bool        `db:"monitored" json:"monitored"`
+    Downloaded          bool        `db:"downloaded" json:"downloaded"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river`
+  - `github.com/arran4/golang-ical` - iCal generation
+
+env_vars: |
+  ```bash
+  CALENDAR_SYNC_INTERVAL=1h
+  CALENDAR_RADARR_URL=http://localhost:7878
+  CALENDAR_SONARR_URL=http://localhost:8989
+  ```
+
+config_keys: |
+  ```yaml
+  calendar:
+    sync_interval: 1h
+    sources:
+      radarr:
+        enabled: true
+        url: http://localhost:7878
+      sonarr:
+        enabled: true
+        url: http://localhost:8989
+  ```
+
+component_interaction: |
+  **Sync Flow**:
+  1. Background job triggers hourly
+  2. Fetch calendar from each Arr service
+  3. Aggregate and deduplicate events
+  4. Update calendar_events table
+
+  **iCal Feed Flow**:
+  1. User creates subscription with filters
+  2. Generate unique iCal URL with token
+  3. External calendar app fetches iCal feed
+  4. Service generates iCal format from events
+
+api_endpoints: |
+  ```
+  GET /api/v1/calendar/events?start=2026-01-01&end=2026-01-31
+  POST /api/v1/calendar/subscriptions
+  GET /api/v1/calendar/ical/:token
+  ```
+
+unit_tests: |
+  ```go
+  func TestCalendarService_GetEvents(t *testing.T) {
+    // Test date range filtering
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestCalendar_ArrSync(t *testing.T) {
+    // Test Radarr/Sonarr sync
+  }
+  ```

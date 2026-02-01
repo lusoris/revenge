@@ -22,9 +22,9 @@
 
 # Grand Comics Database (GCD)
 
-> Historical comic data from Grand Comics Database
+> GCD - Historical comic bibliographic data
 
-Grand Comics Database (GCD) specializes in historical comics from the Golden and Silver Ages. Detailed bibliographic records for vintage comics. Covers publishers that no longer exist. Useful for identifying older comics in your collection. Supplements ComicVine with historical data.
+SUPPLEMENTARY metadata source for comics libraries. Specializes in historical comics from Golden (1938-1956) and Silver Age (1956-1970). Detailed bibliographic records for vintage comics. Covers defunct publishers. **Supplements ComicVine** with historical data ComicVine may lack. REST API with free access. Useful for identifying older comics in collections.
 
 ---
 
@@ -65,9 +65,9 @@ Grand Comics Database (GCD) specializes in historical comics from the Golden and
 ### Learn More
 
 Official documentation and guides:
+- [GCD REST API](https://www.comics.org/api/)
 - [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 - [River Job Queue](../../../../sources/tooling/river.md)
 
 

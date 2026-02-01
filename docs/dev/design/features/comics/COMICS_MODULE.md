@@ -152,15 +152,165 @@ internal/content/comics/
 
 ### File Structure
 
-<!-- File structure -->
+```
+internal/content/comics/
+├── module.go              # fx.Module with all providers
+├── repository.go          # Database layer
+├── repository_test.go     # Repository tests (testcontainers)
+├── service.go             # Business logic
+├── service_test.go        # Service tests (mocks)
+├── handler.go             # HTTP handlers
+├── handler_test.go        # Handler tests (httptest)
+├── types.go               # Domain types
+├── cache.go               # Caching logic
+├── cache_test.go          # Cache tests
+├── extractor/
+│   ├── cbz.go             # CBZ extraction
+│   ├── cbr.go             # CBR extraction
+│   ├── cb7.go             # CB7 extraction
+│   ├── cbt.go             # CBT extraction
+│   ├── extractor.go       # Common extractor interface
+│   └── extractor_test.go  # Extraction tests
+├── metadata/
+│   ├── provider.go        # Interface: MetadataProvider
+│   ├── comicvine.go       # ComicVine API integration
+│   ├── marvel.go          # Marvel API integration
+│   ├── gcd.go             # Grand Comics Database
+│   ├── anilist.go         # AniList GraphQL (manga)
+│   ├── mal.go             # MyAnimeList API (manga)
+│   └── enricher.go        # Enrichment orchestration
+└── progress/
+    ├── tracker.go         # Reading progress tracking
+    └── sync.go            # Multi-device sync logic
+
+migrations/
+└── comics/
+    ├── 001_series.sql     # Series and publishers schema
+    ├── 002_issues.sql     # Issues and files schema
+    ├── 003_creators.sql   # Creators schema
+    └── 004_progress.sql   # Progress tracking schema
+
+api/
+└── openapi.yaml           # OpenAPI spec (comics/* endpoints)
+```
+
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Repository defines database operations for comics
+type Repository interface {
+    // Series CRUD
+    GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
+    ListSeries(ctx context.Context, filters ListFilters) ([]Series, error)
+    CreateSeries(ctx context.Context, series *Series) error
+    UpdateSeries(ctx context.Context, series *Series) error
+    DeleteSeries(ctx context.Context, id uuid.UUID) error
+
+    // Issue CRUD
+    GetIssue(ctx context.Context, id uuid.UUID) (*Issue, error)
+    ListIssues(ctx context.Context, seriesID uuid.UUID, filters ListFilters) ([]Issue, error)
+    CreateIssue(ctx context.Context, issue *Issue) error
+    UpdateIssue(ctx context.Context, issue *Issue) error
+    DeleteIssue(ctx context.Context, id uuid.UUID) error
+
+    // Publisher and creator operations
+    GetPublisher(ctx context.Context, id uuid.UUID) (*Publisher, error)
+    ListPublishers(ctx context.Context) ([]Publisher, error)
+    GetCreator(ctx context.Context, id uuid.UUID) (*Creator, error)
+    ListCreators(ctx context.Context) ([]Creator, error)
+
+    // Progress tracking
+    GetProgress(ctx context.Context, userID, issueID uuid.UUID) (*ReadingProgress, error)
+    UpdateProgress(ctx context.Context, progress *ReadingProgress) error
+    GetRecentlyRead(ctx context.Context, userID uuid.UUID, limit int) ([]Issue, error)
+
+    // Pull list management
+    AddToPullList(ctx context.Context, userID, seriesID uuid.UUID) error
+    RemoveFromPullList(ctx context.Context, userID, seriesID uuid.UUID) error
+    GetPullList(ctx context.Context, userID uuid.UUID) ([]Series, error)
+}
+
+// Service defines business logic for comics
+type Service interface {
+    // Series operations
+    GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
+    SearchSeries(ctx context.Context, query string, filters SearchFilters) ([]Series, error)
+    EnrichSeries(ctx context.Context, id uuid.UUID) error
+
+    // Issue operations
+    GetIssue(ctx context.Context, id uuid.UUID) (*Issue, error)
+    GetIssuePages(ctx context.Context, issueID uuid.UUID) ([]PageInfo, error)
+    GetPage(ctx context.Context, issueID uuid.UUID, pageNumber int) (image.Image, error)
+
+    // Progress operations
+    UpdateProgress(ctx context.Context, userID, issueID uuid.UUID, progress ProgressUpdate) error
+    GetNextIssue(ctx context.Context, userID, issueID uuid.UUID) (*Issue, error)
+}
+
+// MetadataProvider fetches comic metadata from external sources
+type MetadataProvider interface {
+    GetSeriesByID(ctx context.Context, providerID string) (*SeriesMetadata, error)
+    GetIssueByID(ctx context.Context, providerID string) (*IssueMetadata, error)
+    SearchSeries(ctx context.Context, query string) ([]SeriesMetadata, error)
+    SearchIssues(ctx context.Context, seriesID string) ([]IssueMetadata, error)
+    GetCreatorByID(ctx context.Context, providerID string) (*CreatorMetadata, error)
+}
+
+// ComicExtractor extracts pages from comic archive files
+type ComicExtractor interface {
+    // ExtractPages extracts all pages from comic archive
+    ExtractPages(ctx context.Context, filePath string, outputDir string) ([]string, error)
+
+    // GetPageCount returns number of pages without extraction
+    GetPageCount(ctx context.Context, filePath string) (int, error)
+
+    // ExtractPage extracts a single page by number
+    ExtractPage(ctx context.Context, filePath string, pageNumber int) (image.Image, error)
+
+    // SupportedFormats returns formats this extractor can handle
+    SupportedFormats() []string
+}
+
+// ProgressTracker manages reading progress synchronization
+type ProgressTracker interface {
+    // UpdateProgress updates user's reading position
+    UpdateProgress(ctx context.Context, update ProgressUpdate) error
+
+    // GetProgress retrieves current reading position
+    GetProgress(ctx context.Context, userID, issueID uuid.UUID) (*ReadingProgress, error)
+
+    // SyncProgress synchronizes progress across devices
+    SyncProgress(ctx context.Context, userID uuid.UUID) error
+
+    // GetNextIssue suggests next issue to read in series
+    GetNextIssue(ctx context.Context, userID, currentIssueID uuid.UUID) (*Issue, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Dependencies**:
+- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+- `github.com/google/uuid` - UUID generation
+- `github.com/maypok86/otter` - In-memory cache
+- `github.com/gen2brain/go-unarr` - CBZ/CBR/CB7/CBT extraction
+- `github.com/disintegration/imaging` - Image processing
+- `github.com/go-resty/resty/v2` - HTTP client for external APIs
+- `go.uber.org/fx` - Dependency injection
+- `github.com/riverqueue/river` - Background job queue
+
+**External APIs**:
+- ComicVine API - Primary metadata for Western comics
+- Marvel API - Official Marvel comics metadata
+- Grand Comics Database - Historical comics data
+- AniList GraphQL API - Manga metadata
+- MyAnimeList API - Alternative manga metadata
+
+**Database**:
+- PostgreSQL 18+ with trigram extension for fuzzy search
+
 
 
 
@@ -169,11 +319,85 @@ internal/content/comics/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+**Environment Variables**:
+- `REVENGE_COMIC_CACHE_TTL` - Cache TTL duration (default: 30m)
+- `REVENGE_COMIC_CACHE_SIZE` - Cache size in MB (default: 200)
+- `REVENGE_METADATA_COMICVINE_API_KEY` - ComicVine API key (required)
+- `REVENGE_METADATA_MARVEL_API_KEY` - Marvel API public key (optional)
+- `REVENGE_METADATA_MARVEL_API_PRIVATE_KEY` - Marvel API private key (optional)
+- `REVENGE_METADATA_ANILIST_ENABLED` - Enable AniList for manga (default: true)
+- `REVENGE_METADATA_MAL_CLIENT_ID` - MyAnimeList client ID (optional)
+- `REVENGE_COMIC_PAGE_CACHE_PATH` - Path for cached extracted pages
+- `REVENGE_COMIC_PAGE_CACHE_SIZE_GB` - Max page cache size in GB (default: 50)
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+**config.yaml keys**:
+```yaml
+comic:
+  cache:
+    ttl: 30m
+    size_mb: 200
+
+  metadata:
+    comicvine:
+      api_key: ${REVENGE_METADATA_COMICVINE_API_KEY}
+      rate_limit: 1  # Requests per second
+      timeout: 15s
+
+    marvel:
+      enabled: false
+      public_key: ${REVENGE_METADATA_MARVEL_API_KEY}
+      private_key: ${REVENGE_METADATA_MARVEL_API_PRIVATE_KEY}
+
+    gcd:
+      enabled: true
+      api_url: https://www.comics.org/api/
+
+    anilist:
+      enabled: true
+      rate_limit: 90  # Per minute
+
+    mal:
+      enabled: false
+      client_id: ${REVENGE_METADATA_MAL_CLIENT_ID}
+
+    priority:
+      comics:
+        - comicvine
+        - marvel
+        - gcd
+      manga:
+        - anilist
+        - mal
+
+  reader:
+    page_cache:
+      enabled: true
+      path: ${REVENGE_COMIC_PAGE_CACHE_PATH}
+      max_size_gb: 50
+      cleanup_policy: lru
+
+    image_optimization:
+      enabled: true
+      max_width: 2048
+      max_height: 2048
+      quality: 85
+      format: webp
+
+    extraction:
+      on_demand: false  # Extract all pages on first access
+      parallel: true
+      max_workers: 4
+
+  features:
+    pull_lists_enabled: true
+    reading_lists_enabled: true
+    series_tracking_enabled: true
+    auto_suggest_next_enabled: true
+```
+
 
 
 ## API Endpoints

@@ -41,6 +41,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -101,7 +102,12 @@ internal/service/activity/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Cleanup jobs
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -119,11 +125,44 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type ActivityService interface {
+  // Logging
+  Log(ctx context.Context, entry ActivityEntry) error
+  LogWithContext(ctx context.Context, userID uuid.UUID, action, resourceType string, resourceID uuid.UUID, changes map[string]interface{}) error
+
+  // Querying
+  GetUserActivity(ctx context.Context, userID uuid.UUID, filters ActivityFilters) ([]ActivityEntry, error)
+  GetResourceActivity(ctx context.Context, resourceType string, resourceID uuid.UUID) ([]ActivityEntry, error)
+  Search(ctx context.Context, filters ActivityFilters) ([]ActivityEntry, error)
+
+  // Cleanup
+  CleanupOldLogs(ctx context.Context, olderThan time.Time) (int, error)
+}
+
+type ActivityEntry struct {
+  ID           uuid.UUID              `db:"id" json:"id"`
+  UserID       *uuid.UUID             `db:"user_id" json:"user_id,omitempty"`
+  Username     *string                `db:"username" json:"username,omitempty"`
+  Action       string                 `db:"action" json:"action"`
+  ResourceType *string                `db:"resource_type" json:"resource_type,omitempty"`
+  ResourceID   *uuid.UUID             `db:"resource_id" json:"resource_id,omitempty"`
+  Changes      map[string]interface{} `db:"changes" json:"changes,omitempty"`
+  IPAddress    *net.IP                `db:"ip_address" json:"ip_address,omitempty"`
+  Success      bool                   `db:"success" json:"success"`
+  CreatedAt    time.Time              `db:"created_at" json:"created_at"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Cleanup jobs
+- `go.uber.org/fx`
+
 
 
 
@@ -132,12 +171,56 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+ACTIVITY_RETENTION_DAYS=90
+ACTIVITY_CLEANUP_INTERVAL=24h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+activity:
+  retention_days: 90
+  cleanup_interval: 24h
+  log_failed_attempts: true
+```
 
+
+
+## API Endpoints
+```
+GET    /api/v1/activity                # Search activity logs
+GET    /api/v1/activity/users/:id      # Get user activity
+GET    /api/v1/activity/resources/:type/:id # Get resource activity
+```
+
+**Example Response**:
+```json
+{
+  "entries": [
+    {
+      "id": "uuid-123",
+      "user_id": "uuid-456",
+      "username": "admin",
+      "action": "settings.update",
+      "resource_type": "setting",
+      "resource_id": "uuid-789",
+      "changes": {
+        "server.name": {
+          "old": "Revenge",
+          "new": "My Server"
+        }
+      },
+      "ip_address": "192.168.1.100",
+      "success": true,
+      "created_at": "2026-02-01T10:00:00Z"
+    }
+  ],
+  "total": 1,
+  "page": 1
+}
+```
 
 
 

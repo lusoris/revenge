@@ -79,13 +79,742 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/revenge___media_enhancement_features/\n\
-  \  ├── module.go              # fx module definition\n  ├── repository.go      \
-  \    # Database operations (sqlc)\n  ├── service.go             # Business logic\n\
-  \  ├── handler.go             # HTTP handlers (ogen)\n  ├── types.go           \
-  \    # Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Cinema mode: trailers before movies
+  CREATE TABLE trailers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    movie_id UUID NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    duration_seconds INTEGER,
+    resolution VARCHAR(20),                    -- '1080p', '4K', etc.
+    source VARCHAR(50),                        -- 'youtube', 'tmdb', 'local'
+    source_id VARCHAR(255),                    -- External ID
+    trailer_type VARCHAR(20) DEFAULT 'trailer',-- 'trailer', 'teaser', 'clip'
+    language VARCHAR(10) DEFAULT 'en',
+    release_date DATE,
+
+    -- Ordering
+    priority INTEGER DEFAULT 0,                -- Higher priority plays first
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_trailers_movie ON trailers(movie_id, priority DESC);
+  CREATE INDEX idx_trailers_source ON trailers(source, source_id) WHERE source_id IS NOT NULL;
+
+  -- TV show theme songs
+  CREATE TABLE themes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    series_id UUID NOT NULL REFERENCES series(id) ON DELETE CASCADE,
+    file_path TEXT NOT NULL,
+    intro_start_seconds NUMERIC(8,2),          -- When intro starts in theme
+    intro_end_seconds NUMERIC(8,2),            -- When intro ends in theme
+    duration_seconds INTEGER,
+    source VARCHAR(50),                        -- 'extracted', 'tvthemes', 'local'
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(series_id)
+  );
+  CREATE INDEX idx_themes_series ON themes(series_id);
+
+  -- Chapter markers for videos
+  CREATE TABLE chapters (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(20) NOT NULL,         -- 'movie', 'episode'
+    content_id UUID NOT NULL,
+    start_time_seconds NUMERIC(10,2) NOT NULL,
+    end_time_seconds NUMERIC(10,2) NOT NULL,
+    title TEXT NOT NULL,
+    chapter_type VARCHAR(50),                  -- 'intro', 'credits', 'recap', 'scene', 'chapter'
+
+    -- Auto-detection metadata
+    confidence_score NUMERIC(3,2),             -- For auto-detected chapters (0.0-1.0)
+    detected_by VARCHAR(50),                   -- 'chromaprint', 'silence', 'manual'
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_chapters_content ON chapters(content_type, content_id, start_time_seconds);
+  CREATE INDEX idx_chapters_type ON chapters(content_type, content_id, chapter_type);
+
+  -- Cinema mode user preferences
+  CREATE TABLE cinema_mode_preferences (
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    enabled BOOLEAN DEFAULT true,
+    play_trailers BOOLEAN DEFAULT true,
+    max_trailers INTEGER DEFAULT 2,
+    trailer_types TEXT[] DEFAULT ARRAY['trailer'], -- Which types to play
+    play_theme BOOLEAN DEFAULT true,              -- Play theme before TV episodes
+    dim_lights BOOLEAN DEFAULT false,              -- Integration with smart lights
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (user_id)
+  );
+
+  -- Picture-in-picture sessions
+  CREATE TABLE pip_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    primary_content_type VARCHAR(20) NOT NULL,  -- 'movie', 'episode', 'live_tv'
+    primary_content_id UUID NOT NULL,
+    pip_content_type VARCHAR(20) NOT NULL,
+    pip_content_id UUID NOT NULL,
+
+    -- Playback state
+    primary_position_seconds NUMERIC(10,2),
+    pip_position_seconds NUMERIC(10,2),
+    pip_size VARCHAR(20) DEFAULT 'small',       -- 'small', 'medium', 'large'
+    pip_position VARCHAR(20) DEFAULT 'bottom-right', -- 'top-left', 'top-right', etc.
+
+    started_at TIMESTAMPTZ DEFAULT now(),
+    ended_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_pip_sessions_user ON pip_sessions(user_id, started_at DESC);
+  CREATE INDEX idx_pip_sessions_active ON pip_sessions(user_id) WHERE ended_at IS NULL;
+
+  -- Media segment markers (for advanced features)
+  CREATE TABLE media_segments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(20) NOT NULL,
+    content_id UUID NOT NULL,
+    segment_type VARCHAR(50) NOT NULL,          -- 'intro', 'recap', 'credits', 'silence', 'black_frames'
+    start_time_seconds NUMERIC(10,2) NOT NULL,
+    end_time_seconds NUMERIC(10,2) NOT NULL,
+
+    -- Detection metadata
+    confidence_score NUMERIC(3,2),
+    detected_by VARCHAR(50),                    -- Detection method
+    detection_metadata JSONB,
+
+    -- User actions
+    user_confirmed BOOLEAN,
+    confirmed_by UUID REFERENCES users(id),
+    confirmed_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_media_segments_content ON media_segments(content_type, content_id);
+  CREATE INDEX idx_media_segments_type ON media_segments(segment_type);
+  ```
+
+module_structure: |
+  ```
+  internal/playback/enhancements/
+  ├── module.go                    # fx module with enhancement dependencies
+  ├── types.go                     # Domain types
+  │   ├── Trailer                  # Movie trailer
+  │   ├── Theme                    # TV theme song
+  │   ├── Chapter                  # Chapter marker
+  │   ├── PiPSession               # Picture-in-picture session
+  │   └── MediaSegment             # Detected media segment
+  ├── repository.go                # Database operations (sqlc)
+  │   ├── GetTrailers()            # Fetch trailers for movie
+  │   ├── GetTheme()               # Fetch theme for series
+  │   ├── GetChapters()            # Fetch chapters for content
+  │   ├── CreateChapter()          # Add chapter marker
+  │   ├── GetCinemaModePrefs()     # Get user cinema preferences
+  │   └── CreatePiPSession()       # Start PiP session
+  ├── service.go                   # Enhancement business logic
+  │   ├── GetCinemaPlaylist()      # Build cinema mode playlist
+  │   ├── DetectChapters()         # Auto-detect chapter markers
+  │   ├── GetPlaybackEnhancements()# Get all enhancements for content
+  │   └── HandlePiP()              # Manage PiP sessions
+  ├── trailers/
+  │   ├── service.go               # Trailer management
+  │   ├── youtube.go               # YouTube trailer downloader
+  │   ├── tmdb.go                  # TMDb trailer fetcher
+  │   └── local.go                 # Local trailer scanner
+  ├── themes/
+  │   ├── extractor.go             # Extract theme from episodes
+  │   ├── tvthemes.go              # TV Themes database integration
+  │   └── detector.go              # Intro/outro detection
+  ├── chapters/
+  │   ├── detector.go              # Chapter detection
+  │   ├── silence.go               # Silence-based detection
+  │   └── black_frames.go          # Black frame detection
+  ├── handler.go                   # HTTP API handlers (ogen)
+  │   ├── GetTrailers()            # GET /api/v1/movies/:id/trailers
+  │   ├── GetTheme()               # GET /api/v1/series/:id/theme
+  │   ├── GetChapters()            # GET /api/v1/:type/:id/chapters
+  │   ├── CreateChapter()          # POST /api/v1/:type/:id/chapters
+  │   ├── GetCinemaModePrefs()     # GET /api/v1/users/:id/cinema-mode
+  │   └── StartPiP()               # POST /api/v1/playback/pip
+  ├── cache.go                     # L1 cache (otter)
+  │   └── CacheEnhancements()      # Cache enhancements per content
+  └── enhancements_test.go         # Unit tests
+
+  migrations/
+  └── 017_media_enhancements.sql   # Schema creation
+
+  web/src/lib/components/player/
+  ├── CinemaMode.svelte            # Cinema mode UI
+  ├── ChapterMarkers.svelte        # Chapter navigation UI
+  ├── PictureInPicture.svelte      # PiP controller
+  └── ThemePlayer.svelte           # Theme song player
+  ```
+
+file_structure: |
+  **Key Files**:
+  - `internal/playback/enhancements/service.go` - Core enhancement logic
+  - `internal/playback/enhancements/trailers/*.go` - Trailer management
+  - `internal/playback/enhancements/chapters/detector.go` - Chapter detection
+  - `web/src/lib/components/player/CinemaMode.svelte` - Cinema mode UI
+  - `migrations/017_media_enhancements.sql` - Database schema
+
+key_interfaces: |
+  ```go
+  // EnhancementService manages playback enhancements
+  type EnhancementService interface {
+    // Cinema Mode
+    GetCinemaPlaylist(ctx context.Context, movieID uuid.UUID, userID uuid.UUID) (*CinemaPlaylist, error)
+    GetCinemaModePreferences(ctx context.Context, userID uuid.UUID) (*CinemaModePreferences, error)
+    UpdateCinemaModePreferences(ctx context.Context, userID uuid.UUID, prefs CinemaModePreferences) error
+
+    // Trailers
+    GetTrailers(ctx context.Context, movieID uuid.UUID) ([]Trailer, error)
+    DownloadTrailer(ctx context.Context, movieID uuid.UUID, source string, sourceID string) (*Trailer, error)
+    ScanLocalTrailers(ctx context.Context) (int, error)
+
+    // Themes
+    GetTheme(ctx context.Context, seriesID uuid.UUID) (*Theme, error)
+    ExtractTheme(ctx context.Context, seriesID uuid.UUID) (*Theme, error)
+    FetchFromTVThemes(ctx context.Context, seriesID uuid.UUID) (*Theme, error)
+
+    // Chapters
+    GetChapters(ctx context.Context, contentType string, contentID uuid.UUID) ([]Chapter, error)
+    DetectChapters(ctx context.Context, contentType string, contentID uuid.UUID) ([]Chapter, error)
+    CreateChapter(ctx context.Context, chapter Chapter) error
+    UpdateChapter(ctx context.Context, chapterID uuid.UUID, updates ChapterUpdate) error
+    DeleteChapter(ctx context.Context, chapterID uuid.UUID) error
+
+    // Picture-in-Picture
+    StartPiP(ctx context.Context, session PiPSession) (*PiPSession, error)
+    GetActivePiP(ctx context.Context, userID uuid.UUID) (*PiPSession, error)
+    EndPiP(ctx context.Context, sessionID uuid.UUID) error
+  }
+
+  // EnhancementRepository handles database operations
+  type EnhancementRepository interface {
+    // Trailers
+    CreateTrailer(ctx context.Context, trailer Trailer) error
+    GetTrailers(ctx context.Context, movieID uuid.UUID) ([]Trailer, error)
+    DeleteTrailer(ctx context.Context, trailerID uuid.UUID) error
+
+    // Themes
+    CreateTheme(ctx context.Context, theme Theme) error
+    GetTheme(ctx context.Context, seriesID uuid.UUID) (*Theme, error)
+    UpdateTheme(ctx context.Context, theme Theme) error
+
+    // Chapters
+    CreateChapter(ctx context.Context, chapter Chapter) error
+    GetChapters(ctx context.Context, contentType string, contentID uuid.UUID) ([]Chapter, error)
+    UpdateChapter(ctx context.Context, chapter Chapter) error
+    DeleteChapter(ctx context.Context, chapterID uuid.UUID) error
+
+    // Cinema Mode
+    GetCinemaModePreferences(ctx context.Context, userID uuid.UUID) (*CinemaModePreferences, error)
+    UpsertCinemaModePreferences(ctx context.Context, prefs CinemaModePreferences) error
+
+    // PiP
+    CreatePiPSession(ctx context.Context, session PiPSession) error
+    GetActivePiPSession(ctx context.Context, userID uuid.UUID) (*PiPSession, error)
+    EndPiPSession(ctx context.Context, sessionID uuid.UUID) error
+  }
+
+  // TrailerService downloads and manages trailers
+  type TrailerService interface {
+    // DownloadFromYouTube downloads trailer from YouTube
+    DownloadFromYouTube(ctx context.Context, youtubeID string, destPath string) error
+
+    // FetchFromTMDb fetches trailer metadata from TMDb
+    FetchFromTMDb(ctx context.Context, tmdbID int) ([]TrailerMetadata, error)
+
+    // ScanLocal scans for local trailer files
+    ScanLocal(ctx context.Context, moviePath string) ([]string, error)
+  }
+
+  // ChapterDetector auto-detects chapter markers
+  type ChapterDetector interface {
+    // DetectBySilence detects chapters by silence gaps
+    DetectBySilence(ctx context.Context, filePath string, threshold float64) ([]Chapter, error)
+
+    // DetectByBlackFrames detects chapters by black frames
+    DetectByBlackFrames(ctx context.Context, filePath string) ([]Chapter, error)
+
+    // DetectIntroOutro detects intro/outro segments
+    DetectIntroOutro(ctx context.Context, contentType string, contentID uuid.UUID) (*Chapter, *Chapter, error)
+  }
+
+  // Types
+  type Trailer struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    MovieID         uuid.UUID       `db:"movie_id" json:"movie_id"`
+    Title           string          `db:"title" json:"title"`
+    FilePath        string          `db:"file_path" json:"file_path"`
+    DurationSeconds *int            `db:"duration_seconds" json:"duration_seconds,omitempty"`
+    Resolution      *string         `db:"resolution" json:"resolution,omitempty"`
+    Source          string          `db:"source" json:"source"`
+    SourceID        *string         `db:"source_id" json:"source_id,omitempty"`
+    TrailerType     string          `db:"trailer_type" json:"trailer_type"`
+    Language        string          `db:"language" json:"language"`
+    ReleaseDate     *time.Time      `db:"release_date" json:"release_date,omitempty"`
+    Priority        int             `db:"priority" json:"priority"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt       time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type Theme struct {
+    ID                uuid.UUID       `db:"id" json:"id"`
+    SeriesID          uuid.UUID       `db:"series_id" json:"series_id"`
+    FilePath          string          `db:"file_path" json:"file_path"`
+    IntroStartSeconds *float64        `db:"intro_start_seconds" json:"intro_start_seconds,omitempty"`
+    IntroEndSeconds   *float64        `db:"intro_end_seconds" json:"intro_end_seconds,omitempty"`
+    DurationSeconds   *int            `db:"duration_seconds" json:"duration_seconds,omitempty"`
+    Source            string          `db:"source" json:"source"`
+    CreatedAt         time.Time       `db:"created_at" json:"created_at"`
+  }
+
+  type Chapter struct {
+    ID                uuid.UUID       `db:"id" json:"id"`
+    ContentType       string          `db:"content_type" json:"content_type"`
+    ContentID         uuid.UUID       `db:"content_id" json:"content_id"`
+    StartTimeSeconds  float64         `db:"start_time_seconds" json:"start_time_seconds"`
+    EndTimeSeconds    float64         `db:"end_time_seconds" json:"end_time_seconds"`
+    Title             string          `db:"title" json:"title"`
+    ChapterType       *string         `db:"chapter_type" json:"chapter_type,omitempty"`
+    ConfidenceScore   *float64        `db:"confidence_score" json:"confidence_score,omitempty"`
+    DetectedBy        *string         `db:"detected_by" json:"detected_by,omitempty"`
+    CreatedAt         time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt         time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type CinemaModePreferences struct {
+    UserID        uuid.UUID       `db:"user_id" json:"user_id"`
+    Enabled       bool            `db:"enabled" json:"enabled"`
+    PlayTrailers  bool            `db:"play_trailers" json:"play_trailers"`
+    MaxTrailers   int             `db:"max_trailers" json:"max_trailers"`
+    TrailerTypes  []string        `db:"trailer_types" json:"trailer_types"`
+    PlayTheme     bool            `db:"play_theme" json:"play_theme"`
+    DimLights     bool            `db:"dim_lights" json:"dim_lights"`
+    CreatedAt     time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt     time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type PiPSession struct {
+    ID                     uuid.UUID       `db:"id" json:"id"`
+    UserID                 uuid.UUID       `db:"user_id" json:"user_id"`
+    PrimaryContentType     string          `db:"primary_content_type" json:"primary_content_type"`
+    PrimaryContentID       uuid.UUID       `db:"primary_content_id" json:"primary_content_id"`
+    PiPContentType         string          `db:"pip_content_type" json:"pip_content_type"`
+    PiPContentID           uuid.UUID       `db:"pip_content_id" json:"pip_content_id"`
+    PrimaryPositionSeconds *float64        `db:"primary_position_seconds" json:"primary_position_seconds,omitempty"`
+    PiPPositionSeconds     *float64        `db:"pip_position_seconds" json:"pip_position_seconds,omitempty"`
+    PiPSize                string          `db:"pip_size" json:"pip_size"`
+    PiPPosition            string          `db:"pip_position" json:"pip_position"`
+    StartedAt              time.Time       `db:"started_at" json:"started_at"`
+    EndedAt                *time.Time      `db:"ended_at" json:"ended_at,omitempty"`
+  }
+
+  type CinemaPlaylist struct {
+    Trailers []Trailer       `json:"trailers"`
+    Movie    *Movie          `json:"movie"`
+    Theme    *Theme          `json:"theme,omitempty"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid` - UUID handling
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/maypok86/otter` - L1 in-memory cache
+  - `github.com/riverqueue/river` - Background job queue
+  - `go.uber.org/fx` - Dependency injection
+  - `go.uber.org/zap` - Structured logging
+  - `github.com/asticode/go-astiav` - FFmpeg bindings for detection
+  - `github.com/kkdai/youtube/v2` - YouTube video downloader
+
+  **Frontend Packages**:
+  - `@sveltejs/kit` - SvelteKit framework
+  - `svelte` - Svelte 5 with runes
+  - `hls.js` - HLS playback
+  - `video.js` - Video player
+
+  **External APIs**:
+  - TMDb API - Trailer metadata
+  - YouTube API - Trailer downloads
+  - TV Themes database (optional)
+
+env_vars: |
+  ```bash
+  # Cinema mode
+  CINEMA_MODE_ENABLED=true                     # Enable cinema mode globally
+  CINEMA_MODE_DEFAULT_TRAILERS=2               # Default max trailers
+
+  # Trailers
+  TRAILERS_PATH=/path/to/trailers              # Storage path for trailers
+  TRAILERS_AUTO_DOWNLOAD=false                 # Auto-download trailers for new movies
+
+  # Themes
+  THEMES_PATH=/path/to/themes                  # Storage path for theme songs
+  THEMES_AUTO_EXTRACT=true                     # Auto-extract themes from episodes
+
+  # YouTube
+  YOUTUBE_ENABLED=true                         # Enable YouTube trailer downloads
+  YOUTUBE_QUALITY=1080p                        # Preferred quality
+
+  # Chapter detection
+  CHAPTERS_AUTO_DETECT=true                    # Auto-detect chapters
+  CHAPTERS_SILENCE_THRESHOLD=-30dB             # Silence detection threshold
+  ```
+
+config_keys: |
+  ```yaml
+  enhancements:
+    cinema_mode:
+      enabled: true
+      default_max_trailers: 2
+      default_trailer_types:
+        - trailer
+        - teaser
+      auto_download_trailers: false
+
+    trailers:
+      storage_path: /path/to/trailers
+      youtube:
+        enabled: true
+        quality: 1080p
+        format: mp4
+      tmdb:
+        enabled: true
+        preferred_language: en
+
+    themes:
+      storage_path: /path/to/themes
+      auto_extract: true
+      extraction:
+        min_episodes: 3                # Need at least 3 episodes to detect pattern
+        confidence_threshold: 0.85     # Minimum confidence for auto-detection
+
+    chapters:
+      auto_detect: true
+      detection:
+        silence_threshold: -30         # dB
+        silence_duration: 1.0          # seconds
+        black_frame_threshold: 32      # pixel value (0-255)
+        black_frame_duration: 2.0      # seconds
+
+    pip:
+      enabled: true
+      default_size: small
+      default_position: bottom-right
+      allowed_combinations:
+        - primary: live_tv
+          pip: [movie, episode, live_tv]
+        - primary: movie
+          pip: [live_tv]
+  ```
+
+component_interaction: |
+  **Cinema Mode Playback Flow**:
+  1. User clicks "Play" on movie with cinema mode enabled
+  2. Service calls `GetCinemaPlaylist(movieID, userID)`
+  3. Service fetches user's cinema mode preferences
+  4. If play_trailers=true:
+     a. Fetch trailers for movie (up to max_trailers)
+     b. Filter by trailer_types preference
+     c. Sort by priority
+  5. Build playlist: [trailer1, trailer2, movie]
+  6. Return playlist to client
+  7. Client plays trailers then movie in sequence
+
+  **Theme Extraction Flow**:
+  1. New series added to library
+  2. Background job triggers theme extraction
+  3. Service fetches first 3-5 episodes
+  4. FFmpeg extracts audio fingerprints
+  5. Compare fingerprints to find common segment (intro)
+  6. Extract matching segment as theme file
+  7. Store theme with intro_start and intro_end times
+  8. When playing episode, client can skip to intro_end
+
+  **Chapter Detection Flow**:
+  1. New movie/episode added
+  2. Background job triggers chapter detection
+  3. Detector runs multiple methods:
+     a. Silence detection (gaps between chapters)
+     b. Black frame detection (scene changes)
+     c. Intro/outro detection (for episodes)
+  4. Combine results with confidence scores
+  5. Store detected chapters
+  6. Client displays chapter markers on timeline
+
+  **PiP Flow**:
+  1. User watching live TV
+  2. User wants to watch movie without stopping TV
+  3. Client calls `StartPiP()` with primary=live_tv, pip=movie
+  4. Server creates PiP session
+  5. Client renders main player (live TV) + small PiP player (movie)
+  6. Both players sync positions to server
+  7. User can swap primary/PiP or end PiP
+
+api_endpoints: |
+  **Endpoints**:
+  ```
+  # Cinema Mode
+  GET    /api/v1/users/:id/cinema-mode                  # Get user cinema preferences
+  PUT    /api/v1/users/:id/cinema-mode                  # Update cinema preferences
+  GET    /api/v1/movies/:id/cinema-playlist             # Get cinema mode playlist
+
+  # Trailers
+  GET    /api/v1/movies/:id/trailers                    # Get trailers for movie
+  POST   /api/v1/movies/:id/trailers                    # Download/add trailer
+  DELETE /api/v1/trailers/:id                           # Delete trailer
+
+  # Themes
+  GET    /api/v1/series/:id/theme                       # Get theme for series
+  POST   /api/v1/series/:id/theme/extract               # Extract theme from episodes
+  DELETE /api/v1/series/:id/theme                       # Delete theme
+
+  # Chapters
+  GET    /api/v1/:type/:id/chapters                     # Get chapters
+  POST   /api/v1/:type/:id/chapters                     # Create chapter
+  POST   /api/v1/:type/:id/chapters/detect              # Auto-detect chapters
+  PUT    /api/v1/chapters/:id                           # Update chapter
+  DELETE /api/v1/chapters/:id                           # Delete chapter
+
+  # Picture-in-Picture
+  POST   /api/v1/playback/pip                           # Start PiP session
+  GET    /api/v1/playback/pip                           # Get active PiP
+  DELETE /api/v1/playback/pip/:id                       # End PiP session
+  ```
+
+  **Request/Response Examples**:
+
+  **Get Cinema Playlist**:
+  ```http
+  GET /api/v1/movies/550e8400-e29b-41d4-a716-446655440000/cinema-playlist
+
+  Response 200 OK:
+  {
+    "trailers": [
+      {
+        "id": "660e8400-e29b-41d4-a716-446655440001",
+        "title": "Official Trailer",
+        "file_path": "/trailers/movie-trailer-1.mp4",
+        "duration_seconds": 150,
+        "resolution": "1080p",
+        "source": "youtube",
+        "trailer_type": "trailer"
+      }
+    ],
+    "movie": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Example Movie",
+      "file_path": "/movies/example.mp4"
+    }
+  }
+  ```
+
+  **Extract Theme**:
+  ```http
+  POST /api/v1/series/770e8400-e29b-41d4-a716-446655440002/theme/extract
+
+  Response 202 Accepted:
+  {
+    "message": "Theme extraction job queued",
+    "job_id": "880e8400-e29b-41d4-a716-446655440003"
+  }
+  ```
+
+  **Get Chapters**:
+  ```http
+  GET /api/v1/episode/990e8400-e29b-41d4-a716-446655440004/chapters
+
+  Response 200 OK:
+  {
+    "chapters": [
+      {
+        "id": "aa0e8400-e29b-41d4-a716-446655440005",
+        "content_type": "episode",
+        "content_id": "990e8400-e29b-41d4-a716-446655440004",
+        "start_time_seconds": 0,
+        "end_time_seconds": 90,
+        "title": "Recap",
+        "chapter_type": "recap",
+        "confidence_score": 0.92,
+        "detected_by": "chromaprint"
+      },
+      {
+        "id": "bb0e8400-e29b-41d4-a716-446655440006",
+        "start_time_seconds": 90,
+        "end_time_seconds": 150,
+        "title": "Intro",
+        "chapter_type": "intro",
+        "confidence_score": 0.95,
+        "detected_by": "chromaprint"
+      }
+    ]
+  }
+  ```
+
+  **Start PiP**:
+  ```http
+  POST /api/v1/playback/pip
+  {
+    "user_id": "cc0e8400-e29b-41d4-a716-446655440007",
+    "primary_content_type": "live_tv",
+    "primary_content_id": "dd0e8400-e29b-41d4-a716-446655440008",
+    "pip_content_type": "movie",
+    "pip_content_id": "550e8400-e29b-41d4-a716-446655440000",
+    "pip_size": "small",
+    "pip_position": "bottom-right"
+  }
+
+  Response 201 Created:
+  {
+    "id": "ee0e8400-e29b-41d4-a716-446655440009",
+    "user_id": "cc0e8400-e29b-41d4-a716-446655440007",
+    "primary_content_type": "live_tv",
+    "pip_content_type": "movie",
+    "pip_size": "small",
+    "pip_position": "bottom-right",
+    "started_at": "2026-01-31T15:30:00Z"
+  }
+  ```
+
+unit_tests: |
+  ```go
+  // internal/playback/enhancements/enhancements_test.go
+
+  func TestEnhancementService_GetCinemaPlaylist(t *testing.T) {
+    tests := []struct {
+      name          string
+      movieID       uuid.UUID
+      prefs         CinemaModePreferences
+      trailers      []Trailer
+      wantTrailers  int
+    }{
+      {
+        name:    "cinema mode enabled with 2 trailers",
+        prefs:   CinemaModePreferences{Enabled: true, PlayTrailers: true, MaxTrailers: 2},
+        trailers: makeTrailers(3),
+        wantTrailers: 2,
+      },
+      {
+        name:    "cinema mode disabled",
+        prefs:   CinemaModePreferences{Enabled: false},
+        trailers: makeTrailers(3),
+        wantTrailers: 0,
+      },
+    }
+
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestChapterDetector_DetectBySilence(t *testing.T) {
+    detector := NewChapterDetector()
+    chapters, err := detector.DetectBySilence(ctx, "testdata/video.mp4", -30.0)
+    require.NoError(t, err)
+
+    assert.Greater(t, len(chapters), 0)
+    for _, ch := range chapters {
+      assert.Greater(t, ch.EndTimeSeconds, ch.StartTimeSeconds)
+    }
+  }
+  ```
+
+  **Coverage Target**: ≥85%
+
+  **Key Test Areas**:
+  - Cinema playlist generation
+  - Trailer downloading and management
+  - Theme extraction logic
+  - Chapter detection algorithms
+  - PiP session management
+  - User preference handling
+
+integration_tests: |
+  ```go
+  // tests/integration/playback/enhancements_test.go
+
+  func TestEnhancements_CinemaMode(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    // Setup
+    srv := setupEnhancementService(t, db)
+    userID := uuid.New()
+    movieID := uuid.New()
+
+    // Set preferences
+    prefs := CinemaModePreferences{
+      UserID: userID,
+      Enabled: true,
+      PlayTrailers: true,
+      MaxTrailers: 2,
+    }
+    err := srv.UpdateCinemaModePreferences(ctx, userID, prefs)
+    require.NoError(t, err)
+
+    // Add trailers
+    for i := 0; i < 3; i++ {
+      trailer := Trailer{
+        MovieID: movieID,
+        Title: fmt.Sprintf("Trailer %d", i+1),
+        FilePath: fmt.Sprintf("/trailers/trailer%d.mp4", i+1),
+        Priority: i,
+      }
+      err = srv.repository.CreateTrailer(ctx, trailer)
+      require.NoError(t, err)
+    }
+
+    // Get cinema playlist
+    playlist, err := srv.GetCinemaPlaylist(ctx, movieID, userID)
+    require.NoError(t, err)
+
+    // Verify
+    assert.Len(t, playlist.Trailers, 2) // Max 2 trailers
+    assert.NotNil(t, playlist.Movie)
+  }
+
+  func TestEnhancements_ChapterDetection(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    srv := setupEnhancementService(t, db)
+
+    // Create test video with silent gaps
+    testVideo := createTestVideoWithSilence(t)
+
+    // Detect chapters
+    chapters, err := srv.DetectChapters(ctx, "movie", uuid.New())
+    require.NoError(t, err)
+
+    // Verify detected chapters
+    assert.Greater(t, len(chapters), 0)
+    for _, ch := range chapters {
+      assert.NotEmpty(t, ch.Title)
+      assert.Greater(t, ch.ConfidenceScore, 0.5)
+    }
+  }
+  ```
+
+  **Coverage Target**: ≥80%
+
+  **Integration Test Scenarios**:
+  - Full cinema mode workflow
+  - Trailer download from YouTube
+  - Theme extraction with FFmpeg
+  - Chapter detection with real video files
+  - PiP session persistence
+  - PostgreSQL queries for enhancements

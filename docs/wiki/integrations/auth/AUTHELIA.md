@@ -24,7 +24,7 @@
 
 > Single sign-on with Authelia
 
-Use Authelia as your identity provider for Revenge. Log in once and access all your self-hosted services. Supports two-factor authentication, WebAuthn security keys, and single sign-on. Configure in Revenge settings by entering your Authelia server URL and client credentials.
+Connect Revenge to your Authelia identity provider for centralized authentication in homelab setups. Authelia provides OIDC with LDAP or file-based backends, perfect for self-hosted environments. Supports two-factor authentication, access control policies, and group-based role mapping.
 
 ---
 
@@ -66,8 +66,8 @@ Use Authelia as your identity provider for Revenge. Log in once and access all y
 
 Official documentation and guides:
 - [Authelia Documentation](../../../sources/security/authelia.md)
-- [Authentik Documentation](../../../sources/security/authentik.md)
-- [Keycloak Documentation](../../../sources/security/keycloak.md)
+- [Authelia OIDC Guide](https://www.authelia.com/integration/openid-connect/introduction/)
+- [Authelia Configuration](https://www.authelia.com/configuration/prologue/introduction/)
 
 
 

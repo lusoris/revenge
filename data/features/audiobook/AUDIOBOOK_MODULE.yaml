@@ -16,15 +16,15 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Audiobook content management with metadata enrichment from Audnexus
-  and OpenLibrary
+technical_summary: '> Audiobook content management with metadata enrichment from Chaptarr
+  and external providers
 
 
   Complete audiobook library:
 
-  - **Chaptarr Integration**: Automated audiobook management and metadata sync
+  - **Metadata Sources**: Chaptarr (PRIMARY - aggregates Audnexus/OpenLibrary), with direct APIs as supplementary
 
-  - **Metadata Sources**: Audnexus (primary), OpenLibrary, Goodreads
+  - **Download Automation**: Chaptarr integration for automated audiobook management
 
   - **Supported Formats**: M4B (with chapters), MP3 (multi-file), AAC
 
@@ -34,9 +34,11 @@ technical_summary: '> Audiobook content management with metadata enrichment from
 wiki_tagline: '> Your audiobook library with chapter navigation and progress sync'
 wiki_overview: The Audiobook Module provides a complete audiobook experience with
   support for chapter navigation, progress tracking, and multi-device synchronization.
-  It integrates with Chaptarr for automated audiobook management and uses Audnexus
-  for rich metadata including narrators, publishers, and book descriptions. Resume
-  playback across devices and adjust playback speed to your preference.
+  Uses Chaptarr as the PRIMARY metadata source (aggregates from Audnexus/OpenLibrary
+  locally), with direct APIs as supplementary enrichment. Chaptarr integration provides
+  both metadata caching and download automation. Rich metadata includes narrators,
+  publishers, and book descriptions. Resume playback across devices and adjust playback
+  speed to your preference.
 sources:
 - name: Audnexus API
   url: https://api.audnex.us/
@@ -75,6 +77,14 @@ design_refs:
   path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../architecture/03_METADATA_SYSTEM.md
+- title: CHAPTARR (PRIMARY metadata + downloads)
+  path: ../../integrations/servarr/CHAPTARR.md
+- title: AUDNEXUS (supplementary audiobook metadata)
+  path: ../../integrations/metadata/AUDNEXUS.md
+- title: OPENLIBRARY (supplemental book metadata)
+  path: ../../integrations/metadata/OPENLIBRARY.md
+- title: GOODREADS (ratings + reviews)
+  path: ../../integrations/metadata/GOODREADS.md
 feature_name: Audiobook Module
 module_name: audiobook
 schema_name: public
@@ -129,8 +139,85 @@ metadata_sources:
   purpose: Ratings and reviews
   priority: 4
   fields: Average rating, review count, community reviews
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+  - `audiobooks`: Audiobook metadata
+  - `audiobook_files`: Physical audio files
+  - `audiobook_chapters`: Chapter markers and metadata
+  - `audiobook_authors`: Book authors/writers
+  - `audiobook_narrators`: Voice narrators
+  - `audiobook_book_authors`: Book-author associations
+  - `audiobook_book_narrators`: Book-narrator associations
+  - `audiobook_series`: Audiobook series
+  - `audiobook_series_members`: Books in series with position
+  - `audiobook_playback_progress`: Per-user playback progress
+  - `audiobook_bookmarks`: User bookmarks with notes
+  - `audiobook_metadata_cache`: Cached metadata from providers
+
+  **Key Columns** (`audiobooks`):
+  - `id` (UUID): Primary key
+  - `title` (TEXT): Audiobook title
+  - `subtitle` (TEXT): Audiobook subtitle
+  - `description` (TEXT): Book description/synopsis
+  - `publisher` (TEXT): Publisher name
+  - `publish_date` (DATE): Publication date
+  - `language` (TEXT): Language code (ISO 639-1)
+  - `duration` (INTEGER): Total duration in seconds
+  - `cover_path` (TEXT): Cover image path
+  - `series_id` (UUID): Series foreign key (nullable)
+  - `series_position` (DECIMAL): Position in series
+  - `asin` (TEXT): Amazon ASIN
+  - `isbn` (TEXT): ISBN (if applicable)
+  - `audnexus_id` (TEXT): Audnexus identifier
+  - `goodreads_id` (TEXT): Goodreads identifier
+  - `chaptarr_id` (INTEGER): Chaptarr book ID
+  - `rating` (DECIMAL): Average rating (0-5)
+  - `ratings_count` (INTEGER): Number of ratings
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`audiobook_chapters`):
+  - `id` (UUID): Primary key
+  - `audiobook_id` (UUID): Audiobook foreign key
+  - `chapter_number` (INTEGER): Chapter index
+  - `title` (TEXT): Chapter title
+  - `start_time` (INTEGER): Start time in milliseconds
+  - `end_time` (INTEGER): End time in milliseconds
+  - `duration` (INTEGER): Chapter duration in milliseconds
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Key Columns** (`audiobook_playback_progress`):
+  - `id` (UUID): Primary key
+  - `user_id` (UUID): User foreign key
+  - `audiobook_id` (UUID): Audiobook foreign key
+  - `current_time` (INTEGER): Current playback position in seconds
+  - `progress_percent` (DECIMAL): Completion percentage (0-100)
+  - `current_chapter` (INTEGER): Current chapter number
+  - `playback_speed` (DECIMAL): Playback speed (0.5-3.0)
+  - `total_listening_time` (INTEGER): Total seconds listened
+  - `last_played_at` (TIMESTAMPTZ): Last playback timestamp
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`audiobook_narrators`):
+  - `id` (UUID): Primary key
+  - `name` (TEXT): Narrator name
+  - `photo_path` (TEXT): Narrator photo path
+  - `audnexus_id` (TEXT): Audnexus narrator ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Indexes**:
+  - `idx_audiobooks_asin` on `asin`
+  - `idx_audiobooks_isbn` on `isbn`
+  - `idx_audiobooks_audnexus_id` on `audnexus_id`
+  - `idx_audiobooks_chaptarr_id` on `chaptarr_id`
+  - `idx_audiobooks_series_id` on `series_id`
+  - `idx_audiobooks_title_trgm` (GIN trigram) for fuzzy search
+  - `idx_audiobook_chapters_audiobook_id` on `audiobook_id`
+  - `idx_audiobook_playback_user_book` on (`user_id`, `audiobook_id`)
+  - `idx_audiobook_bookmarks_user_book` on (`user_id`, `audiobook_id`)
 playback_features:
   streaming_protocol: HLS (HTTP Live Streaming)
   chapter_navigation: Jump to any chapter instantly
@@ -198,6 +285,461 @@ module_structure: "```\n  internal/content/audiobook/\n  ├── module.go    
   \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
   \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
   \              # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+component_interaction: |
+  1. **Request Flow**:
+     - Client sends HTTP request to `/api/v1/audiobooks/*`
+     - API handler (ogen) validates request and calls service
+     - Service checks cache for existing data
+     - If cache miss, service calls repository for database query
+     - Repository executes SQL via sqlc-generated code
+     - Results flow back through service → handler → client
+
+  2. **Metadata Enrichment**:
+     - Chaptarr webhook triggers on new audiobook addition
+     - Service fetches metadata from Chaptarr API (includes Audnexus data)
+     - Service extracts chapter markers from M4B file
+     - Service stores audiobook, author, narrator, and chapter data
+     - Service downloads cover image
+     - Cache is populated with enriched metadata
+
+  3. **Audiobook Streaming**:
+     - Client requests stream via `/api/v1/audiobooks/{id}/stream`
+     - Service checks user permissions and file format
+     - Service generates HLS manifest with chapter markers
+     - If transcoding needed, FFmpeg worker job is created
+     - HLS segments are generated with chapter boundaries
+     - Client plays audio with chapter-aware seeking
+
+  4. **Progress Tracking**:
+     - Client sends progress updates via WebSocket
+     - Service updates playback_progress table
+     - Progress synced to all user's devices in real-time
+     - Last playback position and chapter restored when opening audiobook
+     - Listening statistics updated (total time, completion)
+
+# Implementation
+file_structure: |
+  ```
+  internal/content/audiobook/
+  ├── module.go              # fx.Module with all providers
+  ├── repository.go          # Database layer
+  ├── repository_test.go     # Repository tests (testcontainers)
+  ├── service.go             # Business logic
+  ├── service_test.go        # Service tests (mocks)
+  ├── handler.go             # HTTP handlers
+  ├── handler_test.go        # Handler tests (httptest)
+  ├── types.go               # Domain types
+  ├── cache.go               # Caching logic
+  ├── cache_test.go          # Cache tests
+  ├── chapters/
+  │   ├── extractor.go       # Chapter extraction from M4B/MP3
+  │   ├── extractor_test.go  # Chapter extraction tests
+  │   └── generator.go       # Chapter generation for multi-file
+  ├── streaming/
+  │   ├── transcoder.go      # FFmpeg transcoding logic
+  │   ├── hls.go             # HLS manifest generation
+  │   └── chapters.go        # Chapter-aware HLS segments
+  ├── metadata/
+  │   ├── provider.go        # Interface: MetadataProvider
+  │   ├── chaptarr.go        # Chaptarr API integration
+  │   ├── audnexus.go        # Audnexus API integration
+  │   ├── openlibrary.go     # OpenLibrary API integration
+  │   └── enricher.go        # Enrichment orchestration
+  └── progress/
+      ├── tracker.go         # Playback progress tracking
+      ├── sync.go            # Multi-device sync logic
+      └── statistics.go      # Listening statistics
+
+  migrations/
+  └── audiobooks/
+      ├── 001_audiobooks.sql # Audiobooks schema
+      ├── 002_chapters.sql   # Chapters schema
+      └── 003_progress.sql   # Progress tracking schema
+
+  api/
+  └── openapi.yaml           # OpenAPI spec (audiobooks/* endpoints)
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository defines database operations for audiobooks
+  type Repository interface {
+      // Audiobook CRUD
+      GetAudiobook(ctx context.Context, id uuid.UUID) (*Audiobook, error)
+      ListAudiobooks(ctx context.Context, filters ListFilters) ([]Audiobook, error)
+      CreateAudiobook(ctx context.Context, audiobook *Audiobook) error
+      UpdateAudiobook(ctx context.Context, audiobook *Audiobook) error
+      DeleteAudiobook(ctx context.Context, id uuid.UUID) error
+
+      // Chapter operations
+      GetChapters(ctx context.Context, audiobookID uuid.UUID) ([]Chapter, error)
+      CreateChapter(ctx context.Context, chapter *Chapter) error
+      UpdateChapter(ctx context.Context, chapter *Chapter) error
+
+      // Author and narrator operations
+      GetAuthor(ctx context.Context, id uuid.UUID) (*Author, error)
+      GetNarrator(ctx context.Context, id uuid.UUID) (*Narrator, error)
+      ListNarrators(ctx context.Context) ([]Narrator, error)
+
+      // Progress tracking
+      GetProgress(ctx context.Context, userID, audiobookID uuid.UUID) (*PlaybackProgress, error)
+      UpdateProgress(ctx context.Context, progress *PlaybackProgress) error
+      GetListeningStatistics(ctx context.Context, userID uuid.UUID) (*Statistics, error)
+
+      // Bookmarks
+      CreateBookmark(ctx context.Context, bookmark *Bookmark) error
+      ListBookmarks(ctx context.Context, userID, audiobookID uuid.UUID) ([]Bookmark, error)
+  }
+
+  // Service defines business logic for audiobooks
+  type Service interface {
+      // Audiobook operations
+      GetAudiobook(ctx context.Context, id uuid.UUID) (*Audiobook, error)
+      SearchAudiobooks(ctx context.Context, query string, filters SearchFilters) ([]Audiobook, error)
+      EnrichAudiobook(ctx context.Context, id uuid.UUID) error
+
+      // Streaming operations
+      GetStreamURL(ctx context.Context, audiobookID uuid.UUID, format string) (string, error)
+      GetChapters(ctx context.Context, audiobookID uuid.UUID) ([]Chapter, error)
+
+      // Progress operations
+      UpdateProgress(ctx context.Context, userID, audiobookID uuid.UUID, progress ProgressUpdate) error
+      GetResumePoint(ctx context.Context, userID, audiobookID uuid.UUID) (*ResumePoint, error)
+  }
+
+  // MetadataProvider fetches audiobook metadata from external sources
+  type MetadataProvider interface {
+      GetAudiobookByASIN(ctx context.Context, asin string) (*AudiobookMetadata, error)
+      GetAudiobookByISBN(ctx context.Context, isbn string) (*AudiobookMetadata, error)
+      GetAuthorByID(ctx context.Context, providerID string) (*AuthorMetadata, error)
+      GetNarratorByID(ctx context.Context, providerID string) (*NarratorMetadata, error)
+      SearchAudiobooks(ctx context.Context, query string) ([]AudiobookMetadata, error)
+  }
+
+  // ChapterExtractor extracts chapter information from audiobook files
+  type ChapterExtractor interface {
+      // ExtractFromM4B extracts chapters from M4B file metadata
+      ExtractFromM4B(ctx context.Context, filePath string) ([]Chapter, error)
+
+      // GenerateFromMultiFile creates chapters from multi-file structure
+      GenerateFromMultiFile(ctx context.Context, files []string) ([]Chapter, error)
+
+      // SupportedFormats returns formats this extractor can handle
+      SupportedFormats() []string
+  }
+
+  // ProgressTracker manages playback progress synchronization
+  type ProgressTracker interface {
+      // UpdateProgress updates user's playback position
+      UpdateProgress(ctx context.Context, update ProgressUpdate) error
+
+      // GetProgress retrieves current playback position
+      GetProgress(ctx context.Context, userID, audiobookID uuid.UUID) (*PlaybackProgress, error)
+
+      // SyncProgress synchronizes progress across devices
+      SyncProgress(ctx context.Context, userID uuid.UUID) error
+
+      // RecordListeningTime updates total listening time statistics
+      RecordListeningTime(ctx context.Context, userID, audiobookID uuid.UUID, seconds int) error
+  }
+  ```
+
+dependencies: |
+  **Go Dependencies**:
+  - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+  - `github.com/google/uuid` - UUID generation
+  - `github.com/maypok86/otter` - In-memory cache
+  - `github.com/asticode/go-astiav` - FFmpeg bindings for audio processing
+  - `github.com/dhowden/tag` - Audio file metadata reading (for M4B chapters)
+  - `github.com/go-resty/resty/v2` - HTTP client for external APIs
+  - `go.uber.org/fx` - Dependency injection
+  - `github.com/riverqueue/river` - Background job queue
+  - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
+
+  **External APIs** (priority order):
+  - **Chaptarr API** - PRIMARY metadata source (local Audnexus/OpenLibrary cache) + download automation
+  - **Audnexus API** - Supplementary metadata (via proxy/VPN when Chaptarr lacks data)
+  - **OpenLibrary API** - Supplemental book metadata (via proxy/VPN)
+  - **Goodreads API** - Ratings and reviews (via proxy/VPN)
+
+  **External Tools**:
+  - FFmpeg 7.0+ - Audio transcoding and chapter extraction
+
+  **Database**:
+  - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
+env_vars: |
+  **Environment Variables**:
+  - `REVENGE_AUDIOBOOK_CACHE_TTL` - Cache TTL duration (default: 20m)
+  - `REVENGE_AUDIOBOOK_CACHE_SIZE` - Cache size in MB (default: 150)
+  - `REVENGE_CHAPTARR_URL` - Chaptarr instance URL (optional)
+  - `REVENGE_CHAPTARR_API_KEY` - Chaptarr API key (optional)
+  - `REVENGE_METADATA_AUDNEXUS_RATE_LIMIT` - Rate limit per second (default: 10)
+  - `REVENGE_AUDIOBOOK_STREAMING_QUALITY` - Streaming quality preset (low, medium, high)
+  - `REVENGE_AUDIOBOOK_PROGRESS_SYNC_INTERVAL` - Progress sync interval in seconds (default: 15)
+  - `REVENGE_AUDIOBOOK_CHAPTER_EXTRACTION_ENABLED` - Enable automatic chapter extraction (default: true)
+
+config_keys: |
+  **config.yaml keys**:
+  ```yaml
+  audiobook:
+    cache:
+      ttl: 20m
+      size_mb: 150
+
+    metadata:
+      priority:
+        - chaptarr     # PRIMARY: Local Audnexus/OpenLibrary cache
+        - audnexus     # Supplementary: Direct API (via proxy/VPN)
+        - openlibrary  # Supplemental (via proxy/VPN)
+
+      chaptarr:
+        enabled: true       # Should be enabled for PRIMARY metadata
+        url: ${REVENGE_CHAPTARR_URL}
+        api_key: ${REVENGE_CHAPTARR_API_KEY}
+        sync_interval: 30m
+
+      audnexus:
+        api_url: https://api.audnex.us
+        rate_limit: 10  # Requests per second
+        timeout: 15s
+        proxy: tor  # Route through proxy/VPN (see HTTP_CLIENT service)
+
+      openlibrary:
+        rate_limit: 5
+        enabled: true
+        proxy: tor  # Route through proxy/VPN
+
+    streaming:
+      quality: high  # low, medium, high
+      formats:
+        - aac: {bitrate: 128, codec: aac}
+        - opus: {bitrate: 96, codec: libopus}
+      cache_segments: true
+      segment_duration: 10  # seconds
+
+    chapters:
+      auto_extract: true
+      multi_file_detection: true
+      cache_chapter_data: true
+
+    progress:
+      sync_interval: 15s
+      autosave_interval: 5s
+      track_listening_time: true
+      sync_to_chaptarr: false
+
+    playback:
+      speed_options: [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0]
+      sleep_timer_options: [5, 10, 15, 30, 45, 60, "end_of_chapter"]
+      offline_downloads_enabled: true
+  ```
+
+defaults: |
+  - Cache TTL: 20 minutes
+  - Cache size: 150 MB
+  - Chaptarr integration: Disabled by default
+  - Audnexus rate limit: 10 requests/second
+  - Streaming quality: high
+  - Chapter auto-extraction: enabled
+  - Progress sync interval: 15 seconds
+  - Playback speed options: 0.5x to 3.0x
+  - Sleep timer options: 5-60 minutes or end of chapter
+  - Metadata priority: Chaptarr → Audnexus → OpenLibrary
+
+# API Endpoints (additional to those already listed)
+request_examples: |
+  **List audiobooks with filters**:
+  ```http
+  GET /api/v1/audiobooks?narrator=narrator-uuid&series=series-uuid&limit=20&offset=0
+  Authorization: Bearer {token}
+  ```
+
+  **Get audiobook with chapters**:
+  ```http
+  GET /api/v1/audiobooks/550e8400-e29b-41d4-a716-446655440000?include=chapters,narrators
+  Authorization: Bearer {token}
+  ```
+
+  **Get streaming URL**:
+  ```http
+  GET /api/v1/audiobooks/550e8400-e29b-41d4-a716-446655440000/stream?quality=high&speed=1.5
+  Authorization: Bearer {token}
+  ```
+
+  **Update playback progress**:
+  ```http
+  PUT /api/v1/audiobooks/550e8400-e29b-41d4-a716-446655440000/progress
+  Authorization: Bearer {token}
+  Content-Type: application/json
+
+  {
+    "current_time": 3625,
+    "current_chapter": 5,
+    "playback_speed": 1.5
+  }
+  ```
+
+  **Create bookmark**:
+  ```http
+  POST /api/v1/audiobooks/550e8400-e29b-41d4-a716-446655440000/bookmarks
+  Authorization: Bearer {token}
+  Content-Type: application/json
+
+  {
+    "time": 3625,
+    "note": "Important plot point"
+  }
+  ```
+
+response_examples: |
+  **Audiobook details response**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "The Hobbit",
+    "subtitle": "or There and Back Again",
+    "description": "A great adventure...",
+    "publisher": "HarperCollins",
+    "publish_date": "2012-09-18",
+    "language": "en",
+    "duration": 42300,
+    "cover_path": "/audiobooks/covers/hobbit.jpg",
+    "authors": [
+      {
+        "id": "...",
+        "name": "J.R.R. Tolkien"
+      }
+    ],
+    "narrators": [
+      {
+        "id": "...",
+        "name": "Andy Serkis"
+      }
+    ],
+    "series": {
+      "id": "...",
+      "name": "Middle-earth",
+      "position": 0
+    },
+    "asin": "B09NBLF6LH",
+    "chapter_count": 19,
+    "rating": 4.8,
+    "ratings_count": 15000,
+    "user_progress": {
+      "current_time": 3625,
+      "progress_percent": 8.6,
+      "current_chapter": 5,
+      "last_played_at": "2024-01-15T20:30:00Z"
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+  **Chapters list response**:
+  ```json
+  {
+    "chapters": [
+      {
+        "id": "...",
+        "chapter_number": 1,
+        "title": "An Unexpected Party",
+        "start_time": 0,
+        "end_time": 2340000,
+        "duration": 2340000
+      },
+      {
+        "id": "...",
+        "chapter_number": 2,
+        "title": "Roast Mutton",
+        "start_time": 2340000,
+        "end_time": 4560000,
+        "duration": 2220000
+      }
+    ],
+    "total": 19
+  }
+  ```
+
+  **Stream URL response**:
+  ```json
+  {
+    "stream_url": "https://revenge.example.com/stream/audiobooks/550e8400.../master.m3u8",
+    "format": "hls",
+    "codec": "aac",
+    "bitrate": 128,
+    "playback_speed": 1.5,
+    "chapters_embedded": true,
+    "expires_at": "2024-01-15T21:30:00Z"
+  }
+  ```
+
+# Testing
+unit_tests: |
+  **Repository Tests** (with testcontainers):
+  - Test CRUD operations for audiobooks
+  - Test chapter management
+  - Test author and narrator associations
+  - Test progress tracking
+  - Test bookmarks
+  - Test listening statistics
+  - Test concurrent access
+
+  **Service Tests** (with mocks):
+  - Test business logic with mocked repository
+  - Test metadata enrichment flow (Chaptarr → Audnexus → fallbacks)
+  - Test cache hit/miss scenarios
+  - Test error handling
+  - Test rate limiting
+
+  **Handler Tests** (with httptest):
+  - Test HTTP request/response handling
+  - Test authentication/authorization
+  - Test request validation
+  - Test error responses
+  - Test pagination
+
+  **Chapter Extraction Tests**:
+  - Test M4B chapter extraction
+  - Test multi-file chapter generation
+  - Test chapter marker validation
+  - Test edge cases (missing chapters, invalid timestamps)
+
+  **Progress Tracking Tests**:
+  - Test progress update logic
+  - Test multi-device sync
+  - Test listening time accumulation
+  - Test chapter-aware progress
+
+integration_tests: |
+  **Full Stack Tests**:
+  - Test complete request flow (client → database)
+  - Test metadata enrichment with real Audnexus API (rate-limited)
+  - Test Chaptarr integration (mocked)
+  - Test audiobook streaming end-to-end
+  - Test chapter navigation during playback
+  - Test progress sync across simulated devices
+
+  **Database Tests**:
+  - Test migrations (up/down)
+  - Test indexes performance
+  - Test foreign key constraints
+  - Test transaction isolation
+  - Test trigram search performance
+
+  **Streaming Tests**:
+  - Test HLS playback with chapter markers
+  - Test variable speed playback
+  - Test sleep timer functionality
+  - Test offline download capability
+
+test_coverage_target: |
+  - **Overall**: 80% minimum
+  - **Repository**: 90% (critical path)
+  - **Service**: 85% (business logic)
+  - **Handler**: 75% (integration layer)
+  - **Metadata providers**: 70% (external dependency)
+  - **Chapter extraction**: 85% (critical functionality)
+  - **Progress tracking**: 90% (critical for user experience)

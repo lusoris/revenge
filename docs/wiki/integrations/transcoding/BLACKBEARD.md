@@ -22,9 +22,9 @@
 
 # Blackbeard
 
-> Offload transcoding to dedicated workers
+> Blackbeard - External transcoding offloading
 
-Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensive transcoding from your main server. Supports hardware acceleration (NVENC, QSV, VAAPI). Multiple workers can process jobs in parallel. Reduces load on the Revenge server for better playback performance.
+EXTERNAL transcoding service integration. Blackbeard is a **third-party distributed transcoding service** (not developed by us) that Revenge can optionally integrate with to offload CPU/GPU-intensive video processing. Revenge has **INTERNAL basic transcoding** via go-astiav/FFmpeg bindings. Blackbeard integration is OPTIONAL for users who want dedicated transcoding hardware. Further implementation details will be provided by Blackbeard project.
 
 ---
 
@@ -66,14 +66,9 @@ Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensiv
 
 Official documentation and guides:
 - [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
 - [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
 - [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
-- [Prometheus Go Client](../../../sources/observability/prometheus.md)
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../../sources/tooling/river.md)
 
 
 

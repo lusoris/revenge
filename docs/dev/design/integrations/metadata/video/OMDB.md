@@ -18,12 +18,16 @@ sources:
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: MOVIE_MODULE
+    path: ../../../features/video/MOVIE_MODULE.md
+  - title: TVSHOW_MODULE
+    path: ../../../features/video/TVSHOW_MODULE.md
+  - title: TRAKT (alternative ratings source)
+    path: ../../scrobbling/TRAKT.md
 ---
 
 ## Table of Contents
@@ -40,6 +44,9 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [OMDb API](#omdb-api)
+- [Rate limiting](#rate-limiting)
+- [Caching](#caching)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -60,7 +67,7 @@ design_refs:
 
 > Integration with OMDb (Open Movie Database)
 
-> Fallback metadata provider + IMDb ratings
+> SUPPLEMENTARY ratings enrichment provider (IMDb/RT/Metacritic)
 **Authentication**: api_key
 
 ---
@@ -103,8 +110,6 @@ internal/integration/omdb_open_movie_database/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -116,11 +121,71 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// OMDb provider implementation
+type OMDbProvider struct {
+  client      *OMDbClient
+  rateLimiter *DailyRateLimiter
+  cache       Cache
+}
+
+// Daily rate limiter (1000 requests per day)
+type DailyRateLimiter struct {
+  limit     int
+  used      int
+  resetTime time.Time
+  mu        sync.Mutex
+}
+
+// Metadata provider interface
+type MetadataProvider interface {
+  // Fetch by IMDb ID
+  GetByIMDbID(ctx context.Context, imdbID string) (*OMDbMetadata, error)
+
+  // Search by title
+  SearchByTitle(ctx context.Context, title string, year *int) (*OMDbMetadata, error)
+
+  // Get ratings only (lightweight)
+  GetRatings(ctx context.Context, imdbID string) (*Ratings, error)
+}
+
+// OMDb metadata structure
+type OMDbMetadata struct {
+  Title          string  `json:"Title"`
+  Year           string  `json:"Year"`
+  Rated          string  `json:"Rated"`
+  Released       string  `json:"Released"`
+  Runtime        string  `json:"Runtime"`
+  Genre          string  `json:"Genre"`
+  Director       string  `json:"Director"`
+  Actors         string  `json:"Actors"`
+  Plot           string  `json:"Plot"`
+  Awards         string  `json:"Awards"`
+  IMDbRating     string  `json:"imdbRating"`
+  IMDbVotes      string  `json:"imdbVotes"`
+  IMDbID         string  `json:"imdbID"`
+  BoxOffice      string  `json:"BoxOffice"`
+  Ratings        []Rating `json:"Ratings"`
+}
+
+type Rating struct {
+  Source string `json:"Source"`   // "Internet Movie Database", "Rotten Tomatoes", "Metacritic"
+  Value  string `json:"Value"`    // "8.8/10", "87%", "82/100"
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- OMDb API (free tier: 1,000 requests/day)
+
 
 
 
@@ -129,11 +194,30 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# OMDb API
+OMDB_API_KEY=your_api_key_here
+
+# Rate limiting
+OMDB_DAILY_LIMIT=1000
+
+# Caching
+OMDB_CACHE_TTL=168h  # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    omdb:
+      enabled: true
+      api_key: ${OMDB_API_KEY}
+      daily_limit: 1000
+      cache_ttl: 168h  # 7 days
+```
+
 
 
 
@@ -160,9 +244,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [MOVIE_MODULE](../../../features/video/MOVIE_MODULE.md)
+- [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
+- [TRAKT (alternative ratings source)](../../scrobbling/TRAKT.md)
 
 ### External Sources
 - [OMDb API](../../../../sources/apis/omdb.md) - Auto-resolved from omdb

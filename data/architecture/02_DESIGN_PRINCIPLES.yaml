@@ -91,9 +91,568 @@ sources:
 design_refs:
 - title: architecture
   path: INDEX.md
+- title: 01_ARCHITECTURE
+  path: 01_ARCHITECTURE.md
+- title: 03_METADATA_SYSTEM
+  path: 03_METADATA_SYSTEM.md
+- title: METADATA (service)
+  path: ../services/METADATA.md
+- title: HTTP_CLIENT (service)
+  path: ../services/HTTP_CLIENT.md
 - title: ADULT_CONTENT_SYSTEM
   path: ../features/adult/ADULT_CONTENT_SYSTEM.md
 - title: ADULT_METADATA
   path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
   path: ../features/adult/DATA_RECONCILIATION.md
+
+# Core Principles
+core_principles: |
+  **1. PostgreSQL Only - No SQLite**
+
+  **Rationale**: Simplifies codebase, best driver ecosystem
+
+  - PostgreSQL 18+ is the ONLY supported database
+  - No SQLite support - reduces complexity, maintenance burden
+  - pgx is the best Go driver for PostgreSQL
+  - Enables advanced features: UUID, TIMESTAMPTZ, trigram, JSON, arrays
+
+  **Why not SQLite?**
+  - Different SQL dialects require separate query sets
+  - pgx has superior performance, connection pooling, LISTEN/NOTIFY
+  - Self-hosted users can run PostgreSQL (Docker/bare metal)
+  - No mobile use case requiring embedded database
+
+  ---
+
+  **2. 80% Test Coverage Minimum**
+
+  **Rationale**: Ensures reliability, enables confident refactoring
+
+  - **Overall**: 80% minimum across all packages
+  - **Repository**: 90% (critical path - data layer)
+  - **Service**: 85% (business logic)
+  - **Handler**: 75% (integration layer)
+  - **Metadata providers**: 70% (external dependencies)
+
+  **Excluded from coverage**:
+  - Generated code (ogen, sqlc)
+  - Main entrypoint (cmd/revenge/main.go)
+  - Trivial getters/setters
+
+  **Enforcement**:
+  - CI fails if coverage drops below threshold
+  - Coverage reports generated on every PR
+  - Table-driven tests for consistent patterns
+
+  ---
+
+  **3. Metadata Priority Chain - Arr Services as PRIMARY**
+
+  **Rationale**: Performance, reliability, reduced external API dependency
+
+  **CRITICAL**: ALL Arr services (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) serve DUAL purposes:
+  1. **PRIMARY Metadata Aggregation** (local cache of external sources)
+  2. **Download Automation** (media acquisition)
+
+  **Priority Chain** (fast → slow):
+  ```
+  L1 Cache (otter) → L2 Cache (Dragonfly) →
+  PRIMARY (Arr Services) → SUPPLEMENTARY (External APIs)
+  ```
+
+  **Why Arr as PRIMARY?**
+  - Arr services already aggregate metadata from external sources (TMDb, TheTVDB, etc.)
+  - Local cache is faster, more reliable than direct external API calls
+  - Reduces external API rate limits, failures, network latency
+  - Single source of truth for metadata + downloads
+
+  **When to use SUPPLEMENTARY (External APIs)?**
+  - **Fallback**: Arr service not setup/unreachable OR lacks specific metadata
+  - **Enrichment**: Additional data beyond what Arr provides (e.g., Trakt ratings)
+
+  **Proxy/VPN**: OPTIONAL routing for external APIs (NOT Arr services), disabled by default
+
+  **See**: [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md), [METADATA](../services/METADATA.md)
+
+  ---
+
+  **4. Table-Driven Tests with testify + mockery**
+
+  **Rationale**: Consistency, readability, maintainability
+
+  **Pattern**:
+  ```go
+  func TestFoo(t *testing.T) {
+      tests := []struct {
+          name    string
+          input   InputType
+          want    OutputType
+          wantErr error
+      }{
+          {name: "success case", input: ..., want: ..., wantErr: nil},
+          {name: "error case", input: ..., want: nil, wantErr: ErrFoo},
+      }
+      for _, tt := range tests {
+          t.Run(tt.name, func(t *testing.T) {
+              got, err := Foo(tt.input)
+              assert.Equal(t, tt.wantErr, err)
+              assert.Equal(t, tt.want, got)
+          })
+      }
+  }
+  ```
+
+  **Mocking**:
+  - Use mockery to generate mocks from interfaces
+  - Repository mocks for service tests
+  - External API mocks for provider tests
+  - HTTP client mocks for integration tests
+
+  **Assertions**:
+  - Use testify/assert for clear error messages
+  - Use testify/require when test cannot continue after failure
+  - Use testify/suite for shared setup/teardown
+
+  ---
+
+  **5. Sentinel Errors - Type-Safe Error Handling**
+
+  **Rationale**: Type-safe error handling, clear error semantics
+
+  **Pattern**:
+  ```go
+  package movie
+
+  import "errors"
+
+  var (
+      ErrNotFound      = errors.New("movie not found")
+      ErrInvalidInput  = errors.New("invalid input")
+      ErrUnauthorized  = errors.New("unauthorized")
+  )
+
+  func (s *Service) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
+      movie, err := s.repo.Get(ctx, id)
+      if err != nil {
+          if errors.Is(err, sql.ErrNoRows) {
+              return nil, fmt.Errorf("get movie %s: %w", id, ErrNotFound)
+          }
+          return nil, fmt.Errorf("get movie %s: %w", id, err)
+      }
+      return movie, nil
+  }
+  ```
+
+  **Error Wrapping**:
+  - Use `fmt.Errorf` with `%w` verb to wrap errors
+  - Preserve error chain for debugging
+  - Use `errors.Is` and `errors.As` for checking
+
+  **Error Handling in Handlers**:
+  - Map sentinel errors to HTTP status codes
+  - Return consistent error responses (ogen-generated types)
+  - Log errors with context (request ID, user ID, etc.)
+
+  ---
+
+  **6. Context-First APIs**
+
+  **Rationale**: Cancellation, deadlines, request-scoped values
+
+  **Pattern**:
+  ```go
+  func (s *Service) Foo(ctx context.Context, arg ArgType) (ResultType, error) {
+      // Check context cancellation
+      if err := ctx.Err(); err != nil {
+          return nil, err
+      }
+
+      // Pass context to all downstream calls
+      result, err := s.repo.Bar(ctx, arg)
+      if err != nil {
+          return nil, err
+      }
+
+      return result, nil
+  }
+  ```
+
+  **Context Usage**:
+  - First parameter of every function that does I/O
+  - Propagate to all downstream calls (database, HTTP, cache)
+  - Use `context.WithTimeout` for operations with time limits
+  - Use `context.WithValue` for request-scoped values (user ID, request ID)
+
+  **Context Keys**:
+  ```go
+  type contextKey string
+
+  const (
+      userIDKey    contextKey = "user_id"
+      requestIDKey contextKey = "request_id"
+  )
+
+  func GetUserID(ctx context.Context) uuid.UUID {
+      if id, ok := ctx.Value(userIDKey).(uuid.UUID); ok {
+          return id
+      }
+      return uuid.Nil
+  }
+  ```
+
+  ---
+
+  **7. Structured Logging - slog with Context**
+
+  **Rationale**: Searchable, parseable logs for debugging and monitoring
+
+  **Pattern**:
+  ```go
+  func (s *Service) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
+      logger := slog.With("movie_id", id, "user_id", GetUserID(ctx))
+      logger.Info("fetching movie")
+
+      movie, err := s.repo.Get(ctx, id)
+      if err != nil {
+          logger.Error("failed to fetch movie", "error", err)
+          return nil, err
+      }
+
+      logger.Info("movie fetched successfully")
+      return movie, nil
+  }
+  ```
+
+  **Log Levels**:
+  - **Debug**: Verbose debugging info (disabled in production)
+  - **Info**: Normal operations (user actions, API calls)
+  - **Warn**: Unexpected but handled (rate limit, cache miss)
+  - **Error**: Failures requiring attention (database errors, API failures)
+
+  **Log Format**:
+  - **Development**: Text with tint (color-coded, human-readable)
+  - **Production**: JSON (structured, machine-parseable)
+
+  ---
+
+  **8. Dependency Injection with fx**
+
+  **Rationale**: Testability, modularity, explicit dependencies
+
+  **Pattern**:
+  ```go
+  package movie
+
+  import "go.uber.org/fx"
+
+  var Module = fx.Module("movie",
+      fx.Provide(
+          NewRepository,
+          NewService,
+          NewHandler,
+      ),
+  )
+
+  func NewService(repo Repository, cache Cache, metadata MetadataService) *Service {
+      return &Service{
+          repo:     repo,
+          cache:    cache,
+          metadata: metadata,
+      }
+  }
+  ```
+
+  **Module Organization**:
+  - Each content type (movie, tvshow, music) has its own fx module
+  - Each service (metadata, auth, search) has its own fx module
+  - Main entrypoint composes all modules
+
+  **Lifecycle Hooks**:
+  ```go
+  func NewDatabase(lc fx.Lifecycle, cfg *config.Database) (*pgxpool.Pool, error) {
+      pool, err := pgxpool.New(context.Background(), cfg.URL)
+      if err != nil {
+          return nil, err
+      }
+
+      lc.Append(fx.Hook{
+          OnStart: func(ctx context.Context) error {
+              return pool.Ping(ctx)
+          },
+          OnStop: func(ctx context.Context) error {
+              pool.Close()
+              return nil
+          },
+      })
+
+      return pool, nil
+  }
+  ```
+
+  ---
+
+  **9. OpenAPI First - ogen Code Generation**
+
+  **Rationale**: API contract as single source of truth, type safety
+
+  **Workflow**:
+  1. Define API in OpenAPI 3.0+ spec (`api/openapi.yaml`)
+  2. Generate handlers, types, client with ogen
+  3. Implement handler interfaces in Go
+  4. Frontend consumes generated TypeScript client (optional)
+
+  **OpenAPI Spec**:
+  ```yaml
+  openapi: 3.0.0
+  paths:
+    /api/v1/movies:
+      get:
+        operationId: listMovies
+        parameters:
+          - name: limit
+            in: query
+            schema:
+              type: integer
+              default: 20
+        responses:
+          '200':
+            description: List of movies
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    movies:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Movie'
+  ```
+
+  **Generated Code**:
+  - `Handler` interface with all operations
+  - Request/response types with validation
+  - HTTP router with path parameters
+  - Error handling and serialization
+
+  ---
+
+  **10. Database Migrations - Forward Only**
+
+  **Rationale**: Reproducibility, auditability, rollback safety
+
+  **Rules**:
+  - **Never modify existing migrations** - always create new ones
+  - **Migrations are forward-only** - no down migrations in production
+  - **Use descriptive names**: `001_initial.sql`, `002_add_movies.sql`
+  - **Test migrations**: Apply to fresh database in CI
+
+  **Migration Pattern**:
+  ```sql
+  -- migrations/002_add_movies.sql
+  CREATE TABLE IF NOT EXISTS movies (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      title TEXT NOT NULL,
+      year INTEGER,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_movies_title_trgm ON movies USING GIN (title gin_trgm_ops);
+  ```
+
+  **Rollback Strategy**:
+  - Create new migration to undo changes (additive)
+  - Never delete columns (mark as deprecated, remove later)
+  - Use feature flags for breaking changes
+
+  ---
+
+  **11. Caching Strategy - L1 + L2 with TTL**
+
+  **Rationale**: Reduce database load, improve response times
+
+  **Layers**:
+  - **L1 (otter)**: In-memory, sub-millisecond, per-instance
+  - **L2 (Dragonfly)**: Distributed, multi-millisecond, shared across instances
+
+  **TTL Strategy**:
+  - **Frequently changed**: 5 minutes (user profiles, watch status)
+  - **Moderately changed**: 1 hour (movie metadata, collections)
+  - **Rarely changed**: 24 hours (genres, credits)
+
+  **Cache Invalidation**:
+  - **Write-through**: Update database + invalidate cache
+  - **Pub/Sub**: Broadcast invalidation via PostgreSQL LISTEN/NOTIFY
+  - **Time-based**: Let TTL expire for eventually consistent data
+
+  ---
+
+  **12. Proxy/VPN Support - Optional, Disabled by Default**
+
+  **Rationale**: Privacy, geo-restriction bypass, rate limit avoidance
+
+  **IMPORTANT**: Proxy/VPN is OPTIONAL and must be explicitly enabled
+
+  **Configuration**:
+  - Disabled by default (no forced proxy/VPN)
+  - Per-provider configuration (TMDb via Tor, MusicBrainz direct)
+  - Supports HTTP proxy, SOCKS5 (Tor), VPN binding
+
+  **Usage**:
+  - **ONLY for external metadata APIs** (TMDb, TheTVDB, MusicBrainz, etc.)
+  - **NOT for Arr services** (Radarr, Sonarr, etc.) - local network
+
+  **See**: [HTTP_CLIENT](../services/HTTP_CLIENT.md) for implementation
+
+  ---
+
+  **13. Feature Flags for Gradual Rollout**
+
+  **Rationale**: Safe deployment, A/B testing, kill switches
+
+  **Pattern**:
+  ```go
+  type FeatureFlags struct {
+      EnableNewPlayer     bool
+      EnableTraktSync     bool
+      EnableProxyRouting  bool
+  }
+
+  func (s *Service) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
+      movie, err := s.repo.Get(ctx, id)
+      if err != nil {
+          return nil, err
+      }
+
+      if s.flags.EnableNewPlayer {
+          movie.PlayerURL = "/player/v2"
+      }
+
+      return movie, nil
+  }
+  ```
+
+  **Flag Management**:
+  - Configuration file or environment variables
+  - Runtime toggles (no deployment required)
+  - Per-user flags for beta testing
+
+testing_philosophy: |
+  **Test Pyramid**:
+  ```
+         ┌─────────┐
+         │   E2E   │  10% - Full system tests (Playwright)
+         └─────────┘
+       ┌─────────────┐
+       │ Integration │  30% - API + database (testcontainers)
+       └─────────────┘
+     ┌─────────────────┐
+     │      Unit       │  60% - Functions + methods (mocks)
+     └─────────────────┘
+  ```
+
+  **Unit Tests (60%)**:
+  - Fast, isolated, deterministic
+  - Mock all dependencies (repository, external APIs, HTTP clients)
+  - Table-driven tests for multiple scenarios
+  - Cover edge cases, error paths, validation
+
+  **Integration Tests (30%)**:
+  - Test API → database flow
+  - Use testcontainers for real PostgreSQL, Dragonfly
+  - Test migrations, indexes, constraints
+  - Slower but more realistic
+
+  **E2E Tests (10%)**:
+  - Full system tests (frontend + backend + database)
+  - Use Playwright for browser automation
+  - Test critical user flows (login, watch movie, search)
+  - Slowest but most comprehensive
+
+  **Test Organization**:
+  - `*_test.go` files next to implementation
+  - `testdata/` for fixtures, golden files
+  - `internal/testutil/` for shared test utilities
+
+  **Test Databases**:
+  - Use testcontainers for isolated PostgreSQL instances
+  - Apply migrations in test setup
+  - Clean database between tests (truncate tables)
+  - Parallel tests with separate databases
+
+error_handling_patterns: |
+  **Sentinel Errors**:
+  ```go
+  var (
+      ErrNotFound      = errors.New("not found")
+      ErrUnauthorized  = errors.New("unauthorized")
+      ErrInvalidInput  = errors.New("invalid input")
+      ErrConflict      = errors.New("conflict")
+  )
+  ```
+
+  **Error Wrapping**:
+  ```go
+  func (s *Service) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
+      movie, err := s.repo.Get(ctx, id)
+      if err != nil {
+          if errors.Is(err, sql.ErrNoRows) {
+              return nil, fmt.Errorf("get movie %s: %w", id, ErrNotFound)
+          }
+          return nil, fmt.Errorf("get movie %s: %w", id, err)
+      }
+      return movie, nil
+  }
+  ```
+
+  **Error Checking**:
+  ```go
+  if errors.Is(err, ErrNotFound) {
+      return http.StatusNotFound
+  }
+  if errors.Is(err, ErrUnauthorized) {
+      return http.StatusUnauthorized
+  }
+  ```
+
+  **Error Responses**:
+  ```go
+  type ErrorResponse struct {
+      Code    string `json:"code"`
+      Message string `json:"message"`
+      Details map[string]interface{} `json:"details,omitempty"`
+  }
+  ```
+
+performance_guidelines: |
+  **Database**:
+  - Use indexes for all foreign keys, frequently queried columns
+  - Use trigram indexes for fuzzy text search
+  - Use connection pooling (pgx pool)
+  - Use prepared statements (sqlc generates them)
+  - Avoid N+1 queries (use JOINs or batch loading)
+
+  **Caching**:
+  - L1 (otter) for hot data (sub-millisecond)
+  - L2 (Dragonfly) for shared data (multi-millisecond)
+  - Use sturdyc for request coalescing (prevent thundering herd)
+  - Set appropriate TTLs based on data change frequency
+
+  **Metadata Fetching**:
+  - Always check L1 → L2 → Arr → External
+  - Batch metadata requests when possible
+  - Use background jobs for non-critical enrichment
+  - Respect rate limits (exponential backoff)
+
+  **Media Processing**:
+  - Use worker pools for transcoding (River queue)
+  - Stream media files (don't load into memory)
+  - Use FFmpeg hardware acceleration when available
+  - Cache transcoded segments (HLS)
+
+  **Frontend**:
+  - Use TanStack Query for automatic caching, deduplication
+  - Lazy load routes, components
+  - Virtual scrolling for long lists
+  - Optimize images (WebP, blurhash placeholders)

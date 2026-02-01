@@ -22,9 +22,9 @@
 
 # Trakt
 
-> Track movies and TV shows with Trakt
+> Track movies/TV and enrich metadata with Trakt
 
-Trakt integration syncs your watch history for movies and TV shows. Scrobble plays automatically as you watch. Import your existing Trakt history to mark content as watched. Sync watchlists both directions. See play counts and last watched dates. OAuth login keeps your credentials secure.
+Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata enrichment. Syncs watch history automatically as you watch. Import existing Trakt history to mark content as watched. Sync watchlists bidirectionally. METADATA ENRICHMENT - Provides provider IDs (TMDb, TVDb, IMDb, etc.), multi-source ratings (TMDb, IMDb, Rotten Tomatoes), and links to other services. VIP features include lists, stats, and advanced filtering. OAuth login keeps credentials secure.
 
 ---
 

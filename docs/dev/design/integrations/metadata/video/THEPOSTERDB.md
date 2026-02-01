@@ -43,6 +43,9 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [ThePosterDB API](#theposterdb-api)
+- [Image storage](#image-storage)
+- [Caching](#caching)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -64,6 +67,7 @@ design_refs:
 > Integration with ThePosterDB
 
 > Curated high-quality posters for movies and TV shows
+**Authentication**: api_key
 
 ---
 
@@ -105,8 +109,6 @@ internal/integration/theposterdb/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -118,11 +120,67 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// ThePosterDB provider implementation
+type PosterDBProvider struct {
+  client      *PosterDBClient
+  storage     ImageStorage
+  cache       Cache
+}
+
+// Poster provider interface
+type PosterProvider interface {
+  // Search
+  SearchPosters(ctx context.Context, query string, contentType string) ([]Poster, error)
+
+  // Get by TMDb/TVDB ID
+  GetMoviePosters(ctx context.Context, tmdbID int) ([]Poster, error)
+  GetTVPosters(ctx context.Context, tvdbID int) ([]Poster, error)
+
+  // Get poster sets (matching collections)
+  GetPosterSet(ctx context.Context, setID int) (*PosterSet, error)
+
+  // Download and apply
+  DownloadPoster(ctx context.Context, posterID int) (string, error)
+  ApplyPoster(ctx context.Context, contentID uuid.UUID, posterID int) error
+}
+
+// Poster metadata structure
+type Poster struct {
+  ID            int    `json:"id"`
+  Title         string `json:"title"`
+  OriginalURL   string `json:"url"`
+  ThumbnailURL  string `json:"thumbnail"`
+  Width         int    `json:"width"`
+  Height        int    `json:"height"`
+  Language      string `json:"language"`
+  Uploader      string `json:"uploader"`
+  Likes         int    `json:"likes"`
+  SetID         *int   `json:"set_id,omitempty"`
+}
+
+// Poster set (matching collection)
+type PosterSet struct {
+  ID      int      `json:"id"`
+  Name    string   `json:"name"`
+  Posters []Poster `json:"posters"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/bbrks/go-blurhash` - Blurhash generation
+- `github.com/riverqueue/river` - Background download jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- ThePosterDB API (free with registration)
+
 
 
 
@@ -131,11 +189,32 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# ThePosterDB API
+POSTERDB_API_KEY=your_api_key_here
+
+# Image storage
+POSTERDB_STORAGE_PATH=/data/posters
+POSTERDB_GENERATE_BLURHASH=true
+
+# Caching
+POSTERDB_CACHE_TTL=168h  # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    posterdb:
+      enabled: true
+      api_key: ${POSTERDB_API_KEY}
+      storage_path: /data/posters
+      generate_blurhash: true
+      cache_ttl: 168h
+```
+
 
 
 

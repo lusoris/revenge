@@ -21,9 +21,9 @@ technical_summary: '> On-demand video/audio transcoding service with hardware ac
 
   Transcoding capabilities:
 
-  - **Primary**: Blackbeard service for offloaded transcoding
+  - **INTERNAL**: go-astiav FFmpeg bindings (default, always available)
 
-  - **Fallback**: Local FFmpeg with go-astiav bindings
+  - **EXTERNAL**: Blackbeard service for optional offloading (third-party, not developed by us)
 
   - **Hardware Acceleration**: NVENC (NVIDIA), QSV (Intel), VAAPI (AMD)
 
@@ -32,10 +32,11 @@ technical_summary: '> On-demand video/audio transcoding service with hardware ac
   - **Queue Management**: River background jobs for async processing'
 wiki_tagline: '> High-performance media transcoding with hardware acceleration'
 wiki_overview: The Transcoding Service converts media files on-demand to ensure compatibility
-  across all devices. Primary transcoding offloads to Blackbeard service for maximum
-  performance, with local FFmpeg fallback. Hardware acceleration via NVENC, QSV, or
-  VAAPI dramatically reduces CPU usage. Generates HLS adaptive streams with multiple
-  quality levels, caching results for faster subsequent playback.
+  across all devices. **INTERNAL transcoding** uses go-astiav (FFmpeg Go bindings) with
+  optional hardware acceleration (NVENC, QSV, VAAPI) and is always available. For heavy
+  workloads, users can optionally configure **EXTERNAL offloading** to a Blackbeard
+  service (third-party, not developed by us). Generates HLS adaptive streams with
+  multiple quality levels, caching results for faster subsequent playback.
 sources:
 - name: go-astiav (FFmpeg)
   url: https://pkg.go.dev/github.com/asticode/go-astiav
@@ -61,29 +62,264 @@ design_refs:
 service_name: Transcoding Service
 package_path: internal/service/transcoding
 fx_module: transcoding.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                  ┌────────────────────────────────┴────────────────────────────┐
+                  ▼                                                              ▼
+           ┌──────────────┐                                              ┌──────────────┐
+           │  Repository  │                                              │ Transcoding  │
+           │   (sqlc)     │                                              │   Router     │
+           └──────┬───────┘                                              └──────┬───────┘
+                  │                                         ┌──────────────────┴───────────────────┐
+                  ▼                                         ▼                                       ▼
+           ┌─────────────┐                          ┌──────────────┐                       ┌──────────────┐
+           │ PostgreSQL  │                          │   INTERNAL   │                       │   EXTERNAL   │
+           │   (pgx)     │                          │   FFmpeg     │                       │  (optional)  │
+           └─────────────┘                          │ (go-astiav)  │                       └──────┬───────┘
+                                                    │              │                              │
+                                                    │ HW Accel:    │                              ▼
+                                                    │ NVENC, QSV,  │                       ┌──────────────┐
+                                                    │ VAAPI        │                       │  Blackbeard  │
+                                                    └──────────────┘                       │ (3rd-party)  │
+                                                                                           └──────────────┘
+
+  INTERNAL: Always available, uses go-astiav FFmpeg bindings
+  EXTERNAL: Optional offloading to Blackbeard (not developed by us)
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Transcode jobs
+  CREATE TABLE transcode_jobs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Content reference
+    video_id UUID NOT NULL,                        -- References movies/episodes/etc.
+    input_path TEXT NOT NULL,
+    output_path TEXT NOT NULL,
+
+    -- Profile
+    profile VARCHAR(50) NOT NULL,                  -- '4k', '1080p', '720p', '480p'
+    codec VARCHAR(20) NOT NULL,                    -- 'h264', 'hevc'
+
+    -- Job status
+    status VARCHAR(20) DEFAULT 'queued',           -- 'queued', 'processing', 'completed', 'failed', 'cancelled'
+    progress_percent FLOAT DEFAULT 0,
+    current_frame INTEGER,
+    total_frames INTEGER,
+
+    -- Execution details
+    worker_type VARCHAR(50),                       -- 'blackbeard', 'local_nvenc', 'local_software'
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    error_message TEXT,
+
+    -- Performance metrics
+    transcode_duration_seconds INTEGER,
+    file_size_bytes BIGINT,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_transcode_jobs_status ON transcode_jobs(status, created_at);
+  CREATE INDEX idx_transcode_jobs_video ON transcode_jobs(video_id);
+
+  -- Transcode cache (file-based cache metadata)
+  CREATE TABLE transcode_cache (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Cache key
+    video_id UUID NOT NULL,
+    profile VARCHAR(50) NOT NULL,
+    checksum VARCHAR(64) NOT NULL,                 -- SHA-256 of input file
+    cache_key VARCHAR(255) NOT NULL UNIQUE,
+
+    -- Cached file
+    file_path TEXT NOT NULL,
+    file_size_bytes BIGINT NOT NULL,
+    duration_seconds INTEGER,
+
+    -- Cache management
+    hit_count INTEGER DEFAULT 0,
+    last_accessed_at TIMESTAMPTZ DEFAULT now(),
+    created_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ DEFAULT now() + INTERVAL '7 days'
+  );
+  CREATE INDEX idx_transcode_cache_video ON transcode_cache(video_id, profile);
+  CREATE INDEX idx_transcode_cache_expires ON transcode_cache(expires_at);
+  CREATE INDEX idx_transcode_cache_lru ON transcode_cache(last_accessed_at);
+
+  -- HLS segments (for adaptive streaming)
+  CREATE TABLE hls_segments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    video_id UUID NOT NULL,
+    profile VARCHAR(50) NOT NULL,
+
+    -- Segment info
+    segment_index INTEGER NOT NULL,
+    file_path TEXT NOT NULL,
+    duration_seconds FLOAT NOT NULL,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_hls_segments_unique ON hls_segments(video_id, profile, segment_index);
+  ```
+
+module_structure: |
+  ```
+  internal/service/transcoding/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Transcoding service logic
+  ├── blackbeard.go                # Blackbeard client
+  ├── ffmpeg.go                    # FFmpeg wrapper (go-astiav)
+  ├── hardware.go                  # Hardware acceleration detection
+  ├── profiles.go                  # Encoding profiles
+  ├── hls.go                       # HLS manifest generation
+  ├── cache.go                     # Cache management
+  ├── worker.go                    # River worker
+  ├── handler.go                   # HTTP API handlers
+  └── transcoding_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type TranscodingService interface {
+    // Transcode operations
+    QueueTranscode(ctx context.Context, videoID uuid.UUID, profile string) (*TranscodeJob, error)
+    GetJob(ctx context.Context, jobID uuid.UUID) (*TranscodeJob, error)
+    CancelJob(ctx context.Context, jobID uuid.UUID) error
+
+    // Cache
+    GetCachedVideo(ctx context.Context, videoID uuid.UUID, profile string) (string, error)
+    ClearCache(ctx context.Context) error
+    GetCacheStats(ctx context.Context) (*CacheStats, error)
+
+    // HLS
+    GenerateHLSManifest(ctx context.Context, videoID uuid.UUID) (string, error)
+  }
+
+  type Transcoder interface {
+    Transcode(ctx context.Context, input, output string, profile Profile) error
+    SupportsHardwareAccel() bool
+    GetHardwareType() string
+  }
+
+  type TranscodeJob struct {
+    ID              uuid.UUID  `db:"id" json:"id"`
+    VideoID         uuid.UUID  `db:"video_id" json:"video_id"`
+    Profile         string     `db:"profile" json:"profile"`
+    Status          string     `db:"status" json:"status"`
+    ProgressPercent float64    `db:"progress_percent" json:"progress_percent"`
+    CreatedAt       time.Time  `db:"created_at" json:"created_at"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/asticode/go-astiav` - FFmpeg Go bindings
+  - `github.com/bluenviron/gohlslib/v2` - HLS streaming
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx`
+
+  **External Services**:
+  - Blackbeard service (optional, for offloading)
+  - FFmpeg (system dependency)
+
+env_vars: |
+  ```bash
+  TRANSCODING_BLACKBEARD_URL=http://blackbeard:8080
+  TRANSCODING_CACHE_DIR=/var/cache/revenge/transcoded
+  TRANSCODING_CACHE_MAX_SIZE_GB=100
+  TRANSCODING_HARDWARE_ACCEL=auto  # auto, nvenc, qsv, vaapi, none
+  TRANSCODING_WORKERS=2
+  ```
+
+config_keys: |
+  ```yaml
+  transcoding:
+    blackbeard:
+      url: http://blackbeard:8080
+      enabled: true
+      timeout: 30s
+    cache:
+      dir: /var/cache/revenge/transcoded
+      max_size_gb: 100
+      ttl: 168h  # 7 days
+    hardware:
+      accel: auto
+      prefer_nvenc: true
+    workers: 2
+    hls:
+      segment_duration: 6s
+  ```
+
+unit_tests: |
+  ```go
+  func TestTranscodingService_QueueTranscode(t *testing.T) {
+    // Test job queuing
+  }
+
+  func TestFFmpegTranscoder_HardwareDetection(t *testing.T) {
+    // Test hardware acceleration detection
+  }
+
+  func TestHLS_ManifestGeneration(t *testing.T) {
+    // Test HLS manifest creation
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestTranscoding_EndToEnd(t *testing.T) {
+    // Test full transcode workflow
+  }
+
+  func TestTranscoding_CacheHit(t *testing.T) {
+    // Test cache serving
+  }
+  ```
 transcoding_targets:
-  primary:
-    name: Blackbeard Service
-    description: External transcoding service for offloading
+  internal:
+    name: Local FFmpeg (INTERNAL)
+    description: go-astiav FFmpeg bindings for local transcoding (DEFAULT)
+    library: go-astiav
+    is_default: true
+    advantages:
+    - Always available, no external dependencies
+    - Works offline
+    - Full control over encoding
+    - Supports hardware acceleration (NVENC, QSV, VAAPI)
+    disadvantages:
+    - Uses local CPU/GPU resources
+    - May compete with other server tasks
+  external:
+    name: Blackbeard Service (EXTERNAL)
+    description: Optional external transcoding service for offloading (NOT developed by us)
     protocol: HTTP API
+    is_default: false
+    developed_by_us: false
     advantages:
     - Dedicated transcoding hardware
     - No local CPU/GPU usage
     - Scales independently
     - Centralized resource management
-    api_endpoint: http://blackbeard:8080/api/v1/transcode
-    fallback: Local FFmpeg
-  fallback:
-    name: Local FFmpeg
-    description: go-astiav FFmpeg bindings for local transcoding
-    library: go-astiav
-    advantages:
-    - No external dependencies
-    - Works offline
-    - Full control over encoding
     disadvantages:
-    - Uses local CPU/GPU resources
-    - Slower than dedicated hardware
+    - Requires separate Blackbeard deployment
+    - Third-party dependency
+    - Network latency for job submission
+    api_endpoint: http://blackbeard:8080/api/v1/transcode
+    fallback: internal
 hardware_acceleration:
   nvenc:
     vendor: NVIDIA

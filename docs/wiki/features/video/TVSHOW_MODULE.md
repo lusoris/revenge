@@ -25,7 +25,7 @@
 
 > Organize TV series with seasons, episodes, and watch progress
 
-Manage TV shows organized by series, season, and episode. Automatic metadata from TheTVDB and TMDB adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr integration monitors for new episodes and downloads them automatically.
+Manage TV shows organized by series, season, and episode. Automatic metadata from Sonarr (PRIMARY source, aggregates from TheTVDB locally) with direct TheTVDB/TMDb API as supplementary enrichment. Adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr integration provides both metadata caching and download automation.
 
 ---
 

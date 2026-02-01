@@ -16,12 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Alternative adult metadata provider with scene/performer/studio
-  data'
-wiki_tagline: '> Alternative metadata from ThePornDB'
-wiki_overview: ThePornDB provides adult metadata as an alternative to StashDB. Scene
-  matching by title and fingerprint. Performer and studio information. REST API with
-  straightforward access. Used as a fallback or supplement when StashDB lacks data.
+technical_summary: '> SUPPLEMENTARY adult metadata provider (fallback + enrichment) for QAR content'
+wiki_tagline: '> ThePornDB - Supplementary to Whisparr/StashDB'
+wiki_overview: 'SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback** when Whisparr/StashDB not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. REST API with scene/performer/studio matching. Fingerprint-based file identification. **Optional proxy/VPN routing** for privacy (via HTTP_CLIENT service).'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
@@ -35,15 +32,666 @@ sources:
 - name: Typesense Go Client
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: WHISPARR (PRIMARY for QAR)
+  path: ../../servarr/WHISPARR.md
+- title: STASHDB (also SUPPLEMENTARY)
+  path: ./STASHDB.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: ADULT_CONTENT_SYSTEM (QAR module)
+  path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
+- title: DATA_RECONCILIATION
+  path: ../../../features/adult/DATA_RECONCILIATION.md
 integration_name: ThePornDB
 integration_id: theporndb
 external_service: ThePornDB
-api_base_url: https://api.theporndb.net/docs
+api_base_url: https://api.theporndb.net
 auth_method: api_key
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Metadata    │
+  │  Service     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────────┐
+         │ PRIMARY                                  │ SUPPLEMENTARY
+         ▼                                          ▼
+  ┌──────────────┐                           ┌──────────────┐
+  │   Whisparr   │                           │  ThePornDB   │
+  │ (LOCAL cache)│                           │  (fallback + │
+  │              │                           │  enrichment) │
+  └──────┬───────┘                           └──────┬───────┘
+         │                                          │
+         ▼                                   ┌──────┴────────┐
+  ┌──────────────┐                          │  HTTP_CLIENT  │
+  │  StashDB     │                          │  (optional    │
+  │  (external)  │                          │   proxy/VPN)  │
+  └──────────────┘                          └───────────────┘
+                                                   │
+                                            ┌──────┴───────┐
+                                            │ Rate Limiter │
+                                            │ (10 req/sec) │
+                                            └──────────────┘
+  ```
+
+api_details: |
+  **API Version**: v1
+  **Base URL**: `https://api.theporndb.net`
+  **Authentication**: Bearer token via `Authorization: Bearer {api_key}` header
+  **Rate Limit**: ~10 requests per second (soft limit, be respectful)
+
+  **Key Endpoints**:
+  - `GET /scenes` - Search scenes by title, performer, studio
+  - `GET /scenes/{id}` - Get scene details
+  - `GET /scenes/hash/{hash}` - Match scene by file hash (MD5/SHA1/phash)
+  - `GET /performers` - Search performers by name
+  - `GET /performers/{id}` - Get performer details
+  - `GET /studios` - Search studios by name
+  - `GET /studios/{id}` - Get studio details
+  - `GET /jav` - JAV-specific scene search (Japanese Adult Video)
+
+  **Search Parameters**:
+  - `q` - Search query (title, performer name)
+  - `hash` - File hash for exact matching
+  - `limit` - Results per page (default: 10, max: 100)
+  - `page` - Pagination offset
+
+database_schema: |
+  **Schema**: `qar` (pirate-themed obfuscation)
+
+  ```sql
+  -- ThePornDB external ID mappings
+  CREATE TABLE qar.theporndb_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    content_type VARCHAR(50) NOT NULL,     -- 'treasure', 'crew', 'ship'
+    content_id UUID NOT NULL,
+
+    tpdb_id VARCHAR(255) NOT NULL,         -- ThePornDB UUID
+    tpdb_slug VARCHAR(255),                -- URL slug
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(content_type, content_id)
+  );
+  CREATE INDEX idx_tpdb_lookup ON qar.theporndb_mappings(tpdb_id);
+
+  -- Fingerprint cache for file matching
+  CREATE TABLE qar.fingerprint_cache (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    hash_type VARCHAR(20) NOT NULL,        -- 'md5', 'sha1', 'phash', 'oshash'
+    hash_value VARCHAR(128) NOT NULL,
+    file_size BIGINT,
+
+    tpdb_scene_id VARCHAR(255),            -- Matched ThePornDB scene
+    stashdb_scene_id VARCHAR(255),         -- Also matched in StashDB
+
+    matched_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(hash_type, hash_value)
+  );
+  CREATE INDEX idx_fingerprint_hash ON qar.fingerprint_cache(hash_type, hash_value);
+
+  -- Metadata fetch cache
+  CREATE TABLE qar.tpdb_cache (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    cache_key VARCHAR(255) NOT NULL,       -- e.g., "scene:abc123", "performer:xyz789"
+    response_data JSONB NOT NULL,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL,
+
+    UNIQUE(cache_key)
+  );
+  CREATE INDEX idx_tpdb_cache_expiry ON qar.tpdb_cache(expires_at);
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/theporndb/
+  ├── module.go                    # fx module
+  ├── client.go                    # ThePornDB API client
+  ├── provider.go                  # Metadata provider interface impl
+  ├── scenes.go                    # Scene search and details
+  ├── performers.go                # Performer search and details
+  ├── studios.go                   # Studio search and details
+  ├── fingerprint.go               # Hash-based scene matching
+  ├── jav.go                       # JAV-specific search
+  ├── ratelimit.go                 # Rate limiter (10/sec)
+  └── theporndb_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // ThePornDB provider implementation
+  type ThePornDBProvider struct {
+    client       *TPDBClient
+    rateLimiter  *rate.Limiter
+    cache        Cache
+    httpFactory  httpclient.ClientFactory
+  }
+
+  // Provider interface for QAR metadata
+  type QARMetadataProvider interface {
+    // Scene operations (treasure in QAR terms)
+    SearchScene(ctx context.Context, query string) ([]SceneResult, error)
+    GetSceneByID(ctx context.Context, id string) (*SceneMetadata, error)
+    MatchSceneByHash(ctx context.Context, hashType, hashValue string) (*SceneMetadata, error)
+
+    // Performer operations (crew in QAR terms)
+    SearchPerformer(ctx context.Context, query string) ([]PerformerResult, error)
+    GetPerformerByID(ctx context.Context, id string) (*PerformerMetadata, error)
+
+    // Studio operations (ship in QAR terms)
+    SearchStudio(ctx context.Context, query string) ([]StudioResult, error)
+    GetStudioByID(ctx context.Context, id string) (*StudioMetadata, error)
+
+    // Priority for metadata chain
+    Priority() int  // Returns 30 (after Whisparr=10, StashDB=20)
+  }
+
+  // Scene metadata (treasure)
+  type SceneMetadata struct {
+    ID           string    `json:"id"`
+    Title        string    `json:"title"`
+    Description  string    `json:"description"`
+    Date         string    `json:"date"`
+    Duration     int       `json:"duration"`      // seconds
+    Performers   []Performer `json:"performers"`
+    Studio       *Studio   `json:"studio"`
+    Tags         []string  `json:"tags"`
+    PosterURL    string    `json:"poster"`
+    BackdropURL  string    `json:"background"`
+    ExternalURLs []string  `json:"external_urls"`
+    Hashes       []Hash    `json:"hashes"`        // For fingerprint matching
+  }
+
+  // Performer metadata (crew)
+  type PerformerMetadata struct {
+    ID          string    `json:"id"`
+    Name        string    `json:"name"`
+    Aliases     []string  `json:"aliases"`
+    Bio         string    `json:"bio"`
+    Gender      string    `json:"gender"`
+    Birthdate   string    `json:"birthdate"`
+    Birthplace  string    `json:"birthplace"`
+    Ethnicity   string    `json:"ethnicity"`
+    Height      int       `json:"height"`         // cm
+    Weight      int       `json:"weight"`         // kg
+    Measurements string   `json:"measurements"`
+    ImageURL    string    `json:"image"`
+    SocialLinks []Link    `json:"socials"`
+    SceneCount  int       `json:"scene_count"`
+  }
+
+  // Studio metadata (ship)
+  type StudioMetadata struct {
+    ID          string    `json:"id"`
+    Name        string    `json:"name"`
+    URL         string    `json:"url"`
+    Parent      string    `json:"parent"`         // Parent studio/network
+    ImageURL    string    `json:"logo"`
+    Description string    `json:"description"`
+    SceneCount  int       `json:"scene_count"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `golang.org/x/time/rate` - Rate limiting (10 req/sec)
+  - `github.com/google/uuid` - UUID support
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/riverqueue/river` - Background jobs
+  - `github.com/bbrks/go-blurhash` - Blurhash generation
+  - `go.uber.org/fx` - Dependency injection
+
+  **External APIs**:
+  - ThePornDB API v1 (free with API key, ~10 req/sec)
+
+  **Internal Services**:
+  - HTTP_CLIENT - Proxy/VPN routing (optional)
+  - Whisparr - PRIMARY metadata source
+  - StashDB - Alternative supplementary source
+
+env_vars: |
+  ```bash
+  # ThePornDB API
+  TPDB_API_KEY=your_api_key_here
+  TPDB_ENABLED=true
+
+  # Rate limiting
+  TPDB_RATE_LIMIT=10
+  TPDB_RATE_WINDOW=1s
+
+  # Caching
+  TPDB_CACHE_TTL=24h
+
+  # Proxy/VPN (optional)
+  TPDB_PROXY_ENABLED=false
+  TPDB_PROXY_URL=socks5://127.0.0.1:9050
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      theporndb:
+        enabled: true
+        api_key: ${TPDB_API_KEY}
+        rate_limit: 10
+        rate_window: 1s
+        cache_ttl: 24h
+
+        # SUPPLEMENTARY role configuration
+        role: supplementary
+        priority: 30               # After Whisparr (10) and StashDB (20)
+
+        # Proxy/VPN support (OPTIONAL - must be setup and enabled)
+        proxy:
+          enabled: false           # Must explicitly enable
+          type: tor                # 'http', 'socks5', 'tor', 'vpn'
+          url: socks5://127.0.0.1:9050
+
+        # Fingerprint matching settings
+        fingerprint:
+          enabled: true
+          hash_types:              # Which hashes to try for matching
+            - oshash               # Preferred (same as Stash/StashDB)
+            - md5
+            - phash                # Perceptual hash for similar scenes
+  ```
+
+component_interaction: |
+  **Scene Metadata Fetch (Treasure)**:
+  1. File scanner detects new QAR media file
+  2. Fingerprint service calculates hashes (oshash, MD5, phash)
+  3. Metadata service calls priority chain:
+     a. Whisparr (PRIMARY) - check local cache first
+     b. StashDB (SUPPLEMENTARY #1) - GraphQL query
+     c. ThePornDB (SUPPLEMENTARY #2) - REST API
+  4. ThePornDBProvider.MatchSceneByHash(ctx, "oshash", hashValue)
+  5. Provider checks rate limiter (10/sec)
+  6. Check local cache for recent lookup
+  7. If not cached, make API request: `GET /scenes/hash/{hash}`
+  8. Parse JSON response into SceneMetadata
+  9. Cache response for 24 hours
+  10. Store external ID mapping in qar.theporndb_mappings
+  11. Return metadata to chain
+
+  **Performer Enrichment (Crew)**:
+  1. Scene metadata contains performer references
+  2. For each performer not in local database:
+  3. Call ThePornDBProvider.GetPerformerByID(ctx, tpdbID)
+  4. Merge with existing performer data (aliases, bio, images)
+  5. Download and store performer images
+  6. Index in Typesense for search
+
+  **Fallback Behavior**:
+  - If Whisparr unavailable: Try StashDB, then ThePornDB
+  - If StashDB unavailable: Try ThePornDB directly
+  - If all fail: Store file without metadata, retry later via River job
+
+api_request_examples: |
+  **Search Scene by Title**:
+  ```bash
+  curl -X GET "https://api.theporndb.net/scenes?q=scene+title" \
+    -H "Authorization: Bearer YOUR_API_KEY" \
+    -H "Accept: application/json"
+  ```
+
+  **Response**:
+  ```json
+  {
+    "data": [
+      {
+        "id": "abc123-def456-ghi789",
+        "title": "Scene Title Here",
+        "date": "2024-06-15",
+        "duration": 2400,
+        "site": {
+          "id": "studio-uuid",
+          "name": "Studio Name",
+          "logo": "https://..."
+        },
+        "performers": [
+          {
+            "id": "performer-uuid",
+            "name": "Performer Name",
+            "image": "https://..."
+          }
+        ],
+        "poster": "https://cdn.theporndb.net/...",
+        "background": "https://cdn.theporndb.net/..."
+      }
+    ],
+    "links": {
+      "first": "...",
+      "last": "...",
+      "next": "..."
+    },
+    "meta": {
+      "current_page": 1,
+      "total": 42
+    }
+  }
+  ```
+
+  **Match by Hash**:
+  ```bash
+  curl -X GET "https://api.theporndb.net/scenes/hash/abc123def456" \
+    -H "Authorization: Bearer YOUR_API_KEY"
+  ```
+
+  **Get Performer Details**:
+  ```bash
+  curl -X GET "https://api.theporndb.net/performers/performer-uuid" \
+    -H "Authorization: Bearer YOUR_API_KEY"
+  ```
+
+  **Performer Response**:
+  ```json
+  {
+    "data": {
+      "id": "performer-uuid",
+      "name": "Performer Name",
+      "aliases": ["Alias One", "Alias Two"],
+      "bio": "Biography text...",
+      "gender": "female",
+      "birthdate": "1995-03-15",
+      "birthplace": "Los Angeles, CA",
+      "ethnicity": "Caucasian",
+      "height": 165,
+      "weight": 52,
+      "measurements": "34D-24-35",
+      "image": "https://cdn.theporndb.net/...",
+      "socials": [
+        {"type": "twitter", "url": "https://twitter.com/..."},
+        {"type": "instagram", "url": "https://instagram.com/..."}
+      ],
+      "scene_count": 127
+    }
+  }
+  ```
+
+fingerprint_matching: |
+  **Supported Hash Types**:
+  - **oshash** (OpenSubtitles Hash): Based on file size + first/last 64KB
+  - **md5**: Standard MD5 checksum of full file
+  - **sha1**: SHA1 checksum (less common)
+  - **phash**: Perceptual hash for visual similarity matching
+
+  **Matching Priority**:
+  1. Try oshash first (fast, same as Stash/StashDB)
+  2. Fall back to MD5 if oshash not matched
+  3. Use phash for "similar scene" suggestions
+
+  **Implementation**:
+  ```go
+  func (p *ThePornDBProvider) MatchSceneByHash(
+    ctx context.Context,
+    hashType string,
+    hashValue string,
+  ) (*SceneMetadata, error) {
+    // Check cache first
+    cacheKey := fmt.Sprintf("hash:%s:%s", hashType, hashValue)
+    if cached, ok := p.cache.Get(cacheKey); ok {
+      return cached.(*SceneMetadata), nil
+    }
+
+    // Rate limit
+    if err := p.rateLimiter.Wait(ctx); err != nil {
+      return nil, fmt.Errorf("rate limit: %w", err)
+    }
+
+    // Get HTTP client (with optional proxy/VPN)
+    client, err := p.httpFactory.GetClientForService(ctx, "theporndb")
+    if err != nil {
+      return nil, fmt.Errorf("http client: %w", err)
+    }
+
+    // API request
+    url := fmt.Sprintf("%s/scenes/hash/%s", p.baseURL, hashValue)
+    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+    req.Header.Set("Authorization", "Bearer "+p.apiKey)
+    req.Header.Set("Accept", "application/json")
+
+    resp, err := client.Do(req)
+    if err != nil {
+      return nil, fmt.Errorf("api request: %w", err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode == 404 {
+      return nil, ErrSceneNotFound
+    }
+
+    var result SceneResponse
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+      return nil, fmt.Errorf("decode response: %w", err)
+    }
+
+    // Cache result
+    p.cache.Set(cacheKey, result.Data, p.cacheTTL)
+
+    return result.Data, nil
+  }
+  ```
+
+supplementary_role: |
+  **SUPPLEMENTARY Metadata Provider** (not primary)
+
+  **Priority Chain for QAR Content**:
+  1. **Whisparr** (priority: 10) - PRIMARY source, local cache
+  2. **StashDB** (priority: 20) - SUPPLEMENTARY #1, GraphQL API
+  3. **ThePornDB** (priority: 30) - SUPPLEMENTARY #2, REST API
+
+  **ThePornDB used as SUPPLEMENTARY in two scenarios**:
+
+  **1. FALLBACK** (when higher priority sources unavailable):
+  - Whisparr not setup or configured
+  - Whisparr/StashDB unreachable (network error)
+  - Scene not found in Whisparr/StashDB cache
+
+  **2. ENRICHMENT** (additional data):
+  - Alternative performer aliases not in StashDB
+  - Additional scene thumbnails/backgrounds
+  - Studio network relationships
+  - JAV-specific metadata (via /jav endpoint)
+
+  **Implementation Pattern**:
+  ```go
+  func (s *MetadataService) GetQARSceneMetadata(
+    ctx context.Context,
+    fileHash string,
+  ) (*Scene, error) {
+    // 1. Try PRIMARY source (Whisparr)
+    if s.whisparr.IsConfigured() {
+      scene, err := s.whisparr.GetSceneByHash(ctx, fileHash)
+      if err == nil {
+        return scene, nil
+      }
+      log.Warn("Whisparr failed, trying StashDB", "error", err)
+    }
+
+    // 2. Try SUPPLEMENTARY #1 (StashDB)
+    if s.stashdb.IsConfigured() {
+      scene, err := s.stashdb.GetSceneByHash(ctx, fileHash)
+      if err == nil {
+        return scene, nil
+      }
+      log.Warn("StashDB failed, trying ThePornDB", "error", err)
+    }
+
+    // 3. Try SUPPLEMENTARY #2 (ThePornDB)
+    scene, err := s.theporndb.MatchSceneByHash(ctx, "oshash", fileHash)
+    if err != nil {
+      return nil, fmt.Errorf("all providers failed: %w", err)
+    }
+
+    return scene, nil
+  }
+  ```
+
+proxy_vpn_support: |
+  **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
+
+  ThePornDB API calls can be routed through proxy/VPN for:
+  - **Privacy**: Hide server IP from ThePornDB
+  - **Network routing**: Route through specific VPN tunnels
+  - **Geo-restriction bypass**: Access from restricted regions
+
+  **IMPORTANT**: Proxy/VPN is **OPTIONAL**
+  - Must be explicitly setup and enabled in config
+  - NOT required for basic ThePornDB functionality
+  - Disabled by default
+
+  **Configuration**:
+  ```yaml
+  metadata:
+    providers:
+      theporndb:
+        proxy:
+          enabled: true              # Must explicitly enable
+          type: tor                  # http, socks5, tor, vpn
+          url: socks5://127.0.0.1:9050
+  ```
+
+  **See**: [HTTP_CLIENT.yaml](../../../services/HTTP_CLIENT.yaml) for implementation
+
+error_handling: |
+  **HTTP Error Codes**:
+  - 401 Unauthorized → Invalid or missing API key
+  - 404 Not Found → Scene/performer/studio doesn't exist
+  - 429 Too Many Requests → Rate limit exceeded (back off)
+  - 500+ Server Errors → ThePornDB outage (retry with backoff)
+
+  **Retry Strategy**:
+  - Transient errors (429, 500+): Retry with exponential backoff (max 3 attempts)
+  - Permanent errors (401, 404): Don't retry, log error
+  - Network errors: Retry once after 5 seconds
+
+  **Error Types**:
+  ```go
+  var (
+    ErrSceneNotFound     = errors.New("scene not found")
+    ErrPerformerNotFound = errors.New("performer not found")
+    ErrStudioNotFound    = errors.New("studio not found")
+    ErrRateLimited       = errors.New("rate limit exceeded")
+    ErrUnauthorized      = errors.New("invalid API key")
+  )
+  ```
+
+unit_tests: |
+  ```go
+  func TestThePornDB_SearchScene(t *testing.T) {
+    // Test scene search with mock HTTP client
+    mockClient := &mockHTTPClient{
+      response: `{"data": [{"id": "abc123", "title": "Test Scene"}]}`,
+    }
+
+    provider := NewThePornDBProvider(mockClient, "test-api-key")
+    results, err := provider.SearchScene(context.Background(), "test query")
+
+    require.NoError(t, err)
+    require.Len(t, results, 1)
+    assert.Equal(t, "abc123", results[0].ID)
+  }
+
+  func TestThePornDB_MatchByHash(t *testing.T) {
+    // Test fingerprint matching
+  }
+
+  func TestThePornDB_RateLimit(t *testing.T) {
+    // Test rate limiter enforces 10/sec
+    provider := NewThePornDBProvider(mockClient, "test-api-key")
+
+    start := time.Now()
+    for i := 0; i < 15; i++ {
+      _, _ = provider.SearchScene(context.Background(), "test")
+    }
+    elapsed := time.Since(start)
+
+    // Should take at least 500ms (5 extra requests at 10/sec)
+    assert.Greater(t, elapsed, 400*time.Millisecond)
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestThePornDB_FullWorkflow(t *testing.T) {
+    if testing.Short() {
+      t.Skip("skipping integration test")
+    }
+
+    apiKey := os.Getenv("TPDB_API_KEY")
+    if apiKey == "" {
+      t.Skip("TPDB_API_KEY not set")
+    }
+
+    provider := NewThePornDBProvider(http.DefaultClient, apiKey)
+
+    // Test search
+    scenes, err := provider.SearchScene(context.Background(), "test scene")
+    require.NoError(t, err)
+
+    if len(scenes) > 0 {
+      // Test get by ID
+      scene, err := provider.GetSceneByID(context.Background(), scenes[0].ID)
+      require.NoError(t, err)
+      assert.NotEmpty(t, scene.Title)
+    }
+  }
+  ```
+
+caching_strategy: |
+  **Cache Layers**:
+  - **L1**: In-memory cache (otter) for hot data (5 minute TTL)
+  - **L2**: Dragonfly cache for API responses (24 hour TTL)
+  - **Database**: qar.tpdb_cache table for persistence
+
+  **Cache Keys**:
+  - `tpdb:search:scene:{query}` - Scene search results
+  - `tpdb:scene:{id}` - Scene details
+  - `tpdb:hash:{type}:{value}` - Fingerprint matches
+  - `tpdb:performer:{id}` - Performer details
+  - `tpdb:studio:{id}` - Studio details
+
+  **Invalidation**:
+  - Manual refresh via admin UI
+  - Automatic expiry after TTL
+  - Cleared on provider configuration change
+
+best_practices: |
+  **API Usage**:
+  - Always include Authorization header with Bearer token
+  - Respect rate limits (~10 req/sec)
+  - Use fingerprint matching when possible (more accurate than title search)
+  - Cache responses aggressively (data rarely changes)
+
+  **Fingerprint Matching**:
+  - Calculate oshash first (fastest, compatible with StashDB)
+  - Use phash for finding similar/duplicate scenes
+  - Store all hashes in fingerprint_cache for future lookups
+
+  **Data Quality**:
+  - Cross-reference with StashDB for verification
+  - Merge performer aliases from multiple sources
+  - Validate dates (some may be incorrect)
+
+  **Privacy**:
+  - Use proxy/VPN if privacy is a concern
+  - Store only necessary metadata locally
+  - Implement data retention policies

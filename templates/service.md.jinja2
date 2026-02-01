@@ -51,22 +51,30 @@
 
 ### Dependencies
 
-{%- if dependencies | default([]) %}
+{%- if dependencies is defined and dependencies %}
+{%- if dependencies is string %}
+{{ dependencies }}
+{%- else %}
 This service depends on:
 {%- for dep in dependencies %}
 - **{{ dep.name }}**: {{ dep.purpose }}
 {%- endfor %}
+{%- endif %}
 {%- else %}
 No external service dependencies.
 {%- endif %}
 
 ### Provides
 
-{%- if provides | default([]) %}
+{%- if provides is defined and provides %}
+{%- if provides is string %}
+{{ provides }}
+{%- else %}
 This service provides:
 {%- for provided in provides %}
 - **{{ provided.name }}**: {{ provided.description }}
 {%- endfor %}
+{%- endif %}
 {%- else %}
 <!-- Service provides -->
 {%- endif %}

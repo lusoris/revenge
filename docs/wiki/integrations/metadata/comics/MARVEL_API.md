@@ -22,9 +22,9 @@
 
 # Marvel API
 
-> Official Marvel Comics data for Marvel titles
+> Official Marvel Comics API for Marvel titles
 
-The official Marvel API provides authoritative metadata for Marvel comics. Character appearances, creator credits, and event tie-ins are tracked. High-quality cover images directly from Marvel. Only covers Marvel-published content. Free developer account required for API access.
+SUPPLEMENTARY metadata source for Marvel comics ONLY. Official Marvel Developer API provides authoritative data for Marvel-published content. Character appearances, creator credits, event tie-ins. High-quality cover images directly from Marvel. **Only covers Marvel content** (not DC, indie, manga). Free developer account required. 3000 req/day rate limit.
 
 ---
 
@@ -65,9 +65,9 @@ The official Marvel API provides authoritative metadata for Marvel comics. Chara
 ### Learn More
 
 Official documentation and guides:
+- [Marvel Developer Portal](https://developer.marvel.com/docs)
 - [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 - [River Job Queue](../../../../sources/tooling/river.md)
 
 

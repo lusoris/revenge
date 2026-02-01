@@ -61,3 +61,245 @@ integration_name: Sonarr
 integration_id: sonarr
 external_service: Sonarr
 auth_method: api_key
+api_base_url: http://localhost:8989/api/v3
+
+dual_role_metadata_and_downloads: |
+  **CRITICAL: Sonarr serves DUAL purposes in the Revenge architecture**:
+
+  **1. PRIMARY Metadata Aggregator**:
+  - Sonarr is the PRIMARY source for TV show metadata in Revenge
+  - It aggregates metadata from TheTVDB (The TV Database)
+  - Maintains local cache of series information (title, seasons, episodes, air dates, cast, posters)
+  - Revenge queries Sonarr API for TV metadata BEFORE falling back to direct TheTVDB API
+  - Provides unified, consistent metadata interface
+  - Reduces direct API calls to external services (rate limiting, availability)
+
+  **2. Download Automation Manager**:
+  - Handles episode acquisition through configured indexers and download clients
+  - Monitors for new episode releases and automatically downloads
+  - Manages season/episode file organization and naming
+  - Webhooks notify Revenge when episodes are ready
+
+  **Metadata Flow**:
+  ```
+  External (TheTVDB) → Sonarr (local aggregation) → Revenge
+                            ↓
+                  (optional direct TheTVDB for enrichment)
+  ```
+
+  **Why This Matters**:
+  - Sonarr is NOT just a download tool - it's the metadata backbone for TV shows
+  - Direct TheTVDB integration is SUPPLEMENTARY for real-time updates/enrichment
+  - This dual-role pattern is consistent across ALL Arr services
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│   Sonarr     │────▶│   Sonarr    │
+  │  Request    │◀────│ Integration  │◀────│   Server    │
+  │  System     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
+api_details: |
+  **API Version**: v3
+  **Base URL**: `http://localhost:8989/api/v3` (configurable)
+  **Authentication**: X-Api-Key header
+  **Rate Limit**: None (local service)
+
+  **Key Endpoints**:
+  - `/series` - List/add/delete TV series
+  - `/series/{id}` - Get/update series details
+  - `/series/lookup` - Search for series (TheTVDB)
+  - `/episode` - Get episodes
+  - `/calendar` - Get upcoming episodes
+  - `/command` - Trigger commands (search, refresh)
+  - `/history` - Get download history
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Sonarr instance configuration
+  CREATE TABLE sonarr_instances (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    name VARCHAR(255) NOT NULL,
+    base_url TEXT NOT NULL,
+    api_key TEXT NOT NULL,
+
+    enabled BOOLEAN DEFAULT true,
+    auto_sync BOOLEAN DEFAULT true,
+    sync_interval INTEGER DEFAULT 300,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- TV show to Sonarr mapping
+  CREATE TABLE sonarr_series (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    tvshow_id UUID NOT NULL REFERENCES tvshows(id) ON DELETE CASCADE,
+    sonarr_instance_id UUID NOT NULL REFERENCES sonarr_instances(id) ON DELETE CASCADE,
+
+    sonarr_series_id INTEGER NOT NULL,
+    monitored BOOLEAN DEFAULT true,
+    quality_profile_id INTEGER,
+    season_folder BOOLEAN DEFAULT true,
+
+    last_synced_at TIMESTAMPTZ,
+    UNIQUE(tvshow_id, sonarr_instance_id)
+  );
+
+  -- Episode file tracking
+  CREATE TABLE sonarr_episodes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    episode_id UUID NOT NULL REFERENCES episodes(id) ON DELETE CASCADE,
+    sonarr_series_id UUID NOT NULL REFERENCES sonarr_series(id) ON DELETE CASCADE,
+
+    sonarr_episode_id INTEGER NOT NULL,
+    has_file BOOLEAN DEFAULT false,
+    file_path TEXT,
+
+    UNIQUE(episode_id)
+  );
+  ```
+
+key_interfaces: |
+  ```go
+  type SonarrService interface {
+    // Series management
+    AddSeries(ctx context.Context, tvdbID int, qualityProfileID int, rootFolder string) (*SonarrSeries, error)
+    DeleteSeries(ctx context.Context, sonarrID int, deleteFiles bool) error
+    SearchSeason(ctx context.Context, seriesID int, seasonNumber int) error
+
+    // Episode management
+    GetEpisodes(ctx context.Context, seriesID int) ([]SonarrEpisode, error)
+    GetCalendar(ctx context.Context, start, end time.Time) ([]CalendarEpisode, error)
+
+    // Sync
+    SyncLibrary(ctx context.Context, instanceID uuid.UUID) error
+  }
+
+  type SonarrSeries struct {
+    ID              int      `json:"id"`
+    Title           string   `json:"title"`
+    Year            int      `json:"year"`
+    TVDbID          int      `json:"tvdbId"`
+    TVRageID        int      `json:"tvRageId"`
+    IMDbID          string   `json:"imdbId"`
+    Monitored       bool     `json:"monitored"`
+    QualityProfile  int      `json:"qualityProfileId"`
+    SeasonFolder    bool     `json:"seasonFolder"`
+    Path            string   `json:"path"`
+    Seasons         []Season `json:"seasons"`
+  }
+
+  type SonarrEpisode struct {
+    ID              int      `json:"id"`
+    SeriesID        int      `json:"seriesId"`
+    SeasonNumber    int      `json:"seasonNumber"`
+    EpisodeNumber   int      `json:"episodeNumber"`
+    Title           string   `json:"title"`
+    AirDate         string   `json:"airDate"`
+    HasFile         bool     `json:"hasFile"`
+    Monitored       bool     `json:"monitored"`
+  }
+  ```
+
+api_request_examples: |
+  **Add Series**:
+  ```
+  POST http://localhost:8989/api/v3/series
+  X-Api-Key: your_api_key
+
+  {
+    "tvdbId": 81189,
+    "title": "Breaking Bad",
+    "qualityProfileId": 1,
+    "rootFolderPath": "/tv",
+    "monitored": true,
+    "seasonFolder": true,
+    "addOptions": {
+      "searchForMissingEpisodes": true
+    }
+  }
+  ```
+
+  **Get Calendar** (upcoming episodes):
+  ```
+  GET http://localhost:8989/api/v3/calendar?start=2026-02-01&end=2026-02-07
+  X-Api-Key: your_api_key
+  ```
+
+webhook_handling: |
+  **Supported Events**:
+  - **Download**: Episode downloaded
+  - **EpisodeFileDelete**: Episode file deleted
+  - **SeriesDelete**: Series deleted
+  - **Rename**: Files renamed
+
+  **Webhook Payload** (Download):
+  ```json
+  {
+    "eventType": "Download",
+    "series": {
+      "id": 1,
+      "title": "Breaking Bad",
+      "tvdbId": 81189
+    },
+    "episodes": [
+      {
+        "id": 123,
+        "seasonNumber": 1,
+        "episodeNumber": 1,
+        "title": "Pilot"
+      }
+    ],
+    "episodeFile": {
+      "path": "/tv/Breaking Bad/Season 01/Breaking.Bad.S01E01.720p.mkv",
+      "quality": "HDTV-720p",
+      "size": 1073741824
+    }
+  }
+  ```
+
+season_monitoring: |
+  **Per-Season Monitoring**:
+  - Monitor all seasons
+  - Monitor latest season only (for ongoing shows)
+  - Monitor specific seasons
+
+  **Sonarr API**:
+  ```json
+  {
+    "seasons": [
+      {
+        "seasonNumber": 1,
+        "monitored": true
+      },
+      {
+        "seasonNumber": 2,
+        "monitored": false
+      }
+    ]
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestSonarrService_AddSeries(t *testing.T) {
+    // Test adding series to Sonarr
+  }
+
+  func TestSonarrWebhook_EpisodeDownload(t *testing.T) {
+    // Test episode download webhook
+  }
+  ```

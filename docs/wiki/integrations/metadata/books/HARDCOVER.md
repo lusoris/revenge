@@ -22,9 +22,9 @@
 
 # Hardcover
 
-> Track reading with Hardcover
+> Hardcover - Track book reading and sync shelves
 
-Hardcover is a modern alternative to Goodreads with an open API. Sync your reading progress and shelves. Import reading history from Goodreads exports. Community ratings and reviews supplement metadata. Connect your Hardcover account in Revenge settings to enable sync.
+Social reading platform with open GraphQL API. Sync reading progress and shelves between Revenge and Hardcover. Import/export reading history. Community ratings and reviews. OAuth 2.0 authentication. Modern alternative to Goodreads with better API access.
 
 ---
 
@@ -66,6 +66,8 @@ Hardcover is a modern alternative to Goodreads with an open API. Sync your readi
 
 Official documentation and guides:
 - [Hardcover API](../../../../sources/apis/hardcover.md)
+- [Khan/genqlient](../../../../sources/tooling/genqlient.md)
+- [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2)
 
 
 

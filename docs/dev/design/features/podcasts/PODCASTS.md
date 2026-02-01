@@ -135,15 +135,162 @@ internal/content/podcasts/
 
 ### File Structure
 
-<!-- File structure -->
+```
+internal/content/podcasts/
+├── module.go              # fx.Module with all providers
+├── repository.go          # Database layer
+├── repository_test.go     # Repository tests (testcontainers)
+├── service.go             # Business logic
+├── service_test.go        # Service tests (mocks)
+├── handler.go             # HTTP handlers
+├── handler_test.go        # Handler tests (httptest)
+├── types.go               # Domain types
+├── cache.go               # Caching logic
+├── cache_test.go          # Cache tests
+├── rss/
+│   ├── parser.go          # RSS/Atom feed parsing
+│   ├── parser_test.go     # RSS parsing tests
+│   └── fetcher.go         # HTTP feed fetching with caching
+├── discovery/
+│   ├── podcast_index.go   # Podcast Index API integration
+│   ├── opml.go            # OPML import/export
+│   └── opml_test.go       # OPML tests
+├── downloads/
+│   ├── downloader.go      # Episode download manager
+│   ├── queue.go           # Download queue management
+│   └── cleanup.go         # Storage cleanup policies
+├── jobs/
+│   ├── feed_refresh.go    # Feed refresh River job
+│   ├── auto_download.go   # Auto-download River job
+│   └── cleanup.go         # Cleanup River job
+└── progress/
+    ├── tracker.go         # Playback progress tracking
+    └── sync.go            # Multi-device sync logic
+
+migrations/
+└── podcasts/
+    ├── 001_podcasts.sql   # Podcasts schema
+    ├── 002_episodes.sql   # Episodes schema
+    └── 003_progress.sql   # Progress tracking schema
+
+api/
+└── openapi.yaml           # OpenAPI spec (podcasts/* endpoints)
+```
+
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Repository defines database operations for podcasts
+type Repository interface {
+    // Podcast CRUD
+    GetPodcast(ctx context.Context, id uuid.UUID) (*Podcast, error)
+    GetPodcastByRSSURL(ctx context.Context, rssURL string) (*Podcast, error)
+    ListPodcasts(ctx context.Context, filters ListFilters) ([]Podcast, error)
+    CreatePodcast(ctx context.Context, podcast *Podcast) error
+    UpdatePodcast(ctx context.Context, podcast *Podcast) error
+    DeletePodcast(ctx context.Context, id uuid.UUID) error
+
+    // Episode CRUD
+    GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
+    GetEpisodeByGUID(ctx context.Context, guid string) (*Episode, error)
+    ListEpisodes(ctx context.Context, podcastID uuid.UUID, filters ListFilters) ([]Episode, error)
+    CreateEpisode(ctx context.Context, episode *Episode) error
+    UpdateEpisode(ctx context.Context, episode *Episode) error
+
+    // Subscription management
+    Subscribe(ctx context.Context, userID, podcastID uuid.UUID, opts SubscriptionOptions) error
+    Unsubscribe(ctx context.Context, userID, podcastID uuid.UUID) error
+    GetSubscription(ctx context.Context, userID, podcastID uuid.UUID) (*Subscription, error)
+    ListSubscriptions(ctx context.Context, userID uuid.UUID) ([]Subscription, error)
+
+    // Progress tracking
+    GetProgress(ctx context.Context, userID, episodeID uuid.UUID) (*PlaybackProgress, error)
+    UpdateProgress(ctx context.Context, progress *PlaybackProgress) error
+}
+
+// Service defines business logic for podcasts
+type Service interface {
+    // Podcast operations
+    SubscribeToPodcast(ctx context.Context, userID uuid.UUID, rssURL string) (*Podcast, error)
+    UnsubscribeFromPodcast(ctx context.Context, userID, podcastID uuid.UUID) error
+    RefreshPodcast(ctx context.Context, podcastID uuid.UUID) error
+
+    // Episode operations
+    GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
+    ListNewEpisodes(ctx context.Context, userID uuid.UUID, limit int) ([]Episode, error)
+    DownloadEpisode(ctx context.Context, episodeID uuid.UUID) error
+    DeleteDownload(ctx context.Context, episodeID uuid.UUID) error
+
+    // Discovery
+    SearchPodcasts(ctx context.Context, query string) ([]PodcastSearchResult, error)
+    ImportOPML(ctx context.Context, userID uuid.UUID, opmlData []byte) error
+    ExportOPML(ctx context.Context, userID uuid.UUID) ([]byte, error)
+
+    // Progress
+    UpdateProgress(ctx context.Context, userID, episodeID uuid.UUID, progress ProgressUpdate) error
+}
+
+// RSSParser parses podcast RSS feeds
+type RSSParser interface {
+    // ParseFeed parses an RSS/Atom feed into structured data
+    ParseFeed(data []byte) (*PodcastFeed, error)
+
+    // ExtractEpisodes extracts episode list from feed
+    ExtractEpisodes(feed *PodcastFeed) ([]Episode, error)
+
+    // ValidateFeed validates RSS feed format
+    ValidateFeed(data []byte) error
+}
+
+// PodcastIndexClient interfaces with Podcast Index API
+type PodcastIndexClient interface {
+    // Search searches for podcasts by query
+    Search(ctx context.Context, query string) ([]PodcastSearchResult, error)
+
+    // GetPodcastByFeedURL retrieves podcast details by RSS URL
+    GetPodcastByFeedURL(ctx context.Context, feedURL string) (*PodcastIndexPodcast, error)
+
+    // GetTrending retrieves trending podcasts
+    GetTrending(ctx context.Context, limit int) ([]PodcastIndexPodcast, error)
+}
+
+// DownloadManager manages episode downloads
+type DownloadManager interface {
+    // QueueDownload adds episode to download queue
+    QueueDownload(ctx context.Context, episodeID uuid.UUID) error
+
+    // GetDownloadStatus retrieves current download status
+    GetDownloadStatus(ctx context.Context, episodeID uuid.UUID) (*DownloadStatus, error)
+
+    // CancelDownload cancels an in-progress download
+    CancelDownload(ctx context.Context, episodeID uuid.UUID) error
+
+    // CleanupOldDownloads removes old downloads per retention policy
+    CleanupOldDownloads(ctx context.Context, retentionDays int) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Dependencies**:
+- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+- `github.com/google/uuid` - UUID generation
+- `github.com/maypok86/otter` - In-memory cache
+- `github.com/mmcdole/gofeed` - RSS/Atom feed parsing
+- `github.com/go-resty/resty/v2` - HTTP client for feed fetching
+- `go.uber.org/fx` - Dependency injection
+- `github.com/riverqueue/river` - Background job queue
+- `github.com/gilliek/go-opml` - OPML parsing and generation
+
+**External APIs**:
+- Podcast Index API - Podcast search and discovery
+- RSS/Atom feeds - Episode metadata and updates
+
+**Database**:
+- PostgreSQL 18+ with trigram extension for fuzzy search
+
 
 
 
@@ -152,11 +299,57 @@ internal/content/podcasts/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+**Environment Variables**:
+- `REVENGE_PODCAST_CACHE_TTL` - Cache TTL duration (default: 15m)
+- `REVENGE_PODCAST_CACHE_SIZE` - Cache size in MB (default: 100)
+- `REVENGE_PODCAST_REFRESH_INTERVAL` - Default refresh interval in seconds (default: 3600)
+- `REVENGE_PODCAST_INDEX_API_KEY` - Podcast Index API key (required for search)
+- `REVENGE_PODCAST_INDEX_API_SECRET` - Podcast Index API secret (required for search)
+- `REVENGE_PODCAST_AUTO_DOWNLOAD_LIMIT` - Default auto-download limit (default: 3)
+- `REVENGE_PODCAST_DOWNLOAD_PATH` - Path for downloaded episodes
+- `REVENGE_PODCAST_RETENTION_DAYS` - Episode retention in days (default: 30)
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+**config.yaml keys**:
+```yaml
+podcast:
+  cache:
+    ttl: 15m
+    size_mb: 100
+
+  feeds:
+    refresh_interval: 3600  # seconds (1 hour)
+    timeout: 30s
+    user_agent: "Revenge Podcast Client/1.0"
+    max_episodes_per_fetch: 100
+
+  discovery:
+    podcast_index:
+      api_key: ${REVENGE_PODCAST_INDEX_API_KEY}
+      api_secret: ${REVENGE_PODCAST_INDEX_API_SECRET}
+      enabled: true
+
+  downloads:
+    enabled: true
+    path: ${REVENGE_PODCAST_DOWNLOAD_PATH}
+    auto_download_limit: 3  # Latest N episodes
+    retention_days: 30
+    max_concurrent: 3
+    bandwidth_limit: 0  # 0 = unlimited, bytes/sec
+
+  playback:
+    speed_options: [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0]
+    skip_forward: 30  # seconds
+    skip_backward: 15  # seconds
+    sleep_timer_options: [5, 10, 15, 30, 45, 60, "end_of_episode"]
+
+  notifications:
+    new_episodes_enabled: true
+    download_complete_enabled: true
+```
+
 
 
 ## API Endpoints

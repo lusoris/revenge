@@ -48,3 +48,488 @@ design_refs:
 integration_name: ErsatzTV
 integration_id: ersatztv
 external_service: ErsatzTV
+api_base_url: http://ersatztv.local:8409
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐    1. View EPG      ┌─────────────────┐
+  │   Revenge    │────────────────────▶│   EPG Service   │
+  │  Web Client  │                     │  (Revenge)      │
+  └──────┬───────┘                     └────────┬────────┘
+         │                                      │
+         │ 2. Select channel                   │
+         │                              3. Fetch EPG from
+         │                                 ErsatzTV
+         │                                      ▼
+         │                             ┌────────────────┐
+         │                             │  ErsatzTV API  │
+         │                             │  /api/channels │
+         │                             │  /api/xmltv.xml│
+         │                             └────────┬───────┘
+         │                                      │
+         │ 4. Play channel                     │ 5. Get channel
+         ▼                                      │    stream URL
+  ┌──────────────┐                             ▼
+  │   Player     │    6. Request HLS  ┌────────────────┐
+  │  (Vidstack)  │───────────────────▶│  ErsatzTV      │
+  └──────────────┘                    │  HLS Endpoint  │
+                                       │  /iptv/{id}.m3u8│
+                                       └────────┬───────┘
+                                                │
+                                        7. Generate HLS
+                                           from scheduled
+                                           media files
+                                                ▼
+                                       ┌────────────────┐
+                                       │  Media Files   │
+                                       │  (your library)│
+                                       └────────────────┘
+  ```
+
+protocol_details: |
+  **ErsatzTV REST API**:
+
+  **Base URL**: `http://ersatztv.local:8409`
+  **Format**: JSON
+  **Authentication**: None (local network service)
+
+  **Key Endpoints**:
+  - `GET /api/channels` - Get all channels
+  - `GET /api/channels/{id}` - Get channel details
+  - `GET /api/channels/{id}/guide` - Get channel EPG
+  - `GET /api/xmltv.xml` - Full EPG in XMLTV format
+  - `GET /iptv/channels.m3u8` - M3U playlist of all channels
+  - `GET /iptv/{id}.m3u8` - HLS stream for specific channel
+
+  **HLS Streaming**:
+  - Format: HLS (HTTP Live Streaming)
+  - Segments: Dynamically generated from media files
+  - Adaptive: Multiple quality profiles supported
+  - Compatibility: Works with any HLS player
+
+  **EPG (Electronic Program Guide)**:
+  - Format: XMLTV (industry standard)
+  - Updates: Real-time based on schedules
+  - History: Maintains past programming data
+  - Future: Shows upcoming programming
+
+  **Channel Types**:
+  - **Playlists**: Play items in order or shuffled
+  - **Collections**: Group similar content
+  - **Smart Collections**: Rule-based auto-updating
+  - **Flood**: Fill schedule with single item (24/7 marathons)
+  - **Blocks**: Time-based programming blocks
+
+module_structure: |
+  ```
+  internal/
+    livetv/
+      ersatztv/
+        client.go         # ErsatzTV API client
+        channels.go       # Channel management
+        epg.go            # EPG data fetching
+        stream.go         # HLS stream proxying
+        sync.go           # Periodic EPG sync
+        types.go          # Response types
+        module.go         # fx module
+        client_test.go
+
+  config/
+    livetv/
+      ersatztv.yaml       # ErsatzTV configuration example
+  ```
+
+key_interfaces: |
+  ```go
+  // ErsatzTVClient manages ErsatzTV API
+  type ErsatzTVClient interface {
+      // Get all channels
+      GetChannels(ctx context.Context) ([]Channel, error)
+
+      // Get channel by ID
+      GetChannel(ctx context.Context, channelID string) (*Channel, error)
+
+      // Get channel EPG
+      GetChannelGuide(ctx context.Context, channelID string, startTime, endTime time.Time) ([]EPGEntry, error)
+
+      // Get full EPG in XMLTV format
+      GetXMLTV(ctx context.Context) ([]byte, error)
+
+      // Get M3U playlist URL
+      GetPlaylistURL() string
+
+      // Get channel stream URL
+      GetStreamURL(channelID string) string
+
+      // Health check
+      Ping(ctx context.Context) error
+  }
+
+  type ErsatzTVConfig struct {
+      BaseURL      string
+      Enabled      bool
+      SyncInterval time.Duration  // EPG sync frequency
+      EPGDays      int             // Days of EPG to fetch
+  }
+
+  type Channel struct {
+      ID           string
+      Number       string       // Channel number (e.g., "1", "2.1")
+      Name         string
+      Categories   []string
+      LogoPath     string
+      StreamURL    string       // HLS stream URL
+      Group        string
+      FFmpegProfile string      // Quality profile
+  }
+
+  type EPGEntry struct {
+      ChannelID    string
+      ProgramID    string
+      Title        string
+      Description  string
+      EpisodeTitle string
+      Season       int
+      Episode      int
+      StartTime    time.Time
+      EndTime      time.Time
+      Duration     time.Duration
+      Category     string
+      Rating       string
+      Artwork      string
+      IsMovie      bool
+      IsEpisode    bool
+  }
+
+  type ErsatzTVResponse struct {
+      PageMap     PageMap     `json:"page_map"`
+      Channels    []ChannelData `json:"data"`
+  }
+
+  type ChannelData struct {
+      ID           int         `json:"id"`
+      Number       string      `json:"number"`
+      Name         string      `json:"name"`
+      Categories   []string    `json:"categories"`
+      Group        string      `json:"group"`
+      StreamMode   string      `json:"stream_mode"`     // HLSSegmenter, HttpLiveStreamingDirect
+      FFmpegProfile int        `json:"ffmpeg_profile_id"`
+      Artwork      ChannelArtwork `json:"artwork"`
+  }
+
+  type ChannelArtwork struct {
+      Path string `json:"path"`
+  }
+
+  type PageMap struct {
+      Count      int `json:"count"`
+      TotalCount int `json:"total_count"`
+      PageSize   int `json:"page_size"`
+      CurrentPage int `json:"current_page"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/bluenviron/gohlslib/v2` - HLS parsing/handling
+  - `github.com/riverqueue/river` - Background EPG sync jobs
+  - `encoding/xml` - XMLTV parsing
+  - `net/http` - HTTP client
+
+  **External Services**:
+  - ErsatzTV server (https://ersatztv.org)
+
+env_vars: |
+  ```bash
+  # ErsatzTV configuration
+  REVENGE_ERSATZTV_ENABLED=true
+  REVENGE_ERSATZTV_BASE_URL=http://ersatztv.local:8409
+  REVENGE_ERSATZTV_SYNC_INTERVAL=1h
+  REVENGE_ERSATZTV_EPG_DAYS=7
+  ```
+
+config_keys: |
+  ```yaml
+  livetv:
+    ersatztv:
+      enabled: true
+      base_url: http://ersatztv.local:8409
+      sync_interval: 1h          # EPG sync frequency
+      epg_days: 7                # Days of EPG to cache
+      stream_proxy: false        # Proxy HLS through Revenge (or direct)
+      logo_cache: true           # Cache channel logos locally
+  ```
+
+component_interaction: |
+  **EPG Sync Workflow**:
+
+  1. **Periodic sync job** (River cron):
+     - Runs every sync_interval (default: 1 hour)
+     - Fetches XMLTV data from ErsatzTV
+     - Parses XML into EPG entries
+     - Stores in PostgreSQL epg_programs table
+
+  2. **Channel discovery**:
+     - GET /api/channels
+     - Parse channel list
+     - Store in database with stream URLs
+     - Download and cache channel logos
+
+  3. **EPG display**:
+     - User views EPG in Revenge
+     - Query database for current/upcoming programs
+     - Display in grid or list view
+     - Update every minute for "now playing"
+
+  4. **Live TV playback**:
+     - User selects channel
+     - Retrieve HLS stream URL (direct or proxied)
+     - Pass URL to Vidstack player
+     - Player loads HLS and begins playback
+
+api_endpoints: |
+  **Revenge API Endpoints**:
+
+  ```
+  # Channels
+  GET  /api/v1/livetv/channels
+  GET  /api/v1/livetv/channels/{id}
+
+  # EPG
+  GET  /api/v1/livetv/epg
+  GET  /api/v1/livetv/epg/{channel_id}
+
+  # Stream
+  GET  /api/v1/livetv/stream/{channel_id}
+  GET  /api/v1/livetv/stream/{channel_id}/master.m3u8
+
+  # Management
+  POST /api/v1/livetv/ersatztv/sync
+  GET  /api/v1/livetv/ersatztv/status
+  ```
+
+  **Example - Get Channels**:
+  ```json
+  GET /api/v1/livetv/channels
+
+  Response:
+  {
+    "channels": [
+      {
+        "id": "ersatztv-1",
+        "number": "1",
+        "name": "Comedy Central",
+        "logo": "https://revenge.local/api/v1/images/channel/ersatztv-1",
+        "group": "Entertainment",
+        "stream_url": "http://ersatztv.local:8409/iptv/1.m3u8",
+        "now_playing": {
+          "title": "The Office",
+          "episode_title": "Pilot",
+          "season": 1,
+          "episode": 1,
+          "start_time": "2026-02-01T10:00:00Z",
+          "end_time": "2026-02-01T10:30:00Z"
+        }
+      }
+    ]
+  }
+  ```
+
+  **Example - Get EPG**:
+  ```json
+  GET /api/v1/livetv/epg?start=2026-02-01T00:00:00Z&end=2026-02-02T00:00:00Z
+
+  Response:
+  {
+    "programs": [
+      {
+        "id": "epg-123",
+        "channel_id": "ersatztv-1",
+        "title": "The Office",
+        "episode_title": "Pilot",
+        "description": "Michael Scott begins his reign...",
+        "season": 1,
+        "episode": 1,
+        "start_time": "2026-02-01T10:00:00Z",
+        "end_time": "2026-02-01T10:30:00Z",
+        "duration": "30m",
+        "category": "Comedy",
+        "is_episode": true
+      }
+    ]
+  }
+  ```
+
+xmltv_parsing: |
+  **XMLTV Format**:
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE tv SYSTEM "xmltv.dtd">
+  <tv generator-info-name="ErsatzTV">
+    <channel id="1">
+      <display-name>Comedy Central</display-name>
+      <icon src="http://ersatztv.local:8409/iptv/logos/1.png"/>
+    </channel>
+    <programme start="20260201100000 +0000" stop="20260201103000 +0000" channel="1">
+      <title>The Office</title>
+      <sub-title>Pilot</sub-title>
+      <desc>Michael Scott begins his reign...</desc>
+      <category>Comedy</category>
+      <episode-num system="onscreen">S01E01</episode-num>
+      <episode-num system="xmltv_ns">0.0.0/1</episode-num>
+      <icon src="http://ersatztv.local:8409/iptv/artwork/123.jpg"/>
+    </programme>
+  </tv>
+  ```
+
+  **Parsing Implementation**:
+  ```go
+  func ParseXMLTV(data []byte) ([]EPGEntry, error) {
+      var tv XMLTV
+      if err := xml.Unmarshal(data, &tv); err != nil {
+          return nil, err
+      }
+
+      var entries []EPGEntry
+      for _, prog := range tv.Programs {
+          entry := EPGEntry{
+              ChannelID:    prog.Channel,
+              Title:        prog.Title,
+              Description:  prog.Description,
+              EpisodeTitle: prog.SubTitle,
+              StartTime:    parseXMLTVTime(prog.Start),
+              EndTime:      parseXMLTVTime(prog.Stop),
+              Category:     prog.Category,
+          }
+
+          // Parse episode numbers
+          for _, epNum := range prog.EpisodeNum {
+              if epNum.System == "xmltv_ns" {
+                  season, episode := parseXMLTVNS(epNum.Value)
+                  entry.Season = season
+                  entry.Episode = episode
+              }
+          }
+
+          entries = append(entries, entry)
+      }
+
+      return entries, nil
+  }
+  ```
+
+error_handling: |
+  **Common Errors**:
+
+  - **Connection Refused**: ErsatzTV not running or wrong URL
+    - Solution: Verify ErsatzTV is running, check base_url config
+
+  - **Empty EPG**: No channels configured in ErsatzTV
+    - Solution: Set up channels/playlists in ErsatzTV first
+
+  - **Stream Not Playing**: HLS stream URL invalid
+    - Solution: Check FFmpeg profile in ErsatzTV, verify network access
+
+  - **EPG Sync Failed**: XMLTV parsing error
+    - Solution: Check ErsatzTV version, validate XMLTV format
+
+unit_tests: |
+  ```go
+  func TestErsatzTVClient_GetChannels(t *testing.T) {
+      mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+          w.Header().Set("Content-Type", "application/json")
+          json.NewEncoder(w).Encode(map[string]interface{}{
+              "data": []map[string]interface{}{
+                  {
+                      "id":     1,
+                      "number": "1",
+                      "name":   "Comedy Central",
+                  },
+              },
+          })
+      }))
+      defer mockServer.Close()
+
+      client := NewErsatzTVClient(mockServer.URL)
+      channels, err := client.GetChannels(context.Background())
+
+      require.NoError(t, err)
+      assert.Len(t, channels, 1)
+      assert.Equal(t, "Comedy Central", channels[0].Name)
+  }
+
+  func TestParseXMLTV(t *testing.T) {
+      xmlData := []byte(`<?xml version="1.0"?><tv>...</tv>`)
+      entries, err := ParseXMLTV(xmlData)
+      require.NoError(t, err)
+      assert.NotEmpty(t, entries)
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestErsatzTV_FullWorkflow(t *testing.T) {
+      if testing.Short() {
+          t.Skip("skipping integration test")
+      }
+
+      baseURL := os.Getenv("ERSATZTV_URL")
+      if baseURL == "" {
+          t.Skip("no ErsatzTV URL provided")
+      }
+
+      client := NewErsatzTVClient(baseURL)
+
+      // Test ping
+      err := client.Ping(context.Background())
+      require.NoError(t, err)
+
+      // Test get channels
+      channels, err := client.GetChannels(context.Background())
+      require.NoError(t, err)
+      require.NotEmpty(t, channels)
+
+      // Test get XMLTV
+      xmltv, err := client.GetXMLTV(context.Background())
+      require.NoError(t, err)
+      assert.NotEmpty(t, xmltv)
+  }
+  ```
+
+best_practices: |
+  **Configuration**:
+  - Run ErsatzTV on same network as Revenge
+  - Use static IP or hostname for ErsatzTV
+  - Configure firewall to allow HTTP access
+  - Set up channels/schedules in ErsatzTV before integrating
+
+  **EPG Sync**:
+  - Sync EPG hourly (balances freshness vs load)
+  - Cache EPG for 7 days (provides full week view)
+  - Index epg_programs table by channel_id + start_time
+  - Clean up old EPG data (older than 7 days)
+
+  **Streaming**:
+  - Direct stream URLs (no proxy) for better performance
+  - Proxy only if network segmentation required
+  - Cache channel logos locally (reduce ErsatzTV load)
+  - Use HLS adaptive streaming for quality selection
+
+  **Channel Management**:
+  - Group channels by category (Movies, TV Shows, Music)
+  - Use consistent numbering scheme
+  - Provide high-quality logos (PNG, 300x300px minimum)
+
+  **Performance**:
+  - Use connection pooling for HTTP client
+  - Implement EPG caching with TTL
+  - Minimize XMLTV parsing frequency
+  - Index database queries efficiently
+
+  **Monitoring**:
+  - Track EPG sync success/failure rates
+  - Monitor stream playback errors
+  - Log XMLTV parsing issues
+  - Alert on ErsatzTV connectivity loss

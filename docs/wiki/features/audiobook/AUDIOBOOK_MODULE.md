@@ -25,7 +25,7 @@
 
 > Your audiobook library with chapter navigation and progress sync
 
-The Audiobook Module provides a complete audiobook experience with support for chapter navigation, progress tracking, and multi-device synchronization. It integrates with Chaptarr for automated audiobook management and uses Audnexus for rich metadata including narrators, publishers, and book descriptions. Resume playback across devices and adjust playback speed to your preference.
+The Audiobook Module provides a complete audiobook experience with support for chapter navigation, progress tracking, and multi-device synchronization. Uses Chaptarr as the PRIMARY metadata source (aggregates from Audnexus/OpenLibrary locally), with direct APIs as supplementary enrichment. Chaptarr integration provides both metadata caching and download automation. Rich metadata includes narrators, publishers, and book descriptions. Resume playback across devices and adjust playback speed to your preference.
 
 ---
 

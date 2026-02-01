@@ -125,11 +125,36 @@ internal/content/library_types/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type LibraryService interface {
+  CreateLibrary(ctx context.Context, req CreateLibraryRequest) (*Library, error)
+  ListLibraries(ctx context.Context) ([]Library, error)
+  GetLibrary(ctx context.Context, libraryID uuid.UUID) (*Library, error)
+  UpdateLibrary(ctx context.Context, libraryID uuid.UUID, update LibraryUpdate) (*Library, error)
+  DeleteLibrary(ctx context.Context, libraryID uuid.UUID) error
+  ScanLibrary(ctx context.Context, libraryID uuid.UUID, scanType string) (*LibraryScan, error)
+}
+
+type Library struct {
+  ID                uuid.UUID `db:"id" json:"id"`
+  Name              string    `db:"name" json:"name"`
+  Type              string    `db:"type" json:"type"`
+  Paths             []string  `db:"paths" json:"paths"`
+  Enabled           bool      `db:"enabled" json:"enabled"`
+  MetadataProvider  string    `db:"metadata_provider" json:"metadata_provider"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/fsnotify/fsnotify` - FS monitoring
+- `github.com/riverqueue/river` - Background scan jobs
+- `go.uber.org/fx`
+
 
 
 
@@ -138,17 +163,33 @@ internal/content/library_types/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+LIBRARIES_AUTO_SCAN_INTERVAL=6h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+libraries:
+  auto_scan_interval: 6h
+  realtime_monitoring_enabled: true
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST   /api/v1/libraries          # Create library
+GET    /api/v1/libraries          # List libraries
+GET    /api/v1/libraries/:id      # Get library
+PUT    /api/v1/libraries/:id      # Update library
+DELETE /api/v1/libraries/:id      # Delete library
+POST   /api/v1/libraries/:id/scan # Trigger scan
+```
+
 
 
 ## Testing Strategy

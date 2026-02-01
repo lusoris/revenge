@@ -27,12 +27,18 @@ sources:
     url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: RADARR (PRIMARY for movies)
+    path: ../../servarr/RADARR.md
+  - title: SONARR (PRIMARY for TV shows)
+    path: ../../servarr/SONARR.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: MOVIE_MODULE
+    path: ../../../features/video/MOVIE_MODULE.md
+  - title: TVSHOW_MODULE
+    path: ../../../features/video/TVSHOW_MODULE.md
 ---
 
 ## Table of Contents
@@ -49,6 +55,9 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [TMDb API](#tmdb-api)
+- [Rate limiting](#rate-limiting)
+- [Caching](#caching)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -69,7 +78,7 @@ design_refs:
 
 > Integration with TMDb (The Movie Database)
 
-> Primary metadata provider for movies and TV shows
+> SUPPLEMENTARY metadata provider (fallback + enrichment) for movies and TV shows
 **API Base URL**: `https://api.themoviedb.org/3`
 **Authentication**: api_key
 
@@ -113,8 +122,6 @@ internal/integration/tmdb_the_movie_database/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -126,11 +133,64 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// TMDb provider implementation
+type TMDbProvider struct {
+  client      *TMDbClient
+  rateLimiter *rate.Limiter
+  cache       Cache
+}
+
+// Metadata provider interface
+type MetadataProvider interface {
+  // Search
+  SearchMovie(ctx context.Context, query string, year *int) ([]MovieSearchResult, error)
+  SearchTV(ctx context.Context, query string, year *int) ([]TVSearchResult, error)
+
+  // Fetch details
+  GetMovieDetails(ctx context.Context, tmdbID int) (*MovieMetadata, error)
+  GetTVDetails(ctx context.Context, tmdbID int) (*TVMetadata, error)
+  GetSeasonDetails(ctx context.Context, tmdbID, seasonNumber int) (*SeasonMetadata, error)
+  GetEpisodeDetails(ctx context.Context, tmdbID, seasonNumber, episodeNumber int) (*EpisodeMetadata, error)
+
+  // Images
+  GetMovieImages(ctx context.Context, tmdbID int) (*ImageSet, error)
+  DownloadImage(ctx context.Context, path string) ([]byte, error)
+}
+
+// Movie metadata structure
+type MovieMetadata struct {
+  TMDbID         int       `json:"id"`
+  IMDbID         string    `json:"imdb_id"`
+  Title          string    `json:"title"`
+  OriginalTitle  string    `json:"original_title"`
+  Overview       string    `json:"overview"`
+  ReleaseDate    string    `json:"release_date"`
+  Runtime        int       `json:"runtime"`
+  Genres         []Genre   `json:"genres"`
+  PosterPath     string    `json:"poster_path"`
+  BackdropPath   string    `json:"backdrop_path"`
+  VoteAverage    float64   `json:"vote_average"`
+  Cast           []Cast    `json:"credits.cast"`
+  Crew           []Crew    `json:"credits.crew"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background jobs
+- `github.com/bbrks/go-blurhash` - Blurhash generation
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- TMDb API v3 (free tier: 40 requests per 10 seconds)
+
 
 
 
@@ -139,11 +199,46 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# TMDb API
+TMDB_API_KEY=your_api_key_here
+TMDB_LANGUAGE=en-US
+TMDB_INCLUDE_ADULT=false
+
+# Rate limiting
+TMDB_RATE_LIMIT=40
+TMDB_RATE_WINDOW=10s
+
+# Caching
+TMDB_CACHE_TTL=24h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    tmdb:
+      enabled: true
+      api_key: ${TMDB_API_KEY}
+      language: en-US
+      include_adult: false
+      rate_limit: 40
+      rate_window: 10s
+      cache_ttl: 24h
+
+      # SUPPLEMENTARY role configuration
+      role: supplementary  # fallback + enrichment
+
+      # Proxy/VPN support (OPTIONAL - must be setup and enabled)
+      proxy:
+        enabled: false           # Must explicitly enable
+        type: tor                # 'http', 'socks5', 'tor', 'vpn'
+        url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
+        interface: tun0          # VPN interface (if type=vpn)
+```
+
 
 
 
@@ -170,9 +265,12 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [RADARR (PRIMARY for movies)](../../servarr/RADARR.md)
+- [SONARR (PRIMARY for TV shows)](../../servarr/SONARR.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [MOVIE_MODULE](../../../features/video/MOVIE_MODULE.md)
+- [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
 
 ### External Sources
 - [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash

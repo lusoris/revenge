@@ -61,7 +61,10 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Connection](#connection)
+- [Pool configuration](#pool-configuration)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -123,8 +126,6 @@ internal/integration/postgresql/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -136,11 +137,42 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Database connection interface
+type Database interface {
+  Pool() *pgxpool.Pool
+  BeginTx(ctx context.Context) (pgx.Tx, error)
+  Close() error
+}
+
+// Configuration
+type PostgresConfig struct {
+  Host            string        `yaml:"host"`
+  Port            int           `yaml:"port"`
+  User            string        `yaml:"user"`
+  Password        string        `yaml:"password"`
+  Database        string        `yaml:"database"`
+  SSLMode         string        `yaml:"ssl_mode"`
+  MaxConns        int32         `yaml:"max_conns"`
+  MinConns        int32         `yaml:"min_conns"`
+  MaxConnLifetime time.Duration `yaml:"max_conn_lifetime"`
+  MaxConnIdleTime time.Duration `yaml:"max_conn_idle_time"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/jackc/pgx/v5/pgxpool` - Connection pooling
+- `github.com/jackc/pgx/v5/pgtype` - PostgreSQL type handling
+- `github.com/kyleconroy/sqlc` - SQL query code generation
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- PostgreSQL 18.0+ server (required)
+
 
 
 
@@ -149,12 +181,60 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Connection
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=revenge
+POSTGRES_PASSWORD=secret
+POSTGRES_DATABASE=revenge
+POSTGRES_SSL_MODE=require
+
+# Pool configuration
+POSTGRES_MAX_CONNS=25
+POSTGRES_MIN_CONNS=5
+POSTGRES_MAX_CONN_LIFETIME=1h
+POSTGRES_MAX_CONN_IDLE_TIME=30m
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+database:
+  postgres:
+    host: localhost
+    port: 5432
+    user: revenge
+    password: ${POSTGRES_PASSWORD}
+    database: revenge
+    ssl_mode: require
+    max_conns: 25
+    min_conns: 5
+    max_conn_lifetime: 1h
+    max_conn_idle_time: 30m
+```
 
+
+
+## API Endpoints
+**Health Check**:
+```
+GET /api/v1/health/database
+```
+
+**Response**:
+```json
+{
+  "status": "healthy",
+  "version": "18.1",
+  "pool_stats": {
+    "total_conns": 10,
+    "idle_conns": 5,
+    "acquired_conns": 5
+  }
+}
+```
 
 
 

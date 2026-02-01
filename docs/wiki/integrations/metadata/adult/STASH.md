@@ -22,9 +22,9 @@
 
 # Stash
 
-> Import from your Stash library
+> Import/sync from local Stash instance
 
-Stash is a self-hosted adult media organizer. Import your existing Stash library into Revenge QAR. Syncs scene metadata, performer tags, and organization. GraphQL API enables bidirectional updates. Keep both systems in sync as you add content.
+Migration and sync integration for local Stash libraries. GraphQL API enables: (1) **One-time migration** from Stash to Revenge QAR, (2) **Bidirectional sync** to keep both systems updated, (3) Scene metadata import (performers, studios, tags), (4) Performer data sync. Self-hosted integration (local network or VPN access). Optional ongoing sync for hybrid deployments.
 
 ---
 

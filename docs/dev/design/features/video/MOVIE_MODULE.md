@@ -1,6 +1,21 @@
 
 
 ---
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../architecture/03_METADATA_SYSTEM.md
+  - title: RADARR (PRIMARY metadata + downloads)
+    path: ../../integrations/servarr/RADARR.md
+  - title: TMDB (supplementary metadata)
+    path: ../../integrations/metadata/TMDB.md
+  - title: OMDB (ratings enrichment)
+    path: ../../integrations/metadata/OMDB.md
+  - title: TRAKT (scrobbling + metadata enrichment)
+    path: ../../integrations/scrobbling/TRAKT.md
 ---
 
 ## Table of Contents
@@ -168,14 +183,15 @@ type MetadataProvider interface {
 - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
 - `github.com/google/uuid` - UUID generation
 - `github.com/maypok86/otter` - In-memory cache
-- `github.com/go-resty/resty/v2` - HTTP client for TMDb API
+- `github.com/go-resty/resty/v2` - HTTP client for external APIs
 - `go.uber.org/fx` - Dependency injection
 - `github.com/riverqueue/river` - Background job queue
+- `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
 
-**External APIs**:
-- TMDb API v3 - Primary metadata source
-- TheTVDB API - Fallback metadata source
-- Radarr API v3 - Download automation integration
+**External APIs** (priority order):
+- **Radarr API v3** - PRIMARY metadata source (local TMDb cache) + download automation
+- **TMDb API v3** - Supplementary metadata (via proxy/VPN when Radarr lacks data)
+- **TheTVDB API** - Additional fallback metadata source
 
 **Database**:
 - PostgreSQL 18+ with trigram extension for fuzzy search
@@ -207,16 +223,18 @@ movie:
     size_mb: 100
 
   metadata:
+    priority:
+      - radarr      # PRIMARY: Local TMDb cache
+      - tmdb        # Supplementary: Direct API (via proxy/VPN)
+      - thetvdb     # Fallback
     tmdb:
       api_key: ${REVENGE_METADATA_TMDB_API_KEY}
       rate_limit: 40
-    priority:
-      - tmdb
-      - thetvdb
+      proxy: tor    # Route through proxy/VPN (see HTTP_CLIENT service)
 
   arr:
     radarr:
-      enabled: false
+      enabled: true       # Should be enabled for PRIMARY metadata
       url: ${REVENGE_RADARR_URL}
       api_key: ${REVENGE_RADARR_API_KEY}
       sync_interval: 15m
@@ -252,7 +270,13 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-<!-- Related design docs -->
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [RADARR (PRIMARY metadata + downloads)](../../integrations/servarr/RADARR.md)
+- [TMDB (supplementary metadata)](../../integrations/metadata/TMDB.md)
+- [OMDB (ratings enrichment)](../../integrations/metadata/OMDB.md)
+- [TRAKT (scrobbling + metadata enrichment)](../../integrations/scrobbling/TRAKT.md)
 
 ### External Sources
 <!-- External documentation sources -->

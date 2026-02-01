@@ -16,12 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> General encyclopedia information via Wikipedia API'
-wiki_tagline: '> Background information from Wikipedia'
-wiki_overview: Wikipedia integration provides encyclopedic context for your media.
-  Plot summaries, production history, and critical reception. Links to actor and director
-  biographies. Available in multiple languages. Cached locally for fast access. No
-  API key required.
+technical_summary: '> ENRICHMENT source for encyclopedic context - MediaWiki API'
+wiki_tagline: '> Wikipedia - Background information for media'
+wiki_overview: 'ENRICHMENT metadata source providing encyclopedic context. Plot summaries, production history, critical reception. Actor/director biographies. Multi-language support. **No API key required**. MediaWiki API with rate limiting etiquette.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -32,14 +29,315 @@ sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../architecture/03_METADATA_SYSTEM.md
+- title: MOVIE_MODULE
+  path: ../../features/video/MOVIE_MODULE.md
+- title: TVSHOW_MODULE
+  path: ../../features/video/TVSHOW_MODULE.md
+- title: WIKI_SYSTEM
+  path: ../../features/shared/WIKI_SYSTEM.md
 integration_name: Wikipedia
 integration_id: wikipedia
 external_service: Wikipedia
-auth_method: api_key
+api_base_url: https://en.wikipedia.org/w/api.php
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Detail Page │
+  │  (Movie/TV)  │
+  └──────┬───────┘
+         │ Enrichment request
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │  Wikipedia   │────▶│  Article Content  │
+  │  MediaWiki   │     │  - Summary        │
+  │  API         │     │  - Plot           │
+  └──────┬───────┘     │  - Production     │
+         │             │  - Reception      │
+  ┌──────┴───────┐     │  - Cast info      │
+  │ Rate Limiter │     └───────────────────┘
+  │ (polite)     │
+  └──────────────┘
+
+  Languages: en, de, fr, es, ja, etc.
+  Content: CC BY-SA license
+  ```
+
+api_details: |
+  **API**: MediaWiki Action API
+  **Base URL**: `https://{lang}.wikipedia.org/w/api.php`
+  **Authentication**: None required
+  **Rate Limit**: Be polite (~1 req/sec, no official limit)
+
+  **Key Parameters**:
+  - `action=query` - Main query action
+  - `prop=extracts` - Page content extracts
+  - `prop=pageimages` - Main image
+  - `prop=info` - Page metadata
+  - `exintro=true` - Intro section only
+  - `explaintext=true` - Plain text (no HTML)
+
+  **Search Endpoints**:
+  - `action=opensearch` - Quick search suggestions
+  - `action=query&list=search` - Full-text search
+
+database_schema: |
+  ```sql
+  -- Wikipedia article cache
+  CREATE TABLE wikipedia_cache (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    page_id INT NOT NULL,
+    language VARCHAR(10) NOT NULL DEFAULT 'en',
+    title VARCHAR(500) NOT NULL,
+    extract TEXT,
+    full_content TEXT,
+    image_url TEXT,
+    last_modified TIMESTAMPTZ,
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL,
+    UNIQUE(page_id, language)
+  );
+  CREATE INDEX idx_wikipedia_title ON wikipedia_cache(title, language);
+
+  -- Media to Wikipedia mappings
+  CREATE TABLE wikipedia_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,    -- 'movie', 'tvshow', 'person'
+    content_id UUID NOT NULL,
+    wikipedia_page_id INT NOT NULL,
+    language VARCHAR(10) NOT NULL DEFAULT 'en',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(content_type, content_id, language)
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/wikipedia/
+  ├── module.go                    # fx module
+  ├── client.go                    # MediaWiki API client
+  ├── provider.go                  # Enrichment provider
+  ├── search.go                    # Article search
+  ├── extract.go                   # Content extraction
+  ├── parser.go                    # Wiki markup parsing
+  ├── ratelimit.go                 # Polite rate limiting
+  └── wikipedia_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Wikipedia enrichment provider
+  type WikipediaProvider struct {
+    language    string
+    client      *http.Client
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  // Wiki enrichment provider interface
+  type WikiEnrichmentProvider interface {
+    Search(ctx context.Context, query string) ([]SearchResult, error)
+    GetArticle(ctx context.Context, title string) (*Article, error)
+    GetArticleByID(ctx context.Context, pageID int) (*Article, error)
+    GetExtract(ctx context.Context, title string, sentences int) (string, error)
+    GetPersonBio(ctx context.Context, name string) (*PersonBio, error)
+  }
+
+  // Wikipedia article
+  type Article struct {
+    PageID       int       `json:"pageid"`
+    Title        string    `json:"title"`
+    Extract      string    `json:"extract"`       // Intro summary
+    FullContent  string    `json:"content"`       // Full article (if fetched)
+    ImageURL     string    `json:"thumbnail.source"`
+    LastModified time.Time `json:"touched"`
+    URL          string    `json:"fullurl"`
+    Categories   []string  `json:"categories"`
+  }
+
+  // Extracted person info
+  type PersonBio struct {
+    Name       string `json:"name"`
+    BirthDate  string `json:"birthdate"`
+    BirthPlace string `json:"birthplace"`
+    Bio        string `json:"bio"`
+    ImageURL   string `json:"image"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `golang.org/x/time/rate` - Polite rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - DI
+
+  **External**:
+  - Wikipedia MediaWiki API (free, no key)
+
+env_vars: |
+  ```bash
+  WIKIPEDIA_ENABLED=true
+  WIKIPEDIA_DEFAULT_LANGUAGE=en
+  WIKIPEDIA_CACHE_TTL=168h    # 7 days
+  WIKIPEDIA_RATE_LIMIT=1      # req/sec
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      wikipedia:
+        enabled: true
+        default_language: en
+        supported_languages:
+          - en
+          - de
+          - fr
+          - es
+          - ja
+        rate_limit: 1
+        cache_ttl: 168h
+        role: enrichment
+        extract_sentences: 5
+  ```
+
+component_interaction: |
+  **Movie/Show Detail Enrichment**:
+  1. User views movie detail page
+  2. Check if Wikipedia data cached
+  3. If not, search: `action=opensearch&search=Movie Title (2024 film)`
+  4. Fetch article: `action=query&titles={title}&prop=extracts|pageimages`
+  5. Cache extract and image
+  6. Display summary in "Background" section
+  7. Link to full Wikipedia article
+
+  **Person Bio Enrichment**:
+  1. User views actor/director page
+  2. Search Wikipedia for person name
+  3. Fetch intro extract
+  4. Parse infobox for birth date, birthplace
+  5. Display biography summary
+
+  **Multi-Language Support**:
+  1. User's locale determines language
+  2. Query appropriate language Wikipedia
+  3. Fall back to English if not found
+
+api_request_examples: |
+  **Search for Movie**:
+  ```bash
+  curl "https://en.wikipedia.org/w/api.php?action=opensearch&search=Inception+film&limit=5&format=json"
+  ```
+
+  **Get Article Extract**:
+  ```bash
+  curl "https://en.wikipedia.org/w/api.php?action=query&titles=Inception&prop=extracts|pageimages&exintro=true&explaintext=true&pithumbsize=300&format=json"
+  ```
+
+  **Response**:
+  ```json
+  {
+    "query": {
+      "pages": {
+        "27205": {
+          "pageid": 27205,
+          "title": "Inception",
+          "extract": "Inception is a 2010 science fiction action film...",
+          "thumbnail": {
+            "source": "https://upload.wikimedia.org/...",
+            "width": 300, "height": 444
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  **Get Person Info**:
+  ```bash
+  curl "https://en.wikipedia.org/w/api.php?action=query&titles=Leonardo_DiCaprio&prop=extracts|pageimages|info&exintro=true&explaintext=true&format=json"
+  ```
+
+enrichment_role: |
+  **ENRICHMENT-Only Provider**
+
+  Wikipedia provides supplementary encyclopedic information:
+  - Production history and behind-the-scenes info
+  - Critical reception and box office data
+  - Actor/director biographies
+  - Cultural impact and legacy
+
+  **Not used for primary metadata**:
+  - TMDb/TVDB for movie/TV metadata
+  - MusicBrainz for music
+  - ComicVine for comics
+
+  **Use Cases**:
+  - "Learn More" sections
+  - Person biographies
+  - Franchise/universe context
+  - Award information
+
+rate_limiting: |
+  **Wikipedia Etiquette**:
+  - No official rate limit, but be polite
+  - 1 request per second is recommended
+  - Identify your bot via User-Agent
+
+  **Implementation**:
+  ```go
+  func NewWikipediaProvider(lang string) *WikipediaProvider {
+    return &WikipediaProvider{
+      language: lang,
+      rateLimiter: rate.NewLimiter(rate.Every(time.Second), 1),
+      client: &http.Client{
+        Transport: &userAgentTransport{
+          userAgent: "Revenge/1.0 (https://github.com/revenge/revenge; revenge@example.com)",
+        },
+      },
+    }
+  }
+  ```
+
+error_handling: |
+  **Common Scenarios**:
+  - Article not found → Search returned no results
+  - Disambiguation page → Multiple matches, present options
+  - Rate limited → Respect and back off
+
+unit_tests: |
+  ```go
+  func TestWikipedia_GetExtract(t *testing.T) {
+    mockResp := `{"query":{"pages":{"123":{"extract":"Test summary"}}}}`
+    provider := NewWikipediaProvider("en", mockClient(mockResp))
+
+    extract, err := provider.GetExtract(ctx, "Test Article", 3)
+    require.NoError(t, err)
+    assert.Contains(t, extract, "Test summary")
+  }
+  ```
+
+best_practices: |
+  **API Usage**:
+  - Use `exintro=true` for short summaries
+  - Use `explaintext=true` for clean text
+  - Cache for 7+ days (content rarely changes)
+
+  **Search**:
+  - Add qualifiers like "(2024 film)" for movies
+  - Handle disambiguation pages
+  - Fall back to broader search if specific fails
+
+  **Attribution**:
+  - Link to Wikipedia article
+  - Mention CC BY-SA license in footer

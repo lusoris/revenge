@@ -146,11 +146,65 @@ internal/content/ticketing_system/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type TicketService interface {
+  CreateTicket(ctx context.Context, userID uuid.UUID, req CreateTicketRequest) (*Ticket, error)
+  ListTickets(ctx context.Context, filters TicketFilters) ([]Ticket, error)
+  GetTicket(ctx context.Context, ticketID uuid.UUID) (*TicketDetail, error)
+  UpdateTicket(ctx context.Context, ticketID uuid.UUID, update TicketUpdate) (*Ticket, error)
+  CloseTicket(ctx context.Context, ticketID uuid.UUID) error
+
+  AddComment(ctx context.Context, ticketID, userID uuid.UUID, comment string, isInternal bool) (*TicketComment, error)
+  GetComments(ctx context.Context, ticketID uuid.UUID) ([]TicketComment, error)
+
+  AddAttachment(ctx context.Context, ticketID, userID uuid.UUID, file FileUpload) (*TicketAttachment, error)
+  AssignTicket(ctx context.Context, ticketID, assigneeID uuid.UUID) error
+
+  LinkGitHubIssue(ctx context.Context, ticketID uuid.UUID, issueNumber int) error
+}
+
+type Ticket struct {
+  ID                uuid.UUID  `db:"id" json:"id"`
+  UserID            uuid.UUID  `db:"user_id" json:"user_id"`
+  Type              string     `db:"type" json:"type"`
+  Priority          string     `db:"priority" json:"priority"`
+  Status            string     `db:"status" json:"status"`
+  Title             string     `db:"title" json:"title"`
+  Description       string     `db:"description" json:"description"`
+  AssignedToUserID  *uuid.UUID `db:"assigned_to_user_id" json:"assigned_to_user_id,omitempty"`
+  GitHubIssueNumber *int       `db:"github_issue_number" json:"github_issue_number,omitempty"`
+  CreatedAt         time.Time  `db:"created_at" json:"created_at"`
+  UpdatedAt         time.Time  `db:"updated_at" json:"updated_at"`
+}
+
+type TicketDetail struct {
+  Ticket
+  Submitter   User               `json:"submitter"`
+  AssignedTo  *User              `json:"assigned_to,omitempty"`
+  Comments    []TicketComment    `json:"comments"`
+  Attachments []TicketAttachment `json:"attachments"`
+  Tags        []string           `json:"tags"`
+}
+
+type GitHubIntegration interface {
+  CreateIssue(ctx context.Context, ticket Ticket) (int, string, error)
+  UpdateIssue(ctx context.Context, issueNumber int, update IssueUpdate) error
+  CloseIssue(ctx context.Context, issueNumber int) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/google/go-github/v58/github` - GitHub API client
+- `go.uber.org/fx`
+
+**External APIs**:
+- GitHub REST API v3 (optional)
+
 
 
 
@@ -159,17 +213,51 @@ internal/content/ticketing_system/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+TICKETS_GITHUB_ENABLED=false
+TICKETS_GITHUB_REPO=owner/repo
+TICKETS_GITHUB_TOKEN=ghp_xxx
+TICKETS_MAX_ATTACHMENT_SIZE_MB=10
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+tickets:
+  enabled: true
+  max_attachment_size_mb: 10
+  allow_attachments: true
+
+  github:
+    enabled: false
+    repo: owner/repo
+    token: ${TICKETS_GITHUB_TOKEN}
+    auto_create_issues: false
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST   /api/v1/tickets                 # Create ticket
+GET    /api/v1/tickets                 # List tickets (filter by status/type)
+GET    /api/v1/tickets/:id             # Get ticket details
+PUT    /api/v1/tickets/:id             # Update ticket
+DELETE /api/v1/tickets/:id/close       # Close ticket
+
+POST   /api/v1/tickets/:id/comments    # Add comment
+GET    /api/v1/tickets/:id/comments    # Get comments
+
+POST   /api/v1/tickets/:id/attachments # Upload attachment
+GET    /api/v1/tickets/:id/attachments # List attachments
+
+PUT    /api/v1/tickets/:id/assign      # Assign ticket
+POST   /api/v1/tickets/:id/github      # Link GitHub issue
+```
+
 
 
 ## Testing Strategy

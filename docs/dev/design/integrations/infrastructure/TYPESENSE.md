@@ -52,7 +52,10 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Typesense connection](#typesense-connection)
+- [Search configuration](#search-configuration)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -115,8 +118,6 @@ internal/integration/typesense/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -128,11 +129,54 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Search service interface
+type SearchService interface {
+  // Multi-collection search
+  Search(ctx context.Context, query string, collections []string, filters SearchFilters) (*SearchResults, error)
+
+  // Index management
+  SyncCollection(ctx context.Context, collectionName string) error
+  IndexDocument(ctx context.Context, collectionName string, doc interface{}) error
+  DeleteDocument(ctx context.Context, collectionName string, docID string) error
+
+  // Collection management
+  CreateCollection(ctx context.Context, schema CollectionSchema) error
+  DropCollection(ctx context.Context, name string) error
+}
+
+type SearchFilters struct {
+  UserID      uuid.UUID
+  LibraryIDs  []uuid.UUID
+  Genres      []string
+  YearRange   *YearRange
+  RatingMin   *float64
+  SortBy      string
+  Page        int
+  PerPage     int
+}
+
+type SearchResults struct {
+  Hits       []SearchHit `json:"hits"`
+  Found      int         `json:"found"`
+  Page       int         `json:"page"`
+  TotalPages int         `json:"total_pages"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/typesense/typesense-go` - Official Typesense client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background sync jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- Typesense server (required)
+
 
 
 
@@ -141,12 +185,69 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Typesense connection
+TYPESENSE_HOST=localhost:8108
+TYPESENSE_API_KEY=xyz123
+TYPESENSE_PROTOCOL=http
+
+# Search configuration
+TYPESENSE_SYNC_INTERVAL=5m
+TYPESENSE_BATCH_SIZE=100
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+search:
+  typesense:
+    host: localhost:8108
+    api_key: ${TYPESENSE_API_KEY}
+    protocol: http
+    timeout: 10s
 
+    sync_interval: 5m
+    batch_size: 100
+```
+
+
+
+## API Endpoints
+**Search**:
+```
+GET /api/v1/search?q=inception&collections=movies,tvshows&filter_by=release_year:>2010
+```
+
+**Response**:
+```json
+{
+  "hits": [
+    {
+      "document": {
+        "id": "uuid-123",
+        "title": "Inception",
+        "release_year": 2010,
+        "rating": 8.8,
+        "genres": ["Action", "Sci-Fi"]
+      },
+      "highlights": {
+        "title": {
+          "matched_tokens": ["Inception"]
+        }
+      },
+      "text_match": 8734987234
+    }
+  ],
+  "found": 1,
+  "page": 1
+}
+```
+
+**Autocomplete**:
+```
+GET /api/v1/search/autocomplete?q=inc&collection=movies
+```
 
 
 

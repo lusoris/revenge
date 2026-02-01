@@ -91,13 +91,349 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/tracearr_analytics_service/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Playback sessions (real-time and historical)
+  CREATE TABLE playback_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Content reference
+    content_type VARCHAR(50) NOT NULL,              -- 'movie', 'episode', 'track', 'scene'
+    content_id UUID NOT NULL,
+
+    -- Session metadata
+    started_at TIMESTAMPTZ DEFAULT now(),
+    ended_at TIMESTAMPTZ,
+    duration_seconds INTEGER,
+    progress_seconds INTEGER,
+
+    -- Client information
+    client_name VARCHAR(100),                       -- 'Web', 'Android', 'iOS', 'Roku'
+    client_version VARCHAR(50),
+    device_id VARCHAR(255),
+    device_name VARCHAR(100),
+
+    -- Network information
+    ip_address INET,
+    user_agent TEXT,
+    location_country VARCHAR(2),                    -- ISO 3166-1 alpha-2
+    location_city VARCHAR(100),
+
+    -- Streaming details
+    bandwidth_mbps DECIMAL(8,2),
+    transcoded BOOLEAN DEFAULT false,
+    transcode_codec VARCHAR(20),
+    original_codec VARCHAR(20),
+    resolution VARCHAR(20),                         -- '4K', '1080p', '720p', etc.
+
+    -- Status
+    status VARCHAR(20) DEFAULT 'active',            -- 'active', 'paused', 'stopped', 'completed'
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_playback_sessions_user ON playback_sessions(user_id, started_at DESC);
+  CREATE INDEX idx_playback_sessions_content ON playback_sessions(content_type, content_id);
+  CREATE INDEX idx_playback_sessions_status ON playback_sessions(status) WHERE status = 'active';
+  CREATE INDEX idx_playback_sessions_started ON playback_sessions(started_at DESC);
+  CREATE INDEX idx_playback_sessions_device ON playback_sessions(device_id);
+
+  -- Aggregated statistics (daily rollup)
+  CREATE TABLE analytics_daily (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    date DATE NOT NULL,
+
+    -- Overall stats
+    total_sessions INTEGER DEFAULT 0,
+    total_duration_minutes INTEGER DEFAULT 0,
+    unique_users INTEGER DEFAULT 0,
+    total_bandwidth_gb DECIMAL(12,2) DEFAULT 0,
+
+    -- Content stats
+    movies_watched INTEGER DEFAULT 0,
+    episodes_watched INTEGER DEFAULT 0,
+    tracks_played INTEGER DEFAULT 0,
+
+    -- Transcoding stats
+    transcoded_sessions INTEGER DEFAULT 0,
+    transcoding_minutes INTEGER DEFAULT 0,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_analytics_daily_date ON analytics_daily(date);
+  CREATE INDEX idx_analytics_daily_date_desc ON analytics_daily(date DESC);
+
+  -- Popular content tracking
+  CREATE TABLE analytics_popular_content (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+
+    -- Time windows
+    plays_today INTEGER DEFAULT 0,
+    plays_this_week INTEGER DEFAULT 0,
+    plays_this_month INTEGER DEFAULT 0,
+    plays_all_time INTEGER DEFAULT 0,
+
+    -- User engagement
+    unique_users_today INTEGER DEFAULT 0,
+    unique_users_this_week INTEGER DEFAULT 0,
+    unique_users_this_month INTEGER DEFAULT 0,
+
+    last_played_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_analytics_popular_unique ON analytics_popular_content(content_type, content_id);
+  CREATE INDEX idx_analytics_popular_week ON analytics_popular_content(plays_this_week DESC);
+  CREATE INDEX idx_analytics_popular_month ON analytics_popular_content(plays_this_month DESC);
+
+  -- Account sharing detection
+  CREATE TABLE sharing_alerts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Detection details
+    alert_type VARCHAR(50) NOT NULL,               -- 'concurrent_streams', 'geo_impossible', 'device_spike'
+    severity VARCHAR(20) DEFAULT 'low',            -- 'low', 'medium', 'high'
+
+    -- Evidence
+    evidence JSONB,                                 -- {\"sessions\": [\"uuid1\", \"uuid2\"], \"distance_km\": 5000}
+
+    -- Status
+    status VARCHAR(20) DEFAULT 'active',           -- 'active', 'dismissed', 'resolved'
+    reviewed_by_user_id UUID REFERENCES users(id),
+    reviewed_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_sharing_alerts_user ON sharing_alerts(user_id, created_at DESC);
+  CREATE INDEX idx_sharing_alerts_status ON sharing_alerts(status) WHERE status = 'active';
+  ```
+module_structure: |
+  ```
+  internal/analytics/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Analytics logic
+  ├── collector.go                 # Collect playback events
+  ├── aggregator.go                # Daily/weekly aggregation (River job)
+  ├── detector.go                  # Account sharing detection
+  ├── geolocation.go               # IP geolocation lookup
+  ├── handler.go                   # HTTP API handlers
+  └── analytics_test.go
+
+  web/src/routes/(app)/analytics/
+  ├── +page.svelte                 # Analytics dashboard
+  ├── +page.ts                     # Data loading
+  └── components/
+      ├── RealTimeActivity.svelte  # Real-time playback activity
+      ├── PopularContent.svelte    # Most popular content charts
+      ├── BandwidthChart.svelte    # Bandwidth usage over time
+      ├── UserStats.svelte         # User activity statistics
+      └── SharingAlerts.svelte     # Account sharing alerts
+  ```
+key_interfaces: |
+  ```go
+  type AnalyticsService interface {
+    // Real-time sessions
+    GetActiveSessions(ctx context.Context) ([]PlaybackSession, error)
+    GetUserSessions(ctx context.Context, userID uuid.UUID, limit int) ([]PlaybackSession, error)
+    RecordSession(ctx context.Context, session PlaybackSessionCreate) (*PlaybackSession, error)
+    UpdateSession(ctx context.Context, sessionID uuid.UUID, update SessionUpdate) error
+    EndSession(ctx context.Context, sessionID uuid.UUID) error
+
+    // Statistics
+    GetDailyStats(ctx context.Context, start, end time.Time) ([]DailyStat, error)
+    GetPopularContent(ctx context.Context, window TimeWindow, limit int) ([]PopularContentItem, error)
+
+    // Account sharing
+    DetectSharing(ctx context.Context) ([]SharingAlert, error)
+    GetSharingAlerts(ctx context.Context, userID uuid.UUID) ([]SharingAlert, error)
+    DismissAlert(ctx context.Context, alertID uuid.UUID) error
+  }
+
+  type PlaybackSession struct {
+    ID              uuid.UUID  `db:"id" json:"id"`
+    UserID          uuid.UUID  `db:"user_id" json:"user_id"`
+    ContentType     string     `db:"content_type" json:"content_type"`
+    ContentID       uuid.UUID  `db:"content_id" json:"content_id"`
+    StartedAt       time.Time  `db:"started_at" json:"started_at"`
+    EndedAt         *time.Time `db:"ended_at" json:"ended_at,omitempty"`
+    DurationSeconds int        `db:"duration_seconds" json:"duration_seconds"`
+    ClientName      string     `db:"client_name" json:"client_name"`
+    DeviceName      string     `db:"device_name" json:"device_name"`
+    IPAddress       string     `db:"ip_address" json:"ip_address"`
+    Transcoded      bool       `db:"transcoded" json:"transcoded"`
+    Resolution      string     `db:"resolution" json:"resolution"`
+    Status          string     `db:"status" json:"status"`
+  }
+
+  type DailyStat struct {
+    Date                  time.Time `db:"date" json:"date"`
+    TotalSessions         int       `db:"total_sessions" json:"total_sessions"`
+    TotalDurationMinutes  int       `db:"total_duration_minutes" json:"total_duration_minutes"`
+    UniqueUsers           int       `db:"unique_users" json:"unique_users"`
+    TotalBandwidthGB      float64   `db:"total_bandwidth_gb" json:"total_bandwidth_gb"`
+    TranscodedSessions    int       `db:"transcoded_sessions" json:"transcoded_sessions"`
+  }
+
+  type SharingAlert struct {
+    ID         uuid.UUID              `db:"id" json:"id"`
+    UserID     uuid.UUID              `db:"user_id" json:"user_id"`
+    AlertType  string                 `db:"alert_type" json:"alert_type"`
+    Severity   string                 `db:"severity" json:"severity"`
+    Evidence   map[string]interface{} `db:"evidence" json:"evidence"`
+    Status     string                 `db:"status" json:"status"`
+    CreatedAt  time.Time              `db:"created_at" json:"created_at"`
+  }
+
+  type SharingDetector interface {
+    DetectConcurrentStreams(ctx context.Context) ([]SharingAlert, error)
+    DetectGeoImpossible(ctx context.Context) ([]SharingAlert, error)
+    DetectDeviceSpike(ctx context.Context) ([]SharingAlert, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river` - Daily aggregation jobs
+  - `github.com/oschwald/geoip2-golang` - IP geolocation
+  - `go.uber.org/fx`
+
+  **External Data**:
+  - MaxMind GeoLite2 database for IP geolocation
+
+env_vars: |
+  ```bash
+  ANALYTICS_ENABLED=true
+  ANALYTICS_GEOIP_DB_PATH=/data/GeoLite2-City.mmdb
+  ANALYTICS_RETENTION_DAYS=90
+  ANALYTICS_SHARING_DETECTION_ENABLED=true
+  ```
+
+config_keys: |
+  ```yaml
+  analytics:
+    enabled: true
+    retention_days: 90
+
+    sharing_detection:
+      enabled: true
+      concurrent_streams_threshold: 3       # Alert if user has >3 concurrent streams
+      geo_distance_threshold_km: 500        # Alert if streams from >500km apart
+      device_spike_threshold: 5             # Alert if >5 new devices in 24h
+  ```
+
+component_interaction: |
+  **Session Recording Flow**:
+  1. Client starts playback, sends session start event
+  2. Service creates playback_sessions record with status='active'
+  3. Client sends heartbeat every 30 seconds with progress
+  4. Service updates session progress and calculates bandwidth
+  5. On playback end, client sends stop event
+  6. Service updates ended_at, duration, marks status='completed'
+
+  **Real-Time Activity Flow**:
+  1. Admin requests GET /api/v1/analytics/sessions/active
+  2. Service queries playback_sessions WHERE status='active'
+  3. Join with users/content tables for display names
+  4. Cache active sessions in otter for 10 seconds
+  5. Return to frontend for real-time dashboard
+
+  **Daily Aggregation Flow**:
+  1. River job runs at midnight UTC
+  2. Aggregate yesterday's playback_sessions into analytics_daily
+  3. Calculate total sessions, duration, unique users, bandwidth
+  4. Store aggregated stats for reporting
+  5. Update analytics_popular_content counters
+
+  **Account Sharing Detection Flow**:
+  1. Background job runs every 15 minutes
+  2. Query active sessions grouped by user_id
+  3. Check for concurrent streams from same user
+  4. Calculate distance between IP addresses using GeoIP
+  5. If >500km apart, create sharing_alert
+  6. Check device_id counts in last 24h
+  7. If >5 new devices, create alert
+
+api_endpoints: |
+  ```
+  GET  /api/v1/analytics/sessions/active         # Get currently active sessions
+  GET  /api/v1/analytics/sessions/user/:userId   # Get user's session history
+  POST /api/v1/analytics/sessions                # Start new session
+  PUT  /api/v1/analytics/sessions/:id            # Update session (heartbeat)
+  DELETE /api/v1/analytics/sessions/:id          # End session
+
+  GET  /api/v1/analytics/stats/daily?start=&end= # Get daily statistics
+  GET  /api/v1/analytics/popular?window=week     # Get popular content
+
+  GET  /api/v1/analytics/sharing/alerts          # Get sharing alerts
+  POST /api/v1/analytics/sharing/alerts/:id/dismiss  # Dismiss alert
+  ```
+
+unit_tests: |
+  ```go
+  func TestAnalyticsService_RecordSession(t *testing.T) {
+    // Test creating playback session
+  }
+
+  func TestAnalyticsService_GetActiveSessions(t *testing.T) {
+    // Test querying active sessions
+  }
+
+  func TestSharingDetector_DetectConcurrentStreams(t *testing.T) {
+    tests := []struct {
+      name       string
+      sessions   []PlaybackSession
+      wantAlerts int
+    }{
+      {
+        name: "concurrent streams detected",
+        sessions: []PlaybackSession{
+          {UserID: uuid1, Status: "active", IPAddress: "1.2.3.4"},
+          {UserID: uuid1, Status: "active", IPAddress: "5.6.7.8"},
+        },
+        wantAlerts: 1,
+      },
+    }
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestSharingDetector_DetectGeoImpossible(t *testing.T) {
+    // Test geo-distance sharing detection
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestAnalytics_EndToEnd(t *testing.T) {
+    // 1. Start playback session
+    // 2. Send heartbeat updates
+    // 3. End session
+    // 4. Verify session recorded correctly
+    // 5. Verify stats updated
+  }
+
+  func TestAnalytics_Aggregation(t *testing.T) {
+    // Test daily aggregation job
+    // Create multiple sessions for a day
+    // Run aggregation
+    // Verify analytics_daily row created
+  }
+
+  func TestAnalytics_SharingDetection(t *testing.T) {
+    // Create concurrent sessions from different IPs
+    // Run sharing detection
+    // Verify alert created
+  }
+  ```

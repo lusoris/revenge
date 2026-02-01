@@ -56,6 +56,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -116,7 +117,13 @@ internal/service/settings/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/knadh/koanf/v2` - Configuration management
+- `github.com/maypok86/otter` - Settings cache
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -134,11 +141,41 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type SettingsService interface {
+  // Get/Set
+  GetSetting(ctx context.Context, key string) (*Setting, error)
+  GetSettings(ctx context.Context, category string) ([]Setting, error)
+  SetSetting(ctx context.Context, key, value string, userID uuid.UUID) error
+  SetBulk(ctx context.Context, settings map[string]string, userID uuid.UUID) error
+
+  // Defaults
+  ResetToDefault(ctx context.Context, key string) error
+  LoadDefaults(ctx context.Context) error
+
+  // History
+  GetHistory(ctx context.Context, key string) ([]SettingChange, error)
+}
+
+type Setting struct {
+  Key          string     `db:"key" json:"key"`
+  Value        string     `db:"value" json:"value"`
+  ValueType    string     `db:"value_type" json:"value_type"`
+  Category     *string    `db:"category" json:"category,omitempty"`
+  Description  *string    `db:"description" json:"description,omitempty"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/knadh/koanf/v2` - Configuration management
+- `github.com/maypok86/otter` - Settings cache
+- `go.uber.org/fx`
+
 
 
 
@@ -147,12 +184,29 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+SETTINGS_CACHE_TTL=5m
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+settings:
+  cache_ttl: 5m
+```
 
+
+
+## API Endpoints
+```
+GET    /api/v1/settings               # List all settings
+GET    /api/v1/settings/:key          # Get setting
+PUT    /api/v1/settings/:key          # Update setting
+POST   /api/v1/settings/bulk          # Bulk update
+POST   /api/v1/settings/:key/reset    # Reset to default
+GET    /api/v1/settings/:key/history  # Get change history
+```
 
 
 

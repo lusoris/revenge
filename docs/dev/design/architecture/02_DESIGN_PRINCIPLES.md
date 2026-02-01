@@ -53,6 +53,14 @@ sources:
 design_refs:
   - title: architecture
     path: INDEX.md
+  - title: 01_ARCHITECTURE
+    path: 01_ARCHITECTURE.md
+  - title: 03_METADATA_SYSTEM
+    path: 03_METADATA_SYSTEM.md
+  - title: METADATA (service)
+    path: ../services/METADATA.md
+  - title: HTTP_CLIENT (service)
+    path: ../services/HTTP_CLIENT.md
   - title: ADULT_CONTENT_SYSTEM
     path: ../features/adult/ADULT_CONTENT_SYSTEM.md
   - title: ADULT_METADATA
@@ -185,6 +193,10 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [architecture](INDEX.md)
+- [01_ARCHITECTURE](01_ARCHITECTURE.md)
+- [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md)
+- [METADATA (service)](../services/METADATA.md)
+- [HTTP_CLIENT (service)](../services/HTTP_CLIENT.md)
 - [ADULT_CONTENT_SYSTEM](../features/adult/ADULT_CONTENT_SYSTEM.md)
 - [ADULT_METADATA](../features/adult/ADULT_METADATA.md)
 - [DATA_RECONCILIATION](../features/adult/DATA_RECONCILIATION.md)

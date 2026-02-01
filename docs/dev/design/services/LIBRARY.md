@@ -56,6 +56,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -116,7 +117,12 @@ internal/service/library/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/fsnotify/fsnotify`
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -134,11 +140,31 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type LibraryService interface {
+  // Library CRUD (delegates to library types feature)
+  GetLibrary(ctx context.Context, libraryID uuid.UUID) (*Library, error)
+  ListLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error)
+
+  // Permissions
+  GrantPermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) error
+  RevokePermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) error
+  CheckPermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) (bool, error)
+
+  // Scan operations
+  TriggerScan(ctx context.Context, libraryID uuid.UUID, scanType string) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/fsnotify/fsnotify`
+- `go.uber.org/fx`
+
 
 
 
@@ -147,12 +173,28 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+LIBRARY_DEFAULT_SCAN_INTERVAL=6h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+library:
+  default_scan_interval: 6h
+  realtime_monitoring: true
+```
 
+
+
+## API Endpoints
+```
+GET    /api/v1/libraries                   # List accessible libraries
+GET    /api/v1/libraries/:id               # Get library details
+POST   /api/v1/libraries/:id/permissions   # Grant permission
+DELETE /api/v1/libraries/:id/permissions/:user_id # Revoke permission
+```
 
 
 

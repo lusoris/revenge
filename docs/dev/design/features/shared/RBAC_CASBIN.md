@@ -137,11 +137,73 @@ internal/content/dynamic_rbac_with_casbin/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type RBACService interface {
+  // Role management
+  CreateRole(ctx context.Context, role CreateRoleRequest) (*Role, error)
+  ListRoles(ctx context.Context) ([]Role, error)
+  GetRole(ctx context.Context, roleID uuid.UUID) (*Role, error)
+  UpdateRole(ctx context.Context, roleID uuid.UUID, update UpdateRoleRequest) (*Role, error)
+  DeleteRole(ctx context.Context, roleID uuid.UUID) error
+
+  // Permission assignment
+  AssignPermissionsToRole(ctx context.Context, roleID uuid.UUID, permissions []string) error
+  GetRolePermissions(ctx context.Context, roleID uuid.UUID) ([]Permission, error)
+  RemovePermissionFromRole(ctx context.Context, roleID uuid.UUID, permission string) error
+
+  // User role assignment
+  AssignRoleToUser(ctx context.Context, userID, roleID uuid.UUID, expiresAt *time.Time) error
+  GetUserRoles(ctx context.Context, userID uuid.UUID) ([]Role, error)
+  RemoveRoleFromUser(ctx context.Context, userID, roleID uuid.UUID) error
+
+  // Permission checking
+  CheckPermission(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+  GetUserPermissions(ctx context.Context, userID uuid.UUID) ([]Permission, error)
+
+  // Library-specific permissions
+  GrantLibraryAccess(ctx context.Context, subject LibraryPermissionSubject, libraryID uuid.UUID) error
+  RevokeLibraryAccess(ctx context.Context, subject LibraryPermissionSubject, libraryID uuid.UUID) error
+  GetUserLibraries(ctx context.Context, userID uuid.UUID) ([]uuid.UUID, error)
+}
+
+type Role struct {
+  ID          uuid.UUID `db:"id" json:"id"`
+  Name        string    `db:"name" json:"name"`
+  DisplayName string    `db:"display_name" json:"display_name"`
+  Description string    `db:"description" json:"description"`
+  IsSystem    bool      `db:"is_system" json:"is_system"`
+  CreatedAt   time.Time `db:"created_at" json:"created_at"`
+}
+
+type Permission struct {
+  ID          uuid.UUID `db:"id" json:"id"`
+  Name        string    `db:"name" json:"name"`
+  DisplayName string    `db:"display_name" json:"display_name"`
+  Description string    `db:"description" json:"description"`
+  Resource    string    `db:"resource" json:"resource"`
+  Action      string    `db:"action" json:"action"`
+}
+
+type CasbinEnforcer interface {
+  Enforce(subject, object, action string) (bool, error)
+  AddPolicy(subject, object, action string) (bool, error)
+  RemovePolicy(subject, object, action string) (bool, error)
+  AddRoleForUser(user, role string) (bool, error)
+  DeleteRoleForUser(user, role string) (bool, error)
+  GetRolesForUser(user string) ([]string, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/casbin/casbin/v2` - RBAC policy engine
+- `github.com/pckhoi/casbin-pgx-adapter/v3` - PostgreSQL adapter for Casbin
+- `go.uber.org/fx`
+
 
 
 
@@ -150,17 +212,49 @@ internal/content/dynamic_rbac_with_casbin/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+RBAC_MODEL_PATH=config/rbac/model.conf
+RBAC_POLICY_PATH=config/rbac/policy.csv
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+rbac:
+  model_path: config/rbac/model.conf
+  auto_load_policy: true
+  cache_enabled: true
+  cache_ttl: 5m
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST   /api/v1/rbac/roles                       # Create role
+GET    /api/v1/rbac/roles                       # List roles
+GET    /api/v1/rbac/roles/:id                   # Get role details
+PUT    /api/v1/rbac/roles/:id                   # Update role
+DELETE /api/v1/rbac/roles/:id                   # Delete role
+
+POST   /api/v1/rbac/roles/:id/permissions       # Assign permissions to role
+GET    /api/v1/rbac/roles/:id/permissions       # Get role permissions
+DELETE /api/v1/rbac/roles/:id/permissions/:name # Remove permission from role
+
+POST   /api/v1/rbac/users/:id/roles             # Assign role to user
+GET    /api/v1/rbac/users/:id/roles             # Get user's roles
+DELETE /api/v1/rbac/users/:id/roles/:roleId     # Remove role from user
+
+GET    /api/v1/rbac/permissions                 # List all permissions
+GET    /api/v1/rbac/users/:id/permissions       # Get user's effective permissions
+
+POST   /api/v1/rbac/libraries/:id/users/:userId # Grant library access
+DELETE /api/v1/rbac/libraries/:id/users/:userId # Revoke library access
+```
+
 
 
 ## Testing Strategy

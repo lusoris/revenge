@@ -23,13 +23,12 @@
     },
     "package_path": {
       "type": "string",
-      "description": "Go package path (e.g., 'internal/service/auth')",
-      "pattern": "^internal/service/[a-z][a-z0-9_/]*$"
+      "description": "Go package path (e.g., 'internal/service/auth' or 'internal/httpclient')",
+      "pattern": "^internal/[a-z][a-z0-9_/]*$"
     },
     "fx_module": {
       "type": "string",
-      "description": "fx module name (e.g., 'auth.Module')",
-      "pattern": "^[a-z][a-z0-9_]*\\.Module$|^\\.Module$"
+      "description": "fx module name (e.g., 'auth.Module') or detailed module documentation"
     },
     "created_date": {
       "type": "string",
@@ -72,28 +71,38 @@
       "description": "User-friendly explanation of how it works"
     },
     "dependencies": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "purpose"],
-        "properties": {
-          "name": {"type": "string"},
-          "purpose": {"type": "string"}
+      "oneOf": [
+        {"type": "string", "description": "Dependencies as multiline string"},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "purpose"],
+            "properties": {
+              "name": {"type": "string"},
+              "purpose": {"type": "string"}
+            }
+          }
         }
-      },
-      "description": "Service dependencies"
+      ],
+      "description": "Service dependencies (string or array format)"
     },
     "provides": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "description"],
-        "properties": {
-          "name": {"type": "string"},
-          "description": {"type": "string"}
+      "oneOf": [
+        {"type": "string", "description": "Provides as multiline string"},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "description"],
+            "properties": {
+              "name": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
         }
-      },
-      "description": "What this service provides to other modules"
+      ],
+      "description": "What this service provides to other modules (string or array format)"
     },
     "component_diagram": {
       "type": "string",
@@ -181,19 +190,24 @@
       "description": "Cross-references to other design docs"
     },
     "api_endpoints": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["method", "path", "description"],
-        "properties": {
-          "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
-          "path": {"type": "string"},
-          "description": {"type": "string"},
-          "request_example": {"type": "string"},
-          "response_example": {"type": "string"}
+      "oneOf": [
+        {"type": "string", "description": "API endpoints as multiline string"},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["method", "path", "description"],
+            "properties": {
+              "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+              "path": {"type": "string"},
+              "description": {"type": "string"},
+              "request_example": {"type": "string"},
+              "response_example": {"type": "string"}
+            }
+          }
         }
-      },
-      "description": "API endpoints"
+      ],
+      "description": "API endpoints (string or array format)"
     },
     "implementation_phases": {
       "type": "array",

@@ -66,8 +66,8 @@ design_refs:
 > > On-demand video/audio transcoding service with hardware acceleration
 
 Transcoding capabilities:
-- **Primary**: Blackbeard service for offloaded transcoding
-- **Fallback**: Local FFmpeg with go-astiav bindings
+- **INTERNAL**: go-astiav FFmpeg bindings (default, always available)
+- **EXTERNAL**: Blackbeard service for optional offloading (third-party, not developed by us)
 - **Hardware Acceleration**: NVENC (NVIDIA), QSV (Intel), VAAPI (AMD)
 - **Adaptive Streaming**: HLS with multiple quality tiers
 - **Queue Management**: River background jobs for async processing
@@ -113,7 +113,18 @@ internal/service/transcoding/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/asticode/go-astiav` - FFmpeg Go bindings
+- `github.com/bluenviron/gohlslib/v2` - HLS streaming
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx`
+
+**External Services**:
+- Blackbeard service (optional, for offloading)
+- FFmpeg (system dependency)
+
 
 ### Provides
 <!-- Service provides -->
@@ -131,11 +142,53 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type TranscodingService interface {
+  // Transcode operations
+  QueueTranscode(ctx context.Context, videoID uuid.UUID, profile string) (*TranscodeJob, error)
+  GetJob(ctx context.Context, jobID uuid.UUID) (*TranscodeJob, error)
+  CancelJob(ctx context.Context, jobID uuid.UUID) error
+
+  // Cache
+  GetCachedVideo(ctx context.Context, videoID uuid.UUID, profile string) (string, error)
+  ClearCache(ctx context.Context) error
+  GetCacheStats(ctx context.Context) (*CacheStats, error)
+
+  // HLS
+  GenerateHLSManifest(ctx context.Context, videoID uuid.UUID) (string, error)
+}
+
+type Transcoder interface {
+  Transcode(ctx context.Context, input, output string, profile Profile) error
+  SupportsHardwareAccel() bool
+  GetHardwareType() string
+}
+
+type TranscodeJob struct {
+  ID              uuid.UUID  `db:"id" json:"id"`
+  VideoID         uuid.UUID  `db:"video_id" json:"video_id"`
+  Profile         string     `db:"profile" json:"profile"`
+  Status          string     `db:"status" json:"status"`
+  ProgressPercent float64    `db:"progress_percent" json:"progress_percent"`
+  CreatedAt       time.Time  `db:"created_at" json:"created_at"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/asticode/go-astiav` - FFmpeg Go bindings
+- `github.com/bluenviron/gohlslib/v2` - HLS streaming
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx`
+
+**External Services**:
+- Blackbeard service (optional, for offloading)
+- FFmpeg (system dependency)
+
 
 
 
@@ -144,11 +197,35 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+TRANSCODING_BLACKBEARD_URL=http://blackbeard:8080
+TRANSCODING_CACHE_DIR=/var/cache/revenge/transcoded
+TRANSCODING_CACHE_MAX_SIZE_GB=100
+TRANSCODING_HARDWARE_ACCEL=auto  # auto, nvenc, qsv, vaapi, none
+TRANSCODING_WORKERS=2
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+transcoding:
+  blackbeard:
+    url: http://blackbeard:8080
+    enabled: true
+    timeout: 30s
+  cache:
+    dir: /var/cache/revenge/transcoded
+    max_size_gb: 100
+    ttl: 168h  # 7 days
+  hardware:
+    accel: auto
+    prefer_nvenc: true
+  workers: 2
+  hls:
+    segment_duration: 6s
+```
+
 
 
 ## API Endpoints

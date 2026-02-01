@@ -125,11 +125,59 @@ internal/content/content_rating_system/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type RatingService interface {
+  GetContentRating(ctx context.Context, contentType string, contentID uuid.UUID) ([]ContentRating, error)
+  AddContentRating(ctx context.Context, rating ContentRating) error
+
+  GetUserRestrictions(ctx context.Context, userID uuid.UUID) (*UserRatingRestriction, error)
+  UpdateUserRestrictions(ctx context.Context, userID uuid.UUID, restrictions UserRatingRestriction) error
+
+  CheckRatingAllowed(ctx context.Context, userID uuid.UUID, rating ContentRating) (bool, string, error)
+  GetRatingSystems(ctx context.Context) ([]RatingSystem, error)
+  MapRating(ctx context.Context, fromSystem, fromValue, toSystem string) (string, error)
+}
+
+type ContentRating struct {
+  ID            uuid.UUID `db:"id" json:"id"`
+  ContentType   string    `db:"content_type" json:"content_type"`
+  ContentID     uuid.UUID `db:"content_id" json:"content_id"`
+  RatingSystem  string    `db:"rating_system" json:"rating_system"`
+  RatingValue   string    `db:"rating_value" json:"rating_value"`
+  Country       *string   `db:"country" json:"country,omitempty"`
+  Descriptors   []string  `db:"descriptors" json:"descriptors"`
+  Source        string    `db:"source" json:"source"`
+}
+
+type UserRatingRestriction struct {
+  UserID             uuid.UUID `db:"user_id" json:"user_id"`
+  MPAAMax            *string   `db:"mpaa_max" json:"mpaa_max,omitempty"`
+  TVMax              *string   `db:"tv_max" json:"tv_max,omitempty"`
+  PEGIMax            *string   `db:"pegi_max" json:"pegi_max,omitempty"`
+  ESRBMax            *string   `db:"esrb_max" json:"esrb_max,omitempty"`
+  BlockUnrated       bool      `db:"block_unrated" json:"block_unrated"`
+  BlockedDescriptors []string  `db:"blocked_descriptors" json:"blocked_descriptors"`
+}
+
+type RatingSystem struct {
+  ID           uuid.UUID              `db:"id" json:"id"`
+  Name         string                 `db:"name" json:"name"`
+  DisplayName  string                 `db:"display_name" json:"display_name"`
+  Description  string                 `db:"description" json:"description"`
+  Country      *string                `db:"country" json:"country,omitempty"`
+  RatingValues []map[string]interface{} `db:"rating_values" json:"rating_values"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/jackc/pgx/v5/pgtype` - JSONB handling
+- `go.uber.org/fx`
+
 
 
 
@@ -138,17 +186,40 @@ internal/content/content_rating_system/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+RATINGS_ENFORCE=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+ratings:
+  enforce_restrictions: true
+  default_block_unrated: false
+  systems:
+    - MPAA
+    - TV
+    - PEGI
+    - ESRB
+    - BBFC
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+GET  /api/v1/ratings/content/:type/:id       # Get content ratings
+GET  /api/v1/ratings/systems                 # List rating systems
+
+GET  /api/v1/users/:id/ratings/restrictions  # Get user restrictions
+PUT  /api/v1/users/:id/ratings/restrictions  # Update restrictions
+
+GET  /api/v1/ratings/check?content=:id       # Check if content allowed for user
+```
+
 
 
 ## Testing Strategy

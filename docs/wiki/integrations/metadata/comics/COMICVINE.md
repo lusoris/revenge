@@ -22,9 +22,9 @@
 
 # ComicVine API
 
-> Comic book metadata from ComicVine
+> ComicVine - Primary comic book metadata
 
-ComicVine provides comprehensive comic book metadata including issue details, story arcs, characters, and creators. Covers Marvel, DC, indie publishers, and manga. Primary metadata source for comics libraries. Community wiki with detailed character and team information. Free API key required.
+PRIMARY metadata source for comics libraries. Comprehensive database covering Marvel, DC, indie publishers, and manga. Issue details, story arcs, characters, and creators. Community wiki with detailed information. Free API key required. 200 req/hour rate limit.
 
 ---
 
@@ -70,6 +70,7 @@ Official documentation and guides:
 - [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
 - [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
 - [River Job Queue](../../../../sources/tooling/river.md)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 
 
 

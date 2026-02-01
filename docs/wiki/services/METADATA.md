@@ -22,9 +22,9 @@
 
 # Metadata Service
 
-> External metadata providers for media enrichment
+> Unified metadata service with Arr-first priority chain
 
-The Metadata service fetches information about your media from external sources like TMDb, TheTVDB, and MusicBrainz. Configure which providers to use per library. Automatic matching uses filenames and folder structure. Manual matching lets you fix incorrect matches. Metadata includes titles, descriptions, posters, cast, crew, and ratings. Background jobs keep metadata fresh.
+Metadata service orchestrates content enrichment using PRIMARY sources (Arr services - Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) that aggregate metadata locally, with SUPPLEMENTARY external APIs (TMDb, TheTVDB, MusicBrainz, etc.) as fallback and enrichment. Priority chain: L1 cache → L2 cache → Arr services (PRIMARY) → External APIs (SUPPLEMENTARY via optional proxy/VPN). Automatic filename matching, manual override, and scheduled background refresh jobs keep metadata current.
 
 ---
 

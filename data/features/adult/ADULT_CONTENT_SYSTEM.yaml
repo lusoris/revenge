@@ -16,15 +16,17 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Complete adult content management with Stash ecosystem integration.
-  > All adult content isolated in PostgreSQL schema `qar` with "Queen Anne''s Revenge"
-  themed obfuscation.'
+technical_summary: '> Complete adult content management with Whisparr and Stash ecosystem
+  integration. > All adult content isolated in PostgreSQL schema `qar` with "Queen
+  Anne''s Revenge" themed obfuscation. > Whisparr PRIMARY metadata source (aggregates
+  StashDB locally).'
 wiki_tagline: '> Isolated adult library with Stash and StashDB integration'
 wiki_overview: Manage adult content in a completely isolated library (codenamed QAR
-  - Queen Anne Revenge). Integrates with Stash and StashDB for metadata and performer
-  information. Content is separated in its own database schema for privacy. Requires
-  explicit permission and NSFW toggle to access. Whisparr integration handles scene
-  downloads automatically.
+  - Queen Anne Revenge). Uses Whisparr as the PRIMARY metadata source (aggregates
+  from StashDB locally), with direct StashDB/Stash APIs as supplementary enrichment.
+  Whisparr integration provides both metadata caching and download automation. Content
+  is separated in its own database schema for privacy. Requires explicit permission
+  and NSFW toggle to access.
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
@@ -54,6 +56,16 @@ design_refs:
   path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../architecture/03_METADATA_SYSTEM.md
+- title: WHISPARR (PRIMARY metadata + downloads)
+  path: ../../integrations/servarr/WHISPARR.md
+- title: STASHDB (supplementary metadata)
+  path: ../../integrations/metadata/STASHDB.md
+- title: STASH (local instance integration)
+  path: ../../integrations/metadata/STASH.md
+- title: DATA_RECONCILIATION (metadata fuzzy matching)
+  path: ../adult/DATA_RECONCILIATION.md
+- title: GALLERY_MODULE (image galleries)
+  path: ../adult/GALLERY_MODULE.md
 feature_name: Revenge - Adult Content System
 module_name: revenge___adult_content_system
 schema_name: qar
@@ -75,13 +87,492 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `qar`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/revenge___adult_content_system/\n  ├──\
-  \ module.go              # fx module definition\n  ├── repository.go          #\
-  \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
-  \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
-  \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `qar` (Queen Anne's Revenge - isolated adult content schema)
+
+  **Tables**:
+  - `qar.cargo`: Scenes/videos (obfuscated as "cargo")
+  - `qar.cargo_files`: Physical files associated with scenes
+  - `qar.crew`: Performers (obfuscated as "crew")
+  - `qar.crew_appearances`: Performer appearances in scenes
+  - `qar.fleet`: Studios (obfuscated as "fleet")
+  - `qar.cargo_tags`: Tags/categories for scenes
+  - `qar.crew_images`: Performer headshots and images
+  - `qar.cargo_markers`: Scene markers/chapters
+  - `qar.crew_stash_ids`: StashDB identifiers for performers
+  - `qar.cargo_stash_ids`: StashDB identifiers for scenes
+  - `qar.voyage_log`: Watch history (obfuscated as "voyage log")
+  - `qar.cargo_metadata_cache`: Cached metadata from Stash/StashDB
+
+  **Key Columns** (`qar.cargo` - scenes):
+  - `id` (UUID): Primary key
+  - `stash_id` (TEXT): StashDB scene identifier
+  - `title` (TEXT): Scene title
+  - `details` (TEXT): Scene description
+  - `date` (DATE): Scene release date
+  - `rating` (INTEGER): User rating (0-5)
+  - `fleet_id` (UUID): Studio (fleet) foreign key
+  - `duration` (INTEGER): Duration in seconds
+  - `director` (TEXT): Director name
+  - `url` (TEXT): Scene URL
+  - `organized` (BOOLEAN): Organization status
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`qar.crew` - performers):
+  - `id` (UUID): Primary key
+  - `stash_id` (TEXT): StashDB performer identifier
+  - `name` (TEXT): Performer name
+  - `aliases` (TEXT[]): Alternative names
+  - `gender` (TEXT): Gender identity
+  - `birthdate` (DATE): Date of birth
+  - `ethnicity` (TEXT): Ethnicity
+  - `country` (TEXT): Country of origin
+  - `eye_color` (TEXT): Eye color
+  - `hair_color` (TEXT): Hair color
+  - `height` (INTEGER): Height in cm
+  - `weight` (INTEGER): Weight in kg
+  - `career_start` (INTEGER): Career start year
+  - `career_end` (INTEGER): Career end year
+  - `tattoos` (TEXT): Tattoo descriptions
+  - `piercings` (TEXT): Piercing descriptions
+  - `image_path` (TEXT): Primary image path
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Indexes**:
+  - `idx_cargo_stash_id` on `stash_id`
+  - `idx_cargo_fleet_id` on `fleet_id`
+  - `idx_cargo_date` on `date`
+  - `idx_cargo_title_trgm` (GIN trigram) for fuzzy search
+  - `idx_crew_stash_id` on `stash_id`
+  - `idx_crew_name_trgm` (GIN trigram) for fuzzy search
+  - `idx_crew_appearances_cargo_id` on `cargo_id`
+  - `idx_crew_appearances_crew_id` on `crew_id`
+  - `idx_voyage_log_user_cargo` on (`user_id`, `cargo_id`)
+
+module_structure: |
+  ```
+  internal/content/revenge___adult_content_system/
+  ├── module.go              # fx module definition
+  ├── repository.go          # Database operations (sqlc generated)
+  ├── service.go             # Business logic
+  ├── handler.go             # HTTP handlers (ogen generated)
+  ├── types.go               # Domain types (pirate-themed)
+  ├── cache.go               # Caching layer (otter)
+  ├── obfuscation.go         # Pirate terminology mapping
+  └── metadata/
+      ├── provider.go        # Metadata provider interface
+      ├── stash.go           # Stash integration
+      ├── stashdb.go         # StashDB GraphQL integration
+      └── enricher.go        # Metadata enrichment logic
+  ```
+
+component_interaction: |
+  1. **Request Flow**:
+     - Client sends HTTP request to `/api/v1/legacy/*` (obfuscated adult endpoints)
+     - Middleware checks `legacy:read` permission scope
+     - API handler (ogen) validates request and calls service
+     - Service applies pirate-themed obfuscation layer
+     - Service checks cache for existing data
+     - If cache miss, service calls repository for database query
+     - Repository executes SQL via sqlc-generated code against `qar.*` schema
+     - Results flow back with obfuscated field names through service → handler → client
+
+  2. **Metadata Enrichment**:
+     - Background job triggered on scene/performer addition
+     - Service calls metadata provider (StashDB GraphQL)
+     - Provider fetches scene details, performer info, studio data
+     - Service maps external IDs to internal UUIDs
+     - Service updates database and invalidates cache
+     - Cache warms up on next request
+
+  3. **Access Control**:
+     - All QAR endpoints require authentication + `legacy:read` scope
+     - NSFW toggle must be enabled in user preferences
+     - Content is completely isolated in separate schema
+     - No cross-references to public schema (privacy protection)
+
+# Implementation
+file_structure: |
+  ```
+  internal/content/revenge___adult_content_system/
+  ├── module.go              # fx.Module with all providers
+  ├── repository.go          # Database layer
+  ├── repository_test.go     # Repository tests (testcontainers)
+  ├── service.go             # Business logic
+  ├── service_test.go        # Service tests (mocks)
+  ├── handler.go             # HTTP handlers
+  ├── handler_test.go        # Handler tests (httptest)
+  ├── types.go               # Domain types
+  ├── obfuscation.go         # Pirate terminology mapping
+  ├── obfuscation_test.go    # Obfuscation tests
+  ├── cache.go               # Caching logic
+  ├── cache_test.go          # Cache tests
+  └── metadata/
+      ├── provider.go        # Interface: MetadataProvider
+      ├── stash.go           # Stash API implementation
+      ├── stashdb.go         # StashDB GraphQL implementation
+      ├── stashdb_test.go    # StashDB integration tests
+      └── enricher.go        # Enrichment orchestration
+
+  migrations/
+  └── qar/
+      ├── 001_cargo.sql      # Scenes schema
+      ├── 002_crew.sql       # Performers schema
+      ├── 003_fleet.sql      # Studios schema
+      └── 004_voyage_log.sql # Watch history schema
+
+  api/
+  └── openapi.yaml           # OpenAPI spec (legacy/* endpoints)
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository defines database operations for QAR content
+  type Repository interface {
+      // Cargo (Scenes) CRUD
+      GetCargo(ctx context.Context, id uuid.UUID) (*Cargo, error)
+      ListCargo(ctx context.Context, filters ListFilters) ([]Cargo, error)
+      CreateCargo(ctx context.Context, cargo *Cargo) error
+      UpdateCargo(ctx context.Context, cargo *Cargo) error
+      DeleteCargo(ctx context.Context, id uuid.UUID) error
+
+      // Crew (Performers) CRUD
+      GetCrew(ctx context.Context, id uuid.UUID) (*Crew, error)
+      ListCrew(ctx context.Context, filters ListFilters) ([]Crew, error)
+      CreateCrew(ctx context.Context, crew *Crew) error
+      UpdateCrew(ctx context.Context, crew *Crew) error
+      DeleteCrew(ctx context.Context, id uuid.UUID) error
+
+      // Fleet (Studios) CRUD
+      GetFleet(ctx context.Context, id uuid.UUID) (*Fleet, error)
+      ListFleet(ctx context.Context) ([]Fleet, error)
+
+      // Voyage Log (Watch History)
+      MarkCargoViewed(ctx context.Context, userID, cargoID uuid.UUID) error
+      GetVoyageLog(ctx context.Context, userID uuid.UUID) ([]VoyageLog, error)
+
+      // Crew Appearances (Performer-Scene links)
+      GetCargoWithCrew(ctx context.Context, cargoID uuid.UUID) (*CargoWithCrew, error)
+      GetCrewAppearances(ctx context.Context, crewID uuid.UUID) ([]Cargo, error)
+  }
+
+  // Service defines business logic for QAR content
+  type Service interface {
+      // Cargo operations
+      GetCargo(ctx context.Context, id uuid.UUID) (*Cargo, error)
+      SearchCargo(ctx context.Context, query string, filters SearchFilters) ([]Cargo, error)
+      EnrichCargo(ctx context.Context, id uuid.UUID) error
+
+      // Crew operations
+      GetCrew(ctx context.Context, id uuid.UUID) (*Crew, error)
+      SearchCrew(ctx context.Context, query string) ([]Crew, error)
+      EnrichCrew(ctx context.Context, id uuid.UUID) error
+
+      // Fleet operations
+      GetFleet(ctx context.Context, id uuid.UUID) (*Fleet, error)
+      ListFleet(ctx context.Context) ([]Fleet, error)
+  }
+
+  // MetadataProvider fetches adult content metadata from external sources
+  type MetadataProvider interface {
+      // StashDB operations
+      GetSceneByStashID(ctx context.Context, stashID string) (*SceneMetadata, error)
+      GetPerformerByStashID(ctx context.Context, stashID string) (*PerformerMetadata, error)
+      GetStudioByStashID(ctx context.Context, stashID string) (*StudioMetadata, error)
+      SearchScenes(ctx context.Context, query string) ([]SceneMetadata, error)
+      SearchPerformers(ctx context.Context, query string) ([]PerformerMetadata, error)
+  }
+
+  // Obfuscator provides pirate-themed terminology mapping
+  type Obfuscator interface {
+      // Map external terms to pirate terms
+      ObfuscateScene(scene *Scene) *Cargo
+      ObfuscatePerformer(performer *Performer) *Crew
+      ObfuscateStudio(studio *Studio) *Fleet
+
+      // Reverse mapping for API responses
+      DeobfuscateCargo(cargo *Cargo) *Scene
+      DeobfuscateCrew(crew *Crew) *Performer
+      DeobfuscateFleet(fleet *Fleet) *Studio
+  }
+  ```
+
+dependencies: |
+  **Go Dependencies**:
+  - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+  - `github.com/google/uuid` - UUID generation
+  - `github.com/maypok86/otter` - In-memory cache
+  - `github.com/Khan/genqlient` - GraphQL client for StashDB
+  - `github.com/go-resty/resty/v2` - HTTP client for external APIs
+  - `go.uber.org/fx` - Dependency injection
+  - `github.com/riverqueue/river` - Background job queue
+  - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
+
+  **External APIs** (priority order):
+  - **Whisparr API v3 (eros)** - PRIMARY metadata source (local StashDB cache) + download automation
+  - **StashDB GraphQL API** - Supplementary metadata (via proxy/VPN when Whisparr lacks data)
+  - **Stash API** - Local Stash instance integration (optional, via proxy/VPN for privacy)
+
+  **Database**:
+  - PostgreSQL 18+ with separate `qar` schema for isolation
+  - Trigram extension for fuzzy search
+
+# Configuration
+env_vars: |
+  **Environment Variables**:
+  - `REVENGE_QAR_ENABLED` - Enable QAR module (default: false)
+  - `REVENGE_QAR_CACHE_TTL` - Cache TTL duration (default: 10m)
+  - `REVENGE_QAR_CACHE_SIZE` - Cache size in MB (default: 200)
+  - `REVENGE_METADATA_STASHDB_API_URL` - StashDB GraphQL endpoint (default: https://stashdb.org/graphql)
+  - `REVENGE_METADATA_STASHDB_API_KEY` - StashDB API key (optional, for rate limit increase)
+  - `REVENGE_METADATA_STASH_URL` - Local Stash instance URL (optional)
+  - `REVENGE_METADATA_STASH_API_KEY` - Local Stash API key (optional)
+  - `REVENGE_WHISPARR_URL` - Whisparr instance URL (optional)
+  - `REVENGE_WHISPARR_API_KEY` - Whisparr API key (optional)
+
+config_keys: |
+  **config.yaml keys**:
+  ```yaml
+  qar:
+    enabled: false  # Must be explicitly enabled
+
+    cache:
+      ttl: 10m
+      size_mb: 200
+
+    metadata:
+      priority:
+        - whisparr   # PRIMARY: Local StashDB cache
+        - stashdb    # Supplementary: Direct API (via proxy/VPN)
+        - stash      # Optional local instance
+
+      whisparr:
+        enabled: true       # Should be enabled for PRIMARY metadata
+        url: ${REVENGE_WHISPARR_URL}
+        api_key: ${REVENGE_WHISPARR_API_KEY}
+        sync_interval: 15m
+
+      stashdb:
+        api_url: https://stashdb.org/graphql
+        api_key: ${REVENGE_METADATA_STASHDB_API_KEY}
+        rate_limit: 60
+        proxy: tor  # Route through proxy/VPN (see HTTP_CLIENT service)
+
+      stash:
+        enabled: false
+        url: ${REVENGE_METADATA_STASH_URL}
+        api_key: ${REVENGE_METADATA_STASH_API_KEY}
+        proxy: tor  # Privacy: route through proxy/VPN even for local instance
+
+    obfuscation:
+      api_namespace: legacy  # /api/v1/legacy/*
+      schema_name: qar
+      terminology:
+        scene: cargo
+        performer: crew
+        studio: fleet
+        watch_history: voyage_log
+  ```
+
+defaults: |
+  - QAR module: Disabled by default (must be explicitly enabled)
+  - Cache TTL: 10 minutes
+  - Cache size: 200 MB
+  - StashDB rate limit: 60 requests/minute
+  - Metadata priority: Whisparr (PRIMARY) → StashDB (via proxy) → Local Stash
+  - Whisparr: Enabled by default when QAR is enabled (required for PRIMARY metadata)
+  - StashDB/Stash proxy: Uses tor proxy from HTTP_CLIENT service
+  - API namespace: `/api/v1/legacy/*`
+  - Permission scope: `legacy:read`
+
+# API Endpoints
+endpoints: |
+  **Cargo (Scenes)**:
+  - `GET /api/v1/legacy/cargo` - List scenes with filters
+  - `GET /api/v1/legacy/cargo/{id}` - Get scene details
+  - `POST /api/v1/legacy/cargo` - Create scene (admin)
+  - `PUT /api/v1/legacy/cargo/{id}` - Update scene (admin)
+  - `DELETE /api/v1/legacy/cargo/{id}` - Delete scene (admin)
+  - `POST /api/v1/legacy/cargo/{id}/enrich` - Trigger metadata enrichment
+  - `POST /api/v1/legacy/cargo/{id}/view` - Mark as viewed
+  - `GET /api/v1/legacy/cargo/{id}/crew` - Get performers in scene
+
+  **Crew (Performers)**:
+  - `GET /api/v1/legacy/crew` - List performers with filters
+  - `GET /api/v1/legacy/crew/{id}` - Get performer details
+  - `POST /api/v1/legacy/crew` - Create performer (admin)
+  - `PUT /api/v1/legacy/crew/{id}` - Update performer (admin)
+  - `DELETE /api/v1/legacy/crew/{id}` - Delete performer (admin)
+  - `POST /api/v1/legacy/crew/{id}/enrich` - Trigger metadata enrichment
+  - `GET /api/v1/legacy/crew/{id}/cargo` - Get scenes with performer
+
+  **Fleet (Studios)**:
+  - `GET /api/v1/legacy/fleet` - List studios
+  - `GET /api/v1/legacy/fleet/{id}` - Get studio details
+  - `POST /api/v1/legacy/fleet` - Create studio (admin)
+  - `PUT /api/v1/legacy/fleet/{id}` - Update studio (admin)
+  - `DELETE /api/v1/legacy/fleet/{id}` - Delete studio (admin)
+  - `GET /api/v1/legacy/fleet/{id}/cargo` - Get scenes from studio
+
+  **Voyage Log (Watch History)**:
+  - `GET /api/v1/legacy/voyage` - Get user's watch history
+  - `GET /api/v1/legacy/cargo/{id}/voyage-status` - Check if viewed by user
+
+request_examples: |
+  **List cargo (scenes) with filters**:
+  ```http
+  GET /api/v1/legacy/cargo?crew=performer-uuid&fleet=studio-uuid&limit=20&offset=0
+  Authorization: Bearer {token}
+  X-Permission-Scope: legacy:read
+  ```
+
+  **Get cargo (scene) details**:
+  ```http
+  GET /api/v1/legacy/cargo/550e8400-e29b-41d4-a716-446655440000
+  Authorization: Bearer {token}
+  X-Permission-Scope: legacy:read
+  ```
+
+  **Mark cargo as viewed**:
+  ```http
+  POST /api/v1/legacy/cargo/550e8400-e29b-41d4-a716-446655440000/view
+  Authorization: Bearer {token}
+  X-Permission-Scope: legacy:read
+  Content-Type: application/json
+
+  {
+    "viewed_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+  **Search crew (performers)**:
+  ```http
+  GET /api/v1/legacy/crew?q=search+query&limit=20
+  Authorization: Bearer {token}
+  X-Permission-Scope: legacy:read
+  ```
+
+response_examples: |
+  **Cargo (scene) details response**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "stash_id": "abc123def456",
+    "title": "Example Scene Title",
+    "details": "Scene description...",
+    "date": "2024-01-15",
+    "rating": 4,
+    "duration": 1800,
+    "director": "Director Name",
+    "fleet": {
+      "id": "...",
+      "name": "Studio Name"
+    },
+    "crew": [
+      {
+        "id": "...",
+        "name": "Performer Name",
+        "image_path": "/crew/images/performer.jpg"
+      }
+    ],
+    "tags": ["tag1", "tag2", "tag3"],
+    "viewed": true,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+  **Crew (performer) details response**:
+  ```json
+  {
+    "id": "650e8400-e29b-41d4-a716-446655440000",
+    "stash_id": "xyz789abc123",
+    "name": "Performer Name",
+    "aliases": ["Alias 1", "Alias 2"],
+    "gender": "Female",
+    "birthdate": "1995-05-15",
+    "ethnicity": "Caucasian",
+    "country": "United States",
+    "eye_color": "Blue",
+    "hair_color": "Blonde",
+    "height": 165,
+    "weight": 55,
+    "career_start": 2018,
+    "career_end": null,
+    "tattoos": "Small tattoo on left wrist",
+    "piercings": "Navel piercing",
+    "image_path": "/crew/images/performer.jpg",
+    "scene_count": 42,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-15T20:30:00Z"
+  }
+  ```
+
+# Testing
+unit_tests: |
+  **Repository Tests** (with testcontainers):
+  - Test CRUD operations for cargo (scenes)
+  - Test CRUD operations for crew (performers)
+  - Test CRUD operations for fleet (studios)
+  - Test crew appearance linking
+  - Test voyage log tracking
+  - Test search with filters
+  - Test concurrent access
+  - Test schema isolation (no cross-schema queries)
+
+  **Service Tests** (with mocks):
+  - Test business logic with mocked repository
+  - Test metadata enrichment flow (StashDB)
+  - Test cache hit/miss scenarios
+  - Test obfuscation layer correctness
+  - Test error handling
+  - Test rate limiting for external APIs
+  - Test permission scope validation
+
+  **Handler Tests** (with httptest):
+  - Test HTTP request/response handling
+  - Test authentication/authorization (`legacy:read` scope)
+  - Test request validation
+  - Test error responses
+  - Test pagination
+  - Test obfuscated endpoint naming
+
+  **Obfuscation Tests**:
+  - Test terminology mapping (scene→cargo, performer→crew, studio→fleet)
+  - Test reverse mapping for API responses
+  - Test field name obfuscation
+  - Test schema namespace isolation
+
+integration_tests: |
+  **Full Stack Tests**:
+  - Test complete request flow (client → database in `qar` schema)
+  - Test metadata enrichment with real StashDB API (rate-limited)
+  - Test Whisparr integration
+  - Test crew appearance operations end-to-end
+  - Test voyage log across users
+  - Test concurrent cargo additions
+  - Test schema isolation (verify no data leakage to public schema)
+
+  **Database Tests**:
+  - Test migrations (up/down) for `qar` schema
+  - Test indexes performance
+  - Test foreign key constraints
+  - Test transaction isolation
+  - Test trigram search performance
+  - Test schema-level permission isolation
+
+  **Access Control Tests**:
+  - Test NSFW toggle requirement
+  - Test `legacy:read` scope enforcement
+  - Test unauthorized access rejection
+  - Test role-based access (admin vs. user)
+
+test_coverage_target: |
+  - **Overall**: 85% minimum (higher due to sensitive content)
+  - **Repository**: 95% (critical path, data isolation)
+  - **Service**: 90% (business logic, obfuscation)
+  - **Handler**: 80% (integration layer)
+  - **Metadata providers**: 75% (external dependency)
+  - **Obfuscation layer**: 95% (critical for privacy)

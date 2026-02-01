@@ -22,9 +22,9 @@
 
 # MusicBrainz
 
-> Open music database for artist and album data
+> Direct MusicBrainz API - Supplementary to Lidarr
 
-MusicBrainz is the primary source for music metadata. Open database with artist, album, and track information. Cover art from Cover Art Archive. Links to other services via MBIDs. No API key required but rate limits apply. Identifies music by acoustic fingerprinting.
+SUPPLEMENTARY metadata source for music. Used as: (1) **Fallback** when Lidarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Lidarr. Open database (no API key required) with strict 1 req/sec rate limit. Provides MBIDs (universal music identifiers), artist/album/track metadata, Cover Art Archive, AcoustID fingerprinting. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).
 
 ---
 

@@ -70,7 +70,10 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [River configuration](#river-configuration)
+- [Queue priorities](#queue-priorities)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -132,8 +135,6 @@ internal/integration/river/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -145,11 +146,43 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// River client wrapper
+type JobQueue interface {
+  Enqueue(ctx context.Context, job river.JobArgs) (*river.JobInsertResult, error)
+  EnqueueWithPriority(ctx context.Context, job river.JobArgs, priority int) (*river.JobInsertResult, error)
+  EnqueueScheduled(ctx context.Context, job river.JobArgs, scheduledAt time.Time) (*river.JobInsertResult, error)
+  Cancel(ctx context.Context, jobID int64) error
+  Start(ctx context.Context) error
+  Stop(ctx context.Context) error
+}
+
+// Example worker
+type LibraryScanWorker struct {
+  river.WorkerDefaults[LibraryScanArgs]
+  libraryService LibraryService
+}
+
+type LibraryScanArgs struct {
+  LibraryID uuid.UUID `json:"library_id"`
+  FullScan  bool      `json:"full_scan"`
+}
+
+func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScanArgs]) error {
+  return w.libraryService.ScanLibrary(ctx, job.Args.LibraryID, job.Args.FullScan)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/riverqueue/river` - Job queue
+- `github.com/riverqueue/river/riverdriver/riverpgxv5` - PostgreSQL driver
+- `github.com/jackc/pgx/v5/pgxpool` - Connection pool
+- `github.com/google/uuid` - UUID support
+- `go.uber.org/fx` - Dependency injection
+
 
 
 
@@ -158,12 +191,73 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# River configuration
+RIVER_WORKERS=10
+RIVER_MAX_ATTEMPTS=25
+RIVER_POLL_INTERVAL=1s
+RIVER_SHUTDOWN_TIMEOUT=30s
+
+# Queue priorities
+RIVER_QUEUE_DEFAULT_PRIORITY=1
+RIVER_QUEUE_HIGH_PRIORITY=10
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+jobs:
+  river:
+    workers: 10
+    max_attempts: 25
+    poll_interval: 1s
+    shutdown_timeout: 30s
 
+    queues:
+      default:
+        max_workers: 10
+      high_priority:
+        max_workers: 20
+      low_priority:
+        max_workers: 5
+```
+
+
+
+## API Endpoints
+**List Jobs**:
+```
+GET /api/v1/admin/jobs?state=running&limit=50
+```
+
+**Response**:
+```json
+{
+  "jobs": [
+    {
+      "id": 12345,
+      "state": "running",
+      "queue": "default",
+      "kind": "library_scan",
+      "args": {
+        "library_id": "uuid-123",
+        "full_scan": false
+      },
+      "attempt": 1,
+      "max_attempts": 25,
+      "created_at": "2026-02-01T10:00:00Z",
+      "scheduled_at": "2026-02-01T10:00:00Z"
+    }
+  ],
+  "total": 1
+}
+```
+
+**Cancel Job**:
+```
+DELETE /api/v1/admin/jobs/:id
+```
 
 
 

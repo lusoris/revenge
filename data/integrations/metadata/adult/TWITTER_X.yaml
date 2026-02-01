@@ -16,25 +16,376 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Performer social media presence'
-wiki_tagline: '> Performer Twitter/X links'
-wiki_overview: Links to performer Twitter/X profiles in the adult content system.
-  Tracks verified social media handles. Provides another way to discover performer
-  content. Links stored as part of performer metadata records. No direct API integration
-  - handles only.
+technical_summary: '> LINK-ONLY performer social media profiles for QAR content'
+wiki_tagline: '> Twitter/X - Performer profile links for QAR'
+wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X profile URLs. Basic profile verification via web scraping. **NO Twitter API access** (expensive, restrictive). **Proxy/VPN recommended** (via HTTP_CLIENT service).'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
+- name: PuerkitoBio/goquery
+  url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+  note: HTML parsing
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: FREEONES
+  path: ./FREEONES.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: ADULT_CONTENT_SYSTEM (QAR module)
+  path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
 integration_name: Twitter/X
 integration_id: twitterx
 external_service: Twitter/X
-api_base_url: https://api.twitter.com/2/users/by/username
-auth_method: bearer
+api_base_url: https://x.com
+data_access_method: web_scraping
+content_streaming: false
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌───────────────────┐
+  │   Performer       │
+  │   Profile Page    │
+  │   (Revenge UI)    │
+  └─────────┬─────────┘
+            │ Display social links
+            ▼
+  ┌───────────────────┐
+  │   Twitter/X Link  │───→ Opens in new tab
+  │   (verified URL)  │     (user's browser)
+  └─────────┬─────────┘
+            │ URL verification
+            │ (NO API access)
+            ▼
+  ┌───────────────────┐     ┌──────────────┐
+  │     x.com         │────▶│  Followers   │
+  │   (login wall)    │     │  (limited)   │
+  └───────────────────┘     └──────────────┘
+            │
+     ┌──────┴────────┐
+     │  HTTP_CLIENT  │
+     │  (recommended │
+     │   proxy/VPN)  │
+     └───────────────┘
+
+  NOTE: Twitter API is NOT used (expensive, restrictive).
+  Only web scraping for basic verification.
+  ```
+
+integration_scope: |
+  **WHAT THIS INTEGRATION DOES**:
+  - ✅ Stores performer Twitter/X profile URLs
+  - ✅ Verifies profile existence
+  - ✅ Extracts basic public metrics (when available)
+  - ✅ Provides "View on Twitter/X" links in UI
+
+  **WHAT THIS INTEGRATION DOES NOT DO**:
+  - ❌ Use Twitter API (too expensive)
+  - ❌ Embed tweets
+  - ❌ Access protected accounts
+  - ❌ Download media content
+  - ❌ Track tweets or mentions
+
+  **Why No API**:
+  - Twitter API now very expensive ($100/mo minimum)
+  - Restrictive rate limits
+  - Profile links can be verified without API
+
+api_details: |
+  **Data Access**: Web scraping (limited)
+  **Base URL**: `https://x.com` (formerly twitter.com)
+  **Authentication**: None for public profiles
+  **Rate Limit**: Self-imposed 0.5 req/sec
+
+  **Twitter/X Restrictions**:
+  - Many pages require login
+  - JavaScript-heavy rendering
+  - Aggressive bot detection
+  - Frequent changes to page structure
+
+  **Verification Approach**:
+  ```
+  HEAD https://x.com/{username}
+  200 OK → Profile likely exists
+  404 Not Found → Profile doesn't exist
+  302 Redirect → May require login
+  ```
+
+database_schema: |
+  Uses shared `qar.social_profiles` table.
+
+  ```sql
+  -- Example Twitter/X entry
+  INSERT INTO qar.social_profiles (
+    performer_id,
+    platform,
+    profile_url,
+    username,
+    display_name,
+    follower_count,
+    link_verified,
+    last_checked
+  ) VALUES (
+    'performer-uuid',
+    'twitter',
+    'https://x.com/username',
+    'username',
+    'Display Name',
+    50000,          -- May be NULL if not extractable
+    true,
+    now()
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/social/twitter/
+  ├── provider.go              # Twitter/X link provider
+  ├── scraper.go               # Profile page scraping
+  ├── verification.go          # Profile URL verification
+  └── twitter_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Twitter/X provider (no API, scraping only)
+  type TwitterProvider struct {
+    httpFactory httpclient.ClientFactory
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  func (p *TwitterProvider) Platform() string { return "twitter" }
+  func (p *TwitterProvider) BaseURL() string { return "https://x.com" }
+
+  // Verify username exists
+  func (p *TwitterProvider) VerifyUsername(
+    ctx context.Context,
+    username string,
+  ) (*ProfileInfo, error) {
+    // Wait for rate limiter
+    if err := p.rateLimiter.Wait(ctx); err != nil {
+      return nil, err
+    }
+
+    url := fmt.Sprintf("https://x.com/%s", username)
+
+    client, err := p.httpFactory.GetClientForService(ctx, "twitter")
+    if err != nil {
+      return nil, err
+    }
+
+    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+    req.Header.Set("User-Agent", userAgent)
+
+    resp, err := client.Do(req)
+    if err != nil {
+      return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode == 404 {
+      return nil, ErrProfileNotFound
+    }
+
+    info := &ProfileInfo{
+      Platform:   "twitter",
+      Username:   username,
+      ProfileURL: url,
+      FetchedAt:  time.Now(),
+    }
+
+    // Try to extract basic info from page
+    if resp.StatusCode == 200 {
+      doc, err := goquery.NewDocumentFromReader(resp.Body)
+      if err == nil {
+        p.extractProfileInfo(doc, info)
+      }
+    }
+
+    return info, nil
+  }
+
+  // Best-effort extraction from page
+  func (p *TwitterProvider) extractProfileInfo(
+    doc *goquery.Document,
+    info *ProfileInfo,
+  ) {
+    // Twitter uses JS rendering, so this is unreliable
+    // May need to use meta tags instead
+
+    // Try Open Graph tags
+    if name, exists := doc.Find(`meta[property="og:title"]`).Attr("content"); exists {
+      info.DisplayName = strings.TrimSuffix(name, " (@"+info.Username+")")
+    }
+
+    if desc, exists := doc.Find(`meta[property="og:description"]`).Attr("content"); exists {
+      info.Bio = desc
+    }
+
+    if img, exists := doc.Find(`meta[property="og:image"]`).Attr("content"); exists {
+      info.ProfileImage = img
+    }
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `github.com/PuerkitoBio/goquery` - HTML/meta tag parsing
+  - `golang.org/x/time/rate` - Rate limiting
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - Dependency injection
+
+  **External**:
+  - Twitter/X website (web scraping, limited)
+
+  **Internal Services**:
+  - HTTP_CLIENT - Proxy/VPN routing
+
+  **NOT Used**:
+  - Twitter API v2 (too expensive, $100/mo minimum)
+
+env_vars: |
+  ```bash
+  # Twitter/X integration (NO API)
+  TWITTER_ENABLED=true
+  TWITTER_RATE_LIMIT=0.5
+  TWITTER_CACHE_TTL=168h
+
+  # Proxy (recommended)
+  TWITTER_PROXY_ENABLED=true
+  TWITTER_PROXY_URL=socks5://127.0.0.1:9050
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      twitter:
+        enabled: true
+        rate_limit: 0.5
+        rate_window: 1s
+        cache_ttl: 168h
+
+        role: link
+        provides_content: false
+        use_api: false              # API too expensive
+
+        proxy:
+          enabled: true
+          type: tor
+          url: socks5://127.0.0.1:9050
+
+        verification:
+          enabled: true
+          check_interval: 168h
+  ```
+
+component_interaction: |
+  **Link Storage**:
+  1. FreeOnes/StashDB provides Twitter username
+  2. TwitterProvider.VerifyUsername(ctx, username)
+  3. If exists: store link with any extracted metadata
+  4. Display "Twitter/X" link on performer profile
+
+  **Metadata Extraction** (Best Effort):
+  - Parse Open Graph meta tags
+  - Extract display name, bio, avatar
+  - May not work if page requires login
+  - Falls back to URL verification only
+
+  **Link Verification (Background)**:
+  1. Weekly job checks all Twitter links
+  2. HEAD/GET request to each profile URL
+  3. Update verification status
+  4. Mark broken or suspended accounts
+
+scraping_limitations: |
+  **Twitter/X is Difficult to Scrape**:
+
+  - Heavy JavaScript rendering
+  - Login walls for most content
+  - Aggressive bot detection
+  - Page structure changes frequently
+
+  **What Works**:
+  - Basic existence check (HEAD request)
+  - Open Graph meta tags (sometimes)
+  - Profile URL construction
+
+  **What Doesn't Work**:
+  - Follower counts (JS rendered)
+  - Tweet content (requires login)
+  - Protected accounts
+
+  **Alternative**: Nitter instances
+  ```go
+  // Nitter provides Twitter content without login
+  // But instances are unreliable and often blocked
+  nitterURL := fmt.Sprintf("https://nitter.net/%s", username)
+  // Parse from Nitter instead
+  ```
+
+link_role: |
+  **LINK-Only Provider**
+
+  Due to Twitter API costs and scraping difficulty:
+  - Store profile URLs from other sources
+  - Basic verification via HEAD request
+  - Limited metadata extraction
+  - Display link in UI
+
+  **UI Display**:
+  ```
+  External Links:
+  [𝕏 Twitter] → Opens x.com/username in new tab
+  ```
+
+error_handling: |
+  **Expected Responses**:
+  - 200 OK → Profile exists (try to extract metadata)
+  - 302 Redirect → May require login
+  - 404 Not Found → Profile doesn't exist
+  - 403 Forbidden → Suspended or blocked
+
+unit_tests: |
+  ```go
+  func TestTwitter_VerifyUsername(t *testing.T) {
+    mockClient := &mockHTTPClient{
+      response: &http.Response{
+        StatusCode: 200,
+        Body: io.NopCloser(strings.NewReader(`
+          <html>
+            <meta property="og:title" content="Display Name (@username)">
+          </html>
+        `)),
+      },
+    }
+
+    provider := NewTwitterProvider(mockClient)
+    info, err := provider.VerifyUsername(context.Background(), "username")
+
+    require.NoError(t, err)
+    assert.Equal(t, "username", info.Username)
+    assert.Equal(t, "Display Name", info.DisplayName)
+  }
+  ```
+
+best_practices: |
+  **Twitter/X Integration**:
+  - Don't use Twitter API (too expensive)
+  - Keep scraping minimal
+  - Use proxy to avoid blocks
+  - Accept unreliable metadata extraction
+  - Source links from FreeOnes/StashDB
+
+  **Alternatives**:
+  - Nitter instances (public Twitter mirrors)
+  - Store links without verification if needed
+  - Focus on verification over extraction

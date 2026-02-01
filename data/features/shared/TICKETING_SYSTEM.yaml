@@ -90,13 +90,265 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/ticketing_system/\n  ├── module.go    \
-  \          # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Support tickets
+  CREATE TABLE tickets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Ticket details
+    type VARCHAR(50) NOT NULL,                     -- 'bug', 'feature', 'question', 'help'
+    priority VARCHAR(20) DEFAULT 'medium',         -- 'low', 'medium', 'high', 'urgent'
+    status VARCHAR(20) DEFAULT 'open',             -- 'open', 'in_progress', 'closed', 'resolved'
+
+    -- Content
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+
+    -- Assignment
+    assigned_to_user_id UUID REFERENCES users(id),
+
+    -- External tracking
+    github_issue_number INTEGER,                   -- Linked GitHub issue
+    github_issue_url TEXT,
+
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+    closed_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_tickets_user ON tickets(user_id, created_at DESC);
+  CREATE INDEX idx_tickets_status ON tickets(status);
+  CREATE INDEX idx_tickets_assigned ON tickets(assigned_to_user_id) WHERE assigned_to_user_id IS NOT NULL;
+  CREATE INDEX idx_tickets_type ON tickets(type);
+  CREATE INDEX idx_tickets_priority ON tickets(priority);
+
+  -- Ticket comments/updates
+  CREATE TABLE ticket_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id UUID NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    comment TEXT NOT NULL,
+    is_internal BOOLEAN DEFAULT false,             -- Internal notes not visible to requester
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_ticket_comments_ticket ON ticket_comments(ticket_id, created_at);
+  CREATE INDEX idx_ticket_comments_user ON ticket_comments(user_id);
+
+  -- Ticket attachments
+  CREATE TABLE ticket_attachments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id UUID NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+    uploaded_by_user_id UUID NOT NULL REFERENCES users(id),
+
+    filename TEXT NOT NULL,
+    file_path TEXT NOT NULL,                       -- Path to file on disk
+    file_size_bytes BIGINT NOT NULL,
+    mime_type VARCHAR(100),
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_ticket_attachments_ticket ON ticket_attachments(ticket_id);
+
+  -- Ticket tags
+  CREATE TABLE ticket_tags (
+    ticket_id UUID NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+    tag VARCHAR(50) NOT NULL,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (ticket_id, tag)
+  );
+  CREATE INDEX idx_ticket_tags_tag ON ticket_tags(tag);
+  ```
+module_structure: |
+  ```
+  internal/tickets/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Ticket logic
+  ├── github.go                    # GitHub Issues integration
+  ├── handler.go                   # HTTP API handlers
+  └── tickets_test.go
+
+  web/src/routes/(app)/support/
+  ├── +page.svelte                 # Tickets list
+  ├── +page.ts                     # Data loading
+  ├── new/
+  │   └── +page.svelte             # Create ticket
+  ├── [id]/
+  │   ├── +page.svelte             # Ticket detail
+  │   └── +page.ts
+  └── components/
+      ├── TicketCard.svelte        # Ticket display card
+      ├── CommentThread.svelte     # Comment thread
+      ├── StatusBadge.svelte       # Status badge
+      └── PriorityBadge.svelte     # Priority badge
+  ```
+key_interfaces: |
+  ```go
+  type TicketService interface {
+    CreateTicket(ctx context.Context, userID uuid.UUID, req CreateTicketRequest) (*Ticket, error)
+    ListTickets(ctx context.Context, filters TicketFilters) ([]Ticket, error)
+    GetTicket(ctx context.Context, ticketID uuid.UUID) (*TicketDetail, error)
+    UpdateTicket(ctx context.Context, ticketID uuid.UUID, update TicketUpdate) (*Ticket, error)
+    CloseTicket(ctx context.Context, ticketID uuid.UUID) error
+
+    AddComment(ctx context.Context, ticketID, userID uuid.UUID, comment string, isInternal bool) (*TicketComment, error)
+    GetComments(ctx context.Context, ticketID uuid.UUID) ([]TicketComment, error)
+
+    AddAttachment(ctx context.Context, ticketID, userID uuid.UUID, file FileUpload) (*TicketAttachment, error)
+    AssignTicket(ctx context.Context, ticketID, assigneeID uuid.UUID) error
+
+    LinkGitHubIssue(ctx context.Context, ticketID uuid.UUID, issueNumber int) error
+  }
+
+  type Ticket struct {
+    ID                uuid.UUID  `db:"id" json:"id"`
+    UserID            uuid.UUID  `db:"user_id" json:"user_id"`
+    Type              string     `db:"type" json:"type"`
+    Priority          string     `db:"priority" json:"priority"`
+    Status            string     `db:"status" json:"status"`
+    Title             string     `db:"title" json:"title"`
+    Description       string     `db:"description" json:"description"`
+    AssignedToUserID  *uuid.UUID `db:"assigned_to_user_id" json:"assigned_to_user_id,omitempty"`
+    GitHubIssueNumber *int       `db:"github_issue_number" json:"github_issue_number,omitempty"`
+    CreatedAt         time.Time  `db:"created_at" json:"created_at"`
+    UpdatedAt         time.Time  `db:"updated_at" json:"updated_at"`
+  }
+
+  type TicketDetail struct {
+    Ticket
+    Submitter   User               `json:"submitter"`
+    AssignedTo  *User              `json:"assigned_to,omitempty"`
+    Comments    []TicketComment    `json:"comments"`
+    Attachments []TicketAttachment `json:"attachments"`
+    Tags        []string           `json:"tags"`
+  }
+
+  type GitHubIntegration interface {
+    CreateIssue(ctx context.Context, ticket Ticket) (int, string, error)
+    UpdateIssue(ctx context.Context, issueNumber int, update IssueUpdate) error
+    CloseIssue(ctx context.Context, issueNumber int) error
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/google/go-github/v58/github` - GitHub API client
+  - `go.uber.org/fx`
+
+  **External APIs**:
+  - GitHub REST API v3 (optional)
+
+env_vars: |
+  ```bash
+  TICKETS_GITHUB_ENABLED=false
+  TICKETS_GITHUB_REPO=owner/repo
+  TICKETS_GITHUB_TOKEN=ghp_xxx
+  TICKETS_MAX_ATTACHMENT_SIZE_MB=10
+  ```
+
+config_keys: |
+  ```yaml
+  tickets:
+    enabled: true
+    max_attachment_size_mb: 10
+    allow_attachments: true
+
+    github:
+      enabled: false
+      repo: owner/repo
+      token: ${TICKETS_GITHUB_TOKEN}
+      auto_create_issues: false
+  ```
+
+component_interaction: |
+  **Ticket Creation Flow**:
+  1. User submits ticket via POST /api/v1/tickets
+  2. Service validates and creates tickets record
+  3. If GitHub integration enabled and auto_create_issues=true:
+     - Call GitHub API to create issue
+     - Store issue number in github_issue_number
+  4. Send email notification to admins
+  5. Return ticket to user
+
+  **Comment Flow**:
+  1. User or admin adds comment
+  2. Service creates ticket_comments record
+  3. If GitHub issue linked, add comment to GitHub
+  4. Notify ticket participants via email
+  5. Update ticket updated_at timestamp
+
+  **Assignment Flow**:
+  1. Admin assigns ticket to user
+  2. Service updates assigned_to_user_id
+  3. Notify assigned user via email
+  4. Update GitHub issue assignee if linked
+
+  **Status Update Flow**:
+  1. Admin changes ticket status
+  2. Service updates status field
+  3. If status = 'closed', set closed_at timestamp
+  4. If GitHub issue linked, close GitHub issue
+  5. Notify requester of resolution
+
+api_endpoints: |
+  ```
+  POST   /api/v1/tickets                 # Create ticket
+  GET    /api/v1/tickets                 # List tickets (filter by status/type)
+  GET    /api/v1/tickets/:id             # Get ticket details
+  PUT    /api/v1/tickets/:id             # Update ticket
+  DELETE /api/v1/tickets/:id/close       # Close ticket
+
+  POST   /api/v1/tickets/:id/comments    # Add comment
+  GET    /api/v1/tickets/:id/comments    # Get comments
+
+  POST   /api/v1/tickets/:id/attachments # Upload attachment
+  GET    /api/v1/tickets/:id/attachments # List attachments
+
+  PUT    /api/v1/tickets/:id/assign      # Assign ticket
+  POST   /api/v1/tickets/:id/github      # Link GitHub issue
+  ```
+
+unit_tests: |
+  ```go
+  func TestTicketService_CreateTicket(t *testing.T) {
+    // Test ticket creation
+    // Test GitHub issue creation
+  }
+
+  func TestTicketService_AddComment(t *testing.T) {
+    // Test adding comments
+    // Test internal vs public comments
+  }
+
+  func TestGitHubIntegration_CreateIssue(t *testing.T) {
+    // Test GitHub API integration
+    // Mock GitHub responses
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestTickets_EndToEnd(t *testing.T) {
+    // 1. User creates ticket
+    // 2. Admin assigns ticket
+    // 3. Admin adds comment
+    // 4. Admin closes ticket
+    // 5. Verify all actions recorded
+  }
+
+  func TestTickets_GitHubIntegration(t *testing.T) {
+    // Test full GitHub integration flow
+    // Mock GitHub API
+  }
+  ```

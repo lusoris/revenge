@@ -16,12 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Adult metadata database for performers, studios, and scenes'
-wiki_tagline: '> Primary adult metadata from StashDB'
-wiki_overview: StashDB is the primary metadata source for adult content. Community-maintained
-  database of performers, studios, and scenes. Fingerprinting matches your files to
-  database entries. High-quality metadata with multiple verification levels. GraphQL
-  API provides comprehensive data access.
+technical_summary: '> SUPPLEMENTARY metadata provider (fallback + enrichment) for QAR content'
+wiki_tagline: '> StashDB metadata - Supplementary to Whisparr'
+wiki_overview: 'SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback** when Whisparr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. Community-maintained database (performers, studios, scenes). Fingerprinting for file matching. GraphQL API. **Optional proxy/VPN routing** for privacy (via HTTP_CLIENT service).'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -66,12 +63,16 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: WHISPARR (PRIMARY for QAR)
+  path: ../../servarr/WHISPARR.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: ADULT_CONTENT_SYSTEM (QAR module)
+  path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
+- title: DATA_RECONCILIATION
+  path: ../../../features/adult/DATA_RECONCILIATION.md
 integration_name: StashDB
 integration_id: stashdb
 external_service: StashDB

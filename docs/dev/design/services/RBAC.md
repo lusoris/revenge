@@ -47,6 +47,9 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+- [Policy management (admin only)](#policy-management-admin-only)
+- [Role management](#role-management)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -107,7 +110,13 @@ internal/service/rbac/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/casbin/casbin/v2`
+- `github.com/casbin/pgx-adapter`
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -125,11 +134,34 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type RBACService interface {
+  // Policy enforcement
+  Enforce(ctx context.Context, sub, obj, act string) (bool, error)
+  EnforceWithContext(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+
+  // Policy management
+  AddPolicy(ctx context.Context, sub, obj, act string) error
+  RemovePolicy(ctx context.Context, sub, obj, act string) error
+  GetPolicies(ctx context.Context) ([][]string, error)
+
+  // Role management
+  AssignRole(ctx context.Context, userID uuid.UUID, role string) error
+  RemoveRole(ctx context.Context, userID uuid.UUID, role string) error
+  GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/casbin/casbin/v2`
+- `github.com/casbin/pgx-adapter`
+- `go.uber.org/fx`
+
 
 
 
@@ -138,12 +170,34 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+RBAC_MODEL_PATH=/config/casbin_model.conf
+RBAC_POLICY_RELOAD_INTERVAL=5m
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+rbac:
+  model_path: /config/casbin_model.conf
+  policy_reload_interval: 5m
+```
 
+
+
+## API Endpoints
+```
+# Policy management (admin only)
+GET    /api/v1/rbac/policies              # List policies
+POST   /api/v1/rbac/policies              # Add policy
+DELETE /api/v1/rbac/policies              # Remove policy
+
+# Role management
+POST   /api/v1/rbac/users/:id/roles       # Assign role
+DELETE /api/v1/rbac/users/:id/roles/:role # Remove role
+GET    /api/v1/rbac/users/:id/roles       # Get user roles
+```
 
 
 

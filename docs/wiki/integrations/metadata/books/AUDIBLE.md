@@ -22,9 +22,9 @@
 
 # Audible
 
-> Audiobook metadata from Audible
+> Audnexus - Audiobook metadata enrichment for Chaptarr
 
-Audible metadata powers your audiobook library. Narrator information, chapter details, and series data are fetched via the Audnexus API. Cover artwork and descriptions match your Audible purchases. Automatically identifies audiobooks by ASIN or title matching.
+SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Chaptarr not setup or lacks data, (2) **Enrichment** for narrator info, chapters, and Audible-specific data. Accessed via Audnexus API (community project). ASIN-based matching. **No authentication required**.
 
 ---
 
@@ -67,6 +67,8 @@ Audible metadata powers your audiobook library. Narrator information, chapter de
 Official documentation and guides:
 - [Audnexus API](../../../../sources/apis/audnexus.md)
 - [go-blurhash](../../../../sources/media/go-blurhash.md)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [River Job Queue](../../../../sources/tooling/river.md)
 
 
 

@@ -16,13 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Book metadata and social reading platform - ratings, reviews,
-  book lists'
-wiki_tagline: '> Import reading data from Goodreads'
-wiki_overview: 'Import your Goodreads library and reading history into Revenge. Export
-  your data from Goodreads and import it to track your book collection. Ratings and
-  shelf assignments are preserved. Note: Goodreads API is closed, so only CSV import
-  is supported, not live sync.'
+technical_summary: '> Data import tool (CSV only) - reading history/ratings from Goodreads'
+wiki_tagline: '> Import Goodreads library data (CSV export)'
+wiki_overview: 'Data import integration for Goodreads library. CSV-based import (Goodreads API is closed). Import: (1) Reading history, (2) Book ratings, (3) Shelf assignments (read/reading/to-read), (4) Reviews. One-time import or periodic refresh. Metadata matched against Chaptarr/OpenLibrary. **Note**: No live API sync, CSV export only.'
 sources:
 - name: Google Books API
   url: https://developers.google.com/books/docs/v1/using
@@ -31,12 +27,12 @@ sources:
   url: https://openlibrary.org/developers/api
   note: Auto-resolved from openlibrary
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
-  path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: BOOK_MODULE
+  path: ../../../features/book/BOOK_MODULE.md
+- title: CHAPTARR (metadata matching)
+  path: ../../servarr/CHAPTARR.md
+- title: OPENLIBRARY (metadata fallback)
+  path: ./OPENLIBRARY.md
 integration_name: Goodreads
 integration_id: goodreads
 external_service: Goodreads

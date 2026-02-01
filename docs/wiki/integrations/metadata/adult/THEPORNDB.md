@@ -22,9 +22,9 @@
 
 # ThePornDB
 
-> Alternative metadata from ThePornDB
+> ThePornDB - Supplementary to Whisparr/StashDB
 
-ThePornDB provides adult metadata as an alternative to StashDB. Scene matching by title and fingerprint. Performer and studio information. REST API with straightforward access. Used as a fallback or supplement when StashDB lacks data.
+SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback** when Whisparr/StashDB not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. REST API with scene/performer/studio matching. Fingerprint-based file identification. **Optional proxy/VPN routing** for privacy (via HTTP_CLIENT service).
 
 ---
 
@@ -69,6 +69,7 @@ Official documentation and guides:
 - [ThePornDB API](../../../../sources/apis/theporndb.md)
 - [Typesense API](../../../../sources/infrastructure/typesense.md)
 - [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 
 
 

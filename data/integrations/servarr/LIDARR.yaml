@@ -64,3 +64,152 @@ integration_name: Lidarr
 integration_id: lidarr
 external_service: Lidarr
 auth_method: api_key
+api_base_url: http://localhost:8686/api/v1
+
+dual_role_metadata_and_downloads: |
+  **CRITICAL: Lidarr serves DUAL purposes in the Revenge architecture**:
+
+  **1. PRIMARY Metadata Aggregator**:
+  - Lidarr is the PRIMARY source for music metadata in Revenge
+  - It aggregates metadata from MusicBrainz (canonical music database)
+  - Maintains local cache of artist/album information (MBIDs, discography, release dates, genres)
+  - Revenge queries Lidarr API for music metadata BEFORE falling back to direct MusicBrainz API
+  - Provides unified, consistent metadata interface
+  - Reduces direct API calls to external services (rate limiting, availability)
+
+  **2. Download Automation Manager**:
+  - Handles music acquisition through configured indexers and download clients
+  - Monitors artists for new album releases and automatically downloads
+  - Manages artist/album file organization and tagging
+  - Webhooks notify Revenge when albums are ready
+
+  **Metadata Flow**:
+  ```
+  External (MusicBrainz) → Lidarr (local aggregation) → Revenge
+                                ↓
+                  (optional direct MusicBrainz/Last.fm for enrichment)
+  ```
+
+  **Why This Matters**:
+  - Lidarr is NOT just a download tool - it's the metadata backbone for music
+  - Direct MusicBrainz/Last.fm integrations are SUPPLEMENTARY for enrichment (scrobbling, listening stats)
+  - This dual-role pattern is consistent across ALL Arr services
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│   Lidarr     │────▶│   Lidarr    │
+  │  Request    │◀────│ Integration  │◀────│   Server    │
+  │  System     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
+api_details: |
+  **API Version**: v1
+  **Base URL**: `http://localhost:8686/api/v1` (configurable)
+  **Authentication**: X-Api-Key header
+
+  **Key Endpoints**:
+  - `/artist` - List/add/delete artists
+  - `/artist/{id}` - Get/update artist details
+  - `/artist/lookup` - Search artists (MusicBrainz)
+  - `/album` - Get albums
+  - `/command` - Trigger commands
+  - `/calendar` - Get upcoming releases
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  CREATE TABLE lidarr_instances (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    base_url TEXT NOT NULL,
+    api_key TEXT NOT NULL,
+    enabled BOOLEAN DEFAULT true,
+    auto_sync BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE lidarr_artists (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    artist_id UUID NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
+    lidarr_instance_id UUID NOT NULL REFERENCES lidarr_instances(id) ON DELETE CASCADE,
+    lidarr_artist_id INTEGER NOT NULL,
+    monitored BOOLEAN DEFAULT true,
+    quality_profile_id INTEGER,
+    metadata_profile_id INTEGER,
+    UNIQUE(artist_id, lidarr_instance_id)
+  );
+
+  CREATE TABLE lidarr_albums (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    album_id UUID NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+    lidarr_artist_id UUID NOT NULL REFERENCES lidarr_artists(id) ON DELETE CASCADE,
+    lidarr_album_id INTEGER NOT NULL,
+    has_files BOOLEAN DEFAULT false,
+    UNIQUE(album_id)
+  );
+  ```
+
+api_request_examples: |
+  **Add Artist**:
+  ```
+  POST http://localhost:8686/api/v1/artist
+  X-Api-Key: your_api_key
+
+  {
+    "foreignArtistId": "a74b1b7f-71a5-4011-9441-d0b5e4122711",
+    "artistName": "Radiohead",
+    "qualityProfileId": 1,
+    "metadataProfileId": 1,
+    "rootFolderPath": "/music",
+    "monitored": true,
+    "addOptions": {
+      "searchForMissingAlbums": true
+    }
+  }
+  ```
+
+webhook_handling: |
+  **Webhook Payload** (AlbumDownload):
+  ```json
+  {
+    "eventType": "AlbumDownload",
+    "artist": {
+      "id": 1,
+      "name": "Radiohead",
+      "mbId": "a74b1b7f-71a5-4011-9441-d0b5e4122711"
+    },
+    "album": {
+      "id": 10,
+      "title": "OK Computer",
+      "releaseDate": "1997-05-21"
+    },
+    "trackFiles": [
+      {
+        "path": "/music/Radiohead/OK Computer/01 - Airbag.flac",
+        "quality": "FLAC",
+        "size": 25165824
+      }
+    ]
+  }
+  ```
+
+quality_profiles: |
+  **Audio Quality Profiles**:
+  - Lossless (FLAC)
+  - High Quality (320kbps MP3)
+  - Standard (V0 MP3)
+  - Any
+
+metadata_profiles: |
+  **Metadata Profiles**:
+  - Studio Albums Only
+  - All Albums (including EPs, singles)
+  - Standard + Live

@@ -64,13 +64,629 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `qar`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/adult_data_reconciliation/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `qar`
+
+  ```sql
+  -- Reconciliation rules for metadata conflicts
+  CREATE TABLE qar.reconciliation_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,        -- 'scene', 'performer', 'studio'
+    field_name VARCHAR(100) NOT NULL,         -- 'title', 'performers', 'release_date', etc.
+    source_priority JSONB NOT NULL,           -- ['stashdb', 'whisparr', 'stash', 'manual']
+    fuzzy_threshold NUMERIC(3,2) DEFAULT 0.85,-- Fuzzy match confidence threshold (0.0-1.0)
+    auto_merge BOOLEAN DEFAULT false,         -- Auto-merge without user confirmation
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_reconciliation_rules_type_field ON qar.reconciliation_rules(content_type, field_name);
+
+  -- Metadata source tracking for each field
+  CREATE TABLE qar.metadata_sources (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,                 -- References scenes/performers/studios
+    field_name VARCHAR(100) NOT NULL,
+    source_name VARCHAR(50) NOT NULL,         -- 'stashdb', 'whisparr', 'stash', 'manual'
+    source_id VARCHAR(255),                   -- External ID from source
+    field_value JSONB NOT NULL,               -- Actual value from this source
+    confidence_score NUMERIC(3,2),            -- Match confidence (0.0-1.0)
+    is_active BOOLEAN DEFAULT true,           -- Currently used value
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_metadata_sources_content ON qar.metadata_sources(content_type, content_id);
+  CREATE INDEX idx_metadata_sources_field ON qar.metadata_sources(content_type, content_id, field_name);
+  CREATE INDEX idx_metadata_sources_active ON qar.metadata_sources(content_id, is_active) WHERE is_active = true;
+
+  -- Reconciliation conflicts requiring user resolution
+  CREATE TABLE qar.reconciliation_conflicts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+    field_name VARCHAR(100) NOT NULL,
+    conflict_values JSONB NOT NULL,           -- Array of {source, value, confidence}
+    resolution_status VARCHAR(20) DEFAULT 'pending', -- 'pending', 'resolved', 'ignored'
+    resolved_value JSONB,
+    resolved_by UUID REFERENCES users(id),
+    resolved_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_reconciliation_conflicts_status ON qar.reconciliation_conflicts(resolution_status) WHERE resolution_status = 'pending';
+  CREATE INDEX idx_reconciliation_conflicts_content ON qar.reconciliation_conflicts(content_type, content_id);
+
+  -- Manual overrides - user-corrected metadata
+  CREATE TABLE qar.manual_overrides (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+    field_name VARCHAR(100) NOT NULL,
+    override_value JSONB NOT NULL,
+    reason TEXT,
+    created_by UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(content_type, content_id, field_name)
+  );
+  CREATE INDEX idx_manual_overrides_content ON qar.manual_overrides(content_type, content_id);
+
+  -- Fuzzy match cache for performance
+  CREATE TABLE qar.fuzzy_match_cache (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    string_a TEXT NOT NULL,
+    string_b TEXT NOT NULL,
+    similarity_score NUMERIC(3,2) NOT NULL,
+    algorithm VARCHAR(50) NOT NULL,           -- 'levenshtein', 'jaro_winkler', 'trigram'
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(string_a, string_b, algorithm)
+  );
+  CREATE INDEX idx_fuzzy_match_cache_lookup ON qar.fuzzy_match_cache(string_a, string_b);
+  ```
+
+module_structure: |
+  ```
+  internal/content/adult/reconciliation/
+  ├── module.go                    # fx module with reconciliation dependencies
+  ├── types.go                     # Domain types
+  │   ├── ReconciliationRule       # Priority rules per field
+  │   ├── MetadataSource           # Source tracking
+  │   ├── Conflict                 # Unresolved conflicts
+  │   ├── ManualOverride           # User corrections
+  │   └── FuzzyMatch               # String similarity
+  ├── repository.go                # Database operations (sqlc)
+  │   ├── GetRules()               # Load reconciliation rules
+  │   ├── TrackMetadataSource()    # Record metadata origin
+  │   ├── FindConflicts()          # Detect conflicts
+  │   ├── ResolveConflict()        # Mark conflict resolved
+  │   ├── SetManualOverride()      # User override
+  │   └── GetFuzzyMatch()          # Cached similarity
+  ├── service.go                   # Reconciliation business logic
+  │   ├── ReconcileScene()         # Merge scene metadata
+  │   ├── ReconcilePerformer()     # Merge performer metadata
+  │   ├── ReconcileStudio()        # Merge studio metadata
+  │   ├── DetectConflicts()        # Find conflicting values
+  │   ├── AutoResolve()            # Automatic conflict resolution
+  │   └── ApplyManualOverride()    # User correction
+  ├── fuzzy/
+  │   ├── levenshtein.go           # Edit distance algorithm
+  │   ├── jaro_winkler.go          # Jaro-Winkler similarity
+  │   ├── trigram.go               # Trigram matching (PostgreSQL)
+  │   └── matcher.go               # Unified fuzzy matcher
+  ├── handler.go                   # HTTP API handlers (ogen)
+  │   ├── GetConflicts()           # List pending conflicts
+  │   ├── ResolveConflict()        # User resolves conflict
+  │   ├── GetMetadataSources()     # Show source history
+  │   └── SetManualOverride()      # Override field value
+  ├── cache.go                     # L1 cache (otter)
+  │   ├── CacheRules()             # Cache reconciliation rules
+  │   └── CacheFuzzyMatches()      # Cache similarity scores
+  └── reconciliation_test.go       # Unit tests
+
+  migrations/
+  └── qar/
+      └── 014_reconciliation.sql   # Schema creation
+  ```
+
+file_structure: |
+  **Key Files**:
+  - `internal/content/adult/reconciliation/service.go` - Core reconciliation logic
+  - `internal/content/adult/reconciliation/fuzzy/*.go` - Fuzzy matching algorithms
+  - `internal/content/adult/reconciliation/repository.go` - Metadata source tracking
+  - `migrations/qar/014_reconciliation.sql` - Database schema
+
+key_interfaces: |
+  ```go
+  // ReconciliationService handles metadata conflict resolution
+  type ReconciliationService interface {
+    // ReconcileScene merges scene metadata from multiple sources
+    ReconcileScene(ctx context.Context, sceneID uuid.UUID, sources []MetadataSource) (*Scene, error)
+
+    // ReconcilePerformer merges performer metadata from multiple sources
+    ReconcilePerformer(ctx context.Context, performerID uuid.UUID, sources []MetadataSource) (*Performer, error)
+
+    // ReconcileStudio merges studio metadata from multiple sources
+    ReconcileStudio(ctx context.Context, studioID uuid.UUID, sources []MetadataSource) (*Studio, error)
+
+    // DetectConflicts finds fields with conflicting values
+    DetectConflicts(ctx context.Context, contentType string, contentID uuid.UUID) ([]Conflict, error)
+
+    // AutoResolve automatically resolves conflicts based on rules
+    AutoResolve(ctx context.Context, conflictID uuid.UUID) error
+
+    // ApplyManualOverride sets user-corrected value for a field
+    ApplyManualOverride(ctx context.Context, override ManualOverride) error
+
+    // GetMetadataHistory shows all source values for a field
+    GetMetadataHistory(ctx context.Context, contentType string, contentID uuid.UUID, field string) ([]MetadataSource, error)
+  }
+
+  // ReconciliationRepository handles database operations
+  type ReconciliationRepository interface {
+    // Rules
+    GetRules(ctx context.Context, contentType string) ([]ReconciliationRule, error)
+    CreateRule(ctx context.Context, rule ReconciliationRule) error
+    UpdateRule(ctx context.Context, rule ReconciliationRule) error
+
+    // Source tracking
+    TrackMetadataSource(ctx context.Context, source MetadataSource) error
+    GetMetadataSources(ctx context.Context, contentType string, contentID uuid.UUID, field string) ([]MetadataSource, error)
+    SetActiveSource(ctx context.Context, sourceID uuid.UUID) error
+
+    // Conflicts
+    FindConflicts(ctx context.Context, contentType string, contentID uuid.UUID) ([]Conflict, error)
+    CreateConflict(ctx context.Context, conflict Conflict) error
+    ResolveConflict(ctx context.Context, conflictID uuid.UUID, resolution ConflictResolution) error
+
+    // Manual overrides
+    GetManualOverride(ctx context.Context, contentType string, contentID uuid.UUID, field string) (*ManualOverride, error)
+    SetManualOverride(ctx context.Context, override ManualOverride) error
+    DeleteManualOverride(ctx context.Context, overrideID uuid.UUID) error
+
+    // Fuzzy matching cache
+    GetFuzzyMatch(ctx context.Context, a, b string, algorithm string) (*float64, error)
+    CacheFuzzyMatch(ctx context.Context, a, b string, algorithm string, score float64) error
+  }
+
+  // FuzzyMatcher performs string similarity matching
+  type FuzzyMatcher interface {
+    // Levenshtein calculates edit distance (0.0-1.0)
+    Levenshtein(a, b string) float64
+
+    // JaroWinkler calculates Jaro-Winkler similarity (0.0-1.0)
+    JaroWinkler(a, b string) float64
+
+    // Trigram calculates trigram similarity using PostgreSQL pg_trgm (0.0-1.0)
+    Trigram(ctx context.Context, a, b string) (float64, error)
+
+    // BestMatch finds the best matching string from candidates
+    BestMatch(ctx context.Context, target string, candidates []string, threshold float64) (*string, float64, error)
+  }
+
+  // Types
+  type ReconciliationRule struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    ContentType     string          `db:"content_type" json:"content_type"`     // 'scene', 'performer', 'studio'
+    FieldName       string          `db:"field_name" json:"field_name"`
+    SourcePriority  []string        `db:"source_priority" json:"source_priority"` // ['stashdb', 'whisparr', 'stash', 'manual']
+    FuzzyThreshold  float64         `db:"fuzzy_threshold" json:"fuzzy_threshold"`
+    AutoMerge       bool            `db:"auto_merge" json:"auto_merge"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt       time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type MetadataSource struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    ContentType     string          `db:"content_type" json:"content_type"`
+    ContentID       uuid.UUID       `db:"content_id" json:"content_id"`
+    FieldName       string          `db:"field_name" json:"field_name"`
+    SourceName      string          `db:"source_name" json:"source_name"`       // 'stashdb', 'whisparr', 'stash', 'manual'
+    SourceID        *string         `db:"source_id" json:"source_id,omitempty"`
+    FieldValue      json.RawMessage `db:"field_value" json:"field_value"`
+    ConfidenceScore *float64        `db:"confidence_score" json:"confidence_score,omitempty"`
+    IsActive        bool            `db:"is_active" json:"is_active"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt       time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type Conflict struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    ContentType     string          `db:"content_type" json:"content_type"`
+    ContentID       uuid.UUID       `db:"content_id" json:"content_id"`
+    FieldName       string          `db:"field_name" json:"field_name"`
+    ConflictValues  json.RawMessage `db:"conflict_values" json:"conflict_values"` // [{source, value, confidence}]
+    ResolutionStatus string         `db:"resolution_status" json:"resolution_status"`
+    ResolvedValue   *json.RawMessage `db:"resolved_value" json:"resolved_value,omitempty"`
+    ResolvedBy      *uuid.UUID      `db:"resolved_by" json:"resolved_by,omitempty"`
+    ResolvedAt      *time.Time      `db:"resolved_at" json:"resolved_at,omitempty"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+  }
+
+  type ManualOverride struct {
+    ID            uuid.UUID       `db:"id" json:"id"`
+    ContentType   string          `db:"content_type" json:"content_type"`
+    ContentID     uuid.UUID       `db:"content_id" json:"content_id"`
+    FieldName     string          `db:"field_name" json:"field_name"`
+    OverrideValue json.RawMessage `db:"override_value" json:"override_value"`
+    Reason        *string         `db:"reason" json:"reason,omitempty"`
+    CreatedBy     uuid.UUID       `db:"created_by" json:"created_by"`
+    CreatedAt     time.Time       `db:"created_at" json:"created_at"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid` - UUID handling
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/maypok86/otter` - L1 in-memory cache
+  - `github.com/riverqueue/river` - Background job queue
+  - `go.uber.org/fx` - Dependency injection
+  - `go.uber.org/zap` - Structured logging
+  - `github.com/agnivade/levenshtein` - Edit distance algorithm
+  - `github.com/xrash/smetrics` - Jaro-Winkler similarity
+
+  **PostgreSQL Extensions**:
+  - `pg_trgm` - Trigram similarity matching
+
+  **External APIs**:
+  - None (internal reconciliation logic)
+
+env_vars: |
+  ```bash
+  # Reconciliation settings
+  RECONCILIATION_DEFAULT_FUZZY_THRESHOLD=0.85  # Default similarity threshold
+  RECONCILIATION_AUTO_MERGE=false               # Enable automatic merging
+  RECONCILIATION_CACHE_SIZE=10000               # Fuzzy match cache entries
+  RECONCILIATION_CACHE_TTL=24h                  # Cache expiration
+  ```
+
+config_keys: |
+  ```yaml
+  reconciliation:
+    default_fuzzy_threshold: 0.85        # Default similarity threshold (0.0-1.0)
+    auto_merge: false                    # Enable automatic conflict resolution
+    cache:
+      size: 10000                        # Fuzzy match cache entries
+      ttl: 24h                           # Cache expiration
+
+    # Default source priority (highest to lowest)
+    source_priority:
+      scene:
+        title: ["manual", "stashdb", "whisparr", "stash"]
+        performers: ["manual", "stashdb", "stash", "whisparr"]
+        studio: ["manual", "stashdb", "whisparr", "stash"]
+        release_date: ["whisparr", "stashdb", "stash", "manual"]
+        duration: ["stash", "whisparr", "manual"]
+      performer:
+        name: ["manual", "stashdb", "whisparr", "stash"]
+        birthdate: ["stashdb", "manual", "stash"]
+        aliases: ["stashdb", "stash", "manual"]
+      studio:
+        name: ["manual", "stashdb", "whisparr", "stash"]
+        url: ["stashdb", "manual", "stash"]
+
+    # Fuzzy matching algorithms
+    algorithms:
+      - levenshtein      # Edit distance
+      - jaro_winkler     # Jaro-Winkler similarity
+      - trigram          # PostgreSQL pg_trgm
+  ```
+
+component_interaction: |
+  **Reconciliation Flow**:
+  1. Metadata import from source (StashDB, Whisparr, Stash)
+  2. Service calls `TrackMetadataSource()` to record source data
+  3. Service calls `DetectConflicts()` to find conflicting values
+  4. If conflict found:
+     a. Check reconciliation rules for field
+     b. Apply source priority from rules
+     c. If values similar (fuzzy match > threshold), auto-merge
+     d. If values different, create conflict for user resolution
+  5. User resolves conflict via API or auto-resolve applies
+  6. Manual override can force specific value regardless of sources
+
+  **Fuzzy Matching Flow**:
+  1. Service compares two strings (e.g., "John Doe" vs "Jon Doe")
+  2. Check fuzzy_match_cache for cached result
+  3. If not cached:
+     a. Run Levenshtein, Jaro-Winkler, Trigram algorithms
+     b. Use highest score
+     c. Cache result
+  4. If score >= threshold, consider match
+  5. Use for auto-merging similar values
+
+  **Manual Override Flow**:
+  1. User notices incorrect metadata
+  2. User sets manual override via API
+  3. Override stored in manual_overrides table
+  4. Manual overrides always win (highest priority)
+  5. Original source data preserved in metadata_sources
+  6. User can remove override to revert to auto-reconciliation
+
+api_endpoints: |
+  **Endpoints**:
+  ```
+  GET    /api/v1/legacy/reconciliation/conflicts                 # List pending conflicts
+  GET    /api/v1/legacy/reconciliation/conflicts/:id             # Get conflict details
+  POST   /api/v1/legacy/reconciliation/conflicts/:id/resolve     # Resolve conflict
+  POST   /api/v1/legacy/reconciliation/conflicts/:id/ignore      # Ignore conflict
+
+  GET    /api/v1/legacy/reconciliation/sources/:type/:id         # Get metadata sources for content
+  GET    /api/v1/legacy/reconciliation/sources/:type/:id/:field  # Get field history
+
+  GET    /api/v1/legacy/reconciliation/overrides/:type/:id       # List overrides for content
+  POST   /api/v1/legacy/reconciliation/overrides                 # Create manual override
+  DELETE /api/v1/legacy/reconciliation/overrides/:id             # Remove override
+
+  GET    /api/v1/legacy/reconciliation/rules                     # List reconciliation rules
+  POST   /api/v1/legacy/reconciliation/rules                     # Create rule
+  PUT    /api/v1/legacy/reconciliation/rules/:id                 # Update rule
+  ```
+
+  **Request/Response Examples**:
+
+  **List Pending Conflicts**:
+  ```http
+  GET /api/v1/legacy/reconciliation/conflicts?status=pending&limit=20
+
+  Response 200 OK:
+  {
+    "conflicts": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "content_type": "scene",
+        "content_id": "660e8400-e29b-41d4-a716-446655440001",
+        "field_name": "title",
+        "conflict_values": [
+          {
+            "source": "stashdb",
+            "value": "Amazing Scene 1",
+            "confidence": 0.95
+          },
+          {
+            "source": "whisparr",
+            "value": "Amazing Scene One",
+            "confidence": 0.88
+          }
+        ],
+        "resolution_status": "pending",
+        "created_at": "2026-01-31T10:00:00Z"
+      }
+    ],
+    "total": 1,
+    "limit": 20,
+    "offset": 0
+  }
+  ```
+
+  **Resolve Conflict**:
+  ```http
+  POST /api/v1/legacy/reconciliation/conflicts/550e8400-e29b-41d4-a716-446655440000/resolve
+  {
+    "resolved_value": "Amazing Scene 1",
+    "source": "stashdb"
+  }
+
+  Response 200 OK:
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "resolution_status": "resolved",
+    "resolved_value": "Amazing Scene 1",
+    "resolved_by": "770e8400-e29b-41d4-a716-446655440002",
+    "resolved_at": "2026-01-31T10:30:00Z"
+  }
+  ```
+
+  **Create Manual Override**:
+  ```http
+  POST /api/v1/legacy/reconciliation/overrides
+  {
+    "content_type": "performer",
+    "content_id": "880e8400-e29b-41d4-a716-446655440003",
+    "field_name": "birthdate",
+    "override_value": "1990-05-15",
+    "reason": "Corrected from official source"
+  }
+
+  Response 201 Created:
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440004",
+    "content_type": "performer",
+    "content_id": "880e8400-e29b-41d4-a716-446655440003",
+    "field_name": "birthdate",
+    "override_value": "1990-05-15",
+    "reason": "Corrected from official source",
+    "created_by": "770e8400-e29b-41d4-a716-446655440002",
+    "created_at": "2026-01-31T11:00:00Z"
+  }
+  ```
+
+  **Get Field History**:
+  ```http
+  GET /api/v1/legacy/reconciliation/sources/scene/660e8400-e29b-41d4-a716-446655440001/title
+
+  Response 200 OK:
+  {
+    "field_name": "title",
+    "sources": [
+      {
+        "id": "aa0e8400-e29b-41d4-a716-446655440005",
+        "source_name": "stashdb",
+        "source_id": "stashdb_12345",
+        "field_value": "Amazing Scene 1",
+        "confidence_score": 0.95,
+        "is_active": true,
+        "created_at": "2026-01-31T09:00:00Z"
+      },
+      {
+        "id": "bb0e8400-e29b-41d4-a716-446655440006",
+        "source_name": "whisparr",
+        "source_id": "whisparr_67890",
+        "field_value": "Amazing Scene One",
+        "confidence_score": 0.88,
+        "is_active": false,
+        "created_at": "2026-01-31T09:30:00Z"
+      }
+    ]
+  }
+  ```
+
+unit_tests: |
+  ```go
+  // internal/content/adult/reconciliation/reconciliation_test.go
+
+  func TestReconciliationService_ReconcileScene(t *testing.T) {
+    tests := []struct {
+      name     string
+      sources  []MetadataSource
+      rules    []ReconciliationRule
+      want     string // Expected title
+      wantErr  bool
+    }{
+      {
+        name: "exact match from multiple sources",
+        sources: []MetadataSource{
+          {SourceName: "stashdb", FieldValue: json.RawMessage(`"Scene Title"`)},
+          {SourceName: "whisparr", FieldValue: json.RawMessage(`"Scene Title"`)},
+        },
+        want: "Scene Title",
+      },
+      {
+        name: "fuzzy match auto-merge",
+        sources: []MetadataSource{
+          {SourceName: "stashdb", FieldValue: json.RawMessage(`"Scene Title"`)},
+          {SourceName: "whisparr", FieldValue: json.RawMessage(`"Scene Titel"`)}, // Typo
+        },
+        want: "Scene Title", // StashDB has priority
+      },
+      {
+        name: "manual override wins",
+        sources: []MetadataSource{
+          {SourceName: "manual", FieldValue: json.RawMessage(`"Correct Title"`)},
+          {SourceName: "stashdb", FieldValue: json.RawMessage(`"Wrong Title"`)},
+        },
+        want: "Correct Title",
+      },
+    }
+
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestFuzzyMatcher_Levenshtein(t *testing.T) {
+    matcher := NewFuzzyMatcher()
+    tests := []struct {
+      a, b     string
+      minScore float64
+    }{
+      {"hello", "hello", 1.0},
+      {"hello", "helo", 0.8},
+      {"John Doe", "Jon Doe", 0.9},
+      {"completely", "different", 0.3},
+    }
+
+    for _, tt := range tests {
+      score := matcher.Levenshtein(tt.a, tt.b)
+      assert.GreaterOrEqual(t, score, tt.minScore)
+    }
+  }
+  ```
+
+  **Coverage Target**: ≥85%
+
+  **Key Test Areas**:
+  - Fuzzy matching algorithms (Levenshtein, Jaro-Winkler, Trigram)
+  - Source priority application
+  - Auto-merge logic
+  - Manual override enforcement
+  - Conflict detection
+  - Cache hit/miss scenarios
+
+integration_tests: |
+  ```go
+  // tests/integration/adult/reconciliation_test.go
+
+  func TestReconciliation_EndToEnd(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    // Setup
+    srv := setupReconciliationService(t, db)
+    sceneID := uuid.New()
+
+    // Import from StashDB
+    err := srv.TrackMetadataSource(ctx, MetadataSource{
+      ContentType: "scene",
+      ContentID: sceneID,
+      FieldName: "title",
+      SourceName: "stashdb",
+      FieldValue: json.RawMessage(`"Original Title"`),
+      ConfidenceScore: ptr(0.95),
+    })
+    require.NoError(t, err)
+
+    // Import from Whisparr (conflicting)
+    err = srv.TrackMetadataSource(ctx, MetadataSource{
+      ContentType: "scene",
+      ContentID: sceneID,
+      FieldName: "title",
+      SourceName: "whisparr",
+      FieldValue: json.RawMessage(`"Different Title"`),
+      ConfidenceScore: ptr(0.88),
+    })
+    require.NoError(t, err)
+
+    // Detect conflict
+    conflicts, err := srv.DetectConflicts(ctx, "scene", sceneID)
+    require.NoError(t, err)
+    assert.Len(t, conflicts, 1)
+    assert.Equal(t, "title", conflicts[0].FieldName)
+
+    // Resolve conflict
+    err = srv.ResolveConflict(ctx, conflicts[0].ID, "Original Title", "stashdb")
+    require.NoError(t, err)
+
+    // Verify resolution
+    sources, err := srv.GetMetadataSources(ctx, "scene", sceneID, "title")
+    require.NoError(t, err)
+    for _, src := range sources {
+      if src.SourceName == "stashdb" {
+        assert.True(t, src.IsActive)
+      } else {
+        assert.False(t, src.IsActive)
+      }
+    }
+  }
+
+  func TestReconciliation_FuzzyMatching(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    // Enable pg_trgm extension
+    _, err := db.Exec(ctx, "CREATE EXTENSION IF NOT EXISTS pg_trgm")
+    require.NoError(t, err)
+
+    matcher := NewFuzzyMatcher(db)
+
+    // Test trigram similarity
+    score, err := matcher.Trigram(ctx, "John Doe", "Jon Doe")
+    require.NoError(t, err)
+    assert.Greater(t, score, 0.85)
+
+    // Verify cache
+    cached, err := matcher.GetCachedScore(ctx, "John Doe", "Jon Doe", "trigram")
+    require.NoError(t, err)
+    assert.Equal(t, score, cached)
+  }
+  ```
+
+  **Coverage Target**: ≥80%
+
+  **Integration Test Scenarios**:
+  - Full reconciliation workflow with PostgreSQL
+  - Fuzzy matching with pg_trgm extension
+  - Conflict creation and resolution
+  - Manual override persistence
+  - Cache performance with otter
+  - Background job processing with River

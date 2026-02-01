@@ -79,13 +79,175 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/internal_wiki_system/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Wiki pages
+  CREATE TABLE wiki_pages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Page identification
+    slug VARCHAR(255) NOT NULL UNIQUE,             -- URL-friendly identifier
+    title TEXT NOT NULL,
+
+    -- Content (Markdown)
+    content TEXT NOT NULL,
+    content_html TEXT,                             -- Rendered HTML (cached)
+
+    -- Organization
+    category VARCHAR(100),                         -- 'users', 'moderators', 'admins', 'developers'
+    tags TEXT[] DEFAULT '{}',
+    parent_page_id UUID REFERENCES wiki_pages(id) ON DELETE SET NULL,
+
+    -- Access control
+    visibility VARCHAR(20) DEFAULT 'public',       -- 'public', 'authenticated', 'admin'
+
+    -- Authorship
+    created_by_user_id UUID REFERENCES users(id),
+    last_edited_by_user_id UUID REFERENCES users(id),
+
+    -- Status
+    is_published BOOLEAN DEFAULT true,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_wiki_pages_slug ON wiki_pages(slug);
+  CREATE INDEX idx_wiki_pages_category ON wiki_pages(category);
+  CREATE INDEX idx_wiki_pages_parent ON wiki_pages(parent_page_id);
+  CREATE INDEX idx_wiki_pages_visibility ON wiki_pages(visibility);
+
+  -- Wiki page versions (revision history)
+  CREATE TABLE wiki_page_versions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    page_id UUID NOT NULL REFERENCES wiki_pages(id) ON DELETE CASCADE,
+
+    version_number INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+
+    -- Change tracking
+    edited_by_user_id UUID REFERENCES users(id),
+    change_summary TEXT,                           -- Description of changes
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_wiki_page_versions_page ON wiki_page_versions(page_id, version_number DESC);
+  CREATE UNIQUE INDEX idx_wiki_page_versions_unique ON wiki_page_versions(page_id, version_number);
+
+  -- Wiki attachments
+  CREATE TABLE wiki_attachments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    page_id UUID NOT NULL REFERENCES wiki_pages(id) ON DELETE CASCADE,
+
+    filename TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_size_bytes BIGINT NOT NULL,
+    mime_type VARCHAR(100),
+
+    uploaded_by_user_id UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_wiki_attachments_page ON wiki_attachments(page_id);
+  ```
+
+module_structure: |
+  ```
+  internal/wiki/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Wiki logic
+  ├── markdown.go                  # Markdown rendering
+  ├── handler.go                   # HTTP API handlers
+  └── wiki_test.go
+
+  web/src/routes/(app)/wiki/
+  ├── +page.svelte                 # Wiki home
+  ├── +page.ts
+  ├── [slug]/
+  │   ├── +page.svelte             # View page
+  │   ├── +page.ts
+  │   └── edit/
+  │       └── +page.svelte         # Edit page
+  └── components/
+      ├── MarkdownEditor.svelte    # MD editor with preview
+      ├── PageTree.svelte          # Hierarchical page navigation
+      └── VersionHistory.svelte    # Revision history
+  ```
+
+key_interfaces: |
+  ```go
+  type WikiService interface {
+    CreatePage(ctx context.Context, page CreatePageRequest) (*WikiPage, error)
+    GetPage(ctx context.Context, slug string) (*WikiPage, error)
+    UpdatePage(ctx context.Context, slug string, update PageUpdate) (*WikiPage, error)
+    DeletePage(ctx context.Context, slug string) error
+
+    ListPages(ctx context.Context, filters PageFilters) ([]WikiPage, error)
+    SearchPages(ctx context.Context, query string) ([]WikiPage, error)
+
+    GetVersions(ctx context.Context, pageID uuid.UUID) ([]WikiPageVersion, error)
+    RestoreVersion(ctx context.Context, pageID uuid.UUID, version int) error
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/gomarkdown/markdown` - Markdown rendering
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  WIKI_ENABLED=true
+  ```
+
+config_keys: |
+  ```yaml
+  wiki:
+    enabled: true
+    allow_public_editing: false
+    require_review: false
+  ```
+
+component_interaction: |
+  **Page Creation**:
+  1. User creates new wiki page with Markdown content
+  2. Service renders Markdown to HTML
+  3. Store in wiki_pages with content and content_html
+  4. Create version 1 in wiki_page_versions
+  5. Return page
+
+  **Page Edit**:
+  1. User edits page content
+  2. Service renders new Markdown
+  3. Update wiki_pages
+  4. Insert new version in wiki_page_versions
+  5. Increment version_number
+
+api_endpoints: |
+  ```
+  POST   /api/v1/wiki/pages           # Create page
+  GET    /api/v1/wiki/pages/:slug     # Get page
+  PUT    /api/v1/wiki/pages/:slug     # Update page
+  DELETE /api/v1/wiki/pages/:slug     # Delete page
+  GET    /api/v1/wiki/pages/:slug/versions  # Get versions
+  POST   /api/v1/wiki/pages/:slug/restore/:version  # Restore version
+  ```
+
+unit_tests: |
+  ```go
+  func TestWikiService_CreatePage(t *testing.T) {
+    // Test page creation with Markdown rendering
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestWiki_EndToEnd(t *testing.T) {
+    // Test create, edit, version restore workflow
+  }
+  ```

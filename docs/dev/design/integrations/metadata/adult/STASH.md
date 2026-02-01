@@ -30,12 +30,12 @@ sources:
     url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: ADULT_CONTENT_SYSTEM (QAR module)
+    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
+  - title: STASHDB (community metadata)
+    path: ./STASHDB.md
+  - title: WHISPARR (PRIMARY for QAR)
+    path: ../../servarr/WHISPARR.md
 ---
 
 ## Table of Contents
@@ -72,7 +72,7 @@ design_refs:
 
 > Integration with Stash
 
-> Self-hosted adult media organizer with GraphQL API
+> Migration/sync tool for self-hosted Stash libraries
 **Authentication**: api_key
 
 ---
@@ -115,8 +115,6 @@ internal/integration/stash/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -172,9 +170,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
+- [STASHDB (community metadata)](./STASHDB.md)
+- [WHISPARR (PRIMARY for QAR)](../../servarr/WHISPARR.md)
 
 ### External Sources
 - [Khan/genqlient](../../../../sources/tooling/genqlient.md) - Auto-resolved from genqlient

@@ -67,6 +67,7 @@ design_refs:
 > Integration with Whisparr v3
 
 > Adult content management automation (eros branch)
+**API Base URL**: `http://localhost:6969/api/v3`
 **Authentication**: api_key
 
 ---
@@ -109,8 +110,6 @@ internal/integration/whisparr_v3/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 

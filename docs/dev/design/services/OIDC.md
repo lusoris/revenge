@@ -50,6 +50,9 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+- [OAuth flow](#oauth-flow)
+- [Provider management (admin)](#provider-management-admin)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -110,7 +113,13 @@ internal/service/oidc/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/coreos/go-oidc/v3/oidc` - OIDC client
+- `golang.org/x/oauth2` - OAuth2 flow
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -128,11 +137,33 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type OIDCService interface {
+  // Provider management
+  AddProvider(ctx context.Context, provider OIDCProvider) error
+  GetProvider(ctx context.Context, name string) (*OIDCProvider, error)
+  ListProviders(ctx context.Context) ([]OIDCProvider, error)
+
+  // OAuth flow
+  GetAuthURL(ctx context.Context, providerName, redirectURL string) (string, error)
+  HandleCallback(ctx context.Context, providerName, code string) (*User, error)
+
+  // User linking
+  LinkUser(ctx context.Context, userID uuid.UUID, providerName string) error
+  UnlinkUser(ctx context.Context, userID uuid.UUID, providerName string) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/coreos/go-oidc/v3/oidc` - OIDC client
+- `golang.org/x/oauth2` - OAuth2 flow
+- `go.uber.org/fx`
+
 
 
 
@@ -141,12 +172,31 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+OIDC_CALLBACK_URL=https://revenge.example.com/api/v1/oidc/callback
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+oidc:
+  callback_url: https://revenge.example.com/api/v1/oidc/callback
+```
 
+
+
+## API Endpoints
+```
+# OAuth flow
+GET  /api/v1/oidc/auth/:provider         # Initiate OAuth flow
+GET  /api/v1/oidc/callback/:provider     # OAuth callback
+
+# Provider management (admin)
+POST /api/v1/oidc/providers              # Add provider
+GET  /api/v1/oidc/providers              # List providers
+PUT  /api/v1/oidc/providers/:id          # Update provider
+```
 
 
 

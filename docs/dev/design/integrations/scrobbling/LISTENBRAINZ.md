@@ -31,6 +31,7 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [No global config needed - users provide their own tokens](#no-global-config-needed-users-provide-their-own-tokens)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -53,7 +54,7 @@ design_refs:
 
 > Open-source music listening history tracking (MusicBrainz project)
 **API Base URL**: `https://api.listenbrainz.org/1`
-**Authentication**: oauth
+**Authentication**: token
 
 ---
 
@@ -95,8 +96,6 @@ internal/integration/listenbrainz/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -108,11 +107,54 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// ListenBrainz integration service
+type ListenBrainzService interface {
+  // Connection
+  ConnectUser(ctx context.Context, userID uuid.UUID, userToken string) (*LBConnection, error)
+  ValidateToken(ctx context.Context, userToken string) (string, error)  // Returns username
+
+  // Submission
+  SubmitListen(ctx context.Context, userID uuid.UUID, trackID uuid.UUID, listenedAt time.Time) error
+  SubmitPlayingNow(ctx context.Context, userID uuid.UUID, trackID uuid.UUID) error
+
+  // Import
+  ImportHistory(ctx context.Context, connectionID uuid.UUID, minTimestamp *time.Time) error
+  GetUserStats(ctx context.Context, connectionID uuid.UUID) (*LBStats, error)
+}
+
+// Listen payload for submission
+type ListenPayload struct {
+  ListenType string   `json:"listen_type"`  // "single", "playing_now", "import"
+  Payload    []Listen `json:"payload"`
+}
+
+type Listen struct {
+  ListenedAt    int64         `json:"listened_at,omitempty"`
+  TrackMetadata TrackMetadata `json:"track_metadata"`
+}
+
+type TrackMetadata struct {
+  ArtistName      string                 `json:"artist_name"`
+  TrackName       string                 `json:"track_name"`
+  ReleaseName     string                 `json:"release_name,omitempty"`
+  AdditionalInfo  map[string]interface{} `json:"additional_info,omitempty"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support (for MBIDs)
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- ListenBrainz account (free, open-source)
+
 
 
 
@@ -121,11 +163,23 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# No global config needed - users provide their own tokens
+LISTENBRAINZ_AUTO_SUBMIT=true
+LISTENBRAINZ_IMPORT_ON_CONNECT=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+integrations:
+  listenbrainz:
+    auto_submit: true              # Auto-submit listens as user plays tracks
+    import_on_connect: true        # Import existing history when user connects
+    max_import_age_days: 365       # Only import listens from last year
+```
+
 
 
 

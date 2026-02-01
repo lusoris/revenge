@@ -75,13 +75,284 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/revenge___internationalization_(i18n)/\n\
-  \  ├── module.go              # fx module definition\n  ├── repository.go      \
-  \    # Database operations (sqlc)\n  ├── service.go             # Business logic\n\
-  \  ├── handler.go             # HTTP handlers (ogen)\n  ├── types.go           \
-  \    # Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- User language preferences
+  CREATE TABLE user_locales (
+    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Language preferences
+    ui_locale VARCHAR(10) NOT NULL DEFAULT 'en-US',           -- 'en-US', 'de-DE', 'fr-FR', etc.
+    metadata_locale VARCHAR(10) NOT NULL DEFAULT 'en-US',     -- Preferred language for metadata
+    subtitle_locale VARCHAR(10),                              -- Default subtitle language
+    audio_locale VARCHAR(10),                                 -- Default audio language
+
+    -- Fallback languages (array for priority order)
+    fallback_locales VARCHAR(10)[] DEFAULT '{en-US}',
+
+    -- Regional settings
+    date_format VARCHAR(20) DEFAULT 'YYYY-MM-DD',             -- Date format preference
+    time_format VARCHAR(10) DEFAULT '24h',                    -- '12h' or '24h'
+    timezone VARCHAR(50) DEFAULT 'UTC',                       -- IANA timezone
+
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_user_locales_ui ON user_locales(ui_locale);
+
+  -- Translation strings for UI
+  CREATE TABLE translations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    locale VARCHAR(10) NOT NULL,                              -- 'en-US', 'de-DE', etc.
+    namespace VARCHAR(100) NOT NULL,                          -- 'common', 'movies', 'settings'
+    key TEXT NOT NULL,                                        -- 'button.save', 'error.not_found'
+    value TEXT NOT NULL,                                      -- Translated string
+
+    -- Metadata
+    context TEXT,                                             -- Context for translators
+    contributor TEXT,                                         -- Who contributed this translation
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_translations_unique ON translations(locale, namespace, key);
+  CREATE INDEX idx_translations_locale ON translations(locale);
+  CREATE INDEX idx_translations_namespace ON translations(namespace);
+
+  -- Localized metadata (titles, descriptions, etc.)
+  CREATE TABLE metadata_translations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Polymorphic reference to content
+    content_type VARCHAR(50) NOT NULL,                        -- 'movie', 'tvshow', 'episode', 'album'
+    content_id UUID NOT NULL,
+
+    -- Translation
+    locale VARCHAR(10) NOT NULL,
+    title TEXT,
+    overview TEXT,
+    tagline TEXT,
+
+    -- Source tracking
+    source VARCHAR(50),                                       -- 'tmdb', 'tvdb', 'musicbrainz', 'manual'
+    source_id VARCHAR(255),
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_metadata_translations_content ON metadata_translations(content_type, content_id, locale);
+  CREATE INDEX idx_metadata_translations_locale ON metadata_translations(locale);
+  CREATE UNIQUE INDEX idx_metadata_translations_unique ON metadata_translations(content_type, content_id, locale);
+  ```
+module_structure: |
+  ```
+  internal/i18n/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Locale and translation logic
+  ├── loader.go                    # Load translations from JSON files
+  ├── middleware.go                # HTTP middleware for locale detection
+  ├── handler.go                   # HTTP API handlers
+  └── i18n_test.go
+
+  web/src/lib/i18n/
+  ├── index.ts                     # i18n initialization
+  ├── locales/
+  │   ├── en-US/
+  │   │   ├── common.json
+  │   │   ├── movies.json
+  │   │   ├── settings.json
+  │   │   └── errors.json
+  │   ├── de-DE/
+  │   │   ├── common.json
+  │   │   └── ...
+  │   └── fr-FR/
+  │       └── ...
+  ├── stores.ts                    # Svelte stores for locale state
+  └── formatters.ts                # Date/time/number formatters
+
+  locales/                         # Editable translation files
+  ├── en-US.json
+  ├── de-DE.json
+  └── fr-FR.json
+  ```
+key_interfaces: |
+  ```go
+  type I18nService interface {
+    GetUserLocale(ctx context.Context, userID uuid.UUID) (*UserLocale, error)
+    UpdateUserLocale(ctx context.Context, userID uuid.UUID, locale UserLocaleUpdate) error
+
+    GetTranslations(ctx context.Context, locale, namespace string) (map[string]string, error)
+    GetTranslation(ctx context.Context, locale, namespace, key string) (string, error)
+    AddTranslation(ctx context.Context, locale, namespace, key, value string) error
+
+    GetMetadataTranslation(ctx context.Context, contentType string, contentID uuid.UUID, locale string) (*MetadataTranslation, error)
+    AddMetadataTranslation(ctx context.Context, trans MetadataTranslation) error
+  }
+
+  type UserLocale struct {
+    UserID          uuid.UUID `db:"user_id" json:"user_id"`
+    UILocale        string    `db:"ui_locale" json:"ui_locale"`
+    MetadataLocale  string    `db:"metadata_locale" json:"metadata_locale"`
+    SubtitleLocale  *string   `db:"subtitle_locale" json:"subtitle_locale,omitempty"`
+    AudioLocale     *string   `db:"audio_locale" json:"audio_locale,omitempty"`
+    FallbackLocales []string  `db:"fallback_locales" json:"fallback_locales"`
+    DateFormat      string    `db:"date_format" json:"date_format"`
+    TimeFormat      string    `db:"time_format" json:"time_format"`
+    Timezone        string    `db:"timezone" json:"timezone"`
+  }
+
+  type Translation struct {
+    ID          uuid.UUID `db:"id" json:"id"`
+    Locale      string    `db:"locale" json:"locale"`
+    Namespace   string    `db:"namespace" json:"namespace"`
+    Key         string    `db:"key" json:"key"`
+    Value       string    `db:"value" json:"value"`
+    Context     string    `db:"context" json:"context,omitempty"`
+    Contributor string    `db:"contributor" json:"contributor,omitempty"`
+  }
+
+  type MetadataTranslation struct {
+    ContentType string    `db:"content_type" json:"content_type"`
+    ContentID   uuid.UUID `db:"content_id" json:"content_id"`
+    Locale      string    `db:"locale" json:"locale"`
+    Title       *string   `db:"title" json:"title,omitempty"`
+    Overview    *string   `db:"overview" json:"overview,omitempty"`
+    Tagline     *string   `db:"tagline" json:"tagline,omitempty"`
+    Source      string    `db:"source" json:"source"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `golang.org/x/text/language` - Language tag parsing
+  - `golang.org/x/text/message` - Message formatting
+  - `go.uber.org/fx`
+
+  **Frontend**:
+  - `svelte-i18n` - Svelte i18n library
+  - `@formatjs/intl` - Internationalization formatters
+
+env_vars: |
+  ```bash
+  DEFAULT_LOCALE=en-US
+  SUPPORTED_LOCALES=en-US,de-DE,fr-FR,es-ES,it-IT,ja-JP,zh-CN
+  ```
+
+config_keys: |
+  ```yaml
+  i18n:
+    default_locale: en-US
+    supported_locales:
+      - en-US
+      - de-DE
+      - fr-FR
+      - es-ES
+      - it-IT
+      - ja-JP
+      - zh-CN
+    fallback_locale: en-US
+    metadata_fetch_locales: true   # Fetch metadata in user's locale
+  ```
+
+component_interaction: |
+  **Locale Detection Flow**:
+  1. HTTP request arrives with Accept-Language header
+  2. Middleware extracts preferred locale
+  3. If user authenticated, load user_locales preference
+  4. Set locale in request context
+  5. Service layer uses context locale for queries
+
+  **UI Translation Flow**:
+  1. Frontend app loads with browser locale
+  2. Fetch translations for locale via GET /api/v1/i18n/translations/{locale}
+  3. Cache translations in memory
+  4. Render UI with translated strings
+  5. User can change locale in settings
+  6. Reload translations and re-render
+
+  **Metadata Translation Flow**:
+  1. User requests movie/show with locale preference
+  2. Service queries metadata_translations for content + locale
+  3. If translation exists, return localized title/overview
+  4. If not, fall back to default locale
+  5. Background job fetches missing translations from external APIs
+
+  **Translation Contribution**:
+  1. Community contributors submit translations via Weblate/Crowdin
+  2. Translations exported to JSON files
+  3. JSON files loaded into database via migration
+  4. Cache invalidated for affected locales
+
+api_endpoints: |
+  ```
+  GET  /api/v1/i18n/locales                    # List supported locales
+  GET  /api/v1/i18n/translations/{locale}      # Get all translations for locale
+  PUT  /api/v1/users/{id}/locale               # Update user locale preferences
+  GET  /api/v1/i18n/metadata/{type}/{id}/{locale}  # Get localized metadata
+  ```
+
+unit_tests: |
+  ```go
+  func TestI18nService_GetUserLocale(t *testing.T) {
+    // Test loading user locale preferences
+    // Test fallback to default locale
+  }
+
+  func TestI18nService_GetTranslation(t *testing.T) {
+    tests := []struct {
+      name      string
+      locale    string
+      namespace string
+      key       string
+      want      string
+      wantErr   bool
+    }{
+      {
+        name:      "get existing translation",
+        locale:    "en-US",
+        namespace: "common",
+        key:       "button.save",
+        want:      "Save",
+        wantErr:   false,
+      },
+      {
+        name:      "fallback to default locale",
+        locale:    "de-DE",
+        namespace: "common",
+        key:       "missing.key",
+        want:      "English fallback",
+        wantErr:   false,
+      },
+    }
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestLocaleMiddleware(t *testing.T) {
+    // Test Accept-Language header parsing
+    // Test user preference override
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestI18n_EndToEnd(t *testing.T) {
+    // 1. User sets locale to de-DE
+    // 2. Request movie metadata
+    // 3. Verify German title/overview returned
+    // 4. Request with missing translation
+    // 5. Verify fallback to en-US
+  }
+
+  func TestMetadataTranslation_Fetching(t *testing.T) {
+    // Test fetching translations from TMDb/TVDB in different locales
+  }
+  ```

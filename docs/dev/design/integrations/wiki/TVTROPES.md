@@ -2,22 +2,29 @@
 
 ---
 sources:
-  - name: Dragonfly Documentation
-    url: ../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: Go io
-    url: ../../../sources/go/stdlib/io.md
-    note: Auto-resolved from go-io
+  - name: TVTropes
+    url: https://tvtropes.org
+    note: Main site
+  - name: PuerkitoBio/goquery
+    url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+    note: HTML parsing for verification
+  - name: golang.org/x/time
+    url: ../../../sources/go/x/time.md
+    note: Rate limiting
   - name: River Job Queue
     url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
+  - title: WIKI_SYSTEM
+    path: ../../features/shared/WIKI_SYSTEM.md
+  - title: MOVIE_MODULE
+    path: ../../features/video/MOVIE_MODULE.md
+  - title: TVSHOW_MODULE
+    path: ../../features/video/TVSHOW_MODULE.md
+  - title: HTTP_CLIENT
+    path: ../../services/HTTP_CLIENT.md
 ---
 
 ## Table of Contents
@@ -54,7 +61,9 @@ design_refs:
 
 > Integration with TVTropes
 
-> Trope analysis and storytelling patterns
+> ENRICHMENT link provider for trope analysis and storytelling patterns
+**API Base URL**: `https://tvtropes.org`
+**Authentication**: none
 
 ---
 
@@ -96,8 +105,6 @@ internal/integration/tvtropes/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -109,11 +116,63 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// TVTropes link provider
+type TVTropesProvider struct {
+  httpClient  *http.Client
+  rateLimiter *rate.Limiter
+  cache       Cache
+}
+
+// Link provider interface
+type TropesLinkProvider interface {
+  GenerateLink(ctx context.Context, content *Content) (*TropesLink, error)
+  VerifyPage(ctx context.Context, url string) (bool, error)
+  GetNamespace(contentType string) string
+}
+
+// Tropes link
+type TropesLink struct {
+  PageTitle string `json:"title"`
+  URL       string `json:"url"`
+  Namespace string `json:"namespace"`
+  Verified  bool   `json:"verified"`
+}
+
+// Title formatter
+func FormatTropesTitle(title string) string {
+  // Remove articles
+  title = strings.TrimPrefix(title, "The ")
+  title = strings.TrimPrefix(title, "A ")
+  title = strings.TrimPrefix(title, "An ")
+
+  // Remove punctuation and special characters
+  reg := regexp.MustCompile(`[^a-zA-Z0-9\s]`)
+  title = reg.ReplaceAllString(title, "")
+
+  // CamelCase
+  words := strings.Fields(title)
+  for i, word := range words {
+    words[i] = strings.Title(strings.ToLower(word))
+  }
+  return strings.Join(words, "")
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/PuerkitoBio/goquery` - HTML parsing for verification
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - DI
+
+**External**:
+- TVTropes website (no API)
+
 
 
 
@@ -122,11 +181,35 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+TVTROPES_ENABLED=true
+TVTROPES_RATE_LIMIT=0.5
+TVTROPES_CACHE_TTL=168h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    tvtropes:
+      enabled: true
+      rate_limit: 0.5
+      rate_window: 1s
+      cache_ttl: 168h
+      role: enrichment
+
+      # Namespace mapping
+      namespaces:
+        movie: Film
+        tvshow: Series
+        anime: Anime
+        animation: WesternAnimation
+        book: Literature
+        game: VideoGame
+```
+
 
 
 
@@ -153,12 +236,15 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [WIKI_SYSTEM](../../features/shared/WIKI_SYSTEM.md)
+- [MOVIE_MODULE](../../features/video/MOVIE_MODULE.md)
+- [TVSHOW_MODULE](../../features/video/TVSHOW_MODULE.md)
+- [HTTP_CLIENT](../../services/HTTP_CLIENT.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [Go io](../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [TVTropes](https://tvtropes.org) - Main site
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery) - HTML parsing for verification
+- [golang.org/x/time](../../../sources/go/x/time.md) - Rate limiting
 - [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
 

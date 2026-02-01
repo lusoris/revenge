@@ -51,3 +51,182 @@ design_refs:
 service_name: Analytics Service
 package_path: internal/service/analytics
 fx_module: analytics.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │  River    │  │  Cache │
+                  │  (sqlc)  │          │  Queue    │  │(otter) │
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  Note: Core playback analytics in ANALYTICS_SERVICE.yaml feature. Service-specific aggregation tables:
+
+  ```sql
+  -- Library statistics (aggregated)
+  CREATE TABLE library_stats (
+    library_id UUID NOT NULL REFERENCES libraries(id) ON DELETE CASCADE,
+    stat_date DATE NOT NULL,
+
+    -- Content counts
+    total_items INTEGER DEFAULT 0,
+    total_size_bytes BIGINT DEFAULT 0,
+
+    -- Playback stats
+    total_plays INTEGER DEFAULT 0,
+    unique_users INTEGER DEFAULT 0,
+    total_watch_time_seconds BIGINT DEFAULT 0,
+
+    PRIMARY KEY (library_id, stat_date)
+  );
+  CREATE INDEX idx_library_stats_date ON library_stats(stat_date DESC);
+
+  -- Popular content (aggregated)
+  CREATE TABLE popular_content (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+
+    -- Time periods
+    plays_24h INTEGER DEFAULT 0,
+    plays_7d INTEGER DEFAULT 0,
+    plays_30d INTEGER DEFAULT 0,
+    plays_all_time INTEGER DEFAULT 0,
+
+    last_updated TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(content_type, content_id)
+  );
+  CREATE INDEX idx_popular_content_24h ON popular_content(plays_24h DESC);
+  CREATE INDEX idx_popular_content_7d ON popular_content(plays_7d DESC);
+  ```
+
+module_structure: |
+  ```
+  internal/service/analytics/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Analytics service
+  ├── aggregation.go               # Data aggregation (River jobs)
+  ├── reports.go                   # Report generation
+  ├── handler.go                   # HTTP API handlers
+  └── analytics_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type AnalyticsService interface {
+    // Library stats
+    GetLibraryStats(ctx context.Context, libraryID uuid.UUID, dateRange DateRange) (*LibraryStats, error)
+    GetServerStats(ctx context.Context, dateRange DateRange) (*ServerStats, error)
+
+    // Popular content
+    GetMostWatched(ctx context.Context, contentType string, period TimePeriod, limit int) ([]PopularItem, error)
+    GetTopGenres(ctx context.Context, period TimePeriod) ([]GenreStats, error)
+
+    // User insights
+    GetUserActivity(ctx context.Context, userID uuid.UUID, dateRange DateRange) (*UserActivity, error)
+    GetActiveUsers(ctx context.Context, period TimePeriod) (int, error)
+
+    // Aggregation
+    AggregateDaily(ctx context.Context, date time.Time) error
+  }
+
+  type ServerStats struct {
+    TotalLibraries    int     `json:"total_libraries"`
+    TotalItems        int     `json:"total_items"`
+    TotalSizeGB       float64 `json:"total_size_gb"`
+    TotalUsers        int     `json:"total_users"`
+    ActiveUsers24h    int     `json:"active_users_24h"`
+    TotalPlays        int     `json:"total_plays"`
+    TotalWatchHours   float64 `json:"total_watch_hours"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river` - Aggregation jobs
+  - `github.com/maypok86/otter` - Stats cache
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  ANALYTICS_AGGREGATION_INTERVAL=1h
+  ANALYTICS_RETENTION_DAYS=365
+  ```
+
+config_keys: |
+  ```yaml
+  analytics:
+    aggregation_interval: 1h
+    retention_days: 365
+    cache_ttl: 5m
+  ```
+
+component_interaction: |
+  **Daily Aggregation** (background):
+  1. River job runs every hour
+  2. Query playback_sessions for past hour
+  3. Aggregate by library, content, user
+  4. Update library_stats, popular_content tables
+  5. Cache invalidation for affected stats
+
+  **Dashboard Query**:
+  1. Admin requests GET /api/v1/analytics/server
+  2. Service queries aggregated tables
+  3. Calculate totals, averages
+  4. Return dashboard data
+
+api_endpoints: |
+  ```
+  GET    /api/v1/analytics/server              # Server overview
+  GET    /api/v1/analytics/libraries/:id       # Library stats
+  GET    /api/v1/analytics/popular/:type       # Most watched content
+  GET    /api/v1/analytics/users/:id           # User activity
+  ```
+
+  **Example Server Stats Response**:
+  ```json
+  {
+    "total_libraries": 5,
+    "total_items": 1543,
+    "total_size_gb": 8542.3,
+    "total_users": 12,
+    "active_users_24h": 8,
+    "total_plays": 23456,
+    "total_watch_hours": 4532.5
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestAnalyticsService_AggregateDaily(t *testing.T) {
+    // Test daily aggregation
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestAnalytics_ReportGeneration(t *testing.T) {
+    // Test full analytics workflow
+  }
+  ```

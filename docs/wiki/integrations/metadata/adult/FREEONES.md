@@ -22,9 +22,9 @@
 
 # FreeOnes
 
-> Performer profiles from FreeOnes
+> FreeOnes - Performer enrichment for Whisparr/StashDB
 
-FreeOnes aggregates performer information and social media links. Comprehensive profiles with photos and statistics. Cross-references to other databases. Used to enrich performer metadata in the QAR system. Provides additional profile images and biographical data.
+ENRICHMENT-only metadata source for QAR performers (crew). Provides additional biographical data, aliases, and social media links not available in StashDB. **Web scraping** with GraphQL-like API. Used to supplement existing performer profiles. **Optional proxy/VPN routing** recommended (via HTTP_CLIENT service).
 
 ---
 
@@ -68,6 +68,8 @@ Official documentation and guides:
 - [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
 - [Go io](../../../../sources/go/stdlib/io.md)
 - [River Job Queue](../../../../sources/tooling/river.md)
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
 
 
 

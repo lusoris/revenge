@@ -25,7 +25,7 @@
 
 > Isolated adult library with Stash and StashDB integration
 
-Manage adult content in a completely isolated library (codenamed QAR - Queen Anne Revenge). Integrates with Stash and StashDB for metadata and performer information. Content is separated in its own database schema for privacy. Requires explicit permission and NSFW toggle to access. Whisparr integration handles scene downloads automatically.
+Manage adult content in a completely isolated library (codenamed QAR - Queen Anne Revenge). Uses Whisparr as the PRIMARY metadata source (aggregates from StashDB locally), with direct StashDB/Stash APIs as supplementary enrichment. Whisparr integration provides both metadata caching and download automation. Content is separated in its own database schema for privacy. Requires explicit permission and NSFW toggle to access.
 
 ---
 

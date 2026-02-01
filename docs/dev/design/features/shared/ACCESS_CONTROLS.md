@@ -125,11 +125,21 @@ internal/content/time_based_access_controls/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type AccessService interface {
+  CheckAccess(ctx context.Context, userID uuid.UUID) (bool, string, error)
+  CreateSchedule(ctx context.Context, schedule AccessSchedule) error
+  GetUsageToday(ctx context.Context, userID uuid.UUID) (int, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/casbin/casbin/v2` - Policy enforcement
+
 
 
 
@@ -138,17 +148,30 @@ internal/content/time_based_access_controls/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+ACCESS_CONTROLS_ENABLED=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+access:
+  enabled: true
+  default_daily_limit_minutes: 120
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+GET  /api/v1/access/schedules/:userId
+POST /api/v1/access/schedules
+GET  /api/v1/access/usage/:userId
+```
+
 
 
 ## Testing Strategy

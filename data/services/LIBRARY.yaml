@@ -63,3 +63,124 @@ design_refs:
 service_name: Library Service
 package_path: internal/service/library
 fx_module: library.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │   RBAC    │  │Scanner │
+                  │  (sqlc)  │          │  Service  │  │(fsnotify)│
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  Note: Core schema defined in LIBRARY_TYPES.yaml feature. Additional service-specific tables:
+
+  ```sql
+  -- Library permissions (user access to libraries)
+  CREATE TABLE library_permissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    library_id UUID NOT NULL REFERENCES libraries(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    role_id UUID REFERENCES roles(id) ON DELETE CASCADE,
+
+    -- Permission type
+    permission VARCHAR(50) NOT NULL,               -- 'view', 'download', 'manage'
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE UNIQUE INDEX idx_library_perms_user ON library_permissions(library_id, user_id, permission);
+  CREATE INDEX idx_library_perms_role ON library_permissions(library_id, role_id);
+  ```
+
+module_structure: |
+  ```
+  internal/service/library/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Library service logic
+  ├── permissions.go               # Library access control
+  ├── handler.go                   # HTTP API handlers
+  └── library_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type LibraryService interface {
+    // Library CRUD (delegates to library types feature)
+    GetLibrary(ctx context.Context, libraryID uuid.UUID) (*Library, error)
+    ListLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error)
+
+    // Permissions
+    GrantPermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) error
+    RevokePermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) error
+    CheckPermission(ctx context.Context, libraryID, userID uuid.UUID, permission string) (bool, error)
+
+    // Scan operations
+    TriggerScan(ctx context.Context, libraryID uuid.UUID, scanType string) error
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/fsnotify/fsnotify`
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  LIBRARY_DEFAULT_SCAN_INTERVAL=6h
+  ```
+
+config_keys: |
+  ```yaml
+  library:
+    default_scan_interval: 6h
+    realtime_monitoring: true
+  ```
+
+component_interaction: |
+  **Check Library Access**:
+  1. User requests GET /api/v1/libraries/:id
+  2. Service checks library_permissions for user
+  3. If no direct permission, check role-based permissions via RBAC
+  4. If permitted, return library details
+  5. If not, return 403 Forbidden
+
+api_endpoints: |
+  ```
+  GET    /api/v1/libraries                   # List accessible libraries
+  GET    /api/v1/libraries/:id               # Get library details
+  POST   /api/v1/libraries/:id/permissions   # Grant permission
+  DELETE /api/v1/libraries/:id/permissions/:user_id # Revoke permission
+  ```
+
+unit_tests: |
+  ```go
+  func TestLibraryService_CheckPermission(t *testing.T) {
+    // Test permission checking
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestLibrary_PermissionFlow(t *testing.T) {
+    // Test grant/revoke/check workflow
+  }
+  ```

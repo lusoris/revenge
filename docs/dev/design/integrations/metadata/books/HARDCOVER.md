@@ -5,13 +5,21 @@ sources:
   - name: Hardcover API
     url: ../../../../sources/apis/hardcover.md
     note: Auto-resolved from hardcover
+  - name: Khan/genqlient
+    url: ../../../../sources/tooling/genqlient.md
+    note: GraphQL client
+  - name: golang.org/x/oauth2
+    url: https://pkg.go.dev/golang.org/x/oauth2
+    note: OAuth 2.0
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: BOOK_MODULE
+    path: ../../../features/book/BOOK_MODULE.md
+  - title: SCROBBLING
+    path: ../../../features/shared/SCROBBLING.md
+  - title: CHAPTARR
+    path: ../../servarr/CHAPTARR.md
 ---
 
 ## Table of Contents
@@ -48,9 +56,9 @@ design_refs:
 
 > Integration with Hardcover
 
-> Social reading platform - Goodreads alternative with API
-**API Base URL**: `https://api.hardcover.app/graphiql`
-**Authentication**: api_key
+> Book reading tracker and scrobbling - Goodreads alternative with GraphQL API
+**API Base URL**: `https://api.hardcover.app/v1/graphql`
+**Authentication**: oauth2
 
 ---
 
@@ -92,8 +100,6 @@ internal/integration/hardcover/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -105,11 +111,45 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Hardcover scrobbler
+type HardcoverScrobbler struct {
+  client      *graphql.Client
+  tokenStore  TokenStore
+  queue       *river.Client
+}
+
+// Book scrobbling interface
+type BookScrobbler interface {
+  Connect(ctx context.Context, userID uuid.UUID, authCode string) error
+  Disconnect(ctx context.Context, userID uuid.UUID) error
+  SyncProgress(ctx context.Context, userID uuid.UUID, bookID uuid.UUID, progress float64) error
+  MarkAsRead(ctx context.Context, userID uuid.UUID, bookID uuid.UUID, rating *int) error
+  ImportShelves(ctx context.Context, userID uuid.UUID) ([]*BookShelf, error)
+  ExportToShelf(ctx context.Context, userID uuid.UUID, bookID uuid.UUID, shelf string) error
+}
+
+// OAuth token storage
+type TokenStore interface {
+  GetToken(ctx context.Context, userID uuid.UUID) (*oauth2.Token, error)
+  SaveToken(ctx context.Context, userID uuid.UUID, token *oauth2.Token) error
+  DeleteToken(ctx context.Context, userID uuid.UUID) error
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/Khan/genqlient` - Type-safe GraphQL client
+- `golang.org/x/oauth2` - OAuth 2.0
+- `github.com/riverqueue/river` - Background sync jobs
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `go.uber.org/fx` - DI
+
+**External**:
+- Hardcover API (OAuth 2.0 required)
+
 
 
 
@@ -118,11 +158,27 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+HARDCOVER_CLIENT_ID=your_client_id
+HARDCOVER_CLIENT_SECRET=your_client_secret
+HARDCOVER_REDIRECT_URI=https://your-revenge-server/api/v1/integrations/hardcover/callback
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+scrobbling:
+  hardcover:
+    enabled: true
+    client_id: ${HARDCOVER_CLIENT_ID}
+    client_secret: ${HARDCOVER_CLIENT_SECRET}
+    redirect_uri: ${HARDCOVER_REDIRECT_URI}
+    sync:
+      interval: 30m
+      direction: bidirectional    # 'to_hardcover', 'from_hardcover', 'bidirectional'
+```
+
 
 
 
@@ -149,10 +205,13 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [BOOK_MODULE](../../../features/book/BOOK_MODULE.md)
+- [SCROBBLING](../../../features/shared/SCROBBLING.md)
+- [CHAPTARR](../../servarr/CHAPTARR.md)
 
 ### External Sources
 - [Hardcover API](../../../../sources/apis/hardcover.md) - Auto-resolved from hardcover
+- [Khan/genqlient](../../../../sources/tooling/genqlient.md) - GraphQL client
+- [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) - OAuth 2.0
 

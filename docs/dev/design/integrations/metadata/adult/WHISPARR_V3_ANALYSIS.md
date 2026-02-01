@@ -88,8 +88,6 @@ internal/integration/whisparr_v3_eros__adult_content_structure_analysis/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 

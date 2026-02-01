@@ -60,11 +60,15 @@ internal/integration/{{ integration_id }}/
 
 ### Provides
 
+{%- if provides_data is defined and provides_data %}
+{%- if provides_data is string %}
+{{ provides_data }}
+{%- else %}
 This integration provides:
-{%- if provides_data | default([]) %}
 {%- for data_type in provides_data %}
 - **{{ data_type.name }}**: {{ data_type.description }}
 {%- endfor %}
+{%- endif %}
 {%- else %}
 <!-- Data provided by integration -->
 {%- endif %}
@@ -125,7 +129,10 @@ This integration provides:
 
 ### Supported Endpoints
 
-{%- if api_endpoints | default([]) %}
+{%- if api_endpoints is defined and api_endpoints %}
+{%- if api_endpoints is string %}
+{{ api_endpoints }}
+{%- else %}
 {%- for endpoint in api_endpoints %}
 #### {{ endpoint.name }}
 
@@ -149,6 +156,7 @@ This integration provides:
 ---
 
 {%- endfor %}
+{%- endif %}
 {%- else %}
 <!-- API endpoints -->
 {%- endif %}
@@ -197,10 +205,14 @@ This integration provides:
 
 ### Prerequisites
 
-{%- if prerequisites | default([]) %}
+{%- if prerequisites is defined and prerequisites %}
+{%- if prerequisites is string %}
+{{ prerequisites }}
+{%- else %}
 {%- for prereq in prerequisites %}
 - {{ prereq }}
 {%- endfor %}
+{%- endif %}
 {%- else %}
 <!-- Prerequisites -->
 {%- endif %}

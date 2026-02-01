@@ -55,6 +55,8 @@ design_refs:
 > Integration with Babepedia
 
 > Adult performer wiki with biographies and filmographies
+**API Base URL**: `https://www.babepedia.com`
+**Authentication**: none
 
 ---
 
@@ -96,8 +98,6 @@ internal/integration/babepedia/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -109,11 +109,81 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Babepedia enrichment provider
+type BabepediaProvider struct {
+  httpClient  *httpclient.Client  // From HTTP_CLIENT service
+  rateLimiter *rate.Limiter
+  cache       Cache
+  parser      *goquery.Document
+}
+
+// Performer enrichment provider interface
+type PerformerEnrichmentProvider interface {
+  SearchPerformer(ctx context.Context, name string) ([]PerformerResult, error)
+  GetPerformer(ctx context.Context, url string) (*PerformerProfile, error)
+  MatchPerformer(ctx context.Context, name string, aliases []string) (*PerformerProfile, error)
+  Priority() int  // Returns 30 (after StashDB)
+}
+
+// Babepedia performer profile
+type PerformerProfile struct {
+  URL          string    `json:"url"`
+  Name         string    `json:"name"`
+  Aliases      []string  `json:"aliases"`
+  BirthDate    *time.Time `json:"birth_date,omitempty"`
+  Birthplace   string    `json:"birthplace"`
+  Nationality  string    `json:"nationality"`
+  HeightCm     int       `json:"height_cm"`
+  Measurements string    `json:"measurements"`
+  HairColor    string    `json:"hair_color"`
+  EyeColor     string    `json:"eye_color"`
+  CareerStart  int       `json:"career_start"`
+  CareerEnd    int       `json:"career_end,omitempty"`
+  SocialLinks  map[string]string `json:"social_links"`
+  PhotoURL     string    `json:"photo_url"`
+}
+
+// HTML parsing with goquery
+func (p *BabepediaProvider) parseProfile(doc *goquery.Document) (*PerformerProfile, error) {
+  profile := &PerformerProfile{}
+
+  // Extract structured data from profile page
+  doc.Find(".profbox li").Each(func(i int, s *goquery.Selection) {
+    label := s.Find(".profhead").Text()
+    value := s.Find(".profdata").Text()
+
+    switch strings.TrimSuffix(label, ":") {
+    case "Born":
+      profile.BirthDate = parseDate(value)
+    case "Birthplace":
+      profile.Birthplace = value
+    case "Height":
+      profile.HeightCm = parseHeight(value)
+    // ... etc
+    }
+  })
+
+  return profile, nil
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/PuerkitoBio/goquery` - HTML parsing
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - DI
+
+**Internal**:
+- `internal/service/httpclient` - Proxy-enabled HTTP client
+
+**External**:
+- Babepedia website (no official API)
+
 
 
 
@@ -122,11 +192,31 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+BABEPEDIA_ENABLED=true
+BABEPEDIA_RATE_LIMIT=0.5          # req/sec (1 every 2 seconds)
+BABEPEDIA_CACHE_TTL=720h          # 30 days
+BABEPEDIA_USE_PROXY=true          # Use proxy pool from HTTP_CLIENT
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+qar:
+  metadata:
+    providers:
+      babepedia:
+        enabled: true
+        rate_limit: 0.5
+        rate_window: 1s
+        cache_ttl: 720h
+        role: enrichment
+        priority: 30             # After StashDB (10), Boobpedia (20)
+        use_proxy: true
+        retry_on_block: true
+```
+
 
 
 

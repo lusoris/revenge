@@ -35,6 +35,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -55,6 +56,7 @@ design_refs:
 > Integration with NextPVR
 
 > Windows/Linux DVR software with IPTV support
+**API Base URL**: `http://nextpvr.local:8866`
 **Authentication**: api_key
 
 ---
@@ -97,8 +99,6 @@ internal/integration/nextpvr/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -110,11 +110,133 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// NextPVRClient manages NextPVR JSON-RPC API
+type NextPVRClient interface {
+    // Get all channels
+    GetChannels(ctx context.Context) ([]Channel, error)
+
+    // Get EPG listings
+    GetListings(ctx context.Context, channelID int, startTime, endTime time.Time) ([]EPGEntry, error)
+
+    // Get recordings
+    GetRecordings(ctx context.Context) ([]Recording, error)
+
+    // Get scheduled recordings
+    GetScheduled(ctx context.Context) ([]ScheduledRecording, error)
+
+    // Start live stream
+    StartLiveStream(ctx context.Context, channelID int) (*StreamInfo, error)
+
+    // Start recording playback
+    StartRecordingStream(ctx context.Context, recordingID int) (*StreamInfo, error)
+
+    // Delete recording
+    DeleteRecording(ctx context.Context, recordingID int) error
+
+    // Schedule recording
+    ScheduleRecording(ctx context.Context, req *ScheduleRequest) error
+}
+
+type NextPVRConfig struct {
+    BaseURL      string
+    PIN          string  // NextPVR PIN for authentication
+    Enabled      bool
+    SyncInterval time.Duration
+}
+
+type Channel struct {
+    ID         int
+    Number     string
+    Name       string
+    Icon       string
+    Group      string
+    Epg        bool    // Has EPG data
+}
+
+type EPGEntry struct {
+    ID           int
+    ChannelID    int
+    Title        string
+    Description  string
+    Subtitle     string
+    StartTime    time.Time
+    EndTime      time.Time
+    Genre        string
+    Original     string
+    Rating       string
+}
+
+type Recording struct {
+    ID            int
+    Name          string
+    Description   string
+    ChannelName   string
+    StartTime     time.Time
+    EndTime       time.Time
+    Duration      int         // Seconds
+    FileSize      int64
+    Status        RecordingStatus
+    Playback      PlaybackStatus
+}
+
+type RecordingStatus string
+
+const (
+    StatusPending   RecordingStatus = "pending"
+    StatusRecording RecordingStatus = "recording"
+    StatusCompleted RecordingStatus = "completed"
+    StatusFailed    RecordingStatus = "failed"
+)
+
+type ScheduledRecording struct {
+    ID          int
+    Name        string
+    ChannelID   int
+    StartTime   time.Time
+    EndTime     time.Time
+    Recurring   bool
+    Enabled     bool
+}
+
+type StreamInfo struct {
+    URL        string
+    Format     string  // hls, mpegts
+    Duration   int     // Seconds (0 for live)
+}
+
+type JSONRPCRequest struct {
+    Jsonrpc string        `json:"jsonrpc"`
+    Method  string        `json:"method"`
+    Params  interface{}   `json:"params,omitempty"`
+    ID      int           `json:"id"`
+}
+
+type JSONRPCResponse struct {
+    Jsonrpc string          `json:"jsonrpc"`
+    Result  json.RawMessage `json:"result,omitempty"`
+    Error   *JSONRPCError   `json:"error,omitempty"`
+    ID      int             `json:"id"`
+}
+
+type JSONRPCError struct {
+    Code    int    `json:"code"`
+    Message string `json:"message"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/bluenviron/gohlslib/v2` - HLS handling
+- `github.com/riverqueue/river` - Background sync jobs
+- `crypto/md5` - PIN authentication
+- `encoding/json` - JSON-RPC
+
+**External Services**:
+- NextPVR server (https://github.com/sub3/NextPVR)
+
 
 
 
@@ -123,12 +245,41 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+REVENGE_NEXTPVR_ENABLED=true
+REVENGE_NEXTPVR_BASE_URL=http://nextpvr.local:8866
+REVENGE_NEXTPVR_PIN=0000
+REVENGE_NEXTPVR_SYNC_INTERVAL=15m
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+livetv:
+  nextpvr:
+    enabled: true
+    base_url: http://nextpvr.local:8866
+    pin: "0000"                # NextPVR PIN
+    sync_interval: 15m         # EPG/recording sync
+    transcode: false           # Enable transcoding
+    transcode_profile: "Default"
+```
 
+
+
+## API Endpoints
+**Revenge API Endpoints**:
+
+```
+GET  /api/v1/livetv/nextpvr/channels
+GET  /api/v1/livetv/nextpvr/epg
+GET  /api/v1/livetv/nextpvr/recordings
+GET  /api/v1/livetv/nextpvr/scheduled
+POST /api/v1/livetv/nextpvr/record
+DELETE /api/v1/livetv/nextpvr/recordings/{id}
+POST /api/v1/livetv/nextpvr/sync
+```
 
 
 

@@ -44,6 +44,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -104,7 +105,13 @@ internal/service/analytics/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Aggregation jobs
+- `github.com/maypok86/otter` - Stats cache
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -122,11 +129,45 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type AnalyticsService interface {
+  // Library stats
+  GetLibraryStats(ctx context.Context, libraryID uuid.UUID, dateRange DateRange) (*LibraryStats, error)
+  GetServerStats(ctx context.Context, dateRange DateRange) (*ServerStats, error)
+
+  // Popular content
+  GetMostWatched(ctx context.Context, contentType string, period TimePeriod, limit int) ([]PopularItem, error)
+  GetTopGenres(ctx context.Context, period TimePeriod) ([]GenreStats, error)
+
+  // User insights
+  GetUserActivity(ctx context.Context, userID uuid.UUID, dateRange DateRange) (*UserActivity, error)
+  GetActiveUsers(ctx context.Context, period TimePeriod) (int, error)
+
+  // Aggregation
+  AggregateDaily(ctx context.Context, date time.Time) error
+}
+
+type ServerStats struct {
+  TotalLibraries    int     `json:"total_libraries"`
+  TotalItems        int     `json:"total_items"`
+  TotalSizeGB       float64 `json:"total_size_gb"`
+  TotalUsers        int     `json:"total_users"`
+  ActiveUsers24h    int     `json:"active_users_24h"`
+  TotalPlays        int     `json:"total_plays"`
+  TotalWatchHours   float64 `json:"total_watch_hours"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Aggregation jobs
+- `github.com/maypok86/otter` - Stats cache
+- `go.uber.org/fx`
+
 
 
 
@@ -135,12 +176,43 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+ANALYTICS_AGGREGATION_INTERVAL=1h
+ANALYTICS_RETENTION_DAYS=365
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+analytics:
+  aggregation_interval: 1h
+  retention_days: 365
+  cache_ttl: 5m
+```
 
+
+
+## API Endpoints
+```
+GET    /api/v1/analytics/server              # Server overview
+GET    /api/v1/analytics/libraries/:id       # Library stats
+GET    /api/v1/analytics/popular/:type       # Most watched content
+GET    /api/v1/analytics/users/:id           # User activity
+```
+
+**Example Server Stats Response**:
+```json
+{
+  "total_libraries": 5,
+  "total_items": 1543,
+  "total_size_gb": 8542.3,
+  "total_users": 12,
+  "active_users_24h": 8,
+  "total_plays": 23456,
+  "total_watch_hours": 4532.5
+}
+```
 
 
 

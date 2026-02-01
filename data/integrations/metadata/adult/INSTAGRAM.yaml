@@ -16,26 +16,401 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Performer social media presence'
-wiki_tagline: '> Performer Instagram links'
-wiki_overview: Links to performer Instagram profiles for the adult content system.
-  Provides verified social media handles. Profile photos supplement metadata imagery.
-  Links stored as part of performer records. No direct API access - handles only.
+technical_summary: '> LINK-ONLY performer social media profiles for QAR content'
+wiki_tagline: '> Instagram - Performer profile links for QAR'
+wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified Instagram profile URLs. Extracts basic public metrics (followers, posts). **NO content access** - only profile links and public metrics. **Web scraping** with rate limiting. **Proxy/VPN recommended** (via HTTP_CLIENT service).'
 sources:
-- name: sqlc
-  url: https://docs.sqlc.dev/en/stable/
-  note: Auto-resolved from sqlc
-- name: sqlc Configuration
-  url: https://docs.sqlc.dev/en/stable/reference/config.html
-  note: Auto-resolved from sqlc-config
+- name: PuerkitoBio/goquery
+  url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+  note: HTML parsing
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Background verification jobs
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: FREEONES
+  path: ./FREEONES.md
+- title: HTTP_CLIENT (proxy/VPN support)
+  path: ../../../services/HTTP_CLIENT.md
+- title: ADULT_CONTENT_SYSTEM (QAR module)
+  path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
 integration_name: Instagram
 integration_id: instagram
 external_service: Instagram
-auth_method: oauth
+api_base_url: https://www.instagram.com
+data_access_method: web_scraping
+content_streaming: false
+
+architecture_diagram: |
+  ```
+  ┌───────────────────┐
+  │   Performer       │
+  │   Profile Page    │
+  │   (Revenge UI)    │
+  └─────────┬─────────┘
+            │ Display social links
+            ▼
+  ┌───────────────────┐
+  │   Instagram Link  │───→ Opens in new tab
+  │   (verified URL)  │     (user's browser)
+  └─────────┬─────────┘
+            │ Metadata only
+            │ (NO content)
+            ▼
+  ┌───────────────────┐     ┌──────────────┐
+  │   Instagram.com   │────▶│  Followers   │
+  │   (login wall)    │     │  Post Count  │
+  └───────────────────┘     │  Bio         │
+            │               └──────────────┘
+     ┌──────┴────────┐
+     │  HTTP_CLIENT  │
+     │  (recommended │
+     │   proxy/VPN)  │
+     └───────────────┘
+
+  IMPORTANT: This integration does NOT access any content.
+  Only stores verified profile links and public counts.
+  ```
+
+integration_scope: |
+  **WHAT THIS INTEGRATION DOES**:
+  - ✅ Stores verified performer Instagram profile URLs
+  - ✅ Extracts public metrics (follower count, post count)
+  - ✅ Verifies profile existence
+  - ✅ Provides "View on Instagram" links in UI
+
+  **WHAT THIS INTEGRATION DOES NOT DO**:
+  - ❌ Download or cache any photos/videos
+  - ❌ Access private or story content
+  - ❌ Authenticate users on Instagram
+  - ❌ Scrape post content
+  - ❌ Use Instagram API (no official access)
+
+  **Instagram Limitations**:
+  - Most content requires login
+  - Heavy rate limiting and bot detection
+  - Profile pages may require authentication
+  - Only public profile info accessible
+
+api_details: |
+  **Data Access**: Web scraping (very limited)
+  **Base URL**: `https://www.instagram.com`
+  **Authentication**: None (public pages only)
+  **Rate Limit**: Self-imposed 0.5 req/sec
+
+  **Accessible Without Login**:
+  - Profile existence check
+  - Username validation
+  - Profile picture (small size)
+  - Follower/following counts (sometimes)
+  - Post count (sometimes)
+  - Bio text (sometimes)
+
+  **Requires Login** (NOT accessible):
+  - Individual posts
+  - Stories
+  - Full-size images
+  - Comments
+  - Most profile details
+
+  **IMPORTANT**: Instagram aggressively blocks scrapers.
+  This integration has very limited functionality.
+
+database_schema: |
+  **Schema**: `qar` (pirate-themed obfuscation)
+
+  ```sql
+  -- Social media profile links (unified for all platforms)
+  CREATE TABLE qar.social_profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    performer_id UUID NOT NULL REFERENCES qar.crew(id),
+    platform VARCHAR(50) NOT NULL,           -- 'instagram', 'twitter', 'onlyfans'
+
+    -- Profile info
+    profile_url TEXT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255),
+    bio TEXT,
+    profile_image_url TEXT,
+
+    -- Public metrics (when available)
+    follower_count BIGINT,
+    following_count BIGINT,
+    post_count INT,
+
+    -- Verification status
+    is_verified BOOLEAN DEFAULT false,       -- Platform verified badge
+    link_verified BOOLEAN DEFAULT true,      -- Link still valid
+    last_checked TIMESTAMPTZ DEFAULT now(),
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(performer_id, platform)
+  );
+  CREATE INDEX idx_social_profiles_platform ON qar.social_profiles(platform, username);
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/social/
+  ├── module.go                    # fx module for all social platforms
+  ├── instagram/
+  │   ├── provider.go              # Instagram link provider
+  │   ├── scraper.go               # Profile page scraping
+  │   └── instagram_test.go
+  ├── twitter/
+  │   └── ...
+  ├── onlyfans/
+  │   └── ...
+  └── common/
+      ├── types.go                 # Shared types
+      └── verification.go          # Link verification
+  ```
+
+key_interfaces: |
+  ```go
+  // Social profile link provider interface
+  type SocialProfileProvider interface {
+    // Verify username exists on platform
+    VerifyUsername(ctx context.Context, username string) (*ProfileInfo, error)
+
+    // Get basic profile info (if publicly accessible)
+    GetProfileInfo(ctx context.Context, username string) (*ProfileInfo, error)
+
+    // Verify link is still valid
+    VerifyLink(ctx context.Context, url string) (bool, error)
+
+    // Provider metadata
+    Platform() string
+    BaseURL() string
+  }
+
+  // Profile information (what's publicly accessible)
+  type ProfileInfo struct {
+    Platform     string `json:"platform"`
+    Username     string `json:"username"`
+    ProfileURL   string `json:"url"`
+    DisplayName  string `json:"display_name,omitempty"`
+    Bio          string `json:"bio,omitempty"`
+    ProfileImage string `json:"image,omitempty"`
+
+    // Metrics (may not always be available)
+    FollowerCount  *int64 `json:"followers,omitempty"`
+    FollowingCount *int64 `json:"following,omitempty"`
+    PostCount      *int   `json:"posts,omitempty"`
+
+    // Verification
+    IsVerified    bool      `json:"verified"`        // Platform badge
+    FetchedAt     time.Time `json:"fetched_at"`
+  }
+
+  // Instagram provider
+  type InstagramProvider struct {
+    httpFactory httpclient.ClientFactory
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `github.com/PuerkitoBio/goquery` - HTML parsing
+  - `golang.org/x/time/rate` - Rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - Dependency injection
+
+  **External**:
+  - Instagram website (very limited scraping)
+
+  **Internal Services**:
+  - HTTP_CLIENT - Proxy/VPN routing
+
+env_vars: |
+  ```bash
+  # Instagram integration
+  INSTAGRAM_ENABLED=true
+  INSTAGRAM_RATE_LIMIT=0.5
+  INSTAGRAM_CACHE_TTL=168h
+
+  # Proxy (recommended due to aggressive blocking)
+  INSTAGRAM_PROXY_ENABLED=true
+  INSTAGRAM_PROXY_URL=socks5://127.0.0.1:9050
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      instagram:
+        enabled: true
+        rate_limit: 0.5
+        rate_window: 1s
+        cache_ttl: 168h
+
+        role: link                   # LINK only
+        provides_content: false
+
+        proxy:
+          enabled: true              # Recommended
+          type: tor
+          url: socks5://127.0.0.1:9050
+
+        verification:
+          enabled: true
+          check_interval: 168h       # Weekly
+  ```
+
+component_interaction: |
+  **Profile Link Storage**:
+  1. FreeOnes/StashDB provides Instagram username for performer
+  2. InstagramProvider.VerifyUsername(ctx, username)
+  3. If exists: create profile URL, store in social_profiles
+  4. Display "Instagram" link on performer profile page
+
+  **Link Verification (Background)**:
+  1. Weekly job checks all Instagram links
+  2. HEAD request to profile URL
+  3. If 404 or redirect: mark as broken
+  4. Update last_checked timestamp
+
+  **Metric Extraction** (Best Effort):
+  - May work on some profiles
+  - Returns nil for inaccessible data
+  - Caches for 7 days
+
+scraping_limitations: |
+  **Instagram is Highly Restrictive**:
+
+  Instagram aggressively blocks automated access:
+  - Login walls for most content
+  - JavaScript-heavy pages
+  - Bot detection and CAPTCHA
+  - Rate limiting on IP level
+  - Geo-restrictions
+
+  **What Realistically Works**:
+  ```go
+  func (p *InstagramProvider) VerifyUsername(
+    ctx context.Context,
+    username string,
+  ) (*ProfileInfo, error) {
+    // This is essentially the only reliable operation
+    url := fmt.Sprintf("https://www.instagram.com/%s/", username)
+
+    resp, err := p.client.Head(ctx, url)
+    if err != nil {
+      return nil, err
+    }
+
+    if resp.StatusCode == 200 {
+      return &ProfileInfo{
+        Platform:   "instagram",
+        Username:   username,
+        ProfileURL: url,
+        FetchedAt:  time.Now(),
+      }, nil
+    }
+
+    if resp.StatusCode == 404 {
+      return nil, ErrProfileNotFound
+    }
+
+    // 302/429/etc - blocked or rate limited
+    return nil, ErrAccessBlocked
+  }
+  ```
+
+  **Metrics Extraction** (Unreliable):
+  ```go
+  // This may or may not work depending on Instagram's current state
+  func (p *InstagramProvider) GetProfileInfo(
+    ctx context.Context,
+    username string,
+  ) (*ProfileInfo, error) {
+    // Try to get JSON data from page
+    url := fmt.Sprintf("https://www.instagram.com/%s/?__a=1", username)
+
+    resp, err := p.client.Get(ctx, url)
+    if err != nil {
+      return nil, err
+    }
+
+    // Instagram frequently changes/breaks this
+    // Falls back to HEAD-only verification
+    if resp.StatusCode != 200 {
+      return p.VerifyUsername(ctx, username)
+    }
+
+    // Parse JSON response (format changes frequently)
+    // ... extraction logic ...
+  }
+  ```
+
+link_role: |
+  **LINK-Only Provider**
+
+  Due to Instagram's restrictions, this integration is minimal:
+  - Store verified profile URLs
+  - Verify username exists
+  - Display links in performer profile
+
+  **UI Display**:
+  ```
+  External Links:
+  [📷 Instagram] → Opens instagram.com/username in new tab
+  ```
+
+  **No Content Access**:
+  - Cannot download images
+  - Cannot access stories
+  - Cannot embed content
+  - Links open in user's browser
+
+error_handling: |
+  **Expected Errors**:
+  - 404 Not Found → Profile doesn't exist
+  - 302 Redirect → Possibly login redirect
+  - 429 Too Many Requests → Rate limited
+  - Connection blocked → IP blocked
+
+  **Graceful Degradation**:
+  - If scraping fails → store link anyway (unverified)
+  - If metrics unavailable → store nil values
+  - Retry verification weekly
+
+unit_tests: |
+  ```go
+  func TestInstagram_VerifyUsername(t *testing.T) {
+    mockClient := &mockHTTPClient{
+      response: &http.Response{StatusCode: 200},
+    }
+
+    provider := NewInstagramProvider(mockClient)
+    info, err := provider.VerifyUsername(context.Background(), "testuser")
+
+    require.NoError(t, err)
+    assert.Equal(t, "testuser", info.Username)
+    assert.Contains(t, info.ProfileURL, "instagram.com/testuser")
+  }
+  ```
+
+best_practices: |
+  **Instagram Integration**:
+  - Keep it minimal (verification only)
+  - Don't rely on metric extraction
+  - Use proxy to avoid blocks
+  - Cache aggressively
+  - Accept that it may not work reliably
+
+  **Alternatives**:
+  - Get Instagram links from FreeOnes/StashDB
+  - Store links without verification if needed
+  - Focus on platforms with better access

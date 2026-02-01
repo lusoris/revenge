@@ -47,6 +47,7 @@ design_refs:
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -107,7 +108,13 @@ internal/service/grants/
 ```
 
 ### Dependencies
-No external service dependencies.
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Cleanup jobs
+- `github.com/maypok86/otter` - Grant cache
+- `go.uber.org/fx`
+
 
 ### Provides
 <!-- Service provides -->
@@ -125,11 +132,40 @@ No external service dependencies.
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type GrantsService interface {
+  // Grant management
+  GrantAccess(ctx context.Context, req GrantRequest) (*AccessGrant, error)
+  RevokeGrant(ctx context.Context, grantID uuid.UUID) error
+  CheckAccess(ctx context.Context, userID uuid.UUID, resourceType string, resourceID uuid.UUID, permission string) (bool, error)
+
+  // List grants
+  GetUserGrants(ctx context.Context, userID uuid.UUID) ([]AccessGrant, error)
+  GetResourceGrants(ctx context.Context, resourceType string, resourceID uuid.UUID) ([]AccessGrant, error)
+
+  // Cleanup
+  CleanupExpiredGrants(ctx context.Context) (int, error)
+}
+
+type GrantRequest struct {
+  GrantedToUserID uuid.UUID  `json:"granted_to_user_id"`
+  ResourceType    string     `json:"resource_type"`
+  ResourceID      uuid.UUID  `json:"resource_id"`
+  Permission      string     `json:"permission"`
+  ExpiresAt       *time.Time `json:"expires_at,omitempty"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river` - Cleanup jobs
+- `github.com/maypok86/otter` - Grant cache
+- `go.uber.org/fx`
+
 
 
 
@@ -138,12 +174,29 @@ No external service dependencies.
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+GRANTS_CLEANUP_INTERVAL=1h
+GRANTS_DEFAULT_EXPIRY=168h  # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+grants:
+  cleanup_interval: 1h
+  default_expiry: 168h
+```
 
+
+
+## API Endpoints
+```
+POST   /api/v1/grants                       # Grant access
+DELETE /api/v1/grants/:id                   # Revoke grant
+GET    /api/v1/grants/me                    # Get my grants
+GET    /api/v1/grants/resource/:type/:id    # Get resource grants
+```
 
 
 

@@ -118,15 +118,44 @@ internal/content/release_calendar_system/
 
 ### File Structure
 
-<!-- File structure -->
+**Key Files**:
+- `internal/calendar/service.go` - Calendar aggregation logic
+- `internal/calendar/sync/*.go` - Arr service sync
+- `internal/calendar/ical/generator.go` - iCal feed generation
+- `web/src/routes/(app)/calendar/+page.svelte` - Calendar UI
+
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type CalendarService interface {
+  GetEvents(ctx context.Context, start, end time.Time, filters EventFilters) ([]CalendarEvent, error)
+  SyncFromSources(ctx context.Context) error
+  CreateSubscription(ctx context.Context, sub CalendarSubscription) (*CalendarSubscription, error)
+  GetICalFeed(ctx context.Context, token uuid.UUID) (string, error)
+}
+
+type CalendarEvent struct {
+  ID                  uuid.UUID   `db:"id" json:"id"`
+  EventType           string      `db:"event_type" json:"event_type"`
+  MediaType           string      `db:"media_type" json:"media_type"`
+  Title               string      `db:"title" json:"title"`
+  AirDate             *time.Time  `db:"air_date" json:"air_date,omitempty"`
+  Source              string      `db:"source" json:"source"`
+  Monitored           bool        `db:"monitored" json:"monitored"`
+  Downloaded          bool        `db:"downloaded" json:"downloaded"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/riverqueue/river`
+- `github.com/arran4/golang-ical` - iCal generation
+
 
 
 
@@ -135,17 +164,38 @@ internal/content/release_calendar_system/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+CALENDAR_SYNC_INTERVAL=1h
+CALENDAR_RADARR_URL=http://localhost:7878
+CALENDAR_SONARR_URL=http://localhost:8989
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+calendar:
+  sync_interval: 1h
+  sources:
+    radarr:
+      enabled: true
+      url: http://localhost:7878
+    sonarr:
+      enabled: true
+      url: http://localhost:8989
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+GET /api/v1/calendar/events?start=2026-01-01&end=2026-01-31
+POST /api/v1/calendar/subscriptions
+GET /api/v1/calendar/ical/:token
+```
+
 
 
 ## Testing Strategy

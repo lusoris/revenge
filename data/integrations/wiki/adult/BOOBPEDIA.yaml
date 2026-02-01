@@ -39,4 +39,350 @@ design_refs:
 integration_name: Boobpedia
 integration_id: boobpedia
 external_service: Boobpedia
-auth_method: api_key
+api_base_url: https://www.boobpedia.com/boobs/api.php
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  QAR Module  │
+  │  (Performer) │
+  └──────┬───────┘
+         │ Enrichment request
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │  Boobpedia   │────▶│  Performer Data   │
+  │  MediaWiki   │     │  - Biography      │
+  │  API         │     │  - Career history │
+  └──────┬───────┘     │  - Studio info    │
+         │             │  - Filmography    │
+  ┌──────┴───────┐     │  - Infobox data   │
+  │ Rate Limiter │     └───────────────────┘
+  │ (polite)     │
+  └──────────────┘
+
+  Uses MediaWiki API (same as Wikipedia)
+  Integration Role: ENRICHMENT (supplements StashDB/Babepedia)
+  ```
+
+api_details: |
+  **API**: MediaWiki Action API
+  **Base URL**: `https://www.boobpedia.com/boobs/api.php`
+  **Authentication**: None required
+  **Rate Limit**: Be polite (~1 req/sec)
+
+  **Key Parameters**:
+  - `action=query` - Main query action
+  - `prop=extracts` - Page content extracts
+  - `prop=pageimages` - Profile images
+  - `prop=revisions&rvprop=content` - Full wikitext
+  - `list=search` - Search articles
+
+  **Useful Endpoints**:
+  - Search: `action=opensearch&search={name}`
+  - Article: `action=query&titles={title}&prop=extracts|pageimages`
+  - Parse infobox: `action=parse&page={title}&prop=wikitext`
+  - Categories: `action=query&titles={title}&prop=categories`
+
+  **Infobox Fields** (from wikitext):
+  - name, image, birthdate, birthplace
+  - measurements, height, weight
+  - eyecolor, haircolor
+  - yearsactive, ethnicity
+
+database_schema: |
+  ```sql
+  -- Boobpedia article cache (QAR schema)
+  CREATE TABLE qar.boobpedia_articles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    page_id INT UNIQUE NOT NULL,
+    title VARCHAR(500) NOT NULL,
+    extract TEXT,
+    infobox_data JSONB,
+    image_url TEXT,
+    categories TEXT[],
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  CREATE INDEX idx_boobpedia_title ON qar.boobpedia_articles(title);
+  CREATE INDEX idx_boobpedia_expires ON qar.boobpedia_articles(expires_at);
+
+  -- Performer to Boobpedia mapping
+  CREATE TABLE qar.performer_boobpedia_links (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    performer_id UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
+    boobpedia_page_id INT NOT NULL,
+    boobpedia_title VARCHAR(500) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(performer_id)
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/boobpedia/
+  ├── module.go                    # fx module
+  ├── client.go                    # MediaWiki API client
+  ├── provider.go                  # Enrichment provider
+  ├── search.go                    # Article search
+  ├── infobox.go                   # Infobox wikitext parser
+  ├── extract.go                   # Content extraction
+  └── boobpedia_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Boobpedia enrichment provider (MediaWiki-based)
+  type BoobpediaProvider struct {
+    baseURL     string
+    client      *http.Client
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  // Performer enrichment provider interface
+  type PerformerEnrichmentProvider interface {
+    SearchPerformer(ctx context.Context, name string) ([]SearchResult, error)
+    GetArticle(ctx context.Context, title string) (*Article, error)
+    GetPerformerInfo(ctx context.Context, title string) (*PerformerInfo, error)
+    Priority() int  // Returns 20 (after StashDB, before Babepedia)
+  }
+
+  // MediaWiki article
+  type Article struct {
+    PageID     int      `json:"pageid"`
+    Title      string   `json:"title"`
+    Extract    string   `json:"extract"`
+    ImageURL   string   `json:"thumbnail"`
+    Categories []string `json:"categories"`
+  }
+
+  // Parsed performer info from infobox
+  type PerformerInfo struct {
+    Name         string     `json:"name"`
+    ImageURL     string     `json:"image"`
+    BirthDate    *time.Time `json:"birthdate,omitempty"`
+    Birthplace   string     `json:"birthplace"`
+    Measurements string     `json:"measurements"`
+    HeightCm     int        `json:"height_cm"`
+    WeightKg     int        `json:"weight_kg"`
+    EyeColor     string     `json:"eye_color"`
+    HairColor    string     `json:"hair_color"`
+    Ethnicity    string     `json:"ethnicity"`
+    YearsActive  string     `json:"years_active"`
+    Bio          string     `json:"bio"`
+  }
+
+  // Infobox parser (wikitext)
+  func parseInfobox(wikitext string) (*PerformerInfo, error) {
+    info := &PerformerInfo{}
+
+    // Match infobox template
+    infoboxRe := regexp.MustCompile(`\{\{Infobox[^}]*\}\}`)
+    match := infoboxRe.FindString(wikitext)
+
+    // Parse key=value pairs from infobox
+    lines := strings.Split(match, "|")
+    for _, line := range lines {
+      parts := strings.SplitN(line, "=", 2)
+      if len(parts) != 2 { continue }
+      key := strings.TrimSpace(parts[0])
+      value := strings.TrimSpace(parts[1])
+
+      switch key {
+      case "name":
+        info.Name = value
+      case "birthdate":
+        info.BirthDate = parseWikiDate(value)
+      case "measurements":
+        info.Measurements = value
+      // ... etc
+      }
+    }
+
+    return info, nil
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `golang.org/x/time/rate` - Rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - DI
+
+  **External**:
+  - Boobpedia MediaWiki API (public, no key)
+
+env_vars: |
+  ```bash
+  BOOBPEDIA_ENABLED=true
+  BOOBPEDIA_RATE_LIMIT=1            # req/sec
+  BOOBPEDIA_CACHE_TTL=336h          # 14 days
+  ```
+
+config_keys: |
+  ```yaml
+  qar:
+    metadata:
+      providers:
+        boobpedia:
+          enabled: true
+          rate_limit: 1
+          rate_window: 1s
+          cache_ttl: 336h
+          role: enrichment
+          priority: 20             # After StashDB (10), before Babepedia (30)
+          extract_sentences: 5
+  ```
+
+component_interaction: |
+  **Performer Enrichment Flow**:
+  1. Performer identified via StashDB
+  2. Search Boobpedia: `action=opensearch&search={name}`
+  3. Get article with infobox: `action=query&titles={title}&prop=revisions`
+  4. Parse infobox wikitext for structured data
+  5. Get extract for biography text
+  6. Cache article and parsed data
+  7. Link performer to Boobpedia page
+
+  **Data Usage**:
+  - Biography text for performer detail page
+  - Career timeline from `yearsactive`
+  - Physical attributes from infobox
+  - Categories for classification
+
+enrichment_role: |
+  **ENRICHMENT Provider**
+
+  Boobpedia provides encyclopedic performer information:
+  - Detailed biographies (wiki-style)
+  - Career chronology
+  - Studio affiliations
+  - Award history
+  - Category classifications
+
+  **Complementary to other sources**:
+  - StashDB: Identity/fingerprinting (PRIMARY)
+  - Babepedia: Quick stats/measurements
+  - IAFD: Filmography/scene credits
+  - Boobpedia: Detailed biography/history
+
+  **Priority Order**:
+  1. StashDB (10) - PRIMARY
+  2. Boobpedia (20) - ENRICHMENT
+  3. Babepedia (30) - ENRICHMENT
+  4. IAFD (40) - SUPPLEMENTARY
+
+api_request_examples: |
+  **Search for Performer**:
+  ```bash
+  curl "https://www.boobpedia.com/boobs/api.php?action=opensearch&search=Performer+Name&limit=5&format=json"
+  ```
+
+  **Get Article with Infobox**:
+  ```bash
+  curl "https://www.boobpedia.com/boobs/api.php?action=query&titles=Performer_Name&prop=revisions&rvprop=content&format=json"
+  ```
+
+  **Get Extract**:
+  ```bash
+  curl "https://www.boobpedia.com/boobs/api.php?action=query&titles=Performer_Name&prop=extracts|pageimages&exintro=true&explaintext=true&pithumbsize=300&format=json"
+  ```
+
+  **Response Example**:
+  ```json
+  {
+    "query": {
+      "pages": {
+        "12345": {
+          "pageid": 12345,
+          "title": "Performer Name",
+          "extract": "Performer Name is an American...",
+          "thumbnail": {
+            "source": "https://..."
+          }
+        }
+      }
+    }
+  }
+  ```
+
+infobox_parsing: |
+  **Wikitext Infobox Format**:
+  ```
+  {{Infobox person
+  | name = Performer Name
+  | image = performer.jpg
+  | birthdate = {{birth date|1990|01|15}}
+  | birthplace = [[Los Angeles]], [[California]]
+  | measurements = 34D-24-35
+  | height = {{height|ft=5|in=6}}
+  | haircolor = Brown
+  | eyecolor = Green
+  | yearsactive = 2015–present
+  | ethnicity = Caucasian
+  }}
+  ```
+
+  **Parsing Challenges**:
+  - Template expansion (birth date, height)
+  - Wiki links in values
+  - Inconsistent field names
+  - Missing fields
+
+error_handling: |
+  **HTTP Errors**:
+  - 404 Not Found → Article doesn't exist
+  - 429 Too Many Requests → Rate limited
+  - 5xx → Service error
+
+  **Parse Errors**:
+  - No infobox → Use extract only
+  - Malformed wikitext → Partial parse
+  - Template not resolved → Parse raw values
+
+unit_tests: |
+  ```go
+  func TestBoobpedia_ParseInfobox(t *testing.T) {
+    wikitext := `{{Infobox person
+    | name = Test Person
+    | birthdate = {{birth date|1990|01|15}}
+    | measurements = 34D-24-35
+    }}`
+
+    info, err := parseInfobox(wikitext)
+
+    require.NoError(t, err)
+    assert.Equal(t, "Test Person", info.Name)
+    assert.Equal(t, "34D-24-35", info.Measurements)
+  }
+
+  func TestBoobpedia_Search(t *testing.T) {
+    mockResp := `["Search",["Result One","Result Two"]]`
+    provider := NewBoobpediaProvider(mockClient(mockResp))
+
+    results, err := provider.SearchPerformer(ctx, "Search")
+    require.NoError(t, err)
+    assert.Len(t, results, 2)
+  }
+  ```
+
+best_practices: |
+  **API Usage**:
+  - Set User-Agent header identifying bot
+  - Respect rate limits (1 req/sec)
+  - Cache for 14+ days (wiki rarely changes)
+
+  **Infobox Parsing**:
+  - Handle missing fields gracefully
+  - Normalize date formats
+  - Strip wiki markup from values
+
+  **Privacy**:
+  - All data flows through QAR access controls
+  - Requires `legacy:read` scope
+  - Data isolated in qar.* schema
+

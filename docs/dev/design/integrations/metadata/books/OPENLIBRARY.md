@@ -9,12 +9,16 @@ sources:
     url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: CHAPTARR (PRIMARY for books/audiobooks)
+    path: ../../servarr/CHAPTARR.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: BOOK_MODULE
+    path: ../../../features/book/BOOK_MODULE.md
+  - title: AUDIOBOOK_MODULE
+    path: ../../../features/audiobook/AUDIOBOOK_MODULE.md
 ---
 
 ## Table of Contents
@@ -51,7 +55,7 @@ design_refs:
 
 > Integration with OpenLibrary
 
-> Open book metadata database - primary metadata provider for books (Goodreads alternative)
+> SUPPLEMENTARY metadata provider (fallback + enrichment) for books/audiobooks
 **Authentication**: api_key
 
 ---
@@ -94,8 +98,6 @@ internal/integration/openlibrary/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -151,9 +153,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [CHAPTARR (PRIMARY for books/audiobooks)](../../servarr/CHAPTARR.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [BOOK_MODULE](../../../features/book/BOOK_MODULE.md)
+- [AUDIOBOOK_MODULE](../../../features/audiobook/AUDIOBOOK_MODULE.md)
 
 ### External Sources
 - [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash

@@ -22,9 +22,9 @@
 
 # OpenLibrary
 
-> Free book metadata from Open Library
+> Open book metadata - Supplementary to Chaptarr
 
-Open Library provides free book metadata as part of the Internet Archive. Covers millions of books with basic information, covers, and edition details. No API key required. Primary book metadata source since Goodreads closed their API. Links to Internet Archive for borrowable digital copies.
+SUPPLEMENTARY metadata source for books/audiobooks. Used as: (1) **Fallback** when Chaptarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. Free API (no key required) from Internet Archive. Millions of books with covers, editions, authors. Links to borrowable digital copies. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).
 
 ---
 

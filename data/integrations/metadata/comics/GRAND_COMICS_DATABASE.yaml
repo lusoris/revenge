@@ -16,33 +16,310 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Open-source historical comics database (Golden/Silver Age focus)'
-wiki_tagline: '> Historical comic data from Grand Comics Database'
-wiki_overview: Grand Comics Database (GCD) specializes in historical comics from the
-  Golden and Silver Ages. Detailed bibliographic records for vintage comics. Covers
-  publishers that no longer exist. Useful for identifying older comics in your collection.
-  Supplements ComicVine with historical data.
+technical_summary: '> SUPPLEMENTARY historical comics database - Golden/Silver Age specialist'
+wiki_tagline: '> GCD - Historical comic bibliographic data'
+wiki_overview: 'SUPPLEMENTARY metadata source for comics libraries. Specializes in historical comics from Golden (1938-1956) and Silver Age (1956-1970). Detailed bibliographic records for vintage comics. Covers defunct publishers. **Supplements ComicVine** with historical data ComicVine may lack. REST API with free access. Useful for identifying older comics in collections.'
 sources:
+- name: GCD REST API
+  url: https://www.comics.org/api/
+  note: REST API documentation
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
   note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-  url: https://www.postgresql.org/docs/current/arrays.html
-  note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-  url: https://www.postgresql.org/docs/current/functions-json.html
-  note: Auto-resolved from postgresql-json
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../../architecture/03_METADATA_SYSTEM.md
+- title: COMICS_MODULE
+  path: ../../../features/comics/COMICS_MODULE.md
+- title: COMICVINE (PRIMARY for comics)
+  path: ./COMICVINE.md
+- title: HTTP_CLIENT
+  path: ../../../services/HTTP_CLIENT.md
 integration_name: Grand Comics Database (GCD)
-integration_id: grand_comics_database_gcd
-external_service: Grand Comics Database (GCD)
-auth_method: api_key
+integration_id: gcd
+external_service: Grand Comics Database
+api_base_url: https://www.comics.org/api
+auth_method: none
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Comics      │
+  │  Library     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────────┐
+         │ PRIMARY                                  │ SUPPLEMENTARY
+         ▼                                          ▼
+  ┌──────────────┐                           ┌──────────────┐
+  │  ComicVine   │                           │     GCD      │
+  │  (modern)    │                           │ (historical) │
+  └──────────────┘                           └──────┬───────┘
+                                                    │
+                                             ┌──────┴───────┐
+                                             │ Rate Limiter │
+                                             │ (polite)     │
+                                             └──────────────┘
+
+  Focus Areas:
+  - Golden Age (1938-1956)
+  - Silver Age (1956-1970)
+  - Defunct publishers
+  - Bibliographic details
+  ```
+
+api_details: |
+  **API**: GCD REST API
+  **Base URL**: `https://www.comics.org/api`
+  **Authentication**: None required (public API)
+  **Rate Limit**: Be polite (~1 req/sec)
+
+  **Key Endpoints**:
+  - `GET /series/` - Search series
+  - `GET /series/{id}/` - Series details
+  - `GET /issue/{id}/` - Issue details
+  - `GET /publisher/{id}/` - Publisher info
+  - `GET /creator/{id}/` - Creator info
+  - `GET /story/{id}/` - Story details
+
+  **Data Model**:
+  ```
+  Publisher → Series → Issue → Story
+                         ↓
+                      Credits (Creators)
+  ```
+
+database_schema: |
+  ```sql
+  -- GCD series cache
+  CREATE TABLE gcd_series (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    gcd_id INT UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    year_began INT,
+    year_ended INT,
+    publisher_name VARCHAR(255),
+    country_code VARCHAR(10),
+    language_code VARCHAR(10),
+    issue_count INT,
+    fetched_at TIMESTAMPTZ DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  CREATE INDEX idx_gcd_series ON gcd_series(gcd_id);
+
+  -- GCD issue cache
+  CREATE TABLE gcd_issues (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    gcd_id INT UNIQUE NOT NULL,
+    series_id INT NOT NULL,
+    number VARCHAR(50),
+    publication_date VARCHAR(100),
+    price VARCHAR(50),
+    page_count INT,
+    notes TEXT,
+    fetched_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_gcd_issues ON gcd_issues(gcd_id);
+
+  -- Comic to GCD mapping
+  CREATE TABLE comic_gcd_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    comic_issue_id UUID REFERENCES comic_issues(id),
+    gcd_issue_id INT NOT NULL,
+    match_confidence FLOAT,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(comic_issue_id)
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/gcd/
+  ├── module.go                    # fx module
+  ├── client.go                    # GCD API client
+  ├── provider.go                  # Supplementary provider
+  ├── search.go                    # Series/issue search
+  ├── matching.go                  # Fuzzy matching for historical titles
+  └── gcd_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // GCD provider (supplementary to ComicVine)
+  type GCDProvider struct {
+    client      *http.Client
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  // Supplementary comics metadata provider
+  type ComicsSupplementaryProvider interface {
+    SearchSeries(ctx context.Context, query string, year int) ([]SeriesResult, error)
+    GetSeries(ctx context.Context, gcdID int) (*Series, error)
+    GetIssue(ctx context.Context, gcdID int) (*Issue, error)
+    MatchHistoricalComic(ctx context.Context, title string, year int, issueNum string) (*Issue, error)
+    Priority() int  // Returns 20 (after ComicVine=10)
+  }
+
+  // GCD Series
+  type Series struct {
+    ID           int    `json:"id"`
+    Name         string `json:"name"`
+    YearBegan    int    `json:"year_began"`
+    YearEnded    int    `json:"year_ended,omitempty"`
+    Publisher    string `json:"publisher_name"`
+    Country      string `json:"country_code"`
+    Language     string `json:"language_code"`
+    IssueCount   int    `json:"issue_count"`
+    Notes        string `json:"notes,omitempty"`
+  }
+
+  // GCD Issue
+  type Issue struct {
+    ID              int    `json:"id"`
+    SeriesID        int    `json:"series"`
+    Number          string `json:"number"`
+    PublicationDate string `json:"publication_date"`
+    Price           string `json:"price"`
+    PageCount       int    `json:"page_count"`
+    Notes           string `json:"notes,omitempty"`
+    Indicia         string `json:"indicia_publisher"`
+    EditorialCredit string `json:"editing"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `golang.org/x/time/rate` - Polite rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - DI
+
+  **External**:
+  - GCD REST API (free, no key required)
+
+env_vars: |
+  ```bash
+  GCD_ENABLED=true
+  GCD_RATE_LIMIT=1
+  GCD_CACHE_TTL=168h    # 7 days
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      gcd:
+        enabled: true
+        rate_limit: 1
+        rate_window: 1s
+        cache_ttl: 168h
+        role: supplementary
+        priority: 20          # After ComicVine (10)
+        focus:
+          - golden_age        # 1938-1956
+          - silver_age        # 1956-1970
+          - defunct_publishers
+  ```
+
+component_interaction: |
+  **Historical Comic Identification**:
+  1. Comic file added to library
+  2. ComicVine (PRIMARY) returns no match
+  3. Extract year from filename/metadata
+  4. If pre-1980: query GCD
+  5. Search GCD: `GET /series/?name={title}&year_began={year}`
+  6. Match issue by number
+  7. Fetch bibliographic details
+  8. Store GCD mapping
+
+  **Use Cases**:
+  - Golden Age comics (Action Comics #1, Detective Comics, etc.)
+  - Silver Age comics (Fantastic Four #1, Amazing Fantasy #15)
+  - Defunct publishers (Quality, Fawcett, EC Comics)
+  - Pre-Code horror/crime comics
+
+supplementary_role: |
+  **SUPPLEMENTARY Metadata Provider**
+
+  **PRIMARY source**: ComicVine (comprehensive modern database)
+
+  **GCD used as SUPPLEMENTARY**:
+  1. **Fallback** when ComicVine lacks historical data
+  2. **Enrichment** for bibliographic details (price, indicia, notes)
+
+  **When to Use GCD**:
+  - Comics from Golden Age (1938-1956)
+  - Comics from Silver Age (1956-1970)
+  - Defunct publishers not in ComicVine
+  - Detailed publication data (variants, reprints)
+
+api_request_examples: |
+  **Search for Series**:
+  ```bash
+  curl "https://www.comics.org/api/series/?name=Action%20Comics"
+  ```
+
+  **Response**:
+  ```json
+  {
+    "count": 5,
+    "results": [
+      {
+        "id": 100,
+        "name": "Action Comics",
+        "year_began": 1938,
+        "publisher_name": "DC",
+        "issue_count": 1050
+      }
+    ]
+  }
+  ```
+
+  **Get Issue Details**:
+  ```bash
+  curl "https://www.comics.org/api/issue/1/"
+  ```
+
+error_handling: |
+  **HTTP Errors**:
+  - 404 Not Found → Series/issue not in GCD
+  - 429 Too Many Requests → Rate limited
+  - 500+ → Service error
+
+unit_tests: |
+  ```go
+  func TestGCD_SearchSeries(t *testing.T) {
+    mockResp := `{"results":[{"id":100,"name":"Action Comics","year_began":1938}]}`
+    provider := NewGCDProvider(mockClient(mockResp))
+
+    results, err := provider.SearchSeries(ctx, "Action Comics", 1938)
+    require.NoError(t, err)
+    assert.Len(t, results, 1)
+    assert.Equal(t, 1938, results[0].YearBegan)
+  }
+  ```
+
+best_practices: |
+  **API Usage**:
+  - Be polite (1 req/sec max)
+  - Cache aggressively (data rarely changes)
+  - Use for historical comics only
+
+  **Matching**:
+  - Use year to narrow results
+  - Handle variant titles (v1, volume 1, etc.)
+  - Fall back to fuzzy matching for old titles
+
+  **Integration**:
+  - ComicVine is PRIMARY for modern comics
+  - GCD supplements with historical/bibliographic data
+  - Cross-reference for comprehensive coverage

@@ -31,6 +31,7 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [No specific env vars required](#no-specific-env-vars-required)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
@@ -125,11 +126,62 @@ internal/content/collections/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type CollectionService interface {
+  CreateCollection(ctx context.Context, userID uuid.UUID, req CreateCollectionRequest) (*Collection, error)
+  ListCollections(ctx context.Context, userID uuid.UUID, filters CollectionFilters) ([]Collection, error)
+  GetCollection(ctx context.Context, collectionID uuid.UUID) (*CollectionDetail, error)
+  UpdateCollection(ctx context.Context, collectionID uuid.UUID, req UpdateCollectionRequest) (*Collection, error)
+  DeleteCollection(ctx context.Context, collectionID uuid.UUID) error
+
+  AddItems(ctx context.Context, collectionID uuid.UUID, items []CollectionItemRef) (int, error)
+  RemoveItem(ctx context.Context, collectionID uuid.UUID, itemID uuid.UUID) error
+  ReorderItems(ctx context.Context, collectionID uuid.UUID, itemPositions map[uuid.UUID]int) error
+
+  GetCollectionItems(ctx context.Context, collectionID uuid.UUID) ([]CollectionItem, error)
+  EvaluateSmartCollection(ctx context.Context, collectionID uuid.UUID) ([]CollectionItem, error)
+
+  ShareCollection(ctx context.Context, collectionID uuid.UUID, shareWith uuid.UUID, permission string) error
+}
+
+type Collection struct {
+  ID          uuid.UUID              `db:"id" json:"id"`
+  UserID      uuid.UUID              `db:"user_id" json:"user_id"`
+  Name        string                 `db:"name" json:"name"`
+  Description string                 `db:"description" json:"description"`
+  Type        string                 `db:"type" json:"type"`
+  IsPublic    bool                   `db:"is_public" json:"is_public"`
+  Filters     map[string]interface{} `db:"filters" json:"filters,omitempty"`
+  ItemCount   int                    `json:"item_count"`
+  CreatedAt   time.Time              `db:"created_at" json:"created_at"`
+  UpdatedAt   time.Time              `db:"updated_at" json:"updated_at"`
+}
+
+type CollectionItem struct {
+  ID         uuid.UUID `db:"id" json:"id"`
+  ItemType   string    `db:"item_type" json:"item_type"`
+  ItemID     uuid.UUID `db:"item_id" json:"item_id"`
+  Position   int       `db:"position" json:"position"`
+
+  // Polymorphic data (joined from item tables)
+  Title      string    `json:"title"`
+  PosterURL  string    `json:"poster_url,omitempty"`
+}
+
+type SmartCollectionEvaluator interface {
+  Evaluate(ctx context.Context, filters map[string]interface{}) ([]uuid.UUID, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/jackc/pgx/v5/pgtype` - JSONB handling
+- `go.uber.org/fx`
+
 
 
 
@@ -138,11 +190,19 @@ internal/content/collections/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# No specific env vars required
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+collections:
+  max_items_per_collection: 5000
+  smart_collection_cache_ttl: 5m
+```
+
 
 
 ## API Endpoints

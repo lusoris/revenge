@@ -9,12 +9,16 @@ sources:
     url: ../../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: LIDARR (PRIMARY for music)
+    path: ../../servarr/LIDARR.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: MUSIC_MODULE
+    path: ../../../features/music/MUSIC_MODULE.md
+  - title: SCROBBLING (Last.fm scrobbling)
+    path: ../../../features/shared/SCROBBLING.md
 ---
 
 ## Table of Contents
@@ -31,6 +35,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Last.fm API](#lastfm-api)
+- [Caching](#caching)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -51,8 +57,8 @@ design_refs:
 
 > Integration with Last.fm
 
-> Music scrobbling and metadata provider - artist bio, tags, similar artists
-**API Base URL**: `https://www.last.fm/api/intro`
+> SUPPLEMENTARY enrichment provider (artist bios, tags, similar artists) + scrobbling
+**API Base URL**: `https://ws.audioscrobbler.com/2.0/`
 **Authentication**: api_key
 
 ---
@@ -95,8 +101,6 @@ internal/integration/lastfm/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -108,11 +112,74 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Last.fm provider implementation
+type LastFMProvider struct {
+  client      *LastFMClient
+  apiKey      string
+  cache       Cache
+}
+
+// Metadata provider interface
+type MetadataProvider interface {
+  // Artist
+  GetArtistInfo(ctx context.Context, artistName string, mbid *uuid.UUID) (*ArtistInfo, error)
+  GetArtistTags(ctx context.Context, artistName string) ([]Tag, error)
+  GetSimilarArtists(ctx context.Context, artistName string, limit int) ([]SimilarArtist, error)
+
+  // Album
+  GetAlbumInfo(ctx context.Context, artistName, albumName string, mbid *uuid.UUID) (*AlbumInfo, error)
+
+  // Track
+  GetTrackInfo(ctx context.Context, artistName, trackName string, mbid *uuid.UUID) (*TrackInfo, error)
+  GetSimilarTracks(ctx context.Context, artistName, trackName string, limit int) ([]SimilarTrack, error)
+}
+
+// Artist info from Last.fm
+type ArtistInfo struct {
+  Name       string         `xml:"name"`
+  MBID       string         `xml:"mbid"`
+  URL        string         `xml:"url"`
+  Image      []Image        `xml:"image"`
+  Listeners  int            `xml:"stats>listeners"`
+  PlayCount  int64          `xml:"stats>playcount"`
+  Bio        Bio            `xml:"bio"`
+  Similar    []SimilarArtist `xml:"similar>artist"`
+  Tags       []Tag          `xml:"tags>tag"`
+}
+
+type Bio struct {
+  Summary string `xml:"summary"`
+  Content string `xml:"content"`
+}
+
+type Tag struct {
+  Name  string `xml:"name"`
+  URL   string `xml:"url"`
+  Count int    `xml:"count"`
+}
+
+type SimilarArtist struct {
+  Name  string  `xml:"name"`
+  MBID  string  `xml:"mbid"`
+  Match float64 `xml:"match"`  // 0.0-1.0 similarity score
+  Image []Image `xml:"image"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `encoding/xml` - XML parsing (Last.fm uses XML by default)
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- Last.fm API 2.0 (free with API key)
+
 
 
 
@@ -121,11 +188,28 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Last.fm API
+LASTFM_API_KEY=your_api_key_here
+LASTFM_API_SECRET=your_api_secret_here
+
+# Caching
+LASTFM_CACHE_TTL=168h  # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    lastfm:
+      enabled: true
+      api_key: ${LASTFM_API_KEY}
+      api_secret: ${LASTFM_API_SECRET}
+      cache_ttl: 168h
+```
+
 
 
 
@@ -152,9 +236,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [LIDARR (PRIMARY for music)](../../servarr/LIDARR.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [MUSIC_MODULE](../../../features/music/MUSIC_MODULE.md)
+- [SCROBBLING (Last.fm scrobbling)](../../../features/shared/SCROBBLING.md)
 
 ### External Sources
 - [Go context](../../../../sources/go/stdlib/context.md) - Auto-resolved from go-context

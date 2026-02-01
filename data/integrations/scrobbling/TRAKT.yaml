@@ -16,12 +16,9 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Social platform for tracking movies and TV shows'
-wiki_tagline: '> Track movies and TV shows with Trakt'
-wiki_overview: Trakt integration syncs your watch history for movies and TV shows.
-  Scrobble plays automatically as you watch. Import your existing Trakt history to
-  mark content as watched. Sync watchlists both directions. See play counts and last
-  watched dates. OAuth login keeps your credentials secure.
+technical_summary: '> Social platform for tracking + metadata enrichment provider with multi-source ratings'
+wiki_tagline: '> Track movies/TV and enrich metadata with Trakt'
+wiki_overview: Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata enrichment. Syncs watch history automatically as you watch. Import existing Trakt history to mark content as watched. Sync watchlists bidirectionally. METADATA ENRICHMENT - Provides provider IDs (TMDb, TVDb, IMDb, etc.), multi-source ratings (TMDb, IMDb, Rotten Tomatoes), and links to other services. VIP features include lists, stats, and advanced filtering. OAuth login keeps credentials secure.
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro
@@ -42,5 +39,769 @@ design_refs:
 integration_name: Trakt
 integration_id: trakt
 external_service: Trakt
-api_base_url: https://api.trakt.tv/oauth/token
+api_base_url: https://api.trakt.tv
 auth_method: oauth
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│    Trakt     │────▶│    Trakt    │
+  │  Playback   │◀────│ Integration  │◀────│     API     │
+  │  Events     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │ Scrobble      │
+                      │ Queue (River) │
+                      └───────────────┘
+  ```
+
+api_details: |
+  **API Version**: v2
+  **Base URL**: `https://api.trakt.tv`
+  **Authentication**: OAuth 2.0 (Authorization Code Grant)
+  **Rate Limit**: 1000 requests per 5 minutes
+
+  **Key Endpoints**:
+
+  *OAuth*:
+  - `/oauth/authorize` - OAuth authorization
+  - `/oauth/token` - Token exchange/refresh
+  - `/users/settings` - Get user VIP status and settings
+
+  *Scrobbling*:
+  - `/scrobble/start` - Start scrobbling
+  - `/scrobble/pause` - Pause scrobbling
+  - `/scrobble/stop` - Stop scrobbling (mark as watched)
+
+  *Sync*:
+  - `/sync/history` - Get/add watch history
+  - `/sync/watchlist` - Get/add watchlist items
+  - `/sync/ratings` - Get/add ratings
+  - `/users/me` - Get current user profile
+
+  *Metadata Enrichment*:
+  - `/movies/{id}?extended=full` - Get movie with IDs, ratings, translations
+  - `/shows/{id}?extended=full` - Get show with IDs, ratings, translations
+  - `/seasons/{id}/{season}?extended=full` - Get season with episodes
+  - `/episodes/{id}/{season}/{episode}?extended=full` - Get episode details
+  - `/movies/{id}/aliases` - Get alternative titles
+  - `/shows/{id}/aliases` - Get alternative show titles
+
+  *VIP-Only Endpoints* ⭐:
+  - `/users/me/lists` - Get user's custom lists (VIP required)
+  - `/users/me/stats` - Advanced statistics (VIP required)
+  - `/recommendations/movies` - Personalized recommendations (VIP required)
+
+  **Required Headers**:
+  - `Content-Type: application/json`
+  - `trakt-api-version: 2`
+  - `trakt-api-key: {client_id}`
+  - `Authorization: Bearer {access_token}`
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Trakt OAuth connections
+  CREATE TABLE trakt_connections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    token_expires_at TIMESTAMPTZ NOT NULL,
+
+    trakt_user_slug VARCHAR(255) NOT NULL,
+    trakt_user_id INTEGER NOT NULL,
+
+    -- VIP/Premium status
+    is_vip BOOLEAN DEFAULT false,
+    vip_expires_at TIMESTAMPTZ,
+    vip_checked_at TIMESTAMPTZ,
+
+    last_sync_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(user_id)
+  );
+  CREATE INDEX idx_trakt_connections_user ON trakt_connections(user_id);
+  CREATE INDEX idx_trakt_connections_vip ON trakt_connections(is_vip) WHERE is_vip = true;
+
+  -- Scrobble queue (River jobs)
+  CREATE TABLE trakt_scrobble_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    connection_id UUID NOT NULL REFERENCES trakt_connections(id) ON DELETE CASCADE,
+
+    content_type VARCHAR(50) NOT NULL,              -- 'movie', 'episode'
+    content_id UUID NOT NULL,
+
+    action VARCHAR(20) NOT NULL,                    -- 'start', 'pause', 'stop'
+    progress_percent NUMERIC(5,2),
+
+    trakt_id INTEGER,
+    tmdb_id INTEGER,
+    imdb_id VARCHAR(50),
+    tvdb_id INTEGER,
+
+    scheduled_at TIMESTAMPTZ DEFAULT now(),
+    completed_at TIMESTAMPTZ,
+    failed_at TIMESTAMPTZ,
+    error_message TEXT
+  );
+  CREATE INDEX idx_trakt_scrobble_user ON trakt_scrobble_queue(user_id);
+  CREATE INDEX idx_trakt_scrobble_scheduled ON trakt_scrobble_queue(scheduled_at) WHERE completed_at IS NULL;
+
+  -- Watch history sync tracking
+  CREATE TABLE trakt_watch_history (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    connection_id UUID NOT NULL REFERENCES trakt_connections(id) ON DELETE CASCADE,
+
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID NOT NULL,
+
+    watched_at TIMESTAMPTZ NOT NULL,
+    trakt_id BIGINT NOT NULL,                       -- Trakt history ID
+
+    synced_to_trakt BOOLEAN DEFAULT true,
+    synced_from_trakt BOOLEAN DEFAULT false,
+
+    UNIQUE(connection_id, trakt_id)
+  );
+  CREATE INDEX idx_trakt_history_connection ON trakt_watch_history(connection_id);
+
+  -- Watchlist sync
+  CREATE TABLE trakt_watchlist (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    connection_id UUID NOT NULL REFERENCES trakt_connections(id) ON DELETE CASCADE,
+
+    content_type VARCHAR(50) NOT NULL,
+    content_id UUID,
+
+    trakt_id INTEGER NOT NULL,
+    listed_at TIMESTAMPTZ NOT NULL,
+
+    synced_to_revenge BOOLEAN DEFAULT false,
+
+    UNIQUE(connection_id, content_type, trakt_id)
+  );
+  ```
+
+metadata_enrichment: |
+  **CRITICAL: Trakt is NOT just scrobbling - it's a metadata enrichment provider**
+
+  **Provider IDs** - Trakt aggregates IDs from multiple sources:
+  ```json
+  "ids": {
+    "trakt": 16662,
+    "slug": "inception-2010",
+    "imdb": "tt1375666",
+    "tmdb": 27205,
+    "tvdb": 349232,      // For TV shows
+    "tvrage": 12345      // Legacy, may be null
+  }
+  ```
+
+  **Use Case**: Cross-referencing
+  - User searches for movie on Trakt
+  - Trakt returns TMDb ID, IMDb ID
+  - Use TMDb ID to fetch from Radarr or direct TMDb API
+  - Use IMDb ID for OMDb ratings lookup
+  - **Benefits**: Single API call gets IDs for ALL providers
+
+  **Multi-Source Ratings** - Trakt aggregates ratings from multiple platforms:
+  ```json
+  "rating": 8.8,           // Trakt community rating
+  "votes": 123456,
+  "ratings": {
+    "trakt": {
+      "rating": 8.8,
+      "votes": 123456,
+      "distribution": {
+        "1": 78,
+        "2": 45,
+        ...
+        "10": 45678
+      }
+    },
+    "imdb": {
+      "rating": 8.7,
+      "votes": 2500000
+    },
+    "tmdb": {
+      "rating": 8.6,
+      "votes": 35000
+    },
+    "rotten_tomatoes": {
+      "rating": 87,          // Tomatometer %
+      "votes": 350,
+      "meter": "certified_fresh"
+    },
+    "metacritic": {
+      "rating": 74,
+      "votes": 42
+    }
+  }
+  ```
+
+  **Translations & Aliases** - Alternative titles in different languages:
+  ```
+  GET /movies/{id}/translations/{language}
+  GET /movies/{id}/aliases
+  ```
+  Returns localized titles, taglines, overviews
+
+  **Links** - External URLs to other services:
+  ```json
+  "homepage": "https://www.inceptionmovie.com",
+  "trailer": "https://youtube.com/watch?v=...",
+  "imdb_url": "https://www.imdb.com/title/tt1375666/",
+  "tmdb_url": "https://www.themoviedb.org/movie/27205",
+  "trakt_url": "https://trakt.tv/movies/inception-2010"
+  ```
+
+  **Metadata Fetching Strategy**:
+  1. User searches for "Inception" in Revenge
+  2. Query Trakt search API → get IDs (trakt, tmdb, imdb)
+  3. Use TMDb ID to check Radarr (PRIMARY metadata source)
+  4. If not in Radarr, use Trakt's full metadata as enrichment
+  5. Store Trakt ratings alongside TMDb/IMDb ratings
+  6. Use IMDb ID for OMDb API to get RT/Metacritic scores
+
+vip_features: |
+  **VIP Status Detection**:
+
+  During OAuth, fetch user settings to determine VIP status:
+  ```
+  GET https://api.trakt.tv/users/settings
+  Authorization: Bearer {access_token}
+  ```
+
+  **Response**:
+  ```json
+  {
+    "user": {
+      "username": "john_doe",
+      "private": false,
+      "vip": true,                    // VIP status
+      "vip_ep": false,                // VIP Executive Producer (higher tier)
+      "vip_og": false,                // VIP Original Gangster (legacy)
+      "vip_years": 3,                 // Years as VIP
+      "vip_cover_image": "..."
+    },
+    "account": {
+      "timezone": "America/Los_Angeles",
+      "cover_image": "...",
+      "vip_cover_image": "..."       // VIP users can customize cover
+    }
+  }
+  ```
+
+  **Store VIP Status**:
+  - During OAuth callback, call `/users/settings`
+  - Extract `user.vip` boolean
+  - Store in `trakt_connections.is_vip`
+  - Store `vip_checked_at` timestamp
+  - Refresh VIP status monthly (background job)
+
+  **VIP-Only Features**:
+
+  ⭐ **Custom Lists** (`/users/me/lists`) - VIP required:
+  - Create unlimited custom lists
+  - Share lists publicly
+  - Collaborative lists
+  - List sorting/filtering
+
+  ⭐ **Advanced Stats** (`/users/me/stats`) - VIP required:
+  - Detailed watch statistics
+  - Genre breakdown
+  - Decade analysis
+  - Network/studio stats
+
+  ⭐ **Personalized Recommendations** (`/recommendations/movies`) - VIP required:
+  - AI-based recommendations
+  - Based on watch history
+  - Excludes already watched
+
+  ⭐ **List Sync** - VIP required:
+  - Sync Revenge collections to Trakt lists
+  - Bidirectional sync
+  - Auto-update on changes
+
+  **Handling VIP-Only Endpoints**:
+  ```go
+  func (s *TraktService) GetUserLists(ctx context.Context, userID uuid.UUID) ([]List, error) {
+    conn, err := s.repo.GetConnection(ctx, userID)
+    if err != nil {
+      return nil, err
+    }
+
+    if !conn.IsVIP {
+      return nil, ErrTraktVIPRequired
+    }
+
+    // Safe to call VIP endpoint
+    return s.client.GetLists(ctx, conn.AccessToken)
+  }
+  ```
+
+  **UI Handling**:
+  - Show VIP badge in Trakt settings if user has VIP
+  - Disable VIP-only features with tooltip: "Requires Trakt VIP"
+  - Provide upgrade link: https://trakt.tv/vip
+
+module_structure: |
+  ```
+  internal/integrations/trakt/
+  ├── module.go                    # fx module
+  ├── client.go                    # Trakt API client
+  ├── oauth.go                     # OAuth 2.0 flow
+  ├── scrobble.go                  # Scrobbling service
+  ├── sync.go                      # History/watchlist sync
+  ├── jobs.go                      # River jobs
+  ├── types.go                     # Trakt API types
+  └── trakt_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Trakt integration service
+  type TraktService interface {
+    // OAuth
+    GetAuthURL(ctx context.Context, userID uuid.UUID, redirectURI string) (string, error)
+    ExchangeCode(ctx context.Context, userID uuid.UUID, code string) (*TraktConnection, error)
+    RefreshToken(ctx context.Context, connectionID uuid.UUID) error
+
+    // Scrobbling
+    StartScrobble(ctx context.Context, userID uuid.UUID, contentType string, contentID uuid.UUID, progress float64) error
+    PauseScrobble(ctx context.Context, userID uuid.UUID, contentType string, contentID uuid.UUID, progress float64) error
+    StopScrobble(ctx context.Context, userID uuid.UUID, contentType string, contentID uuid.UUID, progress float64) error
+
+    // Sync
+    SyncHistory(ctx context.Context, connectionID uuid.UUID, direction string) error  // "import", "export", "bidirectional"
+    SyncWatchlist(ctx context.Context, connectionID uuid.UUID, direction string) error
+
+    // Stats
+    GetUserStats(ctx context.Context, connectionID uuid.UUID) (*TraktStats, error)
+  }
+
+  // Trakt OAuth connection
+  type TraktConnection struct {
+    ID            uuid.UUID `json:"id"`
+    UserID        uuid.UUID `json:"user_id"`
+    AccessToken   string    `json:"-"`
+    RefreshToken  string    `json:"-"`
+    ExpiresAt     time.Time `json:"expires_at"`
+    TraktUserSlug string    `json:"trakt_user_slug"`
+    TraktUserID   int       `json:"trakt_user_id"`
+  }
+
+  // Scrobble payload
+  type ScrobblePayload struct {
+    Movie   *MovieIdentifiers   `json:"movie,omitempty"`
+    Episode *EpisodeIdentifiers `json:"episode,omitempty"`
+    Progress float64            `json:"progress"`
+  }
+
+  type MovieIdentifiers struct {
+    Title string                `json:"title"`
+    Year  int                   `json:"year"`
+    IDs   map[string]interface{} `json:"ids"`
+  }
+
+  type EpisodeIdentifiers struct {
+    Season int                   `json:"season"`
+    Number int                   `json:"number"`
+    Title  string                `json:"title,omitempty"`
+    IDs    map[string]interface{} `json:"ids"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `golang.org/x/oauth2` - OAuth 2.0 client
+  - `golang.org/x/net/proxy` - SOCKS5 proxy support for external API calls
+  - `github.com/google/uuid` - UUID support
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - Dependency injection
+
+  **External Services**:
+  - **Trakt.tv API** - Dual-purpose: Scrobbling + Metadata enrichment provider (via proxy/VPN)
+  - Trakt.tv account with OAuth app registration
+
+env_vars: |
+  ```bash
+  # Trakt OAuth app credentials
+  TRAKT_CLIENT_ID=your_client_id
+  TRAKT_CLIENT_SECRET=your_client_secret
+  TRAKT_REDIRECT_URI=https://your-domain.com/oauth/trakt/callback
+
+  # Sync settings
+  TRAKT_AUTO_SCROBBLE=true
+  TRAKT_SCROBBLE_THRESHOLD=90  # Scrobble at 90% progress
+  ```
+
+config_keys: |
+  ```yaml
+  integrations:
+    trakt:
+      client_id: ${TRAKT_CLIENT_ID}
+      client_secret: ${TRAKT_CLIENT_SECRET}
+      redirect_uri: ${TRAKT_REDIRECT_URI}
+
+      proxy: tor                 # Route through proxy/VPN (see HTTP_CLIENT service)
+
+      auto_scrobble: true
+      scrobble_threshold: 90     # Percent watched to mark as scrobbled
+
+      sync:
+        auto_import_history: true
+        auto_export_plays: true
+        bidirectional_watchlist: true
+        sync_interval: 3600      # 1 hour
+
+      metadata:
+        use_for_enrichment: true # Use Trakt as metadata enrichment provider
+        fetch_ratings: true      # Fetch multi-source ratings (IMDb, TMDb, RT)
+        fetch_ids: true          # Fetch provider IDs cross-reference
+
+      vip:
+        check_interval: 2592000  # Check VIP status monthly (30 days in seconds)
+        enable_lists: true       # Enable list sync for VIP users
+        enable_recommendations: true  # Enable recommendations for VIP users
+  ```
+
+component_interaction: |
+  **OAuth Flow** (with VIP detection):
+  1. User clicks "Connect Trakt" in Revenge settings
+  2. Redirect to Trakt OAuth authorize URL with client_id, redirect_uri, state
+  3. User authorizes on Trakt
+  4. Trakt redirects back with authorization code
+  5. Exchange code for access_token and refresh_token
+  6. **Fetch user settings** → GET /users/settings to check VIP status
+  7. Store tokens + VIP status in trakt_connections table
+  8. Tokens expire after 3 months, auto-refresh when needed
+  9. VIP status rechecked monthly via background job
+
+  **Scrobbling Workflow**:
+  1. User starts watching movie/episode
+  2. Playback event triggers TraktService.StartScrobble()
+  3. River job queues scrobble request
+  4. POST /scrobble/start with movie/episode identifiers and progress
+  5. User pauses → POST /scrobble/pause
+  6. User reaches 90% or stops → POST /scrobble/stop (marks as watched)
+  7. Trakt records play in user's history
+
+  **History Sync** (bidirectional):
+  1. River job runs hourly
+  2. GET /sync/history from Trakt (last 30 days)
+  3. Compare with local watch_history table
+  4. Import new Trakt plays as watched in Revenge
+  5. Export new Revenge plays to Trakt
+  6. Store trakt_id to prevent duplicates
+
+  **Watchlist Sync**:
+  1. GET /sync/watchlist from Trakt
+  2. Add items to Revenge requests if not already in library
+  3. On new Revenge request, POST /sync/watchlist to add to Trakt
+
+oauth_flow: |
+  **Authorization Code Grant**:
+
+  **Step 1 - Authorize URL**:
+  ```
+  https://trakt.tv/oauth/authorize?
+    response_type=code&
+    client_id={client_id}&
+    redirect_uri={redirect_uri}&
+    state={random_state}
+  ```
+
+  **Step 2 - User Authorizes**:
+  User logs into Trakt and approves application access
+
+  **Step 3 - Exchange Code**:
+  ```
+  POST https://api.trakt.tv/oauth/token
+  Content-Type: application/json
+
+  {
+    "code": "{authorization_code}",
+    "client_id": "{client_id}",
+    "client_secret": "{client_secret}",
+    "redirect_uri": "{redirect_uri}",
+    "grant_type": "authorization_code"
+  }
+  ```
+
+  **Response**:
+  ```json
+  {
+    "access_token": "abc123...",
+    "token_type": "Bearer",
+    "expires_in": 7776000,
+    "refresh_token": "xyz789...",
+    "scope": "public",
+    "created_at": 1706745600
+  }
+  ```
+
+  **Step 4 - Refresh Token**:
+  ```
+  POST https://api.trakt.tv/oauth/token
+  Content-Type: application/json
+
+  {
+    "refresh_token": "{refresh_token}",
+    "client_id": "{client_id}",
+    "client_secret": "{client_secret}",
+    "redirect_uri": "{redirect_uri}",
+    "grant_type": "refresh_token"
+  }
+  ```
+
+api_request_examples: |
+  **Start Scrobble (Movie)**:
+  ```
+  POST https://api.trakt.tv/scrobble/start
+  Content-Type: application/json
+  trakt-api-version: 2
+  trakt-api-key: {client_id}
+  Authorization: Bearer {access_token}
+
+  {
+    "movie": {
+      "title": "Inception",
+      "year": 2010,
+      "ids": {
+        "trakt": 16662,
+        "slug": "inception-2010",
+        "imdb": "tt1375666",
+        "tmdb": 27205
+      }
+    },
+    "progress": 15.5
+  }
+  ```
+
+  **Response**:
+  ```json
+  {
+    "id": 1234567890,
+    "action": "start",
+    "progress": 15.5,
+    "sharing": {
+      "twitter": false,
+      "mastodon": false
+    },
+    "movie": {
+      "title": "Inception",
+      "year": 2010,
+      "ids": { ... }
+    }
+  }
+  ```
+
+  **Stop Scrobble (Episode)**:
+  ```
+  POST https://api.trakt.tv/scrobble/stop
+  Content-Type: application/json
+  trakt-api-version: 2
+  trakt-api-key: {client_id}
+  Authorization: Bearer {access_token}
+
+  {
+    "episode": {
+      "season": 1,
+      "number": 1,
+      "title": "Pilot",
+      "ids": {
+        "trakt": 73640,
+        "tvdb": 349232,
+        "imdb": "tt0959621",
+        "tmdb": 62085
+      }
+    },
+    "show": {
+      "title": "Breaking Bad",
+      "year": 2008,
+      "ids": {
+        "trakt": 1,
+        "slug": "breaking-bad",
+        "tvdb": 81189,
+        "imdb": "tt0903747",
+        "tmdb": 1396
+      }
+    },
+    "progress": 100
+  }
+  ```
+
+  **Get Watch History**:
+  ```
+  GET https://api.trakt.tv/sync/history?
+    type=movies&
+    page=1&
+    limit=100&
+    start_at=2026-01-01T00:00:00Z
+  trakt-api-version: 2
+  trakt-api-key: {client_id}
+  Authorization: Bearer {access_token}
+  ```
+
+  **Response**:
+  ```json
+  [
+    {
+      "id": 9876543210,
+      "watched_at": "2026-01-15T20:30:00.000Z",
+      "action": "scrobble",
+      "type": "movie",
+      "movie": {
+        "title": "Inception",
+        "year": 2010,
+        "ids": { ... }
+      }
+    }
+  ]
+  ```
+
+scrobbling_workflow: |
+  **Real-Time Scrobbling**:
+
+  **Scrobble Lifecycle**:
+  1. **Start** - Sent when playback begins (progress 0-5%)
+  2. **Pause** - Sent when user pauses (optional)
+  3. **Stop** - Sent at 90%+ progress or when user stops
+
+  **Progress Calculation**:
+  ```
+  progress = (current_time / total_duration) * 100
+  ```
+
+  **Scrobble Threshold**:
+  - Default: 90% (configurable)
+  - Movie must be watched for at least 90% to count as "watched"
+  - Episode must reach 90% to count
+
+  **Debouncing**:
+  - Start scrobble: Send immediately
+  - Pause scrobble: Debounce 5 seconds (ignore rapid pause/unpause)
+  - Stop scrobble: Send immediately if threshold met
+
+  **Error Handling**:
+  - Queue failed scrobbles in trakt_scrobble_queue
+  - Retry with exponential backoff (max 5 attempts)
+  - If user offline, queue and sync when online
+
+watchlist_sync: |
+  **Bidirectional Watchlist Sync**:
+
+  **Import from Trakt**:
+  1. GET /sync/watchlist (movies and shows)
+  2. For each item:
+     - Check if already in Revenge library
+     - If not, add to trakt_watchlist table
+     - Optionally auto-create request in Revenge
+  3. Store listed_at timestamp to detect removals
+
+  **Export to Trakt**:
+  1. User adds movie/show to Revenge watchlist
+  2. POST /sync/watchlist/movies or /sync/watchlist/shows
+  3. Store Trakt confirmation
+
+  **Conflict Resolution**:
+  - Trakt is source of truth for imports
+  - Local additions always exported
+  - Removals: If item deleted from Trakt, keep in Revenge but mark as "not synced"
+
+history_sync: |
+  **Watch History Sync**:
+
+  **Import from Trakt** (initial sync):
+  1. GET /sync/history with pagination (100 items per page)
+  2. Import all historical plays
+  3. Mark movies/episodes as watched in Revenge
+  4. Store trakt_id to prevent duplicate imports
+
+  **Export to Trakt**:
+  1. User watches content in Revenge (via scrobbling or manual mark)
+  2. If not already in trakt_watch_history, POST /sync/history
+  3. Payload includes watched_at timestamp
+
+  **Incremental Sync**:
+  - Store last_sync_at timestamp
+  - Only fetch plays since last sync
+  - Reduces API calls and processing time
+
+  **Duplicate Detection**:
+  - Use trakt_id for history entries
+  - Check tmdb_id/imdb_id/tvdb_id matches
+  - Ignore plays within 5 minutes of each other
+
+rate_limiting: |
+  **Rate Limits**:
+  - **Global**: 1000 requests per 5 minutes
+  - **Per Endpoint**: Some endpoints have stricter limits
+
+  **Rate Limit Headers**:
+  ```
+  X-Ratelimit-Limit: 1000
+  X-Ratelimit-Remaining: 987
+  X-Ratelimit-Reset: 1706745900
+  ```
+
+  **Handling**:
+  - Use golang.org/x/time/rate limiter
+  - Track remaining requests from headers
+  - If rate limited (429), sleep until reset time
+  - Queue non-urgent requests (history sync) during off-peak
+
+  **Burst Handling**:
+  - Allow burst of 10 requests for immediate scrobbles
+  - Throttle background syncs to 10 req/min
+
+unit_tests: |
+  ```go
+  func TestTraktService_OAuth(t *testing.T) {
+    // Test OAuth URL generation
+    // Test code exchange
+    // Test token refresh
+  }
+
+  func TestTraktService_Scrobble(t *testing.T) {
+    // Test start/pause/stop scrobbling
+    // Test progress calculation
+    // Test threshold logic
+  }
+
+  func TestTraktService_HistorySync(t *testing.T) {
+    // Test import from Trakt
+    // Test export to Trakt
+    // Test duplicate detection
+  }
+
+  func TestTraktService_RateLimit(t *testing.T) {
+    // Test rate limiter respects 1000/5min
+    // Test 429 retry logic
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestTrakt_FullWorkflow(t *testing.T) {
+    // Use Trakt sandbox environment (if available)
+    // Test OAuth flow
+    // Test scrobble movie → verify in Trakt history
+    // Test sync history → verify imported to Revenge
+    // Test watchlist bidirectional sync
+  }
+  ```

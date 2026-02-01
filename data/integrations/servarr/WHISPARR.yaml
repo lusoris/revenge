@@ -55,3 +55,132 @@ integration_name: Whisparr v3
 integration_id: whisparr_v3
 external_service: Whisparr v3
 auth_method: api_key
+api_base_url: http://localhost:6969/api/v3
+
+dual_role_metadata_and_downloads: |
+  **CRITICAL: Whisparr serves DUAL purposes in the Revenge architecture**:
+
+  **1. PRIMARY Metadata Aggregator**:
+  - Whisparr is the PRIMARY source for adult content metadata in Revenge (QAR system)
+  - It aggregates metadata from StashDB (adult content database)
+  - Maintains local cache of performer/scene information (StashDB IDs, performer details, scene metadata)
+  - Revenge queries Whisparr API for adult metadata BEFORE falling back to direct StashDB/Stash APIs
+  - Provides unified, consistent metadata interface
+  - Reduces direct API calls to external services (rate limiting, availability, privacy)
+
+  **2. Download Automation Manager**:
+  - Handles adult scene acquisition through configured indexers and download clients
+  - Monitors performers/studios for new releases and automatically downloads
+  - Manages file organization within QAR schema (adult content isolation)
+  - Webhooks notify Revenge when scenes are ready
+
+  **Metadata Flow**:
+  ```
+  External (StashDB) → Whisparr (local aggregation) → Revenge QAR System
+                            ↓
+                  (optional direct StashDB/Stash for enrichment)
+  ```
+
+  **Why This Matters**:
+  - Whisparr is NOT just a download tool - it's the metadata backbone for adult content
+  - Direct StashDB/Stash integrations are SUPPLEMENTARY for enrichment
+  - This dual-role pattern is consistent across ALL Arr services
+  - Privacy benefit: Local metadata cache reduces external calls to adult content databases
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│  Whisparr    │────▶│  Whisparr   │
+  │  QAR Module │◀────│ Integration  │◀────│  (eros)     │
+  └─────────────┘     └──────┬───────┘     └─────────────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
+api_details: |
+  **API Version**: v3
+  **Base URL**: `http://localhost:6969/api/v3` (configurable)
+  **Authentication**: X-Api-Key header
+  **Branch**: eros (adult content optimized)
+
+  **Key Endpoints**:
+  - `/site` - List/add/delete sites (performers)
+  - `/site/{id}` - Get/update site details
+  - `/movie` - Scene/movie management
+  - `/command` - Trigger searches
+  - `/calendar` - Upcoming releases
+
+database_schema: |
+  **Schema**: `qar` (adult content isolation)
+
+  ```sql
+  CREATE TABLE qar.whisparr_instances (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    base_url TEXT NOT NULL,
+    api_key TEXT NOT NULL,
+    enabled BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  CREATE TABLE qar.whisparr_performers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    performer_id UUID NOT NULL REFERENCES qar.performers(id) ON DELETE CASCADE,
+    whisparr_instance_id UUID NOT NULL REFERENCES qar.whisparr_instances(id) ON DELETE CASCADE,
+    whisparr_site_id INTEGER NOT NULL,
+    monitored BOOLEAN DEFAULT true,
+    UNIQUE(performer_id, whisparr_instance_id)
+  );
+
+  CREATE TABLE qar.whisparr_scenes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    scene_id UUID NOT NULL REFERENCES qar.scenes(id) ON DELETE CASCADE,
+    whisparr_movie_id INTEGER NOT NULL,
+    has_file BOOLEAN DEFAULT false,
+    file_path TEXT,
+    UNIQUE(scene_id)
+  );
+  ```
+
+api_request_examples: |
+  **Add Site (Performer)**:
+  ```
+  POST http://localhost:6969/api/v3/site
+  X-Api-Key: your_api_key
+
+  {
+    "foreignId": "stashdb-performer-uuid",
+    "name": "Performer Name",
+    "qualityProfileId": 1,
+    "rootFolderPath": "/adult",
+    "monitored": true
+  }
+  ```
+
+webhook_handling: |
+  **Webhook Payload** (MovieDownload):
+  ```json
+  {
+    "eventType": "Download",
+    "movie": {
+      "id": 123,
+      "title": "Scene Title",
+      "stashId": "uuid-from-stashdb"
+    },
+    "movieFile": {
+      "path": "/adult/scene.mp4",
+      "quality": "Bluray-1080p",
+      "size": 5368709120
+    }
+  }
+  ```
+
+pirate_terminology: |
+  **QAR Obfuscation** (pirate theme):
+  - "Site" → Performer/Studio
+  - "Movie" → Scene
+  - "Root Folder" → "Cargo Hold"
+  - Integrated with QAR schema (`qar.*` tables)

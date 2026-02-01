@@ -22,9 +22,9 @@
 
 # TheTVDB
 
-> TV show metadata from TheTVDB
+> Direct TheTVDB API - Supplementary to Sonarr
 
-TheTVDB provides detailed TV show metadata including episode names, air dates, and season artwork. Especially strong for anime and international shows. Episode ordering options (DVD, absolute, aired) handle different numbering schemes. Requires free API key to access.
+SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Sonarr. Free API with JWT authentication. Strong anime support with multiple episode ordering (aired/DVD/absolute). Multi-language metadata. **Optional proxy/VPN routing** for restricted regions (via HTTP_CLIENT service).
 
 ---
 

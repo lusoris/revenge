@@ -2,16 +2,29 @@
 
 ---
 sources:
+  - name: FANDOM API
+    url: https://community.fandom.com/wiki/Community_Central:API
+    note: MediaWiki-based API
+  - name: MediaWiki API
+    url: ../../../sources/wiki/mediawiki.md
+    note: Underlying API
+  - name: golang.org/x/time
+    url: ../../../sources/go/x/time.md
+    note: Rate limiting
   - name: River Job Queue
     url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
+  - title: WIKI_SYSTEM
+    path: ../../features/shared/WIKI_SYSTEM.md
+  - title: WIKIPEDIA (similar MediaWiki integration)
+    path: ./WIKIPEDIA.md
+  - title: MOVIE_MODULE
+    path: ../../features/video/MOVIE_MODULE.md
+  - title: TVSHOW_MODULE
+    path: ../../features/video/TVSHOW_MODULE.md
 ---
 
 ## Table of Contents
@@ -46,10 +59,11 @@ design_refs:
 **Category**: integration
 
 
-> Integration with FANDOM
+> Integration with FANDOM (Wikia)
 
-> Fan-curated wikis for movies, TV shows, games, and more
-**Authentication**: api_key
+> ENRICHMENT link provider to fan-curated wikis for franchises
+**API Base URL**: `https://{wiki}.fandom.com/api.php`
+**Authentication**: none
 
 ---
 
@@ -91,8 +105,6 @@ internal/integration/fandom/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -104,11 +116,65 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// FANDOM link provider
+type FANDOMProvider struct {
+  client      *http.Client
+  rateLimiter *rate.Limiter
+  wikiRegistry *WikiRegistry
+  cache       Cache
+}
+
+// Wiki link provider interface
+type WikiLinkProvider interface {
+  FindWikiForContent(ctx context.Context, content *Content) (*Wiki, error)
+  SearchPage(ctx context.Context, wiki string, query string) ([]PageResult, error)
+  GetPageInfo(ctx context.Context, wiki string, title string) (*PageInfo, error)
+  GenerateLink(ctx context.Context, content *Content) (*WikiLink, error)
+}
+
+// Wiki registry
+type WikiRegistry struct {
+  wikis map[string]*Wiki
+}
+
+type Wiki struct {
+  Subdomain string   `json:"subdomain"`
+  Name      string   `json:"name"`
+  Keywords  []string `json:"keywords"`
+}
+
+// Wiki page info
+type PageInfo struct {
+  Title    string `json:"title"`
+  PageID   int    `json:"pageid"`
+  URL      string `json:"fullurl"`
+  Extract  string `json:"extract,omitempty"`
+  Exists   bool   `json:"exists"`
+}
+
+// Link to display in UI
+type WikiLink struct {
+  WikiName string `json:"wiki_name"`
+  PageTitle string `json:"page_title"`
+  URL       string `json:"url"`
+  LinkType  string `json:"type"`  // 'main', 'character', 'episode'
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `golang.org/x/time/rate` - Polite rate limiting
+- `github.com/jackc/pgx/v5` - PostgreSQL
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - DI
+
+**External**:
+- FANDOM MediaWiki API (free, no key)
+
 
 
 
@@ -117,11 +183,44 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+FANDOM_ENABLED=true
+FANDOM_RATE_LIMIT=1
+FANDOM_CACHE_TTL=168h
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    fandom:
+      enabled: true
+      rate_limit: 1
+      rate_window: 1s
+      cache_ttl: 168h
+      role: enrichment
+
+      # Pre-configured wikis
+      wikis:
+        - subdomain: starwars
+          name: Wookieepedia
+          keywords: [Star Wars, Mandalorian, Ahsoka, Andor]
+        - subdomain: marvel
+          name: Marvel Database
+          keywords: [Marvel, Avengers, X-Men, Spider-Man]
+        - subdomain: gameofthrones
+          name: Wiki of Westeros
+          keywords: [Game of Thrones, House of the Dragon]
+        - subdomain: memory-alpha
+          name: Memory Alpha
+          keywords: [Star Trek, Discovery, Strange New Worlds]
+        - subdomain: lotr
+          name: Tolkien Gateway
+          keywords: [Lord of the Rings, Hobbit, Rings of Power]
+```
+
 
 
 
@@ -148,10 +247,15 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [WIKI_SYSTEM](../../features/shared/WIKI_SYSTEM.md)
+- [WIKIPEDIA (similar MediaWiki integration)](./WIKIPEDIA.md)
+- [MOVIE_MODULE](../../features/video/MOVIE_MODULE.md)
+- [TVSHOW_MODULE](../../features/video/TVSHOW_MODULE.md)
 
 ### External Sources
+- [FANDOM API](https://community.fandom.com/wiki/Community_Central:API) - MediaWiki-based API
+- [MediaWiki API](../../../sources/wiki/mediawiki.md) - Underlying API
+- [golang.org/x/time](../../../sources/go/x/time.md) - Rate limiting
 - [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
 

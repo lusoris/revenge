@@ -9,12 +9,14 @@ sources:
     url: ../../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: LIDARR (PRIMARY for music)
+    path: ../../servarr/LIDARR.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: MUSIC_MODULE
+    path: ../../../features/music/MUSIC_MODULE.md
 ---
 
 ## Table of Contents
@@ -31,6 +33,9 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Discogs API](#discogs-api)
+- [Rate limiting](#rate-limiting)
+- [Caching](#caching)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -51,7 +56,7 @@ design_refs:
 
 > Integration with Discogs
 
-> Music marketplace and database - vinyl releases, marketplace data, detailed credits
+> SUPPLEMENTARY enrichment provider (vinyl/CD releases, marketplace, credits)
 **API Base URL**: `https://api.discogs.com`
 **Authentication**: oauth
 
@@ -95,8 +100,6 @@ internal/integration/discogs/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -108,11 +111,60 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Discogs provider implementation
+type DiscogsProvider struct {
+  client      *DiscogsClient
+  token       string  // Personal Access Token
+  cache       Cache
+}
+
+// Metadata provider interface
+type MetadataProvider interface {
+  // Search
+  SearchRelease(ctx context.Context, artist, title string, year *int) ([]ReleaseSearchResult, error)
+  SearchArtist(ctx context.Context, name string) ([]ArtistSearchResult, error)
+
+  // Fetch details
+  GetRelease(ctx context.Context, releaseID int) (*ReleaseDetails, error)
+  GetMaster(ctx context.Context, masterID int) (*MasterRelease, error)
+  GetArtist(ctx context.Context, artistID int) (*ArtistDetails, error)
+}
+
+// Release details from Discogs
+type ReleaseDetails struct {
+  ID          int      `json:"id"`
+  Title       string   `json:"title"`
+  Artists     []Artist `json:"artists"`
+  Year        int      `json:"year"`
+  Country     string   `json:"country"`
+  Genres      []string `json:"genres"`
+  Styles      []string `json:"styles"`
+  Formats     []Format `json:"formats"`
+  Labels      []Label  `json:"labels"`
+  Tracklist   []Track  `json:"tracklist"`
+  Credits     []Credit `json:"extraartists"`  // Full credits
+  Images      []Image  `json:"images"`
+}
+
+type Credit struct {
+  Name string `json:"name"`
+  Role string `json:"role"`  // "Producer", "Engineer", "Mastering"
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `go.uber.org/fx` - Dependency injection
+
+**External APIs**:
+- Discogs API v2 (free with registration)
+
 
 
 
@@ -121,11 +173,30 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Discogs API
+DISCOGS_TOKEN=your_personal_access_token_here
+
+# Rate limiting
+DISCOGS_RATE_LIMIT=60  # requests per minute
+
+# Caching
+DISCOGS_CACHE_TTL=168h  # 7 days
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    discogs:
+      enabled: true
+      token: ${DISCOGS_TOKEN}
+      rate_limit: 60  # requests/minute
+      cache_ttl: 168h
+```
+
 
 
 
@@ -152,9 +223,10 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [LIDARR (PRIMARY for music)](../../servarr/LIDARR.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [MUSIC_MODULE](../../../features/music/MUSIC_MODULE.md)
 
 ### External Sources
 - [Discogs API](../../../../sources/apis/discogs.md) - Auto-resolved from discogs

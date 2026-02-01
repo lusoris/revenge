@@ -24,7 +24,7 @@
 
 > Single sign-on with Keycloak
 
-Integrate with Keycloak for enterprise-grade identity management. Supports LDAP/Active Directory backends, social login federation, and fine-grained access control. Create a Revenge client in Keycloak and configure the connection in Revenge settings. Role mappings sync Keycloak roles to Revenge permissions.
+Connect Revenge to your Keycloak identity and access management system for enterprise-grade authentication. Keycloak supports OIDC, SAML, LDAP, Active Directory, and social logins. Features include advanced role mappings, client scopes, audience validation, and comprehensive audit logging.
 
 ---
 
@@ -65,9 +65,9 @@ Integrate with Keycloak for enterprise-grade identity management. Supports LDAP/
 ### Learn More
 
 Official documentation and guides:
-- [Authelia Documentation](../../../sources/security/authelia.md)
-- [Authentik Documentation](../../../sources/security/authentik.md)
 - [Keycloak Documentation](../../../sources/security/keycloak.md)
+- [Keycloak OIDC Guide](https://www.keycloak.org/docs/latest/securing_apps/#_oidc)
+- [Keycloak Server Admin](https://www.keycloak.org/docs/latest/server_admin/)
 
 
 

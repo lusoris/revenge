@@ -69,3 +69,240 @@ design_refs:
 integration_name: PostgreSQL
 integration_id: postgresql
 external_service: PostgreSQL
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Server    │────▶│   pgxpool    │────▶│ PostgreSQL  │
+  │ (Services)  │◀────│ (Connection  │◀────│  Server 18+ │
+  └─────────────┘     │     Pool)    │     └─────────────┘
+                      └──────┬───────┘
+                             │
+                      ┌──────┴───────┐
+                      │   sqlc       │
+                      │ (Query Gen)  │
+                      └──────────────┘
+  ```
+
+connection_details: |
+  **Driver**: pgx v5 (pure Go PostgreSQL driver)
+  **Connection Pool**: pgxpool with automatic connection management
+  **Query Generation**: sqlc for type-safe SQL queries
+  **Minimum Version**: PostgreSQL 18.0+
+
+  **Connection String Format**:
+  ```
+  postgres://username:password@host:port/database?sslmode=require
+  ```
+
+database_schema: |
+  **Primary Schemas**:
+  - `public` - Default schema for main tables (users, libraries, content)
+  - `qar` - QAR (adult content) isolation schema with pirate-themed tables
+  - `river_job` - River job queue tables (managed by River)
+  - `river_leader` - River leadership election tables
+
+  **Key Features Used**:
+  - JSONB columns for flexible metadata storage
+  - Array columns for multi-value fields (genres, tags)
+  - Full-text search with tsvector for EPG programs
+  - Partial indexes for performance optimization
+  - Foreign keys with CASCADE for referential integrity
+  - gen_random_uuid() for UUID generation
+  - Triggers for updated_at timestamps
+
+module_structure: |
+  ```
+  internal/database/
+  ├── module.go                    # fx module
+  ├── postgres.go                  # PostgreSQL connection
+  ├── pool.go                      # Connection pool config
+  ├── migrations/                  # SQL migration files
+  │   ├── 001_initial_schema.sql
+  │   ├── 002_add_qar.sql
+  │   └── ...
+  └── sqlc/                        # Generated code
+      ├── db.go
+      ├── models.go
+      └── queries.sql.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Database connection interface
+  type Database interface {
+    Pool() *pgxpool.Pool
+    BeginTx(ctx context.Context) (pgx.Tx, error)
+    Close() error
+  }
+
+  // Configuration
+  type PostgresConfig struct {
+    Host            string        `yaml:"host"`
+    Port            int           `yaml:"port"`
+    User            string        `yaml:"user"`
+    Password        string        `yaml:"password"`
+    Database        string        `yaml:"database"`
+    SSLMode         string        `yaml:"ssl_mode"`
+    MaxConns        int32         `yaml:"max_conns"`
+    MinConns        int32         `yaml:"min_conns"`
+    MaxConnLifetime time.Duration `yaml:"max_conn_lifetime"`
+    MaxConnIdleTime time.Duration `yaml:"max_conn_idle_time"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/jackc/pgx/v5/pgxpool` - Connection pooling
+  - `github.com/jackc/pgx/v5/pgtype` - PostgreSQL type handling
+  - `github.com/kyleconroy/sqlc` - SQL query code generation
+  - `go.uber.org/fx` - Dependency injection
+
+  **External Services**:
+  - PostgreSQL 18.0+ server (required)
+
+env_vars: |
+  ```bash
+  # Connection
+  POSTGRES_HOST=localhost
+  POSTGRES_PORT=5432
+  POSTGRES_USER=revenge
+  POSTGRES_PASSWORD=secret
+  POSTGRES_DATABASE=revenge
+  POSTGRES_SSL_MODE=require
+
+  # Pool configuration
+  POSTGRES_MAX_CONNS=25
+  POSTGRES_MIN_CONNS=5
+  POSTGRES_MAX_CONN_LIFETIME=1h
+  POSTGRES_MAX_CONN_IDLE_TIME=30m
+  ```
+
+config_keys: |
+  ```yaml
+  database:
+    postgres:
+      host: localhost
+      port: 5432
+      user: revenge
+      password: ${POSTGRES_PASSWORD}
+      database: revenge
+      ssl_mode: require
+      max_conns: 25
+      min_conns: 5
+      max_conn_lifetime: 1h
+      max_conn_idle_time: 30m
+  ```
+
+component_interaction: |
+  **Application Startup**:
+  1. fx lifecycle starts
+  2. Database module creates pgxpool.Pool
+  3. Connection pool initialized with config
+  4. Run migrations (if needed)
+  5. Services inject *pgxpool.Pool dependency
+  6. sqlc-generated repositories use pool
+
+  **Query Execution** (with sqlc):
+  1. Service calls repository method
+  2. sqlc-generated code prepares query
+  3. Execute via pgxpool with context
+  4. Map results to Go structs
+  5. Return typed data to service
+
+  **Transaction Example**:
+  ```go
+  tx, err := db.Pool().Begin(ctx)
+  if err != nil {
+    return err
+  }
+  defer tx.Rollback(ctx)
+
+  // Execute queries within transaction
+  qtx := queries.New(tx)
+
+  if err := tx.Commit(ctx); err != nil {
+    return err
+  }
+  ```
+
+api_endpoints: |
+  **Health Check**:
+  ```
+  GET /api/v1/health/database
+  ```
+
+  **Response**:
+  ```json
+  {
+    "status": "healthy",
+    "version": "18.1",
+    "pool_stats": {
+      "total_conns": 10,
+      "idle_conns": 5,
+      "acquired_conns": 5
+    }
+  }
+  ```
+
+migration_strategy: |
+  **Migration Tool**: golang-migrate or custom SQL migration runner
+
+  **File Naming**: `{version}_{description}.{up|down}.sql`
+
+  **Example**:
+  ```sql
+  -- 001_initial_schema.up.sql
+  CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  ```
+
+  **Execution**: Migrations run automatically on server startup, idempotent
+
+unit_tests: |
+  ```go
+  func TestPostgresConnection(t *testing.T) {
+    // Test connection establishment
+  }
+
+  func TestConnectionPool(t *testing.T) {
+    // Test pool configuration
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestPostgres_FullWorkflow(t *testing.T) {
+    // Use testcontainers to spin up PostgreSQL
+    // Test migrations, queries, transactions
+  }
+  ```
+
+backup_restore: |
+  **Backup**:
+  ```bash
+  pg_dump -h localhost -U revenge -d revenge > backup.sql
+  ```
+
+  **Restore**:
+  ```bash
+  psql -h localhost -U revenge -d revenge < backup.sql
+  ```
+
+  **Automated Backups**: Configure via cron or Kubernetes CronJob for daily backups
+
+performance_tuning: |
+  **Connection Pool Sizing**:
+  - `max_conns` should be ~2-3x CPU cores
+  - `min_conns` should be ~25% of max_conns
+  - Tune based on workload monitoring
+
+  **Query Optimization**:
+  - Use EXPLAIN ANALYZE for slow queries
+  - Add indexes for frequent WHERE/JOIN columns
+  - Use partial indexes for filtered queries
+  - Monitor query performance with pg_stat_statements

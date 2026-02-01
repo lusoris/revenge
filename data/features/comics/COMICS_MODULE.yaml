@@ -133,8 +133,97 @@ metadata_sources:
   priority: 5
   fields: Manga information, user ratings
   api_url: https://api.myanimelist.net/v2/
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+  - `comic_series`: Comic/manga series metadata
+  - `comic_issues`: Individual comic issues/chapters
+  - `comic_files`: Physical comic files
+  - `comic_publishers`: Publishers/studios
+  - `comic_creators`: Writers, artists, colorists, etc.
+  - `comic_issue_creators`: Issue-creator associations with role
+  - `comic_characters`: Characters appearing in comics
+  - `comic_issue_characters`: Issue-character appearances
+  - `comic_reading_progress`: Per-user reading progress
+  - `comic_reading_lists`: User-created reading lists
+  - `comic_pull_lists`: User pull lists for ongoing series
+  - `comic_metadata_cache`: Cached metadata from providers
+
+  **Key Columns** (`comic_series`):
+  - `id` (UUID): Primary key
+  - `title` (TEXT): Series title
+  - `sort_title` (TEXT): Title for alphabetical sorting
+  - `description` (TEXT): Series description/synopsis
+  - `publisher_id` (UUID): Publisher foreign key
+  - `start_year` (INTEGER): Series start year
+  - `end_year` (INTEGER): Series end year (nullable for ongoing)
+  - `issue_count` (INTEGER): Total issues in series
+  - `cover_path` (TEXT): Series cover image
+  - `series_type` (TEXT): comic, manga, graphic_novel, limited, one-shot
+  - `reading_direction` (TEXT): ltr, rtl, auto
+  - `comicvine_id` (TEXT): ComicVine series ID
+  - `anilist_id` (INTEGER): AniList manga ID
+  - `mal_id` (INTEGER): MyAnimeList manga ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+  - `updated_at` (TIMESTAMPTZ): Last update time
+
+  **Key Columns** (`comic_issues`):
+  - `id` (UUID): Primary key
+  - `series_id` (UUID): Series foreign key
+  - `issue_number` (TEXT): Issue number (e.g., "1", "2.5", "Annual 1")
+  - `title` (TEXT): Issue title
+  - `description` (TEXT): Issue description
+  - `page_count` (INTEGER): Number of pages
+  - `cover_path` (TEXT): Issue cover image
+  - `release_date` (DATE): Original release date
+  - `comicvine_id` (TEXT): ComicVine issue ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Key Columns** (`comic_files`):
+  - `id` (UUID): Primary key
+  - `issue_id` (UUID): Issue foreign key
+  - `file_path` (TEXT): Absolute file path
+  - `file_size` (BIGINT): Size in bytes
+  - `format` (TEXT): File format (CBZ, CBR, CB7, CBT, PDF)
+  - `checksum` (TEXT): File checksum (SHA256)
+  - `pages_extracted` (BOOLEAN): Pages extracted to cache
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Key Columns** (`comic_reading_progress`):
+  - `id` (UUID): Primary key
+  - `user_id` (UUID): User foreign key
+  - `issue_id` (UUID): Issue foreign key
+  - `current_page` (INTEGER): Current page number (1-indexed)
+  - `total_pages` (INTEGER): Total pages in issue
+  - `progress_percent` (DECIMAL): Completion percentage (0-100)
+  - `completed` (BOOLEAN): Issue fully read
+  - `last_read_at` (TIMESTAMPTZ): Last reading timestamp
+
+  **Key Columns** (`comic_creators`):
+  - `id` (UUID): Primary key
+  - `name` (TEXT): Creator name
+  - `photo_path` (TEXT): Creator photo
+  - `comicvine_id` (TEXT): ComicVine person ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Key Columns** (`comic_publishers`):
+  - `id` (UUID): Primary key
+  - `name` (TEXT): Publisher name
+  - `logo_path` (TEXT): Publisher logo
+  - `comicvine_id` (TEXT): ComicVine publisher ID
+  - `created_at` (TIMESTAMPTZ): Record creation time
+
+  **Indexes**:
+  - `idx_comic_series_title_trgm` (GIN trigram) for fuzzy search
+  - `idx_comic_series_publisher_id` on `publisher_id`
+  - `idx_comic_series_comicvine_id` on `comicvine_id`
+  - `idx_comic_series_anilist_id` on `anilist_id`
+  - `idx_comic_issues_series_id` on `series_id`
+  - `idx_comic_issues_release_date` on `release_date`
+  - `idx_comic_reading_progress_user_issue` (unique) on (`user_id`, `issue_id`)
+  - `idx_comic_issue_creators_issue_id` on `issue_id`
+  - `idx_comic_issue_creators_creator_id` on `creator_id`
 reader_features:
   reading_modes:
   - Single page (default)
@@ -233,6 +322,480 @@ module_structure: "```\n  internal/content/comics/\n  ├── module.go       
   \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
   \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
   \              # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+component_interaction: |
+  1. **Request Flow**:
+     - Client sends HTTP request to `/api/v1/comics/*`
+     - API handler (ogen) validates request and calls service
+     - Service checks cache for existing data
+     - If cache miss, service calls repository for database query
+     - Repository executes SQL via sqlc-generated code
+     - Results flow back through service → handler → client
+
+  2. **Metadata Enrichment**:
+     - New comic file scan triggers enrichment
+     - Service extracts filename/metadata for series/issue identification
+     - Service queries ComicVine API (or manga APIs for manga)
+     - Service downloads cover art
+     - Service stores series, issue, creator, and publisher data
+     - Cache is populated with enriched metadata
+
+  3. **Comic Reader Flow**:
+     - Client requests issue content via `/api/v1/comics/issues/{id}/read`
+     - Service checks if pages are extracted and cached
+     - If not extracted: Service extracts pages from CBZ/CBR/etc. to cache
+     - Service returns page count and base URL for page images
+     - Client requests individual pages via `/api/v1/comics/issues/{id}/pages/{page}`
+     - Service serves cached page images
+     - Progress updates sent periodically
+
+  4. **Progress Tracking**:
+     - Client sends progress updates as user reads
+     - Service updates reading_progress table
+     - Progress synced to all user's devices in real-time
+     - Last read page restored when opening issue
+
+# Implementation
+file_structure: |
+  ```
+  internal/content/comics/
+  ├── module.go              # fx.Module with all providers
+  ├── repository.go          # Database layer
+  ├── repository_test.go     # Repository tests (testcontainers)
+  ├── service.go             # Business logic
+  ├── service_test.go        # Service tests (mocks)
+  ├── handler.go             # HTTP handlers
+  ├── handler_test.go        # Handler tests (httptest)
+  ├── types.go               # Domain types
+  ├── cache.go               # Caching logic
+  ├── cache_test.go          # Cache tests
+  ├── extractor/
+  │   ├── cbz.go             # CBZ extraction
+  │   ├── cbr.go             # CBR extraction
+  │   ├── cb7.go             # CB7 extraction
+  │   ├── cbt.go             # CBT extraction
+  │   ├── extractor.go       # Common extractor interface
+  │   └── extractor_test.go  # Extraction tests
+  ├── metadata/
+  │   ├── provider.go        # Interface: MetadataProvider
+  │   ├── comicvine.go       # ComicVine API integration
+  │   ├── marvel.go          # Marvel API integration
+  │   ├── gcd.go             # Grand Comics Database
+  │   ├── anilist.go         # AniList GraphQL (manga)
+  │   ├── mal.go             # MyAnimeList API (manga)
+  │   └── enricher.go        # Enrichment orchestration
+  └── progress/
+      ├── tracker.go         # Reading progress tracking
+      └── sync.go            # Multi-device sync logic
+
+  migrations/
+  └── comics/
+      ├── 001_series.sql     # Series and publishers schema
+      ├── 002_issues.sql     # Issues and files schema
+      ├── 003_creators.sql   # Creators schema
+      └── 004_progress.sql   # Progress tracking schema
+
+  api/
+  └── openapi.yaml           # OpenAPI spec (comics/* endpoints)
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository defines database operations for comics
+  type Repository interface {
+      // Series CRUD
+      GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
+      ListSeries(ctx context.Context, filters ListFilters) ([]Series, error)
+      CreateSeries(ctx context.Context, series *Series) error
+      UpdateSeries(ctx context.Context, series *Series) error
+      DeleteSeries(ctx context.Context, id uuid.UUID) error
+
+      // Issue CRUD
+      GetIssue(ctx context.Context, id uuid.UUID) (*Issue, error)
+      ListIssues(ctx context.Context, seriesID uuid.UUID, filters ListFilters) ([]Issue, error)
+      CreateIssue(ctx context.Context, issue *Issue) error
+      UpdateIssue(ctx context.Context, issue *Issue) error
+      DeleteIssue(ctx context.Context, id uuid.UUID) error
+
+      // Publisher and creator operations
+      GetPublisher(ctx context.Context, id uuid.UUID) (*Publisher, error)
+      ListPublishers(ctx context.Context) ([]Publisher, error)
+      GetCreator(ctx context.Context, id uuid.UUID) (*Creator, error)
+      ListCreators(ctx context.Context) ([]Creator, error)
+
+      // Progress tracking
+      GetProgress(ctx context.Context, userID, issueID uuid.UUID) (*ReadingProgress, error)
+      UpdateProgress(ctx context.Context, progress *ReadingProgress) error
+      GetRecentlyRead(ctx context.Context, userID uuid.UUID, limit int) ([]Issue, error)
+
+      // Pull list management
+      AddToPullList(ctx context.Context, userID, seriesID uuid.UUID) error
+      RemoveFromPullList(ctx context.Context, userID, seriesID uuid.UUID) error
+      GetPullList(ctx context.Context, userID uuid.UUID) ([]Series, error)
+  }
+
+  // Service defines business logic for comics
+  type Service interface {
+      // Series operations
+      GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
+      SearchSeries(ctx context.Context, query string, filters SearchFilters) ([]Series, error)
+      EnrichSeries(ctx context.Context, id uuid.UUID) error
+
+      // Issue operations
+      GetIssue(ctx context.Context, id uuid.UUID) (*Issue, error)
+      GetIssuePages(ctx context.Context, issueID uuid.UUID) ([]PageInfo, error)
+      GetPage(ctx context.Context, issueID uuid.UUID, pageNumber int) (image.Image, error)
+
+      // Progress operations
+      UpdateProgress(ctx context.Context, userID, issueID uuid.UUID, progress ProgressUpdate) error
+      GetNextIssue(ctx context.Context, userID, issueID uuid.UUID) (*Issue, error)
+  }
+
+  // MetadataProvider fetches comic metadata from external sources
+  type MetadataProvider interface {
+      GetSeriesByID(ctx context.Context, providerID string) (*SeriesMetadata, error)
+      GetIssueByID(ctx context.Context, providerID string) (*IssueMetadata, error)
+      SearchSeries(ctx context.Context, query string) ([]SeriesMetadata, error)
+      SearchIssues(ctx context.Context, seriesID string) ([]IssueMetadata, error)
+      GetCreatorByID(ctx context.Context, providerID string) (*CreatorMetadata, error)
+  }
+
+  // ComicExtractor extracts pages from comic archive files
+  type ComicExtractor interface {
+      // ExtractPages extracts all pages from comic archive
+      ExtractPages(ctx context.Context, filePath string, outputDir string) ([]string, error)
+
+      // GetPageCount returns number of pages without extraction
+      GetPageCount(ctx context.Context, filePath string) (int, error)
+
+      // ExtractPage extracts a single page by number
+      ExtractPage(ctx context.Context, filePath string, pageNumber int) (image.Image, error)
+
+      // SupportedFormats returns formats this extractor can handle
+      SupportedFormats() []string
+  }
+
+  // ProgressTracker manages reading progress synchronization
+  type ProgressTracker interface {
+      // UpdateProgress updates user's reading position
+      UpdateProgress(ctx context.Context, update ProgressUpdate) error
+
+      // GetProgress retrieves current reading position
+      GetProgress(ctx context.Context, userID, issueID uuid.UUID) (*ReadingProgress, error)
+
+      // SyncProgress synchronizes progress across devices
+      SyncProgress(ctx context.Context, userID uuid.UUID) error
+
+      // GetNextIssue suggests next issue to read in series
+      GetNextIssue(ctx context.Context, userID, currentIssueID uuid.UUID) (*Issue, error)
+  }
+  ```
+
+dependencies: |
+  **Go Dependencies**:
+  - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
+  - `github.com/google/uuid` - UUID generation
+  - `github.com/maypok86/otter` - In-memory cache
+  - `github.com/gen2brain/go-unarr` - CBZ/CBR/CB7/CBT extraction
+  - `github.com/disintegration/imaging` - Image processing
+  - `github.com/go-resty/resty/v2` - HTTP client for external APIs
+  - `go.uber.org/fx` - Dependency injection
+  - `github.com/riverqueue/river` - Background job queue
+
+  **External APIs**:
+  - ComicVine API - Primary metadata for Western comics
+  - Marvel API - Official Marvel comics metadata
+  - Grand Comics Database - Historical comics data
+  - AniList GraphQL API - Manga metadata
+  - MyAnimeList API - Alternative manga metadata
+
+  **Database**:
+  - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
+env_vars: |
+  **Environment Variables**:
+  - `REVENGE_COMIC_CACHE_TTL` - Cache TTL duration (default: 30m)
+  - `REVENGE_COMIC_CACHE_SIZE` - Cache size in MB (default: 200)
+  - `REVENGE_METADATA_COMICVINE_API_KEY` - ComicVine API key (required)
+  - `REVENGE_METADATA_MARVEL_API_KEY` - Marvel API public key (optional)
+  - `REVENGE_METADATA_MARVEL_API_PRIVATE_KEY` - Marvel API private key (optional)
+  - `REVENGE_METADATA_ANILIST_ENABLED` - Enable AniList for manga (default: true)
+  - `REVENGE_METADATA_MAL_CLIENT_ID` - MyAnimeList client ID (optional)
+  - `REVENGE_COMIC_PAGE_CACHE_PATH` - Path for cached extracted pages
+  - `REVENGE_COMIC_PAGE_CACHE_SIZE_GB` - Max page cache size in GB (default: 50)
+
+config_keys: |
+  **config.yaml keys**:
+  ```yaml
+  comic:
+    cache:
+      ttl: 30m
+      size_mb: 200
+
+    metadata:
+      comicvine:
+        api_key: ${REVENGE_METADATA_COMICVINE_API_KEY}
+        rate_limit: 1  # Requests per second
+        timeout: 15s
+
+      marvel:
+        enabled: false
+        public_key: ${REVENGE_METADATA_MARVEL_API_KEY}
+        private_key: ${REVENGE_METADATA_MARVEL_API_PRIVATE_KEY}
+
+      gcd:
+        enabled: true
+        api_url: https://www.comics.org/api/
+
+      anilist:
+        enabled: true
+        rate_limit: 90  # Per minute
+
+      mal:
+        enabled: false
+        client_id: ${REVENGE_METADATA_MAL_CLIENT_ID}
+
+      priority:
+        comics:
+          - comicvine
+          - marvel
+          - gcd
+        manga:
+          - anilist
+          - mal
+
+    reader:
+      page_cache:
+        enabled: true
+        path: ${REVENGE_COMIC_PAGE_CACHE_PATH}
+        max_size_gb: 50
+        cleanup_policy: lru
+
+      image_optimization:
+        enabled: true
+        max_width: 2048
+        max_height: 2048
+        quality: 85
+        format: webp
+
+      extraction:
+        on_demand: false  # Extract all pages on first access
+        parallel: true
+        max_workers: 4
+
+    features:
+      pull_lists_enabled: true
+      reading_lists_enabled: true
+      series_tracking_enabled: true
+      auto_suggest_next_enabled: true
+  ```
+
+defaults: |
+  - Cache TTL: 30 minutes
+  - Cache size: 200 MB
+  - ComicVine rate limit: 1 request/second
+  - Page cache size: 50 GB
+  - Image optimization: enabled (WebP, 2048x2048 max, 85% quality)
+  - On-demand extraction: disabled (extract all on first access)
+  - Metadata priority (comics): ComicVine → Marvel → GCD
+  - Metadata priority (manga): AniList → MyAnimeList
+
+# API Endpoints (additional to those already listed)
+request_examples: |
+  **List comic series with filters**:
+  ```http
+  GET /api/v1/comics/series?publisher=publisher-uuid&type=comic&limit=20&offset=0
+  Authorization: Bearer {token}
+  ```
+
+  **Get series with issues**:
+  ```http
+  GET /api/v1/comics/series/550e8400-e29b-41d4-a716-446655440000?include=issues
+  Authorization: Bearer {token}
+  ```
+
+  **Get issue content for reader**:
+  ```http
+  GET /api/v1/comics/issues/650e8400-e29b-41d4-a716-446655440000/read
+  Authorization: Bearer {token}
+  ```
+
+  **Get specific page image**:
+  ```http
+  GET /api/v1/comics/issues/650e8400-e29b-41d4-a716-446655440000/pages/15
+  Authorization: Bearer {token}
+  ```
+
+  **Update reading progress**:
+  ```http
+  PUT /api/v1/comics/issues/650e8400-e29b-41d4-a716-446655440000/progress
+  Authorization: Bearer {token}
+  Content-Type: application/json
+
+  {
+    "current_page": 15,
+    "completed": false
+  }
+  ```
+
+  **Add to pull list**:
+  ```http
+  POST /api/v1/comics/pull-list
+  Authorization: Bearer {token}
+  Content-Type: application/json
+
+  {
+    "series_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
+  ```
+
+response_examples: |
+  **Series details response**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "The Amazing Spider-Man",
+    "sort_title": "Amazing Spider-Man, The",
+    "description": "The classic Spider-Man series...",
+    "publisher": {
+      "id": "...",
+      "name": "Marvel Comics"
+    },
+    "start_year": 1963,
+    "end_year": null,
+    "issue_count": 900,
+    "cover_path": "/comics/series/amazing-spider-man.jpg",
+    "series_type": "comic",
+    "reading_direction": "ltr",
+    "user_progress": {
+      "issues_read": 45,
+      "completion_percent": 5.0
+    },
+    "in_pull_list": true,
+    "created_at": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+  **Issue details response**:
+  ```json
+  {
+    "id": "650e8400-e29b-41d4-a716-446655440000",
+    "series_id": "550e8400-e29b-41d4-a716-446655440000",
+    "issue_number": "1",
+    "title": "With Great Power",
+    "description": "The origin of Spider-Man...",
+    "page_count": 22,
+    "cover_path": "/comics/issues/asm-1.jpg",
+    "release_date": "1963-03-01",
+    "creators": [
+      {
+        "id": "...",
+        "name": "Stan Lee",
+        "role": "Writer"
+      },
+      {
+        "id": "...",
+        "name": "Steve Ditko",
+        "role": "Artist"
+      }
+    ],
+    "user_progress": {
+      "current_page": 15,
+      "progress_percent": 68.2,
+      "completed": false,
+      "last_read_at": "2024-01-15T20:30:00Z"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+  **Reader data response**:
+  ```json
+  {
+    "issue_id": "650e8400-e29b-41d4-a716-446655440000",
+    "page_count": 22,
+    "reading_direction": "ltr",
+    "page_urls": [
+      "/api/v1/comics/issues/650e8400.../pages/1",
+      "/api/v1/comics/issues/650e8400.../pages/2"
+    ],
+    "current_page": 15,
+    "series_info": {
+      "title": "The Amazing Spider-Man",
+      "issue_number": "1"
+    }
+  }
+  ```
+
+# Testing
+unit_tests: |
+  **Repository Tests** (with testcontainers):
+  - Test CRUD operations for series
+  - Test CRUD operations for issues
+  - Test publisher and creator associations
+  - Test progress tracking
+  - Test pull list management
+  - Test reading list management
+  - Test search with filters
+
+  **Service Tests** (with mocks):
+  - Test business logic with mocked repository
+  - Test metadata enrichment flow (ComicVine → fallbacks)
+  - Test manga enrichment (AniList → MAL)
+  - Test cache hit/miss scenarios
+  - Test error handling
+  - Test rate limiting
+
+  **Handler Tests** (with httptest):
+  - Test HTTP request/response handling
+  - Test authentication/authorization
+  - Test request validation
+  - Test error responses
+  - Test pagination
+
+  **Extractor Tests**:
+  - Test CBZ extraction
+  - Test CBR extraction
+  - Test CB7 extraction
+  - Test CBT extraction
+  - Test PDF page extraction
+  - Test page count detection
+  - Test corrupted archive handling
+
+  **Progress Tracking Tests**:
+  - Test progress update logic
+  - Test multi-device sync
+  - Test next issue suggestion
+  - Test series completion tracking
+
+integration_tests: |
+  **Full Stack Tests**:
+  - Test complete request flow (client → database)
+  - Test metadata enrichment with real ComicVine API (rate-limited)
+  - Test manga enrichment with AniList (mocked)
+  - Test comic reader page serving end-to-end
+  - Test page extraction and caching
+  - Test progress sync across simulated devices
+
+  **Database Tests**:
+  - Test migrations (up/down)
+  - Test indexes performance
+  - Test foreign key constraints
+  - Test transaction isolation
+  - Test trigram search performance
+
+  **Reader Tests**:
+  - Test page extraction from various formats
+  - Test image optimization
+  - Test page caching
+  - Test concurrent page requests
+  - Test reading direction detection
+
+test_coverage_target: |
+  - **Overall**: 80% minimum
+  - **Repository**: 90% (critical path)
+  - **Service**: 85% (business logic)
+  - **Handler**: 75% (integration layer)
+  - **Metadata providers**: 70% (external dependency)
+  - **Extractor components**: 90% (critical functionality)
+  - **Progress tracking**: 85% (user experience)

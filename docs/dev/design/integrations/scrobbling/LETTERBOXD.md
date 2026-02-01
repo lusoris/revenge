@@ -34,6 +34,7 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [No API credentials needed](#no-api-credentials-needed)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -55,7 +56,7 @@ design_refs:
 > Integration with Letterboxd
 
 > Social network for movie lovers and film tracking
-**Authentication**: none
+**Authentication**: csv_export
 
 ---
 
@@ -97,8 +98,6 @@ internal/integration/letterboxd/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -110,11 +109,62 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Letterboxd CSV integration service
+type LetterboxdService interface {
+  // Import
+  ImportDiary(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+  ImportWatchlist(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+  ImportRatings(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+
+  // Export
+  ExportDiary(ctx context.Context, userID uuid.UUID) (io.Reader, error)
+  ExportWatchlist(ctx context.Context, userID uuid.UUID) (io.Reader, error)
+
+  // Matching
+  MatchFilmsToLibrary(ctx context.Context, importID uuid.UUID) error
+}
+
+// CSV row structures
+type DiaryEntry struct {
+  Date          string  `csv:"Date"`
+  Name          string  `csv:"Name"`
+  Year          string  `csv:"Year"`
+  LetterboxdURI string  `csv:"Letterboxd URI"`
+  Rating        string  `csv:"Rating"`
+  Rewatch       string  `csv:"Rewatch"`
+  Tags          string  `csv:"Tags"`
+  WatchedDate   string  `csv:"Watched Date"`
+}
+
+type WatchlistEntry struct {
+  Date          string  `csv:"Date"`
+  Name          string  `csv:"Name"`
+  Year          string  `csv:"Year"`
+  LetterboxdURI string  `csv:"Letterboxd URI"`
+}
+
+type ImportResult struct {
+  TotalEntries    int
+  MatchedEntries  int
+  UnmatchedEntries int
+  Errors          []string
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `encoding/csv` - CSV parsing
+- `io` - Reader/Writer interfaces
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- Letterboxd account (free tier)
+
 
 
 
@@ -123,11 +173,22 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# No API credentials needed
+LETTERBOXD_AUTO_MATCH=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+integrations:
+  letterboxd:
+    auto_match: true               # Automatically match imported films to library
+    import_reviews: true           # Import reviews from diary
+    sync_ratings: true             # Sync Letterboxd ratings to Revenge
+```
+
 
 
 

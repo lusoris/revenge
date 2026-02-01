@@ -94,13 +94,720 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `qar`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/whisparr_v3_&_stashdb_schema_integration/\n\
-  \  ├── module.go              # fx module definition\n  ├── repository.go      \
-  \    # Database operations (sqlc)\n  ├── service.go             # Business logic\n\
-  \  ├── handler.go             # HTTP handlers (ogen)\n  ├── types.go           \
-  \    # Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `qar`
+
+  ```sql
+  -- Whisparr sync configuration
+  CREATE TABLE qar.whisparr_config (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    url TEXT NOT NULL,
+    api_key TEXT NOT NULL,
+    enabled BOOLEAN DEFAULT true,
+    sync_interval_hours INTEGER DEFAULT 24,
+    last_sync TIMESTAMPTZ,
+    last_sync_status VARCHAR(20),              -- 'success', 'failed'
+    last_sync_error TEXT,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- Whisparr-cached scene metadata
+  CREATE TABLE qar.whisparr_scenes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    whisparr_id INTEGER NOT NULL UNIQUE,       -- Whisparr internal ID
+    stashdb_id VARCHAR(255),                   -- StashDB scene ID
+    title TEXT NOT NULL,
+    description TEXT,
+    release_date DATE,
+    duration_seconds INTEGER,
+    studio_id UUID REFERENCES qar.ports(id),   -- Links to studio
+
+    -- File info
+    file_path TEXT,
+    file_size_bytes BIGINT,
+    video_codec VARCHAR(50),
+    audio_codec VARCHAR(50),
+    resolution VARCHAR(20),                    -- '1080p', '4K', etc.
+    framerate NUMERIC(6,3),
+
+    -- Metadata
+    tags TEXT[] DEFAULT '{}',
+    rating INTEGER CHECK (rating >= 0 AND rating <= 5),
+    stash_ids JSONB DEFAULT '[]',             -- [{source, remote_id}]
+
+    -- Whisparr data
+    whisparr_data JSONB,                       -- Full Whisparr API response
+    downloaded BOOLEAN DEFAULT false,
+    monitored BOOLEAN DEFAULT true,
+
+    -- Search
+    search_vector tsvector,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+    deleted_at TIMESTAMPTZ                     -- Soft delete
+  );
+  CREATE INDEX idx_whisparr_scenes_whisparr_id ON qar.whisparr_scenes(whisparr_id);
+  CREATE INDEX idx_whisparr_scenes_stashdb_id ON qar.whisparr_scenes(stashdb_id) WHERE stashdb_id IS NOT NULL;
+  CREATE INDEX idx_whisparr_scenes_studio ON qar.whisparr_scenes(studio_id);
+  CREATE INDEX idx_whisparr_scenes_release ON qar.whisparr_scenes(release_date DESC) WHERE release_date IS NOT NULL;
+  CREATE INDEX idx_whisparr_scenes_tags ON qar.whisparr_scenes USING GIN(tags);
+  CREATE INDEX idx_whisparr_scenes_search ON qar.whisparr_scenes USING GIN(search_vector);
+  CREATE INDEX idx_whisparr_scenes_downloaded ON qar.whisparr_scenes(downloaded);
+
+  -- Scene-performer relationships (from Whisparr/StashDB)
+  CREATE TABLE qar.whisparr_scene_performers (
+    scene_id UUID NOT NULL REFERENCES qar.whisparr_scenes(id) ON DELETE CASCADE,
+    performer_id UUID NOT NULL REFERENCES qar.crew(id) ON DELETE CASCADE,
+    PRIMARY KEY (scene_id, performer_id)
+  );
+  CREATE INDEX idx_whisparr_scene_performers_performer ON qar.whisparr_scene_performers(performer_id);
+
+  -- StashDB performer cache
+  CREATE TABLE qar.stashdb_performers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    stashdb_id VARCHAR(255) NOT NULL UNIQUE,  -- StashDB performer ID
+    name TEXT NOT NULL,
+    disambiguation TEXT,                      -- Differentiates performers with same name
+    aliases TEXT[] DEFAULT '{}',
+    gender VARCHAR(20),
+    birthdate DATE,
+    death_date DATE,
+    measurements TEXT,                        -- "34B-24-34"
+    height_cm INTEGER,
+    weight_kg INTEGER,
+    ethnicity VARCHAR(50),
+    eye_color VARCHAR(30),
+    hair_color VARCHAR(30),
+    tattoos TEXT,
+    piercings TEXT,
+    country VARCHAR(100),
+    career_start_year INTEGER,
+    career_end_year INTEGER,
+
+    -- Images
+    image_url TEXT,
+    image_blurhash TEXT,
+
+    -- StashDB metadata
+    stashdb_data JSONB,                       -- Full StashDB GraphQL response
+    urls TEXT[] DEFAULT '{}',                 -- Official URLs
+
+    -- Linked local performer
+    local_performer_id UUID REFERENCES qar.crew(id),
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_stashdb_performers_name ON qar.stashdb_performers(name);
+  CREATE INDEX idx_stashdb_performers_local ON qar.stashdb_performers(local_performer_id) WHERE local_performer_id IS NOT NULL;
+
+  -- StashDB studio cache
+  CREATE TABLE qar.stashdb_studios (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    stashdb_id VARCHAR(255) NOT NULL UNIQUE,  -- StashDB studio ID
+    name TEXT NOT NULL,
+    parent_studio_id UUID REFERENCES qar.stashdb_studios(id),
+    urls TEXT[] DEFAULT '{}',
+
+    -- Images
+    image_url TEXT,
+    image_blurhash TEXT,
+
+    -- StashDB metadata
+    stashdb_data JSONB,
+
+    -- Linked local studio
+    local_studio_id UUID REFERENCES qar.ports(id),
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_stashdb_studios_name ON qar.stashdb_studios(name);
+  CREATE INDEX idx_stashdb_studios_local ON qar.stashdb_studios(local_studio_id) WHERE local_studio_id IS NOT NULL;
+
+  -- Whisparr webhook events (for real-time updates)
+  CREATE TABLE qar.whisparr_webhooks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_type VARCHAR(50) NOT NULL,          -- 'Download', 'Rename', 'SceneFileDelete', etc.
+    whisparr_id INTEGER NOT NULL,
+    payload JSONB NOT NULL,
+    processed BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_whisparr_webhooks_processed ON qar.whisparr_webhooks(processed) WHERE processed = false;
+  CREATE INDEX idx_whisparr_webhooks_created ON qar.whisparr_webhooks(created_at DESC);
+  ```
+
+module_structure: |
+  ```
+  internal/content/adult/whisparr/
+  ├── module.go                    # fx module with Whisparr/StashDB dependencies
+  ├── types.go                     # Domain types
+  │   ├── WhisparrScene            # Cached scene from Whisparr
+  │   ├── StashDBPerformer         # Cached performer from StashDB
+  │   ├── StashDBStudio            # Cached studio from StashDB
+  │   ├── WhisparrConfig           # Whisparr connection config
+  │   └── WebhookEvent             # Webhook payload
+  ├── repository.go                # Database operations (sqlc)
+  │   ├── CreateScene()            # Cache scene from Whisparr
+  │   ├── GetScene()               # Fetch scene by ID
+  │   ├── ListScenes()             # Paginated list with filters
+  │   ├── UpdateScene()            # Update cached scene
+  │   ├── LinkPerformer()          # Link scene to performer
+  │   ├── CachePerformer()         # Cache StashDB performer
+  │   └── ProcessWebhook()         # Handle webhook event
+  ├── service.go                   # Business logic
+  │   ├── SyncWithWhisparr()       # Full sync from Whisparr
+  │   ├── FetchFromStashDB()       # Fetch metadata from StashDB
+  │   ├── LinkLocalEntities()      # Link StashDB to local performers/studios
+  │   └── SearchScenes()           # Full-text search
+  ├── whisparr/
+  │   ├── client.go                # Whisparr API client
+  │   ├── scenes.go                # Scene endpoints
+  │   ├── webhooks.go              # Webhook handler
+  │   └── types.go                 # Whisparr API types
+  ├── stashdb/
+  │   ├── client.go                # StashDB GraphQL client
+  │   ├── performers.go            # Performer queries
+  │   ├── studios.go               # Studio queries
+  │   ├── scenes.go                # Scene queries
+  │   └── schema.graphql           # GraphQL schema
+  ├── handler.go                   # HTTP API handlers (ogen)
+  │   ├── ListScenes()             # GET /api/v1/legacy/whisparr/scenes
+  │   ├── GetScene()               # GET /api/v1/legacy/whisparr/scenes/:id
+  │   ├── SyncWhisparr()           # POST /api/v1/legacy/whisparr/sync
+  │   ├── HandleWebhook()          # POST /api/v1/legacy/whisparr/webhook
+  │   └── SearchScenes()           # GET /api/v1/legacy/whisparr/search
+  ├── cache.go                     # L1 cache (otter)
+  │   └── CacheSceneMetadata()     # Cache scene objects
+  └── whisparr_test.go             # Unit tests
+
+  migrations/
+  └── qar/
+      └── 016_whisparr_stashdb.sql # Schema creation
+
+  web/src/routes/(app)/legacy/scenes/
+  ├── +page.svelte                 # Scene list view (custom UI)
+  ├── +page.ts                     # Data loading
+  ├── [id]/
+  │   ├── +page.svelte             # Scene detail view
+  │   └── +page.ts                 # Scene data loading
+  └── components/
+      ├── SceneCard.svelte         # Scene thumbnail card
+      ├── SceneFilter.svelte       # Filter sidebar
+      └── PerformerChip.svelte     # Performer tag
+  ```
+
+file_structure: |
+  **Key Files**:
+  - `internal/content/adult/whisparr/service.go` - Whisparr sync and StashDB integration
+  - `internal/content/adult/whisparr/whisparr/client.go` - Whisparr API client
+  - `internal/content/adult/whisparr/stashdb/client.go` - StashDB GraphQL client
+  - `web/src/routes/(app)/legacy/scenes/+page.svelte` - Custom scene browsing UI
+  - `migrations/qar/016_whisparr_stashdb.sql` - Database schema
+
+key_interfaces: |
+  ```go
+  // WhisparrService manages Whisparr and StashDB integration
+  type WhisparrService interface {
+    // Sync
+    SyncWithWhisparr(ctx context.Context) error
+    SyncScene(ctx context.Context, whisparrID int) (*WhisparrScene, error)
+
+    // Scenes
+    GetScene(ctx context.Context, id uuid.UUID) (*WhisparrScene, error)
+    ListScenes(ctx context.Context, filters SceneFilters) ([]WhisparrScene, int, error)
+    SearchScenes(ctx context.Context, query string, filters SceneFilters) ([]WhisparrScene, int, error)
+
+    // StashDB
+    FetchPerformerFromStashDB(ctx context.Context, stashdbID string) (*StashDBPerformer, error)
+    FetchStudioFromStashDB(ctx context.Context, stashdbID string) (*StashDBStudio, error)
+    LinkStashDBToLocal(ctx context.Context, stashdbID string, localID uuid.UUID, entityType string) error
+
+    // Webhooks
+    HandleWebhook(ctx context.Context, event WebhookEvent) error
+  }
+
+  // WhisparrRepository handles database operations
+  type WhisparrRepository interface {
+    // Config
+    GetConfig(ctx context.Context) (*WhisparrConfig, error)
+    UpdateConfig(ctx context.Context, config WhisparrConfig) error
+
+    // Scenes
+    CreateScene(ctx context.Context, scene WhisparrScene) error
+    GetSceneByID(ctx context.Context, id uuid.UUID) (*WhisparrScene, error)
+    GetSceneByWhisparrID(ctx context.Context, whisparrID int) (*WhisparrScene, error)
+    ListScenes(ctx context.Context, filters SceneFilters, limit, offset int) ([]WhisparrScene, int, error)
+    UpdateScene(ctx context.Context, scene WhisparrScene) error
+
+    // Relationships
+    LinkPerformer(ctx context.Context, sceneID, performerID uuid.UUID) error
+    GetPerformers(ctx context.Context, sceneID uuid.UUID) ([]Performer, error)
+
+    // StashDB cache
+    CachePerformer(ctx context.Context, performer StashDBPerformer) error
+    GetStashDBPerformer(ctx context.Context, stashdbID string) (*StashDBPerformer, error)
+    CacheStudio(ctx context.Context, studio StashDBStudio) error
+    GetStashDBStudio(ctx context.Context, stashdbID string) (*StashDBStudio, error)
+
+    // Webhooks
+    CreateWebhookEvent(ctx context.Context, event WebhookEvent) error
+    GetPendingWebhooks(ctx context.Context, limit int) ([]WebhookEvent, error)
+    MarkWebhookProcessed(ctx context.Context, webhookID uuid.UUID) error
+  }
+
+  // WhisparrClient interacts with Whisparr API
+  type WhisparrClient interface {
+    // Scenes
+    GetAllScenes(ctx context.Context) ([]WhisparrAPIScene, error)
+    GetScene(ctx context.Context, whisparrID int) (*WhisparrAPIScene, error)
+    SearchScenes(ctx context.Context, query string) ([]WhisparrAPIScene, error)
+
+    // Commands
+    TriggerRescan(ctx context.Context) error
+    TriggerRefresh(ctx context.Context, whisparrID int) error
+
+    // Health
+    GetSystemStatus(ctx context.Context) (*WhisparrSystemStatus, error)
+  }
+
+  // StashDBClient interacts with StashDB GraphQL API
+  type StashDBClient interface {
+    // Performers
+    GetPerformer(ctx context.Context, stashdbID string) (*StashDBPerformer, error)
+    SearchPerformers(ctx context.Context, query string) ([]StashDBPerformer, error)
+
+    // Studios
+    GetStudio(ctx context.Context, stashdbID string) (*StashDBStudio, error)
+    SearchStudios(ctx context.Context, query string) ([]StashDBStudio, error)
+
+    // Scenes
+    GetScene(ctx context.Context, stashdbID string) (*StashDBScene, error)
+    SearchScenes(ctx context.Context, query string) ([]StashDBScene, error)
+
+    // Submit
+    SubmitPerformer(ctx context.Context, performer StashDBPerformer) (string, error)
+    SubmitScene(ctx context.Context, scene StashDBScene) (string, error)
+  }
+
+  // Types
+  type WhisparrScene struct {
+    ID              uuid.UUID       `db:"id" json:"id"`
+    WhisparrID      int             `db:"whisparr_id" json:"whisparr_id"`
+    StashDBID       *string         `db:"stashdb_id" json:"stashdb_id,omitempty"`
+    Title           string          `db:"title" json:"title"`
+    Description     *string         `db:"description" json:"description,omitempty"`
+    ReleaseDate     *time.Time      `db:"release_date" json:"release_date,omitempty"`
+    DurationSeconds *int            `db:"duration_seconds" json:"duration_seconds,omitempty"`
+    StudioID        *uuid.UUID      `db:"studio_id" json:"studio_id,omitempty"`
+    FilePath        *string         `db:"file_path" json:"file_path,omitempty"`
+    FileSizeBytes   *int64          `db:"file_size_bytes" json:"file_size_bytes,omitempty"`
+    VideoCodec      *string         `db:"video_codec" json:"video_codec,omitempty"`
+    AudioCodec      *string         `db:"audio_codec" json:"audio_codec,omitempty"`
+    Resolution      *string         `db:"resolution" json:"resolution,omitempty"`
+    Framerate       *float64        `db:"framerate" json:"framerate,omitempty"`
+    Tags            []string        `db:"tags" json:"tags"`
+    Rating          *int            `db:"rating" json:"rating,omitempty"`
+    StashIDs        json.RawMessage `db:"stash_ids" json:"stash_ids"`
+    WhisparrData    json.RawMessage `db:"whisparr_data" json:"whisparr_data"`
+    Downloaded      bool            `db:"downloaded" json:"downloaded"`
+    Monitored       bool            `db:"monitored" json:"monitored"`
+    CreatedAt       time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt       time.Time       `db:"updated_at" json:"updated_at"`
+
+    // Relationships (not in DB)
+    Performers      []Performer     `json:"performers,omitempty"`
+    Studio          *Studio         `json:"studio,omitempty"`
+  }
+
+  type StashDBPerformer struct {
+    ID                 uuid.UUID       `db:"id" json:"id"`
+    StashDBID          string          `db:"stashdb_id" json:"stashdb_id"`
+    Name               string          `db:"name" json:"name"`
+    Disambiguation     *string         `db:"disambiguation" json:"disambiguation,omitempty"`
+    Aliases            []string        `db:"aliases" json:"aliases"`
+    Gender             *string         `db:"gender" json:"gender,omitempty"`
+    Birthdate          *time.Time      `db:"birthdate" json:"birthdate,omitempty"`
+    DeathDate          *time.Time      `db:"death_date" json:"death_date,omitempty"`
+    Measurements       *string         `db:"measurements" json:"measurements,omitempty"`
+    HeightCm           *int            `db:"height_cm" json:"height_cm,omitempty"`
+    WeightKg           *int            `db:"weight_kg" json:"weight_kg,omitempty"`
+    Ethnicity          *string         `db:"ethnicity" json:"ethnicity,omitempty"`
+    EyeColor           *string         `db:"eye_color" json:"eye_color,omitempty"`
+    HairColor          *string         `db:"hair_color" json:"hair_color,omitempty"`
+    Tattoos            *string         `db:"tattoos" json:"tattoos,omitempty"`
+    Piercings          *string         `db:"piercings" json:"piercings,omitempty"`
+    Country            *string         `db:"country" json:"country,omitempty"`
+    CareerStartYear    *int            `db:"career_start_year" json:"career_start_year,omitempty"`
+    CareerEndYear      *int            `db:"career_end_year" json:"career_end_year,omitempty"`
+    ImageURL           *string         `db:"image_url" json:"image_url,omitempty"`
+    ImageBlurhash      *string         `db:"image_blurhash" json:"image_blurhash,omitempty"`
+    StashDBData        json.RawMessage `db:"stashdb_data" json:"stashdb_data"`
+    URLs               []string        `db:"urls" json:"urls"`
+    LocalPerformerID   *uuid.UUID      `db:"local_performer_id" json:"local_performer_id,omitempty"`
+    CreatedAt          time.Time       `db:"created_at" json:"created_at"`
+    UpdatedAt          time.Time       `db:"updated_at" json:"updated_at"`
+  }
+
+  type WebhookEvent struct {
+    ID          uuid.UUID       `db:"id" json:"id"`
+    EventType   string          `db:"event_type" json:"event_type"`
+    WhisparrID  int             `db:"whisparr_id" json:"whisparr_id"`
+    Payload     json.RawMessage `db:"payload" json:"payload"`
+    Processed   bool            `db:"processed" json:"processed"`
+    CreatedAt   time.Time       `db:"created_at" json:"created_at"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid` - UUID handling
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `github.com/maypok86/otter` - L1 in-memory cache
+  - `github.com/riverqueue/river` - Background job queue for sync
+  - `go.uber.org/fx` - Dependency injection
+  - `go.uber.org/zap` - Structured logging
+  - `github.com/machinebox/graphql` - GraphQL client for StashDB
+  - `github.com/asticode/go-astiav` - FFmpeg bindings for video analysis
+
+  **Frontend Packages**:
+  - `@sveltejs/kit` - SvelteKit framework
+  - `svelte` - Svelte 5 with runes
+  - `shadcn-svelte` - UI components
+  - `@tanstack/svelte-query` - Data fetching
+
+  **External APIs**:
+  - Whisparr API v3 - Adult content management
+  - StashDB GraphQL API - Collaborative metadata database
+
+env_vars: |
+  ```bash
+  # Whisparr configuration
+  WHISPARR_URL=http://localhost:6969                # Whisparr URL
+  WHISPARR_API_KEY=your-api-key                     # Whisparr API key
+  WHISPARR_ENABLED=true                             # Enable Whisparr integration
+  WHISPARR_SYNC_INTERVAL=24h                        # Auto-sync interval
+
+  # StashDB configuration
+  STASHDB_ENABLED=true                              # Enable StashDB lookups
+  STASHDB_API_KEY=your-api-key                      # StashDB API key (optional)
+  STASHDB_AUTO_LINK=true                            # Auto-link to local entities
+
+  # Webhook
+  WHISPARR_WEBHOOK_SECRET=random-secret             # Webhook authentication
+  ```
+
+config_keys: |
+  ```yaml
+  whisparr:
+    enabled: true
+    url: http://localhost:6969
+    api_key: ${WHISPARR_API_KEY}
+    sync_interval: 24h
+    webhook_secret: ${WHISPARR_WEBHOOK_SECRET}
+
+    # What to sync
+    sync_scenes: true
+    sync_performers: true
+    sync_studios: true
+
+  stashdb:
+    enabled: true
+    url: https://stashdb.org/graphql
+    api_key: ${STASHDB_API_KEY}      # Optional, for submissions
+    auto_link: true                   # Auto-link StashDB to local entities
+
+    # Matching thresholds
+    performer_match_threshold: 0.85
+    studio_match_threshold: 0.90
+
+    # Rate limiting
+    requests_per_minute: 30
+  ```
+
+component_interaction: |
+  **Whisparr Sync Flow**:
+  1. Background job triggers every 24h (configurable)
+  2. Service calls Whisparr API `/api/v3/scene` to get all scenes
+  3. For each scene:
+     a. Check if already cached (by whisparr_id)
+     b. If new or updated:
+        - Extract metadata (title, performers, studio, tags)
+        - Check if scene has StashDB ID
+        - If StashDB ID exists, fetch full metadata from StashDB
+        - Cache scene in qar.whisparr_scenes
+        - Cache performers/studios from StashDB
+        - Link scene to performers
+  4. Update last_sync timestamp
+
+  **StashDB Lookup Flow**:
+  1. Scene has StashDB ID from Whisparr
+  2. Service calls StashDB GraphQL API with ID
+  3. StashDB returns performer IDs, studio ID, tags, etc.
+  4. For each performer ID:
+     a. Check if cached in qar.stashdb_performers
+     b. If not cached, fetch from StashDB GraphQL
+     c. Try to match to local performer (by name + birthdate fuzzy match)
+     d. If match found, set local_performer_id
+     e. Cache performer
+  5. Link scene to all performers
+
+  **Scene Browse Flow (Custom UI)**:
+  1. User visits `/legacy/scenes`
+  2. SvelteKit loads data from API (GET /api/v1/legacy/whisparr/scenes)
+  3. API returns paginated scenes with:
+     - Cover image thumbnail
+     - Title, release date, duration
+     - Performer names (from joins)
+     - Studio name
+     - Tags
+  4. User filters by performer, studio, tags, date range
+  5. Results update with new API call
+
+  **Webhook Flow**:
+  1. Whisparr triggers webhook on event (Download, Rename, etc.)
+  2. POST to /api/v1/legacy/whisparr/webhook
+  3. Handler validates webhook secret
+  4. Store event in qar.whisparr_webhooks
+  5. River background job processes webhook:
+     a. Parse event type and payload
+     b. If "Download" event, sync that specific scene
+     c. If "SceneFileDelete" event, mark scene as deleted
+  6. Mark webhook as processed
+
+api_endpoints: |
+  **Endpoints**:
+  ```
+  GET    /api/v1/legacy/whisparr/scenes              # List scenes
+  GET    /api/v1/legacy/whisparr/scenes/:id          # Get scene details
+  GET    /api/v1/legacy/whisparr/search              # Search scenes
+
+  POST   /api/v1/legacy/whisparr/sync                # Trigger full sync
+  POST   /api/v1/legacy/whisparr/sync/:id            # Sync specific scene
+
+  POST   /api/v1/legacy/whisparr/webhook             # Receive Whisparr webhook
+
+  GET    /api/v1/legacy/stashdb/performers/:id       # Get StashDB performer
+  GET    /api/v1/legacy/stashdb/studios/:id          # Get StashDB studio
+  POST   /api/v1/legacy/stashdb/link                 # Link StashDB to local entity
+  ```
+
+  **Request/Response Examples**:
+
+  **List Scenes**:
+  ```http
+  GET /api/v1/legacy/whisparr/scenes?limit=20&offset=0&performer=550e8400&sort=release_date&order=desc
+
+  Response 200 OK:
+  {
+    "scenes": [
+      {
+        "id": "660e8400-e29b-41d4-a716-446655440001",
+        "whisparr_id": 123,
+        "stashdb_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "title": "Example Scene Title",
+        "description": "Scene description...",
+        "release_date": "2024-06-15",
+        "duration_seconds": 1800,
+        "resolution": "1080p",
+        "downloaded": true,
+        "monitored": true,
+        "tags": ["outdoor", "beach"],
+        "rating": 5,
+        "performers": [
+          {
+            "id": "770e8400-e29b-41d4-a716-446655440002",
+            "name": "Performer Name"
+          }
+        ],
+        "studio": {
+          "id": "880e8400-e29b-41d4-a716-446655440003",
+          "name": "Studio Name"
+        }
+      }
+    ],
+    "total": 456,
+    "limit": 20,
+    "offset": 0
+  }
+  ```
+
+  **Trigger Sync**:
+  ```http
+  POST /api/v1/legacy/whisparr/sync
+
+  Response 202 Accepted:
+  {
+    "message": "Sync job queued",
+    "job_id": "990e8400-e29b-41d4-a716-446655440004"
+  }
+  ```
+
+  **Webhook Event**:
+  ```http
+  POST /api/v1/legacy/whisparr/webhook
+  X-Whisparr-Signature: sha256=...
+  {
+    "eventType": "Download",
+    "scene": {
+      "id": 123,
+      "title": "Example Scene",
+      "sceneFile": {
+        "path": "/media/scenes/example.mp4",
+        "size": 1073741824
+      }
+    }
+  }
+
+  Response 200 OK:
+  {
+    "message": "Webhook received"
+  }
+  ```
+
+  **Link StashDB to Local**:
+  ```http
+  POST /api/v1/legacy/stashdb/link
+  {
+    "stashdb_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "local_id": "aa0e8400-e29b-41d4-a716-446655440005",
+    "entity_type": "performer"
+  }
+
+  Response 200 OK:
+  {
+    "message": "Linked successfully",
+    "stashdb_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "local_id": "aa0e8400-e29b-41d4-a716-446655440005"
+  }
+  ```
+
+unit_tests: |
+  ```go
+  // internal/content/adult/whisparr/whisparr_test.go
+
+  func TestWhisparrService_SyncScene(t *testing.T) {
+    tests := []struct {
+      name        string
+      whisparrID  int
+      mockScene   *WhisparrAPIScene
+      wantErr     bool
+    }{
+      {
+        name:       "valid scene with StashDB ID",
+        whisparrID: 123,
+        mockScene: &WhisparrAPIScene{
+          ID:         123,
+          Title:      "Test Scene",
+          StashDBID:  "stashdb-123",
+          ReleaseDate: "2024-06-15",
+        },
+      },
+      {
+        name:       "scene without StashDB ID",
+        whisparrID: 456,
+        mockScene: &WhisparrAPIScene{
+          ID:    456,
+          Title: "Test Scene No StashDB",
+        },
+      },
+    }
+
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestStashDBClient_GetPerformer(t *testing.T) {
+    if testing.Short() {
+      t.Skip("Skipping StashDB integration test")
+    }
+
+    client := NewStashDBClient("https://stashdb.org/graphql", "")
+    performer, err := client.GetPerformer(ctx, "test-stashdb-id")
+    require.NoError(t, err)
+
+    assert.NotEmpty(t, performer.Name)
+    assert.NotEmpty(t, performer.StashDBID)
+  }
+  ```
+
+  **Coverage Target**: ≥85%
+
+  **Key Test Areas**:
+  - Whisparr API client
+  - StashDB GraphQL queries
+  - Scene sync logic
+  - Performer/studio linking
+  - Webhook handling
+  - Fuzzy matching for entity linking
+
+integration_tests: |
+  ```go
+  // tests/integration/adult/whisparr_test.go
+
+  func TestWhisparr_FullSync(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    // Setup mock Whisparr server
+    whisparr := setupMockWhisparr(t)
+    defer whisparr.Close()
+
+    // Configure service
+    srv := setupWhisparrService(t, db, whisparr.URL)
+
+    // Trigger sync
+    err := srv.SyncWithWhisparr(ctx)
+    require.NoError(t, err)
+
+    // Verify scenes cached
+    scenes, total, err := srv.ListScenes(ctx, SceneFilters{})
+    require.NoError(t, err)
+    assert.Greater(t, total, 0)
+
+    // Verify performers linked
+    for _, scene := range scenes {
+      performers, err := srv.GetPerformers(ctx, scene.ID)
+      require.NoError(t, err)
+      assert.NotEmpty(t, performers)
+    }
+  }
+
+  func TestWhisparr_Webhook(t *testing.T) {
+    db := testcontainers.SetupPostgreSQL(t)
+    defer db.Close()
+
+    srv := setupWhisparrService(t, db, "")
+
+    // Simulate webhook event
+    event := WebhookEvent{
+      EventType:  "Download",
+      WhisparrID: 123,
+      Payload:    json.RawMessage(`{"scene":{"id":123,"title":"Test"}}`),
+    }
+
+    err := srv.HandleWebhook(ctx, event)
+    require.NoError(t, err)
+
+    // Verify scene synced
+    scene, err := srv.GetSceneByWhisparrID(ctx, 123)
+    require.NoError(t, err)
+    assert.Equal(t, "Test", scene.Title)
+  }
+  ```
+
+  **Coverage Target**: ≥80%
+
+  **Integration Test Scenarios**:
+  - Full Whisparr sync workflow
+  - StashDB GraphQL queries
+  - Webhook event processing
+  - PostgreSQL full-text search on scenes
+  - Entity linking with fuzzy matching
+  - Background job processing with River

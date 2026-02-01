@@ -1,6 +1,6 @@
 doc_title: Keycloak Integration
 doc_category: integration
-created_date: '2026-01-31'
+created_date: '2026-02-01'
 overall_status: ✅ Complete
 status_design: ✅
 status_design_notes: '-'
@@ -16,22 +16,22 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Enterprise identity and access management solution'
+technical_summary: '> Enterprise-grade identity and access management with advanced features'
 wiki_tagline: '> Single sign-on with Keycloak'
-wiki_overview: Integrate with Keycloak for enterprise-grade identity management. Supports
-  LDAP/Active Directory backends, social login federation, and fine-grained access
-  control. Create a Revenge client in Keycloak and configure the connection in Revenge
-  settings. Role mappings sync Keycloak roles to Revenge permissions.
+wiki_overview: Connect Revenge to your Keycloak identity and access management system
+  for enterprise-grade authentication. Keycloak supports OIDC, SAML, LDAP, Active
+  Directory, and social logins. Features include advanced role mappings, client scopes,
+  audience validation, and comprehensive audit logging.
 sources:
-- name: Authelia Documentation
-  url: https://www.authelia.com/overview/
-  note: Auto-resolved from authelia
-- name: Authentik Documentation
-  url: https://goauthentik.io/docs/
-  note: Auto-resolved from authentik
 - name: Keycloak Documentation
   url: https://www.keycloak.org/documentation
   note: Auto-resolved from keycloak
+- name: Keycloak OIDC Guide
+  url: https://www.keycloak.org/docs/latest/securing_apps/#_oidc
+  note: OIDC implementation details
+- name: Keycloak Server Admin
+  url: https://www.keycloak.org/docs/latest/server_admin/
+  note: Server administration guide
 design_refs:
 - title: 01_ARCHITECTURE
   path: ../../architecture/01_ARCHITECTURE.md
@@ -42,5 +42,815 @@ design_refs:
 integration_name: Keycloak
 integration_id: keycloak
 external_service: Keycloak
-api_base_url: https://revenge.example.com/api/v1/auth/oidc/callback
-auth_method: oauth
+api_base_url: https://keycloak.company.local
+auth_method: oidc
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐    1. Auth Request   ┌─────────────────┐
+  │    User      │─────(redirect)──────▶│    Keycloak     │
+  │   Browser    │                      │   Auth Server   │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │ 2. Login page (realm selection)      │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │ 3. Submit credentials                │
+         │──────────────────────────────────────▶│
+         │                  ┌────────────────────┤
+         │                  │  Authenticate:     │
+         │                  │  - Local users     │
+         │                  │  - LDAP/AD         │
+         │                  │  - Social login    │
+         │                  │  - SAML federation │
+         │                  │  - Custom SPI      │
+         │                  └────────────────────┤
+         │ 4. Authorization code                │
+         │◀──────────────────────────────────────│
+         │   (redirect to callback)              │
+         ▼                                       │
+  ┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+  │   Revenge    │─────for tokens──────▶│    Keycloak     │
+  │   Server     │                      │  Token Endpoint │
+  │              │◀─────────────────────│                 │
+  │              │  6. ID + access +    │                 │
+  └──────┬───────┘     refresh tokens   └─────────────────┘
+         │
+         │ 7. Verify token (JWKS)
+         │ 8. Introspect token (optional)
+         │ 9. Get user info
+         │ 10. Map roles/groups → Revenge roles
+         │ 11. Apply audience validation
+         │ 12. Create session
+         ▼
+  ┌──────────────┐
+  │   User       │
+  │  Session     │
+  └──────────────┘
+  ```
+
+protocol_details: |
+  **OpenID Connect (OIDC)** with Keycloak:
+
+  **Endpoints** (Realm-specific):
+  - **Authorization**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/auth`
+  - **Token**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/token`
+  - **UserInfo**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/userinfo`
+  - **JWKS**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/certs`
+  - **Discovery**: `https://keycloak.company.local/realms/{realm}/.well-known/openid-configuration`
+  - **Introspection**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/token/introspect`
+  - **Logout**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/logout`
+
+  **OAuth2 Flow**: Authorization Code flow with PKCE
+
+  **Token Types**:
+  - **ID Token** (JWT): User identity, email, roles, groups
+  - **Access Token** (JWT): API access with audience, roles, scopes
+  - **Refresh Token**: Long-lived token for renewal
+  - **Offline Token**: Never expires, for long-term access
+
+  **Keycloak-Specific Features**:
+  - Multi-realm support (tenant isolation)
+  - Client scopes (reusable scope configurations)
+  - Protocol mappers (custom claims)
+  - Audience validation (prevent token misuse)
+  - Fine-grained authorization policies
+  - Identity brokering (external IdPs)
+  - User federation (LDAP, AD, custom)
+  - Service accounts (machine-to-machine)
+  - Token exchange (impersonation, delegation)
+
+module_structure: |
+  ```
+  internal/
+    service/
+      auth/
+        oidc/
+          keycloak.go         # Keycloak-specific provider
+          provider.go         # Generic OIDC provider interface
+          client.go           # OAuth2 client
+          token.go            # Token validation
+          userinfo.go         # UserInfo endpoint
+          roles.go            # Role/group mapping logic
+          audience.go         # Audience validation
+          module.go           # fx module
+          keycloak_test.go
+
+  config/
+    oidc/
+      keycloak.yaml          # Provider configuration example
+  ```
+
+key_interfaces: |
+  ```go
+  // KeycloakProvider implements OIDC for Keycloak
+  type KeycloakProvider struct {
+      config   *KeycloakConfig
+      oauth    *oauth2.Config
+      verifier *oidc.IDTokenVerifier
+  }
+
+  type KeycloakConfig struct {
+      Issuer           string            // https://keycloak.company.local/realms/{realm}
+      Realm            string            // Keycloak realm (e.g., "revenge")
+      ClientID         string            // revenge-client
+      ClientSecret     string            // secret
+      RedirectURL      string            // https://revenge.local/api/v1/auth/oidc/callback
+      Scopes           []string          // openid, profile, email, roles, groups
+      RoleMappings     map[string]string // Keycloak role → Revenge role
+      GroupMappings    map[string]string // Keycloak group → Revenge role
+      ClientScopes     []string          // Additional client scopes
+      AudienceRequired string            // Expected audience claim
+      AutoCreateUsers  bool              // Create users on first login
+      UpdateUserInfo   bool              // Update email/name on each login
+      UseRealmRoles    bool              // Map realm roles (default: client roles)
+  }
+
+  // OIDCProvider interface (generic)
+  type OIDCProvider interface {
+      // Get authorization URL
+      GetAuthURL(state string) string
+
+      // Exchange code for tokens
+      ExchangeCode(ctx context.Context, code string) (*TokenResponse, error)
+
+      // Verify ID token
+      VerifyIDToken(ctx context.Context, rawIDToken string) (*IDToken, error)
+
+      // Get user info from UserInfo endpoint
+      GetUserInfo(ctx context.Context, accessToken string) (*UserInfo, error)
+
+      // Map provider roles/groups to Revenge roles
+      MapRoles(ctx context.Context, user *UserInfo, idToken *IDToken) ([]string, error)
+
+      // Introspect token (Keycloak supports this)
+      IntrospectToken(ctx context.Context, token string) (*TokenIntrospection, error)
+  }
+
+  type TokenResponse struct {
+      IDToken      string
+      AccessToken  string
+      RefreshToken string
+      ExpiresIn    int
+  }
+
+  type IDToken struct {
+      Subject           string            // User ID in Keycloak
+      Email             string
+      EmailVerified     bool
+      Name              string
+      PreferredUsername string
+      GivenName         string
+      FamilyName        string
+      Roles             []string          // Client or realm roles
+      Groups            []string          // Group memberships
+      Audience          []string          // Audience claim (aud)
+      Issuer            string            // Issuer (iss)
+      IssuedAt          time.Time
+      ExpiresAt         time.Time
+      CustomClaims      map[string]any    // Additional protocol mapper claims
+  }
+
+  type UserInfo struct {
+      Sub               string            // Subject (user ID)
+      Email             string
+      EmailVerified     bool
+      Name              string
+      PreferredUsername string
+      GivenName         string
+      FamilyName        string
+      Roles             []string          // From Keycloak
+      Groups            []string          // From Keycloak
+      Picture           string            // Avatar URL
+      Locale            string
+      CustomAttributes  map[string]any    // Custom user attributes
+  }
+
+  type TokenIntrospection struct {
+      Active    bool
+      Scope     string
+      ClientID  string
+      Username  string
+      TokenType string
+      ExpiresAt time.Time
+      IssuedAt  time.Time
+      Subject   string
+      Audience  []string
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
+  - `golang.org/x/oauth2` - OAuth2 flow
+  - `github.com/golang-jwt/jwt/v5` - JWT parsing (fallback)
+
+  **External Services**:
+  - Keycloak server 23.0+ (https://www.keycloak.org/)
+
+env_vars: |
+  ```bash
+  # Keycloak OIDC configuration
+  REVENGE_OIDC_PROVIDER=keycloak
+  REVENGE_OIDC_KEYCLOAK_ISSUER=https://keycloak.company.local/realms/revenge
+  REVENGE_OIDC_KEYCLOAK_REALM=revenge
+  REVENGE_OIDC_KEYCLOAK_CLIENT_ID=revenge-client
+  REVENGE_OIDC_KEYCLOAK_CLIENT_SECRET=very-secret-key
+  REVENGE_OIDC_KEYCLOAK_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callback
+  REVENGE_OIDC_KEYCLOAK_AUDIENCE=revenge-api
+  ```
+
+config_keys: |
+  ```yaml
+  auth:
+    oidc:
+      enabled: true
+      provider: keycloak     # authentik, authelia, keycloak, generic
+      providers:
+        keycloak:
+          issuer: ${REVENGE_OIDC_KEYCLOAK_ISSUER}
+          realm: revenge
+          client_id: ${REVENGE_OIDC_KEYCLOAK_CLIENT_ID}
+          client_secret: ${REVENGE_OIDC_KEYCLOAK_CLIENT_SECRET}
+          redirect_url: https://revenge.local/api/v1/auth/oidc/callback
+          scopes:
+            - openid
+            - profile
+            - email
+            - roles          # Keycloak roles
+            - groups         # Keycloak groups
+          client_scopes:
+            - revenge-scope  # Custom client scope
+          audience_required: revenge-api
+          role_mappings:
+            # Keycloak client role → Revenge role
+            "revenge-admin": "admin"
+            "revenge-moderator": "moderator"
+            "revenge-user": "user"
+          group_mappings:
+            # Keycloak group → Revenge role (alternative to role mappings)
+            "/Revenge/Admins": "admin"
+            "/Revenge/Users": "user"
+          use_realm_roles: false  # Use client roles (default)
+          auto_create_users: true
+          update_user_info: true
+          user_claim: "preferred_username"  # Field to use as username
+  ```
+
+keycloak_setup: |
+  **Keycloak Configuration Steps**:
+
+  1. **Create Realm**:
+     - Navigate to Keycloak Admin Console
+     - Click "Create Realm"
+     - Name: "revenge"
+     - Enabled: true
+     - Save
+
+  2. **Create Client**:
+     - Navigate to Clients → Create
+     - Client ID: "revenge-client"
+     - Client Protocol: "openid-connect"
+     - Root URL: "https://revenge.local"
+     - Save
+
+  3. **Configure Client Settings**:
+     - Access Type: "confidential"
+     - Valid Redirect URIs: `https://revenge.local/api/v1/auth/oidc/callback`
+     - Web Origins: `https://revenge.local`
+     - Save
+     - Go to "Credentials" tab → copy Client Secret
+
+  4. **Create Client Roles**:
+     - Navigate to Clients → revenge-client → Roles
+     - Create roles: "revenge-admin", "revenge-moderator", "revenge-user"
+
+  5. **Create Groups** (optional, alternative to roles):
+     - Navigate to Groups → New
+     - Create: "/Revenge/Admins", "/Revenge/Users"
+     - Assign users to groups
+
+  6. **Create Users**:
+     - Navigate to Users → Add User
+     - Username: "alice"
+     - Email: "alice@example.com"
+     - Save
+
+  7. **Assign Roles to Users**:
+     - Users → alice → Role Mappings
+     - Client Roles → revenge-client
+     - Assign "revenge-admin"
+
+  8. **Configure Protocol Mappers** (include roles/groups in tokens):
+     - Clients → revenge-client → Mappers → Create
+     - **Mapper 1 - Client Roles**:
+       - Name: "client-roles"
+       - Mapper Type: "User Client Role"
+       - Client ID: "revenge-client"
+       - Token Claim Name: "roles"
+       - Add to ID token: ON
+       - Add to access token: ON
+       - Add to userinfo: ON
+     - **Mapper 2 - Groups**:
+       - Name: "groups"
+       - Mapper Type: "Group Membership"
+       - Token Claim Name: "groups"
+       - Full group path: ON
+       - Add to ID token: ON
+       - Add to userinfo: ON
+
+  9. **Client Scopes** (optional, for advanced claims):
+     - Navigate to Client Scopes → Create
+     - Name: "revenge-scope"
+     - Protocol: "openid-connect"
+     - Add custom protocol mappers as needed
+     - Assign to revenge-client
+
+  10. **Test Configuration**:
+      - Navigate to Clients → revenge-client → Client Scopes → Evaluate
+      - Select user "alice"
+      - View Generated ID Token to verify claims
+
+component_interaction: |
+  **OIDC Login Flow**:
+
+  1. **User visits Revenge**:
+     - Clicks "Login with Keycloak" button
+     - Revenge redirects to Keycloak authorization endpoint
+     - URL includes: client_id, redirect_uri, scope, state, code_challenge (PKCE)
+
+  2. **User authenticates with Keycloak**:
+     - Enters credentials (or uses SSO if already logged in)
+     - Keycloak verifies user (local DB, LDAP, AD, social login, SAML federation)
+     - Redirects back to Revenge with authorization code
+
+  3. **Revenge exchanges code for tokens**:
+     - POST to Keycloak token endpoint
+     - Includes: code, client_id, client_secret, code_verifier (PKCE)
+     - Receives: id_token, access_token, refresh_token
+
+  4. **Revenge verifies ID token**:
+     - Fetch JWKS from Keycloak
+     - Verify signature, expiration, audience, issuer
+     - Extract claims: sub, email, name, roles, groups
+
+  5. **Revenge validates audience**:
+     - Check `aud` claim matches expected audience (e.g., "revenge-api")
+     - Prevents token misuse across different applications
+
+  6. **Revenge creates/updates user**:
+     - Check if user exists (by `sub` or email)
+     - If auto_create_users=true, create new user
+     - Map Keycloak roles/groups to Revenge roles
+     - Update user info if update_user_info=true
+
+  7. **Session creation**:
+     - Create Revenge session
+     - Set session cookie
+     - Redirect to app homepage
+
+api_endpoints: |
+  **OIDC Endpoints** (Revenge):
+  ```
+  GET  /api/v1/auth/oidc/login
+  GET  /api/v1/auth/oidc/callback
+  POST /api/v1/auth/oidc/refresh
+  POST /api/v1/auth/oidc/logout
+  GET  /api/v1/auth/oidc/introspect
+  ```
+
+  **Example - Initiate Login**:
+  ```
+  GET /api/v1/auth/oidc/login?provider=keycloak
+
+  → Redirects to:
+  https://keycloak.company.local/realms/revenge/protocol/openid-connect/auth?
+    client_id=revenge-client&
+    redirect_uri=https://revenge.local/api/v1/auth/oidc/callback&
+    response_type=code&
+    scope=openid+profile+email+roles+groups&
+    state=random-state&
+    code_challenge=...&
+    code_challenge_method=S256
+  ```
+
+  **Example - Callback**:
+  ```
+  GET /api/v1/auth/oidc/callback?
+    code=authorization-code&
+    state=random-state
+
+  → Revenge backend:
+  1. Verifies state
+  2. Exchanges code for tokens
+  3. Verifies ID token signature and claims
+  4. Validates audience
+  5. Creates user/session
+  6. Sets session cookie
+  7. Redirects to /
+  ```
+
+  **Example - Token Introspection**:
+  ```
+  POST /api/v1/auth/oidc/introspect
+  {
+    "token": "access-token-here"
+  }
+
+  → Response:
+  {
+    "active": true,
+    "scope": "openid profile email roles",
+    "client_id": "revenge-client",
+    "username": "alice",
+    "exp": 1735689600,
+    "iat": 1735686000,
+    "sub": "a1b2c3d4-...",
+    "aud": ["revenge-api"]
+  }
+  ```
+
+role_mapping: |
+  **Keycloak Role → Revenge Role Mapping**:
+
+  **Client Roles** (default):
+  ```yaml
+  role_mappings:
+    "revenge-admin": "admin"
+    "revenge-moderator": "moderator"
+    "revenge-user": "user"
+    "revenge-readonly": "readonly"
+  ```
+
+  **Realm Roles** (if use_realm_roles=true):
+  ```yaml
+  use_realm_roles: true
+  role_mappings:
+    "admin": "admin"
+    "user": "user"
+  ```
+
+  **Group Mappings** (alternative):
+  ```yaml
+  group_mappings:
+    "/Revenge/Admins": "admin"
+    "/Revenge/Moderators": "moderator"
+    "/Revenge/Users": "user"
+    "/Family": "family"
+  ```
+
+  **Implementation**:
+  ```go
+  func (p *KeycloakProvider) MapRoles(ctx context.Context, user *UserInfo, idToken *IDToken) ([]string, error) {
+      roles := []string{"user"}  // Default role
+
+      // Map client/realm roles
+      for _, role := range idToken.Roles {
+          if mappedRole, ok := p.config.RoleMappings[role]; ok {
+              roles = append(roles, mappedRole)
+          }
+      }
+
+      // Map groups
+      for _, group := range idToken.Groups {
+          if mappedRole, ok := p.config.GroupMappings[group]; ok {
+              roles = append(roles, mappedRole)
+          }
+      }
+
+      return deduplicateRoles(roles), nil
+  }
+  ```
+
+  **Role Precedence**: Admin > Moderator > User > Readonly
+
+audience_validation: |
+  **Audience Validation**:
+
+  Keycloak supports audience (aud) claim validation to prevent token misuse.
+
+  **Configuration**:
+  1. Create Client Scope "revenge-audience":
+     - Protocol: openid-connect
+     - Add Mapper:
+       - Type: "Audience"
+       - Included Client Audience: "revenge-api"
+       - Add to access token: ON
+       - Add to ID token: ON
+
+  2. Assign to Client:
+     - Clients → revenge-client → Client Scopes
+     - Add "revenge-audience" to Default Client Scopes
+
+  **Validation Code**:
+  ```go
+  func (p *KeycloakProvider) VerifyIDToken(ctx context.Context, rawIDToken string) (*IDToken, error) {
+      token, err := p.verifier.Verify(ctx, rawIDToken)
+      if err != nil {
+          return nil, fmt.Errorf("failed to verify token: %w", err)
+      }
+
+      var claims IDToken
+      if err := token.Claims(&claims); err != nil {
+          return nil, fmt.Errorf("failed to parse claims: %w", err)
+      }
+
+      // Validate audience
+      if p.config.AudienceRequired != "" {
+          found := false
+          for _, aud := range claims.Audience {
+              if aud == p.config.AudienceRequired {
+                  found = true
+                  break
+              }
+          }
+          if !found {
+              return nil, fmt.Errorf("audience validation failed: expected %s, got %v",
+                  p.config.AudienceRequired, claims.Audience)
+          }
+      }
+
+      return &claims, nil
+  }
+  ```
+
+token_refresh: |
+  **Refresh Token Flow**:
+
+  When access token expires:
+  1. Use refresh token to get new access token
+  2. POST to Keycloak token endpoint
+  3. Receive new id_token + access_token + refresh_token
+  4. Update user session
+
+  ```go
+  func (p *KeycloakProvider) RefreshToken(ctx context.Context, refreshToken string) (*TokenResponse, error) {
+      token, err := p.oauth.TokenSource(ctx, &oauth2.Token{
+          RefreshToken: refreshToken,
+      }).Token()
+
+      if err != nil {
+          return nil, fmt.Errorf("failed to refresh token: %w", err)
+      }
+
+      // Extract new ID token
+      rawIDToken, ok := token.Extra("id_token").(string)
+      if !ok {
+          return nil, fmt.Errorf("no id_token in refresh response")
+      }
+
+      return &TokenResponse{
+          IDToken:      rawIDToken,
+          AccessToken:  token.AccessToken,
+          RefreshToken: token.RefreshToken,
+          ExpiresIn:    int(time.Until(token.Expiry).Seconds()),
+      }, nil
+  }
+  ```
+
+  **Offline Tokens** (Keycloak-specific):
+  - Request scope: "offline_access"
+  - Returns refresh token that never expires
+  - Useful for long-term access (background jobs)
+
+token_introspection: |
+  **Token Introspection** (Keycloak extension):
+
+  Keycloak supports OAuth2 token introspection (RFC 7662).
+
+  **Endpoint**: `https://keycloak.company.local/realms/{realm}/protocol/openid-connect/token/introspect`
+
+  **Use Cases**:
+  - Validate access tokens in resource servers
+  - Check if token is still active
+  - Get token metadata
+
+  **Implementation**:
+  ```go
+  func (p *KeycloakProvider) IntrospectToken(ctx context.Context, token string) (*TokenIntrospection, error) {
+      introspectURL := fmt.Sprintf("%s/protocol/openid-connect/token/introspect", p.config.Issuer)
+
+      data := url.Values{}
+      data.Set("token", token)
+      data.Set("client_id", p.config.ClientID)
+      data.Set("client_secret", p.config.ClientSecret)
+
+      req, err := http.NewRequestWithContext(ctx, "POST", introspectURL, strings.NewReader(data.Encode()))
+      if err != nil {
+          return nil, err
+      }
+      req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+      resp, err := http.DefaultClient.Do(req)
+      if err != nil {
+          return nil, err
+      }
+      defer resp.Body.Close()
+
+      var result TokenIntrospection
+      if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+          return nil, err
+      }
+
+      return &result, nil
+  }
+  ```
+
+error_handling: |
+  **Common Errors**:
+
+  - **invalid_client**: Client ID or secret incorrect
+    - Solution: Verify credentials match Keycloak client configuration
+
+  - **redirect_uri_mismatch**: Callback URL not registered
+    - Solution: Add exact URL to Keycloak Valid Redirect URIs
+
+  - **invalid_grant**: Authorization code expired or invalid
+    - Solution: User should retry login
+
+  - **invalid_token**: ID token signature invalid
+    - Solution: Check JWKS endpoint, verify issuer URL, check realm name
+
+  - **audience_mismatch**: Token audience doesn't match expected
+    - Solution: Configure client scope with correct audience mapper
+
+  - **insufficient_scope**: Missing required scopes
+    - Solution: Add missing scopes to client configuration
+
+  **Error Response Example**:
+  ```json
+  {
+    "error": "invalid_grant",
+    "error_description": "Code not valid"
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestKeycloakProvider_ExchangeCode(t *testing.T) {
+      mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+          // Mock Keycloak token endpoint
+          w.Header().Set("Content-Type", "application/json")
+          json.NewEncoder(w).Encode(map[string]interface{}{
+              "id_token":      "mock-id-token",
+              "access_token":  "mock-access-token",
+              "refresh_token": "mock-refresh-token",
+              "expires_in":    3600,
+          })
+      }))
+      defer mockServer.Close()
+
+      provider := NewKeycloakProvider(&KeycloakConfig{
+          Issuer:       mockServer.URL,
+          Realm:        "test-realm",
+          ClientID:     "test-client",
+          ClientSecret: "test-secret",
+      })
+
+      tokens, err := provider.ExchangeCode(context.Background(), "test-code")
+      require.NoError(t, err)
+      assert.Equal(t, "mock-id-token", tokens.IDToken)
+  }
+
+  func TestKeycloakProvider_MapRoles(t *testing.T) {
+      tests := []struct {
+          name         string
+          keycloakRole string
+          wantRole     string
+      }{
+          {"admin role", "revenge-admin", "admin"},
+          {"user role", "revenge-user", "user"},
+          {"unmapped role", "other-role", ""},
+      }
+
+      provider := NewKeycloakProvider(&KeycloakConfig{
+          RoleMappings: map[string]string{
+              "revenge-admin": "admin",
+              "revenge-user":  "user",
+          },
+      })
+
+      for _, tt := range tests {
+          t.Run(tt.name, func(t *testing.T) {
+              idToken := &IDToken{
+                  Roles: []string{tt.keycloakRole},
+              }
+              roles, err := provider.MapRoles(context.Background(), nil, idToken)
+              require.NoError(t, err)
+
+              if tt.wantRole != "" {
+                  assert.Contains(t, roles, tt.wantRole)
+              }
+          })
+      }
+  }
+
+  func TestKeycloakProvider_AudienceValidation(t *testing.T) {
+      // Test audience claim validation
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestKeycloak_FullOIDCFlow(t *testing.T) {
+      // Requires running Keycloak instance
+      if testing.Short() {
+          t.Skip("skipping integration test")
+      }
+
+      provider := NewKeycloakProvider(&KeycloakConfig{
+          Issuer:       os.Getenv("KEYCLOAK_ISSUER"),
+          Realm:        os.Getenv("KEYCLOAK_REALM"),
+          ClientID:     os.Getenv("KEYCLOAK_CLIENT_ID"),
+          ClientSecret: os.Getenv("KEYCLOAK_CLIENT_SECRET"),
+      })
+
+      // Test discovery
+      _, err := provider.Discover(context.Background())
+      require.NoError(t, err)
+
+      // Test JWKS fetch
+      jwks, err := provider.FetchJWKS(context.Background())
+      require.NoError(t, err)
+      assert.NotEmpty(t, jwks.Keys)
+  }
+
+  func TestKeycloak_TokenIntrospection(t *testing.T) {
+      // Test token introspection endpoint
+      if testing.Short() {
+          t.Skip("skipping integration test")
+      }
+
+      provider := NewKeycloakProvider(&KeycloakConfig{
+          Issuer:       os.Getenv("KEYCLOAK_ISSUER"),
+          Realm:        os.Getenv("KEYCLOAK_REALM"),
+          ClientID:     os.Getenv("KEYCLOAK_CLIENT_ID"),
+          ClientSecret: os.Getenv("KEYCLOAK_CLIENT_SECRET"),
+      })
+
+      // Get test token (requires manual setup)
+      testToken := os.Getenv("KEYCLOAK_TEST_TOKEN")
+      if testToken == "" {
+          t.Skip("no test token provided")
+      }
+
+      introspection, err := provider.IntrospectToken(context.Background(), testToken)
+      require.NoError(t, err)
+      assert.True(t, introspection.Active)
+  }
+  ```
+
+best_practices: |
+  **Security**:
+  - Use PKCE for authorization code flow
+  - Validate state parameter to prevent CSRF
+  - Verify ID token signature with JWKS
+  - Validate audience claim to prevent token misuse
+  - Check token expiration and issuer claims
+  - Use HTTPS for all endpoints
+  - Rotate client secrets regularly
+  - Enable Keycloak security features (Brute Force Detection, OTP)
+
+  **Multi-Realm Support**:
+  - Use separate realms for dev/staging/prod
+  - Configure realm-specific issuers
+  - Maintain realm isolation for tenant separation
+
+  **User Management**:
+  - Enable auto_create_users for seamless onboarding
+  - Map roles/groups correctly for proper permissions
+  - Update user info on login to sync changes
+  - Handle edge cases (email changes, role removals)
+  - Support both realm and client roles
+
+  **Token Management**:
+  - Store refresh tokens securely (encrypted)
+  - Implement token rotation
+  - Set appropriate session timeouts
+  - Revoke tokens on logout
+  - Use offline tokens for long-term access (background jobs)
+  - Implement token introspection for resource servers
+
+  **Client Scopes**:
+  - Use client scopes for reusable claim configurations
+  - Configure protocol mappers for custom claims
+  - Separate default and optional scopes
+  - Use audience mappers for multi-service deployments
+
+  **Identity Federation**:
+  - Configure identity brokering for external IdPs (Google, GitHub, etc.)
+  - Use LDAP/AD user federation for enterprise environments
+  - Map external user attributes to Keycloak users
+
+  **Monitoring**:
+  - Log OIDC errors with context
+  - Track failed login attempts
+  - Monitor token refresh failures
+  - Alert on Keycloak connectivity issues
+  - Use Keycloak admin events for audit logging
+
+  **Performance**:
+  - Cache JWKS keys (refresh periodically)
+  - Use connection pooling for token endpoints
+  - Implement request coalescing for concurrent token validations
+  - Consider token introspection caching for high-traffic APIs

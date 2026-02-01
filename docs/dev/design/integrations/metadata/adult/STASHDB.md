@@ -45,12 +45,16 @@ sources:
     url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: WHISPARR (PRIMARY for QAR)
+    path: ../../servarr/WHISPARR.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: ADULT_CONTENT_SYSTEM (QAR module)
+    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
+  - title: DATA_RECONCILIATION
+    path: ../../../features/adult/DATA_RECONCILIATION.md
 ---
 
 ## Table of Contents
@@ -87,7 +91,7 @@ design_refs:
 
 > Integration with StashDB
 
-> Adult metadata database for performers, studios, and scenes
+> SUPPLEMENTARY metadata provider (fallback + enrichment) for QAR content
 **Authentication**: api_key
 
 ---
@@ -130,8 +134,6 @@ internal/integration/stashdb/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -187,9 +189,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [WHISPARR (PRIMARY for QAR)](../../servarr/WHISPARR.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
+- [DATA_RECONCILIATION](../../../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
 - [FFmpeg Documentation](../../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg

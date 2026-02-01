@@ -82,13 +82,352 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/dynamic_rbac_with_casbin/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Casbin policy rules (managed by casbin-pgx-adapter)
+  CREATE TABLE casbin_rule (
+    id BIGSERIAL PRIMARY KEY,
+    ptype VARCHAR(10) NOT NULL,                    -- 'p' (policy), 'g' (grouping)
+    v0 VARCHAR(255),                               -- Subject (user ID, role name)
+    v1 VARCHAR(255),                               -- Object (resource, role)
+    v2 VARCHAR(255),                               -- Action (read, write, delete)
+    v3 VARCHAR(255),                               -- Additional attributes
+    v4 VARCHAR(255),
+    v5 VARCHAR(255)
+  );
+  CREATE INDEX idx_casbin_rule_ptype ON casbin_rule(ptype);
+  CREATE INDEX idx_casbin_rule_v0 ON casbin_rule(v0);
+  CREATE INDEX idx_casbin_rule_v1 ON casbin_rule(v1);
+  CREATE INDEX idx_casbin_rule_v0_v1 ON casbin_rule(v0, v1);
+
+  -- Roles
+  CREATE TABLE roles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    display_name TEXT NOT NULL,
+    description TEXT,
+    is_system BOOLEAN DEFAULT false,               -- System roles can't be deleted
+
+    -- Metadata
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_roles_name ON roles(name);
+
+  -- Permissions (for UI display, actual enforcement via Casbin)
+  CREATE TABLE permissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL UNIQUE,             -- e.g., 'movie:read', 'admin:users'
+    display_name TEXT NOT NULL,
+    description TEXT,
+    resource VARCHAR(50) NOT NULL,                 -- 'movie', 'admin', 'library'
+    action VARCHAR(50) NOT NULL,                   -- 'read', 'write', 'delete'
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_permissions_name ON permissions(name);
+  CREATE INDEX idx_permissions_resource ON permissions(resource);
+
+  -- User role assignments (denormalized for quick lookups)
+  CREATE TABLE user_roles (
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+
+    -- Expiration (optional time-limited roles)
+    expires_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (user_id, role_id)
+  );
+  CREATE INDEX idx_user_roles_user ON user_roles(user_id);
+  CREATE INDEX idx_user_roles_role ON user_roles(role_id);
+  CREATE INDEX idx_user_roles_expires ON user_roles(expires_at) WHERE expires_at IS NOT NULL;
+
+  -- Library-specific permissions
+  CREATE TABLE library_permissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    role_id UUID REFERENCES roles(id) ON DELETE CASCADE,
+    library_id UUID NOT NULL REFERENCES libraries(id) ON DELETE CASCADE,
+
+    -- At least one of user_id or role_id must be set
+    CONSTRAINT chk_library_perms_subject CHECK (user_id IS NOT NULL OR role_id IS NOT NULL),
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_library_permissions_user ON library_permissions(user_id, library_id);
+  CREATE INDEX idx_library_permissions_role ON library_permissions(role_id, library_id);
+  CREATE INDEX idx_library_permissions_library ON library_permissions(library_id);
+  ```
+module_structure: |
+  ```
+  internal/rbac/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # RBAC logic
+  ├── enforcer.go                  # Casbin enforcer wrapper
+  ├── middleware.go                # HTTP middleware for permission checks
+  ├── handler.go                   # HTTP API handlers
+  └── rbac_test.go
+
+  config/rbac/
+  ├── model.conf                   # Casbin RBAC model definition
+  └── policy.csv                   # Default policies
+
+  web/src/routes/(app)/admin/roles/
+  ├── +page.svelte                 # Roles management
+  ├── +page.ts                     # Data loading
+  ├── [id]/
+  │   ├── +page.svelte             # Role detail/edit
+  │   └── +page.ts
+  └── components/
+      ├── RoleCard.svelte          # Role display card
+      ├── PermissionMatrix.svelte  # Permission assignment matrix
+      └── UserAssignment.svelte    # Assign users to roles
+  ```
+key_interfaces: |
+  ```go
+  type RBACService interface {
+    // Role management
+    CreateRole(ctx context.Context, role CreateRoleRequest) (*Role, error)
+    ListRoles(ctx context.Context) ([]Role, error)
+    GetRole(ctx context.Context, roleID uuid.UUID) (*Role, error)
+    UpdateRole(ctx context.Context, roleID uuid.UUID, update UpdateRoleRequest) (*Role, error)
+    DeleteRole(ctx context.Context, roleID uuid.UUID) error
+
+    // Permission assignment
+    AssignPermissionsToRole(ctx context.Context, roleID uuid.UUID, permissions []string) error
+    GetRolePermissions(ctx context.Context, roleID uuid.UUID) ([]Permission, error)
+    RemovePermissionFromRole(ctx context.Context, roleID uuid.UUID, permission string) error
+
+    // User role assignment
+    AssignRoleToUser(ctx context.Context, userID, roleID uuid.UUID, expiresAt *time.Time) error
+    GetUserRoles(ctx context.Context, userID uuid.UUID) ([]Role, error)
+    RemoveRoleFromUser(ctx context.Context, userID, roleID uuid.UUID) error
+
+    // Permission checking
+    CheckPermission(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+    GetUserPermissions(ctx context.Context, userID uuid.UUID) ([]Permission, error)
+
+    // Library-specific permissions
+    GrantLibraryAccess(ctx context.Context, subject LibraryPermissionSubject, libraryID uuid.UUID) error
+    RevokeLibraryAccess(ctx context.Context, subject LibraryPermissionSubject, libraryID uuid.UUID) error
+    GetUserLibraries(ctx context.Context, userID uuid.UUID) ([]uuid.UUID, error)
+  }
+
+  type Role struct {
+    ID          uuid.UUID `db:"id" json:"id"`
+    Name        string    `db:"name" json:"name"`
+    DisplayName string    `db:"display_name" json:"display_name"`
+    Description string    `db:"description" json:"description"`
+    IsSystem    bool      `db:"is_system" json:"is_system"`
+    CreatedAt   time.Time `db:"created_at" json:"created_at"`
+  }
+
+  type Permission struct {
+    ID          uuid.UUID `db:"id" json:"id"`
+    Name        string    `db:"name" json:"name"`
+    DisplayName string    `db:"display_name" json:"display_name"`
+    Description string    `db:"description" json:"description"`
+    Resource    string    `db:"resource" json:"resource"`
+    Action      string    `db:"action" json:"action"`
+  }
+
+  type CasbinEnforcer interface {
+    Enforce(subject, object, action string) (bool, error)
+    AddPolicy(subject, object, action string) (bool, error)
+    RemovePolicy(subject, object, action string) (bool, error)
+    AddRoleForUser(user, role string) (bool, error)
+    DeleteRoleForUser(user, role string) (bool, error)
+    GetRolesForUser(user string) ([]string, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/casbin/casbin/v2` - RBAC policy engine
+  - `github.com/pckhoi/casbin-pgx-adapter/v3` - PostgreSQL adapter for Casbin
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  RBAC_MODEL_PATH=config/rbac/model.conf
+  RBAC_POLICY_PATH=config/rbac/policy.csv
+  ```
+
+config_keys: |
+  ```yaml
+  rbac:
+    model_path: config/rbac/model.conf
+    auto_load_policy: true
+    cache_enabled: true
+    cache_ttl: 5m
+  ```
+
+casbin_model: |
+  **File**: `config/rbac/model.conf`
+
+  ```conf
+  [request_definition]
+  r = sub, obj, act
+
+  [policy_definition]
+  p = sub, obj, act
+
+  [role_definition]
+  g = _, _
+
+  [policy_effect]
+  e = some(where (p.eft == allow))
+
+  [matchers]
+  m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
+  ```
+
+default_policies: |
+  **File**: `config/rbac/policy.csv`
+
+  ```csv
+  # Admin role - full access
+  p, admin, *, *
+
+  # Moderator role - content management
+  p, moderator, movie, read
+  p, moderator, movie, write
+  p, moderator, tvshow, read
+  p, moderator, tvshow, write
+  p, moderator, user, read
+
+  # User role - basic access
+  p, user, movie, read
+  p, user, tvshow, read
+  p, user, music, read
+  p, user, profile, write
+
+  # Guest role - read-only
+  p, guest, movie, read
+  p, guest, tvshow, read
+  ```
+
+component_interaction: |
+  **Permission Check Flow**:
+  1. HTTP request arrives with JWT token
+  2. Middleware extracts user ID from token
+  3. Middleware calls RBACService.CheckPermission(userID, resource, action)
+  4. Service queries Casbin enforcer with user ID, resource, action
+  5. Casbin loads user's roles from casbin_rule table
+  6. Casbin evaluates policies against request
+  7. Returns true (allow) or false (deny)
+  8. If denied, middleware returns 403 Forbidden
+
+  **Role Assignment Flow**:
+  1. Admin creates role via POST /api/v1/rbac/roles
+  2. Service creates role in roles table
+  3. Admin assigns permissions via POST /api/v1/rbac/roles/{id}/permissions
+  4. Service adds policy rules to Casbin (stored in casbin_rule)
+  5. Admin assigns role to user via POST /api/v1/rbac/users/{id}/roles
+  6. Service creates user_roles record and adds grouping rule to Casbin
+  7. User's permissions take effect immediately (cached for 5m)
+
+  **Library-Specific Permissions**:
+  1. Admin grants user access to library via POST /api/v1/rbac/libraries/{id}/users
+  2. Service creates library_permissions record
+  3. When user requests library content, middleware checks library_permissions
+  4. If no library-specific permission exists, check global permissions
+  5. Deny access if neither permission exists
+
+api_endpoints: |
+  ```
+  POST   /api/v1/rbac/roles                       # Create role
+  GET    /api/v1/rbac/roles                       # List roles
+  GET    /api/v1/rbac/roles/:id                   # Get role details
+  PUT    /api/v1/rbac/roles/:id                   # Update role
+  DELETE /api/v1/rbac/roles/:id                   # Delete role
+
+  POST   /api/v1/rbac/roles/:id/permissions       # Assign permissions to role
+  GET    /api/v1/rbac/roles/:id/permissions       # Get role permissions
+  DELETE /api/v1/rbac/roles/:id/permissions/:name # Remove permission from role
+
+  POST   /api/v1/rbac/users/:id/roles             # Assign role to user
+  GET    /api/v1/rbac/users/:id/roles             # Get user's roles
+  DELETE /api/v1/rbac/users/:id/roles/:roleId     # Remove role from user
+
+  GET    /api/v1/rbac/permissions                 # List all permissions
+  GET    /api/v1/rbac/users/:id/permissions       # Get user's effective permissions
+
+  POST   /api/v1/rbac/libraries/:id/users/:userId # Grant library access
+  DELETE /api/v1/rbac/libraries/:id/users/:userId # Revoke library access
+  ```
+
+unit_tests: |
+  ```go
+  func TestRBACService_CreateRole(t *testing.T) {
+    // Test role creation
+  }
+
+  func TestRBACService_CheckPermission(t *testing.T) {
+    tests := []struct {
+      name       string
+      userID     uuid.UUID
+      resource   string
+      action     string
+      want       bool
+    }{
+      {
+        name:     "admin has all permissions",
+        userID:   adminUserID,
+        resource: "movie",
+        action:   "delete",
+        want:     true,
+      },
+      {
+        name:     "user can read movies",
+        userID:   regularUserID,
+        resource: "movie",
+        action:   "read",
+        want:     true,
+      },
+      {
+        name:     "user cannot delete movies",
+        userID:   regularUserID,
+        resource: "movie",
+        action:   "delete",
+        want:     false,
+      },
+    }
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestCasbinEnforcer_RoleHierarchy(t *testing.T) {
+    // Test role inheritance
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestRBAC_EndToEnd(t *testing.T) {
+    // 1. Create role "moderator"
+    // 2. Assign permissions to moderator
+    // 3. Assign moderator role to user
+    // 4. Verify user has moderator permissions
+    // 5. Remove role from user
+    // 6. Verify permissions revoked
+  }
+
+  func TestRBAC_LibraryPermissions(t *testing.T) {
+    // Test library-specific access control
+  }
+
+  func TestRBAC_Middleware(t *testing.T) {
+    // Test HTTP middleware permission enforcement
+  }
+  ```

@@ -57,3 +57,154 @@ design_refs:
 service_name: OIDC Service
 package_path: internal/service/oidc
 fx_module: oidc.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Browser)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                │                                  │
+                │ OAuth2 redirect     ┌────────────┼────────────┐
+                │                     ▼            ▼            ▼
+                │              ┌──────────┐  ┌───────────┐  ┌────────┐
+                └─────────────▶│  OIDC    │  │Repository │  │  Auth  │
+                               │ Provider │  │  (sqlc)   │  │Service │
+                               │(Authentik)│  └─────┬─────┘  └────────┘
+                               └──────────┘        │
+                                                   ▼
+                                            ┌─────────────┐
+                                            │ PostgreSQL  │
+                                            └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- OIDC providers
+  CREATE TABLE oidc_providers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Provider details
+    name VARCHAR(100) NOT NULL UNIQUE,             -- 'authentik', 'keycloak', 'authelia'
+    display_name TEXT NOT NULL,
+    issuer_url TEXT NOT NULL,                      -- https://auth.example.com/application/o/revenge/
+    client_id TEXT NOT NULL,
+    client_secret TEXT NOT NULL,                   -- Encrypted
+
+    -- Configuration
+    scopes TEXT[] DEFAULT '{openid,email,profile}',
+    enabled BOOLEAN DEFAULT true,
+    auto_create_users BOOLEAN DEFAULT false,
+    group_claim VARCHAR(100),                      -- Claim for group/role mapping
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  -- User OIDC links (user -> provider mapping)
+  CREATE TABLE user_oidc_links (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    provider_id UUID NOT NULL REFERENCES oidc_providers(id) ON DELETE CASCADE,
+
+    -- Provider user info
+    provider_user_id TEXT NOT NULL,                -- 'sub' claim from provider
+    provider_email TEXT,
+
+    linked_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(provider_id, provider_user_id)
+  );
+  CREATE INDEX idx_user_oidc_links_user ON user_oidc_links(user_id);
+  ```
+
+module_structure: |
+  ```
+  internal/service/oidc/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # OIDC service logic
+  ├── provider.go                  # Provider client
+  ├── handler.go                   # HTTP API handlers (OAuth callback)
+  └── oidc_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type OIDCService interface {
+    // Provider management
+    AddProvider(ctx context.Context, provider OIDCProvider) error
+    GetProvider(ctx context.Context, name string) (*OIDCProvider, error)
+    ListProviders(ctx context.Context) ([]OIDCProvider, error)
+
+    // OAuth flow
+    GetAuthURL(ctx context.Context, providerName, redirectURL string) (string, error)
+    HandleCallback(ctx context.Context, providerName, code string) (*User, error)
+
+    // User linking
+    LinkUser(ctx context.Context, userID uuid.UUID, providerName string) error
+    UnlinkUser(ctx context.Context, userID uuid.UUID, providerName string) error
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
+  - `golang.org/x/oauth2` - OAuth2 flow
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  OIDC_CALLBACK_URL=https://revenge.example.com/api/v1/oidc/callback
+  ```
+
+config_keys: |
+  ```yaml
+  oidc:
+    callback_url: https://revenge.example.com/api/v1/oidc/callback
+  ```
+
+component_interaction: |
+  **OAuth Login Flow**:
+  1. User clicks "Login with Authentik"
+  2. GET /api/v1/oidc/auth/authentik
+  3. Service generates OAuth state token
+  4. Redirect to Authentik: https://auth.example.com/authorize?client_id=...&redirect_uri=...&state=...
+  5. User logs in at Authentik
+  6. Authentik redirects back: GET /api/v1/oidc/callback?code=...&state=...
+  7. Service exchanges code for tokens
+  8. Query Authentik userinfo endpoint
+  9. Check if provider_user_id exists in user_oidc_links
+  10. If exists, find user; if not, create user (if auto_create_users)
+  11. Create session
+  12. Redirect to app
+
+api_endpoints: |
+  ```
+  # OAuth flow
+  GET  /api/v1/oidc/auth/:provider         # Initiate OAuth flow
+  GET  /api/v1/oidc/callback/:provider     # OAuth callback
+
+  # Provider management (admin)
+  POST /api/v1/oidc/providers              # Add provider
+  GET  /api/v1/oidc/providers              # List providers
+  PUT  /api/v1/oidc/providers/:id          # Update provider
+  ```
+
+unit_tests: |
+  ```go
+  func TestOIDCService_GetAuthURL(t *testing.T) {
+    // Test OAuth URL generation
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestOIDC_CallbackFlow(t *testing.T) {
+    // Test full OAuth callback workflow
+  }
+  ```

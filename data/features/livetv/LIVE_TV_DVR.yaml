@@ -93,13 +93,970 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+
+  ```sql
+  -- Live TV channels
+  CREATE TABLE livetv_channels (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      backend_id UUID NOT NULL REFERENCES livetv_backends(id) ON DELETE CASCADE,
+      channel_number TEXT NOT NULL,
+      channel_name TEXT NOT NULL,
+      channel_icon_url TEXT,
+
+      -- Channel info
+      hd BOOLEAN DEFAULT false,
+      is_favorite BOOLEAN DEFAULT false,
+      enabled BOOLEAN DEFAULT true,
+
+      -- Stream info
+      stream_url TEXT NOT NULL,  -- Backend-specific stream URL
+      codec TEXT,  -- e.g., 'h264', 'mpeg2'
+
+      -- EPG
+      xmltv_id TEXT,  -- XMLTV channel ID for EPG matching
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE(backend_id, channel_number)
+  );
+
+  CREATE INDEX idx_livetv_channels_backend_id ON livetv_channels(backend_id);
+  CREATE INDEX idx_livetv_channels_number ON livetv_channels(channel_number);
+  CREATE INDEX idx_livetv_channels_favorite ON livetv_channels(is_favorite) WHERE is_favorite = true;
+  CREATE INDEX idx_livetv_channels_enabled ON livetv_channels(enabled) WHERE enabled = true;
+  CREATE INDEX idx_livetv_channels_xmltv_id ON livetv_channels(xmltv_id);
+
+  -- Live TV backends (TVHeadend, NextPVR, ErsatzTV)
+  CREATE TABLE livetv_backends (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name TEXT NOT NULL,
+      backend_type TEXT NOT NULL,  -- 'tvheadend', 'nextpvr', 'ersatztv'
+
+      -- Connection
+      base_url TEXT NOT NULL,
+      username TEXT,
+      password_encrypted TEXT,  -- Encrypted with app key
+      api_key TEXT,  -- Some backends use API key instead
+
+      -- Status
+      enabled BOOLEAN DEFAULT true,
+      last_sync_at TIMESTAMPTZ,
+      last_sync_status TEXT,  -- 'success', 'error'
+      last_sync_error TEXT,
+
+      -- Capabilities
+      supports_recording BOOLEAN DEFAULT true,
+      supports_epg BOOLEAN DEFAULT true,
+      supports_streaming BOOLEAN DEFAULT true,
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_livetv_backends_enabled ON livetv_backends(enabled) WHERE enabled = true;
+
+  -- EPG (Electronic Program Guide) data
+  CREATE TABLE livetv_epg_programs (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      channel_id UUID NOT NULL REFERENCES livetv_channels(id) ON DELETE CASCADE,
+
+      -- Program info
+      title TEXT NOT NULL,
+      subtitle TEXT,
+      description TEXT,
+      episode_number TEXT,  -- e.g., "S01E05"
+      season_number INTEGER,
+      episode_num INTEGER,
+
+      -- Schedule
+      start_time TIMESTAMPTZ NOT NULL,
+      end_time TIMESTAMPTZ NOT NULL,
+      duration_seconds INTEGER NOT NULL,
+
+      -- Categories
+      categories TEXT[] DEFAULT '{}',
+      genres TEXT[] DEFAULT '{}',
+
+      -- Metadata
+      original_air_date DATE,
+      rating TEXT,  -- e.g., 'TV-14', 'TV-MA'
+      is_new BOOLEAN DEFAULT false,
+      is_live BOOLEAN DEFAULT false,
+      is_premiere BOOLEAN DEFAULT false,
+
+      -- Images
+      poster_url TEXT,
+      thumbnail_url TEXT,
+
+      -- Source
+      xmltv_id TEXT,  -- Original XMLTV program ID
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CONSTRAINT epg_programs_time_check CHECK (end_time > start_time)
+  );
+
+  CREATE INDEX idx_livetv_epg_channel_id ON livetv_epg_programs(channel_id);
+  CREATE INDEX idx_livetv_epg_start_time ON livetv_epg_programs(start_time);
+  CREATE INDEX idx_livetv_epg_end_time ON livetv_epg_programs(end_time);
+  CREATE INDEX idx_livetv_epg_channel_time ON livetv_epg_programs(channel_id, start_time, end_time);
+
+  -- Full-text search on EPG
+  CREATE INDEX idx_livetv_epg_fts ON livetv_epg_programs USING GIN(
+      to_tsvector('english', COALESCE(title, '') || ' ' || COALESCE(subtitle, '') || ' ' || COALESCE(description, ''))
+  );
+
+  -- DVR recordings schedule
+  CREATE TABLE livetv_recordings (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+      -- Recording type
+      recording_type TEXT NOT NULL,  -- 'manual', 'series', 'epg_program'
+
+      -- Channel/program
+      channel_id UUID REFERENCES livetv_channels(id) ON DELETE SET NULL,
+      epg_program_id UUID REFERENCES livetv_epg_programs(id) ON DELETE SET NULL,
+
+      -- Schedule
+      scheduled_start TIMESTAMPTZ NOT NULL,
+      scheduled_end TIMESTAMPTZ NOT NULL,
+      pre_padding_seconds INTEGER DEFAULT 60,  -- Start early
+      post_padding_seconds INTEGER DEFAULT 300,  -- End late
+
+      -- Series recording rules
+      series_title TEXT,  -- For series recordings
+      series_match_rule TEXT,  -- 'exact', 'fuzzy', 'regex'
+      record_new_only BOOLEAN DEFAULT true,
+
+      -- Status
+      status TEXT NOT NULL DEFAULT 'scheduled',  -- 'scheduled', 'recording', 'completed', 'failed', 'cancelled'
+      actual_start_time TIMESTAMPTZ,
+      actual_end_time TIMESTAMPTZ,
+      error_message TEXT,
+
+      -- Output
+      output_file_path TEXT,
+      file_size_bytes BIGINT,
+      duration_seconds INTEGER,
+
+      -- Link to library
+      tv_episode_id UUID,  -- Links to episodes table after processing
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_livetv_recordings_user_id ON livetv_recordings(user_id);
+  CREATE INDEX idx_livetv_recordings_channel_id ON livetv_recordings(channel_id);
+  CREATE INDEX idx_livetv_recordings_status ON livetv_recordings(status);
+  CREATE INDEX idx_livetv_recordings_scheduled_start ON livetv_recordings(scheduled_start);
+  CREATE INDEX idx_livetv_recordings_type ON livetv_recordings(recording_type);
+
+  -- Time-shifting buffer (for pause/rewind live TV)
+  CREATE TABLE livetv_timeshift_sessions (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      channel_id UUID NOT NULL REFERENCES livetv_channels(id) ON DELETE CASCADE,
+
+      -- Session info
+      started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      last_activity_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      -- Buffer
+      buffer_file_path TEXT NOT NULL,
+      buffer_size_bytes BIGINT DEFAULT 0,
+      buffer_duration_seconds INTEGER DEFAULT 0,
+      max_buffer_seconds INTEGER DEFAULT 7200,  -- 2 hours max
+
+      -- Playback position
+      playback_position_seconds INTEGER DEFAULT 0,
+      is_paused BOOLEAN DEFAULT false,
+
+      -- Status
+      status TEXT NOT NULL DEFAULT 'active',  -- 'active', 'expired', 'stopped'
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_livetv_timeshift_user_id ON livetv_timeshift_sessions(user_id);
+  CREATE INDEX idx_livetv_timeshift_channel_id ON livetv_timeshift_sessions(channel_id);
+  CREATE INDEX idx_livetv_timeshift_status ON livetv_timeshift_sessions(status);
+  CREATE INDEX idx_livetv_timeshift_last_activity ON livetv_timeshift_sessions(last_activity_at);
+  ```
+
+  **Indexes**: Optimized for:
+  - Channel listings by backend
+  - EPG program lookups by channel and time range
+  - Full-text search on EPG program titles/descriptions
+  - Recording schedule queries
+  - Time-shifting session management
+  - Favorite channels filtering
+file_structure: |
+  ```
+  internal/content/livetv/
+  ├── module.go                    # fx module registration
+  ├── repository.go                # Database operations (sqlc)
+  ├── queries.sql                  # SQL queries for sqlc
+  ├── service.go                   # Business logic
+  ├── handler.go                   # HTTP handlers (ogen-generated)
+  ├── types.go                     # Domain types
+  ├── cache.go                     # Caching layer (otter)
+  ├── backend_tvheadend.go         # TVHeadend backend integration
+  ├── backend_nextpvr.go           # NextPVR backend integration
+  ├── backend_ersatztv.go          # ErsatzTV backend integration
+  ├── backend_interface.go         # Backend provider interface
+  ├── epg_parser.go                # XMLTV EPG parser
+  ├── epg_sync.go                  # EPG synchronization
+  ├── stream_proxy.go              # Live stream proxy/transcoding
+  ├── recorder.go                  # DVR recording logic
+  ├── timeshift.go                 # Time-shifting buffer management
+  └── scheduler.go                 # Recording scheduler (River jobs)
+
+  cmd/server/
+  └── main.go                      # Server entry point with fx
+
+  migrations/
+  ├── 025_livetv.up.sql            # Live TV tables
+  └── 025_livetv.down.sql          # Rollback
+
+  api/openapi/
+  └── livetv.yaml                  # OpenAPI spec for live TV
+
+  web/src/lib/components/livetv/
+  ├── ChannelGuide.svelte          # Channel listing
+  ├── EPGGrid.svelte               # Electronic program guide grid
+  ├── LivePlayer.svelte            # Live TV player
+  ├── RecordingsList.svelte        # Recordings manager
+  ├── TimeshiftControls.svelte     # Pause/rewind controls
+  └── BackendSettings.svelte       # Backend configuration
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository interface for database operations
+  type Repository interface {
+      // Backends
+      CreateBackend(ctx context.Context, params CreateBackendParams) (*LiveTVBackend, error)
+      GetBackendByID(ctx context.Context, id uuid.UUID) (*LiveTVBackend, error)
+      ListBackends(ctx context.Context, enabledOnly bool) ([]*LiveTVBackend, error)
+      UpdateBackend(ctx context.Context, id uuid.UUID, params UpdateBackendParams) (*LiveTVBackend, error)
+      DeleteBackend(ctx context.Context, id uuid.UUID) error
+      UpdateBackendSyncStatus(ctx context.Context, id uuid.UUID, status, errorMsg string) error
+
+      // Channels
+      CreateChannel(ctx context.Context, params CreateChannelParams) (*LiveTVChannel, error)
+      GetChannelByID(ctx context.Context, id uuid.UUID) (*LiveTVChannel, error)
+      ListChannels(ctx context.Context, backendID *uuid.UUID, enabledOnly, favoritesOnly bool) ([]*LiveTVChannel, error)
+      UpdateChannel(ctx context.Context, id uuid.UUID, params UpdateChannelParams) (*LiveTVChannel, error)
+      DeleteChannel(ctx context.Context, id uuid.UUID) error
+      ToggleFavorite(ctx context.Context, channelID uuid.UUID, isFavorite bool) error
+      DeleteBackendChannels(ctx context.Context, backendID uuid.UUID) error  // Cleanup on sync
+
+      // EPG
+      UpsertEPGProgram(ctx context.Context, params UpsertEPGProgramParams) (*EPGProgram, error)
+      GetEPGProgramByID(ctx context.Context, id uuid.UUID) (*EPGProgram, error)
+      GetCurrentProgram(ctx context.Context, channelID uuid.UUID, at time.Time) (*EPGProgram, error)
+      GetChannelSchedule(ctx context.Context, channelID uuid.UUID, start, end time.Time) ([]*EPGProgram, error)
+      SearchEPG(ctx context.Context, query string, limit, offset int) ([]*EPGProgram, error)
+      DeleteOldEPGData(ctx context.Context, before time.Time) (int64, error)
+
+      // Recordings
+      CreateRecording(ctx context.Context, params CreateRecordingParams) (*Recording, error)
+      GetRecordingByID(ctx context.Context, id uuid.UUID) (*Recording, error)
+      ListRecordings(ctx context.Context, userID uuid.UUID, status *string, limit, offset int) ([]*Recording, int64, error)
+      UpdateRecording(ctx context.Context, id uuid.UUID, params UpdateRecordingParams) (*Recording, error)
+      UpdateRecordingStatus(ctx context.Context, id uuid.UUID, status string, errorMsg *string) error
+      DeleteRecording(ctx context.Context, id uuid.UUID) error
+      GetUpcomingRecordings(ctx context.Context, within time.Duration) ([]*Recording, error)
+      GetSeriesRecordings(ctx context.Context, userID uuid.UUID, seriesTitle string) ([]*Recording, error)
+
+      // Time-shifting
+      CreateTimeshiftSession(ctx context.Context, params CreateTimeshiftParams) (*TimeshiftSession, error)
+      GetTimeshiftSession(ctx context.Context, id uuid.UUID) (*TimeshiftSession, error)
+      GetActiveTimeshiftSession(ctx context.Context, userID, channelID uuid.UUID) (*TimeshiftSession, error)
+      UpdateTimeshiftSession(ctx context.Context, id uuid.UUID, params UpdateTimeshiftParams) error
+      ExpireInactiveSessions(ctx context.Context, inactiveSince time.Time) (int64, error)
+  }
+
+  // Service interface for business logic
+  type Service interface {
+      // Backends
+      AddBackend(ctx context.Context, req AddBackendRequest) (*LiveTVBackend, error)
+      GetBackend(ctx context.Context, id uuid.UUID) (*LiveTVBackend, error)
+      ListBackends(ctx context.Context) ([]*LiveTVBackend, error)
+      UpdateBackend(ctx context.Context, id uuid.UUID, updates BackendUpdates) (*LiveTVBackend, error)
+      DeleteBackend(ctx context.Context, id uuid.UUID) error
+      SyncBackend(ctx context.Context, backendID uuid.UUID) error
+      TestBackendConnection(ctx context.Context, req AddBackendRequest) (bool, error)
+
+      // Channels
+      GetChannel(ctx context.Context, id uuid.UUID) (*LiveTVChannel, error)
+      ListChannels(ctx context.Context, filters ChannelFilters) ([]*LiveTVChannel, error)
+      ToggleFavorite(ctx context.Context, channelID uuid.UUID) (*LiveTVChannel, error)
+
+      // Streaming
+      GetChannelStream(ctx context.Context, userID, channelID uuid.UUID, format StreamFormat) (*StreamInfo, error)
+      StopStream(ctx context.Context, streamID uuid.UUID) error
+
+      // EPG
+      GetEPGGrid(ctx context.Context, start, end time.Time, channelIDs []uuid.UUID) (*EPGGridResponse, error)
+      GetChannelSchedule(ctx context.Context, channelID uuid.UUID, start, end time.Time) ([]*EPGProgram, error)
+      SearchEPG(ctx context.Context, query string, pagination Pagination) (*EPGSearchResponse, error)
+      SyncEPG(ctx context.Context, xmltvURL string) error
+
+      // Recordings
+      ScheduleRecording(ctx context.Context, userID uuid.UUID, req ScheduleRecordingRequest) (*Recording, error)
+      ScheduleSeriesRecording(ctx context.Context, userID uuid.UUID, req SeriesRecordingRequest) (*Recording, error)
+      ListRecordings(ctx context.Context, userID uuid.UUID, filters RecordingFilters) (*RecordingListResponse, error)
+      CancelRecording(ctx context.Context, userID, recordingID uuid.UUID) error
+      DeleteRecording(ctx context.Context, userID, recordingID uuid.UUID) error
+
+      // Time-shifting
+      StartTimeshift(ctx context.Context, userID, channelID uuid.UUID) (*TimeshiftSession, error)
+      GetTimeshiftSession(ctx context.Context, userID, sessionID uuid.UUID) (*TimeshiftSession, error)
+      UpdateTimeshiftPosition(ctx context.Context, userID, sessionID uuid.UUID, positionSec int) error
+      StopTimeshift(ctx context.Context, userID, sessionID uuid.UUID) error
+  }
+
+  // BackendProvider interface for different live TV backends
+  type BackendProvider interface {
+      // Connection
+      Connect(ctx context.Context, config BackendConfig) error
+      TestConnection(ctx context.Context) error
+      Disconnect() error
+
+      // Channels
+      GetChannels(ctx context.Context) ([]*ChannelInfo, error)
+
+      // EPG
+      GetEPGData(ctx context.Context, start, end time.Time) ([]*EPGProgramInfo, error)
+
+      // Streaming
+      GetChannelStreamURL(ctx context.Context, channelID string) (string, error)
+
+      // Recording (if supported)
+      SupportsRecording() bool
+      ScheduleRecording(ctx context.Context, params RecordingParams) (string, error)
+      CancelRecording(ctx context.Context, recordingID string) error
+      GetRecordingStatus(ctx context.Context, recordingID string) (*RecordingStatus, error)
+  }
+
+  // StreamProxy interface for stream transcoding
+  type StreamProxy interface {
+      StartStream(ctx context.Context, sourceURL string, format StreamFormat) (*Stream, error)
+      StopStream(ctx context.Context, streamID uuid.UUID) error
+      GetStreamURL(streamID uuid.UUID) string
+  }
+
+  // EPGParser interface for XMLTV parsing
+  type EPGParser interface {
+      ParseXMLTV(ctx context.Context, xmltvData io.Reader) (*EPGData, error)
+      FetchAndParse(ctx context.Context, url string) (*EPGData, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  ```go
+  require (
+      // Core
+      github.com/google/uuid v1.6.0
+      go.uber.org/fx v1.23.0
+
+      // Database
+      github.com/jackc/pgx/v5 v5.7.2
+      github.com/sqlc-dev/sqlc v1.28.0
+
+      // API
+      github.com/ogen-go/ogen v1.7.0
+
+      // Caching
+      github.com/maypok86/otter v1.2.4
+      github.com/redis/rueidis v1.0.50
+
+      // Video streaming
+      github.com/asticode/go-astiav v0.23.0  // FFmpeg bindings
+      github.com/bluenviron/gohlslib/v2 v2.1.0  // HLS streaming
+
+      // XMLTV parsing
+      github.com/kokardy/listing v0.0.0-20190406184253-c66d3d3d64aa  // XMLTV parser
+      // Alternative: Custom XML parser with encoding/xml
+
+      // HTTP clients
+      github.com/go-resty/resty/v2 v2.16.2
+
+      // Job queue
+      github.com/riverqueue/river v0.15.0
+
+      // Encryption
+      golang.org/x/crypto v0.31.0
+
+      // Testing
+      github.com/stretchr/testify v1.10.0
+      github.com/testcontainers/testcontainers-go v0.35.0
+  )
+  ```
+
+  **External Dependencies**:
+  - **FFmpeg 7.1+**: Video transcoding and streaming
+  - **PostgreSQL 18+**: Database
+  - **Dragonfly**: Distributed cache (L2)
+
+  **External Services** (one or more required):
+  - **TVHeadend**: Open-source TV streaming server
+  - **NextPVR**: Windows-based PVR software
+  - **ErsatzTV**: Virtual channel management
+  - **XMLTV EPG Source**: Electronic program guide data
+
+env_vars: |
+  ```bash
+  # Backend defaults
+  LIVETV_AUTO_SYNC_ENABLED=true             # Auto-sync backends on startup
+  LIVETV_SYNC_INTERVAL_HOURS=6              # Hours between auto-syncs
+
+  # EPG
+  LIVETV_EPG_RETENTION_DAYS=14              # Keep EPG data for X days
+  LIVETV_EPG_CLEANUP_INTERVAL_HOURS=24      # Cleanup old EPG data every X hours
+  LIVETV_XMLTV_CACHE_HOURS=4                # Cache XMLTV fetches
+
+  # Streaming
+  LIVETV_STREAM_FORMAT=hls                  # 'hls' or 'direct'
+  LIVETV_HLS_SEGMENT_DURATION=6             # HLS segment duration (seconds)
+  LIVETV_HLS_PLAYLIST_LENGTH=5              # HLS playlist segments
+  LIVETV_TRANSCODE_PRESET=veryfast          # FFmpeg preset
+  LIVETV_TRANSCODE_CRF=23                   # FFmpeg CRF quality
+  LIVETV_MAX_CONCURRENT_STREAMS=10          # Max simultaneous streams
+
+  # Recording
+  LIVETV_RECORDING_PATH=/data/recordings    # DVR recording storage
+  LIVETV_RECORDING_FORMAT=mkv               # Output format
+  LIVETV_DEFAULT_PRE_PADDING_SEC=60         # Start recording early
+  LIVETV_DEFAULT_POST_PADDING_SEC=300       # End recording late
+  LIVETV_MAX_CONCURRENT_RECORDINGS=5        # Max simultaneous recordings
+
+  # Time-shifting
+  LIVETV_TIMESHIFT_ENABLED=true             # Enable time-shifting
+  LIVETV_TIMESHIFT_PATH=/data/timeshift     # Buffer storage
+  LIVETV_TIMESHIFT_MAX_DURATION_SEC=7200    # Max buffer (2 hours)
+  LIVETV_TIMESHIFT_CLEANUP_INTERVAL_MIN=30  # Cleanup inactive sessions
+
+  # Worker
+  LIVETV_WORKER_CONCURRENCY=3               # Concurrent recording jobs
+  ```
+
+config_keys: |
+  ```yaml
+  livetv:
+    # Sync settings
+    sync:
+      auto_sync_enabled: true
+      sync_interval_hours: 6
+
+    # EPG settings
+    epg:
+      retention_days: 14
+      cleanup_interval_hours: 24
+      xmltv_cache_hours: 4
+      default_xmltv_url: ""  # Optional default XMLTV source
+
+    # Streaming
+    streaming:
+      format: hls                        # 'hls' or 'direct'
+      hls:
+        segment_duration_sec: 6
+        playlist_length: 5
+      transcode:
+        enabled: true
+        preset: veryfast                 # ultrafast, superfast, veryfast, faster, fast, medium, slow
+        crf: 23                          # Quality (0-51, lower = better)
+        max_width: 1920
+        max_height: 1080
+        audio_codec: aac
+        audio_bitrate_kbps: 128
+      max_concurrent_streams: 10
+
+    # Recording
+    recording:
+      storage_path: /data/recordings
+      format: mkv                        # mkv, mp4, ts
+      default_pre_padding_sec: 60
+      default_post_padding_sec: 300
+      max_concurrent_recordings: 5
+      auto_import_to_library: true       # Import recordings to TV library
+
+    # Time-shifting
+    timeshift:
+      enabled: true
+      storage_path: /data/timeshift
+      max_duration_sec: 7200             # 2 hours
+      cleanup_interval_minutes: 30
+      session_timeout_minutes: 60        # Expire inactive sessions
+
+    # Worker
+    worker:
+      concurrency: 3
+      retry_attempts: 2
+  ```
+
+defaults: |
+  - **Auto-sync**: Enabled with 6-hour interval
+  - **EPG Retention**: 14 days
+  - **Stream Format**: HLS with 6-second segments
+  - **Transcoding**: Enabled with veryfast preset, CRF 23
+  - **Max Concurrent Streams**: 10
+  - **Recording Format**: MKV
+  - **Pre-padding**: 60 seconds (start early)
+  - **Post-padding**: 300 seconds (end late)
+  - **Max Concurrent Recordings**: 5
+  - **Time-shift Buffer**: 2 hours max
+  - **Worker Concurrency**: 3 recording jobs
+
 module_structure: "```\n  internal/content/live_tv_&_dvr/\n  ├── module.go       \
   \       # fx module definition\n  ├── repository.go          # Database operations\
   \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
   \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
   \ cache.go               # Caching layer (otter)\n  ```"
+request_examples: |
+  **Add Backend**:
+  ```json
+  POST /api/v1/livetv/backends
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "name": "My TVHeadend Server",
+    "backend_type": "tvheadend",
+    "base_url": "http://192.168.1.100:9981",
+    "username": "admin",
+    "password": "password"
+  }
+  ```
+
+  **Sync Backend** (trigger channel/EPG sync):
+  ```json
+  POST /api/v1/livetv/backends/550e8400-e29b-41d4-a716-446655440000/sync
+  Authorization: Bearer <token>
+  ```
+
+  **Get Channel Stream**:
+  ```json
+  GET /api/v1/livetv/channels/123e4567-e89b-12d3-a456-426614174000/stream?format=hls
+  Authorization: Bearer <token>
+  ```
+
+  **Schedule Recording**:
+  ```json
+  POST /api/v1/livetv/recordings
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "recording_type": "epg_program",
+    "epg_program_id": "550e8400-e29b-41d4-a716-446655440000",
+    "pre_padding_seconds": 120,
+    "post_padding_seconds": 600
+  }
+  ```
+
+  **Schedule Series Recording**:
+  ```json
+  POST /api/v1/livetv/recordings/series
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "series_title": "The Office",
+    "channel_id": "123e4567-e89b-12d3-a456-426614174000",
+    "match_rule": "fuzzy",
+    "record_new_only": true,
+    "pre_padding_seconds": 60,
+    "post_padding_seconds": 300
+  }
+  ```
+
+  **Get EPG Grid**:
+  ```json
+  GET /api/v1/livetv/epg?start=2024-06-15T18:00:00Z&end=2024-06-15T22:00:00Z&channels=123,456
+  Authorization: Bearer <token>
+  ```
+
+  **Search EPG**:
+  ```json
+  GET /api/v1/livetv/epg/search?q=news&limit=20
+  Authorization: Bearer <token>
+  ```
+
+  **Start Time-shift Session**:
+  ```json
+  POST /api/v1/livetv/channels/123e4567-e89b-12d3-a456-426614174000/timeshift
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "max_buffer_seconds": 3600
+  }
+  ```
+
+  **Update Time-shift Position** (seek/pause):
+  ```json
+  PUT /api/v1/livetv/timeshift/550e8400-e29b-41d4-a716-446655440000/position
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "position_seconds": 300,
+    "is_paused": false
+  }
+  ```
+
+response_examples: |
+  **Backend Object**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "My TVHeadend Server",
+    "backend_type": "tvheadend",
+    "base_url": "http://192.168.1.100:9981",
+    "username": "admin",
+    "enabled": true,
+    "last_sync_at": "2024-06-15T10:00:00Z",
+    "last_sync_status": "success",
+    "supports_recording": true,
+    "supports_epg": true,
+    "supports_streaming": true,
+    "channel_count": 127,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-06-15T10:00:00Z"
+  }
+  ```
+
+  **Channel Object**:
+  ```json
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "backend_id": "550e8400-e29b-41d4-a716-446655440000",
+    "channel_number": "2.1",
+    "channel_name": "NBC",
+    "channel_icon_url": "https://example.com/nbc.png",
+    "hd": true,
+    "is_favorite": false,
+    "enabled": true,
+    "codec": "h264",
+    "current_program": {
+      "id": "660e8400-e29b-41d4-a716-446655440000",
+      "title": "Evening News",
+      "subtitle": "June 15, 2024",
+      "start_time": "2024-06-15T18:00:00Z",
+      "end_time": "2024-06-15T18:30:00Z",
+      "progress_percent": 45
+    }
+  }
+  ```
+
+  **List Channels Response**:
+  ```json
+  {
+    "channels": [
+      {
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "channel_number": "2.1",
+        "channel_name": "NBC",
+        "channel_icon_url": "https://example.com/nbc.png",
+        "hd": true,
+        "is_favorite": false
+      }
+    ],
+    "total": 127
+  }
+  ```
+
+  **Stream Info Response**:
+  ```json
+  {
+    "stream_id": "770e8400-e29b-41d4-a716-446655440000",
+    "stream_url": "http://revenge.local/api/v1/livetv/stream/770e8400/master.m3u8",
+    "format": "hls",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "expires_at": "2024-06-15T22:00:00Z"
+  }
+  ```
+
+  **EPG Program Object**:
+  ```json
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440000",
+    "channel_id": "123e4567-e89b-12d3-a456-426614174000",
+    "channel_number": "2.1",
+    "channel_name": "NBC",
+    "title": "The Office",
+    "subtitle": "Dinner Party",
+    "description": "Michael hosts a disastrous dinner party.",
+    "episode_number": "S04E13",
+    "season_number": 4,
+    "episode_num": 13,
+    "start_time": "2024-06-15T19:00:00Z",
+    "end_time": "2024-06-15T19:30:00Z",
+    "duration_seconds": 1800,
+    "categories": ["Comedy", "Sitcom"],
+    "genres": ["Comedy"],
+    "rating": "TV-14",
+    "is_new": false,
+    "is_live": false,
+    "poster_url": "https://example.com/theoffice.jpg"
+  }
+  ```
+
+  **EPG Grid Response**:
+  ```json
+  {
+    "start_time": "2024-06-15T18:00:00Z",
+    "end_time": "2024-06-15T22:00:00Z",
+    "channels": [
+      {
+        "channel_id": "123e4567-e89b-12d3-a456-426614174000",
+        "channel_number": "2.1",
+        "channel_name": "NBC",
+        "programs": [
+          {
+            "id": "660e8400-e29b-41d4-a716-446655440000",
+            "title": "Evening News",
+            "start_time": "2024-06-15T18:00:00Z",
+            "end_time": "2024-06-15T18:30:00Z"
+          },
+          {
+            "id": "770e8400-e29b-41d4-a716-446655440000",
+            "title": "The Office",
+            "start_time": "2024-06-15T19:00:00Z",
+            "end_time": "2024-06-15T19:30:00Z"
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+  **Recording Object**:
+  ```json
+  {
+    "id": "880e8400-e29b-41d4-a716-446655440000",
+    "user_id": "990e8400-e29b-41d4-a716-446655440000",
+    "recording_type": "epg_program",
+    "channel": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "channel_number": "2.1",
+      "channel_name": "NBC"
+    },
+    "program": {
+      "title": "The Office",
+      "subtitle": "Dinner Party",
+      "episode_number": "S04E13"
+    },
+    "scheduled_start": "2024-06-15T18:59:00Z",
+    "scheduled_end": "2024-06-15T19:35:00Z",
+    "pre_padding_seconds": 60,
+    "post_padding_seconds": 300,
+    "status": "scheduled",
+    "created_at": "2024-06-14T10:00:00Z"
+  }
+  ```
+
+  **Timeshift Session Response**:
+  ```json
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440000",
+    "channel_id": "123e4567-e89b-12d3-a456-426614174000",
+    "started_at": "2024-06-15T19:00:00Z",
+    "buffer_duration_seconds": 600,
+    "max_buffer_seconds": 3600,
+    "playback_position_seconds": 300,
+    "is_paused": false,
+    "stream_url": "http://revenge.local/api/v1/livetv/timeshift/aa0e8400/stream.m3u8",
+    "status": "active"
+  }
+  ```
+
+unit_tests: |
+  **Repository Layer**:
+  - Test CRUD operations for backends, channels, EPG programs, recordings
+  - Test EPG queries by channel and time range
+  - Test full-text search on EPG data
+  - Test recording schedule queries (upcoming, by series)
+  - Test time-shift session management
+  - Test EPG cleanup (delete old data)
+  - Test concurrent recording detection
+  - Mock database with sqlc.Querier interface
+
+  **Service Layer**:
+  - Test backend connection and sync
+  - Test channel listing and filtering
+  - Test EPG grid generation
+  - Test recording scheduling (manual, series, EPG-based)
+  - Test recording conflict detection
+  - Test time-shift session lifecycle
+  - Test stream URL generation
+  - Mock repository and backend providers
+
+  **Backend Providers**:
+  - Test TVHeadend API integration (mock HTTP)
+  - Test NextPVR API integration (mock HTTP)
+  - Test ErsatzTV API integration (mock HTTP)
+  - Test channel fetching
+  - Test EPG data retrieval
+  - Test stream URL generation per backend
+  - Mock HTTP responses
+
+  **EPG Parser**:
+  - Test XMLTV parsing with sample files
+  - Test handling malformed XML
+  - Test channel matching (by xmltv_id)
+  - Test program time parsing
+  - Test category/genre extraction
+
+  **Stream Proxy**:
+  - Test HLS stream generation (mock FFmpeg)
+  - Test direct stream passthrough
+  - Test stream cleanup on stop
+  - Test concurrent stream limits
+  - Mock FFmpeg processes
+
+  **Recorder**:
+  - Test recording start/stop logic
+  - Test padding application
+  - Test output file management
+  - Test error handling (stream failure, disk full)
+  - Mock FFmpeg processes
+
+  **Handler Layer**:
+  - Test request validation (ogen schemas)
+  - Test authentication and authorization
+  - Test pagination
+  - Test error responses
+  - Mock service layer
+
+  **Coverage Target**: 85%+ for critical paths (streaming, recording, EPG)
+
+integration_tests: |
+  **Database Integration**:
+  - Test full recording lifecycle with real PostgreSQL (testcontainers)
+  - Test EPG sync and queries
+  - Test complex time-based queries
+  - Test concurrent recording conflicts
+  - Test migration up/down
+
+  **Backend Integration** (with mocks):
+  - Test TVHeadend mock server integration
+  - Test channel sync from backend
+  - Test EPG data import
+  - Test stream URL retrieval
+
+  **XMLTV Integration**:
+  - Test EPG sync from real XMLTV file
+  - Test incremental EPG updates
+  - Test channel matching logic
+
+  **FFmpeg Integration**:
+  - Test live stream transcoding with real FFmpeg
+  - Test HLS segmentation
+  - Test recording to file
+  - Test time-shift buffer management
+
+  **API Integration**:
+  - Test full channel streaming flow (HTTP → FFmpeg → HLS)
+  - Test recording schedule → execution → file creation
+  - Test EPG grid rendering with real data
+  - Test time-shift session lifecycle
+
+  **Job Queue Integration**:
+  - Test scheduled recording execution with River
+  - Test concurrent recording jobs
+  - Test job retries on transient failures
+  - Test EPG cleanup job
+
+  **Performance Tests**:
+  - Test EPG grid query performance (100+ channels, 24-hour window)
+  - Test concurrent streaming (10+ streams)
+  - Test concurrent recordings (5 recordings)
+  - Test time-shift buffer performance
+
+test_coverage_target: "80%"
+
+api_endpoints:
+- method: GET
+  path: /api/v1/livetv/backends
+  description: List all Live TV backends
+- method: POST
+  path: /api/v1/livetv/backends
+  description: Add a new backend
+- method: GET
+  path: /api/v1/livetv/backends/:id
+  description: Get backend details
+- method: PUT
+  path: /api/v1/livetv/backends/:id
+  description: Update backend configuration
+- method: DELETE
+  path: /api/v1/livetv/backends/:id
+  description: Delete a backend
+- method: POST
+  path: /api/v1/livetv/backends/:id/sync
+  description: Sync channels and EPG from backend
+- method: GET
+  path: /api/v1/livetv/channels
+  description: List all channels
+- method: GET
+  path: /api/v1/livetv/channels/:id
+  description: Get channel details
+- method: PUT
+  path: /api/v1/livetv/channels/:id/favorite
+  description: Toggle channel favorite status
+- method: GET
+  path: /api/v1/livetv/channels/:id/stream
+  description: Get channel stream URL
+- method: GET
+  path: /api/v1/livetv/epg
+  description: Get EPG grid for time range
+- method: GET
+  path: /api/v1/livetv/epg/search
+  description: Search EPG programs
+- method: GET
+  path: /api/v1/livetv/channels/:id/schedule
+  description: Get channel schedule for date range
+- method: GET
+  path: /api/v1/livetv/recordings
+  description: List recordings
+- method: POST
+  path: /api/v1/livetv/recordings
+  description: Schedule a recording
+- method: POST
+  path: /api/v1/livetv/recordings/series
+  description: Schedule series recording
+- method: DELETE
+  path: /api/v1/livetv/recordings/:id
+  description: Cancel/delete a recording
+- method: POST
+  path: /api/v1/livetv/channels/:id/timeshift
+  description: Start time-shift session
+- method: GET
+  path: /api/v1/livetv/timeshift/:id
+  description: Get time-shift session status
+- method: PUT
+  path: /api/v1/livetv/timeshift/:id/position
+  description: Update playback position
+- method: DELETE
+  path: /api/v1/livetv/timeshift/:id
+  description: Stop time-shift session
+
 component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
   \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
   \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

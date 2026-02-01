@@ -25,7 +25,7 @@
 
 > Your digital library with reading progress and recommendations
 
-The Book Module provides a comprehensive eBook library with support for multiple formats including EPUB, PDF, and MOBI. Track your reading progress across devices, create custom reading lists, and discover new books through metadata from OpenLibrary, Google Books, and Goodreads. The built-in web reader lets you read anywhere without additional software.
+The Book Module provides a comprehensive eBook library with support for multiple formats including EPUB, PDF, and MOBI. Uses Chaptarr as the PRIMARY metadata source (aggregates from OpenLibrary/Goodreads locally), with direct APIs as supplementary enrichment. Chaptarr integration provides both metadata caching and download automation. Track your reading progress across devices, create custom reading lists, and discover new books. The built-in web reader lets you read anywhere without additional software.
 
 ---
 

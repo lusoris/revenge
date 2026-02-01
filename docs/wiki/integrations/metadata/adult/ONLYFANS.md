@@ -12,6 +12,7 @@
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 # OnlyFans
@@ -21,9 +22,9 @@
 
 # OnlyFans
 
-> Performer OnlyFans links
+> OnlyFans - Performer profile links for QAR
 
-Tracks OnlyFans profile links for adult performers. Links stored in performer metadata for reference. No content access or subscription management - profile links only. Helps identify performer presence on the platform.
+LINK-ONLY integration for QAR performer profiles. Stores verified OnlyFans profile URLs. Basic profile verification (existence check). **NO content access or subscription management** - only profile links. **Proxy/VPN recommended** (via HTTP_CLIENT service).
 
 ---
 
@@ -60,6 +61,12 @@ Tracks OnlyFans profile links for adult performers. Links stored in performer me
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [River Job Queue](../../../../sources/tooling/river.md)
 
 
 

@@ -81,13 +81,508 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/native_request_system/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Content requests
+  CREATE TABLE content_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Content details
+    content_type VARCHAR(50) NOT NULL,             -- 'movie', 'tvshow', 'album', 'book'
+    external_id VARCHAR(255) NOT NULL,             -- TMDb ID, TVDB ID, MusicBrainz ID, etc.
+    external_source VARCHAR(50) NOT NULL,          -- 'tmdb', 'tvdb', 'musicbrainz'
+
+    -- Display metadata (cached from external source)
+    title TEXT NOT NULL,
+    overview TEXT,
+    poster_url TEXT,
+    release_date DATE,
+
+    -- Request details
+    reason TEXT,                                   -- Optional reason for request
+    priority INTEGER DEFAULT 0,                    -- Higher = more urgent
+
+    -- Status
+    status VARCHAR(20) DEFAULT 'pending',          -- 'pending', 'approved', 'rejected', 'available'
+    reviewed_by_user_id UUID REFERENCES users(id),
+    reviewed_at TIMESTAMPTZ,
+    rejection_reason TEXT,
+
+    -- Arr service integration
+    arr_service VARCHAR(50),                       -- 'radarr', 'sonarr', 'lidarr', 'readarr'
+    arr_item_id INTEGER,                           -- ID in Arr service
+    arr_status VARCHAR(50),                        -- 'monitoring', 'downloading', 'imported'
+
+    -- Notifications
+    notified_user BOOLEAN DEFAULT false,           -- Has user been notified of status change?
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_content_requests_user ON content_requests(user_id, created_at DESC);
+  CREATE INDEX idx_content_requests_status ON content_requests(status);
+  CREATE INDEX idx_content_requests_external ON content_requests(external_source, external_id);
+  CREATE UNIQUE INDEX idx_content_requests_unique ON content_requests(content_type, external_id, user_id) WHERE status IN ('pending', 'approved');
+
+  -- Request votes (community upvoting)
+  CREATE TABLE request_votes (
+    request_id UUID NOT NULL REFERENCES content_requests(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (request_id, user_id)
+  );
+  CREATE INDEX idx_request_votes_request ON request_votes(request_id);
+  CREATE INDEX idx_request_votes_user ON request_votes(user_id);
+
+  -- Request comments
+  CREATE TABLE request_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    request_id UUID NOT NULL REFERENCES content_requests(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    comment TEXT NOT NULL,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_request_comments_request ON request_comments(request_id, created_at);
+  CREATE INDEX idx_request_comments_user ON request_comments(user_id);
+
+  -- Auto-approval rules
+  CREATE TABLE request_auto_approval_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Conditions
+    content_type VARCHAR(50),                      -- If set, only applies to this type
+    min_votes INTEGER,                             -- Auto-approve if votes >= this
+    user_role VARCHAR(50),                         -- Auto-approve if user has this role
+
+    -- Actions
+    auto_approve BOOLEAN DEFAULT true,
+    auto_send_to_arr BOOLEAN DEFAULT true,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  ```
+module_structure: |
+  ```
+  internal/requests/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Request management logic
+  ├── approval.go                  # Auto-approval rules engine
+  ├── arr_integration.go           # Send requests to Arr services
+  ├── metadata_fetcher.go          # Fetch metadata from external sources
+  ├── handler.go                   # HTTP API handlers
+  └── requests_test.go
+
+  web/src/routes/(app)/requests/
+  ├── +page.svelte                 # Requests list
+  ├── +page.ts                     # Data loading
+  ├── new/
+  │   └── +page.svelte             # Create new request
+  ├── [id]/
+  │   ├── +page.svelte             # Request detail
+  │   └── +page.ts
+  └── components/
+      ├── RequestCard.svelte       # Request display card
+      ├── SearchExternal.svelte    # Search TMDb/TVDB/etc
+      ├── VoteButton.svelte        # Upvote request
+      └── CommentThread.svelte     # Comments on request
+  ```
+key_interfaces: |
+  ```go
+  type RequestService interface {
+    // Request management
+    CreateRequest(ctx context.Context, userID uuid.UUID, req CreateRequestRequest) (*ContentRequest, error)
+    ListRequests(ctx context.Context, filters RequestFilters) ([]ContentRequest, error)
+    GetRequest(ctx context.Context, requestID uuid.UUID) (*ContentRequestDetail, error)
+    CancelRequest(ctx context.Context, requestID, userID uuid.UUID) error
+
+    // Approval workflow
+    ApproveRequest(ctx context.Context, requestID, reviewerID uuid.UUID) error
+    RejectRequest(ctx context.Context, requestID, reviewerID uuid.UUID, reason string) error
+    CheckAutoApproval(ctx context.Context, requestID uuid.UUID) (bool, error)
+
+    // Voting
+    VoteRequest(ctx context.Context, requestID, userID uuid.UUID) error
+    UnvoteRequest(ctx context.Context, requestID, userID uuid.UUID) error
+    GetRequestVotes(ctx context.Context, requestID uuid.UUID) (int, error)
+
+    // Comments
+    AddComment(ctx context.Context, requestID, userID uuid.UUID, comment string) (*RequestComment, error)
+    GetComments(ctx context.Context, requestID uuid.UUID) ([]RequestComment, error)
+
+    // Arr integration
+    SendToArr(ctx context.Context, requestID uuid.UUID) error
+    UpdateArrStatus(ctx context.Context, requestID uuid.UUID, status string) error
+  }
+
+  type ContentRequest struct {
+    ID             uuid.UUID  `db:"id" json:"id"`
+    UserID         uuid.UUID  `db:"user_id" json:"user_id"`
+    ContentType    string     `db:"content_type" json:"content_type"`
+    ExternalID     string     `db:"external_id" json:"external_id"`
+    ExternalSource string     `db:"external_source" json:"external_source"`
+    Title          string     `db:"title" json:"title"`
+    Overview       string     `db:"overview" json:"overview"`
+    PosterURL      string     `db:"poster_url" json:"poster_url"`
+    Status         string     `db:"status" json:"status"`
+    VoteCount      int        `json:"vote_count"`
+    CreatedAt      time.Time  `db:"created_at" json:"created_at"`
+  }
+
+  type ContentRequestDetail struct {
+    ContentRequest
+    RequestedBy    User              `json:"requested_by"`
+    ReviewedBy     *User             `json:"reviewed_by,omitempty"`
+    Comments       []RequestComment  `json:"comments"`
+    VotedByUser    bool              `json:"voted_by_user"`
+  }
+
+  type ArrIntegration interface {
+    AddItem(ctx context.Context, req ArrAddRequest) (int, error)
+    GetItemStatus(ctx context.Context, itemID int) (string, error)
+    RemoveItem(ctx context.Context, itemID int) error
+  }
+
+  type MetadataFetcher interface {
+    // PRIMARY: Query Arr services first (they aggregate metadata locally)
+    FetchMovieFromRadarr(ctx context.Context, tmdbID string) (*MovieMetadata, error)
+    FetchTVShowFromSonarr(ctx context.Context, tvdbID string) (*TVShowMetadata, error)
+    FetchAlbumFromLidarr(ctx context.Context, musicbrainzID string) (*AlbumMetadata, error)
+    FetchBookFromChaptarr(ctx context.Context, goodreadsID string) (*BookMetadata, error)
+
+    // FALLBACK: Query external APIs directly (via proxy/VPN)
+    FetchMovieFromTMDb(ctx context.Context, tmdbID string) (*MovieMetadata, error)
+    FetchTVShowFromTVDB(ctx context.Context, tvdbID string) (*TVShowMetadata, error)
+    FetchAlbumFromMusicBrainz(ctx context.Context, musicbrainzID string) (*AlbumMetadata, error)
+    FetchBookFromGoodReads(ctx context.Context, goodreadsID string) (*BookMetadata, error)
+
+    // UNIFIED: Try Arr first, fallback to external
+    FetchMovie(ctx context.Context, tmdbID string) (*MovieMetadata, error)
+    FetchTVShow(ctx context.Context, tvdbID string) (*TVShowMetadata, error)
+    FetchAlbum(ctx context.Context, musicbrainzID string) (*AlbumMetadata, error)
+    FetchBook(ctx context.Context, isbn string) (*BookMetadata, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river` - Background jobs for Arr sync
+  - `go.uber.org/fx`
+
+  **Arr Services** (PRIMARY - both metadata AND downloads):
+  - Radarr API (movie metadata from TMDb + downloads)
+  - Sonarr API (TV show metadata from TheTVDB + downloads)
+  - Lidarr API (music metadata from MusicBrainz + downloads)
+  - Chaptarr API (book metadata from GoodReads/OpenLibrary + downloads)
+  - Whisparr API (adult content metadata from StashDB + downloads)
+
+  **External APIs** (supplementary, via proxy/VPN):
+  - TMDb API (for movie metadata when Radarr doesn't have it)
+  - TheTVDB API (for TV show metadata when Sonarr doesn't have it)
+  - MusicBrainz API (for music metadata when Lidarr doesn't have it)
+  - GoodReads/OpenLibrary API (for book metadata when Chaptarr doesn't have it)
+
+env_vars: |
+  ```bash
+  REQUESTS_AUTO_APPROVAL_ENABLED=true
+  REQUESTS_MAX_PER_USER_PER_DAY=10
+
+  RADARR_URL=http://localhost:7878
+  RADARR_API_KEY=your_api_key
+  SONARR_URL=http://localhost:8989
+  SONARR_API_KEY=your_api_key
+  LIDARR_URL=http://localhost:8686
+  LIDARR_API_KEY=your_api_key
+  ```
+
+config_keys: |
+  ```yaml
+  requests:
+    enabled: true
+    max_per_user_per_day: 10
+    auto_approval:
+      enabled: true
+      min_votes: 5
+    voting_enabled: true
+    comments_enabled: true
+
+    arr:
+      radarr:
+        enabled: true
+        url: ${RADARR_URL}
+        api_key: ${RADARR_API_KEY}
+      sonarr:
+        enabled: true
+        url: ${SONARR_URL}
+        api_key: ${SONARR_API_KEY}
+      lidarr:
+        enabled: true
+        url: ${LIDARR_URL}
+        api_key: ${LIDARR_API_KEY}
+  ```
+
+component_interaction: |
+  **Request Creation Flow** (updated to reflect Arr services as PRIMARY metadata source):
+  1. User searches TMDb/TVDB/MusicBrainz via frontend (searches query external APIs via proxy/VPN)
+  2. User selects item and clicks "Request"
+  3. Frontend sends POST /api/v1/requests with external_id and source
+  4. **Metadata Fetch Priority**:
+     a. Query Arr service first (e.g., Radarr for movies) → Has metadata? Use it
+     b. Fallback to external API (e.g., TMDb via proxy/VPN) → Fetch + add to Arr service
+  5. Service creates content_requests record with cached metadata
+  6. Service checks auto-approval rules
+  7. If auto-approved:
+     - If item NOT in Arr service, add it (triggers download + metadata caching)
+     - If item already in Arr service, just monitor it
+  8. Return request to user
+
+  **Approval Flow**:
+  1. Admin views pending requests
+  2. Admin approves request via PUT /api/v1/requests/{id}/approve
+  3. Service updates status to 'approved'
+  4. Service calls arr_integration.AddItem()
+  5. Arr service downloads content
+  6. Background job polls Arr status every 5 minutes
+  7. When download complete, update status to 'available'
+  8. Notify requesting user via notification system
+
+  **Voting Flow**:
+  1. User upvotes request via POST /api/v1/requests/{id}/vote
+  2. Service creates request_votes record
+  3. Service increments vote count
+  4. If vote count >= auto-approval threshold, trigger approval
+  5. Return updated vote count
+
+  **Auto-Approval Flow**:
+  1. New request created or vote added
+  2. Service queries request_auto_approval_rules
+  3. Check if any rule matches (content_type, min_votes, user_role)
+  4. If match found and auto_approve=true, approve request
+  5. If auto_send_to_arr=true, send to Arr service
+
+api_endpoints: |
+  ```
+  POST   /api/v1/requests                         # Create request
+  GET    /api/v1/requests                         # List requests (filter by status)
+  GET    /api/v1/requests/:id                     # Get request details
+  DELETE /api/v1/requests/:id                     # Cancel request (own requests only)
+
+  PUT    /api/v1/requests/:id/approve             # Approve request (admin)
+  PUT    /api/v1/requests/:id/reject              # Reject request (admin)
+
+  POST   /api/v1/requests/:id/vote                # Upvote request
+  DELETE /api/v1/requests/:id/vote                # Remove vote
+
+  POST   /api/v1/requests/:id/comments            # Add comment
+  GET    /api/v1/requests/:id/comments            # Get comments
+
+  GET    /api/v1/requests/search/movies?q=        # Search TMDb for movies
+  GET    /api/v1/requests/search/tvshows?q=       # Search TVDB for TV shows
+  GET    /api/v1/requests/search/music?q=         # Search MusicBrainz for albums
+  ```
+
+unit_tests: |
+  ```go
+  func TestRequestService_CreateRequest(t *testing.T) {
+    // Test request creation
+    // Test duplicate request prevention
+  }
+
+  func TestRequestService_CheckAutoApproval(t *testing.T) {
+    tests := []struct {
+      name       string
+      request    ContentRequest
+      rules      []AutoApprovalRule
+      wantApprove bool
+    }{
+      {
+        name: "auto-approve with min votes",
+        request: ContentRequest{VoteCount: 5},
+        rules: []AutoApprovalRule{{MinVotes: 5}},
+        wantApprove: true,
+      },
+      {
+        name: "do not auto-approve under threshold",
+        request: ContentRequest{VoteCount: 3},
+        rules: []AutoApprovalRule{{MinVotes: 5}},
+        wantApprove: false,
+      },
+    }
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestArrIntegration_AddItem(t *testing.T) {
+    // Test adding item to Radarr/Sonarr
+    // Mock HTTP responses
+  }
+  ```
+
+metadata_fetching_strategy: |
+  **Metadata Fetch Implementation** (reflects dual-role Arr architecture):
+
+  ```go
+  type MetadataFetcherService struct {
+    radarrClient   RadarrClient
+    sonarrClient   SonarrClient
+    lidarrClient   LidarrClient
+    chaptarrClient ChaptarrClient
+
+    tmdbClient       TMDbClient        // Uses proxy/VPN
+    tvdbClient       TVDBClient        // Uses proxy/VPN
+    musicbrainzClient MusicBrainzClient // Uses proxy/VPN
+
+    cache Cache
+  }
+
+  func (s *MetadataFetcherService) FetchMovie(ctx context.Context, tmdbID string) (*MovieMetadata, error) {
+    // 1. Check cache
+    if cached, ok := s.cache.Get(fmt.Sprintf("movie:%s", tmdbID)); ok {
+      return cached.(*MovieMetadata), nil
+    }
+
+    // 2. Query Radarr FIRST (PRIMARY metadata source)
+    if movie, err := s.radarrClient.LookupMovie(ctx, tmdbID); err == nil {
+      s.cache.Set(fmt.Sprintf("movie:%s", tmdbID), movie, 15*time.Minute)
+      return movie, nil
+    }
+
+    // 3. Fallback to TMDb API (via proxy/VPN)
+    movie, err := s.tmdbClient.GetMovie(ctx, tmdbID)
+    if err != nil {
+      return nil, fmt.Errorf("failed to fetch movie metadata: %w", err)
+    }
+
+    // 4. Cache the result
+    s.cache.Set(fmt.Sprintf("movie:%s", tmdbID), movie, 15*time.Minute)
+
+    // 5. Optionally add to Radarr for future queries (background job)
+    // This populates Radarr's metadata cache for next time
+    go s.addToRadarrIfNotExists(context.Background(), tmdbID, movie)
+
+    return movie, nil
+  }
+
+  func (s *MetadataFetcherService) addToRadarrIfNotExists(ctx context.Context, tmdbID string, movie *MovieMetadata) {
+    // Add to Radarr in "monitoring" mode even if not downloaded yet
+    // This caches metadata locally in Radarr for future requests
+    _ = s.radarrClient.AddMovie(ctx, tmdbID, defaultQualityProfile, defaultRootFolder)
+  }
+  ```
+
+  **Why This Matters**:
+  - Reduces direct external API calls (rate limiting, privacy)
+  - Arr services build up local metadata cache over time
+  - First request queries external API, subsequent requests use Arr cache
+  - Proxy/VPN only needed for initial external API calls
+
+proxy_vpn_integration: |
+  **Proxy/VPN Support for External Metadata APIs**:
+
+  **Module Structure**:
+  ```
+  internal/requests/
+  ├── metadata/
+  │   ├── fetcher.go           # MetadataFetcherService (priority chain)
+  │   ├── providers/
+  │   │   ├── tmdb.go          # TMDb client (with proxy)
+  │   │   ├── tvdb.go          # TheTVDB client (with proxy)
+  │   │   ├── musicbrainz.go   # MusicBrainz client (with proxy)
+  │   │   └── goodreads.go     # GoodReads client (with proxy)
+  │   ├── arr/
+  │   │   ├── radarr.go        # Radarr client (no proxy - local)
+  │   │   ├── sonarr.go        # Sonarr client (no proxy - local)
+  │   │   ├── lidarr.go        # Lidarr client (no proxy - local)
+  │   │   └── chaptarr.go      # Chaptarr client (no proxy - local)
+  │   └── metadata_test.go
+  ```
+
+  **Configuration**:
+  ```yaml
+  requests:
+    metadata:
+      # Proxy settings for external APIs
+      proxy:
+        enabled: true
+        url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy
+
+      # Per-provider overrides
+      providers:
+        tmdb:
+          use_proxy: true
+        tvdb:
+          use_proxy: true
+        musicbrainz:
+          use_proxy: true
+          rate_limit: 1  # 1 req/sec (respectful)
+        goodreads:
+          use_proxy: false  # Skip proxy for GoodReads
+  ```
+
+  **HTTP Client Injection**:
+  ```go
+  // In fx module
+  fx.Provide(
+    metadata.NewProxyConfig,
+    metadata.NewProxiedHTTPClient,   // For external APIs
+    metadata.NewStandardHTTPClient,  // For local Arr services
+
+    // Providers
+    fx.Annotate(
+      metadata.NewTMDbClient,
+      fx.ParamTags(`name:"proxied"`),  // Use proxied client
+    ),
+    fx.Annotate(
+      metadata.NewRadarrClient,
+      fx.ParamTags(`name:"standard"`),  // Use standard client
+    ),
+  )
+  ```
+
+integration_tests: |
+  ```go
+  func TestRequests_EndToEnd(t *testing.T) {
+    // 1. User creates request
+    // 2. Other users vote on request
+    // 3. Request auto-approved when votes >= threshold
+    // 4. Metadata fetched from Radarr (or TMDb fallback via proxy)
+    // 5. Request sent to Radarr (adds to monitoring)
+    // 6. Poll Radarr status
+    // 7. Mark request as available when downloaded
+  }
+
+  func TestRequests_ManualApproval(t *testing.T) {
+    // Test manual approval workflow
+  }
+
+  func TestRequests_ArrIntegration(t *testing.T) {
+    // Test integration with Radarr/Sonarr APIs
+    // Use testcontainers for Arr services if possible
+  }
+
+  func TestRequests_MetadataFetchPriority(t *testing.T) {
+    // Test Arr-first metadata fetching
+    // 1. Query Radarr → return cached metadata
+    // 2. Query Radarr (miss) → fallback to TMDb via proxy
+    // 3. Verify proxy usage for external API
+  }
+
+  func TestRequests_ProxySupport(t *testing.T) {
+    // Test proxy configuration for external APIs
+    // Verify Arr services bypass proxy (local)
+  }
+  ```

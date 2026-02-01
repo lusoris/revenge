@@ -89,8 +89,66 @@ collection_types:
     - Release year
     - Date added
     - Watch status
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Collections (manual or smart)
+  CREATE TABLE collections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    description TEXT,
+    type VARCHAR(20) NOT NULL DEFAULT 'manual',  -- 'manual', 'smart'
+    is_public BOOLEAN DEFAULT false,
+
+    -- Smart collection filters (JSONB for flexibility)
+    filters JSONB,                                -- Smart collection filter rules
+
+    -- Metadata
+    poster_url TEXT,
+    backdrop_url TEXT,
+    sort_order INTEGER DEFAULT 0,                 -- User-defined sort order
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_collections_user ON collections(user_id, created_at DESC);
+  CREATE INDEX idx_collections_public ON collections(is_public) WHERE is_public = true;
+  CREATE INDEX idx_collections_type ON collections(type);
+  CREATE INDEX idx_collections_filters ON collections USING gin(filters) WHERE type = 'smart';
+
+  -- Collection items (polymorphic references)
+  CREATE TABLE collection_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    collection_id UUID NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
+
+    -- Polymorphic reference to any content type
+    item_type VARCHAR(50) NOT NULL,              -- 'movie', 'tvshow', 'episode', 'album', 'track', 'scene', 'gallery'
+    item_id UUID NOT NULL,                       -- References movies.id, tvshows.id, etc.
+
+    -- Ordering within collection
+    position INTEGER NOT NULL DEFAULT 0,
+
+    added_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_collection_items_collection ON collection_items(collection_id, position);
+  CREATE INDEX idx_collection_items_item ON collection_items(item_type, item_id);
+  CREATE UNIQUE INDEX idx_collection_items_unique ON collection_items(collection_id, item_type, item_id);
+
+  -- Collection sharing (collaborate with other users)
+  CREATE TABLE collection_shares (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    collection_id UUID NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
+    shared_with_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    permission VARCHAR(20) DEFAULT 'read',       -- 'read', 'write', 'admin'
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_collection_shares_collection ON collection_shares(collection_id);
+  CREATE INDEX idx_collection_shares_user ON collection_shares(shared_with_user_id);
+  CREATE UNIQUE INDEX idx_collection_shares_unique ON collection_shares(collection_id, shared_with_user_id);
+  ```
 api_endpoints:
 - method: POST
   path: /api/v1/collections
@@ -211,11 +269,177 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-module_structure: "```\n  internal/content/collections/\n  ├── module.go         \
-  \     # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+module_structure: |
+  ```
+  internal/collections/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Collection logic
+  ├── evaluator.go                 # Smart collection filter evaluator
+  ├── handler.go                   # HTTP API handlers
+  └── collections_test.go
+
+  web/src/routes/(app)/collections/
+  ├── +page.svelte                 # Collections list
+  ├── +page.ts                     # Data loading
+  ├── [id]/
+  │   ├── +page.svelte             # Collection detail
+  │   ├── +page.ts                 # Data loading
+  │   └── edit/
+  │       └── +page.svelte         # Edit collection
+  └── components/
+      ├── CollectionCard.svelte    # Collection card
+      ├── CollectionGrid.svelte    # Grid of collections
+      ├── FilterBuilder.svelte     # Smart collection filter builder
+      └── ItemPicker.svelte        # Add items to collection
+  ```
+key_interfaces: |
+  ```go
+  type CollectionService interface {
+    CreateCollection(ctx context.Context, userID uuid.UUID, req CreateCollectionRequest) (*Collection, error)
+    ListCollections(ctx context.Context, userID uuid.UUID, filters CollectionFilters) ([]Collection, error)
+    GetCollection(ctx context.Context, collectionID uuid.UUID) (*CollectionDetail, error)
+    UpdateCollection(ctx context.Context, collectionID uuid.UUID, req UpdateCollectionRequest) (*Collection, error)
+    DeleteCollection(ctx context.Context, collectionID uuid.UUID) error
+
+    AddItems(ctx context.Context, collectionID uuid.UUID, items []CollectionItemRef) (int, error)
+    RemoveItem(ctx context.Context, collectionID uuid.UUID, itemID uuid.UUID) error
+    ReorderItems(ctx context.Context, collectionID uuid.UUID, itemPositions map[uuid.UUID]int) error
+
+    GetCollectionItems(ctx context.Context, collectionID uuid.UUID) ([]CollectionItem, error)
+    EvaluateSmartCollection(ctx context.Context, collectionID uuid.UUID) ([]CollectionItem, error)
+
+    ShareCollection(ctx context.Context, collectionID uuid.UUID, shareWith uuid.UUID, permission string) error
+  }
+
+  type Collection struct {
+    ID          uuid.UUID              `db:"id" json:"id"`
+    UserID      uuid.UUID              `db:"user_id" json:"user_id"`
+    Name        string                 `db:"name" json:"name"`
+    Description string                 `db:"description" json:"description"`
+    Type        string                 `db:"type" json:"type"`
+    IsPublic    bool                   `db:"is_public" json:"is_public"`
+    Filters     map[string]interface{} `db:"filters" json:"filters,omitempty"`
+    ItemCount   int                    `json:"item_count"`
+    CreatedAt   time.Time              `db:"created_at" json:"created_at"`
+    UpdatedAt   time.Time              `db:"updated_at" json:"updated_at"`
+  }
+
+  type CollectionItem struct {
+    ID         uuid.UUID `db:"id" json:"id"`
+    ItemType   string    `db:"item_type" json:"item_type"`
+    ItemID     uuid.UUID `db:"item_id" json:"item_id"`
+    Position   int       `db:"position" json:"position"`
+
+    // Polymorphic data (joined from item tables)
+    Title      string    `json:"title"`
+    PosterURL  string    `json:"poster_url,omitempty"`
+  }
+
+  type SmartCollectionEvaluator interface {
+    Evaluate(ctx context.Context, filters map[string]interface{}) ([]uuid.UUID, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/jackc/pgx/v5/pgtype` - JSONB handling
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  # No specific env vars required
+  ```
+
+config_keys: |
+  ```yaml
+  collections:
+    max_items_per_collection: 5000
+    smart_collection_cache_ttl: 5m
+  ```
+
+component_interaction: |
+  **Manual Collection Flow**:
+  1. User creates collection via POST /api/v1/collections
+  2. Service validates and creates collection record
+  3. User adds items via POST /api/v1/collections/{id}/items
+  4. Service validates item references and inserts into collection_items
+  5. Items cached in otter for 5 minutes
+
+  **Smart Collection Flow**:
+  1. User creates smart collection with filters (JSONB)
+  2. On GET /api/v1/collections/{id}, service evaluates filters
+  3. Evaluator builds SQL query from filter JSONB
+  4. Results cached for configured TTL
+  5. Background job re-evaluates periodically
+
+  **Sharing Flow**:
+  1. Owner shares collection with user
+  2. Recipient sees collection in shared collections list
+  3. Permission enforced at service layer (read/write/admin)
+
+unit_tests: |
+  ```go
+  func TestCollectionService_CreateCollection(t *testing.T) {
+    tests := []struct {
+      name    string
+      req     CreateCollectionRequest
+      wantErr bool
+    }{
+      {
+        name: "create manual collection",
+        req: CreateCollectionRequest{
+          Name: "Best Sci-Fi",
+          Type: "manual",
+        },
+        wantErr: false,
+      },
+      {
+        name: "create smart collection",
+        req: CreateCollectionRequest{
+          Name: "4K Movies",
+          Type: "smart",
+          Filters: map[string]interface{}{
+            "resolution": "4K",
+          },
+        },
+        wantErr: false,
+      },
+    }
+    for _, tt := range tests {
+      t.Run(tt.name, func(t *testing.T) {
+        // Test implementation
+      })
+    }
+  }
+
+  func TestSmartCollectionEvaluator_Evaluate(t *testing.T) {
+    // Test filter evaluation logic
+  }
+
+  func TestCollectionService_ShareCollection(t *testing.T) {
+    // Test collection sharing permissions
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestCollections_EndToEnd(t *testing.T) {
+    // 1. Create manual collection
+    // 2. Add items to collection
+    // 3. Retrieve collection with items
+    // 4. Share collection
+    // 5. Verify shared user can access
+    // 6. Create smart collection
+    // 7. Verify items auto-populate
+  }
+
+  func TestSmartCollections_FilterEvaluation(t *testing.T) {
+    // Test various filter combinations
+    // Verify SQL generation is correct
+    // Check cache invalidation
+  }
+  ```

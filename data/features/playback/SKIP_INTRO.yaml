@@ -68,13 +68,790 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+
+  ```sql
+  -- Intro/credits markers for episodes
+  CREATE TABLE intro_credits_markers (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+      -- Content reference
+      content_type TEXT NOT NULL DEFAULT 'episode',  -- 'episode' (movies don't have intros)
+      content_id UUID NOT NULL,
+
+      -- Marker type
+      marker_type TEXT NOT NULL,  -- 'intro', 'credits', 'recap'
+
+      -- Timecodes (in seconds)
+      start_seconds NUMERIC(10,3) NOT NULL,
+      end_seconds NUMERIC(10,3) NOT NULL,
+      duration_seconds NUMERIC(10,3) GENERATED ALWAYS AS (end_seconds - start_seconds) STORED,
+
+      -- Detection method
+      detection_method TEXT NOT NULL,  -- 'audio_fingerprint', 'visual_analysis', 'manual', 'series_match'
+      confidence NUMERIC(5,2) DEFAULT 0,  -- Confidence score (0-100)
+
+      -- Audio fingerprint (Chromaprint)
+      chromaprint_fingerprint TEXT,  -- Base64-encoded fingerprint
+      chromaprint_duration_seconds NUMERIC(10,3),
+
+      -- Visual analysis data
+      black_frame_detected BOOLEAN DEFAULT false,
+      silence_detected BOOLEAN DEFAULT false,
+
+      -- Series-wide matching
+      matched_from_episode_id UUID,  -- If matched from another episode
+
+      -- Verification
+      verified BOOLEAN DEFAULT false,  -- Manually verified
+      verified_by_user_id UUID,
+      verified_at TIMESTAMPTZ,
+
+      -- Status
+      status TEXT NOT NULL DEFAULT 'active',  -- 'active', 'disabled', 'flagged'
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      CONSTRAINT intro_credits_start_end_check CHECK (end_seconds > start_seconds),
+      CONSTRAINT intro_credits_confidence_check CHECK (confidence BETWEEN 0 AND 100)
+  );
+
+  CREATE INDEX idx_intro_credits_content ON intro_credits_markers(content_type, content_id);
+  CREATE INDEX idx_intro_credits_marker_type ON intro_credits_markers(marker_type);
+  CREATE INDEX idx_intro_credits_status ON intro_credits_markers(status) WHERE status = 'active';
+  CREATE INDEX idx_intro_credits_matched_from ON intro_credits_markers(matched_from_episode_id)
+      WHERE matched_from_episode_id IS NOT NULL;
+
+  -- Series intro patterns (for matching across episodes)
+  CREATE TABLE series_intro_patterns (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      series_id UUID NOT NULL,  -- References tv_shows.id
+
+      -- Pattern info
+      pattern_type TEXT NOT NULL,  -- 'intro', 'credits', 'recap'
+
+      -- Reference fingerprint
+      reference_fingerprint TEXT NOT NULL,  -- Chromaprint fingerprint
+      reference_episode_id UUID NOT NULL,  -- Episode this pattern came from
+      reference_start_seconds NUMERIC(10,3) NOT NULL,
+      reference_end_seconds NUMERIC(10,3) NOT NULL,
+
+      -- Match statistics
+      matched_episode_count INTEGER DEFAULT 1,
+      average_confidence NUMERIC(5,2) DEFAULT 100,
+
+      -- Status
+      is_active BOOLEAN DEFAULT true,
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_series_intro_patterns_series ON series_intro_patterns(series_id, pattern_type)
+      WHERE is_active = true;
+  CREATE INDEX idx_series_intro_patterns_episode ON series_intro_patterns(reference_episode_id);
+
+  -- Detection queue (for async processing)
+  CREATE TABLE intro_detection_queue (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      content_type TEXT NOT NULL DEFAULT 'episode',
+      content_id UUID NOT NULL,
+      priority INTEGER DEFAULT 5,  -- 1-10, higher = more priority
+      requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      status TEXT NOT NULL DEFAULT 'queued',  -- 'queued', 'processing', 'completed', 'failed'
+      error_message TEXT,
+
+      UNIQUE(content_type, content_id)
+  );
+
+  CREATE INDEX idx_intro_detection_queue_status ON intro_detection_queue(status, priority DESC, requested_at);
+
+  -- User skip preferences
+  CREATE TABLE intro_skip_preferences (
+      user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+      -- Auto-skip settings
+      auto_skip_intro BOOLEAN DEFAULT false,
+      auto_skip_credits BOOLEAN DEFAULT false,
+      auto_skip_recap BOOLEAN DEFAULT false,
+
+      -- Button display
+      show_skip_button BOOLEAN DEFAULT true,
+      button_display_duration_seconds INTEGER DEFAULT 10,  -- Show button for X seconds
+
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  -- Skip statistics (analytics)
+  CREATE TABLE intro_skip_stats (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      content_type TEXT NOT NULL,
+      content_id UUID NOT NULL,
+      marker_id UUID REFERENCES intro_credits_markers(id) ON DELETE SET NULL,
+      marker_type TEXT NOT NULL,  -- 'intro', 'credits', 'recap'
+      skipped BOOLEAN NOT NULL,  -- true if skipped, false if watched
+      skipped_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_intro_skip_stats_user ON intro_skip_stats(user_id);
+  CREATE INDEX idx_intro_skip_stats_content ON intro_skip_stats(content_type, content_id);
+  CREATE INDEX idx_intro_skip_stats_marker ON intro_skip_stats(marker_id);
+  ```
+
+  **Indexes**: Optimized for:
+  - Content marker lookups
+  - Series pattern matching
+  - Detection queue processing
+  - User preferences retrieval
+  - Skip analytics
+file_structure: |
+  ```
+  internal/playback/skipintro/
+  ├── module.go                    # fx module registration
+  ├── repository.go                # Database operations (sqlc)
+  ├── queries.sql                  # SQL queries for sqlc
+  ├── service.go                   # Business logic
+  ├── handler.go                   # HTTP handlers (ogen-generated)
+  ├── types.go                     # Domain types
+  ├── detector.go                  # Detection orchestration
+  ├── audio_detector.go            # Audio fingerprinting (Chromaprint)
+  ├── visual_detector.go           # Visual analysis (black frames, silence)
+  ├── pattern_matcher.go           # Series pattern matching
+  ├── chromaprint.go               # Chromaprint integration
+  ├── ffmpeg.go                    # FFmpeg audio/video extraction
+  ├── queue.go                     # Detection queue management
+  └── cache.go                     # Caching layer (otter)
+
+  cmd/server/
+  └── main.go                      # Server entry point with fx
+
+  migrations/
+  ├── 032_skip_intro.up.sql        # Skip intro tables
+  └── 032_skip_intro.down.sql      # Rollback
+
+  api/openapi/
+  └── skipintro.yaml               # OpenAPI spec for skip intro
+
+  web/src/lib/components/player/
+  ├── SkipIntroButton.svelte       # Skip intro button overlay
+  └── SkipPreferences.svelte       # User preferences UI
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository interface for skip intro database operations
+  type Repository interface {
+      // Markers
+      CreateMarker(ctx context.Context, params CreateMarkerParams) (*IntroCreditsMarker, error)
+      GetMarker(ctx context.Context, id uuid.UUID) (*IntroCreditsMarker, error)
+      GetMarkersForContent(ctx context.Context, contentType string, contentID uuid.UUID) ([]*IntroCreditsMarker, error)
+      UpdateMarker(ctx context.Context, id uuid.UUID, params UpdateMarkerParams) (*IntroCreditsMarker, error)
+      DeleteMarker(ctx context.Context, id uuid.UUID) error
+      VerifyMarker(ctx context.Context, markerID, userID uuid.UUID) error
+
+      // Series patterns
+      CreateSeriesPattern(ctx context.Context, params CreatePatternParams) (*SeriesIntroPattern, error)
+      GetSeriesPatterns(ctx context.Context, seriesID uuid.UUID, patternType string) ([]*SeriesIntroPattern, error)
+      UpdatePatternStats(ctx context.Context, id uuid.UUID, matchedCount int, avgConfidence float64) error
+      DeactivatePattern(ctx context.Context, id uuid.UUID) error
+
+      // Detection queue
+      EnqueueDetection(ctx context.Context, contentType string, contentID uuid.UUID, priority int) error
+      GetQueuedItems(ctx context.Context, limit int) ([]*DetectionQueueItem, error)
+      UpdateQueueStatus(ctx context.Context, id uuid.UUID, status, errorMsg string) error
+
+      // Preferences
+      GetUserPreferences(ctx context.Context, userID uuid.UUID) (*IntroSkipPreferences, error)
+      UpsertUserPreferences(ctx context.Context, userID uuid.UUID, prefs PreferencesParams) (*IntroSkipPreferences, error)
+
+      // Statistics
+      RecordSkip(ctx context.Context, params SkipStatsParams) error
+      GetSkipStats(ctx context.Context, markerID uuid.UUID) (*SkipStatistics, error)
+  }
+
+  // Service interface for skip intro operations
+  type Service interface {
+      // Detection
+      DetectIntroCredits(ctx context.Context, contentType string, contentID uuid.UUID) ([]*IntroCreditsMarker, error)
+      GetMarkers(ctx context.Context, contentType string, contentID uuid.UUID) ([]*IntroCreditsMarker, error)
+      QueueBulkDetection(ctx context.Context, contentRefs []ContentReference, priority int) error
+
+      // Manual management
+      CreateManualMarker(ctx context.Context, req CreateManualMarkerRequest) (*IntroCreditsMarker, error)
+      UpdateMarker(ctx context.Context, markerID uuid.UUID, updates MarkerUpdates) (*IntroCreditsMarker, error)
+      DeleteMarker(ctx context.Context, markerID uuid.UUID) error
+      VerifyMarker(ctx context.Context, markerID, userID uuid.UUID) error
+
+      // Preferences
+      GetPreferences(ctx context.Context, userID uuid.UUID) (*IntroSkipPreferences, error)
+      UpdatePreferences(ctx context.Context, userID uuid.UUID, updates PreferencesUpdate) (*IntroSkipPreferences, error)
+
+      // Statistics
+      RecordSkipAction(ctx context.Context, userID uuid.UUID, markerID uuid.UUID, skipped bool) error
+  }
+
+  // Detector interface for intro/credits detection
+  type Detector interface {
+      DetectIntro(ctx context.Context, contentType string, contentID uuid.UUID, videoPath string) (*DetectionResult, error)
+      DetectCredits(ctx context.Context, contentType string, contentID uuid.UUID, videoPath string) (*DetectionResult, error)
+      DetectRecap(ctx context.Context, contentType string, contentID uuid.UUID, videoPath string) (*DetectionResult, error)
+  }
+
+  // AudioDetector interface for audio fingerprinting
+  type AudioDetector interface {
+      ExtractFingerprint(ctx context.Context, audioPath string, startSec, durationSec float64) (*AudioFingerprint, error)
+      CompareFingerprints(fp1, fp2 *AudioFingerprint) (similarity float64, err error)
+      FindMatchingSegment(ctx context.Context, haystack, needle *AudioFingerprint) (*MatchResult, error)
+  }
+
+  // VisualDetector interface for visual analysis
+  type VisualDetector interface {
+      DetectBlackFrames(ctx context.Context, videoPath string) ([]BlackFrameSegment, error)
+      DetectSilence(ctx context.Context, audioPath string) ([]SilenceSegment, error)
+      DetectSceneChanges(ctx context.Context, videoPath string) ([]SceneChange, error)
+  }
+
+  // PatternMatcher interface for series-wide matching
+  type PatternMatcher interface {
+      CreatePattern(ctx context.Context, seriesID, episodeID uuid.UUID, marker *IntroCreditsMarker) (*SeriesIntroPattern, error)
+      MatchAgainstPatterns(ctx context.Context, seriesID uuid.UUID, episodeID uuid.UUID, fingerprint *AudioFingerprint) ([]*PatternMatch, error)
+      UpdatePatternStatistics(ctx context.Context, patternID uuid.UUID) error
+  }
+
+  // ChromaprintClient interface for Chromaprint integration
+  type ChromaprintClient interface {
+      GenerateFingerprint(audioData []byte, sampleRate int, channels int) (string, error)
+      CompareFinger prints(fp1, fp2 string) (float64, error)
+  }
+
+  // FFmpegClient interface for audio/video extraction
+  type FFmpegClient interface {
+      ExtractAudio(ctx context.Context, videoPath, outputPath string, startSec, durationSec float64) error
+      ExtractFrames(ctx context.Context, videoPath, outputDir string, interval float64) error
+      DetectBlackFrames(ctx context.Context, videoPath string, threshold float64) ([]TimeRange, error)
+      DetectSilence(ctx context.Context, audioPath string, threshold float64, minDuration float64) ([]TimeRange, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  ```go
+  require (
+      // Core
+      github.com/google/uuid v1.6.0
+      go.uber.org/fx v1.23.0
+
+      // Database
+      github.com/jackc/pgx/v5 v5.7.2
+      github.com/sqlc-dev/sqlc v1.28.0
+
+      // API
+      github.com/ogen-go/ogen v1.7.0
+
+      // Caching
+      github.com/maypok86/otter v1.2.4
+
+      // FFmpeg
+      github.com/asticode/go-astiav v0.23.0  // FFmpeg bindings
+
+      // Chromaprint (audio fingerprinting)
+      // Note: Use CGO bindings to libchromaprint or subprocess to fpcalc
+      github.com/acoustid/chromaprint v1.0.0  // Hypothetical Go bindings
+
+      // Job queue
+      github.com/riverqueue/river v0.15.0
+
+      // Testing
+      github.com/stretchr/testify v1.10.0
+      github.com/testcontainers/testcontainers-go v0.35.0
+  )
+  ```
+
+  **External Dependencies**:
+  - **FFmpeg 7.1+**: Audio/video extraction, black frame detection, silence detection
+  - **Chromaprint (fpcalc)**: Audio fingerprinting
+  - **PostgreSQL 18+**: Database
+
+env_vars: |
+  ```bash
+  # Feature toggle
+  SKIP_INTRO_ENABLED=true
+  SKIP_INTRO_AUTO_DETECT=true              # Auto-detect on library scan
+
+  # Detection settings
+  SKIP_INTRO_MIN_DURATION_SEC=15           # Min intro duration
+  SKIP_INTRO_MAX_DURATION_SEC=180          # Max intro duration (3 minutes)
+  SKIP_INTRO_MIN_CONFIDENCE=70             # Min confidence % to accept
+  SKIP_INTRO_USE_AUDIO_FINGERPRINT=true   # Use Chromaprint
+  SKIP_INTRO_USE_VISUAL_ANALYSIS=true     # Use black frame/silence detection
+  SKIP_INTRO_USE_SERIES_PATTERNS=true     # Match against series patterns
+
+  # Chromaprint settings
+  CHROMAPRINT_BIN_PATH=/usr/bin/fpcalc     # Path to fpcalc binary
+  CHROMAPRINT_SAMPLE_DURATION_SEC=60       # Sample duration for fingerprinting
+
+  # Credits detection
+  SKIP_CREDITS_ENABLED=true
+  SKIP_CREDITS_START_OFFSET_SEC=300        # Start checking X seconds before end
+
+  # Worker
+  SKIP_INTRO_WORKER_CONCURRENCY=2          # Concurrent detection jobs
+  SKIP_INTRO_WORKER_PRIORITY=5             # Job priority (1-10)
+  SKIP_INTRO_DETECTION_TIMEOUT_MIN=10      # Timeout for detection
+
+  # User defaults
+  SKIP_INTRO_DEFAULT_AUTO_SKIP=false       # Default auto-skip setting
+  SKIP_INTRO_BUTTON_DURATION_SEC=10        # Show button for X seconds
+  ```
+
+config_keys: |
+  ```yaml
+  skip_intro:
+    # Feature toggle
+    enabled: true
+    auto_detect: true                 # Auto-detect on library scan
+
+    # Detection settings
+    detection:
+      intro:
+        min_duration_seconds: 15
+        max_duration_seconds: 180     # 3 minutes
+        min_confidence: 70
+      credits:
+        enabled: true
+        start_offset_seconds: 300     # Check last 5 minutes
+      recap:
+        enabled: true
+        max_duration_seconds: 120     # 2 minutes
+
+      # Detection methods
+      methods:
+        audio_fingerprint:
+          enabled: true
+          sample_duration_seconds: 60
+        visual_analysis:
+          enabled: true
+          black_frame_threshold: 0.98  # 98% black
+          silence_threshold_db: -40
+          silence_duration_seconds: 2
+        series_patterns:
+          enabled: true
+          min_match_confidence: 80
+
+    # Chromaprint
+    chromaprint:
+      bin_path: /usr/bin/fpcalc
+      sample_rate: 16000
+      channels: 1
+
+    # Worker
+    worker:
+      concurrency: 2
+      priority: 5
+      timeout_minutes: 10
+
+    # User defaults
+    defaults:
+      auto_skip_intro: false
+      auto_skip_credits: false
+      auto_skip_recap: false
+      show_skip_button: true
+      button_display_duration_seconds: 10
+
+    # Cache
+    cache:
+      ttl_markers: 1h
+      ttl_series_patterns: 24h
+  ```
+
+defaults: |
+  - **Min Intro Duration**: 15 seconds
+  - **Max Intro Duration**: 180 seconds (3 minutes)
+  - **Min Confidence**: 70%
+  - **Audio Fingerprint**: Enabled with 60-second samples
+  - **Visual Analysis**: Enabled (black frames, silence)
+  - **Series Patterns**: Enabled with 80% min match confidence
+  - **Credits Detection**: Enabled, check last 5 minutes
+  - **Auto-skip**: Disabled by default (user opt-in)
+  - **Skip Button Duration**: 10 seconds
+  - **Worker Concurrency**: 2 jobs
+
 module_structure: "```\n  internal/content/skip_intro_/_credits_detection/\n  ├──\
   \ module.go              # fx module definition\n  ├── repository.go          #\
   \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
   \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
   \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
+request_examples: |
+  **Detect Intro/Credits**:
+  ```json
+  POST /api/v1/skip-intro/detect
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "content_type": "episode",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000"
+  }
+  ```
+
+  **Get Markers for Content**:
+  ```json
+  GET /api/v1/skip-intro/markers?content_type=episode&content_id=123e4567-e89b-12d3-a456-426614174000
+  Authorization: Bearer <token>
+  ```
+
+  **Create Manual Marker**:
+  ```json
+  POST /api/v1/skip-intro/markers
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "content_type": "episode",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "marker_type": "intro",
+    "start_seconds": 15.5,
+    "end_seconds": 95.2
+  }
+  ```
+
+  **Update Marker**:
+  ```json
+  PUT /api/v1/skip-intro/markers/550e8400-e29b-41d4-a716-446655440000
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "start_seconds": 16.0,
+    "end_seconds": 96.0,
+    "status": "active"
+  }
+  ```
+
+  **Verify Marker** (confirm accuracy):
+  ```json
+  POST /api/v1/skip-intro/markers/550e8400-e29b-41d4-a716-446655440000/verify
+  Authorization: Bearer <token>
+  ```
+
+  **Get User Preferences**:
+  ```json
+  GET /api/v1/skip-intro/preferences
+  Authorization: Bearer <token>
+  ```
+
+  **Update Preferences**:
+  ```json
+  PUT /api/v1/skip-intro/preferences
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "auto_skip_intro": true,
+    "auto_skip_credits": false,
+    "auto_skip_recap": false,
+    "show_skip_button": true,
+    "button_display_duration_seconds": 15
+  }
+  ```
+
+  **Record Skip Action** (analytics):
+  ```json
+  POST /api/v1/skip-intro/skip
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "marker_id": "550e8400-e29b-41d4-a716-446655440000",
+    "skipped": true
+  }
+  ```
+
+  **Queue Bulk Detection**:
+  ```json
+  POST /api/v1/skip-intro/bulk-detect
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "series_id": "660e8400-e29b-41d4-a716-446655440000",
+    "priority": 8
+  }
+  ```
+
+response_examples: |
+  **Intro/Credits Marker Object**:
+  ```json
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "content_type": "episode",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "marker_type": "intro",
+    "start_seconds": 15.5,
+    "end_seconds": 95.2,
+    "duration_seconds": 79.7,
+    "detection_method": "audio_fingerprint",
+    "confidence": 92.5,
+    "verified": true,
+    "verified_by_user_id": "770e8400-e29b-41d4-a716-446655440000",
+    "verified_at": "2024-06-15T12:00:00Z",
+    "status": "active",
+    "created_at": "2024-06-15T10:00:00Z",
+    "updated_at": "2024-06-15T12:00:00Z"
+  }
+  ```
+
+  **Get Markers Response**:
+  ```json
+  {
+    "markers": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "marker_type": "intro",
+        "start_seconds": 15.5,
+        "end_seconds": 95.2,
+        "duration_seconds": 79.7,
+        "confidence": 92.5,
+        "verified": true
+      },
+      {
+        "id": "660e8400-e29b-41d4-a716-446655440000",
+        "marker_type": "credits",
+        "start_seconds": 2340.0,
+        "end_seconds": 2580.0,
+        "duration_seconds": 240.0,
+        "confidence": 88.0,
+        "verified": false
+      }
+    ]
+  }
+  ```
+
+  **Detection Result Response**:
+  ```json
+  {
+    "content_type": "episode",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "detected_markers": [
+      {
+        "marker_type": "intro",
+        "start_seconds": 15.5,
+        "end_seconds": 95.2,
+        "detection_method": "audio_fingerprint",
+        "confidence": 92.5
+      },
+      {
+        "marker_type": "credits",
+        "start_seconds": 2340.0,
+        "end_seconds": 2580.0,
+        "detection_method": "visual_analysis",
+        "confidence": 88.0
+      }
+    ],
+    "series_pattern_matched": true,
+    "matched_from_episode": {
+      "episode_id": "770e8400-e29b-41d4-a716-446655440000",
+      "episode_title": "Pilot"
+    }
+  }
+  ```
+
+  **User Preferences Object**:
+  ```json
+  {
+    "user_id": "990e8400-e29b-41d4-a716-446655440000",
+    "auto_skip_intro": true,
+    "auto_skip_credits": false,
+    "auto_skip_recap": false,
+    "show_skip_button": true,
+    "button_display_duration_seconds": 10,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-06-15T10:00:00Z"
+  }
+  ```
+
+  **Series Pattern Object**:
+  ```json
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440000",
+    "series_id": "660e8400-e29b-41d4-a716-446655440000",
+    "pattern_type": "intro",
+    "reference_episode_id": "770e8400-e29b-41d4-a716-446655440000",
+    "reference_start_seconds": 15.5,
+    "reference_end_seconds": 95.2,
+    "matched_episode_count": 24,
+    "average_confidence": 91.2,
+    "is_active": true,
+    "created_at": "2024-01-15T10:00:00Z",
+    "updated_at": "2024-06-15T10:00:00Z"
+  }
+  ```
+
+unit_tests: |
+  **Repository Layer**:
+  - Test CRUD operations for markers
+  - Test marker retrieval by content
+  - Test series pattern CRUD
+  - Test pattern matching queries
+  - Test detection queue operations
+  - Test user preferences CRUD
+  - Test skip statistics recording
+  - Mock database with sqlc.Querier interface
+
+  **Service Layer**:
+  - Test detection orchestration
+  - Test manual marker creation/updates
+  - Test marker verification
+  - Test preferences management
+  - Test skip action recording
+  - Mock repository and detector
+
+  **AudioDetector**:
+  - Test fingerprint extraction with Chromaprint
+  - Test fingerprint comparison
+  - Test matching segment detection
+  - Test confidence scoring
+  - Mock Chromaprint client and FFmpeg
+
+  **VisualDetector**:
+  - Test black frame detection
+  - Test silence detection
+  - Test scene change detection
+  - Test threshold configuration
+  - Mock FFmpeg client
+
+  **PatternMatcher**:
+  - Test pattern creation from marker
+  - Test pattern matching against episode
+  - Test match confidence calculation
+  - Test pattern statistics updates
+  - Mock repository and fingerprint comparison
+
+  **ChromaprintClient**:
+  - Test fingerprint generation
+  - Test fingerprint comparison
+  - Test subprocess execution (fpcalc)
+  - Test error handling
+  - Mock subprocess calls
+
+  **Detector**:
+  - Test full intro detection flow
+  - Test credits detection flow
+  - Test recap detection flow
+  - Test method selection (audio vs visual)
+  - Test confidence thresholding
+  - Mock audio/visual detectors and pattern matcher
+
+  **Handler Layer**:
+  - Test request validation (ogen schemas)
+  - Test authentication and authorization
+  - Test error responses
+  - Mock service layer
+
+  **Coverage Target**: 85%+ for critical paths (detection, matching)
+
+integration_tests: |
+  **Database Integration**:
+  - Test full marker lifecycle with real PostgreSQL (testcontainers)
+  - Test series pattern matching queries
+  - Test detection queue processing
+  - Test generated columns (duration_seconds)
+  - Test migration up/down
+
+  **FFmpeg Integration**:
+  - Test audio extraction from sample videos
+  - Test black frame detection with real video
+  - Test silence detection with real audio
+  - Test various video formats and codecs
+
+  **Chromaprint Integration**:
+  - Test fingerprint generation with real fpcalc
+  - Test fingerprint comparison accuracy
+  - Test matching against known intro sequences
+  - Test sample duration handling
+
+  **Detection Integration**:
+  - Test full intro detection on sample TV episode
+  - Test credits detection on sample episode
+  - Test series pattern matching (multiple episodes)
+  - Test detection with various video qualities
+
+  **Pattern Matching Integration**:
+  - Test pattern creation from detected intro
+  - Test matching intro across series (5+ episodes)
+  - Test confidence calculation
+  - Test pattern statistics updates
+
+  **Job Queue Integration**:
+  - Test async detection with River
+  - Test concurrent detection jobs
+  - Test job retries on transient failures
+  - Test bulk detection queuing
+
+  **API Integration**:
+  - Test full detection flow (HTTP → job → FFmpeg/Chromaprint → database)
+  - Test marker retrieval
+  - Test manual marker creation
+  - Test preferences updates
+  - Test skip action recording
+
+  **Performance Tests**:
+  - Test detection speed (45-minute episode)
+  - Test concurrent detection (10 episodes)
+  - Test series pattern matching (100+ episodes)
+  - Test fingerprint comparison performance
+
+  **Accuracy Tests**:
+  - Test detection accuracy on known intro sequences
+  - Test false positive rate
+  - Test confidence score correlation with accuracy
+  - Test series pattern match accuracy
+
+test_coverage_target: "80%"
+
+api_endpoints:
+- method: POST
+  path: /api/v1/skip-intro/detect
+  description: Detect intro/credits for content
+- method: GET
+  path: /api/v1/skip-intro/markers
+  description: Get markers for content
+- method: POST
+  path: /api/v1/skip-intro/markers
+  description: Create manual marker
+- method: PUT
+  path: /api/v1/skip-intro/markers/:id
+  description: Update marker
+- method: DELETE
+  path: /api/v1/skip-intro/markers/:id
+  description: Delete marker
+- method: POST
+  path: /api/v1/skip-intro/markers/:id/verify
+  description: Verify marker accuracy
+- method: GET
+  path: /api/v1/skip-intro/preferences
+  description: Get user skip preferences
+- method: PUT
+  path: /api/v1/skip-intro/preferences
+  description: Update user skip preferences
+- method: POST
+  path: /api/v1/skip-intro/skip
+  description: Record skip action (analytics)
+- method: POST
+  path: /api/v1/skip-intro/bulk-detect
+  description: Queue bulk detection for series
+- method: GET
+  path: /api/v1/skip-intro/series/:id/patterns
+  description: Get series intro patterns
+
 component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
   \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
   \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

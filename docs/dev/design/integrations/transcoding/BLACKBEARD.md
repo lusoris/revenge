@@ -5,37 +5,24 @@ sources:
   - name: FFmpeg Documentation
     url: ../../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
     url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
+    note: Internal transcoding (go-astiav)
   - name: gohlslib (HLS)
     url: ../../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
-    url: ../../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-  - name: Prometheus Go Client
-    url: ../../../sources/observability/prometheus.md
-    note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
-    url: ../../../sources/observability/prometheus-metrics.md
-    note: Auto-resolved from prometheus-metrics
+  - name: River Job Queue
+    url: ../../../sources/tooling/river.md
+    note: Job queue for transcoding tasks
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
+  - title: TRANSCODING service (INTERNAL transcoding)
+    path: ../../services/TRANSCODING.md
+  - title: 04_PLAYER_ARCHITECTURE
+    path: ../../architecture/04_PLAYER_ARCHITECTURE.md
+  - title: TRICKPLAY feature
+    path: ../../features/playback/TRICKPLAY.md
+  - title: HTTP_CLIENT (for Blackbeard API)
+    path: ../../services/HTTP_CLIENT.md
 ---
 
 ## Table of Contents
@@ -52,6 +39,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Blackbeard external integration (OPTIONAL)](#blackbeard-external-integration-optional)
+- [Transcoding preference](#transcoding-preference)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -72,7 +61,7 @@ design_refs:
 
 > Integration with Blackbeard
 
-> External transcoding service for Revenge
+> EXTERNAL transcoding service integration - offload CPU/GPU-intensive transcoding to dedicated Blackbeard instances
 
 ---
 
@@ -81,7 +70,7 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | - |
+| Design | ✅ | External integration design complete |
 | Sources | ✅ | - |
 | Instructions | ✅ | - |
 | Code | 🔴 | - |
@@ -114,8 +103,6 @@ internal/integration/blackbeard/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -127,11 +114,89 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// External transcoding provider interface
+type ExternalTranscoder interface {
+  // Submit job to external service
+  SubmitJob(ctx context.Context, job *TranscodeJob) (externalID string, error)
+
+  // Get job status from external service
+  GetJobStatus(ctx context.Context, externalID string) (*JobStatus, error)
+
+  // Cancel job on external service
+  CancelJob(ctx context.Context, externalID string) error
+
+  // Check if service is available
+  IsAvailable(ctx context.Context) bool
+
+  // Provider name
+  Name() string
+}
+
+// Blackbeard client (implements ExternalTranscoder)
+type BlackbeardClient struct {
+  baseURL     string
+  apiKey      string
+  httpClient  *http.Client
+}
+
+func (c *BlackbeardClient) Name() string { return "blackbeard" }
+
+func (c *BlackbeardClient) IsAvailable(ctx context.Context) bool {
+  // Check Blackbeard health endpoint
+  resp, err := c.httpClient.Get(c.baseURL + "/api/v1/health")
+  if err != nil {
+    return false
+  }
+  defer resp.Body.Close()
+  return resp.StatusCode == http.StatusOK
+}
+
+func (c *BlackbeardClient) SubmitJob(ctx context.Context, job *TranscodeJob) (string, error) {
+  // Submit to Blackbeard API
+  // Returns external job ID
+}
+
+// Transcoding router (chooses internal vs external)
+type TranscodingRouter struct {
+  internal    *InternalTranscoder  // go-astiav FFmpeg
+  external    ExternalTranscoder   // Blackbeard (optional)
+  preferExternal bool
+}
+
+func (r *TranscodingRouter) Transcode(ctx context.Context, job *TranscodeJob) error {
+  // Try external if configured and available
+  if r.preferExternal && r.external != nil && r.external.IsAvailable(ctx) {
+    externalID, err := r.external.SubmitJob(ctx, job)
+    if err == nil {
+      // Track external job
+      return r.trackExternalJob(ctx, job, externalID)
+    }
+    slog.Warn("external transcode failed, falling back to internal", "error", err)
+  }
+
+  // Fall back to internal transcoding
+  return r.internal.Transcode(ctx, job)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client for Blackbeard API
+- `encoding/json` - JSON encoding/decoding
+- `github.com/jackc/pgx/v5` - PostgreSQL for job tracking
+- `github.com/riverqueue/river` - Background job processing
+- `go.uber.org/fx` - Dependency injection
+
+**For Internal Transcoding** (see TRANSCODING service):
+- `github.com/asticode/go-astiav` - FFmpeg Go bindings
+- `github.com/bluenviron/gohlslib/v2` - HLS streaming
+
+**External**:
+- Blackbeard service (user-deployed, not developed by us)
+
 
 
 
@@ -140,11 +205,46 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Blackbeard external integration (OPTIONAL)
+BLACKBEARD_ENABLED=false             # Enable external offloading
+BLACKBEARD_URL=http://blackbeard:8080
+BLACKBEARD_API_KEY=your_api_key
+
+# Transcoding preference
+TRANSCODING_PREFER_EXTERNAL=false    # Prefer Blackbeard over internal
+TRANSCODING_EXTERNAL_TIMEOUT=60s     # Timeout for external API calls
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+transcoding:
+  # Internal transcoding (always available)
+  internal:
+    enabled: true
+    hardware_accel: auto           # auto, nvenc, qsv, vaapi, none
+    max_concurrent: 2
+    cache_dir: /var/cache/revenge/transcoded
+    cache_max_size_gb: 100
+
+  # External transcoding via Blackbeard (OPTIONAL)
+  external:
+    blackbeard:
+      enabled: false               # Disabled by default
+      url: ${BLACKBEARD_URL}
+      api_key: ${BLACKBEARD_API_KEY}
+      timeout: 60s
+      prefer_external: false       # Prefer external over internal
+      fallback_to_internal: true   # Fall back if Blackbeard unavailable
+
+  # HLS settings (used by both internal and external)
+  hls:
+    segment_duration: 6s
+    target_duration: 6
+```
+
 
 
 
@@ -171,18 +271,14 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [TRANSCODING service (INTERNAL transcoding)](../../services/TRANSCODING.md)
+- [04_PLAYER_ARCHITECTURE](../../architecture/04_PLAYER_ARCHITECTURE.md)
+- [TRICKPLAY feature](../../features/playback/TRICKPLAY.md)
+- [HTTP_CLIENT (for Blackbeard API)](../../services/HTTP_CLIENT.md)
 
 ### External Sources
 - [FFmpeg Documentation](../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md) - Internal transcoding (go-astiav)
 - [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [Prometheus Go Client](../../../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../../../sources/tooling/river.md) - Job queue for transcoding tasks
 

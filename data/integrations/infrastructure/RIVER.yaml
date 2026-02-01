@@ -78,3 +78,346 @@ design_refs:
 integration_name: River
 integration_id: river
 external_service: River
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Services   │────▶│   River      │────▶│ PostgreSQL  │
+  │ (Enqueue)   │     │   Client     │     │ (Job Store) │
+  └─────────────┘     └──────────────┘     └─────────────┘
+                             │
+                      ┌──────┴───────┐
+                      │   Workers    │
+                      │ (Background) │
+                      └──────────────┘
+  ```
+
+connection_details: |
+  **Job Queue**: River (PostgreSQL-native background job processor)
+  **Storage**: Jobs stored in PostgreSQL `river_job` schema
+  **Client**: riverqueue/river Go package
+  **Worker Pool**: Configurable concurrency per job type
+
+  **Key Features**:
+  - PostgreSQL-native (no Redis/RabbitMQ needed)
+  - Job persistence (survives server restarts)
+  - Priority queues
+  - Scheduled/delayed jobs
+  - Retry with exponential backoff
+  - Job cancellation
+  - Leadership election for distributed workers
+
+job_architecture: |
+  **Job Lifecycle**:
+  1. **Enqueue**: Service creates job, inserted into `river_job` table
+  2. **Available**: Job becomes available at scheduled time
+  3. **Running**: Worker picks up job and executes
+  4. **Completed**: Job finishes successfully
+  5. **Failed**: Job fails, retried with backoff (max 25 attempts)
+  6. **Discarded**: Job exceeds retry limit
+
+  **Job States**:
+  - `available` - Ready to run
+  - `running` - Currently executing
+  - `completed` - Successfully finished
+  - `retryable` - Failed, will retry
+  - `scheduled` - Waiting for scheduled time
+  - `cancelled` - Manually cancelled
+  - `discarded` - Permanently failed
+
+database_schema: |
+  **Schema**: `river_job` (managed by River)
+
+  ```sql
+  -- Job queue table (managed by River)
+  CREATE TABLE river_job (
+    id BIGSERIAL PRIMARY KEY,
+    state VARCHAR(50) NOT NULL,
+    queue VARCHAR(100) NOT NULL,
+    kind VARCHAR(100) NOT NULL,
+    args JSONB NOT NULL,
+    priority INTEGER DEFAULT 1,
+    scheduled_at TIMESTAMPTZ NOT NULL,
+    attempted_at TIMESTAMPTZ,
+    attempt INTEGER DEFAULT 0,
+    max_attempts INTEGER DEFAULT 25,
+    errors TEXT[],
+    created_at TIMESTAMPTZ DEFAULT now(),
+    finalized_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_river_job_state_queue ON river_job(state, queue);
+  CREATE INDEX idx_river_job_scheduled ON river_job(scheduled_at);
+
+  -- Leadership election (managed by River)
+  CREATE TABLE river_leader (
+    name VARCHAR(100) PRIMARY KEY,
+    leader_id VARCHAR(100) NOT NULL,
+    elected_at TIMESTAMPTZ NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/jobs/
+  ├── module.go                    # fx module
+  ├── client.go                    # River client
+  ├── workers/                     # Job workers
+  │   ├── library_scan.go
+  │   ├── metadata_fetch.go
+  │   ├── transcode.go
+  │   ├── analytics_aggregate.go
+  │   ├── activity_cleanup.go
+  │   └── ...
+  └── jobs_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // River client wrapper
+  type JobQueue interface {
+    Enqueue(ctx context.Context, job river.JobArgs) (*river.JobInsertResult, error)
+    EnqueueWithPriority(ctx context.Context, job river.JobArgs, priority int) (*river.JobInsertResult, error)
+    EnqueueScheduled(ctx context.Context, job river.JobArgs, scheduledAt time.Time) (*river.JobInsertResult, error)
+    Cancel(ctx context.Context, jobID int64) error
+    Start(ctx context.Context) error
+    Stop(ctx context.Context) error
+  }
+
+  // Example worker
+  type LibraryScanWorker struct {
+    river.WorkerDefaults[LibraryScanArgs]
+    libraryService LibraryService
+  }
+
+  type LibraryScanArgs struct {
+    LibraryID uuid.UUID `json:"library_id"`
+    FullScan  bool      `json:"full_scan"`
+  }
+
+  func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScanArgs]) error {
+    return w.libraryService.ScanLibrary(ctx, job.Args.LibraryID, job.Args.FullScan)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/riverqueue/river` - Job queue
+  - `github.com/riverqueue/river/riverdriver/riverpgxv5` - PostgreSQL driver
+  - `github.com/jackc/pgx/v5/pgxpool` - Connection pool
+  - `github.com/google/uuid` - UUID support
+  - `go.uber.org/fx` - Dependency injection
+
+env_vars: |
+  ```bash
+  # River configuration
+  RIVER_WORKERS=10
+  RIVER_MAX_ATTEMPTS=25
+  RIVER_POLL_INTERVAL=1s
+  RIVER_SHUTDOWN_TIMEOUT=30s
+
+  # Queue priorities
+  RIVER_QUEUE_DEFAULT_PRIORITY=1
+  RIVER_QUEUE_HIGH_PRIORITY=10
+  ```
+
+config_keys: |
+  ```yaml
+  jobs:
+    river:
+      workers: 10
+      max_attempts: 25
+      poll_interval: 1s
+      shutdown_timeout: 30s
+
+      queues:
+        default:
+          max_workers: 10
+        high_priority:
+          max_workers: 20
+        low_priority:
+          max_workers: 5
+  ```
+
+component_interaction: |
+  **Enqueue Job**:
+  1. Service needs to scan library
+  2. Create LibraryScanArgs{LibraryID: uuid}
+  3. Call jobQueue.Enqueue(ctx, args)
+  4. River inserts job into river_job table
+  5. Job becomes available immediately
+
+  **Execute Job** (background):
+  1. River worker polls for available jobs
+  2. Worker picks up job based on priority and queue
+  3. Worker executes LibraryScanWorker.Work()
+  4. If successful, mark job as completed
+  5. If failed, increment attempt and retry with backoff
+
+  **Scheduled Job** (delayed execution):
+  1. Enqueue job with future scheduled_at timestamp
+  2. Job stays in `scheduled` state until time reached
+  3. Job becomes `available` at scheduled time
+  4. Worker picks up and executes normally
+
+job_examples: |
+  **Library Scan Job**:
+  ```go
+  type LibraryScanArgs struct {
+    LibraryID uuid.UUID `json:"library_id"`
+    FullScan  bool      `json:"full_scan"`
+  }
+
+  // Enqueue
+  jobQueue.Enqueue(ctx, LibraryScanArgs{
+    LibraryID: libraryID,
+    FullScan:  false,
+  })
+  ```
+
+  **Metadata Fetch Job** (with retry):
+  ```go
+  type MetadataFetchArgs struct {
+    ContentID   uuid.UUID `json:"content_id"`
+    ProviderID  string    `json:"provider_id"`
+  }
+
+  // Worker with custom retry logic
+  func (w *MetadataFetchWorker) Work(ctx context.Context, job *river.Job[MetadataFetchArgs]) error {
+    err := w.metadataService.Fetch(ctx, job.Args.ContentID, job.Args.ProviderID)
+    if err != nil {
+      // Retry on transient errors
+      if isTransient(err) {
+        return err
+      }
+      // Don't retry on permanent errors (e.g., 404)
+      return river.JobCancel(err)
+    }
+    return nil
+  }
+  ```
+
+  **Scheduled Analytics Job** (daily aggregation):
+  ```go
+  // Schedule for next midnight
+  nextMidnight := time.Now().Add(24 * time.Hour).Truncate(24 * time.Hour)
+
+  jobQueue.EnqueueScheduled(ctx, AnalyticsAggregateArgs{
+    Date: time.Now(),
+  }, nextMidnight)
+  ```
+
+api_endpoints: |
+  **List Jobs**:
+  ```
+  GET /api/v1/admin/jobs?state=running&limit=50
+  ```
+
+  **Response**:
+  ```json
+  {
+    "jobs": [
+      {
+        "id": 12345,
+        "state": "running",
+        "queue": "default",
+        "kind": "library_scan",
+        "args": {
+          "library_id": "uuid-123",
+          "full_scan": false
+        },
+        "attempt": 1,
+        "max_attempts": 25,
+        "created_at": "2026-02-01T10:00:00Z",
+        "scheduled_at": "2026-02-01T10:00:00Z"
+      }
+    ],
+    "total": 1
+  }
+  ```
+
+  **Cancel Job**:
+  ```
+  DELETE /api/v1/admin/jobs/:id
+  ```
+
+common_jobs: |
+  **Background Jobs in Revenge**:
+  - `library_scan` - Scan library for new/changed files
+  - `metadata_fetch` - Fetch metadata from external providers
+  - `transcode` - Video transcoding for streaming
+  - `trickplay_generate` - Generate timeline thumbnails
+  - `intro_detect` - Detect intro/credits segments
+  - `analytics_aggregate` - Daily analytics aggregation
+  - `activity_cleanup` - Clean up old activity logs
+  - `session_cleanup` - Expire old sessions
+  - `notification_send` - Send email/push notifications
+  - `data_export` - GDPR data export
+  - `user_deletion` - GDPR user deletion
+
+retry_strategy: |
+  **Retry Configuration**:
+  - Default max attempts: 25
+  - Backoff: Exponential with jitter
+  - Initial delay: 30 seconds
+  - Max delay: 24 hours
+
+  **Backoff Formula**:
+  ```
+  delay = min(30s * 2^attempt + jitter, 24h)
+  ```
+
+  **Example Retry Schedule**:
+  - Attempt 1: 30s
+  - Attempt 2: 1m
+  - Attempt 3: 2m
+  - Attempt 4: 4m
+  - Attempt 5: 8m
+  - ...
+  - Attempt 25: 24h (max)
+
+unit_tests: |
+  ```go
+  func TestRiverClient_Enqueue(t *testing.T) {
+    // Test job enqueueing
+  }
+
+  func TestWorker_LibraryScan(t *testing.T) {
+    // Test worker execution
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestRiver_FullWorkflow(t *testing.T) {
+    // Use testcontainers for PostgreSQL
+    // Enqueue job, verify execution, check completion
+  }
+  ```
+
+monitoring: |
+  **Metrics Exposed** (via Prometheus):
+  - `river_jobs_enqueued_total` - Total jobs enqueued
+  - `river_jobs_completed_total` - Total jobs completed
+  - `river_jobs_failed_total` - Total jobs failed
+  - `river_jobs_running` - Currently running jobs
+  - `river_job_duration_seconds` - Job execution time histogram
+  - `river_worker_utilization` - Worker pool utilization
+
+  **Dashboard Queries**:
+  - Job success rate: `rate(river_jobs_completed_total[5m]) / rate(river_jobs_enqueued_total[5m])`
+  - Average job duration: `rate(river_job_duration_seconds_sum[5m]) / rate(river_job_duration_seconds_count[5m])`
+
+performance_tuning: |
+  **Worker Sizing**:
+  - Set `workers` to ~2x CPU cores for I/O-bound jobs
+  - For CPU-bound jobs (transcoding), set to CPU cores
+  - Monitor worker utilization and adjust
+
+  **Queue Prioritization**:
+  - Use high priority queue for user-facing jobs (metadata fetch)
+  - Use low priority queue for background maintenance (analytics)
+
+  **Job Batching**:
+  - For bulk operations, enqueue jobs in batches with `InsertMany`
+  - Reduces transaction overhead

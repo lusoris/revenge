@@ -77,3 +77,380 @@ design_refs:
   path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
   path: ../features/adult/DATA_RECONCILIATION.md
+
+adr_number: 5
+adr_status: Accepted
+adr_date: '2026-01-31'
+
+context: |
+  # Context
+
+  Many self-hosted media servers (Plex, Jellyfin, Emby) implement plugin systems to extend functionality. These plugins allow third-party developers to add features without modifying the core codebase.
+
+  **Plugin System Benefits**:
+  - Community-driven feature development
+  - Extensibility without core changes
+  - Marketplace ecosystem
+  - User customization
+
+  **Plugin System Drawbacks**:
+  - **Security**: Arbitrary code execution risk
+  - **Stability**: Plugins can crash the main process
+  - **Maintenance**: API compatibility burden across versions
+  - **Performance**: Plugin overhead and inefficiencies
+  - **Support**: Difficult to debug user issues with many plugins
+  - **Complexity**: Plugin API design and versioning
+
+  **Revenge's Needs**:
+  - Modern, secure architecture
+  - Fast development velocity
+  - First-class integrations (Arr stack, metadata providers)
+  - Simple deployment and maintenance
+  - Clear security boundaries
+
+decision: |
+  # Decision
+
+  **Revenge will NOT implement a plugin system.** Instead, we provide:
+
+  1. **First-Class Integrations**
+     - Built-in support for common services (Radarr, Sonarr, TMDb, etc.)
+     - Maintained as part of the core codebase
+     - Versioned with releases
+     - Tested in CI/CD pipeline
+
+  2. **REST API for External Integration**
+     - Well-documented OpenAPI specification
+     - OAuth 2.0 authentication
+     - Webhook subscriptions for events
+     - External systems integrate via HTTP
+
+  3. **Configuration-Driven Features**
+     - Feature flags for gradual rollout
+     - Extensive configuration options
+     - User-defined metadata mappings
+     - Custom artwork and theming
+
+  4. **Future: Scripting for Power Users** (Optional)
+     - Sandboxed scripting language (Lua or Starlark)
+     - Limited API surface (read-only operations, webhooks)
+     - No direct database or file system access
+     - Executed in isolated environments
+
+rationale: |
+  # Rationale
+
+  ## Security
+  - **No Arbitrary Code Execution**: Users cannot install untrusted code that runs with server privileges
+  - **Clear Security Boundaries**: External integrations use OAuth, not shared memory
+  - **Auditable**: All code is in the main repository, reviewed in PRs
+  - **No Supply Chain Attacks**: No third-party plugin repositories or marketplaces
+
+  ## Simplicity
+  - **Easier Maintenance**: No plugin API to version and maintain
+  - **Faster Development**: No compatibility guarantees across plugin versions
+  - **Simpler Debugging**: Fewer variables when users report issues
+  - **Better Testing**: All features tested together in CI
+
+  ## Performance
+  - **No Plugin Overhead**: Direct function calls instead of plugin interfaces
+  - **Optimized Integrations**: Built-in services can use internal APIs efficiently
+  - **No Sandboxing Penalty**: Native Go code runs at full speed
+
+  ## User Experience
+  - **Batteries Included**: Common features work out of the box
+  - **Consistent UI**: All features follow the same design system
+  - **Reliable**: Core features don't break due to plugin incompatibilities
+  - **Better Documentation**: Centralized docs for all features
+
+consequences: |
+  # Consequences
+
+  ## Positive
+
+  1. **Security**
+     - Reduced attack surface (no plugin code execution)
+     - Easier security audits
+     - No plugin supply chain risks
+
+  2. **Development Velocity**
+     - Faster feature development (no plugin API constraints)
+     - Simpler refactoring (no API compatibility burden)
+     - Easier dependency upgrades
+
+  3. **User Support**
+     - Fewer support requests due to plugin conflicts
+     - Easier to reproduce issues (no plugin variables)
+     - Better documentation (all features documented)
+
+  4. **Performance**
+     - Lower latency (native code)
+     - Better resource utilization
+     - Optimized integrations
+
+  5. **Testing**
+     - Comprehensive integration tests
+     - Higher code coverage
+     - More reliable releases
+
+  ## Negative
+
+  1. **Community Contributions**
+     - Harder for external developers to contribute features
+     - *Mitigation*: Clear contribution guidelines, mentoring, bounties
+
+  2. **Feature Requests**
+     - Core team must prioritize and implement all features
+     - *Mitigation*: Community voting, roadmap transparency, feature flags
+
+  3. **Niche Use Cases**
+     - Cannot support every edge case
+     - *Mitigation*: REST API + webhooks for external automation
+
+  4. **Customization**
+     - Limited to configuration options
+     - *Mitigation*: Extensive config, theming, scripting (future)
+
+alternatives_considered: |
+  # Alternatives Considered
+
+  ## Alternative 1: Full Plugin System (Rejected)
+
+  **Approach**: Implement a plugin system like Plex or Jellyfin
+
+  **Pros**:
+  - Community-driven development
+  - User customization
+  - Plugin marketplace
+
+  **Cons**:
+  - Security risks (arbitrary code execution)
+  - Maintenance burden (API versioning)
+  - Performance overhead
+  - Support complexity
+
+  **Why Rejected**:
+  - Security and stability are higher priorities than extensibility
+  - Modern integrations (webhooks, REST API) provide sufficient flexibility
+
+  ## Alternative 2: WebAssembly Plugins (Rejected)
+
+  **Approach**: Use WebAssembly (Wasm) for sandboxed plugins
+
+  **Pros**:
+  - Better security than native plugins
+  - Multi-language support (compile to Wasm)
+  - Performance isolation
+
+  **Cons**:
+  - Still requires plugin API design and versioning
+  - Limited Go ecosystem support for Wasm plugins
+  - Complexity in host-guest communication
+  - Performance overhead for small operations
+
+  **Why Rejected**:
+  - Added complexity not justified by benefits
+  - REST API + webhooks are simpler and sufficient
+
+  ## Alternative 3: Scripting Only (Deferred)
+
+  **Approach**: Lightweight scripting (Lua/Starlark) for automation
+
+  **Pros**:
+  - Simpler than full plugins
+  - Sandboxed execution
+  - Easier to review and audit
+
+  **Cons**:
+  - Still requires API design
+  - Limited use cases (automation, not new features)
+  - Performance constraints
+
+  **Why Deferred**:
+  - May add in future for power users
+  - Focus on core features first
+  - Evaluate based on user feedback
+
+  ## Alternative 4: Microservices + gRPC (Rejected)
+
+  **Approach**: External services integrate via gRPC
+
+  **Pros**:
+  - Process isolation (stability)
+  - Language-agnostic
+  - Scalable
+
+  **Cons**:
+  - Deployment complexity (many services)
+  - Network overhead
+  - More complex for users to deploy
+
+  **Why Rejected**:
+  - Over-engineered for single-server use case
+  - REST API achieves same goals with lower complexity
+
+implementation_approach: |
+  # Implementation Approach
+
+  ## Phase 1: Core Integrations (Current)
+
+  Build first-class support for essential services:
+
+  1. **Arr Stack**
+     - Radarr (movies)
+     - Sonarr (TV shows)
+     - Lidarr (music)
+     - Chaptarr (audiobooks)
+     - Whisparr (adult content)
+
+  2. **Metadata Providers**
+     - TMDb (primary for movies/TV)
+     - TheTVDB (fallback for TV)
+     - MusicBrainz (music metadata)
+     - Audible (audiobook metadata)
+
+  3. **Authentication**
+     - OAuth 2.0 (Google, GitHub, etc.)
+     - LDAP/Active Directory
+     - OIDC
+
+  4. **Notifications**
+     - Discord webhooks
+     - Slack webhooks
+     - Email (SMTP)
+     - Push notifications (ntfy.sh)
+
+  ## Phase 2: REST API & Webhooks (Q1 2026)
+
+  Provide external integration capabilities:
+
+  1. **OpenAPI Specification**
+     - Auto-generated from ogen code
+     - Versioned endpoints (`/api/v1/`)
+     - Comprehensive documentation
+
+  2. **Webhook System**
+     - Subscribe to events (media added, playback started, etc.)
+     - Retry logic with exponential backoff
+     - Signature verification (HMAC)
+
+  3. **OAuth 2.0 Scopes**
+     - Fine-grained permissions (read:media, write:users, etc.)
+     - Token refresh
+     - Revocation
+
+  **Example Webhook**:
+  ```json
+  {
+    "event": "media.added",
+    "timestamp": "2026-02-01T12:00:00Z",
+    "data": {
+      "media_id": "movie-123",
+      "title": "Example Movie",
+      "type": "movie",
+      "added_by": "user-456"
+    }
+  }
+  ```
+
+  ## Phase 3: Scripting (Future, Optional)
+
+  Add sandboxed scripting for advanced automation:
+
+  1. **Language Selection**
+     - **Lua**: Lightweight, easy to embed, familiar to users
+     - **Starlark**: Python-like, used by Bazel, deterministic
+
+  2. **API Surface** (Read-Only Initially)
+     - Query media library
+     - Read user data
+     - Access metadata
+
+  3. **Use Cases**
+     - Custom metadata mappings
+     - Automated tagging
+     - Library organization rules
+     - Custom webhook handlers
+
+  4. **Execution Environment**
+     - Time limits (max 5 seconds)
+     - Memory limits (max 100MB)
+     - No network access (initially)
+     - No file system access
+
+  **Example Script** (Lua):
+  ```lua
+  -- Auto-tag movies by decade
+  function on_media_added(media)
+      if media.type == "movie" and media.release_year then
+          local decade = math.floor(media.release_year / 10) * 10
+          media:add_tag(decade .. "s")
+      end
+  end
+  ```
+
+related_decisions: |
+  # Related Decisions
+
+  - **ADR-001**: PostgreSQL Only (No SQLite)
+    - Simpler codebase, no database abstraction needed
+    - Enables rich SQL features without compatibility layer
+
+  - **ADR-002**: OpenAPI-First API Design
+    - Well-defined external integration surface
+    - Replaces need for plugin API
+
+  - **ADR-003**: OAuth 2.0 Authentication
+    - Secure external integrations
+    - Fine-grained permissions instead of plugin capabilities
+
+  - **ADR-004**: Feature Flags for Gradual Rollout
+    - Enables experimental features without plugins
+    - Users can opt-in to beta features
+
+revision_history:
+- date: '2026-01-31'
+  version: '1.0'
+  author: Development Team
+  changes: Initial decision to reject plugin system
+
+open_questions:
+- question: Should we support Lua or Starlark for future scripting?
+  status: Open
+  notes: Evaluate based on user demand and security review
+
+- question: What webhook events should be available in Phase 2?
+  status: Open
+  notes: Collect feedback from community on use cases
+
+- question: Should REST API use GraphQL instead of REST?
+  status: Rejected
+  notes: OpenAPI + REST is simpler, more tooling available
+
+references:
+  internal:
+  - title: REST API Documentation
+    path: ../technical/API_DESIGN.md
+
+  - title: Authentication System
+    path: ../integrations/auth/AUTHENTICATION.md
+
+  - title: Webhook System
+    path: ../features/notifications/WEBHOOKS.md
+
+  external:
+  - title: Plex Plugin System
+    url: https://support.plex.tv/articles/201187656-using-and-installing-channels/
+    note: Example of traditional plugin approach
+
+  - title: Jellyfin Plugin Architecture
+    url: https://jellyfin.org/docs/general/server/plugins/
+    note: Security and stability concerns
+
+  - title: Starlark Language Spec
+    url: https://github.com/bazelbuild/starlark
+    note: Potential scripting language
+
+  - title: WebAssembly Component Model
+    url: https://github.com/WebAssembly/component-model
+    note: Future alternative for plugins

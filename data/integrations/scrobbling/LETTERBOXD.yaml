@@ -42,4 +42,397 @@ design_refs:
 integration_name: Letterboxd
 integration_id: letterboxd
 external_service: Letterboxd
-auth_method: none
+auth_method: csv_export
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│ Letterboxd   │     │ Letterboxd  │
+  │  Watch      │     │ Integration  │     │   Website   │
+  │  History    │     │              │     │             │
+  └─────────────┘     └──────┬───────┘     └──────┬──────┘
+                             │                    │
+                      ┌──────▼────────┐           │
+                      │  CSV Export/  │◀──────────┘
+                      │  Import       │
+                      └───────────────┘
+  ```
+
+api_details: |
+  **API Version**: Limited public API, primarily CSV-based
+  **Base URL**: `https://letterboxd.com`
+  **Authentication**: None (CSV export/import)
+
+  **Available Endpoints** (limited):
+  - `/api/auth/token` - OAuth token (API access requires partnership)
+  - RSS feeds for public lists and reviews
+
+  **CSV Export** (primary method):
+  - User exports diary, watchlist, ratings from Letterboxd settings
+  - CSV format with standardized columns
+  - Import into Revenge for watch history sync
+
+  **Note**: Full API access is restricted to partners. Most users rely on CSV export/import.
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Letterboxd CSV imports
+  CREATE TABLE letterboxd_imports (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    import_type VARCHAR(50) NOT NULL,               -- 'diary', 'watchlist', 'ratings'
+    file_path TEXT,
+    total_entries INTEGER,
+
+    imported_at TIMESTAMPTZ DEFAULT now(),
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_letterboxd_imports_user ON letterboxd_imports(user_id);
+
+  -- Parsed diary entries
+  CREATE TABLE letterboxd_diary (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    import_id UUID NOT NULL REFERENCES letterboxd_imports(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    movie_id UUID REFERENCES movies(id) ON DELETE SET NULL,
+
+    -- Letterboxd data
+    date_watched DATE NOT NULL,
+    letterboxd_uri VARCHAR(500),
+    film_name VARCHAR(500) NOT NULL,
+    film_year INTEGER,
+    rating NUMERIC(2,1),                            -- 0.5-5.0 stars
+    rewatch BOOLEAN DEFAULT false,
+    tags TEXT[],
+    review TEXT,
+
+    matched_to_revenge BOOLEAN DEFAULT false,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(user_id, letterboxd_uri)
+  );
+  CREATE INDEX idx_letterboxd_diary_user ON letterboxd_diary(user_id);
+  CREATE INDEX idx_letterboxd_diary_import ON letterboxd_diary(import_id);
+
+  -- Watchlist entries
+  CREATE TABLE letterboxd_watchlist (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    import_id UUID NOT NULL REFERENCES letterboxd_imports(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    movie_id UUID REFERENCES movies(id) ON DELETE SET NULL,
+
+    film_name VARCHAR(500) NOT NULL,
+    film_year INTEGER,
+    letterboxd_uri VARCHAR(500),
+
+    matched_to_revenge BOOLEAN DEFAULT false,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+
+    UNIQUE(user_id, letterboxd_uri)
+  );
+  ```
+
+module_structure: |
+  ```
+  internal/integrations/letterboxd/
+  ├── module.go                    # fx module
+  ├── csv.go                       # CSV parser
+  ├── import.go                    # Import service
+  ├── export.go                    # Export service
+  ├── matcher.go                   # Match films to Revenge library
+  ├── types.go                     # CSV row types
+  └── letterboxd_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // Letterboxd CSV integration service
+  type LetterboxdService interface {
+    // Import
+    ImportDiary(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+    ImportWatchlist(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+    ImportRatings(ctx context.Context, userID uuid.UUID, csvReader io.Reader) (*ImportResult, error)
+
+    // Export
+    ExportDiary(ctx context.Context, userID uuid.UUID) (io.Reader, error)
+    ExportWatchlist(ctx context.Context, userID uuid.UUID) (io.Reader, error)
+
+    // Matching
+    MatchFilmsToLibrary(ctx context.Context, importID uuid.UUID) error
+  }
+
+  // CSV row structures
+  type DiaryEntry struct {
+    Date          string  `csv:"Date"`
+    Name          string  `csv:"Name"`
+    Year          string  `csv:"Year"`
+    LetterboxdURI string  `csv:"Letterboxd URI"`
+    Rating        string  `csv:"Rating"`
+    Rewatch       string  `csv:"Rewatch"`
+    Tags          string  `csv:"Tags"`
+    WatchedDate   string  `csv:"Watched Date"`
+  }
+
+  type WatchlistEntry struct {
+    Date          string  `csv:"Date"`
+    Name          string  `csv:"Name"`
+    Year          string  `csv:"Year"`
+    LetterboxdURI string  `csv:"Letterboxd URI"`
+  }
+
+  type ImportResult struct {
+    TotalEntries    int
+    MatchedEntries  int
+    UnmatchedEntries int
+    Errors          []string
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `encoding/csv` - CSV parsing
+  - `io` - Reader/Writer interfaces
+  - `github.com/google/uuid` - UUID support
+  - `github.com/jackc/pgx/v5` - PostgreSQL driver
+  - `go.uber.org/fx` - Dependency injection
+
+  **External Services**:
+  - Letterboxd account (free tier)
+
+env_vars: |
+  ```bash
+  # No API credentials needed
+  LETTERBOXD_AUTO_MATCH=true
+  ```
+
+config_keys: |
+  ```yaml
+  integrations:
+    letterboxd:
+      auto_match: true               # Automatically match imported films to library
+      import_reviews: true           # Import reviews from diary
+      sync_ratings: true             # Sync Letterboxd ratings to Revenge
+  ```
+
+component_interaction: |
+  **Import Diary Flow**:
+  1. User exports diary from Letterboxd:
+     - Go to https://letterboxd.com/settings/data/
+     - Click "Export your data"
+     - Download diary.csv
+  2. User uploads diary.csv to Revenge
+  3. Parse CSV rows into DiaryEntry structs
+  4. For each entry:
+     - Parse date, rating (0.5-5.0 stars), tags, review
+     - Try to match film by name + year to movies in library
+     - If matched, mark movie as watched with rating
+     - Store in letterboxd_diary table
+  5. Return ImportResult with match statistics
+
+  **Film Matching**:
+  1. Query movies table for title match (fuzzy)
+  2. Filter by release_year ± 1 year tolerance
+  3. If multiple matches, use closest year
+  4. If no match, store as unmatched for manual review
+  5. User can manually link unmatched entries
+
+  **Export Diary**:
+  1. Query watch_history for user
+  2. Generate CSV in Letterboxd format
+  3. Include ratings, dates, rewatches
+  4. User can import to Letterboxd manually
+
+csv_format: |
+  **Diary CSV Format**:
+  ```csv
+  Date,Name,Year,Letterboxd URI,Rating,Rewatch,Tags,Watched Date
+  2026-01-15,Inception,2010,https://letterboxd.com/film/inception/,4.5,No,"sci-fi, thriller",2026-01-15
+  2026-01-14,The Matrix,1999,https://letterboxd.com/film/the-matrix/,5.0,Yes,"action, sci-fi",2026-01-14
+  ```
+
+  **Columns**:
+  - **Date**: Date added to Letterboxd
+  - **Name**: Film title
+  - **Year**: Release year
+  - **Letterboxd URI**: Canonical film URL
+  - **Rating**: 0.5-5.0 stars (empty if not rated)
+  - **Rewatch**: "Yes" or "No"
+  - **Tags**: Comma-separated tags
+  - **Watched Date**: Date watched (may differ from Date)
+
+  **Watchlist CSV Format**:
+  ```csv
+  Date,Name,Year,Letterboxd URI
+  2026-01-20,Dune: Part Two,2024,https://letterboxd.com/film/dune-part-two/
+  ```
+
+  **Ratings CSV Format**:
+  ```csv
+  Date,Name,Year,Letterboxd URI,Rating
+  2026-01-15,Inception,2010,https://letterboxd.com/film/inception/,4.5
+  ```
+
+rating_conversion: |
+  **Letterboxd → Revenge Rating**:
+  - Letterboxd: 0.5-5.0 stars (0.5 increments)
+  - Revenge: 0-10 scale (integers)
+
+  **Conversion**:
+  ```
+  revenge_rating = letterboxd_rating * 2
+  ```
+
+  **Examples**:
+  - 5.0 stars → 10/10
+  - 4.5 stars → 9/10
+  - 3.0 stars → 6/10
+  - 0.5 stars → 1/10
+
+  **Reverse (Export)**:
+  ```
+  letterboxd_rating = revenge_rating / 2
+  ```
+
+film_matching: |
+  **Matching Algorithm**:
+
+  **Step 1 - Exact Title + Year**:
+  ```sql
+  SELECT * FROM movies
+  WHERE LOWER(title) = LOWER('{film_name}')
+    AND release_year = {film_year}
+  ```
+
+  **Step 2 - Fuzzy Title + Year Range**:
+  ```sql
+  SELECT * FROM movies
+  WHERE similarity(title, '{film_name}') > 0.8
+    AND release_year BETWEEN {film_year - 1} AND {film_year + 1}
+  ORDER BY similarity(title, '{film_name}') DESC
+  LIMIT 1
+  ```
+
+  **Step 3 - TMDb Search**:
+  - If no local match, search TMDb by title + year
+  - If found, add to library and link
+
+  **Step 4 - Manual Review**:
+  - Store unmatched entries for user review
+  - User can manually select correct movie from library
+
+import_workflow: |
+  **Import Process**:
+
+  1. **Upload CSV**:
+     - User uploads via web UI
+     - Store in temporary location
+
+  2. **Parse CSV**:
+     - Use encoding/csv to parse rows
+     - Validate required columns exist
+     - Convert rating strings to numeric
+
+  3. **Batch Processing**:
+     - Process entries in batches of 100
+     - Use transaction for atomicity
+     - Roll back on critical errors
+
+  4. **Film Matching**:
+     - Run matching algorithm for each entry
+     - Store match confidence score
+     - Flag low-confidence matches for review
+
+  5. **Apply to Library**:
+     - Mark matched movies as watched
+     - Set rating if provided
+     - Set watched_at date from Watched Date column
+     - Mark as rewatch if "Rewatch" = "Yes"
+
+  6. **Report Results**:
+     - Total entries: 1234
+     - Matched: 1150 (93%)
+     - Unmatched: 84 (7%)
+     - Errors: 0
+
+export_workflow: |
+  **Export Process**:
+
+  1. **Query Watch History**:
+     - Get all watched movies for user
+     - Include ratings, dates, rewatch flags
+
+  2. **Generate CSV**:
+     - Create CSV with Letterboxd format
+     - Map Revenge data to Letterboxd columns
+     - Use movie TMDb URL to construct Letterboxd URI
+
+  3. **Download**:
+     - Return CSV as downloadable file
+     - User can import to Letterboxd manually via settings
+
+limitations: |
+  **Letterboxd API Limitations**:
+  - **No Public API**: Full API requires partnership agreement
+  - **CSV Only**: Standard users limited to CSV export/import
+  - **Manual Process**: User must download CSV from Letterboxd and upload to Revenge
+  - **No Auto-Sync**: Cannot automatically sync in background (no OAuth)
+  - **One-Way Import**: Export from Revenge to Letterboxd requires manual CSV import on Letterboxd
+
+  **Workarounds**:
+  - Periodic manual CSV imports (user uploads new export)
+  - RSS feed parsing for public lists (read-only)
+  - Potential future: Screen scraping (not recommended, violates TOS)
+
+rss_feeds: |
+  **Public RSS Feeds** (read-only):
+  - Diary: `https://letterboxd.com/{username}/rss/`
+  - Watchlist: `https://letterboxd.com/{username}/watchlist/rss/`
+  - Reviews: `https://letterboxd.com/{username}/films/reviews/rss/`
+
+  **Use Cases**:
+  - Display user's latest reviews in Revenge
+  - Show recently watched films
+  - Track watchlist changes (compare with previous fetch)
+
+  **Limitations**:
+  - Public profiles only (privacy setting must be public)
+  - Limited data compared to CSV export
+  - No authentication, can't access private data
+
+unit_tests: |
+  ```go
+  func TestLetterboxdService_ImportDiary(t *testing.T) {
+    // Test CSV parsing
+    // Test film matching
+    // Test rating conversion
+  }
+
+  func TestLetterboxdService_ExportDiary(t *testing.T) {
+    // Test CSV generation
+    // Test format compliance
+  }
+
+  func TestLetterboxdMatcher_FuzzyMatch(t *testing.T) {
+    // Test fuzzy title matching
+    // Test year tolerance
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestLetterboxd_FullWorkflow(t *testing.T) {
+    // Import sample diary CSV
+    // Verify matched films marked as watched
+    // Export diary and compare format
+  }
+  ```

@@ -137,11 +137,26 @@ internal/content/revenge___client_support_&_device_capabilities/
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+type ClientService interface {
+  RegisterDevice(ctx context.Context, userID uuid.UUID, device ClientDeviceRegister) (*ClientDevice, error)
+  GetDevice(ctx context.Context, deviceID string) (*ClientDevice, error)
+  UpdateCapabilities(ctx context.Context, deviceID string, capabilities DeviceCapabilities) error
+  GetQualityProfile(ctx context.Context, deviceID string) (*QualityProfile, error)
+  UpdateQualityProfile(ctx context.Context, deviceID string, profile QualityProfile) error
+  DetectCapabilities(ctx context.Context, userAgent string) (*DeviceCapabilities, error)
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `github.com/mssola/user_agent` - User agent parsing
+- `go.uber.org/fx`
+
 
 
 
@@ -150,17 +165,31 @@ internal/content/revenge___client_support_&_device_capabilities/
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+CLIENTS_AUTO_DETECT_CAPABILITIES=true
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+clients:
+  auto_detect_capabilities: true
+  default_max_resolution: 1080p
+  default_max_bitrate_mbps: 20
+```
+
 
 
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+```
+POST /api/v1/clients/register     # Register device
+GET  /api/v1/clients/:id           # Get device info
+PUT  /api/v1/clients/:id/profile   # Update quality profile
+```
+
 
 
 ## Testing Strategy

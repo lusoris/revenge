@@ -169,6 +169,9 @@ design_refs:
 {%- if claude and api_endpoints is defined and api_endpoints %}
 ## API Endpoints
 
+{%- if api_endpoints is string %}
+{{ api_endpoints }}
+{%- else %}
 {%- for endpoint in api_endpoints %}
 ### {{ endpoint.method }} {{ endpoint.path }}
 
@@ -187,6 +190,7 @@ design_refs:
 {{ endpoint.response_example | default('{}') }}
 ```
 {%- endfor %}
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 

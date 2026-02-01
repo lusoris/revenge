@@ -5,13 +5,21 @@ sources:
   - name: River Job Queue
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
+  - name: PuerkitoBio/goquery
+    url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+    note: HTML parsing
+  - name: golang.org/x/time
+    url: ../../../../sources/go/x/time.md
+    note: Rate limiting
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
     path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: FREEONES
+    path: ./FREEONES.md
+  - title: HTTP_CLIENT (proxy/VPN support)
+    path: ../../../services/HTTP_CLIENT.md
+  - title: ADULT_CONTENT_SYSTEM (QAR module)
+    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
 ---
 
 ## Table of Contents
@@ -28,6 +36,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Twitter/X integration (NO API)](#twitterx-integration-no-api)
+- [Proxy (recommended)](#proxy-recommended)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -48,9 +58,9 @@ design_refs:
 
 > Integration with Twitter/X
 
-> Performer social media presence
-**API Base URL**: `https://api.twitter.com/2/users/by/username`
-**Authentication**: bearer
+> LINK-ONLY performer social media profiles for QAR content
+**API Base URL**: `https://x.com`
+**Authentication**: none
 
 ---
 
@@ -92,8 +102,6 @@ internal/integration/twitterx/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -105,11 +113,107 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Twitter/X provider (no API, scraping only)
+type TwitterProvider struct {
+  httpFactory httpclient.ClientFactory
+  rateLimiter *rate.Limiter
+  cache       Cache
+}
+
+func (p *TwitterProvider) Platform() string { return "twitter" }
+func (p *TwitterProvider) BaseURL() string { return "https://x.com" }
+
+// Verify username exists
+func (p *TwitterProvider) VerifyUsername(
+  ctx context.Context,
+  username string,
+) (*ProfileInfo, error) {
+  // Wait for rate limiter
+  if err := p.rateLimiter.Wait(ctx); err != nil {
+    return nil, err
+  }
+
+  url := fmt.Sprintf("https://x.com/%s", username)
+
+  client, err := p.httpFactory.GetClientForService(ctx, "twitter")
+  if err != nil {
+    return nil, err
+  }
+
+  req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+  req.Header.Set("User-Agent", userAgent)
+
+  resp, err := client.Do(req)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  if resp.StatusCode == 404 {
+    return nil, ErrProfileNotFound
+  }
+
+  info := &ProfileInfo{
+    Platform:   "twitter",
+    Username:   username,
+    ProfileURL: url,
+    FetchedAt:  time.Now(),
+  }
+
+  // Try to extract basic info from page
+  if resp.StatusCode == 200 {
+    doc, err := goquery.NewDocumentFromReader(resp.Body)
+    if err == nil {
+      p.extractProfileInfo(doc, info)
+    }
+  }
+
+  return info, nil
+}
+
+// Best-effort extraction from page
+func (p *TwitterProvider) extractProfileInfo(
+  doc *goquery.Document,
+  info *ProfileInfo,
+) {
+  // Twitter uses JS rendering, so this is unreliable
+  // May need to use meta tags instead
+
+  // Try Open Graph tags
+  if name, exists := doc.Find(`meta[property="og:title"]`).Attr("content"); exists {
+    info.DisplayName = strings.TrimSuffix(name, " (@"+info.Username+")")
+  }
+
+  if desc, exists := doc.Find(`meta[property="og:description"]`).Attr("content"); exists {
+    info.Bio = desc
+  }
+
+  if img, exists := doc.Find(`meta[property="og:image"]`).Attr("content"); exists {
+    info.ProfileImage = img
+  }
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/PuerkitoBio/goquery` - HTML/meta tag parsing
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/riverqueue/river` - Background jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External**:
+- Twitter/X website (web scraping, limited)
+
+**Internal Services**:
+- HTTP_CLIENT - Proxy/VPN routing
+
+**NOT Used**:
+- Twitter API v2 (too expensive, $100/mo minimum)
+
 
 
 
@@ -118,11 +222,43 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Twitter/X integration (NO API)
+TWITTER_ENABLED=true
+TWITTER_RATE_LIMIT=0.5
+TWITTER_CACHE_TTL=168h
+
+# Proxy (recommended)
+TWITTER_PROXY_ENABLED=true
+TWITTER_PROXY_URL=socks5://127.0.0.1:9050
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+metadata:
+  providers:
+    twitter:
+      enabled: true
+      rate_limit: 0.5
+      rate_window: 1s
+      cache_ttl: 168h
+
+      role: link
+      provides_content: false
+      use_api: false              # API too expensive
+
+      proxy:
+        enabled: true
+        type: tor
+        url: socks5://127.0.0.1:9050
+
+      verification:
+        enabled: true
+        check_interval: 168h
+```
+
 
 
 
@@ -149,10 +285,13 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [FREEONES](./FREEONES.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
 
 ### External Sources
 - [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery) - HTML parsing
+- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
 

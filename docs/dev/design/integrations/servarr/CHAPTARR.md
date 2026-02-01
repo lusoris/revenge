@@ -49,6 +49,8 @@ design_refs:
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
+- [Chaptarr instance](#chaptarr-instance)
+- [Sync settings](#sync-settings)
     - [Config Keys](#config-keys)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
@@ -70,6 +72,7 @@ design_refs:
 > Integration with Chaptarr
 
 > Book & audiobook management automation (uses Readarr API)
+**API Base URL**: `http://localhost:8787/api/v1`
 **Authentication**: api_key
 
 ---
@@ -112,8 +115,6 @@ internal/integration/chaptarr/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -125,11 +126,61 @@ This integration provides:
 
 ### Key Interfaces
 
-<!-- Interface definitions -->
+```go
+// Chaptarr integration service
+type ChaptarrService interface {
+  // Author management
+  AddAuthor(ctx context.Context, goodreadsID string, qualityProfileID int, rootFolder string) (*ChaptarrAuthor, error)
+  DeleteAuthor(ctx context.Context, chaptarrID int, deleteFiles bool) error
+  SearchAuthor(ctx context.Context, authorID int) error  // Trigger download
+
+  // Book management
+  GetBooks(ctx context.Context, authorID int) ([]ChaptarrBook, error)
+  GetCalendar(ctx context.Context, start, end time.Time) ([]CalendarBook, error)
+
+  // Sync
+  SyncLibrary(ctx context.Context, instanceID uuid.UUID) error
+}
+
+// Chaptarr author structure
+type ChaptarrAuthor struct {
+  ID              int      `json:"id"`
+  AuthorName      string   `json:"authorName"`
+  ForeignAuthorID string   `json:"foreignAuthorId"`  // GoodReads ID
+  QualityProfile  int      `json:"qualityProfileId"`
+  MetadataProfile int      `json:"metadataProfileId"`
+  Monitored       bool     `json:"monitored"`
+  RootFolderPath  string   `json:"rootFolderPath"`
+  Path            string   `json:"path"`
+}
+
+// Chaptarr book structure
+type ChaptarrBook struct {
+  ID              int      `json:"id"`
+  Title           string   `json:"title"`
+  AuthorID        int      `json:"authorId"`
+  ForeignBookID   string   `json:"foreignBookId"`
+  ISBN            string   `json:"isbn"`
+  ReleaseDate     string   `json:"releaseDate"`
+  PageCount       int      `json:"pageCount"`
+  Monitored       bool     `json:"monitored"`
+  HasFile         bool     `json:"hasFile"`
+}
+```
+
 
 ### Dependencies
 
-<!-- Dependency list -->
+**Go Packages**:
+- `net/http` - HTTP client
+- `github.com/google/uuid` - UUID support
+- `github.com/jackc/pgx/v5` - PostgreSQL driver
+- `github.com/riverqueue/river` - Background sync jobs
+- `go.uber.org/fx` - Dependency injection
+
+**External Services**:
+- Chaptarr/Readarr v1+ (self-hosted)
+
 
 
 
@@ -138,11 +189,31 @@ This integration provides:
 ## Configuration
 ### Environment Variables
 
-<!-- Environment variables -->
+```bash
+# Chaptarr instance
+CHAPTARR_URL=http://localhost:8787
+CHAPTARR_API_KEY=your_api_key_here
+
+# Sync settings
+CHAPTARR_AUTO_SYNC=true
+CHAPTARR_SYNC_INTERVAL=300  # 5 minutes
+```
+
 
 ### Config Keys
 
-<!-- Configuration keys -->
+```yaml
+integrations:
+  chaptarr:
+    instances:
+      - name: Main Chaptarr
+        base_url: http://localhost:8787
+        api_key: ${CHAPTARR_API_KEY}
+        enabled: true
+        auto_sync: true
+        sync_interval: 300
+```
+
 
 
 

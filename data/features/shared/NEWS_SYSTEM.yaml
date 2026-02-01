@@ -72,13 +72,254 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/news_system/\n  ├── module.go         \
-  \     # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- News articles (admin announcements + external RSS)
+  CREATE TABLE news_articles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Article details
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    summary TEXT,                                  -- Short summary for cards
+
+    -- Source
+    source VARCHAR(50) NOT NULL,                   -- 'internal', 'rss'
+    source_url TEXT,                               -- External article URL
+    author TEXT,
+
+    -- Categorization
+    category VARCHAR(50),                          -- 'movies', 'tv', 'music', 'server', 'general'
+    tags TEXT[] DEFAULT '{}',
+
+    -- Display
+    image_url TEXT,
+    is_pinned BOOLEAN DEFAULT false,               -- Pin to top
+    is_published BOOLEAN DEFAULT true,
+
+    -- External RSS tracking
+    rss_feed_id UUID REFERENCES rss_feeds(id) ON DELETE CASCADE,
+    rss_guid TEXT,                                 -- RSS item GUID
+
+    -- Timestamps
+    published_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_news_articles_published ON news_articles(published_at DESC) WHERE is_published = true;
+  CREATE INDEX idx_news_articles_pinned ON news_articles(is_pinned, published_at DESC) WHERE is_pinned = true;
+  CREATE INDEX idx_news_articles_category ON news_articles(category, published_at DESC);
+  CREATE INDEX idx_news_articles_source ON news_articles(source);
+  CREATE UNIQUE INDEX idx_news_articles_rss_guid ON news_articles(rss_guid) WHERE rss_guid IS NOT NULL;
+
+  -- RSS feeds (external news sources)
+  CREATE TABLE rss_feeds (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    url TEXT NOT NULL UNIQUE,
+    category VARCHAR(50),                          -- Auto-assign category to articles
+
+    -- Status
+    enabled BOOLEAN DEFAULT true,
+    last_fetch_at TIMESTAMPTZ,
+    last_fetch_status VARCHAR(20),                 -- 'success', 'failed'
+    last_fetch_error TEXT,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_rss_feeds_enabled ON rss_feeds(enabled) WHERE enabled = true;
+
+  -- User read tracking
+  CREATE TABLE news_read_status (
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    article_id UUID NOT NULL REFERENCES news_articles(id) ON DELETE CASCADE,
+
+    read_at TIMESTAMPTZ DEFAULT now(),
+    PRIMARY KEY (user_id, article_id)
+  );
+  CREATE INDEX idx_news_read_user ON news_read_status(user_id, read_at DESC);
+  CREATE INDEX idx_news_read_article ON news_read_status(article_id);
+  ```
+module_structure: |
+  ```
+  internal/news/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # News logic
+  ├── rss.go                       # RSS feed fetcher (gofeed)
+  ├── worker.go                    # Background RSS fetch worker
+  ├── handler.go                   # HTTP API handlers
+  └── news_test.go
+
+  web/src/routes/(app)/news/
+  ├── +page.svelte                 # News feed
+  ├── +page.ts                     # Data loading
+  ├── [id]/
+  │   ├── +page.svelte             # Article detail
+  │   └── +page.ts
+  └── components/
+      ├── ArticleCard.svelte       # Article card
+      ├── PinnedArticle.svelte     # Pinned announcement
+      └── CategoryFilter.svelte    # Filter by category
+  ```
+key_interfaces: |
+  ```go
+  type NewsService interface {
+    // Articles
+    CreateArticle(ctx context.Context, article CreateArticleRequest) (*NewsArticle, error)
+    ListArticles(ctx context.Context, filters ArticleFilters) ([]NewsArticle, error)
+    GetArticle(ctx context.Context, articleID uuid.UUID) (*NewsArticle, error)
+    UpdateArticle(ctx context.Context, articleID uuid.UUID, update ArticleUpdate) (*NewsArticle, error)
+    DeleteArticle(ctx context.Context, articleID uuid.UUID) error
+
+    // RSS feeds
+    AddRSSFeed(ctx context.Context, feed CreateRSSFeedRequest) (*RSSFeed, error)
+    ListRSSFeeds(ctx context.Context) ([]RSSFeed, error)
+    RemoveRSSFeed(ctx context.Context, feedID uuid.UUID) error
+    FetchRSSFeed(ctx context.Context, feedID uuid.UUID) (int, error)
+    FetchAllRSSFeeds(ctx context.Context) error
+
+    // User interaction
+    MarkAsRead(ctx context.Context, userID, articleID uuid.UUID) error
+    GetUnreadCount(ctx context.Context, userID uuid.UUID) (int, error)
+  }
+
+  type NewsArticle struct {
+    ID          uuid.UUID  `db:"id" json:"id"`
+    Title       string     `db:"title" json:"title"`
+    Content     string     `db:"content" json:"content"`
+    Summary     string     `db:"summary" json:"summary"`
+    Source      string     `db:"source" json:"source"`
+    SourceURL   *string    `db:"source_url" json:"source_url,omitempty"`
+    Author      string     `db:"author" json:"author"`
+    Category    string     `db:"category" json:"category"`
+    Tags        []string   `db:"tags" json:"tags"`
+    ImageURL    *string    `db:"image_url" json:"image_url,omitempty"`
+    IsPinned    bool       `db:"is_pinned" json:"is_pinned"`
+    IsPublished bool       `db:"is_published" json:"is_published"`
+    PublishedAt time.Time  `db:"published_at" json:"published_at"`
+    CreatedAt   time.Time  `db:"created_at" json:"created_at"`
+  }
+
+  type RSSFeed struct {
+    ID              uuid.UUID  `db:"id" json:"id"`
+    Name            string     `db:"name" json:"name"`
+    URL             string     `db:"url" json:"url"`
+    Category        string     `db:"category" json:"category"`
+    Enabled         bool       `db:"enabled" json:"enabled"`
+    LastFetchAt     *time.Time `db:"last_fetch_at" json:"last_fetch_at,omitempty"`
+    LastFetchStatus string     `db:"last_fetch_status" json:"last_fetch_status"`
+  }
+
+  type RSSFetcher interface {
+    FetchFeed(ctx context.Context, url string) (*gofeed.Feed, error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/mmcdole/gofeed` - RSS/Atom feed parser
+  - `github.com/riverqueue/river` - Background RSS fetch jobs
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  NEWS_RSS_ENABLED=true
+  NEWS_RSS_FETCH_INTERVAL=1h
+  ```
+
+config_keys: |
+  ```yaml
+  news:
+    enabled: true
+    rss:
+      enabled: true
+      fetch_interval: 1h
+      max_articles_per_feed: 50
+    default_feeds:
+      - name: "The Verge - Entertainment"
+        url: "https://www.theverge.com/rss/entertainment/index.xml"
+        category: "general"
+  ```
+
+component_interaction: |
+  **RSS Fetch Flow**:
+  1. River background job runs every hour
+  2. Query rss_feeds WHERE enabled=true
+  3. For each feed, call gofeed.ParseURL()
+  4. For each new item (check rss_guid):
+     - Create news_articles record
+     - Set source='rss', category from feed
+     - Extract title, content, published_at from RSS
+  5. Update last_fetch_at, last_fetch_status
+
+  **Article Display Flow**:
+  1. User visits news page
+  2. Frontend requests GET /api/v1/news
+  3. Service queries news_articles ORDER BY pinned DESC, published_at DESC
+  4. Join with news_read_status to mark read articles
+  5. Cache for 5 minutes
+  6. Return articles with read status
+
+  **Admin Announcement Flow**:
+  1. Admin creates article via POST /api/v1/news
+  2. Service creates news_articles with source='internal'
+  3. Admin can set is_pinned=true to pin to top
+  4. Users see pinned announcements first
+  5. Mark as read when user clicks article
+
+api_endpoints: |
+  ```
+  GET    /api/v1/news                      # List articles
+  POST   /api/v1/news                      # Create article (admin)
+  GET    /api/v1/news/:id                  # Get article
+  PUT    /api/v1/news/:id                  # Update article (admin)
+  DELETE /api/v1/news/:id                  # Delete article (admin)
+
+  POST   /api/v1/news/:id/read             # Mark as read
+  GET    /api/v1/news/unread/count         # Get unread count
+
+  POST   /api/v1/news/rss/feeds            # Add RSS feed (admin)
+  GET    /api/v1/news/rss/feeds            # List RSS feeds
+  DELETE /api/v1/news/rss/feeds/:id        # Remove RSS feed
+  POST   /api/v1/news/rss/feeds/:id/fetch  # Manually fetch feed
+  ```
+
+unit_tests: |
+  ```go
+  func TestNewsService_CreateArticle(t *testing.T) {
+    // Test article creation
+  }
+
+  func TestRSSFetcher_FetchFeed(t *testing.T) {
+    // Test RSS parsing
+    // Mock RSS feed responses
+  }
+
+  func TestNewsService_MarkAsRead(t *testing.T) {
+    // Test read tracking
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestNews_EndToEnd(t *testing.T) {
+    // 1. Admin creates announcement
+    // 2. Add RSS feed
+    // 3. Fetch RSS feed
+    // 4. User lists articles
+    // 5. User marks article as read
+    // 6. Verify unread count decreases
+  }
+
+  func TestNews_RSSFetching(t *testing.T) {
+    // Test full RSS fetch workflow
+    // Mock RSS feed XML
+  }
+  ```

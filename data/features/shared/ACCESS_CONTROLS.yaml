@@ -69,13 +69,102 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
-module_structure: "```\n  internal/content/time_based_access_controls/\n  ├── module.go\
-  \              # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  CREATE TABLE access_schedules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    enabled BOOLEAN DEFAULT true,
+    days_of_week INTEGER[] DEFAULT '{0,1,2,3,4,5,6}',  -- 0=Sunday, 6=Saturday
+    start_time TIME,                                    -- Daily start time
+    end_time TIME,                                      -- Daily end time
+    daily_limit_minutes INTEGER,                       -- Max minutes per day
+    weekly_limit_minutes INTEGER,                      -- Max minutes per week
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_access_schedules_user ON access_schedules(user_id);
+  CREATE INDEX idx_access_schedules_enabled ON access_schedules(enabled) WHERE enabled = true;
+
+  CREATE TABLE access_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content_type VARCHAR(20),
+    content_id UUID,
+    started_at TIMESTAMPTZ DEFAULT now(),
+    ended_at TIMESTAMPTZ,
+    duration_minutes INTEGER,
+    blocked BOOLEAN DEFAULT false,
+    block_reason TEXT
+  );
+  CREATE INDEX idx_access_logs_user ON access_logs(user_id, started_at DESC);
+  CREATE INDEX idx_access_logs_date ON access_logs(DATE(started_at));
+  ```
+
+module_structure: |
+  ```
+  internal/access/
+  ├── module.go
+  ├── types.go
+  ├── repository.go
+  ├── service.go
+  ├── middleware.go          # Auth middleware
+  └── handler.go
+  ```
+
+key_interfaces: |
+  ```go
+  type AccessService interface {
+    CheckAccess(ctx context.Context, userID uuid.UUID) (bool, string, error)
+    CreateSchedule(ctx context.Context, schedule AccessSchedule) error
+    GetUsageToday(ctx context.Context, userID uuid.UUID) (int, error)
+  }
+  ```
+
+dependencies: |
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/casbin/casbin/v2` - Policy enforcement
+
+env_vars: |
+  ```bash
+  ACCESS_CONTROLS_ENABLED=true
+  ```
+
+config_keys: |
+  ```yaml
+  access:
+    enabled: true
+    default_daily_limit_minutes: 120
+  ```
+
+component_interaction: |
+  1. Middleware checks access_schedules for user
+  2. Verify current time against allowed times
+  3. Check daily/weekly usage limits
+  4. Block or allow access
+  5. Log access attempt
+
+api_endpoints: |
+  ```
+  GET  /api/v1/access/schedules/:userId
+  POST /api/v1/access/schedules
+  GET  /api/v1/access/usage/:userId
+  ```
+
+unit_tests: |
+  ```go
+  func TestAccessService_CheckAccess(t *testing.T) {
+    // Test time-based restrictions
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestAccess_EndToEnd(t *testing.T) {
+    // Test full access control workflow
+  }
+  ```

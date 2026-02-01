@@ -76,3 +76,610 @@ design_refs:
   path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
   path: ../features/adult/DATA_RECONCILIATION.md
+
+arr_services_dual_role: |
+  **CRITICAL ARCHITECTURE PRINCIPLE**: All Arr services serve DUAL purposes:
+
+  **1. PRIMARY Metadata Aggregators** (not just download tools):
+  - Arr services are the PRIMARY source of metadata in Revenge
+  - They aggregate and cache metadata from external sources LOCALLY
+  - Revenge queries Arr services FIRST, before falling back to direct external APIs
+  - This provides:
+    - Unified, consistent metadata interface
+    - Reduced external API calls (rate limiting mitigation)
+    - Better availability (local cache persists even if external service is down)
+    - Privacy (fewer direct calls to external services)
+
+  **2. Download Automation Managers**:
+  - Handle content acquisition through indexers and download clients
+  - Monitor for new releases and automatically download
+  - Manage file organization and naming
+  - Webhook notifications when content is ready
+
+  **Arr Service → Metadata Source Mapping**:
+  ```
+  Radarr      → TMDb (The Movie Database)         → Movies
+  Sonarr      → TheTVDB (The TV Database)         → TV Shows
+  Lidarr      → MusicBrainz                       → Music (artists, albums, tracks)
+  Chaptarr    → GoodReads + OpenLibrary           → Books + Audiobooks
+  Whisparr    → StashDB                           → Adult Content (QAR system)
+  ```
+
+  **Metadata Flow Pattern** (applies to ALL Arr services):
+  ```
+  External API → Arr Service (local cache) → Revenge
+                       ↓
+           (optional) Direct API for enrichment
+  ```
+
+  **Example - Movie Metadata Request**:
+  1. User requests movie information in Revenge
+  2. Check L1 cache (otter in-memory) → HIT? Return immediately
+  3. Check L2 cache (Dragonfly/rueidis) → HIT? Return + populate L1
+  4. Query Radarr API → Has movie? Return metadata + cache
+  5. Fallback to direct TMDb API → Fetch + cache + (optionally) add to Radarr
+  6. Background job enriches with additional data (cast, crew, reviews, etc.)
+
+metadata_priority_chain: |
+  **Metadata Resolution Priority Chain**:
+
+  **1. Local Cache (L1 - In-Memory)**:
+  - otter cache (TTL: 5-15 minutes depending on content type)
+  - Fastest possible response
+  - Reduces database queries
+
+  **2. Local Cache (L2 - Distributed)**:
+  - Dragonfly/rueidis (TTL: 1-24 hours depending on content type)
+  - Shared across Revenge instances
+  - Persists across restarts
+
+  **3. Arr Services (PRIMARY Metadata Source)**:
+  - Radarr, Sonarr, Lidarr, Chaptarr, Whisparr
+  - Local metadata aggregation from external sources
+  - Already populated if content was added via Arr
+  - Consistent, unified API interface
+
+  **4. Internal Services** (QAR system only):
+  - Stash (local adult content metadata)
+  - Used for QAR content not yet in Whisparr
+
+  **5. External APIs (Supplementary)**:
+  - Direct calls to TMDb, TheTVDB, MusicBrainz, etc.
+  - Used for enrichment and real-time updates
+  - Used when Arr service doesn't have the content
+  - **Must route through proxy/VPN** (see proxy_vpn_support)
+
+proxy_vpn_support: |
+  **CRITICAL DESIGN REQUIREMENT**: Proxy/VPN support for external metadata calls
+
+  **Rationale**:
+  - Privacy: Hide metadata queries from ISP and external services
+  - Geolocation: Access region-restricted metadata
+  - Rate limiting: Rotate IPs to avoid rate limits
+  - Security: Isolate metadata traffic from main network
+
+  **Scope**: ONLY for EXTERNAL metadata API calls
+  - Direct calls to TMDb, TheTVDB, MusicBrainz, Last.fm, Discogs, etc.
+  - Does NOT apply to Arr services (local network)
+  - Does NOT apply to internal services (Stash, local database)
+
+  **Implementation Approaches**:
+
+  **Option 1 - HTTP Proxy (Preferred)**:
+  ```go
+  // Use net/http.Transport with Proxy
+  package metadata
+
+  import (
+    "net/http"
+    "net/url"
+  )
+
+  type ProxyConfig struct {
+    Enabled   bool
+    ProxyURL  string  // "http://proxy.example.com:8080" or "socks5://127.0.0.1:1080"
+    Username  string
+    Password  string
+  }
+
+  func NewHTTPClientWithProxy(cfg ProxyConfig) *http.Client {
+    if !cfg.Enabled {
+      return http.DefaultClient
+    }
+
+    proxyURL, _ := url.Parse(cfg.ProxyURL)
+    if cfg.Username != "" {
+      proxyURL.User = url.UserPassword(cfg.Username, cfg.Password)
+    }
+
+    transport := &http.Transport{
+      Proxy: http.ProxyURL(proxyURL),
+    }
+
+    return &http.Client{Transport: transport}
+  }
+  ```
+
+  **Option 2 - VPN Binding (Advanced)**:
+  ```go
+  // Bind to specific network interface (VPN tunnel)
+  package metadata
+
+  import (
+    "net"
+    "net/http"
+  )
+
+  type VPNConfig struct {
+    Enabled       bool
+    InterfaceName string  // "tun0", "wg0", etc.
+  }
+
+  func NewHTTPClientWithVPN(cfg VPNConfig) (*http.Client, error) {
+    if !cfg.Enabled {
+      return http.DefaultClient, nil
+    }
+
+    iface, err := net.InterfaceByName(cfg.InterfaceName)
+    if err != nil {
+      return nil, err
+    }
+
+    addrs, _ := iface.Addrs()
+    localAddr := addrs[0].(*net.IPNet).IP
+
+    dialer := &net.Dialer{
+      LocalAddr: &net.TCPAddr{IP: localAddr},
+    }
+
+    transport := &http.Transport{
+      DialContext: dialer.DialContext,
+    }
+
+    return &http.Client{Transport: transport}, nil
+  }
+  ```
+
+  **Option 3 - SOCKS5 Proxy** (Tor, commercial VPNs):
+  ```go
+  // Use golang.org/x/net/proxy for SOCKS5
+  package metadata
+
+  import (
+    "net/http"
+    "golang.org/x/net/proxy"
+  )
+
+  func NewHTTPClientWithSOCKS5(proxyAddr string) (*http.Client, error) {
+    dialer, err := proxy.SOCKS5("tcp", proxyAddr, nil, proxy.Direct)
+    if err != nil {
+      return nil, err
+    }
+
+    transport := &http.Transport{
+      Dial: dialer.Dial,
+    }
+
+    return &http.Client{Transport: transport}, nil
+  }
+  ```
+
+  **Configuration Keys**:
+  ```yaml
+  metadata:
+    external_api:
+      proxy:
+        enabled: true
+        type: http  # http, socks5, vpn
+        url: http://proxy.example.com:8080
+        username: user
+        password: pass
+
+      vpn:
+        enabled: false
+        interface: tun0  # VPN tunnel interface
+
+      # Per-provider overrides
+      providers:
+        tmdb:
+          proxy_override: socks5://127.0.0.1:9050  # Use Tor for TMDb
+        musicbrainz:
+          proxy_override: null  # Skip proxy for MusicBrainz (respectful scraping)
+  ```
+
+  **Module Structure**:
+  ```
+  internal/metadata/
+  ├── proxy/
+  │   ├── module.go           # fx module
+  │   ├── config.go           # Proxy/VPN configuration
+  │   ├── http_client.go      # HTTP client factory with proxy support
+  │   ├── dialer.go           # Custom dialers (VPN binding)
+  │   └── proxy_test.go
+  ```
+
+  **Usage Pattern**:
+  ```go
+  // In TMDb client
+  type TMDbClient struct {
+    httpClient *http.Client  // Injected with proxy support
+  }
+
+  // In fx module
+  fx.Provide(
+    metadata.NewProxyConfig,           // Load from config
+    metadata.NewHTTPClientWithProxy,   // Create proxied client
+  )
+  ```
+
+caching_layers: |
+  **Two-Tier Caching Strategy**:
+
+  **L1 Cache - In-Memory (otter)**:
+  - Per-process cache (not shared across instances)
+  - Ultra-fast lookups (nanoseconds)
+  - TTL: 5-15 minutes depending on content volatility
+  - Size-based eviction (LRU)
+  - Use cases:
+    - Movie/TV show metadata (15 min TTL)
+    - Artist/album metadata (15 min TTL)
+    - User preferences (5 min TTL)
+
+  **L2 Cache - Distributed (Dragonfly/rueidis)**:
+  - Shared across all Revenge instances
+  - Redis-compatible (Dragonfly for performance)
+  - TTL: 1-24 hours depending on content type
+  - Persists across application restarts
+  - Use cases:
+    - Movie posters, backdrops (24 hour TTL)
+    - TV show episode lists (6 hour TTL)
+    - Music album metadata (12 hour TTL)
+    - External API responses (1-4 hour TTL)
+
+  **Cache Keys Pattern**:
+  ```
+  metadata:movie:{tmdb_id}                    → Movie metadata
+  metadata:tvshow:{tvdb_id}                   → TV show metadata
+  metadata:artist:{musicbrainz_id}            → Artist metadata
+  metadata:album:{musicbrainz_id}             → Album metadata
+  metadata:book:{isbn}                        → Book metadata
+  metadata:qar:performer:{stashdb_id}         → QAR performer metadata
+  ```
+
+  **Cache Invalidation**:
+  - Manual: Admin triggers refresh for specific content
+  - Automatic: Background jobs check for updates (daily)
+  - Webhook-triggered: Arr service notifies of metadata changes
+  - TTL-based: Cache expires naturally
+
+metadata_providers: |
+  **External Metadata Providers** (all must support proxy/VPN):
+
+  **Movies**:
+  - **TMDb** (The Movie Database) - Primary via Radarr
+  - **IMDb** - Supplementary (ratings, reviews)
+  - **OMDb** - Fallback
+
+  **TV Shows**:
+  - **TheTVDB** - Primary via Sonarr
+  - **TVMaze** - Supplementary (episode air dates)
+
+  **Music**:
+  - **MusicBrainz** - Primary via Lidarr (canonical IDs)
+  - **Last.fm** - Scrobbling and listening stats
+  - **Discogs** - Release information and artwork
+  - **Spotify** - Supplementary (popularity, previews)
+
+  **Books**:
+  - **GoodReads** - Primary via Chaptarr
+  - **OpenLibrary** - Primary via Chaptarr
+  - **Audible** - Audiobook-specific metadata
+
+  **Comics**:
+  - **ComicVine** - Primary
+  - **Grand Comics Database** - Supplementary
+  - **Marvel API** - Marvel-specific content
+
+  **Adult Content** (QAR system):
+  - **StashDB** - Primary via Whisparr (canonical IDs)
+  - **Stash** - Local metadata (self-hosted)
+  - **ThePornDB** - Supplementary
+  - **FreeOnes** - Performer information
+
+  **Wiki Sources** (enrichment):
+  - **Wikipedia** - General information
+  - **Fandom** - Fan wikis for specific franchises
+  - **TVTropes** - Tropes and themes
+
+matching_algorithms: |
+  **Content Matching Strategies**:
+
+  **1. Fingerprinting** (Music):
+  - Chromaprint/AcoustID for audio fingerprinting
+  - Match tracks by acoustic signature
+  - Used when metadata is missing or incorrect
+  - Query AcoustID API → MusicBrainz Recording ID
+
+  **2. Hash Matching** (Media Files):
+  - MD5/SHA256 hashes for file deduplication
+  - Detect duplicate content across library
+  - Used for cleanup and organization
+
+  **3. Fuzzy Text Matching**:
+  - Levenshtein distance for title similarity
+  - Used when exact title match fails
+  - PostgreSQL pg_trgm extension for similarity scoring
+  - Example:
+    ```sql
+    SELECT * FROM movies
+    WHERE similarity(title, 'Inceptoin') > 0.8
+    ORDER BY similarity(title, 'Inceptoin') DESC
+    LIMIT 1;
+    ```
+
+  **4. Metadata Cross-Reference**:
+  - Match by external IDs (TMDb ID, IMDb ID, MusicBrainz ID, etc.)
+  - Most reliable matching method
+  - Arr services provide canonical ID mappings
+
+enrichment_workflow: |
+  **Background Metadata Enrichment** (River jobs):
+
+  **Phase 1 - Initial Import** (when content added):
+  1. Extract basic metadata from filename/tags
+  2. Query Arr service for canonical metadata
+  3. Store in database with external IDs
+  4. Trigger Phase 2 enrichment job
+
+  **Phase 2 - Detailed Enrichment** (background):
+  1. Fetch cast and crew information
+  2. Download posters, backdrops, thumbnails
+  3. Generate blurhash previews
+  4. Fetch ratings and reviews
+  5. Extract genres, keywords, themes
+  6. Update cache layers
+
+  **Phase 3 - Periodic Updates** (daily):
+  1. Check for metadata changes (new ratings, cast updates)
+  2. Update recently released content (new episodes, albums)
+  3. Refresh stale cache entries
+  4. Validate external ID mappings
+
+  **River Job Types**:
+  ```go
+  type EnrichMovieMetadataJob struct {
+    MovieID uuid.UUID
+  }
+
+  type EnrichTVShowMetadataJob struct {
+    TVShowID uuid.UUID
+  }
+
+  type EnrichAlbumMetadataJob struct {
+    AlbumID uuid.UUID
+  }
+
+  type RefreshMetadataCacheJob struct {
+    ContentType string  // "movie", "tvshow", "album", etc.
+    ContentID   uuid.UUID
+  }
+  ```
+
+blurhash_generation: |
+  **Blurhash for Image Previews**:
+
+  **Purpose**:
+  - Generate compact placeholder images
+  - Display instantly while full image loads
+  - ~20-30 character string encodes blurred thumbnail
+
+  **Implementation**:
+  ```go
+  import "github.com/bbrks/go-blurhash"
+
+  func GenerateBlurhash(imageURL string) (string, error) {
+    // Download image
+    resp, _ := http.Get(imageURL)
+    img, _ := jpeg.Decode(resp.Body)
+
+    // Generate blurhash (4x3 components)
+    hash, _ := blurhash.Encode(4, 3, img)
+    return hash, nil
+  }
+  ```
+
+  **Storage**:
+  - Store blurhash in movies/tvshows/albums tables
+  - Column: `poster_blurhash VARCHAR(50)`
+  - Generate during metadata enrichment
+
+  **Frontend Usage**:
+  - Decode blurhash to canvas
+  - Display as placeholder until image loads
+  - Smooth transition to full image
+
+database_schema: |
+  **Metadata Storage Patterns**:
+
+  **External ID Columns** (for cross-referencing):
+  ```sql
+  -- Movies
+  tmdb_id INTEGER UNIQUE
+  imdb_id VARCHAR(20) UNIQUE
+
+  -- TV Shows
+  tvdb_id INTEGER UNIQUE
+  imdb_id VARCHAR(20) UNIQUE
+  tvmaze_id INTEGER
+
+  -- Music
+  musicbrainz_artist_id UUID UNIQUE
+  musicbrainz_album_id UUID UNIQUE
+  musicbrainz_recording_id UUID UNIQUE
+
+  -- Books
+  isbn VARCHAR(20) UNIQUE
+  goodreads_id VARCHAR(50) UNIQUE
+  openlibrary_id VARCHAR(50) UNIQUE
+
+  -- Adult Content (QAR)
+  stashdb_scene_id UUID UNIQUE
+  stashdb_performer_id UUID UNIQUE
+  ```
+
+  **Metadata JSONB Columns** (flexible storage):
+  ```sql
+  -- Store additional metadata that doesn't fit in structured columns
+  metadata JSONB DEFAULT '{}'::jsonb
+
+  -- Example content:
+  {
+    "credits": {
+      "cast": [...],
+      "crew": [...]
+    },
+    "external_ratings": {
+      "imdb": 8.8,
+      "metacritic": 74,
+      "rotten_tomatoes": 87
+    },
+    "keywords": ["sci-fi", "mind-bending", "dreams"],
+    "themes": ["reality", "subconsciousness"]
+  }
+  ```
+
+  **Caching Table** (optional, for L2 cache overflow):
+  ```sql
+  CREATE TABLE metadata_cache (
+    cache_key VARCHAR(255) PRIMARY KEY,
+    value JSONB NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_metadata_cache_expires ON metadata_cache(expires_at);
+  ```
+
+rate_limiting: |
+  **External API Rate Limiting**:
+
+  **Provider Limits**:
+  - **TMDb**: 40 requests per 10 seconds
+  - **TheTVDB**: 100 requests per day (free tier), unlimited (paid)
+  - **MusicBrainz**: 1 request per second (respectful scraping)
+  - **Last.fm**: 5 requests per second
+  - **Trakt**: 1000 requests per 5 minutes
+
+  **Mitigation Strategies**:
+  1. **Caching**: Reduce API calls by caching responses (L1 + L2)
+  2. **Arr Services**: Use Arr local cache as primary source
+  3. **Rate Limiter**: Implement token bucket algorithm
+  4. **Request Coalescing**: Use sturdyc to deduplicate concurrent requests
+  5. **Proxy Rotation**: Route through proxy/VPN to rotate IPs (for public APIs)
+
+  **Rate Limiter Implementation**:
+  ```go
+  import "golang.org/x/time/rate"
+
+  type TMDbClient struct {
+    limiter *rate.Limiter  // 40 requests per 10 seconds
+  }
+
+  func NewTMDbClient() *TMDbClient {
+    return &TMDbClient{
+      limiter: rate.NewLimiter(rate.Every(250*time.Millisecond), 40),
+    }
+  }
+
+  func (c *TMDbClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
+    // Wait for rate limiter
+    if err := c.limiter.Wait(ctx); err != nil {
+      return nil, err
+    }
+
+    // Make API call
+    // ...
+  }
+  ```
+
+error_handling: |
+  **Metadata Fetch Error Handling**:
+
+  **Error Categories**:
+  1. **Transient Errors**: Network timeouts, rate limits, service unavailable
+  2. **Permanent Errors**: Content not found (404), invalid ID, service discontinued
+  3. **Auth Errors**: Invalid API key, expired token, insufficient permissions
+
+  **Retry Strategy**:
+  ```go
+  func FetchMetadataWithRetry(ctx context.Context, fetcher func() error) error {
+    backoff := []time.Duration{1*time.Second, 5*time.Second, 15*time.Second}
+
+    for i, delay := range backoff {
+      err := fetcher()
+      if err == nil {
+        return nil
+      }
+
+      // Don't retry on permanent errors
+      if errors.Is(err, ErrNotFound) || errors.Is(err, ErrUnauthorized) {
+        return err
+      }
+
+      // Retry on transient errors
+      if i < len(backoff)-1 {
+        time.Sleep(delay)
+        continue
+      }
+
+      return err
+    }
+    return nil
+  }
+  ```
+
+  **Fallback Chain**:
+  1. Query Arr service → Success? Return
+  2. Query primary external API → Success? Return + cache + add to Arr
+  3. Query fallback external API → Success? Return + cache
+  4. Return cached stale data (if available)
+  5. Return minimal placeholder data (title, year, generic poster)
+
+unit_tests: |
+  ```go
+  func TestMetadataService_GetMovie(t *testing.T) {
+    // Test L1 cache hit
+    // Test L2 cache hit
+    // Test Radarr query
+    // Test TMDb fallback
+    // Test cache population
+  }
+
+  func TestMetadataService_ProxySupport(t *testing.T) {
+    // Test HTTP proxy configuration
+    // Test SOCKS5 proxy
+    // Test VPN interface binding
+    // Test per-provider proxy overrides
+  }
+
+  func TestMetadataEnrichment_Blurhash(t *testing.T) {
+    // Test blurhash generation
+    // Test storage in database
+  }
+
+  func TestRateLimiter_TMDb(t *testing.T) {
+    // Test 40 req/10s limit
+    // Test request queuing
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestMetadata_FullWorkflow(t *testing.T) {
+    // 1. Add movie to Radarr (via API)
+    // 2. Query metadata through Revenge
+    // 3. Verify cache population (L1 + L2)
+    // 4. Trigger enrichment job
+    // 5. Verify blurhash, cast, crew populated
+    // 6. Test proxy routing for external API calls
+  }
+  ```

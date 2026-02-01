@@ -59,3 +59,226 @@ design_refs:
 service_name: API Keys Service
 package_path: internal/service/apikeys
 fx_module: apikeys.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  Middleware  │────▶│   Service   │
+  │ (API Key)   │◀────│ (API Auth)   │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │   Cache   │  │  RBAC  │
+                  │  (sqlc)  │          │  (otter)  │  │Service │
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- API keys
+  CREATE TABLE api_keys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Key details
+    key_hash TEXT NOT NULL UNIQUE,                 -- SHA-256 hash of API key
+    name TEXT NOT NULL,                            -- User-friendly name
+    description TEXT,
+
+    -- Scopes
+    scopes TEXT[] DEFAULT '{}',                    -- ['read', 'write', 'admin']
+
+    -- Status
+    is_active BOOLEAN DEFAULT true,
+    revoked_at TIMESTAMPTZ,
+
+    -- Expiration
+    expires_at TIMESTAMPTZ,
+
+    -- Usage tracking
+    last_used_at TIMESTAMPTZ,
+    usage_count INTEGER DEFAULT 0,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_api_keys_user ON api_keys(user_id);
+  CREATE INDEX idx_api_keys_hash ON api_keys(key_hash);
+  CREATE INDEX idx_api_keys_active ON api_keys(is_active) WHERE is_active = true;
+
+  -- API key usage log
+  CREATE TABLE api_key_usage_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    api_key_id UUID REFERENCES api_keys(id) ON DELETE CASCADE,
+
+    -- Request details
+    method VARCHAR(10) NOT NULL,                   -- 'GET', 'POST', etc.
+    path TEXT NOT NULL,
+    status_code INTEGER NOT NULL,
+
+    -- Client info
+    ip_address INET,
+    user_agent TEXT,
+
+    created_at TIMESTAMPTZ DEFAULT now()
+  );
+  CREATE INDEX idx_api_key_usage_key ON api_key_usage_log(api_key_id, created_at DESC);
+  ```
+
+module_structure: |
+  ```
+  internal/service/apikeys/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # API key service logic
+  ├── generator.go                 # API key generation
+  ├── middleware.go                # HTTP API key auth middleware
+  ├── handler.go                   # HTTP API handlers
+  └── apikeys_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type APIKeysService interface {
+    // Key management
+    CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*APIKey, string, error) // Returns key and raw token
+    GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error)
+    ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error)
+    RevokeKey(ctx context.Context, keyID uuid.UUID) error
+
+    // Validation
+    ValidateKey(ctx context.Context, rawKey string) (*APIKey, error)
+    CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error)
+
+    // Usage tracking
+    RecordUsage(ctx context.Context, keyID uuid.UUID, method, path string, statusCode int) error
+    GetUsageStats(ctx context.Context, keyID uuid.UUID) (*UsageStats, error)
+  }
+
+  type APIKey struct {
+    ID          uuid.UUID  `db:"id" json:"id"`
+    UserID      uuid.UUID  `db:"user_id" json:"user_id"`
+    Name        string     `db:"name" json:"name"`
+    Description *string    `db:"description" json:"description,omitempty"`
+    Scopes      []string   `db:"scopes" json:"scopes"`
+    IsActive    bool       `db:"is_active" json:"is_active"`
+    ExpiresAt   *time.Time `db:"expires_at" json:"expires_at,omitempty"`
+    LastUsedAt  *time.Time `db:"last_used_at" json:"last_used_at,omitempty"`
+    CreatedAt   time.Time  `db:"created_at" json:"created_at"`
+  }
+
+  type CreateKeyRequest struct {
+    Name        string     `json:"name"`
+    Description string     `json:"description,omitempty"`
+    Scopes      []string   `json:"scopes"`
+    ExpiresAt   *time.Time `json:"expires_at,omitempty"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/maypok86/otter` - API key cache
+  - `crypto/rand` - Key generation
+  - `crypto/sha256` - Key hashing
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  APIKEYS_LENGTH=32               # bytes
+  APIKEYS_DEFAULT_EXPIRY=0        # 0 = never expire
+  APIKEYS_MAX_PER_USER=10
+  ```
+
+config_keys: |
+  ```yaml
+  apikeys:
+    length: 32
+    default_expiry: 0  # 0 = never expire
+    max_per_user: 10
+  ```
+
+component_interaction: |
+  **API Key Creation**:
+  1. User creates API key: POST /api/v1/apikeys
+  2. Generate random 32-byte key (base64 encoded)
+  3. Hash key with SHA-256
+  4. Insert into api_keys table (store hash only)
+  5. Return raw key to user (ONLY time it's visible)
+  6. User stores key securely
+
+  **API Key Authentication**:
+  1. Client sends request with header: X-API-Key: <raw_key>
+  2. Middleware extracts key
+  3. Hash key with SHA-256
+  4. Check cache (otter) for key_hash
+  5. If miss, query api_keys table
+  6. Verify: is_active = true AND (expires_at IS NULL OR expires_at > now)
+  7. Check required scope
+  8. If valid, attach user to context, proceed
+  9. If invalid, return 401 Unauthorized
+  10. Record usage in api_key_usage_log
+
+api_endpoints: |
+  ```
+  POST   /api/v1/apikeys              # Create API key
+  GET    /api/v1/apikeys              # List user's keys
+  GET    /api/v1/apikeys/:id          # Get key details
+  DELETE /api/v1/apikeys/:id          # Revoke key
+  GET    /api/v1/apikeys/:id/usage    # Get usage stats
+  ```
+
+  **Example Create Request**:
+  ```json
+  {
+    "name": "Mobile App",
+    "description": "API key for my mobile app",
+    "scopes": ["read", "write"],
+    "expires_at": "2027-02-01T00:00:00Z"
+  }
+  ```
+
+  **Example Create Response**:
+  ```json
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Mobile App",
+    "scopes": ["read", "write"],
+    "api_key": "rv_1234567890abcdefghijklmnopqrstuvwxyz",
+    "created_at": "2026-02-01T10:00:00Z",
+    "message": "Store this key securely. It won't be shown again."
+  }
+  ```
+
+unit_tests: |
+  ```go
+  func TestAPIKeysService_CreateKey(t *testing.T) {
+    // Test key generation and storage
+  }
+
+  func TestAPIKeysService_ValidateKey(t *testing.T) {
+    // Test key validation (active, not expired)
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestAPIKeys_AuthFlow(t *testing.T) {
+    // Test create -> authenticate -> revoke workflow
+  }
+
+  func TestAPIKeys_Middleware(t *testing.T) {
+    // Test HTTP middleware API key auth
+  }
+  ```

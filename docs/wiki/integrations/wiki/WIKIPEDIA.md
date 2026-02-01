@@ -22,9 +22,9 @@
 
 # Wikipedia
 
-> Background information from Wikipedia
+> Wikipedia - Background information for media
 
-Wikipedia integration provides encyclopedic context for your media. Plot summaries, production history, and critical reception. Links to actor and director biographies. Available in multiple languages. Cached locally for fast access. No API key required.
+ENRICHMENT metadata source providing encyclopedic context. Plot summaries, production history, critical reception. Actor/director biographies. Multi-language support. **No API key required**. MediaWiki API with rate limiting etiquette.
 
 ---
 
@@ -68,6 +68,7 @@ Official documentation and guides:
 - [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
 - [MediaWiki API](../../../sources/wiki/mediawiki.md)
 - [River Job Queue](../../../sources/tooling/river.md)
+- [golang.org/x/time](../../../sources/go/x/time.md)
 
 
 

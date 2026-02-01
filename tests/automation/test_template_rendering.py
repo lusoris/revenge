@@ -321,22 +321,23 @@ class TestTemplateDefaults:
         )
 
     def test_service_template_has_defaults_for_all_optional_fields(self, jinja_env):
-        """Service template must use | default() for all optional fields."""
+        """Service template must use | default() or 'is defined' for all optional fields."""
         template_path = Path("templates/service.md.jinja2")
         content = template_path.read_text()
 
-        # Check that optional fields use | default()
+        # Check that optional fields use | default() or 'is defined' check
         optional_fields = ["dependencies", "provides", "wiki_how_it_works"]
 
         for field in optional_fields:
-            # Either field uses | default() OR is in {%- else %} block
+            # Field must use | default() OR 'is defined' check OR not be checked at all
             assert (
                 f"{field} | default" in content or
+                f"{field} is defined" in content or
                 f"if {field}" not in content  # Field not checked without default
-            ), f"Field '{field}' should use | default() or not be checked"
+            ), f"Field '{field}' should use | default() or 'is defined' or not be checked"
 
     def test_integration_template_has_defaults_for_all_optional_fields(self, jinja_env):
-        """Integration template must use | default() for all optional fields."""
+        """Integration template must use | default() or 'is defined' for all optional fields."""
         template_path = Path("templates/integration.md.jinja2")
         content = template_path.read_text()
 
@@ -353,11 +354,12 @@ class TestTemplateDefaults:
         ]
 
         for field in optional_fields:
-            # Either field uses | default() OR is in {%- else %} block
+            # Field must use | default() OR 'is defined' check OR not be checked at all
             assert (
                 f"{field} | default" in content or
+                f"{field} is defined" in content or
                 f"if {field}" not in content
-            ), f"Field '{field}' should use | default() or not be checked"
+            ), f"Field '{field}' should use | default() or 'is defined' or not be checked"
 
     def test_feature_template_has_defaults_for_all_optional_fields(self, jinja_env):
         """Feature template must use | default() for all optional fields."""

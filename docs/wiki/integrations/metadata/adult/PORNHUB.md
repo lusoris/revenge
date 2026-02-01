@@ -22,9 +22,9 @@
 
 # Pornhub
 
-> Performer pages from Pornhub
+> Pornhub - Performer channel links and view metrics
 
-Pornhub integration provides links to official performer channels. View counts and popularity metrics available. Cross-references performer identities across platforms. Part of the QAR adult metadata enrichment pipeline. Links stored for reference, no content streaming.
+LINK-ONLY integration for QAR performer profiles. Stores verified channel URLs for performer cross-referencing. Extracts view counts and subscriber metrics. **NO content streaming** - only metadata and links. **Web scraping** with heavy Cloudflare protection. **Proxy/VPN required** (via HTTP_CLIENT service).
 
 ---
 
@@ -67,6 +67,9 @@ Pornhub integration provides links to official performer channels. View counts a
 Official documentation and guides:
 - [Go io](../../../../sources/go/stdlib/io.md)
 - [River Job Queue](../../../../sources/tooling/river.md)
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
+- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [chromedp](https://pkg.go.dev/github.com/chromedp/chromedp)
 
 
 

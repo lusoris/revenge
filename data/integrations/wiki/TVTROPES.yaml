@@ -16,29 +16,342 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Trope analysis and storytelling patterns'
-wiki_tagline: '> Discover tropes and storytelling patterns'
-wiki_overview: TVTropes integration links to trope analysis for your media. Discover
-  recurring storytelling patterns, character archetypes, and narrative devices. See
-  which tropes appear in movies and shows. Great for understanding what makes stories
-  tick. Links to TVTropes pages from item details.
+technical_summary: '> ENRICHMENT link provider for trope analysis and storytelling patterns'
+wiki_tagline: '> TVTropes - Discover tropes and storytelling patterns'
+wiki_overview: 'ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, TV shows, and other media. Discover recurring storytelling patterns, character archetypes, and narrative devices. **No API available** - uses URL construction and verification. Great for understanding what makes stories tick.'
 sources:
-- name: Dragonfly Documentation
-  url: https://www.dragonflydb.io/docs
-  note: Auto-resolved from dragonfly
-- name: Go io
-  url: https://pkg.go.dev/io
-  note: Auto-resolved from go-io
+- name: TVTropes
+  url: https://tvtropes.org
+  note: Main site
+- name: PuerkitoBio/goquery
+  url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
+  note: HTML parsing for verification
+- name: golang.org/x/time
+  url: https://pkg.go.dev/golang.org/x/time
+  note: Rate limiting
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: 01_ARCHITECTURE
-  path: ../../architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
-  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../../architecture/03_METADATA_SYSTEM.md
+- title: WIKI_SYSTEM
+  path: ../../features/shared/WIKI_SYSTEM.md
+- title: MOVIE_MODULE
+  path: ../../features/video/MOVIE_MODULE.md
+- title: TVSHOW_MODULE
+  path: ../../features/video/TVSHOW_MODULE.md
+- title: HTTP_CLIENT
+  path: ../../services/HTTP_CLIENT.md
 integration_name: TVTropes
 integration_id: tvtropes
 external_service: TVTropes
+api_base_url: https://tvtropes.org
+auth_method: none
+data_access_method: url_verification
+
+architecture_diagram: |
+  ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Detail Page │
+  │  (Movie/TV)  │
+  └──────┬───────┘
+         │ "Tropes" link
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │   TVTropes   │────▶│  Trope Analysis   │
+  │   (web)      │     │  - Used tropes    │
+  └──────┬───────┘     │  - Character types│
+         │             │  - Plot devices   │
+  ┌──────┴───────┐     │  - Narrative      │
+  │ Rate Limiter │     └───────────────────┘
+  │ (0.5/sec)    │
+  └──────────────┘
+
+  URL Structure:
+  - /pmwiki/pmwiki.php/Film/{Title}
+  - /pmwiki/pmwiki.php/Series/{Title}
+  - /pmwiki/pmwiki.php/WesternAnimation/{Title}
+  - /pmwiki/pmwiki.php/Anime/{Title}
+  ```
+
+api_details: |
+  **Data Access**: URL construction + verification (NO API)
+  **Base URL**: `https://tvtropes.org`
+  **Authentication**: None
+  **Rate Limit**: Self-imposed 0.5 req/sec (be polite)
+
+  **URL Pattern**:
+  ```
+  https://tvtropes.org/pmwiki/pmwiki.php/{Namespace}/{PageTitle}
+  ```
+
+  **Namespaces**:
+  - `Film` - Movies
+  - `Series` - Live-action TV shows
+  - `WesternAnimation` - Animated shows/movies
+  - `Anime` - Anime series/movies
+  - `Literature` - Books
+  - `VideoGame` - Video games
+  - `Webcomic` - Webcomics
+
+  **Title Formatting**:
+  - Remove spaces, articles, punctuation
+  - CamelCase: "The Dark Knight" → "TheDarkKnight"
+
+database_schema: |
+  ```sql
+  -- TVTropes page links
+  CREATE TABLE tvtropes_links (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_type VARCHAR(50) NOT NULL,    -- 'movie', 'tvshow'
+    content_id UUID NOT NULL,
+    namespace VARCHAR(50) NOT NULL,       -- 'Film', 'Series', etc.
+    page_title VARCHAR(255) NOT NULL,     -- CamelCase title
+    page_url TEXT NOT NULL,
+    verified BOOLEAN DEFAULT false,
+    last_verified TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(content_type, content_id)
+  );
+  CREATE INDEX idx_tvtropes_content ON tvtropes_links(content_type, content_id);
+  ```
+
+module_structure: |
+  ```
+  internal/metadata/providers/tvtropes/
+  ├── module.go                    # fx module
+  ├── provider.go                  # Link provider
+  ├── url_builder.go               # URL construction
+  ├── verifier.go                  # Page existence verification
+  ├── title_formatter.go           # CamelCase formatting
+  └── tvtropes_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  // TVTropes link provider
+  type TVTropesProvider struct {
+    httpClient  *http.Client
+    rateLimiter *rate.Limiter
+    cache       Cache
+  }
+
+  // Link provider interface
+  type TropesLinkProvider interface {
+    GenerateLink(ctx context.Context, content *Content) (*TropesLink, error)
+    VerifyPage(ctx context.Context, url string) (bool, error)
+    GetNamespace(contentType string) string
+  }
+
+  // Tropes link
+  type TropesLink struct {
+    PageTitle string `json:"title"`
+    URL       string `json:"url"`
+    Namespace string `json:"namespace"`
+    Verified  bool   `json:"verified"`
+  }
+
+  // Title formatter
+  func FormatTropesTitle(title string) string {
+    // Remove articles
+    title = strings.TrimPrefix(title, "The ")
+    title = strings.TrimPrefix(title, "A ")
+    title = strings.TrimPrefix(title, "An ")
+
+    // Remove punctuation and special characters
+    reg := regexp.MustCompile(`[^a-zA-Z0-9\s]`)
+    title = reg.ReplaceAllString(title, "")
+
+    // CamelCase
+    words := strings.Fields(title)
+    for i, word := range words {
+      words[i] = strings.Title(strings.ToLower(word))
+    }
+    return strings.Join(words, "")
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `net/http` - HTTP client
+  - `github.com/PuerkitoBio/goquery` - HTML parsing for verification
+  - `golang.org/x/time/rate` - Rate limiting
+  - `github.com/jackc/pgx/v5` - PostgreSQL
+  - `github.com/riverqueue/river` - Background jobs
+  - `go.uber.org/fx` - DI
+
+  **External**:
+  - TVTropes website (no API)
+
+env_vars: |
+  ```bash
+  TVTROPES_ENABLED=true
+  TVTROPES_RATE_LIMIT=0.5
+  TVTROPES_CACHE_TTL=168h
+  ```
+
+config_keys: |
+  ```yaml
+  metadata:
+    providers:
+      tvtropes:
+        enabled: true
+        rate_limit: 0.5
+        rate_window: 1s
+        cache_ttl: 168h
+        role: enrichment
+
+        # Namespace mapping
+        namespaces:
+          movie: Film
+          tvshow: Series
+          anime: Anime
+          animation: WesternAnimation
+          book: Literature
+          game: VideoGame
+  ```
+
+component_interaction: |
+  **Link Generation Flow**:
+  1. User views movie/show detail page
+  2. Determine namespace from content type
+  3. Format title to CamelCase
+  4. Construct URL: `tvtropes.org/pmwiki/pmwiki.php/{ns}/{title}`
+  5. Verify page exists (HEAD request)
+  6. Store verified link
+  7. Display "View Tropes" link in UI
+
+  **Title Formatting Examples**:
+  ```
+  "The Dark Knight" → "DarkKnight"
+  "Breaking Bad" → "BreakingBad"
+  "Spider-Man: No Way Home" → "SpiderManNoWayHome"
+  "Avatar: The Way of Water" → "AvatarTheWayOfWater"
+  ```
+
+  **Namespace Selection**:
+  ```go
+  func (p *TVTropesProvider) GetNamespace(contentType string, isAnimated bool) string {
+    switch contentType {
+    case "movie":
+      if isAnimated {
+        return "WesternAnimation"
+      }
+      return "Film"
+    case "tvshow":
+      if isAnimated {
+        return "WesternAnimation"
+      }
+      return "Series"
+    case "anime":
+      return "Anime"
+    default:
+      return "Film"
+    }
+  }
+  ```
+
+url_construction: |
+  **URL Building**:
+  ```go
+  func (p *TVTropesProvider) BuildURL(namespace, title string) string {
+    formattedTitle := FormatTropesTitle(title)
+    return fmt.Sprintf("https://tvtropes.org/pmwiki/pmwiki.php/%s/%s",
+      namespace, formattedTitle)
+  }
+  ```
+
+  **Verification**:
+  ```go
+  func (p *TVTropesProvider) VerifyPage(ctx context.Context, url string) (bool, error) {
+    req, _ := http.NewRequestWithContext(ctx, "HEAD", url, nil)
+    resp, err := p.httpClient.Do(req)
+    if err != nil {
+      return false, err
+    }
+    defer resp.Body.Close()
+
+    // TVTropes returns 200 for existing pages
+    // Redirects to search for non-existing
+    return resp.StatusCode == 200 && resp.Request.URL.String() == url, nil
+  }
+  ```
+
+enrichment_role: |
+  **ENRICHMENT-Only Provider**
+
+  TVTropes provides storytelling analysis:
+  - Tropes used in the movie/show
+  - Character archetypes (The Chosen One, Anti-Hero, etc.)
+  - Plot devices and narrative structures
+  - Genre conventions
+  - Comparisons to similar works
+
+  **Use Cases**:
+  - "View Tropes" link on detail pages
+  - Understanding storytelling patterns
+  - Discovering similar works through trope connections
+  - Entertainment/educational value
+
+  **UI Display**:
+  ```
+  Learn More:
+  [📚 TVTropes] → View tropes for "Breaking Bad"
+  ```
+
+error_handling: |
+  **Expected Responses**:
+  - 200 OK + same URL → Page exists
+  - 200 OK + redirect → Page doesn't exist (redirected to search)
+  - 404 Not Found → Page doesn't exist
+  - Timeout → Network issue
+
+  **Fallback Strategies**:
+  - Try alternate namespace (Film vs WesternAnimation)
+  - Try with/without year suffix
+  - Fall back to search URL if page not found
+
+unit_tests: |
+  ```go
+  func TestTVTropes_FormatTitle(t *testing.T) {
+    tests := []struct {
+      input    string
+      expected string
+    }{
+      {"The Dark Knight", "DarkKnight"},
+      {"Breaking Bad", "BreakingBad"},
+      {"Spider-Man: No Way Home", "SpiderManNoWayHome"},
+      {"Avengers: Endgame", "AvengersEndgame"},
+    }
+
+    for _, tt := range tests {
+      result := FormatTropesTitle(tt.input)
+      assert.Equal(t, tt.expected, result)
+    }
+  }
+
+  func TestTVTropes_BuildURL(t *testing.T) {
+    provider := NewTVTropesProvider()
+
+    url := provider.BuildURL("Film", "The Dark Knight")
+    assert.Equal(t, "https://tvtropes.org/pmwiki/pmwiki.php/Film/DarkKnight", url)
+  }
+  ```
+
+best_practices: |
+  **URL Construction**:
+  - Use correct namespace for content type
+  - Handle animated content differently
+  - Try multiple title variations if first fails
+
+  **Rate Limiting**:
+  - Be very polite (0.5 req/sec)
+  - Cache verified links for 7+ days
+  - Batch verification in background jobs
+
+  **User Experience**:
+  - Only show link if page verified
+  - Indicate it opens external site
+  - Consider TVTropes' "wiki walk" nature

@@ -9,12 +9,12 @@ sources:
     url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
+  - title: BOOK_MODULE
+    path: ../../../features/book/BOOK_MODULE.md
+  - title: CHAPTARR (metadata matching)
+    path: ../../servarr/CHAPTARR.md
+  - title: OPENLIBRARY (metadata fallback)
+    path: ./OPENLIBRARY.md
 ---
 
 ## Table of Contents
@@ -51,7 +51,7 @@ design_refs:
 
 > Integration with Goodreads
 
-> Book metadata and social reading platform - ratings, reviews, book lists
+> Data import tool (CSV only) - reading history/ratings from Goodreads
 **Authentication**: api_key
 
 ---
@@ -94,8 +94,6 @@ internal/integration/goodreads/
 <!-- Data flow diagram -->
 
 ### Provides
-
-This integration provides:
 <!-- Data provided by integration -->
 
 
@@ -151,9 +149,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [BOOK_MODULE](../../../features/book/BOOK_MODULE.md)
+- [CHAPTARR (metadata matching)](../../servarr/CHAPTARR.md)
+- [OPENLIBRARY (metadata fallback)](./OPENLIBRARY.md)
 
 ### External Sources
 - [Google Books API](../../../../sources/apis/google-books.md) - Auto-resolved from google-books

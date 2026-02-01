@@ -22,9 +22,9 @@
 
 # TVTropes
 
-> Discover tropes and storytelling patterns
+> TVTropes - Discover tropes and storytelling patterns
 
-TVTropes integration links to trope analysis for your media. Discover recurring storytelling patterns, character archetypes, and narrative devices. See which tropes appear in movies and shows. Great for understanding what makes stories tick. Links to TVTropes pages from item details.
+ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, TV shows, and other media. Discover recurring storytelling patterns, character archetypes, and narrative devices. **No API available** - uses URL construction and verification. Great for understanding what makes stories tick.
 
 ---
 
@@ -65,8 +65,9 @@ TVTropes integration links to trope analysis for your media. Discover recurring 
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [Go io](../../../sources/go/stdlib/io.md)
+- [TVTropes](https://tvtropes.org)
+- [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
+- [golang.org/x/time](../../../sources/go/x/time.md)
 - [River Job Queue](../../../sources/tooling/river.md)
 
 

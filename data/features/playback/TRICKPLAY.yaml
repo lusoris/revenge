@@ -74,13 +74,611 @@ architecture_diagram: "```\n  ┌─────────────┐     
   \                    │ PostgreSQL  │        │ External │\n                    │\
   \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
   \ └──────────┘\n  ```"
-database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
-  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+database_schema: |
+  **Schema**: `public`
+
+  **Tables**:
+
+  ```sql
+  -- Trickplay thumbnail metadata
+  CREATE TABLE trickplay_tiles (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+      -- Content reference (polymorphic)
+      content_type TEXT NOT NULL,  -- 'movie', 'episode'
+      content_id UUID NOT NULL,
+
+      -- Tile configuration
+      interval_seconds INTEGER NOT NULL DEFAULT 10,  -- Thumbnail every X seconds
+      tile_width INTEGER NOT NULL DEFAULT 320,
+      tile_height INTEGER NOT NULL DEFAULT 180,
+      quality INTEGER NOT NULL DEFAULT 85,  -- JPEG quality (1-100)
+
+      -- Output files
+      format TEXT NOT NULL,  -- 'bif', 'webvtt', 'sprite'
+      tile_count INTEGER NOT NULL,
+      total_duration_seconds INTEGER NOT NULL,
+
+      -- BIF format (single file)
+      bif_file_path TEXT,
+      bif_file_size_bytes BIGINT,
+
+      -- WebVTT format (VTT + sprite images)
+      webvtt_file_path TEXT,
+      webvtt_file_size_bytes BIGINT,
+
+      -- Sprite images (for WebVTT)
+      sprite_base_path TEXT,  -- Directory containing sprite images
+      sprites_per_file INTEGER DEFAULT 100,  -- Thumbnails per sprite image
+      sprite_columns INTEGER DEFAULT 10,  -- Grid columns
+      sprite_rows INTEGER DEFAULT 10,  -- Grid rows
+
+      -- Generation status
+      status TEXT NOT NULL DEFAULT 'pending',  -- 'pending', 'generating', 'completed', 'failed'
+      generation_started_at TIMESTAMPTZ,
+      generation_completed_at TIMESTAMPTZ,
+      generation_duration_ms INTEGER,
+      error_message TEXT,
+
+      -- Job tracking
+      job_id TEXT,  -- River job ID
+
+      -- Metadata
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+      UNIQUE(content_type, content_id, format),
+      CONSTRAINT trickplay_tiles_interval_check CHECK (interval_seconds > 0),
+      CONSTRAINT trickplay_tiles_quality_check CHECK (quality BETWEEN 1 AND 100)
+  );
+
+  CREATE INDEX idx_trickplay_tiles_content ON trickplay_tiles(content_type, content_id);
+  CREATE INDEX idx_trickplay_tiles_status ON trickplay_tiles(status);
+  CREATE INDEX idx_trickplay_tiles_pending ON trickplay_tiles(status, created_at)
+      WHERE status = 'pending';
+  CREATE INDEX idx_trickplay_tiles_job_id ON trickplay_tiles(job_id) WHERE job_id IS NOT NULL;
+
+  -- Trickplay generation queue (tracks what needs generation)
+  CREATE TABLE trickplay_generation_queue (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      content_type TEXT NOT NULL,
+      content_id UUID NOT NULL,
+      priority INTEGER DEFAULT 5,  -- 1-10, higher = more priority
+      requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      status TEXT NOT NULL DEFAULT 'queued',  -- 'queued', 'processing', 'completed', 'failed'
+
+      UNIQUE(content_type, content_id)
+  );
+
+  CREATE INDEX idx_trickplay_queue_status ON trickplay_generation_queue(status, priority DESC, requested_at);
+  ```
+
+  **Indexes**: Optimized for:
+  - Content tile lookups (by content_type + content_id)
+  - Pending tile generation queries
+  - Job tracking and status monitoring
+  - Queue priority ordering
+file_structure: |
+  ```
+  internal/playback/trickplay/
+  ├── module.go                    # fx module registration
+  ├── repository.go                # Database operations (sqlc)
+  ├── queries.sql                  # SQL queries for sqlc
+  ├── service.go                   # Business logic
+  ├── handler.go                   # HTTP handlers (ogen-generated)
+  ├── types.go                     # Domain types
+  ├── generator.go                 # Thumbnail generation logic
+  ├── bif_writer.go                # BIF format writer (Roku)
+  ├── webvtt_writer.go             # WebVTT format writer
+  ├── sprite_generator.go          # Sprite image generation
+  ├── ffmpeg.go                    # FFmpeg thumbnail extraction
+  ├── queue.go                     # Generation queue management
+  └── cache.go                     # Caching layer (otter)
+
+  cmd/server/
+  └── main.go                      # Server entry point with fx
+
+  migrations/
+  ├── 031_trickplay.up.sql         # Trickplay tables
+  └── 031_trickplay.down.sql       # Rollback
+
+  api/openapi/
+  └── trickplay.yaml               # OpenAPI spec for trickplay
+
+  web/src/lib/components/player/
+  └── TrickplayPreview.svelte      # Thumbnail preview overlay
+  ```
+
+key_interfaces: |
+  ```go
+  // Repository interface for trickplay database operations
+  type Repository interface {
+      // Tiles
+      CreateTile(ctx context.Context, params CreateTileParams) (*TrickplayTile, error)
+      GetTile(ctx context.Context, contentType string, contentID uuid.UUID, format string) (*TrickplayTile, error)
+      GetTilesByContent(ctx context.Context, contentType string, contentID uuid.UUID) ([]*TrickplayTile, error)
+      UpdateTileStatus(ctx context.Context, id uuid.UUID, status string, errorMsg *string) error
+      UpdateTileGeneration(ctx context.Context, id uuid.UUID, params UpdateGenerationParams) error
+      DeleteTile(ctx context.Context, id uuid.UUID) error
+      GetPendingTiles(ctx context.Context, limit int) ([]*TrickplayTile, error)
+
+      // Queue
+      EnqueueGeneration(ctx context.Context, contentType string, contentID uuid.UUID, priority int) error
+      GetQueuedItems(ctx context.Context, limit int) ([]*GenerationQueueItem, error)
+      UpdateQueueStatus(ctx context.Context, id uuid.UUID, status string) error
+      RemoveFromQueue(ctx context.Context, contentType string, contentID uuid.UUID) error
+  }
+
+  // Service interface for trickplay operations
+  type Service interface {
+      // Generation
+      GenerateTrickplay(ctx context.Context, contentType string, contentID uuid.UUID, config TrickplayConfig) error
+      RegenerateTrickplay(ctx context.Context, contentType string, contentID uuid.UUID) error
+      GetGenerationStatus(ctx context.Context, contentType string, contentID uuid.UUID) (*GenerationStatus, error)
+
+      // Retrieval
+      GetTrickplayManifest(ctx context.Context, contentType string, contentID uuid.UUID, format string) (*TrickplayManifest, error)
+      GetBIFFile(ctx context.Context, contentType string, contentID uuid.UUID) (io.ReadCloser, error)
+      GetWebVTTFile(ctx context.Context, contentType string, contentID uuid.UUID) (io.ReadCloser, error)
+      GetSpriteImage(ctx context.Context, contentType string, contentID uuid.UUID, spriteIndex int) (io.ReadCloser, error)
+
+      // Management
+      DeleteTrickplay(ctx context.Context, contentType string, contentID uuid.UUID) error
+      QueueBulkGeneration(ctx context.Context, contentRefs []ContentReference, priority int) error
+  }
+
+  // Generator interface for thumbnail generation
+  type Generator interface {
+      GenerateBIF(ctx context.Context, params GenerationParams) (*BIFResult, error)
+      GenerateWebVTT(ctx context.Context, params GenerationParams) (*WebVTTResult, error)
+      ExtractThumbnails(ctx context.Context, videoPath string, interval time.Duration, size ThumbnailSize) ([]ThumbnailFrame, error)
+  }
+
+  // BIFWriter interface for BIF format writing
+  type BIFWriter interface {
+      Create(outputPath string) error
+      AddFrame(timestamp time.Duration, imageData []byte) error
+      Close() error
+  }
+
+  // WebVTTWriter interface for WebVTT format writing
+  type WebVTTWriter interface {
+      CreateManifest(outputPath string) error
+      CreateSprite(spriteIndex int, frames []SpriteFrame, outputPath string) error
+      AddCue(timestamp time.Duration, spriteIndex int, x, y, width, height int) error
+      Close() error
+  }
+
+  // FFmpegExtractor interface for thumbnail extraction
+  type FFmpegExtractor interface {
+      ExtractFrame(ctx context.Context, videoPath string, timestamp time.Duration, outputPath string, size ThumbnailSize) error
+      GetVideoDuration(ctx context.Context, videoPath string) (time.Duration, error)
+      GetVideoResolution(ctx context.Context, videoPath string) (width, height int, err error)
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  ```go
+  require (
+      // Core
+      github.com/google/uuid v1.6.0
+      go.uber.org/fx v1.23.0
+
+      // Database
+      github.com/jackc/pgx/v5 v5.7.2
+      github.com/sqlc-dev/sqlc v1.28.0
+
+      // API
+      github.com/ogen-go/ogen v1.7.0
+
+      // Caching
+      github.com/maypok86/otter v1.2.4
+
+      // FFmpeg
+      github.com/asticode/go-astiav v0.23.0  // FFmpeg bindings
+
+      // Image processing
+      github.com/disintegration/imaging v1.6.2  // Image resizing/compositing
+      image/jpeg  // Standard library JPEG encoding
+
+      // Job queue
+      github.com/riverqueue/river v0.15.0
+
+      // Testing
+      github.com/stretchr/testify v1.10.0
+      github.com/testcontainers/testcontainers-go v0.35.0
+  )
+  ```
+
+  **External Dependencies**:
+  - **FFmpeg 7.1+**: Video frame extraction
+  - **PostgreSQL 18+**: Database
+  - **Storage**: Filesystem or S3 for tile storage
+
+env_vars: |
+  ```bash
+  # Generation settings
+  TRICKPLAY_ENABLED=true
+  TRICKPLAY_AUTO_GENERATE=true             # Auto-generate on library scan
+  TRICKPLAY_DEFAULT_INTERVAL_SEC=10        # Thumbnail every 10 seconds
+  TRICKPLAY_DEFAULT_WIDTH=320
+  TRICKPLAY_DEFAULT_HEIGHT=180
+  TRICKPLAY_DEFAULT_QUALITY=85             # JPEG quality (1-100)
+
+  # Formats
+  TRICKPLAY_GENERATE_BIF=true              # Roku BIF format
+  TRICKPLAY_GENERATE_WEBVTT=true           # WebVTT format for web
+  TRICKPLAY_SPRITE_COLUMNS=10              # Sprite grid columns
+  TRICKPLAY_SPRITE_ROWS=10                 # Sprite grid rows
+
+  # Storage
+  TRICKPLAY_STORAGE_PATH=/data/trickplay   # Storage location
+  TRICKPLAY_MAX_STORAGE_GB=100             # Max storage for tiles
+
+  # Worker
+  TRICKPLAY_WORKER_CONCURRENCY=2           # Concurrent generation jobs
+  TRICKPLAY_WORKER_PRIORITY=5              # Job priority (1-10)
+  TRICKPLAY_GENERATION_TIMEOUT_MIN=60      # Timeout for generation
+
+  # Cleanup
+  TRICKPLAY_CLEANUP_ON_DELETE=true         # Delete tiles when content deleted
+  ```
+
+config_keys: |
+  ```yaml
+  trickplay:
+    # Feature toggle
+    enabled: true
+    auto_generate: true               # Auto-generate on library scan
+
+    # Generation settings
+    generation:
+      interval_seconds: 10            # Thumbnail every X seconds
+      thumbnail:
+        width: 320
+        height: 180
+        quality: 85                   # JPEG quality (1-100)
+
+      formats:
+        bif:
+          enabled: true               # Roku BIF format
+        webvtt:
+          enabled: true               # WebVTT format for web
+          sprite:
+            columns: 10               # Sprite grid width
+            rows: 10                  # Sprite grid height
+            thumbnails_per_file: 100  # Max thumbnails per sprite
+
+    # Storage
+    storage:
+      path: /data/trickplay
+      max_size_gb: 100
+
+    # Worker
+    worker:
+      concurrency: 2
+      priority: 5                     # Default job priority (1-10)
+      timeout_minutes: 60
+
+    # Cleanup
+    cleanup:
+      on_content_delete: true         # Delete tiles when content deleted
+      orphaned_tiles_check_hours: 24
+  ```
+
+defaults: |
+  - **Interval**: 10 seconds between thumbnails
+  - **Size**: 320x180 pixels
+  - **Quality**: 85 (JPEG quality)
+  - **Formats**: Both BIF and WebVTT enabled
+  - **Sprite Grid**: 10x10 (100 thumbnails per sprite)
+  - **Worker Concurrency**: 2 jobs
+  - **Generation Timeout**: 60 minutes
+  - **Max Storage**: 100 GB
+
 module_structure: "```\n  internal/content/trickplay_(timeline_thumbnails)/\n  ├──\
   \ module.go              # fx module definition\n  ├── repository.go          #\
   \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
   \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
   \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
+request_examples: |
+  **Generate Trickplay**:
+  ```json
+  POST /api/v1/trickplay/generate
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "content_type": "movie",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "config": {
+      "interval_seconds": 10,
+      "width": 320,
+      "height": 180,
+      "quality": 85,
+      "formats": ["bif", "webvtt"]
+    }
+  }
+  ```
+
+  **Get Generation Status**:
+  ```json
+  GET /api/v1/trickplay/status?content_type=movie&content_id=123e4567-e89b-12d3-a456-426614174000
+  Authorization: Bearer <token>
+  ```
+
+  **Get Trickplay Manifest** (WebVTT):
+  ```json
+  GET /api/v1/trickplay/manifest?content_type=episode&content_id=550e8400-e29b-41d4-a716-446655440000&format=webvtt
+  Authorization: Bearer <token>
+  ```
+
+  **Queue Bulk Generation**:
+  ```json
+  POST /api/v1/trickplay/bulk-generate
+  Content-Type: application/json
+  Authorization: Bearer <token>
+
+  {
+    "content_refs": [
+      {"content_type": "movie", "content_id": "123e4567-e89b-12d3-a456-426614174000"},
+      {"content_type": "episode", "content_id": "550e8400-e29b-41d4-a716-446655440000"}
+    ],
+    "priority": 7
+  }
+  ```
+
+  **Delete Trickplay**:
+  ```json
+  DELETE /api/v1/trickplay?content_type=movie&content_id=123e4567-e89b-12d3-a456-426614174000
+  Authorization: Bearer <token>
+  ```
+
+response_examples: |
+  **Trickplay Tile Object**:
+  ```json
+  {
+    "id": "770e8400-e29b-41d4-a716-446655440000",
+    "content_type": "movie",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "interval_seconds": 10,
+    "tile_width": 320,
+    "tile_height": 180,
+    "quality": 85,
+    "format": "webvtt",
+    "tile_count": 720,
+    "total_duration_seconds": 7200,
+    "webvtt_file_path": "/data/trickplay/movies/123e4567/trickplay.vtt",
+    "webvtt_file_size_bytes": 15360,
+    "sprite_base_path": "/data/trickplay/movies/123e4567/sprites",
+    "sprites_per_file": 100,
+    "sprite_columns": 10,
+    "sprite_rows": 10,
+    "status": "completed",
+    "generation_started_at": "2024-06-15T10:00:00Z",
+    "generation_completed_at": "2024-06-15T10:05:30Z",
+    "generation_duration_ms": 330000,
+    "created_at": "2024-06-15T10:00:00Z",
+    "updated_at": "2024-06-15T10:05:30Z"
+  }
+  ```
+
+  **Generation Status Response**:
+  ```json
+  {
+    "content_type": "movie",
+    "content_id": "123e4567-e89b-12d3-a456-426614174000",
+    "tiles": [
+      {
+        "format": "bif",
+        "status": "completed",
+        "tile_count": 720,
+        "generation_duration_ms": 310000
+      },
+      {
+        "format": "webvtt",
+        "status": "completed",
+        "tile_count": 720,
+        "generation_duration_ms": 330000
+      }
+    ],
+    "overall_status": "completed"
+  }
+  ```
+
+  **Trickplay Manifest Response** (WebVTT):
+  ```json
+  {
+    "format": "webvtt",
+    "vtt_url": "/api/v1/trickplay/movies/123e4567-e89b-12d3-a456-426614174000/trickplay.vtt",
+    "sprite_base_url": "/api/v1/trickplay/movies/123e4567-e89b-12d3-a456-426614174000/sprites",
+    "sprite_count": 8,
+    "thumbnails_per_sprite": 100,
+    "sprite_columns": 10,
+    "sprite_rows": 10,
+    "thumbnail_width": 320,
+    "thumbnail_height": 180,
+    "interval_seconds": 10,
+    "total_thumbnails": 720
+  }
+  ```
+
+  **WebVTT File Content** (example):
+  ```
+  WEBVTT
+
+  00:00:00.000 --> 00:00:10.000
+  sprite-0.jpg#xywh=0,0,320,180
+
+  00:00:10.000 --> 00:00:20.000
+  sprite-0.jpg#xywh=320,0,320,180
+
+  00:00:20.000 --> 00:00:30.000
+  sprite-0.jpg#xywh=640,0,320,180
+
+  ...
+  ```
+
+  **BIF File Download**:
+  ```http
+  GET /api/v1/trickplay/movies/123e4567-e89b-12d3-a456-426614174000/trickplay.bif
+  Authorization: Bearer <token>
+
+  Response:
+  Content-Type: application/octet-stream
+  Content-Length: 5242880
+  Content-Disposition: attachment; filename="trickplay.bif"
+
+  <binary BIF data>
+  ```
+
+unit_tests: |
+  **Repository Layer**:
+  - Test CRUD operations for trickplay tiles
+  - Test tile status updates
+  - Test pending tiles query
+  - Test queue operations
+  - Test unique constraint (content + format)
+  - Mock database with sqlc.Querier interface
+
+  **Service Layer**:
+  - Test trickplay generation request
+  - Test tile retrieval
+  - Test manifest generation (WebVTT)
+  - Test BIF file serving
+  - Test bulk generation queuing
+  - Test tile deletion
+  - Mock repository and generator
+
+  **BIF Writer**:
+  - Test BIF file creation
+  - Test frame addition
+  - Test file closure and validation
+  - Test BIF format specification compliance
+  - Mock file I/O
+
+  **WebVTT Writer**:
+  - Test VTT manifest creation
+  - Test cue generation with timestamps
+  - Test sprite image compositing
+  - Test WebVTT format specification compliance
+  - Mock file I/O
+
+  **Sprite Generator**:
+  - Test sprite grid layout (10x10)
+  - Test thumbnail compositing into sprite
+  - Test sprite file creation
+  - Test coordinate calculation for VTT cues
+  - Mock image operations
+
+  **FFmpeg Extractor**:
+  - Test frame extraction at specific timestamps
+  - Test thumbnail resizing (320x180)
+  - Test video duration detection
+  - Test video resolution detection
+  - Test error handling (corrupt video)
+  - Mock FFmpeg processes
+
+  **Generator**:
+  - Test full BIF generation flow
+  - Test full WebVTT generation flow
+  - Test interval-based thumbnail extraction
+  - Test quality settings application
+  - Test timeout handling
+  - Mock FFmpeg and file operations
+
+  **Handler Layer**:
+  - Test request validation (ogen schemas)
+  - Test authentication and authorization
+  - Test file download responses
+  - Test error responses
+  - Mock service layer
+
+  **Coverage Target**: 85%+ for critical paths (generation, serving)
+
+integration_tests: |
+  **Database Integration**:
+  - Test full tile lifecycle with real PostgreSQL (testcontainers)
+  - Test unique constraints
+  - Test cascade deletions
+  - Test migration up/down
+
+  **FFmpeg Integration**:
+  - Test real thumbnail extraction from sample video
+  - Test BIF generation with real FFmpeg
+  - Test WebVTT generation with real FFmpeg
+  - Test various video formats (MP4, MKV, AVI)
+  - Test various codecs (H.264, H.265, VP9)
+
+  **BIF Format Integration**:
+  - Test BIF file generation compliance
+  - Test BIF file parsing (read back generated file)
+  - Test Roku player compatibility (if possible)
+
+  **WebVTT Format Integration**:
+  - Test WebVTT file generation compliance
+  - Test WebVTT parsing with browser parser
+  - Test sprite image grid layout
+  - Test coordinate accuracy
+
+  **Job Queue Integration**:
+  - Test async generation with River
+  - Test concurrent generation jobs
+  - Test job retries on transient failures
+  - Test job cancellation
+
+  **Storage Integration**:
+  - Test file creation and storage
+  - Test file cleanup on deletion
+  - Test storage quota enforcement
+
+  **API Integration**:
+  - Test full generation flow (HTTP → job → FFmpeg → storage → database)
+  - Test manifest serving
+  - Test BIF file download
+  - Test sprite image download
+  - Test VTT file download
+
+  **Performance Tests**:
+  - Test generation speed (2-hour movie)
+  - Test concurrent generation (10 movies)
+  - Test storage usage (1000 movies)
+  - Test manifest serving performance
+
+  **Cross-platform Tests**:
+  - Test BIF format on Roku device (manual/emulator)
+  - Test WebVTT in various browsers
+  - Test sprite loading performance
+
+test_coverage_target: "80%"
+
+api_endpoints:
+- method: POST
+  path: /api/v1/trickplay/generate
+  description: Generate trickplay tiles for content
+- method: GET
+  path: /api/v1/trickplay/status
+  description: Get generation status
+- method: GET
+  path: /api/v1/trickplay/manifest
+  description: Get trickplay manifest (WebVTT metadata)
+- method: GET
+  path: /api/v1/trickplay/{content_type}/{content_id}/trickplay.bif
+  description: Download BIF file
+- method: GET
+  path: /api/v1/trickplay/{content_type}/{content_id}/trickplay.vtt
+  description: Download WebVTT file
+- method: GET
+  path: /api/v1/trickplay/{content_type}/{content_id}/sprites/{index}.jpg
+  description: Download sprite image
+- method: POST
+  path: /api/v1/trickplay/bulk-generate
+  description: Queue bulk trickplay generation
+- method: DELETE
+  path: /api/v1/trickplay
+  description: Delete trickplay tiles
+
 component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
   \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
   \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

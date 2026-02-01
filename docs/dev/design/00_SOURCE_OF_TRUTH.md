@@ -163,6 +163,7 @@ This applies to ALL data types across all modules.
 | `github.com/golang-migrate/migrate/v4` | v4.19.1 | DB migrations | Embedded SQL support |
 | `github.com/gobwas/ws` | latest | WebSocket | Zero-alloc, maximum performance |
 | `github.com/go-resty/resty/v2` | v2.17.1 | HTTP client | Retry, backoff, middleware |
+| `golang.org/x/net` | v0.34.0 | Network extensions | proxy package for SOCKS5 support |
 | `github.com/google/uuid` | v1.6.0 | UUIDs | V7 time-ordered support |
 | `github.com/stretchr/testify` | v1.11.1 | Testing | Assertions, mocks |
 

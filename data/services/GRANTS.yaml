@@ -53,3 +53,155 @@ design_refs:
 service_name: Grants Service
 package_path: internal/service/grants
 fx_module: grants.Module
+
+architecture_diagram: |
+  ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │   RBAC    │  │  Cache │
+                  │  (sqlc)  │          │  Service  │  │(otter) │
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
+database_schema: |
+  **Schema**: `public`
+
+  ```sql
+  -- Access grants (polymorphic sharing)
+  CREATE TABLE access_grants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Grantor (who shares)
+    granted_by_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Grantee (who receives access)
+    granted_to_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Resource (polymorphic)
+    resource_type VARCHAR(50) NOT NULL,            -- 'movie', 'tvshow', 'library', 'playlist'
+    resource_id UUID NOT NULL,
+
+    -- Permission
+    permission VARCHAR(50) NOT NULL,               -- 'view', 'edit', 'download'
+
+    -- Expiration
+    expires_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    revoked_at TIMESTAMPTZ
+  );
+  CREATE INDEX idx_access_grants_grantee ON access_grants(granted_to_user_id, resource_type);
+  CREATE INDEX idx_access_grants_resource ON access_grants(resource_type, resource_id);
+  CREATE INDEX idx_access_grants_expires ON access_grants(expires_at) WHERE expires_at IS NOT NULL;
+  ```
+
+module_structure: |
+  ```
+  internal/service/grants/
+  ├── module.go                    # fx module
+  ├── types.go                     # Domain types
+  ├── repository.go                # Database operations (sqlc)
+  ├── service.go                   # Grants service logic
+  ├── cleanup.go                   # Expired grants cleanup (River job)
+  ├── handler.go                   # HTTP API handlers
+  └── grants_test.go
+  ```
+
+key_interfaces: |
+  ```go
+  type GrantsService interface {
+    // Grant management
+    GrantAccess(ctx context.Context, req GrantRequest) (*AccessGrant, error)
+    RevokeGrant(ctx context.Context, grantID uuid.UUID) error
+    CheckAccess(ctx context.Context, userID uuid.UUID, resourceType string, resourceID uuid.UUID, permission string) (bool, error)
+
+    // List grants
+    GetUserGrants(ctx context.Context, userID uuid.UUID) ([]AccessGrant, error)
+    GetResourceGrants(ctx context.Context, resourceType string, resourceID uuid.UUID) ([]AccessGrant, error)
+
+    // Cleanup
+    CleanupExpiredGrants(ctx context.Context) (int, error)
+  }
+
+  type GrantRequest struct {
+    GrantedToUserID uuid.UUID  `json:"granted_to_user_id"`
+    ResourceType    string     `json:"resource_type"`
+    ResourceID      uuid.UUID  `json:"resource_id"`
+    Permission      string     `json:"permission"`
+    ExpiresAt       *time.Time `json:"expires_at,omitempty"`
+  }
+  ```
+
+dependencies: |
+  **Go Packages**:
+  - `github.com/google/uuid`
+  - `github.com/jackc/pgx/v5`
+  - `github.com/riverqueue/river` - Cleanup jobs
+  - `github.com/maypok86/otter` - Grant cache
+  - `go.uber.org/fx`
+
+env_vars: |
+  ```bash
+  GRANTS_CLEANUP_INTERVAL=1h
+  GRANTS_DEFAULT_EXPIRY=168h  # 7 days
+  ```
+
+config_keys: |
+  ```yaml
+  grants:
+    cleanup_interval: 1h
+    default_expiry: 168h
+  ```
+
+component_interaction: |
+  **Share Resource**:
+  1. User A shares movie with User B
+  2. POST /api/v1/grants with {granted_to_user_id, resource_type: "movie", resource_id, permission: "view"}
+  3. Service validates User A owns/can share the resource
+  4. Insert into access_grants
+  5. User B can now view the movie
+
+  **Access Check**:
+  1. User B requests GET /api/v1/movies/:id
+  2. Middleware checks if User B has access
+  3. Query access_grants WHERE granted_to_user_id = B AND resource_type = 'movie' AND resource_id = :id
+  4. If found and not expired, allow access
+  5. If not found, fallback to RBAC/library permissions
+
+api_endpoints: |
+  ```
+  POST   /api/v1/grants                       # Grant access
+  DELETE /api/v1/grants/:id                   # Revoke grant
+  GET    /api/v1/grants/me                    # Get my grants
+  GET    /api/v1/grants/resource/:type/:id    # Get resource grants
+  ```
+
+unit_tests: |
+  ```go
+  func TestGrantsService_GrantAccess(t *testing.T) {
+    // Test granting access with expiration
+  }
+
+  func TestGrantsService_CheckAccess(t *testing.T) {
+    // Test access checking (active, expired)
+  }
+  ```
+
+integration_tests: |
+  ```go
+  func TestGrants_ExpiryCleanup(t *testing.T) {
+    // Test expired grant cleanup job
+  }
+  ```
