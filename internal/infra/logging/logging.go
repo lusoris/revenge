@@ -127,3 +127,14 @@ func parseLevel(levelStr string) slog.Level {
 		return slog.LevelInfo
 	}
 }
+
+// NewTestLogger creates a logger suitable for testing.
+// It writes to a discarding writer and uses debug level.
+func NewTestLogger() *slog.Logger {
+	return NewLogger(Config{
+		Level:       "debug",
+		Format:      "text",
+		Development: true,
+		Output:      io.Discard,
+	})
+}
