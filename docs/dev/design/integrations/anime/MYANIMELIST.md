@@ -22,7 +22,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: MyAnimeList API
@@ -43,6 +42,8 @@ design_refs:
 ---
 
 # MyAnimeList (MAL)
+
+<!-- DESIGN: integrations/anime, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -70,9 +71,7 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -116,9 +115,6 @@ This integration provides:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -127,8 +123,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -146,17 +140,12 @@ This integration provides:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [integrations/anime](integrations/anime.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist

@@ -1,0 +1,167 @@
+openapi: 3.1.0
+info:
+  title: Revenge Media Server API
+  version: 0.1.0
+  description: |
+    Modern, self-hosted media server with Go backend and SvelteKit frontend.
+
+    This is the skeleton API for v0.1.0 - only health endpoints are implemented.
+  contact:
+    name: Revenge Development Team
+    url: https://github.com/lusoris/revenge
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.revenge.example.com
+    description: Production server
+
+tags:
+  - name: health
+    description: Health check endpoints for monitoring and Kubernetes probes
+
+paths:
+  /health/live:
+    get:
+      summary: Liveness probe
+      description: |
+        Checks if the service is alive and running.
+        This should always return 200 unless the process is deadlocked.
+        Used by Kubernetes liveness probes.
+      operationId: getLiveness
+      tags:
+        - health
+      responses:
+        '200':
+          description: Service is alive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /health/ready:
+    get:
+      summary: Readiness probe
+      description: |
+        Checks if the service is ready to accept traffic.
+        Returns 200 only if all dependencies (database, cache, etc.) are available.
+        Used by Kubernetes readiness probes.
+      operationId: getReadiness
+      tags:
+        - health
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        '503':
+          description: Service is not ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /health/startup:
+    get:
+      summary: Startup probe
+      description: |
+        Checks if the service has completed initialization.
+        Returns 200 only after startup is complete.
+        Used by Kubernetes startup probes.
+      operationId: getStartup
+      tags:
+        - health
+      responses:
+        '200':
+          description: Startup complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        '503':
+          description: Startup in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        default:
+          $ref: '#/components/responses/Error'
+
+components:
+  schemas:
+    HealthCheck:
+      type: object
+      required:
+        - name
+        - status
+      properties:
+        name:
+          type: string
+          description: Name of the health check
+          example: readiness
+        status:
+          type: string
+          enum:
+            - healthy
+            - unhealthy
+            - degraded
+          description: Health status
+          example: healthy
+        message:
+          type: string
+          description: Human-readable message
+          example: service is ready
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional details about the health check
+          example:
+            database:
+              name: database
+              status: healthy
+              message: database is healthy
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 500
+        message:
+          type: string
+          description: Human-readable error message
+          example: Internal server error
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error details
+
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token from /api/v1/auth/login
+
+security: []

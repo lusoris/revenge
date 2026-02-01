@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Svelte 5 Documentation
@@ -67,6 +66,8 @@ design_refs:
 
 # Frontend Architecture
 
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -98,9 +99,7 @@ Modern reactive frontend for Revenge:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -130,9 +129,6 @@ Modern reactive frontend for Revenge:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -141,8 +137,6 @@ Modern reactive frontend for Revenge:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -160,16 +154,11 @@ Modern reactive frontend for Revenge:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [TECH_STACK](TECH_STACK.md)
+- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
 - [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Component framework

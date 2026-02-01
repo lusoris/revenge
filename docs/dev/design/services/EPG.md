@@ -30,7 +30,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: XMLTV Format
@@ -61,6 +60,8 @@ design_refs:
 ---
 
 # EPG Service
+
+<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -95,9 +96,7 @@ EPG capabilities:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -142,9 +141,6 @@ No external service dependencies.
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -253,15 +249,10 @@ Get EPG statistics
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [services](services.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [LIVE_TV_DVR](features/livetv/LIVE_TV_DVR.md)
 - [TVHEADEND](integrations/livetv/TVHEADEND.md)
 - [NEXTPVR](integrations/livetv/NEXTPVR.md)

@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Radarr API Docs
@@ -55,6 +54,8 @@ design_refs:
 
 # Webhooks
 
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -84,9 +85,7 @@ Complete webhook infrastructure:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -116,9 +115,6 @@ Complete webhook infrastructure:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -127,8 +123,6 @@ Complete webhook infrastructure:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -146,16 +140,11 @@ Complete webhook infrastructure:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [WEBHOOK_PATTERNS](patterns/WEBHOOK_PATTERNS.md)
 - [ARR_INTEGRATION](patterns/ARR_INTEGRATION.md)
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)

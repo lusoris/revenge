@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: shadcn-svelte
@@ -47,6 +46,8 @@ design_refs:
 ---
 
 # UX/UI Design & Frontend Resources
+
+<!-- DESIGN: research, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -78,9 +79,7 @@ Resources covered:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: 🔴 Not Started
-
 
 
 ---
@@ -110,9 +109,6 @@ Resources covered:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -121,8 +117,6 @@ Resources covered:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -140,17 +134,12 @@ Resources covered:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [research](research.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Auto-resolved from shadcn-svelte

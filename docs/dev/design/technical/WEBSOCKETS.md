@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: coder/websocket GitHub README
@@ -44,6 +43,8 @@ design_refs:
 ---
 
 # WebSockets
+
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -74,9 +75,7 @@ Complete WebSocket infrastructure:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -106,9 +105,6 @@ Complete WebSocket infrastructure:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -117,8 +113,6 @@ Complete WebSocket infrastructure:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -136,16 +130,11 @@ Complete WebSocket infrastructure:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [WEBSOCKETS (Syncplay)](features/playback/SYNCPLAY.md)
 
 ### External Sources

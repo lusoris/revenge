@@ -12,8 +12,8 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
-| [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md) | > Research into problems users face with existing media serv... | 🟡 Planned |
+| [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md) | > Frontend design resources and UI component references | 🟡 Planned |
 
 ---
 

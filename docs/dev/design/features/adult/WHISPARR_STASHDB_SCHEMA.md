@@ -24,7 +24,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: FFmpeg Documentation
@@ -85,6 +84,8 @@ design_refs:
 
 # Whisparr v3 & StashDB Schema Integration
 
+<!-- DESIGN: features/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -109,9 +110,7 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -157,9 +156,6 @@ internal/content/whisparr_v3_&_stashdb_schema_integration/
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -191,17 +187,12 @@ internal/content/whisparr_v3_&_stashdb_schema_integration/
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/adult](features/adult.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg

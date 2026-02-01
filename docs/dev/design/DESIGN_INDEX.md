@@ -17,6 +17,7 @@
 - [🔧 Technical](#technical)
 - [📦 Operations](#operations)
 - [🔬 Research](#research)
+- [📋 Planning](#planning)
 
 ---
 
@@ -24,11 +25,11 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Documents | 149 |
-| Total Lines | 28,159 |
-| Designed (✅) | 132 |
-| Partial (🟡) | 7 |
-| Not Started (🔴) | 10 |
+| Total Documents | 169 |
+| Total Lines | 31,906 |
+| Designed (✅) | 150 |
+| Partial (🟡) | 3 |
+| Not Started (🔴) | 16 |
 
 ---
 
@@ -38,11 +39,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Architecture v2](architecture/01_ARCHITECTURE.md) | PLACEHOLDER: Brief technical summary | ✅ |
-| [Revenge - Design Principles](architecture/02_DESIGN_PRINCIPLES.md) | PLACEHOLDER: Brief technical summary | ✅ |
-| [Revenge - Metadata System](architecture/03_METADATA_SYSTEM.md) | PLACEHOLDER: Brief technical summary | ✅ |
-| [Revenge - Player Architecture](architecture/04_PLAYER_ARCHITECTURE.md) | PLACEHOLDER: Brief technical summary | ✅ |
-| [Plugin Architecture Decision](architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) | PLACEHOLDER: Brief technical summary | ✅ |
+| [Revenge - Architecture v2](architecture/01_ARCHITECTURE.md) | > Modern media server architecture with Go backend, SvelteKit frontend, PostgreS | ✅ |
+| [Revenge - Design Principles](architecture/02_DESIGN_PRINCIPLES.md) | > Core design principles and patterns guiding Revenge development | ✅ |
+| [Revenge - Metadata System](architecture/03_METADATA_SYSTEM.md) | > Multi-source metadata system with caching and priority chain | ✅ |
+| [Revenge - Player Architecture](architecture/04_PLAYER_ARCHITECTURE.md) | > Media playback system with HLS streaming and Vidstack player | ✅ |
+| [Plugin Architecture Decision](architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) | > ADR: Decision to use integrations over plugins | ✅ |
 
 ---
 
@@ -168,7 +169,7 @@
 | [Analytics Service](services/ANALYTICS.md) | > Usage analytics, playback statistics, and library insights | ✅ |
 | [API Keys Service](services/APIKEYS.md) | > API key generation, validation, and management | ✅ |
 | [Auth Service](services/AUTH.md) | > Authentication, registration, and password management | ✅ |
-| [EPG Service](services/EPG.md) | > Electronic Program Guide (EPG) service for Live TV scheduling | ✅ |
+| [EPG Service](services/EPG.md) | > TV program schedule and guide data management service | ✅ |
 | [Fingerprint Service](services/FINGERPRINT.md) | > Media file identification via perceptual hashing and acoustic fingerprinting | ✅ |
 | [Grants Service](services/GRANTS.md) | > Polymorphic resource access grants for fine-grained sharing | ✅ |
 | [Library Service](services/LIBRARY.md) | > Library management and access control | ✅ |
@@ -179,7 +180,7 @@
 | [Search Service](services/SEARCH.md) | > Full-text search via Typesense with per-module collections | ✅ |
 | [Session Service](services/SESSION.md) | > Session token management and device tracking | ✅ |
 | [Settings Service](services/SETTINGS.md) | > Server settings persistence and retrieval | ✅ |
-| [Transcoding Service](services/TRANSCODING.md) | > On-demand video/audio transcoding service with offloading support | ✅ |
+| [Transcoding Service](services/TRANSCODING.md) | > On-demand video/audio transcoding service with hardware acceleration | ✅ |
 | [User Service](services/USER.md) | > User account management and authentication | ✅ |
 
 ---
@@ -190,16 +191,28 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
+| [Accessibility](technical/design/ACCESSIBILITY.md) | > WCAG 2.1 AAA compliant accessibility system | ✅ |
 | [API Reference](technical/API.md) | > REST API reference with OpenAPI specification and ogen code generation | ✅ |
-| [Revenge - Audio Streaming & Progress Tracking](technical/AUDIO_STREAMING.md) | PLACEHOLDER: Brief technical summary | 🔴 |
+| [Audio Streaming & Progress Tracking](technical/AUDIO_STREAMING.md) | > HLS audio streaming with adaptive bitrate and progress tracking | ✅ |
+| [Brand Identity](technical/design/BRAND_IDENTITY.md) | > Queen Anne's Revenge themed brand identity for Revenge | ✅ |
+| [Color System](technical/design/COLOR_SYSTEM.md) | > Arr-aligned module color system with full theme shift | ✅ |
+| [UI Components](technical/design/COMPONENTS.md) | > shadcn-svelte based component library | ✅ |
 | [Configuration Reference](technical/CONFIGURATION.md) | > Configuration system using koanf (YAML + environment variables + hot reload) | ✅ |
-| [Email System](technical/EMAIL.md) | PLACEHOLDER: Brief technical summary | 🟡 |
+| [Design System](technical/DESIGN_SYSTEM.md) | > Queen Anne's Revenge themed design system for Revenge frontend | ✅ |
+| [Email System](technical/EMAIL.md) | > SMTP email system with go-mail, TLS/STARTTLS, templates, async delivery | ✅ |
 | [Frontend Architecture](technical/FRONTEND.md) | > Frontend architecture with SvelteKit 2, Svelte 5, Tailwind CSS 4, and shadcn-s | ✅ |
-| [Notifications System](technical/NOTIFICATIONS.md) | PLACEHOLDER: Brief technical summary | 🟡 |
-| [Revenge - Advanced Offloading Architecture](technical/OFFLOADING.md) | PLACEHOLDER: Brief technical summary | 🔴 |
-| [Revenge - Technology Stack](technical/TECH_STACK.md) | PLACEHOLDER: Brief technical summary | 🔴 |
-| [Webhooks](technical/WEBHOOKS.md) | PLACEHOLDER: Brief technical summary | 🟡 |
-| [WebSockets](technical/WEBSOCKETS.md) | PLACEHOLDER: Brief technical summary | 🟡 |
+| [Layout System](technical/design/LAYOUT.md) | > Spacing, breakpoints, and layout primitives | ✅ |
+| [Motion & Animation](technical/design/MOTION.md) | > Expressive micro-interactions and delightful details | ✅ |
+| [Navigation System](technical/design/NAVIGATION.md) | > Multi-platform navigation with keyboard-first design | ✅ |
+| [Notifications System](technical/NOTIFICATIONS.md) | > Multi-channel notification system: Email, Push (FCM), Webhooks | ✅ |
+| [Observability - Metrics, Tracing, and Logging](technical/OBSERVABILITY.md) | > Complete observability stack with metrics, distributed tracing, and structured | ✅ |
+| [Advanced Offloading Architecture](technical/OFFLOADING.md) | > Offload heavy operations to background workers and external services | ✅ |
+| [Pirate Mode Easter Eggs](technical/design/PIRATE_MODE.md) | > Achievement-unlocked pirate theming easter eggs | ✅ |
+| [Revenge - Technology Stack](technical/TECH_STACK.md) | > Complete technology stack powering Revenge | 🔴 |
+| [Testing Patterns and Practices](technical/TESTING.md) | > Comprehensive testing strategy with unit, integration, and end-to-end tests | ✅ |
+| [Typography](technical/design/TYPOGRAPHY.md) | > Modern + Serif Accents typography system | ✅ |
+| [Webhooks](technical/WEBHOOKS.md) | > Bidirectional webhook system for integrations and event notifications | ✅ |
+| [WebSockets](technical/WEBSOCKETS.md) | > Real-time bidirectional communication via WebSockets | ✅ |
 
 ---
 
@@ -226,8 +239,29 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md) | PLACEHOLDER: Brief technical summary | 🔴 |
-| [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md) | PLACEHOLDER: Brief technical summary | 🔴 |
+| [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md) | > Research into problems users face with existing media servers | 🔴 |
+| [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md) | > Frontend design resources and UI component references | 🔴 |
+
+---
+
+## 📋 Planning
+
+<a id="planning"></a>
+
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Revenge Roadmap](planning/ROADMAP.md) | Version progression from v0.0.0 to v1.0.0 | 🔴 |
+| [TODO v0.0.0 - Foundation](planning/TODO_v0.0.0.md) | CI/CD Infrastructure | 🔴 |
+| [TODO v0.1.0 - Skeleton](planning/TODO_v0.1.0.md) | Project Structure | 🔴 |
+| [TODO v0.2.0 - Core](planning/TODO_v0.2.0.md) | Backend Services | 🔴 |
+| [TODO v0.3.0 - MVP (Movies)](planning/TODO_v0.3.0.md) | Movie Module + Basic Frontend | 🔴 |
+| [TODO v0.4.0 - Shows](planning/TODO_v0.4.0.md) | TV Shows Module | 🔴 |
+| [TODO v0.5.0 - Audio](planning/TODO_v0.5.0.md) | Music Module | 🔴 |
+| [TODO v0.6.0 - Playback](planning/TODO_v0.6.0.md) | Playback Features | 🔴 |
+| [TODO v0.7.0 - Media](planning/TODO_v0.7.0.md) | Additional Content Modules | 🔴 |
+| [TODO v0.8.0 - Intelligence](planning/TODO_v0.8.0.md) | Advanced Features | 🔴 |
+| [TODO v0.9.0 - RC1 (Release Candidate)](planning/TODO_v0.9.0.md) | QAR Module, Live TV, Polish | 🔴 |
+| [TODO v1.0.0 - Revenge (First Stable)](planning/TODO_v1.0.0.md) | Production Ready | 🔴 |
 
 ---
 

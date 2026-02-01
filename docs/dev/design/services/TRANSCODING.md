@@ -28,7 +28,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: go-astiav (FFmpeg)
@@ -55,6 +54,8 @@ design_refs:
 ---
 
 # Transcoding Service
+
+<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -88,9 +89,7 @@ Transcoding capabilities:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -135,9 +134,6 @@ No external service dependencies.
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -220,17 +216,12 @@ Get cache statistics
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [services](services.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [OFFLOADING](technical/OFFLOADING.md)
-- [AUDIO_STREAMING](technical/AUDIO_STREAMING.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [OFFLOADING](../technical/OFFLOADING.md)
+- [AUDIO_STREAMING](../technical/AUDIO_STREAMING.md)
 
 ### External Sources
 - [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - FFmpeg Go bindings

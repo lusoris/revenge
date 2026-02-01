@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Dragonfly Documentation
@@ -63,6 +62,8 @@ design_refs:
 
 # Revenge - Metadata System
 
+<!-- DESIGN: architecture, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -93,9 +94,7 @@ Metadata handling:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -125,9 +124,6 @@ Metadata handling:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -136,8 +132,6 @@ Metadata handling:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -153,11 +147,6 @@ Metadata handling:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: shadcn-svelte
@@ -45,6 +44,8 @@ design_refs:
 ---
 
 # UI Components
+
+<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-02-01
@@ -76,9 +77,7 @@ Component system features:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -108,9 +107,6 @@ Component system features:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -119,8 +115,6 @@ Component system features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -138,16 +132,11 @@ Component system features:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [FRONTEND](technical/FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](../../technical/FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](../../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
 - [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library

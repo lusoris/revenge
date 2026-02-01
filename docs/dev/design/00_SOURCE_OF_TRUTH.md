@@ -157,7 +157,7 @@ This applies to ALL data types across all modules.
 | `github.com/jackc/pgx/v5` | v5.7.5 | PostgreSQL driver | Self-healing pool via pgxpool |
 | `github.com/riverqueue/river` | v0.26.0 | Job queue | PostgreSQL-backed, transactional |
 | `github.com/redis/rueidis` | v1.0.49 | Redis/Dragonfly client | Pipelining, client-side cache |
-| `github.com/maypok86/otter/v2` | v2.x | In-memory cache | W-TinyLFU, faster than Ristretto |
+| `github.com/maypok86/otter` | v1.2.4 | In-memory cache | W-TinyLFU, faster than Ristretto |
 | `github.com/knadh/koanf/v2` | v2.3.0 | Configuration | Hot reload via Watch() |
 | `github.com/ogen-go/ogen` | v1.18.0 | OpenAPI codegen | Type-safe handlers |
 | `github.com/golang-migrate/migrate/v4` | v4.19.1 | DB migrations | Embedded SQL support |
@@ -180,7 +180,7 @@ This applies to ALL data types across all modules.
 | Package | Version | Purpose | Notes |
 |---------|---------|---------|-------|
 | `github.com/lmittmann/tint` | v1.1.2 | Structured logging (dev) | Colorized slog handler |
-| `go.uber.org/zap` | v1.28.0 | Structured logging (prod) | High-performance JSON logs |
+| `go.uber.org/zap` | v1.27.1 | Structured logging (prod) | High-performance JSON logs |
 | `go.opentelemetry.io/otel` | v1.39.0 | Telemetry | Traces, metrics |
 | `github.com/heptiolabs/healthcheck` | latest | Health probes | K8s liveness/readiness |
 | `github.com/go-faster/errors` | v0.7.1 | Error handling | Stack traces, wrapping |

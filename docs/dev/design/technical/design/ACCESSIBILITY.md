@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: WCAG 2.1 Guidelines
@@ -37,6 +36,8 @@ design_refs:
 ---
 
 # Accessibility
+
+<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-02-01
@@ -68,9 +69,7 @@ Accessibility features:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -100,9 +99,6 @@ Accessibility features:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -111,8 +107,6 @@ Accessibility features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -128,11 +122,6 @@ Accessibility features:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

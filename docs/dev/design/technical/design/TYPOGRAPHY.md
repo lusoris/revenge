@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Inter
@@ -40,6 +39,8 @@ design_refs:
 ---
 
 # Typography
+
+<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-02-01
@@ -70,9 +71,7 @@ Typography approach:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -102,9 +101,6 @@ Typography approach:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -113,8 +109,6 @@ Typography approach:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -130,11 +124,6 @@ Typography approach:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

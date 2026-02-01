@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Dragonfly Documentation
@@ -84,6 +83,8 @@ design_refs:
 
 # Revenge - Design Principles
 
+<!-- DESIGN: architecture, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -114,9 +115,7 @@ Key principles:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -146,9 +145,6 @@ Key principles:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -157,8 +153,6 @@ Key principles:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -174,11 +168,6 @@ Key principles:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

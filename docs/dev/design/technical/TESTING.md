@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Go Testing Package
@@ -48,6 +47,8 @@ design_refs:
 ---
 
 # Testing Patterns and Practices
+
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -79,9 +80,7 @@ Testing approach:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -111,9 +110,6 @@ Testing approach:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -122,8 +118,6 @@ Testing approach:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -141,16 +135,11 @@ Testing approach:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 
 ### External Sources
 - [Go Testing Package](../sources/go/stdlib/testing.md) - Standard library testing

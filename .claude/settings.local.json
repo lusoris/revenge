@@ -71,7 +71,13 @@
       "Bash(git fetch:*)",
       "Bash(sort:*)",
       "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -5 {}')",
-      "Bash(ruff format:*)"
+      "Bash(ruff format:*)",
+      "Bash(for pr in 16 17 19 20)",
+      "Bash(do gh pr comment $pr --body \"@dependabot rebase\")",
+      "Bash(go mod tidy:*)",
+      "Bash(go list:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go build:*)",
+      "Bash(./bin/revenge version:*)"
     ]
   }
 }

@@ -22,7 +22,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: ComicVine API
@@ -53,6 +52,8 @@ design_refs:
 
 # ComicVine API
 
+<!-- DESIGN: integrations/metadata/comics, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -79,9 +80,7 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -125,9 +124,6 @@ This integration provides:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -136,8 +132,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -155,17 +149,12 @@ This integration provides:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/comics](integrations/metadata/comics.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [ComicVine API](../sources/apis/comicvine.md) - Auto-resolved from comicvine

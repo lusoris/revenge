@@ -33,7 +33,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Audnexus API
@@ -79,6 +78,8 @@ design_refs:
 
 # Audiobook Module
 
+<!-- DESIGN: features/audiobook, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -110,9 +111,7 @@ Complete audiobook library:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -156,9 +155,6 @@ internal/content/audiobook/
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -236,17 +232,12 @@ List all audiobook series
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/audiobook](features/audiobook.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [Audnexus API](../sources/apis/audnexus.md) - Auto-resolved from audnexus

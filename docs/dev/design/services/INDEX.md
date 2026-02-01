@@ -16,7 +16,7 @@
 | [Analytics Service](ANALYTICS.md) | > Usage analytics, playback statistics, and library insights | 🟡 Planned |
 | [API Keys Service](APIKEYS.md) | > API key generation, validation, and management | 🟡 Planned |
 | [Auth Service](AUTH.md) | > Authentication, registration, and password management | 🟡 Planned |
-| [EPG Service](EPG.md) | > Electronic Program Guide (EPG) service for Live TV schedul... | 🟡 Planned |
+| [EPG Service](EPG.md) | > TV program schedule and guide data management service | 🟡 Planned |
 | [Fingerprint Service](FINGERPRINT.md) | > Media file identification via perceptual hashing and acous... | 🟡 Planned |
 | [Grants Service](GRANTS.md) | > Polymorphic resource access grants for fine-grained sharin... | 🟡 Planned |
 | [Library Service](LIBRARY.md) | > Library management and access control | 🟡 Planned |
@@ -27,7 +27,7 @@
 | [Search Service](SEARCH.md) | > Full-text search via Typesense with per-module collections | 🟡 Planned |
 | [Session Service](SESSION.md) | > Session token management and device tracking | 🟡 Planned |
 | [Settings Service](SETTINGS.md) | > Server settings persistence and retrieval | 🟡 Planned |
-| [Transcoding Service](TRANSCODING.md) | > On-demand video/audio transcoding service with offloading ... | 🟡 Planned |
+| [Transcoding Service](TRANSCODING.md) | > On-demand video/audio transcoding service with hardware ac... | 🟡 Planned |
 | [User Service](USER.md) | > User account management and authentication | 🟡 Planned |
 
 ---

@@ -24,11 +24,12 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 ---
 
 # Movie Module
+
+<!-- DESIGN: features/video, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -54,9 +55,7 @@
 | Linting | 🔴 Not Started | - |
 | Unit Testing | 🔴 Not Started | - |
 | Integration Testing | 🔴 Not Started | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -102,9 +101,6 @@ internal/content/movie/
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -134,11 +130,6 @@ internal/content/movie/
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

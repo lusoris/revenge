@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Lucide Icons
@@ -34,6 +33,8 @@ design_refs:
 ---
 
 # Pirate Mode Easter Eggs
+
+<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-02-01
@@ -64,9 +65,7 @@ Pirate mode features:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -96,9 +95,6 @@ Pirate mode features:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -107,8 +103,6 @@ Pirate mode features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -124,11 +118,6 @@ Pirate mode features:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

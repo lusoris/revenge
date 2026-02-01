@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Go Installation
@@ -57,6 +56,8 @@ design_refs:
 
 # Development Environment Setup
 
+<!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -86,9 +87,7 @@ Complete guide for setting up Revenge development environment:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -118,9 +117,6 @@ Complete guide for setting up Revenge development environment:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -129,8 +125,6 @@ Complete guide for setting up Revenge development environment:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -148,17 +142,12 @@ Complete guide for setting up Revenge development environment:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [BEST_PRACTICES](BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide

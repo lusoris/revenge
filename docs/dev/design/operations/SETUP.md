@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Dragonfly Documentation
@@ -81,6 +80,8 @@ design_refs:
 
 # Production Deployment Setup
 
+<!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -110,9 +111,7 @@ Multiple deployment options:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -142,9 +141,6 @@ Multiple deployment options:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -153,8 +149,6 @@ Multiple deployment options:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -172,17 +166,12 @@ Multiple deployment options:
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [REVERSE_PROXY](operations/REVERSE_PROXY.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [REVERSE_PROXY](REVERSE_PROXY.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

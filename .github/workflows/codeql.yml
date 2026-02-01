@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-          cache: false  # Disabled until go.sum exists
+          cache: true  # Enabled - go.sum now exists
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v4

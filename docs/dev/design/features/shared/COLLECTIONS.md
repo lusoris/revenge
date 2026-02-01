@@ -31,7 +31,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Uber fx
@@ -50,6 +49,8 @@ design_refs:
 ---
 
 # Collections & Playlists
+
+<!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -83,9 +84,7 @@ Collections allow users to group media items together:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -129,9 +128,6 @@ internal/content/collections/
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -299,15 +295,10 @@ Remove item from collection
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared/INDEX.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
 - [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
 
 ### External Sources

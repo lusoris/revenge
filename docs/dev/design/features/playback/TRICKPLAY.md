@@ -24,7 +24,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Roku BIF Format
@@ -67,6 +66,8 @@ design_refs:
 
 # Trickplay (Timeline Thumbnails)
 
+<!-- DESIGN: features/playback, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -91,9 +92,7 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -139,9 +138,6 @@ internal/content/trickplay_(timeline_thumbnails)/
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -173,17 +169,12 @@ internal/content/trickplay_(timeline_thumbnails)/
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [Roku BIF Format](../sources/protocols/bif.md) - Auto-resolved from bif-spec

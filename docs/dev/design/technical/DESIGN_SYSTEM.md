@@ -27,7 +27,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: shadcn-svelte
@@ -65,6 +64,8 @@ design_refs:
 
 # Design System
 
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -96,9 +97,7 @@ Design system index with pirate-themed elegance:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -128,9 +127,6 @@ Design system index with pirate-themed elegance:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -139,8 +135,6 @@ Design system index with pirate-themed elegance:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -156,8 +150,6 @@ Design system index with pirate-themed elegance:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
 
 
 ## Implementation Checklist
@@ -197,11 +189,10 @@ Target: **80% minimum**
 - [ ] Celebration animations
 
 
-
 ## Related Documentation
 ### Design Documents
-- [FRONTEND](technical/FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
 - [USER_EXPERIENCE_FEATURES](features/shared/USER_EXPERIENCE_FEATURES.md)
 
 ### External Sources

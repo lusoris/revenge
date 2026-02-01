@@ -24,7 +24,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Jellyfin API
@@ -42,6 +41,8 @@ design_refs:
 ---
 
 # Watch Next & Continue Watching System
+
+<!-- DESIGN: features/playback, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -67,9 +68,7 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -115,9 +114,6 @@ internal/content/watch_next_&_continue_watching_system/
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -149,17 +145,12 @@ internal/content/watch_next_&_continue_watching_system/
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [Jellyfin API](../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api

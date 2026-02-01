@@ -1,39 +1,208 @@
 // Package config provides configuration management for the Revenge server.
 package config
 
-// Config holds the application configuration.
+import (
+	"time"
+)
+
+// Config holds the complete application configuration.
 type Config struct {
 	// Server configuration
-	Server ServerConfig
+	Server ServerConfig `koanf:"server"`
 
 	// Database configuration
-	Database DatabaseConfig
+	Database DatabaseConfig `koanf:"database"`
+
+	// Cache configuration (Dragonfly/Redis)
+	Cache CacheConfig `koanf:"cache"`
+
+	// Search configuration (Typesense)
+	Search SearchConfig `koanf:"search"`
+
+	// Jobs configuration (River)
+	Jobs JobsConfig `koanf:"jobs"`
+
+	// Logging configuration
+	Logging LoggingConfig `koanf:"logging"`
+
+	// Auth configuration
+	Auth AuthConfig `koanf:"auth"`
+
+	// Legacy (QAR) module configuration
+	Legacy LegacyConfig `koanf:"legacy"`
 }
 
 // ServerConfig holds HTTP server configuration.
 type ServerConfig struct {
 	// Host is the server bind address.
-	Host string
+	Host string `koanf:"host" validate:"required"`
 
 	// Port is the server port.
-	Port int
+	Port int `koanf:"port" validate:"required,min=1,max=65535"`
+
+	// ReadTimeout is the maximum duration for reading the entire request.
+	ReadTimeout time.Duration `koanf:"read_timeout"`
+
+	// WriteTimeout is the maximum duration before timing out writes of the response.
+	WriteTimeout time.Duration `koanf:"write_timeout"`
+
+	// IdleTimeout is the maximum amount of time to wait for the next request.
+	IdleTimeout time.Duration `koanf:"idle_timeout"`
+
+	// ShutdownTimeout is the maximum duration to wait for active connections to finish.
+	ShutdownTimeout time.Duration `koanf:"shutdown_timeout"`
 }
 
 // DatabaseConfig holds database connection configuration.
 type DatabaseConfig struct {
 	// URL is the PostgreSQL connection string.
-	URL string
+	URL string `koanf:"url" validate:"required"`
+
+	// MaxConns is the maximum number of connections in the pool.
+	MaxConns int `koanf:"max_conns"`
+
+	// MinConns is the minimum number of connections in the pool.
+	MinConns int `koanf:"min_conns"`
+
+	// MaxConnLifetime is the maximum lifetime of a connection.
+	MaxConnLifetime time.Duration `koanf:"max_conn_lifetime"`
+
+	// MaxConnIdleTime is the maximum idle time of a connection.
+	MaxConnIdleTime time.Duration `koanf:"max_conn_idle_time"`
+
+	// HealthCheckPeriod is the duration between health checks.
+	HealthCheckPeriod time.Duration `koanf:"health_check_period"`
 }
 
-// Default returns a Config with default values.
-func Default() *Config {
-	return &Config{
-		Server: ServerConfig{
-			Host: "0.0.0.0",
-			Port: 8080,
-		},
-		Database: DatabaseConfig{
-			URL: "postgres://localhost:5432/revenge?sslmode=disable",
-		},
+// CacheConfig holds cache (Dragonfly/Redis) configuration.
+type CacheConfig struct {
+	// URL is the Redis/Dragonfly connection URL.
+	URL string `koanf:"url"`
+
+	// Enabled indicates if cache is enabled.
+	Enabled bool `koanf:"enabled"`
+}
+
+// SearchConfig holds search (Typesense) configuration.
+type SearchConfig struct {
+	// URL is the Typesense server URL.
+	URL string `koanf:"url"`
+
+	// APIKey is the Typesense API key.
+	APIKey string `koanf:"api_key"`
+
+	// Enabled indicates if search is enabled.
+	Enabled bool `koanf:"enabled"`
+}
+
+// JobsConfig holds job queue (River) configuration.
+type JobsConfig struct {
+	// MaxWorkers is the maximum number of concurrent workers.
+	MaxWorkers int `koanf:"max_workers"`
+
+	// FetchCooldown is the duration to wait between fetch attempts.
+	FetchCooldown time.Duration `koanf:"fetch_cooldown"`
+
+	// FetchPollInterval is the interval between polling for new jobs.
+	FetchPollInterval time.Duration `koanf:"fetch_poll_interval"`
+
+	// RescueStuckJobsAfter is the duration after which stuck jobs are rescued.
+	RescueStuckJobsAfter time.Duration `koanf:"rescue_stuck_jobs_after"`
+}
+
+// LoggingConfig holds logging configuration.
+type LoggingConfig struct {
+	// Level is the minimum log level (debug, info, warn, error).
+	Level string `koanf:"level" validate:"oneof=debug info warn error"`
+
+	// Format is the log format (text, json).
+	Format string `koanf:"format" validate:"oneof=text json"`
+
+	// Development enables development mode (pretty printing, etc.).
+	Development bool `koanf:"development"`
+}
+
+// AuthConfig holds authentication configuration.
+type AuthConfig struct {
+	// JWTSecret is the secret key for JWT signing.
+	JWTSecret string `koanf:"jwt_secret" validate:"required,min=32"`
+
+	// JWTExpiry is the duration for JWT token validity.
+	JWTExpiry time.Duration `koanf:"jwt_expiry"`
+
+	// RefreshExpiry is the duration for refresh token validity.
+	RefreshExpiry time.Duration `koanf:"refresh_expiry"`
+}
+
+// LegacyConfig holds QAR (adult content) module configuration.
+type LegacyConfig struct {
+	// Enabled indicates if the QAR module is enabled.
+	Enabled bool `koanf:"enabled"`
+
+	// EncryptionKey is the encryption key for QAR data.
+	EncryptionKey string `koanf:"encryption_key"`
+
+	// Privacy settings
+	Privacy LegacyPrivacyConfig `koanf:"privacy"`
+}
+
+// LegacyPrivacyConfig holds QAR privacy settings.
+type LegacyPrivacyConfig struct {
+	// RequirePIN requires a PIN to access QAR content.
+	RequirePIN bool `koanf:"require_pin"`
+
+	// AuditAllAccess logs all access to QAR content.
+	AuditAllAccess bool `koanf:"audit_all_access"`
+}
+
+// Defaults returns a map of default configuration values.
+func Defaults() map[string]interface{} {
+	return map[string]interface{}{
+		// Server defaults
+		"server.host":             "0.0.0.0",
+		"server.port":             8080,
+		"server.read_timeout":     "30s",
+		"server.write_timeout":    "30s",
+		"server.idle_timeout":     "120s",
+		"server.shutdown_timeout": "10s",
+
+		// Database defaults
+		"database.url":                 "",
+		"database.max_conns":           0, // 0 = (CPU * 2) + 1
+		"database.min_conns":           2,
+		"database.max_conn_lifetime":   "30m",
+		"database.max_conn_idle_time":  "5m",
+		"database.health_check_period": "30s",
+
+		// Cache defaults
+		"cache.url":     "",
+		"cache.enabled": false,
+
+		// Search defaults
+		"search.url":     "",
+		"search.api_key": "",
+		"search.enabled": false,
+
+		// Jobs defaults
+		"jobs.max_workers":             100,
+		"jobs.fetch_cooldown":          "200ms",
+		"jobs.fetch_poll_interval":     "2s",
+		"jobs.rescue_stuck_jobs_after": "30m",
+
+		// Logging defaults
+		"logging.level":       "info",
+		"logging.format":      "text",
+		"logging.development": false,
+
+		// Auth defaults
+		"auth.jwt_secret":     "",
+		"auth.jwt_expiry":     "24h",
+		"auth.refresh_expiry": "168h", // 7 days
+
+		// Legacy defaults
+		"legacy.enabled":                  false,
+		"legacy.encryption_key":           "",
+		"legacy.privacy.require_pin":      true,
+		"legacy.privacy.audit_all_access": true,
 	}
 }

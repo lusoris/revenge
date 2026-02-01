@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: Prometheus
@@ -55,6 +54,8 @@ design_refs:
 
 # Observability Pattern
 
+<!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -85,9 +86,7 @@ All integrated via OpenTelemetry SDK for unified observability.
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -117,9 +116,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -128,8 +124,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -147,16 +141,11 @@ All integrated via OpenTelemetry SDK for unified observability.
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection

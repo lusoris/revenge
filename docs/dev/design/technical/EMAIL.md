@@ -25,7 +25,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: go-mail GitHub README
@@ -49,6 +48,8 @@ design_refs:
 ---
 
 # Email System
+
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -79,9 +80,7 @@ Complete email infrastructure:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -109,9 +108,6 @@ Complete email infrastructure:
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -194,16 +190,11 @@ Unsubscribe from emails (public, no auth)
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)
 
 ### External Sources

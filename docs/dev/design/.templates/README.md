@@ -1,6 +1,6 @@
 # Design Documentation Templates
 
-<!-- DESIGN: .templates, ANALYSIS, QUESTIONS, README -->
+<!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 
 **Purpose**: Jinja2 templates for generating both Claude-optimized and Wiki documentation from a single source.
@@ -224,8 +224,7 @@ These appear in BOTH versions (with different content):
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | 🟡 | Scaffold - needs detailed database schema |
-| Code | 🔴 | Not started |
-## Architecture
+| Code | 🔴 | Not started |## Architecture
 
 ```
 ┌─────────────────────────────────────────┐

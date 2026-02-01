@@ -20,7 +20,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: To be added during design phase
@@ -32,6 +31,8 @@ design_refs:
 ---
 
 # {{ FEATURE_NAME }}
+
+<!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 
 **Created**: 2026-01-31
@@ -55,9 +56,7 @@ design_refs:
 | Linting | 🔴 NOT STARTED | - |
 | Unit Testing | 🔴 NOT STARTED | - |
 | Integration Testing | 🔴 NOT STARTED | - |
-
 **Overall**: 🔴 PLANNED
-
 
 
 ---
@@ -87,9 +86,6 @@ design_refs:
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -98,8 +94,6 @@ design_refs:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
 
 
 ## Testing Strategy
@@ -115,11 +109,6 @@ design_refs:
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

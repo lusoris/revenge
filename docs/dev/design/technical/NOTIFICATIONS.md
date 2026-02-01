@@ -30,7 +30,6 @@
     - [External Sources](#external-sources)
 
 
-
 ---
 sources:
   - name: go-mail GitHub README
@@ -59,6 +58,8 @@ design_refs:
 ---
 
 # Notifications System
+
+<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 
 **Created**: 2026-01-31
@@ -90,9 +91,7 @@ Unified notification delivery:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
-
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -120,9 +119,6 @@ Unified notification delivery:
 ### Dependencies
 
 <!-- Dependency list -->
-
-
-
 
 
 ## Configuration
@@ -270,16 +266,11 @@ Send test notification (admin only)
 Target: **80% minimum**
 
 
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [EMAIL](technical/EMAIL.md)
 - [WEBHOOKS](technical/WEBHOOKS.md)
 
