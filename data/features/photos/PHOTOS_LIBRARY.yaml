@@ -112,43 +112,8 @@ exif_metadata_extraction:
   privacy_options:
     strip_location: Option to strip GPS on share
     strip_camera: Option to strip camera metadata
-database_schema: "```sql\n-- Photo Albums\nCREATE TABLE photo_albums (\n  id UUID\
-  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  title TEXT\
-  \ NOT NULL,\n  description TEXT,\n  cover_photo_id UUID,\n  photo_count INTEGER\
-  \ DEFAULT 0,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ\
-  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_photo_albums_user ON photo_albums(user_id);\n\
-  \n-- Photos\nCREATE TABLE photos (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  user_id UUID NOT NULL,\n  file_path TEXT NOT NULL,\n  file_format TEXT, -- jpeg,\
-  \ png, webp, heic, raw\n  file_size_bytes BIGINT,\n  width INTEGER,\n  height INTEGER,\n\
-  \  orientation INTEGER, -- EXIF orientation\n  blurhash TEXT, -- Placeholder while\
-  \ loading\n  taken_at TIMESTAMPTZ,\n  latitude NUMERIC,\n  longitude NUMERIC,\n\
-  \  altitude NUMERIC,\n  camera_make TEXT,\n  camera_model TEXT,\n  lens_model TEXT,\n\
-  \  iso INTEGER,\n  aperture NUMERIC,\n  shutter_speed TEXT,\n  focal_length NUMERIC,\n\
-  \  flash_fired BOOLEAN,\n  exif_data JSONB, -- Full EXIF blob\n  tags TEXT[],\n\
-  \  favorite BOOLEAN DEFAULT FALSE,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
-  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_photos_user ON photos(user_id);\n\
-  CREATE INDEX idx_photos_taken_at ON photos(user_id, taken_at DESC NULLS LAST);\n\
-  CREATE INDEX idx_photos_location ON photos USING GIST(ll_to_earth(latitude, longitude))\
-  \ WHERE latitude IS NOT NULL;\nCREATE INDEX idx_photos_tags ON photos USING GIN(tags);\n\
-  CREATE INDEX idx_photos_favorite ON photos(user_id, favorite) WHERE favorite = TRUE;\n\
-  \n-- Album Photos (M:N relationship)\nCREATE TABLE album_photos (\n  album_id UUID\
-  \ REFERENCES photo_albums(id) ON DELETE CASCADE,\n  photo_id UUID REFERENCES photos(id)\
-  \ ON DELETE CASCADE,\n  position INTEGER, -- Order within album\n  added_at TIMESTAMPTZ\
-  \ DEFAULT NOW(),\n  PRIMARY KEY (album_id, photo_id)\n);\n\nCREATE INDEX idx_album_photos_album\
-  \ ON album_photos(album_id, position);\n\n-- Photo People/Faces\nCREATE TABLE photo_people\
-  \ (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL UNIQUE,\n\
-  \  user_id UUID NOT NULL,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE\
-  \ INDEX idx_photo_people_user ON photo_people(user_id);\n\n-- Photo Face Tags\n\
-  CREATE TABLE photo_face_tags (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  photo_id UUID REFERENCES photos(id) ON DELETE CASCADE,\n  person_id UUID REFERENCES\
-  \ photo_people(id) ON DELETE CASCADE,\n  bounding_box JSONB, -- {x, y, width, height}\n\
-  \  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_photo_face_tags_photo\
-  \ ON photo_face_tags(photo_id);\nCREATE INDEX idx_photo_face_tags_person ON photo_face_tags(person_id);\n\
-  \n-- Photo Places (reverse geocoding)\nCREATE TABLE photo_places (\n  id UUID PRIMARY\
-  \ KEY DEFAULT gen_random_uuid(),\n  latitude NUMERIC NOT NULL,\n  longitude NUMERIC\
-  \ NOT NULL,\n  place_name TEXT, -- City, State, Country\n  address TEXT,\n  geocoded_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE\
-  \ INDEX idx_photo_places_coords ON photo_places(latitude, longitude);\n```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 organization_features:
   albums:
     types:
@@ -267,3 +232,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/photos/map
   description: Get photos with location data for map view
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/photos_library/\n  ├── module.go      \
+  \        # fx module definition\n  ├── repository.go          # Database operations\
+  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
+  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
+  \ cache.go               # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

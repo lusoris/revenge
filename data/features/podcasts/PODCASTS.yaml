@@ -93,45 +93,8 @@ automatic_updates:
   notifications:
     new_episodes: Push notifications for subscribed podcasts
     download_complete: Notify when episode download finishes
-database_schema: "```sql\n-- Podcasts\nCREATE TABLE podcasts (\n  id UUID PRIMARY\
-  \ KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n  description TEXT,\n\
-  \  author TEXT,\n  rss_url TEXT NOT NULL UNIQUE,\n  website_url TEXT,\n  image_url\
-  \ TEXT,\n  categories TEXT[],\n  language TEXT DEFAULT 'en',\n  explicit BOOLEAN\
-  \ DEFAULT FALSE,\n  last_fetched_at TIMESTAMPTZ,\n  refresh_interval_hours INTEGER\
-  \ DEFAULT 6,\n  auto_download BOOLEAN DEFAULT FALSE,\n  auto_download_count INTEGER\
-  \ DEFAULT 3,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
-  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_podcasts_title ON podcasts USING\
-  \ GIN(to_tsvector('english', title));\nCREATE INDEX idx_podcasts_rss_url ON podcasts(rss_url);\n\
-  \n-- Podcast Episodes\nCREATE TABLE podcast_episodes (\n  id UUID PRIMARY KEY DEFAULT\
-  \ gen_random_uuid(),\n  podcast_id UUID REFERENCES podcasts(id) ON DELETE CASCADE,\n\
-  \  title TEXT NOT NULL,\n  description TEXT,\n  episode_number INTEGER,\n  season_number\
-  \ INTEGER,\n  publication_date TIMESTAMPTZ,\n  duration_seconds INTEGER,\n  file_url\
-  \ TEXT NOT NULL,\n  file_path TEXT, -- Local path if downloaded\n  file_size_bytes\
-  \ BIGINT,\n  file_type TEXT, -- audio/mpeg, audio/mp4, etc.\n  guid TEXT UNIQUE,\
-  \ -- RSS GUID for deduplication\n  image_url TEXT,\n  explicit BOOLEAN DEFAULT FALSE,\n\
-  \  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ\
-  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_podcast_episodes_podcast ON podcast_episodes(podcast_id);\n\
-  CREATE INDEX idx_podcast_episodes_pub_date ON podcast_episodes(podcast_id, publication_date\
-  \ DESC);\nCREATE INDEX idx_podcast_episodes_guid ON podcast_episodes(guid);\n\n\
-  -- Episode Chapters (Podcasting 2.0)\nCREATE TABLE podcast_chapters (\n  id UUID\
-  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  episode_id UUID REFERENCES podcast_episodes(id)\
-  \ ON DELETE CASCADE,\n  start_time_seconds NUMERIC NOT NULL,\n  title TEXT,\n  url\
-  \ TEXT,\n  image_url TEXT,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE\
-  \ INDEX idx_podcast_chapters_episode ON podcast_chapters(episode_id, start_time_seconds);\n\
-  \n-- Podcast Subscriptions (per-user)\nCREATE TABLE podcast_subscriptions (\n  id\
-  \ UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  podcast_id\
-  \ UUID REFERENCES podcasts(id) ON DELETE CASCADE,\n  subscribed_at TIMESTAMPTZ DEFAULT\
-  \ NOW(),\n  notifications_enabled BOOLEAN DEFAULT TRUE,\n  UNIQUE(user_id, podcast_id)\n\
-  );\n\nCREATE INDEX idx_podcast_subscriptions_user ON podcast_subscriptions(user_id);\n\
-  \n-- Episode Playback Progress (per-user)\nCREATE TABLE podcast_progress (\n  id\
-  \ UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  episode_id\
-  \ UUID REFERENCES podcast_episodes(id) ON DELETE CASCADE,\n  current_position_seconds\
-  \ NUMERIC NOT NULL DEFAULT 0,\n  completed BOOLEAN DEFAULT FALSE,\n  last_played_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  playback_speed NUMERIC DEFAULT 1.0,\n  created_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id,\
-  \ episode_id)\n);\n\nCREATE INDEX idx_podcast_progress_user ON podcast_progress(user_id);\n\
-  CREATE INDEX idx_podcast_progress_last_played ON podcast_progress(user_id, last_played_at\
-  \ DESC);\n```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 playback_features:
   streaming: Direct streaming or HLS transcode
   variable_speed: 0.5x, 0.75x, 1.0x, 1.25x, 1.5x, 1.75x, 2.0x, 2.5x, 3.0x
@@ -199,3 +162,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/podcasts/export-opml
   description: Export podcast subscriptions as OPML file
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/podcasts/\n  ├── module.go            \
+  \  # fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

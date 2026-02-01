@@ -89,24 +89,8 @@ collection_types:
     - Release year
     - Date added
     - Watch status
-database_schema: "```sql\n-- Collections table\nCREATE TABLE collections (\n  id UUID\
-  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES users(id),\n\
-  \  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  type VARCHAR(50) NOT NULL,\
-  \ -- 'manual' or 'smart'\n  is_public BOOLEAN DEFAULT false,\n  poster_path VARCHAR(500),\n\
-  \  backdrop_path VARCHAR(500),\n\n  -- Smart collection filters (JSONB)\n  filters\
-  \ JSONB,\n\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT\
-  \ NOW(),\n\n  CONSTRAINT collections_user_name_unique UNIQUE(user_id, name)\n);\n\
-  \n-- Collection items (for manual collections)\nCREATE TABLE collection_items (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  collection_id UUID NOT NULL\
-  \ REFERENCES collections(id) ON DELETE CASCADE,\n\n  -- Polymorphic reference to\
-  \ media\n  item_type VARCHAR(50) NOT NULL, -- 'movie', 'tvshow', 'episode', 'album',\
-  \ 'track'\n  item_id UUID NOT NULL,\n\n  position INTEGER NOT NULL, -- Order within\
-  \ collection\n  added_at TIMESTAMPTZ DEFAULT NOW(),\n\n  CONSTRAINT collection_items_unique\
-  \ UNIQUE(collection_id, item_type, item_id)\n);\n\n-- Indexes\nCREATE INDEX idx_collections_user_id\
-  \ ON collections(user_id);\nCREATE INDEX idx_collections_type ON collections(type);\n\
-  CREATE INDEX idx_collection_items_collection_id ON collection_items(collection_id);\n\
-  CREATE INDEX idx_collection_items_item ON collection_items(item_type, item_id);\n\
-  ```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 api_endpoints:
 - method: POST
   path: /api/v1/collections
@@ -213,3 +197,25 @@ frontend_integration: '- Collections page: `/collections`
   - Share collection URL: `/collections/{id}/share`
 
   '
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/collections/\n  ├── module.go         \
+  \     # fx module definition\n  ├── repository.go          # Database operations\
+  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
+  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
+  \ cache.go               # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

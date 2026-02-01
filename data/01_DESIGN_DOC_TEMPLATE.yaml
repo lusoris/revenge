@@ -16,19 +16,28 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |
-  > Template for creating new design documents
+technical_summary: '> Template for creating new design documents
+
 
   Template sections:
+
   - **Status Table**: Track progress across dimensions
+
   - **Technical Summary**: Developer-focused overview
+
   - **Wiki Content**: User-friendly explanations
+
   - **Sources**: External documentation references
+
   - **Design Refs**: Cross-references to related docs
 
+  '
 wiki_tagline: '> How to create new design documents'
-
-wiki_overview: 'This template provides the standard structure for all Revenge design documents. Each doc includes a status table tracking design, implementation, and testing progress. Technical summaries target developers while wiki content explains features to users. Sources link to external documentation. Use this template when adding new features or services to ensure consistent documentation.'
+wiki_overview: This template provides the standard structure for all Revenge design
+  documents. Each doc includes a status table tracking design, implementation, and
+  testing progress. Technical summaries target developers while wiki content explains
+  features to users. Sources link to external documentation. Use this template when
+  adding new features or services to ensure consistent documentation.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

@@ -125,31 +125,8 @@ metadata_sources:
   priority: 3
   fields: Play counts, user tags, artist bio, similar artists
   api_url: https://www.last.fm/api
-database_schema: "```sql\n-- Artists\nCREATE TABLE artists (\n  id UUID PRIMARY KEY\
-  \ DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  musicbrainz_id UUID,\n  lidarr_id\
-  \ INTEGER,\n  biography TEXT,\n  genres TEXT[],\n  image_url TEXT,\n  metadata JSONB,\n\
-  \  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n\
-  );\n\nCREATE INDEX idx_artists_musicbrainz ON artists(musicbrainz_id);\nCREATE INDEX\
-  \ idx_artists_lidarr ON artists(lidarr_id);\nCREATE INDEX idx_artists_name ON artists\
-  \ USING GIN(to_tsvector('english', name));\n\n-- Albums\nCREATE TABLE albums (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  artist_id UUID REFERENCES artists(id)\
-  \ ON DELETE CASCADE,\n  title TEXT NOT NULL,\n  musicbrainz_release_id UUID,\n \
-  \ lidarr_id INTEGER,\n  release_date DATE,\n  album_type TEXT, -- album, ep, single,\
-  \ compilation\n  genres TEXT[],\n  label TEXT,\n  cover_art_url TEXT,\n  track_count\
-  \ INTEGER,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
-  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_albums_artist ON albums(artist_id);\n\
-  CREATE INDEX idx_albums_musicbrainz ON albums(musicbrainz_release_id);\nCREATE INDEX\
-  \ idx_albums_lidarr ON albums(lidarr_id);\nCREATE INDEX idx_albums_title ON albums\
-  \ USING GIN(to_tsvector('english', title));\n\n-- Tracks\nCREATE TABLE tracks (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  album_id UUID REFERENCES albums(id)\
-  \ ON DELETE CASCADE,\n  title TEXT NOT NULL,\n  track_number INTEGER,\n  disc_number\
-  \ INTEGER DEFAULT 1,\n  duration_seconds INTEGER,\n  musicbrainz_recording_id UUID,\n\
-  \  file_path TEXT,\n  file_format TEXT, -- mp3, flac, aac, etc.\n  bitrate INTEGER,\n\
-  \  sample_rate INTEGER,\n  lyrics TEXT,\n  metadata JSONB,\n  created_at TIMESTAMPTZ\
-  \ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_tracks_album\
-  \ ON tracks(album_id);\nCREATE INDEX idx_tracks_musicbrainz ON tracks(musicbrainz_recording_id);\n\
-  CREATE INDEX idx_tracks_title ON tracks USING GIN(to_tsvector('english', title));\n\
-  ```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 playback_features:
   streaming_protocol: HLS (HTTP Live Streaming)
   gapless_playback: true
@@ -208,3 +185,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/music/genres
   description: List all music genres
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/music/\n  ├── module.go              #\
+  \ fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

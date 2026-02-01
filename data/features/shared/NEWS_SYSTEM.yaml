@@ -58,3 +58,27 @@ design_refs:
 feature_name: News System
 module_name: news_system
 schema_name: public
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
+module_structure: "```\n  internal/content/news_system/\n  ├── module.go         \
+  \     # fx module definition\n  ├── repository.go          # Database operations\
+  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
+  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
+  \ cache.go               # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

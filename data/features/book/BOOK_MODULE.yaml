@@ -127,49 +127,8 @@ metadata_sources:
   priority: 4
   fields: Book details, community features
   api_url: https://hardcover.app/api/
-database_schema: "```sql\n-- Book Authors\nCREATE TABLE book_authors (\n  id UUID\
-  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  biography TEXT,\n\
-  \  birth_date DATE,\n  death_date DATE,\n  image_url TEXT,\n  openlibrary_id TEXT,\n\
-  \  goodreads_id TEXT,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
-  \  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_authors_name\
-  \ ON book_authors USING GIN(to_tsvector('english', name));\nCREATE INDEX idx_book_authors_openlibrary\
-  \ ON book_authors(openlibrary_id);\n\n-- Book Series\nCREATE TABLE book_series (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  description\
-  \ TEXT,\n  total_books INTEGER,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT\
-  \ NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_series_name\
-  \ ON book_series USING GIN(to_tsvector('english', name));\n\n-- Books\nCREATE TABLE\
-  \ books (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n\
-  \  subtitle TEXT,\n  author_id UUID REFERENCES book_authors(id),\n  series_id UUID\
-  \ REFERENCES book_series(id),\n  series_position NUMERIC,\n  isbn_10 TEXT,\n  isbn_13\
-  \ TEXT,\n  publisher TEXT,\n  publish_date DATE,\n  page_count INTEGER,\n  description\
-  \ TEXT,\n  language TEXT DEFAULT 'en',\n  openlibrary_id TEXT,\n  goodreads_id TEXT,\n\
-  \  google_books_id TEXT,\n  cover_url TEXT,\n  file_path TEXT,\n  file_format TEXT,\
-  \ -- epub, pdf, mobi, azw3, cbz\n  file_size_bytes BIGINT,\n  subjects TEXT[],\n\
-  \  genres TEXT[],\n  average_rating NUMERIC,\n  ratings_count INTEGER,\n  metadata\
-  \ JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT\
-  \ NOW()\n);\n\nCREATE INDEX idx_books_author ON books(author_id);\nCREATE INDEX\
-  \ idx_books_series ON books(series_id);\nCREATE INDEX idx_books_title ON books USING\
-  \ GIN(to_tsvector('english', title));\nCREATE INDEX idx_books_isbn13 ON books(isbn_13);\n\
-  CREATE INDEX idx_books_openlibrary ON books(openlibrary_id);\n\n-- Reading Progress\
-  \ (per-user)\nCREATE TABLE reading_progress (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  user_id UUID NOT NULL,\n  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n\
-  \  current_page INTEGER,\n  total_pages INTEGER,\n  progress_percent NUMERIC, --\
-  \ 0-100\n  current_location TEXT, -- CFI for EPUB, page for PDF\n  completed BOOLEAN\
-  \ DEFAULT FALSE,\n  started_at TIMESTAMPTZ,\n  completed_at TIMESTAMPTZ,\n  last_read_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id, book_id)\n);\n\nCREATE INDEX idx_reading_progress_user\
-  \ ON reading_progress(user_id);\nCREATE INDEX idx_reading_progress_last_read ON\
-  \ reading_progress(user_id, last_read_at DESC);\n\n-- Bookmarks\nCREATE TABLE book_bookmarks\
-  \ (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n\
-  \  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n  location TEXT NOT NULL,\
-  \ -- CFI or page number\n  note TEXT,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n\
-  );\n\nCREATE INDEX idx_book_bookmarks_user_book ON book_bookmarks(user_id, book_id);\n\
-  \n-- Highlights\nCREATE TABLE book_highlights (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  user_id UUID NOT NULL,\n  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n\
-  \  location_start TEXT NOT NULL,\n  location_end TEXT NOT NULL,\n  highlighted_text\
-  \ TEXT NOT NULL,\n  note TEXT,\n  color TEXT DEFAULT 'yellow',\n  created_at TIMESTAMPTZ\
-  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_highlights_user_book ON book_highlights(user_id,\
-  \ book_id);\n```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 reading_features:
   web_reader:
     epub_library: Epub.js
@@ -264,3 +223,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/books/collections
   description: List all book collections
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/book/\n  ├── module.go              # fx\
+  \ module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

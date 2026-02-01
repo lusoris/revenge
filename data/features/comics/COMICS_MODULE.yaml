@@ -133,40 +133,8 @@ metadata_sources:
   priority: 5
   fields: Manga information, user ratings
   api_url: https://api.myanimelist.net/v2/
-database_schema: "```sql\n-- Comic Publishers\nCREATE TABLE comic_publishers (\n \
-  \ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  description\
-  \ TEXT,\n  founded_year INTEGER,\n  comicvine_id INTEGER,\n  image_url TEXT,\n \
-  \ metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ\
-  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_comic_publishers_name ON comic_publishers\
-  \ USING GIN(to_tsvector('english', name));\n\n-- Comic Series\nCREATE TABLE comic_series\
-  \ (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n\
-  \  publisher_id UUID REFERENCES comic_publishers(id),\n  start_year INTEGER,\n \
-  \ end_year INTEGER,\n  issue_count INTEGER,\n  description TEXT,\n  comicvine_id\
-  \ INTEGER,\n  anilist_id INTEGER,\n  mal_id INTEGER,\n  cover_url TEXT,\n  series_type\
-  \ TEXT, -- comic, manga, graphic_novel, webcomic\n  status TEXT, -- ongoing, completed,\
-  \ hiatus, canceled\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
-  \  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_comic_series_title\
-  \ ON comic_series USING GIN(to_tsvector('english', title));\nCREATE INDEX idx_comic_series_publisher\
-  \ ON comic_series(publisher_id);\nCREATE INDEX idx_comic_series_comicvine ON comic_series(comicvine_id);\n\
-  \n-- Comic Issues\nCREATE TABLE comic_issues (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  series_id UUID REFERENCES comic_series(id) ON DELETE CASCADE,\n  issue_number\
-  \ NUMERIC, -- Allows decimals like 12.1, annuals\n  title TEXT,\n  description TEXT,\n\
-  \  release_date DATE,\n  page_count INTEGER,\n  cover_url TEXT,\n  file_path TEXT\
-  \ NOT NULL,\n  file_format TEXT, -- cbz, cbr, cb7, cbt, pdf\n  file_size_bytes BIGINT,\n\
-  \  comicvine_id INTEGER,\n  isbn TEXT,\n  creators JSONB, -- {writers: [], artists:\
-  \ [], colorists: [], etc}\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
-  \  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_comic_issues_series\
-  \ ON comic_issues(series_id);\nCREATE INDEX idx_comic_issues_number ON comic_issues(series_id,\
-  \ issue_number);\nCREATE INDEX idx_comic_issues_comicvine ON comic_issues(comicvine_id);\n\
-  \n-- Comic Reading Progress (per-user)\nCREATE TABLE comic_reading_progress (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  issue_id\
-  \ UUID REFERENCES comic_issues(id) ON DELETE CASCADE,\n  current_page INTEGER DEFAULT\
-  \ 0,\n  total_pages INTEGER,\n  completed BOOLEAN DEFAULT FALSE,\n  reading_mode\
-  \ TEXT DEFAULT 'single', -- single, double, webtoon\n  last_read_at TIMESTAMPTZ\
-  \ DEFAULT NOW(),\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ\
-  \ DEFAULT NOW(),\n  UNIQUE(user_id, issue_id)\n);\n\nCREATE INDEX idx_comic_reading_progress_user\
-  \ ON comic_reading_progress(user_id);\nCREATE INDEX idx_comic_reading_progress_last_read\
-  \ ON comic_reading_progress(user_id, last_read_at DESC);\n```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 reader_features:
   reading_modes:
   - Single page (default)
@@ -246,3 +214,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/comics/pull-list
   description: Get user pull list of series
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/comics/\n  ├── module.go              #\
+  \ fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

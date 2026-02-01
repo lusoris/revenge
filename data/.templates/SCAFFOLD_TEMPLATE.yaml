@@ -1,10 +1,3 @@
-# Auto-generated YAML from docs/dev/design/.templates/SCAFFOLD_TEMPLATE.md
-# Migration Date: 2026-01-31
-#
-# TODO: Complete the PLACEHOLDER fields below
-# TODO: Review auto-resolved sources and design_refs
-# TODO: Add feature/service/integration-specific fields as needed
-
 doc_title: '{{ FEATURE_NAME }}'
 doc_category: other
 created_date: '2026-01-31'

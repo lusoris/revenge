@@ -1,25 +1,25 @@
-# Auto-generated YAML from docs/dev/design/02_QUESTIONS_TO_DISCUSS.md
-# Migration Date: 2026-01-31
-#
-# TODO: Complete the PLACEHOLDER fields below
-# TODO: Review auto-resolved sources and design_refs
-# TODO: Add feature/service/integration-specific fields as needed
-
 doc_title: Questions & Gaps to Discuss
 doc_category: other
 created_date: '2026-01-31'
 overall_status: ✅ Complete
 status_design: ✅
 status_design_notes: '-'
-technical_summary: |
-  > Open questions and design gaps requiring discussion
+technical_summary: '> Open questions and design gaps requiring discussion
+
 
   Tracks unresolved decisions:
+
   - Architecture questions needing team input
+
   - Feature scope clarifications
+
   - Integration prioritization
+
   - Technical debt items
 
+  '
 wiki_tagline: '> Open questions requiring team discussion'
-
-wiki_overview: 'This document tracks unresolved design questions and gaps that need team discussion before implementation. Items include architectural decisions, feature scope questions, integration priorities, and technical debt. Questions are resolved in design meetings and moved to the appropriate design docs once decided.'
+wiki_overview: This document tracks unresolved design questions and gaps that need
+  team discussion before implementation. Items include architectural decisions, feature
+  scope questions, integration priorities, and technical debt. Questions are resolved
+  in design meetings and moved to the appropriate design docs once decided.

@@ -129,44 +129,8 @@ metadata_sources:
   purpose: Ratings and reviews
   priority: 4
   fields: Average rating, review count, community reviews
-database_schema: "```sql\n-- Audiobook Authors\nCREATE TABLE audiobook_authors (\n\
-  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  biography\
-  \ TEXT,\n  image_url TEXT,\n  audnexus_id TEXT,\n  metadata JSONB,\n  created_at\
-  \ TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE\
-  \ INDEX idx_audiobook_authors_name ON audiobook_authors USING GIN(to_tsvector('english',\
-  \ name));\nCREATE INDEX idx_audiobook_authors_audnexus ON audiobook_authors(audnexus_id);\n\
-  \n-- Audiobook Series\nCREATE TABLE audiobook_series (\n  id UUID PRIMARY KEY DEFAULT\
-  \ gen_random_uuid(),\n  name TEXT NOT NULL,\n  description TEXT,\n  total_books\
-  \ INTEGER,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
-  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_audiobook_series_name ON audiobook_series\
-  \ USING GIN(to_tsvector('english', name));\n\n-- Audiobooks\nCREATE TABLE audiobooks\
-  \ (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n\
-  \  author_id UUID REFERENCES audiobook_authors(id),\n  series_id UUID REFERENCES\
-  \ audiobook_series(id),\n  series_position NUMERIC,\n  narrator TEXT,\n  publisher\
-  \ TEXT,\n  publish_date DATE,\n  duration_seconds INTEGER,\n  description TEXT,\n\
-  \  isbn TEXT,\n  asin TEXT,\n  audnexus_id TEXT,\n  chaptarr_id INTEGER,\n  cover_art_url\
-  \ TEXT,\n  file_path TEXT,\n  file_format TEXT, -- m4b, mp3, aac\n  genres TEXT[],\n\
-  \  language TEXT DEFAULT 'en',\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT\
-  \ NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_audiobooks_author\
-  \ ON audiobooks(author_id);\nCREATE INDEX idx_audiobooks_series ON audiobooks(series_id);\n\
-  CREATE INDEX idx_audiobooks_title ON audiobooks USING GIN(to_tsvector('english',\
-  \ title));\nCREATE INDEX idx_audiobooks_chaptarr ON audiobooks(chaptarr_id);\n\n\
-  -- Audiobook Chapters\nCREATE TABLE audiobook_chapters (\n  id UUID PRIMARY KEY\
-  \ DEFAULT gen_random_uuid(),\n  audiobook_id UUID REFERENCES audiobooks(id) ON DELETE\
-  \ CASCADE,\n  chapter_number INTEGER NOT NULL,\n  title TEXT,\n  start_time_seconds\
-  \ NUMERIC NOT NULL,\n  end_time_seconds NUMERIC NOT NULL,\n  metadata JSONB,\n \
-  \ created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_audiobook_chapters_audiobook\
-  \ ON audiobook_chapters(audiobook_id);\nCREATE INDEX idx_audiobook_chapters_order\
-  \ ON audiobook_chapters(audiobook_id, chapter_number);\n\n-- Audiobook Progress\
-  \ (per-user)\nCREATE TABLE audiobook_progress (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
-  \  user_id UUID NOT NULL,\n  audiobook_id UUID REFERENCES audiobooks(id) ON DELETE\
-  \ CASCADE,\n  current_position_seconds NUMERIC NOT NULL DEFAULT 0,\n  completed\
-  \ BOOLEAN DEFAULT FALSE,\n  last_played_at TIMESTAMPTZ DEFAULT NOW(),\n  playback_speed\
-  \ NUMERIC DEFAULT 1.0, -- 0.5 to 3.0\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
-  \  updated_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id, audiobook_id)\n);\n\n\
-  CREATE INDEX idx_audiobook_progress_user ON audiobook_progress(user_id);\nCREATE\
-  \ INDEX idx_audiobook_progress_last_played ON audiobook_progress(user_id, last_played_at\
-  \ DESC);\n```\n"
+database_schema: "**Schema**: `public`\n\n  **Tables**: See migration files for complete\
+  \ schema\n\n  **Indexes**: Optimized for common queries and full-text search\n  "
 playback_features:
   streaming_protocol: HLS (HTTP Live Streaming)
   chapter_navigation: Jump to any chapter instantly
@@ -215,3 +179,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/audiobooks/series
   description: List all audiobook series
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/audiobook/\n  ├── module.go           \
+  \   # fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
