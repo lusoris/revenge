@@ -4,8 +4,12 @@ on:
   pull_request:
     paths:
       - 'docs/**'
+      - 'data/**/*.yaml'
+      - 'templates/**/*.jinja2'
+      - 'schemas/**/*.json'
       - 'scripts/**/*.py'
       - 'scripts/requirements.txt'
+      - 'tests/**/*.py'
       - '.github/workflows/doc-validation.yml'
   push:
     branches:
@@ -13,7 +17,11 @@ on:
       - main
     paths:
       - 'docs/**'
+      - 'data/**/*.yaml'
+      - 'templates/**/*.jinja2'
+      - 'schemas/**/*.json'
       - 'scripts/**/*.py'
+      - 'tests/**/*.py'
 
 jobs:
   # Extract versions from SOURCE_OF_TRUTH first
