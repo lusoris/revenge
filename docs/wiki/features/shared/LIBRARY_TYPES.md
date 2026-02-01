@@ -46,8 +46,8 @@ Create separate libraries for different content types. Movies, TV Shows, Music, 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

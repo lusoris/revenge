@@ -38,8 +38,8 @@ The Grants service enables sharing specific items with other users. Share a movi
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

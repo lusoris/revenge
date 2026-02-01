@@ -46,8 +46,8 @@ Stream live TV channels through Revenge with support for multiple backends (TVHe
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

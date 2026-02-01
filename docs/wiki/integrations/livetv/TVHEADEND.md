@@ -38,8 +38,8 @@ TVHeadend integration brings live TV and DVR to Revenge. Supports DVB, IPTV, and
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

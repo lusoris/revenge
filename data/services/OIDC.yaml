@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> OpenID Connect / SSO provider management'
 wiki_tagline: '> OpenID Connect / SSO provider management'
-wiki_overview: The OIDC service enables Single Sign-On with external identity providers. Connect Authentik, Keycloak, Authelia,
-  or any OIDC-compliant provider. Users can link multiple providers to one account. Auto-create users on first login or require
-  admin approval. Supports standard claims for profile info and group mapping for automatic role assignment.
+wiki_overview: The OIDC service enables Single Sign-On with external identity providers.
+  Connect Authentik, Keycloak, Authelia, or any OIDC-compliant provider. Users can
+  link multiple providers to one account. Auto-create users on first login or require
+  admin approval. Supports standard claims for profile info and group mapping for
+  automatic role assignment.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -55,19 +57,27 @@ design_refs:
 service_name: OIDC Service
 package_path: internal/service/oidc
 fx_module: oidc.Module
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Browser)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼            ▼            ▼<br/>────┐  ┌───────────┐  ┌────"]
-      node5["PostgreSQL"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Browser)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                │                                  │
+                │ OAuth2 redirect     ┌────────────┼────────────┐
+                │                     ▼            ▼            ▼
+                │              ┌──────────┐  ┌───────────┐  ┌────────┐
+                └─────────────▶│  OIDC    │  │Repository │  │  Auth  │
+                               │ Provider │  │  (sqlc)   │  │Service │
+                               │(Authentik)│  └─────┬─────┘  └────────┘
+                               └──────────┘        │
+                                                   ▼
+                                            ┌─────────────┐
+                                            │ PostgreSQL  │
+                                            └─────────────┘
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -108,6 +118,7 @@ database_schema: |
   );
   CREATE INDEX idx_user_oidc_links_user ON user_oidc_links(user_id);
   ```
+
 module_structure: |
   ```
   internal/service/oidc/
@@ -119,6 +130,7 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers (OAuth callback)
   └── oidc_test.go
   ```
+
 key_interfaces: |
   ```go
   type OIDCService interface {
@@ -136,6 +148,7 @@ key_interfaces: |
     UnlinkUser(ctx context.Context, userID uuid.UUID, providerName string) error
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -143,15 +156,18 @@ dependencies: |
   - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
   - `golang.org/x/oauth2` - OAuth2 flow
   - `go.uber.org/fx`
+
 env_vars: |
   ```bash
   OIDC_CALLBACK_URL=https://revenge.example.com/api/v1/oidc/callback
   ```
+
 config_keys: |
   ```yaml
   oidc:
     callback_url: https://revenge.example.com/api/v1/oidc/callback
   ```
+
 component_interaction: |
   **OAuth Login Flow**:
   1. User clicks "Login with Authentik"
@@ -166,6 +182,7 @@ component_interaction: |
   10. If exists, find user; if not, create user (if auto_create_users)
   11. Create session
   12. Redirect to app
+
 api_endpoints: |
   ```
   # OAuth flow
@@ -177,12 +194,14 @@ api_endpoints: |
   GET  /api/v1/oidc/providers              # List providers
   PUT  /api/v1/oidc/providers/:id          # Update provider
   ```
+
 unit_tests: |
   ```go
   func TestOIDCService_GetAuthURL(t *testing.T) {
     // Test OAuth URL generation
   }
   ```
+
 integration_tests: |
   ```go
   func TestOIDC_CallbackFlow(t *testing.T) {

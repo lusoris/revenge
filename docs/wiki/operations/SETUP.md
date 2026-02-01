@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Production Deployment Setup](#production-deployment-setup)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Troubleshooting](#troubleshooting)
     - [Container won't start](#container-wont-start)
     - [Cannot connect to database](#cannot-connect-to-database)
@@ -33,9 +31,6 @@ This guide covers everything you need to deploy Revenge in production. The recom
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -45,8 +40,7 @@ This guide covers everything you need to deploy Revenge in production. The recom
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

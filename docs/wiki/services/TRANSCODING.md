@@ -38,8 +38,8 @@ The Transcoding Service converts media files on-demand to ensure compatibility a
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

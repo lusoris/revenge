@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> API key generation, validation, and management'
 wiki_tagline: '> API key generation, validation, and management'
-wiki_overview: API keys allow external applications to access Revenge programmatically. Create keys with specific scopes (read-only,
-  write, admin) and optional expiration dates. Each key is associated with a user and inherits their permissions. Keys can
+wiki_overview: API keys allow external applications to access Revenge programmatically.
+  Create keys with specific scopes (read-only, write, admin) and optional expiration
+  dates. Each key is associated with a user and inherits their permissions. Keys can
   be revoked instantly. Use API keys for automation, mobile apps, or third-party integrations.
 sources:
 - name: Uber fx
@@ -58,19 +59,28 @@ design_refs:
 service_name: API Keys Service
 package_path: internal/service/apikeys
 fx_module: apikeys.Module
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(API Key)"]
-      node2["Middleware<br/>(API Auth)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  Middleware  │────▶│   Service   │
+  │ (API Key)   │◀────│ (API Auth)   │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │   Cache   │  │  RBAC  │
+                  │  (sqlc)  │          │  (otter)  │  │Service │
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -123,6 +133,7 @@ database_schema: |
   );
   CREATE INDEX idx_api_key_usage_key ON api_key_usage_log(api_key_id, created_at DESC);
   ```
+
 module_structure: |
   ```
   internal/service/apikeys/
@@ -135,6 +146,7 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── apikeys_test.go
   ```
+
 key_interfaces: |
   ```go
   type APIKeysService interface {
@@ -172,6 +184,7 @@ key_interfaces: |
     ExpiresAt   *time.Time `json:"expires_at,omitempty"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -180,12 +193,14 @@ dependencies: |
   - `crypto/rand` - Key generation
   - `crypto/sha256` - Key hashing
   - `go.uber.org/fx`
+
 env_vars: |
   ```bash
   APIKEYS_LENGTH=32               # bytes
   APIKEYS_DEFAULT_EXPIRY=0        # 0 = never expire
   APIKEYS_MAX_PER_USER=10
   ```
+
 config_keys: |
   ```yaml
   apikeys:
@@ -193,6 +208,7 @@ config_keys: |
     default_expiry: 0  # 0 = never expire
     max_per_user: 10
   ```
+
 component_interaction: |
   **API Key Creation**:
   1. User creates API key: POST /api/v1/apikeys
@@ -213,6 +229,7 @@ component_interaction: |
   8. If valid, attach user to context, proceed
   9. If invalid, return 401 Unauthorized
   10. Record usage in api_key_usage_log
+
 api_endpoints: |
   ```
   POST   /api/v1/apikeys              # Create API key
@@ -243,6 +260,7 @@ api_endpoints: |
     "message": "Store this key securely. It won't be shown again."
   }
   ```
+
 unit_tests: |
   ```go
   func TestAPIKeysService_CreateKey(t *testing.T) {
@@ -253,6 +271,7 @@ unit_tests: |
     // Test key validation (active, not expired)
   }
   ```
+
 integration_tests: |
   ```go
   func TestAPIKeys_AuthFlow(t *testing.T) {

@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Automatic intro and credits detection with one-click skip'
 wiki_tagline: '> Automatic intro and credits detection with one-click skip'
-wiki_overview: Skip repetitive intros and credits with one click. Revenge automatically detects intro sequences using audio
-  fingerprinting (Chromaprint) and visual analysis. When an intro is detected, a Skip button appears. Enable auto-skip to
-  jump automatically. Credits detection suggests the next episode before the current one ends.
+wiki_overview: Skip repetitive intros and credits with one click. Revenge automatically
+  detects intro sequences using audio fingerprinting (Chromaprint) and visual analysis.
+  When an intro is detected, a Skip button appears. Enable auto-skip to jump automatically.
+  Credits detection suggests the next episode before the current one ends.
 sources:
 - name: Chromaprint/AcoustID
   url: https://acoustid.org/chromaprint
@@ -53,21 +54,20 @@ design_refs:
 feature_name: Skip Intro / Credits Detection
 module_name: skip_intro_/_credits_detection
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -244,6 +244,7 @@ file_structure: |
   ├── SkipIntroButton.svelte       # Skip intro button overlay
   └── SkipPreferences.svelte       # User preferences UI
   ```
+
 key_interfaces: |
   ```go
   // Repository interface for skip intro database operations
@@ -339,6 +340,7 @@ key_interfaces: |
       DetectSilence(ctx context.Context, audioPath string, threshold float64, minDuration float64) ([]TimeRange, error)
   }
   ```
+
 dependencies: |
   **Go Packages**:
   ```go
@@ -377,6 +379,7 @@ dependencies: |
   - **FFmpeg 7.1+**: Audio/video extraction, black frame detection, silence detection
   - **Chromaprint (fpcalc)**: Audio fingerprinting
   - **PostgreSQL 18+**: Database
+
 env_vars: |
   ```bash
   # Feature toggle
@@ -408,6 +411,7 @@ env_vars: |
   SKIP_INTRO_DEFAULT_AUTO_SKIP=false       # Default auto-skip setting
   SKIP_INTRO_BUTTON_DURATION_SEC=10        # Show button for X seconds
   ```
+
 config_keys: |
   ```yaml
   skip_intro:
@@ -467,6 +471,7 @@ config_keys: |
       ttl_markers: 1h
       ttl_series_patterns: 24h
   ```
+
 defaults: |
   - **Min Intro Duration**: 15 seconds
   - **Max Intro Duration**: 180 seconds (3 minutes)
@@ -478,16 +483,12 @@ defaults: |
   - **Auto-skip**: Disabled by default (user opt-in)
   - **Skip Button Duration**: 10 seconds
   - **Worker Concurrency**: 2 jobs
-module_structure: |-
-  ```
-    internal/content/skip_intro_/_credits_detection/
-    ├── module.go              # fx module definition
-    ├── repository.go          # Database operations (sqlc)
-    ├── service.go             # Business logic
-    ├── handler.go             # HTTP handlers (ogen)
-    ├── types.go               # Domain types
-    └── cache.go               # Caching layer (otter)
-    ```
+
+module_structure: "```\n  internal/content/skip_intro_/_credits_detection/\n  ├──\
+  \ module.go              # fx module definition\n  ├── repository.go          #\
+  \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
+  \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
+  \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
 request_examples: |
   **Detect Intro/Credits**:
   ```json
@@ -585,6 +586,7 @@ request_examples: |
     "priority": 8
   }
   ```
+
 response_examples: |
   **Intro/Credits Marker Object**:
   ```json
@@ -692,6 +694,7 @@ response_examples: |
     "updated_at": "2024-06-15T10:00:00Z"
   }
   ```
+
 unit_tests: |
   **Repository Layer**:
   - Test CRUD operations for markers
@@ -754,6 +757,7 @@ unit_tests: |
   - Mock service layer
 
   **Coverage Target**: 85%+ for critical paths (detection, matching)
+
 integration_tests: |
   **Database Integration**:
   - Test full marker lifecycle with real PostgreSQL (testcontainers)
@@ -810,7 +814,9 @@ integration_tests: |
   - Test false positive rate
   - Test confidence score correlation with accuracy
   - Test series pattern match accuracy
-test_coverage_target: 80%
+
+test_coverage_target: "80%"
+
 api_endpoints:
 - method: POST
   path: /api/v1/skip-intro/detect
@@ -845,9 +851,7 @@ api_endpoints:
 - method: GET
   path: /api/v1/skip-intro/series/:id/patterns
   description: Get series intro patterns
-component_interaction: |-
-  1. Client requests resource via HTTP
-    2. API handler validates and routes to service
-    3. Service checks cache, queries repository if needed
-    4. Repository executes SQL via sqlc
-    5. Results return through layers to client
+
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

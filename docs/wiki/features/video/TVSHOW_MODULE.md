@@ -46,8 +46,8 @@ Manage TV shows organized by series, season, and episode. Automatic metadata fro
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

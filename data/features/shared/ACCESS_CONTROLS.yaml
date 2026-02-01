@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User access restrictions based on time, limits, and schedules'
 wiki_tagline: '> Control when and how users can access your media'
-wiki_overview: Set rules for when users can access content. Limit viewing to certain hours (kids only watch TV after homework).
-  Set daily or weekly limits on screen time. Block access during bedtimes or school hours. Create schedules per user or user
-  group. Perfect for family media servers where parents want to control viewing habits.
+wiki_overview: Set rules for when users can access content. Limit viewing to certain
+  hours (kids only watch TV after homework). Set daily or weekly limits on screen
+  time. Block access during bedtimes or school hours. Create schedules per user or
+  user group. Perfect for family media servers where parents want to control viewing
+  habits.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -53,21 +55,20 @@ design_refs:
 feature_name: Time-Based Access Controls
 module_name: time_based_access_controls
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -102,6 +103,7 @@ database_schema: |
   CREATE INDEX idx_access_logs_user ON access_logs(user_id, started_at DESC);
   CREATE INDEX idx_access_logs_date ON access_logs(DATE(started_at));
   ```
+
 module_structure: |
   ```
   internal/access/
@@ -112,6 +114,7 @@ module_structure: |
   ├── middleware.go          # Auth middleware
   └── handler.go
   ```
+
 key_interfaces: |
   ```go
   type AccessService interface {
@@ -120,38 +123,45 @@ key_interfaces: |
     GetUsageToday(ctx context.Context, userID uuid.UUID) (int, error)
   }
   ```
+
 dependencies: |
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/casbin/casbin/v2` - Policy enforcement
+
 env_vars: |
   ```bash
   ACCESS_CONTROLS_ENABLED=true
   ```
+
 config_keys: |
   ```yaml
   access:
     enabled: true
     default_daily_limit_minutes: 120
   ```
+
 component_interaction: |
   1. Middleware checks access_schedules for user
   2. Verify current time against allowed times
   3. Check daily/weekly usage limits
   4. Block or allow access
   5. Log access attempt
+
 api_endpoints: |
   ```
   GET  /api/v1/access/schedules/:userId
   POST /api/v1/access/schedules
   GET  /api/v1/access/usage/:userId
   ```
+
 unit_tests: |
   ```go
   func TestAccessService_CheckAccess(t *testing.T) {
     // Test time-based restrictions
   }
   ```
+
 integration_tests: |
   ```go
   func TestAccess_EndToEnd(t *testing.T) {

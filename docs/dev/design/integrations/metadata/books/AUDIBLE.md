@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,35 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Audiobook<br/>Service"]
-    node2["Chaptarr<br/>(LOCAL cache)"]
-    node3["Audnexus<br/>(Audible<br/>metadata)"]
-    node4["Rate Limiter<br/>(1 req/sec)"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
 ```
+┌──────────────┐
+│  Revenge     │
+│  Audiobook   │
+│  Service     │
+└──────┬───────┘
+       │
+       ├─────────────────────────────────────────┐
+       │ PRIMARY                                  │ SUPPLEMENTARY
+       ▼                                          ▼
+┌──────────────┐                           ┌──────────────┐
+│   Chaptarr   │                           │   Audnexus   │
+│ (LOCAL cache)│                           │  (Audible    │
+│              │                           │   metadata)  │
+└──────────────┘                           └──────┬───────┘
+                                                  │
+                                           ┌──────┴───────┐
+                                           │ Rate Limiter │
+                                           │ (1 req/sec)  │
+                                           └──────────────┘
+
+Key Data:
+- Narrator information
+- Chapter markers (timestamps)
+- Series info
+- Audible ASIN mappings
+- Cover images
+```
+
 
 ### Integration Structure
 
@@ -90,10 +104,6 @@ internal/integration/audible/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -160,7 +170,9 @@ type Chapter struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -185,21 +197,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

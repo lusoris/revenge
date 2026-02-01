@@ -28,10 +28,6 @@
       - [GET /api/v1/trickplay/{content_type}/{content_id}/sprites/{index}.jpg](#get-apiv1trickplaycontent_typecontent_idspritesindexjpg)
       - [POST /api/v1/trickplay/bulk-generate](#post-apiv1trickplaybulk-generate)
       - [DELETE /api/v1/trickplay](#delete-apiv1trickplay)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -72,20 +68,25 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["External<br/>APIs"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           ▼                      ▼
+                    ┌─────────────┐        ┌──────────┐
+                    │ PostgreSQL  │        │ External │
+                    │   (pgx)     │        │   APIs   │
+                    └─────────────┘        └──────────┘
+  ```
 
 ### Database Schema
 
@@ -259,7 +260,9 @@ require (
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -378,21 +381,6 @@ Queue bulk trickplay generation
 Delete trickplay tiles
 
 ---
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

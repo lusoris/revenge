@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Accessibility](#accessibility)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color contrast
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color contrast
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Reverse Proxy Configuration](#reverse-proxy-configuration)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ A reverse proxy sits between the internet and Revenge, handling HTTPS encryption
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ A reverse proxy sits between the internet and Revenge, handling HTTPS encryption
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

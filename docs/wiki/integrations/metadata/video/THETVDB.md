@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonar
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

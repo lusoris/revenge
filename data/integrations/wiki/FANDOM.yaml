@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> ENRICHMENT link provider to fan-curated wikis for franchises'
 wiki_tagline: '> FANDOM - Links to fan wikis for movies, TV, games'
-wiki_overview: ENRICHMENT metadata source providing links to fan-curated wikis. Deep links to character pages, episode guides,
-  and universe lore. Covers major franchises (Star Wars, Marvel, Game of Thrones, etc.). **No API key required** - uses MediaWiki
-  API. Links appear on item detail pages for "Learn More" functionality.
+wiki_overview: 'ENRICHMENT metadata source providing links to fan-curated wikis. Deep links to character pages, episode guides, and universe lore. Covers major franchises (Star Wars, Marvel, Game of Thrones, etc.). **No API key required** - uses MediaWiki API. Links appear on item detail pages for "Learn More" functionality.'
 sources:
 - name: FANDOM API
   url: https://community.fandom.com/wiki/Community_Central:API
@@ -50,17 +48,35 @@ integration_id: fandom
 external_service: FANDOM (Wikia)
 api_base_url: https://{wiki}.fandom.com/api.php
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
-      node2["FANDOM<br/>MediaWiki<br/>API"]
-      node3["Fan Wiki Links<br/>- Character pages<br/>- Episode guides"]
-      node4["Rate Limiter<br/>(polite)"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Detail Page │
+  │  (Movie/TV)  │
+  └──────┬───────┘
+         │ "Learn More" links
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │   FANDOM     │────▶│  Fan Wiki Links   │
+  │  MediaWiki   │     │  - Character pages│
+  │  API         │     │  - Episode guides │
+  └──────┬───────┘     │  - Lore/universe  │
+         │             │  - Cast info      │
+  ┌──────┴───────┐     └───────────────────┘
+  │ Rate Limiter │
+  │ (polite)     │
+  └──────────────┘
+
+  Major Wikis:
+  - starwars.fandom.com (Wookieepedia)
+  - marvel.fandom.com (Marvel Database)
+  - gameofthrones.fandom.com
+  - memory-alpha.fandom.com (Star Trek)
+  - lotr.fandom.com (Tolkien Gateway)
+  ```
+
 api_details: |
   **API**: MediaWiki API (same as Wikipedia)
   **Base URL**: `https://{wiki}.fandom.com/api.php`
@@ -77,6 +93,7 @@ api_details: |
   **Wiki Discovery**:
   - Map franchise to wiki subdomain
   - e.g., "Star Wars" → "starwars.fandom.com"
+
 database_schema: |
   ```sql
   -- FANDOM wiki mappings
@@ -104,6 +121,7 @@ database_schema: |
   );
   CREATE INDEX idx_fandom_links_content ON fandom_links(content_type, content_id);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/fandom/
@@ -114,6 +132,7 @@ module_structure: |
   ├── search.go                    # Page search
   └── fandom_test.go
   ```
+
 key_interfaces: |
   ```go
   // FANDOM link provider
@@ -160,6 +179,7 @@ key_interfaces: |
     LinkType  string `json:"type"`  // 'main', 'character', 'episode'
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -170,12 +190,14 @@ dependencies: |
 
   **External**:
   - FANDOM MediaWiki API (free, no key)
+
 env_vars: |
   ```bash
   FANDOM_ENABLED=true
   FANDOM_RATE_LIMIT=1
   FANDOM_CACHE_TTL=168h
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -205,6 +227,7 @@ config_keys: |
             name: Tolkien Gateway
             keywords: [Lord of the Rings, Hobbit, Rings of Power]
   ```
+
 component_interaction: |
   **Link Generation Flow**:
   1. User views movie/show detail page
@@ -234,6 +257,7 @@ component_interaction: |
   Learn More:
   [📖 Wookieepedia] → View "The Mandalorian" on starwars.fandom.com
   ```
+
 api_request_examples: |
   **Search for Page**:
   ```bash
@@ -254,6 +278,7 @@ api_request_examples: |
   ```bash
   curl "https://starwars.fandom.com/api.php?action=query&titles=The_Mandalorian&prop=info|extracts&exintro=true&format=json"
   ```
+
 enrichment_role: |
   **ENRICHMENT-Only Provider**
 
@@ -273,11 +298,13 @@ enrichment_role: |
   - Deep dive into franchise lore
   - Episode-specific wiki pages
   - Character relationship info
+
 error_handling: |
   **Common Scenarios**:
   - Page not found → No link displayed
   - Wiki subdomain invalid → Skip wiki
   - Rate limited → Back off and retry
+
 unit_tests: |
   ```go
   func TestFANDOM_FindWiki(t *testing.T) {
@@ -299,6 +326,7 @@ unit_tests: |
     assert.Len(t, results, 1)
   }
   ```
+
 best_practices: |
   **API Usage**:
   - Be polite (1 req/sec per wiki)

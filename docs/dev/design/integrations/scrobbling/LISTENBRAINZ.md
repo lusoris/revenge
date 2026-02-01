@@ -7,17 +7,12 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
 - [No global config needed - users provide their own tokens](#no-global-config-needed-users-provide-their-own-tokens)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,16 +55,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Playback"]
-    node2["ListenBrainz<br/>Integration"]
-    node3["ListenBrainz<br/>API"]
-    node4["Listen<br/>Queue (River)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Revenge    │────▶│ ListenBrainz │────▶│ListenBrainz │
+│  Playback   │◀────│ Integration  │◀────│     API     │
+│  Events     │     │              │     └─────────────┘
+└─────────────┘     └──────┬───────┘
+                           │
+                    ┌──────▼────────┐
+                    │  Listen       │
+                    │  Queue (River)│
+                    └───────────────┘
+```
+
 
 ### Integration Structure
 
@@ -91,10 +89,6 @@ internal/integration/listenbrainz/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -150,7 +144,9 @@ type TrackMetadata struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -171,21 +167,6 @@ integrations:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

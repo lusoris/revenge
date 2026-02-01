@@ -3,18 +3,8 @@
 - [Revenge - Technology Stack](#revenge-technology-stack)
   - [Status](#status)
   - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -66,71 +56,45 @@ Stack overview:
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["SvelteKit Frontend<br/>(Svelte 5 + Tailwind 4 + shadcn-svelte)"]
-    node2["ogen OpenAPI Handlers<br/>(Type-safe from openapi.yaml)"]
-    node3["Service Layer [fx]<br/>Movies<br/>TV"]
-    node4["Cache<br/>(L1+L2)"]
-    node5["Search<br/>(Typesense)"]
-    node6["Jobs<br/>(River)"]
-    node7["Repository<br/>(sqlc)"]
-    node8["PostgreSQL 18"]
-    node4 --> node5
-    node5 --> node6
-    node6 --> node7
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node7 --> node8
-```
+┌─────────────────────────────────────────────────────────────────┐
+│                    SvelteKit Frontend                           │
+│          (Svelte 5 + Tailwind 4 + shadcn-svelte)               │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │ HTTP/JSON
+┌─────────────────────▼───────────────────────────────────────────┐
+│                  ogen OpenAPI Handlers                          │
+│             (Type-safe from openapi.yaml)                       │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────────┐
+│                   Service Layer (fx)                            │
+│         Movies │ TV │ Music │ QAR │ User │ Auth                 │
+└─────┬───────┬──┴──┬────────┬──────┬──────────────────────┬─────┘
+      │       │     │        │      │                      │
+┌─────▼───┐ ┌─▼─────▼──┐ ┌──▼──────▼───┐          ┌───────▼──────┐
+│  Cache  │ │  Search  │ │   Jobs      │          │  Repository  │
+│  (L1+L2)│ │(Typesense)│ │   (River)   │          │   (sqlc)     │
+└─────────┘ └──────────┘ └─────────────┘          └───────┬──────┘
+                                                            │
+                                                  ┌─────────▼──────┐
+                                                  │  PostgreSQL 18 │
+                                                  └────────────────┘
 
-### Components
-
-<!-- Component description -->
 
 
-## Implementation
 
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
 ## Configuration
+
 ### Environment Variables
 
 [{'name': 'REVENGE_SERVER_HOST', 'type': 'string', 'default': '0.0.0.0', 'description': 'Server bind address'}, {'name': 'REVENGE_SERVER_PORT', 'type': 'int', 'default': 8080, 'description': 'Server listen port'}, {'name': 'REVENGE_DATABASE_URL', 'type': 'string', 'required': True, 'description': 'PostgreSQL connection string (postgres://user:pass@host:5432/db)'}, {'name': 'REVENGE_CACHE_REDIS_ADDR', 'type': 'string', 'default': 'localhost:6379', 'description': 'Dragonfly/Redis address for L2 cache'}, {'name': 'REVENGE_SEARCH_HOST', 'type': 'string', 'default': 'localhost:8108', 'description': 'Typesense server host'}, {'name': 'REVENGE_JOBS_ENABLED', 'type': 'bool', 'default': True, 'description': 'Enable River job queue'}]
 
-### Config Keys
-<!-- Configuration keys -->
 
-
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

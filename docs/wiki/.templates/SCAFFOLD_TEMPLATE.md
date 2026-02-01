@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [{{ FEATURE_NAME }}](#feature_name)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ PLACEHOLDER: User-friendly overview
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ PLACEHOLDER: User-friendly overview
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

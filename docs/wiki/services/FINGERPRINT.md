@@ -38,8 +38,8 @@ Fingerprinting identifies media files by their content, not just filenames. Perc
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

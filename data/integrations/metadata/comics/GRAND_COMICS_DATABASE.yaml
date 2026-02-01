@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY historical comics database - Golden/Silver Age specialist'
 wiki_tagline: '> GCD - Historical comic bibliographic data'
-wiki_overview: SUPPLEMENTARY metadata source for comics libraries. Specializes in historical comics from Golden (1938-1956)
-  and Silver Age (1956-1970). Detailed bibliographic records for vintage comics. Covers defunct publishers. **Supplements
-  ComicVine** with historical data ComicVine may lack. REST API with free access. Useful for identifying older comics in collections.
+wiki_overview: 'SUPPLEMENTARY metadata source for comics libraries. Specializes in historical comics from Golden (1938-1956) and Silver Age (1956-1970). Detailed bibliographic records for vintage comics. Covers defunct publishers. **Supplements ComicVine** with historical data ComicVine may lack. REST API with free access. Useful for identifying older comics in collections.'
 sources:
 - name: GCD REST API
   url: https://www.comics.org/api/
@@ -48,17 +46,35 @@ integration_id: gcd
 external_service: Grand Comics Database
 api_base_url: https://www.comics.org/api
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Comics<br/>Library"]
-      node2["ComicVine<br/>(modern)"]
-      node3["GCD<br/>(historical)"]
-      node4["Rate Limiter<br/>(polite)"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Comics      │
+  │  Library     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────────┐
+         │ PRIMARY                                  │ SUPPLEMENTARY
+         ▼                                          ▼
+  ┌──────────────┐                           ┌──────────────┐
+  │  ComicVine   │                           │     GCD      │
+  │  (modern)    │                           │ (historical) │
+  └──────────────┘                           └──────┬───────┘
+                                                    │
+                                             ┌──────┴───────┐
+                                             │ Rate Limiter │
+                                             │ (polite)     │
+                                             └──────────────┘
+
+  Focus Areas:
+  - Golden Age (1938-1956)
+  - Silver Age (1956-1970)
+  - Defunct publishers
+  - Bibliographic details
+  ```
+
 api_details: |
   **API**: GCD REST API
   **Base URL**: `https://www.comics.org/api`
@@ -79,6 +95,7 @@ api_details: |
                          ↓
                       Credits (Creators)
   ```
+
 database_schema: |
   ```sql
   -- GCD series cache
@@ -121,6 +138,7 @@ database_schema: |
     UNIQUE(comic_issue_id)
   );
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/gcd/
@@ -131,6 +149,7 @@ module_structure: |
   ├── matching.go                  # Fuzzy matching for historical titles
   └── gcd_test.go
   ```
+
 key_interfaces: |
   ```go
   // GCD provider (supplementary to ComicVine)
@@ -175,6 +194,7 @@ key_interfaces: |
     EditorialCredit string `json:"editing"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -185,12 +205,14 @@ dependencies: |
 
   **External**:
   - GCD REST API (free, no key required)
+
 env_vars: |
   ```bash
   GCD_ENABLED=true
   GCD_RATE_LIMIT=1
   GCD_CACHE_TTL=168h    # 7 days
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -207,6 +229,7 @@ config_keys: |
           - silver_age        # 1956-1970
           - defunct_publishers
   ```
+
 component_interaction: |
   **Historical Comic Identification**:
   1. Comic file added to library
@@ -223,6 +246,7 @@ component_interaction: |
   - Silver Age comics (Fantastic Four #1, Amazing Fantasy #15)
   - Defunct publishers (Quality, Fawcett, EC Comics)
   - Pre-Code horror/crime comics
+
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider**
 
@@ -237,6 +261,7 @@ supplementary_role: |
   - Comics from Silver Age (1956-1970)
   - Defunct publishers not in ComicVine
   - Detailed publication data (variants, reprints)
+
 api_request_examples: |
   **Search for Series**:
   ```bash
@@ -263,11 +288,13 @@ api_request_examples: |
   ```bash
   curl "https://www.comics.org/api/issue/1/"
   ```
+
 error_handling: |
   **HTTP Errors**:
   - 404 Not Found → Series/issue not in GCD
   - 429 Too Many Requests → Rate limited
   - 500+ → Service error
+
 unit_tests: |
   ```go
   func TestGCD_SearchSeries(t *testing.T) {
@@ -280,6 +307,7 @@ unit_tests: |
     assert.Equal(t, 1938, results[0].YearBegan)
   }
   ```
+
 best_practices: |
   **API Usage**:
   - Be polite (1 req/sec max)

@@ -7,17 +7,12 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
 - [No API credentials needed](#no-api-credentials-needed)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Watch<br/>History"]
-    node2["Letterboxd<br/>Integration"]
-    node3["Letterboxd<br/>Website"]
-    node4["CSV Export/<br/>Import"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Revenge    │────▶│ Letterboxd   │     │ Letterboxd  │
+│  Watch      │     │ Integration  │     │   Website   │
+│  History    │     │              │     │             │
+└─────────────┘     └──────┬───────┘     └──────┬──────┘
+                           │                    │
+                    ┌──────▼────────┐           │
+                    │  CSV Export/  │◀──────────┘
+                    │  Import       │
+                    └───────────────┘
+```
+
 
 ### Integration Structure
 
@@ -90,10 +88,6 @@ internal/integration/letterboxd/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -157,7 +151,9 @@ type ImportResult struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -177,21 +173,6 @@ integrations:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

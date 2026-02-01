@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [WebSockets](#websockets)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The WebSocket System enables real-time bidirectional communication between the s
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The WebSocket System enables real-time bidirectional communication between the s
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

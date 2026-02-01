@@ -46,8 +46,8 @@ See upcoming releases and recent additions at a glance. The calendar pulls data 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

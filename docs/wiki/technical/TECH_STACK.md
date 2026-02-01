@@ -1,7 +1,6 @@
 ## Table of Contents
 
 - [Revenge - Technology Stack](#revenge-technology-stack)
-  - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
@@ -26,9 +25,6 @@ Revenge uses a carefully selected stack optimized for performance and maintainab
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +34,8 @@ Revenge uses a carefully selected stack optimized for performance and maintainab
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

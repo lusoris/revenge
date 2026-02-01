@@ -18,10 +18,7 @@ status_integration_testing: 🔴 Not Started
 status_integration_testing_notes: '-'
 technical_summary: '> Movie content management with metadata enrichment'
 wiki_tagline: '> Your movie library with rich metadata and artwork'
-wiki_overview: Manage your movie collection with automatic metadata from Radarr (PRIMARY source, aggregates from TMDb locally),
-  with direct TMDb API as supplementary enrichment. Movies are organized with posters, backdrops, cast info, and trailers.
-  Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track
-  watched status per user. Radarr integration provides both metadata caching and download automation.
+wiki_overview: 'Manage your movie collection with automatic metadata from Radarr (PRIMARY source, aggregates from TMDb locally), with direct TMDb API as supplementary enrichment. Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Radarr integration provides both metadata caching and download automation.'
 design_refs:
 - title: 01_ARCHITECTURE
   path: ../../architecture/01_ARCHITECTURE.md
@@ -43,21 +40,36 @@ schema_name: public
 content_types:
 - Movies
 - Collections
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["▼              ▼<br/>─────┐  ┌───────<br/>arr"]
-      node6["TMDb<br/>(external)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
-      node5 --> node6
+
+# Architecture
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           │               ┌──────┴───────┐
+                           ▼               ▼              ▼
+                    ┌─────────────┐  ┌──────────┐  ┌──────────┐
+                    │ PostgreSQL  │  │  Radarr  │  │   TMDb   │
+                    │   (pgx)     │  │(PRIMARY) │  │(fallback)│
+                    └─────────────┘  └────┬─────┘  └──────────┘
+                                          │
+                                          ▼
+                                    ┌──────────┐
+                                    │   TMDb   │
+                                    │(external)│
+                                    └──────────┘
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -98,6 +110,7 @@ database_schema: |
   - `idx_movies_year` on `year`
   - `idx_movies_title_trgm` (GIN trigram) for fuzzy search
   - `idx_movie_watched_user_movie` on (`user_id`, `movie_id`)
+
 module_structure: |
   ```
   internal/content/movie/
@@ -112,6 +125,7 @@ module_structure: |
       ├── tmdb.go            # TMDb integration
       └── enricher.go        # Metadata enrichment logic
   ```
+
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/movies`
@@ -133,6 +147,8 @@ component_interaction: |
      - Repository uses JOIN queries for efficient fetching
      - Cache stores collection metadata separately
      - Updates propagate to all collection members
+
+# Implementation
 file_structure: |
   ```
   internal/content/movie/
@@ -158,6 +174,7 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (movies endpoints)
   ```
+
 key_interfaces: |
   ```go
   // Repository defines database operations for movies
@@ -199,6 +216,7 @@ key_interfaces: |
       GetMovieImages(ctx context.Context, tmdbID int) (*Images, error)
   }
   ```
+
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -216,6 +234,8 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_MOVIE_CACHE_TTL` - Cache TTL duration (default: 5m)
@@ -224,6 +244,7 @@ env_vars: |
   - `REVENGE_METADATA_TMDB_RATE_LIMIT` - Rate limit per second (default: 40)
   - `REVENGE_RADARR_URL` - Radarr instance URL (optional)
   - `REVENGE_RADARR_API_KEY` - Radarr API key (optional)
+
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -249,6 +270,7 @@ config_keys: |
         api_key: ${REVENGE_RADARR_API_KEY}
         sync_interval: 15m
   ```
+
 defaults: |
   - Cache TTL: 5 minutes
   - Cache size: 100 MB
@@ -256,6 +278,8 @@ defaults: |
   - Metadata priority: Radarr (PRIMARY) → TMDb (via proxy) → TheTVDB
   - Radarr sync: Enabled by default (required for PRIMARY metadata)
   - TMDb proxy: Uses tor proxy from HTTP_CLIENT service
+
+# API Endpoints
 endpoints: |
   **Movies**:
   - `GET /api/v1/movies` - List movies with filters
@@ -279,6 +303,7 @@ endpoints: |
   **Watch History**:
   - `GET /api/v1/movies/watched` - Get user's watched movies
   - `GET /api/v1/movies/{id}/watch-status` - Check if watched by user
+
 request_examples: |
   **List movies with filters**:
   ```http
@@ -302,6 +327,7 @@ request_examples: |
     "watched_at": "2024-01-15T20:30:00Z"
   }
   ```
+
 response_examples: |
   **Movie details response**:
   ```json
@@ -329,6 +355,8 @@ response_examples: |
     "updated_at": "2024-01-15T20:30:00Z"
   }
   ```
+
+# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for movies
@@ -350,6 +378,7 @@ unit_tests: |
   - Test request validation
   - Test error responses
   - Test pagination
+
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database)
@@ -365,6 +394,7 @@ integration_tests: |
   - Test foreign key constraints
   - Test transaction isolation
   - Test database triggers (if any)
+
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (critical path)

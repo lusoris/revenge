@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Email System](#email-system)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Email System provides reliable SMTP email delivery with support for HTML tem
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Email System provides reliable SMTP email delivery with support for HTML tem
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

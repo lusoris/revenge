@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Webhook Patterns](#webhook-patterns)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Webhook Pattern provides a secure, reliable foundation for receiving and pro
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Webhook Pattern provides a secure, reliable foundation for receiving and pro
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

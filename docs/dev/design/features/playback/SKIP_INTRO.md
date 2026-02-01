@@ -32,10 +32,6 @@
       - [POST /api/v1/skip-intro/skip](#post-apiv1skip-introskip)
       - [POST /api/v1/skip-intro/bulk-detect](#post-apiv1skip-introbulk-detect)
       - [GET /api/v1/skip-intro/series/:id/patterns](#get-apiv1skip-introseriesidpatterns)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -76,20 +72,25 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["External<br/>APIs"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           ▼                      ▼
+                    ┌─────────────┐        ┌──────────┐
+                    │ PostgreSQL  │        │ External │
+                    │   (pgx)     │        │   APIs   │
+                    └─────────────┘        └──────────┘
+  ```
 
 ### Database Schema
 
@@ -293,7 +294,9 @@ require (
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -448,21 +451,6 @@ Queue bulk detection for series
 Get series intro patterns
 
 ---
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

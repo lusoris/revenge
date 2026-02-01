@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -18,10 +17,6 @@
 - [Proxy/VPN (REQUIRED for Cloudflare)](#proxyvpn-required-for-cloudflare)
 - [Headless browser (for Cloudflare bypass)](#headless-browser-for-cloudflare-bypass)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -63,20 +58,42 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-    node2["Pornhub Link<br/>(verified URL)"]
-    node3["Pornhub.com<br/>(Cloudflare)"]
-    node4["View Count<br/>Subscribers"]
-    node5["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"]
-    node6["Headless<br/>Browser<br/>(Cloudflare)"]
-    node3 --> node4
-    node1 --> node2
-    node2 --> node3
-    node4 --> node5
-    node5 --> node6
 ```
+┌───────────────────┐
+│   Performer       │
+│   Profile Page    │
+│   (Revenge UI)    │
+└─────────┬─────────┘
+          │ Display external links
+          ▼
+┌───────────────────┐
+│   Pornhub Link    │───→ Opens in new tab
+│   (verified URL)  │     (user's browser)
+└─────────┬─────────┘
+          │ Metadata only
+          │ (NO streaming)
+          ▼
+┌───────────────────┐     ┌──────────────┐
+│   Pornhub.com     │────▶│  View Count  │
+│   (Cloudflare)    │     │  Subscribers │
+└───────────────────┘     │  Video Count │
+          │               └──────────────┘
+   ┌──────┴────────┐
+   │  HTTP_CLIENT  │
+   │  (REQUIRED    │
+   │   proxy/VPN)  │
+   └───────────────┘
+          │
+   ┌──────┴───────┐
+   │  Headless    │
+   │  Browser     │
+   │  (Cloudflare)│
+   └──────────────┘
+
+IMPORTANT: This integration does NOT stream any content.
+Only stores verified links and basic metrics.
+```
+
 
 ### Integration Structure
 
@@ -98,10 +115,6 @@ internal/integration/pornhub/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -183,7 +196,9 @@ type LinkStatus struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -243,21 +258,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

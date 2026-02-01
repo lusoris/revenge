@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -19,10 +18,6 @@
 - [Match](#match)
 - [Refresh](#refresh)
 - [Providers](#providers)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -64,24 +59,52 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Metadata<br/>Service"]
-    node4["Priority<br/>Chain"]
-    node5["L1 Cache<br/>L2 Cache<br/>▼                                ▼"]
-    node6["PRIMARY [local Arr services]<br/>▼                                                   ▼<br/>────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐"]
-    node7["SUPPLEMENTARY [external APIs]<br/>▼<br/>──────┐  ┌──────────────┐  ┌─────────────"]
-    node8["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
-    node5 --> node6
-    node6 --> node7
-    node7 --> node8
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  API Handler │────▶│  Metadata   │
+│  (Web/App)  │◀────│   (ogen)     │◀────│   Service   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                 │
+                                          ┌──────┴──────┐
+                                          │  Priority   │
+                                          │   Chain     │
+                                          └──────┬──────┘
+                                                 │
+                ┌────────────────────────────────┼──────────────────────────┐
+                │ L1 Cache                       │ L2 Cache                 │
+                ▼                                ▼                          │
+          ┌──────────┐                    ┌──────────┐                     │
+          │  Otter   │                    │Dragonfly │                     │
+          │(in-mem)  │                    │(distrib) │                     │
+          └──────────┘                    └──────────┘                     │
+                                                 │                          │
+                ┌────────────────────────────────┴──────────────────┐      │
+                │ PRIMARY (local Arr services)                      │      │
+                ▼                                                   ▼      │
+       ┌────────────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐       │
+       │ Radarr/Sonarr  │  │ Lidarr  │  │Chaptarr │  │ Whisparr │       │
+       │ (LOCAL cache)  │  │(music)  │  │(books)  │  │  (QAR)   │       │
+       └────────┬───────┘  └────┬────┘  └────┬────┘  └─────┬────┘       │
+                │               │            │             │             │
+                └───────────────┴────────────┴─────────────┘             │
+                                │                                        │
+                ┌───────────────┴───────────────────────┐                │
+                │ SUPPLEMENTARY (external APIs)          │                │
+                ▼                                        ▼                ▼
+       ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────┐
+       │  TMDb/TVDB   │  │ MusicBrainz  │  │ OpenLibrary  │  │ StashDB  │
+       │ (via proxy)  │  │ (via proxy)  │  │ (via proxy)  │  │(via proxy)│
+       └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └─────┬────┘
+              │                  │                 │                 │
+              └──────────────────┴─────────────────┴─────────────────┘
+                                 │
+                          ┌──────┴────────┐
+                          │ HTTP_CLIENT   │
+                          │ (optional     │
+                          │  proxy/VPN)   │
+                          └───────────────┘
+```
+
 
 ### Service Structure
 
@@ -132,10 +155,6 @@ internal/service/metadata/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -210,7 +229,9 @@ type Metadata struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -321,21 +342,6 @@ PUT    /api/v1/metadata/providers/:name  # Configure provider
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

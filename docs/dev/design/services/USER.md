@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -20,10 +19,6 @@
 - [Profile](#profile)
 - [Notifications](#notifications)
 - [GDPR](#gdpr)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -65,20 +60,26 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["File<br/>Storage"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  API Handler │────▶│   Service   │
+│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                 │
+                     ┌──────────────────────┼────────────┐
+                     ▼                      ▼            ▼
+                ┌──────────┐          ┌───────────┐  ┌────────┐
+                │Repository│          │  Storage  │  │  Cache │
+                │  (sqlc)  │          │  Service  │  │(otter) │
+                └────┬─────┘          └─────┬─────┘  └────────┘
+                     │                      │
+                     ▼                      ▼
+                ┌─────────────┐        ┌──────────┐
+                │ PostgreSQL  │        │ File     │
+                │   (pgx)     │        │ Storage  │
+                └─────────────┘        └──────────┘
+```
+
 
 ### Service Structure
 
@@ -112,10 +113,6 @@ internal/service/user/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -169,7 +166,9 @@ type UserProfile struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -235,21 +234,6 @@ DELETE /api/v1/users/me/delete/:id            # Cancel deletion
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

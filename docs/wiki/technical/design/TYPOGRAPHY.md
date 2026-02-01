@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Typography](#typography)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Typography in Revenge uses a modern + serif accent approach. Inter handles all b
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Typography in Revenge uses a modern + serif accent approach. Inter handles all b
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

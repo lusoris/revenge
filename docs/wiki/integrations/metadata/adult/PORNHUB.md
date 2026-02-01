@@ -38,8 +38,8 @@ LINK-ONLY integration for QAR performer profiles. Stores verified channel URLs f
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

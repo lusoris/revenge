@@ -38,8 +38,8 @@ ListenBrainz is an open-source alternative to Last.fm for tracking music listeni
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

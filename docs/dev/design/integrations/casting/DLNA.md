@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [DLNA server configuration](#dlna-server-configuration)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,16 +55,39 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Smart TV<br/>DLNA Client"]
-    node2["Revenge<br/>MediaServer"]
-    node3["Renderer<br/>(Playback)"]
-    node4["AVTransport<br/>Service"]
-    node1 --> node2
-    node3 --> node4
-    node2 --> node3
 ```
+┌──────────────┐    SSDP Discovery    ┌─────────────────┐
+│   Smart TV   │◀─────(UDP 1900)─────▶│    Revenge      │
+│  DLNA Client │                      │  MediaServer    │
+└──────┬───────┘                      └────────┬────────┘
+       │                                       │
+       │  1. Discover servers (M-SEARCH)      │
+       │──────────────────────────────────────▶│
+       │                                       │
+       │  2. Get device description (XML)     │
+       │◀──────────────────────────────────────│
+       │                                       │
+       │  3. Browse content (SOAP)            │
+       │──────────────────────────────────────▶│
+       │   <Browse ObjectID="0"/>             │
+       │                                       │
+       │  4. Receive content list (DIDL-Lite) │
+       │◀──────────────────────────────────────│
+       │   <?xml version="1.0"?>              │
+       │   <DIDL-Lite>...</DIDL-Lite>         │
+       │                                       │
+       │  5. Request media URL                │
+       │──────────────────────────────────────▶│
+       │                                       │
+       │  6. Stream media (HTTP)              │
+       │◀──────────────────────────────────────│
+       │                                       │
+┌──────▼───────┐                      ┌────────▼────────┐
+│   Renderer   │                      │   AVTransport   │
+│   (Playback) │◀──Control (SOAP)────│   Service       │
+└──────────────┘                      └─────────────────┘
+```
+
 
 ### Integration Structure
 
@@ -91,10 +109,6 @@ internal/integration/dlnaupnp/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -229,7 +243,9 @@ type DLNAProfile struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -315,21 +331,6 @@ GET /api/v1/dlna/status
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

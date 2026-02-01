@@ -1,7 +1,6 @@
 ## Table of Contents
 
 - [Revenge - Architecture v2](#revenge-architecture-v2)
-  - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
@@ -26,9 +25,6 @@ Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +34,8 @@ Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

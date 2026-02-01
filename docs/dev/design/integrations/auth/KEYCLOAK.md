@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Keycloak OIDC configuration](#keycloak-oidc-configuration)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,18 +56,49 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["User<br/>Browser"]
-    node2["Keycloak<br/>Auth Server"]
-    node3["Revenge<br/>Server"]
-    node4["Keycloak<br/>Token Endpoint"]
-    node5["User<br/>Session"]
-    node1 --> node2
-    node3 --> node4
-    node2 --> node3
-    node4 --> node5
 ```
+┌──────────────┐    1. Auth Request   ┌─────────────────┐
+│    User      │─────(redirect)──────▶│    Keycloak     │
+│   Browser    │                      │   Auth Server   │
+└──────┬───────┘                      └────────┬────────┘
+       │                                       │
+       │ 2. Login page (realm selection)      │
+       │◀──────────────────────────────────────│
+       │                                       │
+       │ 3. Submit credentials                │
+       │──────────────────────────────────────▶│
+       │                  ┌────────────────────┤
+       │                  │  Authenticate:     │
+       │                  │  - Local users     │
+       │                  │  - LDAP/AD         │
+       │                  │  - Social login    │
+       │                  │  - SAML federation │
+       │                  │  - Custom SPI      │
+       │                  └────────────────────┤
+       │ 4. Authorization code                │
+       │◀──────────────────────────────────────│
+       │   (redirect to callback)              │
+       ▼                                       │
+┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+│   Revenge    │─────for tokens──────▶│    Keycloak     │
+│   Server     │                      │  Token Endpoint │
+│              │◀─────────────────────│                 │
+│              │  6. ID + access +    │                 │
+└──────┬───────┘     refresh tokens   └─────────────────┘
+       │
+       │ 7. Verify token (JWKS)
+       │ 8. Introspect token (optional)
+       │ 9. Get user info
+       │ 10. Map roles/groups → Revenge roles
+       │ 11. Apply audience validation
+       │ 12. Create session
+       ▼
+┌──────────────┐
+│   User       │
+│  Session     │
+└──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -94,10 +120,6 @@ internal/integration/keycloak/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -213,7 +235,9 @@ type TokenIntrospection struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -328,21 +352,6 @@ POST /api/v1/auth/oidc/introspect
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

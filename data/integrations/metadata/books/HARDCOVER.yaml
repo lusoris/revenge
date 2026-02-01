@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Book reading tracker and scrobbling - Goodreads alternative with GraphQL API'
 wiki_tagline: '> Hardcover - Track book reading and sync shelves'
-wiki_overview: Social reading platform with open GraphQL API. Sync reading progress and shelves between Revenge and Hardcover.
-  Import/export reading history. Community ratings and reviews. OAuth 2.0 authentication. Modern alternative to Goodreads
-  with better API access.
+wiki_overview: 'Social reading platform with open GraphQL API. Sync reading progress and shelves between Revenge and Hardcover. Import/export reading history. Community ratings and reviews. OAuth 2.0 authentication. Modern alternative to Goodreads with better API access.'
 sources:
 - name: Hardcover API
   url: https://hardcover.app/docs/api
@@ -45,19 +43,34 @@ integration_id: hardcover
 external_service: Hardcover
 api_base_url: https://api.hardcover.app/v1/graphql
 auth_method: oauth2
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Book Library"]
-      node2["Hardcover<br/>Account"]
-      node3["River Queue<br/>(background)"]
-      node4["User Shelves<br/>- Want to Read"]
-      node5["Hardcover API<br/>(GraphQL)"]
-      node1 --> node2
-      node3 --> node4
-      node2 --> node3
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────────┐                    ┌──────────────────┐
+  │  Revenge         │                    │   Hardcover      │
+  │  Book Library    │◀──── Two-Way ────▶│   Account        │
+  └────────┬─────────┘       Sync        └────────┬─────────┘
+           │                                       │
+           │ Reading Events                        │
+           ▼                                       ▼
+  ┌──────────────────┐                    ┌──────────────────┐
+  │   River Queue    │                    │   User Shelves   │
+  │   (background)   │                    │   - Want to Read │
+  └────────┬─────────┘                    │   - Reading      │
+           │                              │   - Read         │
+           ▼                              └──────────────────┘
+  ┌──────────────────┐
+  │  Hardcover API   │
+  │  (GraphQL)       │
+  └──────────────────┘
+
+  Sync Types:
+  - Reading progress → Hardcover
+  - Book completion → Hardcover
+  - Shelf changes ← Hardcover
+  - Ratings ← Hardcover (enrichment)
+  ```
+
 api_details: |
   **Protocol**: GraphQL
   **Base URL**: `https://api.hardcover.app/v1/graphql`
@@ -76,6 +89,7 @@ api_details: |
   - `currently_reading` - In progress
   - `read` - Completed
   - Custom shelves supported
+
 database_schema: |
   ```sql
   -- Hardcover user connections
@@ -103,6 +117,7 @@ database_schema: |
   );
   CREATE INDEX idx_hardcover_mapping ON hardcover_book_mappings(hardcover_id);
   ```
+
 module_structure: |
   ```
   internal/scrobbling/hardcover/
@@ -114,6 +129,7 @@ module_structure: |
   ├── queries.graphql              # GraphQL queries
   └── hardcover_test.go
   ```
+
 key_interfaces: |
   ```go
   // Hardcover scrobbler
@@ -140,6 +156,7 @@ key_interfaces: |
     DeleteToken(ctx context.Context, userID uuid.UUID) error
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/Khan/genqlient` - Type-safe GraphQL client
@@ -150,12 +167,14 @@ dependencies: |
 
   **External**:
   - Hardcover API (OAuth 2.0 required)
+
 env_vars: |
   ```bash
   HARDCOVER_CLIENT_ID=your_client_id
   HARDCOVER_CLIENT_SECRET=your_client_secret
   HARDCOVER_REDIRECT_URI=https://your-revenge-server/api/v1/integrations/hardcover/callback
   ```
+
 config_keys: |
   ```yaml
   scrobbling:
@@ -168,6 +187,7 @@ config_keys: |
         interval: 30m
         direction: bidirectional    # 'to_hardcover', 'from_hardcover', 'bidirectional'
   ```
+
 component_interaction: |
   **OAuth Connection Flow**:
   1. User clicks "Connect Hardcover" in settings
@@ -191,6 +211,7 @@ component_interaction: |
   3. Compare with local shelves
   4. Sync new additions both directions
   5. Update book ratings from Hardcover
+
 oauth_flow: |
   **OAuth 2.0 Authorization Code Flow**:
   ```go
@@ -219,6 +240,7 @@ oauth_flow: |
     return h.tokenStore.SaveToken(ctx, userID, token)
   }
   ```
+
 graphql_queries: |
   ```graphql
   # Search for books
@@ -259,6 +281,7 @@ graphql_queries: |
     }
   }
   ```
+
 error_handling: |
   **OAuth Errors**:
   - Token expired → Refresh using refresh_token
@@ -268,6 +291,7 @@ error_handling: |
   **Sync Errors**:
   - Book not found on Hardcover → Skip, log warning
   - Rate limited → Retry with backoff
+
 unit_tests: |
   ```go
   func TestHardcover_SyncProgress(t *testing.T) {
@@ -279,6 +303,7 @@ unit_tests: |
     assert.True(t, mockClient.UpdateProgressCalled)
   }
   ```
+
 best_practices: |
   **Token Management**:
   - Encrypt tokens at rest

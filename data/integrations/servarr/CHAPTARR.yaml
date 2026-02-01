@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Book & audiobook management automation (uses Readarr API)'
 wiki_tagline: '> Automatic book and audiobook downloads with Chaptarr'
-wiki_overview: Chaptarr manages book and audiobook downloads using the Readarr API. Add authors and their works download automatically.
-  Monitors for new releases. Supports both ebook and audiobook formats. Webhooks notify Revenge when books are imported. Connect
-  with your Chaptarr/Readarr URL and API key.
+wiki_overview: Chaptarr manages book and audiobook downloads using the Readarr API.
+  Add authors and their works download automatically. Monitors for new releases. Supports
+  both ebook and audiobook formats. Webhooks notify Revenge when books are imported.
+  Connect with your Chaptarr/Readarr URL and API key.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -58,6 +59,7 @@ integration_id: chaptarr
 external_service: Chaptarr
 auth_method: api_key
 api_base_url: http://localhost:8787/api/v1
+
 dual_role_metadata_and_downloads: |
   **CRITICAL: Chaptarr serves DUAL purposes in the Revenge architecture**:
 
@@ -88,17 +90,21 @@ dual_role_metadata_and_downloads: |
   - Direct GoodReads/OpenLibrary/Audible integrations are SUPPLEMENTARY for enrichment
   - This dual-role pattern is consistent across ALL Arr services
   - Chaptarr uniquely handles BOTH ebook and audiobook formats with same metadata source
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Request"]
-      node2["Chaptarr<br/>Integration"]
-      node3["Chaptarr<br/>(Readarr)"]
-      node4["Webhook<br/>Handler"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│  Chaptarr    │────▶│  Chaptarr   │
+  │  Request    │◀────│ Integration  │◀────│ (Readarr)   │
+  │  System     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
 api_details: |
   **API Version**: v1 (Readarr-compatible API)
   **Base URL**: `http://localhost:8787/api/v1` (configurable)
@@ -114,6 +120,7 @@ api_details: |
   - `/calendar` - Get upcoming releases
 
   **Note**: Chaptarr uses Readarr API for book/audiobook management
+
 database_schema: |
   **Schema**: `public`
 
@@ -165,6 +172,7 @@ database_schema: |
     UNIQUE(book_id)
   );
   ```
+
 module_structure: |
   ```
   internal/integrations/chaptarr/
@@ -176,6 +184,7 @@ module_structure: |
   ├── types.go                     # Chaptarr API types
   └── chaptarr_test.go
   ```
+
 key_interfaces: |
   ```go
   // Chaptarr integration service
@@ -218,6 +227,7 @@ key_interfaces: |
     HasFile         bool     `json:"hasFile"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -228,6 +238,7 @@ dependencies: |
 
   **External Services**:
   - Chaptarr/Readarr v1+ (self-hosted)
+
 env_vars: |
   ```bash
   # Chaptarr instance
@@ -238,6 +249,7 @@ env_vars: |
   CHAPTARR_AUTO_SYNC=true
   CHAPTARR_SYNC_INTERVAL=300  # 5 minutes
   ```
+
 config_keys: |
   ```yaml
   integrations:
@@ -250,6 +262,7 @@ config_keys: |
           auto_sync: true
           sync_interval: 300
   ```
+
 component_interaction: |
   **Add Author to Chaptarr** (from Revenge request):
   1. User requests author in Revenge
@@ -275,6 +288,7 @@ component_interaction: |
   4. Compare with chaptarr_books table
   5. Update monitored status, has_file, file_path
   6. Create/update books in Revenge library
+
 api_request_examples: |
   **Add Author**:
   ```
@@ -310,6 +324,7 @@ api_request_examples: |
     "authorId": 1
   }
   ```
+
 webhook_handling: |
   **Supported Events**:
   - **BookDownload**: Book downloaded and imported
@@ -348,6 +363,7 @@ webhook_handling: |
   3. Determine if ebook or audiobook based on file extension or isAudiobook flag
   4. Update chaptarr_books table with file info
   5. Trigger library rescan to import book
+
 quality_profiles: |
   **Book Quality Profiles**:
   - EPUB Only
@@ -359,11 +375,13 @@ quality_profiles: |
   - M4B (Audiobook format with chapters)
   - MP3 (audiobook)
   - Any
+
 metadata_profiles: |
   **Metadata Profiles**:
   - Standard: Novels and novellas only
   - Everything: All book types (short stories, collections, comics)
   - Audiobooks Only: Filter for audiobook editions
+
 book_vs_audiobook: |
   **Dual Format Support**:
   - Chaptarr can monitor for both ebook and audiobook editions
@@ -374,6 +392,7 @@ book_vs_audiobook: |
   **File Extensions**:
   - eBooks: .epub, .mobi, .azw3, .pdf
   - Audiobooks: .m4b, .mp3 (in folders with multiple tracks)
+
 unit_tests: |
   ```go
   func TestChaptarrService_AddAuthor(t *testing.T) {
@@ -388,6 +407,7 @@ unit_tests: |
     // Test handling both ebook and audiobook downloads
   }
   ```
+
 integration_tests: |
   ```go
   func TestChaptarr_FullWorkflow(t *testing.T) {

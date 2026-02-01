@@ -38,8 +38,8 @@ Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the large
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

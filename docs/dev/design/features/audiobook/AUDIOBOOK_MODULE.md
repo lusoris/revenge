@@ -24,10 +24,6 @@
       - [POST /api/v1/audiobooks/:id/bookmarks](#post-apiv1audiobooksidbookmarks)
       - [GET /api/v1/audiobooks/authors](#get-apiv1audiobooksauthors)
       - [GET /api/v1/audiobooks/series](#get-apiv1audiobooksseries)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -75,20 +71,25 @@ Complete audiobook library:
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["External<br/>APIs"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           ▼                      ▼
+                    ┌─────────────┐        ┌──────────┐
+                    │ PostgreSQL  │        │ External │
+                    │   (pgx)     │        │   APIs   │
+                    └─────────────┘        └──────────┘
+  ```
 
 ### Database Schema
 
@@ -274,7 +275,9 @@ type ProgressTracker interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 **Environment Variables**:
@@ -394,21 +397,6 @@ List all audiobook authors
 List all audiobook series
 
 ---
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

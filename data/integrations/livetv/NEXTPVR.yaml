@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Windows/Linux DVR software with IPTV support'
 wiki_tagline: '> Record live TV with NextPVR'
-wiki_overview: Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRun, and IPTV sources. Browse
-  the guide in Revenge and schedule recordings. Recorded shows automatically appear in your library. Available for Windows
-  and Linux servers.
+wiki_overview: Connect NextPVR for live TV and DVR functionality. Supports cable card,
+  HDHomeRun, and IPTV sources. Browse the guide in Revenge and schedule recordings.
+  Recorded shows automatically appear in your library. Available for Windows and Linux
+  servers.
 sources:
 - name: gohlslib (HLS)
   url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
@@ -43,21 +44,41 @@ integration_id: nextpvr
 external_service: NextPVR
 api_base_url: http://nextpvr.local:8866
 auth_method: api_key
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Web Client"]
-      node2["EPG Service<br/>(Revenge)"]
-      node3["NextPVR API<br/>/service"]
-      node4["Player<br/>(Vidstack)"]
-      node5["NextPVR<br/>Stream"]
-      node6["TV Tuner/<br/>Recordings"]
-      node1 --> node2
-      node4 --> node5
-      node2 --> node3
-      node3 --> node4
-      node5 --> node6
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    1. View EPG      ┌─────────────────┐
+  │   Revenge    │────────────────────▶│   EPG Service   │
+  │  Web Client  │                     │  (Revenge)      │
+  └──────┬───────┘                     └────────┬────────┘
+         │                                      │
+         │ 2. Select channel                   │ 3. Fetch EPG from
+         │                                      │    NextPVR
+         │                                      ▼
+         │                             ┌────────────────┐
+         │                             │  NextPVR API   │
+         │                             │  /service      │
+         │                             └────────┬───────┘
+         │                                      │
+         │ 4. Play live TV                     │ 5. Get stream URL
+         │    or recording                      │
+         ▼                                      ▼
+  ┌──────────────┐                     ┌────────────────┐
+  │   Player     │    6. Request       │  NextPVR       │
+  │  (Vidstack)  │────HLS stream──────▶│  Stream        │
+  └──────────────┘                     │  /live/...     │
+                                        │  /recording/...│
+                                        └────────┬───────┘
+                                                 │
+                                         7. Stream from
+                                            tuner/file
+                                                 ▼
+                                        ┌────────────────┐
+                                        │ TV Tuner/      │
+                                        │ Recordings     │
+                                        └────────────────┘
+  ```
+
 protocol_details: |
   **NextPVR JSON-RPC API**:
 
@@ -84,6 +105,7 @@ protocol_details: |
   - Format: HLS or direct stream
   - Transcode: Optional real-time transcoding
   - Quality: Configurable profiles
+
 module_structure: |
   ```
   internal/
@@ -99,6 +121,7 @@ module_structure: |
         module.go         # fx module
         client_test.go
   ```
+
 key_interfaces: |
   ```go
   // NextPVRClient manages NextPVR JSON-RPC API
@@ -214,6 +237,7 @@ key_interfaces: |
       Message string `json:"message"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/bluenviron/gohlslib/v2` - HLS handling
@@ -223,6 +247,7 @@ dependencies: |
 
   **External Services**:
   - NextPVR server (https://github.com/sub3/NextPVR)
+
 env_vars: |
   ```bash
   REVENGE_NEXTPVR_ENABLED=true
@@ -230,6 +255,7 @@ env_vars: |
   REVENGE_NEXTPVR_PIN=0000
   REVENGE_NEXTPVR_SYNC_INTERVAL=15m
   ```
+
 config_keys: |
   ```yaml
   livetv:
@@ -241,6 +267,7 @@ config_keys: |
       transcode: false           # Enable transcoding
       transcode_profile: "Default"
   ```
+
 authentication: |
   **PIN Authentication**:
 
@@ -273,6 +300,7 @@ authentication: |
       // ... implementation
   }
   ```
+
 component_interaction: |
   **EPG Sync Workflow**:
   1. Periodic River job (15min intervals)
@@ -293,6 +321,7 @@ component_interaction: |
   2. Call `recording.stream.start` with recording ID
   3. Receive stream URL or file path
   4. Stream through Revenge or direct access
+
 api_endpoints: |
   **Revenge API Endpoints**:
 
@@ -305,12 +334,14 @@ api_endpoints: |
   DELETE /api/v1/livetv/nextpvr/recordings/{id}
   POST /api/v1/livetv/nextpvr/sync
   ```
+
 error_handling: |
   **Common Errors**:
   - **Authentication Failed**: Wrong PIN
   - **Channel Not Found**: Invalid channel ID
   - **Tuner Busy**: All tuners in use
   - **Recording Failed**: Disk space or permission issues
+
 unit_tests: |
   ```go
   func TestNextPVRClient_GetChannels(t *testing.T) {
@@ -330,6 +361,7 @@ unit_tests: |
       assert.Len(t, sid, 32)  // MD5 hex string
   }
   ```
+
 integration_tests: |
   ```go
   func TestNextPVR_FullWorkflow(t *testing.T) {
@@ -356,6 +388,7 @@ integration_tests: |
       // May be empty if no recordings
   }
   ```
+
 best_practices: |
   **Configuration**:
   - Secure PIN with environment variables

@@ -38,8 +38,8 @@ ENRICHMENT metadata source providing encyclopedic context. Plot summaries, produ
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

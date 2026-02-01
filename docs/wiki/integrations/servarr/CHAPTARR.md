@@ -38,8 +38,8 @@ Chaptarr manages book and audiobook downloads using the Readarr API. Add authors
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

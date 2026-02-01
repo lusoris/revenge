@@ -46,8 +46,8 @@ Scrobble your viewing and listening history to external services. Connect Trakt 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

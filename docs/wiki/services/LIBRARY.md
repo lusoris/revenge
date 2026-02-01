@@ -38,8 +38,8 @@ Libraries organize your media by type and location. Create separate libraries fo
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

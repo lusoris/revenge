@@ -38,8 +38,8 @@ The Auth service handles user login, registration, and password management. It s
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

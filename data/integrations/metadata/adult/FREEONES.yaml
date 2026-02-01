@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> ENRICHMENT-only performer metadata provider for QAR content'
 wiki_tagline: '> FreeOnes - Performer enrichment for Whisparr/StashDB'
-wiki_overview: ENRICHMENT-only metadata source for QAR performers (crew). Provides additional biographical data, aliases,
-  and social media links not available in StashDB. **Web scraping** with GraphQL-like API. Used to supplement existing performer
-  profiles. **Optional proxy/VPN routing** recommended (via HTTP_CLIENT service).
+wiki_overview: 'ENRICHMENT-only metadata source for QAR performers (crew). Provides additional biographical data, aliases, and social media links not available in StashDB. **Web scraping** with GraphQL-like API. Used to supplement existing performer profiles. **Optional proxy/VPN routing** recommended (via HTTP_CLIENT service).'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -57,19 +55,42 @@ integration_id: freeones
 external_service: FreeOnes
 api_base_url: https://www.freeones.com
 data_access_method: web_scraping
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Performer<br/>Enrichment"]
-      node2["Whisparr/StashDB<br/>(performer base)"]
-      node3["FreeOnes<br/>(additional<br/>details)"]
-      node4["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
-      node5["Rate Limiter<br/>(2 req/sec)"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────────┐
+  │  Revenge         │
+  │  Performer       │
+  │  Enrichment      │
+  └────────┬─────────┘
+           │
+           ├──────────────────────────────────────────┐
+           │ PRIMARY                                   │ ENRICHMENT
+           ▼                                           ▼
+  ┌─────────────────┐                          ┌──────────────┐
+  │ Whisparr/StashDB│                          │   FreeOnes   │
+  │ (performer base)│                          │ (additional  │
+  │                 │                          │  details)    │
+  └─────────────────┘                          └──────┬───────┘
+                                                      │
+                                               ┌──────┴────────┐
+                                               │  HTTP_CLIENT  │
+                                               │  (RECOMMENDED │
+                                               │   proxy/VPN)  │
+                                               └───────────────┘
+                                                      │
+                                               ┌──────┴───────┐
+                                               │ Rate Limiter │
+                                               │ (2 req/sec)  │
+                                               └──────────────┘
+
+  Data Flow:
+  1. Performer exists in Whisparr/StashDB (base profile)
+  2. Enrichment job queries FreeOnes for additional data
+  3. Merge: aliases, measurements, social links, career dates
+  4. Store enriched profile in local database
+  ```
+
 api_details: |
   **Data Access**: Web scraping + internal API
   **Base URL**: `https://www.freeones.com`
@@ -91,6 +112,7 @@ api_details: |
   - Use reasonable rate limits (2 req/sec)
   - Use proxy/VPN to avoid IP blocks
   - Cache aggressively (data changes infrequently)
+
 database_schema: |
   **Schema**: `qar` (pirate-themed obfuscation)
 
@@ -154,6 +176,7 @@ database_schema: |
   );
   CREATE INDEX idx_performer_enrichment_expires ON qar.performer_enrichment(expires_at);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/freeones/
@@ -166,6 +189,7 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (2/sec)
   └── freeones_test.go
   ```
+
 key_interfaces: |
   ```go
   // FreeOnes enrichment provider
@@ -250,6 +274,7 @@ key_interfaces: |
     Username string `json:"username,omitempty"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -265,6 +290,7 @@ dependencies: |
   **Internal Services**:
   - HTTP_CLIENT - Proxy/VPN routing (RECOMMENDED for scraping)
   - Whisparr/StashDB - Base performer data to enrich
+
 env_vars: |
   ```bash
   # FreeOnes integration
@@ -281,6 +307,7 @@ env_vars: |
   FREEONES_PROXY_ENABLED=true
   FREEONES_PROXY_URL=socks5://127.0.0.1:9050
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -313,6 +340,7 @@ config_keys: |
           priority: low              # Background job priority
           batch_size: 10             # Performers per batch job
   ```
+
 component_interaction: |
   **Performer Enrichment Flow**:
   1. New performer added to database (from Whisparr/StashDB)
@@ -340,6 +368,7 @@ component_interaction: |
   - Append new aliases to existing list
   - Add social links not already present
   - Update enrichment timestamp
+
 scraping_implementation: |
   **HTML Parsing with goquery**:
   ```go
@@ -429,6 +458,7 @@ scraping_implementation: |
     return profile, nil
   }
   ```
+
 enrichment_role: |
   **ENRICHMENT-Only Provider** (not primary or fallback)
 
@@ -483,6 +513,7 @@ enrichment_role: |
     return j.repo.UpdatePerformer(ctx, performer)
   }
   ```
+
 proxy_vpn_support: |
   **Proxy/VPN Routing** (RECOMMENDED for web scraping)
 
@@ -525,6 +556,7 @@ proxy_vpn_support: |
     }
   }
   ```
+
 error_handling: |
   **HTTP Error Codes**:
   - 404 Not Found → Performer page doesn't exist
@@ -541,6 +573,7 @@ error_handling: |
   - 403/429: Rotate proxy, retry after 30 seconds
   - 503: Wait 60 seconds, retry with new proxy
   - Network errors: Retry 3 times with exponential backoff
+
 unit_tests: |
   ```go
   func TestFreeOnes_ParseProfile(t *testing.T) {
@@ -568,6 +601,7 @@ unit_tests: |
     // Ensure rate limit is enforced (2 req/sec)
   }
   ```
+
 integration_tests: |
   ```go
   func TestFreeOnes_FullEnrichment(t *testing.T) {
@@ -593,6 +627,7 @@ integration_tests: |
     }
   }
   ```
+
 caching_strategy: |
   **Cache Layers**:
   - **L1**: In-memory cache (otter) for search results (1 hour TTL)
@@ -608,6 +643,7 @@ caching_strategy: |
   - Performer data changes infrequently
   - Web scraping should be minimized
   - 7-day cache reduces load on FreeOnes
+
 best_practices: |
   **Scraping Ethics**:
   - Respect robots.txt directives

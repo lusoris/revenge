@@ -38,8 +38,8 @@ Get notified about important events through multiple channels. Receive alerts wh
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

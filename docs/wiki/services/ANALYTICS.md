@@ -38,8 +38,8 @@ Analytics provides insights into how your server is used. See most-watched movie
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

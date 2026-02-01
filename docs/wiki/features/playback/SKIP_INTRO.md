@@ -46,8 +46,8 @@ Skip repetitive intros and credits with one click. Revenge automatically detects
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -18,10 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Complete multi-language support for UI, metadata, and content.'
 wiki_tagline: '> Use Revenge in your language with localized metadata'
-wiki_overview: Full internationalization support for the entire application. The UI translates to your preferred language.
-  Metadata (titles, descriptions, cast names) fetches in your locale when available. Subtitle language preferences remembered
-  per user. Date, time, and number formats adapt to regional standards. Community-contributed translations keep adding new
-  languages.
+wiki_overview: Full internationalization support for the entire application. The UI
+  translates to your preferred language. Metadata (titles, descriptions, cast names)
+  fetches in your locale when available. Subtitle language preferences remembered
+  per user. Date, time, and number formats adapt to regional standards. Community-contributed
+  translations keep adding new languages.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -60,21 +61,20 @@ design_refs:
 feature_name: Revenge - Internationalization (i18n)
 module_name: revenge___internationalization_(i18n)
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -224,6 +224,7 @@ key_interfaces: |
     Source      string    `db:"source" json:"source"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -235,11 +236,13 @@ dependencies: |
   **Frontend**:
   - `svelte-i18n` - Svelte i18n library
   - `@formatjs/intl` - Internationalization formatters
+
 env_vars: |
   ```bash
   DEFAULT_LOCALE=en-US
   SUPPORTED_LOCALES=en-US,de-DE,fr-FR,es-ES,it-IT,ja-JP,zh-CN
   ```
+
 config_keys: |
   ```yaml
   i18n:
@@ -255,6 +258,7 @@ config_keys: |
     fallback_locale: en-US
     metadata_fetch_locales: true   # Fetch metadata in user's locale
   ```
+
 component_interaction: |
   **Locale Detection Flow**:
   1. HTTP request arrives with Accept-Language header
@@ -283,6 +287,7 @@ component_interaction: |
   2. Translations exported to JSON files
   3. JSON files loaded into database via migration
   4. Cache invalidated for affected locales
+
 api_endpoints: |
   ```
   GET  /api/v1/i18n/locales                    # List supported locales
@@ -290,6 +295,7 @@ api_endpoints: |
   PUT  /api/v1/users/{id}/locale               # Update user locale preferences
   GET  /api/v1/i18n/metadata/{type}/{id}/{locale}  # Get localized metadata
   ```
+
 unit_tests: |
   ```go
   func TestI18nService_GetUserLocale(t *testing.T) {
@@ -335,6 +341,7 @@ unit_tests: |
     // Test user preference override
   }
   ```
+
 integration_tests: |
   ```go
   func TestI18n_EndToEnd(t *testing.T) {

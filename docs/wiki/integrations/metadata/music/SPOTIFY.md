@@ -38,8 +38,8 @@ SUPPLEMENTARY enrichment for music metadata. Provides: (1) High-quality album ar
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

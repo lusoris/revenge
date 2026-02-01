@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Plugin Architecture Decision](#plugin-architecture-decision)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge deliberately chose not to implement a plugin system. Instead, common int
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge deliberately chose not to implement a plugin system. Instead, common int
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

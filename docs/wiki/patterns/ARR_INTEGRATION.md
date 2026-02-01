@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Arr Integration Pattern](#arr-integration-pattern)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Arr Integration Pattern provides a consistent approach for integrating with 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Arr Integration Pattern provides a consistent approach for integrating with 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

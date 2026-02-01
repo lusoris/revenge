@@ -38,8 +38,8 @@ ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 mov
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

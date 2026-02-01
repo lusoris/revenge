@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -17,10 +16,6 @@
 - [Caching](#caching)
 - [Proxy/VPN (RECOMMENDED)](#proxyvpn-recommended)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -62,16 +57,37 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Data<br/>Reconciliation<br/>Service"]
-    node2["TheNude<br/>(Alias Database)"]
-    node3["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
-    node4["Rate Limiter<br/>(1 req/sec)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌───────────────────┐
+│   Data            │
+│   Reconciliation  │
+│   Service         │
+└─────────┬─────────┘
+          │
+          │ Alias Resolution
+          ▼
+┌───────────────────┐
+│     TheNude       │
+│  (Alias Database) │
+└─────────┬─────────┘
+          │
+   ┌──────┴────────┐
+   │  HTTP_CLIENT  │
+   │  (RECOMMENDED │
+   │   proxy/VPN)  │
+   └───────────────┘
+          │
+   ┌──────┴───────┐
+   │ Rate Limiter │
+   │ (1 req/sec)  │
+   └──────────────┘
+
+Use Case:
+Scene has "Performer A" → TheNude shows aliases
+→ "Performer A" = "Stage Name B" = "Name C"
+→ Link all instances to single performer record
+```
+
 
 ### Integration Structure
 
@@ -93,10 +109,6 @@ internal/integration/thenude/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -177,7 +189,9 @@ type AliasResult struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -230,21 +244,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

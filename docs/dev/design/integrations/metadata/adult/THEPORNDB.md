@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -17,10 +16,6 @@
 - [Caching](#caching)
 - [Proxy/VPN (optional)](#proxyvpn-optional)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -63,18 +58,34 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Metadata<br/>Service"]
-    node2["Whisparr<br/>(LOCAL cache)"]
-    node3["ThePornDB<br/>(fallback +<br/>enrichment)"]
-    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-    node5["Rate Limiter<br/>(10 req/sec)"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
-    node4 --> node5
 ```
+┌──────────────┐
+│  Revenge     │
+│  Metadata    │
+│  Service     │
+└──────┬───────┘
+       │
+       ├─────────────────────────────────────────┐
+       │ PRIMARY                                  │ SUPPLEMENTARY
+       ▼                                          ▼
+┌──────────────┐                           ┌──────────────┐
+│   Whisparr   │                           │  ThePornDB   │
+│ (LOCAL cache)│                           │  (fallback + │
+│              │                           │  enrichment) │
+└──────┬───────┘                           └──────┬───────┘
+       │                                          │
+       ▼                                   ┌──────┴────────┐
+┌──────────────┐                          │  HTTP_CLIENT  │
+│  StashDB     │                          │  (optional    │
+│  (external)  │                          │   proxy/VPN)  │
+└──────────────┘                          └───────────────┘
+                                                 │
+                                          ┌──────┴───────┐
+                                          │ Rate Limiter │
+                                          │ (10 req/sec) │
+                                          └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -96,10 +107,6 @@ internal/integration/theporndb/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -201,7 +208,9 @@ type StudioMetadata struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -254,21 +263,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

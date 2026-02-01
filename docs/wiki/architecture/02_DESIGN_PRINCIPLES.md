@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Revenge - Design Principles](#revenge-design-principles)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge follows strict design principles for maintainability and performance. Po
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge follows strict design principles for maintainability and performance. Po
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

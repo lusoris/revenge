@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Universal Plug and Play streaming to compatible devices'
 wiki_tagline: '> Stream to smart TVs and devices via DLNA'
-wiki_overview: Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles, and media players. Revenge appears
-  as a media server on your network. Browse and play content directly from your TV remote or device app. No app installation
-  required on the receiving device.
+wiki_overview: Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles,
+  and media players. Revenge appears as a media server on your network. Browse and
+  play content directly from your TV remote or device app. No app installation required
+  on the receiving device.
 design_refs:
 - title: 01_ARCHITECTURE
   path: ../../architecture/01_ARCHITECTURE.md
@@ -32,17 +33,41 @@ integration_name: DLNA/UPnP
 integration_id: dlnaupnp
 external_service: DLNA/UPnP
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Smart TV<br/>DLNA Client"]
-      node2["Revenge<br/>MediaServer"]
-      node3["Renderer<br/>(Playback)"]
-      node4["AVTransport<br/>Service"]
-      node1 --> node2
-      node3 --> node4
-      node2 --> node3
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    SSDP Discovery    ┌─────────────────┐
+  │   Smart TV   │◀─────(UDP 1900)─────▶│    Revenge      │
+  │  DLNA Client │                      │  MediaServer    │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │  1. Discover servers (M-SEARCH)      │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │  2. Get device description (XML)     │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │  3. Browse content (SOAP)            │
+         │──────────────────────────────────────▶│
+         │   <Browse ObjectID="0"/>             │
+         │                                       │
+         │  4. Receive content list (DIDL-Lite) │
+         │◀──────────────────────────────────────│
+         │   <?xml version="1.0"?>              │
+         │   <DIDL-Lite>...</DIDL-Lite>         │
+         │                                       │
+         │  5. Request media URL                │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │  6. Stream media (HTTP)              │
+         │◀──────────────────────────────────────│
+         │                                       │
+  ┌──────▼───────┐                      ┌────────▼────────┐
+  │   Renderer   │                      │   AVTransport   │
+  │   (Playback) │◀──Control (SOAP)────│   Service       │
+  └──────────────┘                      └─────────────────┘
+  ```
+
 protocol_details: |
   **UPnP/DLNA Protocols**:
 
@@ -70,6 +95,7 @@ protocol_details: |
   - **MediaServer**: Provides content (Revenge implements this)
   - **MediaRenderer**: Plays content (Smart TV implements this)
   - **MediaController**: Remote control (optional)
+
 module_structure: |
   ```
   internal/
@@ -92,6 +118,7 @@ module_structure: |
           useDLNAServer.ts     # Server status monitoring
           DLNAStatus.svelte    # Admin UI component
   ```
+
 key_interfaces: |
   ```go
   // DLNAServer implements UPnP MediaServer specification
@@ -207,6 +234,7 @@ key_interfaces: |
       MaxBitrate    int
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/anacrolix/dms` - DLNA MediaServer implementation
@@ -216,6 +244,7 @@ dependencies: |
 
   **External Tools**:
   - FFmpeg (for transcoding incompatible formats)
+
 env_vars: |
   ```bash
   # DLNA server configuration
@@ -225,6 +254,7 @@ env_vars: |
   REVENGE_DLNA_INTERFACE=eth0       # Network interface to bind
   REVENGE_DLNA_ANNOUNCE_INTERVAL=30s
   ```
+
 config_keys: |
   ```yaml
   casting:
@@ -261,6 +291,7 @@ config_keys: |
         folder_structure: by_type    # by_type, by_library, flat
         image_thumbnails: true
   ```
+
 component_interaction: |
   **Device Discovery & Browsing**:
 
@@ -306,6 +337,7 @@ component_interaction: |
      - Client requests media URL from `<res>` tag
      - Server streams file via HTTP
      - If transcoding needed, start transcode session first
+
 content_hierarchy: |
   **DLNA Folder Structure**:
 
@@ -337,6 +369,7 @@ content_hierarchy: |
   - TV Show: `"tvshow-{uuid}"`
   - Season: `"season-{uuid}"`
   - Episode: `"episode-{uuid}"`
+
 didl_generation: |
   **DIDL-Lite Example** (Movie):
 
@@ -374,6 +407,7 @@ didl_generation: |
     </item>
   </DIDL-Lite>
   ```
+
 transcoding: |
   **On-the-Fly Transcoding**:
 
@@ -402,6 +436,7 @@ transcoding: |
   2. Remux (change container only, fast)
   3. Transcode video (codec conversion, slow)
   4. Transcode video + audio (slowest)
+
 api_endpoints: |
   **DLNA Server Control** (Admin API):
   ```
@@ -435,6 +470,7 @@ api_endpoints: |
     }
   }
   ```
+
 error_handling: |
   **Common Issues**:
 
@@ -455,6 +491,7 @@ error_handling: |
   - **Seeking Not Working**:
     - Server not supporting HTTP byte-range requests
     - Solution: Ensure HTTP server supports Range header
+
 unit_tests: |
   ```go
   func TestDLNAServer_Browse(t *testing.T) {
@@ -495,6 +532,7 @@ unit_tests: |
       }
   }
   ```
+
 integration_tests: |
   ```go
   func TestDLNA_FullWorkflow(t *testing.T) {
@@ -526,6 +564,7 @@ integration_tests: |
       assert.Greater(t, len(didl.Containers), 0)
   }
   ```
+
 best_practices: |
   **Network**:
   - Use wired Ethernet for 4K streaming

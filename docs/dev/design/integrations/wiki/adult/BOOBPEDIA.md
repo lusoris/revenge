@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,14 +54,29 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>QAR Module<br/>(Performer)"]
-    node2["Boobpedia<br/>MediaWiki<br/>API"]
-    node3["Performer Data<br/>- Biography<br/>- Career history"]
-    node2 --> node3
-    node1 --> node2
 ```
+┌──────────────┐
+│  Revenge     │
+│  QAR Module  │
+│  (Performer) │
+└──────┬───────┘
+       │ Enrichment request
+       ▼
+┌──────────────┐     ┌───────────────────┐
+│  Boobpedia   │────▶│  Performer Data   │
+│  MediaWiki   │     │  - Biography      │
+│  API         │     │  - Career history │
+└──────┬───────┘     │  - Studio info    │
+       │             │  - Filmography    │
+┌──────┴───────┐     │  - Infobox data   │
+│ Rate Limiter │     └───────────────────┘
+│ (polite)     │
+└──────────────┘
+
+Uses MediaWiki API (same as Wikipedia)
+Integration Role: ENRICHMENT (supplements StashDB/Babepedia)
+```
+
 
 ### Integration Structure
 
@@ -88,10 +98,6 @@ internal/integration/boobpedia/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -185,7 +191,9 @@ func parseInfobox(wikitext string) (*PerformerInfo, error) {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -212,21 +220,6 @@ qar:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

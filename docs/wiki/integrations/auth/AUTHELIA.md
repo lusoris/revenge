@@ -38,8 +38,8 @@ Connect Revenge to your Authelia identity provider for centralized authenticatio
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -38,8 +38,8 @@ Typesense powers the search functionality in Revenge. Search results appear inst
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -17,10 +16,6 @@
 - [L2 cache (Dragonfly)](#l2-cache-dragonfly)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -62,16 +57,20 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Server<br/>(Services)"]
-    node2["rueidis<br/>(Redis Client"]
-    node3["Dragonfly<br/>Server"]
-    node4["sturdyc<br/>(Coalescing)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Server    │────▶│   rueidis    │────▶│  Dragonfly  │
+│ (Services)  │◀────│ (Redis Client│◀────│   Server    │
+└─────────────┘     │  with Auto-  │     └─────────────┘
+                    │   Pipelining)│
+                    └──────────────┘
+                           │
+                    ┌──────┴───────┐
+                    │   sturdyc    │
+                    │ (Coalescing) │
+                    └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -93,10 +92,6 @@ internal/integration/dragonfly/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -143,7 +138,9 @@ type L1Config struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -215,21 +212,6 @@ GET /api/v1/health/cache
 GET /api/v1/admin/cache/stats
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

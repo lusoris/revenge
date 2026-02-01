@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Pirate Mode Easter Eggs](#pirate-mode-easter-eggs)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's le
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's le
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

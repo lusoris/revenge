@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Advanced Offloading Architecture](#advanced-offloading-architecture)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Advanced Offloading Architecture ensures fast API response times by delegati
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Advanced Offloading Architecture ensures fast API response times by delegati
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

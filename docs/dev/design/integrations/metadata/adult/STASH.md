@@ -6,17 +6,6 @@
     - [Integration Structure](#integration-structure)
     - [Data Flow](#data-flow)
     - [Provides](#provides)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -77,47 +66,14 @@ internal/integration/stash/
 <!-- Data provided by integration -->
 
 
-## Implementation
-
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
-
-<!-- Environment variables -->
-
-### Config Keys
-<!-- Configuration keys -->
 
 
 
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

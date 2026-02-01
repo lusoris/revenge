@@ -46,8 +46,8 @@ The Book Module provides a comprehensive eBook library with support for multiple
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

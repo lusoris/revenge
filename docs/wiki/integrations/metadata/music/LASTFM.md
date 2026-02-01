@@ -38,8 +38,8 @@ SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

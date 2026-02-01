@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,33 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Comics<br/>Library"]
-    node2["ComicVine<br/>(modern)"]
-    node3["GCD<br/>(historical)"]
-    node4["Rate Limiter<br/>(polite)"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
 ```
+┌──────────────┐
+│  Revenge     │
+│  Comics      │
+│  Library     │
+└──────┬───────┘
+       │
+       ├─────────────────────────────────────────┐
+       │ PRIMARY                                  │ SUPPLEMENTARY
+       ▼                                          ▼
+┌──────────────┐                           ┌──────────────┐
+│  ComicVine   │                           │     GCD      │
+│  (modern)    │                           │ (historical) │
+└──────────────┘                           └──────┬───────┘
+                                                  │
+                                           ┌──────┴───────┐
+                                           │ Rate Limiter │
+                                           │ (polite)     │
+                                           └──────────────┘
+
+Focus Areas:
+- Golden Age (1938-1956)
+- Silver Age (1956-1970)
+- Defunct publishers
+- Bibliographic details
+```
+
 
 ### Integration Structure
 
@@ -90,10 +102,6 @@ internal/integration/gcd/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -158,7 +166,9 @@ type Issue struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -187,21 +197,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

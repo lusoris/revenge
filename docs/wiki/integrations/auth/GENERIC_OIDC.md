@@ -38,8 +38,8 @@ Use any OpenID Connect compatible identity provider with Revenge. Works with cor
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

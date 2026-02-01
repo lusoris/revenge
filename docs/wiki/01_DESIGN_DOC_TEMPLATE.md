@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Design Document Template](#design-document-template)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ This template provides the standard structure for all Revenge design documents. 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ This template provides the standard structure for all Revenge design documents. 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

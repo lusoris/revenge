@@ -16,21 +16,27 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > On-demand video/audio transcoding service with hardware acceleration
+technical_summary: '> On-demand video/audio transcoding service with hardware acceleration
+
 
   Transcoding capabilities:
+
   - **INTERNAL**: go-astiav FFmpeg bindings (default, always available)
+
   - **EXTERNAL**: Blackbeard service for optional offloading (third-party, not developed by us)
+
   - **Hardware Acceleration**: NVENC (NVIDIA), QSV (Intel), VAAPI (AMD)
+
   - **Adaptive Streaming**: HLS with multiple quality tiers
-  - **Queue Management**: River background jobs for async processing
+
+  - **Queue Management**: River background jobs for async processing'
 wiki_tagline: '> High-performance media transcoding with hardware acceleration'
-wiki_overview: The Transcoding Service converts media files on-demand to ensure compatibility across all devices. **INTERNAL
-  transcoding** uses go-astiav (FFmpeg Go bindings) with optional hardware acceleration (NVENC, QSV, VAAPI) and is always
-  available. For heavy workloads, users can optionally configure **EXTERNAL offloading** to a Blackbeard service (third-party,
-  not developed by us). Generates HLS adaptive streams with multiple quality levels, caching results for faster subsequent
-  playback.
+wiki_overview: The Transcoding Service converts media files on-demand to ensure compatibility
+  across all devices. **INTERNAL transcoding** uses go-astiav (FFmpeg Go bindings) with
+  optional hardware acceleration (NVENC, QSV, VAAPI) and is always available. For heavy
+  workloads, users can optionally configure **EXTERNAL offloading** to a Blackbeard
+  service (third-party, not developed by us). Generates HLS adaptive streams with
+  multiple quality levels, caching results for faster subsequent playback.
 sources:
 - name: go-astiav (FFmpeg)
   url: https://pkg.go.dev/github.com/asticode/go-astiav
@@ -56,21 +62,37 @@ design_refs:
 service_name: Transcoding Service
 package_path: internal/service/transcoding
 fx_module: transcoding.Module
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼<br/>────────┐                                              ┌───────<br/>sitory"]
-      node5["▼<br/>───────┐                       ┌────────<br/>RNAL"]
-      node6["Blackbeard"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
-      node5 --> node6
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                  ┌────────────────────────────────┴────────────────────────────┐
+                  ▼                                                              ▼
+           ┌──────────────┐                                              ┌──────────────┐
+           │  Repository  │                                              │ Transcoding  │
+           │   (sqlc)     │                                              │   Router     │
+           └──────┬───────┘                                              └──────┬───────┘
+                  │                                         ┌──────────────────┴───────────────────┐
+                  ▼                                         ▼                                       ▼
+           ┌─────────────┐                          ┌──────────────┐                       ┌──────────────┐
+           │ PostgreSQL  │                          │   INTERNAL   │                       │   EXTERNAL   │
+           │   (pgx)     │                          │   FFmpeg     │                       │  (optional)  │
+           └─────────────┘                          │ (go-astiav)  │                       └──────┬───────┘
+                                                    │              │                              │
+                                                    │ HW Accel:    │                              ▼
+                                                    │ NVENC, QSV,  │                       ┌──────────────┐
+                                                    │ VAAPI        │                       │  Blackbeard  │
+                                                    └──────────────┘                       │ (3rd-party)  │
+                                                                                           └──────────────┘
+
+  INTERNAL: Always available, uses go-astiav FFmpeg bindings
+  EXTERNAL: Optional offloading to Blackbeard (not developed by us)
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -149,6 +171,7 @@ database_schema: |
   );
   CREATE UNIQUE INDEX idx_hls_segments_unique ON hls_segments(video_id, profile, segment_index);
   ```
+
 module_structure: |
   ```
   internal/service/transcoding/
@@ -166,6 +189,7 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── transcoding_test.go
   ```
+
 key_interfaces: |
   ```go
   type TranscodingService interface {
@@ -198,6 +222,7 @@ key_interfaces: |
     CreatedAt       time.Time  `db:"created_at" json:"created_at"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -210,6 +235,7 @@ dependencies: |
   **External Services**:
   - Blackbeard service (optional, for offloading)
   - FFmpeg (system dependency)
+
 env_vars: |
   ```bash
   TRANSCODING_BLACKBEARD_URL=http://blackbeard:8080
@@ -218,6 +244,7 @@ env_vars: |
   TRANSCODING_HARDWARE_ACCEL=auto  # auto, nvenc, qsv, vaapi, none
   TRANSCODING_WORKERS=2
   ```
+
 config_keys: |
   ```yaml
   transcoding:
@@ -236,6 +263,7 @@ config_keys: |
     hls:
       segment_duration: 6s
   ```
+
 unit_tests: |
   ```go
   func TestTranscodingService_QueueTranscode(t *testing.T) {
@@ -250,6 +278,7 @@ unit_tests: |
     // Test HLS manifest creation
   }
   ```
+
 integration_tests: |
   ```go
   func TestTranscoding_EndToEnd(t *testing.T) {
@@ -398,130 +427,65 @@ hls_streaming:
     video_bitrate: 15000 kbps
     audio_bitrate: 256 kbps
     bandwidth: 15256000
-  manifest_generation: |
-    ```go
-    func GenerateHLSManifest(qualities []Quality) string {
-        var manifest strings.Builder
-        manifest.WriteString("#EXTM3U\n")
-        manifest.WriteString("#EXT-X-VERSION:3\n\n")
-
-        for _, q := range qualities {
-            manifest.WriteString(fmt.Sprintf("#EXT-X-STREAM-INF:BANDWIDTH=%d,RESOLUTION=%s\n",
-                q.Bandwidth, q.Resolution))
-            manifest.WriteString(fmt.Sprintf("%s/playlist.m3u8\n", q.Name))
-        }
-
-        return manifest.String()
-    }
-    ```
+  manifest_generation: "```go\nfunc GenerateHLSManifest(qualities []Quality) string\
+    \ {\n    var manifest strings.Builder\n    manifest.WriteString(\"#EXTM3U\\n\"\
+    )\n    manifest.WriteString(\"#EXT-X-VERSION:3\\n\\n\")\n\n    for _, q := range\
+    \ qualities {\n        manifest.WriteString(fmt.Sprintf(\"#EXT-X-STREAM-INF:BANDWIDTH=%d,RESOLUTION=%s\\\
+    n\",\n            q.Bandwidth, q.Resolution))\n        manifest.WriteString(fmt.Sprintf(\"\
+    %s/playlist.m3u8\\n\", q.Name))\n    }\n\n    return manifest.String()\n}\n```\n"
 transcoding_pipeline:
-  job_creation: |
-    ```go
-    type TranscodeVideoArgs struct {
-        VideoID    uuid.UUID `json:"video_id"`
-        InputPath  string    `json:"input_path"`
-        OutputPath string    `json:"output_path"`
-        Profile    string    `json:"profile"` // 1080p, 720p, etc.
-        Priority   int       `json:"priority"`
-    }
+  job_creation: "```go\ntype TranscodeVideoArgs struct {\n    VideoID    uuid.UUID\
+    \ `json:\"video_id\"`\n    InputPath  string    `json:\"input_path\"`\n    OutputPath\
+    \ string    `json:\"output_path\"`\n    Profile    string    `json:\"profile\"\
+    ` // 1080p, 720p, etc.\n    Priority   int       `json:\"priority\"`\n}\n\nfunc\
+    \ (s *TranscodingService) QueueTranscode(ctx context.Context, videoID uuid.UUID,\
+    \ profile string) error {\n    video, err := s.repo.GetByID(ctx, videoID)\n  \
+    \  if err != nil {\n        return err\n    }\n\n    _, err = s.riverClient.Insert(ctx,\
+    \ &TranscodeVideoArgs{\n        VideoID:    videoID,\n        InputPath:  video.FilePath,\n\
+    \        OutputPath: s.getOutputPath(videoID, profile),\n        Profile:    profile,\n\
+    \        Priority:   2, // Normal priority\n    }, nil)\n\n    return err\n}\n\
+    ```\n"
+  worker_implementation: "```go\ntype TranscodeVideoWorker struct {\n    river.WorkerDefaults[TranscodeVideoArgs]\n\
+    \    transcoder *Transcoder\n    repo       VideoRepository\n}\n\nfunc (w *TranscodeVideoWorker)\
+    \ Work(ctx context.Context, job *river.Job[TranscodeVideoArgs]) error {\n    slog.Info(\"\
+    starting transcode\",\n        \"video_id\", job.Args.VideoID,\n        \"profile\"\
+    , job.Args.Profile)\n\n    // Try Blackbeard first\n    if w.transcoder.BlackbeardAvailable()\
+    \ {\n        err := w.transcoder.TranscodeViaBlackbeard(ctx, job.Args)\n     \
+    \   if err == nil {\n            return nil\n        }\n        slog.Warn(\"blackbeard\
+    \ transcode failed, falling back to local\", \"error\", err)\n    }\n\n    //\
+    \ Fallback to local FFmpeg\n    return w.transcoder.TranscodeLocal(ctx, job.Args)\n\
+    }\n```\n"
+  ffmpeg_command: "```go\nfunc (t *Transcoder) TranscodeLocal(ctx context.Context,\
+    \ args *TranscodeVideoArgs) error {\n    profile := t.profiles[args.Profile]\n\
+    \n    cmd := ffmpeg.New().\n        Input(args.InputPath).\n        VideoCodec(profile.VideoCodec).\n\
+    \        VideoBitrate(profile.VideoBitrate).\n        AudioCodec(profile.AudioCodec).\n\
+    \        AudioBitrate(profile.AudioBitrate).\n        Scale(profile.Width, profile.Height).\n\
+    \        Output(args.OutputPath)\n\n    // Add hardware acceleration if available\n\
+    \    if t.hwAccel != nil {\n        cmd = cmd.HardwareAccel(t.hwAccel)\n    }\n\
+    \n    return cmd.Run(ctx)\n}\n```\n"
+caching_strategy: 'File-based cache with LRU eviction:
 
-    func (s *TranscodingService) QueueTranscode(ctx context.Context, videoID uuid.UUID, profile string) error {
-        video, err := s.repo.GetByID(ctx, videoID)
-        if err != nil {
-            return err
-        }
-
-        _, err = s.riverClient.Insert(ctx, &TranscodeVideoArgs{
-            VideoID:    videoID,
-            InputPath:  video.FilePath,
-            OutputPath: s.getOutputPath(videoID, profile),
-            Profile:    profile,
-            Priority:   2, // Normal priority
-        }, nil)
-
-        return err
-    }
-    ```
-  worker_implementation: |
-    ```go
-    type TranscodeVideoWorker struct {
-        river.WorkerDefaults[TranscodeVideoArgs]
-        transcoder *Transcoder
-        repo       VideoRepository
-    }
-
-    func (w *TranscodeVideoWorker) Work(ctx context.Context, job *river.Job[TranscodeVideoArgs]) error {
-        slog.Info("starting transcode",
-            "video_id", job.Args.VideoID,
-            "profile", job.Args.Profile)
-
-        // Try Blackbeard first
-        if w.transcoder.BlackbeardAvailable() {
-            err := w.transcoder.TranscodeViaBlackbeard(ctx, job.Args)
-            if err == nil {
-                return nil
-            }
-            slog.Warn("blackbeard transcode failed, falling back to local", "error", err)
-        }
-
-        // Fallback to local FFmpeg
-        return w.transcoder.TranscodeLocal(ctx, job.Args)
-    }
-    ```
-  ffmpeg_command: |
-    ```go
-    func (t *Transcoder) TranscodeLocal(ctx context.Context, args *TranscodeVideoArgs) error {
-        profile := t.profiles[args.Profile]
-
-        cmd := ffmpeg.New().
-            Input(args.InputPath).
-            VideoCodec(profile.VideoCodec).
-            VideoBitrate(profile.VideoBitrate).
-            AudioCodec(profile.AudioCodec).
-            AudioBitrate(profile.AudioBitrate).
-            Scale(profile.Width, profile.Height).
-            Output(args.OutputPath)
-
-        // Add hardware acceleration if available
-        if t.hwAccel != nil {
-            cmd = cmd.HardwareAccel(t.hwAccel)
-        }
-
-        return cmd.Run(ctx)
-    }
-    ```
-caching_strategy: |-
-  File-based cache with LRU eviction:
   - Location: /var/cache/revenge/transcoded/
+
   - TTL: 7 days
+
   - Key format: ${video_id}_${profile}_${checksum}
-  - Max size: 100 GB
-cache_keys: |-
-  ```
+
+  - Max size: 100 GB'
+cache_keys: '```
+
   ${video_id}_${profile}_${checksum}  # Transcoded video files
-  ```
-cache_check: |
-  ```go
-  func (s *TranscodingService) GetTranscodedVideo(ctx context.Context, videoID uuid.UUID, profile string) (string, error) {
-      cacheKey := s.getCacheKey(videoID, profile)
-      cachedPath := s.cachePath(cacheKey)
 
-      // Check if cached version exists
-      if _, err := os.Stat(cachedPath); err == nil {
-          slog.Info("serving from cache", "video_id", videoID, "profile", profile)
-          return cachedPath, nil
-      }
-
-      // Not cached, queue transcoding job
-      err := s.QueueTranscode(ctx, videoID, profile)
-      if err != nil {
-          return "", err
-      }
-
-      // Wait for transcode to complete (with timeout)
-      return s.waitForTranscode(ctx, cacheKey, 5*time.Minute)
-  }
-  ```
+  ```'
+cache_check: "```go\nfunc (s *TranscodingService) GetTranscodedVideo(ctx context.Context,\
+  \ videoID uuid.UUID, profile string) (string, error) {\n    cacheKey := s.getCacheKey(videoID,\
+  \ profile)\n    cachedPath := s.cachePath(cacheKey)\n\n    // Check if cached version\
+  \ exists\n    if _, err := os.Stat(cachedPath); err == nil {\n        slog.Info(\"\
+  serving from cache\", \"video_id\", videoID, \"profile\", profile)\n        return\
+  \ cachedPath, nil\n    }\n\n    // Not cached, queue transcoding job\n    err :=\
+  \ s.QueueTranscode(ctx, videoID, profile)\n    if err != nil {\n        return \"\
+  \", err\n    }\n\n    // Wait for transcode to complete (with timeout)\n    return\
+  \ s.waitForTranscode(ctx, cacheKey, 5*time.Minute)\n}\n```\n"
 progress_tracking:
   method: WebSocket updates via /api/v1/ws/transcode/:job_id
   update_frequency: Every 2 seconds
@@ -531,55 +495,28 @@ progress_tracking:
   - total_frames
   - fps (frames per second)
   - eta_seconds (estimated time remaining)
-  websocket_message: |
-    ```json
-    {
-      "type": "transcode.progress",
-      "job_id": "uuid-here",
-      "progress": 45.5,
-      "current_frame": 12345,
-      "total_frames": 27000,
-      "fps": 120.5,
-      "eta_seconds": 180
-    }
-    ```
+  websocket_message: "```json\n{\n  \"type\": \"transcode.progress\",\n  \"job_id\"\
+    : \"uuid-here\",\n  \"progress\": 45.5,\n  \"current_frame\": 12345,\n  \"total_frames\"\
+    : 27000,\n  \"fps\": 120.5,\n  \"eta_seconds\": 180\n}\n```\n"
 api_endpoints:
 - method: POST
   path: /api/v1/transcode/video/:id
   description: Start video transcoding
-  request: |
-    {
-      "profile": "1080p",
-      "priority": "normal"
-    }
-  response: |
-    {
-      "job_id": "uuid-here",
-      "status": "queued"
-    }
+  request: "{\n  \"profile\": \"1080p\",\n  \"priority\": \"normal\"\n}\n"
+  response: "{\n  \"job_id\": \"uuid-here\",\n  \"status\": \"queued\"\n}\n"
 - method: GET
   path: /api/v1/transcode/job/:job_id
   description: Get transcode job status
-  response: |
-    {
-      "job_id": "uuid-here",
-      "status": "processing",
-      "progress": 45.5,
-      "eta_seconds": 180
-    }
+  response: "{\n  \"job_id\": \"uuid-here\",\n  \"status\": \"processing\",\n  \"\
+    progress\": 45.5,\n  \"eta_seconds\": 180\n}\n"
 - method: DELETE
   path: /api/v1/transcode/job/:job_id
   description: Cancel transcode job
 - method: GET
   path: /api/v1/transcode/cache/stats
   description: Get cache statistics
-  response: |
-    {
-      "size_bytes": 85000000000,
-      "max_size_bytes": 100000000000,
-      "item_count": 523,
-      "hit_rate": 0.78
-    }
+  response: "{\n  \"size_bytes\": 85000000000,\n  \"max_size_bytes\": 100000000000,\n\
+    \  \"item_count\": 523,\n  \"hit_rate\": 0.78\n}\n"
 best_practices:
 - practice: Offload to Blackbeard when available
   reason: Saves local resources, faster transcoding

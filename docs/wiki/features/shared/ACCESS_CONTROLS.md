@@ -46,8 +46,8 @@ Set rules for when users can access content. Limit viewing to certain hours (kid
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

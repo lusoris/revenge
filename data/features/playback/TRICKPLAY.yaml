@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Thumbnail previews on video seek bar'
 wiki_tagline: '> Thumbnail previews on video seek bar'
-wiki_overview: See where you are going when scrubbing through videos. Trickplay generates thumbnail previews that appear when
-  hovering over the seek bar. Thumbnails are created during library scan using FFmpeg. Supports BIF format for Roku compatibility.
-  Configurable interval (default 10 seconds) and quality settings per library.
+wiki_overview: See where you are going when scrubbing through videos. Trickplay generates
+  thumbnail previews that appear when hovering over the seek bar. Thumbnails are created
+  during library scan using FFmpeg. Supports BIF format for Roku compatibility. Configurable
+  interval (default 10 seconds) and quality settings per library.
 sources:
 - name: Roku BIF Format
   url: https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md
@@ -59,21 +60,20 @@ design_refs:
 feature_name: Trickplay (Timeline Thumbnails)
 module_name: trickplay_(timeline_thumbnails)
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -188,6 +188,7 @@ file_structure: |
   web/src/lib/components/player/
   └── TrickplayPreview.svelte      # Thumbnail preview overlay
   ```
+
 key_interfaces: |
   ```go
   // Repository interface for trickplay database operations
@@ -255,6 +256,7 @@ key_interfaces: |
       GetVideoResolution(ctx context.Context, videoPath string) (width, height int, err error)
   }
   ```
+
 dependencies: |
   **Go Packages**:
   ```go
@@ -293,6 +295,7 @@ dependencies: |
   - **FFmpeg 7.1+**: Video frame extraction
   - **PostgreSQL 18+**: Database
   - **Storage**: Filesystem or S3 for tile storage
+
 env_vars: |
   ```bash
   # Generation settings
@@ -321,6 +324,7 @@ env_vars: |
   # Cleanup
   TRICKPLAY_CLEANUP_ON_DELETE=true         # Delete tiles when content deleted
   ```
+
 config_keys: |
   ```yaml
   trickplay:
@@ -362,6 +366,7 @@ config_keys: |
       on_content_delete: true         # Delete tiles when content deleted
       orphaned_tiles_check_hours: 24
   ```
+
 defaults: |
   - **Interval**: 10 seconds between thumbnails
   - **Size**: 320x180 pixels
@@ -371,16 +376,12 @@ defaults: |
   - **Worker Concurrency**: 2 jobs
   - **Generation Timeout**: 60 minutes
   - **Max Storage**: 100 GB
-module_structure: |-
-  ```
-    internal/content/trickplay_(timeline_thumbnails)/
-    ├── module.go              # fx module definition
-    ├── repository.go          # Database operations (sqlc)
-    ├── service.go             # Business logic
-    ├── handler.go             # HTTP handlers (ogen)
-    ├── types.go               # Domain types
-    └── cache.go               # Caching layer (otter)
-    ```
+
+module_structure: "```\n  internal/content/trickplay_(timeline_thumbnails)/\n  ├──\
+  \ module.go              # fx module definition\n  ├── repository.go          #\
+  \ Database operations (sqlc)\n  ├── service.go             # Business logic\n  ├──\
+  \ handler.go             # HTTP handlers (ogen)\n  ├── types.go               #\
+  \ Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
 request_examples: |
   **Generate Trickplay**:
   ```json
@@ -433,6 +434,7 @@ request_examples: |
   DELETE /api/v1/trickplay?content_type=movie&content_id=123e4567-e89b-12d3-a456-426614174000
   Authorization: Bearer <token>
   ```
+
 response_examples: |
   **Trickplay Tile Object**:
   ```json
@@ -530,6 +532,7 @@ response_examples: |
 
   <binary BIF data>
   ```
+
 unit_tests: |
   **Repository Layer**:
   - Test CRUD operations for trickplay tiles
@@ -593,6 +596,7 @@ unit_tests: |
   - Mock service layer
 
   **Coverage Target**: 85%+ for critical paths (generation, serving)
+
 integration_tests: |
   **Database Integration**:
   - Test full tile lifecycle with real PostgreSQL (testcontainers)
@@ -646,7 +650,9 @@ integration_tests: |
   - Test BIF format on Roku device (manual/emulator)
   - Test WebVTT in various browsers
   - Test sprite loading performance
-test_coverage_target: 80%
+
+test_coverage_target: "80%"
+
 api_endpoints:
 - method: POST
   path: /api/v1/trickplay/generate
@@ -672,9 +678,7 @@ api_endpoints:
 - method: DELETE
   path: /api/v1/trickplay
   description: Delete trickplay tiles
-component_interaction: |-
-  1. Client requests resource via HTTP
-    2. API handler validates and routes to service
-    3. Service checks cache, queries repository if needed
-    4. Repository executes SQL via sqlc
-    5. Results return through layers to client
+
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

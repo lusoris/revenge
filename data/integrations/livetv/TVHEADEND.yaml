@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open-source TV streaming server and DVR'
 wiki_tagline: '> Live TV and DVR with TVHeadend'
-wiki_overview: TVHeadend integration brings live TV and DVR to Revenge. Supports DVB, IPTV, and other broadcast sources. Watch
-  live channels through the Revenge interface. Schedule recordings and manage the DVR queue. EPG data displays what is currently
+wiki_overview: TVHeadend integration brings live TV and DVR to Revenge. Supports DVB,
+  IPTV, and other broadcast sources. Watch live channels through the Revenge interface.
+  Schedule recordings and manage the DVR queue. EPG data displays what is currently
   airing and coming up next.
 sources:
 - name: gohlslib (HLS)
@@ -40,21 +41,40 @@ integration_id: tvheadend
 external_service: TVHeadend
 api_base_url: http://tvheadend.local:9981
 auth_method: basic
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Web Client"]
-      node2["EPG Service<br/>(Revenge)"]
-      node3["TVHeadend API<br/>/api/channel/<br/>/api/epg/"]
-      node4["Player<br/>(Vidstack)"]
-      node5["TVHeadend<br/>Streaming"]
-      node6["DVB Adapter/<br/>IPTV/DVR Files"]
-      node1 --> node2
-      node4 --> node5
-      node2 --> node3
-      node3 --> node4
-      node5 --> node6
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    1. View EPG      ┌─────────────────┐
+  │   Revenge    │────────────────────▶│   EPG Service   │
+  │  Web Client  │                     │  (Revenge)      │
+  └──────┬───────┘                     └────────┬────────┘
+         │                                      │
+         │ 2. Select channel                   │ 3. Fetch EPG from
+         │                                      │    TVHeadend
+         │                                      ▼
+         │                             ┌────────────────┐
+         │                             │  TVHeadend API │
+         │                             │  /api/channel/ │
+         │                             │  /api/epg/     │
+         │                             └────────┬───────┘
+         │                                      │
+         │ 4. Play live/DVR                    │ 5. Get stream
+         ▼                                      ▼
+  ┌──────────────┐                     ┌────────────────┐
+  │   Player     │    6. Request       │  TVHeadend     │
+  │  (Vidstack)  │────HLS/MPEG-TS─────▶│  Streaming     │
+  └──────────────┘                     │  /stream/...   │
+                                        └────────┬───────┘
+                                                 │
+                                         7. Stream from
+                                            adapter/DVR
+                                                 ▼
+                                        ┌────────────────┐
+                                        │ DVB Adapter/   │
+                                        │ IPTV/DVR Files │
+                                        └────────────────┘
+  ```
+
 protocol_details: |
   **TVHeadend REST API**:
 
@@ -85,6 +105,7 @@ protocol_details: |
   - Integrated EPG grabbers (OTA, XMLTV, Schedules Direct)
   - Real-time EPG updates
   - Multi-day EPG cache
+
 module_structure: |
   ```
   internal/
@@ -100,6 +121,7 @@ module_structure: |
         module.go         # fx module
         client_test.go
   ```
+
 key_interfaces: |
   ```go
   // TVHeadendClient manages TVHeadend REST API
@@ -197,6 +219,7 @@ key_interfaces: |
       Total   int               `json:"totalCount"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/bluenviron/gohlslib/v2` - HLS handling
@@ -206,6 +229,7 @@ dependencies: |
 
   **External Services**:
   - TVHeadend server (https://tvheadend.org)
+
 env_vars: |
   ```bash
   REVENGE_TVHEADEND_ENABLED=true
@@ -215,6 +239,7 @@ env_vars: |
   REVENGE_TVHEADEND_SYNC_INTERVAL=15m
   REVENGE_TVHEADEND_STREAM_PROFILE=pass
   ```
+
 config_keys: |
   ```yaml
   livetv:
@@ -228,6 +253,7 @@ config_keys: |
       use_channel_icons: true
       epg_days: 7
   ```
+
 authentication: |
   **HTTP Basic Authentication**:
 
@@ -257,6 +283,7 @@ authentication: |
       return resp, nil
   }
   ```
+
 component_interaction: |
   **EPG Sync Workflow**:
   1. River cron job (every 15 minutes)
@@ -278,6 +305,7 @@ component_interaction: |
   4. Recording appears in upcoming list
   5. After recording, appears in finished list
   6. Playback via /dvrfile/{uuid}
+
 api_endpoints: |
   **Revenge API Endpoints**:
 
@@ -324,6 +352,7 @@ api_endpoints: |
     "uuid": "dvr-xyz789"
   }
   ```
+
 error_handling: |
   **Common Errors**:
   - **401 Unauthorized**: Invalid credentials
@@ -337,6 +366,7 @@ error_handling: |
 
   - **400 Bad Request**: Invalid DVR request
     - Solution: Validate event_id and time range
+
 unit_tests: |
   ```go
   func TestTVHeadendClient_GetChannels(t *testing.T) {
@@ -373,6 +403,7 @@ unit_tests: |
       assert.NotEmpty(t, encoded)
   }
   ```
+
 integration_tests: |
   ```go
   func TestTVHeadend_FullWorkflow(t *testing.T) {
@@ -401,6 +432,7 @@ integration_tests: |
       // May be empty if no EPG data
   }
   ```
+
 best_practices: |
   **Configuration**:
   - Use strong credentials (not default admin:admin)

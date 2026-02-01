@@ -62,9 +62,6 @@ class ASCIIToMermaid:
         box_id = 0
 
         # Find box boundaries by looking for ┌ and └ patterns
-        # Track column positions of boxes
-        box_columns = []  # List of (start_col, end_col) for each box on current row
-
         i = 0
         while i < len(lines):
             line = lines[i]
@@ -112,10 +109,7 @@ class ASCIIToMermaid:
                             box_id += 1
                             # Combine multi-line text
                             main_label = box_texts[0]
-                            if len(box_texts) > 1:
-                                sublabels = box_texts[1:]
-                            else:
-                                sublabels = []
+                            sublabels = box_texts[1:] if box_texts[1:] else []
                             boxes.append(
                                 {
                                     "id": f"node{box_id}",
@@ -135,7 +129,7 @@ class ASCIIToMermaid:
         return boxes
 
     def infer_connections(
-        self, boxes: list[dict], ascii_text: str
+        self, boxes: list[dict], _ascii_text: str
     ) -> list[tuple[str, str, str]]:
         """Infer connections between boxes based on position and arrows.
 
@@ -160,8 +154,8 @@ class ASCIIToMermaid:
             rows[row].append(box)
 
         # Sort boxes in each row by column
-        for row in rows:
-            rows[row].sort(key=lambda b: b.get("col", 0))
+        for row_boxes in rows.values():
+            row_boxes.sort(key=lambda b: b.get("col", 0))
 
         # Connect boxes in same row horizontally (left to right)
         for row_boxes in rows.values():

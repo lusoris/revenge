@@ -38,8 +38,8 @@ Connect Revenge to your Authentik identity provider for centralized user managem
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

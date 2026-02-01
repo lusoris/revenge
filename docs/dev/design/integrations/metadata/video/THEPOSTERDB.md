@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -16,10 +15,6 @@
 - [Image storage](#image-storage)
 - [Caching](#caching)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,16 +56,18 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Metadata<br/>Service"]
-    node2["ThePosterDB<br/>Provider"]
-    node3["PosterDB API<br/>(External)"]
-    node4["Image Download<br/>& Storage"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Metadata   │────▶│ ThePosterDB  │────▶│PosterDB API │
+│  Service    │◀────│  Provider    │◀────│ (External)  │
+└─────────────┘     └──────┬───────┘     └─────────────┘
+                           │
+                    ┌──────┴───────┐
+                    │Image Download│
+                    │  & Storage   │
+                    └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -92,10 +89,6 @@ internal/integration/theposterdb/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -164,7 +157,9 @@ type PosterSet struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -194,21 +189,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

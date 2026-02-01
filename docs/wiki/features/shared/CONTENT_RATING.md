@@ -46,8 +46,8 @@ Unified content rating system covering movies, TV shows, music, and games. Suppo
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

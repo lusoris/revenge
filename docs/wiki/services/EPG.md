@@ -3,7 +3,6 @@
 - [EPG Service](#epg-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ The Electronic Program Guide (EPG) Service provides comprehensive TV program sch
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

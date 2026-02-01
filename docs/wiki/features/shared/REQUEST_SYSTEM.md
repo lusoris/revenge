@@ -46,8 +46,8 @@ Built-in request system replaces Overseerr/Jellyseerr. Users browse TMDB, TheTVD
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Chromecast configuration](#chromecast-configuration)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,16 +55,40 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Web App"]
-    node2["Chromecast<br/>Device"]
-    node3["Revenge<br/>Server<br/>(HLS Stream)"]
-    node4["Receiver<br/>Application<br/>(Custom)"]
-    node1 --> node2
-    node3 --> node4
-    node2 --> node3
 ```
+┌──────────────┐                    ┌─────────────────┐
+│   Revenge    │                    │   Chromecast    │
+│   Web App    │                    │     Device      │
+└──────┬───────┘                    └────────┬────────┘
+       │                                     │
+       │ 1. Discover devices (mDNS/SSDP)   │
+       │────────────────────────────────────▶│
+       │                                     │
+       │ 2. Connect to device               │
+       │────────────────────────────────────▶│
+       │                                     │
+       │ 3. Load media (Cast SDK)           │
+       │────────────────────────────────────▶│
+       │   {                                 │
+       │     "contentId": "http://...m3u8", │
+       │     "contentType": "video/mp4",     │
+       │     "metadata": {...}               │
+       │   }                                 │
+       │                                     │
+       │ 4. Playback commands               │
+       │    (play/pause/seek)                │
+       │◀────────────────────────────────────▶
+       │                                     │
+       │ 5. Status updates                  │
+       │◀────────────────────────────────────│
+       │                                     │
+┌──────▼───────┐                    ┌────────▼────────┐
+│   Revenge    │                    │   Receiver      │
+│   Server     │                    │   Application   │
+│  (HLS Stream)│────Media Data─────▶│   (Custom)      │
+└──────────────┘                    └─────────────────┘
+```
+
 
 ### Integration Structure
 
@@ -91,10 +110,6 @@ internal/integration/chromecast/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -210,7 +225,9 @@ const (
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -301,21 +318,6 @@ POST /api/v1/cast/sessions
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

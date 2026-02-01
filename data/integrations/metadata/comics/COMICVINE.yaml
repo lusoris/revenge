@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> PRIMARY comics metadata provider - comprehensive database from GameSpot'
 wiki_tagline: '> ComicVine - Primary comic book metadata'
-wiki_overview: PRIMARY metadata source for comics libraries. Comprehensive database covering Marvel, DC, indie publishers,
-  and manga. Issue details, story arcs, characters, and creators. Community wiki with detailed information. Free API key required.
-  200 req/hour rate limit.
+wiki_overview: 'PRIMARY metadata source for comics libraries. Comprehensive database covering Marvel, DC, indie publishers, and manga. Issue details, story arcs, characters, and creators. Community wiki with detailed information. Free API key required. 200 req/hour rate limit.'
 sources:
 - name: ComicVine API
   url: https://comicvine.gamespot.com/api/documentation
@@ -52,17 +50,32 @@ integration_id: comicvine
 external_service: ComicVine API
 api_base_url: https://comicvine.gamespot.com/api
 auth_method: api_key
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Comics<br/>Library"]
-      node2["ComicVine<br/>API"]
-      node3["Metadata<br/>- Series"]
-      node4["Rate Limiter"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Comics      │
+  │  Library     │
+  └──────┬───────┘
+         │
+         ▼
+  ┌──────────────┐     ┌──────────────┐
+  │  ComicVine   │────▶│  Metadata    │
+  │  API         │     │  - Series    │
+  └──────┬───────┘     │  - Issues    │
+         │             │  - Characters│
+  ┌──────┴───────┐     │  - Creators  │
+  │ Rate Limiter │     │  - Story Arcs│
+  │ (200/hour)   │     └──────────────┘
+  └──────────────┘
+
+  Hierarchy:
+  Publisher → Volume (Series) → Issue → Story Arc
+                                  ↓
+                            Characters, Creators
+  ```
+
 api_details: |
   **API Version**: v1.0
   **Base URL**: `https://comicvine.gamespot.com/api`
@@ -81,6 +94,7 @@ api_details: |
 
   **Response Format**: JSON (add `format=json` to requests)
   **Field Filtering**: Use `field_list` parameter to limit response
+
 database_schema: |
   ```sql
   -- Comic volumes (series)
@@ -133,6 +147,7 @@ database_schema: |
     PRIMARY KEY (issue_id, comicvine_person_id, role)
   );
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/comicvine/
@@ -146,6 +161,7 @@ module_structure: |
   ├── ratelimit.go                 # 200/hour rate limiter
   └── comicvine_test.go
   ```
+
 key_interfaces: |
   ```go
   // ComicVine provider
@@ -192,6 +208,7 @@ key_interfaces: |
     StoryArcs    []*StoryArc `json:"story_arc_credits"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -202,12 +219,14 @@ dependencies: |
 
   **External**:
   - ComicVine API (free API key required)
+
 env_vars: |
   ```bash
   COMICVINE_API_KEY=your_api_key
   COMICVINE_ENABLED=true
   COMICVINE_CACHE_TTL=168h    # 7 days
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -221,6 +240,7 @@ config_keys: |
         role: primary
         priority: 10
   ```
+
 component_interaction: |
   **Comic File Import**:
   1. CBZ/CBR file added to library
@@ -237,6 +257,7 @@ component_interaction: |
   2. For recently added series, fetch new issues
   3. Update changed metadata
   4. Download updated cover images
+
 api_request_examples: |
   **Search for Volume**:
   ```bash
@@ -272,6 +293,7 @@ api_request_examples: |
     }
   }
   ```
+
 rate_limiting: |
   **ComicVine Rate Limits**:
   - 200 requests per hour (per API key)
@@ -294,11 +316,13 @@ rate_limiting: |
   - Cache volume/issue data for 7 days
   - Cache search results for 1 hour
   - Aggressive caching reduces API calls
+
 error_handling: |
   **HTTP Errors**:
   - 401 Unauthorized → Invalid API key
   - 420 Rate Limit → Wait before retry
   - 404 Not Found → Resource doesn't exist
+
 unit_tests: |
   ```go
   func TestComicVine_SearchVolume(t *testing.T) {
@@ -310,6 +334,7 @@ unit_tests: |
     assert.Len(t, results, 1)
   }
   ```
+
 best_practices: |
   **API Usage**:
   - Always include `format=json`

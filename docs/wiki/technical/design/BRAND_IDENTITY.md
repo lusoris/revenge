@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Brand Identity](#brand-identity)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge takes its name and visual identity from Queen Anne's Revenge - Blackbear
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge takes its name and visual identity from Queen Anne's Revenge - Blackbear
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

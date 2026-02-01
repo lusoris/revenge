@@ -3,7 +3,6 @@
 - [StashDB](#stashdb)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback**
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

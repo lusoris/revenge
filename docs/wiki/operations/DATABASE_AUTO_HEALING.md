@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Database Auto-Healing & Recovery](#database-auto-healing-recovery)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge includes built-in database recovery mechanisms. The connection pool (pgx
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge includes built-in database recovery mechanisms. The connection pool (pgx
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

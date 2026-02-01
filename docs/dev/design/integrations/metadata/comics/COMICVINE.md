@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,30 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Comics<br/>Library"]
-    node2["ComicVine<br/>API"]
-    node3["Metadata<br/>- Series"]
-    node4["Rate Limiter"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
 ```
+┌──────────────┐
+│  Revenge     │
+│  Comics      │
+│  Library     │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐     ┌──────────────┐
+│  ComicVine   │────▶│  Metadata    │
+│  API         │     │  - Series    │
+└──────┬───────┘     │  - Issues    │
+       │             │  - Characters│
+┌──────┴───────┐     │  - Creators  │
+│ Rate Limiter │     │  - Story Arcs│
+│ (200/hour)   │     └──────────────┘
+└──────────────┘
+
+Hierarchy:
+Publisher → Volume (Series) → Issue → Story Arc
+                                ↓
+                          Characters, Creators
+```
+
 
 ### Integration Structure
 
@@ -90,10 +99,6 @@ internal/integration/comicvine/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -160,7 +165,9 @@ type Issue struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -186,21 +193,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

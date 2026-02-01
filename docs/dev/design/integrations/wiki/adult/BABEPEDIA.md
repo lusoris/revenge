@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,30 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>QAR Module<br/>(Performer)"]
-    node2["Babepedia<br/>Scraper"]
-    node3["Performer Data<br/>- Biography"]
-    node4["Rate Limiter"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
 ```
+┌──────────────┐
+│  Revenge     │
+│  QAR Module  │
+│  (Performer) │
+└──────┬───────┘
+       │ Enrichment request
+       ▼
+┌──────────────┐     ┌───────────────────┐
+│  Babepedia   │────▶│  Performer Data   │
+│  Scraper     │     │  - Biography      │
+└──────┬───────┘     │  - Measurements   │
+       │             │  - Career dates   │
+┌──────┴───────┐     │  - Social links   │
+│ Rate Limiter │     │  - Photo URL      │
+│ + Proxy Pool │     └───────────────────┘
+└──────────────┘
+
+Data Flow:
+Performer Identified → Check Cache → Scrape Profile → Parse HTML → Store Enrichment
+
+Integration Role: ENRICHMENT (supplements StashDB performer data)
+```
+
 
 ### Integration Structure
 
@@ -90,10 +99,6 @@ internal/integration/babepedia/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -176,7 +181,9 @@ func (p *BabepediaProvider) parseProfile(doc *goquery.Document) (*PerformerProfi
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -205,21 +212,6 @@ qar:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

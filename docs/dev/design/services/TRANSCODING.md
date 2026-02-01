@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -19,10 +18,6 @@
     - [GET /api/v1/transcode/job/:job_id](#get-apiv1transcodejobjob_id)
     - [DELETE /api/v1/transcode/job/:job_id](#delete-apiv1transcodejobjob_id)
     - [GET /api/v1/transcode/cache/stats](#get-apiv1transcodecachestats)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -71,20 +66,35 @@ Transcoding capabilities:
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼<br/>────────┐                                              ┌───────<br/>sitory"]
-    node5["▼<br/>───────┐                       ┌────────<br/>RNAL"]
-    node6["Blackbeard"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
-    node5 --> node6
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  API Handler │────▶│   Service   │
+│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                 │
+                ┌────────────────────────────────┴────────────────────────────┐
+                ▼                                                              ▼
+         ┌──────────────┐                                              ┌──────────────┐
+         │  Repository  │                                              │ Transcoding  │
+         │   (sqlc)     │                                              │   Router     │
+         └──────┬───────┘                                              └──────┬───────┘
+                │                                         ┌──────────────────┴───────────────────┐
+                ▼                                         ▼                                       ▼
+         ┌─────────────┐                          ┌──────────────┐                       ┌──────────────┐
+         │ PostgreSQL  │                          │   INTERNAL   │                       │   EXTERNAL   │
+         │   (pgx)     │                          │   FFmpeg     │                       │  (optional)  │
+         └─────────────┘                          │ (go-astiav)  │                       └──────┬───────┘
+                                                  │              │                              │
+                                                  │ HW Accel:    │                              ▼
+                                                  │ NVENC, QSV,  │                       ┌──────────────┐
+                                                  │ VAAPI        │                       │  Blackbeard  │
+                                                  └──────────────┘                       │ (3rd-party)  │
+                                                                                         └──────────────┘
+
+INTERNAL: Always available, uses go-astiav FFmpeg bindings
+EXTERNAL: Optional offloading to Blackbeard (not developed by us)
+```
+
 
 ### Service Structure
 
@@ -122,10 +132,6 @@ internal/service/transcoding/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -180,7 +186,9 @@ type TranscodeJob struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -220,12 +228,20 @@ Start video transcoding
 
 **Request**:
 ```json
-{}
+{
+  "profile": "1080p",
+  "priority": "normal"
+}
+
 ```
 
 **Response**:
 ```json
-{}
+{
+  "job_id": "uuid-here",
+  "status": "queued"
+}
+
 ```
 ### GET /api/v1/transcode/job/:job_id
 
@@ -238,7 +254,13 @@ Get transcode job status
 
 **Response**:
 ```json
-{}
+{
+  "job_id": "uuid-here",
+  "status": "processing",
+  "progress": 45.5,
+  "eta_seconds": 180
+}
+
 ```
 ### DELETE /api/v1/transcode/job/:job_id
 
@@ -264,23 +286,14 @@ Get cache statistics
 
 **Response**:
 ```json
-{}
+{
+  "size_bytes": 85000000000,
+  "max_size_bytes": 100000000000,
+  "item_count": 523,
+  "hit_rate": 0.78
+}
+
 ```
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

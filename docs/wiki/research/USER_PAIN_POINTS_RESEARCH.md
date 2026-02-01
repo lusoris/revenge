@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [User Pain Points Research - Existing Media Servers](#user-pain-points-research-existing-media-servers)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ This research documents common complaints about Jellyfin, Plex, and Emby from Re
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ This research documents common complaints about Jellyfin, Plex, and Emby from Re
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

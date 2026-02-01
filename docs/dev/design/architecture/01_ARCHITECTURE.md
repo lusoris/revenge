@@ -3,7 +3,6 @@
 - [Revenge - Architecture v2](#revenge-architecture-v2)
   - [Status](#status)
   - [Architecture](#architecture)
-    - [Components](#components)
   - [Implementation](#implementation)
     - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
@@ -11,10 +10,6 @@
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -64,24 +59,47 @@ Core components:
 
 Revenge follows a **layered architecture** with clear separation of concerns:
 
-```mermaid
-flowchart TD
-    node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
-    node2["API Layer<br/>(ogen-generated handlers + validation)"]
-    node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>┌────────────┐  ┌────────────┐  ┌────────────┐  ┌──────────┐"]
-    node4["▼                      ▼<br/>─────────┐    ┌─────────<br/>tory"]
-    node5["PostgreSQL<br/>Database<br/>(pgx pool)"]
-    node6["L1 Cache → L2 Cache →<br/>Arr Services → External<br/>(otter → Dragonfly →"]
-    node5 --> node6
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Client Layer                              │
+│          (Web/Mobile/TV Apps - SvelteKit Frontend)              │
+└────────────────────────┬────────────────────────────────────────┘
+                         │ HTTP/WebSocket
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         API Layer                                │
+│              (ogen-generated handlers + validation)             │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Service Layer                               │
+│         (Business logic, orchestration, caching)                │
+│                                                                  │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌──────────┐ │
+│  │  Content   │  │  Metadata  │  │   Auth     │  │  Media   │ │
+│  │  Services  │  │  Services  │  │  Services  │  │Processing│ │
+│  └────────────┘  └────────────┘  └────────────┘  └──────────┘ │
+└────────────────────┬────────────────────┬───────────────────────┘
+                     │                    │
+         ┌───────────┴──────────┐        ▼
+         ▼                      ▼    ┌──────────────┐
+┌─────────────────┐    ┌───────────────────────┐   │
+│  Repository     │    │   Metadata Priority   │   │  Background
+│     Layer       │    │      Chain            │   │    Jobs
+│  (sqlc + pgx)   │    │                       │   │  (River)
+└────────┬────────┘    └───────────┬───────────┘   └──────────┘
+         │                         │
+         ▼                         ▼
+┌─────────────────┐    ┌──────────────────────────┐
+│   PostgreSQL    │    │  L1 Cache → L2 Cache →   │
+│   Database      │    │  Arr Services → External │
+│   (pgx pool)    │    │  (otter → Dragonfly →    │
+└─────────────────┘    │   Radarr/Sonarr/etc →    │
+                       │   TMDb/TVDB/etc)          │
+                       └──────────────────────────┘
 ```
 
-### Components
-
-<!-- Component description -->
 
 
 ## Implementation
@@ -232,7 +250,9 @@ type ClientFactory interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 **Core**:
@@ -368,21 +388,6 @@ jobs:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

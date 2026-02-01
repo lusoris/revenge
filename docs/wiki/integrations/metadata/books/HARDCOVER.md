@@ -38,8 +38,8 @@ Social reading platform with open GraphQL API. Sync reading progress and shelves
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

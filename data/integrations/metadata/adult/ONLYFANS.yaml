@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> LINK-ONLY performer subscription platform profiles for QAR content'
 wiki_tagline: '> OnlyFans - Performer profile links for QAR'
-wiki_overview: LINK-ONLY integration for QAR performer profiles. Stores verified OnlyFans profile URLs. Basic profile verification
-  (existence check). **NO content access or subscription management** - only profile links. **Proxy/VPN recommended** (via
-  HTTP_CLIENT service).
+wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified OnlyFans profile URLs. Basic profile verification (existence check). **NO content access or subscription management** - only profile links. **Proxy/VPN recommended** (via HTTP_CLIENT service).'
 sources:
 - name: golang.org/x/time
   url: https://pkg.go.dev/golang.org/x/time
@@ -44,17 +42,38 @@ api_base_url: https://onlyfans.com
 data_access_method: link_verification
 content_streaming: false
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-      node2["OnlyFans Link<br/>(verified URL)"]
-      node3["OnlyFans.com<br/>(login wall)"]
-      node4["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌───────────────────┐
+  │   Performer       │
+  │   Profile Page    │
+  │   (Revenge UI)    │
+  └─────────┬─────────┘
+            │ Display social links
+            ▼
+  ┌───────────────────┐
+  │   OnlyFans Link   │───→ Opens in new tab
+  │   (verified URL)  │     (user's browser)
+  └─────────┬─────────┘
+            │ URL verification only
+            │ (NO content access)
+            ▼
+  ┌───────────────────┐
+  │   OnlyFans.com    │
+  │   (login wall)    │
+  └───────────────────┘
+            │
+     ┌──────┴────────┐
+     │  HTTP_CLIENT  │
+     │  (recommended │
+     │   proxy/VPN)  │
+     └───────────────┘
+
+  IMPORTANT: This integration does NOT access any content.
+  Only verifies profile URLs exist.
+  ```
+
 integration_scope: |
   **WHAT THIS INTEGRATION DOES**:
   - ✅ Stores performer OnlyFans profile URLs
@@ -73,6 +92,7 @@ integration_scope: |
   - No public API
   - Profile pages mostly behind login
   - Only existence verification possible
+
 api_details: |
   **Data Access**: HEAD request only
   **Base URL**: `https://onlyfans.com`
@@ -90,6 +110,7 @@ api_details: |
   **NO DATA EXTRACTION**:
   OnlyFans provides no public profile information.
   We can only verify that a profile URL is valid.
+
 database_schema: |
   Uses shared `qar.social_profiles` table.
 
@@ -111,6 +132,7 @@ database_schema: |
     now()
   );
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/social/onlyfans/
@@ -118,6 +140,7 @@ module_structure: |
   ├── verification.go          # Profile URL verification
   └── onlyfans_test.go
   ```
+
 key_interfaces: |
   ```go
   // OnlyFans provider (verification only)
@@ -174,6 +197,7 @@ key_interfaces: |
     return p.VerifyUsername(ctx, username)
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -186,6 +210,7 @@ dependencies: |
 
   **Internal Services**:
   - HTTP_CLIENT - Proxy/VPN routing
+
 env_vars: |
   ```bash
   # OnlyFans integration
@@ -197,6 +222,7 @@ env_vars: |
   ONLYFANS_PROXY_ENABLED=true
   ONLYFANS_PROXY_URL=socks5://127.0.0.1:9050
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -219,6 +245,7 @@ config_keys: |
           enabled: true
           check_interval: 168h
   ```
+
 component_interaction: |
   **Link Storage**:
   1. FreeOnes provides OnlyFans username for performer
@@ -231,6 +258,7 @@ component_interaction: |
   2. HEAD request to each profile URL
   3. Update link_verified status
   4. Mark broken links
+
 link_role: |
   **LINK-Only Provider**
 
@@ -249,6 +277,7 @@ link_role: |
   - User clicks link
   - Opens OnlyFans in their browser
   - User manages their own subscription
+
 error_handling: |
   **Expected Responses**:
   - 200 OK → Profile exists
@@ -256,6 +285,7 @@ error_handling: |
   - 404 Not Found → Profile doesn't exist
   - 403 Forbidden → Blocked (rotate proxy)
   - 429 Too Many Requests → Rate limited
+
 unit_tests: |
   ```go
   func TestOnlyFans_VerifyUsername(t *testing.T) {
@@ -285,6 +315,7 @@ unit_tests: |
     }
   }
   ```
+
 best_practices: |
   **OnlyFans Integration**:
   - Keep it minimal (verification only)

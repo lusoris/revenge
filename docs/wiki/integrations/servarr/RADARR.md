@@ -38,8 +38,8 @@ Radarr integration enables automatic movie downloads and library management. Req
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

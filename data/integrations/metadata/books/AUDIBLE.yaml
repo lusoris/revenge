@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY audiobook metadata via Audnexus API (Chaptarr is PRIMARY)'
 wiki_tagline: '> Audnexus - Audiobook metadata enrichment for Chaptarr'
-wiki_overview: 'SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Chaptarr not setup or lacks data,
-  (2) **Enrichment** for narrator info, chapters, and Audible-specific data. Accessed via Audnexus API (community project).
-  ASIN-based matching. **No authentication required**.'
+wiki_overview: 'SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Chaptarr not setup or lacks data, (2) **Enrichment** for narrator info, chapters, and Audible-specific data. Accessed via Audnexus API (community project). ASIN-based matching. **No authentication required**.'
 sources:
 - name: Audnexus API
   url: https://api.audnex.us/
@@ -48,17 +46,37 @@ integration_id: audible
 external_service: Audnexus (Audible metadata)
 api_base_url: https://api.audnex.us
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Audiobook<br/>Service"]
-      node2["Chaptarr<br/>(LOCAL cache)"]
-      node3["Audnexus<br/>(Audible<br/>metadata)"]
-      node4["Rate Limiter<br/>(1 req/sec)"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Audiobook   │
+  │  Service     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────────┐
+         │ PRIMARY                                  │ SUPPLEMENTARY
+         ▼                                          ▼
+  ┌──────────────┐                           ┌──────────────┐
+  │   Chaptarr   │                           │   Audnexus   │
+  │ (LOCAL cache)│                           │  (Audible    │
+  │              │                           │   metadata)  │
+  └──────────────┘                           └──────┬───────┘
+                                                    │
+                                             ┌──────┴───────┐
+                                             │ Rate Limiter │
+                                             │ (1 req/sec)  │
+                                             └──────────────┘
+
+  Key Data:
+  - Narrator information
+  - Chapter markers (timestamps)
+  - Series info
+  - Audible ASIN mappings
+  - Cover images
+  ```
+
 api_details: |
   **API**: Audnexus (community project aggregating Audible data)
   **Base URL**: `https://api.audnex.us`
@@ -75,6 +93,7 @@ api_details: |
   - From filename (if included)
   - From Chaptarr match
   - From title/author search
+
 database_schema: |
   **Schema**: `public`
 
@@ -102,6 +121,7 @@ database_schema: |
   );
   CREATE INDEX idx_chapters_book ON audiobook_chapters(audiobook_id);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/audnexus/
@@ -113,6 +133,7 @@ module_structure: |
   ├── search.go                    # ASIN search
   └── audnexus_test.go
   ```
+
 key_interfaces: |
   ```go
   // Audnexus provider
@@ -158,6 +179,7 @@ key_interfaces: |
     LengthMs     int64  `json:"lengthMs"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -169,12 +191,14 @@ dependencies: |
 
   **External APIs**:
   - Audnexus API (free, no key required)
+
 env_vars: |
   ```bash
   AUDNEXUS_ENABLED=true
   AUDNEXUS_RATE_LIMIT=1
   AUDNEXUS_CACHE_TTL=168h    # 7 days
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -187,6 +211,7 @@ config_keys: |
         role: supplementary
         priority: 20
   ```
+
 component_interaction: |
   **Audiobook Identification**:
   1. Audio file added to library
@@ -201,6 +226,7 @@ component_interaction: |
   2. Chapters stored in audiobook_chapters table
   3. Player uses chapters for navigation
   4. Chapter titles displayed in playback UI
+
 api_request_examples: |
   **Get Book by ASIN**:
   ```bash
@@ -225,6 +251,7 @@ api_request_examples: |
   ```bash
   curl "https://api.audnex.us/books/B08ZYXLTYG/chapters"
   ```
+
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider**
 
@@ -249,6 +276,7 @@ supplementary_role: |
     return s.audnexus.SearchByASIN(ctx, asin)
   }
   ```
+
 error_handling: |
   **HTTP Errors**:
   - 404 Not Found → ASIN not in Audnexus database
@@ -258,6 +286,7 @@ error_handling: |
   **Fallback**:
   - If Audnexus fails, use filename metadata
   - Store partial data when available
+
 unit_tests: |
   ```go
   func TestAudnexus_GetBook(t *testing.T) {
@@ -269,6 +298,7 @@ unit_tests: |
     assert.Equal(t, "Project Hail Mary", book.Title)
   }
   ```
+
 best_practices: |
   **ASIN Extraction**:
   - Check filename patterns (e.g., `[B08ZYXLTYG]`)

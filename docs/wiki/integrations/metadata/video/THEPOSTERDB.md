@@ -38,8 +38,8 @@ ThePosterDB offers designer-quality posters and artwork for your library. Commun
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

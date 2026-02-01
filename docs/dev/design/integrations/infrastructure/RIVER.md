@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -16,10 +15,6 @@
 - [Queue priorities](#queue-priorities)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,16 +55,18 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Services<br/>(Enqueue)"]
-    node2["River<br/>Client"]
-    node3["PostgreSQL<br/>(Job Store)"]
-    node4["Workers<br/>(Background)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Services   │────▶│   River      │────▶│ PostgreSQL  │
+│ (Enqueue)   │     │   Client     │     │ (Job Store) │
+└─────────────┘     └──────────────┘     └─────────────┘
+                           │
+                    ┌──────┴───────┐
+                    │   Workers    │
+                    │ (Background) │
+                    └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -91,10 +88,6 @@ internal/integration/river/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -139,7 +132,9 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -209,21 +204,6 @@ GET /api/v1/admin/jobs?state=running&limit=50
 DELETE /api/v1/admin/jobs/:id
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

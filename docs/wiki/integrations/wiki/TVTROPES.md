@@ -38,8 +38,8 @@ ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, T
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

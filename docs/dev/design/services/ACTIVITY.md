@@ -8,17 +8,12 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,18 +55,26 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  API Handler │────▶│   Service   │
+│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                 │
+                     ┌──────────────────────┼────────────┐
+                     ▼                      ▼            ▼
+                ┌──────────┐          ┌───────────┐  ┌────────┐
+                │Repository│          │  River    │  │  Cache │
+                │  (sqlc)  │          │  Queue    │  │(otter) │
+                └────┬─────┘          └───────────┘  └────────┘
+                     │
+                     ▼
+                ┌─────────────┐
+                │ PostgreSQL  │
+                │   (pgx)     │
+                └─────────────┘
+```
+
 
 ### Service Structure
 
@@ -103,10 +106,6 @@ internal/service/activity/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -152,7 +151,9 @@ type ActivityEntry struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -205,21 +206,6 @@ GET    /api/v1/activity/resources/:type/:id # Get resource activity
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

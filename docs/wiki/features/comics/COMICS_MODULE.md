@@ -46,8 +46,8 @@ The Comics Module provides a comprehensive digital comics experience supporting 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

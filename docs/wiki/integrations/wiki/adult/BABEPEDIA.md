@@ -38,8 +38,8 @@ Babepedia provides biographical information for adult performers. Physical attri
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

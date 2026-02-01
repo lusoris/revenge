@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Enterprise-grade identity provider for self-hosted environments'
 wiki_tagline: '> Single sign-on with Authentik'
-wiki_overview: Connect Revenge to your Authentik identity provider for centralized user management. Create users in Authentik
-  and they automatically get access to Revenge. Supports OIDC protocol with configurable scopes. Group mappings let you assign
-  Revenge roles based on Authentik groups.
+wiki_overview: Connect Revenge to your Authentik identity provider for centralized
+  user management. Create users in Authentik and they automatically get access to
+  Revenge. Supports OIDC protocol with configurable scopes. Group mappings let you
+  assign Revenge roles based on Authentik groups.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -43,19 +44,42 @@ integration_id: authentik
 external_service: Authentik
 api_base_url: https://authentik.company.local
 auth_method: oidc
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["User<br/>Browser"]
-      node2["Authentik<br/>IdP Server"]
-      node3["Revenge<br/>Server"]
-      node4["Authentik<br/>OAuth2 API"]
-      node5["User<br/>Session"]
-      node1 --> node2
-      node3 --> node4
-      node2 --> node3
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    1. Auth Request   ┌─────────────────┐
+  │    User      │─────(redirect)──────▶│   Authentik     │
+  │   Browser    │                      │   IdP Server    │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │ 2. Login page                        │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │ 3. Submit credentials                │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │ 4. Authorization code                │
+         │◀──────────────────────────────────────│
+         │   (redirect to callback)              │
+         ▼                                       │
+  ┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+  │   Revenge    │─────for tokens──────▶│   Authentik     │
+  │   Server     │                      │   OAuth2 API    │
+  │              │◀─────────────────────│                 │
+  │              │  6. ID token + access│                 │
+  └──────┬───────┘     token            └─────────────────┘
+         │
+         │ 7. Verify token (JWKS)
+         │ 8. Get user info
+         │ 9. Map groups → roles
+         │ 10. Create session
+         ▼
+  ┌──────────────┐
+  │   User       │
+  │  Session     │
+  └──────────────┘
+  ```
+
 protocol_details: |
   **OpenID Connect (OIDC)** with Authentik:
 
@@ -72,6 +96,7 @@ protocol_details: |
   - **ID Token** (JWT): User identity, email, groups
   - **Access Token**: API access (opaque or JWT)
   - **Refresh Token**: Long-lived token for renewal
+
 module_structure: |
   ```
   internal/
@@ -91,6 +116,7 @@ module_structure: |
     oidc/
       authentik.yaml           # Provider configuration example
   ```
+
 key_interfaces: |
   ```go
   // AuthentikProvider implements OIDC for Authentik
@@ -157,6 +183,7 @@ key_interfaces: |
       Picture           string   // Avatar URL
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
@@ -165,6 +192,7 @@ dependencies: |
 
   **External Services**:
   - Authentik server (https://goauthentik.io/)
+
 env_vars: |
   ```bash
   # Authentik OIDC configuration
@@ -174,6 +202,7 @@ env_vars: |
   REVENGE_OIDC_AUTHENTIK_CLIENT_SECRET=very-secret-key
   REVENGE_OIDC_AUTHENTIK_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callback
   ```
+
 config_keys: |
   ```yaml
   auth:
@@ -200,6 +229,7 @@ config_keys: |
           update_user_info: true
           user_claim: "preferred_username"  # Field to use as username
   ```
+
 authentik_setup: |
   **Authentik Configuration Steps**:
 
@@ -231,6 +261,7 @@ authentik_setup: |
      - Redirects to Authentik, login
      - Redirects back to Revenge with token
      - User created automatically with mapped roles
+
 component_interaction: |
   **OIDC Login Flow**:
 
@@ -264,6 +295,7 @@ component_interaction: |
      - Create Revenge session
      - Set session cookie
      - Redirect to app homepage
+
 api_endpoints: |
   **OIDC Endpoints** (Revenge):
   ```
@@ -302,6 +334,7 @@ api_endpoints: |
   5. Sets session cookie
   6. Redirects to /
   ```
+
 group_mapping: |
   **Authentik Group → Revenge Role Mapping**:
 
@@ -330,6 +363,7 @@ group_mapping: |
   ```
 
   **Role Precedence**: Admin > Moderator > User > Readonly
+
 token_refresh: |
   **Refresh Token Flow**:
 
@@ -356,6 +390,7 @@ token_refresh: |
       }, nil
   }
   ```
+
 error_handling: |
   **Common Errors**:
 
@@ -370,6 +405,7 @@ error_handling: |
 
   - **invalid_token**: ID token signature invalid
     - Solution: Check JWKS endpoint, verify issuer URL
+
 unit_tests: |
   ```go
   func TestAuthentikProvider_ExchangeCode(t *testing.T) {
@@ -396,6 +432,7 @@ unit_tests: |
       assert.Equal(t, "mock-id-token", tokens.IDToken)
   }
   ```
+
 integration_tests: |
   ```go
   func TestAuthentik_FullOIDCFlow(t *testing.T) {
@@ -420,6 +457,7 @@ integration_tests: |
       assert.NotEmpty(t, jwks.Keys)
   }
   ```
+
 best_practices: |
   **Security**:
   - Use PKCE for authorization code flow

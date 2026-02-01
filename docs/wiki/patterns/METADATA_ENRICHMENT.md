@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Metadata Enrichment Pattern](#metadata-enrichment-pattern)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Metadata Enrichment Pattern ensures fast UI response times while maintaining
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Metadata Enrichment Pattern ensures fast UI response times while maintaining
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

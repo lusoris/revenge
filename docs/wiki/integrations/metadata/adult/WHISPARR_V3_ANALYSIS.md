@@ -3,7 +3,6 @@
 - [Whisparr v3 (eros) - Adult Content Structure Analysis](#whisparr-v3-eros-adult-content-structure-analysis)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
@@ -37,8 +36,7 @@ Technical analysis of Whisparr v3 (eros branch) structure. Documents how Whispar
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -46,8 +46,8 @@ The Audiobook Module provides a complete audiobook experience with support for c
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

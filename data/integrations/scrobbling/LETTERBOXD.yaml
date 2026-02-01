@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social network for movie lovers and film tracking'
 wiki_tagline: '> Log films to your Letterboxd diary'
-wiki_overview: 'Letterboxd integration logs movies to your film diary. Rate films as you watch and add reviews. Import your
-  existing Letterboxd watchlist. See friends activity and discover films through the community. Note: Uses CSV import/export
+wiki_overview: 'Letterboxd integration logs movies to your film diary. Rate films
+  as you watch and add reviews. Import your existing Letterboxd watchlist. See friends
+  activity and discover films through the community. Note: Uses CSV import/export
   as Letterboxd API is limited.'
 sources:
 - name: Go io
@@ -42,17 +43,21 @@ integration_name: Letterboxd
 integration_id: letterboxd
 external_service: Letterboxd
 auth_method: csv_export
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Watch<br/>History"]
-      node2["Letterboxd<br/>Integration"]
-      node3["Letterboxd<br/>Website"]
-      node4["CSV Export/<br/>Import"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│ Letterboxd   │     │ Letterboxd  │
+  │  Watch      │     │ Integration  │     │   Website   │
+  │  History    │     │              │     │             │
+  └─────────────┘     └──────┬───────┘     └──────┬──────┘
+                             │                    │
+                      ┌──────▼────────┐           │
+                      │  CSV Export/  │◀──────────┘
+                      │  Import       │
+                      └───────────────┘
+  ```
+
 api_details: |
   **API Version**: Limited public API, primarily CSV-based
   **Base URL**: `https://letterboxd.com`
@@ -68,6 +73,7 @@ api_details: |
   - Import into Revenge for watch history sync
 
   **Note**: Full API access is restricted to partners. Most users rely on CSV export/import.
+
 database_schema: |
   **Schema**: `public`
 
@@ -135,6 +141,7 @@ database_schema: |
     UNIQUE(user_id, letterboxd_uri)
   );
   ```
+
 module_structure: |
   ```
   internal/integrations/letterboxd/
@@ -146,6 +153,7 @@ module_structure: |
   ├── types.go                     # CSV row types
   └── letterboxd_test.go
   ```
+
 key_interfaces: |
   ```go
   // Letterboxd CSV integration service
@@ -189,6 +197,7 @@ key_interfaces: |
     Errors          []string
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `encoding/csv` - CSV parsing
@@ -199,11 +208,13 @@ dependencies: |
 
   **External Services**:
   - Letterboxd account (free tier)
+
 env_vars: |
   ```bash
   # No API credentials needed
   LETTERBOXD_AUTO_MATCH=true
   ```
+
 config_keys: |
   ```yaml
   integrations:
@@ -212,6 +223,7 @@ config_keys: |
       import_reviews: true           # Import reviews from diary
       sync_ratings: true             # Sync Letterboxd ratings to Revenge
   ```
+
 component_interaction: |
   **Import Diary Flow**:
   1. User exports diary from Letterboxd:
@@ -239,6 +251,7 @@ component_interaction: |
   2. Generate CSV in Letterboxd format
   3. Include ratings, dates, rewatches
   4. User can import to Letterboxd manually
+
 csv_format: |
   **Diary CSV Format**:
   ```csv
@@ -268,6 +281,7 @@ csv_format: |
   Date,Name,Year,Letterboxd URI,Rating
   2026-01-15,Inception,2010,https://letterboxd.com/film/inception/,4.5
   ```
+
 rating_conversion: |
   **Letterboxd → Revenge Rating**:
   - Letterboxd: 0.5-5.0 stars (0.5 increments)
@@ -288,6 +302,7 @@ rating_conversion: |
   ```
   letterboxd_rating = revenge_rating / 2
   ```
+
 film_matching: |
   **Matching Algorithm**:
 
@@ -314,6 +329,7 @@ film_matching: |
   **Step 4 - Manual Review**:
   - Store unmatched entries for user review
   - User can manually select correct movie from library
+
 import_workflow: |
   **Import Process**:
 
@@ -347,6 +363,7 @@ import_workflow: |
      - Matched: 1150 (93%)
      - Unmatched: 84 (7%)
      - Errors: 0
+
 export_workflow: |
   **Export Process**:
 
@@ -362,6 +379,7 @@ export_workflow: |
   3. **Download**:
      - Return CSV as downloadable file
      - User can import to Letterboxd manually via settings
+
 limitations: |
   **Letterboxd API Limitations**:
   - **No Public API**: Full API requires partnership agreement
@@ -374,6 +392,7 @@ limitations: |
   - Periodic manual CSV imports (user uploads new export)
   - RSS feed parsing for public lists (read-only)
   - Potential future: Screen scraping (not recommended, violates TOS)
+
 rss_feeds: |
   **Public RSS Feeds** (read-only):
   - Diary: `https://letterboxd.com/{username}/rss/`
@@ -389,6 +408,7 @@ rss_feeds: |
   - Public profiles only (privacy setting must be public)
   - Limited data compared to CSV export
   - No authentication, can't access private data
+
 unit_tests: |
   ```go
   func TestLetterboxdService_ImportDiary(t *testing.T) {
@@ -407,6 +427,7 @@ unit_tests: |
     // Test year tolerance
   }
   ```
+
 integration_tests: |
   ```go
   func TestLetterboxd_FullWorkflow(t *testing.T) {

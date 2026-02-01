@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> ENRICHMENT-only performer alias database for QAR content'
 wiki_tagline: '> TheNude - Performer alias resolution for Whisparr/StashDB'
-wiki_overview: ENRICHMENT-only metadata source for QAR performer alias resolution. Comprehensive alias database linking performers
-  across different stage names. Physical attributes, measurements, and career data. **Web scraping** required (no official
-  API). Used to resolve performer identity conflicts. **Proxy/VPN routing** recommended (via HTTP_CLIENT service).
+wiki_overview: 'ENRICHMENT-only metadata source for QAR performer alias resolution. Comprehensive alias database linking performers across different stage names. Physical attributes, measurements, and career data. **Web scraping** required (no official API). Used to resolve performer identity conflicts. **Proxy/VPN routing** recommended (via HTTP_CLIENT service).'
 sources:
 - name: Go io
   url: https://pkg.go.dev/io
@@ -52,17 +50,39 @@ integration_id: thenude
 external_service: TheNude
 api_base_url: https://www.thenude.com
 data_access_method: web_scraping
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Data<br/>Reconciliation<br/>Service"]
-      node2["TheNude<br/>(Alias Database)"]
-      node3["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
-      node4["Rate Limiter<br/>(1 req/sec)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌───────────────────┐
+  │   Data            │
+  │   Reconciliation  │
+  │   Service         │
+  └─────────┬─────────┘
+            │
+            │ Alias Resolution
+            ▼
+  ┌───────────────────┐
+  │     TheNude       │
+  │  (Alias Database) │
+  └─────────┬─────────┘
+            │
+     ┌──────┴────────┐
+     │  HTTP_CLIENT  │
+     │  (RECOMMENDED │
+     │   proxy/VPN)  │
+     └───────────────┘
+            │
+     ┌──────┴───────┐
+     │ Rate Limiter │
+     │ (1 req/sec)  │
+     └──────────────┘
+
+  Use Case:
+  Scene has "Performer A" → TheNude shows aliases
+  → "Performer A" = "Stage Name B" = "Name C"
+  → Link all instances to single performer record
+  ```
+
 api_details: |
   **Data Access**: Web scraping only
   **Base URL**: `https://www.thenude.com`
@@ -85,6 +105,7 @@ api_details: |
   - Use proxy/VPN
   - Cache extensively
   - Handle Cloudflare protection
+
 database_schema: |
   **Schema**: `qar` (pirate-themed obfuscation)
 
@@ -141,6 +162,7 @@ database_schema: |
   );
   CREATE INDEX idx_alias_lookup ON qar.performer_alias_index(alias);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/thenude/
@@ -153,6 +175,7 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (1/sec)
   └── thenude_test.go
   ```
+
 key_interfaces: |
   ```go
   // TheNude alias resolution provider
@@ -207,6 +230,7 @@ key_interfaces: |
     CareerEnd   int `json:"career_end,omitempty"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -223,6 +247,7 @@ dependencies: |
   **Internal Services**:
   - HTTP_CLIENT - Proxy/VPN routing (RECOMMENDED)
   - DATA_RECONCILIATION - Alias resolution consumer
+
 env_vars: |
   ```bash
   # TheNude integration
@@ -239,6 +264,7 @@ env_vars: |
   THENUDE_PROXY_ENABLED=true
   THENUDE_PROXY_URL=socks5://127.0.0.1:9050
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -269,6 +295,7 @@ config_keys: |
           min_fuzzy_score: 0.85     # Minimum similarity for fuzzy match
           normalize_names: true     # Remove punctuation, lowercase
   ```
+
 component_interaction: |
   **Alias Resolution Flow** (Data Reconciliation):
   1. Scene metadata has performer name "Performer X"
@@ -295,6 +322,7 @@ component_interaction: |
   4. Parse HTML for alias list
   5. Extract physical attributes for verification
   6. Cache result for 14 days
+
 alias_extraction: |
   **Alias Extraction from HTML**:
   ```go
@@ -360,6 +388,7 @@ alias_extraction: |
     )
   }
   ```
+
 data_reconciliation_integration: |
   **Integration with DATA_RECONCILIATION Service**:
 
@@ -424,6 +453,7 @@ data_reconciliation_integration: |
     return s.repo.CreatePerformer(ctx, performer)
   }
   ```
+
 enrichment_role: |
   **ENRICHMENT-Only Provider** (alias resolution specialist)
 
@@ -448,6 +478,7 @@ enrichment_role: |
                                       ↓
                               Link to Performer Record
   ```
+
 proxy_vpn_support: |
   **Proxy/VPN Routing** (RECOMMENDED)
 
@@ -466,6 +497,7 @@ proxy_vpn_support: |
           type: tor
           url: socks5://127.0.0.1:9050
   ```
+
 error_handling: |
   **HTTP Error Codes**:
   - 404 Not Found → Performer doesn't exist on TheNude
@@ -477,6 +509,7 @@ error_handling: |
   - If TheNude unavailable → fall back to local fuzzy matching
   - If performer not found → return empty aliases, don't error
   - If scraping fails → cache failure, retry later
+
 unit_tests: |
   ```go
   func TestTheNude_ExtractAliases(t *testing.T) {
@@ -517,6 +550,7 @@ unit_tests: |
     assert.Greater(t, confidence, 0.8)
   }
   ```
+
 integration_tests: |
   ```go
   func TestTheNude_AliasResolution(t *testing.T) {
@@ -532,6 +566,7 @@ integration_tests: |
     assert.NotEmpty(t, aliases.Aliases)
   }
   ```
+
 caching_strategy: |
   **Cache Layers**:
   - **L1**: In-memory cache (otter) for alias lookups (1 hour TTL)
@@ -547,6 +582,7 @@ caching_strategy: |
   - `thenude:aliases:{slug}` - Full alias list
   - `thenude:search:{query}` - Search results
   - `thenude:resolve:{normalized_name}` - Quick alias resolution
+
 best_practices: |
   **Scraping**:
   - Very conservative rate limit (1 req/sec)

@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Instagram integration](#instagram-integration)
 - [Proxy (recommended due to aggressive blocking)](#proxy-recommended-due-to-aggressive-blocking)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,18 +55,36 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-    node2["Instagram Link<br/>(verified URL)"]
-    node3["Instagram.com<br/>(login wall)"]
-    node4["Followers<br/>Post Count"]
-    node5["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
-    node3 --> node4
-    node1 --> node2
-    node2 --> node3
-    node4 --> node5
 ```
+┌───────────────────┐
+│   Performer       │
+│   Profile Page    │
+│   (Revenge UI)    │
+└─────────┬─────────┘
+          │ Display social links
+          ▼
+┌───────────────────┐
+│   Instagram Link  │───→ Opens in new tab
+│   (verified URL)  │     (user's browser)
+└─────────┬─────────┘
+          │ Metadata only
+          │ (NO content)
+          ▼
+┌───────────────────┐     ┌──────────────┐
+│   Instagram.com   │────▶│  Followers   │
+│   (login wall)    │     │  Post Count  │
+└───────────────────┘     │  Bio         │
+          │               └──────────────┘
+   ┌──────┴────────┐
+   │  HTTP_CLIENT  │
+   │  (recommended │
+   │   proxy/VPN)  │
+   └───────────────┘
+
+IMPORTANT: This integration does NOT access any content.
+Only stores verified profile links and public counts.
+```
+
 
 ### Integration Structure
 
@@ -93,10 +106,6 @@ internal/integration/instagram/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -165,7 +174,9 @@ type InstagramProvider struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -205,21 +216,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

@@ -38,8 +38,8 @@ Letterboxd integration logs movies to your film diary. Rate films as you watch a
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

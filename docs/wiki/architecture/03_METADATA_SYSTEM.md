@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Revenge - Metadata System](#revenge-metadata-system)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The metadata system gathers information about your media from multiple sources. 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The metadata system gathers information about your media from multiple sources. 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

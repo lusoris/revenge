@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Configuration Reference](#configuration-reference)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ Configure Revenge using a YAML file, environment variables, or both. All setting
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ Configure Revenge using a YAML file, environment variables, or both. All setting
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

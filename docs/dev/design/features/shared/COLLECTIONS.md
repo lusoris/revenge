@@ -7,7 +7,6 @@
     - [Module Structure](#module-structure)
     - [Component Interaction](#component-interaction)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -23,10 +22,6 @@
       - [DELETE /api/v1/collections/{id}](#delete-apiv1collectionsid)
       - [POST /api/v1/collections/{id}/items](#post-apiv1collectionsiditems)
       - [DELETE /api/v1/collections/{id}/items/{item_id}](#delete-apiv1collectionsiditemsitem_id)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -75,20 +70,25 @@ Collections allow users to group media items together:
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["External<br/>APIs"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           ▼                      ▼
+                    ┌─────────────┐        ┌──────────┐
+                    │ PostgreSQL  │        │ External │
+                    │   (pgx)     │        │   APIs   │
+                    └─────────────┘        └──────────┘
+  ```
 
 ### Database Schema
 
@@ -114,10 +114,6 @@ internal/content/collections/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -181,7 +177,9 @@ type SmartCollectionEvaluator interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -336,21 +334,6 @@ Remove item from collection
 ```
 
 ---
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

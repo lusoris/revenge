@@ -38,8 +38,8 @@ Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled device. C
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for Marvel comics ONLY. Official Marvel Developer 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -1,7 +1,6 @@
 ## Table of Contents
 
 - [Revenge - Player Architecture](#revenge-player-architecture)
-  - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
@@ -26,9 +25,6 @@ The player architecture handles media playback across web, mobile, and TV client
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +34,8 @@ The player architecture handles media playback across web, mobile, and TV client
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

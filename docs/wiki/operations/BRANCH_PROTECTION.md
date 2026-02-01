@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Branch Protection Rules](#branch-protection-rules)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Branch protection rules prevent direct pushes to main and develop branches. All 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Branch protection rules prevent direct pushes to main and develop branches. All 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -46,8 +46,8 @@ See where you are going when scrubbing through videos. Trickplay generates thumb
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

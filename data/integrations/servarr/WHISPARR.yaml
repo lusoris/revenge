@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult content management automation (eros branch)'
 wiki_tagline: '> Automatic adult content downloads with Whisparr'
-wiki_overview: Whisparr (eros branch) automates adult content downloads. Request scenes and Whisparr handles acquisition.
-  Integrates with StashDB for metadata. Webhooks notify Revenge when content is imported. Part of the QAR adult content system.
-  Configure with Whisparr URL and API key in settings.
+wiki_overview: Whisparr (eros branch) automates adult content downloads. Request scenes
+  and Whisparr handles acquisition. Integrates with StashDB for metadata. Webhooks
+  notify Revenge when content is imported. Part of the QAR adult content system. Configure
+  with Whisparr URL and API key in settings.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -55,6 +56,7 @@ integration_id: whisparr_v3
 external_service: Whisparr v3
 auth_method: api_key
 api_base_url: http://localhost:6969/api/v3
+
 dual_role_metadata_and_downloads: |
   **CRITICAL: Whisparr serves DUAL purposes in the Revenge architecture**:
 
@@ -84,17 +86,20 @@ dual_role_metadata_and_downloads: |
   - Direct StashDB/Stash integrations are SUPPLEMENTARY for enrichment
   - This dual-role pattern is consistent across ALL Arr services
   - Privacy benefit: Local metadata cache reduces external calls to adult content databases
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>QAR Module"]
-      node2["Whisparr<br/>Integration"]
-      node3["Whisparr<br/>(eros)"]
-      node4["Webhook<br/>Handler"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│  Whisparr    │────▶│  Whisparr   │
+  │  QAR Module │◀────│ Integration  │◀────│  (eros)     │
+  └─────────────┘     └──────┬───────┘     └─────────────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
 api_details: |
   **API Version**: v3
   **Base URL**: `http://localhost:6969/api/v3` (configurable)
@@ -107,6 +112,7 @@ api_details: |
   - `/movie` - Scene/movie management
   - `/command` - Trigger searches
   - `/calendar` - Upcoming releases
+
 database_schema: |
   **Schema**: `qar` (adult content isolation)
 
@@ -138,6 +144,7 @@ database_schema: |
     UNIQUE(scene_id)
   );
   ```
+
 api_request_examples: |
   **Add Site (Performer)**:
   ```
@@ -152,6 +159,7 @@ api_request_examples: |
     "monitored": true
   }
   ```
+
 webhook_handling: |
   **Webhook Payload** (MovieDownload):
   ```json
@@ -169,6 +177,7 @@ webhook_handling: |
     }
   }
   ```
+
 pirate_terminology: |
   **QAR Obfuscation** (pirate theme):
   - "Site" → Performer/Studio

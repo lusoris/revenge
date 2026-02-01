@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Webhooks](#webhooks)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Webhook System enables bidirectional event-driven integration. Receive webho
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Webhook System enables bidirectional event-driven integration. Receive webho
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

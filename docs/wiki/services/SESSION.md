@@ -38,8 +38,8 @@ The Session service tracks active login sessions across devices. Each login crea
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

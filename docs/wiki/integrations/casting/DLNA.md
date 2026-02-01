@@ -37,8 +37,8 @@ Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles, and 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

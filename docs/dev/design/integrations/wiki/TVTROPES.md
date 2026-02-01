@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,14 +54,31 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
-    node2["TVTropes<br/>(web)"]
-    node3["Trope Analysis<br/>- Used tropes"]
-    node2 --> node3
-    node1 --> node2
 ```
+┌──────────────┐
+│  Revenge     │
+│  Detail Page │
+│  (Movie/TV)  │
+└──────┬───────┘
+       │ "Tropes" link
+       ▼
+┌──────────────┐     ┌───────────────────┐
+│   TVTropes   │────▶│  Trope Analysis   │
+│   (web)      │     │  - Used tropes    │
+└──────┬───────┘     │  - Character types│
+       │             │  - Plot devices   │
+┌──────┴───────┐     │  - Narrative      │
+│ Rate Limiter │     └───────────────────┘
+│ (0.5/sec)    │
+└──────────────┘
+
+URL Structure:
+- /pmwiki/pmwiki.php/Film/{Title}
+- /pmwiki/pmwiki.php/Series/{Title}
+- /pmwiki/pmwiki.php/WesternAnimation/{Title}
+- /pmwiki/pmwiki.php/Anime/{Title}
+```
+
 
 ### Integration Structure
 
@@ -88,10 +100,6 @@ internal/integration/tvtropes/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -156,7 +164,9 @@ func FormatTropesTitle(title string) string {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -189,21 +199,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

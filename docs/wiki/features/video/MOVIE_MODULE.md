@@ -45,8 +45,8 @@ Manage your movie collection with automatic metadata from Radarr (PRIMARY source
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -38,8 +38,8 @@ Internet Adult Film Database (IAFD) provides comprehensive industry data. Perfor
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

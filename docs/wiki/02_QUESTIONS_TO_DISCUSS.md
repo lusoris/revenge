@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Questions & Gaps to Discuss](#questions-gaps-to-discuss)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
@@ -25,9 +23,6 @@ This document tracks unresolved design questions and gaps that need team discuss
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -37,8 +32,7 @@ This document tracks unresolved design questions and gaps that need team discuss
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -38,8 +38,8 @@ SUPPLEMENTARY ratings enrichment for movies/TV shows. Provides: (1) IMDb ratings
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

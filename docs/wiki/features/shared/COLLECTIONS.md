@@ -48,8 +48,8 @@ The Collections system lets you group any media into custom collections. Create 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

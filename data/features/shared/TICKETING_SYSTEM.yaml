@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User portal for bug reports, feature requests, and support tickets'
 wiki_tagline: '> Report issues and request features through a built-in portal'
-wiki_overview: Built-in support system for your media server. Users can submit bug reports, request features, or ask for help
-  without leaving the app. Admins see a dashboard of all tickets with priority, status, and assignment. Email notifications
-  keep everyone updated. Integrates with GitHub Issues for developers who want external tracking.
+wiki_overview: Built-in support system for your media server. Users can submit bug
+  reports, request features, or ask for help without leaving the app. Admins see a
+  dashboard of all tickets with priority, status, and assignment. Email notifications
+  keep everyone updated. Integrates with GitHub Issues for developers who want external
+  tracking.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -74,21 +76,20 @@ design_refs:
 feature_name: Ticketing System
 module_name: ticketing_system
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -237,6 +238,7 @@ key_interfaces: |
     CloseIssue(ctx context.Context, issueNumber int) error
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -246,6 +248,7 @@ dependencies: |
 
   **External APIs**:
   - GitHub REST API v3 (optional)
+
 env_vars: |
   ```bash
   TICKETS_GITHUB_ENABLED=false
@@ -253,6 +256,7 @@ env_vars: |
   TICKETS_GITHUB_TOKEN=ghp_xxx
   TICKETS_MAX_ATTACHMENT_SIZE_MB=10
   ```
+
 config_keys: |
   ```yaml
   tickets:
@@ -266,6 +270,7 @@ config_keys: |
       token: ${TICKETS_GITHUB_TOKEN}
       auto_create_issues: false
   ```
+
 component_interaction: |
   **Ticket Creation Flow**:
   1. User submits ticket via POST /api/v1/tickets
@@ -295,6 +300,7 @@ component_interaction: |
   3. If status = 'closed', set closed_at timestamp
   4. If GitHub issue linked, close GitHub issue
   5. Notify requester of resolution
+
 api_endpoints: |
   ```
   POST   /api/v1/tickets                 # Create ticket
@@ -312,6 +318,7 @@ api_endpoints: |
   PUT    /api/v1/tickets/:id/assign      # Assign ticket
   POST   /api/v1/tickets/:id/github      # Link GitHub issue
   ```
+
 unit_tests: |
   ```go
   func TestTicketService_CreateTicket(t *testing.T) {
@@ -329,6 +336,7 @@ unit_tests: |
     // Mock GitHub responses
   }
   ```
+
 integration_tests: |
   ```go
   func TestTickets_EndToEnd(t *testing.T) {

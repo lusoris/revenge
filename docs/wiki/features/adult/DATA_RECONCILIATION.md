@@ -46,8 +46,8 @@ When multiple metadata sources provide conflicting information, the reconciliati
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

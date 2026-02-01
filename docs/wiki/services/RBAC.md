@@ -38,8 +38,8 @@ The RBAC service controls who can do what in Revenge. Built on Casbin, it suppor
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

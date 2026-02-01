@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -18,10 +17,6 @@
 - [In-app notifications](#in-app-notifications)
 - [Preferences](#preferences)
 - [Push devices](#push-devices)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -63,18 +58,22 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Event<br/>Publisher"]
-    node2["Notification<br/>Service"]
-    node3["Channels<br/>(Email,<br/>Push,"]
-    node4["PostgreSQL<br/>(pgx)"]
-    node5["External<br/>Services"]
-    node1 --> node2
-    node2 --> node3
-    node4 --> node5
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Event     │────▶│  Notification│────▶│  Channels   │
+│  Publisher  │     │   Service    │     │  (Email,    │
+│             │     │              │     │   Push,     │
+│             │     │              │     │   Webhook)  │
+└─────────────┘     └──────┬───────┘     └─────┬───────┘
+                           │                   │
+                           ▼                   ▼
+                    ┌─────────────┐     ┌──────────────┐
+                    │ PostgreSQL  │     │   External   │
+                    │   (pgx)     │     │   Services   │
+                    └─────────────┘     │ (SMTP, FCM)  │
+                                        └──────────────┘
+```
+
 
 ### Service Structure
 
@@ -114,10 +113,6 @@ internal/service/notification/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -179,7 +174,9 @@ type NotificationChannel interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -260,21 +257,6 @@ View: {{ .ActionURL }}
 Revenge Media Server
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -18,10 +17,6 @@
 - [Rate limiting](#rate-limiting)
 - [Caching](#caching)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -63,20 +58,38 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Metadata<br/>Service"]
-    node2["Lidarr<br/>(LOCAL cache)"]
-    node3["MusicBrainz<br/>API<br/>(fallback +"]
-    node4["MusicBrainz<br/>API<br/>(external)"]
-    node5["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-    node6["▼────┐  ┌──────▼──────┐  ┌───▼─<br/>er<br/>AcoustID/"]
-    node2 --> node3
-    node4 --> node5
-    node1 --> node2
-    node3 --> node4
-    node5 --> node6
 ```
+┌──────────────┐
+│  Revenge     │
+│  Metadata    │
+│  Service     │
+└──────┬───────┘
+       │
+       ├─────────────────────────────────────┐
+       │ PRIMARY                             │ SUPPLEMENTARY
+       ▼                                     ▼
+┌──────────────┐                      ┌──────────────┐
+│   Lidarr     │                      │ MusicBrainz  │
+│ (LOCAL cache)│                      │     API      │
+│              │                      │  (fallback + │
+└──────┬───────┘                      │  enrichment) │
+       │                              └──────┬───────┘
+       ▼                                     │
+┌──────────────┐                      ┌──────┴────────┐
+│ MusicBrainz  │                      │  HTTP_CLIENT  │
+│     API      │                      │  (optional    │
+│  (external)  │                      │   proxy/VPN)  │
+└──────────────┘                      └───────┬───────┘
+                                             │
+                                      ┌──────┴───────┬──────────────┐
+                                      │              │              │
+                                 ┌────▼────┐  ┌──────▼──────┐  ┌───▼────┐
+                                 │ Cover   │  │ AcoustID/   │  │ Rate   │
+                                 │ Art     │  │ Chromaprint │  │ Limiter│
+                                 │ Archive │  │             │  │(1/sec) │
+                                 └─────────┘  └─────────────┘  └────────┘
+```
+
 
 ### Integration Structure
 
@@ -98,10 +111,6 @@ internal/integration/musicbrainz/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -179,7 +188,9 @@ type AlbumMetadata struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -221,21 +232,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

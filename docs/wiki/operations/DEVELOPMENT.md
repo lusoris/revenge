@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Development Environment Setup](#development-environment-setup)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ This guide walks you through setting up Revenge for local development. You will 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ This guide walks you through setting up Revenge for local development. You will 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

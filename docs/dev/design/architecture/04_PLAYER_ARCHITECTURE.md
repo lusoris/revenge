@@ -4,18 +4,12 @@
   - [Status](#status)
   - [Architecture](#architecture)
 - [Player Architecture](#player-architecture)
-    - [Components](#components)
   - [Implementation](#implementation)
     - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -64,30 +58,77 @@ Player components:
 
 # Player Architecture
 
-```mermaid
-flowchart TD
-    node1["CLIENT LAYER<br/>├─────────────────────────────────────────────────────────────────┤<br/>┌──────────────┐  ┌──────────────┐  ┌──────────────┐"]
-    node2["HLS.js<br/>(Adaptive)"]
-    node3["STREAMING LAYER<br/>├─────────────────────────────────────────────────────────────────┤<br/>┌──────────────────────────────────────────────────────────┐"]
-    node4["Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)"]
-    node5["FEATURE LAYER<br/>├─────────────────────────────────────────────────────────────────┤<br/>┌──────────────┐  ┌──────────────┐  ┌──────────────┐"]
-    node6["SyncPlay<br/>- WebSocket<br/>- Sync State"]
-    node7["Casting<br/>- Chromecast<br/>- DLNA"]
-    node8["Subtitles<br/>- SSA/ASS<br/>- WebVTT"]
-    node9["STORAGE LAYER<br/>├──────────────────────────────────────────────────────────────────┤<br/>┌──────────────────┐  ┌──────────────────┐  ┌────────────────┐"]
-    node6 --> node7
-    node7 --> node8
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
-    node5 --> node6
-    node8 --> node9
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT LAYER                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │ Web Player   │  │ Mobile App   │  │ TV App       │         │
+│  │ (Vidstack)   │  │ (React Native)│  │ (Android TV) │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+│         │                 │                  │                  │
+│         └─────────────────┼──────────────────┘                  │
+│                           │                                     │
+│                    ┌──────▼───────┐                            │
+│                    │   HLS.js     │                            │
+│                    │ (Adaptive)   │                            │
+│                    └──────┬───────┘                            │
+└───────────────────────────┼─────────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────────┐
+│                      STREAMING LAYER                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │              HLS Manifest Generator (gohlslib)           │  │
+│  │  - Master Playlist (.m3u8)                               │  │
+│  │  - Media Playlists (video/audio/subs)                    │  │
+│  │  - Adaptive Bitrate Profiles                             │  │
+│  └──────────────────┬───────────────────────────────────────┘  │
+│                     │                                           │
+│  ┌──────────────────▼───────────────────────────────────────┐  │
+│  │           Transcoding Engine (FFmpeg/go-astiav)          │  │
+│  │  - Codec Conversion (H.264, H.265, AV1)                  │  │
+│  │  - Audio Transcoding (AAC, Opus)                         │  │
+│  │  - Subtitle Burning/Extract                              │  │
+│  │  - Hardware Acceleration (VAAPI, NVENC, QSV)             │  │
+│  └──────────────────┬───────────────────────────────────────┘  │
+│                     │                                           │
+└─────────────────────┼───────────────────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────────────────┐
+│                    FEATURE LAYER                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │ Skip Intro   │  │  Trickplay   │  │  Chapters    │         │
+│  │ - Timeline   │  │  - Thumbnails│  │  - Markers   │         │
+│  │ - Detection  │  │  - Scrubbing │  │  - Navigation│         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │  SyncPlay    │  │  Casting     │  │  Subtitles   │         │
+│  │ - WebSocket  │  │  - Chromecast│  │  - SSA/ASS   │         │
+│  │ - Sync State │  │  - DLNA      │  │  - WebVTT    │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────┐
+│                       STORAGE LAYER                               │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌────────────────┐ │
+│  │ Media Files      │  │ Metadata DB      │  │ Cache          │ │
+│  │ - Video Streams  │  │ - Playback State │  │ - Transcodes   │ │
+│  │ - Audio Tracks   │  │ - User Progress  │  │ - Trickplay    │ │
+│  │ - Subtitle Files │  │ - Watch History  │  │ - Segments     │ │
+│  └──────────────────┘  └──────────────────┘  └────────────────┘ │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
-### Components
-
-<!-- Component description -->
 
 
 ## Implementation
@@ -424,10 +465,8 @@ const (
 
 
 
-## Configuration
-### Environment Variables
 
-<!-- Environment variables -->
+## Configuration
 
 ### Config Keys
 **Playback**:
@@ -449,21 +488,6 @@ const (
 | `playback.casting.dlna_enabled` | bool | True | Enable DLNA support |
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

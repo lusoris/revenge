@@ -3,7 +3,6 @@
 - [Lidarr](#lidarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ Lidarr integration automates music library management. Add artists and Lidarr do
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

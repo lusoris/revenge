@@ -46,8 +46,8 @@ Built-in support system for your media server. Users can submit bug reports, req
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -46,8 +46,8 @@ Use your voice to control Revenge through smart assistants. Ask Alexa or Google 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

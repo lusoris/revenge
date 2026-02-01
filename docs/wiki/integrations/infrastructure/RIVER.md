@@ -38,8 +38,8 @@ River handles background tasks like library scanning, metadata fetching, and tra
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

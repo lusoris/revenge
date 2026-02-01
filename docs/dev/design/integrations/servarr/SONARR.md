@@ -7,16 +7,7 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +50,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Request"]
-    node2["Sonarr<br/>Integration"]
-    node3["Sonarr<br/>Server"]
-    node4["Webhook<br/>Handler"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Revenge    │────▶│   Sonarr     │────▶│   Sonarr    │
+│  Request    │◀────│ Integration  │◀────│   Server    │
+│  System     │     │              │     └─────────────┘
+└─────────────┘     └──────┬───────┘
+                           │
+                    ┌──────▼────────┐
+                    │   Webhook     │
+                    │   Handler     │
+                    └───────────────┘
+```
+
 
 ### Integration Structure
 
@@ -90,10 +84,6 @@ internal/integration/sonarr/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -139,37 +129,13 @@ type SonarrEpisode struct {
 ```
 
 
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
-
-<!-- Environment variables -->
-
-### Config Keys
-<!-- Configuration keys -->
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

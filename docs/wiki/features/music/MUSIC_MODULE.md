@@ -46,8 +46,8 @@ The Music Module provides a complete music library experience with support for a
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Layout System](#layout-system)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The layout system uses a 4px base unit for all spacing, ensuring visual consiste
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The layout system uses a 4px base unit for all spacing, ensuring visual consiste
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

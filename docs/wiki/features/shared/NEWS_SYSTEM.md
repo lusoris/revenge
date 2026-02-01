@@ -46,8 +46,8 @@ Stay informed with server announcements and entertainment news. Admins can post 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

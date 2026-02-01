@@ -16,20 +16,26 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > RSS podcast subscription and playback
+technical_summary: '> RSS podcast subscription and playback
+
 
   Complete podcast experience:
+
   - **RSS Feed Support**: Subscribe to any podcast via RSS/Atom feeds
+
   - **Automatic Updates**: Background jobs refresh feeds and download new episodes
+
   - **Playback Features**: Variable speed, chapter navigation, sleep timer
+
   - **Offline Support**: Download episodes for offline listening
-  - **Discovery**: Search and browse podcasts via Podcast Index API
+
+  - **Discovery**: Search and browse podcasts via Podcast Index API'
 wiki_tagline: '> Your podcast library with automatic updates and offline downloads'
-wiki_overview: The Podcasts Module provides a complete podcast listening experience with RSS feed subscriptions, automatic
-  episode updates, and offline downloads. Subscribe to your favorite podcasts, get notified of new episodes, and listen with
-  variable speed playback and chapter navigation. All episodes are automatically organized and ready to play across all your
-  devices.
+wiki_overview: The Podcasts Module provides a complete podcast listening experience
+  with RSS feed subscriptions, automatic episode updates, and offline downloads. Subscribe
+  to your favorite podcasts, get notified of new episodes, and listen with variable
+  speed playback and chapter navigation. All episodes are automatically organized
+  and ready to play across all your devices.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -234,31 +240,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/podcasts/export-opml
   description: Export podcast subscriptions as OPML file
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
-module_structure: |-
-  ```
-    internal/content/podcasts/
-    ├── module.go              # fx module definition
-    ├── repository.go          # Database operations (sqlc)
-    ├── service.go             # Business logic
-    ├── handler.go             # HTTP handlers (ogen)
-    ├── types.go               # Domain types
-    └── cache.go               # Caching layer (otter)
-    ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/podcasts/\n  ├── module.go            \
+  \  # fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/podcasts/*`
@@ -290,6 +290,8 @@ component_interaction: |
      - For streaming: HLS manifest generated or direct URL returned
      - For download: Episode downloaded to local storage
      - Progress updates sent via WebSocket
+
+# Implementation
 file_structure: |
   ```
   internal/content/podcasts/
@@ -332,6 +334,7 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (podcasts/* endpoints)
   ```
+
 key_interfaces: |
   ```go
   // Repository defines database operations for podcasts
@@ -423,6 +426,7 @@ key_interfaces: |
       CleanupOldDownloads(ctx context.Context, retentionDays int) error
   }
   ```
+
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -440,6 +444,8 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_PODCAST_CACHE_TTL` - Cache TTL duration (default: 15m)
@@ -450,6 +456,7 @@ env_vars: |
   - `REVENGE_PODCAST_AUTO_DOWNLOAD_LIMIT` - Default auto-download limit (default: 3)
   - `REVENGE_PODCAST_DOWNLOAD_PATH` - Path for downloaded episodes
   - `REVENGE_PODCAST_RETENTION_DAYS` - Episode retention in days (default: 30)
+
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -488,6 +495,7 @@ config_keys: |
       new_episodes_enabled: true
       download_complete_enabled: true
   ```
+
 defaults: |
   - Cache TTL: 15 minutes
   - Cache size: 100 MB
@@ -498,6 +506,8 @@ defaults: |
   - Skip forward: 30 seconds
   - Skip backward: 15 seconds
   - Playback speed: 0.5x to 3.0x
+
+# API Endpoints (additional to those already listed)
 request_examples: |
   **Subscribe to podcast**:
   ```http
@@ -543,6 +553,7 @@ request_examples: |
     "completed": false
   }
   ```
+
 response_examples: |
   **Podcast details response**:
   ```json
@@ -624,6 +635,8 @@ response_examples: |
     "total": 42
   }
   ```
+
+# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for podcasts
@@ -659,6 +672,7 @@ unit_tests: |
   - Test OPML import
   - Test OPML export
   - Test malformed OPML handling
+
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database)
@@ -680,6 +694,7 @@ integration_tests: |
   - Test auto-download job execution
   - Test cleanup job execution
   - Test job failure and retry logic
+
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (critical path)

@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -17,10 +16,6 @@
   - [API Endpoints](#api-endpoints)
 - [Policy management (admin only)](#policy-management-admin-only)
 - [Role management](#role-management)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -62,16 +57,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["Middleware<br/>(Auth)"]
-    node3["Casbin<br/>Enforcer"]
-    node4["PostgreSQL<br/>casbin_rule"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  Middleware  │────▶│   Casbin    │
+│  (Web/App)  │◀────│   (Auth)     │◀────│  Enforcer   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+                                                 │
+                                                 ▼
+                                          ┌─────────────┐
+                                          │ PostgreSQL  │
+                                          │casbin_rule  │
+                                          └─────────────┘
+```
+
 
 ### Service Structure
 
@@ -104,10 +102,6 @@ internal/service/rbac/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -143,7 +137,9 @@ type RBACService interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -174,21 +170,6 @@ DELETE /api/v1/rbac/users/:id/roles/:role # Remove role
 GET    /api/v1/rbac/users/:id/roles       # Get user roles
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

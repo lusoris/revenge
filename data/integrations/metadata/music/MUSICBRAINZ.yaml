@@ -18,10 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY metadata provider (fallback + enrichment) for music'
 wiki_tagline: '> Direct MusicBrainz API - Supplementary to Lidarr'
-wiki_overview: 'SUPPLEMENTARY metadata source for music. Used as: (1) **Fallback** when Lidarr not setup, unreachable, or
-  lacks metadata, (2) **Enrichment** for additional data not cached by Lidarr. Open database (no API key required) with strict
-  1 req/sec rate limit. Provides MBIDs (universal music identifiers), artist/album/track metadata, Cover Art Archive, AcoustID
-  fingerprinting. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).'
+wiki_overview: 'SUPPLEMENTARY metadata source for music. Used as: (1) **Fallback** when Lidarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Lidarr. Open database (no API key required) with strict 1 req/sec rate limit. Provides MBIDs (universal music identifiers), artist/album/track metadata, Cover Art Archive, AcoustID fingerprinting. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -49,21 +46,40 @@ integration_name: MusicBrainz
 integration_id: musicbrainz
 external_service: MusicBrainz
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Metadata<br/>Service"]
-      node2["Lidarr<br/>(LOCAL cache)"]
-      node3["MusicBrainz<br/>API<br/>(fallback +"]
-      node4["MusicBrainz<br/>API<br/>(external)"]
-      node5["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-      node6["▼────┐  ┌──────▼──────┐  ┌───▼─<br/>er<br/>AcoustID/"]
-      node2 --> node3
-      node4 --> node5
-      node1 --> node2
-      node3 --> node4
-      node5 --> node6
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Metadata    │
+  │  Service     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────┐
+         │ PRIMARY                             │ SUPPLEMENTARY
+         ▼                                     ▼
+  ┌──────────────┐                      ┌──────────────┐
+  │   Lidarr     │                      │ MusicBrainz  │
+  │ (LOCAL cache)│                      │     API      │
+  │              │                      │  (fallback + │
+  └──────┬───────┘                      │  enrichment) │
+         │                              └──────┬───────┘
+         ▼                                     │
+  ┌──────────────┐                      ┌──────┴────────┐
+  │ MusicBrainz  │                      │  HTTP_CLIENT  │
+  │     API      │                      │  (optional    │
+  │  (external)  │                      │   proxy/VPN)  │
+  └──────────────┘                      └───────┬───────┘
+                                               │
+                                        ┌──────┴───────┬──────────────┐
+                                        │              │              │
+                                   ┌────▼────┐  ┌──────▼──────┐  ┌───▼────┐
+                                   │ Cover   │  │ AcoustID/   │  │ Rate   │
+                                   │ Art     │  │ Chromaprint │  │ Limiter│
+                                   │ Archive │  │             │  │(1/sec) │
+                                   └─────────┘  └─────────────┘  └────────┘
+  ```
+
 api_details: |
   **API Version**: v2
   **Base URL**: `https://musicbrainz.org/ws/2`
@@ -84,6 +100,7 @@ api_details: |
 
   **AcoustID** (fingerprinting):
   - `https://api.acoustid.org/v2/lookup` - Identify track by fingerprint
+
 database_schema: |
   **Schema**: `public`
 
@@ -120,6 +137,7 @@ database_schema: |
   );
   CREATE INDEX idx_fingerprints_acoustid ON acoustic_fingerprints(acoustid);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/musicbrainz/
@@ -134,6 +152,7 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (1/sec)
   └── musicbrainz_test.go
   ```
+
 key_interfaces: |
   ```go
   // MusicBrainz provider implementation
@@ -188,6 +207,7 @@ key_interfaces: |
     TrackCount    int         `json:"track-count"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -201,6 +221,7 @@ dependencies: |
   - MusicBrainz API v2 (free, no key required)
   - Cover Art Archive (free)
   - AcoustID API (free with API key)
+
 env_vars: |
   ```bash
   # MusicBrainz
@@ -219,6 +240,7 @@ env_vars: |
   # Caching
   MUSICBRAINZ_CACHE_TTL=168h  # 7 days
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -236,6 +258,7 @@ config_keys: |
           enabled: true
           api_key: ${ACOUSTID_API_KEY}
   ```
+
 component_interaction: |
   **Artist Metadata Fetch**:
   1. User adds music folder to library
@@ -268,6 +291,7 @@ component_interaction: |
   6. Response includes MusicBrainz recording MBID
   7. Call GetTrack(mbid) to fetch metadata
   8. Tag file with metadata
+
 rate_limiting: |
   **Strict 1 Request/Second**:
   - MusicBrainz strictly enforces 1 request per second
@@ -290,6 +314,7 @@ rate_limiting: |
   // Make request
   resp, err := client.Get(url)
   ```
+
 api_request_examples: |
   **Search Artist**:
   ```
@@ -337,6 +362,7 @@ api_request_examples: |
     ]
   }
   ```
+
 mbid_system: |
   **MusicBrainz IDs (MBIDs)**:
   - All entities in MusicBrainz have UUIDs
@@ -353,6 +379,7 @@ mbid_system: |
   - Artist → Release Groups (albums)
   - Release Group → Releases (vinyl, CD, digital editions)
   - Release → Recordings (tracks)
+
 acoustic_fingerprinting: |
   **AcoustID Integration**:
   - Generate Chromaprint fingerprint from audio file
@@ -374,6 +401,7 @@ acoustic_fingerprinting: |
     "fingerprint": "AQAAC0kkZUqYREkUnFwaOueDHE... (base64)"
   }
   ```
+
 unit_tests: |
   ```go
   func TestMusicBrainzProvider_SearchArtist(t *testing.T) {
@@ -388,6 +416,7 @@ unit_tests: |
     // Test fingerprint identification
   }
   ```
+
 integration_tests: |
   ```go
   func TestMusicBrainz_FullWorkflow(t *testing.T) {
@@ -395,6 +424,7 @@ integration_tests: |
     // Test search, fetch, cover art
   }
   ```
+
 user_agent_requirement: |
   **Critical: User-Agent Header**:
   - MusicBrainz REQUIRES a valid User-Agent header
@@ -406,6 +436,7 @@ user_agent_requirement: |
   ```go
   req.Header.Set("User-Agent", "Revenge/1.0.0 (https://example.com)")
   ```
+
 caching_strategy: |
   **Long TTL for Music Metadata**:
   - Artist/album metadata rarely changes (7 day TTL)
@@ -416,6 +447,7 @@ caching_strategy: |
   - `mb:artist:{mbid}` - Artist metadata
   - `mb:album:{mbid}` - Album metadata
   - `mb:coverart:{mbid}` - Cover art URLs
+
 performance_optimization: |
   **Batch Lookups**:
   - When scanning large library, queue lookups

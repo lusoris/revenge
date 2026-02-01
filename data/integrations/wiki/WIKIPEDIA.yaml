@@ -18,8 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> ENRICHMENT source for encyclopedic context - MediaWiki API'
 wiki_tagline: '> Wikipedia - Background information for media'
-wiki_overview: ENRICHMENT metadata source providing encyclopedic context. Plot summaries, production history, critical reception.
-  Actor/director biographies. Multi-language support. **No API key required**. MediaWiki API with rate limiting etiquette.
+wiki_overview: 'ENRICHMENT metadata source providing encyclopedic context. Plot summaries, production history, critical reception. Actor/director biographies. Multi-language support. **No API key required**. MediaWiki API with rate limiting etiquette.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -47,15 +46,31 @@ integration_id: wikipedia
 external_service: Wikipedia
 api_base_url: https://en.wikipedia.org/w/api.php
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
-      node2["Wikipedia<br/>MediaWiki<br/>API"]
-      node3["Article Content<br/>- Summary<br/>- Plot"]
-      node2 --> node3
-      node1 --> node2
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Detail Page │
+  │  (Movie/TV)  │
+  └──────┬───────┘
+         │ Enrichment request
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │  Wikipedia   │────▶│  Article Content  │
+  │  MediaWiki   │     │  - Summary        │
+  │  API         │     │  - Plot           │
+  └──────┬───────┘     │  - Production     │
+         │             │  - Reception      │
+  ┌──────┴───────┐     │  - Cast info      │
+  │ Rate Limiter │     └───────────────────┘
+  │ (polite)     │
+  └──────────────┘
+
+  Languages: en, de, fr, es, ja, etc.
+  Content: CC BY-SA license
+  ```
+
 api_details: |
   **API**: MediaWiki Action API
   **Base URL**: `https://{lang}.wikipedia.org/w/api.php`
@@ -73,6 +88,7 @@ api_details: |
   **Search Endpoints**:
   - `action=opensearch` - Quick search suggestions
   - `action=query&list=search` - Full-text search
+
 database_schema: |
   ```sql
   -- Wikipedia article cache
@@ -102,6 +118,7 @@ database_schema: |
     UNIQUE(content_type, content_id, language)
   );
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/wikipedia/
@@ -114,6 +131,7 @@ module_structure: |
   ├── ratelimit.go                 # Polite rate limiting
   └── wikipedia_test.go
   ```
+
 key_interfaces: |
   ```go
   // Wikipedia enrichment provider
@@ -154,6 +172,7 @@ key_interfaces: |
     ImageURL   string `json:"image"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -164,6 +183,7 @@ dependencies: |
 
   **External**:
   - Wikipedia MediaWiki API (free, no key)
+
 env_vars: |
   ```bash
   WIKIPEDIA_ENABLED=true
@@ -171,6 +191,7 @@ env_vars: |
   WIKIPEDIA_CACHE_TTL=168h    # 7 days
   WIKIPEDIA_RATE_LIMIT=1      # req/sec
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -189,6 +210,7 @@ config_keys: |
         role: enrichment
         extract_sentences: 5
   ```
+
 component_interaction: |
   **Movie/Show Detail Enrichment**:
   1. User views movie detail page
@@ -210,6 +232,7 @@ component_interaction: |
   1. User's locale determines language
   2. Query appropriate language Wikipedia
   3. Fall back to English if not found
+
 api_request_examples: |
   **Search for Movie**:
   ```bash
@@ -244,6 +267,7 @@ api_request_examples: |
   ```bash
   curl "https://en.wikipedia.org/w/api.php?action=query&titles=Leonardo_DiCaprio&prop=extracts|pageimages|info&exintro=true&explaintext=true&format=json"
   ```
+
 enrichment_role: |
   **ENRICHMENT-Only Provider**
 
@@ -263,6 +287,7 @@ enrichment_role: |
   - Person biographies
   - Franchise/universe context
   - Award information
+
 rate_limiting: |
   **Wikipedia Etiquette**:
   - No official rate limit, but be polite
@@ -283,11 +308,13 @@ rate_limiting: |
     }
   }
   ```
+
 error_handling: |
   **Common Scenarios**:
   - Article not found → Search returned no results
   - Disambiguation page → Multiple matches, present options
   - Rate limited → Respect and back off
+
 unit_tests: |
   ```go
   func TestWikipedia_GetExtract(t *testing.T) {
@@ -299,6 +326,7 @@ unit_tests: |
     assert.Contains(t, extract, "Test summary")
   }
   ```
+
 best_practices: |
   **API Usage**:
   - Use `exintro=true` for short summaries

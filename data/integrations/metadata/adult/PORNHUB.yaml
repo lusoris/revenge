@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> LINK-ONLY performer channel references for QAR content'
 wiki_tagline: '> Pornhub - Performer channel links and view metrics'
-wiki_overview: LINK-ONLY integration for QAR performer profiles. Stores verified channel URLs for performer cross-referencing.
-  Extracts view counts and subscriber metrics. **NO content streaming** - only metadata and links. **Web scraping** with heavy
-  Cloudflare protection. **Proxy/VPN required** (via HTTP_CLIENT service).
+wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified channel URLs for performer cross-referencing. Extracts view counts and subscriber metrics. **NO content streaming** - only metadata and links. **Web scraping** with heavy Cloudflare protection. **Proxy/VPN required** (via HTTP_CLIENT service).'
 sources:
 - name: Go io
   url: https://pkg.go.dev/io
@@ -56,21 +54,44 @@ external_service: Pornhub
 api_base_url: https://www.pornhub.com
 data_access_method: web_scraping
 content_streaming: false
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-      node2["Pornhub Link<br/>(verified URL)"]
-      node3["Pornhub.com<br/>(Cloudflare)"]
-      node4["View Count<br/>Subscribers"]
-      node5["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"]
-      node6["Headless<br/>Browser<br/>(Cloudflare)"]
-      node3 --> node4
-      node1 --> node2
-      node2 --> node3
-      node4 --> node5
-      node5 --> node6
+
+architecture_diagram: |
   ```
+  ┌───────────────────┐
+  │   Performer       │
+  │   Profile Page    │
+  │   (Revenge UI)    │
+  └─────────┬─────────┘
+            │ Display external links
+            ▼
+  ┌───────────────────┐
+  │   Pornhub Link    │───→ Opens in new tab
+  │   (verified URL)  │     (user's browser)
+  └─────────┬─────────┘
+            │ Metadata only
+            │ (NO streaming)
+            ▼
+  ┌───────────────────┐     ┌──────────────┐
+  │   Pornhub.com     │────▶│  View Count  │
+  │   (Cloudflare)    │     │  Subscribers │
+  └───────────────────┘     │  Video Count │
+            │               └──────────────┘
+     ┌──────┴────────┐
+     │  HTTP_CLIENT  │
+     │  (REQUIRED    │
+     │   proxy/VPN)  │
+     └───────────────┘
+            │
+     ┌──────┴───────┐
+     │  Headless    │
+     │  Browser     │
+     │  (Cloudflare)│
+     └──────────────┘
+
+  IMPORTANT: This integration does NOT stream any content.
+  Only stores verified links and basic metrics.
+  ```
+
 integration_scope: |
   **WHAT THIS INTEGRATION DOES**:
   - ✅ Stores verified performer channel URLs
@@ -90,6 +111,7 @@ integration_scope: |
   - Respects robots.txt where applicable
   - No content redistribution
   - Links open in user's own browser
+
 api_details: |
   **Data Access**: Web scraping (no official API)
   **Base URL**: `https://www.pornhub.com`
@@ -112,6 +134,7 @@ api_details: |
   - Video view counts
   - Video upload count
   - Channel URL (verified)
+
 database_schema: |
   **Schema**: `qar` (pirate-themed obfuscation)
 
@@ -161,6 +184,7 @@ database_schema: |
   );
   CREATE INDEX idx_link_checks_performer ON qar.external_link_checks(performer_id, checked_at);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/pornhub/
@@ -174,6 +198,7 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (0.5/sec)
   └── pornhub_test.go
   ```
+
 key_interfaces: |
   ```go
   // Pornhub link provider (LINK-ONLY, no content)
@@ -230,6 +255,7 @@ key_interfaces: |
     CheckedAt   time.Time `json:"checked_at"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -245,6 +271,7 @@ dependencies: |
 
   **Internal Services**:
   - HTTP_CLIENT - Proxy/VPN routing (REQUIRED)
+
 env_vars: |
   ```bash
   # Pornhub integration
@@ -265,6 +292,7 @@ env_vars: |
   PORNHUB_USE_BROWSER=true
   PORNHUB_BROWSER_TIMEOUT=30s
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -298,6 +326,7 @@ config_keys: |
           check_interval: 168h      # Re-verify weekly
           remove_broken_links: false  # Keep but mark as broken
   ```
+
 component_interaction: |
   **Link Discovery Flow**:
   1. New performer added from Whisparr/StashDB
@@ -336,6 +365,7 @@ component_interaction: |
   │ [🔗 OnlyFans]                   │
   └─────────────────────────────────┘
   ```
+
 cloudflare_bypass: |
   **Cloudflare Challenge Handling**:
 
@@ -396,6 +426,7 @@ cloudflare_bypass: |
   // Store cookies for reuse
   p.cookieJar.SetCookies(url, cookies)
   ```
+
 metrics_extraction: |
   **Extracting Public Metrics**:
   ```go
@@ -441,6 +472,7 @@ metrics_extraction: |
     return int64(val * float64(multiplier))
   }
   ```
+
 link_role: |
   **LINK-Only Provider** (no content streaming)
 
@@ -461,6 +493,7 @@ link_role: |
   - Links open in new browser tab
   - User navigates Pornhub in their own browser
   - Revenge does not proxy or embed content
+
 proxy_vpn_support: |
   **Proxy/VPN Routing** (REQUIRED)
 
@@ -482,6 +515,7 @@ proxy_vpn_support: |
 
   **Browser Proxy**:
   Headless browser also routes through configured proxy.
+
 error_handling: |
   **HTTP Error Codes**:
   - 403 Forbidden → Cloudflare block, rotate proxy
@@ -493,6 +527,7 @@ error_handling: |
   - If challenge detected → use headless browser
   - If browser fails → rotate proxy, retry
   - After 3 failures → skip, retry later
+
 unit_tests: |
   ```go
   func TestPornhub_ParseMetrics(t *testing.T) {
@@ -524,6 +559,7 @@ unit_tests: |
     }
   }
   ```
+
 integration_tests: |
   ```go
   func TestPornhub_LinkVerification(t *testing.T) {
@@ -542,6 +578,7 @@ integration_tests: |
     // Note: May be valid or 404 depending on if performer exists
   }
   ```
+
 caching_strategy: |
   **Cache Layers**:
   - **L1**: In-memory (otter) for recent lookups (1 hour TTL)
@@ -557,6 +594,7 @@ caching_strategy: |
   - Cache valid cookies for 1 hour
   - Reuse session for multiple requests
   - Refresh session on 403 response
+
 best_practices: |
   **Ethical Scraping**:
   - Very conservative rate limiting (0.5 req/sec)

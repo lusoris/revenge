@@ -46,8 +46,8 @@ Browse adult scenes with rich metadata from StashDB via Whisparr integration. Sc
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

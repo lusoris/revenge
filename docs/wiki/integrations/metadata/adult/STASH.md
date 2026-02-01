@@ -3,7 +3,6 @@
 - [Stash](#stash)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ Migration and sync integration for local Stash libraries. GraphQL API enables: (
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

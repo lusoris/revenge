@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Testing Patterns and Practices](#testing-patterns-and-practices)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Testing Strategy ensures code quality through multiple test layers. Unit tes
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Testing Strategy ensures code quality through multiple test layers. Unit tes
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

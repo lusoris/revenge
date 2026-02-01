@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Design Documentation Status](#design-documentation-status)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ This dashboard shows the completion status of all design documentation. Each doc
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ This dashboard shows the completion status of all design documentation. Each doc
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

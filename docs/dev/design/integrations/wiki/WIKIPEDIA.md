@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,14 +54,29 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
-    node2["Wikipedia<br/>MediaWiki<br/>API"]
-    node3["Article Content<br/>- Summary<br/>- Plot"]
-    node2 --> node3
-    node1 --> node2
 ```
+┌──────────────┐
+│  Revenge     │
+│  Detail Page │
+│  (Movie/TV)  │
+└──────┬───────┘
+       │ Enrichment request
+       ▼
+┌──────────────┐     ┌───────────────────┐
+│  Wikipedia   │────▶│  Article Content  │
+│  MediaWiki   │     │  - Summary        │
+│  API         │     │  - Plot           │
+└──────┬───────┘     │  - Production     │
+       │             │  - Reception      │
+┌──────┴───────┐     │  - Cast info      │
+│ Rate Limiter │     └───────────────────┘
+│ (polite)     │
+└──────────────┘
+
+Languages: en, de, fr, es, ja, etc.
+Content: CC BY-SA license
+```
+
 
 ### Integration Structure
 
@@ -88,10 +98,6 @@ internal/integration/wikipedia/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -152,7 +158,9 @@ type PersonBio struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -184,21 +192,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

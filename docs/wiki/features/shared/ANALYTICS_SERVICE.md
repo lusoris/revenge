@@ -46,8 +46,8 @@ The Tracearr analytics dashboard shows real-time server activity. See what is be
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

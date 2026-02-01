@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for music. Used as: (1) **Fallback** when Lidarr n
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

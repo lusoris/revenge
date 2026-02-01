@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [API Reference](#api-reference)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ The Revenge API lets you build custom clients and integrations. All endpoints us
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ The Revenge API lets you build custom clients and integrations. All endpoints us
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

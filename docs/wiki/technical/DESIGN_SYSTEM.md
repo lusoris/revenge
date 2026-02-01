@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Design System](#design-system)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Complete design system themed around Queen Anne's Revenge - Blackbeard's legenda
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Complete design system themed around Queen Anne's Revenge - Blackbeard's legenda
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,16 +54,29 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>QAR Module<br/>(Metadata)"]
-    node2["IAFD<br/>Scraper"]
-    node3["Industry Data<br/>- Performer bio"]
-    node4["Rate Limiter"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
 ```
+┌──────────────┐
+│  Revenge     │
+│  QAR Module  │
+│  (Metadata)  │
+└──────┬───────┘
+       │ Lookup request
+       ▼
+┌──────────────┐     ┌───────────────────┐
+│    IAFD      │────▶│  Industry Data    │
+│   Scraper    │     │  - Performer bio  │
+└──────┬───────┘     │  - Filmography    │
+       │             │  - Scene credits  │
+┌──────┴───────┐     │  - Studio info    │
+│ Rate Limiter │     │  - Release dates  │
+│ + Proxy Pool │     └───────────────────┘
+└──────────────┘
+
+IAFD = Internet Adult Film Database
+Industry standard reference for professional content
+Integration Role: SUPPLEMENTARY (authoritative for filmography/scene credits)
+```
+
 
 ### Integration Structure
 
@@ -90,10 +98,6 @@ internal/integration/iafd/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -204,7 +208,9 @@ func (p *IAFDProvider) parsePerformer(doc *goquery.Document) (*Performer, error)
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -233,21 +239,6 @@ qar:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

@@ -3,7 +3,6 @@
 - [Last.fm Scrobbling](#lastfm-scrobbling)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ Send your music listening history to Last.fm automatically. Tracks scrobble afte
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

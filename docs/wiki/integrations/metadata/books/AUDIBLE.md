@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Cha
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

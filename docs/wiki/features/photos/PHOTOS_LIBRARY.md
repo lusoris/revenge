@@ -46,8 +46,8 @@ The Photos Library provides comprehensive photo management with support for JPEG
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

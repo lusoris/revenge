@@ -38,8 +38,8 @@ The User service manages user accounts, profiles, and preferences. Admins can cr
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

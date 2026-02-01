@@ -38,8 +38,8 @@ Link your Kitsu account to track anime watching. Kitsu provides metadata, commun
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

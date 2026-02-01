@@ -38,8 +38,8 @@ Dragonfly provides high-speed caching for Revenge. Stores session data, API resp
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

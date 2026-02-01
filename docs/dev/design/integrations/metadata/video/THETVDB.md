@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -16,10 +15,6 @@
 - [Episode ordering preference](#episode-ordering-preference)
 - [Caching](#caching)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,18 +56,34 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Metadata<br/>Service"]
-    node2["Sonarr<br/>(LOCAL cache)"]
-    node3["TheTVDB API<br/>(fallback +<br/>enrichment)"]
-    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-    node5["JWT Token<br/>Manager"]
-    node2 --> node3
-    node1 --> node2
-    node3 --> node4
-    node4 --> node5
 ```
+┌──────────────┐
+│  Revenge     │
+│  Metadata    │
+│  Service     │
+└──────┬───────┘
+       │
+       ├─────────────────────────────────────┐
+       │ PRIMARY                             │ SUPPLEMENTARY
+       ▼                                     ▼
+┌──────────────┐                      ┌──────────────┐
+│   Sonarr     │                      │ TheTVDB API  │
+│ (LOCAL cache)│                      │  (fallback + │
+│              │                      │  enrichment) │
+└──────┬───────┘                      └──────┬───────┘
+       │                                     │
+       ▼                              ┌──────┴────────┐
+┌──────────────┐                     │  HTTP_CLIENT  │
+│ TheTVDB API  │                     │  (optional    │
+│  (external)  │                     │   proxy/VPN)  │
+└──────────────┘                     └───────┬───────┘
+                                            │
+                                     ┌──────┴───────┐
+                                     │  JWT Token   │
+                                     │   Manager    │
+                                     └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -94,10 +105,6 @@ internal/integration/thetvdb/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -183,7 +190,9 @@ type EpisodeMetadata struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -223,21 +232,6 @@ metadata:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

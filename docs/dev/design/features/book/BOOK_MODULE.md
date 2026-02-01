@@ -28,10 +28,6 @@
       - [GET /api/v1/books/authors](#get-apiv1booksauthors)
       - [GET /api/v1/books/series](#get-apiv1booksseries)
       - [GET /api/v1/books/collections](#get-apiv1bookscollections)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -79,20 +75,25 @@ Complete eBook library:
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["External<br/>APIs"]
-    node1 --> node2
-    node2 --> node3
-    node5 --> node6
-    node3 --> node4
-    node4 --> node5
 ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                            ┌──────────────────────┼────────────┐
+                            ▼                      ▼            ▼
+                      ┌──────────┐          ┌───────────┐  ┌────────┐
+                      │Repository│          │ Metadata  │  │  Cache │
+                      │  (sqlc)  │          │  Service  │  │(otter) │
+                      └────┬─────┘          └─────┬─────┘  └────────┘
+                           │                      │
+                           ▼                      ▼
+                    ┌─────────────┐        ┌──────────┐
+                    │ PostgreSQL  │        │ External │
+                    │   (pgx)     │        │   APIs   │
+                    └─────────────┘        └──────────┘
+  ```
 
 ### Database Schema
 
@@ -286,7 +287,9 @@ type ProgressTracker interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 **Environment Variables**:
@@ -441,21 +444,6 @@ List all book series
 List all book collections
 
 ---
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

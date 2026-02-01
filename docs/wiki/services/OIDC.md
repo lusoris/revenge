@@ -38,8 +38,8 @@ The OIDC service enables Single Sign-On with external identity providers. Connec
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

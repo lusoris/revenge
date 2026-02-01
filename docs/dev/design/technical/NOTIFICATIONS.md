@@ -2,15 +2,6 @@
 
 - [Notifications System](#notifications-system)
   - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [GET /api/v1/user/notifications/preferences](#get-apiv1usernotificationspreferences)
     - [PUT /api/v1/user/notifications/preferences](#put-apiv1usernotificationspreferences)
@@ -21,10 +12,6 @@
     - [GET /api/v1/admin/webhooks](#get-apiv1adminwebhooks)
     - [DELETE /api/v1/admin/webhooks/:id](#delete-apiv1adminwebhooksid)
     - [POST /api/v1/admin/notifications/test](#post-apiv1adminnotificationstest)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -69,39 +56,14 @@ Unified notification delivery:
 ---
 
 
-## Architecture
-
-<!-- Architecture diagram placeholder -->
-
-### Components
-
-<!-- Component description -->
-
-
-## Implementation
-
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
 
-<!-- Environment variables -->
 
-### Config Keys
-<!-- Configuration keys -->
+
 
 
 ## API Endpoints
@@ -222,21 +184,6 @@ Send test notification (admin only)
 ```json
 {}
 ```
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

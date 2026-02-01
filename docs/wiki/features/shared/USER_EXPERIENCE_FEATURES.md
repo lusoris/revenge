@@ -46,8 +46,8 @@ Modern UI inspired by popular streaming services. Auto-playing previews on hover
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

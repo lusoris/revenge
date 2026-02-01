@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -16,10 +15,6 @@
 - [Search configuration](#search-configuration)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,16 +56,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Search)"]
-    node2["Search<br/>Service"]
-    node3["Typesense<br/>Server"]
-    node4["Sync Job<br/>(PostgreSQL<br/>→ Typesense)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│   Search     │────▶│  Typesense  │
+│  (Search)   │◀────│   Service    │◀────│   Server    │
+└─────────────┘     └──────┬───────┘     └─────────────┘
+                           │
+                    ┌──────┴───────┐
+                    │   Sync Job   │
+                    │ (PostgreSQL  │
+                    │   → Typesense)│
+                    └──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -92,10 +90,6 @@ internal/integration/typesense/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -151,7 +145,9 @@ type SearchResults struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -217,21 +213,6 @@ GET /api/v1/search?q=inception&collections=movies,tvshows&filter_by=release_year
 GET /api/v1/search/autocomplete?q=inc&collection=movies
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

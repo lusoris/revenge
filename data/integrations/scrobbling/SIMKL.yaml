@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV tracker and movie scrobbler (alternative to Trakt)'
 wiki_tagline: '> Track TV and movies with Simkl'
-wiki_overview: Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrobbling records what you watch.
-  Strong anime support with AniList integration. Sync your watchlist and watched history. View detailed statistics about your
-  viewing habits. Free account with no limits.
+wiki_overview: Simkl provides TV and movie tracking as an alternative to Trakt. Automatic
+  scrobbling records what you watch. Strong anime support with AniList integration.
+  Sync your watchlist and watched history. View detailed statistics about your viewing
+  habits. Free account with no limits.
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro
@@ -43,17 +44,21 @@ integration_id: simkl
 external_service: Simkl
 api_base_url: https://api.simkl.com
 auth_method: oauth
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Playback"]
-      node2["Simkl<br/>Integration"]
-      node3["Simkl<br/>API"]
-      node4["Scrobble<br/>Queue (River)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│    Simkl     │────▶│    Simkl    │
+  │  Playback   │◀────│ Integration  │◀────│     API     │
+  │  Events     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │ Scrobble      │
+                      │ Queue (River) │
+                      └───────────────┘
+  ```
+
 api_details: |
   **API Version**: v2
   **Base URL**: `https://api.simkl.com`
@@ -74,6 +79,7 @@ api_details: |
   - `Content-Type: application/json`
   - `simkl-api-key: {client_id}`
   - `Authorization: Bearer {access_token}`
+
 database_schema: |
   **Schema**: `public`
 
@@ -156,6 +162,7 @@ database_schema: |
     UNIQUE(connection_id, content_type, simkl_id)
   );
   ```
+
 module_structure: |
   ```
   internal/integrations/simkl/
@@ -168,6 +175,7 @@ module_structure: |
   ├── types.go                     # Simkl API types
   └── simkl_test.go
   ```
+
 key_interfaces: |
   ```go
   // Simkl integration service
@@ -205,6 +213,7 @@ key_interfaces: |
     To     string                 `json:"to,omitempty"`  // Status: "watchlist", "watching", "completed"
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -215,6 +224,7 @@ dependencies: |
 
   **External Services**:
   - Simkl account (free tier available)
+
 env_vars: |
   ```bash
   # Simkl OAuth app credentials
@@ -224,6 +234,7 @@ env_vars: |
   # Sync settings
   SIMKL_AUTO_SCROBBLE=true
   ```
+
 config_keys: |
   ```yaml
   integrations:
@@ -235,6 +246,7 @@ config_keys: |
       auto_sync_watchlist: true
       sync_interval: 3600            # 1 hour
   ```
+
 component_interaction: |
   **PIN-Based OAuth Flow**:
   1. User clicks "Connect Simkl" in Revenge
@@ -261,6 +273,7 @@ component_interaction: |
   - Simkl has strong anime catalog
   - Accepts anilist_id alongside tmdb_id/imdb_id
   - Can sync with AniList via Simkl's native integration
+
 oauth_flow: |
   **PIN-Based Authorization** (no redirect needed):
 
@@ -312,6 +325,7 @@ oauth_flow: |
     "scope": "public"
   }
   ```
+
 api_request_examples: |
   **Add to Watch History**:
   ```
@@ -383,6 +397,7 @@ api_request_examples: |
     "shows": [...]
   }
   ```
+
 anime_support: |
   **Anime Integration**:
   - Simkl has native anime support
@@ -409,6 +424,7 @@ anime_support: |
     ]
   }
   ```
+
 watchlist_sync: |
   **Simkl List Statuses**:
   - **plantowatch**: Want to watch
@@ -424,6 +440,7 @@ watchlist_sync: |
   3. For items with status "completed":
      - Mark as watched in Revenge
   4. Bidirectional: Add Revenge requests to Simkl watchlist
+
 rating_sync: |
   **Simkl Rating System**:
   - Scale: 1-10 (integers)
@@ -443,6 +460,7 @@ rating_sync: |
     ]
   }
   ```
+
 unit_tests: |
   ```go
   func TestSimklService_OAuth(t *testing.T) {
@@ -462,6 +480,7 @@ unit_tests: |
     // Test export to Simkl
   }
   ```
+
 integration_tests: |
   ```go
   func TestSimkl_FullWorkflow(t *testing.T) {

@@ -38,8 +38,8 @@ LINK-ONLY integration for QAR performer profiles. Stores verified OnlyFans profi
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

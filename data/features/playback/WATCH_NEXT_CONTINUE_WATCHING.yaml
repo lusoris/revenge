@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Intelligent playback continuation and recommendation system'
 wiki_tagline: '> Intelligent playback continuation and recommendation system'
-wiki_overview: Never lose your place. Continue Watching shows partially-watched content with progress bars. Watch Next suggests
-  the next episode or related content based on your viewing history. Syncs across all your devices so you can start on your
-  phone and finish on TV. Configurable per-user with options to hide content or reset progress.
+wiki_overview: Never lose your place. Continue Watching shows partially-watched content
+  with progress bars. Watch Next suggests the next episode or related content based
+  on your viewing history. Syncs across all your devices so you can start on your
+  phone and finish on TV. Configurable per-user with options to hide content or reset
+  progress.
 sources:
 - name: Jellyfin API
   url: https://api.jellyfin.org/
@@ -35,21 +37,20 @@ design_refs:
 feature_name: Watch Next & Continue Watching System
 module_name: watch_next_&_continue_watching_system
 schema_name: public
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
 database_schema: |
   **Schema**: `public`
 
@@ -245,6 +246,7 @@ file_structure: |
   ├── ProgressBar.svelte           # Progress indicator
   └── PlaybackPreferences.svelte   # User preferences UI
   ```
+
 key_interfaces: |
   ```go
   // ProgressRepository interface for playback progress database operations
@@ -321,6 +323,7 @@ key_interfaces: |
       GenerateHistoryBasedSuggestions(ctx context.Context, userID uuid.UUID) ([]*WatchNextSuggestion, error)
   }
   ```
+
 dependencies: |
   **Go Packages**:
   ```go
@@ -349,6 +352,7 @@ dependencies: |
   **External Dependencies**:
   - **PostgreSQL 18+**: Database with views and generated columns
   - **Dragonfly**: Distributed cache (L2) for cross-device sync
+
 env_vars: |
   ```bash
   # Continue Watching
@@ -372,6 +376,7 @@ env_vars: |
   PLAYBACK_CLEANUP_INTERVAL_HOURS=24          # Run cleanup job every X hours
   PLAYBACK_CLEANUP_OLD_PROGRESS_DAYS=365      # Delete progress older than X days
   ```
+
 config_keys: |
   ```yaml
   playback:
@@ -413,6 +418,7 @@ config_keys: |
       ttl_watch_next: 10m
       ttl_user_progress: 1m
   ```
+
 defaults: |
   - **Continue Watching Limit**: 20 items
   - **Progress Range**: Show items between 5% and 95% watched
@@ -423,16 +429,12 @@ defaults: |
   - **Progress Update Interval**: 10 seconds (rate limiting)
   - **Cross-device Sync**: Enabled
   - **Cleanup**: Daily, delete progress older than 1 year
-module_structure: |-
-  ```
-    internal/content/watch_next_&_continue_watching_system/
-    ├── module.go              # fx module definition
-    ├── repository.go          # Database operations (sqlc)
-    ├── service.go             # Business logic
-    ├── handler.go             # HTTP handlers (ogen)
-    ├── types.go               # Domain types
-    └── cache.go               # Caching layer (otter)
-    ```
+
+module_structure: "```\n  internal/content/watch_next_&_continue_watching_system/\n\
+  \  ├── module.go              # fx module definition\n  ├── repository.go      \
+  \    # Database operations (sqlc)\n  ├── service.go             # Business logic\n\
+  \  ├── handler.go             # HTTP handlers (ogen)\n  ├── types.go           \
+  \    # Domain types\n  └── cache.go               # Caching layer (otter)\n  ```"
 request_examples: |
   **Update Playback Progress**:
   ```json
@@ -501,6 +503,7 @@ request_examples: |
   DELETE /api/v1/playback/watch-next/660e8400-e29b-41d4-a716-446655440000
   Authorization: Bearer <token>
   ```
+
 response_examples: |
   **Progress Object**:
   ```json
@@ -607,6 +610,7 @@ response_examples: |
     "updated_at": "2024-06-15T10:00:00Z"
   }
   ```
+
 unit_tests: |
   **ProgressRepository Layer**:
   - Test CRUD operations for playback progress
@@ -665,6 +669,7 @@ unit_tests: |
   - Mock service layer
 
   **Coverage Target**: 85%+ for critical paths (progress tracking, suggestions)
+
 integration_tests: |
   **Database Integration**:
   - Test full progress lifecycle with real PostgreSQL (testcontainers)
@@ -712,7 +717,9 @@ integration_tests: |
   - Test Continue Watching query performance (user with 1000+ progress records)
   - Test concurrent progress updates (100+ simultaneous requests)
   - Test suggestion generation performance
-test_coverage_target: 80%
+
+test_coverage_target: "80%"
+
 api_endpoints:
 - method: GET
   path: /api/v1/playback/continue-watching
@@ -750,9 +757,7 @@ api_endpoints:
 - method: PUT
   path: /api/v1/playback/preferences
   description: Update user playback preferences
-component_interaction: |-
-  1. Client requests resource via HTTP
-    2. API handler validates and routes to service
-    3. Service checks cache, queries repository if needed
-    4. Repository executes SQL via sqlc
-    5. Results return through layers to client
+
+component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
+  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
+  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"

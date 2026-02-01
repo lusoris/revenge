@@ -46,8 +46,8 @@ Organize adult image sets and galleries with full metadata support. Link galleri
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Notifications System](#notifications-system)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Notifications System delivers real-time alerts across multiple channels. Use
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Notifications System delivers real-time alerts across multiple channels. Use
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

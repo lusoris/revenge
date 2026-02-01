@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Frontend Architecture](#frontend-architecture)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ The Revenge web interface is built with SvelteKit and Svelte 5 for a fast, react
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ The Revenge web interface is built with SvelteKit and Svelte 5 for a fast, react
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -3,7 +3,6 @@
 - [Whisparr v3](#whisparr-v3)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ Whisparr (eros branch) automates adult content downloads. Request scenes and Whi
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

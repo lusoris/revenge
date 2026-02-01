@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -18,10 +17,6 @@
 - [VPN interface](#vpn-interface)
 - [Default proxy for external APIs](#default-proxy-for-external-apis)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -128,18 +123,23 @@ fx.Provide(
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["External APIs<br/>(TMDb, TVDB)"]
-    node2["HTTP Client<br/>Factory"]
-    node3["Services<br/>(Metadata,"]
-    node4["Proxy/VPN<br/>(Tor, HTTP)"]
-    node5["Local Services<br/>(Arr, Stash)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
 ```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  External APIs  │◀────│  HTTP Client     │◀────│  Services   │
+│  (TMDb, TVDB)   │     │  Factory         │     │  (Metadata, │
+└─────────────────┘     │                  │     │   Requests) │
+                        │  - Proxy Router  │     └─────────────┘
+┌─────────────────┐     │  - VPN Binding   │
+│  Proxy/VPN      │◀────│  - Health Check  │
+│  (Tor, HTTP)    │     │  - Middleware    │
+└─────────────────┘     └──────────────────┘
+                                  │
+┌─────────────────┐               │
+│  Local Services │◀──────────────┘
+│  (Arr, Stash)   │    (Direct, no proxy)
+└─────────────────┘
+```
+
 
 ### Service Structure
 
@@ -175,10 +175,6 @@ internal/httpclient/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -280,7 +276,9 @@ func RetryMiddleware(maxRetries int, backoff time.Duration) Middleware
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -357,21 +355,6 @@ httpclient:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

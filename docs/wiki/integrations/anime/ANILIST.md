@@ -38,8 +38,8 @@ Connect your AniList account to sync anime watching progress. Metadata for anime
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

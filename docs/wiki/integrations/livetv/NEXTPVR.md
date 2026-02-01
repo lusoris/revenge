@@ -38,8 +38,8 @@ Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRu
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

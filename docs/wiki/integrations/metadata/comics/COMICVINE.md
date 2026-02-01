@@ -38,8 +38,8 @@ PRIMARY metadata source for comics libraries. Comprehensive database covering Ma
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

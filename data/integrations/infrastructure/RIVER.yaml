@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> PostgreSQL-native job queue'
 wiki_tagline: '> Background job processing with River'
-wiki_overview: River handles background tasks like library scanning, metadata fetching, and transcoding. Jobs are stored in
-  PostgreSQL for reliability - nothing is lost if the server restarts. View job status in the admin dashboard. Configure worker
+wiki_overview: River handles background tasks like library scanning, metadata fetching,
+  and transcoding. Jobs are stored in PostgreSQL for reliability - nothing is lost
+  if the server restarts. View job status in the admin dashboard. Configure worker
   concurrency based on your server capacity.
 sources:
 - name: Dragonfly Documentation
@@ -77,17 +78,20 @@ design_refs:
 integration_name: River
 integration_id: river
 external_service: River
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Services<br/>(Enqueue)"]
-      node2["River<br/>Client"]
-      node3["PostgreSQL<br/>(Job Store)"]
-      node4["Workers<br/>(Background)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Services   │────▶│   River      │────▶│ PostgreSQL  │
+  │ (Enqueue)   │     │   Client     │     │ (Job Store) │
+  └─────────────┘     └──────────────┘     └─────────────┘
+                             │
+                      ┌──────┴───────┐
+                      │   Workers    │
+                      │ (Background) │
+                      └──────────────┘
+  ```
+
 connection_details: |
   **Job Queue**: River (PostgreSQL-native background job processor)
   **Storage**: Jobs stored in PostgreSQL `river_job` schema
@@ -102,6 +106,7 @@ connection_details: |
   - Retry with exponential backoff
   - Job cancellation
   - Leadership election for distributed workers
+
 job_architecture: |
   **Job Lifecycle**:
   1. **Enqueue**: Service creates job, inserted into `river_job` table
@@ -119,6 +124,7 @@ job_architecture: |
   - `scheduled` - Waiting for scheduled time
   - `cancelled` - Manually cancelled
   - `discarded` - Permanently failed
+
 database_schema: |
   **Schema**: `river_job` (managed by River)
 
@@ -150,6 +156,7 @@ database_schema: |
     expires_at TIMESTAMPTZ NOT NULL
   );
   ```
+
 module_structure: |
   ```
   internal/jobs/
@@ -164,6 +171,7 @@ module_structure: |
   │   └── ...
   └── jobs_test.go
   ```
+
 key_interfaces: |
   ```go
   // River client wrapper
@@ -191,6 +199,7 @@ key_interfaces: |
     return w.libraryService.ScanLibrary(ctx, job.Args.LibraryID, job.Args.FullScan)
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/riverqueue/river` - Job queue
@@ -198,6 +207,7 @@ dependencies: |
   - `github.com/jackc/pgx/v5/pgxpool` - Connection pool
   - `github.com/google/uuid` - UUID support
   - `go.uber.org/fx` - Dependency injection
+
 env_vars: |
   ```bash
   # River configuration
@@ -210,6 +220,7 @@ env_vars: |
   RIVER_QUEUE_DEFAULT_PRIORITY=1
   RIVER_QUEUE_HIGH_PRIORITY=10
   ```
+
 config_keys: |
   ```yaml
   jobs:
@@ -227,6 +238,7 @@ config_keys: |
         low_priority:
           max_workers: 5
   ```
+
 component_interaction: |
   **Enqueue Job**:
   1. Service needs to scan library
@@ -247,6 +259,7 @@ component_interaction: |
   2. Job stays in `scheduled` state until time reached
   3. Job becomes `available` at scheduled time
   4. Worker picks up and executes normally
+
 job_examples: |
   **Library Scan Job**:
   ```go
@@ -293,6 +306,7 @@ job_examples: |
     Date: time.Now(),
   }, nextMidnight)
   ```
+
 api_endpoints: |
   **List Jobs**:
   ```
@@ -326,6 +340,7 @@ api_endpoints: |
   ```
   DELETE /api/v1/admin/jobs/:id
   ```
+
 common_jobs: |
   **Background Jobs in Revenge**:
   - `library_scan` - Scan library for new/changed files
@@ -339,6 +354,7 @@ common_jobs: |
   - `notification_send` - Send email/push notifications
   - `data_export` - GDPR data export
   - `user_deletion` - GDPR user deletion
+
 retry_strategy: |
   **Retry Configuration**:
   - Default max attempts: 25
@@ -359,6 +375,7 @@ retry_strategy: |
   - Attempt 5: 8m
   - ...
   - Attempt 25: 24h (max)
+
 unit_tests: |
   ```go
   func TestRiverClient_Enqueue(t *testing.T) {
@@ -369,6 +386,7 @@ unit_tests: |
     // Test worker execution
   }
   ```
+
 integration_tests: |
   ```go
   func TestRiver_FullWorkflow(t *testing.T) {
@@ -376,6 +394,7 @@ integration_tests: |
     // Enqueue job, verify execution, check completion
   }
   ```
+
 monitoring: |
   **Metrics Exposed** (via Prometheus):
   - `river_jobs_enqueued_total` - Total jobs enqueued
@@ -388,6 +407,7 @@ monitoring: |
   **Dashboard Queries**:
   - Job success rate: `rate(river_jobs_completed_total[5m]) / rate(river_jobs_enqueued_total[5m])`
   - Average job duration: `rate(river_job_duration_seconds_sum[5m]) / rate(river_job_duration_seconds_count[5m])`
+
 performance_tuning: |
   **Worker Sizing**:
   - Set `workers` to ~2x CPU cores for I/O-bound jobs

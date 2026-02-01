@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for comics libraries. Specializes in historical co
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [UI Components](#ui-components)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Component library built on shadcn-svelte and Bits UI. Media cards with hover inf
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Component library built on shadcn-svelte and Bits UI. Media cards with hover inf
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User account management and authentication'
 wiki_tagline: '> User account management and authentication'
-wiki_overview: The User service manages user accounts, profiles, and preferences. Admins can create users, assign roles, and
-  manage permissions. Users can update their profile, change email/password, and configure notification settings. Profile
-  images are stored with configurable storage backends. User data can be exported or deleted for GDPR compliance.
+wiki_overview: The User service manages user accounts, profiles, and preferences.
+  Admins can create users, assign roles, and manage permissions. Users can update
+  their profile, change email/password, and configure notification settings. Profile
+  images are stored with configurable storage backends. User data can be exported
+  or deleted for GDPR compliance.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -61,21 +63,28 @@ design_refs:
 service_name: User Service
 package_path: internal/service/user
 fx_module: user.Module
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["File<br/>Storage"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │  Storage  │  │  Cache │
+                  │  (sqlc)  │          │  Service  │  │(otter) │
+                  └────┬─────┘          └─────┬─────┘  └────────┘
+                       │                      │
+                       ▼                      ▼
+                  ┌─────────────┐        ┌──────────┐
+                  │ PostgreSQL  │        │ File     │
+                  │   (pgx)     │        │ Storage  │
+                  └─────────────┘        └──────────┘
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -165,6 +174,7 @@ database_schema: |
   );
   CREATE INDEX idx_user_deletion_user ON user_deletion_requests(user_id);
   ```
+
 module_structure: |
   ```
   internal/service/user/
@@ -196,6 +206,7 @@ module_structure: |
           └── data/
               └── +page.svelte     # Data export/deletion
   ```
+
 key_interfaces: |
   ```go
   type UserService interface {
@@ -231,6 +242,7 @@ key_interfaces: |
     ProfileVisibility string     `db:"profile_visibility" json:"profile_visibility"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -239,6 +251,7 @@ dependencies: |
   - `io` - File handling
   - `archive/zip` - Data export ZIP creation
   - `go.uber.org/fx`
+
 env_vars: |
   ```bash
   USER_DEFAULT_STORAGE_QUOTA_MB=100
@@ -246,6 +259,7 @@ env_vars: |
   USER_DATA_EXPORT_EXPIRY=168h  # 7 days
   USER_DELETION_GRACE_PERIOD=720h  # 30 days
   ```
+
 config_keys: |
   ```yaml
   user:
@@ -259,6 +273,7 @@ config_keys: |
     profile:
       default_visibility: private
   ```
+
 component_interaction: |
   **Profile Update**:
   1. User edits profile (bio, avatar, timezone)
@@ -296,6 +311,7 @@ component_interaction: |
      - Delete all user data (cascade)
      - Remove uploaded files
      - Update deletion request (status=completed)
+
 api_endpoints: |
   ```
   # User management (admin)
@@ -334,6 +350,7 @@ api_endpoints: |
     "profile_visibility": "friends"
   }
   ```
+
 unit_tests: |
   ```go
   func TestUserService_UpdateProfile(t *testing.T) {
@@ -344,6 +361,7 @@ unit_tests: |
     // Test avatar upload and quota enforcement
   }
   ```
+
 integration_tests: |
   ```go
   func TestUser_DataExportFlow(t *testing.T) {

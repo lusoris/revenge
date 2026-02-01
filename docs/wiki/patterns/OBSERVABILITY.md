@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Observability Pattern](#observability-pattern)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ Revenge includes comprehensive monitoring and debugging capabilities out of the 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ Revenge includes comprehensive monitoring and debugging capabilities out of the 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

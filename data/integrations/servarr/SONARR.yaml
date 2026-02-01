@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV show management automation'
 wiki_tagline: '> Automatic TV show downloads with Sonarr'
-wiki_overview: Sonarr integration automates TV show downloads. Add series to Sonarr and new episodes download automatically.
-  Webhooks notify Revenge when episodes are ready. See which shows are monitored and upcoming episodes. Calendar integration
+wiki_overview: Sonarr integration automates TV show downloads. Add series to Sonarr
+  and new episodes download automatically. Webhooks notify Revenge when episodes are
+  ready. See which shows are monitored and upcoming episodes. Calendar integration
   shows air dates. Connect with your Sonarr URL and API key.
 sources:
 - name: Uber fx
@@ -61,6 +62,7 @@ integration_id: sonarr
 external_service: Sonarr
 auth_method: api_key
 api_base_url: http://localhost:8989/api/v3
+
 dual_role_metadata_and_downloads: |
   **CRITICAL: Sonarr serves DUAL purposes in the Revenge architecture**:
 
@@ -89,17 +91,21 @@ dual_role_metadata_and_downloads: |
   - Sonarr is NOT just a download tool - it's the metadata backbone for TV shows
   - Direct TheTVDB integration is SUPPLEMENTARY for real-time updates/enrichment
   - This dual-role pattern is consistent across ALL Arr services
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Request"]
-      node2["Sonarr<br/>Integration"]
-      node3["Sonarr<br/>Server"]
-      node4["Webhook<br/>Handler"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Revenge    │────▶│   Sonarr     │────▶│   Sonarr    │
+  │  Request    │◀────│ Integration  │◀────│   Server    │
+  │  System     │     │              │     └─────────────┘
+  └─────────────┘     └──────┬───────┘
+                             │
+                      ┌──────▼────────┐
+                      │   Webhook     │
+                      │   Handler     │
+                      └───────────────┘
+  ```
+
 api_details: |
   **API Version**: v3
   **Base URL**: `http://localhost:8989/api/v3` (configurable)
@@ -114,6 +120,7 @@ api_details: |
   - `/calendar` - Get upcoming episodes
   - `/command` - Trigger commands (search, refresh)
   - `/history` - Get download history
+
 database_schema: |
   **Schema**: `public`
 
@@ -164,6 +171,7 @@ database_schema: |
     UNIQUE(episode_id)
   );
   ```
+
 key_interfaces: |
   ```go
   type SonarrService interface {
@@ -205,6 +213,7 @@ key_interfaces: |
     Monitored       bool     `json:"monitored"`
   }
   ```
+
 api_request_examples: |
   **Add Series**:
   ```
@@ -229,6 +238,7 @@ api_request_examples: |
   GET http://localhost:8989/api/v3/calendar?start=2026-02-01&end=2026-02-07
   X-Api-Key: your_api_key
   ```
+
 webhook_handling: |
   **Supported Events**:
   - **Download**: Episode downloaded
@@ -260,6 +270,7 @@ webhook_handling: |
     }
   }
   ```
+
 season_monitoring: |
   **Per-Season Monitoring**:
   - Monitor all seasons
@@ -281,6 +292,7 @@ season_monitoring: |
     ]
   }
   ```
+
 unit_tests: |
   ```go
   func TestSonarrService_AddSeries(t *testing.T) {

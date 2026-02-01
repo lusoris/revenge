@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for movies/TV shows. Used as: (1) **Fallback** whe
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

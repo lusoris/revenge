@@ -38,8 +38,8 @@ Search instantly across your entire library using Typesense. Find movies, shows,
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

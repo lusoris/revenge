@@ -16,21 +16,29 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Audiobook content management with metadata enrichment from Chaptarr and external providers
+technical_summary: '> Audiobook content management with metadata enrichment from Chaptarr
+  and external providers
+
 
   Complete audiobook library:
+
   - **Metadata Sources**: Chaptarr (PRIMARY - aggregates Audnexus/OpenLibrary), with direct APIs as supplementary
+
   - **Download Automation**: Chaptarr integration for automated audiobook management
+
   - **Supported Formats**: M4B (with chapters), MP3 (multi-file), AAC
+
   - **Chapter Navigation**: Jump to chapters, bookmarks, progress tracking
-  - **Playback**: Variable speed (0.5x-3x), sleep timer, per-user resume
+
+  - **Playback**: Variable speed (0.5x-3x), sleep timer, per-user resume'
 wiki_tagline: '> Your audiobook library with chapter navigation and progress sync'
-wiki_overview: The Audiobook Module provides a complete audiobook experience with support for chapter navigation, progress
-  tracking, and multi-device synchronization. Uses Chaptarr as the PRIMARY metadata source (aggregates from Audnexus/OpenLibrary
-  locally), with direct APIs as supplementary enrichment. Chaptarr integration provides both metadata caching and download
-  automation. Rich metadata includes narrators, publishers, and book descriptions. Resume playback across devices and adjust
-  playback speed to your preference.
+wiki_overview: The Audiobook Module provides a complete audiobook experience with
+  support for chapter navigation, progress tracking, and multi-device synchronization.
+  Uses Chaptarr as the PRIMARY metadata source (aggregates from Audnexus/OpenLibrary
+  locally), with direct APIs as supplementary enrichment. Chaptarr integration provides
+  both metadata caching and download automation. Rich metadata includes narrators,
+  publishers, and book descriptions. Resume playback across devices and adjust playback
+  speed to your preference.
 sources:
 - name: Audnexus API
   url: https://api.audnex.us/
@@ -258,31 +266,25 @@ api_endpoints:
 - method: GET
   path: /api/v1/audiobooks/series
   description: List all audiobook series
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node6["External<br/>APIs"]
-      node1 --> node2
-      node2 --> node3
-      node5 --> node6
-      node3 --> node4
-      node4 --> node5
-  ```
-module_structure: |-
-  ```
-    internal/content/audiobook/
-    ├── module.go              # fx module definition
-    ├── repository.go          # Database operations (sqlc)
-    ├── service.go             # Business logic
-    ├── handler.go             # HTTP handlers (ogen)
-    ├── types.go               # Domain types
-    └── cache.go               # Caching layer (otter)
-    ```
+architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
+  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
+  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
+  \  └──────┬──────┘\n                                                   │\n     \
+  \                       ┌──────────────────────┼────────────┐\n                \
+  \            ▼                      ▼            ▼\n                      ┌──────────┐\
+  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
+  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
+  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
+  \                           │                      │\n                         \
+  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
+  \                    │ PostgreSQL  │        │ External │\n                    │\
+  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
+  \ └──────────┘\n  ```"
+module_structure: "```\n  internal/content/audiobook/\n  ├── module.go           \
+  \   # fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
+  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
+  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
+  \              # Caching layer (otter)\n  ```"
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/audiobooks/*`
@@ -314,6 +316,8 @@ component_interaction: |
      - Progress synced to all user's devices in real-time
      - Last playback position and chapter restored when opening audiobook
      - Listening statistics updated (total time, completion)
+
+# Implementation
 file_structure: |
   ```
   internal/content/audiobook/
@@ -355,6 +359,7 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (audiobooks/* endpoints)
   ```
+
 key_interfaces: |
   ```go
   // Repository defines database operations for audiobooks
@@ -438,6 +443,7 @@ key_interfaces: |
       RecordListeningTime(ctx context.Context, userID, audiobookID uuid.UUID, seconds int) error
   }
   ```
+
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -461,6 +467,8 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension for fuzzy search
+
+# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_AUDIOBOOK_CACHE_TTL` - Cache TTL duration (default: 20m)
@@ -471,6 +479,7 @@ env_vars: |
   - `REVENGE_AUDIOBOOK_STREAMING_QUALITY` - Streaming quality preset (low, medium, high)
   - `REVENGE_AUDIOBOOK_PROGRESS_SYNC_INTERVAL` - Progress sync interval in seconds (default: 15)
   - `REVENGE_AUDIOBOOK_CHAPTER_EXTRACTION_ENABLED` - Enable automatic chapter extraction (default: true)
+
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -526,6 +535,7 @@ config_keys: |
       sleep_timer_options: [5, 10, 15, 30, 45, 60, "end_of_chapter"]
       offline_downloads_enabled: true
   ```
+
 defaults: |
   - Cache TTL: 20 minutes
   - Cache size: 150 MB
@@ -537,6 +547,8 @@ defaults: |
   - Playback speed options: 0.5x to 3.0x
   - Sleep timer options: 5-60 minutes or end of chapter
   - Metadata priority: Chaptarr → Audnexus → OpenLibrary
+
+# API Endpoints (additional to those already listed)
 request_examples: |
   **List audiobooks with filters**:
   ```http
@@ -580,6 +592,7 @@ request_examples: |
     "note": "Important plot point"
   }
   ```
+
 response_examples: |
   **Audiobook details response**:
   ```json
@@ -662,6 +675,8 @@ response_examples: |
     "expires_at": "2024-01-15T21:30:00Z"
   }
   ```
+
+# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for audiobooks
@@ -697,6 +712,7 @@ unit_tests: |
   - Test multi-device sync
   - Test listening time accumulation
   - Test chapter-aware progress
+
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database)
@@ -718,6 +734,7 @@ integration_tests: |
   - Test variable speed playback
   - Test sleep timer functionality
   - Test offline download capability
+
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (critical path)

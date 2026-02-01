@@ -67,35 +67,50 @@
 
 {% block architecture -%}
 {%- if claude %}
+{%- if architecture_diagram is defined and architecture_diagram %}
 ## Architecture
 
-{{ architecture_diagram | default('<!-- Architecture diagram placeholder -->') }}
+{{ architecture_diagram }}
 
+{%- if component_description is defined and component_description %}
 ### Components
 
-{{ component_description | default('<!-- Component description -->') }}
+{{ component_description }}
+{%- endif %}
+{%- endif %}
 {%- elif wiki %}
+{%- if wiki_how_it_works is defined and wiki_how_it_works %}
 ## How It Works
 
-{{ wiki_how_it_works | default('<!-- User-friendly explanation -->') }}
+{{ wiki_how_it_works }}
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 
 {% block implementation -%}
 {%- if claude %}
+{%- set has_impl = file_structure is defined or key_interfaces is defined or dependencies is defined %}
+{%- if has_impl %}
 ## Implementation
+
+{%- if file_structure is defined and file_structure %}
 
 ### File Structure
 
-{{ file_structure | default('<!-- File structure -->') }}
+{{ file_structure }}
+{%- endif %}
+
+{%- if key_interfaces is defined and key_interfaces %}
 
 ### Key Interfaces
 
-{{ key_interfaces | default('<!-- Interface definitions -->') }}
+{{ key_interfaces }}
+{%- endif %}
+
+{%- if dependencies is defined and dependencies %}
 
 ### Dependencies
 
-{%- if dependencies is defined and dependencies %}
 {%- if dependencies is string %}
 {{ dependencies }}
 {%- elif dependencies is mapping %}
@@ -111,8 +126,7 @@
 - `{{ dep.name }}`: {{ dep.purpose }}
 {%- endfor %}
 {%- endif %}
-{%- else %}
-<!-- Dependency list -->
+{%- endif %}
 {%- endif %}
 {%- endif %}
 {%- endblock %}
@@ -147,16 +161,22 @@
 {%- endblock %}
 
 {% block configuration -%}
+{%- set has_config = env_vars is defined or config_keys is defined or wiki_configuration is defined %}
+{%- if has_config %}
 ## Configuration
 
 {%- if claude %}
+{%- if env_vars is defined and env_vars %}
+
 ### Environment Variables
 
-{{ env_vars | default('<!-- Environment variables -->') }}
+{{ env_vars }}
+{%- endif %}
+
+{%- if config_keys is defined and config_keys %}
 
 ### Config Keys
 
-{%- if config_keys is defined and config_keys %}
 {%- if config_keys is string %}
 {{ config_keys }}
 {%- elif config_keys is mapping %}
@@ -177,11 +197,12 @@
 | `{{ key.key }}` | {{ key.type }} | {{ key.default }} | {{ key.description }} |
 {%- endfor %}
 {%- endif %}
-{%- else %}
-<!-- Configuration keys -->
 {%- endif %}
 {%- elif wiki %}
-{{ wiki_configuration | default('<!-- User-friendly configuration guide -->') }}
+{%- if wiki_configuration is defined and wiki_configuration %}
+{{ wiki_configuration }}
+{%- endif %}
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 
@@ -202,12 +223,12 @@
 
 **Request**:
 ```json
-{{ endpoint.request_example | default('{}') }}
+{{ endpoint.request | default(endpoint.request_example) | default('{}') }}
 ```
 
 **Response**:
 ```json
-{{ endpoint.response_example | default('{}') }}
+{{ endpoint.response | default(endpoint.response_example) | default('{}') }}
 ```
 {%- endfor %}
 {%- endif %}
@@ -216,21 +237,33 @@
 
 {% block testing -%}
 {%- if claude %}
+{%- set has_tests = unit_tests_description is defined or integration_tests_description is defined or test_coverage_notes is defined %}
+{%- if has_tests %}
 ## Testing Strategy
+
+{%- if unit_tests_description is defined and unit_tests_description %}
 
 ### Unit Tests
 
-{{ unit_tests_description | default('<!-- Unit test strategy -->') }}
+{{ unit_tests_description }}
+{%- endif %}
+
+{%- if integration_tests_description is defined and integration_tests_description %}
 
 ### Integration Tests
 
-{{ integration_tests_description | default('<!-- Integration test strategy -->') }}
+{{ integration_tests_description }}
+{%- endif %}
+
+{%- if test_coverage_notes is defined and test_coverage_notes %}
 
 ### Test Coverage
 
 Target: **80% minimum**
 
-{{ test_coverage_notes | default('') }}
+{{ test_coverage_notes }}
+{%- endif %}
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 

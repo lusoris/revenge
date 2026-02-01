@@ -46,8 +46,8 @@ Enhanced playback features that make watching more enjoyable. Includes trailer p
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

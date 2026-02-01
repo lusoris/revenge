@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fast, typo-tolerant search engine'
 wiki_tagline: '> Instant search with typo tolerance'
-wiki_overview: Typesense powers the search functionality in Revenge. Search results appear instantly as you type. Typo-tolerant
-  so misspellings still find the right content. Faceted search lets you filter by genre, year, rating, and more. Automatically
+wiki_overview: Typesense powers the search functionality in Revenge. Search results
+  appear instantly as you type. Typo-tolerant so misspellings still find the right
+  content. Faceted search lets you filter by genre, year, rating, and more. Automatically
   indexes new content as it is added to your library.
 sources:
 - name: Dragonfly Documentation
@@ -60,17 +61,21 @@ integration_name: Typesense
 integration_id: typesense
 external_service: Typesense
 auth_method: api_key
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Search)"]
-      node2["Search<br/>Service"]
-      node3["Typesense<br/>Server"]
-      node4["Sync Job<br/>(PostgreSQL<br/>→ Typesense)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│   Search     │────▶│  Typesense  │
+  │  (Search)   │◀────│   Service    │◀────│   Server    │
+  └─────────────┘     └──────┬───────┘     └─────────────┘
+                             │
+                      ┌──────┴───────┐
+                      │   Sync Job   │
+                      │ (PostgreSQL  │
+                      │   → Typesense)│
+                      └──────────────┘
+  ```
+
 connection_details: |
   **Client**: typesense-go (official Go client)
   **Protocol**: HTTP/HTTPS with API key authentication
@@ -84,6 +89,7 @@ connection_details: |
     typesense.WithAPIKey("xyz"),
   )
   ```
+
 search_architecture: |
   **Data Flow**:
   1. **Indexing**: PostgreSQL → River job → Typesense sync
@@ -99,6 +105,7 @@ search_architecture: |
   - `performers` - QAR performers (adult content)
   - `scenes` - QAR scenes (adult content)
   - `epg_programs` - EPG program guide
+
 schema_definition: |
   **Example Collection Schema** (movies):
   ```json
@@ -119,6 +126,7 @@ schema_definition: |
     "default_sorting_field": "rating"
   }
   ```
+
 module_structure: |
   ```
   internal/search/
@@ -134,6 +142,7 @@ module_structure: |
   │   └── ...
   └── search_test.go
   ```
+
 key_interfaces: |
   ```go
   // Search service interface
@@ -169,6 +178,7 @@ key_interfaces: |
     TotalPages int         `json:"total_pages"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/typesense/typesense-go` - Official Typesense client
@@ -179,6 +189,7 @@ dependencies: |
 
   **External Services**:
   - Typesense server (required)
+
 env_vars: |
   ```bash
   # Typesense connection
@@ -190,6 +201,7 @@ env_vars: |
   TYPESENSE_SYNC_INTERVAL=5m
   TYPESENSE_BATCH_SIZE=100
   ```
+
 config_keys: |
   ```yaml
   search:
@@ -202,6 +214,7 @@ config_keys: |
       sync_interval: 5m
       batch_size: 100
   ```
+
 component_interaction: |
   **Indexing Workflow** (background sync):
   1. River job runs every 5 minutes
@@ -224,6 +237,7 @@ component_interaction: |
   2. Service enqueues IndexDocumentJob
   3. Background worker indexes document to Typesense immediately
   4. Document searchable within seconds
+
 search_features: |
   **Typo Tolerance**:
   - Automatic typo correction (1-2 character edits)
@@ -245,6 +259,7 @@ search_features: |
   **Prefix Search**:
   - As-you-type autocomplete
   - "inc" → "Inception", "Incredibles"
+
 api_endpoints: |
   **Search**:
   ```
@@ -280,6 +295,7 @@ api_endpoints: |
   ```
   GET /api/v1/search/autocomplete?q=inc&collection=movies
   ```
+
 sync_strategy: |
   **Full Sync** (initial):
   1. Drop existing collection
@@ -299,6 +315,7 @@ sync_strategy: |
   - On document create/update, enqueue IndexDocumentJob
   - On document delete, enqueue DeleteDocumentJob
   - Jobs execute within seconds
+
 unit_tests: |
   ```go
   func TestTypesenseClient_Connection(t *testing.T) {
@@ -309,6 +326,7 @@ unit_tests: |
     // Test multi-collection search
   }
   ```
+
 integration_tests: |
   ```go
   func TestTypesense_FullWorkflow(t *testing.T) {
@@ -316,6 +334,7 @@ integration_tests: |
     // Test indexing, search, filters, typo tolerance
   }
   ```
+
 rbac_integration: |
   **Library Access Filtering**:
   ```go
@@ -340,6 +359,7 @@ rbac_integration: |
     collections = []string{"movies", "tvshows", "tracks", "performers", "scenes"}
   }
   ```
+
 monitoring: |
   **Metrics Exposed** (via Prometheus):
   - `typesense_search_requests_total` - Total search requests
@@ -368,6 +388,7 @@ monitoring: |
     }
   }
   ```
+
 performance_tuning: |
   **Indexing Performance**:
   - Use batch upsert (100-1000 docs per batch)

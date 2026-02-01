@@ -38,8 +38,8 @@ PostgreSQL is the only supported database for Revenge (no SQLite). Stores all me
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

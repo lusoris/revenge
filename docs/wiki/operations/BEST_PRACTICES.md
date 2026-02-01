@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Development Best Practices](#development-best-practices)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Follow these guidelines when contributing code to Revenge. Use gofmt for formatt
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Follow these guidelines when contributing code to Revenge. Use gofmt for formatt
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

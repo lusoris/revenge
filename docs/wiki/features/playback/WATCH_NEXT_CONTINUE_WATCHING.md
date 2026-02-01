@@ -46,8 +46,8 @@ Never lose your place. Continue Watching shows partially-watched content with pr
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -19,10 +18,6 @@
 - [OAuth flow](#oauth-flow)
 - [Configuration](#configuration)
 - [Manual operations](#manual-operations)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -65,24 +60,43 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Web Player"]
-    node2["Anime Item<br/>(TV Show)"]
-    node3["Scrobbling<br/>Service"]
-    node4["River Queue<br/>(Background)"]
-    node5["AniList<br/>Scrobbler"]
-    node6["Database<br/>(history)"]
-    node7["AniList API<br/>(GraphQL)"]
-    node8["AniList<br/>User Profile"]
-    node1 --> node2
-    node3 --> node4
-    node6 --> node7
-    node2 --> node3
-    node4 --> node5
-    node5 --> node6
-    node7 --> node8
 ```
+┌──────────────┐    1. Watch anime   ┌─────────────────┐
+│   Revenge    │────episode──────────▶│   Anime Item    │
+│  Web Player  │                      │   (TV Show)     │
+└──────┬───────┘                      └────────┬────────┘
+       │                                       │
+       │ 2. Update progress                   │
+       ▼                                       ▼
+┌──────────────┐    3. Queue job     ┌────────────────┐
+│  Scrobbling  │────────────────────▶│  River Queue   │
+│   Service    │                     │  (Background)  │
+└──────┬───────┘                     └────────┬───────┘
+       │                                      │
+       │                              4. Process job
+       │                                      ▼
+       │                             ┌────────────────┐
+       │                             │  AniList       │
+       │                             │  Scrobbler     │
+       │                             └────────┬───────┘
+       │                                      │
+       │                              5. GraphQL mutation
+       │                              (SaveMediaListEntry)
+       │                                      ▼
+┌──────┴───────┐                     ┌────────────────┐
+│  Database    │                     │   AniList API  │
+│  (history)   │                     │   (GraphQL)    │
+└──────────────┘                     └────────┬───────┘
+                                              │
+                                      6. Update user's
+                                         anime list
+                                              ▼
+                                     ┌────────────────┐
+                                     │  AniList       │
+                                     │  User Profile  │
+                                     └────────────────┘
+```
+
 
 ### Integration Structure
 
@@ -104,10 +118,6 @@ internal/integration/anilist/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -326,7 +336,9 @@ type GraphQLError struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -408,21 +420,6 @@ Response:
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

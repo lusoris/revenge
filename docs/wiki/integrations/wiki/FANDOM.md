@@ -38,8 +38,8 @@ ENRICHMENT metadata source providing links to fan-curated wikis. Deep links to c
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

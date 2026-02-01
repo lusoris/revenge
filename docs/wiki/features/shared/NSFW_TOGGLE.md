@@ -46,8 +46,8 @@ Control adult content visibility per user. When disabled, adult libraries are co
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

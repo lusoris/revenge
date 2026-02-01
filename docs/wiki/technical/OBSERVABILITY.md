@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Observability - Metrics, Tracing, and Logging](#observability-metrics-tracing-and-logging)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Observability Stack provides complete visibility into your Revenge server. P
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Observability Stack provides complete visibility into your Revenge server. P
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

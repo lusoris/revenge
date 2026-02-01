@@ -38,8 +38,8 @@ The Settings service stores and manages server configuration that can be changed
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

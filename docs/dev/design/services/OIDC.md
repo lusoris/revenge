@@ -8,7 +8,6 @@
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -17,10 +16,6 @@
   - [API Endpoints](#api-endpoints)
 - [OAuth flow](#oauth-flow)
 - [Provider management (admin)](#provider-management-admin)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -62,18 +57,25 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Client<br/>(Browser)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["▼            ▼            ▼<br/>────┐  ┌───────────┐  ┌────"]
-    node5["PostgreSQL"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Client    │────▶│  API Handler │────▶│   Service   │
+│  (Browser)  │◀────│   (ogen)     │◀────│   (Logic)   │
+└─────────────┘     └──────────────┘     └──────┬──────┘
+              │                                  │
+              │ OAuth2 redirect     ┌────────────┼────────────┐
+              │                     ▼            ▼            ▼
+              │              ┌──────────┐  ┌───────────┐  ┌────────┐
+              └─────────────▶│  OIDC    │  │Repository │  │  Auth  │
+                             │ Provider │  │  (sqlc)   │  │Service │
+                             │(Authentik)│  └─────┬─────┘  └────────┘
+                             └──────────┘        │
+                                                 ▼
+                                          ┌─────────────┐
+                                          │ PostgreSQL  │
+                                          └─────────────┘
+```
+
 
 ### Service Structure
 
@@ -106,10 +108,6 @@ internal/service/oidc/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -144,7 +142,9 @@ type OIDCService interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -172,21 +172,6 @@ GET  /api/v1/oidc/providers              # List providers
 PUT  /api/v1/oidc/providers/:id          # Update provider
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

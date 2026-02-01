@@ -18,9 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Usage analytics, playback statistics, and library insights'
 wiki_tagline: '> Usage analytics, playback statistics, and library insights'
-wiki_overview: Analytics provides insights into how your server is used. See most-watched movies, popular genres, peak usage
-  times, and user activity. Track playback statistics like total watch time and completion rates. Library dashboards show
-  storage usage, file counts, and metadata coverage. All data stays on your server - no external tracking.
+wiki_overview: Analytics provides insights into how your server is used. See most-watched
+  movies, popular genres, peak usage times, and user activity. Track playback statistics
+  like total watch time and completion rates. Library dashboards show storage usage,
+  file counts, and metadata coverage. All data stays on your server - no external
+  tracking.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -49,19 +51,28 @@ design_refs:
 service_name: Analytics Service
 package_path: internal/service/analytics
 fx_module: analytics.Module
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Client<br/>(Web/App)"]
-      node2["API Handler<br/>(ogen)"]
-      node3["Service<br/>(Logic)"]
-      node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
-      node5["PostgreSQL<br/>(pgx)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │   Client    │────▶│  API Handler │────▶│   Service   │
+  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
+  └─────────────┘     └──────────────┘     └──────┬──────┘
+                                                   │
+                       ┌──────────────────────┼────────────┐
+                       ▼                      ▼            ▼
+                  ┌──────────┐          ┌───────────┐  ┌────────┐
+                  │Repository│          │  River    │  │  Cache │
+                  │  (sqlc)  │          │  Queue    │  │(otter) │
+                  └────┬─────┘          └───────────┘  └────────┘
+                       │
+                       ▼
+                  ┌─────────────┐
+                  │ PostgreSQL  │
+                  │   (pgx)     │
+                  └─────────────┘
+  ```
+
 database_schema: |
   **Schema**: `public`
 
@@ -105,6 +116,7 @@ database_schema: |
   CREATE INDEX idx_popular_content_24h ON popular_content(plays_24h DESC);
   CREATE INDEX idx_popular_content_7d ON popular_content(plays_7d DESC);
   ```
+
 module_structure: |
   ```
   internal/service/analytics/
@@ -117,6 +129,7 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── analytics_test.go
   ```
+
 key_interfaces: |
   ```go
   type AnalyticsService interface {
@@ -146,6 +159,7 @@ key_interfaces: |
     TotalWatchHours   float64 `json:"total_watch_hours"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -153,11 +167,13 @@ dependencies: |
   - `github.com/riverqueue/river` - Aggregation jobs
   - `github.com/maypok86/otter` - Stats cache
   - `go.uber.org/fx`
+
 env_vars: |
   ```bash
   ANALYTICS_AGGREGATION_INTERVAL=1h
   ANALYTICS_RETENTION_DAYS=365
   ```
+
 config_keys: |
   ```yaml
   analytics:
@@ -165,6 +181,7 @@ config_keys: |
     retention_days: 365
     cache_ttl: 5m
   ```
+
 component_interaction: |
   **Daily Aggregation** (background):
   1. River job runs every hour
@@ -178,6 +195,7 @@ component_interaction: |
   2. Service queries aggregated tables
   3. Calculate totals, averages
   4. Return dashboard data
+
 api_endpoints: |
   ```
   GET    /api/v1/analytics/server              # Server overview
@@ -198,12 +216,14 @@ api_endpoints: |
     "total_watch_hours": 4532.5
   }
   ```
+
 unit_tests: |
   ```go
   func TestAnalyticsService_AggregateDaily(t *testing.T) {
     // Test daily aggregation
   }
   ```
+
 integration_tests: |
   ```go
   func TestAnalytics_ReportGeneration(t *testing.T) {

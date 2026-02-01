@@ -2,24 +2,11 @@
 
 - [Email System](#email-system)
   - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [POST /api/v1/admin/email/send](#post-apiv1adminemailsend)
     - [GET /api/v1/user/email/preferences](#get-apiv1useremailpreferences)
     - [PUT /api/v1/user/email/preferences](#put-apiv1useremailpreferences)
     - [GET /unsubscribe](#get-unsubscribe)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -63,39 +50,14 @@ Complete email infrastructure:
 ---
 
 
-## Architecture
-
-<!-- Architecture diagram placeholder -->
-
-### Components
-
-<!-- Component description -->
-
-
-## Implementation
-
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
 
-<!-- Environment variables -->
 
-### Config Keys
-<!-- Configuration keys -->
+
 
 
 ## API Endpoints
@@ -151,21 +113,6 @@ Unsubscribe from emails (public, no auth)
 ```json
 {}
 ```
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

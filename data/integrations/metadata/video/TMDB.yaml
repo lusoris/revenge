@@ -18,10 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY metadata provider (fallback + enrichment) for movies and TV shows'
 wiki_tagline: '> Direct TMDb API - Supplementary to Radarr/Sonarr'
-wiki_overview: 'SUPPLEMENTARY metadata source for movies/TV shows. Used as: (1) **Fallback** when Radarr/Sonarr not setup,
-  unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Arr services. Free API with 40 req/10s
-  rate limit. Supports multi-language metadata, images, cast, trailers. **Optional proxy/VPN routing** for regions with TMDb
-  restrictions (via HTTP_CLIENT service).'
+wiki_overview: 'SUPPLEMENTARY metadata source for movies/TV shows. Used as: (1) **Fallback** when Radarr/Sonarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Arr services. Free API with 40 req/10s rate limit. Supports multi-language metadata, images, cast, trailers. **Optional proxy/VPN routing** for regions with TMDb restrictions (via HTTP_CLIENT service).'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -65,19 +62,36 @@ integration_id: tmdb_the_movie_database
 external_service: TMDb (The Movie Database)
 api_base_url: https://api.themoviedb.org/3
 auth_method: api_key
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>Metadata<br/>Service"]
-      node2["Radarr/Sonarr<br/>(LOCAL cache)"]
-      node3["TMDb API<br/>(fallback +<br/>enrichment)"]
-      node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
-      node5["Rate Limiter<br/>(40 req/10s)"]
-      node2 --> node3
-      node1 --> node2
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  Metadata    │
+  │  Service     │
+  └──────┬───────┘
+         │
+         ├─────────────────────────────────────┐
+         │ PRIMARY                             │ SUPPLEMENTARY
+         ▼                                     ▼
+  ┌──────────────┐                      ┌──────────────┐
+  │ Radarr/Sonarr│                      │   TMDb API   │
+  │ (LOCAL cache)│                      │  (fallback + │
+  │              │                      │  enrichment) │
+  └──────┬───────┘                      └──────┬───────┘
+         │                                     │
+         ▼                              ┌──────┴────────┐
+  ┌──────────────┐                     │  HTTP_CLIENT  │
+  │  TMDb API    │                     │  (optional    │
+  │  (external)  │                     │   proxy/VPN)  │
+  └──────────────┘                     └───────────────┘
+                                              │
+                                       ┌──────┴───────┐
+                                       │ Rate Limiter │
+                                       │ (40 req/10s) │
+                                       └──────────────┘
+  ```
+
 api_details: |
   **API Version**: v3
   **Base URL**: `https://api.themoviedb.org/3`
@@ -94,6 +108,7 @@ api_details: |
   - `/tv/{id}` - Get TV show details
   - `/tv/{id}/season/{season_number}` - Get season details
   - `/tv/{id}/season/{season_number}/episode/{episode_number}` - Get episode details
+
 database_schema: |
   **Schema**: `public`
 
@@ -128,6 +143,7 @@ database_schema: |
   );
   CREATE INDEX idx_metadata_cache_expiry ON metadata_cache(expires_at);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/tmdb/
@@ -140,6 +156,7 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (40/10s)
   └── tmdb_test.go
   ```
+
 key_interfaces: |
   ```go
   // TMDb provider implementation
@@ -183,6 +200,7 @@ key_interfaces: |
     Crew           []Crew    `json:"credits.crew"`
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -195,6 +213,7 @@ dependencies: |
 
   **External APIs**:
   - TMDb API v3 (free tier: 40 requests per 10 seconds)
+
 env_vars: |
   ```bash
   # TMDb API
@@ -209,6 +228,7 @@ env_vars: |
   # Caching
   TMDB_CACHE_TTL=24h
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -232,6 +252,7 @@ config_keys: |
           url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
           interface: tun0          # VPN interface (if type=vpn)
   ```
+
 component_interaction: |
   **Movie Metadata Fetch**:
   1. User adds movie file to library
@@ -260,6 +281,7 @@ component_interaction: |
   - Allow burst of 40 requests
   - Refill 4 tokens per second (40/10s)
   - Block if limit exceeded
+
 api_request_examples: |
   **Search Movie**:
   ```
@@ -292,6 +314,7 @@ api_request_examples: |
   **Image URLs**:
   - Poster: `https://image.tmdb.org/t/p/original{poster_path}`
   - Backdrop: `https://image.tmdb.org/t/p/original{backdrop_path}`
+
 supported_metadata: |
   **Movies**:
   - Title (localized and original)
@@ -315,6 +338,7 @@ supported_metadata: |
   - Episode titles and air dates
   - Episode-level posters
   - Cast information
+
 image_handling: |
   **Image Sizes Available**:
   - Poster: w92, w154, w185, w342, w500, w780, original
@@ -339,6 +363,7 @@ image_handling: |
   // Store in database
   movie.PosterBlurhash = hash
   ```
+
 unit_tests: |
   ```go
   func TestTMDbProvider_SearchMovie(t *testing.T) {
@@ -349,6 +374,7 @@ unit_tests: |
     // Test rate limiter enforces 40/10s
   }
   ```
+
 integration_tests: |
   ```go
   func TestTMDb_FullWorkflow(t *testing.T) {
@@ -356,6 +382,7 @@ integration_tests: |
     // Test search, fetch, image download
   }
   ```
+
 caching_strategy: |
   **Cache Layers**:
   - **L1**: In-memory cache (otter) for hot data (5 minute TTL)
@@ -371,6 +398,7 @@ caching_strategy: |
   - Manual refresh via admin UI
   - Automatic expiry after TTL
   - Cleared on provider configuration change
+
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider** (not primary)
 
@@ -416,6 +444,7 @@ supplementary_role: |
     return movie, nil
   }
   ```
+
 proxy_vpn_support: |
   **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
 
@@ -462,6 +491,7 @@ proxy_vpn_support: |
   - **vpn**: Bind to specific VPN network interface
 
   **See**: [HTTP_CLIENT.yaml](../../../services/HTTP_CLIENT.yaml) for proxy/VPN implementation details
+
 error_handling: |
   **HTTP Error Codes**:
   - 401 Unauthorized → Invalid API key
@@ -473,6 +503,7 @@ error_handling: |
   - Transient errors (429, 500+): Retry with exponential backoff (max 3 attempts)
   - Permanent errors (401, 404): Don't retry, log error
   - Network errors: Retry once after 5 seconds
+
 performance_optimization: |
   **Batch Requests**:
   - Use `append_to_response` to fetch multiple resources in one request

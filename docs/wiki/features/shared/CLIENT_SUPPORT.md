@@ -46,8 +46,8 @@ Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

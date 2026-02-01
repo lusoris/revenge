@@ -38,8 +38,8 @@ API keys allow external applications to access Revenge programmatically. Create 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

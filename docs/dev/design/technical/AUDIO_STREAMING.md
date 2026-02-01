@@ -2,25 +2,12 @@
 
 - [Audio Streaming & Progress Tracking](#audio-streaming-progress-tracking)
   - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [GET /api/v1/stream/:track_id/playlist.m3u8](#get-apiv1streamtrack_idplaylistm3u8)
     - [GET /api/v1/stream/:track_id/segment:N.ts](#get-apiv1streamtrack_idsegmentnts)
     - [GET /api/v1/playback/progress/:track_id](#get-apiv1playbackprogresstrack_id)
     - [PUT /api/v1/playback/progress/:track_id](#put-apiv1playbackprogresstrack_id)
     - [POST /api/v1/playback/scrobble](#post-apiv1playbackscrobble)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -64,39 +51,14 @@ Audio streaming architecture:
 ---
 
 
-## Architecture
-
-<!-- Architecture diagram placeholder -->
-
-### Components
-
-<!-- Component description -->
-
-
-## Implementation
-
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
 
-<!-- Environment variables -->
 
-### Config Keys
-<!-- Configuration keys -->
+
 
 
 ## API Endpoints
@@ -165,21 +127,6 @@ Submit scrobble
 ```json
 {}
 ```
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

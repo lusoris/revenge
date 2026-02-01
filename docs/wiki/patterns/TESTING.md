@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Testing Patterns](#testing-patterns)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -28,9 +26,6 @@ Revenge maintains high code quality through comprehensive testing. All new code 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -40,8 +35,7 @@ Revenge maintains high code quality through comprehensive testing. All new code 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

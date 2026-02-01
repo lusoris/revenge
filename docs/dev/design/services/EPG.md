@@ -7,13 +7,6 @@
     - [Dependencies](#dependencies)
     - [Provides](#provides)
     - [Component Diagram](#component-diagram)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [GET /api/v1/epg/channels](#get-apiv1epgchannels)
     - [GET /api/v1/epg/channels/{id}/schedule](#get-apiv1epgchannelsidschedule)
@@ -21,10 +14,6 @@
     - [GET /api/v1/epg/search](#get-apiv1epgsearch)
     - [POST /api/v1/epg/refresh](#post-apiv1epgrefresh)
     - [GET /api/v1/epg/stats](#get-apiv1epgstats)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -98,30 +87,12 @@ No external service dependencies.
 <!-- Component diagram -->
 
 
-## Implementation
-
-### File Structure
-
-<!-- File structure -->
-
-### Key Interfaces
-
-<!-- Interface definitions -->
-
-### Dependencies
-<!-- Dependency list -->
 
 
 
 
 
-## Configuration
-### Environment Variables
 
-<!-- Environment variables -->
-
-### Config Keys
-<!-- Configuration keys -->
 
 
 ## API Endpoints
@@ -136,7 +107,16 @@ List all EPG channels
 
 **Response**:
 ```json
-{}
+{
+  "channels": [
+    {
+      "id": "uuid-123",
+      "display_name": "HBO",
+      "number": 501,
+      "icon_url": "http://example.com/hbo.png"
+    }
+  ]
+}
 ```
 ### GET /api/v1/epg/channels/{id}/schedule
 
@@ -149,7 +129,20 @@ Get channel schedule
 
 **Response**:
 ```json
-{}
+{
+  "channel_id": "uuid-123",
+  "date": "2026-01-31",
+  "programs": [
+    {
+      "id": "uuid-456",
+      "title": "Game of Thrones",
+      "subtitle": "Winter Is Coming",
+      "start_time": "2026-01-31T18:00:00Z",
+      "stop_time": "2026-01-31T19:00:00Z",
+      "categories": ["Drama", "Fantasy"]
+    }
+  ]
+}
 ```
 ### GET /api/v1/epg/programs/{id}
 
@@ -162,7 +155,19 @@ Get program details
 
 **Response**:
 ```json
-{}
+{
+  "id": "uuid-456",
+  "title": "Game of Thrones",
+  "subtitle": "Winter Is Coming",
+  "description": "Eddard Stark is torn between...",
+  "start_time": "2026-01-31T18:00:00Z",
+  "stop_time": "2026-01-31T19:00:00Z",
+  "season_number": 1,
+  "episode_number": 1,
+  "categories": ["Drama", "Fantasy"],
+  "rating": "TV-MA",
+  "poster_url": "http://example.com/got.jpg"
+}
 ```
 ### GET /api/v1/epg/search
 
@@ -175,7 +180,17 @@ Search EPG programs
 
 **Response**:
 ```json
-{}
+{
+  "results": [
+    {
+      "id": "uuid-456",
+      "title": "Game of Thrones",
+      "channel_name": "HBO",
+      "start_time": "2026-01-31T18:00:00Z"
+    }
+  ],
+  "total": 1
+}
 ```
 ### POST /api/v1/epg/refresh
 
@@ -183,12 +198,17 @@ Trigger EPG refresh (admin only)
 
 **Request**:
 ```json
-{}
+{
+  "source": "tvheadend"
+}
 ```
 
 **Response**:
 ```json
-{}
+{
+  "job_id": "uuid-789",
+  "status": "queued"
+}
 ```
 ### GET /api/v1/epg/stats
 
@@ -201,23 +221,17 @@ Get EPG statistics
 
 **Response**:
 ```json
-{}
+{
+  "total_channels": 150,
+  "total_programs": 12543,
+  "oldest_program": "2026-01-30T00:00:00Z",
+  "newest_program": "2026-02-07T23:59:59Z",
+  "last_refresh": {
+    "tvheadend": "2026-01-31T12:00:00Z",
+    "nextpvr": "2026-01-31T11:30:00Z"
+  }
+}
 ```
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

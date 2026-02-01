@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Semantic Versioning & Releases](#semantic-versioning-releases)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge follows Semantic Versioning (semver). Version numbers are formatted as v
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge follows Semantic Versioning (semver). Version numbers are formatted as v
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

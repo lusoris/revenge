@@ -38,8 +38,8 @@ Connect Revenge to your Keycloak identity and access management system for enter
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

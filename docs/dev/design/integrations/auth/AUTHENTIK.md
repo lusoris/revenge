@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Authentik OIDC configuration](#authentik-oidc-configuration)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,18 +56,40 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["User<br/>Browser"]
-    node2["Authentik<br/>IdP Server"]
-    node3["Revenge<br/>Server"]
-    node4["Authentik<br/>OAuth2 API"]
-    node5["User<br/>Session"]
-    node1 --> node2
-    node3 --> node4
-    node2 --> node3
-    node4 --> node5
 ```
+┌──────────────┐    1. Auth Request   ┌─────────────────┐
+│    User      │─────(redirect)──────▶│   Authentik     │
+│   Browser    │                      │   IdP Server    │
+└──────┬───────┘                      └────────┬────────┘
+       │                                       │
+       │ 2. Login page                        │
+       │◀──────────────────────────────────────│
+       │                                       │
+       │ 3. Submit credentials                │
+       │──────────────────────────────────────▶│
+       │                                       │
+       │ 4. Authorization code                │
+       │◀──────────────────────────────────────│
+       │   (redirect to callback)              │
+       ▼                                       │
+┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+│   Revenge    │─────for tokens──────▶│   Authentik     │
+│   Server     │                      │   OAuth2 API    │
+│              │◀─────────────────────│                 │
+│              │  6. ID token + access│                 │
+└──────┬───────┘     token            └─────────────────┘
+       │
+       │ 7. Verify token (JWKS)
+       │ 8. Get user info
+       │ 9. Map groups → roles
+       │ 10. Create session
+       ▼
+┌──────────────┐
+│   User       │
+│  Session     │
+└──────────────┘
+```
+
 
 ### Integration Structure
 
@@ -94,10 +111,6 @@ internal/integration/authentik/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -182,7 +195,9 @@ type UserInfo struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -263,21 +278,6 @@ GET /api/v1/auth/oidc/callback?
 6. Redirects to /
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

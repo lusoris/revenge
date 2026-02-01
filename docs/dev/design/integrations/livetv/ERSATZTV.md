@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -19,10 +18,6 @@
 - [EPG](#epg)
 - [Stream](#stream)
 - [Management](#management)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -65,18 +60,41 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Web Client"]
-    node2["EPG Service<br/>(Revenge)"]
-    node3["ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml"]
-    node4["Player<br/>(Vidstack)"]
-    node5["Media Files<br/>(your library)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
-    node4 --> node5
 ```
+┌──────────────┐    1. View EPG      ┌─────────────────┐
+│   Revenge    │────────────────────▶│   EPG Service   │
+│  Web Client  │                     │  (Revenge)      │
+└──────┬───────┘                     └────────┬────────┘
+       │                                      │
+       │ 2. Select channel                   │
+       │                              3. Fetch EPG from
+       │                                 ErsatzTV
+       │                                      ▼
+       │                             ┌────────────────┐
+       │                             │  ErsatzTV API  │
+       │                             │  /api/channels │
+       │                             │  /api/xmltv.xml│
+       │                             └────────┬───────┘
+       │                                      │
+       │ 4. Play channel                     │ 5. Get channel
+       ▼                                      │    stream URL
+┌──────────────┐                             ▼
+│   Player     │    6. Request HLS  ┌────────────────┐
+│  (Vidstack)  │───────────────────▶│  ErsatzTV      │
+└──────────────┘                    │  HLS Endpoint  │
+                                     │  /iptv/{id}.m3u8│
+                                     └────────┬───────┘
+                                              │
+                                      7. Generate HLS
+                                         from scheduled
+                                         media files
+                                              ▼
+                                     ┌────────────────┐
+                                     │  Media Files   │
+                                     │  (your library)│
+                                     └────────────────┘
+```
+
 
 ### Integration Structure
 
@@ -98,10 +116,6 @@ internal/integration/ersatztv/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -210,7 +224,9 @@ type PageMap struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -309,21 +325,6 @@ Response:
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

@@ -38,8 +38,8 @@ Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

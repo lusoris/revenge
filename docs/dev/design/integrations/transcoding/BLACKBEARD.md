@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Blackbeard external integration (OPTIONAL)](#blackbeard-external-integration-optional)
 - [Transcoding preference](#transcoding-preference)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,14 +54,45 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge Server<br/>┌────────────────┐    ┌────────────────┐    ┌────────────────┐<br/>Playback"]
-    node2["Transcoding Router<br/>(choose internal vs external)"]
-    node3["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>┌──────────────────────────────────────────────────────────────┐"]
-    node1 --> node2
-    node2 --> node3
 ```
+┌──────────────────────────────────────────────────────────────────┐
+│                        Revenge Server                             │
+│  ┌────────────────┐    ┌────────────────┐    ┌────────────────┐  │
+│  │   Playback     │    │   Transcoding  │    │   INTERNAL     │  │
+│  │   Service      │───▶│   Service      │───▶│   FFmpeg       │  │
+│  └────────────────┘    └───────┬────────┘    │  (go-astiav)   │  │
+│                                │             └────────────────┘  │
+│                                │                                  │
+│              ┌─────────────────┴──────────────────┐              │
+│              │      Transcoding Router            │              │
+│              │   (choose internal vs external)    │              │
+│              └─────────────────┬──────────────────┘              │
+│                                │                                  │
+└────────────────────────────────┼──────────────────────────────────┘
+                                 │
+                                 │ OPTIONAL External Offloading
+                                 │ (via REST API)
+                                 ▼
+┌────────────────────────────────────────────────────────────────────┐
+│                   EXTERNAL: Blackbeard Service                      │
+│                   (Third-party, NOT developed by us)                │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │  Distributed Transcoding Workers                              │  │
+│  │  - GPU acceleration (NVENC, QSV, VAAPI)                       │  │
+│  │  - Multiple worker instances                                   │  │
+│  │  - Job queue and coordination                                  │  │
+│  │  - API for job submission and status                           │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+│  NOTE: Blackbeard is developed externally.                          │
+│  Details about its architecture will come from the Blackbeard team. │
+└────────────────────────────────────────────────────────────────────┘
+
+Transcoding Strategy:
+1. INTERNAL (default): go-astiav FFmpeg bindings
+2. EXTERNAL (optional): Offload to Blackbeard if configured
+```
+
 
 ### Integration Structure
 
@@ -88,10 +114,6 @@ internal/integration/blackbeard/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -182,7 +204,9 @@ func (r *TranscodingRouter) Transcode(ctx context.Context, job *TranscodeJob) er
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -226,21 +250,6 @@ transcoding:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

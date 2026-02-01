@@ -46,8 +46,8 @@ Self-hosted wiki for server documentation and guides. Create articles for users 
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

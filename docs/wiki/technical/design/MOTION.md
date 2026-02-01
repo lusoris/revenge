@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Motion & Animation](#motion-animation)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Motion in Revenge is expressive but purposeful. Cards scale on hover, overlays f
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Motion in Revenge is expressive but purposeful. Cards scale on hover, overlays f
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

@@ -38,8 +38,8 @@ SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback**
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

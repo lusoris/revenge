@@ -3,7 +3,6 @@
 - [OpenLibrary](#openlibrary)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ SUPPLEMENTARY metadata source for books/audiobooks. Used as: (1) **Fallback** wh
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

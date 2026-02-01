@@ -38,8 +38,8 @@ The Activity service logs important events for security and debugging. Track log
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -18,8 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer encyclopedia with detailed profiles'
 wiki_tagline: '> Performer encyclopedia from Boobpedia'
-wiki_overview: Boobpedia provides detailed performer profiles for the adult content system. Career timelines, studio affiliations,
-  and filmography data. Community-maintained wiki format. Complements other adult metadata sources. Part of the QAR performer
+wiki_overview: Boobpedia provides detailed performer profiles for the adult content
+  system. Career timelines, studio affiliations, and filmography data. Community-maintained
+  wiki format. Complements other adult metadata sources. Part of the QAR performer
   metadata pipeline.
 sources:
 - name: Dragonfly Documentation
@@ -40,15 +41,31 @@ integration_id: boobpedia
 external_service: Boobpedia
 api_base_url: https://www.boobpedia.com/boobs/api.php
 auth_method: none
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Revenge<br/>QAR Module<br/>(Performer)"]
-      node2["Boobpedia<br/>MediaWiki<br/>API"]
-      node3["Performer Data<br/>- Biography<br/>- Career history"]
-      node2 --> node3
-      node1 --> node2
+
+architecture_diagram: |
   ```
+  ┌──────────────┐
+  │  Revenge     │
+  │  QAR Module  │
+  │  (Performer) │
+  └──────┬───────┘
+         │ Enrichment request
+         ▼
+  ┌──────────────┐     ┌───────────────────┐
+  │  Boobpedia   │────▶│  Performer Data   │
+  │  MediaWiki   │     │  - Biography      │
+  │  API         │     │  - Career history │
+  └──────┬───────┘     │  - Studio info    │
+         │             │  - Filmography    │
+  ┌──────┴───────┐     │  - Infobox data   │
+  │ Rate Limiter │     └───────────────────┘
+  │ (polite)     │
+  └──────────────┘
+
+  Uses MediaWiki API (same as Wikipedia)
+  Integration Role: ENRICHMENT (supplements StashDB/Babepedia)
+  ```
+
 api_details: |
   **API**: MediaWiki Action API
   **Base URL**: `https://www.boobpedia.com/boobs/api.php`
@@ -73,6 +90,7 @@ api_details: |
   - measurements, height, weight
   - eyecolor, haircolor
   - yearsactive, ethnicity
+
 database_schema: |
   ```sql
   -- Boobpedia article cache (QAR schema)
@@ -100,6 +118,7 @@ database_schema: |
     UNIQUE(performer_id)
   );
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/boobpedia/
@@ -111,6 +130,7 @@ module_structure: |
   ├── extract.go                   # Content extraction
   └── boobpedia_test.go
   ```
+
 key_interfaces: |
   ```go
   // Boobpedia enrichment provider (MediaWiki-based)
@@ -184,6 +204,7 @@ key_interfaces: |
     return info, nil
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -194,12 +215,14 @@ dependencies: |
 
   **External**:
   - Boobpedia MediaWiki API (public, no key)
+
 env_vars: |
   ```bash
   BOOBPEDIA_ENABLED=true
   BOOBPEDIA_RATE_LIMIT=1            # req/sec
   BOOBPEDIA_CACHE_TTL=336h          # 14 days
   ```
+
 config_keys: |
   ```yaml
   qar:
@@ -214,6 +237,7 @@ config_keys: |
           priority: 20             # After StashDB (10), before Babepedia (30)
           extract_sentences: 5
   ```
+
 component_interaction: |
   **Performer Enrichment Flow**:
   1. Performer identified via StashDB
@@ -229,6 +253,7 @@ component_interaction: |
   - Career timeline from `yearsactive`
   - Physical attributes from infobox
   - Categories for classification
+
 enrichment_role: |
   **ENRICHMENT Provider**
 
@@ -250,6 +275,7 @@ enrichment_role: |
   2. Boobpedia (20) - ENRICHMENT
   3. Babepedia (30) - ENRICHMENT
   4. IAFD (40) - SUPPLEMENTARY
+
 api_request_examples: |
   **Search for Performer**:
   ```bash
@@ -283,6 +309,7 @@ api_request_examples: |
     }
   }
   ```
+
 infobox_parsing: |
   **Wikitext Infobox Format**:
   ```
@@ -305,6 +332,7 @@ infobox_parsing: |
   - Wiki links in values
   - Inconsistent field names
   - Missing fields
+
 error_handling: |
   **HTTP Errors**:
   - 404 Not Found → Article doesn't exist
@@ -315,6 +343,7 @@ error_handling: |
   - No infobox → Use extract only
   - Malformed wikitext → Partial parse
   - Template not resolved → Parse raw values
+
 unit_tests: |
   ```go
   func TestBoobpedia_ParseInfobox(t *testing.T) {
@@ -340,6 +369,7 @@ unit_tests: |
     assert.Len(t, results, 2)
   }
   ```
+
 best_practices: |
   **API Usage**:
   - Set User-Agent header identifying bot
@@ -355,3 +385,4 @@ best_practices: |
   - All data flows through QAR access controls
   - Requires `legacy:read` scope
   - Data isolated in qar.* schema
+

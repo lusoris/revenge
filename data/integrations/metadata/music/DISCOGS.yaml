@@ -18,9 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY enrichment provider (vinyl/CD releases, marketplace, credits)'
 wiki_tagline: '> Physical release metadata (vinyl/CD) - Supplementary to Lidarr'
-wiki_overview: 'SUPPLEMENTARY enrichment for physical music releases. Provides: (1) Vinyl/CD pressings and editions, (2) Regional
-  variations, (3) Detailed credits (full contributor lists), (4) Marketplace data (record values/prices). OAuth authentication
-  required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Ideal for collectors tracking specific pressings.'
+wiki_overview: 'SUPPLEMENTARY enrichment for physical music releases. Provides: (1) Vinyl/CD pressings and editions, (2) Regional variations, (3) Detailed credits (full contributor lists), (4) Marketplace data (record values/prices). OAuth authentication required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Ideal for collectors tracking specific pressings.'
 sources:
 - name: Discogs API
   url: https://www.discogs.com/developers
@@ -42,15 +40,15 @@ integration_id: discogs
 external_service: Discogs
 api_base_url: https://api.discogs.com
 auth_method: oauth
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["Metadata<br/>Service"]
-      node2["Discogs<br/>Provider"]
-      node3["Discogs<br/>API"]
-      node1 --> node2
-      node2 --> node3
+
+architecture_diagram: |
   ```
+  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+  │  Metadata   │────▶│   Discogs    │────▶│  Discogs    │
+  │  Service    │◀────│   Provider   │◀────│     API     │
+  └─────────────┘     └──────────────┘     └─────────────┘
+  ```
+
 api_details: |
   **API Version**: v2
   **Base URL**: `https://api.discogs.com`
@@ -69,6 +67,7 @@ api_details: |
   - Full credits (engineers, producers, musicians)
   - Regional variations and editions
   - Marketplace value data
+
 database_schema: |
   **Schema**: `public`
 
@@ -94,6 +93,7 @@ database_schema: |
   );
   CREATE INDEX idx_discogs_id ON discogs_mappings(discogs_id);
   ```
+
 module_structure: |
   ```
   internal/metadata/providers/discogs/
@@ -105,6 +105,7 @@ module_structure: |
   ├── artists.go                   # Artist metadata methods
   └── discogs_test.go
   ```
+
 key_interfaces: |
   ```go
   // Discogs provider implementation
@@ -147,6 +148,7 @@ key_interfaces: |
     Role string `json:"role"`  // "Producer", "Engineer", "Mastering"
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -156,6 +158,7 @@ dependencies: |
 
   **External APIs**:
   - Discogs API v2 (free with registration)
+
 env_vars: |
   ```bash
   # Discogs API
@@ -167,6 +170,7 @@ env_vars: |
   # Caching
   DISCOGS_CACHE_TTL=168h  # 7 days
   ```
+
 config_keys: |
   ```yaml
   metadata:
@@ -177,6 +181,7 @@ config_keys: |
         rate_limit: 60  # requests/minute
         cache_ttl: 168h
   ```
+
 api_request_examples: |
   **Search Release**:
   ```
@@ -242,6 +247,7 @@ api_request_examples: |
     ]
   }
   ```
+
 use_cases: |
   **Primary Use Cases**:
   1. **Vinyl Collectors**: Track specific pressings (original vs reissue)
@@ -266,6 +272,7 @@ use_cases: |
   Producer: Chris Thomas
   Mastering: Doug Sax
   ```
+
 format_handling: |
   **Format Types**:
   - Vinyl (7", 10", 12")
@@ -291,6 +298,7 @@ format_handling: |
     ]
   }
   ```
+
 credits_extraction: |
   **Full Credits** (`extraartists`):
   - Producer
@@ -312,6 +320,7 @@ credits_extraction: |
     ]
   }
   ```
+
 unit_tests: |
   ```go
   func TestDiscogsProvider_SearchRelease(t *testing.T) {
@@ -322,6 +331,7 @@ unit_tests: |
     // Test parsing of complex credits
   }
   ```
+
 integration_tests: |
   ```go
   func TestDiscogs_FullWorkflow(t *testing.T) {

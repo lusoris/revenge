@@ -7,7 +7,6 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
@@ -15,10 +14,6 @@
 - [Trakt OAuth app credentials](#trakt-oauth-app-credentials)
 - [Sync settings](#sync-settings)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -61,16 +56,19 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Playback"]
-    node2["Trakt<br/>Integration"]
-    node3["Trakt<br/>API"]
-    node4["Scrobble<br/>Queue (River)"]
-    node1 --> node2
-    node2 --> node3
-    node3 --> node4
 ```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Revenge    │────▶│    Trakt     │────▶│    Trakt    │
+│  Playback   │◀────│ Integration  │◀────│     API     │
+│  Events     │     │              │     └─────────────┘
+└─────────────┘     └──────┬───────┘
+                           │
+                    ┌──────▼────────┐
+                    │ Scrobble      │
+                    │ Queue (River) │
+                    └───────────────┘
+```
+
 
 ### Integration Structure
 
@@ -92,10 +90,6 @@ internal/integration/trakt/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -172,7 +166,9 @@ type EpisodeIdentifiers struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -219,21 +215,6 @@ integrations:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

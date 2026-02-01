@@ -38,8 +38,8 @@ EXTERNAL transcoding service integration. Blackbeard is a **third-party distribu
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

@@ -38,8 +38,8 @@ Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrob
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

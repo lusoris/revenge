@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Git Workflow & Branching Strategy](#git-workflow-branching-strategy)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ Revenge uses a Gitflow-style branching strategy. The main branch contains produc
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ Revenge uses a Gitflow-style branching strategy. The main branch contains produc
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

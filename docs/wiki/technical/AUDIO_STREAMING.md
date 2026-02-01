@@ -1,9 +1,7 @@
 ## Table of Contents
 
 - [Audio Streaming & Progress Tracking](#audio-streaming-progress-tracking)
-  - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -26,9 +24,6 @@ The Audio Streaming system delivers high-quality music playback using HLS (HTTP 
 ---
 
 
-## How It Works
-
-<!-- User-friendly explanation -->
 
 
 
@@ -38,8 +33,7 @@ The Audio Streaming system delivers high-quality music playback using HLS (HTTP 
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

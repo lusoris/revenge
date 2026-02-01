@@ -38,8 +38,8 @@ LINK-ONLY integration for QAR performer profiles. Stores verified Instagram prof
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

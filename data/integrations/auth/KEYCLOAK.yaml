@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Enterprise-grade identity and access management with advanced features'
 wiki_tagline: '> Single sign-on with Keycloak'
-wiki_overview: Connect Revenge to your Keycloak identity and access management system for enterprise-grade authentication.
-  Keycloak supports OIDC, SAML, LDAP, Active Directory, and social logins. Features include advanced role mappings, client
-  scopes, audience validation, and comprehensive audit logging.
+wiki_overview: Connect Revenge to your Keycloak identity and access management system
+  for enterprise-grade authentication. Keycloak supports OIDC, SAML, LDAP, Active
+  Directory, and social logins. Features include advanced role mappings, client scopes,
+  audience validation, and comprehensive audit logging.
 sources:
 - name: Keycloak Documentation
   url: https://www.keycloak.org/documentation
@@ -43,19 +44,51 @@ integration_id: keycloak
 external_service: Keycloak
 api_base_url: https://keycloak.company.local
 auth_method: oidc
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["User<br/>Browser"]
-      node2["Keycloak<br/>Auth Server"]
-      node3["Revenge<br/>Server"]
-      node4["Keycloak<br/>Token Endpoint"]
-      node5["User<br/>Session"]
-      node1 --> node2
-      node3 --> node4
-      node2 --> node3
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    1. Auth Request   ┌─────────────────┐
+  │    User      │─────(redirect)──────▶│    Keycloak     │
+  │   Browser    │                      │   Auth Server   │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │ 2. Login page (realm selection)      │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │ 3. Submit credentials                │
+         │──────────────────────────────────────▶│
+         │                  ┌────────────────────┤
+         │                  │  Authenticate:     │
+         │                  │  - Local users     │
+         │                  │  - LDAP/AD         │
+         │                  │  - Social login    │
+         │                  │  - SAML federation │
+         │                  │  - Custom SPI      │
+         │                  └────────────────────┤
+         │ 4. Authorization code                │
+         │◀──────────────────────────────────────│
+         │   (redirect to callback)              │
+         ▼                                       │
+  ┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+  │   Revenge    │─────for tokens──────▶│    Keycloak     │
+  │   Server     │                      │  Token Endpoint │
+  │              │◀─────────────────────│                 │
+  │              │  6. ID + access +    │                 │
+  └──────┬───────┘     refresh tokens   └─────────────────┘
+         │
+         │ 7. Verify token (JWKS)
+         │ 8. Introspect token (optional)
+         │ 9. Get user info
+         │ 10. Map roles/groups → Revenge roles
+         │ 11. Apply audience validation
+         │ 12. Create session
+         ▼
+  ┌──────────────┐
+  │   User       │
+  │  Session     │
+  └──────────────┘
+  ```
+
 protocol_details: |
   **OpenID Connect (OIDC)** with Keycloak:
 
@@ -86,6 +119,7 @@ protocol_details: |
   - User federation (LDAP, AD, custom)
   - Service accounts (machine-to-machine)
   - Token exchange (impersonation, delegation)
+
 module_structure: |
   ```
   internal/
@@ -106,6 +140,7 @@ module_structure: |
     oidc/
       keycloak.yaml          # Provider configuration example
   ```
+
 key_interfaces: |
   ```go
   // KeycloakProvider implements OIDC for Keycloak
@@ -203,6 +238,7 @@ key_interfaces: |
       Audience  []string
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
@@ -211,6 +247,7 @@ dependencies: |
 
   **External Services**:
   - Keycloak server 23.0+ (https://www.keycloak.org/)
+
 env_vars: |
   ```bash
   # Keycloak OIDC configuration
@@ -222,6 +259,7 @@ env_vars: |
   REVENGE_OIDC_KEYCLOAK_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callback
   REVENGE_OIDC_KEYCLOAK_AUDIENCE=revenge-api
   ```
+
 config_keys: |
   ```yaml
   auth:
@@ -258,6 +296,7 @@ config_keys: |
           update_user_info: true
           user_claim: "preferred_username"  # Field to use as username
   ```
+
 keycloak_setup: |
   **Keycloak Configuration Steps**:
 
@@ -331,6 +370,7 @@ keycloak_setup: |
       - Navigate to Clients → revenge-client → Client Scopes → Evaluate
       - Select user "alice"
       - View Generated ID Token to verify claims
+
 component_interaction: |
   **OIDC Login Flow**:
 
@@ -368,6 +408,7 @@ component_interaction: |
      - Create Revenge session
      - Set session cookie
      - Redirect to app homepage
+
 api_endpoints: |
   **OIDC Endpoints** (Revenge):
   ```
@@ -428,6 +469,7 @@ api_endpoints: |
     "aud": ["revenge-api"]
   }
   ```
+
 role_mapping: |
   **Keycloak Role → Revenge Role Mapping**:
 
@@ -481,6 +523,7 @@ role_mapping: |
   ```
 
   **Role Precedence**: Admin > Moderator > User > Readonly
+
 audience_validation: |
   **Audience Validation**:
 
@@ -530,6 +573,7 @@ audience_validation: |
       return &claims, nil
   }
   ```
+
 token_refresh: |
   **Refresh Token Flow**:
 
@@ -568,6 +612,7 @@ token_refresh: |
   - Request scope: "offline_access"
   - Returns refresh token that never expires
   - Useful for long-term access (background jobs)
+
 token_introspection: |
   **Token Introspection** (Keycloak extension):
 
@@ -610,6 +655,7 @@ token_introspection: |
       return &result, nil
   }
   ```
+
 error_handling: |
   **Common Errors**:
 
@@ -638,6 +684,7 @@ error_handling: |
     "error_description": "Code not valid"
   }
   ```
+
 unit_tests: |
   ```go
   func TestKeycloakProvider_ExchangeCode(t *testing.T) {
@@ -702,6 +749,7 @@ unit_tests: |
       // Test audience claim validation
   }
   ```
+
 integration_tests: |
   ```go
   func TestKeycloak_FullOIDCFlow(t *testing.T) {
@@ -751,6 +799,7 @@ integration_tests: |
       assert.True(t, introspection.Active)
   }
   ```
+
 best_practices: |
   **Security**:
   - Use PKCE for authorization code flow

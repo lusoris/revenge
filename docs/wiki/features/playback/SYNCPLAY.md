@@ -46,8 +46,8 @@ Watch movies and shows together with friends, even when apart. SyncPlay keeps ev
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

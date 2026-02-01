@@ -7,16 +7,11 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -59,18 +54,32 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Book Library"]
-    node2["Hardcover<br/>Account"]
-    node3["River Queue<br/>(background)"]
-    node4["User Shelves<br/>- Want to Read"]
-    node5["Hardcover API<br/>(GraphQL)"]
-    node1 --> node2
-    node3 --> node4
-    node2 --> node3
-    node4 --> node5
 ```
+┌──────────────────┐                    ┌──────────────────┐
+│  Revenge         │                    │   Hardcover      │
+│  Book Library    │◀──── Two-Way ────▶│   Account        │
+└────────┬─────────┘       Sync        └────────┬─────────┘
+         │                                       │
+         │ Reading Events                        │
+         ▼                                       ▼
+┌──────────────────┐                    ┌──────────────────┐
+│   River Queue    │                    │   User Shelves   │
+│   (background)   │                    │   - Want to Read │
+└────────┬─────────┘                    │   - Reading      │
+         │                              │   - Read         │
+         ▼                              └──────────────────┘
+┌──────────────────┐
+│  Hardcover API   │
+│  (GraphQL)       │
+└──────────────────┘
+
+Sync Types:
+- Reading progress → Hardcover
+- Book completion → Hardcover
+- Shelf changes ← Hardcover
+- Ratings ← Hardcover (enrichment)
+```
+
 
 ### Integration Structure
 
@@ -92,10 +101,6 @@ internal/integration/hardcover/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -142,7 +147,9 @@ type TokenStore interface {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -167,21 +174,6 @@ scrobbling:
 
 
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

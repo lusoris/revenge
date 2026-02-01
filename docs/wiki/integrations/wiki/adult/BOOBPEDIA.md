@@ -38,8 +38,8 @@ Boobpedia provides detailed performer profiles for the adult content system. Car
 
 
 
+
 ## Configuration
-<!-- User-friendly configuration guide -->
 
 
 

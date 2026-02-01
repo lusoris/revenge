@@ -18,9 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Support for any OpenID Connect compatible provider'
 wiki_tagline: '> Connect any OIDC provider for authentication'
-wiki_overview: Use any OpenID Connect compatible identity provider with Revenge. Works with corporate identity systems, cloud
-  providers (Google, Microsoft, Okta), or other self-hosted solutions. Configure the discovery URL, client ID, and secret.
-  Map claims to Revenge user attributes and roles.
+wiki_overview: Use any OpenID Connect compatible identity provider with Revenge. Works
+  with corporate identity systems, cloud providers (Google, Microsoft, Okta), or other
+  self-hosted solutions. Configure the discovery URL, client ID, and secret. Map claims
+  to Revenge user attributes and roles.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -46,19 +47,42 @@ integration_id: generic_oidc
 external_service: Generic OIDC
 api_base_url: https://revenge.example.com/api/v1/auth/oidc/callback
 auth_method: oidc
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["User<br/>Browser"]
-      node2["OIDC Provider<br/>(Any Provider)"]
-      node3["Revenge<br/>Server"]
-      node4["Provider<br/>Token API"]
-      node5["User<br/>Session"]
-      node1 --> node2
-      node3 --> node4
-      node2 --> node3
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌──────────────┐    1. Auth Request   ┌─────────────────┐
+  │    User      │─────(redirect)──────▶│   OIDC Provider │
+  │   Browser    │                      │  (Any Provider) │
+  └──────┬───────┘                      └────────┬────────┘
+         │                                       │
+         │ 2. Login page                        │
+         │◀──────────────────────────────────────│
+         │                                       │
+         │ 3. Submit credentials                │
+         │──────────────────────────────────────▶│
+         │                                       │
+         │ 4. Authorization code                │
+         │◀──────────────────────────────────────│
+         │   (redirect to callback)              │
+         ▼                                       │
+  ┌──────────────┐    5. Exchange code  ┌────────┴────────┐
+  │   Revenge    │─────for tokens──────▶│   Provider      │
+  │   Server     │                      │   Token API     │
+  │              │◀─────────────────────│                 │
+  │              │  6. ID + access +    │                 │
+  └──────┬───────┘     refresh tokens   └─────────────────┘
+         │
+         │ 7. Verify token (JWKS)
+         │ 8. Get user info
+         │ 9. Map claims → roles
+         │ 10. Create session
+         ▼
+  ┌──────────────┐
+  │   User       │
+  │  Session     │
+  └──────────────┘
+  ```
+
 protocol_details: |
   **OpenID Connect (OIDC)** with Generic Provider:
 
@@ -91,6 +115,7 @@ protocol_details: |
   - GitLab OAuth
   - Apple Sign In
   - Any OIDC-compliant provider
+
 supported_providers: |
   **Popular OIDC Providers**:
 
@@ -129,6 +154,7 @@ supported_providers: |
   9. **OneLogin**:
      - Discovery URL: `https://{subdomain}.onelogin.com/oidc/2/.well-known/openid-configuration`
      - Enterprise SSO
+
 module_structure: |
   ```
   internal/
@@ -154,6 +180,7 @@ module_structure: |
         azure.yaml           # Azure AD example
         google.yaml          # Google example
   ```
+
 key_interfaces: |
   ```go
   // GenericOIDCProvider implements OIDC for any provider
@@ -258,6 +285,7 @@ key_interfaces: |
       Claims    map[string]any // All userinfo claims
   }
   ```
+
 dependencies: |
   **Go Packages**:
   - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
@@ -266,6 +294,7 @@ dependencies: |
 
   **External Services**:
   - Any OIDC-compliant identity provider
+
 env_vars: |
   ```bash
   # Generic OIDC configuration
@@ -276,6 +305,7 @@ env_vars: |
   REVENGE_OIDC_GENERIC_CLIENT_SECRET=very-secret-key
   REVENGE_OIDC_GENERIC_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callback
   ```
+
 config_keys: |
   ```yaml
   auth:
@@ -316,6 +346,7 @@ config_keys: |
             # Provider-specific params (e.g., Azure AD resource)
             # resource: "https://graph.microsoft.com"
   ```
+
 provider_examples: |
   **Okta Configuration**:
   ```yaml
@@ -388,6 +419,7 @@ provider_examples: |
     claim_mappings:
       roles: "groups"
   ```
+
 component_interaction: |
   **OIDC Login Flow**:
 
@@ -431,6 +463,7 @@ component_interaction: |
      - Create Revenge session
      - Set session cookie
      - Redirect to app homepage
+
 api_endpoints: |
   **OIDC Endpoints** (Revenge):
   ```
@@ -470,6 +503,7 @@ api_endpoints: |
   6. Sets session cookie
   7. Redirects to /
   ```
+
 claim_mapping: |
   **Flexible Claim Mapping**:
 
@@ -563,6 +597,7 @@ claim_mapping: |
       return deduplicateRoles(roles), nil
   }
   ```
+
 discovery: |
   **OIDC Discovery Implementation**:
 
@@ -603,6 +638,7 @@ discovery: |
   - Cache discovery document for 24 hours
   - Refresh on startup or if endpoints fail
   - Reduces latency and external dependencies
+
 token_refresh: |
   **Refresh Token Flow**:
 
@@ -627,6 +663,7 @@ token_refresh: |
       }, nil
   }
   ```
+
 logout: |
   **Logout Flow**:
 
@@ -651,6 +688,7 @@ logout: |
       return logoutURL.String(), nil
   }
   ```
+
 error_handling: |
   **Common Errors**:
 
@@ -674,6 +712,7 @@ error_handling: |
 
   - **claim_not_found**: Required claim missing from token
     - Solution: Adjust claim_mappings or request additional scopes
+
 unit_tests: |
   ```go
   func TestGenericOIDCProvider_Discover(t *testing.T) {
@@ -747,6 +786,7 @@ unit_tests: |
       // Test nested claim extraction
   }
   ```
+
 integration_tests: |
   ```go
   func TestGenericOIDC_RealProvider(t *testing.T) {
@@ -772,6 +812,7 @@ integration_tests: |
       assert.NotEmpty(t, jwks.Keys)
   }
   ```
+
 best_practices: |
   **Security**:
   - Always use PKCE for authorization code flow

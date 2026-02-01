@@ -3,7 +3,6 @@
 - [Sonarr](#sonarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
-  - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
@@ -38,8 +37,7 @@ Sonarr integration automates TV show downloads. Add series to Sonarr and new epi
 
 
 
-## Configuration
-<!-- User-friendly configuration guide -->
+
 
 
 

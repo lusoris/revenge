@@ -7,17 +7,12 @@
     - [Data Flow](#data-flow)
     - [Provides](#provides)
   - [Implementation](#implementation)
-    - [File Structure](#file-structure)
     - [Key Interfaces](#key-interfaces)
     - [Dependencies](#dependencies)
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
@@ -60,20 +55,38 @@
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    node1["Revenge<br/>Web Client"]
-    node2["EPG Service<br/>(Revenge)"]
-    node3["TVHeadend API<br/>/api/channel/<br/>/api/epg/"]
-    node4["Player<br/>(Vidstack)"]
-    node5["TVHeadend<br/>Streaming"]
-    node6["DVB Adapter/<br/>IPTV/DVR Files"]
-    node1 --> node2
-    node4 --> node5
-    node2 --> node3
-    node3 --> node4
-    node5 --> node6
 ```
+┌──────────────┐    1. View EPG      ┌─────────────────┐
+│   Revenge    │────────────────────▶│   EPG Service   │
+│  Web Client  │                     │  (Revenge)      │
+└──────┬───────┘                     └────────┬────────┘
+       │                                      │
+       │ 2. Select channel                   │ 3. Fetch EPG from
+       │                                      │    TVHeadend
+       │                                      ▼
+       │                             ┌────────────────┐
+       │                             │  TVHeadend API │
+       │                             │  /api/channel/ │
+       │                             │  /api/epg/     │
+       │                             └────────┬───────┘
+       │                                      │
+       │ 4. Play live/DVR                    │ 5. Get stream
+       ▼                                      ▼
+┌──────────────┐                     ┌────────────────┐
+│   Player     │    6. Request       │  TVHeadend     │
+│  (Vidstack)  │────HLS/MPEG-TS─────▶│  Streaming     │
+└──────────────┘                     │  /stream/...   │
+                                      └────────┬───────┘
+                                               │
+                                       7. Stream from
+                                          adapter/DVR
+                                               ▼
+                                      ┌────────────────┐
+                                      │ DVB Adapter/   │
+                                      │ IPTV/DVR Files │
+                                      └────────────────┘
+```
+
 
 ### Integration Structure
 
@@ -95,10 +108,6 @@ internal/integration/tvheadend/
 
 
 ## Implementation
-
-### File Structure
-
-<!-- File structure -->
 
 ### Key Interfaces
 
@@ -215,7 +224,9 @@ type GridResponse struct {
 
 
 
+
 ## Configuration
+
 ### Environment Variables
 
 ```bash
@@ -291,21 +302,6 @@ Response:
 }
 ```
 
-
-
-## Testing Strategy
-
-### Unit Tests
-
-<!-- Unit test strategy -->
-
-### Integration Tests
-
-<!-- Integration test strategy -->
-
-### Test Coverage
-
-Target: **80% minimum**
 
 
 

@@ -18,10 +18,12 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Centralized HTTP client factory with proxy/VPN support for external API calls'
 wiki_tagline: '> Route external API calls through proxy or VPN for privacy'
-wiki_overview: The HTTP client service provides centralized HTTP client management with proxy and VPN support. External metadata
-  API calls (TMDb, TheTVDB, MusicBrainz, etc.) route through configured proxies or VPN tunnels for privacy and geo-unblocking.
-  Local services (Arr stack, Stash) bypass proxy. Supports HTTP/HTTPS proxies, SOCKS5 (Tor), and VPN interface binding. Per-service
-  routing rules, health checking, and automatic failover.
+wiki_overview: The HTTP client service provides centralized HTTP client management
+  with proxy and VPN support. External metadata API calls (TMDb, TheTVDB, MusicBrainz,
+  etc.) route through configured proxies or VPN tunnels for privacy and geo-unblocking.
+  Local services (Arr stack, Stash) bypass proxy. Supports HTTP/HTTPS proxies, SOCKS5
+  (Tor), and VPN interface binding. Per-service routing rules, health checking, and
+  automatic failover.
 sources:
 - name: Go context
   url: https://pkg.go.dev/context
@@ -51,19 +53,25 @@ design_refs:
 service_name: HTTP Client & Proxy
 module_name: http_client
 package_path: internal/httpclient
-architecture_diagram: |-
-  ```mermaid
-  flowchart TD
-      node1["External APIs<br/>(TMDb, TVDB)"]
-      node2["HTTP Client<br/>Factory"]
-      node3["Services<br/>(Metadata,"]
-      node4["Proxy/VPN<br/>(Tor, HTTP)"]
-      node5["Local Services<br/>(Arr, Stash)"]
-      node1 --> node2
-      node2 --> node3
-      node3 --> node4
-      node4 --> node5
+
+architecture_diagram: |
   ```
+  ┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+  │  External APIs  │◀────│  HTTP Client     │◀────│  Services   │
+  │  (TMDb, TVDB)   │     │  Factory         │     │  (Metadata, │
+  └─────────────────┘     │                  │     │   Requests) │
+                          │  - Proxy Router  │     └─────────────┘
+  ┌─────────────────┐     │  - VPN Binding   │
+  │  Proxy/VPN      │◀────│  - Health Check  │
+  │  (Tor, HTTP)    │     │  - Middleware    │
+  └─────────────────┘     └──────────────────┘
+                                    │
+  ┌─────────────────┐               │
+  │  Local Services │◀──────────────┘
+  │  (Arr, Stash)   │    (Direct, no proxy)
+  └─────────────────┘
+  ```
+
 design_rationale: |
   **Why a Dedicated HTTP Client Service?**
 
@@ -90,6 +98,7 @@ design_rationale: |
   - Rate limit mitigation: Rotate IPs through proxy pool
   - Simplified configuration: One place to configure all HTTP behavior
   - Testability: Mock HTTP clients for unit tests
+
 module_structure: |
   ```
   internal/httpclient/
@@ -108,6 +117,7 @@ module_structure: |
   internal/metadata/providers/tmdb/
   ├── client.go                    # Receives *http.Client via fx
   ```
+
 key_interfaces: |
   ```go
   // HTTP client factory
@@ -189,6 +199,7 @@ key_interfaces: |
   // Retry middleware
   func RetryMiddleware(maxRetries int, backoff time.Duration) Middleware
   ```
+
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -199,6 +210,7 @@ dependencies: |
   - `github.com/knadh/koanf/v2` - Configuration
   - `go.uber.org/fx` - Dependency injection
   - `log/slog` - Structured logging
+
 config_keys: |
   ```yaml
   httpclient:
@@ -254,6 +266,7 @@ config_keys: |
       - service: stash
         proxy: none             # Stash → Direct (local)
   ```
+
 env_vars: |
   ```bash
   # HTTP proxy
@@ -269,6 +282,7 @@ env_vars: |
   # Default proxy for external APIs
   DEFAULT_PROXY=tor  # "tor", "http", "vpn", "none"
   ```
+
 implementation_factory: |
   **HTTP Client Factory Implementation**:
 
@@ -479,6 +493,7 @@ implementation_factory: |
     return nil
   }
   ```
+
 middleware_chain: |
   **Middleware Implementation**:
 
@@ -580,6 +595,7 @@ middleware_chain: |
     }
   }
   ```
+
 fx_module: |
   **fx Dependency Injection**:
 
@@ -646,6 +662,7 @@ fx_module: |
     ),
   )
   ```
+
 health_checking: |
   **Background Health Checking**:
 
@@ -706,6 +723,7 @@ health_checking: |
     }
   }
   ```
+
 usage_examples: |
   **Usage in Metadata Services**:
 
@@ -775,6 +793,7 @@ usage_examples: |
     // ...
   }
   ```
+
 unit_tests: |
   ```go
   func TestFactory_GetClient(t *testing.T) {
@@ -802,6 +821,7 @@ unit_tests: |
     // Test exponential backoff
   }
   ```
+
 integration_tests: |
   ```go
   func TestHTTPClient_RealProxy(t *testing.T) {
