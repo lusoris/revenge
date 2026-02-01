@@ -59,7 +59,7 @@ class CompletionAssistant:
 
                     if has_placeholders:
                         incomplete.append(yaml_file)
-                except Exception:  # noqa: BLE001
+                except Exception:
                     pass
 
         return sorted(incomplete)

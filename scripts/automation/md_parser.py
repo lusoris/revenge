@@ -231,7 +231,7 @@ class MarkdownParser:
 
         return sections
 
-    def to_yaml(self, data: dict, _template_type: str = "basic") -> str:
+    def to_yaml(self, data: dict, template_type: str = "basic") -> str:  # noqa: ARG002
         """Convert extracted data to YAML format.
 
         Args:
