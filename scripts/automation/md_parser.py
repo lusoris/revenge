@@ -152,7 +152,7 @@ class MarkdownParser:
 
         return status_data
 
-    def _determine_category(self, md_file: Path, content: str) -> str:
+    def _determine_category(self, md_file: Path, _content: str) -> str:
         """Determine document category based on file path and content.
 
         Returns:
@@ -231,7 +231,7 @@ class MarkdownParser:
 
         return sections
 
-    def to_yaml(self, data: dict, template_type: str = "basic") -> str:
+    def to_yaml(self, data: dict, _template_type: str = "basic") -> str:
         """Convert extracted data to YAML format.
 
         Args:

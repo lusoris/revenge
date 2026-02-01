@@ -122,7 +122,7 @@ class FormatFixer:
 
         return stats
 
-    def fix_all(self, category: str = None, dry_run: bool = False) -> dict:
+    def fix_all(self, category: str | None = None, dry_run: bool = False) -> dict:
         """Fix all YAML files or specific category.
 
         Args:
@@ -265,7 +265,7 @@ def main():
     fixer = FormatFixer(repo_root)
 
     # Fix files
-    stats = fixer.fix_all(category, dry_run)
+    fixer.fix_all(category, dry_run)
 
     # Exit code based on results
     sys.exit(0)

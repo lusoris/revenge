@@ -101,6 +101,7 @@ class CIValidator:
                 cwd=self.repo_root,
                 capture_output=True,
                 text=True,
+                check=False,
             )
 
             if result.returncode != 0:

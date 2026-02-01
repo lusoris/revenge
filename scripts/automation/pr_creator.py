@@ -11,6 +11,7 @@ Author: Automation System
 Created: 2026-01-31
 """
 
+import contextlib
 import os
 import subprocess
 import sys
@@ -299,17 +300,14 @@ class PRCreator:
 
             pr_url = result.stdout.strip()
 
-            # Enable auto-merge if requested
+            # Enable auto-merge if requested (ignore failure - PR still created)
             if auto_merge:
-                try:
+                with contextlib.suppress(subprocess.CalledProcessError):
                     subprocess.run(
                         ["gh", "pr", "merge", pr_url, "--auto", "--squash"],
                         cwd=self.repo_root,
                         check=True,
                     )
-                except subprocess.CalledProcessError:
-                    # Auto-merge failed, but PR created successfully
-                    pass
 
             return True, pr_url
 

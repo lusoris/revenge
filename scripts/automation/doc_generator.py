@@ -21,8 +21,8 @@ from typing import Any
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-import yaml
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
+import yaml  # noqa: E402
+from jinja2 import Environment, FileSystemLoader, StrictUndefined  # noqa: E402
 
 
 # Import TOCGenerator - handle both script and module contexts
