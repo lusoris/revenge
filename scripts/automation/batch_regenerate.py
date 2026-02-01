@@ -234,7 +234,7 @@ Examples:
         backup_originals=args.backup,
     )
 
-    # Run regeneration
+    # Run regeneration (includes TOC generation via doc_generator.py)
     stats = regenerator.regenerate_all()
 
     # Exit code

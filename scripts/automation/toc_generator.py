@@ -100,12 +100,16 @@ class TOCGenerator:
         Returns:
             Tuple of (frontmatter, body)
         """
-        # Check for YAML frontmatter
-        if content.startswith("---\n"):
+        # Strip leading blank lines and check for YAML frontmatter
+        stripped = content.lstrip("\n")
+        leading_blanks = content[: len(content) - len(stripped)]
+
+        if stripped.startswith("---\n"):
             # Find closing ---
-            parts = content.split("---\n", 2)
+            parts = stripped.split("---\n", 2)
             if len(parts) >= 3:
-                frontmatter = f"---\n{parts[1]}---\n"
+                # Include leading blanks with frontmatter
+                frontmatter = f"{leading_blanks}---\n{parts[1]}---\n"
                 body = parts[2]
                 return frontmatter, body
 
