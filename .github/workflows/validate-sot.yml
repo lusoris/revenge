@@ -86,7 +86,6 @@ jobs:
               --exclude-dir=.git \
               --exclude-dir=node_modules \
               --exclude-dir=docs/dev/sources \
-              --exclude-dir=.github/docs \
               --exclude-dir=.analysis \
               --exclude-dir=.shared \
               --exclude-dir=.zed \
@@ -94,6 +93,7 @@ jobs:
               --exclude="validate-sot.yml" \
               "python-version.*3\.12" . 2>/dev/null | \
               grep -v "needs.versions.outputs" | \
+              grep -v "\.github/docs" | \
               grep -v "e.g\|example\|Example\|TODO\|<from SOT>"; then
             echo "❌ Found hardcoded Python version 3.12"
             echo "Use: needs.versions.outputs.python-version instead"
@@ -110,7 +110,6 @@ jobs:
               --exclude-dir=.git \
               --exclude-dir=node_modules \
               --exclude-dir=docs/dev/sources \
-              --exclude-dir=.github/docs \
               --exclude-dir=.analysis \
               --exclude-dir=.shared \
               --exclude-dir=.zed \
@@ -119,6 +118,7 @@ jobs:
               "node-version.*['\"]20" . 2>/dev/null | \
               grep "\.yml\|\.yaml" | \
               grep -v "needs.versions.outputs" | \
+              grep -v "\.github/docs" | \
               grep -v "e.g\|example\|Example\|TODO\|<from SOT>"; then
             echo "❌ Found hardcoded Node.js version"
             echo "Use: needs.versions.outputs.node-version instead"
@@ -135,7 +135,6 @@ jobs:
               --exclude-dir=.git \
               --exclude-dir=node_modules \
               --exclude-dir=docs/dev/sources \
-              --exclude-dir=.github/docs \
               --exclude-dir=.analysis \
               --exclude-dir=.shared \
               --exclude-dir=.zed \
@@ -143,6 +142,7 @@ jobs:
               --exclude="validate-sot.yml" \
               "GOEXPERIMENT: greenteagc,jsonv2" . 2>/dev/null | \
               grep "\.yml\|\.yaml" | \
+              grep -v "\.github/docs" | \
               grep -v "needs.versions.outputs.goexperiment"; then
             echo "❌ Found hardcoded GOEXPERIMENT in workflows"
             echo "Use: needs.versions.outputs.goexperiment instead"
