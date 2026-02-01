@@ -1,8 +1,8 @@
 # TanStack Query
 
 > Source: https://tanstack.com/query/latest/docs/framework/svelte/overview
-> Fetched: 2026-01-31T16:00:07.723797+00:00
-> Content-Hash: 74a8357096e42e36
+> Fetched: 2026-02-01T05:06:00.060238+00:00
+> Content-Hash: 344fc425a6828033
 > Type: html
 
 ---
@@ -11,7 +11,7 @@
 
 [Query v5v5](/query)
 
-[AlphaTry TanStack CLI](/cli)
+[AlphaTry TanStack CLI](/cli/latest)
 
 [](https://github.com/tanstack/query)[](https://x.com/tan_stack)[](https://bsky.app/profile/tanstack.com)[](https://instagram.com/tan_stack)[](https://tlinz.com/discord)
 

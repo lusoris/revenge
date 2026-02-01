@@ -317,9 +317,9 @@ sources:
     url: https://www.omdbapi.com/
     output: apis/omdb.md
     status: success
-    fetched_at: '2026-01-31T15:57:15.740824+00:00'
+    fetched_at: '2026-02-01T05:03:15.724459+00:00'
     error: null
-    content_hash: 31457462663d6be0
+    content_hash: 499c3f554805acd9
   musicbrainz:
     name: MusicBrainz API
     url: https://musicbrainz.org/doc/MusicBrainz_API
@@ -340,10 +340,9 @@ sources:
     name: Discogs API
     url: https://www.discogs.com/developers
     output: apis/discogs.md
-    status: unchanged
-    fetched_at: '2026-01-31T10:57:55.753095+00:00'
-    error: null
-    content_hash: afd2f6ebbefe3fbb
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
   spotify:
     name: Spotify Web API
     url: https://developer.spotify.com/documentation/web-api
@@ -480,7 +479,7 @@ sources:
     name: HLS Specification
     url: https://datatracker.ietf.org/doc/html/rfc8216
     output: protocols/hls-rfc8216.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:23.591837+00:00'
     error: null
     content_hash: eb8161b6df8699b1
@@ -496,7 +495,7 @@ sources:
     name: HTTP Range Requests
     url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
     output: protocols/http-range.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:27.919349+00:00'
     error: null
     content_hash: fae7f6e214482cd6
@@ -504,7 +503,7 @@ sources:
     name: WebRTC API
     url: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
     output: protocols/webrtc.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:45.168524+00:00'
     error: null
     content_hash: b1975205e41b4120
@@ -512,7 +511,7 @@ sources:
     name: Svelte 5 Documentation
     url: https://svelte.dev/docs/svelte/overview
     output: frontend/svelte5.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:56.049150+00:00'
     error: null
     content_hash: 5be0490595f1f5b7
@@ -520,7 +519,7 @@ sources:
     name: Svelte 5 Runes
     url: https://svelte.dev/docs/svelte/$state
     output: frontend/svelte-runes.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:58.267776+00:00'
     error: null
     content_hash: fcd0763ab3339330
@@ -528,7 +527,7 @@ sources:
     name: SvelteKit Documentation
     url: https://svelte.dev/docs/kit/introduction
     output: frontend/sveltekit.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:00.305623+00:00'
     error: null
     content_hash: 43369020da46740e
@@ -536,7 +535,7 @@ sources:
     name: shadcn-svelte
     url: https://www.shadcn-svelte.com/docs
     output: frontend/shadcn-svelte.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:02.517143+00:00'
     error: null
     content_hash: fedef262b590935a
@@ -544,7 +543,7 @@ sources:
     name: Bits UI
     url: https://www.bits-ui.com/docs/introduction
     output: frontend/bits-ui.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:04.758618+00:00'
     error: null
     content_hash: 497b2a8d7065a52e
@@ -553,14 +552,14 @@ sources:
     url: https://tanstack.com/query/latest/docs/framework/svelte/overview
     output: frontend/tanstack-query.md
     status: success
-    fetched_at: '2026-01-31T16:00:07.723797+00:00'
+    fetched_at: '2026-02-01T05:06:00.060238+00:00'
     error: null
-    content_hash: 74a8357096e42e36
+    content_hash: 344fc425a6828033
   vidstack:
     name: Vidstack Player
     url: https://www.vidstack.io/docs/player/getting-started/installation
     output: frontend/vidstack.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:10.203837+00:00'
     error: null
     content_hash: b71783470c904c9c
@@ -569,38 +568,38 @@ sources:
     url: https://ffmpeg.org/ffmpeg.html
     output: media/ffmpeg.md
     status: success
-    fetched_at: '2026-01-31T16:00:40.970246+00:00'
+    fetched_at: '2026-02-01T05:06:31.567676+00:00'
     error: null
-    content_hash: c86c0cdf3dfa531a
+    content_hash: c55942164372128d
   ffmpeg-codecs:
     name: FFmpeg Codecs
     url: https://ffmpeg.org/ffmpeg-codecs.html
     output: media/ffmpeg-codecs.md
     status: success
-    fetched_at: '2026-01-31T16:00:43.318831+00:00'
+    fetched_at: '2026-02-01T05:06:35.066066+00:00'
     error: null
-    content_hash: bd9a369b0b8b559d
+    content_hash: 4a660a63c309f51b
   ffmpeg-formats:
     name: FFmpeg Formats
     url: https://ffmpeg.org/ffmpeg-formats.html
     output: media/ffmpeg-formats.md
     status: success
-    fetched_at: '2026-01-31T16:00:45.564147+00:00'
+    fetched_at: '2026-02-01T05:06:37.803080+00:00'
     error: null
-    content_hash: bd45792a2da458b1
+    content_hash: 80a22a1787b508eb
   mediainfo:
     name: MediaInfo
     url: https://mediaarea.net/en/MediaInfo
     output: media/mediainfo.md
     status: success
-    fetched_at: '2026-01-31T16:00:47.715721+00:00'
+    fetched_at: '2026-02-01T05:06:40.317452+00:00'
     error: null
-    content_hash: 5c8128f9d01dcda8
+    content_hash: a5f481724d9bc183
   go-astiav:
     name: go-astiav (FFmpeg bindings)
     url: https://pkg.go.dev/github.com/asticode/go-astiav
     output: media/go-astiav.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:52.089566+00:00'
     error: null
     content_hash: a10e55e5a89bcd97
@@ -617,14 +616,14 @@ sources:
     url: https://pkg.go.dev/github.com/bluenviron/gortsplib/v4
     output: media/gortsplib.md
     status: success
-    fetched_at: '2026-01-31T16:00:56.513292+00:00'
+    fetched_at: '2026-02-01T05:06:48.592300+00:00'
     error: null
-    content_hash: 3e8b3f8dd451f27f
+    content_hash: e0aa3c350d50a548
   gohlslib:
     name: gohlslib (HLS)
     url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
     output: media/gohlslib.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:59.016387+00:00'
     error: null
     content_hash: 4a8879e1124b1e59
@@ -632,7 +631,7 @@ sources:
     name: mp4ff (MP4 parsing)
     url: https://pkg.go.dev/github.com/Eyevinn/mp4ff
     output: media/mp4ff.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:01.340735+00:00'
     error: null
     content_hash: 729f50def7792c08
@@ -640,7 +639,7 @@ sources:
     name: go-astisub (subtitles)
     url: https://pkg.go.dev/github.com/asticode/go-astisub
     output: media/go-astisub.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:04.232905+00:00'
     error: null
     content_hash: 9a47a11349a26190
@@ -648,7 +647,7 @@ sources:
     name: go-blurhash
     url: https://pkg.go.dev/github.com/bbrks/go-blurhash
     output: media/go-blurhash.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:06.566900+00:00'
     error: null
     content_hash: 6f35fec4f26d30a2
@@ -656,7 +655,7 @@ sources:
     name: dhowden/tag (audio metadata)
     url: https://pkg.go.dev/github.com/dhowden/tag
     output: media/dhowden-tag.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:08.854772+00:00'
     error: null
     content_hash: e59cb0b8c94e285a
@@ -664,7 +663,7 @@ sources:
     name: bogem/id3v2
     url: https://pkg.go.dev/github.com/bogem/id3v2/v2
     output: media/bogem-id3v2.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:16.110096+00:00'
     error: null
     content_hash: 68f108ceab998213
@@ -672,7 +671,7 @@ sources:
     name: OpenID Connect Core
     url: https://openid.net/specs/openid-connect-core-1_0.html
     output: security/oidc-core.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:36.400708+00:00'
     error: null
     content_hash: f6457a1d8fff57c6
@@ -680,7 +679,7 @@ sources:
     name: OAuth 2.0 RFC
     url: https://datatracker.ietf.org/doc/html/rfc6749
     output: security/oauth2-rfc6749.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:38.537297+00:00'
     error: null
     content_hash: 5a14cce1b208536d
@@ -688,7 +687,7 @@ sources:
     name: OAuth 2.0 PKCE
     url: https://datatracker.ietf.org/doc/html/rfc7636
     output: security/pkce-rfc7636.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:40.705857+00:00'
     error: null
     content_hash: 0d4739e984109084
@@ -696,7 +695,7 @@ sources:
     name: JWT RFC
     url: https://datatracker.ietf.org/doc/html/rfc7519
     output: security/jwt-rfc7519.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:42.820580+00:00'
     error: null
     content_hash: 16264a3eb121b91c
@@ -704,7 +703,7 @@ sources:
     name: testify
     url: https://pkg.go.dev/github.com/stretchr/testify
     output: testing/testify.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:06.562791+00:00'
     error: null
     content_hash: 30bcf71587c8d7ac
@@ -712,7 +711,7 @@ sources:
     name: testcontainers-go
     url: https://golang.testcontainers.org/
     output: testing/testcontainers.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:09.234607+00:00'
     error: null
     content_hash: d6512282892ff6cd
@@ -720,7 +719,7 @@ sources:
     name: Go Testing Patterns
     url: https://go.dev/doc/tutorial/add-a-test
     output: testing/go-patterns.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:11.537005+00:00'
     error: null
     content_hash: 98c6a175c01c4a8f
@@ -728,7 +727,7 @@ sources:
     name: Prometheus Go Client
     url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
     output: observability/prometheus.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:23.560489+00:00'
     error: null
     content_hash: 7786cfbd3465d91a
@@ -736,7 +735,7 @@ sources:
     name: OpenTelemetry Go
     url: https://opentelemetry.io/docs/languages/go/
     output: observability/opentelemetry.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:25.754504+00:00'
     error: null
     content_hash: f5f2c9323d147d4d
@@ -744,7 +743,7 @@ sources:
     name: Prometheus Metric Types
     url: https://prometheus.io/docs/concepts/metric_types/
     output: observability/prometheus-metrics.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:28.307525+00:00'
     error: null
     content_hash: 2bec0c99178c16ae
@@ -752,7 +751,7 @@ sources:
     name: Dragonfly Documentation
     url: https://www.dragonflydb.io/docs
     output: infrastructure/dragonfly.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:46.395440+00:00'
     error: null
     content_hash: 53596a1ad58680ca
@@ -760,7 +759,7 @@ sources:
     name: Typesense API
     url: https://typesense.org/docs/latest/api/
     output: infrastructure/typesense.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:48.521915+00:00'
     error: null
     content_hash: 4112224746f2c318
@@ -840,7 +839,7 @@ sources:
     name: Semantic Versioning
     url: https://semver.org/
     output: standards/semver.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:55.082494+00:00'
     error: null
     content_hash: 51f6a809a27542ec
@@ -848,7 +847,7 @@ sources:
     name: Conventional Commits
     url: https://www.conventionalcommits.org/
     output: standards/conventional-commits.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:57.381709+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -856,7 +855,7 @@ sources:
     name: Git Flow
     url: https://nvie.com/posts/a-successful-git-branching-model/
     output: standards/gitflow.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:59.680678+00:00'
     error: null
     content_hash: 05d8b406deb498f0
@@ -864,7 +863,7 @@ sources:
     name: Chromaprint/AcoustID
     url: https://acoustid.org/chromaprint
     output: standards/chromaprint.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:02.391978+00:00'
     error: null
     content_hash: 8b4cac6e789bf17c
@@ -1161,7 +1160,7 @@ sources:
     name: RTSP RFC 7826
     url: https://datatracker.ietf.org/doc/html/rfc7826
     output: protocols/rtsp-rfc7826.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:30.434889+00:00'
     error: null
     content_hash: 543eac76b077906b
@@ -1169,7 +1168,7 @@ sources:
     name: M3U8 Extended Format
     url: https://datatracker.ietf.org/doc/html/rfc8216
     output: protocols/m3u8.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:32.520302+00:00'
     error: null
     content_hash: eb8161b6df8699b1
@@ -1177,7 +1176,7 @@ sources:
     name: WebVTT Specification
     url: https://www.w3.org/TR/webvtt1/
     output: protocols/webvtt.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:34.846441+00:00'
     error: null
     content_hash: fdb2b186978fc2a1
@@ -1185,7 +1184,7 @@ sources:
     name: Roku BIF Format
     url: https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md
     output: protocols/bif.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:37.613147+00:00'
     error: null
     content_hash: bcfaa082de6b933c
@@ -1194,14 +1193,14 @@ sources:
     url: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
     output: protocols/xmltv.md
     status: success
-    fetched_at: '2026-01-31T15:59:40.212285+00:00'
+    fetched_at: '2026-02-01T05:05:31.611124+00:00'
     error: null
-    content_hash: dcd4c2a353078f52
+    content_hash: ecd9ddb3d024a063
   xmltv-wiki:
     name: XMLTV Wiki
     url: https://wiki.xmltv.org/index.php/XMLTVFormat
     output: protocols/xmltv-format.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:42.882468+00:00'
     error: null
     content_hash: 6fc219c8e4593fe0
@@ -1209,7 +1208,7 @@ sources:
     name: Pion WebRTC (Go)
     url: https://pkg.go.dev/github.com/pion/webrtc/v4
     output: protocols/pion-webrtc.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:49.292081+00:00'
     error: null
     content_hash: 7011c90eb7f9ee48
@@ -1225,7 +1224,7 @@ sources:
     name: MPEG Transport Stream
     url: https://en.wikipedia.org/wiki/MPEG_transport_stream
     output: protocols/mpeg-ts.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:53.895935+00:00'
     error: null
     content_hash: 5a2f003d90ce04ea
@@ -1233,7 +1232,7 @@ sources:
     name: Vite Documentation
     url: https://vite.dev/guide/
     output: frontend/vite.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:12.415450+00:00'
     error: null
     content_hash: 3eb111b8c4165268
@@ -1241,7 +1240,7 @@ sources:
     name: Vite Configuration
     url: https://vite.dev/config/
     output: frontend/vite-config.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:14.457332+00:00'
     error: null
     content_hash: 97af5549589dea21
@@ -1249,7 +1248,7 @@ sources:
     name: TypeScript Documentation
     url: https://www.typescriptlang.org/docs/
     output: frontend/typescript.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:16.629645+00:00'
     error: null
     content_hash: b498c669ea2b6d63
@@ -1257,7 +1256,7 @@ sources:
     name: TypeScript Handbook
     url: https://www.typescriptlang.org/docs/handbook/intro.html
     output: frontend/typescript-handbook.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:18.774588+00:00'
     error: null
     content_hash: 710dfd1fe1adec1a
@@ -1265,7 +1264,7 @@ sources:
     name: TailwindCSS Documentation
     url: https://tailwindcss.com/docs
     output: frontend/tailwindcss.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:21.043544+00:00'
     error: null
     content_hash: cf4cb808a2007fb3
@@ -1273,7 +1272,7 @@ sources:
     name: TailwindCSS v4
     url: https://tailwindcss.com/blog/tailwindcss-v4
     output: frontend/tailwindcss-v4.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:23.202669+00:00'
     error: null
     content_hash: f07623f5b4d9acca
@@ -1282,9 +1281,9 @@ sources:
     url: https://zod.dev/
     output: frontend/zod.md
     status: success
-    fetched_at: '2026-01-31T16:00:27.075547+00:00'
+    fetched_at: '2026-02-01T05:06:17.343107+00:00'
     error: null
-    content_hash: cae63534e213a1d8
+    content_hash: 9909a5eab416618a
   zod-github:
     name: Zod GitHub
     url: https://github.com/colinhacks/zod
@@ -1297,7 +1296,7 @@ sources:
     name: SvelteKit Superforms
     url: https://superforms.rocks/
     output: frontend/superforms.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:32.049035+00:00'
     error: null
     content_hash: 575064e64dcd69c0
@@ -1305,7 +1304,7 @@ sources:
     name: Lucide Svelte
     url: https://lucide.dev/guide/packages/lucide-svelte
     output: frontend/lucide-svelte.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:34.334442+00:00'
     error: null
     content_hash: b48b1cb6408f5f20
@@ -1313,7 +1312,7 @@ sources:
     name: davidbyttow/govips
     url: https://pkg.go.dev/github.com/davidbyttow/govips/v2
     output: media/govips.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:18.460723+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -1329,7 +1328,7 @@ sources:
     name: corona10/goimagehash
     url: https://pkg.go.dev/github.com/corona10/goimagehash
     output: media/goimagehash.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:23.567870+00:00'
     error: null
     content_hash: b6375d2d2c0ee4d0
@@ -1352,7 +1351,7 @@ sources:
     name: gen2brain/go-unarr
     url: https://pkg.go.dev/github.com/gen2brain/go-unarr
     output: media/go-unarr.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:34.110501+00:00'
     error: null
     content_hash: db9ea4350650d346
@@ -1360,7 +1359,7 @@ sources:
     name: Authelia Documentation
     url: https://www.authelia.com/overview/
     output: security/authelia.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:45.294053+00:00'
     error: null
     content_hash: 53d7ce839574f5e4
@@ -1368,7 +1367,7 @@ sources:
     name: Authentik Documentation
     url: https://goauthentik.io/docs/
     output: security/authentik.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:47.775983+00:00'
     error: null
     content_hash: c3697ba8f54b9d99
@@ -1376,7 +1375,7 @@ sources:
     name: Keycloak Documentation
     url: https://www.keycloak.org/documentation
     output: security/keycloak.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:50.848781+00:00'
     error: null
     content_hash: b93740bbe3770681
@@ -1384,7 +1383,7 @@ sources:
     name: Casbin
     url: https://pkg.go.dev/github.com/casbin/casbin/v2
     output: security/casbin.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:53.971891+00:00'
     error: null
     content_hash: 7a9c49c862d92e05
@@ -1392,7 +1391,7 @@ sources:
     name: Casbin Documentation
     url: https://casbin.org/docs/overview
     output: security/casbin-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:56.805825+00:00'
     error: null
     content_hash: 04c7350b1bc6f2ab
@@ -1400,7 +1399,7 @@ sources:
     name: Casbin pgx Adapter
     url: https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3
     output: security/casbin-pgx.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:01:59.078244+00:00'
     error: null
     content_hash: 136ff6db0df064d9
@@ -1408,7 +1407,7 @@ sources:
     name: Open Policy Agent
     url: https://pkg.go.dev/github.com/open-policy-agent/opa
     output: security/opa.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:01.410032+00:00'
     error: null
     content_hash: e0aa3c350d50a548
@@ -1416,7 +1415,7 @@ sources:
     name: OPA Documentation
     url: https://www.openpolicyagent.org/docs/latest/
     output: security/opa-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:04.159807+00:00'
     error: null
     content_hash: 6615edf506b4d6bd
@@ -1424,7 +1423,7 @@ sources:
     name: mockery
     url: https://pkg.go.dev/github.com/vektra/mockery/v3
     output: testing/mockery.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:13.799707+00:00'
     error: null
     content_hash: e0aa3c350d50a548
@@ -1432,7 +1431,7 @@ sources:
     name: mockery Documentation
     url: https://vektra.github.io/mockery/
     output: testing/mockery-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:15.982172+00:00'
     error: null
     content_hash: 94c52d94bad3698e
@@ -1440,7 +1439,7 @@ sources:
     name: embedded-postgres
     url: https://pkg.go.dev/github.com/fergusstrange/embedded-postgres
     output: testing/embedded-postgres.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:18.585624+00:00'
     error: null
     content_hash: 7753283058197def
@@ -1456,7 +1455,7 @@ sources:
     name: Grafana Documentation
     url: https://grafana.com/docs/grafana/latest/
     output: observability/grafana.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:30.522762+00:00'
     error: null
     content_hash: 73e4da00e5ba80a6
@@ -1464,7 +1463,7 @@ sources:
     name: Grafana Dashboard JSON
     url: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/
     output: observability/grafana-dashboards.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:32.698071+00:00'
     error: null
     content_hash: 2b3412ce62560e9b
@@ -1472,7 +1471,7 @@ sources:
     name: Grafana Loki
     url: https://grafana.com/docs/loki/latest/
     output: observability/loki.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:34.831612+00:00'
     error: null
     content_hash: fa9cdd4b84777109
@@ -1480,7 +1479,7 @@ sources:
     name: LogQL Query Language
     url: https://grafana.com/docs/loki/latest/query/
     output: observability/logql.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:36.953921+00:00'
     error: null
     content_hash: d511df286e5cf15c
@@ -1488,7 +1487,7 @@ sources:
     name: Jaeger Documentation
     url: https://www.jaegertracing.io/docs/
     output: observability/jaeger.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:39.107511+00:00'
     error: null
     content_hash: 1f64bc036aea5f85
@@ -1496,7 +1495,7 @@ sources:
     name: Jaeger Go Client
     url: https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go
     output: observability/jaeger-go.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:41.859063+00:00'
     error: null
     content_hash: 5768f484eeb1cf71
@@ -1504,7 +1503,7 @@ sources:
     name: slog-multi
     url: https://pkg.go.dev/github.com/samber/slog-multi
     output: observability/slog-multi.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:44.230320+00:00'
     error: null
     content_hash: 021cb35255f8e0ce
@@ -1520,7 +1519,7 @@ sources:
     name: ErsatzTV Documentation
     url: https://ersatztv.org/docs/
     output: livetv/ersatztv-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:02:55.078338+00:00'
     error: null
     content_hash: ecfc493ed26b76df
@@ -1543,7 +1542,7 @@ sources:
     name: HashiCorp Raft
     url: https://pkg.go.dev/github.com/hashicorp/raft
     output: distributed/hashicorp-raft.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:06.219622+00:00'
     error: null
     content_hash: 4bb2a8c152983d76
@@ -1559,7 +1558,7 @@ sources:
     name: etcd Raft
     url: https://pkg.go.dev/go.etcd.io/raft/v3
     output: distributed/etcd-raft.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:11.575049+00:00'
     error: null
     content_hash: 4e8473d5951d18e6
@@ -1567,7 +1566,7 @@ sources:
     name: hashicorp/raft-boltdb
     url: https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2
     output: distributed/raft-boltdb.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:13.940804+00:00'
     error: null
     content_hash: b2144ee4a823d9d1
@@ -1575,7 +1574,7 @@ sources:
     name: hashicorp/memberlist
     url: https://pkg.go.dev/github.com/hashicorp/memberlist
     output: distributed/memberlist.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:16.705149+00:00'
     error: null
     content_hash: 3dac1f6ac58ddba7
@@ -1583,7 +1582,7 @@ sources:
     name: Kubernetes Documentation
     url: https://kubernetes.io/docs/home/
     output: orchestration/kubernetes.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:18.855210+00:00'
     error: null
     content_hash: 4d05748907a80e25
@@ -1591,7 +1590,7 @@ sources:
     name: Helm Documentation
     url: https://helm.sh/docs/
     output: orchestration/helm.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:21.457797+00:00'
     error: null
     content_hash: 2665bd6489379573
@@ -1599,7 +1598,7 @@ sources:
     name: K3s Documentation
     url: https://docs.k3s.io/
     output: orchestration/k3s.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:23.696795+00:00'
     error: null
     content_hash: a5ecfe6f4e39ed2a
@@ -1607,7 +1606,7 @@ sources:
     name: Docker Swarm Documentation
     url: https://docs.docker.com/engine/swarm/
     output: orchestration/docker-swarm.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:25.861099+00:00'
     error: null
     content_hash: c00a2eec4ea62fb6
@@ -1615,7 +1614,7 @@ sources:
     name: Traefik Documentation
     url: https://doc.traefik.io/traefik/
     output: orchestration/traefik.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:28.020321+00:00'
     error: null
     content_hash: e3ddde7b0e7bda06
@@ -1623,7 +1622,7 @@ sources:
     name: Longhorn Storage
     url: https://longhorn.io/docs/
     output: orchestration/longhorn.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:30.131713+00:00'
     error: null
     content_hash: c72cc7629c6f7649
@@ -1631,7 +1630,7 @@ sources:
     name: k8s.io/client-go
     url: https://pkg.go.dev/k8s.io/client-go
     output: orchestration/client-go.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:32.359631+00:00'
     error: null
     content_hash: 1a738e4bdb7baf20
@@ -1639,7 +1638,7 @@ sources:
     name: sigs.k8s.io/controller-runtime
     url: https://pkg.go.dev/sigs.k8s.io/controller-runtime
     output: orchestration/controller-runtime.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:34.558031+00:00'
     error: null
     content_hash: 28589d4bc1b4c8c4
@@ -1647,7 +1646,7 @@ sources:
     name: Kubebuilder Book
     url: https://book.kubebuilder.io/
     output: orchestration/kubebuilder.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:36.801412+00:00'
     error: null
     content_hash: 0ca7641ff3c1ed2c
@@ -1678,7 +1677,7 @@ sources:
     name: Wikipedia API
     url: https://en.wikipedia.org/w/api.php?action=help&modules=query
     output: wiki/wikipedia.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:50.198166+00:00'
     error: null
     content_hash: ce7bd2c677113ec4
@@ -1686,7 +1685,7 @@ sources:
     name: MediaWiki API
     url: https://www.mediawiki.org/wiki/API:Main_page
     output: wiki/mediawiki.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:03:52.579031+00:00'
     error: null
     content_hash: c312e65eb5821c5d
@@ -1694,7 +1693,7 @@ sources:
     name: VS Code Documentation
     url: https://code.visualstudio.com/docs
     output: ides/vscode/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:07.112294+00:00'
     error: null
     content_hash: de8116955935b03b
@@ -1702,7 +1701,7 @@ sources:
     name: VS Code Settings Reference
     url: https://code.visualstudio.com/docs/getstarted/settings
     output: ides/vscode/settings.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:09.386319+00:00'
     error: null
     content_hash: 17c27012a62dc307
@@ -1710,7 +1709,7 @@ sources:
     name: VS Code Tasks
     url: https://code.visualstudio.com/docs/editor/tasks
     output: ides/vscode/tasks.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:11.571806+00:00'
     error: null
     content_hash: be24bf4d5ff9a795
@@ -1718,7 +1717,7 @@ sources:
     name: VS Code Debugging
     url: https://code.visualstudio.com/docs/editor/debugging
     output: ides/vscode/debugging.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:13.940734+00:00'
     error: null
     content_hash: 606e9b12599cd730
@@ -1726,7 +1725,7 @@ sources:
     name: VS Code Extension API
     url: https://code.visualstudio.com/api
     output: ides/vscode/extensions.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:16.085507+00:00'
     error: null
     content_hash: e2cc24f00a99994c
@@ -1734,7 +1733,7 @@ sources:
     name: VS Code Remote Development
     url: https://code.visualstudio.com/docs/remote/remote-overview
     output: ides/vscode/remote.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:18.215934+00:00'
     error: null
     content_hash: 031e100ff6573c15
@@ -1743,14 +1742,14 @@ sources:
     url: https://github.com/golang/vscode-go/wiki
     output: ides/vscode/go-extension.md
     status: success
-    fetched_at: '2026-01-31T16:04:20.716025+00:00'
+    fetched_at: '2026-02-01T05:10:35.902138+00:00'
     error: null
-    content_hash: 6888d86d48a84f27
+    content_hash: dff09ca3d875c7fa
   vscode-svelte:
     name: VS Code Svelte Extension
     url: https://github.com/sveltejs/language-tools/blob/master/docs/README.md
     output: ides/vscode/svelte-extension.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:23.086164+00:00'
     error: null
     content_hash: bf662ba1ade51918
@@ -1758,7 +1757,7 @@ sources:
     name: Zed Documentation
     url: https://zed.dev/docs
     output: ides/zed/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:25.529815+00:00'
     error: null
     content_hash: 806a82279b5ff9a4
@@ -1780,7 +1779,7 @@ sources:
     name: Zed Language Support
     url: https://zed.dev/docs/languages
     output: ides/zed/languages.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:40.237663+00:00'
     error: null
     content_hash: 652db4f036d28d54
@@ -1788,7 +1787,7 @@ sources:
     name: Zed Collaboration
     url: https://zed.dev/docs/collaboration
     output: ides/zed/collaboration.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:42.291509+00:00'
     error: null
     content_hash: c456e62886953aac
@@ -1796,7 +1795,7 @@ sources:
     name: Zed Extensions
     url: https://zed.dev/docs/extensions
     output: ides/zed/extensions.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:44.354631+00:00'
     error: null
     content_hash: e52b2b37d3ea32b3
@@ -1804,7 +1803,7 @@ sources:
     name: GoLand Documentation
     url: https://www.jetbrains.com/help/go/
     output: ides/jetbrains/goland.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:46.562660+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -1812,7 +1811,7 @@ sources:
     name: IntelliJ IDEA Go Plugin
     url: https://plugins.jetbrains.com/plugin/9568-go
     output: ides/jetbrains/intellij-go.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:48.697425+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -1820,7 +1819,7 @@ sources:
     name: JetBrains Gateway
     url: https://www.jetbrains.com/help/idea/remote-development-overview.html
     output: ides/jetbrains/gateway.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:50.797207+00:00'
     error: null
     content_hash: d5924ba5748ab34b
@@ -1828,7 +1827,7 @@ sources:
     name: GitHub Actions Documentation
     url: https://docs.github.com/en/actions
     output: devops/github-actions/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:52.909158+00:00'
     error: null
     content_hash: fb1f35da3a7e8348
@@ -1836,7 +1835,7 @@ sources:
     name: GitHub Actions Workflow Syntax
     url: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
     output: devops/github-actions/syntax.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:55.069323+00:00'
     error: null
     content_hash: 87a80d091350cd01
@@ -1844,7 +1843,7 @@ sources:
     name: GitHub Actions Contexts
     url: https://docs.github.com/en/actions/learn-github-actions/contexts
     output: devops/github-actions/contexts.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:57.175559+00:00'
     error: null
     content_hash: 4b049330aeae4487
@@ -1852,7 +1851,7 @@ sources:
     name: GitHub Actions Variables
     url: https://docs.github.com/en/actions/learn-github-actions/variables
     output: devops/github-actions/variables.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:59.244406+00:00'
     error: null
     content_hash: 2a480cee1c5601a3
@@ -1860,7 +1859,7 @@ sources:
     name: GitHub Actions Encrypted Secrets
     url: https://docs.github.com/en/actions/security-guides/encrypted-secrets
     output: devops/github-actions/secrets.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:01.315767+00:00'
     error: null
     content_hash: 6d9e0f550700a6d3
@@ -1868,7 +1867,7 @@ sources:
     name: GitHub Actions Caching
     url: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
     output: devops/github-actions/caching.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:03.372384+00:00'
     error: null
     content_hash: c4057ed38ddd89b2
@@ -1876,7 +1875,7 @@ sources:
     name: GitHub Actions Matrix Builds
     url: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
     output: devops/github-actions/matrix.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:05.433961+00:00'
     error: null
     content_hash: 2934014b4ed135d2
@@ -1884,7 +1883,7 @@ sources:
     name: GitHub Actions Security Best Practices
     url: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
     output: devops/github-actions/security.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:07.498447+00:00'
     error: null
     content_hash: 51aa7663731cd3ce
@@ -1892,7 +1891,7 @@ sources:
     name: Dependabot Documentation
     url: https://docs.github.com/en/code-security/dependabot
     output: devops/dependabot/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:09.566373+00:00'
     error: null
     content_hash: 7df62bb26a35ca9f
@@ -1900,7 +1899,7 @@ sources:
     name: Dependabot Configuration
     url: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
     output: devops/dependabot/config.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:11.654237+00:00'
     error: null
     content_hash: a0906c0915077881
@@ -1908,7 +1907,7 @@ sources:
     name: Coder Documentation
     url: https://coder.com/docs
     output: devops/coder/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:13.990970+00:00'
     error: null
     content_hash: 69d664e826cdcb18
@@ -1916,7 +1915,7 @@ sources:
     name: Coder Templates
     url: https://coder.com/docs/templates
     output: devops/coder/templates.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:16.260526+00:00'
     error: null
     content_hash: 36ac6c178a15b080
@@ -1931,7 +1930,7 @@ sources:
     name: Coder Workspaces
     url: https://coder.com/docs/workspaces
     output: devops/coder/workspaces.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:24.809599+00:00'
     error: null
     content_hash: c440f7d349926f16
@@ -1939,7 +1938,7 @@ sources:
     name: Coder IDEs
     url: https://coder.com/docs/ides
     output: devops/coder/ides.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:27.043019+00:00'
     error: null
     content_hash: f47620e87ffcc5ef
@@ -1947,7 +1946,7 @@ sources:
     name: Coder Docker
     url: https://coder.com/docs/platforms/docker
     output: devops/coder/docker.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:29.137685+00:00'
     error: null
     content_hash: 8a5332aa2894565c
@@ -1955,7 +1954,7 @@ sources:
     name: Coder Kubernetes
     url: https://coder.com/docs/platforms/kubernetes
     output: devops/coder/kubernetes.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:31.367917+00:00'
     error: null
     content_hash: 8a5332aa2894565c
@@ -1963,7 +1962,7 @@ sources:
     name: Docker Documentation
     url: https://docs.docker.com/
     output: devops/docker/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:33.452818+00:00'
     error: null
     content_hash: 085edd0e3f305e70
@@ -1971,7 +1970,7 @@ sources:
     name: Docker Compose
     url: https://docs.docker.com/compose/
     output: devops/docker/compose.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:35.533490+00:00'
     error: null
     content_hash: 9493e0c1a3c0f1c2
@@ -1979,7 +1978,7 @@ sources:
     name: Docker Compose File Reference
     url: https://docs.docker.com/compose/compose-file/
     output: devops/docker/compose-file.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:37.639056+00:00'
     error: null
     content_hash: 03fb902e4b930ad5
@@ -1987,7 +1986,7 @@ sources:
     name: Docker Multi-stage Builds
     url: https://docs.docker.com/build/building/multi-stage/
     output: devops/docker/multistage.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:39.724928+00:00'
     error: null
     content_hash: 135a2a989cde495f
@@ -1995,7 +1994,7 @@ sources:
     name: Dockerfile Best Practices
     url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
     output: devops/docker/best-practices.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:41.856990+00:00'
     error: null
     content_hash: f116892c54ce617a
@@ -2003,7 +2002,7 @@ sources:
     name: gopls Documentation
     url: https://github.com/golang/tools/blob/master/gopls/README.md
     output: go_dev_tools/gopls/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:24.832656+00:00'
     error: null
     content_hash: fac95fbfec515edc
@@ -2011,7 +2010,7 @@ sources:
     name: gopls Settings
     url: https://github.com/golang/tools/blob/master/gopls/doc/settings.md
     output: go_dev_tools/gopls/settings.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:27.285461+00:00'
     error: null
     content_hash: fac95fbfec515edc
@@ -2026,7 +2025,7 @@ sources:
     name: golangci-lint Documentation
     url: https://golangci-lint.run/
     output: go_dev_tools/golangci-lint/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:35.998018+00:00'
     error: null
     content_hash: 170d411c92c2bd4e
@@ -2034,7 +2033,7 @@ sources:
     name: golangci-lint Linters
     url: https://golangci-lint.run/usage/linters/
     output: go_dev_tools/golangci-lint/linters.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:38.123498+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -2042,7 +2041,7 @@ sources:
     name: golangci-lint Configuration
     url: https://golangci-lint.run/usage/configuration/
     output: go_dev_tools/golangci-lint/config.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:40.245218+00:00'
     error: null
     content_hash: 4ea4e803d29607db
@@ -2059,9 +2058,9 @@ sources:
     url: https://github.com/air-verse/air/blob/master/air_example.toml
     output: go_dev_tools/air/config.md
     status: success
-    fetched_at: '2026-01-31T16:06:44.744551+00:00'
+    fetched_at: '2026-02-01T05:13:06.472817+00:00'
     error: null
-    content_hash: dea076b2627ca7f1
+    content_hash: 9ab080209dd2c8ec
   delve-docs:
     name: Delve Debugger
     url: https://github.com/go-delve/delve
@@ -2074,7 +2073,7 @@ sources:
     name: Delve CLI Documentation
     url: https://github.com/go-delve/delve/tree/master/Documentation/cli
     output: go_dev_tools/delve/cli.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:49.286240+00:00'
     error: null
     content_hash: 3384657946aa16bc
@@ -2082,7 +2081,7 @@ sources:
     name: Delve API
     url: https://github.com/go-delve/delve/tree/master/Documentation/api
     output: go_dev_tools/delve/api.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:51.636930+00:00'
     error: null
     content_hash: 3384657946aa16bc
@@ -2090,7 +2089,7 @@ sources:
     name: govulncheck
     url: https://go.dev/blog/vuln
     output: go_dev_tools/govulncheck/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:53.882220+00:00'
     error: null
     content_hash: 8fbd49e3d183fa64
@@ -2098,7 +2097,7 @@ sources:
     name: govulncheck Tutorial
     url: https://go.dev/doc/tutorial/govulncheck
     output: go_dev_tools/govulncheck/tutorial.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:56.059516+00:00'
     error: null
     content_hash: a7f18000061d9b9e
@@ -2106,7 +2105,7 @@ sources:
     name: goimports
     url: https://pkg.go.dev/golang.org/x/tools/cmd/goimports
     output: go_dev_tools/goimports.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:00.913614+00:00'
     error: null
     content_hash: eb0cf02699287e36
@@ -2114,7 +2113,7 @@ sources:
     name: staticcheck
     url: https://staticcheck.io/docs/
     output: go_dev_tools/staticcheck/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:03.573010+00:00'
     error: null
     content_hash: f21574486c0186ff
@@ -2122,7 +2121,7 @@ sources:
     name: staticcheck Checks
     url: https://staticcheck.io/docs/checks/
     output: go_dev_tools/staticcheck/checks.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:05.695345+00:00'
     error: null
     content_hash: 09e1ee4b44496a15
@@ -2130,7 +2129,7 @@ sources:
     name: Ruff Documentation
     url: https://docs.astral.sh/ruff/
     output: python_tools/ruff/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:27.962742+00:00'
     error: null
     content_hash: 2c150a3712495081
@@ -2138,7 +2137,7 @@ sources:
     name: Ruff Rules
     url: https://docs.astral.sh/ruff/rules/
     output: python_tools/ruff/rules.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:30.287278+00:00'
     error: null
     content_hash: a6b8df64d1c5d68e
@@ -2146,7 +2145,7 @@ sources:
     name: Ruff Configuration
     url: https://docs.astral.sh/ruff/configuration/
     output: python_tools/ruff/config.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:32.413746+00:00'
     error: null
     content_hash: 20ab5a2c1a4103e2
@@ -2154,7 +2153,7 @@ sources:
     name: Ruff Formatter
     url: https://docs.astral.sh/ruff/formatter/
     output: python_tools/ruff/formatter.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:34.525208+00:00'
     error: null
     content_hash: 919b1d13c6954ce8
@@ -2170,7 +2169,7 @@ sources:
     name: pytest Documentation
     url: https://docs.pytest.org/en/stable/
     output: python_tools/pytest/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:38.922451+00:00'
     error: null
     content_hash: 5aadf1333fbda9a1
@@ -2178,7 +2177,7 @@ sources:
     name: pytest Fixtures
     url: https://docs.pytest.org/en/stable/fixture.html
     output: python_tools/pytest/fixtures.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:41.629980+00:00'
     error: null
     content_hash: fd215fd8c60779bb
@@ -2186,7 +2185,7 @@ sources:
     name: pytest Plugins
     url: https://docs.pytest.org/en/stable/plugins.html
     output: python_tools/pytest/plugins.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:44.111913+00:00'
     error: null
     content_hash: 5ba3fc00e87ff1ac
@@ -2194,7 +2193,7 @@ sources:
     name: pytest-cov
     url: https://pytest-cov.readthedocs.io/en/latest/
     output: python_tools/pytest/coverage.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:46.416118+00:00'
     error: null
     content_hash: a6abcf3326d792e2
@@ -2202,7 +2201,7 @@ sources:
     name: mypy Documentation
     url: https://mypy.readthedocs.io/en/stable/
     output: python_tools/mypy/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:48.611037+00:00'
     error: null
     content_hash: 624740723183e97e
@@ -2210,7 +2209,7 @@ sources:
     name: mypy Configuration
     url: https://mypy.readthedocs.io/en/stable/config_file.html
     output: python_tools/mypy/config.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:50.866875+00:00'
     error: null
     content_hash: 57777fe3d90ebbaa
@@ -2218,7 +2217,7 @@ sources:
     name: Black Formatter
     url: https://black.readthedocs.io/en/stable/
     output: python_tools/black/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:53.047579+00:00'
     error: null
     content_hash: d2684f3677ee744b
@@ -2226,7 +2225,7 @@ sources:
     name: Git Documentation
     url: https://git-scm.com/doc
     output: git_tools/git/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:10.296842+00:00'
     error: null
     content_hash: 141724de4abd2d3c
@@ -2234,7 +2233,7 @@ sources:
     name: Pro Git Book
     url: https://git-scm.com/book/en/v2
     output: git_tools/git/book.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:12.346091+00:00'
     error: null
     content_hash: 4ded8af8b3bc0665
@@ -2242,7 +2241,7 @@ sources:
     name: pre-commit Framework
     url: https://pre-commit.com/
     output: git_tools/pre-commit/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:21.729113+00:00'
     error: null
     content_hash: fd22ecd222b963aa
@@ -2250,7 +2249,7 @@ sources:
     name: pre-commit Hooks
     url: https://pre-commit.com/hooks.html
     output: git_tools/pre-commit/hooks.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:24.167189+00:00'
     error: null
     content_hash: 72f44770b9ce478c
@@ -2258,7 +2257,7 @@ sources:
     name: GitHub CLI
     url: https://cli.github.com/manual/
     output: git_tools/gh/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:26.343188+00:00'
     error: null
     content_hash: 4bcdcf915e099295
@@ -2266,7 +2265,7 @@ sources:
     name: GitHub CLI Manual
     url: https://cli.github.com/manual/gh
     output: git_tools/gh/manual.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:28.470700+00:00'
     error: null
     content_hash: 9f91387a47be52cf
@@ -2274,7 +2273,7 @@ sources:
     name: Commitizen
     url: https://commitizen-tools.github.io/commitizen/
     output: git_tools/commitizen/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:30.685407+00:00'
     error: null
     content_hash: 068747f020bc8aa7
@@ -2298,7 +2297,7 @@ sources:
     name: Git Hooks Documentation
     url: https://git-scm.com/docs/githooks
     output: git_tools/git/hooks.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:14.401850+00:00'
     error: null
     content_hash: b791228f5c2a1dfb
@@ -2306,7 +2305,7 @@ sources:
     name: 'Pro Git: Git Hooks'
     url: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
     output: git_tools/git/hooks-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:16.459134+00:00'
     error: null
     content_hash: 5954da67f5a5cc98
@@ -2314,7 +2313,7 @@ sources:
     name: markdownlint Rules
     url: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
     output: standards/markdownlint-rules.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:04:04.905450+00:00'
     error: null
     content_hash: 5bfe50522a12faf3
@@ -2322,7 +2321,7 @@ sources:
     name: GitHub Wiki Documentation
     url: https://docs.github.com/en/communities/documenting-your-project-with-wikis
     output: devops/github-wiki/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:43.885787+00:00'
     error: null
     content_hash: cec4b9ce33b3fd5c
@@ -2330,7 +2329,7 @@ sources:
     name: GitHub REST API - Wikis
     url: https://docs.github.com/en/rest/gists/gists
     output: devops/github-wiki/api.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:45.958472+00:00'
     error: null
     content_hash: 5276ab6aa46f7138
@@ -2338,7 +2337,7 @@ sources:
     name: Go AST Package
     url: https://pkg.go.dev/go/ast
     output: go_dev_tools/go-ast.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:21.242914+00:00'
     error: null
     content_hash: 174867119c362055
@@ -2346,7 +2345,7 @@ sources:
     name: Go Parser Package
     url: https://pkg.go.dev/go/parser
     output: go_dev_tools/go-parser.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:23.421730+00:00'
     error: null
     content_hash: eb13825d8cb3cc80
@@ -2354,7 +2353,7 @@ sources:
     name: golang.org/x/tools/go/packages
     url: https://pkg.go.dev/golang.org/x/tools/go/packages
     output: go_dev_tools/go-packages.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:25.637187+00:00'
     error: null
     content_hash: d00044935d10fdff
@@ -2362,7 +2361,7 @@ sources:
     name: Jinja2 Documentation
     url: https://jinja.palletsprojects.com/en/stable/
     output: python_tools/jinja2/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:55.230151+00:00'
     error: null
     content_hash: 13a18fc38d745c42
@@ -2370,7 +2369,7 @@ sources:
     name: Jinja2 Template Designer
     url: https://jinja.palletsprojects.com/en/stable/templates/
     output: python_tools/jinja2/templates.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:57.488655+00:00'
     error: null
     content_hash: d8a02fd7b435d901
@@ -2378,7 +2377,7 @@ sources:
     name: Jinja2 API
     url: https://jinja.palletsprojects.com/en/stable/api/
     output: python_tools/jinja2/api.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:07:59.677199+00:00'
     error: null
     content_hash: da51b9037a5a6a31
@@ -2386,7 +2385,7 @@ sources:
     name: OpenAPI 3.1 Specification
     url: https://spec.openapis.org/oas/v3.1.0
     output: apis/openapi-spec.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:10.867179+00:00'
     error: null
     content_hash: fb7b28cc554b5a32
@@ -2394,7 +2393,7 @@ sources:
     name: Stoplight API Design Guide
     url: https://stoplight.io/api-design-guide
     output: apis/stoplight-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T15:59:13.173610+00:00'
     error: null
     content_hash: e5b9688fcc377bdf
@@ -2409,7 +2408,7 @@ sources:
     name: Mermaid.js Documentation
     url: https://mermaid.js.org/intro/
     output: frontend/mermaid.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:36.581669+00:00'
     error: null
     content_hash: 0ee2e261e41ab729
@@ -2417,7 +2416,7 @@ sources:
     name: Mermaid Syntax Reference
     url: https://mermaid.js.org/syntax/flowchart.html
     output: frontend/mermaid-syntax.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:00:38.665093+00:00'
     error: null
     content_hash: e597e0593a8a920f
@@ -2425,7 +2424,7 @@ sources:
     name: GitHub README Best Practices
     url: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
     output: devops/github-docs/readme.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:47.997726+00:00'
     error: null
     content_hash: 40060cf0bd5e3761
@@ -2433,7 +2432,7 @@ sources:
     name: GitHub CONTRIBUTING Guide
     url: https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors
     output: devops/github-docs/contributing.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:50.030259+00:00'
     error: null
     content_hash: 39ae807d0d2de3af
@@ -2441,7 +2440,7 @@ sources:
     name: GitHub Issue/PR Templates
     url: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests
     output: devops/github-docs/templates.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:52.065389+00:00'
     error: null
     content_hash: 68f87fa0c1096915
@@ -2449,7 +2448,7 @@ sources:
     name: GitHub Repository Metadata
     url: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-repository-languages
     output: devops/github-docs/metadata.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:54.089130+00:00'
     error: null
     content_hash: efbb3718b1661d42
@@ -2457,7 +2456,7 @@ sources:
     name: GitHub Issues Documentation
     url: https://docs.github.com/en/issues
     output: devops/github-management/issues.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:56.117950+00:00'
     error: null
     content_hash: 437b23cbec9c0ac5
@@ -2465,7 +2464,7 @@ sources:
     name: GitHub Projects Documentation
     url: https://docs.github.com/en/issues/planning-and-tracking-with-projects
     output: devops/github-management/projects.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:05:58.137337+00:00'
     error: null
     content_hash: 809642bc9fc401d8
@@ -2473,7 +2472,7 @@ sources:
     name: GitHub Discussions Documentation
     url: https://docs.github.com/en/discussions
     output: devops/github-management/discussions.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:00.163557+00:00'
     error: null
     content_hash: e6922961615a0218
@@ -2481,7 +2480,7 @@ sources:
     name: GitHub Advanced Security Documentation
     url: https://docs.github.com/en/code-security
     output: devops/github-management/security.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:02.225749+00:00'
     error: null
     content_hash: ff5449ca472a6931
@@ -2489,7 +2488,7 @@ sources:
     name: GitHub REST API Reference
     url: https://docs.github.com/en/rest
     output: devops/github-api/rest.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:04.316035+00:00'
     error: null
     content_hash: 9ce3210808f7b8a4
@@ -2497,7 +2496,7 @@ sources:
     name: CodeQL Documentation
     url: https://codeql.github.com/docs/
     output: devops/codeql/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:06.471947+00:00'
     error: null
     content_hash: 20db13ce5e03a373
@@ -2505,7 +2504,7 @@ sources:
     name: CodeQL CLI Reference
     url: https://codeql.github.com/docs/codeql-cli/
     output: devops/codeql/cli.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:08.660897+00:00'
     error: null
     content_hash: dbd4cc0e6622e7f8
@@ -2513,7 +2512,7 @@ sources:
     name: Google Developer Documentation Style Guide
     url: https://developers.google.com/style
     output: devops/style-guides/google.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:11.277367+00:00'
     error: null
     content_hash: 22d666e544b0a0fe
@@ -2521,7 +2520,7 @@ sources:
     name: Write the Docs Best Practices
     url: https://www.writethedocs.org/guide/
     output: devops/style-guides/writethedocs.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:13.455011+00:00'
     error: null
     content_hash: 717190e71e0fcd82
@@ -2529,7 +2528,7 @@ sources:
     name: Markdown Guide
     url: https://www.markdownguide.org/basic-syntax/
     output: devops/style-guides/markdown-guide.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:15.788073+00:00'
     error: null
     content_hash: 7d6f2a792c9d8bcd
@@ -2537,7 +2536,7 @@ sources:
     name: Yamale YAML Schema Validator
     url: https://github.com/23andMe/Yamale
     output: devops/validation/yamale.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:17.949473+00:00'
     error: null
     content_hash: bc03281210a18cbf
@@ -2545,7 +2544,7 @@ sources:
     name: markdown-link-check
     url: https://github.com/tcort/markdown-link-check
     output: devops/validation/markdown-link-check.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:20.099256+00:00'
     error: null
     content_hash: c676bef6c48e6339
@@ -2553,7 +2552,7 @@ sources:
     name: Shields.io Badge API
     url: https://shields.io/
     output: devops/shields-io/api.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:06:22.359845+00:00'
     error: null
     content_hash: f0c362786f0abc23
@@ -2561,7 +2560,7 @@ sources:
     name: Pillow (PIL Fork) Documentation
     url: https://pillow.readthedocs.io/en/stable/
     output: python_tools/pillow/main.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:01.848520+00:00'
     error: null
     content_hash: a96db666b4d7f690
@@ -2569,7 +2568,7 @@ sources:
     name: Pillow Handbook
     url: https://pillow.readthedocs.io/en/stable/handbook/index.html
     output: python_tools/pillow/handbook.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:03.898678+00:00'
     error: null
     content_hash: 6c19ca91432b82a9
@@ -2577,7 +2576,7 @@ sources:
     name: Pillow API Reference
     url: https://pillow.readthedocs.io/en/stable/reference/index.html
     output: python_tools/pillow/reference.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:05.965947+00:00'
     error: null
     content_hash: 1742f517b67832d9
@@ -2585,13 +2584,13 @@ sources:
     name: CairoSVG Documentation
     url: https://cairosvg.org/
     output: python_tools/cairosvg.md
-    status: success
+    status: unchanged
     fetched_at: '2026-01-31T16:08:08.200335+00:00'
     error: null
     content_hash: c1186671992f4a52
-last_updated: '2026-01-31T16:08:37.097835+00:00'
+last_updated: '2026-02-01T05:14:39.003595+00:00'
 total_sources: 323
-successful: 196
-failed: 14
+successful: 11
+failed: 15
 skipped: 5
-unchanged: 108
+unchanged: 292

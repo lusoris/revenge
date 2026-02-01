@@ -1,8 +1,8 @@
 # VS Code Go Extension
 
 > Source: https://github.com/golang/vscode-go/wiki
-> Fetched: 2026-01-31T16:04:20.716025+00:00
-> Content-Hash: 6888d86d48a84f27
+> Fetched: 2026-02-01T05:10:35.902138+00:00
+> Content-Hash: dff09ca3d875c7fa
 > Type: html
 
 ---
@@ -10,7 +10,7 @@
 [ golang ](/golang) / **[vscode-go](/golang/vscode-go) ** Public
 
   * [ Notifications ](/login?return_to=%2Fgolang%2Fvscode-go) You must be signed in to change notification settings
-  * [ Fork 876 ](/login?return_to=%2Fgolang%2Fvscode-go)
+  * [ Fork 877 ](/login?return_to=%2Fgolang%2Fvscode-go)
   * [ Star  4.2k ](/login?return_to=%2Fgolang%2Fvscode-go)
 
 
