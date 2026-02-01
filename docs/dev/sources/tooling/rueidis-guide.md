@@ -1,7 +1,7 @@
 # rueidis GitHub README
 
 > Source: https://github.com/redis/rueidis
-> Fetched: 2026-01-30T23:48:41.820001+00:00
+> Fetched: 2026-02-01T11:42:04.231001+00:00
 > Content-Hash: a99a390d85d528cb
 > Type: github_readme
 

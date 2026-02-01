@@ -1,7 +1,7 @@
 # Servarr Wiki
 
 > Source: https://wiki.servarr.com/
-> Fetched: 2026-01-31T10:59:06.086947+00:00
+> Fetched: 2026-02-01T11:45:34.518354+00:00
 > Content-Hash: 417d9e83cd3df67f
 > Type: html
 

@@ -1,7 +1,7 @@
 # PostgreSQL JSON Functions
 
 > Source: https://www.postgresql.org/docs/current/functions-json.html
-> Fetched: 2026-01-31T10:57:35.835147+00:00
+> Fetched: 2026-02-01T11:43:36.155185+00:00
 > Content-Hash: bc74c4ad8aedf48c
 > Type: html
 

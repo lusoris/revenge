@@ -1,7 +1,7 @@
 # go-astiav GitHub README
 
 > Source: https://github.com/asticode/go-astiav
-> Fetched: 2026-01-30T23:53:44.078192+00:00
+> Fetched: 2026-02-01T11:48:24.711245+00:00
 > Content-Hash: f11b1f83bfecc42c
 > Type: github_readme
 

@@ -1,7 +1,7 @@
 # Mermaid Syntax Reference
 
 > Source: https://mermaid.js.org/syntax/flowchart.html
-> Fetched: 2026-01-31T16:00:38.665093+00:00
+> Fetched: 2026-02-01T11:48:08.574578+00:00
 > Content-Hash: e597e0593a8a920f
 > Type: html
 

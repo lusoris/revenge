@@ -1,7 +1,7 @@
 # Stoplight API Design Guide
 
 > Source: https://stoplight.io/api-design-guide
-> Fetched: 2026-01-31T15:59:13.173610+00:00
+> Fetched: 2026-02-01T11:46:10.114343+00:00
 > Content-Hash: e5b9688fcc377bdf
 > Type: html
 

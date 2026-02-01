@@ -1,7 +1,7 @@
 # OPA Documentation
 
 > Source: https://www.openpolicyagent.org/docs/latest/
-> Fetched: 2026-01-31T16:02:04.159807+00:00
+> Fetched: 2026-02-01T11:49:31.048718+00:00
 > Content-Hash: 6615edf506b4d6bd
 > Type: html
 

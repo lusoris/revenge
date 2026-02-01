@@ -1,7 +1,7 @@
 # Casbin pgx Adapter
 
 > Source: https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3
-> Fetched: 2026-01-31T16:01:59.078244+00:00
+> Fetched: 2026-02-01T11:49:25.841351+00:00
 > Content-Hash: 136ff6db0df064d9
 > Type: html
 

@@ -1,7 +1,7 @@
 # embedded-postgres
 
 > Source: https://pkg.go.dev/github.com/fergusstrange/embedded-postgres
-> Fetched: 2026-01-31T16:02:18.585624+00:00
+> Fetched: 2026-02-01T11:49:46.382658+00:00
 > Content-Hash: 7753283058197def
 > Type: html
 

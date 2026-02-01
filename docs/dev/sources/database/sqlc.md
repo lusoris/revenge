@@ -1,7 +1,7 @@
 # sqlc
 
 > Source: https://docs.sqlc.dev/en/stable/
-> Fetched: 2026-01-31T10:57:19.486562+00:00
+> Fetched: 2026-02-01T11:43:21.659980+00:00
 > Content-Hash: 1cbef34dc51a65f7
 > Type: html
 

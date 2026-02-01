@@ -1,7 +1,7 @@
 # gofeed GitHub README
 
 > Source: https://github.com/mmcdole/gofeed
-> Fetched: 2026-01-30T23:49:42.611341+00:00
+> Fetched: 2026-02-01T11:43:05.306402+00:00
 > Content-Hash: aa69f9f7a894cede
 > Type: github_readme
 

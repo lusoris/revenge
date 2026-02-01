@@ -1,7 +1,7 @@
 # ComicVine API
 
 > Source: https://comicvine.gamespot.com/api/documentation
-> Fetched: 2026-01-31T10:58:06.360587+00:00
+> Fetched: 2026-02-01T11:44:05.247426+00:00
 > Content-Hash: 61beb3e7f733bee8
 > Type: html
 

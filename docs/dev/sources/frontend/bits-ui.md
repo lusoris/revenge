@@ -1,7 +1,7 @@
 # Bits UI
 
 > Source: https://www.bits-ui.com/docs/introduction
-> Fetched: 2026-01-31T16:00:04.758618+00:00
+> Fetched: 2026-02-01T11:47:01.722490+00:00
 > Content-Hash: 497b2a8d7065a52e
 > Type: html
 

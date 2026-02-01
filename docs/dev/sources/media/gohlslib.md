@@ -1,7 +1,7 @@
 # gohlslib (HLS)
 
 > Source: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-> Fetched: 2026-01-31T16:00:59.016387+00:00
+> Fetched: 2026-02-01T11:48:29.726557+00:00
 > Content-Hash: 4a8879e1124b1e59
 > Type: html
 

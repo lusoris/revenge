@@ -1,7 +1,7 @@
 # Jaeger Go Client
 
 > Source: https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go
-> Fetched: 2026-01-31T16:02:41.859063+00:00
+> Fetched: 2026-02-01T11:50:10.008742+00:00
 > Content-Hash: 5768f484eeb1cf71
 > Type: html
 

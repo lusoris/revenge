@@ -1,7 +1,7 @@
 # Lucide Svelte
 
 > Source: https://lucide.dev/guide/packages/lucide-svelte
-> Fetched: 2026-01-31T16:00:34.334442+00:00
+> Fetched: 2026-02-01T11:48:04.043465+00:00
 > Content-Hash: b48b1cb6408f5f20
 > Type: html
 

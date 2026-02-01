@@ -1,7 +1,7 @@
 # Keycloak Documentation
 
 > Source: https://www.keycloak.org/documentation
-> Fetched: 2026-01-31T16:01:50.848781+00:00
+> Fetched: 2026-02-01T11:49:16.553305+00:00
 > Content-Hash: b93740bbe3770681
 > Type: html
 

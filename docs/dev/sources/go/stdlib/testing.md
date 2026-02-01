@@ -1,7 +1,7 @@
 # Go testing
 
 > Source: https://pkg.go.dev/testing
-> Fetched: 2026-01-31T10:55:16.086761+00:00
+> Fetched: 2026-02-01T11:41:19.243720+00:00
 > Content-Hash: 96c39f370b708e52
 > Type: html
 

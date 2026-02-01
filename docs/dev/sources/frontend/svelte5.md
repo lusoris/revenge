@@ -1,7 +1,7 @@
 # Svelte 5 Documentation
 
 > Source: https://svelte.dev/docs/svelte/overview
-> Fetched: 2026-01-31T15:59:56.049150+00:00
+> Fetched: 2026-02-01T11:46:51.856670+00:00
 > Content-Hash: 5be0490595f1f5b7
 > Type: html
 

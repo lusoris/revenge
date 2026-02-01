@@ -1,7 +1,7 @@
 # OAuth 2.0 RFC
 
 > Source: https://datatracker.ietf.org/doc/html/rfc6749
-> Fetched: 2026-01-31T16:01:38.537297+00:00
+> Fetched: 2026-02-01T11:49:04.347469+00:00
 > Content-Hash: 5a14cce1b208536d
 > Type: html
 

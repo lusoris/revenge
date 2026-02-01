@@ -1,7 +1,7 @@
 # SvelteKit Superforms
 
 > Source: https://superforms.rocks/
-> Fetched: 2026-01-31T16:00:32.049035+00:00
+> Fetched: 2026-02-01T11:48:01.849897+00:00
 > Content-Hash: 575064e64dcd69c0
 > Type: html
 

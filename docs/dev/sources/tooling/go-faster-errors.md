@@ -1,7 +1,7 @@
 # go-faster/errors
 
 > Source: https://pkg.go.dev/github.com/go-faster/errors
-> Fetched: 2026-01-31T10:56:37.168694+00:00
+> Fetched: 2026-02-01T11:42:39.736126+00:00
 > Content-Hash: 63cc57618d1c983f
 > Type: html
 

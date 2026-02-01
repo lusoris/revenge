@@ -1,7 +1,7 @@
 # fx Documentation
 
 > Source: https://uber-go.github.io/fx/
-> Fetched: 2026-01-31T10:55:43.225207+00:00
+> Fetched: 2026-02-01T11:41:46.109333+00:00
 > Content-Hash: f7166ae14004b69d
 > Type: html
 

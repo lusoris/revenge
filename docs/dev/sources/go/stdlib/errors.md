@@ -1,7 +1,7 @@
 # Go errors
 
 > Source: https://pkg.go.dev/errors
-> Fetched: 2026-01-31T10:55:20.676347+00:00
+> Fetched: 2026-02-01T11:41:23.641355+00:00
 > Content-Hash: f5e951ab354c6ce4
 > Type: html
 

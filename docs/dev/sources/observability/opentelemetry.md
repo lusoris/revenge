@@ -1,7 +1,7 @@
 # OpenTelemetry Go
 
 > Source: https://opentelemetry.io/docs/languages/go/
-> Fetched: 2026-01-31T16:02:25.754504+00:00
+> Fetched: 2026-02-01T11:49:54.002500+00:00
 > Content-Hash: f5f2c9323d147d4d
 > Type: html
 

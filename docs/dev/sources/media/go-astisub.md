@@ -1,7 +1,7 @@
 # go-astisub (subtitles)
 
 > Source: https://pkg.go.dev/github.com/asticode/go-astisub
-> Fetched: 2026-01-31T16:01:04.232905+00:00
+> Fetched: 2026-02-01T11:48:34.588398+00:00
 > Content-Hash: 9a47a11349a26190
 > Type: html
 

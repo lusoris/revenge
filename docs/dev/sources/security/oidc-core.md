@@ -1,7 +1,7 @@
 # OpenID Connect Core
 
 > Source: https://openid.net/specs/openid-connect-core-1_0.html
-> Fetched: 2026-01-31T16:01:36.400708+00:00
+> Fetched: 2026-02-01T11:49:02.131590+00:00
 > Content-Hash: f6457a1d8fff57c6
 > Type: html
 

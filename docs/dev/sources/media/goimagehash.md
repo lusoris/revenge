@@ -1,7 +1,7 @@
 # corona10/goimagehash
 
 > Source: https://pkg.go.dev/github.com/corona10/goimagehash
-> Fetched: 2026-01-31T16:01:23.567870+00:00
+> Fetched: 2026-02-01T11:48:49.057225+00:00
 > Content-Hash: b6375d2d2c0ee4d0
 > Type: html
 

@@ -1,7 +1,7 @@
 # TailwindCSS Documentation
 
 > Source: https://tailwindcss.com/docs
-> Fetched: 2026-01-31T16:00:21.043544+00:00
+> Fetched: 2026-02-01T11:47:19.228029+00:00
 > Content-Hash: cf4cb808a2007fb3
 > Type: html
 

@@ -1,7 +1,7 @@
 # K3s Documentation
 
 > Source: https://docs.k3s.io/
-> Fetched: 2026-01-31T16:03:23.696795+00:00
+> Fetched: 2026-02-01T11:50:52.557714+00:00
 > Content-Hash: a5ecfe6f4e39ed2a
 > Type: html
 

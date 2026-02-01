@@ -1,7 +1,7 @@
 # mockery
 
 > Source: https://pkg.go.dev/github.com/vektra/mockery/v3
-> Fetched: 2026-01-31T16:02:13.799707+00:00
+> Fetched: 2026-02-01T11:49:41.879457+00:00
 > Content-Hash: e0aa3c350d50a548
 > Type: html
 

@@ -1,8 +1,8 @@
 # Zod Documentation
 
 > Source: https://zod.dev/
-> Fetched: 2026-01-31T16:00:27.075547+00:00
-> Content-Hash: cae63534e213a1d8
+> Fetched: 2026-02-01T11:47:23.618635+00:00
+> Content-Hash: 44ff8465966c9de8
 > Type: html
 
 ---
@@ -58,7 +58,7 @@ Zod 4 is now stable! Read the [release notes here](/v4).
 
 [](https://jazz.tools/?utm_source=zod)
 
-Interested in featuring? [Get in touch.](/cdn-cgi/l/email-protection#83f0f3ecedf0ecf1f0ebeaf3c3e0ecefeaedebe2e0e8f0ade0ecee)
+Interested in featuring? [Get in touch.](/cdn-cgi/l/email-protection#2a595a45445945585942435a6a4945464344424b49415904494547)
 
 ## [Introduction](?id=introduction)
 

@@ -1,7 +1,7 @@
 # XMLTV Wiki
 
 > Source: https://wiki.xmltv.org/index.php/XMLTVFormat
-> Fetched: 2026-01-31T15:59:42.882468+00:00
+> Fetched: 2026-02-01T11:46:39.986298+00:00
 > Content-Hash: 6fc219c8e4593fe0
 > Type: html
 

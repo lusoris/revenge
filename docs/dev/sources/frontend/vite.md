@@ -1,7 +1,7 @@
 # Vite Documentation
 
 > Source: https://vite.dev/guide/
-> Fetched: 2026-01-31T16:00:12.415450+00:00
+> Fetched: 2026-02-01T11:47:10.258346+00:00
 > Content-Hash: 3eb111b8c4165268
 > Type: html
 

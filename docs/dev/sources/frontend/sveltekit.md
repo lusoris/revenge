@@ -1,7 +1,7 @@
 # SvelteKit Documentation
 
 > Source: https://svelte.dev/docs/kit/introduction
-> Fetched: 2026-01-31T16:00:00.305623+00:00
+> Fetched: 2026-02-01T11:46:56.095347+00:00
 > Content-Hash: 43369020da46740e
 > Type: html
 

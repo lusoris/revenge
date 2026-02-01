@@ -1,7 +1,7 @@
 # Grafana Loki
 
 > Source: https://grafana.com/docs/loki/latest/
-> Fetched: 2026-01-31T16:02:34.831612+00:00
+> Fetched: 2026-02-01T11:50:03.036069+00:00
 > Content-Hash: fa9cdd4b84777109
 > Type: html
 

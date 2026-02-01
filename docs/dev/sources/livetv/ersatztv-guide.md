@@ -1,7 +1,7 @@
 # ErsatzTV Documentation
 
 > Source: https://ersatztv.org/docs/
-> Fetched: 2026-01-31T16:02:55.078338+00:00
+> Fetched: 2026-02-01T11:50:23.727247+00:00
 > Content-Hash: ecfc493ed26b76df
 > Type: html
 

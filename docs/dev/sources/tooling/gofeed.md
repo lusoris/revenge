@@ -1,7 +1,7 @@
 # mmcdole/gofeed
 
 > Source: https://pkg.go.dev/github.com/mmcdole/gofeed
-> Fetched: 2026-01-31T10:57:00.223324+00:00
+> Fetched: 2026-02-01T11:43:03.139410+00:00
 > Content-Hash: fec402a0a93e1299
 > Type: html
 

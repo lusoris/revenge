@@ -1,7 +1,7 @@
 # Open Policy Agent
 
 > Source: https://pkg.go.dev/github.com/open-policy-agent/opa
-> Fetched: 2026-01-31T16:02:01.410032+00:00
+> Fetched: 2026-02-01T11:49:28.163184+00:00
 > Content-Hash: e0aa3c350d50a548
 > Type: html
 

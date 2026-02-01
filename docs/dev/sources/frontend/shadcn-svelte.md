@@ -1,7 +1,7 @@
 # shadcn-svelte
 
 > Source: https://www.shadcn-svelte.com/docs
-> Fetched: 2026-01-31T16:00:02.517143+00:00
+> Fetched: 2026-02-01T11:46:59.505715+00:00
 > Content-Hash: fedef262b590935a
 > Type: html
 

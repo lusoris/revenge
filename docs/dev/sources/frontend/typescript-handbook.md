@@ -1,7 +1,7 @@
 # TypeScript Handbook
 
 > Source: https://www.typescriptlang.org/docs/handbook/intro.html
-> Fetched: 2026-01-31T16:00:18.774588+00:00
+> Fetched: 2026-02-01T11:47:17.015088+00:00
 > Content-Hash: 710dfd1fe1adec1a
 > Type: html
 

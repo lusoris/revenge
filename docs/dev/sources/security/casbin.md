@@ -1,7 +1,7 @@
 # Casbin
 
 > Source: https://pkg.go.dev/github.com/casbin/casbin/v2
-> Fetched: 2026-01-31T16:01:53.971891+00:00
+> Fetched: 2026-02-01T11:49:20.334614+00:00
 > Content-Hash: 7a9c49c862d92e05
 > Type: html
 

@@ -1,7 +1,7 @@
 # Vidstack Player
 
 > Source: https://www.vidstack.io/docs/player/getting-started/installation
-> Fetched: 2026-01-31T16:00:10.203837+00:00
+> Fetched: 2026-02-01T11:47:07.367893+00:00
 > Content-Hash: b71783470c904c9c
 > Type: html
 

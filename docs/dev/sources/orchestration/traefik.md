@@ -1,7 +1,7 @@
 # Traefik Documentation
 
 > Source: https://doc.traefik.io/traefik/
-> Fetched: 2026-01-31T16:03:28.020321+00:00
+> Fetched: 2026-02-01T11:50:57.189627+00:00
 > Content-Hash: e3ddde7b0e7bda06
 > Type: html
 

@@ -1,7 +1,7 @@
 # Go log/slog
 
 > Source: https://pkg.go.dev/log/slog
-> Fetched: 2026-01-31T10:55:11.204423+00:00
+> Fetched: 2026-02-01T11:41:14.346105+00:00
 > Content-Hash: 7435ee17ff91ab84
 > Type: html
 

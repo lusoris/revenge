@@ -1,7 +1,7 @@
 # Jaeger Documentation
 
 > Source: https://www.jaegertracing.io/docs/
-> Fetched: 2026-01-31T16:02:39.107511+00:00
+> Fetched: 2026-02-01T11:50:07.680236+00:00
 > Content-Hash: 1f64bc036aea5f85
 > Type: html
 

@@ -1,7 +1,7 @@
 # sony/gobreaker
 
 > Source: https://pkg.go.dev/github.com/sony/gobreaker
-> Fetched: 2026-01-31T10:56:51.024728+00:00
+> Fetched: 2026-02-01T11:42:53.967209+00:00
 > Content-Hash: ef508e9d6e1f42a7
 > Type: html
 

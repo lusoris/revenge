@@ -1,7 +1,7 @@
 # cenkalti/backoff GitHub
 
 > Source: https://github.com/cenkalti/backoff
-> Fetched: 2026-01-30T23:49:38.115905+00:00
+> Fetched: 2026-02-01T11:43:00.923577+00:00
 > Content-Hash: dafa8e33e9a4ca1d
 > Type: github_readme
 

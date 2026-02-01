@@ -1,7 +1,7 @@
 # slog-multi
 
 > Source: https://pkg.go.dev/github.com/samber/slog-multi
-> Fetched: 2026-01-31T16:02:44.230320+00:00
+> Fetched: 2026-02-01T11:50:12.502271+00:00
 > Content-Hash: 021cb35255f8e0ce
 > Type: html
 

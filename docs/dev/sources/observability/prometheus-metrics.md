@@ -1,7 +1,7 @@
 # Prometheus Metric Types
 
 > Source: https://prometheus.io/docs/concepts/metric_types/
-> Fetched: 2026-01-31T16:02:28.307525+00:00
+> Fetched: 2026-02-01T11:49:56.414884+00:00
 > Content-Hash: 2bec0c99178c16ae
 > Type: html
 

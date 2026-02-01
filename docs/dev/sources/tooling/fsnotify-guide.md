@@ -1,7 +1,7 @@
 # fsnotify GitHub README
 
 > Source: https://github.com/fsnotify/fsnotify
-> Fetched: 2026-01-30T23:49:05.517653+00:00
+> Fetched: 2026-02-01T11:42:27.494316+00:00
 > Content-Hash: bf35d09bf58b2a63
 > Type: github_readme
 

@@ -1,7 +1,7 @@
 # Podcast Index API
 
 > Source: https://podcastindex-org.github.io/docs-api/
-> Fetched: 2026-01-31T10:58:45.927414+00:00
+> Fetched: 2026-02-01T11:45:10.483603+00:00
 > Content-Hash: 72e28a8f8d9327bc
 > Type: html
 

@@ -1,7 +1,7 @@
 # mockery Documentation
 
 > Source: https://vektra.github.io/mockery/
-> Fetched: 2026-01-31T16:02:15.982172+00:00
+> Fetched: 2026-02-01T11:49:44.122981+00:00
 > Content-Hash: 94c52d94bad3698e
 > Type: html
 

@@ -1,7 +1,7 @@
 # Open Library API
 
 > Source: https://openlibrary.org/developers/api
-> Fetched: 2026-01-31T10:58:00.999165+00:00
+> Fetched: 2026-02-01T11:44:00.105637+00:00
 > Content-Hash: 021b49e4292d2aa1
 > Type: html
 

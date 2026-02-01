@@ -1,7 +1,7 @@
 # testify
 
 > Source: https://pkg.go.dev/github.com/stretchr/testify
-> Fetched: 2026-01-31T16:02:06.562791+00:00
+> Fetched: 2026-02-01T11:49:33.486525+00:00
 > Content-Hash: 30bcf71587c8d7ac
 > Type: html
 

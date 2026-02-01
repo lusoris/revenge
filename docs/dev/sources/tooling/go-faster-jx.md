@@ -1,7 +1,7 @@
 # go-faster/jx (JSON)
 
 > Source: https://pkg.go.dev/github.com/go-faster/jx
-> Fetched: 2026-01-31T10:56:32.564273+00:00
+> Fetched: 2026-02-01T11:42:34.727883+00:00
 > Content-Hash: aeec1650fbf6cad9
 > Type: html
 

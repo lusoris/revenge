@@ -1,7 +1,7 @@
 # golang.org/x/time/rate
 
 > Source: https://pkg.go.dev/golang.org/x/time/rate
-> Fetched: 2026-01-31T10:56:53.362065+00:00
+> Fetched: 2026-02-01T11:42:56.189306+00:00
 > Content-Hash: dda2b2ac4b3966ce
 > Type: html
 

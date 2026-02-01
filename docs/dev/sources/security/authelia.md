@@ -1,7 +1,7 @@
 # Authelia Documentation
 
 > Source: https://www.authelia.com/overview/
-> Fetched: 2026-01-31T16:01:45.294053+00:00
+> Fetched: 2026-02-01T11:49:11.857295+00:00
 > Content-Hash: 53d7ce839574f5e4
 > Type: html
 

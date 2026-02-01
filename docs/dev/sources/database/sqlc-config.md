@@ -1,7 +1,7 @@
 # sqlc Configuration
 
 > Source: https://docs.sqlc.dev/en/stable/reference/config.html
-> Fetched: 2026-01-31T10:57:21.959877+00:00
+> Fetched: 2026-02-01T11:43:23.870192+00:00
 > Content-Hash: 9bd8f9e22dd922d5
 > Type: html
 

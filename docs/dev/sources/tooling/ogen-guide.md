@@ -1,7 +1,7 @@
 # ogen Documentation
 
 > Source: https://ogen.dev/docs/intro
-> Fetched: 2026-01-31T10:55:50.585940+00:00
+> Fetched: 2026-02-01T11:41:54.346484+00:00
 > Content-Hash: 18e923bbff6afa8f
 > Type: html
 

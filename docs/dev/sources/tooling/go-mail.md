@@ -1,7 +1,7 @@
 # wneessen/go-mail
 
 > Source: https://pkg.go.dev/github.com/wneessen/go-mail
-> Fetched: 2026-01-31T10:57:10.026287+00:00
+> Fetched: 2026-02-01T11:43:12.556025+00:00
 > Content-Hash: 766154dbb365a038
 > Type: html
 

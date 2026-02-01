@@ -1,7 +1,7 @@
 # Mermaid.js Documentation
 
 > Source: https://mermaid.js.org/intro/
-> Fetched: 2026-01-31T16:00:36.581669+00:00
+> Fetched: 2026-02-01T11:48:06.358768+00:00
 > Content-Hash: 0ee2e261e41ab729
 > Type: html
 

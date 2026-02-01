@@ -1,7 +1,7 @@
 # etcd Raft
 
 > Source: https://pkg.go.dev/go.etcd.io/raft/v3
-> Fetched: 2026-01-31T16:03:11.575049+00:00
+> Fetched: 2026-02-01T11:50:39.885070+00:00
 > Content-Hash: 4e8473d5951d18e6
 > Type: html
 

@@ -1,7 +1,7 @@
 # PostgreSQL Full Text Search
 
 > Source: https://www.postgresql.org/docs/current/textsearch.html
-> Fetched: 2026-01-31T10:57:37.998183+00:00
+> Fetched: 2026-02-01T11:43:38.303277+00:00
 > Content-Hash: cc217bdaa43ae38d
 > Type: html
 

@@ -1,7 +1,7 @@
 # PhotoPrism API
 
 > Source: https://docs.photoprism.app/developer-guide/api/
-> Fetched: 2026-01-31T10:58:43.728723+00:00
+> Fetched: 2026-02-01T11:45:08.305046+00:00
 > Content-Hash: 376f0e8b4aa925dc
 > Type: html
 

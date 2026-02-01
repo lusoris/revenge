@@ -1,7 +1,7 @@
 # golang-migrate PostgreSQL
 
 > Source: https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres
-> Fetched: 2026-01-31T10:57:26.575187+00:00
+> Fetched: 2026-02-01T11:43:28.392621+00:00
 > Content-Hash: cdb024435ad8d454
 > Type: html
 

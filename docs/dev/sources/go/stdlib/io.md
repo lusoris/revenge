@@ -1,7 +1,7 @@
 # Go io
 
 > Source: https://pkg.go.dev/io
-> Fetched: 2026-01-31T10:55:22.931791+00:00
+> Fetched: 2026-02-01T11:41:25.910405+00:00
 > Content-Hash: b3a8a3201d713e6d
 > Type: html
 

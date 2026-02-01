@@ -1,7 +1,7 @@
 # Go net/http
 
 > Source: https://pkg.go.dev/net/http
-> Fetched: 2026-01-31T10:55:13.586665+00:00
+> Fetched: 2026-02-01T11:41:16.932056+00:00
 > Content-Hash: 5fe6e6e33e152326
 > Type: html
 

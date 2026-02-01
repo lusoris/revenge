@@ -1,7 +1,7 @@
 # OpenAPI 3.1 Specification
 
 > Source: https://spec.openapis.org/oas/v3.1.0
-> Fetched: 2026-01-31T15:59:10.867179+00:00
+> Fetched: 2026-02-01T11:46:07.811050+00:00
 > Content-Hash: fb7b28cc554b5a32
 > Type: html
 

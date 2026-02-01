@@ -1,7 +1,7 @@
 # dhowden/tag (audio metadata)
 
 > Source: https://pkg.go.dev/github.com/dhowden/tag
-> Fetched: 2026-01-31T16:01:08.854772+00:00
+> Fetched: 2026-02-01T11:48:39.245559+00:00
 > Content-Hash: e59cb0b8c94e285a
 > Type: html
 

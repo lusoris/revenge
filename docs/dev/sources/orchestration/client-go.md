@@ -1,7 +1,7 @@
 # k8s.io/client-go
 
 > Source: https://pkg.go.dev/k8s.io/client-go
-> Fetched: 2026-01-31T16:03:32.359631+00:00
+> Fetched: 2026-02-01T11:51:01.994475+00:00
 > Content-Hash: 1a738e4bdb7baf20
 > Type: html
 

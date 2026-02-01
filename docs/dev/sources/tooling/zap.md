@@ -1,7 +1,7 @@
 # uber-go/zap
 
 > Source: https://pkg.go.dev/go.uber.org/zap
-> Fetched: 2026-01-31T10:56:48.723432+00:00
+> Fetched: 2026-02-01T11:42:51.606689+00:00
 > Content-Hash: 4dc7e205ddbb24ad
 > Type: html
 

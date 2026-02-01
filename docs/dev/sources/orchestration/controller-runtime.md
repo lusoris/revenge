@@ -1,7 +1,7 @@
 # sigs.k8s.io/controller-runtime
 
 > Source: https://pkg.go.dev/sigs.k8s.io/controller-runtime
-> Fetched: 2026-01-31T16:03:34.558031+00:00
+> Fetched: 2026-02-01T11:51:04.266157+00:00
 > Content-Hash: 28589d4bc1b4c8c4
 > Type: html
 

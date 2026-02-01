@@ -1,7 +1,7 @@
 # Go sync
 
 > Source: https://pkg.go.dev/sync
-> Fetched: 2026-01-31T10:55:18.319384+00:00
+> Fetched: 2026-02-01T11:41:21.470586+00:00
 > Content-Hash: 4188c7db622d4dee
 > Type: html
 

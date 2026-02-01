@@ -1,7 +1,7 @@
 # HashiCorp Raft GitHub
 
 > Source: https://github.com/hashicorp/raft
-> Fetched: 2026-01-30T23:55:54.766104+00:00
+> Fetched: 2026-02-01T11:50:37.500334+00:00
 > Content-Hash: 63322805eddfd638
 > Type: github_readme
 

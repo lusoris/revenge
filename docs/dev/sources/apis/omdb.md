@@ -1,8 +1,8 @@
 # OMDb API
 
 > Source: https://www.omdbapi.com/
-> Fetched: 2026-01-31T15:57:15.740824+00:00
-> Content-Hash: 31457462663d6be0
+> Fetched: 2026-02-01T11:43:47.458643+00:00
+> Content-Hash: 26f42876565a2122
 > Type: html
 
 ---
@@ -18,7 +18,7 @@ OMDb API
 
   * [Become a Patron](https://www.patreon.com/join/omdb)
   * [Donate](donate.htm)
-  * [Contact](/cdn-cgi/l/email-protection#d0b2b6a2b9a4aa90b6b1b4b9beb7a3b9b7beb1bcfeb3bfbd)
+  * [Contact](/cdn-cgi/l/email-protection#abc9cdd9c2dfd1ebcdcacfc2c5ccd8c2ccc5cac785c8c4c6)
 
 
 

@@ -1,7 +1,7 @@
 # Kubebuilder Book
 
 > Source: https://book.kubebuilder.io/
-> Fetched: 2026-01-31T16:03:36.801412+00:00
+> Fetched: 2026-02-01T11:51:06.876653+00:00
 > Content-Hash: 0ca7641ff3c1ed2c
 > Type: html
 

@@ -1,7 +1,7 @@
 # go-astiav (FFmpeg bindings)
 
 > Source: https://pkg.go.dev/github.com/asticode/go-astiav
-> Fetched: 2026-01-31T16:00:52.089566+00:00
+> Fetched: 2026-02-01T11:48:22.550944+00:00
 > Content-Hash: a10e55e5a89bcd97
 > Type: html
 

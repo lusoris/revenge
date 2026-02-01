@@ -1,7 +1,7 @@
 # lmittmann/tint
 
 > Source: https://pkg.go.dev/github.com/lmittmann/tint
-> Fetched: 2026-01-31T10:56:46.371785+00:00
+> Fetched: 2026-02-01T11:42:48.678714+00:00
 > Content-Hash: f1d8722427984693
 > Type: html
 

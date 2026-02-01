@@ -1,7 +1,7 @@
 # NextPVR Documentation
 
 > Source: https://github.com/sub3/NextPVR
-> Fetched: 2026-01-30T23:55:49.681190+00:00
+> Fetched: 2026-02-01T11:50:32.420676+00:00
 > Content-Hash: 9fc0cbabb937d906
 > Type: github_readme
 

@@ -1,7 +1,7 @@
 # coder/websocket
 
 > Source: https://pkg.go.dev/github.com/coder/websocket
-> Fetched: 2026-01-31T10:56:13.336394+00:00
+> Fetched: 2026-02-01T11:42:16.031668+00:00
 > Content-Hash: 30a58a11a9a8f2bf
 > Type: html
 

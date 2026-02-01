@@ -1,7 +1,7 @@
 # WebVTT Specification
 
 > Source: https://www.w3.org/TR/webvtt1/
-> Fetched: 2026-01-31T15:59:34.846441+00:00
+> Fetched: 2026-02-01T11:46:31.972992+00:00
 > Content-Hash: fdb2b186978fc2a1
 > Type: html
 

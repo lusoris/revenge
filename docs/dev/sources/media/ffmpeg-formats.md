@@ -1,8 +1,8 @@
 # FFmpeg Formats
 
 > Source: https://ffmpeg.org/ffmpeg-formats.html
-> Fetched: 2026-01-31T16:00:45.564147+00:00
-> Content-Hash: bd45792a2da458b1
+> Fetched: 2026-02-01T11:48:16.407961+00:00
+> Content-Hash: 80a22a1787b508eb
 > Type: html
 
 ---
@@ -5556,7 +5556,7 @@ For details about the authorship, see the Git history of the project (https://gi
 
 Maintainers for the specific components are listed in the file MAINTAINERS in the source code tree. 
 
-This document was generated on _January 30, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
+This document was generated on _January 31, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
 
 Hosting provided by [telepoint.bg](https://telepoint.bg)
   *[↑]: Back to Top

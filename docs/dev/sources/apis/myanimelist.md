@@ -1,7 +1,7 @@
 # MyAnimeList API
 
 > Source: https://myanimelist.net/apiconfig/references/api/v2
-> Fetched: 2026-01-31T10:58:14.452882+00:00
+> Fetched: 2026-02-01T11:44:12.627872+00:00
 > Content-Hash: a38de9c011d9d658
 > Type: html
 

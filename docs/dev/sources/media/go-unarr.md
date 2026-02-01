@@ -1,7 +1,7 @@
 # gen2brain/go-unarr
 
 > Source: https://pkg.go.dev/github.com/gen2brain/go-unarr
-> Fetched: 2026-01-31T16:01:34.110501+00:00
+> Fetched: 2026-02-01T11:48:59.714527+00:00
 > Content-Hash: db9ea4350650d346
 > Type: html
 

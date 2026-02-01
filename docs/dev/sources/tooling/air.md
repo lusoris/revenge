@@ -1,7 +1,7 @@
 # air (hot reload)
 
 > Source: https://github.com/air-verse/air
-> Fetched: 2026-01-30T23:49:23.957224+00:00
+> Fetched: 2026-02-01T11:42:46.351244+00:00
 > Content-Hash: 6eef63860a5a6893
 > Type: github_readme
 

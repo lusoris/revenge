@@ -1,7 +1,7 @@
 # Authentik Documentation
 
 > Source: https://goauthentik.io/docs/
-> Fetched: 2026-01-31T16:01:47.775983+00:00
+> Fetched: 2026-02-01T11:49:14.427059+00:00
 > Content-Hash: c3697ba8f54b9d99
 > Type: html
 

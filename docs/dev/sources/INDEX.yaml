@@ -2589,9 +2589,9 @@ sources:
     fetched_at: '2026-01-31T16:08:08.200335+00:00'
     error: null
     content_hash: c1186671992f4a52
-last_updated: '2026-01-31T16:08:37.097835+00:00'
-total_sources: 323
-successful: 196
-failed: 14
-skipped: 5
-unchanged: 108
+last_updated: '2026-02-01T11:40:58.653049+00:00'
+total_sources: 1
+successful: 0
+failed: 0
+skipped: 0
+unchanged: 1

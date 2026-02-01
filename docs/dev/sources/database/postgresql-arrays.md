@@ -1,7 +1,7 @@
 # PostgreSQL Arrays
 
 > Source: https://www.postgresql.org/docs/current/arrays.html
-> Fetched: 2026-01-31T10:57:40.179417+00:00
+> Fetched: 2026-02-01T11:43:40.486655+00:00
 > Content-Hash: 12232e59324e6ae9
 > Type: html
 

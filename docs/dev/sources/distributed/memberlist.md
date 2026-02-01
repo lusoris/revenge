@@ -1,7 +1,7 @@
 # hashicorp/memberlist
 
 > Source: https://pkg.go.dev/github.com/hashicorp/memberlist
-> Fetched: 2026-01-31T16:03:16.705149+00:00
+> Fetched: 2026-02-01T11:50:45.554043+00:00
 > Content-Hash: 3dac1f6ac58ddba7
 > Type: html
 

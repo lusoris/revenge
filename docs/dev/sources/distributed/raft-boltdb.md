@@ -1,7 +1,7 @@
 # hashicorp/raft-boltdb
 
 > Source: https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2
-> Fetched: 2026-01-31T16:03:13.940804+00:00
+> Fetched: 2026-02-01T11:50:42.171677+00:00
 > Content-Hash: b2144ee4a823d9d1
 > Type: html
 

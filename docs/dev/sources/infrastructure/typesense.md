@@ -1,7 +1,7 @@
 # Typesense API
 
 > Source: https://typesense.org/docs/latest/api/
-> Fetched: 2026-01-31T16:02:48.521915+00:00
+> Fetched: 2026-02-01T11:50:17.164235+00:00
 > Content-Hash: 4112224746f2c318
 > Type: html
 

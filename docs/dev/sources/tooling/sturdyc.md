@@ -1,7 +1,7 @@
 # sturdyc
 
 > Source: https://pkg.go.dev/github.com/viccon/sturdyc
-> Fetched: 2026-01-31T10:56:08.644602+00:00
+> Fetched: 2026-02-01T11:42:11.390079+00:00
 > Content-Hash: bae021928bc4988a
 > Type: html
 

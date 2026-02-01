@@ -1,7 +1,7 @@
 # koanf
 
 > Source: https://pkg.go.dev/github.com/knadh/koanf/v2
-> Fetched: 2026-01-31T10:55:45.565469+00:00
+> Fetched: 2026-02-01T11:41:48.923605+00:00
 > Content-Hash: 604930721597c46b
 > Type: html
 

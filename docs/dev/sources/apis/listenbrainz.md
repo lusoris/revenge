@@ -1,7 +1,7 @@
 # ListenBrainz API
 
 > Source: https://listenbrainz.readthedocs.io/en/latest/users/api/index.html
-> Fetched: 2026-01-31T10:58:23.609498+00:00
+> Fetched: 2026-02-01T11:44:43.622443+00:00
 > Content-Hash: 3bf6295e6a666c97
 > Type: html
 

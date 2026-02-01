@@ -1,7 +1,7 @@
 # govips GitHub README
 
 > Source: https://github.com/davidbyttow/govips
-> Fetched: 2026-01-30T23:54:05.387834+00:00
+> Fetched: 2026-02-01T11:48:46.762322+00:00
 > Content-Hash: daa8b385d7cd4f7c
 > Type: github_readme
 

@@ -1,7 +1,7 @@
 # resty HTTP Client
 
 > Source: https://pkg.go.dev/github.com/go-resty/resty/v2
-> Fetched: 2026-01-31T10:56:18.036874+00:00
+> Fetched: 2026-02-01T11:42:20.828103+00:00
 > Content-Hash: ead4b89ad7971197
 > Type: html
 

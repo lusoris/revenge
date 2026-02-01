@@ -1,7 +1,7 @@
 # Docker Swarm Documentation
 
 > Source: https://docs.docker.com/engine/swarm/
-> Fetched: 2026-01-31T16:03:25.861099+00:00
+> Fetched: 2026-02-01T11:50:54.935236+00:00
 > Content-Hash: c00a2eec4ea62fb6
 > Type: html
 

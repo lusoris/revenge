@@ -1,7 +1,7 @@
 # TMDb API
 
 > Source: https://developer.themoviedb.org/reference/intro/getting-started
-> Fetched: 2026-01-31T10:57:43.164922+00:00
+> Fetched: 2026-02-01T11:43:43.187733+00:00
 > Content-Hash: d0e1fd130d1e2606
 > Type: html
 

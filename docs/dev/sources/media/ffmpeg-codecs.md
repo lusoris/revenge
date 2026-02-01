@@ -1,8 +1,8 @@
 # FFmpeg Codecs
 
 > Source: https://ffmpeg.org/ffmpeg-codecs.html
-> Fetched: 2026-01-31T16:00:43.318831+00:00
-> Content-Hash: bd9a369b0b8b559d
+> Fetched: 2026-02-01T11:48:13.706402+00:00
+> Content-Hash: 4a660a63c309f51b
 > Type: html
 
 ---
@@ -7818,7 +7818,7 @@ For details about the authorship, see the Git history of the project (https://gi
 
 Maintainers for the specific components are listed in the file MAINTAINERS in the source code tree. 
 
-This document was generated on _January 30, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
+This document was generated on _January 31, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
 
 Hosting provided by [telepoint.bg](https://telepoint.bg)
   *[↑]: Back to Top

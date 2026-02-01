@@ -1,7 +1,7 @@
 # gorilla/feeds
 
 > Source: https://pkg.go.dev/github.com/gorilla/feeds
-> Fetched: 2026-01-31T10:57:04.760275+00:00
+> Fetched: 2026-02-01T11:43:07.528820+00:00
 > Content-Hash: e20ee4e159d4d619
 > Type: html
 

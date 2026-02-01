@@ -1,7 +1,7 @@
 # go-blurhash
 
 > Source: https://pkg.go.dev/github.com/bbrks/go-blurhash
-> Fetched: 2026-01-31T16:01:06.566900+00:00
+> Fetched: 2026-02-01T11:48:36.898228+00:00
 > Content-Hash: 6f35fec4f26d30a2
 > Type: html
 

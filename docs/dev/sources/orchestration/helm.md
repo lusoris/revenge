@@ -1,7 +1,7 @@
 # Helm Documentation
 
 > Source: https://helm.sh/docs/
-> Fetched: 2026-01-31T16:03:21.457797+00:00
+> Fetched: 2026-02-01T11:50:50.337836+00:00
 > Content-Hash: 2665bd6489379573
 > Type: html
 

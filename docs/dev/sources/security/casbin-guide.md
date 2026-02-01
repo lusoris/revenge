@@ -1,7 +1,7 @@
 # Casbin Documentation
 
 > Source: https://casbin.org/docs/overview
-> Fetched: 2026-01-31T16:01:56.805825+00:00
+> Fetched: 2026-02-01T11:49:23.301956+00:00
 > Content-Hash: 04c7350b1bc6f2ab
 > Type: html
 

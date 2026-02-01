@@ -1,7 +1,7 @@
 # Grafana Dashboard JSON
 
 > Source: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/
-> Fetched: 2026-01-31T16:02:32.698071+00:00
+> Fetched: 2026-02-01T11:50:00.861073+00:00
 > Content-Hash: 2b3412ce62560e9b
 > Type: html
 

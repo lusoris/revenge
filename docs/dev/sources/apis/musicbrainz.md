@@ -1,7 +1,7 @@
 # MusicBrainz API
 
 > Source: https://musicbrainz.org/doc/MusicBrainz_API
-> Fetched: 2026-01-31T10:57:50.211407+00:00
+> Fetched: 2026-02-01T11:43:49.827309+00:00
 > Content-Hash: 0602390f641a44d7
 > Type: html
 

@@ -1,7 +1,7 @@
 # rueidis
 
 > Source: https://pkg.go.dev/github.com/redis/rueidis
-> Fetched: 2026-01-31T10:55:59.053575+00:00
+> Fetched: 2026-02-01T11:42:02.049151+00:00
 > Content-Hash: 1ca7ae640d519aac
 > Type: html
 

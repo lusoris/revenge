@@ -1,7 +1,7 @@
 # go-fcm GitHub README
 
 > Source: https://github.com/appleboy/go-fcm
-> Fetched: 2026-01-30T23:49:56.379605+00:00
+> Fetched: 2026-02-01T11:43:19.193472+00:00
 > Content-Hash: 4a4070ec8a551d5b
 > Type: github_readme
 

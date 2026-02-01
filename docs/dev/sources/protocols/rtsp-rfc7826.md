@@ -1,7 +1,7 @@
 # RTSP RFC 7826
 
 > Source: https://datatracker.ietf.org/doc/html/rfc7826
-> Fetched: 2026-01-31T15:59:30.434889+00:00
+> Fetched: 2026-02-01T11:46:27.015996+00:00
 > Content-Hash: 543eac76b077906b
 > Type: html
 

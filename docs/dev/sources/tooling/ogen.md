@@ -1,7 +1,7 @@
 # ogen OpenAPI Generator
 
 > Source: https://pkg.go.dev/github.com/ogen-go/ogen
-> Fetched: 2026-01-31T10:55:48.175280+00:00
+> Fetched: 2026-02-01T11:41:51.863618+00:00
 > Content-Hash: abfde520a6beeadb
 > Type: html
 

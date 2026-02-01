@@ -1,7 +1,7 @@
 # Go Testing Patterns
 
 > Source: https://go.dev/doc/tutorial/add-a-test
-> Fetched: 2026-01-31T16:02:11.537005+00:00
+> Fetched: 2026-02-01T11:49:39.373758+00:00
 > Content-Hash: 98c6a175c01c4a8f
 > Type: html
 

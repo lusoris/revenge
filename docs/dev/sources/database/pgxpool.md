@@ -1,7 +1,7 @@
 # pgxpool Connection Pool
 
 > Source: https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool
-> Fetched: 2026-01-31T10:57:32.416510+00:00
+> Fetched: 2026-02-01T11:43:32.983455+00:00
 > Content-Hash: e50705de9d76727f
 > Type: html
 

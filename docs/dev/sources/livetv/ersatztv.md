@@ -1,7 +1,7 @@
 # ErsatzTV
 
 > Source: https://github.com/ErsatzTV/ErsatzTV
-> Fetched: 2026-01-30T23:55:38.806779+00:00
+> Fetched: 2026-02-01T11:50:21.499712+00:00
 > Content-Hash: 4f9863101ed8db6d
 > Type: github_readme
 

@@ -1,7 +1,7 @@
 # Svelte 5 Runes
 
 > Source: https://svelte.dev/docs/svelte/$state
-> Fetched: 2026-01-31T15:59:58.267776+00:00
+> Fetched: 2026-02-01T11:46:54.049026+00:00
 > Content-Hash: fcd0763ab3339330
 > Type: html
 

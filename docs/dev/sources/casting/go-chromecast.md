@@ -1,7 +1,7 @@
 # go-chromecast
 
 > Source: https://github.com/vishen/go-chromecast
-> Fetched: 2026-01-30T23:56:28.843396+00:00
+> Fetched: 2026-02-01T11:51:11.035220+00:00
 > Content-Hash: 86067b80672cbcf6
 > Type: github_readme
 

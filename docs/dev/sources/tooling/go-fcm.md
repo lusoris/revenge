@@ -1,7 +1,7 @@
 # appleboy/go-fcm
 
 > Source: https://pkg.go.dev/github.com/appleboy/go-fcm
-> Fetched: 2026-01-31T10:57:14.608151+00:00
+> Fetched: 2026-02-01T11:43:17.032934+00:00
 > Content-Hash: 424be5f1e1c1f8b9
 > Type: html
 

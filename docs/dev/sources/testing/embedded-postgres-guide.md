@@ -1,7 +1,7 @@
 # embedded-postgres GitHub README
 
 > Source: https://github.com/fergusstrange/embedded-postgres
-> Fetched: 2026-01-30T23:55:04.581676+00:00
+> Fetched: 2026-02-01T11:49:48.608240+00:00
 > Content-Hash: 7a4869897c0eb39a
 > Type: github_readme
 

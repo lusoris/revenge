@@ -1,7 +1,7 @@
 # coder/websocket GitHub README
 
 > Source: https://github.com/coder/websocket
-> Fetched: 2026-01-30T23:48:55.572400+00:00
+> Fetched: 2026-02-01T11:42:18.203401+00:00
 > Content-Hash: ec92620d532c4ee4
 > Type: github_readme
 

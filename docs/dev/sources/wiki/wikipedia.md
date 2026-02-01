@@ -1,7 +1,7 @@
 # Wikipedia API
 
 > Source: https://en.wikipedia.org/w/api.php?action=help&modules=query
-> Fetched: 2026-01-31T16:03:50.198166+00:00
+> Fetched: 2026-02-01T11:51:15.944548+00:00
 > Content-Hash: ce7bd2c677113ec4
 > Type: html
 

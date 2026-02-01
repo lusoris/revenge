@@ -1,7 +1,7 @@
 # HashiCorp Raft
 
 > Source: https://pkg.go.dev/github.com/hashicorp/raft
-> Fetched: 2026-01-31T16:03:06.219622+00:00
+> Fetched: 2026-02-01T11:50:35.351743+00:00
 > Content-Hash: 4bb2a8c152983d76
 > Type: html
 

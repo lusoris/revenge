@@ -1,7 +1,7 @@
 # genqlient GitHub README
 
 > Source: https://github.com/Khan/genqlient
-> Fetched: 2026-01-30T23:49:21.774905+00:00
+> Fetched: 2026-02-01T11:42:44.166676+00:00
 > Content-Hash: db412501ec5de7f7
 > Type: github_readme
 

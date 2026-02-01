@@ -1,7 +1,7 @@
 # Typesense Go Client
 
 > Source: https://github.com/typesense/typesense-go
-> Fetched: 2026-01-30T23:55:36.624658+00:00
+> Fetched: 2026-02-01T11:50:19.333735+00:00
 > Content-Hash: f098e769d2166a64
 > Type: github_readme
 

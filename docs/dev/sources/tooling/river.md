@@ -1,7 +1,7 @@
 # River Job Queue
 
 > Source: https://pkg.go.dev/github.com/riverqueue/river
-> Fetched: 2026-01-31T10:55:53.465866+00:00
+> Fetched: 2026-02-01T11:41:57.376228+00:00
 > Content-Hash: 072dcd21def2c8e2
 > Type: html
 

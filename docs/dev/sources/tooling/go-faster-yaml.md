@@ -1,7 +1,7 @@
 # go-faster/yaml
 
 > Source: https://pkg.go.dev/github.com/go-faster/yaml
-> Fetched: 2026-01-31T10:56:34.813885+00:00
+> Fetched: 2026-02-01T11:42:37.353232+00:00
 > Content-Hash: 9f556e8437c8a825
 > Type: html
 

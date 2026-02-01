@@ -1,7 +1,7 @@
 # pgx PostgreSQL Driver
 
 > Source: https://pkg.go.dev/github.com/jackc/pgx/v5
-> Fetched: 2026-01-31T10:57:30.079719+00:00
+> Fetched: 2026-02-01T11:43:30.689813+00:00
 > Content-Hash: 77eef8486c31f787
 > Type: html
 

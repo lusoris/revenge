@@ -1,7 +1,7 @@
 # otter Cache
 
 > Source: https://pkg.go.dev/github.com/maypok86/otter/v2
-> Fetched: 2026-01-31T10:56:03.984249+00:00
+> Fetched: 2026-02-01T11:42:06.769210+00:00
 > Content-Hash: bb92b616b4186272
 > Type: html
 

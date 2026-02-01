@@ -1,7 +1,7 @@
 # Spotify Web API
 
 > Source: https://developer.spotify.com/documentation/web-api
-> Fetched: 2026-01-31T10:57:57.991447+00:00
+> Fetched: 2026-02-01T11:43:57.277558+00:00
 > Content-Hash: 46b329bc97480950
 > Type: html
 

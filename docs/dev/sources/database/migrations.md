@@ -1,7 +1,7 @@
 # golang-migrate
 
 > Source: https://github.com/golang-migrate/migrate
-> Fetched: 2026-01-30T23:50:03.819313+00:00
+> Fetched: 2026-02-01T11:43:26.023946+00:00
 > Content-Hash: 8a31b5349fae8061
 > Type: github_readme
 

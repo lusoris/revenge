@@ -1,7 +1,7 @@
 # Prometheus Go Client
 
 > Source: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
-> Fetched: 2026-01-31T16:02:23.560489+00:00
+> Fetched: 2026-02-01T11:49:51.345148+00:00
 > Content-Hash: 7786cfbd3465d91a
 > Type: html
 

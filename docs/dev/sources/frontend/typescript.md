@@ -1,7 +1,7 @@
 # TypeScript Documentation
 
 > Source: https://www.typescriptlang.org/docs/
-> Fetched: 2026-01-31T16:00:16.629645+00:00
+> Fetched: 2026-02-01T11:47:14.888710+00:00
 > Content-Hash: b498c669ea2b6d63
 > Type: html
 

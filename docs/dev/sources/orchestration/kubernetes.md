@@ -1,7 +1,7 @@
 # Kubernetes Documentation
 
 > Source: https://kubernetes.io/docs/home/
-> Fetched: 2026-01-31T16:03:18.855210+00:00
+> Fetched: 2026-02-01T11:50:47.705579+00:00
 > Content-Hash: 4d05748907a80e25
 > Type: html
 

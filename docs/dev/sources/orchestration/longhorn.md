@@ -1,7 +1,7 @@
 # Longhorn Storage
 
 > Source: https://longhorn.io/docs/
-> Fetched: 2026-01-31T16:03:30.131713+00:00
+> Fetched: 2026-02-01T11:50:59.708679+00:00
 > Content-Hash: c72cc7629c6f7649
 > Type: html
 

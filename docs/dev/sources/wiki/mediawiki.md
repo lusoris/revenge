@@ -1,7 +1,7 @@
 # MediaWiki API
 
 > Source: https://www.mediawiki.org/wiki/API:Main_page
-> Fetched: 2026-01-31T16:03:52.579031+00:00
+> Fetched: 2026-02-01T11:51:18.270308+00:00
 > Content-Hash: c312e65eb5821c5d
 > Type: html
 

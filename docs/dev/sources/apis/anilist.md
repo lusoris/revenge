@@ -1,7 +1,7 @@
 # AniList GraphQL API
 
 > Source: https://anilist.gitbook.io/anilist-apiv2-docs
-> Fetched: 2026-01-31T10:58:08.828185+00:00
+> Fetched: 2026-02-01T11:44:07.696003+00:00
 > Content-Hash: b27718e470590599
 > Type: html
 

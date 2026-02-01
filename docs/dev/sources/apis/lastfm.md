@@ -1,7 +1,7 @@
 # Last.fm API
 
 > Source: https://www.last.fm/api/intro
-> Fetched: 2026-01-31T10:57:52.813645+00:00
+> Fetched: 2026-02-01T11:43:52.365545+00:00
 > Content-Hash: ea91f827252961af
 > Type: html
 
