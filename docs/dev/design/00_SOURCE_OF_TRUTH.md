@@ -263,7 +263,7 @@ Tools used for development, with exact versions synced to configs.
 | **Docker** | 27+ | `.github/workflows/*.yml` | Docker Engine |
 | **Dragonfly** | v1.36.0 | `docker-compose.yml`, `.coder/template.tf` | Redis-compatible cache |
 | **Typesense** | v30.1 | `docker-compose.yml`, `.coder/template.tf` | Search engine |
-| **golangci-lint** | v1.61.0 | `.github/workflows/ci.yml`, `.golangci.yml` | Go linter |
+| **golangci-lint** | ⏸️ disabled | `.github/workflows/ci.yml`, `.golangci.yml` | Disabled: golangci-lint v1.64.8 lacks Go 1.25 support (re-enable when updated) |
 | **ruff** | 0.4+ | `scripts/requirements.txt`, `.github/workflows/*.yml`, `ruff.toml` | Python linter/formatter |
 | **Coder** | v2.17.2+ | `.coder/template.tf` | Dev environments |
 | **markdownlint** | 0.39+ | `.markdownlint.json`, `.github/workflows/*.yml` | Markdown linter |

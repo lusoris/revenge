@@ -23,7 +23,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [go, javascript]
+        # NOTE: javascript removed - no JS/TS code in project yet
+        language: [go]
 
     steps:
       - name: Checkout repository
