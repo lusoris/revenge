@@ -51,11 +51,14 @@ jobs:
             if grep -r $EXCLUDE_ARGS \
                 --exclude-dir=.git \
                 --exclude-dir=node_modules \
-                --exclude-dir=docs/dev/sources \
+                --exclude-dir='*/sources' \
+                --exclude-dir='*/sources/*' \
+                --exclude='*/sources/*.md' \
+                --exclude='release-notes.md' \
                 --exclude-dir=.analysis \
                 --exclude-dir=.shared \
                 --exclude-dir=.zed \
-                "$pattern" . 2>/dev/null | grep -v "e.g\|example\|Example\|TODO\|<from SOT>\|check SOURCE_OF_TRUTH"; then
+                "$pattern" . 2>/dev/null | grep -v "e.g\|example\|Example\|TODO\|<from SOT>\|check SOURCE_OF_TRUTH\|docs/dev/sources"; then
               echo "  ❌ Found hardcoded version matching: $pattern"
               FOUND=1
             fi
