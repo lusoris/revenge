@@ -22,6 +22,8 @@ on:
       - 'schemas/**/*.json'
       - 'scripts/**/*.py'
       - 'tests/**/*.py'
+      - '.github/workflows/doc-validation.yml'
+  workflow_dispatch:
 
 jobs:
   # Extract versions from SOURCE_OF_TRUTH first
