@@ -5,6 +5,7 @@ Tests:
 - Log viewer functionality
 """
 
+import builtins
 from pathlib import Path
 from unittest.mock import Mock, mock_open, patch
 
@@ -81,15 +82,37 @@ class TestHealthChecker:
 
     def test_check_python_dependencies_missing_deps(self, checker):
         """Test checking Python deps with missing dependencies."""
-        with (
-            patch.object(Path, "exists", return_value=True),
-            patch("builtins.__import__", side_effect=ImportError("no module")),
-        ):
-            result = checker.check_python_dependencies()
+        import builtins
+        import sys
 
-        assert result.component == "python-deps"
-        assert result.status == "degraded"
-        assert "Missing dependencies" in result.message
+        original_import = builtins.__import__
+
+        def selective_import_error(name, *args, **kwargs):
+            """Raise ImportError only for yaml and pytest."""
+            if name in ("yaml", "pytest"):
+                raise ImportError(f"No module named '{name}'")
+            return original_import(name, *args, **kwargs)
+
+        # Remove from sys.modules so import is attempted fresh
+        saved_yaml = sys.modules.pop("yaml", None)
+        saved_pytest = sys.modules.pop("pytest", None)
+
+        try:
+            with (
+                patch.object(Path, "exists", return_value=True),
+                patch.object(builtins, "__import__", side_effect=selective_import_error),
+            ):
+                result = checker.check_python_dependencies()
+
+            assert result.component == "python-deps"
+            assert result.status == "degraded"
+            assert "Missing dependencies" in result.message
+        finally:
+            # Restore modules
+            if saved_yaml:
+                sys.modules["yaml"] = saved_yaml
+            if saved_pytest:
+                sys.modules["pytest"] = saved_pytest
 
     def test_check_python_dependencies_success(self, checker):
         """Test checking Python deps successfully."""
