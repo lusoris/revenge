@@ -61,20 +61,23 @@
 
 ---
 
-### [ISSUE-006] golangci-lint v2.8.0 doesn't support --out-format flag
+### [ISSUE-006] golangci-lint-action@v4 incompatible with golangci-lint v2.x
 **Problem**: CI/CD "Lint & Code Quality" job fails with "Error: unknown flag: --out-format"
-**Cause**: golangci-lint v2.8.0 doesn't support the `--out-format` flag that the golangci-lint-action@v4 tries to use
-**Root Cause**: v2.8.0 uses `--output.<format>.path` instead of `--out-format`
-**Available Formats**: text, json, tab, html, checkstyle, code-climate, junit-xml, teamcity, sarif (no github-actions format)
-**Fix**: Need to either:
-  1. Remove the `args: --timeout=5m --out-format=github-actions` from workflow and let action use defaults
-  2. Update to newer golangci-lint version that supports --out-format
-  3. Use `--output.json.path=stdout` or similar format instead
-**Test Hint**: Verify CI workflow completes successfully with proper output formatting
+**Root Cause**: golangci-lint v2.x completely removed the `--out-format` flag. The golangci-lint-action@v4 is designed for v1.x and automatically adds `--out-format=github-actions` which doesn't exist in v2.x
+**v1 vs v2 Syntax**:
+  - v1: `golangci-lint run --out-format=json`
+  - v2: `golangci-lint run --output.json.path=stdout`
+**Fix**: Replaced golangci-lint-action@v4 with manual installation and execution using v2 syntax
+**Test Hint**: Verify CI workflow completes successfully with golangci-lint v2.8.0
 **Files Changed**:
-- [.github/workflows/dev.yml](../.github/workflows/dev.yml) (needs fix)
-**Workflow Run**: [21563257750](https://github.com/lusoris/revenge/actions/runs/21563257750)
-**Status**: BLOCKING - CI/CD pipeline failing
+- [.github/workflows/dev.yml:43-47](../.github/workflows/dev.yml#L43-L47)
+**Workflow Runs**:
+  - [21563257750](https://github.com/lusoris/revenge/actions/runs/21563257750) - Initial failure
+  - [21563321778](https://github.com/lusoris/revenge/actions/runs/21563321778) - Still failed (action auto-adds flag)
+**Sources**:
+  - [v2 upgrade discussion](https://github.com/golangci/golangci-lint/discussions/5703)
+  - [Output formats error](https://github.com/golangci/golangci-lint/issues/5605)
+**Status**: FIXED - Using direct installation instead of action
 
 ---
 
