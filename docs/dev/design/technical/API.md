@@ -143,8 +143,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
 - [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen

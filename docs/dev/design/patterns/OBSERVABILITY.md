@@ -155,8 +155,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection

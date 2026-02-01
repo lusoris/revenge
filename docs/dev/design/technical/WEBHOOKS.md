@@ -154,8 +154,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [WEBHOOK_PATTERNS](patterns/WEBHOOK_PATTERNS.md)
 - [ARR_INTEGRATION](patterns/ARR_INTEGRATION.md)
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)

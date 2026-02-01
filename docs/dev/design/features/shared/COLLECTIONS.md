@@ -307,7 +307,7 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared/INDEX.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
 - [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
 
 ### External Sources

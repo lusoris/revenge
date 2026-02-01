@@ -262,10 +262,10 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - L2 cache backend

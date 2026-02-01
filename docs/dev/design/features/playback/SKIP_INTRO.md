@@ -175,9 +175,9 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
 - [Chromaprint/AcoustID](../sources/standards/chromaprint.md) - Auto-resolved from chromaprint-acoustid

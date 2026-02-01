@@ -261,7 +261,7 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [services](services.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [LIVE_TV_DVR](features/livetv/LIVE_TV_DVR.md)
 - [TVHEADEND](integrations/livetv/TVHEADEND.md)
 - [NEXTPVR](integrations/livetv/NEXTPVR.md)

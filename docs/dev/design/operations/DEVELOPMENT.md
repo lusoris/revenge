@@ -156,9 +156,9 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [BEST_PRACTICES](BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide
