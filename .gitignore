@@ -55,7 +55,8 @@ ehthumbs.db
 Thumbs.db
 
 # Application runtime (not YAML sources in data/)
-revenge
+# Binary (but not cmd/revenge/ source directory)
+/revenge
 /logs/
 /config/
 /cache/
