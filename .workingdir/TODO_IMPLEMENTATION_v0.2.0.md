@@ -113,12 +113,12 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 ## Step 3: River Job Queue
 
 ### 3.1 River Client Setup
-- [ ] Create `internal/infra/jobs/river.go`
-- [ ] Initialize River client with pgx
-- [ ] Configure worker pool
-- [ ] **Test**: Unit test client creation
-- [ ] **Lint**: Check
-- [ ] **Verify**: Client initializes
+- [x] Create `internal/infra/jobs/river.go`
+- [x] Initialize River client with pgx
+- [x] Configure worker pool
+- [x] **Test**: Unit test client creation
+- [x] **Lint**: Check
+- [x] **Verify**: Client initializes
 
 ### 3.2 Queue Configuration
 - [ ] Create `internal/infra/jobs/queues.go`
