@@ -100,13 +100,13 @@ This applies to ALL data types across all modules.
 |--------|--------|--------|------------------|-----------------|------------|
 | Movie | `public` | ✅ Complete | TMDb | Radarr | [MOVIE_MODULE.md](features/video/MOVIE_MODULE.md) |
 | TV Show | `public` | ✅ Complete | TMDb, TheTVDB | Sonarr | [TVSHOW_MODULE.md](features/video/TVSHOW_MODULE.md) |
-| Music | `public` | ✅ Complete | MusicBrainz, Last.fm | Lidarr | [MUSIC_MODULE.md](features/music/MUSIC_MODULE.md) |
-| Audiobook | `public` | ✅ Complete | Audnexus, OpenLibrary | Chaptarr | [AUDIOBOOK_MODULE.md](features/audiobook/AUDIOBOOK_MODULE.md) |
-| Book | `public` | ✅ Complete | OpenLibrary, Goodreads | Chaptarr | [BOOK_MODULE.md](features/book/BOOK_MODULE.md) |
+| Music | `public` | 🟡 Scaffold | MusicBrainz, Last.fm | Lidarr | [MUSIC_MODULE.md](features/music/MUSIC_MODULE.md) |
+| Audiobook | `public` | 🟡 Scaffold | Audnexus, OpenLibrary | Chaptarr | [AUDIOBOOK_MODULE.md](features/audiobook/AUDIOBOOK_MODULE.md) |
+| Book | `public` | 🟡 Scaffold | OpenLibrary, Goodreads | Chaptarr | [BOOK_MODULE.md](features/book/BOOK_MODULE.md) |
 | Podcast | `public` | 🟡 Scaffold | RSS/iTunes | Native | [PODCASTS.md](features/podcasts/PODCASTS.md) |
 | Photo | `public` | 🔴 Planned | EXIF, Immich | - | [PHOTOS_LIBRARY.md](features/photos/PHOTOS_LIBRARY.md) |
-| Comics | `public` | ✅ Complete | ComicVine | - | [COMICS_MODULE.md](features/comics/COMICS_MODULE.md) |
-| LiveTV | `public` | ✅ Complete | XMLTV | TVHeadend | [LIVE_TV_DVR.md](features/livetv/LIVE_TV_DVR.md) |
+| Comics | `public` | 🔴 Planned | ComicVine | - | [COMICS_MODULE.md](features/comics/COMICS_MODULE.md) |
+| LiveTV | `public` | 🔴 Planned | XMLTV | TVHeadend | [LIVE_TV_DVR.md](features/livetv/LIVE_TV_DVR.md) |
 | QAR Voyages | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [ADULT_CONTENT_SYSTEM.md](features/adult/ADULT_CONTENT_SYSTEM.md) |
 | QAR Expeditions | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [ADULT_CONTENT_SYSTEM.md](features/adult/ADULT_CONTENT_SYSTEM.md) |
 | QAR Treasures | `qar` | 🟡 Scaffold | StashDB | Prowlarr | [GALLERY_MODULE.md](features/adult/GALLERY_MODULE.md) |
@@ -125,12 +125,12 @@ This applies to ALL data types across all modules.
 | Settings | `internal/service/settings` | `settings.Module` | ✅ Complete | [SETTINGS.md](services/SETTINGS.md) |
 | API Keys | `internal/service/apikeys` | `apikeys.Module` | ✅ Complete | [APIKEYS.md](services/APIKEYS.md) |
 | OIDC | `internal/service/oidc` | `oidc.Module` | ✅ Complete | [OIDC.md](services/OIDC.md) |
-| Grants | `internal/service/grants` | `grants.Module` | ✅ Complete | [GRANTS.md](services/GRANTS.md) |
-| Fingerprint | `internal/service/fingerprint` | `fingerprint.Module` | ✅ Complete | [FINGERPRINT.md](services/FINGERPRINT.md) |
+| Grants | `internal/service/grants` | `grants.Module` | 🔵 Planned | [GRANTS.md](services/GRANTS.md) |
+| Fingerprint | `internal/service/fingerprint` | `fingerprint.Module` | 🔵 Planned | [FINGERPRINT.md](services/FINGERPRINT.md) |
 | Library | `internal/service/library` | `library.Module` | ✅ Complete | [LIBRARY.md](services/LIBRARY.md) |
 | Playback | `internal/service/playback` | `playback.Module` | 🟡 Partial | [PLAYBACK.md](technical/) |
-| Metadata | `internal/service/metadata` | `metadata.Module` | ✅ Complete | [METADATA.md](services/METADATA.md) |
-| Search | `internal/service/search` | `search.Module` | ✅ Complete | [SEARCH.md](services/SEARCH.md) |
+| Metadata | `internal/service/metadata` | `metadata.Module` | 🟡 Partial | [METADATA.md](services/METADATA.md) |
+| Search | `internal/service/search` | `search.Module` | 🟡 Partial | [SEARCH.md](services/SEARCH.md) |
 | Health | `internal/infra/health` | `health.Module` | ✅ Complete | - |
 | Scrobbling | `internal/service/scrobbling` | `scrobbling.Module` | 🔴 Planned | [SCROBBLING.md](features/shared/) |
 | Analytics | `internal/service/analytics` | `analytics.Module` | 🔴 Planned | [ANALYTICS.md](services/ANALYTICS.md) |
@@ -390,11 +390,11 @@ Helm chart repositories used for deployment and testing.
 
 | Service | Content | API Version | Package | Status |
 |---------|---------|-------------|---------|--------|
-| Radarr | Movies | v3 | `internal/service/metadata/radarr` | ✅ Complete |
-| Sonarr | TV | v3 | `internal/service/metadata/sonarr` | ✅ Complete |
-| Lidarr | Music | v1 | `internal/service/metadata/lidarr` | ✅ Complete |
+| Radarr | Movies | v3 | `internal/service/metadata/radarr` | ✅ |
+| Sonarr | TV | v3 | `internal/service/metadata/sonarr` | 🔴 |
+| Lidarr | Music | v1 | `internal/service/metadata/lidarr` | 🔴 |
 | Whisparr | QAR | v3 | `internal/service/metadata/whisparr` | 🟡 |
-| Chaptarr | Books | v1 (Readarr) | `internal/service/metadata/chaptarr` | ✅ Complete |
+| Chaptarr | Books | v1 (Readarr) | `internal/service/metadata/chaptarr` | 🔴 |
 | Prowlarr | Indexers | v1 | `internal/service/metadata/prowlarr` | 🔴 |
 
 ### Scrobbling
