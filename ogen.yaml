@@ -1,9 +1,9 @@
 # ogen Code Generation Configuration
 # https://ogen.dev/docs/intro
-# 
+#
 # Note: ogen v1.18.0 uses CLI flags, not this config file format
 # This file is kept for documentation purposes only
-# 
+#
 # To regenerate: make ogen
 # Or: go run github.com/ogen-go/ogen/cmd/ogen@v1.18.0 --target internal/api/ogen --package ogen --clean api/openapi/openapi.yaml
 #

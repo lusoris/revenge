@@ -111,7 +111,7 @@ package api
 
 import (
     "context"
-    
+
     "github.com/lusoris/revenge/internal/infra/health"
 )
 

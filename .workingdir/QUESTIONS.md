@@ -215,7 +215,7 @@ sql/
 
 **Status**: ✅ Resolved
 **Decision**: Keep Go 1.25.6
-**Rationale**: 
+**Rationale**:
 - Latest version has bug fixes
 - Source of truth document specifies 1.25.6
 - Version mismatch is a toolchain issue, not a project issue

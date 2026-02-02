@@ -1,0 +1,196 @@
+//go:build integration
+
+package integration
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"net"
+	"net/http"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/lusoris/revenge/internal/api"
+	"github.com/lusoris/revenge/internal/app"
+	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/database"
+	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/logging"
+	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/testutil"
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxtest"
+)
+
+// TestServer represents a running test server instance.
+type TestServer struct {
+	App        *fxtest.App
+	BaseURL    string
+	HTTPClient *http.Client
+	DB         *testutil.PostgreSQLContainer
+	Logger     *slog.Logger
+}
+
+// setupServer starts a test server with all dependencies.
+func setupServer(t *testing.T) *TestServer {
+	t.Helper()
+
+	// Start PostgreSQL container
+	pgContainer := testutil.NewPostgreSQLContainer(t)
+
+	// Create test configuration
+	cfg := pgContainer.Config
+
+	// Find available port for HTTP server
+	listener, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		pgContainer.Close()
+		t.Fatalf("failed to get available port: %v", err)
+	}
+	port := listener.Addr().(*net.TCPAddr).Port
+	_ = listener.Close()
+
+	cfg.Server.Host = "localhost"
+	cfg.Server.Port = port
+	cfg.Server.ReadTimeout = 5000000000  // 5s
+	cfg.Server.WriteTimeout = 5000000000 // 5s
+
+	// Create logger
+	logger := logging.NewLogger(logging.Config{
+		Level:       cfg.Logging.Level,
+		Format:      cfg.Logging.Format,
+		Development: cfg.Logging.Development,
+	})
+
+	// Create fx app for testing
+	app := fxtest.New(t,
+		// Provide configuration
+		fx.Supply(cfg),
+		fx.Supply(logger),
+
+		// Provide modules
+		app.Module,
+		config.Module,
+		database.Module,
+		cache.Module,
+		search.Module,
+		jobs.Module,
+		health.Module,
+		api.Module,
+
+		// Disable output
+		fx.NopLogger,
+	)
+
+	// Start app
+	app.RequireStart()
+
+	// Wait for server to be ready
+	baseURL := fmt.Sprintf("http://%s:%d", cfg.Server.Host, cfg.Server.Port)
+	waitForServer(t, baseURL, 10*time.Second)
+
+	return &TestServer{
+		App:     app,
+		BaseURL: baseURL,
+		HTTPClient: &http.Client{
+			Timeout: 5 * time.Second,
+		},
+		DB:     pgContainer,
+		Logger: logger,
+	}
+}
+
+// teardownServer stops the test server and cleans up resources.
+func teardownServer(t *testing.T, ts *TestServer) {
+	t.Helper()
+
+	if ts.App != nil {
+		ts.App.RequireStop()
+	}
+
+	if ts.DB != nil {
+		ts.DB.Close()
+	}
+}
+
+// waitForServer waits for the HTTP server to be ready.
+func waitForServer(t *testing.T, baseURL string, timeout time.Duration) {
+	t.Helper()
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
+
+	client := &http.Client{Timeout: 1 * time.Second}
+	healthURL := baseURL + "/health/live"
+
+	for {
+		select {
+		case <-ctx.Done():
+			t.Fatalf("server did not become ready within %v", timeout)
+		case <-ticker.C:
+			resp, err := client.Get(healthURL)
+			if err == nil && resp.StatusCode == http.StatusOK {
+				resp.Body.Close()
+				return
+			}
+			if resp != nil {
+				resp.Body.Close()
+			}
+		}
+	}
+}
+
+// resetDatabase truncates all tables in the test database.
+func resetDatabase(t *testing.T, ts *TestServer) {
+	t.Helper()
+	ts.DB.Reset(t)
+}
+
+// TestMain runs before all tests.
+func TestMain(m *testing.M) {
+	// Check if Docker is available
+	if !isDockerAvailable() {
+		fmt.Println("Docker is not available - skipping integration tests")
+		os.Exit(0)
+	}
+
+	// Run tests
+	code := m.Run()
+	os.Exit(code)
+}
+
+// isDockerAvailable checks if Docker is available on the system.
+func isDockerAvailable() bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	// Try to connect to Docker socket
+	conn, err := net.DialTimeout("unix", "/var/run/docker.sock", 1*time.Second)
+	if err == nil {
+		conn.Close()
+		return true
+	}
+
+	// On Windows, try named pipe
+	conn, err = net.DialTimeout("npipe", `\\.\pipe\docker_engine`, 1*time.Second)
+	if err == nil {
+		conn.Close()
+		return true
+	}
+
+	// Try Docker Desktop via TCP
+	_, err = http.Get("http://localhost:2375/_ping")
+	if err == nil {
+		return true
+	}
+
+	_ = ctx // Satisfy linter
+	return false
+}
