@@ -56,6 +56,20 @@ func encodeChangePasswordRequest(
 	return nil
 }
 
+func encodeCreateAPIKeyRequest(
+	req *CreateAPIKeyRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeForgotPasswordRequest(
 	req *ForgotPasswordRequest,
 	r *http.Request,

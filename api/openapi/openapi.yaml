@@ -996,6 +996,113 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+
+  # API Keys endpoints
+  /api/v1/apikeys:
+    get:
+      summary: List API keys
+      description: Get all API keys for the authenticated user
+      operationId: listAPIKeys
+      tags:
+        - apikeys
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+    post:
+      summary: Create API key
+      description: Generate a new API key for the authenticated user
+      operationId: createAPIKey
+      tags:
+        - apikeys
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAPIKeyRequest'
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAPIKeyResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/apikeys/{keyId}:
+    get:
+      summary: Get API key
+      description: Get details of a specific API key
+      operationId: getAPIKey
+      tags:
+        - apikeys
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: API Key ID
+      responses:
+        '200':
+          description: API key details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Revoke API key
+      description: Revoke (deactivate) an API key
+      operationId: revokeAPIKey
+      tags:
+        - apikeys
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: API Key ID
+      responses:
+        '204':
+          description: API key revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
 components:
   schemas:
     # Auth schemas
@@ -1658,6 +1765,122 @@ components:
         role:
           type: string
           description: Role name to assign
+
+
+    # API Keys schemas
+    APIKeyInfo:
+      type: object
+      required:
+        - id
+        - user_id
+        - name
+        - key_prefix
+        - scopes
+        - is_active
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        key_prefix:
+          type: string
+          description: First 8 characters of the key (rv_xxxxx)
+        scopes:
+          type: array
+          items:
+            type: string
+            enum: [read, write, admin]
+        is_active:
+          type: boolean
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_used_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    APIKeyListResponse:
+      type: object
+      required:
+        - keys
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIKeyInfo'
+
+    CreateAPIKeyRequest:
+      type: object
+      required:
+        - name
+        - scopes
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 1000
+        scopes:
+          type: array
+          items:
+            type: string
+            enum: [read, write, admin]
+          minItems: 1
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    CreateAPIKeyResponse:
+      type: object
+      required:
+        - id
+        - name
+        - key_prefix
+        - scopes
+        - created_at
+        - api_key
+        - message
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        key_prefix:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        api_key:
+          type: string
+          description: The raw API key - store this securely, it won't be shown again
+        message:
+          type: string
+          description: Warning message about storing the key
 
     Error:
       type: object

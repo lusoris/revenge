@@ -13,12 +13,20 @@ type ChangePasswordRes interface {
 	changePasswordRes()
 }
 
+type CreateAPIKeyRes interface {
+	createAPIKeyRes()
+}
+
 type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
 
 type ForgotPasswordRes interface {
 	forgotPasswordRes()
+}
+
+type GetAPIKeyRes interface {
+	getAPIKeyRes()
 }
 
 type GetCurrentSessionRes interface {
@@ -55,6 +63,10 @@ type GetUserRolesRes interface {
 
 type GetUserSettingRes interface {
 	getUserSettingRes()
+}
+
+type ListAPIKeysRes interface {
+	listAPIKeysRes()
 }
 
 type ListPoliciesRes interface {
@@ -115,6 +127,10 @@ type ResendVerificationRes interface {
 
 type ResetPasswordRes interface {
 	resetPasswordRes()
+}
+
+type RevokeAPIKeyRes interface {
+	revokeAPIKeyRes()
 }
 
 type RevokeSessionRes interface {

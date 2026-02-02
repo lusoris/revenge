@@ -147,6 +147,72 @@ func decodeDeleteUserSettingParams(args [1]string, argsEscaped bool, r *http.Req
 	return params, nil
 }
 
+// GetAPIKeyParams is parameters of getAPIKey operation.
+type GetAPIKeyParams struct {
+	// API Key ID.
+	KeyId uuid.UUID
+}
+
+func unpackGetAPIKeyParams(packed middleware.Parameters) (params GetAPIKeyParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "keyId",
+			In:   "path",
+		}
+		params.KeyId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeGetAPIKeyParams(args [1]string, argsEscaped bool, r *http.Request) (params GetAPIKeyParams, _ error) {
+	// Decode path: keyId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "keyId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.KeyId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "keyId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetServerSettingParams is parameters of getServerSetting operation.
 type GetServerSettingParams struct {
 	// Setting key.
@@ -524,6 +590,72 @@ func decodeRemoveRoleParams(args [2]string, argsEscaped bool, r *http.Request) (
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "role",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RevokeAPIKeyParams is parameters of revokeAPIKey operation.
+type RevokeAPIKeyParams struct {
+	// API Key ID.
+	KeyId uuid.UUID
+}
+
+func unpackRevokeAPIKeyParams(packed middleware.Parameters) (params RevokeAPIKeyParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "keyId",
+			In:   "path",
+		}
+		params.KeyId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeRevokeAPIKeyParams(args [1]string, argsEscaped bool, r *http.Request) (params RevokeAPIKeyParams, _ error) {
+	// Decode path: keyId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "keyId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.KeyId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "keyId",
 			In:   "path",
 			Err:  err,
 		}

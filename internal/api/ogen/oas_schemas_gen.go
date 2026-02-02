@@ -16,6 +16,199 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/APIKeyInfo
+type APIKeyInfo struct {
+	ID          uuid.UUID    `json:"id"`
+	UserID      uuid.UUID    `json:"user_id"`
+	Name        string       `json:"name"`
+	Description OptNilString `json:"description"`
+	// First 8 characters of the key (rv_xxxxx).
+	KeyPrefix  string                 `json:"key_prefix"`
+	Scopes     []APIKeyInfoScopesItem `json:"scopes"`
+	IsActive   bool                   `json:"is_active"`
+	ExpiresAt  OptNilDateTime         `json:"expires_at"`
+	LastUsedAt OptNilDateTime         `json:"last_used_at"`
+	CreatedAt  time.Time              `json:"created_at"`
+	UpdatedAt  time.Time              `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *APIKeyInfo) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *APIKeyInfo) GetUserID() uuid.UUID {
+	return s.UserID
+}
+
+// GetName returns the value of Name.
+func (s *APIKeyInfo) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *APIKeyInfo) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetKeyPrefix returns the value of KeyPrefix.
+func (s *APIKeyInfo) GetKeyPrefix() string {
+	return s.KeyPrefix
+}
+
+// GetScopes returns the value of Scopes.
+func (s *APIKeyInfo) GetScopes() []APIKeyInfoScopesItem {
+	return s.Scopes
+}
+
+// GetIsActive returns the value of IsActive.
+func (s *APIKeyInfo) GetIsActive() bool {
+	return s.IsActive
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *APIKeyInfo) GetExpiresAt() OptNilDateTime {
+	return s.ExpiresAt
+}
+
+// GetLastUsedAt returns the value of LastUsedAt.
+func (s *APIKeyInfo) GetLastUsedAt() OptNilDateTime {
+	return s.LastUsedAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *APIKeyInfo) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *APIKeyInfo) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *APIKeyInfo) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *APIKeyInfo) SetUserID(val uuid.UUID) {
+	s.UserID = val
+}
+
+// SetName sets the value of Name.
+func (s *APIKeyInfo) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *APIKeyInfo) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetKeyPrefix sets the value of KeyPrefix.
+func (s *APIKeyInfo) SetKeyPrefix(val string) {
+	s.KeyPrefix = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *APIKeyInfo) SetScopes(val []APIKeyInfoScopesItem) {
+	s.Scopes = val
+}
+
+// SetIsActive sets the value of IsActive.
+func (s *APIKeyInfo) SetIsActive(val bool) {
+	s.IsActive = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *APIKeyInfo) SetExpiresAt(val OptNilDateTime) {
+	s.ExpiresAt = val
+}
+
+// SetLastUsedAt sets the value of LastUsedAt.
+func (s *APIKeyInfo) SetLastUsedAt(val OptNilDateTime) {
+	s.LastUsedAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *APIKeyInfo) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *APIKeyInfo) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+func (*APIKeyInfo) getAPIKeyRes() {}
+
+type APIKeyInfoScopesItem string
+
+const (
+	APIKeyInfoScopesItemRead  APIKeyInfoScopesItem = "read"
+	APIKeyInfoScopesItemWrite APIKeyInfoScopesItem = "write"
+	APIKeyInfoScopesItemAdmin APIKeyInfoScopesItem = "admin"
+)
+
+// AllValues returns all APIKeyInfoScopesItem values.
+func (APIKeyInfoScopesItem) AllValues() []APIKeyInfoScopesItem {
+	return []APIKeyInfoScopesItem{
+		APIKeyInfoScopesItemRead,
+		APIKeyInfoScopesItemWrite,
+		APIKeyInfoScopesItemAdmin,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s APIKeyInfoScopesItem) MarshalText() ([]byte, error) {
+	switch s {
+	case APIKeyInfoScopesItemRead:
+		return []byte(s), nil
+	case APIKeyInfoScopesItemWrite:
+		return []byte(s), nil
+	case APIKeyInfoScopesItemAdmin:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *APIKeyInfoScopesItem) UnmarshalText(data []byte) error {
+	switch APIKeyInfoScopesItem(data) {
+	case APIKeyInfoScopesItemRead:
+		*s = APIKeyInfoScopesItemRead
+		return nil
+	case APIKeyInfoScopesItemWrite:
+		*s = APIKeyInfoScopesItemWrite
+		return nil
+	case APIKeyInfoScopesItemAdmin:
+		*s = APIKeyInfoScopesItemAdmin
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/APIKeyListResponse
+type APIKeyListResponse struct {
+	Keys []APIKeyInfo `json:"keys"`
+}
+
+// GetKeys returns the value of Keys.
+func (s *APIKeyListResponse) GetKeys() []APIKeyInfo {
+	return s.Keys
+}
+
+// SetKeys sets the value of Keys.
+func (s *APIKeyListResponse) SetKeys(val []APIKeyInfo) {
+	s.Keys = val
+}
+
+func (*APIKeyListResponse) listAPIKeysRes() {}
+
 type AddPolicyBadRequest Error
 
 func (*AddPolicyBadRequest) addPolicyRes() {}
@@ -274,6 +467,195 @@ type ChangePasswordUnauthorized Error
 
 func (*ChangePasswordUnauthorized) changePasswordRes() {}
 
+type CreateAPIKeyBadRequest Error
+
+func (*CreateAPIKeyBadRequest) createAPIKeyRes() {}
+
+// Ref: #/components/schemas/CreateAPIKeyRequest
+type CreateAPIKeyRequest struct {
+	Name        string                          `json:"name"`
+	Description OptString                       `json:"description"`
+	Scopes      []CreateAPIKeyRequestScopesItem `json:"scopes"`
+	ExpiresAt   OptNilDateTime                  `json:"expires_at"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateAPIKeyRequest) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *CreateAPIKeyRequest) GetDescription() OptString {
+	return s.Description
+}
+
+// GetScopes returns the value of Scopes.
+func (s *CreateAPIKeyRequest) GetScopes() []CreateAPIKeyRequestScopesItem {
+	return s.Scopes
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *CreateAPIKeyRequest) GetExpiresAt() OptNilDateTime {
+	return s.ExpiresAt
+}
+
+// SetName sets the value of Name.
+func (s *CreateAPIKeyRequest) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CreateAPIKeyRequest) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *CreateAPIKeyRequest) SetScopes(val []CreateAPIKeyRequestScopesItem) {
+	s.Scopes = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *CreateAPIKeyRequest) SetExpiresAt(val OptNilDateTime) {
+	s.ExpiresAt = val
+}
+
+type CreateAPIKeyRequestScopesItem string
+
+const (
+	CreateAPIKeyRequestScopesItemRead  CreateAPIKeyRequestScopesItem = "read"
+	CreateAPIKeyRequestScopesItemWrite CreateAPIKeyRequestScopesItem = "write"
+	CreateAPIKeyRequestScopesItemAdmin CreateAPIKeyRequestScopesItem = "admin"
+)
+
+// AllValues returns all CreateAPIKeyRequestScopesItem values.
+func (CreateAPIKeyRequestScopesItem) AllValues() []CreateAPIKeyRequestScopesItem {
+	return []CreateAPIKeyRequestScopesItem{
+		CreateAPIKeyRequestScopesItemRead,
+		CreateAPIKeyRequestScopesItemWrite,
+		CreateAPIKeyRequestScopesItemAdmin,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateAPIKeyRequestScopesItem) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateAPIKeyRequestScopesItemRead:
+		return []byte(s), nil
+	case CreateAPIKeyRequestScopesItemWrite:
+		return []byte(s), nil
+	case CreateAPIKeyRequestScopesItemAdmin:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateAPIKeyRequestScopesItem) UnmarshalText(data []byte) error {
+	switch CreateAPIKeyRequestScopesItem(data) {
+	case CreateAPIKeyRequestScopesItemRead:
+		*s = CreateAPIKeyRequestScopesItemRead
+		return nil
+	case CreateAPIKeyRequestScopesItemWrite:
+		*s = CreateAPIKeyRequestScopesItemWrite
+		return nil
+	case CreateAPIKeyRequestScopesItemAdmin:
+		*s = CreateAPIKeyRequestScopesItemAdmin
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/CreateAPIKeyResponse
+type CreateAPIKeyResponse struct {
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	KeyPrefix string    `json:"key_prefix"`
+	Scopes    []string  `json:"scopes"`
+	CreatedAt time.Time `json:"created_at"`
+	// The raw API key - store this securely, it won't be shown again.
+	APIKey string `json:"api_key"`
+	// Warning message about storing the key.
+	Message string `json:"message"`
+}
+
+// GetID returns the value of ID.
+func (s *CreateAPIKeyResponse) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CreateAPIKeyResponse) GetName() string {
+	return s.Name
+}
+
+// GetKeyPrefix returns the value of KeyPrefix.
+func (s *CreateAPIKeyResponse) GetKeyPrefix() string {
+	return s.KeyPrefix
+}
+
+// GetScopes returns the value of Scopes.
+func (s *CreateAPIKeyResponse) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CreateAPIKeyResponse) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *CreateAPIKeyResponse) GetAPIKey() string {
+	return s.APIKey
+}
+
+// GetMessage returns the value of Message.
+func (s *CreateAPIKeyResponse) GetMessage() string {
+	return s.Message
+}
+
+// SetID sets the value of ID.
+func (s *CreateAPIKeyResponse) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateAPIKeyResponse) SetName(val string) {
+	s.Name = val
+}
+
+// SetKeyPrefix sets the value of KeyPrefix.
+func (s *CreateAPIKeyResponse) SetKeyPrefix(val string) {
+	s.KeyPrefix = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *CreateAPIKeyResponse) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CreateAPIKeyResponse) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *CreateAPIKeyResponse) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// SetMessage sets the value of Message.
+func (s *CreateAPIKeyResponse) SetMessage(val string) {
+	s.Message = val
+}
+
+func (*CreateAPIKeyResponse) createAPIKeyRes() {}
+
+type CreateAPIKeyUnauthorized Error
+
+func (*CreateAPIKeyUnauthorized) createAPIKeyRes() {}
+
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
 
@@ -331,6 +713,7 @@ func (*Error) forgotPasswordRes()     {}
 func (*Error) getCurrentUserRes()     {}
 func (*Error) getUserPreferencesRes() {}
 func (*Error) getUserRolesRes()       {}
+func (*Error) listAPIKeysRes()        {}
 func (*Error) listServerSettingsRes() {}
 func (*Error) listSessionsRes()       {}
 func (*Error) listUserSettingsRes()   {}
@@ -401,6 +784,14 @@ func (s *ForgotPasswordRequest) GetEmail() string {
 func (s *ForgotPasswordRequest) SetEmail(val string) {
 	s.Email = val
 }
+
+type GetAPIKeyNotFound Error
+
+func (*GetAPIKeyNotFound) getAPIKeyRes() {}
+
+type GetAPIKeyUnauthorized Error
+
+func (*GetAPIKeyUnauthorized) getAPIKeyRes() {}
 
 type GetCurrentSessionNotFound Error
 
@@ -947,6 +1338,132 @@ func (o OptInt) Get() (v int, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilDateTime returns new OptNilDateTime with value set to v.
+func NewOptNilDateTime(v time.Time) OptNilDateTime {
+	return OptNilDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilDateTime is optional nullable time.Time.
+type OptNilDateTime struct {
+	Value time.Time
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilDateTime was set.
+func (o OptNilDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilDateTime) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilDateTime) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v time.Time
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilDateTime) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilString returns new OptNilString with value set to v.
+func NewOptNilString(v string) OptNilString {
+	return OptNilString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilString is optional nullable string.
+type OptNilString struct {
+	Value string
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilString was set.
+func (o OptNilString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilString) SetTo(v string) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilString) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilString) Or(d string) string {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1971,6 +2488,19 @@ func (s *ResetPasswordRequest) SetToken(val string) {
 func (s *ResetPasswordRequest) SetNewPassword(val string) {
 	s.NewPassword = val
 }
+
+// RevokeAPIKeyNoContent is response for RevokeAPIKey operation.
+type RevokeAPIKeyNoContent struct{}
+
+func (*RevokeAPIKeyNoContent) revokeAPIKeyRes() {}
+
+type RevokeAPIKeyNotFound Error
+
+func (*RevokeAPIKeyNotFound) revokeAPIKeyRes() {}
+
+type RevokeAPIKeyUnauthorized Error
+
+func (*RevokeAPIKeyUnauthorized) revokeAPIKeyRes() {}
 
 type RevokeSessionBadRequest Error
 

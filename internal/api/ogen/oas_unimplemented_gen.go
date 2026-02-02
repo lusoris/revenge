@@ -40,6 +40,15 @@ func (UnimplementedHandler) ChangePassword(ctx context.Context, req *ChangePassw
 	return r, ht.ErrNotImplemented
 }
 
+// CreateAPIKey implements createAPIKey operation.
+//
+// Generate a new API key for the authenticated user.
+//
+// POST /api/v1/apikeys
+func (UnimplementedHandler) CreateAPIKey(ctx context.Context, req *CreateAPIKeyRequest) (r CreateAPIKeyRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DeleteUserSetting implements deleteUserSetting operation.
 //
 // Delete a user setting (revert to default).
@@ -55,6 +64,15 @@ func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params Delete
 //
 // POST /api/v1/auth/forgot-password
 func (UnimplementedHandler) ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (r ForgotPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetAPIKey implements getAPIKey operation.
+//
+// Get details of a specific API key.
+//
+// GET /api/v1/apikeys/{keyId}
+func (UnimplementedHandler) GetAPIKey(ctx context.Context, params GetAPIKeyParams) (r GetAPIKeyRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -151,6 +169,15 @@ func (UnimplementedHandler) GetUserRoles(ctx context.Context, params GetUserRole
 //
 // GET /api/v1/settings/user/{key}
 func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSettingParams) (r GetUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListAPIKeys implements listAPIKeys operation.
+//
+// Get all API keys for the authenticated user.
+//
+// GET /api/v1/apikeys
+func (UnimplementedHandler) ListAPIKeys(ctx context.Context) (r ListAPIKeysRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -286,6 +313,15 @@ func (UnimplementedHandler) ResendVerification(ctx context.Context) (r ResendVer
 //
 // POST /api/v1/auth/reset-password
 func (UnimplementedHandler) ResetPassword(ctx context.Context, req *ResetPasswordRequest) (r ResetPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RevokeAPIKey implements revokeAPIKey operation.
+//
+// Revoke (deactivate) an API key.
+//
+// DELETE /api/v1/apikeys/{keyId}
+func (UnimplementedHandler) RevokeAPIKey(ctx context.Context, params RevokeAPIKeyParams) (r RevokeAPIKeyRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -26,6 +26,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/change-password
 	ChangePassword(ctx context.Context, req *ChangePasswordRequest) (ChangePasswordRes, error)
+	// CreateAPIKey implements createAPIKey operation.
+	//
+	// Generate a new API key for the authenticated user.
+	//
+	// POST /api/v1/apikeys
+	CreateAPIKey(ctx context.Context, req *CreateAPIKeyRequest) (CreateAPIKeyRes, error)
 	// DeleteUserSetting implements deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
@@ -38,6 +44,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/forgot-password
 	ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (ForgotPasswordRes, error)
+	// GetAPIKey implements getAPIKey operation.
+	//
+	// Get details of a specific API key.
+	//
+	// GET /api/v1/apikeys/{keyId}
+	GetAPIKey(ctx context.Context, params GetAPIKeyParams) (GetAPIKeyRes, error)
 	// GetCurrentSession implements getCurrentSession operation.
 	//
 	// Get information about the current session.
@@ -104,6 +116,12 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// ListAPIKeys implements listAPIKeys operation.
+	//
+	// Get all API keys for the authenticated user.
+	//
+	// GET /api/v1/apikeys
+	ListAPIKeys(ctx context.Context) (ListAPIKeysRes, error)
 	// ListPolicies implements listPolicies operation.
 	//
 	// Get all authorization policies (admin only).
@@ -194,6 +212,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/reset-password
 	ResetPassword(ctx context.Context, req *ResetPasswordRequest) (ResetPasswordRes, error)
+	// RevokeAPIKey implements revokeAPIKey operation.
+	//
+	// Revoke (deactivate) an API key.
+	//
+	// DELETE /api/v1/apikeys/{keyId}
+	RevokeAPIKey(ctx context.Context, params RevokeAPIKeyParams) (RevokeAPIKeyRes, error)
 	// RevokeSession implements revokeSession operation.
 	//
 	// Revoke a specific session by ID.

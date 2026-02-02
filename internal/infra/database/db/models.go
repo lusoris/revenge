@@ -13,6 +13,27 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// API keys for programmatic access with scope-based permissions
+type SharedApiKey struct {
+	ID          uuid.UUID `json:"id"`
+	UserID      uuid.UUID `json:"userId"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	// SHA-256 hash of the API key (never store plaintext)
+	KeyHash string `json:"keyHash"`
+	// First 8 chars for key identification (rv_xxxxxxxx)
+	KeyPrefix string `json:"keyPrefix"`
+	// Permission scopes: read, write, admin
+	Scopes []string `json:"scopes"`
+	// Key can be revoked by setting to false
+	IsActive  bool               `json:"isActive"`
+	ExpiresAt pgtype.Timestamptz `json:"expiresAt"`
+	// Timestamp of last successful authentication
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
 // JWT refresh tokens for persistent user sessions
 type SharedAuthToken struct {
 	ID     uuid.UUID `json:"id"`
@@ -31,6 +52,22 @@ type SharedAuthToken struct {
 	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
 	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
+// Default policies created. First user should be assigned admin role manually.
+type SharedCasbinRule struct {
+	ID int32 `json:"id"`
+	// Policy type: p (policy) or g (role)
+	Ptype string `json:"ptype"`
+	// Subject (user/role)
+	V0 *string `json:"v0"`
+	// Object (resource)
+	V1 *string `json:"v1"`
+	// Action (read/write/delete)
+	V2 *string `json:"v2"`
+	V3 *string `json:"v3"`
+	V4 *string `json:"v4"`
+	V5 *string `json:"v5"`
 }
 
 // One-time tokens for email verification and email change flow

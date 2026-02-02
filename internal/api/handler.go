@@ -9,6 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -27,6 +28,7 @@ type Handler struct {
 	authService     *auth.Service
 	sessionService  *session.Service
 	rbacService     *rbac.Service
+	apikeyService   *apikeys.Service
 	tokenManager    auth.TokenManager
 }
 

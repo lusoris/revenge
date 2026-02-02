@@ -9,13 +9,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count users matching filters
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
+	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (SharedApiKey, error)
 	CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error)
 	// Upload a new avatar (sets it as current)
 	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
@@ -32,10 +35,12 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (SharedUser, error)
 	// Create a new user setting
 	CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error)
+	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
 	// Delete all settings for a user (used when user is deleted)
 	DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error
 	// Soft delete an avatar
 	DeleteAvatar(ctx context.Context, id uuid.UUID) error
+	DeleteExpiredAPIKeys(ctx context.Context) error
 	DeleteExpiredAuthTokens(ctx context.Context) error
 	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
 	DeleteExpiredPasswordResetTokens(ctx context.Context) error
@@ -52,6 +57,12 @@ type Querier interface {
 	// Delete a user setting
 	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
 	DeleteVerifiedEmailTokens(ctx context.Context) error
+	GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error)
+	GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error)
+	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (SharedApiKey, error)
+	// This is a placeholder - actual usage tracking would be in a separate table
+	// For now, we just return last_used_at
+	GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
 	GetAuthTokenByHash(ctx context.Context, tokenHash string) (SharedAuthToken, error)
 	GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetAuthTokensByDeviceFingerprintParams) ([]SharedAuthToken, error)
 	GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) ([]SharedAuthToken, error)
@@ -96,6 +107,7 @@ type Querier interface {
 	InvalidateEmailVerificationTokensByEmail(ctx context.Context, email string) error
 	InvalidateUserEmailVerificationTokens(ctx context.Context, userID uuid.UUID) error
 	InvalidateUserPasswordResetTokens(ctx context.Context, userID uuid.UUID) error
+	ListActiveUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]SharedApiKey, error)
 	// Includes expired but not revoked sessions (for user to see full history)
 	ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
 	// Get public settings (exposed in API)
@@ -104,6 +116,7 @@ type Querier interface {
 	ListServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get settings by category
 	ListServerSettingsByCategory(ctx context.Context, category *string) ([]SharedServerSetting, error)
+	ListUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]SharedApiKey, error)
 	// List all avatars for a user (for history)
 	ListUserAvatars(ctx context.Context, arg ListUserAvatarsParams) ([]SharedUserAvatar, error)
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
@@ -115,6 +128,7 @@ type Querier interface {
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error)
 	MarkEmailVerificationTokenUsed(ctx context.Context, id uuid.UUID) error
 	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
+	RevokeAPIKey(ctx context.Context, id uuid.UUID) error
 	RevokeAllUserAuthTokens(ctx context.Context, userID uuid.UUID) error
 	RevokeAllUserAuthTokensExcept(ctx context.Context, arg RevokeAllUserAuthTokensExceptParams) error
 	RevokeAllUserSessions(ctx context.Context, arg RevokeAllUserSessionsParams) error
@@ -128,6 +142,8 @@ type Querier interface {
 	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
 	// Mark all user's avatars as not current (before setting a new current)
 	UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) error
+	UpdateAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error
+	UpdateAPIKeyScopes(ctx context.Context, arg UpdateAPIKeyScopesParams) error
 	UpdateAuthTokenLastUsed(ctx context.Context, id uuid.UUID) error
 	// Update user last login timestamp
 	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
