@@ -61,6 +61,26 @@
 
 **Status**: Complete ✅ (10/10 tests passing)
 
+---
+
+## Phase 3: Integrate into Pipeline & CI
+
+### Step 3.1: Update doc-pipeline.sh
+- [x] Add status sync step to scripts/doc-pipeline.sh
+- [x] Place after status table validation, before cross-reference generation
+- [x] Test pipeline execution (manual test successful)
+
+**Status**: Complete ✅
+
+### Step 3.2: Enhance CI/CD workflows
+- [x] Add yamllint job to doc-validation.yml (fix FLAW-001)
+- [x] Add status sync verification job
+- [x] Add status sync to dry-run pipeline
+- [ ] Extend validate-sot.yml to check ALL package versions (address FLAW-002)
+- [ ] Test workflow execution
+
+**Current**: Finishing Phase 3, Step 3.2
+
 ### Step 2.2: Write Tests
 - [ ] Create test file in `tests/unit/`
 - [ ] Test backup functionality

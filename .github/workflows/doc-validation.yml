@@ -54,6 +54,25 @@ jobs:
       - name: Run Ruff formatter check
         run: ruff format --check scripts/
 
+  lint-yaml:
+    name: Lint YAML Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint on data directory
+        run: yamllint -c .yamllint.yml data/
+
   validate-structure:
     needs: versions
     name: Validate Document Structure
@@ -98,6 +117,26 @@ jobs:
           if grep -q "Manual.*-" docs/dev/design/.analysis/FIXES_REPORT.md 2>/dev/null; then
             echo "::warning::Some broken links require manual review"
           fi
+
+  verify-status-sync:
+    needs: versions
+    name: Verify Status Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ needs.versions.outputs.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Check YAML status sync with SOT
+        run: python scripts/doc-pipeline/04-sync-sot-status.py --strict
 
   test-scripts:
     name: Run Pipeline Tests
@@ -150,6 +189,7 @@ jobs:
           python scripts/doc-pipeline/01-indexes.py
           python scripts/doc-pipeline/02-breadcrumbs.py
           python scripts/doc-pipeline/03-status.py
+          python scripts/doc-pipeline/04-sync-sot-status.py
           python scripts/doc-pipeline/06-meta.py
 
       - name: Dry run source index

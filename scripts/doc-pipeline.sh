@@ -7,6 +7,7 @@
 # 1. Generate INDEX.md files
 # 2. Add design breadcrumbs
 # 3. Sync status tables
+# 3.5 Sync YAML status to SOT tables
 # 4. Validate document structure
 # 5. Fix broken links
 # 6. Generate meta files (DESIGN_INDEX.md)
@@ -165,6 +166,11 @@ STATUS_ARGS=()
 [[ -n "$APPLY" ]] && STATUS_ARGS+=("--apply")
 [[ -n "$ADD_MISSING" ]] && STATUS_ARGS+=("--add-missing")
 run_step 3 "Sync Status Tables" "doc-pipeline/03-status.py" "${STATUS_ARGS[@]}"
+
+# Step 3.5: Sync YAML status to SOT tables
+SOT_STATUS_ARGS=()
+[[ -n "$APPLY" ]] && SOT_STATUS_ARGS+=("--apply")
+run_step 3.5 "Sync YAML Status to SOT" "doc-pipeline/04-sync-sot-status.py" "${SOT_STATUS_ARGS[@]}"
 
 # Step 4: Validate document structure
 run_step 4 "Validate Document Structure" "doc-pipeline/04-validate.py"
