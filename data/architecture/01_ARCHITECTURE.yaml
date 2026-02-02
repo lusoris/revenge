@@ -123,6 +123,8 @@ design_refs:
   path: 03_METADATA_SYSTEM.md
 - title: METADATA (service)
   path: ../services/METADATA.md
+- title: DRAGONFLY (integration)
+  path: ../integrations/infrastructure/DRAGONFLY.md
 - title: HTTP_CLIENT (service)
   path: ../services/HTTP_CLIENT.md
 - title: RADARR (PRIMARY metadata + downloads)
@@ -257,10 +259,8 @@ system_components: |
     - Full-text search with tsvector
 
   **7. Cache Layer**
-  - **L1**: otter (in-memory, sub-millisecond)
-  - **L2**: Dragonfly via rueidis (distributed, Redis-compatible)
-  - **Request Coalescing**: sturdyc prevents thundering herd
-  - **TTL Strategy**: Configurable per content type
+  Two-tier caching: L1 (otter) + L2 (Dragonfly via rueidis).
+  See data/integrations/infrastructure/DRAGONFLY.yaml for complete cache architecture details.
 
   **8. Search (Typesense)**
   - **Purpose**: Full-text search across all content

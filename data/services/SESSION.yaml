@@ -55,6 +55,8 @@ design_refs:
   path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: ../architecture/03_METADATA_SYSTEM.md
+- title: DRAGONFLY (cache architecture)
+  path: ../integrations/infrastructure/DRAGONFLY.md
 service_name: Session Service
 package_path: internal/service/session
 fx_module: session.Module

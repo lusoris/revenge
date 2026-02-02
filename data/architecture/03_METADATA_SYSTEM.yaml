@@ -76,6 +76,8 @@ design_refs:
   path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
   path: ../features/adult/DATA_RECONCILIATION.md
+- title: DRAGONFLY (cache architecture)
+  path: ../integrations/infrastructure/DRAGONFLY.md
 
 arr_services_dual_role: |
   **CRITICAL ARCHITECTURE PRINCIPLE**: All Arr services serve DUAL purposes:

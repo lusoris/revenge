@@ -36,6 +36,8 @@ sources:
 design_refs:
 - title: 03_METADATA_SYSTEM (PRIMARY architecture doc)
   path: ../architecture/03_METADATA_SYSTEM.md
+- title: DRAGONFLY (cache architecture)
+  path: ../integrations/infrastructure/DRAGONFLY.md
 - title: HTTP_CLIENT (proxy/VPN support)
   path: ./HTTP_CLIENT.md
 - title: RADARR (PRIMARY for movies)
