@@ -294,13 +294,13 @@ components:
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1["SvelteKit Frontend<br/>(Svelte 5 + Tailwind 4 + shadcn-svelte)"]
-      node2[[ogen OpenAPI Handlers<br/>(Type-safe from openapi.yaml)]]
+      node1["SvelteKit Frontend<br/>[Svelte 5 + Tailwind 4 + shadcn-svelte]"]
+      node2[[ogen OpenAPI Handlers<br/>[Type-safe from openapi.yaml]]]
       node3["Service Layer [fx]<br/>Movies TV Music QAR User"]
-      node4[(Cache<br/>(L1+L2))]
-      node5["Search<br/>(Typesense)"]
-      node6["Jobs<br/>(River)"]
-      node7["Repository<br/>(sqlc)"]
+      node4[(Cache<br/>[L1+L2])]
+      node5["Search<br/>[Typesense]"]
+      node6["Jobs<br/>[River]"]
+      node7["Repository<br/>[sqlc]"]
       node8[(PostgreSQL 18)]
       node4 --> node5
       node5 --> node6

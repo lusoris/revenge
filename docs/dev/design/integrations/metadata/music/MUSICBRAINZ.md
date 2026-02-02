@@ -61,13 +61,13 @@
 ```mermaid
 flowchart TD
     node1[[Revenge<br/>Metadata<br/>Service]]
-    node2[(Lidarr<br/>(LOCAL cache))]
-    node3[[MusicBrainz<br/>API<br/>(fallback +]]
-    node4([MusicBrainz<br/>API<br/>(external)])
-    node5([HTTP_CLIENT<br/>(optional<br/>proxy/VPN)])
+    node2[(Lidarr<br/>[LOCAL cache])]
+    node3[[MusicBrainz<br/>API<br/>[fallback +]]
+    node4([MusicBrainz<br/>API<br/>[external]])
+    node5([HTTP_CLIENT<br/>[optional<br/>proxy/VPN]])
     node6["Cover<br/>Art<br/>Archive"]
     node7["AcoustID/<br/>Chromaprint"]
-    node8["Rate<br/>Limiter<br/>(1/sec)"]
+    node8["Rate<br/>Limiter<br/>[1/sec]"]
     node2 --> node3
     node4 --> node5
     node6 --> node7

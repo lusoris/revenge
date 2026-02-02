@@ -322,13 +322,24 @@ class ASCIIToMermaid:
         # Track layer boxes for styling
         layer_box_ids = []
 
+        def escape_label(text: str) -> str:
+            """Escape special characters that conflict with Mermaid syntax."""
+            return (
+                text.replace('"', "'")
+                .replace("(", "[")
+                .replace(")", "]")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+            )
+
         # Add all nodes with appropriate shapes
         for box in boxes:
-            label = box["label"].replace('"', "'").replace("(", "[").replace(")", "]")
+            label = escape_label(box["label"])
 
-            # Add sublabels if present
+            # Add sublabels if present (also escape them)
             if box.get("sublabels"):
-                sublabels = "<br/>".join(box["sublabels"][:2])
+                escaped_sublabels = [escape_label(s) for s in box["sublabels"][:2]]
+                sublabels = "<br/>".join(escaped_sublabels)
                 label = f"{label}<br/>{sublabels}"
 
             # Check if this is a layer/tier box - use banner shape

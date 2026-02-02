@@ -59,13 +59,13 @@
 
 ```mermaid
 flowchart TD
-    node1([Client<br/>(Web/App)])
-    node2[[API Handler<br/>(ogen)]]
-    node3[[Service<br/>(Logic)]]
-    node4["Repository<br/>(sqlc)"]
+    node1([Client<br/>[Web/App]])
+    node2[[API Handler<br/>[ogen]]]
+    node3[[Service<br/>[Logic]]]
+    node4["Repository<br/>[sqlc]"]
     node5([Typesense<br/>Client])
     node6[[RBAC<br/>Service]]
-    node7[(PostgreSQL<br/>(pgx))]
+    node7[(PostgreSQL<br/>[pgx])]
     node8["Typesense<br/>Server"]
     node1 --> node2
     node2 --> node3

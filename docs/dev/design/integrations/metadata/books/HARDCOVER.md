@@ -58,9 +58,9 @@
 flowchart TD
     node1["Revenge<br/>Book Library"]
     node2["Hardcover<br/>Account<br/>User Shelves"]
-    node3["River Queue<br/>(background)"]
+    node3["River Queue<br/>[background]"]
     node4["User Shelves<br/>- Want to Read<br/>- Reading"]
-    node5[[Hardcover API<br/>(GraphQL)]]
+    node5[[Hardcover API<br/>[GraphQL]]]
     node1 --> node2
     node3 --> node4
     node2 --> node3

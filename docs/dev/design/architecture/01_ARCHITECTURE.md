@@ -61,17 +61,17 @@ Revenge follows a **layered architecture** with clear separation of concerns:
 
 ```mermaid
 flowchart TD
-    node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
-    node2["API Layer<br/>(ogen-generated handlers + validation)"]
-    node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content Metadata Auth Media"]
+    node1["Client Layer<br/>[Web/Mobile/TV Apps - SvelteKit Frontend]"]
+    node2["API Layer<br/>[ogen-generated handlers + validation]"]
+    node3["Service Layer<br/>[Business logic, orchestration, caching]<br/>Content Metadata Auth Media"]
     node4[[Content<br/>Services]]
     node5[[Metadata<br/>Services]]
     node6[[Auth<br/>Services]]
     node7["Media<br/>Processing"]
-    node8["Repository<br/>Layer<br/>(sqlc + pgx)"]
+    node8["Repository<br/>Layer<br/>[sqlc + pgx]"]
     node9["Metadata Priority<br/>Chain"]
-    node10[(PostgreSQL<br/>Database<br/>(pgx pool))]
-    node11[(L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly)]
+    node10[(PostgreSQL<br/>Database<br/>[pgx pool])]
+    node11[(L1 Cache L2 Cache<br/>Arr Services External<br/>[otter Dragonfly)]
     node4 --> node5
     node5 --> node6
     node6 --> node7

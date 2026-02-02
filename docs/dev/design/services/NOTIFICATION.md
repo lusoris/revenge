@@ -62,9 +62,9 @@
 flowchart TD
     node1["Event<br/>Publisher"]
     node2[[Notification<br/>Service]]
-    node3([Channels<br/>(Email,<br/>Push,])
-    node4[(PostgreSQL<br/>(pgx))]
-    node5([External<br/>Services<br/>(SMTP, FCM)])
+    node3([Channels<br/>[Email,<br/>Push,])
+    node4[(PostgreSQL<br/>[pgx])]
+    node5([External<br/>Services<br/>[SMTP, FCM]])
     node1 --> node2
     node2 --> node3
     node4 --> node5

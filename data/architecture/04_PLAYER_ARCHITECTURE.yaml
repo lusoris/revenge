@@ -75,14 +75,14 @@ architecture_diagram: |-
 
   ```mermaid
   flowchart TD
-      node1["CLIENT LAYER<br/>Web Player Mobile App TV App<br/>(Vidstack) (React Native) (Android TV)"]
-      node2["Web Player<br/>(Vidstack)"]
-      node3([Mobile App<br/>(React Native)])
-      node4([TV App<br/>(Android TV)])
-      node5["HLS.js<br/>(Adaptive)"]
-      node6["STREAMING LAYER<br/>HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)"]
-      node7["HLS Manifest Generator [gohlslib]<br/>- Master Playlist (.m3u8)<br/>- Media Playlists (video/audio/subs)"]
-      node8[[Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)]]
+      node1["CLIENT LAYER<br/>Web Player Mobile App TV App<br/>[Vidstack] [React Native] [Android TV]"]
+      node2["Web Player<br/>[Vidstack]"]
+      node3([Mobile App<br/>[React Native]])
+      node4([TV App<br/>[Android TV]])
+      node5["HLS.js<br/>[Adaptive]"]
+      node6["STREAMING LAYER<br/>HLS Manifest Generator [gohlslib]<br/>- Master Playlist [.m3u8]"]
+      node7["HLS Manifest Generator [gohlslib]<br/>- Master Playlist [.m3u8]<br/>- Media Playlists [video/audio/subs]"]
+      node8[[Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion [H.264, H.265, AV1]<br/>- Audio Transcoding [AAC, Opus]]]
       node9["FEATURE LAYER<br/>Skip Intro Trickplay Chapters<br/>- Timeline - Thumbnails - Markers"]
       node10["Skip Intro<br/>- Timeline<br/>- Detection"]
       node11["Trickplay<br/>- Thumbnails<br/>- Scrubbing"]

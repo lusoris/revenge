@@ -68,15 +68,15 @@ Transcoding capabilities:
 
 ```mermaid
 flowchart TD
-    node1([Client<br/>(Web/App)])
-    node2[[API Handler<br/>(ogen)]]
-    node3[[Service<br/>(Logic)]]
-    node4["Repository<br/>(sqlc)"]
+    node1([Client<br/>[Web/App]])
+    node2[[API Handler<br/>[ogen]]]
+    node3[[Service<br/>[Logic]]]
+    node4["Repository<br/>[sqlc]"]
     node5["Transcoding<br/>Router"]
-    node6[(PostgreSQL<br/>(pgx))]
-    node7[[INTERNAL<br/>FFmpeg<br/>(go-astiav)]]
-    node8([EXTERNAL<br/>(optional)])
-    node9["Blackbeard<br/>(3rd-party)"]
+    node6[(PostgreSQL<br/>[pgx])]
+    node7[[INTERNAL<br/>FFmpeg<br/>[go-astiav]]]
+    node8([EXTERNAL<br/>[optional]])
+    node9["Blackbeard<br/>[3rd-party]"]
     node1 --> node2
     node2 --> node3
     node4 --> node5

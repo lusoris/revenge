@@ -60,7 +60,7 @@
 flowchart TD
     node1[[Metadata<br/>Service]]
     node2[(ThePosterDB<br/>Provider)]
-    node3[(PosterDB API<br/>(External))]
+    node3[(PosterDB API<br/>[External])]
     node4[(Image Download<br/>& Storage)]
     node1 --> node2
     node2 --> node3

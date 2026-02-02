@@ -60,8 +60,8 @@
 flowchart TD
     node1[[Metadata<br/>Service]]
     node2[(OMDb<br/>Provider)]
-    node3[(OMDb API<br/>(External))]
-    node4["Rate Limiter<br/>(1000/day)"]
+    node3[(OMDb API<br/>[External])]
+    node4["Rate Limiter<br/>[1000/day]"]
     node1 --> node2
     node2 --> node3
     node3 --> node4

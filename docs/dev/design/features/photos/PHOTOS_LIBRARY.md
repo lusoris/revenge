@@ -85,13 +85,13 @@ Complete photo library:
 
 ```mermaid
 flowchart TD
-    node1([Client<br/>(Web/App)])
-    node2[[API Handler<br/>(ogen)]]
-    node3[[Service<br/>(Logic)]]
-    node4["Repository<br/>(sqlc)"]
+    node1([Client<br/>[Web/App]])
+    node2[[API Handler<br/>[ogen]]]
+    node3[[Service<br/>[Logic]]]
+    node4["Repository<br/>[sqlc]"]
     node5[[Metadata<br/>Service]]
-    node6[(Cache<br/>(otter))]
-    node7[(PostgreSQL<br/>(pgx))]
+    node6[(Cache<br/>[otter])]
+    node7[(PostgreSQL<br/>[pgx])]
     node8([External<br/>APIs])
     node1 --> node2
     node2 --> node3

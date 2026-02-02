@@ -61,7 +61,7 @@ flowchart TD
     node1["Revenge<br/>Playback<br/>Events"]
     node2["Trakt<br/>Integration"]
     node3[[Trakt<br/>API]]
-    node4["Scrobble<br/>Queue (River)"]
+    node4["Scrobble<br/>Queue [River]"]
     node1 --> node2
     node2 --> node3
     node3 --> node4
