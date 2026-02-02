@@ -121,12 +121,12 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 - [x] **Verify**: Client initializes
 
 ### 3.2 Queue Configuration
-- [ ] Create `internal/infra/jobs/queues.go`
-- [ ] Define queue priorities (critical, default, low)
-- [ ] Configure retry policies
-- [ ] **Test**: Queue config validation
-- [ ] **Lint**: Check
-- [ ] **Verify**: Queues registered
+- [x] Create `internal/infra/jobs/queues.go`
+- [x] Define queue priorities (critical, default, low)
+- [x] Configure retry policies
+- [x] **Test**: Queue config validation
+- [x] **Lint**: Check
+- [x] **Verify**: Queues registered
 
 ### 3.3 Base Job Types
 - [ ] Create `internal/infra/jobs/cleanup_job.go`

@@ -32,7 +32,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 |-----------|--------|----------|-------|
 | PostgreSQL | 🟢 Complete | 100% | ✓ Migrations ✓ sqlc ✓ Metrics ✓ Query Logging (4/4) |
 | Dragonfly | 🟢 Complete | 100% | ✓ Rueidis client ✓ Otter L1 ✓ Cache Ops (3/3) |
-| River | 🟡 In Progress | 30% | ✓ River client ⏳ Queue config ⏳ Job types (1/3) |
+| River | 🟡 In Progress | 60% | ✓ River client ✓ Queue config ⏳ Job types (2/3) |
 
 ### Testing
 
@@ -62,13 +62,14 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: Database Layer (Migrations, sqlc, Metrics, Query Logging) - 4/4 steps
 - ✅ **2026-02-02**: Dragonfly/Redis Cache (Rueidis, Otter L1, Cache Ops) - 3/3 steps
 - ✅ **2026-02-02**: River Client Setup - Step 3.1 complete
+- ✅ **2026-02-02**: River Queue Configuration - Step 3.2 complete (3 queues, 2 backoff strategies)
 
 ## Next Steps
 
-1. Complete Step 3.2: Queue Configuration (priorities, retry policies)
-2. Complete Step 3.3: Base Job Types (cleanup job)
-3. Start Step 4: Settings Service (migrations, service layer)
-4. Start Step 5: Auth Service (core authentication)
+1. Complete Step 3.3: Base Job Types (cleanup job implementation)
+2. Start Step 4: Settings Service (migrations, service layer)
+3. Start Step 5: Auth Service (core authentication)
+4. Implement remaining services (User, Session, RBAC, API Keys, OIDC)
 
 ## Reference
 
@@ -84,3 +85,4 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Database Layer (4/4): Migrations, sqlc, Metrics, Query Logging |
 | 2026-02-02 | Completed Cache Layer (3/3): Rueidis client, Otter L1, Cache Operations |
 | 2026-02-02 | Completed Step 3.1: River client setup (36% coverage, 0 lint issues) |
+| 2026-02-02 | Completed Step 3.2: Queue config (3 queues, 2 backoff, coverage 55.6%) |
