@@ -13,6 +13,56 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// JWT refresh tokens for persistent user sessions
+type SharedAuthToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the refresh token (never store plaintext)
+	TokenHash  string  `json:"tokenHash"`
+	TokenType  string  `json:"tokenType"`
+	DeviceName *string `json:"deviceName"`
+	// Unique identifier for the device/browser
+	DeviceFingerprint *string            `json:"deviceFingerprint"`
+	IpAddress         netip.Addr         `json:"ipAddress"`
+	UserAgent         *string            `json:"userAgent"`
+	ExpiresAt         time.Time          `json:"expiresAt"`
+	RevokedAt         pgtype.Timestamptz `json:"revokedAt"`
+	// Timestamp when token was last used for refresh
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
+// One-time tokens for email verification and email change flow
+type SharedEmailVerificationToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the verification token (never store plaintext)
+	TokenHash string `json:"tokenHash"`
+	// Email address being verified (may differ from user.email during change)
+	Email     string     `json:"email"`
+	IpAddress netip.Addr `json:"ipAddress"`
+	UserAgent *string    `json:"userAgent"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	// Timestamp when token was used (prevents reuse)
+	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+// One-time tokens for password reset flow
+type SharedPasswordResetToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the reset token (never store plaintext)
+	TokenHash string     `json:"tokenHash"`
+	IpAddress netip.Addr `json:"ipAddress"`
+	UserAgent *string    `json:"userAgent"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	// Timestamp when token was used (prevents reuse)
+	UsedAt    pgtype.Timestamptz `json:"usedAt"`
+	CreatedAt time.Time          `json:"createdAt"`
+}
+
 // Server-wide configuration settings with validation
 type SharedServerSetting struct {
 	Key string `json:"key"`
@@ -62,28 +112,86 @@ type SharedSession struct {
 	LastUsedAt time.Time `json:"lastUsedAt"`
 }
 
-// User accounts for authentication and authorization
+// User accounts with authentication and profile information
 type SharedUser struct {
-	// Unique user identifier (UUID v4)
-	ID uuid.UUID `json:"id"`
-	// User email address (unique, used for login)
-	Email string `json:"email"`
-	// Hashed password (bcrypt or argon2)
-	PasswordHash string `json:"passwordHash"`
-	// Unique username (alphanumeric, used for @mentions)
-	Username string `json:"username"`
-	// Display name shown in UI
-	DisplayName *string `json:"displayName"`
-	AvatarUrl   *string `json:"avatarUrl"`
-	// Whether the user account is active (can log in)
-	IsActive bool `json:"isActive"`
-	// Whether the user has admin privileges
-	IsAdmin bool `json:"isAdmin"`
-	// Whether the email address has been verified
-	EmailVerified bool               `json:"emailVerified"`
-	CreatedAt     time.Time          `json:"createdAt"`
-	UpdatedAt     time.Time          `json:"updatedAt"`
-	LastLoginAt   pgtype.Timestamptz `json:"lastLoginAt"`
-	// Soft delete timestamp (NULL = not deleted)
-	DeletedAt pgtype.Timestamptz `json:"deletedAt"`
+	ID       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Email    string    `json:"email"`
+	// Argon2id password hash
+	PasswordHash string  `json:"passwordHash"`
+	DisplayName  *string `json:"displayName"`
+	AvatarUrl    *string `json:"avatarUrl"`
+	Locale       *string `json:"locale"`
+	Timezone     *string `json:"timezone"`
+	// Grants legacy:read scope for QAR (adult content) access
+	QarEnabled      *bool              `json:"qarEnabled"`
+	IsActive        *bool              `json:"isActive"`
+	IsAdmin         *bool              `json:"isAdmin"`
+	EmailVerified   *bool              `json:"emailVerified"`
+	EmailVerifiedAt pgtype.Timestamptz `json:"emailVerifiedAt"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+	LastLoginAt     pgtype.Timestamptz `json:"lastLoginAt"`
+	DeletedAt       pgtype.Timestamptz `json:"deletedAt"`
+}
+
+// User avatar storage with versioning and metadata
+type SharedUserAvatar struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Storage path relative to upload directory
+	FilePath      string `json:"filePath"`
+	FileSizeBytes int64  `json:"fileSizeBytes"`
+	MimeType      string `json:"mimeType"`
+	Width         int32  `json:"width"`
+	Height        int32  `json:"height"`
+	IsAnimated    *bool  `json:"isAnimated"`
+	// Avatar version number (incremented on each upload)
+	Version int32 `json:"version"`
+	// Whether this is the currently active avatar
+	IsCurrent             *bool              `json:"isCurrent"`
+	UploadedAt            time.Time          `json:"uploadedAt"`
+	UploadedFromIp        netip.Addr         `json:"uploadedFromIp"`
+	UploadedFromUserAgent *string            `json:"uploadedFromUserAgent"`
+	CreatedAt             time.Time          `json:"createdAt"`
+	UpdatedAt             time.Time          `json:"updatedAt"`
+	DeletedAt             pgtype.Timestamptz `json:"deletedAt"`
+}
+
+// User preferences for notifications, privacy, and display settings
+type SharedUserPreference struct {
+	UserID uuid.UUID `json:"userId"`
+	// Email notification settings (enabled, frequency, types)
+	EmailNotifications []byte `json:"emailNotifications"`
+	// Push notification settings (enabled, device tokens)
+	PushNotifications []byte `json:"pushNotifications"`
+	// Digest notification settings (enabled, frequency)
+	DigestNotifications []byte `json:"digestNotifications"`
+	// Who can view the user profile (public, friends, private)
+	ProfileVisibility *string   `json:"profileVisibility"`
+	ShowEmail         *bool     `json:"showEmail"`
+	ShowActivity      *bool     `json:"showActivity"`
+	Theme             *string   `json:"theme"`
+	DisplayLanguage   *string   `json:"displayLanguage"`
+	ContentLanguage   *string   `json:"contentLanguage"`
+	ShowAdultContent  *bool     `json:"showAdultContent"`
+	ShowSpoilers      *bool     `json:"showSpoilers"`
+	AutoPlayVideos    *bool     `json:"autoPlayVideos"`
+	CreatedAt         time.Time `json:"createdAt"`
+	UpdatedAt         time.Time `json:"updatedAt"`
+}
+
+// User-specific configuration settings
+type SharedUserSetting struct {
+	UserID uuid.UUID `json:"userId"`
+	Key    string    `json:"key"`
+	// Setting value stored as JSONB for type flexibility
+	Value       json.RawMessage `json:"value"`
+	Description *string         `json:"description"`
+	// Setting category for organization
+	Category *string `json:"category"`
+	// Expected data type for validation
+	DataType  string    `json:"dataType"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

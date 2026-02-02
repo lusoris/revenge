@@ -40,7 +40,7 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 
 	cmd := c.client.rueidisClient.B().Get().Key(key).Build()
 	resp := c.client.rueidisClient.Do(ctx, cmd)
-	
+
 	if err := resp.Error(); err != nil {
 		return nil, fmt.Errorf("L2 cache get failed: %w", err)
 	}
@@ -99,7 +99,7 @@ func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
 	if c.client != nil && c.client.rueidisClient != nil {
 		cmd := c.client.rueidisClient.B().Exists().Key(key).Build()
 		resp := c.client.rueidisClient.Do(ctx, cmd)
-		
+
 		if err := resp.Error(); err != nil {
 			return false, fmt.Errorf("L2 cache exists check failed: %w", err)
 		}
@@ -126,7 +126,7 @@ func (c *Cache) Invalidate(ctx context.Context, pattern string) error {
 		// Use KEYS command to find matching keys (not recommended for production large datasets)
 		keysCmd := c.client.rueidisClient.B().Keys().Pattern(pattern).Build()
 		keysResp := c.client.rueidisClient.Do(ctx, keysCmd)
-		
+
 		if err := keysResp.Error(); err != nil {
 			return fmt.Errorf("L2 cache keys lookup failed: %w", err)
 		}

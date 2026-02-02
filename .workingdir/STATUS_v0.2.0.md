@@ -3,7 +3,7 @@
 **Version**: v0.2.0 - Core Backend Services
 **Start Date**: 2026-02-02
 **Target**: TBD
-**Current Status**: 🟡 In Progress (Database: 80%, Cache: 100%, Jobs: 30%)
+**Current Status**: � Infrastructure Complete (Database, Cache, Jobs 100%)
 
 ## Overview
 
@@ -32,7 +32,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 |-----------|--------|----------|-------|
 | PostgreSQL | 🟢 Complete | 100% | ✓ Migrations ✓ sqlc ✓ Metrics ✓ Query Logging (4/4) |
 | Dragonfly | 🟢 Complete | 100% | ✓ Rueidis client ✓ Otter L1 ✓ Cache Ops (3/3) |
-| River | 🟡 In Progress | 60% | ✓ River client ✓ Queue config ⏳ Job types (2/3) |
+| River | � Complete | 100% | ✓ River client ✓ Queue config ✓ Cleanup job (3/3) |
 
 ### Testing
 
@@ -63,13 +63,15 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: Dragonfly/Redis Cache (Rueidis, Otter L1, Cache Ops) - 3/3 steps
 - ✅ **2026-02-02**: River Client Setup - Step 3.1 complete
 - ✅ **2026-02-02**: River Queue Configuration - Step 3.2 complete (3 queues, 2 backoff strategies)
+- ✅ **2026-02-02**: River Cleanup Job - Step 3.3 complete (validation, dry-run, 8 tests)
+- ✅ **2026-02-02**: River Job Queue - FULLY COMPLETE (all 3 steps, 31 tests, 65.6% coverage)
 
 ## Next Steps
 
-1. Complete Step 3.3: Base Job Types (cleanup job implementation)
-2. Start Step 4: Settings Service (migrations, service layer)
-3. Start Step 5: Auth Service (core authentication)
-4. Implement remaining services (User, Session, RBAC, API Keys, OIDC)
+1. **START SERVICE IMPLEMENTATION** - Infrastructure layer complete! 🎉
+2. Step 4: Settings Service (migrations, service layer, CRUD operations)
+3. Step 5: Auth Service (login, JWT tokens, password reset)
+4. Step 6+: Remaining services (User, Session, RBAC, API Keys, OIDC, Activity, Library, Health)
 
 ## Reference
 
@@ -86,3 +88,5 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Cache Layer (3/3): Rueidis client, Otter L1, Cache Operations |
 | 2026-02-02 | Completed Step 3.1: River client setup (36% coverage, 0 lint issues) |
 | 2026-02-02 | Completed Step 3.2: Queue config (3 queues, 2 backoff, coverage 55.6%) |
+| 2026-02-02 | Completed Step 3.3: Cleanup job (validation, dry-run, coverage 65.6%) |
+| 2026-02-02 | ✅ INFRASTRUCTURE COMPLETE: PostgreSQL + Dragonfly + River (100%) |

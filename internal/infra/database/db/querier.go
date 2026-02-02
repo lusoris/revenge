@@ -11,10 +11,16 @@ import (
 )
 
 type Querier interface {
+	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count users matching filters
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
+	CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error)
 	// Upload a new avatar (sets it as current)
 	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
+	// Email Verification Tokens
+	CreateEmailVerificationToken(ctx context.Context, arg CreateEmailVerificationTokenParams) (SharedEmailVerificationToken, error)
+	// Password Reset Tokens
+	CreatePasswordResetToken(ctx context.Context, arg CreatePasswordResetTokenParams) (SharedPasswordResetToken, error)
 	// Create a new server setting
 	CreateServerSetting(ctx context.Context, arg CreateServerSettingParams) (SharedServerSetting, error)
 	// Create a new user
@@ -25,14 +31,23 @@ type Querier interface {
 	DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error
 	// Soft delete an avatar
 	DeleteAvatar(ctx context.Context, id uuid.UUID) error
+	DeleteExpiredAuthTokens(ctx context.Context) error
+	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
+	DeleteExpiredPasswordResetTokens(ctx context.Context) error
+	DeleteRevokedAuthTokens(ctx context.Context) error
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
+	DeleteUsedPasswordResetTokens(ctx context.Context) error
 	// Soft delete a user
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	// Delete user preferences (cleanup on user deletion)
 	DeleteUserPreferences(ctx context.Context, userID uuid.UUID) error
 	// Delete a user setting
 	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
+	DeleteVerifiedEmailTokens(ctx context.Context) error
+	GetAuthTokenByHash(ctx context.Context, tokenHash string) (SharedAuthToken, error)
+	GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetAuthTokensByDeviceFingerprintParams) ([]SharedAuthToken, error)
+	GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) ([]SharedAuthToken, error)
 	// Get a specific avatar by ID
 	GetAvatarByID(ctx context.Context, id uuid.UUID) (SharedUserAvatar, error)
 	// ============================================================================
@@ -40,8 +55,10 @@ type Querier interface {
 	// ============================================================================
 	// Get the current avatar for a user
 	GetCurrentAvatar(ctx context.Context, userID uuid.UUID) (SharedUserAvatar, error)
+	GetEmailVerificationToken(ctx context.Context, tokenHash string) (SharedEmailVerificationToken, error)
 	// Get the latest avatar version number for a user
 	GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) (int32, error)
+	GetPasswordResetToken(ctx context.Context, tokenHash string) (SharedPasswordResetToken, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
 	// Get a user by email
@@ -64,6 +81,9 @@ type Querier interface {
 	HardDeleteAvatar(ctx context.Context, id uuid.UUID) error
 	// Permanently delete a user (GDPR compliance)
 	HardDeleteUser(ctx context.Context, id uuid.UUID) error
+	InvalidateEmailVerificationTokensByEmail(ctx context.Context, email string) error
+	InvalidateUserEmailVerificationTokens(ctx context.Context, userID uuid.UUID) error
+	InvalidateUserPasswordResetTokens(ctx context.Context, userID uuid.UUID) error
 	// Get public settings (exposed in API)
 	ListPublicServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get all server settings
@@ -78,10 +98,17 @@ type Querier interface {
 	ListUserSettingsByCategory(ctx context.Context, arg ListUserSettingsByCategoryParams) ([]SharedUserSetting, error)
 	// List all active users with optional filters
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error)
+	MarkEmailVerificationTokenUsed(ctx context.Context, id uuid.UUID) error
+	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
+	RevokeAllUserAuthTokens(ctx context.Context, userID uuid.UUID) error
+	RevokeAllUserAuthTokensExcept(ctx context.Context, arg RevokeAllUserAuthTokensExceptParams) error
+	RevokeAuthToken(ctx context.Context, id uuid.UUID) error
+	RevokeAuthTokenByHash(ctx context.Context, tokenHash string) error
 	// Set an existing avatar as current
 	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
 	// Mark all user's avatars as not current (before setting a new current)
 	UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) error
+	UpdateAuthTokenLastUsed(ctx context.Context, id uuid.UUID) error
 	// Update user last login timestamp
 	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
 	// Update user password hash

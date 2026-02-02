@@ -13,6 +13,56 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// JWT refresh tokens for persistent user sessions
+type SharedAuthToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the refresh token (never store plaintext)
+	TokenHash  string  `json:"tokenHash"`
+	TokenType  string  `json:"tokenType"`
+	DeviceName *string `json:"deviceName"`
+	// Unique identifier for the device/browser
+	DeviceFingerprint *string            `json:"deviceFingerprint"`
+	IpAddress         netip.Addr         `json:"ipAddress"`
+	UserAgent         *string            `json:"userAgent"`
+	ExpiresAt         time.Time          `json:"expiresAt"`
+	RevokedAt         pgtype.Timestamptz `json:"revokedAt"`
+	// Timestamp when token was last used for refresh
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
+// One-time tokens for email verification and email change flow
+type SharedEmailVerificationToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the verification token (never store plaintext)
+	TokenHash string `json:"tokenHash"`
+	// Email address being verified (may differ from user.email during change)
+	Email     string     `json:"email"`
+	IpAddress netip.Addr `json:"ipAddress"`
+	UserAgent *string    `json:"userAgent"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	// Timestamp when token was used (prevents reuse)
+	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+// One-time tokens for password reset flow
+type SharedPasswordResetToken struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// SHA-256 hash of the reset token (never store plaintext)
+	TokenHash string     `json:"tokenHash"`
+	IpAddress netip.Addr `json:"ipAddress"`
+	UserAgent *string    `json:"userAgent"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	// Timestamp when token was used (prevents reuse)
+	UsedAt    pgtype.Timestamptz `json:"usedAt"`
+	CreatedAt time.Time          `json:"createdAt"`
+}
+
 // Server-wide configuration settings with validation
 type SharedServerSetting struct {
 	Key string `json:"key"`
