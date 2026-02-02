@@ -61,10 +61,13 @@ flowchart TD
     node1["SvelteKit Frontend<br/>(Svelte 5 + Tailwind 4 + shadcn-svelte)"]
     node2[["ogen OpenAPI Handlers<br/>(Type-safe from openapi.yaml)"]]
     node3["Service Layer (fx)<br/>Movies TV Music QAR User"]
-    node4[("Cache<br/>(L1+L2)")]
-    node5["Search<br/>(Typesense)"]
-    node6["Jobs<br/>(River)"]
-    node7["Repository<br/>(sqlc)"]
+    subgraph row1[ ]
+        direction LR
+        node4[("Cache<br/>(L1+L2)")]
+        node5["Search<br/>(Typesense)"]
+        node6["Jobs<br/>(River)"]
+        node7["Repository<br/>(sqlc)"]
+    end
     node8[("PostgreSQL 18")]
     node4 --> node5
     node5 --> node6
@@ -76,6 +79,9 @@ flowchart TD
 
     %% Layer styling
     style node3 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 ## Configuration
 

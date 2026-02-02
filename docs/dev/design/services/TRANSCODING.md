@@ -68,14 +68,23 @@ Transcoding capabilities:
 
 ```mermaid
 flowchart TD
-    node1(["Client<br/>(Web/App)"])
-    node2[["API Handler<br/>(ogen)"]]
-    node3[["Service<br/>(Logic)"]]
-    node4["Repository<br/>(sqlc)"]
-    node5["Transcoding<br/>Router"]
-    node6[("PostgreSQL<br/>(pgx)")]
-    node7[["INTERNAL<br/>FFmpeg<br/>(go-astiav)"]]
-    node8(["EXTERNAL<br/>(optional)"])
+    subgraph row1[ ]
+        direction LR
+        node1(["Client<br/>(Web/App)"])
+        node2[["API Handler<br/>(ogen)"]]
+        node3[["Service<br/>(Logic)"]]
+    end
+    subgraph row2[ ]
+        direction LR
+        node4["Repository<br/>(sqlc)"]
+        node5["Transcoding<br/>Router"]
+    end
+    subgraph row3[ ]
+        direction LR
+        node6[("PostgreSQL<br/>(pgx)")]
+        node7[["INTERNAL<br/>FFmpeg<br/>(go-astiav)"]]
+        node8(["EXTERNAL<br/>(optional)"])
+    end
     node9["Blackbeard<br/>(3rd-party)"]
     node1 --> node2
     node2 --> node3
@@ -85,6 +94,11 @@ flowchart TD
     node3 --> node4
     node5 --> node6
     node8 --> node9
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
+    style row3 fill:transparent,stroke:transparent
 ```
 
 ### Service Structure

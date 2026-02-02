@@ -58,13 +58,19 @@
 
 ```mermaid
 flowchart TD
-    node1(["Client<br/>(Search)"])
-    node2[["Search<br/>Service"]]
-    node3["Typesense<br/>Server"]
+    subgraph row1[ ]
+        direction LR
+        node1(["Client<br/>(Search)"])
+        node2[["Search<br/>Service"]]
+        node3["Typesense<br/>Server"]
+    end
     node4[("Sync Job<br/>(PostgreSQL<br/>Typesense)")]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

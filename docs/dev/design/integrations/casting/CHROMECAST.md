@@ -57,13 +57,23 @@
 
 ```mermaid
 flowchart TD
-    node1(["Revenge<br/>Web App"])
-    node2["Chromecast<br/>Device"]
-    node3["Revenge<br/>Server<br/>(HLS Stream)"]
-    node4(["Receiver<br/>Application<br/>(Custom)"])
+    subgraph row1[ ]
+        direction LR
+        node1(["Revenge<br/>Web App"])
+        node2["Chromecast<br/>Device"]
+    end
+    subgraph row2[ ]
+        direction LR
+        node3["Revenge<br/>Server<br/>(HLS Stream)"]
+        node4(["Receiver<br/>Application<br/>(Custom)"])
+    end
     node1 --> node2
     node3 --> node4
     node2 --> node3
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

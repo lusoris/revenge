@@ -58,13 +58,19 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Playback<br/>Events"]
-    node2["Trakt<br/>Integration"]
-    node3[["Trakt<br/>API"]]
+    subgraph row1[ ]
+        direction LR
+        node1["Revenge<br/>Playback<br/>Events"]
+        node2["Trakt<br/>Integration"]
+        node3[["Trakt<br/>API"]]
+    end
     node4["Scrobble<br/>Queue (River)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

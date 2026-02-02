@@ -56,13 +56,19 @@ auth_method: api_key
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1[["Metadata<br/>Service"]]
-      node2[("OMDb<br/>Provider")]
-      node3[("OMDb API<br/>(External)")]
+      subgraph row1[ ]
+          direction LR
+          node1[["Metadata<br/>Service"]]
+          node2[("OMDb<br/>Provider")]
+          node3[("OMDb API<br/>(External)")]
+      end
       node4["Rate Limiter<br/>(1000/day)"]
       node1 --> node2
       node2 --> node3
       node3 --> node4
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
   ```
 api_details: |
   **API Version**: v1

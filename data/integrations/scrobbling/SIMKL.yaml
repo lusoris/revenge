@@ -46,13 +46,19 @@ auth_method: oauth
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1["Revenge<br/>Playback<br/>Events"]
-      node2["Simkl<br/>Integration"]
-      node3[["Simkl<br/>API"]]
+      subgraph row1[ ]
+          direction LR
+          node1["Revenge<br/>Playback<br/>Events"]
+          node2["Simkl<br/>Integration"]
+          node3[["Simkl<br/>API"]]
+      end
       node4["Scrobble<br/>Queue (River)"]
       node1 --> node2
       node2 --> node3
       node3 --> node4
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
   ```
 api_details: |
   **API Version**: v2

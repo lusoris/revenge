@@ -35,13 +35,23 @@ auth_method: none
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1(["Smart TV<br/>DLNA Client"])
-      node2["Revenge<br/>MediaServer"]
-      node3["Renderer<br/>(Playback)"]
-      node4[["AVTransport<br/>Service"]]
+      subgraph row1[ ]
+          direction LR
+          node1(["Smart TV<br/>DLNA Client"])
+          node2["Revenge<br/>MediaServer"]
+      end
+      subgraph row2[ ]
+          direction LR
+          node3["Renderer<br/>(Playback)"]
+          node4[["AVTransport<br/>Service"]]
+      end
       node1 --> node2
       node3 --> node4
       node2 --> node3
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
+      style row2 fill:transparent,stroke:transparent
   ```
 protocol_details: |
   **UPnP/DLNA Protocols**:

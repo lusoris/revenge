@@ -61,22 +61,34 @@
 
 ```mermaid
 flowchart TD
-    node1(["Client<br/>(Web/App)"])
-    node2[["API Handler<br/>(ogen)"]]
-    node3[["Metadata<br/>Service"]]
+    subgraph row1[ ]
+        direction LR
+        node1(["Client<br/>(Web/App)"])
+        node2[["API Handler<br/>(ogen)"]]
+        node3[["Metadata<br/>Service"]]
+    end
     node4["Priority<br/>Chain"]
     node5[("L1 Cache L2 Cache<br/>Dragonfly<br/>(distrib)")]
-    node6["Otter<br/>(in-mem)"]
-    node7["Dragonfly<br/>(distrib)"]
+    subgraph row2[ ]
+        direction LR
+        node6["Otter<br/>(in-mem)"]
+        node7["Dragonfly<br/>(distrib)"]
+    end
     node8[["PRIMARY (local Arr services)<br/>Lidarr Chaptarr Whisparr<br/>(music) (books) (QAR)"]]
-    node9[("Radarr/Sonarr<br/>(LOCAL cache)")]
-    node10["Lidarr<br/>(music)"]
-    node11["Chaptarr<br/>(books)"]
-    node12["Whisparr<br/>(QAR)"]
-    node13[("TMDb/TVDB<br/>(via proxy)")]
-    node14["MusicBrainz<br/>(via proxy)"]
-    node15["OpenLibrary<br/>(via proxy)"]
-    node16[("StashDB<br/>(via proxy)")]
+    subgraph row3[ ]
+        direction LR
+        node9[("Radarr/Sonarr<br/>(LOCAL cache)")]
+        node10["Lidarr<br/>(music)"]
+        node11["Chaptarr<br/>(books)"]
+        node12["Whisparr<br/>(QAR)"]
+    end
+    subgraph row4[ ]
+        direction LR
+        node13[("TMDb/TVDB<br/>(via proxy)")]
+        node14["MusicBrainz<br/>(via proxy)"]
+        node15["OpenLibrary<br/>(via proxy)"]
+        node16[("StashDB<br/>(via proxy)")]
+    end
     node17(["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"])
     node1 --> node2
     node2 --> node3
@@ -94,6 +106,12 @@ flowchart TD
     node8 --> node9
     node12 --> node13
     node16 --> node17
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
+    style row3 fill:transparent,stroke:transparent
+    style row4 fill:transparent,stroke:transparent
 ```
 
 ### Service Structure

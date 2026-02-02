@@ -57,12 +57,18 @@
 ```mermaid
 flowchart TD
     node1["Revenge<br/>QAR Module<br/>(Performer)"]
-    node2["Babepedia<br/>Scraper"]
-    node3["Performer Data<br/>- Biography<br/>- Measurements"]
+    subgraph row1[ ]
+        direction LR
+        node2["Babepedia<br/>Scraper"]
+        node3["Performer Data<br/>- Biography<br/>- Measurements"]
+    end
     node4["Rate Limiter<br/>+ Proxy Pool"]
     node2 --> node3
     node1 --> node2
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

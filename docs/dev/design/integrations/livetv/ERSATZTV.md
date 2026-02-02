@@ -62,8 +62,11 @@
 
 ```mermaid
 flowchart TD
-    node1(["Revenge<br/>Web Client"])
-    node2[["EPG Service<br/>(Revenge)"]]
+    subgraph row1[ ]
+        direction LR
+        node1(["Revenge<br/>Web Client"])
+        node2[["EPG Service<br/>(Revenge)"]]
+    end
     node3[["ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml"]]
     node4["Player<br/>(Vidstack)"]
     node5["Media Files<br/>(your library)"]
@@ -74,6 +77,9 @@ flowchart TD
 
     %% Layer styling
     style node4 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

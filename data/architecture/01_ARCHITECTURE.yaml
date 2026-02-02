@@ -153,14 +153,23 @@ architecture_diagram: |-
       node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
       node2["API Layer<br/>(ogen-generated handlers + validation)"]
       node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content Metadata Auth Media"]
-      node4[["Content<br/>Services"]]
-      node5[["Metadata<br/>Services"]]
-      node6[["Auth<br/>Services"]]
-      node7["Media<br/>Processing"]
-      node8["Repository<br/>Layer<br/>(sqlc + pgx)"]
-      node9["Metadata Priority<br/>Chain"]
-      node10[("PostgreSQL<br/>Database<br/>(pgx pool)")]
-      node11[("L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly")]
+      subgraph row1[ ]
+          direction LR
+          node4[["Content<br/>Services"]]
+          node5[["Metadata<br/>Services"]]
+          node6[["Auth<br/>Services"]]
+          node7["Media<br/>Processing"]
+      end
+      subgraph row2[ ]
+          direction LR
+          node8["Repository<br/>Layer<br/>(sqlc + pgx)"]
+          node9["Metadata Priority<br/>Chain"]
+      end
+      subgraph row3[ ]
+          direction LR
+          node10[("PostgreSQL<br/>Database<br/>(pgx pool)")]
+          node11[("L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly")]
+      end
       node4 --> node5
       node5 --> node6
       node6 --> node7
@@ -176,6 +185,11 @@ architecture_diagram: |-
       style node1 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
       style node2 fill:#388E3C,stroke:#fff,stroke-width:2px,color:#fff
       style node3 fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
+      style row2 fill:transparent,stroke:transparent
+      style row3 fill:transparent,stroke:transparent
   ```
 system_components: |
   **1. Client Layer (Frontend)**

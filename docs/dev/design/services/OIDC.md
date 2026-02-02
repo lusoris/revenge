@@ -59,15 +59,21 @@
 
 ```mermaid
 flowchart TD
-    node1(["Client<br/>(Browser)"])
-    node2[["API Handler<br/>(ogen)"]]
-    node3[["Service<br/>(Logic)"]]
+    subgraph row1[ ]
+        direction LR
+        node1(["Client<br/>(Browser)"])
+        node2[["API Handler<br/>(ogen)"]]
+        node3[["Service<br/>(Logic)"]]
+    end
     node4(["OIDC<br/>Provider<br/>(Authentik)"])
     node5[("PostgreSQL")]
     node1 --> node2
     node2 --> node3
     node3 --> node4
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Service Structure

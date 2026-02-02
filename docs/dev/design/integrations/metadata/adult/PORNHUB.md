@@ -62,8 +62,11 @@
 flowchart TD
     node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
     node2["Pornhub Link<br/>(verified URL)"]
-    node3["Pornhub.com<br/>(Cloudflare)"]
-    node4["View Count<br/>Subscribers<br/>Video Count"]
+    subgraph row1[ ]
+        direction LR
+        node3["Pornhub.com<br/>(Cloudflare)"]
+        node4["View Count<br/>Subscribers<br/>Video Count"]
+    end
     node5(["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"])
     node6["Headless<br/>Browser<br/>(Cloudflare)"]
     node3 --> node4
@@ -71,6 +74,9 @@ flowchart TD
     node2 --> node3
     node4 --> node5
     node5 --> node6
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

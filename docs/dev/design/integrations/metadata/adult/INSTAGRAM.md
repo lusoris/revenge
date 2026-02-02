@@ -59,13 +59,19 @@
 flowchart TD
     node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
     node2["Instagram Link<br/>(verified URL)"]
-    node3["Instagram.com<br/>(login wall)"]
-    node4["Followers<br/>Post Count<br/>Bio"]
+    subgraph row1[ ]
+        direction LR
+        node3["Instagram.com<br/>(login wall)"]
+        node4["Followers<br/>Post Count<br/>Bio"]
+    end
     node5(["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"])
     node3 --> node4
     node1 --> node2
     node2 --> node3
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

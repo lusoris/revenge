@@ -58,13 +58,19 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Request<br/>System"]
-    node2["Chaptarr<br/>Integration"]
-    node3["Chaptarr<br/>(Readarr)"]
+    subgraph row1[ ]
+        direction LR
+        node1["Revenge<br/>Request<br/>System"]
+        node2["Chaptarr<br/>Integration"]
+        node3["Chaptarr<br/>(Readarr)"]
+    end
     node4(["Webhook<br/>Handler"])
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

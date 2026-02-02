@@ -125,15 +125,21 @@ fx.Provide(
 
 ```mermaid
 flowchart TD
-    node1[("External APIs<br/>(TMDb, TVDB)")]
-    node2(["HTTP Client<br/>Factory<br/>- Proxy Router"])
-    node3[["Services<br/>(Metadata,<br/>Requests)"]]
+    subgraph row1[ ]
+        direction LR
+        node1[("External APIs<br/>(TMDb, TVDB)")]
+        node2(["HTTP Client<br/>Factory<br/>- Proxy Router"])
+        node3[["Services<br/>(Metadata,<br/>Requests)"]]
+    end
     node4["Proxy/VPN<br/>(Tor, HTTP)"]
     node5[["Local Services<br/>(Arr, Stash)"]]
     node1 --> node2
     node2 --> node3
     node3 --> node4
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Service Structure

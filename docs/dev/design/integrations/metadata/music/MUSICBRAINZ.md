@@ -61,13 +61,22 @@
 ```mermaid
 flowchart TD
     node1[["Revenge<br/>Metadata<br/>Service"]]
-    node2[("Lidarr<br/>(LOCAL cache)")]
-    node3[["MusicBrainz<br/>API<br/>(fallback +"]]
-    node4(["MusicBrainz<br/>API<br/>(external)"])
-    node5(["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"])
-    node6["Cover<br/>Art<br/>Archive"]
-    node7["AcoustID/<br/>Chromaprint"]
-    node8["Rate<br/>Limiter<br/>(1/sec)"]
+    subgraph row1[ ]
+        direction LR
+        node2[("Lidarr<br/>(LOCAL cache)")]
+        node3[["MusicBrainz<br/>API<br/>(fallback +"]]
+    end
+    subgraph row2[ ]
+        direction LR
+        node4(["MusicBrainz<br/>API<br/>(external)"])
+        node5(["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"])
+    end
+    subgraph row3[ ]
+        direction LR
+        node6["Cover<br/>Art<br/>Archive"]
+        node7["AcoustID/<br/>Chromaprint"]
+        node8["Rate<br/>Limiter<br/>(1/sec)"]
+    end
     node2 --> node3
     node4 --> node5
     node6 --> node7
@@ -75,6 +84,11 @@ flowchart TD
     node1 --> node2
     node3 --> node4
     node5 --> node6
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
+    style row3 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

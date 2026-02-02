@@ -62,13 +62,22 @@
 
 ```mermaid
 flowchart TD
-    node1(["Revenge<br/>Web Player"])
-    node2["Anime Item<br/>(TV Show)<br/>River Queue"]
-    node3[["Scrobbling<br/>Service"]]
-    node4["River Queue<br/>(Background)"]
+    subgraph row1[ ]
+        direction LR
+        node1(["Revenge<br/>Web Player"])
+        node2["Anime Item<br/>(TV Show)<br/>River Queue"]
+    end
+    subgraph row2[ ]
+        direction LR
+        node3[["Scrobbling<br/>Service"]]
+        node4["River Queue<br/>(Background)"]
+    end
     node5["AniList<br/>Scrobbler"]
-    node6[("Database<br/>(history)")]
-    node7[["AniList API<br/>(GraphQL)"]]
+    subgraph row3[ ]
+        direction LR
+        node6[("Database<br/>(history)")]
+        node7[["AniList API<br/>(GraphQL)"]]
+    end
     node8["AniList<br/>User Profile"]
     node1 --> node2
     node3 --> node4
@@ -77,6 +86,11 @@ flowchart TD
     node4 --> node5
     node5 --> node6
     node7 --> node8
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
+    style row3 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

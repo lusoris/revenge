@@ -59,13 +59,19 @@
 
 ```mermaid
 flowchart TD
-    node1[["Server<br/>(Services)"]]
-    node2[("rueidis<br/>(Redis Client<br/>with Auto-")]
-    node3["Dragonfly<br/>Server"]
+    subgraph row1[ ]
+        direction LR
+        node1[["Server<br/>(Services)"]]
+        node2[("rueidis<br/>(Redis Client<br/>with Auto-")]
+        node3["Dragonfly<br/>Server"]
+    end
     node4["sturdyc<br/>(Coalescing)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

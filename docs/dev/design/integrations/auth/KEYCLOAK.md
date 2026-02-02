@@ -58,15 +58,25 @@
 
 ```mermaid
 flowchart TD
-    node1["User<br/>Browser"]
-    node2["Keycloak<br/>Auth Server"]
-    node3["Revenge<br/>Server"]
-    node4["Keycloak<br/>Token Endpoint"]
+    subgraph row1[ ]
+        direction LR
+        node1["User<br/>Browser"]
+        node2["Keycloak<br/>Auth Server"]
+    end
+    subgraph row2[ ]
+        direction LR
+        node3["Revenge<br/>Server"]
+        node4["Keycloak<br/>Token Endpoint"]
+    end
     node5["User<br/>Session"]
     node1 --> node2
     node3 --> node4
     node2 --> node3
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

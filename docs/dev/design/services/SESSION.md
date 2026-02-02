@@ -57,12 +57,18 @@
 
 ```mermaid
 flowchart TD
-    node1(["Client<br/>(Web/App)"])
-    node2["Middleware<br/>(Auth)"]
-    node3[["Service<br/>(Logic)"]]
-    node4["Repository<br/>(sqlc)"]
-    node5[("Cache<br/>(otter)")]
-    node6[("Redis<br/>(rueidis)")]
+    subgraph row1[ ]
+        direction LR
+        node1(["Client<br/>(Web/App)"])
+        node2["Middleware<br/>(Auth)"]
+        node3[["Service<br/>(Logic)"]]
+    end
+    subgraph row2[ ]
+        direction LR
+        node4["Repository<br/>(sqlc)"]
+        node5[("Cache<br/>(otter)")]
+        node6[("Redis<br/>(rueidis)")]
+    end
     node7[("PostgreSQL<br/>(pgx)")]
     node1 --> node2
     node2 --> node3
@@ -70,6 +76,10 @@ flowchart TD
     node5 --> node6
     node3 --> node4
     node6 --> node7
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
+    style row2 fill:transparent,stroke:transparent
 ```
 
 ### Service Structure

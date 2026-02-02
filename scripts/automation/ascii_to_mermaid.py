@@ -307,6 +307,7 @@ class ASCIIToMermaid:
 
         Uses different node shapes based on content type for visual distinction.
         Layer boxes get a special banner shape for clear section headings.
+        Groups horizontal boxes using subgraphs with direction LR.
 
         Args:
             boxes: List of box dicts
@@ -332,27 +333,54 @@ class ASCIIToMermaid:
             """
             return text.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
 
-        # Add all nodes with appropriate shapes
-        for box in boxes:
+        def make_node(box: dict) -> str:
+            """Generate node definition string."""
             label = escape_label(box["label"])
-
-            # Add sublabels if present (also escape them)
             if box.get("sublabels"):
                 escaped_sublabels = [escape_label(s) for s in box["sublabels"][:2]]
                 sublabels = "<br/>".join(escaped_sublabels)
                 label = f"{label}<br/>{sublabels}"
 
-            # Check if this is a layer/tier box - use banner shape
             if self._is_layer_box(box["label"]):
                 layer_box_ids.append(box["id"])
-                # Use banner shape for layers: >label]
-                lines.append(f'    {box["id"]}["{label}"]')
+                return f'{box["id"]}["{label}"]'
             else:
-                # Use appropriate shape based on content
                 open_br, close_br = self._get_node_shape(
                     box["label"], box.get("sublabels", [])
                 )
-                lines.append(f"    {box['id']}{open_br}{label}{close_br}")
+                return f"{box['id']}{open_br}{label}{close_br}"
+
+        # Group boxes by row to detect horizontal arrangements
+        rows: dict[int, list[dict]] = {}
+        for box in boxes:
+            row = box.get("row", 0)
+            if row not in rows:
+                rows[row] = []
+            rows[row].append(box)
+
+        # Sort boxes in each row by column
+        for row_boxes in rows.values():
+            row_boxes.sort(key=lambda b: b.get("col", 0))
+
+        # Generate nodes, using subgraphs for horizontal groups
+        subgraph_id = 0
+        sorted_rows = sorted(rows.keys())
+
+        for row_num in sorted_rows:
+            row_boxes = rows[row_num]
+
+            if len(row_boxes) > 1:
+                # Multiple boxes on same row - create horizontal subgraph
+                subgraph_id += 1
+                lines.append(f"    subgraph row{subgraph_id}[ ]")
+                lines.append("        direction LR")
+                for box in row_boxes:
+                    lines.append(f"        {make_node(box)}")
+                lines.append("    end")
+            else:
+                # Single box - add directly
+                for box in row_boxes:
+                    lines.append(f"    {make_node(box)}")
 
         # Add connections
         for from_id, to_id, conn_label in connections:
@@ -372,6 +400,13 @@ class ASCIIToMermaid:
                     f"    style {layer_id} fill:{color},stroke:#fff,"
                     f"stroke-width:2px,color:#fff"
                 )
+
+        # Hide subgraph borders (transparent styling)
+        if subgraph_id > 0:
+            lines.append("")
+            lines.append("    %% Hide row subgraph borders")
+            for i in range(1, subgraph_id + 1):
+                lines.append(f"    style row{i} fill:transparent,stroke:transparent")
 
         return "\n".join(lines)
 

@@ -60,14 +60,20 @@
 ```mermaid
 flowchart TD
     node1["Revenge<br/>Performer<br/>Enrichment"]
-    node2[("Whisparr/StashDB<br/>(performer base)")]
-    node3["FreeOnes<br/>(additional<br/>details)"]
+    subgraph row1[ ]
+        direction LR
+        node2[("Whisparr/StashDB<br/>(performer base)")]
+        node3["FreeOnes<br/>(additional<br/>details)"]
+    end
     node4(["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"])
     node5["Rate Limiter<br/>(2 req/sec)"]
     node2 --> node3
     node1 --> node2
     node3 --> node4
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

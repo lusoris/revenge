@@ -59,11 +59,17 @@
 
 ```mermaid
 flowchart TD
-    node1[["Metadata<br/>Service"]]
-    node2(["Discogs<br/>Provider"])
-    node3[["Discogs<br/>API"]]
+    subgraph row1[ ]
+        direction LR
+        node1[["Metadata<br/>Service"]]
+        node2(["Discogs<br/>Provider"])
+        node3[["Discogs<br/>API"]]
+    end
     node1 --> node2
     node2 --> node3
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

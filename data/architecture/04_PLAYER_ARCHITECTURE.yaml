@@ -76,24 +76,36 @@ architecture_diagram: |-
   ```mermaid
   flowchart TD
       node1["CLIENT LAYER<br/>Web Player Mobile App TV App<br/>(Vidstack) (React Native) (Android TV)"]
-      node2["Web Player<br/>(Vidstack)"]
-      node3(["Mobile App<br/>(React Native)"])
-      node4(["TV App<br/>(Android TV)"])
+      subgraph row1[ ]
+          direction LR
+          node2["Web Player<br/>(Vidstack)"]
+          node3(["Mobile App<br/>(React Native)"])
+          node4(["TV App<br/>(Android TV)"])
+      end
       node5["HLS.js<br/>(Adaptive)"]
       node6["STREAMING LAYER<br/>HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)"]
       node7["HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)<br/>- Media Playlists (video/audio/subs)"]
       node8[["Transcoding Engine (FFmpeg/go-astiav)<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)"]]
       node9["FEATURE LAYER<br/>Skip Intro Trickplay Chapters<br/>- Timeline - Thumbnails - Markers"]
-      node10["Skip Intro<br/>- Timeline<br/>- Detection"]
-      node11["Trickplay<br/>- Thumbnails<br/>- Scrubbing"]
-      node12["Chapters<br/>- Markers<br/>- Navigation"]
-      node13(["SyncPlay<br/>- WebSocket<br/>- Sync State"])
-      node14["Casting<br/>- Chromecast<br/>- DLNA"]
-      node15(["Subtitles<br/>- SSA/ASS<br/>- WebVTT"])
+      subgraph row2[ ]
+          direction LR
+          node10["Skip Intro<br/>- Timeline<br/>- Detection"]
+          node11["Trickplay<br/>- Thumbnails<br/>- Scrubbing"]
+          node12["Chapters<br/>- Markers<br/>- Navigation"]
+      end
+      subgraph row3[ ]
+          direction LR
+          node13(["SyncPlay<br/>- WebSocket<br/>- Sync State"])
+          node14["Casting<br/>- Chromecast<br/>- DLNA"]
+          node15(["Subtitles<br/>- SSA/ASS<br/>- WebVTT"])
+      end
       node16["STORAGE LAYER<br/>Media Files Metadata DB Cache<br/>- Video Streams - Playback State - Transcodes"]
-      node17["Media Files<br/>- Video Streams<br/>- Audio Tracks"]
-      node18[("Metadata DB<br/>- Playback State<br/>- User Progress")]
-      node19[("Cache<br/>- Transcodes<br/>- Trickplay")]
+      subgraph row4[ ]
+          direction LR
+          node17["Media Files<br/>- Video Streams<br/>- Audio Tracks"]
+          node18[("Metadata DB<br/>- Playback State<br/>- User Progress")]
+          node19[("Cache<br/>- Transcodes<br/>- Trickplay")]
+      end
       node2 --> node3
       node3 --> node4
       node10 --> node11
@@ -119,6 +131,12 @@ architecture_diagram: |-
       style node6 fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
       style node9 fill:#F57C00,stroke:#fff,stroke-width:2px,color:#fff
       style node16 fill:#C2185B,stroke:#fff,stroke-width:2px,color:#fff
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
+      style row2 fill:transparent,stroke:transparent
+      style row3 fill:transparent,stroke:transparent
+      style row4 fill:transparent,stroke:transparent
   ```
 system_components:
 - name: Web Player (Vidstack)

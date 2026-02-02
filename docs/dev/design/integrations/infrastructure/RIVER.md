@@ -57,13 +57,19 @@
 
 ```mermaid
 flowchart TD
-    node1[["Services<br/>(Enqueue)"]]
-    node2(["River<br/>Client"])
-    node3[("PostgreSQL<br/>(Job Store)")]
+    subgraph row1[ ]
+        direction LR
+        node1[["Services<br/>(Enqueue)"]]
+        node2(["River<br/>Client"])
+        node3[("PostgreSQL<br/>(Job Store)")]
+    end
     node4["Workers<br/>(Background)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

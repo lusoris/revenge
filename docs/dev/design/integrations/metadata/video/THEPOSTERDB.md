@@ -58,13 +58,19 @@
 
 ```mermaid
 flowchart TD
-    node1[["Metadata<br/>Service"]]
-    node2[("ThePosterDB<br/>Provider")]
-    node3[("PosterDB API<br/>(External)")]
+    subgraph row1[ ]
+        direction LR
+        node1[["Metadata<br/>Service"]]
+        node2[("ThePosterDB<br/>Provider")]
+        node3[("PosterDB API<br/>(External)")]
+    end
     node4[("Image Download<br/>& Storage")]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

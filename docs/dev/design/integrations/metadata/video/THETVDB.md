@@ -59,14 +59,20 @@
 ```mermaid
 flowchart TD
     node1[["Revenge<br/>Metadata<br/>Service"]]
-    node2[("Sonarr<br/>(LOCAL cache)")]
-    node3[("TheTVDB API<br/>(fallback +<br/>enrichment)")]
+    subgraph row1[ ]
+        direction LR
+        node2[("Sonarr<br/>(LOCAL cache)")]
+        node3[("TheTVDB API<br/>(fallback +<br/>enrichment)")]
+    end
     node4[("TheTVDB API<br/>(external)")]
     node5[["JWT Token<br/>Manager"]]
     node2 --> node3
     node1 --> node2
     node3 --> node4
     node4 --> node5
+
+    %% Hide row subgraph borders
+    style row1 fill:transparent,stroke:transparent
 ```
 
 ### Integration Structure

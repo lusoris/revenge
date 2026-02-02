@@ -55,13 +55,19 @@ fx_module: rbac.Module
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1(["Client<br/>(Web/App)"])
-      node2["Middleware<br/>(Auth)"]
-      node3["Casbin<br/>Enforcer"]
+      subgraph row1[ ]
+          direction LR
+          node1(["Client<br/>(Web/App)"])
+          node2["Middleware<br/>(Auth)"]
+          node3["Casbin<br/>Enforcer"]
+      end
       node4[("PostgreSQL<br/>casbin_rule")]
       node1 --> node2
       node2 --> node3
       node3 --> node4
+
+      %% Hide row subgraph borders
+      style row1 fill:transparent,stroke:transparent
   ```
 database_schema: |
   **Schema**: `public`
