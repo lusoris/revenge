@@ -15,13 +15,13 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 | Service | Status | Progress | Notes |
 |---------|--------|----------|-------|
-| Auth | 🔴 Not Started | 0% | Login, JWT, tokens, password reset |
-| User | 🔴 Not Started | 0% | Profile, preferences, avatar |
+| Auth | � In Progress | 50% | ✓ DB ✓ Repo ✓ JWT ⏳ Service layer |
+| User | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 17-19) |
 | Session | 🔴 Not Started | 0% | Token management, devices |
 | RBAC | 🔴 Not Started | 0% | Casbin integration |
 | API Keys | 🔴 Not Started | 0% | Key generation, validation |
 | OIDC | 🔴 Not Started | 0% | SSO providers |
-| Settings | 🟡 In Progress | 30% | ✓ Database layer ⏳ Service layer |
+| Settings | 🟢 Complete | 100% | ✓ DB ✓ Service ✓ API (Commits 11-16) |
 | Activity | 🔴 Not Started | 0% | Audit logging |
 | Library | 🔴 Not Started | 0% | Library CRUD |
 | Health | 🔴 Not Started | 0% | Enhanced checks |
@@ -38,13 +38,13 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 | Category | Coverage | Target | Status |
 |----------|----------|--------|--------|
-| Auth | 0% | 80% | 🔴 Not Started |
-| User | 0% | 80% | 🔴 Not Started |
+| Auth | ~30% | 80% | 🟡 In Progress (DB/Repo/JWT tests pending) |
+| User | ~40% | 80% | 🟡 Partial (Service tests exist) |
 | Session | 0% | 80% | 🔴 Not Started |
 | RBAC | 0% | 80% | 🔴 Not Started |
 | API Keys | 0% | 80% | 🔴 Not Started |
 | OIDC | 0% | 80% | 🔴 Not Started |
-| Settings | 0% | 80% | 🔴 Not Started |
+| Settings | ~50% | 80% | 🟡 Partial (DB tests exist) |
 | Activity | 0% | 80% | 🔴 Not Started |
 | Library | 0% | 80% | 🔴 Not Started |
 
@@ -65,13 +65,18 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: River Queue Configuration - Step 3.2 complete (3 queues, 2 backoff strategies)
 - ✅ **2026-02-02**: River Cleanup Job - Step 3.3 complete (validation, dry-run, 8 tests)
 - ✅ **2026-02-02**: River Job Queue - FULLY COMPLETE (all 3 steps, 31 tests, 65.6% coverage)
+- ✅ **2026-02-02**: Settings Service (Commits 11-16) - DB, Service layer, API, 6 commits
+- ✅ **2026-02-02**: User Service (Commits 17-19) - DB, Repository, Service, 3 commits
+- ✅ **2026-02-02**: Auth Service Step 6.1 (Commit 20) - 3 token tables, SHA-256 hashing
+- ✅ **2026-02-02**: Auth Service Step 6.2 (Commit 21) - 27 sqlc queries, PostgreSQL repo
+- ✅ **2026-02-02**: Auth Service Step 6.3 (Commit 22) - JWT manager (stdlib crypto only)
 
 ## Next Steps
 
-1. **START SERVICE IMPLEMENTATION** - Infrastructure layer complete! 🎉
-2. Step 4: Settings Service (migrations, service layer, CRUD operations)
-3. Step 5: Auth Service (login, JWT tokens, password reset)
-4. Step 6+: Remaining services (User, Session, RBAC, API Keys, OIDC, Activity, Library, Health)
+1. **Step 6.4**: Auth Service Layer (Login, Register, Password Reset, Refresh)
+2. **Step 6.5**: Auth Middleware (JWT validation, user context injection)
+3. **Step 6.6**: Auth API Handler (8+ endpoints)
+4. **Step 7+**: Session, RBAC, API Keys, OIDC, Activity, Library services
 
 ## Reference
 
@@ -90,3 +95,8 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Step 3.2: Queue config (3 queues, 2 backoff, coverage 55.6%) |
 | 2026-02-02 | Completed Step 3.3: Cleanup job (validation, dry-run, coverage 65.6%) |
 | 2026-02-02 | ✅ INFRASTRUCTURE COMPLETE: PostgreSQL + Dragonfly + River (100%) |
+| 2026-02-02 | Completed Settings Service (Commits 11-16): Database + Service + API |
+| 2026-02-02 | Completed User Service (Commits 17-19): Users + Preferences + Avatars |
+| 2026-02-02 | Completed Auth Step 6.1 (Commit 20): 3 token tables with SHA-256 hashing |
+| 2026-02-02 | Completed Auth Step 6.2 (Commit 21): 27 repository methods + sqlc |
+| 2026-02-02 | Completed Auth Step 6.3 (Commit 22): JWT manager (HMAC-SHA256, stdlib) |

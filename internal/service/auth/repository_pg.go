@@ -20,6 +20,60 @@ func NewRepositoryPG(queries *db.Queries) *RepositoryPG {
 	return &RepositoryPG{queries: queries}
 }
 
+// User Operations
+
+func (r *RepositoryPG) CreateUser(ctx context.Context, params db.CreateUserParams) (db.SharedUser, error) {
+	return r.queries.CreateUser(ctx, params)
+}
+
+func (r *RepositoryPG) GetUserByID(ctx context.Context, userID uuid.UUID) (*db.SharedUser, error) {
+	user, err := r.queries.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user by ID: %w", err)
+	}
+	return &user, nil
+}
+
+func (r *RepositoryPG) GetUserByUsername(ctx context.Context, username string) (*db.SharedUser, error) {
+	user, err := r.queries.GetUserByUsername(ctx, username)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user by username: %w", err)
+	}
+	return &user, nil
+}
+
+func (r *RepositoryPG) GetUserByEmail(ctx context.Context, email string) (*db.SharedUser, error) {
+	user, err := r.queries.GetUserByEmail(ctx, email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user by email: %w", err)
+	}
+	return &user, nil
+}
+
+func (r *RepositoryPG) UpdateUserPassword(ctx context.Context, userID uuid.UUID, passwordHash string) error {
+	if err := r.queries.UpdatePassword(ctx, db.UpdatePasswordParams{
+		ID:           userID,
+		PasswordHash: passwordHash,
+	}); err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+	return nil
+}
+
+func (r *RepositoryPG) UpdateUserEmailVerified(ctx context.Context, userID uuid.UUID, verified bool) error {
+	if err := r.queries.VerifyEmail(ctx, userID); err != nil {
+		return fmt.Errorf("failed to verify email: %w", err)
+	}
+	return nil
+}
+
+func (r *RepositoryPG) UpdateUserLastLogin(ctx context.Context, userID uuid.UUID) error {
+	if err := r.queries.UpdateLastLogin(ctx, userID); err != nil {
+		return fmt.Errorf("failed to update last login: %w", err)
+	}
+	return nil
+}
+
 // Auth Tokens
 
 func (r *RepositoryPG) CreateAuthToken(ctx context.Context, params CreateAuthTokenParams) (AuthToken, error) {

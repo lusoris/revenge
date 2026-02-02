@@ -6,10 +6,20 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
 // Repository defines the data access interface for auth operations
 type Repository interface {
+	// User Operations (required for auth flows)
+	CreateUser(ctx context.Context, params db.CreateUserParams) (db.SharedUser, error)
+	GetUserByID(ctx context.Context, userID uuid.UUID) (*db.SharedUser, error)
+	GetUserByUsername(ctx context.Context, username string) (*db.SharedUser, error)
+	GetUserByEmail(ctx context.Context, email string) (*db.SharedUser, error)
+	UpdateUserPassword(ctx context.Context, userID uuid.UUID, passwordHash string) error
+	UpdateUserEmailVerified(ctx context.Context, userID uuid.UUID, verified bool) error
+	UpdateUserLastLogin(ctx context.Context, userID uuid.UUID) error
+
 	// Auth Tokens (JWT refresh tokens)
 	CreateAuthToken(ctx context.Context, params CreateAuthTokenParams) (AuthToken, error)
 	GetAuthTokenByHash(ctx context.Context, tokenHash string) (AuthToken, error)
