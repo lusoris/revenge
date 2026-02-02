@@ -26,12 +26,14 @@
 **Completed**: Phase 1, Step 1.1 ✅
 
 ### Step 1.2: Enhance sync-versions.py
-- [ ] Add `--strict` mode that errors on violations
-- [ ] Test on current codebase
-- [ ] Fix any violations found
-- [ ] Add tests for the new mode
-- [ ] Run tests until passing
-- [ ] Commit changes
+- [x] Add `--strict` mode that errors on violations
+- [x] Test on current codebase (found BUG-006 duplicate pgx version, fixed)
+- [x] Fix any violations found (fixed SOT duplicate)
+- [x] Add tests for the new mode (6 tests, all passing)
+- [x] Run tests until passing
+- [x] Commit changes
+
+**Completed**: Phase 1, Step 1.2 ✅
 
 ---
 

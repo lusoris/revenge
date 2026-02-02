@@ -142,7 +142,7 @@ This applies to ALL data types across all modules.
 
 | Component | Package/Service | Version | Purpose | Design Doc |
 |-----------|-----------------|---------|---------|------------|
-| PostgreSQL | `pgx/v5` | v5.7.5 | Primary database | [POSTGRESQL.md](integrations/infrastructure/) |
+| PostgreSQL | `github.com/jackc/pgx/v5` | v5.8.0 | Primary database | [POSTGRESQL.md](integrations/infrastructure/) |
 | Dragonfly | `rueidis` | v1.0.49 | Cache/sessions | [DRAGONFLY.md](integrations/infrastructure/) |
 | Typesense | `typesense-go/v4` | v4.x | Full-text search | [TYPESENSE.md](integrations/infrastructure/) |
 | River | `riverqueue/river` | v0.26.0 | Job queue | [RIVER.md](integrations/infrastructure/) |

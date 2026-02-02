@@ -62,9 +62,16 @@
   3. OR disable yamllint indentation rule until proper fix
 - **Recommendation**: This should be a SEPARATE task/PR, not part of current content fix
 
----
+### BUG-006: Duplicate pgx versions in SOT
+- **File**: `docs/dev/design/00_SOURCE_OF_TRUTH.md`
+- **Issue**: 
+  - Line 145: `pgx/v5` listed as v5.7.5 (Infrastructure table)
+  - Line 157: `github.com/jackc/pgx/v5` listed as v5.8.0 (Dependencies table)
+- **Impact**: sync-versions.py picks up BOTH entries causing permanent drift
+- **Status**: Found during --strict mode testing
+- **Fix**: Remove duplicate entry, keep only `github.com/jackc/pgx/v5` v5.8.0
 
-## Fixed Bugs
+---
 
 _(Will be populated as bugs are fixed)_
 

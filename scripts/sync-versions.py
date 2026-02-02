@@ -9,10 +9,12 @@ Usage:
     python3 scripts/sync-versions.py              # Check for drift
     python3 scripts/sync-versions.py --fix       # Update versions
     python3 scripts/sync-versions.py --report    # Generate report
+    python3 scripts/sync-versions.py --strict    # Exit with error if drift found (CI)
 """
 
 import argparse
 import re
+import sys
 from pathlib import Path
 
 
@@ -112,6 +114,11 @@ def main():
     parser.add_argument("--fix", action="store_true", help="Apply fixes")
     parser.add_argument("--report", action="store_true", help="Generate report")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit with error code if version drift found (CI mode)",
+    )
     args = parser.parse_args()
 
     print("Extracting versions from SOT...")
@@ -180,6 +187,9 @@ def main():
 
     if not args.fix and total_drift > 0:
         print("\nRun with --fix to update versions")
+        if args.strict:
+            print("\n❌ STRICT MODE: Version drift detected!")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

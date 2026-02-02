@@ -255,7 +255,7 @@ require (
     go.uber.org/fx v1.24.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.7.5
+    github.com/jackc/pgx/v5 v5.8.0
     github.com/sqlc-dev/sqlc v1.30.0
 
     // API
