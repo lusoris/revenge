@@ -96,7 +96,7 @@ The current TODO files (v0.1.0 - v1.0.0) are **significantly smaller in scope** 
 **TODO says**: Just TV shows
 **Reality**: TV shows design exists, but so do 9 OTHER content modules
 
-#### v0.5.0+ 
+#### v0.5.0+
 **TODO says**: Music, Photos, Live TV, Audiobooks (spread across multiple versions)
 **Reality**: ALL of these are already fully designed
 
