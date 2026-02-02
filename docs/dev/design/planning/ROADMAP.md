@@ -66,7 +66,7 @@
 
 **Last Updated**: 2026-02-02
 **Current Phase**: Implementation Phase (Design Phase ✅ Complete)
-**Current Version**: v0.0.0 (CI/CD Infrastructure + Phase 5 Documentation)
+**Current Version**: v0.1.3 (Skeleton Complete + CI Fixes)
 **MVP Milestone**: v0.3.0
 **Release Candidate**: v0.9.0
 **First Stable**: v1.0.0
@@ -101,7 +101,10 @@
 | Version | Codename | Focus | Key Deliverables | Design Status |
 |---------|----------|-------|------------------|---------------|
 | v0.0.0 | **Foundation** | CI/CD + Documentation | Pipelines, Deploy configs, YAML data structure, Doc generation | ✅ Complete |
-| v0.1.0 | **Skeleton** | Project Structure | Go modules, fx setup, Database schema | ✅ Designed |
+| v0.1.0 | **Skeleton** | Project Structure | Go modules, fx setup, Database schema | ✅ Complete |
+| v0.1.1 | Skeleton | Test Coverage Sprint | Database 78% coverage, testcontainers | ✅ Complete |
+| v0.1.2 | Skeleton | Errors Coverage | Errors package 100% coverage | ✅ Complete |
+| v0.1.3 | Skeleton | CI Fixes | Port conflicts, lint, macOS/Windows | ✅ Complete |
 | v0.2.0 | **Core** | Backend Services | Auth, User, Session, RBAC, Library | ✅ Designed |
 | **v0.3.0** | **MVP** | Movie Module | Full backend + Movies + Basic UI | ✅ Designed |
 | v0.4.0 | **Shows** | TV Shows Module | Series, Seasons, Episodes, Sonarr | ✅ Designed |
@@ -183,21 +186,32 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 
 ---
 
-## v0.1.0 - Skeleton
+## v0.1.0 - Skeleton (COMPLETE)
 
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
+**Tag**: `v0.1.3`
+**Completed**: 2026-02-02
 **Focus**: Project Structure
+
+### Patch Releases
+
+| Version | Focus | Key Changes |
+|---------|-------|-------------|
+| v0.1.0 | Skeleton | Go modules, fx, koanf, pgx, ogen, health, logging, errors |
+| v0.1.1 | Test Coverage | Database 22%→78%, testcontainers integration |
+| v0.1.2 | Errors Coverage | Errors package 44%→100% coverage |
+| v0.1.3 | CI Fixes | Port conflicts resolved, lint fixes, macOS/Windows `-short` |
 
 ### Deliverables
 
-- [ ] Go module structure (`internal/`, `cmd/`, `pkg/`)
-- [ ] fx dependency injection setup
-- [ ] Configuration system (koanf)
-- [ ] Database migrations framework
-- [ ] OpenAPI spec skeleton (ogen)
-- [ ] Basic health endpoints
-- [ ] Logging infrastructure (tint/zap)
-- [ ] Error handling patterns
+- [x] Go module structure (`internal/`, `cmd/`, `pkg/`)
+- [x] fx dependency injection setup
+- [x] Configuration system (koanf)
+- [x] Database migrations framework
+- [x] OpenAPI spec skeleton (ogen)
+- [x] Basic health endpoints
+- [x] Logging infrastructure (tint/JSON)
+- [x] Error handling patterns
 
 ### Dependencies
 

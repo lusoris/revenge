@@ -30,11 +30,21 @@
 
 > Project Structure
 
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Tag**: `v0.1.0`
+**Completed**: 2026-02-02
 **Focus**: Project Structure & Foundation
 
 **Depends On**: [v0.0.0](TODO_v0.0.0.md) (CI/CD must work)
+
+### Patch Releases
+
+| Version | Focus | Status |
+|---------|-------|--------|
+| v0.1.0 | Skeleton - Project Structure | ✅ Complete |
+| v0.1.1 | Test Coverage Sprint (Database 78%) | ✅ Complete |
+| v0.1.2 | Errors Package 100% Coverage | ✅ Complete |
+| v0.1.3 | CI Fixes (Port Conflicts, Lint, macOS/Windows) | ✅ Complete |
 
 ---
 
@@ -48,13 +58,13 @@ This milestone establishes the Go project structure, dependency injection framew
 
 ### Go Module Structure
 
-- [ ] **Root Module** (`go.mod`)
-  - [ ] Initialize module: `github.com/lusoris/revenge`
-  - [ ] Add core dependencies from SOURCE_OF_TRUTH
-  - [ ] Configure Go 1.25.6
-  - [ ] Set up GOEXPERIMENT flags
+- [x] **Root Module** (`go.mod`)
+  - [x] Initialize module: `github.com/lusoris/revenge`
+  - [x] Add core dependencies from SOURCE_OF_TRUTH
+  - [x] Configure Go 1.25.6
+  - [x] Set up GOEXPERIMENT flags
 
-- [ ] **Directory Structure**
+- [x] **Directory Structure**
   ```
   revenge/
   ├── cmd/revenge/main.go      # Entry point
@@ -76,203 +86,205 @@ This milestone establishes the Go project structure, dependency injection framew
 
 ### fx Dependency Injection
 
-- [ ] **Root Module** (`internal/app/module.go`)
-  - [ ] fx.App configuration
-  - [ ] Lifecycle hooks setup
-  - [ ] Graceful shutdown handling
+- [x] **Root Module** (`internal/app/module.go`)
+  - [x] fx.App configuration
+  - [x] Lifecycle hooks setup
+  - [x] Graceful shutdown handling
 
-- [ ] **Config Module** (`internal/config/module.go`)
-  - [ ] fx.Provide for config loading
-  - [ ] Environment variable binding
+- [x] **Config Module** (`internal/config/module.go`)
+  - [x] fx.Provide for config loading
+  - [x] Environment variable binding
 
-- [ ] **Infrastructure Modules**
-  - [ ] `internal/infra/database/module.go` - pgxpool provider
-  - [ ] `internal/infra/cache/module.go` - rueidis provider
-  - [ ] `internal/infra/search/module.go` - typesense provider
-  - [ ] `internal/infra/jobs/module.go` - river provider
-  - [ ] `internal/infra/health/module.go` - health provider
+- [x] **Infrastructure Modules**
+  - [x] `internal/infra/database/module.go` - pgxpool provider
+  - [ ] `internal/infra/cache/module.go` - rueidis provider (deferred to v0.2.0)
+  - [ ] `internal/infra/search/module.go` - typesense provider (deferred to v0.2.0)
+  - [ ] `internal/infra/jobs/module.go` - river provider (deferred to v0.2.0)
+  - [x] `internal/infra/health/module.go` - health provider
 
 ### Configuration System (koanf)
 
-- [ ] **Config Struct** (`internal/config/config.go`)
-  - [ ] Server configuration (port, host)
-  - [ ] Database configuration (url, pool settings)
-  - [ ] Cache configuration (url)
-  - [ ] Search configuration (url, api_key)
-  - [ ] Logging configuration (level, format)
+- [x] **Config Struct** (`internal/config/config.go`)
+  - [x] Server configuration (port, host)
+  - [x] Database configuration (url, pool settings)
+  - [x] Cache configuration (url)
+  - [x] Search configuration (url, api_key)
+  - [x] Logging configuration (level, format)
 
-- [ ] **Config Loading** (`internal/config/loader.go`)
-  - [ ] Default values
-  - [ ] YAML file loading
-  - [ ] Environment variable override (REVENGE_*)
-  - [ ] Validation with go-playground/validator
+- [x] **Config Loading** (`internal/config/loader.go`)
+  - [x] Default values
+  - [x] YAML file loading
+  - [x] Environment variable override (REVENGE_*)
+  - [x] Validation with go-playground/validator
 
-- [ ] **Config Files**
-  - [ ] `config/config.yaml` - Default configuration
-  - [ ] `config/config.example.yaml` - Example with comments
+- [x] **Config Files**
+  - [x] `config/config.yaml` - Default configuration
+  - [x] `config/config.example.yaml` - Example with comments
 
 ### Database Infrastructure
 
-- [ ] **pgxpool Setup** (`internal/infra/database/pool.go`)
-  - [ ] Connection string parsing
-  - [ ] Pool configuration from config
-  - [ ] Health check integration
-  - [ ] Graceful shutdown
+- [x] **pgxpool Setup** (`internal/infra/database/pool.go`)
+  - [x] Connection string parsing
+  - [x] Pool configuration from config
+  - [x] Health check integration
+  - [x] Graceful shutdown
 
-- [ ] **Migration Framework** (`internal/infra/database/migrate.go`)
-  - [ ] golang-migrate integration
-  - [ ] Embedded migrations support
-  - [ ] Up/Down/Version commands
+- [x] **Migration Framework** (`internal/infra/database/migrate.go`)
+  - [x] golang-migrate integration
+  - [x] Embedded migrations support
+  - [x] Up/Down/Version commands
 
-- [ ] **Initial Migrations** (`migrations/`)
-  - [ ] `000001_create_schemas.up.sql` - Create public, shared, qar schemas
-  - [ ] `000001_create_schemas.down.sql`
-  - [ ] `000002_create_users_table.up.sql` - Basic users table
-  - [ ] `000002_create_users_table.down.sql`
-  - [ ] `000003_create_sessions_table.up.sql`
-  - [ ] `000003_create_sessions_table.down.sql`
+- [x] **Initial Migrations** (`migrations/`)
+  - [x] `000001_create_schemas.up.sql` - Create public, shared, qar schemas
+  - [x] `000001_create_schemas.down.sql`
+  - [x] `000002_create_users_table.up.sql` - Basic users table
+  - [x] `000002_create_users_table.down.sql`
+  - [x] `000003_create_sessions_table.up.sql`
+  - [x] `000003_create_sessions_table.down.sql`
 
-- [ ] **sqlc Configuration** (`sqlc.yaml`)
-  - [ ] Database connection settings
-  - [ ] Query file locations
-  - [ ] Code generation settings
+- [x] **sqlc Configuration** (`sqlc.yaml`)
+  - [x] Database connection settings
+  - [x] Query file locations
+  - [x] Code generation settings
 
 ### OpenAPI Skeleton (ogen)
 
-- [ ] **Base Spec** (`api/openapi/openapi.yaml`)
-  - [ ] OpenAPI 3.1 header
-  - [ ] Server definitions
-  - [ ] Security schemes (Bearer JWT)
-  - [ ] Common components (Error, Pagination)
+- [x] **Base Spec** (`api/openapi/openapi.yaml`)
+  - [x] OpenAPI 3.1 header
+  - [x] Server definitions
+  - [x] Security schemes (Bearer JWT)
+  - [x] Common components (Error, Pagination)
 
-- [ ] **Health Endpoints**
-  - [ ] `GET /health/live` - Liveness probe
-  - [ ] `GET /health/ready` - Readiness probe
-  - [ ] `GET /health/startup` - Startup probe
+- [x] **Health Endpoints**
+  - [x] `GET /health/live` - Liveness probe
+  - [x] `GET /health/ready` - Readiness probe
+  - [x] `GET /health/startup` - Startup probe
 
-- [ ] **ogen Generation**
-  - [ ] Configure ogen.yaml
-  - [ ] Generate server interfaces
-  - [ ] Generate client (for testing)
-  - [ ] Makefile target: `make generate`
+- [x] **ogen Generation**
+  - [x] Configure ogen.yaml
+  - [x] Generate server interfaces
+  - [x] Generate client (for testing)
+  - [x] Makefile target: `make generate`
 
 ### Logging Infrastructure
 
-- [ ] **Development Logging** (`internal/infra/logging/tint.go`)
-  - [ ] tint handler for colorized output
-  - [ ] slog integration
-  - [ ] Log level from config
+- [x] **Development Logging** (`internal/infra/logging/logger.go`)
+  - [x] tint handler for colorized output
+  - [x] slog integration
+  - [x] Log level from config
 
-- [ ] **Production Logging** (`internal/infra/logging/zap.go`)
-  - [ ] zap JSON handler
-  - [ ] Structured fields
-  - [ ] Performance optimization
+- [x] **Production Logging** (`internal/infra/logging/logger.go`)
+  - [x] JSON handler for production
+  - [x] Structured fields
+  - [x] Performance optimization
 
-- [ ] **Logging Module** (`internal/infra/logging/module.go`)
-  - [ ] fx provider
-  - [ ] Environment-based selection
+- [x] **Logging Module** (`internal/infra/logging/module.go`)
+  - [x] fx provider
+  - [x] Environment-based selection
 
 ### Error Handling Patterns
 
-- [ ] **Sentinel Errors** (`internal/errors/errors.go`)
-  - [ ] ErrNotFound
-  - [ ] ErrUnauthorized
-  - [ ] ErrForbidden
-  - [ ] ErrConflict
-  - [ ] ErrValidation
+- [x] **Sentinel Errors** (`internal/errors/errors.go`)
+  - [x] ErrNotFound
+  - [x] ErrUnauthorized
+  - [x] ErrForbidden
+  - [x] ErrConflict
+  - [x] ErrValidation
+  - [x] ErrInternal, ErrBadRequest, ErrUnavailable, ErrTimeout
 
-- [ ] **API Errors** (`internal/api/errors.go`)
-  - [ ] APIError struct
-  - [ ] Error response formatting
-  - [ ] Error code mapping
+- [x] **API Errors** (`internal/api/handler.go`)
+  - [x] APIError struct
+  - [x] Error response formatting
+  - [x] Error code mapping
 
-- [ ] **Error Wrapping** (`internal/errors/wrap.go`)
-  - [ ] go-faster/errors integration
-  - [ ] Stack trace preservation
-  - [ ] Error unwrapping helpers
+- [x] **Error Wrapping** (`internal/errors/wrap.go`)
+  - [x] go-faster/errors integration
+  - [x] Stack trace preservation
+  - [x] Error unwrapping helpers
 
 ### Basic Health Endpoints
 
-- [ ] **Health Service** (`internal/infra/health/service.go`)
-  - [ ] Liveness check (always healthy if running)
-  - [ ] Readiness check (all dependencies ready)
-  - [ ] Startup check (initialization complete)
+- [x] **Health Service** (`internal/infra/health/service.go`)
+  - [x] Liveness check (always healthy if running)
+  - [x] Readiness check (all dependencies ready)
+  - [x] Startup check (initialization complete)
+  - [x] Full check (detailed dependency status)
 
-- [ ] **Dependency Checks** (`internal/infra/health/checks.go`)
-  - [ ] PostgreSQL ping check
-  - [ ] Dragonfly ping check
-  - [ ] Typesense health check
-  - [ ] River worker check
+- [x] **Dependency Checks** (`internal/infra/health/service.go`)
+  - [x] PostgreSQL ping check
+  - [ ] Dragonfly ping check (deferred to v0.2.0)
+  - [ ] Typesense health check (deferred to v0.2.0)
+  - [ ] River worker check (deferred to v0.2.0)
 
-- [ ] **Health Handler** (`internal/infra/health/handler.go`)
-  - [ ] HTTP endpoint implementation
-  - [ ] JSON response format
-  - [ ] Prometheus metrics integration
+- [x] **Health Handler** (`internal/infra/health/handler.go`)
+  - [x] HTTP endpoint implementation
+  - [x] JSON response format
+  - [ ] Prometheus metrics integration (deferred to v0.2.0)
 
 ### Main Entry Point
 
-- [ ] **cmd/revenge/main.go**
-  - [ ] fx.New() with all modules
-  - [ ] Signal handling (SIGINT, SIGTERM)
-  - [ ] Version flag
-  - [ ] Config path flag
+- [x] **cmd/revenge/main.go**
+  - [x] fx.New() with all modules
+  - [x] Signal handling (SIGINT, SIGTERM)
+  - [x] Version flag
+  - [x] Config path flag
 
-- [ ] **cmd/revenge/migrate.go**
+- [ ] **cmd/revenge/migrate.go** (deferred - using golang-migrate CLI)
   - [ ] Subcommand: `revenge migrate up`
   - [ ] Subcommand: `revenge migrate down`
   - [ ] Subcommand: `revenge migrate version`
 
 ### Testing Infrastructure
 
-- [ ] **Test Helpers** (`internal/testutil/`)
-  - [ ] `database.go` - embedded-postgres setup
-  - [ ] `fixtures.go` - Common test fixtures
-  - [ ] `assertions.go` - Custom assertions
+- [x] **Test Helpers** (`internal/testutil/`)
+  - [x] `containers.go` - testcontainers PostgreSQL setup
+  - [x] `fixtures.go` - Common test fixtures
+  - [x] Custom assertions via testify
 
-- [ ] **Integration Test Setup** (`internal/testutil/containers.go`)
-  - [ ] testcontainers-go PostgreSQL
-  - [ ] testcontainers-go Dragonfly
-  - [ ] testcontainers-go Typesense
+- [x] **Integration Test Setup** (`internal/testutil/containers.go`)
+  - [x] testcontainers-go PostgreSQL
+  - [ ] testcontainers-go Dragonfly (deferred to v0.2.0)
+  - [ ] testcontainers-go Typesense (deferred to v0.2.0)
 
-- [ ] **Test Configuration**
-  - [ ] `config/config.test.yaml`
-  - [ ] CI-specific test settings
+- [x] **Test Configuration**
+  - [x] `config/config.test.yaml`
+  - [x] CI-specific test settings
 
 ### Makefile
 
-- [ ] **Build Targets**
-  - [ ] `make build` - Build binary
-  - [ ] `make test` - Run tests
-  - [ ] `make test-integration` - Run integration tests
-  - [ ] `make generate` - Generate code (ogen, sqlc, mockery)
-  - [ ] `make lint` - Run linters
-  - [ ] `make migrate-up` - Run migrations
-  - [ ] `make migrate-down` - Rollback migrations
+- [x] **Build Targets**
+  - [x] `make build` - Build binary
+  - [x] `make test` - Run tests
+  - [x] `make test-integration` - Run integration tests
+  - [x] `make generate` - Generate code (ogen, sqlc, mockery)
+  - [x] `make lint` - Run linters
+  - [x] `make migrate-up` - Run migrations
+  - [x] `make migrate-down` - Rollback migrations
 
-- [ ] **Development Targets**
-  - [ ] `make dev` - Start with hot reload (air)
-  - [ ] `make docker-up` - Start Docker Compose stack
-  - [ ] `make docker-down` - Stop Docker Compose stack
+- [x] **Development Targets**
+  - [x] `make dev` - Start with hot reload (air)
+  - [x] `make docker-up` - Start Docker Compose stack
+  - [x] `make docker-down` - Stop Docker Compose stack
 
 ### Air Configuration
 
-- [ ] **.air.toml**
-  - [ ] Watch directories
-  - [ ] Exclude patterns
-  - [ ] Build command with GOEXPERIMENT
-  - [ ] Binary output path
+- [x] **.air.toml**
+  - [x] Watch directories
+  - [x] Exclude patterns
+  - [x] Build command with GOEXPERIMENT
+  - [x] Binary output path
 
 ---
 
 ## Verification Checklist
 
-- [ ] `go build ./...` succeeds
-- [ ] `make test` passes
-- [ ] `make lint` passes (when golangci-lint supports Go 1.25)
-- [ ] Health endpoints respond correctly
-- [ ] Migrations run successfully
-- [ ] Docker Compose stack starts
-- [ ] CI pipeline passes
+- [x] `go build ./...` succeeds
+- [x] `make test` passes
+- [x] `make lint` passes (golangci-lint v2)
+- [x] Health endpoints respond correctly
+- [x] Migrations run successfully
+- [x] Docker Compose stack starts
+- [x] CI pipeline passes (all platforms: Ubuntu, macOS, Windows)
 
 ---
 
