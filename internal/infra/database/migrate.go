@@ -13,7 +13,7 @@ import (
 	"github.com/lusoris/revenge/internal/errors"
 )
 
-//go:embed migrations/*.sql
+//go:embed migrations/shared/*.sql
 var migrationsFS embed.FS
 
 // MigrateUp runs all pending migrations.
