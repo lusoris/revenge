@@ -138,7 +138,7 @@ func TestHandler_GetReadiness_Unhealthy(t *testing.T) {
 	_ = newTestHandler(healthService) // Verify handler can be created
 
 	// Stop the database to simulate unhealthy state
-	postgres.Stop()
+	_ = postgres.Stop()
 	pool.Close()
 
 	// Create new pool pointing to stopped DB

@@ -234,12 +234,12 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	// First verify readiness is healthy
 	resp, err := http.Get("http://127.0.0.1:15455/health/ready")
 	require.NoError(t, err)
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
 	// Now stop postgres and close pool
 	pool.Close()
-	postgres.Stop()
+	_ = postgres.Stop()
 
 	// Give it a moment
 	time.Sleep(100 * time.Millisecond)
@@ -623,7 +623,7 @@ func TestNewServer_GracefulShutdown(t *testing.T) {
 	// Verify server is running
 	resp, err := http.Get("http://127.0.0.1:15465/health/live")
 	require.NoError(t, err)
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
 	// Stop should complete gracefully (not hang)
@@ -701,7 +701,7 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 			// Verify server is running
 			resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/health/live", port))
 			require.NoError(t, err)
-			resp.Body.Close()
+			_ = resp.Body.Close()
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 
 			app.RequireStop()
