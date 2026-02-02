@@ -125,7 +125,8 @@ type LoggingConfig struct {
 // AuthConfig holds authentication configuration.
 type AuthConfig struct {
 	// JWTSecret is the secret key for JWT signing.
-	JWTSecret string `koanf:"jwt_secret" validate:"required,min=32"`
+	// Optional for v0.1.0 (auth not implemented yet)
+	JWTSecret string `koanf:"jwt_secret" validate:"omitempty,min=32"`
 
 	// JWTExpiry is the duration for JWT token validity.
 	JWTExpiry time.Duration `koanf:"jwt_expiry"`
