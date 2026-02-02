@@ -87,3 +87,18 @@ type SharedUser struct {
 	// Soft delete timestamp (NULL = not deleted)
 	DeletedAt pgtype.Timestamptz `json:"deletedAt"`
 }
+
+// User-specific configuration settings
+type SharedUserSetting struct {
+	UserID uuid.UUID `json:"userId"`
+	Key    string    `json:"key"`
+	// Setting value stored as JSONB for type flexibility
+	Value       json.RawMessage `json:"value"`
+	Description *string         `json:"description"`
+	// Setting category for organization
+	Category *string `json:"category"`
+	// Expected data type for validation
+	DataType  string    `json:"dataType"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}

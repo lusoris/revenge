@@ -6,25 +6,46 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
 	// Create a new server setting
 	CreateServerSetting(ctx context.Context, arg CreateServerSettingParams) (SharedServerSetting, error)
+	// Create a new user setting
+	CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error)
+	// Delete all settings for a user (used when user is deleted)
+	DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
+	// Delete a user setting
+	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
+	// ============================================================================
+	// User Settings Queries
+	// ============================================================================
+	// Get a user setting by user_id and key
+	GetUserSetting(ctx context.Context, arg GetUserSettingParams) (SharedUserSetting, error)
 	// Get public settings (exposed in API)
 	ListPublicServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get all server settings
 	ListServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get settings by category
 	ListServerSettingsByCategory(ctx context.Context, category *string) ([]SharedServerSetting, error)
+	// Get all settings for a user
+	ListUserSettings(ctx context.Context, userID uuid.UUID) ([]SharedUserSetting, error)
+	// Get user settings by category
+	ListUserSettingsByCategory(ctx context.Context, arg ListUserSettingsByCategoryParams) ([]SharedUserSetting, error)
 	// Update a server setting value
 	UpdateServerSetting(ctx context.Context, arg UpdateServerSettingParams) (SharedServerSetting, error)
+	// Update a user setting value
+	UpdateUserSetting(ctx context.Context, arg UpdateUserSettingParams) (SharedUserSetting, error)
 	// Insert or update a server setting
 	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (SharedServerSetting, error)
+	// Insert or update a user setting
+	UpsertUserSetting(ctx context.Context, arg UpsertUserSettingParams) (SharedUserSetting, error)
 }
 
 var _ Querier = (*Queries)(nil)

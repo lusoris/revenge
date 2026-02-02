@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -83,6 +84,64 @@ func (q *Queries) CreateServerSetting(ctx context.Context, arg CreateServerSetti
 	return i, err
 }
 
+const createUserSetting = `-- name: CreateUserSetting :one
+INSERT INTO shared.user_settings (
+    user_id,
+    key,
+    value,
+    description,
+    category,
+    data_type
+) VALUES (
+    $1, $2, $3, $4, $5, $6
+)
+RETURNING user_id, key, value, description, category, data_type, created_at, updated_at
+`
+
+type CreateUserSettingParams struct {
+	UserID      uuid.UUID       `json:"userId"`
+	Key         string          `json:"key"`
+	Value       json.RawMessage `json:"value"`
+	Description *string         `json:"description"`
+	Category    *string         `json:"category"`
+	DataType    string          `json:"dataType"`
+}
+
+// Create a new user setting
+func (q *Queries) CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error) {
+	row := q.db.QueryRow(ctx, createUserSetting,
+		arg.UserID,
+		arg.Key,
+		arg.Value,
+		arg.Description,
+		arg.Category,
+		arg.DataType,
+	)
+	var i SharedUserSetting
+	err := row.Scan(
+		&i.UserID,
+		&i.Key,
+		&i.Value,
+		&i.Description,
+		&i.Category,
+		&i.DataType,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deleteAllUserSettings = `-- name: DeleteAllUserSettings :exec
+DELETE FROM shared.user_settings
+WHERE user_id = $1
+`
+
+// Delete all settings for a user (used when user is deleted)
+func (q *Queries) DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteAllUserSettings, userID)
+	return err
+}
+
 const deleteServerSetting = `-- name: DeleteServerSetting :exec
 DELETE FROM shared.server_settings
 WHERE key = $1
@@ -91,6 +150,22 @@ WHERE key = $1
 // Delete a server setting
 func (q *Queries) DeleteServerSetting(ctx context.Context, key string) error {
 	_, err := q.db.Exec(ctx, deleteServerSetting, key)
+	return err
+}
+
+const deleteUserSetting = `-- name: DeleteUserSetting :exec
+DELETE FROM shared.user_settings
+WHERE user_id = $1 AND key = $2
+`
+
+type DeleteUserSettingParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Key    string    `json:"key"`
+}
+
+// Delete a user setting
+func (q *Queries) DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error {
+	_, err := q.db.Exec(ctx, deleteUserSetting, arg.UserID, arg.Key)
 	return err
 }
 
@@ -119,6 +194,38 @@ func (q *Queries) GetServerSetting(ctx context.Context, key string) (SharedServe
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UpdatedBy,
+	)
+	return i, err
+}
+
+const getUserSetting = `-- name: GetUserSetting :one
+
+SELECT user_id, key, value, description, category, data_type, created_at, updated_at FROM shared.user_settings
+WHERE user_id = $1 AND key = $2
+LIMIT 1
+`
+
+type GetUserSettingParams struct {
+	UserID uuid.UUID `json:"userId"`
+	Key    string    `json:"key"`
+}
+
+// ============================================================================
+// User Settings Queries
+// ============================================================================
+// Get a user setting by user_id and key
+func (q *Queries) GetUserSetting(ctx context.Context, arg GetUserSettingParams) (SharedUserSetting, error) {
+	row := q.db.QueryRow(ctx, getUserSetting, arg.UserID, arg.Key)
+	var i SharedUserSetting
+	err := row.Scan(
+		&i.UserID,
+		&i.Key,
+		&i.Value,
+		&i.Description,
+		&i.Category,
+		&i.DataType,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -248,6 +355,83 @@ func (q *Queries) ListServerSettingsByCategory(ctx context.Context, category *st
 	return items, nil
 }
 
+const listUserSettings = `-- name: ListUserSettings :many
+SELECT user_id, key, value, description, category, data_type, created_at, updated_at FROM shared.user_settings
+WHERE user_id = $1
+ORDER BY category, key
+`
+
+// Get all settings for a user
+func (q *Queries) ListUserSettings(ctx context.Context, userID uuid.UUID) ([]SharedUserSetting, error) {
+	rows, err := q.db.Query(ctx, listUserSettings, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SharedUserSetting{}
+	for rows.Next() {
+		var i SharedUserSetting
+		if err := rows.Scan(
+			&i.UserID,
+			&i.Key,
+			&i.Value,
+			&i.Description,
+			&i.Category,
+			&i.DataType,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserSettingsByCategory = `-- name: ListUserSettingsByCategory :many
+SELECT user_id, key, value, description, category, data_type, created_at, updated_at FROM shared.user_settings
+WHERE user_id = $1 AND category = $2
+ORDER BY key
+`
+
+type ListUserSettingsByCategoryParams struct {
+	UserID   uuid.UUID `json:"userId"`
+	Category *string   `json:"category"`
+}
+
+// Get user settings by category
+func (q *Queries) ListUserSettingsByCategory(ctx context.Context, arg ListUserSettingsByCategoryParams) ([]SharedUserSetting, error) {
+	rows, err := q.db.Query(ctx, listUserSettingsByCategory, arg.UserID, arg.Category)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SharedUserSetting{}
+	for rows.Next() {
+		var i SharedUserSetting
+		if err := rows.Scan(
+			&i.UserID,
+			&i.Key,
+			&i.Value,
+			&i.Description,
+			&i.Category,
+			&i.DataType,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateServerSetting = `-- name: UpdateServerSetting :one
 UPDATE shared.server_settings
 SET
@@ -283,6 +467,38 @@ func (q *Queries) UpdateServerSetting(ctx context.Context, arg UpdateServerSetti
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UpdatedBy,
+	)
+	return i, err
+}
+
+const updateUserSetting = `-- name: UpdateUserSetting :one
+UPDATE shared.user_settings
+SET
+    value = $2,
+    updated_at = NOW()
+WHERE user_id = $1 AND key = $3
+RETURNING user_id, key, value, description, category, data_type, created_at, updated_at
+`
+
+type UpdateUserSettingParams struct {
+	UserID uuid.UUID       `json:"userId"`
+	Value  json.RawMessage `json:"value"`
+	Key    string          `json:"key"`
+}
+
+// Update a user setting value
+func (q *Queries) UpdateUserSetting(ctx context.Context, arg UpdateUserSettingParams) (SharedUserSetting, error) {
+	row := q.db.QueryRow(ctx, updateUserSetting, arg.UserID, arg.Value, arg.Key)
+	var i SharedUserSetting
+	err := row.Scan(
+		&i.UserID,
+		&i.Key,
+		&i.Value,
+		&i.Description,
+		&i.Category,
+		&i.DataType,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -347,6 +563,57 @@ func (q *Queries) UpsertServerSetting(ctx context.Context, arg UpsertServerSetti
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UpdatedBy,
+	)
+	return i, err
+}
+
+const upsertUserSetting = `-- name: UpsertUserSetting :one
+INSERT INTO shared.user_settings (
+    user_id,
+    key,
+    value,
+    description,
+    category,
+    data_type
+) VALUES (
+    $1, $2, $3, $4, $5, $6
+)
+ON CONFLICT (user_id, key) DO UPDATE
+SET
+    value = EXCLUDED.value,
+    updated_at = NOW()
+RETURNING user_id, key, value, description, category, data_type, created_at, updated_at
+`
+
+type UpsertUserSettingParams struct {
+	UserID      uuid.UUID       `json:"userId"`
+	Key         string          `json:"key"`
+	Value       json.RawMessage `json:"value"`
+	Description *string         `json:"description"`
+	Category    *string         `json:"category"`
+	DataType    string          `json:"dataType"`
+}
+
+// Insert or update a user setting
+func (q *Queries) UpsertUserSetting(ctx context.Context, arg UpsertUserSettingParams) (SharedUserSetting, error) {
+	row := q.db.QueryRow(ctx, upsertUserSetting,
+		arg.UserID,
+		arg.Key,
+		arg.Value,
+		arg.Description,
+		arg.Category,
+		arg.DataType,
+	)
+	var i SharedUserSetting
+	err := row.Scan(
+		&i.UserID,
+		&i.Key,
+		&i.Value,
+		&i.Description,
+		&i.Category,
+		&i.DataType,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
