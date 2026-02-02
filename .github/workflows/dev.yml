@@ -235,31 +235,6 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: [versions, build]
-    services:
-      postgres:
-        image: postgres:18-alpine
-        env:
-          POSTGRES_DB: revenge_test
-          POSTGRES_USER: revenge
-          POSTGRES_PASSWORD: test_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -268,26 +243,36 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
+          cache: true
 
-      - name: Run integration tests
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run integration tests with testcontainers
         env:
-          REVENGE_DB_TYPE: postgres
-          REVENGE_DB_HOST: localhost
-          REVENGE_DB_PORT: 5432
-          REVENGE_DB_USER: revenge
-          REVENGE_DB_PASSWORD: test_password
-          REVENGE_DB_NAME: revenge_test
-          REVENGE_CACHE_TYPE: redis
-          REVENGE_REDIS_ADDR: localhost:6379
           GOEXPERIMENT: ${{ needs.versions.outputs.goexperiment }}
         run: |
-          # Skip if no Go integration tests exist yet
-          if go list -tags=integration ./tests/integration/... 2>/dev/null | grep -q .; then
-            go test -v -tags=integration ./tests/integration/...
-          else
-            echo "No Go integration tests found, skipping"
-          fi
+          # testcontainers will automatically start PostgreSQL in Docker
+          # GitHub Actions runners have Docker pre-installed
+          go test -v -tags=integration -coverprofile=coverage-integration.out -covermode=atomic ./tests/integration/...
+
+      - name: Upload integration test coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage-integration.out
+          flags: integration
+          name: codecov-integration
+
+      - name: Upload integration coverage HTML
+        run: |
+          go tool cover -html=coverage-integration.out -o coverage-integration.html
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: integration-coverage-report
+          path: coverage-integration.html
+          retention-days: 7
 
   pr-comment:
     name: PR Comment with Build Info
