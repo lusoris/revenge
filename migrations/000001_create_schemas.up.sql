@@ -18,4 +18,6 @@ COMMENT ON SCHEMA qar IS 'QAR (Adult content): voyages, expeditions, treasures -
 -- Set search path to include all schemas
 -- Application will set this per-connection based on user permissions
 -- Default search path: public, shared (qar requires explicit scope)
-ALTER DATABASE revenge SET search_path TO public, shared;
+-- Note: We don't use ALTER DATABASE here because it requires knowing the DB name
+-- Instead, the application will SET search_path per connection
+-- or via pgxpool config: "search_path=public,shared"
