@@ -141,11 +141,21 @@
   - Others: Add cross-reference, remove duplicate text
 
 ### Step 5.2: Create HTTP_CLIENT.yaml pattern
-- [ ] Create `data/patterns/HTTP_CLIENT.yaml` following template
-- [ ] Consolidate all proxy/VPN documentation (~425 lines)
-- [ ] Add to SOT pattern index
-- [ ] Test YAML validation
-- [ ] Commit
+- [x] Create `data/patterns/HTTP_CLIENT.yaml` following template
+- [x] Consolidate all proxy/VPN documentation (~425 lines)
+- [x] Add to SOT pattern index (deferred - no central index yet)
+- [x] Test YAML validation
+- [x] Commit
+
+**Status**: Complete ✅ (557 lines, commit 52e2ddd9ee)
+
+### Step 5.2.5: Create detailed consolidation plan
+- [x] Document exact files and line numbers for remaining steps
+- [x] Plan replacement text for each duplicate
+- [x] Define execution order and risk assessment
+- [x] Create PHASE_5_CONSOLIDATION_PLAN.md
+
+**Status**: Complete ✅ - Plan ready for execution
 
 ### Step 5.3: Consolidate Cache Architecture
 - [ ] Keep full description in DRAGONFLY.yaml
@@ -153,6 +163,8 @@
 - [ ] Remove duplicate text (~60 lines)
 - [ ] Test validation
 - [ ] Commit
+
+**Current**: Starting Phase 5, Step 5.3
 
 ### Step 5.4: Consolidate Arr Dual-Role
 - [ ] Keep full description in 03_METADATA_SYSTEM.yaml
