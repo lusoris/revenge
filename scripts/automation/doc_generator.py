@@ -19,6 +19,7 @@ from typing import Any
 import yaml
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
+
 # Add repo root to Python path for imports
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
