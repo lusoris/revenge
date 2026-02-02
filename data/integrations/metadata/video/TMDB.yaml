@@ -393,8 +393,8 @@ supplementary_role: |
   **SUPPLEMENTARY Metadata Provider** (not primary)
 
   **PRIMARY source**: Radarr (movies) / Sonarr (TV shows)
-  - Arr services aggregate TMDb metadata locally
-  - Revenge queries Arr services FIRST for all metadata
+  - See data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role for why Arr services
+    are PRIMARY metadata aggregators (not just download tools)
 
   **TMDb API used as SUPPLEMENTARY in two scenarios**:
 

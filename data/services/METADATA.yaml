@@ -478,32 +478,10 @@ integration_tests: |
 dual_role_architecture: |
   **Arr Services as PRIMARY Metadata Aggregators**:
 
-  **CRITICAL**: All Arr services (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) serve DUAL purposes:
-  1. **PRIMARY Metadata Aggregator**: Local cache of external metadata
-  2. **Download Automation Manager**: Content acquisition and organization
+  All Arr services serve dual purposes as both metadata aggregators and download managers.
 
-  **Metadata Flow**:
-  ```
-  External API (TMDb/TVDB/MusicBrainz/etc.)
-         ↓
-  Arr Service (local aggregation + cache)
-         ↓
-  Revenge Metadata Service
-         ↓
-  (optional) Direct External API for enrichment/fallback
-  ```
-
-  **Why This Matters**:
-  - **Reduces external API calls**: Arr services cache metadata locally
-  - **Rate limiting protection**: First request hits external API, subsequent requests use Arr cache
-  - **Privacy**: Local metadata cache, especially important for adult content (Whisparr/StashDB)
-  - **Unified interface**: Arr APIs provide consistent metadata format
-  - **Availability**: Works even when external APIs are down (if Arr has cached data)
-
-  **Implementation**:
-  - Revenge queries Arr services FIRST for all metadata
-  - Direct external APIs used ONLY as fallback or enrichment
-  - External API results optionally added to Arr for future queries
+  See data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role for complete
+  architecture explanation including metadata flow, rationale, and implementation patterns.
 provider_priority_chain: |
   **Priority Chain Resolution**:
 

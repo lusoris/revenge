@@ -62,33 +62,15 @@ external_service: Sonarr
 auth_method: api_key
 api_base_url: http://localhost:8989/api/v3
 dual_role_metadata_and_downloads: |
-  **CRITICAL: Sonarr serves DUAL purposes in the Revenge architecture**:
+  **Sonarr serves DUAL purposes in the Revenge architecture**:
 
-  **1. PRIMARY Metadata Aggregator**:
-  - Sonarr is the PRIMARY source for TV show metadata in Revenge
-  - It aggregates metadata from TheTVDB (The TV Database)
-  - Maintains local cache of series information (title, seasons, episodes, air dates, cast, posters)
-  - Revenge queries Sonarr API for TV metadata BEFORE falling back to direct TheTVDB API
-  - Provides unified, consistent metadata interface
-  - Reduces direct API calls to external services (rate limiting, availability)
+  1. **PRIMARY Metadata Aggregator**: Aggregates TheTVDB metadata locally, provides unified interface
+  2. **Download Automation Manager**: Handles episode acquisition, season/episode organization, webhooks
 
-  **2. Download Automation Manager**:
-  - Handles episode acquisition through configured indexers and download clients
-  - Monitors for new episode releases and automatically downloads
-  - Manages season/episode file organization and naming
-  - Webhooks notify Revenge when episodes are ready
+  Revenge queries Sonarr API for TV metadata BEFORE falling back to direct TheTVDB API.
 
-  **Metadata Flow**:
-  ```
-  External (TheTVDB) → Sonarr (local aggregation) → Revenge
-                            ↓
-                  (optional direct TheTVDB for enrichment)
-  ```
-
-  **Why This Matters**:
-  - Sonarr is NOT just a download tool - it's the metadata backbone for TV shows
-  - Direct TheTVDB integration is SUPPLEMENTARY for real-time updates/enrichment
-  - This dual-role pattern is consistent across ALL Arr services
+  See data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role for complete
+  explanation of why ALL Arr services follow this dual-role pattern.
 architecture_diagram: |-
   ```mermaid
   flowchart LR

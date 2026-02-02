@@ -273,10 +273,10 @@ system_components: |
   - **Queue**: PostgreSQL-backed (pgx integration)
 
   **10. Arr Services Integration (Dual-Role)**
-  **CRITICAL**: ALL Arr services serve DUAL purposes:
+  Arr services (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) serve dual purposes as both
+  PRIMARY metadata aggregators (local cache of external APIs) and download automation managers.
 
-  1. **PRIMARY Metadata Aggregation** (local cache of external sources)
-  2. **Download Automation** (media acquisition)
+  See [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md#arr_services_dual_role) for complete architecture explanation.
 
   **Arr Services**:
   - **Radarr**: Movies (aggregates TMDb locally)
@@ -284,13 +284,6 @@ system_components: |
   - **Lidarr**: Music (aggregates MusicBrainz locally)
   - **Chaptarr**: Books & Audiobooks (aggregates OpenLibrary/Audnexus locally)
   - **Whisparr**: Adult Content (aggregates StashDB locally)
-
-  **See**:
-  - [RADARR](../integrations/servarr/RADARR.md)
-  - [SONARR](../integrations/servarr/SONARR.md)
-  - [LIDARR](../integrations/servarr/LIDARR.md)
-  - [CHAPTARR](../integrations/servarr/CHAPTARR.md)
-  - [WHISPARR](../integrations/servarr/WHISPARR.md)
 
   **11. Proxy/VPN Support (Optional)**
   **OPTIONAL** routing for external metadata API calls (NOT for Arr services):

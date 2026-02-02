@@ -18,10 +18,11 @@ status_integration_testing: 🔴 Not Started
 status_integration_testing_notes: '-'
 technical_summary: '> Movie content management with metadata enrichment'
 wiki_tagline: '> Your movie library with rich metadata and artwork'
-wiki_overview: Manage your movie collection with automatic metadata from Radarr (PRIMARY source, aggregates from TMDb locally),
-  with direct TMDb API as supplementary enrichment. Movies are organized with posters, backdrops, cast info, and trailers.
-  Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track
-  watched status per user. Radarr integration provides both metadata caching and download automation.
+wiki_overview: Manage your movie collection with automatic metadata from Radarr (PRIMARY aggregator, see
+  data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role) with direct TMDb API as supplementary enrichment.
+  Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel,
+  Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Radarr
+  provides both metadata and download automation.
 design_refs:
 - title: 01_ARCHITECTURE
   path: ../../architecture/01_ARCHITECTURE.md
