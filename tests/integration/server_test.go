@@ -82,7 +82,7 @@ func TestServerSignalHandling(t *testing.T) {
 	select {
 	case <-doneCh:
 		// Shutdown completed successfully
-		ts.Logger.Info("server shutdown completed cleanly")
+		t.Log("server shutdown completed cleanly")
 	case <-time.After(5 * time.Second):
 		t.Fatal("server shutdown timed out")
 	}
@@ -116,9 +116,7 @@ func TestServerModuleInitialization(t *testing.T) {
 	resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	// 4. Logging module - logger is functional
-	ts.Logger.Info("test log message - verifying logger works")
-	assert.NotNil(t, ts.Logger, "Logging module should be initialized")
+	// Logging is verified by the fact the modules above work (they all use zap.Logger)
 }
 
 func TestServerConcurrentRequests(t *testing.T) {

@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -151,7 +152,7 @@ func TestDatabaseConnectionPooling(t *testing.T) {
 
 	// Acquire multiple connections
 	const numConns = 5
-	conns := make([]interface{ Release() }, numConns)
+	conns := make([]*pgxpool.Conn, numConns)
 
 	for i := 0; i < numConns; i++ {
 		conn, err := ts.DB.Pool.Acquire(ctx)
@@ -161,8 +162,7 @@ func TestDatabaseConnectionPooling(t *testing.T) {
 
 	// Verify all connections work
 	for i, conn := range conns {
-		poolConn := conn.(*pgxConn)
-		err := poolConn.Ping(ctx)
+		err := conn.Ping(ctx)
 		assert.NoError(t, err, "connection %d should work", i)
 	}
 
@@ -174,12 +174,6 @@ func TestDatabaseConnectionPooling(t *testing.T) {
 	// Verify pool is still healthy
 	err := ts.DB.Pool.Ping(ctx)
 	assert.NoError(t, err, "pool should be healthy after releasing connections")
-}
-
-// pgxConn wraps pgxpool.Conn to satisfy the Release interface
-type pgxConn interface {
-	Release()
-	Ping(ctx context.Context) error
 }
 
 func TestDatabaseTransactions(t *testing.T) {

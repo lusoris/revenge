@@ -5,7 +5,6 @@ package integration
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -13,8 +12,6 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/api"
-	"github.com/lusoris/revenge/internal/app"
-	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
@@ -32,7 +29,6 @@ type TestServer struct {
 	BaseURL    string
 	HTTPClient *http.Client
 	DB         *testutil.PostgreSQLContainer
-	Logger     *slog.Logger
 }
 
 // setupServer starts a test server with all dependencies.
@@ -59,31 +55,21 @@ func setupServer(t *testing.T) *TestServer {
 	cfg.Server.ReadTimeout = 5000000000  // 5s
 	cfg.Server.WriteTimeout = 5000000000 // 5s
 
-	// Create logger
-	logger := logging.NewLogger(logging.Config{
-		Level:       cfg.Logging.Level,
-		Format:      cfg.Logging.Format,
-		Development: cfg.Logging.Development,
-	})
-
 	// Create fx app for testing
+	// Note: We don't use app.Module because it includes config.Module
+	// Instead, we provide cfg directly and include only the needed modules
 	app := fxtest.New(t,
-		// Provide configuration
+		// Provide configuration directly (from PostgreSQL container)
 		fx.Supply(cfg),
-		fx.Supply(logger),
 
-		// Provide modules
-		app.Module,
-		config.Module,
+		// Infrastructure modules (logging provides zap.Logger)
+		logging.Module,
 		database.Module,
 		cache.Module,
 		search.Module,
 		jobs.Module,
 		health.Module,
 		api.Module,
-
-		// Disable output
-		fx.NopLogger,
 	)
 
 	// Start app
@@ -99,8 +85,7 @@ func setupServer(t *testing.T) *TestServer {
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-		DB:     pgContainer,
-		Logger: logger,
+		DB: pgContainer,
 	}
 }
 
@@ -168,26 +153,26 @@ func TestMain(m *testing.M) {
 
 // isDockerAvailable checks if Docker is available on the system.
 func isDockerAvailable() bool {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Try to connect to Docker socket
-	conn, err := net.DialTimeout("unix", "/var/run/docker.sock", 1*time.Second)
-	if err == nil {
-		conn.Close()
+	// On Windows, check via Docker CLI which uses named pipes internally
+	if _, err := os.Stat(`\\.\pipe\docker_engine`); err == nil {
 		return true
 	}
 
-	// On Windows, try named pipe
-	conn, err = net.DialTimeout("npipe", `\\.\pipe\docker_engine`, 1*time.Second)
+	// Try Unix socket (Linux/macOS)
+	conn, err := net.DialTimeout("unix", "/var/run/docker.sock", 2*time.Second)
 	if err == nil {
 		conn.Close()
 		return true
 	}
 
 	// Try Docker Desktop via TCP
-	_, err = http.Get("http://localhost:2375/_ping")
+	client := http.Client{Timeout: 2 * time.Second}
+	resp, err := client.Get("http://localhost:2375/_ping")
 	if err == nil {
+		resp.Body.Close()
 		return true
 	}
 

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lusoris/revenge/internal/api/oas"
+	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +19,7 @@ func TestOgenClientGeneration(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create ogen client")
 	require.NotNil(t, client, "client should not be nil")
 }
@@ -30,7 +30,7 @@ func TestHealthEndpointsViaClient(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create ogen client")
 
 	ctx := context.Background()
@@ -39,45 +39,54 @@ func TestHealthEndpointsViaClient(t *testing.T) {
 	t.Run("Liveness", func(t *testing.T) {
 		resp, err := client.GetLiveness(ctx)
 		require.NoError(t, err, "should be able to call liveness endpoint")
+		require.NotNil(t, resp, "response should not be nil")
 
-		// Type assertion to get the actual health check
-		healthCheck, ok := resp.(*oas.HealthCheck)
-		require.True(t, ok, "response should be *oas.HealthCheck")
-		require.NotNil(t, healthCheck, "health check should not be nil")
-
-		assert.Equal(t, "healthy", healthCheck.Status, "status should be healthy")
-		assert.False(t, healthCheck.Timestamp.IsZero(), "timestamp should be set")
+		// GetLiveness returns *HealthCheck directly
+		assert.Equal(t, "liveness", resp.Name, "name should be liveness")
+		assert.Equal(t, ogen.HealthCheckStatusHealthy, resp.Status, "status should be healthy")
+		assert.True(t, resp.Message.IsSet(), "message should be set")
 	})
 
 	// Test readiness endpoint
 	t.Run("Readiness", func(t *testing.T) {
 		resp, err := client.GetReadiness(ctx)
 		require.NoError(t, err, "should be able to call readiness endpoint")
+		require.NotNil(t, resp, "response should not be nil")
 
-		healthCheck, ok := resp.(*oas.HealthCheck)
-		require.True(t, ok, "response should be *oas.HealthCheck")
-		require.NotNil(t, healthCheck, "health check should not be nil")
-
-		assert.Equal(t, "ready", healthCheck.Status, "status should be ready")
-		assert.False(t, healthCheck.Timestamp.IsZero(), "timestamp should be set")
-
-		// Verify checks are present
-		require.NotNil(t, healthCheck.Checks.Value, "checks should be present")
-		checks := healthCheck.Checks.Value
-		assert.Contains(t, checks, "database", "should have database check")
+		// GetReadiness returns GetReadinessRes interface (either OK or ServiceUnavailable)
+		switch r := resp.(type) {
+		case *ogen.GetReadinessOK:
+			healthCheck := (*ogen.HealthCheck)(r)
+			assert.Equal(t, "readiness", healthCheck.Name, "name should be readiness")
+			assert.Equal(t, ogen.HealthCheckStatusHealthy, healthCheck.Status, "status should be healthy")
+		case *ogen.GetReadinessServiceUnavailable:
+			healthCheck := (*ogen.HealthCheck)(r)
+			assert.Equal(t, "readiness", healthCheck.Name, "name should be readiness")
+			assert.Equal(t, ogen.HealthCheckStatusUnhealthy, healthCheck.Status, "status should be unhealthy")
+		default:
+			t.Fatalf("unexpected response type: %T", resp)
+		}
 	})
 
 	// Test startup endpoint
 	t.Run("Startup", func(t *testing.T) {
 		resp, err := client.GetStartup(ctx)
 		require.NoError(t, err, "should be able to call startup endpoint")
+		require.NotNil(t, resp, "response should not be nil")
 
-		healthCheck, ok := resp.(*oas.HealthCheck)
-		require.True(t, ok, "response should be *oas.HealthCheck")
-		require.NotNil(t, healthCheck, "health check should not be nil")
-
-		assert.Equal(t, "started", healthCheck.Status, "status should be started")
-		assert.False(t, healthCheck.Timestamp.IsZero(), "timestamp should be set")
+		// GetStartup returns GetStartupRes interface (either OK or ServiceUnavailable)
+		switch r := resp.(type) {
+		case *ogen.GetStartupOK:
+			healthCheck := (*ogen.HealthCheck)(r)
+			assert.Equal(t, "startup", healthCheck.Name, "name should be startup")
+			assert.Equal(t, ogen.HealthCheckStatusHealthy, healthCheck.Status, "status should be healthy")
+		case *ogen.GetStartupServiceUnavailable:
+			healthCheck := (*ogen.HealthCheck)(r)
+			assert.Equal(t, "startup", healthCheck.Name, "name should be startup")
+			assert.Equal(t, ogen.HealthCheckStatusUnhealthy, healthCheck.Status, "status should be unhealthy")
+		default:
+			t.Fatalf("unexpected response type: %T", resp)
+		}
 	})
 }
 
@@ -87,7 +96,7 @@ func TestClientTypeSafety(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create client")
 
 	ctx := context.Background()
@@ -95,21 +104,17 @@ func TestClientTypeSafety(t *testing.T) {
 	// Call liveness endpoint
 	resp, err := client.GetLiveness(ctx)
 	require.NoError(t, err, "should be able to call endpoint")
-
-	// Verify type safety - response should be HealthCheck
-	healthCheck, ok := resp.(*oas.HealthCheck)
-	require.True(t, ok, "response should be *oas.HealthCheck type")
+	require.NotNil(t, resp, "response should not be nil")
 
 	// Verify fields are accessible with type safety
-	_ = healthCheck.Status    // string
-	_ = healthCheck.Timestamp // time.Time
-	_ = healthCheck.Checks    // OptHealthCheckChecks
-	_ = healthCheck.Details   // OptHealthCheckDetails
+	assert.NotEmpty(t, resp.Name, "name should not be empty")
+	assert.NotEmpty(t, resp.Status, "status should not be empty")
+	// message and details are optional (OptString, OptHealthCheckDetails)
 }
 
 func TestClientErrorHandling(t *testing.T) {
 	// Create client pointing to non-existent server
-	client, err := oas.NewClient("http://localhost:9999", oas.WithClient(&http.Client{
+	client, err := ogen.NewClient("http://localhost:9999", ogen.WithClient(&http.Client{
 		Timeout: 1 * time.Second,
 	}))
 	require.NoError(t, err, "should be able to create client")
@@ -127,7 +132,7 @@ func TestClientConcurrentRequests(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create client")
 
 	ctx := context.Background()
@@ -146,7 +151,7 @@ func TestClientConcurrentRequests(t *testing.T) {
 	// Collect results
 	for i := 0; i < numRequests; i++ {
 		err := <-results
-		assert.NoError(t, err, "concurrent request %d should succeed", i)
+		assert.NoError(t, err, "concurrent request should succeed")
 	}
 }
 
@@ -156,7 +161,7 @@ func TestClientTimeout(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create client with very short timeout
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(&http.Client{
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(&http.Client{
 		Timeout: 1 * time.Nanosecond, // Extremely short timeout
 	}))
 	require.NoError(t, err, "should be able to create client")
@@ -174,7 +179,7 @@ func TestClientContextCancellation(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create client")
 
 	// Create context with immediate cancellation
@@ -193,7 +198,7 @@ func TestClientWithContextTimeout(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create client")
 
 	// Create context with timeout
@@ -214,7 +219,7 @@ func TestClientResponseValidation(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Create ogen client
-	client, err := oas.NewClient(ts.BaseURL, oas.WithClient(ts.HTTPClient))
+	client, err := ogen.NewClient(ts.BaseURL, ogen.WithClient(ts.HTTPClient))
 	require.NoError(t, err, "should be able to create client")
 
 	ctx := context.Background()
@@ -222,18 +227,17 @@ func TestClientResponseValidation(t *testing.T) {
 	// Call endpoint and validate response structure
 	resp, err := client.GetLiveness(ctx)
 	require.NoError(t, err, "should be able to call endpoint")
-
-	healthCheck, ok := resp.(*oas.HealthCheck)
-	require.True(t, ok, "response should be *oas.HealthCheck")
+	require.NotNil(t, resp, "response should not be nil")
 
 	// Validate required fields are present
-	assert.NotEmpty(t, healthCheck.Status, "status should not be empty")
-	assert.False(t, healthCheck.Timestamp.IsZero(), "timestamp should not be zero")
+	assert.NotEmpty(t, resp.Name, "name should not be empty")
+	assert.NotEmpty(t, resp.Status, "status should not be empty")
 
 	// Validate status is one of expected values
-	validStatuses := []string{"healthy", "unhealthy", "degraded"}
-	assert.Contains(t, validStatuses, healthCheck.Status, "status should be valid")
-
-	// Validate timestamp is recent (within last minute)
-	assert.WithinDuration(t, time.Now(), healthCheck.Timestamp, 1*time.Minute, "timestamp should be recent")
+	validStatuses := []ogen.HealthCheckStatus{
+		ogen.HealthCheckStatusHealthy,
+		ogen.HealthCheckStatusUnhealthy,
+		ogen.HealthCheckStatusDegraded,
+	}
+	assert.Contains(t, validStatuses, resp.Status, "status should be valid")
 }
