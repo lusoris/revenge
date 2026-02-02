@@ -7,40 +7,49 @@
 
 ## Critical Bugs (P0)
 
-### 🔴 BUG-001: No HTTP Server Running
+### ✅ BUG-001: No HTTP Server Running [RESOLVED]
 
-**Status**: Open
+**Status**: ✅ Resolved (2026-02-02 13:30)
 **Priority**: P0 (Critical)
 **Severity**: Blocker
 **Discovered**: 2026-02-02
+**Resolved**: 2026-02-02
 **Component**: internal/api
 
 **Description**:
-OpenAPI specification exists at `api/openapi/openapi.yaml` with health endpoints defined, but no actual HTTP server is running. The ogen code has not been generated, and no handlers are implemented.
+OpenAPI specification exists at `api/openapi/openapi.yaml` with health endpoints defined, but no actual HTTP server was running. The ogen code had not been generated, and no handlers were implemented.
 
 **Impact**:
 - Cannot test API endpoints
 - Health checks not accessible
 - v0.1.0 non-functional
 
-**Steps to Reproduce**:
-1. Run `curl http://localhost:8080/health/live`
-2. Observe: Connection refused
-
-**Expected Behavior**:
-HTTP server should be running on port 8080 and respond to health check requests.
-
 **Root Cause**:
-1. `make generate` has not been run to generate ogen code
-2. No `internal/api/server.go` implementing ogen.Server
-3. No handlers for health endpoints
-4. HTTP server not wired into fx.App
+1. ogen.yaml config format incompatible with ogen CLI v1.18.0
+2. .gitignore excluded *_gen.go files
+3. No HTTP server implementation
+4. No handler implementation
 
-**Solution**:
-See STATUS.md Phase 1 for implementation plan.
+**Solution Implemented**:
+✅ **Commit 6477058dca**: Generated ogen code
+  - Fixed ogen CLI invocation (use flags instead of config file)
+  - Generated 17 ogen files (oas_*_gen.go)
+  - Updated .gitignore to commit generated code
+  - Updated Makefile with correct ogen command
 
-**Assignee**: TBD
-**ETA**: Today
+✅ **Commit 63a5202131**: Implemented HTTP server and handlers
+  - Created internal/api/server.go with fx lifecycle
+  - Created internal/api/handler.go implementing ogen.Handler
+  - Implemented GetLiveness, GetReadiness, GetStartup handlers
+  - Wired into fx.App via internal/api/module.go
+  - Made Auth.JWTSecret optional (not in v0.1.0 scope)
+
+**Verification**:
+- ✅ Code compiles successfully
+- ⏳ Local testing pending (needs database setup)
+
+**Assignee**: Agent
+**Resolution**: 2026-02-02 13:30
 
 ---
 

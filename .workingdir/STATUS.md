@@ -35,30 +35,32 @@
 **Target Completion**: Today
 
 #### Tasks:
-- [ ] 1.1 Generate ogen code
-  - [ ] Run `make generate`
-  - [ ] Verify `internal/api/oas_*.go` files generated
-  - [ ] Commit generated code
+- [x] 1.1 Generate ogen code ✅ COMPLETE (6477058dca)
+  - [x] Run code generation (fixed ogen CLI flags)
+  - [x] Verify `internal/api/ogen/oas_*.go` files generated (17 files)
+  - [x] Fixed .gitignore to commit generated code
+  - [x] Updated Makefile with correct ogen command
+  - [x] Committed & pushed to develop
 
-- [ ] 1.2 Implement HTTP server
-  - [ ] Create `internal/api/server.go`
-  - [ ] Implement ogen.Server interface
-  - [ ] Add HTTP server lifecycle hooks
-  - [ ] Wire server into fx.App
+- [x] 1.2 Implement HTTP server ✅ COMPLETE (63a5202131)
+  - [x] Create `internal/api/server.go`
+  - [x] Implement HTTP server lifecycle hooks with fx
+  - [x] Wire server into fx.App
 
-- [ ] 1.3 Implement health handlers
-  - [ ] Create `internal/api/health_handler.go`
-  - [ ] Implement GetLiveness handler
-  - [ ] Implement GetReadiness handler
-  - [ ] Implement GetStartup handler
-  - [ ] Wire handlers to server
+- [x] 1.3 Implement health handlers ✅ COMPLETE (63a5202131)
+  - [x] Create `internal/api/handler.go`
+  - [x] Implement GetLiveness handler (returns HealthCheck)
+  - [x] Implement GetReadiness handler (uses health.Service)
+  - [x] Implement GetStartup handler (uses health.Service)
+  - [x] Implement NewError handler for error responses
 
 - [ ] 1.4 Test locally
-  - [ ] Start server with `make dev`
-  - [ ] Test `curl http://localhost:8080/health/live`
-  - [ ] Test `curl http://localhost:8080/health/ready`
-  - [ ] Test `curl http://localhost:8080/health/startup`
-  - [ ] Verify JSON responses
+  - [ ] Set up local test environment (embedded-postgres)
+  - [ ] Start server with `make dev` or manual command
+  - [ ] Test `curl http://localhost:18096/health/live`
+  - [ ] Test `curl http://localhost:18096/health/ready`
+  - [ ] Test `curl http://localhost:18096/health/startup`
+  - [ ] Verify JSON responses match OpenAPI spec
 
 - [ ] 1.5 Add tests
   - [ ] Add HTTP server startup test
@@ -66,11 +68,11 @@
   - [ ] Ensure tests pass in CI
 
 - [ ] 1.6 Commit & push
-  - [ ] Commit with message: "feat: implement HTTP server with health endpoints"
+  - [ ] Commit with message: "test: add health endpoint tests"
   - [ ] Push to develop
   - [ ] Verify CI passes
 
-**Blockers**: None
+**Blockers**: Need database connection for testing (BUG-001 RESOLVED, new blocker: local DB setup)
 
 ---
 
