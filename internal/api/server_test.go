@@ -49,7 +49,7 @@ func TestNewServer_WithFxLifecycle(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15450/test?sslmode=disable")
@@ -96,7 +96,7 @@ func TestNewServer_WithFxLifecycle(t *testing.T) {
 	// Test that server is actually listening
 	resp, err := http.Get("http://127.0.0.1:15451/health/live")
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
 	// Stop the app (triggers OnStop hooks)
@@ -117,7 +117,7 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15452/test?sslmode=disable")
@@ -157,21 +157,21 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 	t.Run("liveness endpoint", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15453/health/live")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
 
 	t.Run("readiness endpoint", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15453/health/ready")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
 
 	t.Run("startup endpoint", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15453/health/startup")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
 
@@ -247,13 +247,13 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	// Readiness should now return 503 Service Unavailable
 	resp, err = http.Get("http://127.0.0.1:15455/health/ready")
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusServiceUnavailable, resp.StatusCode)
 
 	// But liveness should still work (process is alive)
 	resp2, err := http.Get("http://127.0.0.1:15455/health/live")
 	require.NoError(t, err)
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp2.StatusCode)
 
 	app.RequireStop()
@@ -273,7 +273,7 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15456/test?sslmode=disable")
@@ -312,7 +312,7 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	// Startup should be unhealthy (503)
 	resp, err := http.Get("http://127.0.0.1:15457/health/startup")
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusServiceUnavailable, resp.StatusCode)
 
 	// Mark startup complete
@@ -321,7 +321,7 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	// Now startup should be healthy
 	resp2, err := http.Get("http://127.0.0.1:15457/health/startup")
 	require.NoError(t, err)
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp2.StatusCode)
 
 	app.RequireStop()
@@ -341,7 +341,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15458/test?sslmode=disable")
@@ -380,7 +380,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	t.Run("liveness response contains correct JSON", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15459/health/live")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
@@ -393,7 +393,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	t.Run("readiness response contains correct JSON", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15459/health/ready")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
@@ -406,7 +406,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	t.Run("startup response contains correct JSON", func(t *testing.T) {
 		resp, err := http.Get("http://127.0.0.1:15459/health/startup")
 		require.NoError(t, err)
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		body, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
@@ -433,7 +433,7 @@ func TestNewServer_ConcurrentRequests(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15460/test?sslmode=disable")
@@ -481,7 +481,7 @@ func TestNewServer_ConcurrentRequests(t *testing.T) {
 				errors <- err
 				return
 			}
-			defer resp.Body.Close()
+			defer func() { _ = resp.Body.Close() }()
 			results <- resp.StatusCode
 		}()
 	}
@@ -515,7 +515,7 @@ func TestNewServer_ServerConfigApplied(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15462/test?sslmode=disable")
@@ -585,7 +585,7 @@ func TestNewServer_GracefulShutdown(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15464/test?sslmode=disable")
@@ -658,7 +658,7 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	ctx := context.Background()
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15466/test?sslmode=disable")
@@ -709,3 +709,5 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 		})
 	}
 }
+
+

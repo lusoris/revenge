@@ -566,7 +566,7 @@ func TestMigrateUpVerifiesTables(t *testing.T) {
 	// Connect and verify tables exist
 	db, err := sql.Open("pgx", dbURL)
 	require.NoError(t, err)
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	// Check if shared schema exists (from 000001_create_schemas.up.sql)
 	var schemaExists bool

@@ -88,7 +88,7 @@ func TestHandler_GetReadiness_Healthy(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	// Create pool
 	ctx := context.Background()
@@ -215,7 +215,7 @@ func TestHandler_GetReadiness_WithCancelledContext(t *testing.T) {
 
 	err := postgres.Start()
 	require.NoError(t, err)
-	defer postgres.Stop()
+	defer func() { _ = postgres.Stop() }()
 
 	// Create pool
 	ctx := context.Background()
@@ -274,3 +274,4 @@ func TestHandler_NewError_VariousErrors(t *testing.T) {
 		})
 	}
 }
+
