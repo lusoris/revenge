@@ -9,6 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
@@ -31,6 +32,7 @@ type ServerParams struct {
 	HealthService   *health.Service
 	SettingsService settings.Service
 	UserService     *user.Service
+	TokenManager    auth.TokenManager
 	Lifecycle       fx.Lifecycle
 }
 
@@ -42,6 +44,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		healthService:   p.HealthService,
 		userService:     p.UserService,
 		settingsService: p.SettingsService,
+		tokenManager:    p.TokenManager,
 	}
 
 	// Create ogen server

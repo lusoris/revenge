@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-faster/errors"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/zap"
@@ -18,14 +20,29 @@ type Handler struct {
 	healthService   *health.Service
 	settingsService settings.Service
 	userService     *user.Service
+	tokenManager    auth.TokenManager
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.
-// TODO: Implement JWT verification
+// Validates JWT access tokens and injects user context.
 func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.OperationName, t ogen.BearerAuth) (context.Context, error) {
 	h.logger.Debug("Bearer auth requested", zap.String("operation", string(operationName)))
-	// TODO: Verify JWT token and extract user ID
-	// For now, just accept any token
+
+	// Validate JWT token
+	claims, err := h.tokenManager.ValidateAccessToken(t.Token)
+	if err != nil {
+		h.logger.Warn("Invalid JWT token", zap.Error(err))
+		return nil, errors.Wrap(err, "invalid token")
+	}
+
+	// Inject user data into context
+	ctx = WithUserID(ctx, claims.UserID)
+	ctx = WithUsername(ctx, claims.Username)
+
+	h.logger.Debug("JWT validated successfully",
+		zap.String("user_id", claims.UserID.String()),
+		zap.String("username", claims.Username))
+
 	return ctx, nil
 }
 
@@ -297,8 +314,15 @@ func boolPtrToBool(b *bool) bool {
 
 // GetCurrentUser returns the authenticated user's profile
 func (h *Handler) GetCurrentUser(ctx context.Context) (ogen.GetCurrentUserRes, error) {
-	// TODO: Get user ID from JWT token in context
-	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+	// Get user ID from JWT token in context
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		h.logger.Warn("No user ID in context", zap.Error(err))
+		return &ogen.Error{
+			Code:    401,
+			Message: "Unauthorized",
+		}, nil
+	}
 
 	user, err := h.userService.GetUser(ctx, userID)
 	if err != nil {
