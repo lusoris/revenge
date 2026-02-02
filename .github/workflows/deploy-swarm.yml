@@ -268,7 +268,7 @@ jobs:
           head -50 deploy/docker-stack.yml
 
       - name: Upload stack file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: docker-stack
           path: deploy/docker-stack.yml
