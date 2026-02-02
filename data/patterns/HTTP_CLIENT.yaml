@@ -546,11 +546,11 @@ sources:
 sources_additional: []
 
 design_refs:
-  - file: data/architecture/03_METADATA_SYSTEM.yaml
-    note: Metadata system uses HTTP client for external APIs
-  - file: data/services/METADATA.yaml
-    note: Metadata service implements HTTP client factory
-  - file: data/integrations/metadata/video/TMDB.yaml
-    note: TMDb integration uses HTTP client
-  - file: data/integrations/metadata/video/THETVDB.yaml
-    note: TheTVDB integration uses HTTP client
+  - title: 03_METADATA_SYSTEM
+    path: ../architecture/03_METADATA_SYSTEM.md
+  - title: METADATA
+    path: ../services/METADATA.md
+  - title: TMDB
+    path: ../integrations/metadata/video/TMDB.md
+  - title: THETVDB
+    path: ../integrations/metadata/video/THETVDB.md
