@@ -33,6 +33,56 @@ type ActivityLog struct {
 	CreatedAt    time.Time  `json:"createdAt"`
 }
 
+// Media libraries organizing content by type and location
+type Library struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+	// Library content type: movie, tvshow, music, photo, book, audiobook, comic, podcast, adult
+	Type string `json:"type"`
+	// Array of file system paths to scan for this library
+	Paths              []string `json:"paths"`
+	Enabled            bool     `json:"enabled"`
+	ScanOnStartup      bool     `json:"scanOnStartup"`
+	RealtimeMonitoring bool     `json:"realtimeMonitoring"`
+	// Primary metadata provider: tmdb, tvdb, musicbrainz, openlib, etc.
+	MetadataProvider  *string `json:"metadataProvider"`
+	PreferredLanguage string  `json:"preferredLanguage"`
+	// Type-specific scanner configuration as JSONB
+	ScannerConfig []byte    `json:"scannerConfig"`
+	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+}
+
+// Per-user access permissions to libraries
+type LibraryPermission struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	// Permission type: view, download, manage
+	Permission string    `json:"permission"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
+// Track library scan jobs and their progress
+type LibraryScan struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryID uuid.UUID `json:"libraryId"`
+	// Type of scan: full, incremental, metadata
+	ScanType string `json:"scanType"`
+	// Scan status: pending, running, completed, failed, cancelled
+	Status          string             `json:"status"`
+	ItemsScanned    int32              `json:"itemsScanned"`
+	ItemsAdded      int32              `json:"itemsAdded"`
+	ItemsUpdated    int32              `json:"itemsUpdated"`
+	ItemsRemoved    int32              `json:"itemsRemoved"`
+	ErrorsCount     int32              `json:"errorsCount"`
+	ErrorMessage    *string            `json:"errorMessage"`
+	StartedAt       pgtype.Timestamptz `json:"startedAt"`
+	CompletedAt     pgtype.Timestamptz `json:"completedAt"`
+	DurationSeconds *int32             `json:"durationSeconds"`
+	CreatedAt       time.Time          `json:"createdAt"`
+}
+
 // API keys for programmatic access with scope-based permissions
 type SharedApiKey struct {
 	ID          uuid.UUID `json:"id"`

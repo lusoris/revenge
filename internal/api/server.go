@@ -12,6 +12,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -43,6 +44,7 @@ type ServerParams struct {
 	APIKeyService   *apikeys.Service
 	OIDCService     *oidc.Service
 	ActivityService *activity.Service
+	LibraryService  *library.Service
 	TokenManager    auth.TokenManager
 	Lifecycle       fx.Lifecycle
 }
@@ -62,6 +64,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		apikeyService:   p.APIKeyService,
 		oidcService:     p.OIDCService,
 		activityService: p.ActivityService,
+		libraryService:  p.LibraryService,
 		tokenManager:    p.TokenManager,
 	}
 

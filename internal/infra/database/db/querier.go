@@ -13,10 +13,20 @@ import (
 )
 
 type Querier interface {
+	// Checks if a user has a specific permission for a library
+	CheckLibraryPermission(ctx context.Context, arg CheckLibraryPermissionParams) (bool, error)
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count total activity logs
 	CountActivityLogs(ctx context.Context) (int64, error)
+	// Counts total libraries
+	CountLibraries(ctx context.Context) (int64, error)
+	// Counts libraries by type
+	CountLibrariesByType(ctx context.Context, type_ string) (int64, error)
+	// Counts permissions for a library
+	CountLibraryPermissions(ctx context.Context, libraryID uuid.UUID) (int64, error)
+	// Counts scans for a library
+	CountLibraryScans(ctx context.Context, libraryID uuid.UUID) (int64, error)
 	// Count activity logs for a specific resource
 	CountResourceActivityLogs(ctx context.Context, arg CountResourceActivityLogsParams) (int64, error)
 	// Count activity logs matching search filters
@@ -36,6 +46,18 @@ type Querier interface {
 	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
 	// Email Verification Tokens
 	CreateEmailVerificationToken(ctx context.Context, arg CreateEmailVerificationTokenParams) (SharedEmailVerificationToken, error)
+	// Creates a new library
+	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
+	// ============================================================================
+	// Library Permissions
+	// ============================================================================
+	// Grants a permission to a user for a library
+	CreateLibraryPermission(ctx context.Context, arg CreateLibraryPermissionParams) (LibraryPermission, error)
+	// ============================================================================
+	// Library Scans
+	// ============================================================================
+	// Creates a new library scan record
+	CreateLibraryScan(ctx context.Context, arg CreateLibraryScanParams) (LibraryScan, error)
 	// Creates a new OIDC provider configuration
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (SharedOidcProvider, error)
 	// ============================================================================
@@ -60,6 +82,8 @@ type Querier interface {
 	// Create a new user setting
 	CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error)
 	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
+	// Revokes all permissions for a library (used when deleting library)
+	DeleteAllLibraryPermissions(ctx context.Context, libraryID uuid.UUID) error
 	// Delete all settings for a user (used when user is deleted)
 	DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error
 	// Soft delete an avatar
@@ -71,6 +95,10 @@ type Querier interface {
 	DeleteExpiredOIDCStates(ctx context.Context) (int64, error)
 	DeleteExpiredPasswordResetTokens(ctx context.Context) error
 	DeleteExpiredSessions(ctx context.Context) error
+	// Deletes a library by ID
+	DeleteLibrary(ctx context.Context, id uuid.UUID) error
+	// Revokes a permission from a user for a library
+	DeleteLibraryPermission(ctx context.Context, arg DeleteLibraryPermissionParams) error
 	// Deletes an OIDC provider
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
 	// Deletes an OAuth2 state (after use or expiration)
@@ -83,6 +111,8 @@ type Querier interface {
 	DeleteOIDCUserLinkByUserAndProvider(ctx context.Context, arg DeleteOIDCUserLinkByUserAndProviderParams) error
 	// Delete activity logs older than a specific date (for cleanup job)
 	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) (int64, error)
+	// Deletes library scans older than a given time
+	DeleteOldLibraryScans(ctx context.Context, olderThan time.Time) (int64, error)
 	DeleteRevokedAuthTokens(ctx context.Context) error
 	DeleteRevokedSessions(ctx context.Context) error
 	// Delete a server setting
@@ -90,6 +120,8 @@ type Querier interface {
 	DeleteUsedPasswordResetTokens(ctx context.Context) error
 	// Soft delete a user
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	// Revokes all library permissions for a user
+	DeleteUserLibraryPermissions(ctx context.Context, userID uuid.UUID) error
 	// Delete user preferences (cleanup on user deletion)
 	DeleteUserPreferences(ctx context.Context, userID uuid.UUID) error
 	// Delete a user setting
@@ -132,6 +164,16 @@ type Querier interface {
 	GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]SharedSession, error)
 	// Get the latest avatar version number for a user
 	GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) (int32, error)
+	// Gets the most recent scan for a library
+	GetLatestLibraryScan(ctx context.Context, libraryID uuid.UUID) (LibraryScan, error)
+	// Gets a library by ID
+	GetLibrary(ctx context.Context, id uuid.UUID) (Library, error)
+	// Gets a library by name
+	GetLibraryByName(ctx context.Context, name string) (Library, error)
+	// Gets a specific permission
+	GetLibraryPermission(ctx context.Context, arg GetLibraryPermissionParams) (LibraryPermission, error)
+	// Gets a library scan by ID
+	GetLibraryScan(ctx context.Context, id uuid.UUID) (LibraryScan, error)
 	// Gets an OIDC provider by ID
 	GetOIDCProvider(ctx context.Context, id uuid.UUID) (SharedOidcProvider, error)
 	// Gets an OIDC provider by name
@@ -151,11 +193,15 @@ type Querier interface {
 	GetRecentActions(ctx context.Context, limit int32) ([]GetRecentActionsRow, error)
 	// Get activity logs for a specific resource
 	GetResourceActivityLogs(ctx context.Context, arg GetResourceActivityLogsParams) ([]ActivityLog, error)
+	// Gets all currently running scans
+	GetRunningScans(ctx context.Context) ([]LibraryScan, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
 	GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSession, error)
 	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash *string) (SharedSession, error)
 	GetSessionByTokenHash(ctx context.Context, tokenHash string) (SharedSession, error)
+	// Gets all libraries a user has view access to
+	GetUserAccessibleLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error)
 	// Get activity logs for a specific user
 	GetUserActivityLogs(ctx context.Context, arg GetUserActivityLogsParams) ([]ActivityLog, error)
 	// Get a user by email
@@ -186,8 +232,18 @@ type Querier interface {
 	ListActivityLogs(ctx context.Context, arg ListActivityLogsParams) ([]ActivityLog, error)
 	// Includes expired but not revoked sessions (for user to see full history)
 	ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
+	// Lists all enabled libraries
+	ListEnabledLibraries(ctx context.Context) ([]Library, error)
 	// Lists all enabled OIDC providers
 	ListEnabledOIDCProviders(ctx context.Context) ([]SharedOidcProvider, error)
+	// Lists all libraries
+	ListLibraries(ctx context.Context) ([]Library, error)
+	// Lists libraries by type
+	ListLibrariesByType(ctx context.Context, type_ string) ([]Library, error)
+	// Lists all permissions for a library
+	ListLibraryPermissions(ctx context.Context, libraryID uuid.UUID) ([]LibraryPermission, error)
+	// Lists scans for a library
+	ListLibraryScans(ctx context.Context, arg ListLibraryScansParams) ([]LibraryScan, error)
 	// Lists all OIDC providers
 	ListOIDCProviders(ctx context.Context) ([]SharedOidcProvider, error)
 	// Get public settings (exposed in API)
@@ -199,6 +255,8 @@ type Querier interface {
 	ListUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]SharedApiKey, error)
 	// List all avatars for a user (for history)
 	ListUserAvatars(ctx context.Context, arg ListUserAvatarsParams) ([]SharedUserAvatar, error)
+	// Lists all library permissions for a user
+	ListUserLibraryPermissions(ctx context.Context, userID uuid.UUID) ([]LibraryPermission, error)
 	// Lists all OIDC links for a user
 	ListUserOIDCLinks(ctx context.Context, userID uuid.UUID) ([]ListUserOIDCLinksRow, error)
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
@@ -233,6 +291,12 @@ type Querier interface {
 	UpdateAuthTokenLastUsed(ctx context.Context, id uuid.UUID) error
 	// Update user last login timestamp
 	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
+	// Updates a library
+	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
+	// Updates scan progress
+	UpdateLibraryScanProgress(ctx context.Context, arg UpdateLibraryScanProgressParams) (LibraryScan, error)
+	// Updates scan status
+	UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) (LibraryScan, error)
 	// Updates an OIDC provider
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (SharedOidcProvider, error)
 	// Updates a user link (tokens, user info)

@@ -80,6 +80,18 @@ type Handler interface {
 	//
 	// POST /api/v1/apikeys
 	CreateAPIKey(ctx context.Context, req *CreateAPIKeyRequest) (CreateAPIKeyRes, error)
+	// CreateLibrary implements createLibrary operation.
+	//
+	// Create a new media library. Admin only.
+	//
+	// POST /api/v1/libraries
+	CreateLibrary(ctx context.Context, req *CreateLibraryRequest) (CreateLibraryRes, error)
+	// DeleteLibrary implements deleteLibrary operation.
+	//
+	// Delete a library and all its content. Admin only.
+	//
+	// DELETE /api/v1/libraries/{libraryId}
+	DeleteLibrary(ctx context.Context, params DeleteLibraryParams) (DeleteLibraryRes, error)
 	// DeleteUserSetting implements deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
@@ -116,6 +128,12 @@ type Handler interface {
 	//
 	// GET /api/v1/users/me
 	GetCurrentUser(ctx context.Context) (GetCurrentUserRes, error)
+	// GetLibrary implements getLibrary operation.
+	//
+	// Get detailed information about a library.
+	//
+	// GET /api/v1/libraries/{libraryId}
+	GetLibrary(ctx context.Context, params GetLibraryParams) (GetLibraryRes, error)
 	// GetLiveness implements getLiveness operation.
 	//
 	// Checks if the service is alive and running.
@@ -188,6 +206,12 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// GrantLibraryPermission implements grantLibraryPermission operation.
+	//
+	// Grant a user permission to access a library. Admin only.
+	//
+	// POST /api/v1/libraries/{libraryId}/permissions
+	GrantLibraryPermission(ctx context.Context, req *GrantLibraryPermissionReq, params GrantLibraryPermissionParams) (GrantLibraryPermissionRes, error)
 	// InitOIDCLink implements initOIDCLink operation.
 	//
 	// Initiates the flow to link an OIDC provider to the user's account.
@@ -200,6 +224,24 @@ type Handler interface {
 	//
 	// GET /api/v1/apikeys
 	ListAPIKeys(ctx context.Context) (ListAPIKeysRes, error)
+	// ListLibraries implements listLibraries operation.
+	//
+	// List all libraries the authenticated user can access. Admins see all libraries.
+	//
+	// GET /api/v1/libraries
+	ListLibraries(ctx context.Context) (ListLibrariesRes, error)
+	// ListLibraryPermissions implements listLibraryPermissions operation.
+	//
+	// List all user permissions for a library. Admin only.
+	//
+	// GET /api/v1/libraries/{libraryId}/permissions
+	ListLibraryPermissions(ctx context.Context, params ListLibraryPermissionsParams) (ListLibraryPermissionsRes, error)
+	// ListLibraryScans implements listLibraryScans operation.
+	//
+	// List scan history for a library.
+	//
+	// GET /api/v1/libraries/{libraryId}/scans
+	ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (ListLibraryScansRes, error)
 	// ListOIDCProviders implements listOIDCProviders operation.
 	//
 	// Returns a list of enabled OIDC providers for login.
@@ -320,6 +362,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/apikeys/{keyId}
 	RevokeAPIKey(ctx context.Context, params RevokeAPIKeyParams) (RevokeAPIKeyRes, error)
+	// RevokeLibraryPermission implements revokeLibraryPermission operation.
+	//
+	// Revoke a user's permission for a library. Admin only.
+	//
+	// DELETE /api/v1/libraries/{libraryId}/permissions/{userId}
+	RevokeLibraryPermission(ctx context.Context, params RevokeLibraryPermissionParams) (RevokeLibraryPermissionRes, error)
 	// RevokeSession implements revokeSession operation.
 	//
 	// Revoke a specific session by ID.
@@ -332,6 +380,12 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity
 	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// TriggerLibraryScan implements triggerLibraryScan operation.
+	//
+	// Start a library scan job. Admin only.
+	//
+	// POST /api/v1/libraries/{libraryId}/scan
+	TriggerLibraryScan(ctx context.Context, req *TriggerLibraryScanReq, params TriggerLibraryScanParams) (TriggerLibraryScanRes, error)
 	// UnlinkOIDCProvider implements unlinkOIDCProvider operation.
 	//
 	// Removes the link between user and OIDC provider.
@@ -344,6 +398,12 @@ type Handler interface {
 	//
 	// PUT /api/v1/users/me
 	UpdateCurrentUser(ctx context.Context, req *UserUpdate) (UpdateCurrentUserRes, error)
+	// UpdateLibrary implements updateLibrary operation.
+	//
+	// Update library settings. Admin only.
+	//
+	// PUT /api/v1/libraries/{libraryId}
+	UpdateLibrary(ctx context.Context, req *UpdateLibraryRequest, params UpdateLibraryParams) (UpdateLibraryRes, error)
 	// UpdateServerSetting implements updateServerSetting operation.
 	//
 	// Update the value of a server setting.

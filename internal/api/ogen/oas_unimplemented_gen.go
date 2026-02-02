@@ -121,6 +121,24 @@ func (UnimplementedHandler) CreateAPIKey(ctx context.Context, req *CreateAPIKeyR
 	return r, ht.ErrNotImplemented
 }
 
+// CreateLibrary implements createLibrary operation.
+//
+// Create a new media library. Admin only.
+//
+// POST /api/v1/libraries
+func (UnimplementedHandler) CreateLibrary(ctx context.Context, req *CreateLibraryRequest) (r CreateLibraryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// DeleteLibrary implements deleteLibrary operation.
+//
+// Delete a library and all its content. Admin only.
+//
+// DELETE /api/v1/libraries/{libraryId}
+func (UnimplementedHandler) DeleteLibrary(ctx context.Context, params DeleteLibraryParams) (r DeleteLibraryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DeleteUserSetting implements deleteUserSetting operation.
 //
 // Delete a user setting (revert to default).
@@ -172,6 +190,15 @@ func (UnimplementedHandler) GetCurrentSession(ctx context.Context) (r GetCurrent
 //
 // GET /api/v1/users/me
 func (UnimplementedHandler) GetCurrentUser(ctx context.Context) (r GetCurrentUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetLibrary implements getLibrary operation.
+//
+// Get detailed information about a library.
+//
+// GET /api/v1/libraries/{libraryId}
+func (UnimplementedHandler) GetLibrary(ctx context.Context, params GetLibraryParams) (r GetLibraryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -280,6 +307,15 @@ func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSe
 	return r, ht.ErrNotImplemented
 }
 
+// GrantLibraryPermission implements grantLibraryPermission operation.
+//
+// Grant a user permission to access a library. Admin only.
+//
+// POST /api/v1/libraries/{libraryId}/permissions
+func (UnimplementedHandler) GrantLibraryPermission(ctx context.Context, req *GrantLibraryPermissionReq, params GrantLibraryPermissionParams) (r GrantLibraryPermissionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // InitOIDCLink implements initOIDCLink operation.
 //
 // Initiates the flow to link an OIDC provider to the user's account.
@@ -295,6 +331,33 @@ func (UnimplementedHandler) InitOIDCLink(ctx context.Context, params InitOIDCLin
 //
 // GET /api/v1/apikeys
 func (UnimplementedHandler) ListAPIKeys(ctx context.Context) (r ListAPIKeysRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLibraries implements listLibraries operation.
+//
+// List all libraries the authenticated user can access. Admins see all libraries.
+//
+// GET /api/v1/libraries
+func (UnimplementedHandler) ListLibraries(ctx context.Context) (r ListLibrariesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLibraryPermissions implements listLibraryPermissions operation.
+//
+// List all user permissions for a library. Admin only.
+//
+// GET /api/v1/libraries/{libraryId}/permissions
+func (UnimplementedHandler) ListLibraryPermissions(ctx context.Context, params ListLibraryPermissionsParams) (r ListLibraryPermissionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListLibraryScans implements listLibraryScans operation.
+//
+// List scan history for a library.
+//
+// GET /api/v1/libraries/{libraryId}/scans
+func (UnimplementedHandler) ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (r ListLibraryScansRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -478,6 +541,15 @@ func (UnimplementedHandler) RevokeAPIKey(ctx context.Context, params RevokeAPIKe
 	return r, ht.ErrNotImplemented
 }
 
+// RevokeLibraryPermission implements revokeLibraryPermission operation.
+//
+// Revoke a user's permission for a library. Admin only.
+//
+// DELETE /api/v1/libraries/{libraryId}/permissions/{userId}
+func (UnimplementedHandler) RevokeLibraryPermission(ctx context.Context, params RevokeLibraryPermissionParams) (r RevokeLibraryPermissionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RevokeSession implements revokeSession operation.
 //
 // Revoke a specific session by ID.
@@ -496,6 +568,15 @@ func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params Searc
 	return r, ht.ErrNotImplemented
 }
 
+// TriggerLibraryScan implements triggerLibraryScan operation.
+//
+// Start a library scan job. Admin only.
+//
+// POST /api/v1/libraries/{libraryId}/scan
+func (UnimplementedHandler) TriggerLibraryScan(ctx context.Context, req *TriggerLibraryScanReq, params TriggerLibraryScanParams) (r TriggerLibraryScanRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UnlinkOIDCProvider implements unlinkOIDCProvider operation.
 //
 // Removes the link between user and OIDC provider.
@@ -511,6 +592,15 @@ func (UnimplementedHandler) UnlinkOIDCProvider(ctx context.Context, params Unlin
 //
 // PUT /api/v1/users/me
 func (UnimplementedHandler) UpdateCurrentUser(ctx context.Context, req *UserUpdate) (r UpdateCurrentUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateLibrary implements updateLibrary operation.
+//
+// Update library settings. Admin only.
+//
+// PUT /api/v1/libraries/{libraryId}
+func (UnimplementedHandler) UpdateLibrary(ctx context.Context, req *UpdateLibraryRequest, params UpdateLibraryParams) (r UpdateLibraryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

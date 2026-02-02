@@ -13,6 +13,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -43,6 +44,7 @@ var Module = fx.Module("app",
 	apikeys.Module,
 	oidc.Module,
 	activity.Module,
+	library.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,

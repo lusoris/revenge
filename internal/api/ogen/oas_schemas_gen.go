@@ -1489,6 +1489,237 @@ type CreateAPIKeyUnauthorized Error
 
 func (*CreateAPIKeyUnauthorized) createAPIKeyRes() {}
 
+type CreateLibraryBadRequest Error
+
+func (*CreateLibraryBadRequest) createLibraryRes() {}
+
+type CreateLibraryConflict Error
+
+func (*CreateLibraryConflict) createLibraryRes() {}
+
+type CreateLibraryForbidden Error
+
+func (*CreateLibraryForbidden) createLibraryRes() {}
+
+// Ref: #/components/schemas/CreateLibraryRequest
+type CreateLibraryRequest struct {
+	// Library display name.
+	Name string `json:"name"`
+	// Type of media in the library.
+	Type CreateLibraryRequestType `json:"type"`
+	// Folder paths to include in the library.
+	Paths []string `json:"paths"`
+	// Whether the library is enabled.
+	Enabled OptBool `json:"enabled"`
+	// Whether to scan the library on server startup.
+	ScanOnStartup OptBool `json:"scanOnStartup"`
+	// Whether to monitor for real-time file changes.
+	RealtimeMonitoring OptBool `json:"realtimeMonitoring"`
+	// Preferred metadata provider.
+	MetadataProvider OptString `json:"metadataProvider"`
+	// Preferred language for metadata.
+	PreferredLanguage OptString `json:"preferredLanguage"`
+	// Type-specific scanner configuration.
+	ScannerConfig OptCreateLibraryRequestScannerConfig `json:"scannerConfig"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateLibraryRequest) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *CreateLibraryRequest) GetType() CreateLibraryRequestType {
+	return s.Type
+}
+
+// GetPaths returns the value of Paths.
+func (s *CreateLibraryRequest) GetPaths() []string {
+	return s.Paths
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *CreateLibraryRequest) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetScanOnStartup returns the value of ScanOnStartup.
+func (s *CreateLibraryRequest) GetScanOnStartup() OptBool {
+	return s.ScanOnStartup
+}
+
+// GetRealtimeMonitoring returns the value of RealtimeMonitoring.
+func (s *CreateLibraryRequest) GetRealtimeMonitoring() OptBool {
+	return s.RealtimeMonitoring
+}
+
+// GetMetadataProvider returns the value of MetadataProvider.
+func (s *CreateLibraryRequest) GetMetadataProvider() OptString {
+	return s.MetadataProvider
+}
+
+// GetPreferredLanguage returns the value of PreferredLanguage.
+func (s *CreateLibraryRequest) GetPreferredLanguage() OptString {
+	return s.PreferredLanguage
+}
+
+// GetScannerConfig returns the value of ScannerConfig.
+func (s *CreateLibraryRequest) GetScannerConfig() OptCreateLibraryRequestScannerConfig {
+	return s.ScannerConfig
+}
+
+// SetName sets the value of Name.
+func (s *CreateLibraryRequest) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *CreateLibraryRequest) SetType(val CreateLibraryRequestType) {
+	s.Type = val
+}
+
+// SetPaths sets the value of Paths.
+func (s *CreateLibraryRequest) SetPaths(val []string) {
+	s.Paths = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *CreateLibraryRequest) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetScanOnStartup sets the value of ScanOnStartup.
+func (s *CreateLibraryRequest) SetScanOnStartup(val OptBool) {
+	s.ScanOnStartup = val
+}
+
+// SetRealtimeMonitoring sets the value of RealtimeMonitoring.
+func (s *CreateLibraryRequest) SetRealtimeMonitoring(val OptBool) {
+	s.RealtimeMonitoring = val
+}
+
+// SetMetadataProvider sets the value of MetadataProvider.
+func (s *CreateLibraryRequest) SetMetadataProvider(val OptString) {
+	s.MetadataProvider = val
+}
+
+// SetPreferredLanguage sets the value of PreferredLanguage.
+func (s *CreateLibraryRequest) SetPreferredLanguage(val OptString) {
+	s.PreferredLanguage = val
+}
+
+// SetScannerConfig sets the value of ScannerConfig.
+func (s *CreateLibraryRequest) SetScannerConfig(val OptCreateLibraryRequestScannerConfig) {
+	s.ScannerConfig = val
+}
+
+// Type-specific scanner configuration.
+type CreateLibraryRequestScannerConfig map[string]jx.Raw
+
+func (s *CreateLibraryRequestScannerConfig) init() CreateLibraryRequestScannerConfig {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Type of media in the library.
+type CreateLibraryRequestType string
+
+const (
+	CreateLibraryRequestTypeMovie     CreateLibraryRequestType = "movie"
+	CreateLibraryRequestTypeTvshow    CreateLibraryRequestType = "tvshow"
+	CreateLibraryRequestTypeMusic     CreateLibraryRequestType = "music"
+	CreateLibraryRequestTypePhoto     CreateLibraryRequestType = "photo"
+	CreateLibraryRequestTypeBook      CreateLibraryRequestType = "book"
+	CreateLibraryRequestTypeAudiobook CreateLibraryRequestType = "audiobook"
+	CreateLibraryRequestTypeComic     CreateLibraryRequestType = "comic"
+	CreateLibraryRequestTypePodcast   CreateLibraryRequestType = "podcast"
+	CreateLibraryRequestTypeAdult     CreateLibraryRequestType = "adult"
+)
+
+// AllValues returns all CreateLibraryRequestType values.
+func (CreateLibraryRequestType) AllValues() []CreateLibraryRequestType {
+	return []CreateLibraryRequestType{
+		CreateLibraryRequestTypeMovie,
+		CreateLibraryRequestTypeTvshow,
+		CreateLibraryRequestTypeMusic,
+		CreateLibraryRequestTypePhoto,
+		CreateLibraryRequestTypeBook,
+		CreateLibraryRequestTypeAudiobook,
+		CreateLibraryRequestTypeComic,
+		CreateLibraryRequestTypePodcast,
+		CreateLibraryRequestTypeAdult,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateLibraryRequestType) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateLibraryRequestTypeMovie:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeTvshow:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeMusic:
+		return []byte(s), nil
+	case CreateLibraryRequestTypePhoto:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeBook:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeAudiobook:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeComic:
+		return []byte(s), nil
+	case CreateLibraryRequestTypePodcast:
+		return []byte(s), nil
+	case CreateLibraryRequestTypeAdult:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateLibraryRequestType) UnmarshalText(data []byte) error {
+	switch CreateLibraryRequestType(data) {
+	case CreateLibraryRequestTypeMovie:
+		*s = CreateLibraryRequestTypeMovie
+		return nil
+	case CreateLibraryRequestTypeTvshow:
+		*s = CreateLibraryRequestTypeTvshow
+		return nil
+	case CreateLibraryRequestTypeMusic:
+		*s = CreateLibraryRequestTypeMusic
+		return nil
+	case CreateLibraryRequestTypePhoto:
+		*s = CreateLibraryRequestTypePhoto
+		return nil
+	case CreateLibraryRequestTypeBook:
+		*s = CreateLibraryRequestTypeBook
+		return nil
+	case CreateLibraryRequestTypeAudiobook:
+		*s = CreateLibraryRequestTypeAudiobook
+		return nil
+	case CreateLibraryRequestTypeComic:
+		*s = CreateLibraryRequestTypeComic
+		return nil
+	case CreateLibraryRequestTypePodcast:
+		*s = CreateLibraryRequestTypePodcast
+		return nil
+	case CreateLibraryRequestTypeAdult:
+		*s = CreateLibraryRequestTypeAdult
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type CreateLibraryUnauthorized Error
+
+func (*CreateLibraryUnauthorized) createLibraryRes() {}
+
 // Ref: #/components/schemas/CreateOIDCProviderRequest
 type CreateOIDCProviderRequest struct {
 	// Unique provider identifier.
@@ -1777,6 +2008,23 @@ func (s *CreateOIDCProviderRequestRoleMappings) init() CreateOIDCProviderRequest
 	return m
 }
 
+type DeleteLibraryForbidden Error
+
+func (*DeleteLibraryForbidden) deleteLibraryRes() {}
+
+// DeleteLibraryNoContent is response for DeleteLibrary operation.
+type DeleteLibraryNoContent struct{}
+
+func (*DeleteLibraryNoContent) deleteLibraryRes() {}
+
+type DeleteLibraryNotFound Error
+
+func (*DeleteLibraryNotFound) deleteLibraryRes() {}
+
+type DeleteLibraryUnauthorized Error
+
+func (*DeleteLibraryUnauthorized) deleteLibraryRes() {}
+
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
 
@@ -1835,6 +2083,7 @@ func (*Error) getCurrentUserRes()     {}
 func (*Error) getUserPreferencesRes() {}
 func (*Error) getUserRolesRes()       {}
 func (*Error) listAPIKeysRes()        {}
+func (*Error) listLibrariesRes()      {}
 func (*Error) listServerSettingsRes() {}
 func (*Error) listSessionsRes()       {}
 func (*Error) listUserOIDCLinksRes()  {}
@@ -1933,6 +2182,18 @@ type GetCurrentSessionUnauthorized Error
 
 func (*GetCurrentSessionUnauthorized) getCurrentSessionRes() {}
 
+type GetLibraryForbidden Error
+
+func (*GetLibraryForbidden) getLibraryRes() {}
+
+type GetLibraryNotFound Error
+
+func (*GetLibraryNotFound) getLibraryRes() {}
+
+type GetLibraryUnauthorized Error
+
+func (*GetLibraryUnauthorized) getLibraryRes() {}
+
 type GetReadinessOK HealthCheck
 
 func (*GetReadinessOK) getReadinessRes() {}
@@ -2004,6 +2265,98 @@ func (*GetUserSettingNotFound) getUserSettingRes() {}
 type GetUserSettingUnauthorized Error
 
 func (*GetUserSettingUnauthorized) getUserSettingRes() {}
+
+type GrantLibraryPermissionBadRequest Error
+
+func (*GrantLibraryPermissionBadRequest) grantLibraryPermissionRes() {}
+
+type GrantLibraryPermissionForbidden Error
+
+func (*GrantLibraryPermissionForbidden) grantLibraryPermissionRes() {}
+
+type GrantLibraryPermissionNotFound Error
+
+func (*GrantLibraryPermissionNotFound) grantLibraryPermissionRes() {}
+
+type GrantLibraryPermissionReq struct {
+	// User ID to grant permission to.
+	UserId uuid.UUID `json:"userId"`
+	// Permission type.
+	Permission GrantLibraryPermissionReqPermission `json:"permission"`
+}
+
+// GetUserId returns the value of UserId.
+func (s *GrantLibraryPermissionReq) GetUserId() uuid.UUID {
+	return s.UserId
+}
+
+// GetPermission returns the value of Permission.
+func (s *GrantLibraryPermissionReq) GetPermission() GrantLibraryPermissionReqPermission {
+	return s.Permission
+}
+
+// SetUserId sets the value of UserId.
+func (s *GrantLibraryPermissionReq) SetUserId(val uuid.UUID) {
+	s.UserId = val
+}
+
+// SetPermission sets the value of Permission.
+func (s *GrantLibraryPermissionReq) SetPermission(val GrantLibraryPermissionReqPermission) {
+	s.Permission = val
+}
+
+// Permission type.
+type GrantLibraryPermissionReqPermission string
+
+const (
+	GrantLibraryPermissionReqPermissionView     GrantLibraryPermissionReqPermission = "view"
+	GrantLibraryPermissionReqPermissionDownload GrantLibraryPermissionReqPermission = "download"
+	GrantLibraryPermissionReqPermissionManage   GrantLibraryPermissionReqPermission = "manage"
+)
+
+// AllValues returns all GrantLibraryPermissionReqPermission values.
+func (GrantLibraryPermissionReqPermission) AllValues() []GrantLibraryPermissionReqPermission {
+	return []GrantLibraryPermissionReqPermission{
+		GrantLibraryPermissionReqPermissionView,
+		GrantLibraryPermissionReqPermissionDownload,
+		GrantLibraryPermissionReqPermissionManage,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s GrantLibraryPermissionReqPermission) MarshalText() ([]byte, error) {
+	switch s {
+	case GrantLibraryPermissionReqPermissionView:
+		return []byte(s), nil
+	case GrantLibraryPermissionReqPermissionDownload:
+		return []byte(s), nil
+	case GrantLibraryPermissionReqPermissionManage:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *GrantLibraryPermissionReqPermission) UnmarshalText(data []byte) error {
+	switch GrantLibraryPermissionReqPermission(data) {
+	case GrantLibraryPermissionReqPermissionView:
+		*s = GrantLibraryPermissionReqPermissionView
+		return nil
+	case GrantLibraryPermissionReqPermissionDownload:
+		*s = GrantLibraryPermissionReqPermissionDownload
+		return nil
+	case GrantLibraryPermissionReqPermissionManage:
+		*s = GrantLibraryPermissionReqPermissionManage
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type GrantLibraryPermissionUnauthorized Error
+
+func (*GrantLibraryPermissionUnauthorized) grantLibraryPermissionRes() {}
 
 // Ref: #/components/schemas/HealthCheck
 type HealthCheck struct {
@@ -2125,6 +2478,746 @@ func (*InitOIDCLinkNotFound) initOIDCLinkRes() {}
 type InitOIDCLinkUnauthorized Error
 
 func (*InitOIDCLinkUnauthorized) initOIDCLinkRes() {}
+
+// Ref: #/components/schemas/Library
+type Library struct {
+	ID uuid.UUID `json:"id"`
+	// Library display name.
+	Name string `json:"name"`
+	// Type of media in the library.
+	Type LibraryType `json:"type"`
+	// Folder paths included in the library.
+	Paths []string `json:"paths"`
+	// Whether the library is enabled.
+	Enabled bool `json:"enabled"`
+	// Whether to scan the library on server startup.
+	ScanOnStartup bool `json:"scanOnStartup"`
+	// Whether to monitor for real-time file changes.
+	RealtimeMonitoring bool `json:"realtimeMonitoring"`
+	// Preferred metadata provider.
+	MetadataProvider OptString `json:"metadataProvider"`
+	// Preferred language for metadata.
+	PreferredLanguage OptString `json:"preferredLanguage"`
+	// Type-specific scanner configuration.
+	ScannerConfig OptLibraryScannerConfig `json:"scannerConfig"`
+	LatestScan    OptLibraryScan          `json:"latestScan"`
+	CreatedAt     time.Time               `json:"createdAt"`
+	UpdatedAt     time.Time               `json:"updatedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Library) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *Library) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *Library) GetType() LibraryType {
+	return s.Type
+}
+
+// GetPaths returns the value of Paths.
+func (s *Library) GetPaths() []string {
+	return s.Paths
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *Library) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetScanOnStartup returns the value of ScanOnStartup.
+func (s *Library) GetScanOnStartup() bool {
+	return s.ScanOnStartup
+}
+
+// GetRealtimeMonitoring returns the value of RealtimeMonitoring.
+func (s *Library) GetRealtimeMonitoring() bool {
+	return s.RealtimeMonitoring
+}
+
+// GetMetadataProvider returns the value of MetadataProvider.
+func (s *Library) GetMetadataProvider() OptString {
+	return s.MetadataProvider
+}
+
+// GetPreferredLanguage returns the value of PreferredLanguage.
+func (s *Library) GetPreferredLanguage() OptString {
+	return s.PreferredLanguage
+}
+
+// GetScannerConfig returns the value of ScannerConfig.
+func (s *Library) GetScannerConfig() OptLibraryScannerConfig {
+	return s.ScannerConfig
+}
+
+// GetLatestScan returns the value of LatestScan.
+func (s *Library) GetLatestScan() OptLibraryScan {
+	return s.LatestScan
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Library) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Library) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Library) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *Library) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *Library) SetType(val LibraryType) {
+	s.Type = val
+}
+
+// SetPaths sets the value of Paths.
+func (s *Library) SetPaths(val []string) {
+	s.Paths = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *Library) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetScanOnStartup sets the value of ScanOnStartup.
+func (s *Library) SetScanOnStartup(val bool) {
+	s.ScanOnStartup = val
+}
+
+// SetRealtimeMonitoring sets the value of RealtimeMonitoring.
+func (s *Library) SetRealtimeMonitoring(val bool) {
+	s.RealtimeMonitoring = val
+}
+
+// SetMetadataProvider sets the value of MetadataProvider.
+func (s *Library) SetMetadataProvider(val OptString) {
+	s.MetadataProvider = val
+}
+
+// SetPreferredLanguage sets the value of PreferredLanguage.
+func (s *Library) SetPreferredLanguage(val OptString) {
+	s.PreferredLanguage = val
+}
+
+// SetScannerConfig sets the value of ScannerConfig.
+func (s *Library) SetScannerConfig(val OptLibraryScannerConfig) {
+	s.ScannerConfig = val
+}
+
+// SetLatestScan sets the value of LatestScan.
+func (s *Library) SetLatestScan(val OptLibraryScan) {
+	s.LatestScan = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Library) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Library) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+func (*Library) createLibraryRes() {}
+func (*Library) getLibraryRes()    {}
+func (*Library) updateLibraryRes() {}
+
+// Ref: #/components/schemas/LibraryListResponse
+type LibraryListResponse struct {
+	Libraries []Library `json:"libraries"`
+	Total     int64     `json:"total"`
+}
+
+// GetLibraries returns the value of Libraries.
+func (s *LibraryListResponse) GetLibraries() []Library {
+	return s.Libraries
+}
+
+// GetTotal returns the value of Total.
+func (s *LibraryListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// SetLibraries sets the value of Libraries.
+func (s *LibraryListResponse) SetLibraries(val []Library) {
+	s.Libraries = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LibraryListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*LibraryListResponse) listLibrariesRes() {}
+
+// Ref: #/components/schemas/LibraryPermission
+type LibraryPermission struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryId uuid.UUID `json:"libraryId"`
+	UserId    uuid.UUID `json:"userId"`
+	// Permission type.
+	Permission LibraryPermissionPermission `json:"permission"`
+	CreatedAt  time.Time                   `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *LibraryPermission) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetLibraryId returns the value of LibraryId.
+func (s *LibraryPermission) GetLibraryId() uuid.UUID {
+	return s.LibraryId
+}
+
+// GetUserId returns the value of UserId.
+func (s *LibraryPermission) GetUserId() uuid.UUID {
+	return s.UserId
+}
+
+// GetPermission returns the value of Permission.
+func (s *LibraryPermission) GetPermission() LibraryPermissionPermission {
+	return s.Permission
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *LibraryPermission) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *LibraryPermission) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetLibraryId sets the value of LibraryId.
+func (s *LibraryPermission) SetLibraryId(val uuid.UUID) {
+	s.LibraryId = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *LibraryPermission) SetUserId(val uuid.UUID) {
+	s.UserId = val
+}
+
+// SetPermission sets the value of Permission.
+func (s *LibraryPermission) SetPermission(val LibraryPermissionPermission) {
+	s.Permission = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *LibraryPermission) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*LibraryPermission) grantLibraryPermissionRes() {}
+
+// Ref: #/components/schemas/LibraryPermissionListResponse
+type LibraryPermissionListResponse struct {
+	Permissions []LibraryPermission `json:"permissions"`
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *LibraryPermissionListResponse) GetPermissions() []LibraryPermission {
+	return s.Permissions
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *LibraryPermissionListResponse) SetPermissions(val []LibraryPermission) {
+	s.Permissions = val
+}
+
+func (*LibraryPermissionListResponse) listLibraryPermissionsRes() {}
+
+// Permission type.
+type LibraryPermissionPermission string
+
+const (
+	LibraryPermissionPermissionView     LibraryPermissionPermission = "view"
+	LibraryPermissionPermissionDownload LibraryPermissionPermission = "download"
+	LibraryPermissionPermissionManage   LibraryPermissionPermission = "manage"
+)
+
+// AllValues returns all LibraryPermissionPermission values.
+func (LibraryPermissionPermission) AllValues() []LibraryPermissionPermission {
+	return []LibraryPermissionPermission{
+		LibraryPermissionPermissionView,
+		LibraryPermissionPermissionDownload,
+		LibraryPermissionPermissionManage,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LibraryPermissionPermission) MarshalText() ([]byte, error) {
+	switch s {
+	case LibraryPermissionPermissionView:
+		return []byte(s), nil
+	case LibraryPermissionPermissionDownload:
+		return []byte(s), nil
+	case LibraryPermissionPermissionManage:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LibraryPermissionPermission) UnmarshalText(data []byte) error {
+	switch LibraryPermissionPermission(data) {
+	case LibraryPermissionPermissionView:
+		*s = LibraryPermissionPermissionView
+		return nil
+	case LibraryPermissionPermissionDownload:
+		*s = LibraryPermissionPermissionDownload
+		return nil
+	case LibraryPermissionPermissionManage:
+		*s = LibraryPermissionPermissionManage
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/LibraryScan
+type LibraryScan struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryId uuid.UUID `json:"libraryId"`
+	// Type of scan.
+	ScanType LibraryScanScanType `json:"scanType"`
+	// Current scan status.
+	Status LibraryScanStatus `json:"status"`
+	// Number of items scanned.
+	ItemsScanned OptInt64 `json:"itemsScanned"`
+	// Number of new items added.
+	ItemsAdded OptInt64 `json:"itemsAdded"`
+	// Number of items updated.
+	ItemsUpdated OptInt64 `json:"itemsUpdated"`
+	// Number of items removed.
+	ItemsRemoved OptInt64 `json:"itemsRemoved"`
+	// Number of errors during scan.
+	ErrorCount OptInt64 `json:"errorCount"`
+	// Error message if scan failed.
+	ErrorMessage OptString   `json:"errorMessage"`
+	StartedAt    OptDateTime `json:"startedAt"`
+	CompletedAt  OptDateTime `json:"completedAt"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *LibraryScan) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetLibraryId returns the value of LibraryId.
+func (s *LibraryScan) GetLibraryId() uuid.UUID {
+	return s.LibraryId
+}
+
+// GetScanType returns the value of ScanType.
+func (s *LibraryScan) GetScanType() LibraryScanScanType {
+	return s.ScanType
+}
+
+// GetStatus returns the value of Status.
+func (s *LibraryScan) GetStatus() LibraryScanStatus {
+	return s.Status
+}
+
+// GetItemsScanned returns the value of ItemsScanned.
+func (s *LibraryScan) GetItemsScanned() OptInt64 {
+	return s.ItemsScanned
+}
+
+// GetItemsAdded returns the value of ItemsAdded.
+func (s *LibraryScan) GetItemsAdded() OptInt64 {
+	return s.ItemsAdded
+}
+
+// GetItemsUpdated returns the value of ItemsUpdated.
+func (s *LibraryScan) GetItemsUpdated() OptInt64 {
+	return s.ItemsUpdated
+}
+
+// GetItemsRemoved returns the value of ItemsRemoved.
+func (s *LibraryScan) GetItemsRemoved() OptInt64 {
+	return s.ItemsRemoved
+}
+
+// GetErrorCount returns the value of ErrorCount.
+func (s *LibraryScan) GetErrorCount() OptInt64 {
+	return s.ErrorCount
+}
+
+// GetErrorMessage returns the value of ErrorMessage.
+func (s *LibraryScan) GetErrorMessage() OptString {
+	return s.ErrorMessage
+}
+
+// GetStartedAt returns the value of StartedAt.
+func (s *LibraryScan) GetStartedAt() OptDateTime {
+	return s.StartedAt
+}
+
+// GetCompletedAt returns the value of CompletedAt.
+func (s *LibraryScan) GetCompletedAt() OptDateTime {
+	return s.CompletedAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *LibraryScan) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *LibraryScan) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetLibraryId sets the value of LibraryId.
+func (s *LibraryScan) SetLibraryId(val uuid.UUID) {
+	s.LibraryId = val
+}
+
+// SetScanType sets the value of ScanType.
+func (s *LibraryScan) SetScanType(val LibraryScanScanType) {
+	s.ScanType = val
+}
+
+// SetStatus sets the value of Status.
+func (s *LibraryScan) SetStatus(val LibraryScanStatus) {
+	s.Status = val
+}
+
+// SetItemsScanned sets the value of ItemsScanned.
+func (s *LibraryScan) SetItemsScanned(val OptInt64) {
+	s.ItemsScanned = val
+}
+
+// SetItemsAdded sets the value of ItemsAdded.
+func (s *LibraryScan) SetItemsAdded(val OptInt64) {
+	s.ItemsAdded = val
+}
+
+// SetItemsUpdated sets the value of ItemsUpdated.
+func (s *LibraryScan) SetItemsUpdated(val OptInt64) {
+	s.ItemsUpdated = val
+}
+
+// SetItemsRemoved sets the value of ItemsRemoved.
+func (s *LibraryScan) SetItemsRemoved(val OptInt64) {
+	s.ItemsRemoved = val
+}
+
+// SetErrorCount sets the value of ErrorCount.
+func (s *LibraryScan) SetErrorCount(val OptInt64) {
+	s.ErrorCount = val
+}
+
+// SetErrorMessage sets the value of ErrorMessage.
+func (s *LibraryScan) SetErrorMessage(val OptString) {
+	s.ErrorMessage = val
+}
+
+// SetStartedAt sets the value of StartedAt.
+func (s *LibraryScan) SetStartedAt(val OptDateTime) {
+	s.StartedAt = val
+}
+
+// SetCompletedAt sets the value of CompletedAt.
+func (s *LibraryScan) SetCompletedAt(val OptDateTime) {
+	s.CompletedAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *LibraryScan) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*LibraryScan) triggerLibraryScanRes() {}
+
+// Ref: #/components/schemas/LibraryScanListResponse
+type LibraryScanListResponse struct {
+	Scans []LibraryScan `json:"scans"`
+	Total int64         `json:"total"`
+}
+
+// GetScans returns the value of Scans.
+func (s *LibraryScanListResponse) GetScans() []LibraryScan {
+	return s.Scans
+}
+
+// GetTotal returns the value of Total.
+func (s *LibraryScanListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// SetScans sets the value of Scans.
+func (s *LibraryScanListResponse) SetScans(val []LibraryScan) {
+	s.Scans = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LibraryScanListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*LibraryScanListResponse) listLibraryScansRes() {}
+
+// Type of scan.
+type LibraryScanScanType string
+
+const (
+	LibraryScanScanTypeFull        LibraryScanScanType = "full"
+	LibraryScanScanTypeIncremental LibraryScanScanType = "incremental"
+	LibraryScanScanTypeMetadata    LibraryScanScanType = "metadata"
+)
+
+// AllValues returns all LibraryScanScanType values.
+func (LibraryScanScanType) AllValues() []LibraryScanScanType {
+	return []LibraryScanScanType{
+		LibraryScanScanTypeFull,
+		LibraryScanScanTypeIncremental,
+		LibraryScanScanTypeMetadata,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LibraryScanScanType) MarshalText() ([]byte, error) {
+	switch s {
+	case LibraryScanScanTypeFull:
+		return []byte(s), nil
+	case LibraryScanScanTypeIncremental:
+		return []byte(s), nil
+	case LibraryScanScanTypeMetadata:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LibraryScanScanType) UnmarshalText(data []byte) error {
+	switch LibraryScanScanType(data) {
+	case LibraryScanScanTypeFull:
+		*s = LibraryScanScanTypeFull
+		return nil
+	case LibraryScanScanTypeIncremental:
+		*s = LibraryScanScanTypeIncremental
+		return nil
+	case LibraryScanScanTypeMetadata:
+		*s = LibraryScanScanTypeMetadata
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Current scan status.
+type LibraryScanStatus string
+
+const (
+	LibraryScanStatusPending   LibraryScanStatus = "pending"
+	LibraryScanStatusRunning   LibraryScanStatus = "running"
+	LibraryScanStatusCompleted LibraryScanStatus = "completed"
+	LibraryScanStatusFailed    LibraryScanStatus = "failed"
+	LibraryScanStatusCancelled LibraryScanStatus = "cancelled"
+)
+
+// AllValues returns all LibraryScanStatus values.
+func (LibraryScanStatus) AllValues() []LibraryScanStatus {
+	return []LibraryScanStatus{
+		LibraryScanStatusPending,
+		LibraryScanStatusRunning,
+		LibraryScanStatusCompleted,
+		LibraryScanStatusFailed,
+		LibraryScanStatusCancelled,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LibraryScanStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case LibraryScanStatusPending:
+		return []byte(s), nil
+	case LibraryScanStatusRunning:
+		return []byte(s), nil
+	case LibraryScanStatusCompleted:
+		return []byte(s), nil
+	case LibraryScanStatusFailed:
+		return []byte(s), nil
+	case LibraryScanStatusCancelled:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LibraryScanStatus) UnmarshalText(data []byte) error {
+	switch LibraryScanStatus(data) {
+	case LibraryScanStatusPending:
+		*s = LibraryScanStatusPending
+		return nil
+	case LibraryScanStatusRunning:
+		*s = LibraryScanStatusRunning
+		return nil
+	case LibraryScanStatusCompleted:
+		*s = LibraryScanStatusCompleted
+		return nil
+	case LibraryScanStatusFailed:
+		*s = LibraryScanStatusFailed
+		return nil
+	case LibraryScanStatusCancelled:
+		*s = LibraryScanStatusCancelled
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Type-specific scanner configuration.
+type LibraryScannerConfig map[string]jx.Raw
+
+func (s *LibraryScannerConfig) init() LibraryScannerConfig {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Type of media in the library.
+type LibraryType string
+
+const (
+	LibraryTypeMovie     LibraryType = "movie"
+	LibraryTypeTvshow    LibraryType = "tvshow"
+	LibraryTypeMusic     LibraryType = "music"
+	LibraryTypePhoto     LibraryType = "photo"
+	LibraryTypeBook      LibraryType = "book"
+	LibraryTypeAudiobook LibraryType = "audiobook"
+	LibraryTypeComic     LibraryType = "comic"
+	LibraryTypePodcast   LibraryType = "podcast"
+	LibraryTypeAdult     LibraryType = "adult"
+)
+
+// AllValues returns all LibraryType values.
+func (LibraryType) AllValues() []LibraryType {
+	return []LibraryType{
+		LibraryTypeMovie,
+		LibraryTypeTvshow,
+		LibraryTypeMusic,
+		LibraryTypePhoto,
+		LibraryTypeBook,
+		LibraryTypeAudiobook,
+		LibraryTypeComic,
+		LibraryTypePodcast,
+		LibraryTypeAdult,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LibraryType) MarshalText() ([]byte, error) {
+	switch s {
+	case LibraryTypeMovie:
+		return []byte(s), nil
+	case LibraryTypeTvshow:
+		return []byte(s), nil
+	case LibraryTypeMusic:
+		return []byte(s), nil
+	case LibraryTypePhoto:
+		return []byte(s), nil
+	case LibraryTypeBook:
+		return []byte(s), nil
+	case LibraryTypeAudiobook:
+		return []byte(s), nil
+	case LibraryTypeComic:
+		return []byte(s), nil
+	case LibraryTypePodcast:
+		return []byte(s), nil
+	case LibraryTypeAdult:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LibraryType) UnmarshalText(data []byte) error {
+	switch LibraryType(data) {
+	case LibraryTypeMovie:
+		*s = LibraryTypeMovie
+		return nil
+	case LibraryTypeTvshow:
+		*s = LibraryTypeTvshow
+		return nil
+	case LibraryTypeMusic:
+		*s = LibraryTypeMusic
+		return nil
+	case LibraryTypePhoto:
+		*s = LibraryTypePhoto
+		return nil
+	case LibraryTypeBook:
+		*s = LibraryTypeBook
+		return nil
+	case LibraryTypeAudiobook:
+		*s = LibraryTypeAudiobook
+		return nil
+	case LibraryTypeComic:
+		*s = LibraryTypeComic
+		return nil
+	case LibraryTypePodcast:
+		*s = LibraryTypePodcast
+		return nil
+	case LibraryTypeAdult:
+		*s = LibraryTypeAdult
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type ListLibraryPermissionsForbidden Error
+
+func (*ListLibraryPermissionsForbidden) listLibraryPermissionsRes() {}
+
+type ListLibraryPermissionsNotFound Error
+
+func (*ListLibraryPermissionsNotFound) listLibraryPermissionsRes() {}
+
+type ListLibraryPermissionsUnauthorized Error
+
+func (*ListLibraryPermissionsUnauthorized) listLibraryPermissionsRes() {}
+
+type ListLibraryScansForbidden Error
+
+func (*ListLibraryScansForbidden) listLibraryScansRes() {}
+
+type ListLibraryScansNotFound Error
+
+func (*ListLibraryScansNotFound) listLibraryScansRes() {}
+
+type ListLibraryScansUnauthorized Error
+
+func (*ListLibraryScansUnauthorized) listLibraryScansRes() {}
 
 type ListPoliciesForbidden Error
 
@@ -2751,6 +3844,52 @@ func (o OptClaimMappings) Or(d ClaimMappings) ClaimMappings {
 	return d
 }
 
+// NewOptCreateLibraryRequestScannerConfig returns new OptCreateLibraryRequestScannerConfig with value set to v.
+func NewOptCreateLibraryRequestScannerConfig(v CreateLibraryRequestScannerConfig) OptCreateLibraryRequestScannerConfig {
+	return OptCreateLibraryRequestScannerConfig{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateLibraryRequestScannerConfig is optional CreateLibraryRequestScannerConfig.
+type OptCreateLibraryRequestScannerConfig struct {
+	Value CreateLibraryRequestScannerConfig
+	Set   bool
+}
+
+// IsSet returns true if OptCreateLibraryRequestScannerConfig was set.
+func (o OptCreateLibraryRequestScannerConfig) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateLibraryRequestScannerConfig) Reset() {
+	var v CreateLibraryRequestScannerConfig
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateLibraryRequestScannerConfig) SetTo(v CreateLibraryRequestScannerConfig) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateLibraryRequestScannerConfig) Get() (v CreateLibraryRequestScannerConfig, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateLibraryRequestScannerConfig) Or(d CreateLibraryRequestScannerConfig) CreateLibraryRequestScannerConfig {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptCreateOIDCProviderRequestProviderType returns new OptCreateOIDCProviderRequestProviderType with value set to v.
 func NewOptCreateOIDCProviderRequestProviderType(v CreateOIDCProviderRequestProviderType) OptCreateOIDCProviderRequestProviderType {
 	return OptCreateOIDCProviderRequestProviderType{
@@ -3027,6 +4166,144 @@ func (o OptInt) Or(d int) int {
 	return d
 }
 
+// NewOptInt64 returns new OptInt64 with value set to v.
+func NewOptInt64(v int64) OptInt64 {
+	return OptInt64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt64 is optional int64.
+type OptInt64 struct {
+	Value int64
+	Set   bool
+}
+
+// IsSet returns true if OptInt64 was set.
+func (o OptInt64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt64) Reset() {
+	var v int64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt64) SetTo(v int64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt64) Get() (v int64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt64) Or(d int64) int64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptLibraryScan returns new OptLibraryScan with value set to v.
+func NewOptLibraryScan(v LibraryScan) OptLibraryScan {
+	return OptLibraryScan{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptLibraryScan is optional LibraryScan.
+type OptLibraryScan struct {
+	Value LibraryScan
+	Set   bool
+}
+
+// IsSet returns true if OptLibraryScan was set.
+func (o OptLibraryScan) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptLibraryScan) Reset() {
+	var v LibraryScan
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptLibraryScan) SetTo(v LibraryScan) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptLibraryScan) Get() (v LibraryScan, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptLibraryScan) Or(d LibraryScan) LibraryScan {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptLibraryScannerConfig returns new OptLibraryScannerConfig with value set to v.
+func NewOptLibraryScannerConfig(v LibraryScannerConfig) OptLibraryScannerConfig {
+	return OptLibraryScannerConfig{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptLibraryScannerConfig is optional LibraryScannerConfig.
+type OptLibraryScannerConfig struct {
+	Value LibraryScannerConfig
+	Set   bool
+}
+
+// IsSet returns true if OptLibraryScannerConfig was set.
+func (o OptLibraryScannerConfig) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptLibraryScannerConfig) Reset() {
+	var v LibraryScannerConfig
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptLibraryScannerConfig) SetTo(v LibraryScannerConfig) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptLibraryScannerConfig) Get() (v LibraryScannerConfig, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptLibraryScannerConfig) Or(d LibraryScannerConfig) LibraryScannerConfig {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptNilDateTime returns new OptNilDateTime with value set to v.
 func NewOptNilDateTime(v time.Time) OptNilDateTime {
 	return OptNilDateTime{
@@ -3239,6 +4516,52 @@ func (o OptUUID) Get() (v uuid.UUID, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptUUID) Or(d uuid.UUID) uuid.UUID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUpdateLibraryRequestScannerConfig returns new OptUpdateLibraryRequestScannerConfig with value set to v.
+func NewOptUpdateLibraryRequestScannerConfig(v UpdateLibraryRequestScannerConfig) OptUpdateLibraryRequestScannerConfig {
+	return OptUpdateLibraryRequestScannerConfig{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUpdateLibraryRequestScannerConfig is optional UpdateLibraryRequestScannerConfig.
+type OptUpdateLibraryRequestScannerConfig struct {
+	Value UpdateLibraryRequestScannerConfig
+	Set   bool
+}
+
+// IsSet returns true if OptUpdateLibraryRequestScannerConfig was set.
+func (o OptUpdateLibraryRequestScannerConfig) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUpdateLibraryRequestScannerConfig) Reset() {
+	var v UpdateLibraryRequestScannerConfig
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUpdateLibraryRequestScannerConfig) SetTo(v UpdateLibraryRequestScannerConfig) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUpdateLibraryRequestScannerConfig) Get() (v UpdateLibraryRequestScannerConfig, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUpdateLibraryRequestScannerConfig) Or(d UpdateLibraryRequestScannerConfig) UpdateLibraryRequestScannerConfig {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4369,6 +5692,75 @@ type RevokeAPIKeyUnauthorized Error
 
 func (*RevokeAPIKeyUnauthorized) revokeAPIKeyRes() {}
 
+type RevokeLibraryPermissionBadRequest Error
+
+func (*RevokeLibraryPermissionBadRequest) revokeLibraryPermissionRes() {}
+
+type RevokeLibraryPermissionForbidden Error
+
+func (*RevokeLibraryPermissionForbidden) revokeLibraryPermissionRes() {}
+
+// RevokeLibraryPermissionNoContent is response for RevokeLibraryPermission operation.
+type RevokeLibraryPermissionNoContent struct{}
+
+func (*RevokeLibraryPermissionNoContent) revokeLibraryPermissionRes() {}
+
+type RevokeLibraryPermissionNotFound Error
+
+func (*RevokeLibraryPermissionNotFound) revokeLibraryPermissionRes() {}
+
+type RevokeLibraryPermissionPermission string
+
+const (
+	RevokeLibraryPermissionPermissionView     RevokeLibraryPermissionPermission = "view"
+	RevokeLibraryPermissionPermissionDownload RevokeLibraryPermissionPermission = "download"
+	RevokeLibraryPermissionPermissionManage   RevokeLibraryPermissionPermission = "manage"
+)
+
+// AllValues returns all RevokeLibraryPermissionPermission values.
+func (RevokeLibraryPermissionPermission) AllValues() []RevokeLibraryPermissionPermission {
+	return []RevokeLibraryPermissionPermission{
+		RevokeLibraryPermissionPermissionView,
+		RevokeLibraryPermissionPermissionDownload,
+		RevokeLibraryPermissionPermissionManage,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RevokeLibraryPermissionPermission) MarshalText() ([]byte, error) {
+	switch s {
+	case RevokeLibraryPermissionPermissionView:
+		return []byte(s), nil
+	case RevokeLibraryPermissionPermissionDownload:
+		return []byte(s), nil
+	case RevokeLibraryPermissionPermissionManage:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RevokeLibraryPermissionPermission) UnmarshalText(data []byte) error {
+	switch RevokeLibraryPermissionPermission(data) {
+	case RevokeLibraryPermissionPermissionView:
+		*s = RevokeLibraryPermissionPermissionView
+		return nil
+	case RevokeLibraryPermissionPermissionDownload:
+		*s = RevokeLibraryPermissionPermissionDownload
+		return nil
+	case RevokeLibraryPermissionPermissionManage:
+		*s = RevokeLibraryPermissionPermissionManage
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type RevokeLibraryPermissionUnauthorized Error
+
+func (*RevokeLibraryPermissionUnauthorized) revokeLibraryPermissionRes() {}
+
 type RevokeSessionBadRequest Error
 
 func (*RevokeSessionBadRequest) revokeSessionRes() {}
@@ -4954,6 +6346,90 @@ func NewSettingValueValue3SettingValueValue(v SettingValueValue3) SettingValueVa
 
 type SettingValueValue3 struct{}
 
+type TriggerLibraryScanBadRequest Error
+
+func (*TriggerLibraryScanBadRequest) triggerLibraryScanRes() {}
+
+type TriggerLibraryScanConflict Error
+
+func (*TriggerLibraryScanConflict) triggerLibraryScanRes() {}
+
+type TriggerLibraryScanForbidden Error
+
+func (*TriggerLibraryScanForbidden) triggerLibraryScanRes() {}
+
+type TriggerLibraryScanNotFound Error
+
+func (*TriggerLibraryScanNotFound) triggerLibraryScanRes() {}
+
+type TriggerLibraryScanReq struct {
+	// Type of scan to perform.
+	ScanType TriggerLibraryScanReqScanType `json:"scanType"`
+}
+
+// GetScanType returns the value of ScanType.
+func (s *TriggerLibraryScanReq) GetScanType() TriggerLibraryScanReqScanType {
+	return s.ScanType
+}
+
+// SetScanType sets the value of ScanType.
+func (s *TriggerLibraryScanReq) SetScanType(val TriggerLibraryScanReqScanType) {
+	s.ScanType = val
+}
+
+// Type of scan to perform.
+type TriggerLibraryScanReqScanType string
+
+const (
+	TriggerLibraryScanReqScanTypeFull        TriggerLibraryScanReqScanType = "full"
+	TriggerLibraryScanReqScanTypeIncremental TriggerLibraryScanReqScanType = "incremental"
+	TriggerLibraryScanReqScanTypeMetadata    TriggerLibraryScanReqScanType = "metadata"
+)
+
+// AllValues returns all TriggerLibraryScanReqScanType values.
+func (TriggerLibraryScanReqScanType) AllValues() []TriggerLibraryScanReqScanType {
+	return []TriggerLibraryScanReqScanType{
+		TriggerLibraryScanReqScanTypeFull,
+		TriggerLibraryScanReqScanTypeIncremental,
+		TriggerLibraryScanReqScanTypeMetadata,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TriggerLibraryScanReqScanType) MarshalText() ([]byte, error) {
+	switch s {
+	case TriggerLibraryScanReqScanTypeFull:
+		return []byte(s), nil
+	case TriggerLibraryScanReqScanTypeIncremental:
+		return []byte(s), nil
+	case TriggerLibraryScanReqScanTypeMetadata:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TriggerLibraryScanReqScanType) UnmarshalText(data []byte) error {
+	switch TriggerLibraryScanReqScanType(data) {
+	case TriggerLibraryScanReqScanTypeFull:
+		*s = TriggerLibraryScanReqScanTypeFull
+		return nil
+	case TriggerLibraryScanReqScanTypeIncremental:
+		*s = TriggerLibraryScanReqScanTypeIncremental
+		return nil
+	case TriggerLibraryScanReqScanTypeMetadata:
+		*s = TriggerLibraryScanReqScanTypeMetadata
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type TriggerLibraryScanUnauthorized Error
+
+func (*TriggerLibraryScanUnauthorized) triggerLibraryScanRes() {}
+
 // UnlinkOIDCProviderNoContent is response for UnlinkOIDCProvider operation.
 type UnlinkOIDCProviderNoContent struct{}
 
@@ -4974,6 +6450,138 @@ func (*UpdateCurrentUserBadRequest) updateCurrentUserRes() {}
 type UpdateCurrentUserUnauthorized Error
 
 func (*UpdateCurrentUserUnauthorized) updateCurrentUserRes() {}
+
+type UpdateLibraryBadRequest Error
+
+func (*UpdateLibraryBadRequest) updateLibraryRes() {}
+
+type UpdateLibraryConflict Error
+
+func (*UpdateLibraryConflict) updateLibraryRes() {}
+
+type UpdateLibraryForbidden Error
+
+func (*UpdateLibraryForbidden) updateLibraryRes() {}
+
+type UpdateLibraryNotFound Error
+
+func (*UpdateLibraryNotFound) updateLibraryRes() {}
+
+// Ref: #/components/schemas/UpdateLibraryRequest
+type UpdateLibraryRequest struct {
+	// Library display name.
+	Name OptString `json:"name"`
+	// Folder paths to include in the library.
+	Paths []string `json:"paths"`
+	// Whether the library is enabled.
+	Enabled OptBool `json:"enabled"`
+	// Whether to scan the library on server startup.
+	ScanOnStartup OptBool `json:"scanOnStartup"`
+	// Whether to monitor for real-time file changes.
+	RealtimeMonitoring OptBool `json:"realtimeMonitoring"`
+	// Preferred metadata provider.
+	MetadataProvider OptString `json:"metadataProvider"`
+	// Preferred language for metadata.
+	PreferredLanguage OptString `json:"preferredLanguage"`
+	// Type-specific scanner configuration.
+	ScannerConfig OptUpdateLibraryRequestScannerConfig `json:"scannerConfig"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateLibraryRequest) GetName() OptString {
+	return s.Name
+}
+
+// GetPaths returns the value of Paths.
+func (s *UpdateLibraryRequest) GetPaths() []string {
+	return s.Paths
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UpdateLibraryRequest) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetScanOnStartup returns the value of ScanOnStartup.
+func (s *UpdateLibraryRequest) GetScanOnStartup() OptBool {
+	return s.ScanOnStartup
+}
+
+// GetRealtimeMonitoring returns the value of RealtimeMonitoring.
+func (s *UpdateLibraryRequest) GetRealtimeMonitoring() OptBool {
+	return s.RealtimeMonitoring
+}
+
+// GetMetadataProvider returns the value of MetadataProvider.
+func (s *UpdateLibraryRequest) GetMetadataProvider() OptString {
+	return s.MetadataProvider
+}
+
+// GetPreferredLanguage returns the value of PreferredLanguage.
+func (s *UpdateLibraryRequest) GetPreferredLanguage() OptString {
+	return s.PreferredLanguage
+}
+
+// GetScannerConfig returns the value of ScannerConfig.
+func (s *UpdateLibraryRequest) GetScannerConfig() OptUpdateLibraryRequestScannerConfig {
+	return s.ScannerConfig
+}
+
+// SetName sets the value of Name.
+func (s *UpdateLibraryRequest) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetPaths sets the value of Paths.
+func (s *UpdateLibraryRequest) SetPaths(val []string) {
+	s.Paths = val
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UpdateLibraryRequest) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetScanOnStartup sets the value of ScanOnStartup.
+func (s *UpdateLibraryRequest) SetScanOnStartup(val OptBool) {
+	s.ScanOnStartup = val
+}
+
+// SetRealtimeMonitoring sets the value of RealtimeMonitoring.
+func (s *UpdateLibraryRequest) SetRealtimeMonitoring(val OptBool) {
+	s.RealtimeMonitoring = val
+}
+
+// SetMetadataProvider sets the value of MetadataProvider.
+func (s *UpdateLibraryRequest) SetMetadataProvider(val OptString) {
+	s.MetadataProvider = val
+}
+
+// SetPreferredLanguage sets the value of PreferredLanguage.
+func (s *UpdateLibraryRequest) SetPreferredLanguage(val OptString) {
+	s.PreferredLanguage = val
+}
+
+// SetScannerConfig sets the value of ScannerConfig.
+func (s *UpdateLibraryRequest) SetScannerConfig(val OptUpdateLibraryRequestScannerConfig) {
+	s.ScannerConfig = val
+}
+
+// Type-specific scanner configuration.
+type UpdateLibraryRequestScannerConfig map[string]jx.Raw
+
+func (s *UpdateLibraryRequestScannerConfig) init() UpdateLibraryRequestScannerConfig {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+type UpdateLibraryUnauthorized Error
+
+func (*UpdateLibraryUnauthorized) updateLibraryRes() {}
 
 // Ref: #/components/schemas/UpdateOIDCProviderRequest
 type UpdateOIDCProviderRequest struct {

@@ -478,6 +478,72 @@ func decodeAssignRoleParams(args [1]string, argsEscaped bool, r *http.Request) (
 	return params, nil
 }
 
+// DeleteLibraryParams is parameters of deleteLibrary operation.
+type DeleteLibraryParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackDeleteLibraryParams(packed middleware.Parameters) (params DeleteLibraryParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeDeleteLibraryParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteLibraryParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteUserSettingParams is parameters of deleteUserSetting operation.
 type DeleteUserSettingParams struct {
 	// Setting key.
@@ -603,6 +669,72 @@ func decodeGetAPIKeyParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "keyId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetLibraryParams is parameters of getLibrary operation.
+type GetLibraryParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackGetLibraryParams(packed middleware.Parameters) (params GetLibraryParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeGetLibraryParams(args [1]string, argsEscaped bool, r *http.Request) (params GetLibraryParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
 			In:   "path",
 			Err:  err,
 		}
@@ -1485,6 +1617,72 @@ func decodeGetUserSettingParams(args [1]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
+// GrantLibraryPermissionParams is parameters of grantLibraryPermission operation.
+type GrantLibraryPermissionParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackGrantLibraryPermissionParams(packed middleware.Parameters) (params GrantLibraryPermissionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeGrantLibraryPermissionParams(args [1]string, argsEscaped bool, r *http.Request) (params GrantLibraryPermissionParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // InitOIDCLinkParams is parameters of initOIDCLink operation.
 type InitOIDCLinkParams struct {
 	// Provider name to link.
@@ -1545,6 +1743,278 @@ func decodeInitOIDCLinkParams(args [1]string, argsEscaped bool, r *http.Request)
 		return params, &ogenerrors.DecodeParamError{
 			Name: "provider",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListLibraryPermissionsParams is parameters of listLibraryPermissions operation.
+type ListLibraryPermissionsParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackListLibraryPermissionsParams(packed middleware.Parameters) (params ListLibraryPermissionsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeListLibraryPermissionsParams(args [1]string, argsEscaped bool, r *http.Request) (params ListLibraryPermissionsParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListLibraryScansParams is parameters of listLibraryScans operation.
+type ListLibraryScansParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+	// Maximum number of results.
+	Limit OptInt `json:",omitempty,omitzero"`
+	// Number of results to skip.
+	Offset OptInt `json:",omitempty,omitzero"`
+}
+
+func unpackListLibraryScansParams(packed middleware.Parameters) (params ListLibraryScansParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "offset",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Offset = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeListLibraryScansParams(args [1]string, argsEscaped bool, r *http.Request) (params ListLibraryScansParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(20)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        false,
+							Min:           0,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: offset.
+	{
+		val := int(0)
+		params.Offset.SetTo(val)
+	}
+	// Decode query: offset.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOffsetVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Offset.SetTo(paramsDotOffsetVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "offset",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -2111,6 +2581,180 @@ func decodeRevokeAPIKeyParams(args [1]string, argsEscaped bool, r *http.Request)
 		return params, &ogenerrors.DecodeParamError{
 			Name: "keyId",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RevokeLibraryPermissionParams is parameters of revokeLibraryPermission operation.
+type RevokeLibraryPermissionParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+	// User ID.
+	UserId uuid.UUID
+	// Permission to revoke.
+	Permission RevokeLibraryPermissionPermission
+}
+
+func unpackRevokeLibraryPermissionParams(packed middleware.Parameters) (params RevokeLibraryPermissionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "userId",
+			In:   "path",
+		}
+		params.UserId = packed[key].(uuid.UUID)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "permission",
+			In:   "query",
+		}
+		params.Permission = packed[key].(RevokeLibraryPermissionPermission)
+	}
+	return params
+}
+
+func decodeRevokeLibraryPermissionParams(args [2]string, argsEscaped bool, r *http.Request) (params RevokeLibraryPermissionParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: userId.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "userId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.UserId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "userId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: permission.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "permission",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Permission = RevokeLibraryPermissionPermission(c)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.Permission.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "permission",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -2724,6 +3368,72 @@ func decodeSearchActivityLogsParams(args [0]string, argsEscaped bool, r *http.Re
 	return params, nil
 }
 
+// TriggerLibraryScanParams is parameters of triggerLibraryScan operation.
+type TriggerLibraryScanParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackTriggerLibraryScanParams(packed middleware.Parameters) (params TriggerLibraryScanParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeTriggerLibraryScanParams(args [1]string, argsEscaped bool, r *http.Request) (params TriggerLibraryScanParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UnlinkOIDCProviderParams is parameters of unlinkOIDCProvider operation.
 type UnlinkOIDCProviderParams struct {
 	// Provider name to unlink.
@@ -2783,6 +3493,72 @@ func decodeUnlinkOIDCProviderParams(args [1]string, argsEscaped bool, r *http.Re
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "provider",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateLibraryParams is parameters of updateLibrary operation.
+type UpdateLibraryParams struct {
+	// Library ID.
+	LibraryId uuid.UUID
+}
+
+func unpackUpdateLibraryParams(packed middleware.Parameters) (params UpdateLibraryParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "libraryId",
+			In:   "path",
+		}
+		params.LibraryId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeUpdateLibraryParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateLibraryParams, _ error) {
+	// Decode path: libraryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "libraryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.LibraryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "libraryId",
 			In:   "path",
 			Err:  err,
 		}

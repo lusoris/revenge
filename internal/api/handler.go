@@ -12,6 +12,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -33,6 +34,7 @@ type Handler struct {
 	apikeyService   *apikeys.Service
 	oidcService     *oidc.Service
 	activityService *activity.Service
+	libraryService  *library.Service
 	tokenManager    auth.TokenManager
 }
 

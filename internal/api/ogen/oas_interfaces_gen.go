@@ -49,6 +49,14 @@ type CreateAPIKeyRes interface {
 	createAPIKeyRes()
 }
 
+type CreateLibraryRes interface {
+	createLibraryRes()
+}
+
+type DeleteLibraryRes interface {
+	deleteLibraryRes()
+}
+
 type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
@@ -71,6 +79,10 @@ type GetCurrentSessionRes interface {
 
 type GetCurrentUserRes interface {
 	getCurrentUserRes()
+}
+
+type GetLibraryRes interface {
+	getLibraryRes()
 }
 
 type GetReadinessRes interface {
@@ -113,12 +125,28 @@ type GetUserSettingRes interface {
 	getUserSettingRes()
 }
 
+type GrantLibraryPermissionRes interface {
+	grantLibraryPermissionRes()
+}
+
 type InitOIDCLinkRes interface {
 	initOIDCLinkRes()
 }
 
 type ListAPIKeysRes interface {
 	listAPIKeysRes()
+}
+
+type ListLibrariesRes interface {
+	listLibrariesRes()
+}
+
+type ListLibraryPermissionsRes interface {
+	listLibraryPermissionsRes()
+}
+
+type ListLibraryScansRes interface {
+	listLibraryScansRes()
 }
 
 type ListPoliciesRes interface {
@@ -197,6 +225,10 @@ type RevokeAPIKeyRes interface {
 	revokeAPIKeyRes()
 }
 
+type RevokeLibraryPermissionRes interface {
+	revokeLibraryPermissionRes()
+}
+
 type RevokeSessionRes interface {
 	revokeSessionRes()
 }
@@ -205,12 +237,20 @@ type SearchActivityLogsRes interface {
 	searchActivityLogsRes()
 }
 
+type TriggerLibraryScanRes interface {
+	triggerLibraryScanRes()
+}
+
 type UnlinkOIDCProviderRes interface {
 	unlinkOIDCProviderRes()
 }
 
 type UpdateCurrentUserRes interface {
 	updateCurrentUserRes()
+}
+
+type UpdateLibraryRes interface {
+	updateLibraryRes()
 }
 
 type UpdateServerSettingRes interface {

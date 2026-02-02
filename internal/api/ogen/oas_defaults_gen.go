@@ -27,6 +27,22 @@ func (s *ClaimMappings) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *CreateLibraryRequest) setDefaults() {
+	{
+		val := bool(true)
+		s.Enabled.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.ScanOnStartup.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.RealtimeMonitoring.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *CreateOIDCProviderRequest) setDefaults() {
 	{
 		val := CreateOIDCProviderRequestProviderType("generic")

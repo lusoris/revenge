@@ -713,6 +713,187 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'l': // Prefix: "libraries"
+
+					if l := len("libraries"); len(elem) >= l && elem[0:l] == "libraries" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListLibrariesRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleCreateLibraryRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET,POST")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "libraryId"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[0] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "DELETE":
+								s.handleDeleteLibraryRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "GET":
+								s.handleGetLibraryRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateLibraryRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,GET,PUT")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'p': // Prefix: "permissions"
+
+								if l := len("permissions"); len(elem) >= l && elem[0:l] == "permissions" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "GET":
+										s.handleListLibraryPermissionsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									case "POST":
+										s.handleGrantLibraryPermissionRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET,POST")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "userId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[1] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "DELETE":
+											s.handleRevokeLibraryPermissionRequest([2]string{
+												args[0],
+												args[1],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "DELETE")
+										}
+
+										return
+									}
+
+								}
+
+							case 's': // Prefix: "scan"
+
+								if l := len("scan"); len(elem) >= l && elem[0:l] == "scan" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "POST":
+										s.handleTriggerLibraryScanRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleListLibraryScansRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
 				case 'o': // Prefix: "oidc/"
 
 					if l := len("oidc/"); len(elem) >= l && elem[0:l] == "oidc/" {
@@ -2308,6 +2489,228 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								default:
 									return
 								}
+							}
+
+						}
+
+					}
+
+				case 'l': // Prefix: "libraries"
+
+					if l := len("libraries"); len(elem) >= l && elem[0:l] == "libraries" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListLibrariesOperation
+							r.summary = "List accessible libraries"
+							r.operationID = "listLibraries"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/libraries"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							r.name = CreateLibraryOperation
+							r.summary = "Create a new library (admin)"
+							r.operationID = "createLibrary"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/libraries"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "libraryId"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[0] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								r.name = DeleteLibraryOperation
+								r.summary = "Delete a library (admin)"
+								r.operationID = "deleteLibrary"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/libraries/{libraryId}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "GET":
+								r.name = GetLibraryOperation
+								r.summary = "Get library details"
+								r.operationID = "getLibrary"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/libraries/{libraryId}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "PUT":
+								r.name = UpdateLibraryOperation
+								r.summary = "Update a library (admin)"
+								r.operationID = "updateLibrary"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/libraries/{libraryId}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'p': // Prefix: "permissions"
+
+								if l := len("permissions"); len(elem) >= l && elem[0:l] == "permissions" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch method {
+									case "GET":
+										r.name = ListLibraryPermissionsOperation
+										r.summary = "List library permissions (admin)"
+										r.operationID = "listLibraryPermissions"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/libraries/{libraryId}/permissions"
+										r.args = args
+										r.count = 1
+										return r, true
+									case "POST":
+										r.name = GrantLibraryPermissionOperation
+										r.summary = "Grant library permission (admin)"
+										r.operationID = "grantLibraryPermission"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/libraries/{libraryId}/permissions"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "userId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[1] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "DELETE":
+											r.name = RevokeLibraryPermissionOperation
+											r.summary = "Revoke library permission (admin)"
+											r.operationID = "revokeLibraryPermission"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/libraries/{libraryId}/permissions/{userId}"
+											r.args = args
+											r.count = 2
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							case 's': // Prefix: "scan"
+
+								if l := len("scan"); len(elem) >= l && elem[0:l] == "scan" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch method {
+									case "POST":
+										r.name = TriggerLibraryScanOperation
+										r.summary = "Trigger library scan (admin)"
+										r.operationID = "triggerLibraryScan"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/libraries/{libraryId}/scan"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = ListLibraryScansOperation
+											r.summary = "List library scans"
+											r.operationID = "listLibraryScans"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/libraries/{libraryId}/scans"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
 							}
 
 						}
