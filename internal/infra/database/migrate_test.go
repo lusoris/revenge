@@ -28,7 +28,7 @@ func TestStatsReturnsAllFields(t *testing.T) {
 
 	// Start embedded postgres
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15440).
+		Port(15540).
 		Username("test").
 		Password("test").
 		Database("statstest"))
@@ -43,7 +43,7 @@ func TestStatsReturnsAllFields(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15440/statstest?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15540/statstest?sslmode=disable")
 	require.NoError(t, err, "Failed to create pool")
 	defer pool.Close()
 
@@ -84,7 +84,7 @@ func TestStatsAfterQueries(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15441).
+		Port(15541).
 		Username("test").
 		Password("test").
 		Database("statstest2"))
@@ -98,7 +98,7 @@ func TestStatsAfterQueries(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15441/statstest2?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15541/statstest2?sslmode=disable")
 	require.NoError(t, err)
 	defer pool.Close()
 
@@ -124,7 +124,7 @@ func TestHealthSuccess(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15442).
+		Port(15542).
 		Username("test").
 		Password("test").
 		Database("healthtest"))
@@ -138,7 +138,7 @@ func TestHealthSuccess(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15442/healthtest?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15542/healthtest?sslmode=disable")
 	require.NoError(t, err)
 	defer pool.Close()
 
@@ -154,7 +154,7 @@ func TestHealthWithCanceledContext(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15443).
+		Port(15543).
 		Username("test").
 		Password("test").
 		Database("healthtest2"))
@@ -168,7 +168,7 @@ func TestHealthWithCanceledContext(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15443/healthtest2?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15543/healthtest2?sslmode=disable")
 	require.NoError(t, err)
 	defer pool.Close()
 
@@ -187,7 +187,7 @@ func TestMigrateUpAndVersion(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15444).
+		Port(15544).
 		Username("test").
 		Password("test").
 		Database("migratetest"))
@@ -198,7 +198,7 @@ func TestMigrateUpAndVersion(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15444/migratetest?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15544/migratetest?sslmode=disable"
 	logger := testLogger()
 
 	// Run migrations up
@@ -219,7 +219,7 @@ func TestMigrateUpIdempotent(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15445).
+		Port(15545).
 		Username("test").
 		Password("test").
 		Database("migratetest2"))
@@ -230,7 +230,7 @@ func TestMigrateUpIdempotent(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15445/migratetest2?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15545/migratetest2?sslmode=disable"
 	logger := testLogger()
 
 	// Run migrations twice
@@ -249,7 +249,7 @@ func TestMigrateDown(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15446).
+		Port(15546).
 		Username("test").
 		Password("test").
 		Database("migratetest3"))
@@ -260,7 +260,7 @@ func TestMigrateDown(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15446/migratetest3?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15546/migratetest3?sslmode=disable"
 	logger := testLogger()
 
 	// First migrate up
@@ -288,7 +288,7 @@ func TestMigrateTo(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15447).
+		Port(15547).
 		Username("test").
 		Password("test").
 		Database("migratetest4"))
@@ -299,7 +299,7 @@ func TestMigrateTo(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15447/migratetest4?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15547/migratetest4?sslmode=disable"
 	logger := testLogger()
 
 	// Migrate to version 1
@@ -319,7 +319,7 @@ func TestMigrateVersionOnFreshDatabase(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15448).
+		Port(15548).
 		Username("test").
 		Password("test").
 		Database("migratetest5"))
@@ -330,7 +330,7 @@ func TestMigrateVersionOnFreshDatabase(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15448/migratetest5?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15548/migratetest5?sslmode=disable"
 
 	// On fresh database, version should be 0
 	version, dirty, err := MigrateVersion(dbURL)
@@ -384,7 +384,7 @@ func TestNewPoolIntegration(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15449).
+		Port(15549).
 		Username("test").
 		Password("test").
 		Database("pooltest"))
@@ -397,7 +397,7 @@ func TestNewPoolIntegration(t *testing.T) {
 
 	cfg := &config.Config{
 		Database: config.DatabaseConfig{
-			URL:               "postgres://test:test@localhost:15449/pooltest?sslmode=disable",
+			URL:               "postgres://test:test@localhost:15549/pooltest?sslmode=disable",
 			MaxConns:          10,
 			MinConns:          2,
 			MaxConnLifetime:   time.Hour,
@@ -427,7 +427,7 @@ func TestNewPoolAndHealthCheck(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15450).
+		Port(15550).
 		Username("test").
 		Password("test").
 		Database("poolhealthtest"))
@@ -440,7 +440,7 @@ func TestNewPoolAndHealthCheck(t *testing.T) {
 
 	cfg := &config.Config{
 		Database: config.DatabaseConfig{
-			URL:      "postgres://test:test@localhost:15450/poolhealthtest?sslmode=disable",
+			URL:      "postgres://test:test@localhost:15550/poolhealthtest?sslmode=disable",
 			MaxConns: 5,
 			MinConns: 1,
 		},
@@ -469,7 +469,7 @@ func TestHealthQueryResultVerification(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15451).
+		Port(15551).
 		Username("test").
 		Password("test").
 		Database("healthquerytest"))
@@ -483,7 +483,7 @@ func TestHealthQueryResultVerification(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15451/healthquerytest?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15551/healthquerytest?sslmode=disable")
 	require.NoError(t, err)
 	defer pool.Close()
 
@@ -503,7 +503,7 @@ func TestConcurrentHealthChecks(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15452).
+		Port(15552).
 		Username("test").
 		Password("test").
 		Database("concurrenthealthtest"))
@@ -517,7 +517,7 @@ func TestConcurrentHealthChecks(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15452/concurrenthealthtest?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15552/concurrenthealthtest?sslmode=disable")
 	require.NoError(t, err)
 	defer pool.Close()
 
@@ -545,7 +545,7 @@ func TestMigrateUpVerifiesTables(t *testing.T) {
 	}
 
 	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15453).
+		Port(15553).
 		Username("test").
 		Password("test").
 		Database("tableverifytest"))
@@ -556,7 +556,7 @@ func TestMigrateUpVerifiesTables(t *testing.T) {
 		_ = postgres.Stop()
 	}()
 
-	dbURL := "postgres://test:test@localhost:15453/tableverifytest?sslmode=disable"
+	dbURL := "postgres://test:test@localhost:15553/tableverifytest?sslmode=disable"
 	logger := testLogger()
 
 	// Run migrations

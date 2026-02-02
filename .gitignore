@@ -121,3 +121,4 @@ node_modules/
 # Documentation temp/analysis files
 .analysis/
 *-preview/
+errors.cov

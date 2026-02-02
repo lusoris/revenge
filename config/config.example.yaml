@@ -13,19 +13,19 @@
 server:
   # Host to bind to (0.0.0.0 for all interfaces, 127.0.0.1 for localhost only)
   host: "0.0.0.0"
-  
+
   # Port to listen on
   port: 8080
-  
+
   # Maximum duration for reading the entire request, including the body
   read_timeout: 30s
-  
+
   # Maximum duration before timing out writes of the response
   write_timeout: 30s
-  
+
   # Maximum amount of time to wait for the next request when keep-alives are enabled
   idle_timeout: 120s
-  
+
   # Maximum duration to wait for active connections to finish during shutdown
   shutdown_timeout: 30s
 
@@ -36,20 +36,20 @@ database:
   # PostgreSQL connection URL
   # Format: postgres://user:password@host:port/database?sslmode=disable
   url: "postgres://revenge:revenge@localhost:5432/revenge?sslmode=disable"
-  
+
   # Maximum number of connections in the pool
   # Recommended: (CPU cores * 2) + 1
   max_conns: 25
-  
+
   # Minimum number of connections to keep idle
   min_conns: 5
-  
+
   # Maximum lifetime of a connection before it's closed and replaced
   max_conn_lifetime: 30m
-  
+
   # Maximum time a connection can be idle before it's closed
   max_conn_idle_time: 5m
-  
+
   # How often to check the health of idle connections
   health_check_period: 1m
 
@@ -60,10 +60,10 @@ cache:
   # Redis/Dragonfly connection URL
   # Format: redis://[:password@]host:port[/database]
   url: "redis://localhost:6379"
-  
+
   # Number of retries for failed commands
   max_retries: 3
-  
+
   # Connection pool size
   pool_size: 10
 
@@ -73,7 +73,7 @@ cache:
 search:
   # Typesense server URL
   url: "http://localhost:8108"
-  
+
   # API key for authentication
   api_key: ""
 
@@ -83,7 +83,7 @@ search:
 log:
   # Log level: debug, info, warn, error
   level: "info"
-  
+
   # Log format: json (production), console (development with colors)
   format: "json"
 
