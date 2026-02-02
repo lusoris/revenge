@@ -538,30 +538,12 @@ supplementary_role: |
   }
   ```
 proxy_vpn_support: |
-  **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
+  **Optional Proxy/VPN Routing**:
 
-  ThePornDB API calls can be routed through proxy/VPN for:
-  - **Privacy**: Hide server IP from ThePornDB
-  - **Network routing**: Route through specific VPN tunnels
-  - **Geo-restriction bypass**: Access from restricted regions
+  ThePornDB API calls can be routed through proxy/VPN for privacy, network routing,
+  or geo-restriction bypass. Proxy/VPN is OPTIONAL and disabled by default.
 
-  **IMPORTANT**: Proxy/VPN is **OPTIONAL**
-  - Must be explicitly setup and enabled in config
-  - NOT required for basic ThePornDB functionality
-  - Disabled by default
-
-  **Configuration**:
-  ```yaml
-  metadata:
-    providers:
-      theporndb:
-        proxy:
-          enabled: true              # Must explicitly enable
-          type: tor                  # http, socks5, tor, vpn
-          url: socks5://127.0.0.1:9050
-  ```
-
-  **See**: [HTTP_CLIENT.yaml](../../../services/HTTP_CLIENT.yaml) for implementation
+  See data/patterns/HTTP_CLIENT.yaml for complete configuration guide.
 error_handling: |
   **HTTP Error Codes**:
   - 401 Unauthorized → Invalid or missing API key

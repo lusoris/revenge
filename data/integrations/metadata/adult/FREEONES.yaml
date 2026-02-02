@@ -502,47 +502,13 @@ enrichment_role: |
   }
   ```
 proxy_vpn_support: |
-  **Proxy/VPN Routing** (RECOMMENDED for web scraping)
+  **Proxy/VPN Routing (RECOMMENDED for web scraping)**:
 
-  FreeOnes scraping should use proxy/VPN for:
-  - **IP Protection**: Avoid blocking of server IP
-  - **Privacy**: Hide scraping activity
-  - **Reliability**: Rotate IPs if blocked
+  FreeOnes scraping should use proxy/VPN to avoid IP blocks and maintain privacy.
+  RECOMMENDED to enable proxy (Tor or residential) for scraping reliability.
 
-  **RECOMMENDED**: Enable proxy for FreeOnes scraping
-  - Web scraping without proxy may result in IP blocks
-  - Tor provides anonymity and IP rotation
-  - Consider residential proxies for higher reliability
-
-  **Configuration**:
-  ```yaml
-  metadata:
-    providers:
-      freeones:
-        proxy:
-          enabled: true              # RECOMMENDED
-          type: tor
-          url: socks5://127.0.0.1:9050
-  ```
-
-  **Handling Blocks**:
-  ```go
-  func (p *FreeOnesProvider) handleResponse(resp *http.Response) error {
-    switch resp.StatusCode {
-    case 200:
-      return nil
-    case 403, 429:
-      // Blocked or rate limited - rotate proxy
-      p.httpFactory.RotateProxy(ctx, "freeones")
-      return ErrBlocked
-    case 503:
-      // Cloudflare challenge - may need browser automation
-      return ErrCloudflareChallenge
-    default:
-      return fmt.Errorf("unexpected status: %d", resp.StatusCode)
-    }
-  }
-  ```
+  See data/patterns/HTTP_CLIENT.yaml for complete configuration guide including
+  HTTP/HTTPS proxy, SOCKS5/Tor support, proxy rotation strategies, and handling blocks.
 error_handling: |
   **HTTP Error Codes**:
   - 404 Not Found → Performer page doesn't exist

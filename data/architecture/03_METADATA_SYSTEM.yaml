@@ -149,105 +149,22 @@ metadata_priority_chain: |
   - Direct calls to TMDb, TheTVDB, MusicBrainz, etc.
   - Used for enrichment and real-time updates
   - Used when Arr service doesn't have the content
-  - **Must route through proxy/VPN** (see proxy_vpn_support)
+  - **May route through proxy/VPN** (see proxy_vpn_support)
 
 proxy_vpn_support: |
-  **CRITICAL DESIGN REQUIREMENT**: Proxy/VPN support for external metadata calls
+  **Proxy/VPN Support for External Metadata Calls**:
 
-  **Rationale**:
-  - Privacy: Hide metadata queries from ISP and external services
-  - Geolocation: Access region-restricted metadata
-  - Rate limiting: Rotate IPs to avoid rate limits
-  - Security: Isolate metadata traffic from main network
+  External metadata API calls support optional proxy/VPN routing for privacy, geo-access,
+  and rate limiting. This applies ONLY to external APIs (TMDb, TheTVDB, MusicBrainz, etc.)
+  and NOT to local Arr services.
 
-  **Scope**: ONLY for EXTERNAL metadata API calls
-  - Direct calls to TMDb, TheTVDB, MusicBrainz, Last.fm, Discogs, etc.
-  - Does NOT apply to Arr services (local network)
-  - Does NOT apply to internal services (Stash, local database)
-
-  **Implementation Approaches**:
-
-  **Option 1 - HTTP Proxy (Preferred)**:
-  ```go
-  // Use net/http.Transport with Proxy
-  package metadata
-
-  import (
-    "net/http"
-    "net/url"
-  )
-
-  type ProxyConfig struct {
-    Enabled   bool
-    ProxyURL  string  // "http://proxy.example.com:8080" or "socks5://127.0.0.1:1080"
-    Username  string
-    Password  string
-  }
-
-  func NewHTTPClientWithProxy(cfg ProxyConfig) *http.Client {
-    if !cfg.Enabled {
-      return http.DefaultClient
-    }
-
-    proxyURL, _ := url.Parse(cfg.ProxyURL)
-    if cfg.Username != "" {
-      proxyURL.User = url.UserPassword(cfg.Username, cfg.Password)
-    }
-
-    transport := &http.Transport{
-      Proxy: http.ProxyURL(proxyURL),
-    }
-
-    return &http.Client{Transport: transport}
-  }
-  ```
-
-  **Option 2 - VPN Binding (Advanced)**:
-  ```go
-  // Bind to specific network interface (VPN tunnel)
-  package metadata
-
-  import (
-    "net"
-    "net/http"
-  )
-
-  type VPNConfig struct {
-    Enabled       bool
-    InterfaceName string  // "tun0", "wg0", etc.
-  }
-
-  func NewHTTPClientWithVPN(cfg VPNConfig) (*http.Client, error) {
-    if !cfg.Enabled {
-      return http.DefaultClient, nil
-    }
-
-    iface, err := net.InterfaceByName(cfg.InterfaceName)
-    if err != nil {
-      return nil, err
-    }
-
-    addrs, _ := iface.Addrs()
-    localAddr := addrs[0].(*net.IPNet).IP
-
-    dialer := &net.Dialer{
-      LocalAddr: &net.TCPAddr{IP: localAddr},
-    }
-
-    transport := &http.Transport{
-      DialContext: dialer.DialContext,
-    }
-
-    return &http.Client{Transport: transport}, nil
-  }
-  ```
-
-  **Option 3 - SOCKS5 Proxy** (Tor, commercial VPNs):
-  ```go
-  // Use golang.org/x/net/proxy for SOCKS5
-  package metadata
-
-  import (
+  See data/patterns/HTTP_CLIENT.yaml for complete implementation guide including:
+  - HTTP/HTTPS proxy configuration with authentication
+  - SOCKS5 proxy support (including Tor)
+  - VPN interface binding (e.g., tun0, wg0)
+  - HTTP client factory pattern
+  - Security considerations and best practices
+  - Configuration examples for various use cases
     "net/http"
     "golang.org/x/net/proxy"
   )

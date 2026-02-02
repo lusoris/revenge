@@ -435,51 +435,13 @@ supplementary_role: |
   }
   ```
 proxy_vpn_support: |
-  **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
+  **Optional Proxy/VPN Routing**:
 
-  TMDb API calls can be routed through proxy/VPN for:
-  - **Region restrictions**: Access TMDb from restricted countries
-  - **Privacy**: Hide server IP from TMDb
-  - **Network routing**: Route through specific VPN tunnels
+  TMDb API calls can be routed through proxy/VPN for region restrictions, privacy,
+  or network routing. Proxy/VPN is OPTIONAL and disabled by default.
 
-  **IMPORTANT**: Proxy/VPN is **OPTIONAL**
-  - Must be explicitly setup and enabled in config
-  - NOT required for basic TMDb functionality
-  - Disabled by default
-
-  **Configuration**:
-  ```yaml
-  metadata:
-    providers:
-      tmdb:
-        proxy:
-          enabled: true              # Must explicitly enable
-          type: tor                  # http, socks5, tor, vpn
-          url: socks5://127.0.0.1:9050  # For http/socks5/tor
-          interface: tun0            # For vpn type
-  ```
-
-  **Implementation** (via HTTP_CLIENT service):
-  ```go
-  import "internal/service/httpclient"
-
-  // Get HTTP client with proxy support
-  client, err := httpClientFactory.GetClientForService(ctx, "tmdb")
-  if err != nil {
-    return nil, fmt.Errorf("failed to get HTTP client: %w", err)
-  }
-
-  // Use client for TMDb API requests
-  resp, err := client.Get("https://api.themoviedb.org/3/movie/550")
-  ```
-
-  **Proxy Types**:
-  - **http/https**: Standard HTTP proxy
-  - **socks5**: SOCKS5 proxy (supports Tor)
-  - **tor**: Convenience alias for Tor SOCKS5 (127.0.0.1:9050)
-  - **vpn**: Bind to specific VPN network interface
-
-  **See**: [HTTP_CLIENT.yaml](../../../services/HTTP_CLIENT.yaml) for proxy/VPN implementation details
+  See data/patterns/HTTP_CLIENT.yaml for complete configuration guide including
+  HTTP/HTTPS proxy, SOCKS5/Tor support, VPN interface binding, and implementation examples.
 error_handling: |
   **HTTP Error Codes**:
   - 401 Unauthorized → Invalid API key

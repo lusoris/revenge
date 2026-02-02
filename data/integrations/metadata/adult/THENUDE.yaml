@@ -468,23 +468,12 @@ enrichment_role: |
                               Link to Performer Record
   ```
 proxy_vpn_support: |
-  **Proxy/VPN Routing** (RECOMMENDED)
+  **Proxy/VPN Routing (RECOMMENDED)**:
 
-  Similar to FreeOnes, proxy/VPN is recommended for TheNude scraping:
-  - Conservative rate limiting (1 req/sec)
-  - Tor provides IP rotation
-  - Avoid server IP being blocked
+  Similar to FreeOnes, proxy/VPN is RECOMMENDED for TheNude scraping with conservative
+  rate limiting (1 req/sec) and Tor for IP rotation to avoid server IP blocks.
 
-  **Configuration**:
-  ```yaml
-  metadata:
-    providers:
-      thenude:
-        proxy:
-          enabled: true
-          type: tor
-          url: socks5://127.0.0.1:9050
-  ```
+  See data/patterns/HTTP_CLIENT.yaml for complete configuration guide.
 error_handling: |
   **HTTP Error Codes**:
   - 404 Not Found → Performer doesn't exist on TheNude

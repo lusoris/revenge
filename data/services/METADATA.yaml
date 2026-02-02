@@ -507,42 +507,9 @@ provider_priority_chain: |
 proxy_vpn_support: |
   **Optional Proxy/VPN Routing for External APIs**:
 
-  **IMPORTANT**: Proxy/VPN is **OPTIONAL**
-  - Must be explicitly setup and enabled in config
-  - Disabled by default
-  - Only applies to SUPPLEMENTARY external APIs
-  - Arr services (PRIMARY) are local and bypass proxy
+  External metadata API calls can be routed through proxy/VPN for privacy, geo-access,
+  and rate limiting. Proxy/VPN is OPTIONAL (disabled by default) and only applies to
+  SUPPLEMENTARY external APIs, not PRIMARY Arr services (local network).
 
-  **Routing Rules**:
-  - **Arr services** (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr): **NO proxy** (local network)
-  - **External APIs** (TMDb, TheTVDB, MusicBrainz, StashDB): **Optional proxy/VPN** (see config)
-
-  **Configuration**:
-  ```yaml
-  metadata:
-    external:
-      tmdb:
-        proxy: tor        # Route through Tor SOCKS5
-      tvdb:
-        proxy: tor        # Route through Tor
-      musicbrainz:
-        proxy: false      # No proxy needed
-      stashdb:
-        proxy: tor        # Privacy for adult content
-  ```
-
-  **HTTP Client Factory** (via HTTP_CLIENT service):
-  ```go
-  // Get client for Arr service (no proxy)
-  radarrClient := httpClientFactory.GetClientForService(ctx, "radarr")
-
-  // Get client for external API (with optional proxy)
-  tmdbClient := httpClientFactory.GetClientForService(ctx, "tmdb") // Uses Tor if configured
-  ```
-
-  **Use Cases**:
-  - **Region restrictions**: Access TMDb/TVDB from restricted countries
-  - **Privacy**: Hide server IP from external metadata providers
-  - **Adult content**: Route Whisparr/StashDB calls through Tor for privacy
-
-  **See**: [HTTP_CLIENT.yaml](./HTTP_CLIENT.yaml) for proxy/VPN implementation details
+  See data/patterns/HTTP_CLIENT.yaml for complete implementation guide including
+  HTTP/HTTPS proxy, SOCKS5/Tor support, VPN binding, and client factory patterns.

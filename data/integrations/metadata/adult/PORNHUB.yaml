@@ -484,26 +484,13 @@ link_role: |
   - User navigates Pornhub in their own browser
   - Revenge does not proxy or embed content
 proxy_vpn_support: |
-  **Proxy/VPN Routing** (REQUIRED)
+  **Proxy/VPN Routing (REQUIRED)**:
 
-  Proxy/VPN is **REQUIRED** for Pornhub due to:
-  - Heavy Cloudflare protection
-  - IP-based rate limiting
-  - Geo-restrictions in some regions
+  Proxy/VPN is REQUIRED for Pornhub due to heavy Cloudflare protection, IP-based
+  rate limiting, and geo-restrictions. Headless browser also routes through proxy.
 
-  **Configuration**:
-  ```yaml
-  metadata:
-    providers:
-      pornhub:
-        proxy:
-          enabled: true             # REQUIRED
-          type: tor
-          url: socks5://127.0.0.1:9050
-  ```
-
-  **Browser Proxy**:
-  Headless browser also routes through configured proxy.
+  See data/patterns/HTTP_CLIENT.yaml for complete configuration guide including
+  SOCKS5/Tor setup and handling Cloudflare challenges.
 error_handling: |
   **HTTP Error Codes**:
   - 403 Forbidden → Cloudflare block, rotate proxy
