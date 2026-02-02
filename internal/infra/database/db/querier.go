@@ -11,41 +11,95 @@ import (
 )
 
 type Querier interface {
+	// Count users matching filters
+	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
+	// Upload a new avatar (sets it as current)
+	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
 	// Create a new server setting
 	CreateServerSetting(ctx context.Context, arg CreateServerSettingParams) (SharedServerSetting, error)
+	// Create a new user
+	CreateUser(ctx context.Context, arg CreateUserParams) (SharedUser, error)
 	// Create a new user setting
 	CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error)
 	// Delete all settings for a user (used when user is deleted)
 	DeleteAllUserSettings(ctx context.Context, userID uuid.UUID) error
+	// Soft delete an avatar
+	DeleteAvatar(ctx context.Context, id uuid.UUID) error
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
+	// Soft delete a user
+	DeleteUser(ctx context.Context, id uuid.UUID) error
+	// Delete user preferences (cleanup on user deletion)
+	DeleteUserPreferences(ctx context.Context, userID uuid.UUID) error
 	// Delete a user setting
 	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
+	// Get a specific avatar by ID
+	GetAvatarByID(ctx context.Context, id uuid.UUID) (SharedUserAvatar, error)
+	// ============================================================================
+	// User Avatars Queries
+	// ============================================================================
+	// Get the current avatar for a user
+	GetCurrentAvatar(ctx context.Context, userID uuid.UUID) (SharedUserAvatar, error)
+	// Get the latest avatar version number for a user
+	GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) (int32, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
+	// Get a user by email
+	GetUserByEmail(ctx context.Context, email string) (SharedUser, error)
+	// Get a user by their UUID
+	GetUserByID(ctx context.Context, id uuid.UUID) (SharedUser, error)
+	// Get a user by username
+	GetUserByUsername(ctx context.Context, username string) (SharedUser, error)
+	// ============================================================================
+	// User Preferences Queries
+	// ============================================================================
+	// Get user preferences
+	GetUserPreferences(ctx context.Context, userID uuid.UUID) (SharedUserPreference, error)
 	// ============================================================================
 	// User Settings Queries
 	// ============================================================================
 	// Get a user setting by user_id and key
 	GetUserSetting(ctx context.Context, arg GetUserSettingParams) (SharedUserSetting, error)
+	// Permanently delete an avatar file
+	HardDeleteAvatar(ctx context.Context, id uuid.UUID) error
+	// Permanently delete a user (GDPR compliance)
+	HardDeleteUser(ctx context.Context, id uuid.UUID) error
 	// Get public settings (exposed in API)
 	ListPublicServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get all server settings
 	ListServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get settings by category
 	ListServerSettingsByCategory(ctx context.Context, category *string) ([]SharedServerSetting, error)
+	// List all avatars for a user (for history)
+	ListUserAvatars(ctx context.Context, arg ListUserAvatarsParams) ([]SharedUserAvatar, error)
 	// Get all settings for a user
 	ListUserSettings(ctx context.Context, userID uuid.UUID) ([]SharedUserSetting, error)
 	// Get user settings by category
 	ListUserSettingsByCategory(ctx context.Context, arg ListUserSettingsByCategoryParams) ([]SharedUserSetting, error)
+	// List all active users with optional filters
+	ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error)
+	// Set an existing avatar as current
+	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
+	// Mark all user's avatars as not current (before setting a new current)
+	UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) error
+	// Update user last login timestamp
+	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
+	// Update user password hash
+	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	// Update a server setting value
 	UpdateServerSetting(ctx context.Context, arg UpdateServerSettingParams) (SharedServerSetting, error)
+	// Update user fields
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (SharedUser, error)
 	// Update a user setting value
 	UpdateUserSetting(ctx context.Context, arg UpdateUserSettingParams) (SharedUserSetting, error)
 	// Insert or update a server setting
 	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (SharedServerSetting, error)
+	// Create or update user preferences
+	UpsertUserPreferences(ctx context.Context, arg UpsertUserPreferencesParams) (SharedUserPreference, error)
 	// Insert or update a user setting
 	UpsertUserSetting(ctx context.Context, arg UpsertUserSettingParams) (SharedUserSetting, error)
+	// Mark email as verified
+	VerifyEmail(ctx context.Context, id uuid.UUID) error
 }
 
 var _ Querier = (*Queries)(nil)
