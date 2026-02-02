@@ -34,6 +34,7 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 }
 
 var operationRolesBearerAuth = map[string][]string{
+	ChangePasswordOperation:        []string{},
 	DeleteUserSettingOperation:     []string{},
 	GetCurrentUserOperation:        []string{},
 	GetServerSettingOperation:      []string{},
@@ -42,6 +43,8 @@ var operationRolesBearerAuth = map[string][]string{
 	GetUserSettingOperation:        []string{},
 	ListServerSettingsOperation:    []string{},
 	ListUserSettingsOperation:      []string{},
+	LogoutOperation:                []string{},
+	ResendVerificationOperation:    []string{},
 	UpdateCurrentUserOperation:     []string{},
 	UpdateServerSettingOperation:   []string{},
 	UpdateUserPreferencesOperation: []string{},

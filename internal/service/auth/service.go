@@ -16,9 +16,9 @@ import (
 
 // Service implements auth business logic
 type Service struct {
-	repo         Repository
-	tokenManager TokenManager
-	jwtExpiry    time.Duration
+	repo          Repository
+	tokenManager  TokenManager
+	jwtExpiry     time.Duration
 	refreshExpiry time.Duration
 }
 

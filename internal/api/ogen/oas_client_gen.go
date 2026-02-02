@@ -28,12 +28,24 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// ChangePassword invokes changePassword operation.
+	//
+	// Change password for authenticated user (requires old password).
+	//
+	// POST /api/v1/auth/change-password
+	ChangePassword(ctx context.Context, request *ChangePasswordRequest) (ChangePasswordRes, error)
 	// DeleteUserSetting invokes deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
 	//
 	// DELETE /api/v1/settings/user/{key}
 	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
+	// ForgotPassword invokes forgotPassword operation.
+	//
+	// Send password reset token to user's email address.
+	//
+	// POST /api/v1/auth/forgot-password
+	ForgotPassword(ctx context.Context, request *ForgotPasswordRequest) (ForgotPasswordRes, error)
 	// GetCurrentUser invokes getCurrentUser operation.
 	//
 	// Get the currently authenticated user's profile.
@@ -100,6 +112,42 @@ type Invoker interface {
 	//
 	// GET /api/v1/settings/user
 	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// Login invokes login operation.
+	//
+	// Authenticate user and return access token and refresh token.
+	//
+	// POST /api/v1/auth/login
+	Login(ctx context.Context, request *LoginRequest) (LoginRes, error)
+	// Logout invokes logout operation.
+	//
+	// Invalidate the current refresh token.
+	//
+	// POST /api/v1/auth/logout
+	Logout(ctx context.Context, request *LogoutRequest) (LogoutRes, error)
+	// RefreshToken invokes refreshToken operation.
+	//
+	// Exchange refresh token for a new access token.
+	//
+	// POST /api/v1/auth/refresh
+	RefreshToken(ctx context.Context, request *RefreshRequest) (RefreshTokenRes, error)
+	// Register invokes register operation.
+	//
+	// Create a new user account with username, email, and password.
+	//
+	// POST /api/v1/auth/register
+	Register(ctx context.Context, request *RegisterRequest) (RegisterRes, error)
+	// ResendVerification invokes resendVerification operation.
+	//
+	// Resend email verification token to user's email address.
+	//
+	// POST /api/v1/auth/resend-verification
+	ResendVerification(ctx context.Context) (ResendVerificationRes, error)
+	// ResetPassword invokes resetPassword operation.
+	//
+	// Reset password using token from password reset email.
+	//
+	// POST /api/v1/auth/reset-password
+	ResetPassword(ctx context.Context, request *ResetPasswordRequest) (ResetPasswordRes, error)
 	// UpdateCurrentUser invokes updateCurrentUser operation.
 	//
 	// Update the authenticated user's profile.
@@ -130,6 +178,12 @@ type Invoker interface {
 	//
 	// POST /api/v1/users/me/avatar
 	UploadAvatar(ctx context.Context, request *UploadAvatarReq) (UploadAvatarRes, error)
+	// VerifyEmail invokes verifyEmail operation.
+	//
+	// Verify user email address with token from verification email.
+	//
+	// POST /api/v1/auth/verify-email
+	VerifyEmail(ctx context.Context, request *VerifyEmailRequest) (VerifyEmailRes, error)
 }
 
 // Client implements OAS client.
@@ -179,6 +233,115 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 		return c.serverURL
 	}
 	return u
+}
+
+// ChangePassword invokes changePassword operation.
+//
+// Change password for authenticated user (requires old password).
+//
+// POST /api/v1/auth/change-password
+func (c *Client) ChangePassword(ctx context.Context, request *ChangePasswordRequest) (ChangePasswordRes, error) {
+	res, err := c.sendChangePassword(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendChangePassword(ctx context.Context, request *ChangePasswordRequest) (res ChangePasswordRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("changePassword"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/change-password"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ChangePasswordOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/change-password"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeChangePasswordRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, ChangePasswordOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeChangePasswordResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
 }
 
 // DeleteUserSetting invokes deleteUserSetting operation.
@@ -298,6 +461,82 @@ func (c *Client) sendDeleteUserSetting(ctx context.Context, params DeleteUserSet
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteUserSettingResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ForgotPassword invokes forgotPassword operation.
+//
+// Send password reset token to user's email address.
+//
+// POST /api/v1/auth/forgot-password
+func (c *Client) ForgotPassword(ctx context.Context, request *ForgotPasswordRequest) (ForgotPasswordRes, error) {
+	res, err := c.sendForgotPassword(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendForgotPassword(ctx context.Context, request *ForgotPasswordRequest) (res ForgotPasswordRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("forgotPassword"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/forgot-password"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ForgotPasswordOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/forgot-password"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeForgotPasswordRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeForgotPasswordResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1326,6 +1565,525 @@ func (c *Client) sendListUserSettings(ctx context.Context) (res ListUserSettings
 	return result, nil
 }
 
+// Login invokes login operation.
+//
+// Authenticate user and return access token and refresh token.
+//
+// POST /api/v1/auth/login
+func (c *Client) Login(ctx context.Context, request *LoginRequest) (LoginRes, error) {
+	res, err := c.sendLogin(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendLogin(ctx context.Context, request *LoginRequest) (res LoginRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("login"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/login"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, LoginOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/login"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeLoginRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeLoginResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// Logout invokes logout operation.
+//
+// Invalidate the current refresh token.
+//
+// POST /api/v1/auth/logout
+func (c *Client) Logout(ctx context.Context, request *LogoutRequest) (LogoutRes, error) {
+	res, err := c.sendLogout(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendLogout(ctx context.Context, request *LogoutRequest) (res LogoutRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("logout"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/logout"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, LogoutOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/logout"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeLogoutRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, LogoutOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeLogoutResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RefreshToken invokes refreshToken operation.
+//
+// Exchange refresh token for a new access token.
+//
+// POST /api/v1/auth/refresh
+func (c *Client) RefreshToken(ctx context.Context, request *RefreshRequest) (RefreshTokenRes, error) {
+	res, err := c.sendRefreshToken(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendRefreshToken(ctx context.Context, request *RefreshRequest) (res RefreshTokenRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("refreshToken"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/refresh"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RefreshTokenOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/refresh"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRefreshTokenRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRefreshTokenResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// Register invokes register operation.
+//
+// Create a new user account with username, email, and password.
+//
+// POST /api/v1/auth/register
+func (c *Client) Register(ctx context.Context, request *RegisterRequest) (RegisterRes, error) {
+	res, err := c.sendRegister(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendRegister(ctx context.Context, request *RegisterRequest) (res RegisterRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("register"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/register"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RegisterOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/register"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRegisterRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRegisterResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ResendVerification invokes resendVerification operation.
+//
+// Resend email verification token to user's email address.
+//
+// POST /api/v1/auth/resend-verification
+func (c *Client) ResendVerification(ctx context.Context) (ResendVerificationRes, error) {
+	res, err := c.sendResendVerification(ctx)
+	return res, err
+}
+
+func (c *Client) sendResendVerification(ctx context.Context) (res ResendVerificationRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("resendVerification"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/resend-verification"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ResendVerificationOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/resend-verification"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, ResendVerificationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeResendVerificationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ResetPassword invokes resetPassword operation.
+//
+// Reset password using token from password reset email.
+//
+// POST /api/v1/auth/reset-password
+func (c *Client) ResetPassword(ctx context.Context, request *ResetPasswordRequest) (ResetPasswordRes, error) {
+	res, err := c.sendResetPassword(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendResetPassword(ctx context.Context, request *ResetPasswordRequest) (res ResetPasswordRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("resetPassword"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/reset-password"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ResetPasswordOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/reset-password"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeResetPasswordRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeResetPasswordResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UpdateCurrentUser invokes updateCurrentUser operation.
 //
 // Update the authenticated user's profile.
@@ -1900,6 +2658,82 @@ func (c *Client) sendUploadAvatar(ctx context.Context, request *UploadAvatarReq)
 
 	stage = "DecodeResponse"
 	result, err := decodeUploadAvatarResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// VerifyEmail invokes verifyEmail operation.
+//
+// Verify user email address with token from verification email.
+//
+// POST /api/v1/auth/verify-email
+func (c *Client) VerifyEmail(ctx context.Context, request *VerifyEmailRequest) (VerifyEmailRes, error) {
+	res, err := c.sendVerifyEmail(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendVerifyEmail(ctx context.Context, request *VerifyEmailRequest) (res VerifyEmailRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("verifyEmail"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/auth/verify-email"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, VerifyEmailOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/auth/verify-email"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeVerifyEmailRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeVerifyEmailResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

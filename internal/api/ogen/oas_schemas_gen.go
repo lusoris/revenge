@@ -179,6 +179,47 @@ func (s *BearerAuth) SetRoles(val []string) {
 	s.Roles = val
 }
 
+type ChangePasswordBadRequest Error
+
+func (*ChangePasswordBadRequest) changePasswordRes() {}
+
+// ChangePasswordNoContent is response for ChangePassword operation.
+type ChangePasswordNoContent struct{}
+
+func (*ChangePasswordNoContent) changePasswordRes() {}
+
+// Ref: #/components/schemas/ChangePasswordRequest
+type ChangePasswordRequest struct {
+	// Current password.
+	OldPassword string `json:"old_password"`
+	// New password (minimum 8 characters).
+	NewPassword string `json:"new_password"`
+}
+
+// GetOldPassword returns the value of OldPassword.
+func (s *ChangePasswordRequest) GetOldPassword() string {
+	return s.OldPassword
+}
+
+// GetNewPassword returns the value of NewPassword.
+func (s *ChangePasswordRequest) GetNewPassword() string {
+	return s.NewPassword
+}
+
+// SetOldPassword sets the value of OldPassword.
+func (s *ChangePasswordRequest) SetOldPassword(val string) {
+	s.OldPassword = val
+}
+
+// SetNewPassword sets the value of NewPassword.
+func (s *ChangePasswordRequest) SetNewPassword(val string) {
+	s.NewPassword = val
+}
+
+type ChangePasswordUnauthorized Error
+
+func (*ChangePasswordUnauthorized) changePasswordRes() {}
+
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
 
@@ -232,10 +273,16 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
 
+func (*Error) forgotPasswordRes()     {}
 func (*Error) getCurrentUserRes()     {}
 func (*Error) getUserPreferencesRes() {}
 func (*Error) listServerSettingsRes() {}
 func (*Error) listUserSettingsRes()   {}
+func (*Error) logoutRes()             {}
+func (*Error) registerRes()           {}
+func (*Error) resendVerificationRes() {}
+func (*Error) resetPasswordRes()      {}
+func (*Error) verifyEmailRes()        {}
 
 // Additional error details.
 type ErrorDetails map[string]jx.Raw
@@ -273,6 +320,27 @@ func (s *ErrorStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
+}
+
+// ForgotPasswordNoContent is response for ForgotPassword operation.
+type ForgotPasswordNoContent struct{}
+
+func (*ForgotPasswordNoContent) forgotPasswordRes() {}
+
+// Ref: #/components/schemas/ForgotPasswordRequest
+type ForgotPasswordRequest struct {
+	// Email address to send password reset token.
+	Email string `json:"email"`
+}
+
+// GetEmail returns the value of Email.
+func (s *ForgotPasswordRequest) GetEmail() string {
+	return s.Email
+}
+
+// SetEmail sets the value of Email.
+func (s *ForgotPasswordRequest) SetEmail(val string) {
+	s.Email = val
 }
 
 type GetReadinessOK HealthCheck
@@ -435,6 +503,140 @@ func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
 type ListUserSettingsOKApplicationJSON []UserSetting
 
 func (*ListUserSettingsOKApplicationJSON) listUserSettingsRes() {}
+
+type LoginBadRequest Error
+
+func (*LoginBadRequest) loginRes() {}
+
+// Ref: #/components/schemas/LoginRequest
+type LoginRequest struct {
+	// Username or email.
+	Username string `json:"username"`
+	// Password.
+	Password string `json:"password"`
+	// Device name for tracking (optional).
+	DeviceName OptString `json:"device_name"`
+}
+
+// GetUsername returns the value of Username.
+func (s *LoginRequest) GetUsername() string {
+	return s.Username
+}
+
+// GetPassword returns the value of Password.
+func (s *LoginRequest) GetPassword() string {
+	return s.Password
+}
+
+// GetDeviceName returns the value of DeviceName.
+func (s *LoginRequest) GetDeviceName() OptString {
+	return s.DeviceName
+}
+
+// SetUsername sets the value of Username.
+func (s *LoginRequest) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetPassword sets the value of Password.
+func (s *LoginRequest) SetPassword(val string) {
+	s.Password = val
+}
+
+// SetDeviceName sets the value of DeviceName.
+func (s *LoginRequest) SetDeviceName(val OptString) {
+	s.DeviceName = val
+}
+
+// Ref: #/components/schemas/LoginResponse
+type LoginResponse struct {
+	User User `json:"user"`
+	// JWT access token.
+	AccessToken string `json:"access_token"`
+	// Refresh token for obtaining new access tokens.
+	RefreshToken string `json:"refresh_token"`
+	// Access token expiry time in seconds.
+	ExpiresIn int `json:"expires_in"`
+}
+
+// GetUser returns the value of User.
+func (s *LoginResponse) GetUser() User {
+	return s.User
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *LoginResponse) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *LoginResponse) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// GetExpiresIn returns the value of ExpiresIn.
+func (s *LoginResponse) GetExpiresIn() int {
+	return s.ExpiresIn
+}
+
+// SetUser sets the value of User.
+func (s *LoginResponse) SetUser(val User) {
+	s.User = val
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *LoginResponse) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *LoginResponse) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+// SetExpiresIn sets the value of ExpiresIn.
+func (s *LoginResponse) SetExpiresIn(val int) {
+	s.ExpiresIn = val
+}
+
+func (*LoginResponse) loginRes() {}
+
+type LoginUnauthorized Error
+
+func (*LoginUnauthorized) loginRes() {}
+
+// LogoutNoContent is response for Logout operation.
+type LogoutNoContent struct{}
+
+func (*LogoutNoContent) logoutRes() {}
+
+// Ref: #/components/schemas/LogoutRequest
+type LogoutRequest struct {
+	// Refresh token to invalidate.
+	RefreshToken string `json:"refresh_token"`
+	// Logout from all devices (default false).
+	LogoutAll OptBool `json:"logout_all"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *LogoutRequest) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// GetLogoutAll returns the value of LogoutAll.
+func (s *LogoutRequest) GetLogoutAll() OptBool {
+	return s.LogoutAll
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *LogoutRequest) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+// SetLogoutAll sets the value of LogoutAll.
+func (s *LogoutRequest) SetLogoutAll(val OptBool) {
+	s.LogoutAll = val
+}
 
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
@@ -1356,6 +1558,150 @@ func (o OptUserPreferencesUpdateTheme) Or(d UserPreferencesUpdateTheme) UserPref
 	return d
 }
 
+// Ref: #/components/schemas/RefreshRequest
+type RefreshRequest struct {
+	// Refresh token.
+	RefreshToken string `json:"refresh_token"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *RefreshRequest) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *RefreshRequest) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+// Ref: #/components/schemas/RefreshResponse
+type RefreshResponse struct {
+	// New JWT access token.
+	AccessToken string `json:"access_token"`
+	// Access token expiry time in seconds.
+	ExpiresIn int `json:"expires_in"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *RefreshResponse) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetExpiresIn returns the value of ExpiresIn.
+func (s *RefreshResponse) GetExpiresIn() int {
+	return s.ExpiresIn
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *RefreshResponse) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetExpiresIn sets the value of ExpiresIn.
+func (s *RefreshResponse) SetExpiresIn(val int) {
+	s.ExpiresIn = val
+}
+
+func (*RefreshResponse) refreshTokenRes() {}
+
+type RefreshTokenBadRequest Error
+
+func (*RefreshTokenBadRequest) refreshTokenRes() {}
+
+type RefreshTokenUnauthorized Error
+
+func (*RefreshTokenUnauthorized) refreshTokenRes() {}
+
+// Ref: #/components/schemas/RegisterRequest
+type RegisterRequest struct {
+	// Username (alphanumeric, dash, underscore).
+	Username string `json:"username"`
+	// Email address.
+	Email string `json:"email"`
+	// Password (minimum 8 characters).
+	Password string `json:"password"`
+	// Display name (optional).
+	DisplayName OptString `json:"display_name"`
+}
+
+// GetUsername returns the value of Username.
+func (s *RegisterRequest) GetUsername() string {
+	return s.Username
+}
+
+// GetEmail returns the value of Email.
+func (s *RegisterRequest) GetEmail() string {
+	return s.Email
+}
+
+// GetPassword returns the value of Password.
+func (s *RegisterRequest) GetPassword() string {
+	return s.Password
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *RegisterRequest) GetDisplayName() OptString {
+	return s.DisplayName
+}
+
+// SetUsername sets the value of Username.
+func (s *RegisterRequest) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetEmail sets the value of Email.
+func (s *RegisterRequest) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetPassword sets the value of Password.
+func (s *RegisterRequest) SetPassword(val string) {
+	s.Password = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *RegisterRequest) SetDisplayName(val OptString) {
+	s.DisplayName = val
+}
+
+// ResendVerificationNoContent is response for ResendVerification operation.
+type ResendVerificationNoContent struct{}
+
+func (*ResendVerificationNoContent) resendVerificationRes() {}
+
+// ResetPasswordNoContent is response for ResetPassword operation.
+type ResetPasswordNoContent struct{}
+
+func (*ResetPasswordNoContent) resetPasswordRes() {}
+
+// Ref: #/components/schemas/ResetPasswordRequest
+type ResetPasswordRequest struct {
+	// Password reset token from email.
+	Token string `json:"token"`
+	// New password (minimum 8 characters).
+	NewPassword string `json:"new_password"`
+}
+
+// GetToken returns the value of Token.
+func (s *ResetPasswordRequest) GetToken() string {
+	return s.Token
+}
+
+// GetNewPassword returns the value of NewPassword.
+func (s *ResetPasswordRequest) GetNewPassword() string {
+	return s.NewPassword
+}
+
+// SetToken sets the value of Token.
+func (s *ResetPasswordRequest) SetToken(val string) {
+	s.Token = val
+}
+
+// SetNewPassword sets the value of NewPassword.
+func (s *ResetPasswordRequest) SetNewPassword(val string) {
+	s.NewPassword = val
+}
+
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {
 	// Setting key.
@@ -1989,6 +2335,7 @@ func (s *User) SetLastLoginAt(val OptDateTime) {
 
 func (*User) getCurrentUserRes()    {}
 func (*User) getUserByIdRes()       {}
+func (*User) registerRes()          {}
 func (*User) updateCurrentUserRes() {}
 
 // Ref: #/components/schemas/UserPreferences
@@ -3108,4 +3455,25 @@ func (s *UserUpdate) SetDisplayName(val OptString) {
 // SetTimezone sets the value of Timezone.
 func (s *UserUpdate) SetTimezone(val OptString) {
 	s.Timezone = val
+}
+
+// VerifyEmailNoContent is response for VerifyEmail operation.
+type VerifyEmailNoContent struct{}
+
+func (*VerifyEmailNoContent) verifyEmailRes() {}
+
+// Ref: #/components/schemas/VerifyEmailRequest
+type VerifyEmailRequest struct {
+	// Email verification token from email.
+	Token string `json:"token"`
+}
+
+// GetToken returns the value of Token.
+func (s *VerifyEmailRequest) GetToken() string {
+	return s.Token
+}
+
+// SetToken sets the value of Token.
+func (s *VerifyEmailRequest) SetToken(val string) {
+	s.Token = val
 }

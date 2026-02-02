@@ -8,12 +8,24 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// ChangePassword implements changePassword operation.
+	//
+	// Change password for authenticated user (requires old password).
+	//
+	// POST /api/v1/auth/change-password
+	ChangePassword(ctx context.Context, req *ChangePasswordRequest) (ChangePasswordRes, error)
 	// DeleteUserSetting implements deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
 	//
 	// DELETE /api/v1/settings/user/{key}
 	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
+	// ForgotPassword implements forgotPassword operation.
+	//
+	// Send password reset token to user's email address.
+	//
+	// POST /api/v1/auth/forgot-password
+	ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (ForgotPasswordRes, error)
 	// GetCurrentUser implements getCurrentUser operation.
 	//
 	// Get the currently authenticated user's profile.
@@ -80,6 +92,42 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user
 	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// Login implements login operation.
+	//
+	// Authenticate user and return access token and refresh token.
+	//
+	// POST /api/v1/auth/login
+	Login(ctx context.Context, req *LoginRequest) (LoginRes, error)
+	// Logout implements logout operation.
+	//
+	// Invalidate the current refresh token.
+	//
+	// POST /api/v1/auth/logout
+	Logout(ctx context.Context, req *LogoutRequest) (LogoutRes, error)
+	// RefreshToken implements refreshToken operation.
+	//
+	// Exchange refresh token for a new access token.
+	//
+	// POST /api/v1/auth/refresh
+	RefreshToken(ctx context.Context, req *RefreshRequest) (RefreshTokenRes, error)
+	// Register implements register operation.
+	//
+	// Create a new user account with username, email, and password.
+	//
+	// POST /api/v1/auth/register
+	Register(ctx context.Context, req *RegisterRequest) (RegisterRes, error)
+	// ResendVerification implements resendVerification operation.
+	//
+	// Resend email verification token to user's email address.
+	//
+	// POST /api/v1/auth/resend-verification
+	ResendVerification(ctx context.Context) (ResendVerificationRes, error)
+	// ResetPassword implements resetPassword operation.
+	//
+	// Reset password using token from password reset email.
+	//
+	// POST /api/v1/auth/reset-password
+	ResetPassword(ctx context.Context, req *ResetPasswordRequest) (ResetPasswordRes, error)
 	// UpdateCurrentUser implements updateCurrentUser operation.
 	//
 	// Update the authenticated user's profile.
@@ -110,6 +158,12 @@ type Handler interface {
 	//
 	// POST /api/v1/users/me/avatar
 	UploadAvatar(ctx context.Context, req *UploadAvatarReq) (UploadAvatarRes, error)
+	// VerifyEmail implements verifyEmail operation.
+	//
+	// Verify user email address with token from verification email.
+	//
+	// POST /api/v1/auth/verify-email
+	VerifyEmail(ctx context.Context, req *VerifyEmailRequest) (VerifyEmailRes, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

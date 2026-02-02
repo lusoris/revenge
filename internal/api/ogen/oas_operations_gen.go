@@ -6,7 +6,9 @@ package ogen
 type OperationName = string
 
 const (
+	ChangePasswordOperation        OperationName = "ChangePassword"
 	DeleteUserSettingOperation     OperationName = "DeleteUserSetting"
+	ForgotPasswordOperation        OperationName = "ForgotPassword"
 	GetCurrentUserOperation        OperationName = "GetCurrentUser"
 	GetLivenessOperation           OperationName = "GetLiveness"
 	GetReadinessOperation          OperationName = "GetReadiness"
@@ -17,9 +19,16 @@ const (
 	GetUserSettingOperation        OperationName = "GetUserSetting"
 	ListServerSettingsOperation    OperationName = "ListServerSettings"
 	ListUserSettingsOperation      OperationName = "ListUserSettings"
+	LoginOperation                 OperationName = "Login"
+	LogoutOperation                OperationName = "Logout"
+	RefreshTokenOperation          OperationName = "RefreshToken"
+	RegisterOperation              OperationName = "Register"
+	ResendVerificationOperation    OperationName = "ResendVerification"
+	ResetPasswordOperation         OperationName = "ResetPassword"
 	UpdateCurrentUserOperation     OperationName = "UpdateCurrentUser"
 	UpdateServerSettingOperation   OperationName = "UpdateServerSetting"
 	UpdateUserPreferencesOperation OperationName = "UpdateUserPreferences"
 	UpdateUserSettingOperation     OperationName = "UpdateUserSetting"
 	UploadAvatarOperation          OperationName = "UploadAvatar"
+	VerifyEmailOperation           OperationName = "VerifyEmail"
 )

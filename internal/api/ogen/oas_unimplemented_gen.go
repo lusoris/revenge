@@ -13,12 +13,30 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// ChangePassword implements changePassword operation.
+//
+// Change password for authenticated user (requires old password).
+//
+// POST /api/v1/auth/change-password
+func (UnimplementedHandler) ChangePassword(ctx context.Context, req *ChangePasswordRequest) (r ChangePasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DeleteUserSetting implements deleteUserSetting operation.
 //
 // Delete a user setting (revert to default).
 //
 // DELETE /api/v1/settings/user/{key}
 func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (r DeleteUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ForgotPassword implements forgotPassword operation.
+//
+// Send password reset token to user's email address.
+//
+// POST /api/v1/auth/forgot-password
+func (UnimplementedHandler) ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (r ForgotPasswordRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -118,6 +136,60 @@ func (UnimplementedHandler) ListUserSettings(ctx context.Context) (r ListUserSet
 	return r, ht.ErrNotImplemented
 }
 
+// Login implements login operation.
+//
+// Authenticate user and return access token and refresh token.
+//
+// POST /api/v1/auth/login
+func (UnimplementedHandler) Login(ctx context.Context, req *LoginRequest) (r LoginRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// Logout implements logout operation.
+//
+// Invalidate the current refresh token.
+//
+// POST /api/v1/auth/logout
+func (UnimplementedHandler) Logout(ctx context.Context, req *LogoutRequest) (r LogoutRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshToken implements refreshToken operation.
+//
+// Exchange refresh token for a new access token.
+//
+// POST /api/v1/auth/refresh
+func (UnimplementedHandler) RefreshToken(ctx context.Context, req *RefreshRequest) (r RefreshTokenRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// Register implements register operation.
+//
+// Create a new user account with username, email, and password.
+//
+// POST /api/v1/auth/register
+func (UnimplementedHandler) Register(ctx context.Context, req *RegisterRequest) (r RegisterRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResendVerification implements resendVerification operation.
+//
+// Resend email verification token to user's email address.
+//
+// POST /api/v1/auth/resend-verification
+func (UnimplementedHandler) ResendVerification(ctx context.Context) (r ResendVerificationRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ResetPassword implements resetPassword operation.
+//
+// Reset password using token from password reset email.
+//
+// POST /api/v1/auth/reset-password
+func (UnimplementedHandler) ResetPassword(ctx context.Context, req *ResetPasswordRequest) (r ResetPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateCurrentUser implements updateCurrentUser operation.
 //
 // Update the authenticated user's profile.
@@ -160,6 +232,15 @@ func (UnimplementedHandler) UpdateUserSetting(ctx context.Context, req *SettingV
 //
 // POST /api/v1/users/me/avatar
 func (UnimplementedHandler) UploadAvatar(ctx context.Context, req *UploadAvatarReq) (r UploadAvatarRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// VerifyEmail implements verifyEmail operation.
+//
+// Verify user email address with token from verification email.
+//
+// POST /api/v1/auth/verify-email
+func (UnimplementedHandler) VerifyEmail(ctx context.Context, req *VerifyEmailRequest) (r VerifyEmailRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

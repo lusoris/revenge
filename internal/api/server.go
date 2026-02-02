@@ -32,6 +32,7 @@ type ServerParams struct {
 	HealthService   *health.Service
 	SettingsService settings.Service
 	UserService     *user.Service
+	AuthService     *auth.Service
 	TokenManager    auth.TokenManager
 	Lifecycle       fx.Lifecycle
 }
@@ -44,6 +45,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		healthService:   p.HealthService,
 		userService:     p.UserService,
 		settingsService: p.SettingsService,
+		authService:     p.AuthService,
 		tokenManager:    p.TokenManager,
 	}
 

@@ -20,6 +20,7 @@ type Handler struct {
 	healthService   *health.Service
 	settingsService settings.Service
 	userService     *user.Service
+	authService     *auth.Service
 	tokenManager    auth.TokenManager
 }
 
@@ -502,4 +503,220 @@ func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (
 	h.logger.Info("Avatar upload requested", zap.String("user_id", userID.String()))
 
 	return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("avatar upload not yet implemented")
+}
+
+// ============================================================================
+// Auth Handlers
+// ============================================================================
+
+// Register handles user registration
+func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen.RegisterRes, error) {
+	h.logger.Info("User registration requested", zap.String("username", req.Username))
+
+	// Extract display name if set
+	var displayName *string
+	if req.DisplayName.Set {
+		displayName = &req.DisplayName.Value
+	}
+
+	// Create user via auth service
+	user, err := h.authService.Register(ctx, auth.RegisterRequest{
+		Username:    req.Username,
+		Email:       req.Email,
+		Password:    req.Password,
+		DisplayName: displayName,
+	})
+	if err != nil {
+		h.logger.Warn("Registration failed", zap.Error(err))
+		return &ogen.Error{
+			Code:    400,
+			Message: fmt.Sprintf("Registration failed: %v", err),
+		}, nil
+	}
+
+	h.logger.Info("User registered successfully", zap.String("user_id", user.ID.String()))
+
+	return &ogen.User{
+		ID:            user.ID,
+		Username:      user.Username,
+		Email:         user.Email,
+		DisplayName:   ogen.NewOptString(stringPtrToString(user.DisplayName)),
+		EmailVerified: ogen.NewOptBool(boolPtrToBool(user.EmailVerified)),
+		IsActive:      boolPtrToBool(user.IsActive),
+		CreatedAt:     user.CreatedAt,
+	}, nil
+}
+
+// Login handles user authentication
+func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.LoginRes, error) {
+	h.logger.Info("Login requested", zap.String("username", req.Username))
+
+	// Extract device name if set
+	var deviceName *string
+	if req.DeviceName.Set {
+		deviceName = &req.DeviceName.Value
+	}
+
+	// Authenticate user (TODO: extract IP, user agent, fingerprint from request)
+	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, nil, nil, deviceName, nil)
+	if err != nil {
+		h.logger.Warn("Login failed", zap.Error(err), zap.String("username", req.Username))
+		return &ogen.LoginUnauthorized{
+			Code:    401,
+			Message: "Invalid username or password",
+		}, nil
+	}
+
+	h.logger.Info("Login successful", zap.String("user_id", loginResp.User.ID.String()))
+
+	return &ogen.LoginResponse{
+		User: ogen.User{
+			ID:            loginResp.User.ID,
+			Username:      loginResp.User.Username,
+			Email:         loginResp.User.Email,
+			DisplayName:   ogen.NewOptString(stringPtrToString(loginResp.User.DisplayName)),
+			EmailVerified: ogen.NewOptBool(boolPtrToBool(loginResp.User.EmailVerified)),
+			IsActive:      boolPtrToBool(loginResp.User.IsActive),
+			CreatedAt:     loginResp.User.CreatedAt,
+		},
+		AccessToken:  loginResp.AccessToken,
+		RefreshToken: loginResp.RefreshToken,
+		ExpiresIn:    int(loginResp.ExpiresIn),
+	}, nil
+}
+
+// Logout handles user logout
+func (h *Handler) Logout(ctx context.Context, req *ogen.LogoutRequest) (ogen.LogoutRes, error) {
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		h.logger.Warn("Logout: no user in context", zap.Error(err))
+		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
+	}
+
+	h.logger.Info("Logout requested", zap.String("user_id", userID.String()))
+
+	// Logout logic
+	if req.LogoutAll.Value {
+		// Logout from all devices
+		if err := h.authService.LogoutAll(ctx, userID); err != nil {
+			h.logger.Error("Logout all failed", zap.Error(err))
+			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
+		}
+	} else {
+		// Logout from current device only
+		if err := h.authService.Logout(ctx, req.RefreshToken); err != nil {
+			h.logger.Error("Logout failed", zap.Error(err))
+			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
+		}
+	}
+
+	return &ogen.LogoutNoContent{}, nil
+}
+
+// RefreshToken handles token refresh
+func (h *Handler) RefreshToken(ctx context.Context, req *ogen.RefreshRequest) (ogen.RefreshTokenRes, error) {
+	h.logger.Debug("Token refresh requested")
+
+	// Refresh access token
+	loginResp, err := h.authService.RefreshToken(ctx, req.RefreshToken)
+	if err != nil {
+		h.logger.Warn("Token refresh failed", zap.Error(err))
+		return &ogen.RefreshTokenUnauthorized{
+			Code:    401,
+			Message: "Invalid or expired refresh token",
+		}, nil
+	}
+
+	return &ogen.RefreshResponse{
+		AccessToken: loginResp.AccessToken,
+		ExpiresIn:   int(loginResp.ExpiresIn),
+	}, nil
+}
+
+// VerifyEmail handles email verification
+func (h *Handler) VerifyEmail(ctx context.Context, req *ogen.VerifyEmailRequest) (ogen.VerifyEmailRes, error) {
+	h.logger.Info("Email verification requested")
+
+	// Verify email token
+	if err := h.authService.VerifyEmail(ctx, req.Token); err != nil {
+		h.logger.Warn("Email verification failed", zap.Error(err))
+		return &ogen.Error{}, fmt.Errorf("verification failed: %w", err)
+	}
+
+	h.logger.Info("Email verified successfully")
+	return &ogen.VerifyEmailNoContent{}, nil
+}
+
+// ResendVerification handles resending verification email
+func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificationRes, error) {
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		h.logger.Warn("Resend verification: no user in context", zap.Error(err))
+		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
+	}
+
+	h.logger.Info("Resend verification requested", zap.String("user_id", userID.String()))
+
+	// Resend verification email
+	if err := h.authService.ResendVerification(ctx, userID); err != nil {
+		h.logger.Error("Resend verification failed", zap.Error(err))
+		return &ogen.Error{}, fmt.Errorf("resend failed: %w", err)
+	}
+
+	return &ogen.ResendVerificationNoContent{}, nil
+}
+
+// ForgotPassword handles password reset request
+func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRequest) (ogen.ForgotPasswordRes, error) {
+	h.logger.Info("Password reset requested", zap.String("email", req.Email))
+
+	// Request password reset (always returns success to prevent email enumeration)
+	// TODO: Extract IP address and user agent from request
+	_, err := h.authService.RequestPasswordReset(ctx, req.Email, nil, nil)
+	if err != nil {
+		h.logger.Error("Password reset request failed", zap.Error(err))
+		// Still return success to avoid email enumeration
+	}
+
+	return &ogen.ForgotPasswordNoContent{}, nil
+}
+
+// ResetPassword handles password reset with token
+func (h *Handler) ResetPassword(ctx context.Context, req *ogen.ResetPasswordRequest) (ogen.ResetPasswordRes, error) {
+	h.logger.Info("Password reset with token")
+
+	// Reset password using token
+	if err := h.authService.ResetPassword(ctx, req.Token, req.NewPassword); err != nil {
+		h.logger.Warn("Password reset failed", zap.Error(err))
+		return &ogen.Error{}, fmt.Errorf("reset failed: %w", err)
+	}
+
+	h.logger.Info("Password reset successfully")
+	return &ogen.ResetPasswordNoContent{}, nil
+}
+
+// ChangePassword handles password change for authenticated user
+func (h *Handler) ChangePassword(ctx context.Context, req *ogen.ChangePasswordRequest) (ogen.ChangePasswordRes, error) {
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		h.logger.Warn("Change password: no user in context", zap.Error(err))
+		return &ogen.ChangePasswordUnauthorized{
+			Code:    401,
+			Message: "Unauthorized",
+		}, nil
+	}
+
+	h.logger.Info("Password change requested", zap.String("user_id", userID.String()))
+
+	// Change password
+	if err := h.authService.ChangePassword(ctx, userID, req.OldPassword, req.NewPassword); err != nil {
+		h.logger.Warn("Password change failed", zap.Error(err))
+		return &ogen.ChangePasswordBadRequest{
+			Code:    400,
+			Message: fmt.Sprintf("Password change failed: %v", err),
+		}, nil
+	}
+
+	h.logger.Info("Password changed successfully")
+	return &ogen.ChangePasswordNoContent{}, nil
 }

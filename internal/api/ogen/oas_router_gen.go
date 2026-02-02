@@ -73,6 +73,242 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				switch elem[0] {
+				case 'a': // Prefix: "auth/"
+
+					if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "change-password"
+
+						if l := len("change-password"); len(elem) >= l && elem[0:l] == "change-password" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleChangePasswordRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 'f': // Prefix: "forgot-password"
+
+						if l := len("forgot-password"); len(elem) >= l && elem[0:l] == "forgot-password" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleForgotPasswordRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 'l': // Prefix: "log"
+
+						if l := len("log"); len(elem) >= l && elem[0:l] == "log" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'i': // Prefix: "in"
+
+							if l := len("in"); len(elem) >= l && elem[0:l] == "in" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleLoginRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						case 'o': // Prefix: "out"
+
+							if l := len("out"); len(elem) >= l && elem[0:l] == "out" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleLogoutRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						}
+
+					case 'r': // Prefix: "re"
+
+						if l := len("re"); len(elem) >= l && elem[0:l] == "re" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'f': // Prefix: "fresh"
+
+							if l := len("fresh"); len(elem) >= l && elem[0:l] == "fresh" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleRefreshTokenRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						case 'g': // Prefix: "gister"
+
+							if l := len("gister"); len(elem) >= l && elem[0:l] == "gister" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleRegisterRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						case 's': // Prefix: "se"
+
+							if l := len("se"); len(elem) >= l && elem[0:l] == "se" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'n': // Prefix: "nd-verification"
+
+								if l := len("nd-verification"); len(elem) >= l && elem[0:l] == "nd-verification" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleResendVerificationRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							case 't': // Prefix: "t-password"
+
+								if l := len("t-password"); len(elem) >= l && elem[0:l] == "t-password" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleResetPasswordRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							}
+
+						}
+
+					case 'v': // Prefix: "verify-email"
+
+						if l := len("verify-email"); len(elem) >= l && elem[0:l] == "verify-email" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleVerifyEmailRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					}
+
 				case 's': // Prefix: "settings/"
 
 					if l := len("settings/"); len(elem) >= l && elem[0:l] == "settings/" {
@@ -507,6 +743,287 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 				switch elem[0] {
+				case 'a': // Prefix: "auth/"
+
+					if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "change-password"
+
+						if l := len("change-password"); len(elem) >= l && elem[0:l] == "change-password" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = ChangePasswordOperation
+								r.summary = "Change password"
+								r.operationID = "changePassword"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/auth/change-password"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'f': // Prefix: "forgot-password"
+
+						if l := len("forgot-password"); len(elem) >= l && elem[0:l] == "forgot-password" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = ForgotPasswordOperation
+								r.summary = "Request password reset"
+								r.operationID = "forgotPassword"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/auth/forgot-password"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'l': // Prefix: "log"
+
+						if l := len("log"); len(elem) >= l && elem[0:l] == "log" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'i': // Prefix: "in"
+
+							if l := len("in"); len(elem) >= l && elem[0:l] == "in" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = LoginOperation
+									r.summary = "Login with credentials"
+									r.operationID = "login"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/auth/login"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'o': // Prefix: "out"
+
+							if l := len("out"); len(elem) >= l && elem[0:l] == "out" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = LogoutOperation
+									r.summary = "Logout"
+									r.operationID = "logout"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/auth/logout"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'r': // Prefix: "re"
+
+						if l := len("re"); len(elem) >= l && elem[0:l] == "re" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'f': // Prefix: "fresh"
+
+							if l := len("fresh"); len(elem) >= l && elem[0:l] == "fresh" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = RefreshTokenOperation
+									r.summary = "Refresh access token"
+									r.operationID = "refreshToken"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/auth/refresh"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'g': // Prefix: "gister"
+
+							if l := len("gister"); len(elem) >= l && elem[0:l] == "gister" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = RegisterOperation
+									r.summary = "Register new user"
+									r.operationID = "register"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/auth/register"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 's': // Prefix: "se"
+
+							if l := len("se"); len(elem) >= l && elem[0:l] == "se" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'n': // Prefix: "nd-verification"
+
+								if l := len("nd-verification"); len(elem) >= l && elem[0:l] == "nd-verification" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = ResendVerificationOperation
+										r.summary = "Resend verification email"
+										r.operationID = "resendVerification"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/auth/resend-verification"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 't': // Prefix: "t-password"
+
+								if l := len("t-password"); len(elem) >= l && elem[0:l] == "t-password" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = ResetPasswordOperation
+										r.summary = "Reset password"
+										r.operationID = "resetPassword"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/auth/reset-password"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						}
+
+					case 'v': // Prefix: "verify-email"
+
+						if l := len("verify-email"); len(elem) >= l && elem[0:l] == "verify-email" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = VerifyEmailOperation
+								r.summary = "Verify email"
+								r.operationID = "verifyEmail"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/auth/verify-email"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
 				case 's': // Prefix: "settings/"
 
 					if l := len("settings/"); len(elem) >= l && elem[0:l] == "settings/" {
