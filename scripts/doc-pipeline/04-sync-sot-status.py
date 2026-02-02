@@ -23,7 +23,6 @@ from pathlib import Path
 
 import yaml
 
-
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
@@ -47,7 +46,6 @@ YAML_TO_SOT_MAP = {
     "Live TV & DVR": "LiveTV",
     "Adult Content System": "QAR Voyages",  # Maps to first row
     "Gallery Module": "QAR Treasures",
-
     # Backend Services (by service name)
     "Authentication Service": "Auth",
     "User Service": "User",
@@ -65,7 +63,6 @@ YAML_TO_SOT_MAP = {
     "Search Service": "Search",
     "Health Service": "Health",
     "Scrobbling Service": "Scrobbling",
-
     # Metadata Providers
     "TMDb Provider": "TMDb",
     "TheTVDB Provider": "TheTVDB",
@@ -76,7 +73,6 @@ YAML_TO_SOT_MAP = {
     "ComicVine Provider": "ComicVine",
     "StashDB Provider": "StashDB",
     "ThePornDB Provider": "ThePornDB",
-
     # Arr Ecosystem
     "Radarr Integration": "Radarr",
     "Sonarr Integration": "Sonarr",
@@ -178,12 +174,14 @@ def parse_markdown_table(content: str, table_start: int) -> tuple[list[dict], in
 
         cols = [col.strip() for col in line.split("|")[1:-1]]
         if len(cols) > status_col_idx:
-            rows.append({
-                "line_num": current_line,
-                "content": line,
-                "columns": cols,
-                "status_col_idx": status_col_idx,
-            })
+            rows.append(
+                {
+                    "line_num": current_line,
+                    "content": line,
+                    "columns": cols,
+                    "status_col_idx": status_col_idx,
+                }
+            )
 
         current_line += 1
 
