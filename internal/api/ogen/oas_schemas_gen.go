@@ -209,6 +209,340 @@ func (s *APIKeyListResponse) SetKeys(val []APIKeyInfo) {
 
 func (*APIKeyListResponse) listAPIKeysRes() {}
 
+// Ref: #/components/schemas/ActionCount
+type ActionCount struct {
+	Action string `json:"action"`
+	Count  int64  `json:"count"`
+}
+
+// GetAction returns the value of Action.
+func (s *ActionCount) GetAction() string {
+	return s.Action
+}
+
+// GetCount returns the value of Count.
+func (s *ActionCount) GetCount() int64 {
+	return s.Count
+}
+
+// SetAction sets the value of Action.
+func (s *ActionCount) SetAction(val string) {
+	s.Action = val
+}
+
+// SetCount sets the value of Count.
+func (s *ActionCount) SetCount(val int64) {
+	s.Count = val
+}
+
+// Ref: #/components/schemas/ActionCountListResponse
+type ActionCountListResponse struct {
+	Actions []ActionCount `json:"actions"`
+}
+
+// GetActions returns the value of Actions.
+func (s *ActionCountListResponse) GetActions() []ActionCount {
+	return s.Actions
+}
+
+// SetActions sets the value of Actions.
+func (s *ActionCountListResponse) SetActions(val []ActionCount) {
+	s.Actions = val
+}
+
+func (*ActionCountListResponse) getRecentActionsRes() {}
+
+// Ref: #/components/schemas/ActivityLogEntry
+type ActivityLogEntry struct {
+	ID       uuid.UUID `json:"id"`
+	UserId   OptUUID   `json:"userId"`
+	Username OptString `json:"username"`
+	// Action type (e.g., user.login, settings.update).
+	Action string `json:"action"`
+	// Resource type (user, library, movie, etc.).
+	ResourceType OptString `json:"resourceType"`
+	ResourceId   OptUUID   `json:"resourceId"`
+	// Field changes as JSON.
+	Changes OptActivityLogEntryChanges `json:"changes"`
+	// Additional context.
+	Metadata     OptActivityLogEntryMetadata `json:"metadata"`
+	IpAddress    OptString                   `json:"ipAddress"`
+	UserAgent    OptString                   `json:"userAgent"`
+	Success      bool                        `json:"success"`
+	ErrorMessage OptString                   `json:"errorMessage"`
+	CreatedAt    time.Time                   `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *ActivityLogEntry) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *ActivityLogEntry) GetUserId() OptUUID {
+	return s.UserId
+}
+
+// GetUsername returns the value of Username.
+func (s *ActivityLogEntry) GetUsername() OptString {
+	return s.Username
+}
+
+// GetAction returns the value of Action.
+func (s *ActivityLogEntry) GetAction() string {
+	return s.Action
+}
+
+// GetResourceType returns the value of ResourceType.
+func (s *ActivityLogEntry) GetResourceType() OptString {
+	return s.ResourceType
+}
+
+// GetResourceId returns the value of ResourceId.
+func (s *ActivityLogEntry) GetResourceId() OptUUID {
+	return s.ResourceId
+}
+
+// GetChanges returns the value of Changes.
+func (s *ActivityLogEntry) GetChanges() OptActivityLogEntryChanges {
+	return s.Changes
+}
+
+// GetMetadata returns the value of Metadata.
+func (s *ActivityLogEntry) GetMetadata() OptActivityLogEntryMetadata {
+	return s.Metadata
+}
+
+// GetIpAddress returns the value of IpAddress.
+func (s *ActivityLogEntry) GetIpAddress() OptString {
+	return s.IpAddress
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *ActivityLogEntry) GetUserAgent() OptString {
+	return s.UserAgent
+}
+
+// GetSuccess returns the value of Success.
+func (s *ActivityLogEntry) GetSuccess() bool {
+	return s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage.
+func (s *ActivityLogEntry) GetErrorMessage() OptString {
+	return s.ErrorMessage
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ActivityLogEntry) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *ActivityLogEntry) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *ActivityLogEntry) SetUserId(val OptUUID) {
+	s.UserId = val
+}
+
+// SetUsername sets the value of Username.
+func (s *ActivityLogEntry) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetAction sets the value of Action.
+func (s *ActivityLogEntry) SetAction(val string) {
+	s.Action = val
+}
+
+// SetResourceType sets the value of ResourceType.
+func (s *ActivityLogEntry) SetResourceType(val OptString) {
+	s.ResourceType = val
+}
+
+// SetResourceId sets the value of ResourceId.
+func (s *ActivityLogEntry) SetResourceId(val OptUUID) {
+	s.ResourceId = val
+}
+
+// SetChanges sets the value of Changes.
+func (s *ActivityLogEntry) SetChanges(val OptActivityLogEntryChanges) {
+	s.Changes = val
+}
+
+// SetMetadata sets the value of Metadata.
+func (s *ActivityLogEntry) SetMetadata(val OptActivityLogEntryMetadata) {
+	s.Metadata = val
+}
+
+// SetIpAddress sets the value of IpAddress.
+func (s *ActivityLogEntry) SetIpAddress(val OptString) {
+	s.IpAddress = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *ActivityLogEntry) SetUserAgent(val OptString) {
+	s.UserAgent = val
+}
+
+// SetSuccess sets the value of Success.
+func (s *ActivityLogEntry) SetSuccess(val bool) {
+	s.Success = val
+}
+
+// SetErrorMessage sets the value of ErrorMessage.
+func (s *ActivityLogEntry) SetErrorMessage(val OptString) {
+	s.ErrorMessage = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ActivityLogEntry) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Field changes as JSON.
+type ActivityLogEntryChanges map[string]jx.Raw
+
+func (s *ActivityLogEntryChanges) init() ActivityLogEntryChanges {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Additional context.
+type ActivityLogEntryMetadata map[string]jx.Raw
+
+func (s *ActivityLogEntryMetadata) init() ActivityLogEntryMetadata {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/ActivityLogListResponse
+type ActivityLogListResponse struct {
+	Entries []ActivityLogEntry `json:"entries"`
+	// Total number of matching entries.
+	Total int64 `json:"total"`
+	// Current page number.
+	Page OptInt `json:"page"`
+	// Number of entries per page.
+	PageSize OptInt `json:"pageSize"`
+}
+
+// GetEntries returns the value of Entries.
+func (s *ActivityLogListResponse) GetEntries() []ActivityLogEntry {
+	return s.Entries
+}
+
+// GetTotal returns the value of Total.
+func (s *ActivityLogListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *ActivityLogListResponse) GetPage() OptInt {
+	return s.Page
+}
+
+// GetPageSize returns the value of PageSize.
+func (s *ActivityLogListResponse) GetPageSize() OptInt {
+	return s.PageSize
+}
+
+// SetEntries sets the value of Entries.
+func (s *ActivityLogListResponse) SetEntries(val []ActivityLogEntry) {
+	s.Entries = val
+}
+
+// SetTotal sets the value of Total.
+func (s *ActivityLogListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *ActivityLogListResponse) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetPageSize sets the value of PageSize.
+func (s *ActivityLogListResponse) SetPageSize(val OptInt) {
+	s.PageSize = val
+}
+
+func (*ActivityLogListResponse) getResourceActivityLogsRes() {}
+func (*ActivityLogListResponse) getUserActivityLogsRes()     {}
+func (*ActivityLogListResponse) searchActivityLogsRes()      {}
+
+// Ref: #/components/schemas/ActivityStats
+type ActivityStats struct {
+	TotalCount   int64       `json:"totalCount"`
+	SuccessCount int64       `json:"successCount"`
+	FailedCount  int64       `json:"failedCount"`
+	OldestEntry  OptDateTime `json:"oldestEntry"`
+	NewestEntry  OptDateTime `json:"newestEntry"`
+}
+
+// GetTotalCount returns the value of TotalCount.
+func (s *ActivityStats) GetTotalCount() int64 {
+	return s.TotalCount
+}
+
+// GetSuccessCount returns the value of SuccessCount.
+func (s *ActivityStats) GetSuccessCount() int64 {
+	return s.SuccessCount
+}
+
+// GetFailedCount returns the value of FailedCount.
+func (s *ActivityStats) GetFailedCount() int64 {
+	return s.FailedCount
+}
+
+// GetOldestEntry returns the value of OldestEntry.
+func (s *ActivityStats) GetOldestEntry() OptDateTime {
+	return s.OldestEntry
+}
+
+// GetNewestEntry returns the value of NewestEntry.
+func (s *ActivityStats) GetNewestEntry() OptDateTime {
+	return s.NewestEntry
+}
+
+// SetTotalCount sets the value of TotalCount.
+func (s *ActivityStats) SetTotalCount(val int64) {
+	s.TotalCount = val
+}
+
+// SetSuccessCount sets the value of SuccessCount.
+func (s *ActivityStats) SetSuccessCount(val int64) {
+	s.SuccessCount = val
+}
+
+// SetFailedCount sets the value of FailedCount.
+func (s *ActivityStats) SetFailedCount(val int64) {
+	s.FailedCount = val
+}
+
+// SetOldestEntry sets the value of OldestEntry.
+func (s *ActivityStats) SetOldestEntry(val OptDateTime) {
+	s.OldestEntry = val
+}
+
+// SetNewestEntry sets the value of NewestEntry.
+func (s *ActivityStats) SetNewestEntry(val OptDateTime) {
+	s.NewestEntry = val
+}
+
+func (*ActivityStats) getActivityStatsRes() {}
+
 type AddPolicyBadRequest Error
 
 func (*AddPolicyBadRequest) addPolicyRes() {}
@@ -225,6 +559,441 @@ func (*AddPolicyForbidden) addPolicyRes() {}
 type AddPolicyUnauthorized Error
 
 func (*AddPolicyUnauthorized) addPolicyRes() {}
+
+type AdminCreateOIDCProviderBadRequest Error
+
+func (*AdminCreateOIDCProviderBadRequest) adminCreateOIDCProviderRes() {}
+
+type AdminCreateOIDCProviderConflict Error
+
+func (*AdminCreateOIDCProviderConflict) adminCreateOIDCProviderRes() {}
+
+type AdminCreateOIDCProviderForbidden Error
+
+func (*AdminCreateOIDCProviderForbidden) adminCreateOIDCProviderRes() {}
+
+type AdminCreateOIDCProviderUnauthorized Error
+
+func (*AdminCreateOIDCProviderUnauthorized) adminCreateOIDCProviderRes() {}
+
+type AdminDeleteOIDCProviderForbidden Error
+
+func (*AdminDeleteOIDCProviderForbidden) adminDeleteOIDCProviderRes() {}
+
+// AdminDeleteOIDCProviderNoContent is response for AdminDeleteOIDCProvider operation.
+type AdminDeleteOIDCProviderNoContent struct{}
+
+func (*AdminDeleteOIDCProviderNoContent) adminDeleteOIDCProviderRes() {}
+
+type AdminDeleteOIDCProviderNotFound Error
+
+func (*AdminDeleteOIDCProviderNotFound) adminDeleteOIDCProviderRes() {}
+
+type AdminDeleteOIDCProviderUnauthorized Error
+
+func (*AdminDeleteOIDCProviderUnauthorized) adminDeleteOIDCProviderRes() {}
+
+type AdminDisableOIDCProviderForbidden Error
+
+func (*AdminDisableOIDCProviderForbidden) adminDisableOIDCProviderRes() {}
+
+// AdminDisableOIDCProviderNoContent is response for AdminDisableOIDCProvider operation.
+type AdminDisableOIDCProviderNoContent struct{}
+
+func (*AdminDisableOIDCProviderNoContent) adminDisableOIDCProviderRes() {}
+
+type AdminDisableOIDCProviderNotFound Error
+
+func (*AdminDisableOIDCProviderNotFound) adminDisableOIDCProviderRes() {}
+
+type AdminDisableOIDCProviderUnauthorized Error
+
+func (*AdminDisableOIDCProviderUnauthorized) adminDisableOIDCProviderRes() {}
+
+type AdminEnableOIDCProviderForbidden Error
+
+func (*AdminEnableOIDCProviderForbidden) adminEnableOIDCProviderRes() {}
+
+// AdminEnableOIDCProviderNoContent is response for AdminEnableOIDCProvider operation.
+type AdminEnableOIDCProviderNoContent struct{}
+
+func (*AdminEnableOIDCProviderNoContent) adminEnableOIDCProviderRes() {}
+
+type AdminEnableOIDCProviderNotFound Error
+
+func (*AdminEnableOIDCProviderNotFound) adminEnableOIDCProviderRes() {}
+
+type AdminEnableOIDCProviderUnauthorized Error
+
+func (*AdminEnableOIDCProviderUnauthorized) adminEnableOIDCProviderRes() {}
+
+type AdminGetOIDCProviderForbidden Error
+
+func (*AdminGetOIDCProviderForbidden) adminGetOIDCProviderRes() {}
+
+type AdminGetOIDCProviderNotFound Error
+
+func (*AdminGetOIDCProviderNotFound) adminGetOIDCProviderRes() {}
+
+type AdminGetOIDCProviderUnauthorized Error
+
+func (*AdminGetOIDCProviderUnauthorized) adminGetOIDCProviderRes() {}
+
+type AdminListOIDCProvidersForbidden Error
+
+func (*AdminListOIDCProvidersForbidden) adminListOIDCProvidersRes() {}
+
+type AdminListOIDCProvidersUnauthorized Error
+
+func (*AdminListOIDCProvidersUnauthorized) adminListOIDCProvidersRes() {}
+
+// Ref: #/components/schemas/AdminOIDCProvider
+type AdminOIDCProvider struct {
+	ID                    uuid.UUID                        `json:"id"`
+	Name                  string                           `json:"name"`
+	DisplayName           string                           `json:"displayName"`
+	ProviderType          AdminOIDCProviderProviderType    `json:"providerType"`
+	IssuerUrl             string                           `json:"issuerUrl"`
+	ClientId              string                           `json:"clientId"`
+	AuthorizationEndpoint OptString                        `json:"authorizationEndpoint"`
+	TokenEndpoint         OptString                        `json:"tokenEndpoint"`
+	UserInfoEndpoint      OptString                        `json:"userInfoEndpoint"`
+	JwksUri               OptString                        `json:"jwksUri"`
+	EndSessionEndpoint    OptString                        `json:"endSessionEndpoint"`
+	Scopes                []string                         `json:"scopes"`
+	ClaimMappings         OptClaimMappings                 `json:"claimMappings"`
+	RoleMappings          OptAdminOIDCProviderRoleMappings `json:"roleMappings"`
+	AutoCreateUsers       bool                             `json:"autoCreateUsers"`
+	UpdateUserInfo        bool                             `json:"updateUserInfo"`
+	AllowLinking          bool                             `json:"allowLinking"`
+	IsEnabled             bool                             `json:"isEnabled"`
+	IsDefault             bool                             `json:"isDefault"`
+	CreatedAt             time.Time                        `json:"createdAt"`
+	UpdatedAt             time.Time                        `json:"updatedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *AdminOIDCProvider) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *AdminOIDCProvider) GetName() string {
+	return s.Name
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *AdminOIDCProvider) GetDisplayName() string {
+	return s.DisplayName
+}
+
+// GetProviderType returns the value of ProviderType.
+func (s *AdminOIDCProvider) GetProviderType() AdminOIDCProviderProviderType {
+	return s.ProviderType
+}
+
+// GetIssuerUrl returns the value of IssuerUrl.
+func (s *AdminOIDCProvider) GetIssuerUrl() string {
+	return s.IssuerUrl
+}
+
+// GetClientId returns the value of ClientId.
+func (s *AdminOIDCProvider) GetClientId() string {
+	return s.ClientId
+}
+
+// GetAuthorizationEndpoint returns the value of AuthorizationEndpoint.
+func (s *AdminOIDCProvider) GetAuthorizationEndpoint() OptString {
+	return s.AuthorizationEndpoint
+}
+
+// GetTokenEndpoint returns the value of TokenEndpoint.
+func (s *AdminOIDCProvider) GetTokenEndpoint() OptString {
+	return s.TokenEndpoint
+}
+
+// GetUserInfoEndpoint returns the value of UserInfoEndpoint.
+func (s *AdminOIDCProvider) GetUserInfoEndpoint() OptString {
+	return s.UserInfoEndpoint
+}
+
+// GetJwksUri returns the value of JwksUri.
+func (s *AdminOIDCProvider) GetJwksUri() OptString {
+	return s.JwksUri
+}
+
+// GetEndSessionEndpoint returns the value of EndSessionEndpoint.
+func (s *AdminOIDCProvider) GetEndSessionEndpoint() OptString {
+	return s.EndSessionEndpoint
+}
+
+// GetScopes returns the value of Scopes.
+func (s *AdminOIDCProvider) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetClaimMappings returns the value of ClaimMappings.
+func (s *AdminOIDCProvider) GetClaimMappings() OptClaimMappings {
+	return s.ClaimMappings
+}
+
+// GetRoleMappings returns the value of RoleMappings.
+func (s *AdminOIDCProvider) GetRoleMappings() OptAdminOIDCProviderRoleMappings {
+	return s.RoleMappings
+}
+
+// GetAutoCreateUsers returns the value of AutoCreateUsers.
+func (s *AdminOIDCProvider) GetAutoCreateUsers() bool {
+	return s.AutoCreateUsers
+}
+
+// GetUpdateUserInfo returns the value of UpdateUserInfo.
+func (s *AdminOIDCProvider) GetUpdateUserInfo() bool {
+	return s.UpdateUserInfo
+}
+
+// GetAllowLinking returns the value of AllowLinking.
+func (s *AdminOIDCProvider) GetAllowLinking() bool {
+	return s.AllowLinking
+}
+
+// GetIsEnabled returns the value of IsEnabled.
+func (s *AdminOIDCProvider) GetIsEnabled() bool {
+	return s.IsEnabled
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *AdminOIDCProvider) GetIsDefault() bool {
+	return s.IsDefault
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *AdminOIDCProvider) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *AdminOIDCProvider) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *AdminOIDCProvider) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *AdminOIDCProvider) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *AdminOIDCProvider) SetDisplayName(val string) {
+	s.DisplayName = val
+}
+
+// SetProviderType sets the value of ProviderType.
+func (s *AdminOIDCProvider) SetProviderType(val AdminOIDCProviderProviderType) {
+	s.ProviderType = val
+}
+
+// SetIssuerUrl sets the value of IssuerUrl.
+func (s *AdminOIDCProvider) SetIssuerUrl(val string) {
+	s.IssuerUrl = val
+}
+
+// SetClientId sets the value of ClientId.
+func (s *AdminOIDCProvider) SetClientId(val string) {
+	s.ClientId = val
+}
+
+// SetAuthorizationEndpoint sets the value of AuthorizationEndpoint.
+func (s *AdminOIDCProvider) SetAuthorizationEndpoint(val OptString) {
+	s.AuthorizationEndpoint = val
+}
+
+// SetTokenEndpoint sets the value of TokenEndpoint.
+func (s *AdminOIDCProvider) SetTokenEndpoint(val OptString) {
+	s.TokenEndpoint = val
+}
+
+// SetUserInfoEndpoint sets the value of UserInfoEndpoint.
+func (s *AdminOIDCProvider) SetUserInfoEndpoint(val OptString) {
+	s.UserInfoEndpoint = val
+}
+
+// SetJwksUri sets the value of JwksUri.
+func (s *AdminOIDCProvider) SetJwksUri(val OptString) {
+	s.JwksUri = val
+}
+
+// SetEndSessionEndpoint sets the value of EndSessionEndpoint.
+func (s *AdminOIDCProvider) SetEndSessionEndpoint(val OptString) {
+	s.EndSessionEndpoint = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *AdminOIDCProvider) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetClaimMappings sets the value of ClaimMappings.
+func (s *AdminOIDCProvider) SetClaimMappings(val OptClaimMappings) {
+	s.ClaimMappings = val
+}
+
+// SetRoleMappings sets the value of RoleMappings.
+func (s *AdminOIDCProvider) SetRoleMappings(val OptAdminOIDCProviderRoleMappings) {
+	s.RoleMappings = val
+}
+
+// SetAutoCreateUsers sets the value of AutoCreateUsers.
+func (s *AdminOIDCProvider) SetAutoCreateUsers(val bool) {
+	s.AutoCreateUsers = val
+}
+
+// SetUpdateUserInfo sets the value of UpdateUserInfo.
+func (s *AdminOIDCProvider) SetUpdateUserInfo(val bool) {
+	s.UpdateUserInfo = val
+}
+
+// SetAllowLinking sets the value of AllowLinking.
+func (s *AdminOIDCProvider) SetAllowLinking(val bool) {
+	s.AllowLinking = val
+}
+
+// SetIsEnabled sets the value of IsEnabled.
+func (s *AdminOIDCProvider) SetIsEnabled(val bool) {
+	s.IsEnabled = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *AdminOIDCProvider) SetIsDefault(val bool) {
+	s.IsDefault = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *AdminOIDCProvider) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *AdminOIDCProvider) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+func (*AdminOIDCProvider) adminCreateOIDCProviderRes() {}
+func (*AdminOIDCProvider) adminGetOIDCProviderRes()    {}
+func (*AdminOIDCProvider) adminUpdateOIDCProviderRes() {}
+
+// Ref: #/components/schemas/AdminOIDCProviderListResponse
+type AdminOIDCProviderListResponse struct {
+	Providers []AdminOIDCProvider `json:"providers"`
+}
+
+// GetProviders returns the value of Providers.
+func (s *AdminOIDCProviderListResponse) GetProviders() []AdminOIDCProvider {
+	return s.Providers
+}
+
+// SetProviders sets the value of Providers.
+func (s *AdminOIDCProviderListResponse) SetProviders(val []AdminOIDCProvider) {
+	s.Providers = val
+}
+
+func (*AdminOIDCProviderListResponse) adminListOIDCProvidersRes() {}
+
+type AdminOIDCProviderProviderType string
+
+const (
+	AdminOIDCProviderProviderTypeGeneric   AdminOIDCProviderProviderType = "generic"
+	AdminOIDCProviderProviderTypeAuthentik AdminOIDCProviderProviderType = "authentik"
+	AdminOIDCProviderProviderTypeKeycloak  AdminOIDCProviderProviderType = "keycloak"
+)
+
+// AllValues returns all AdminOIDCProviderProviderType values.
+func (AdminOIDCProviderProviderType) AllValues() []AdminOIDCProviderProviderType {
+	return []AdminOIDCProviderProviderType{
+		AdminOIDCProviderProviderTypeGeneric,
+		AdminOIDCProviderProviderTypeAuthentik,
+		AdminOIDCProviderProviderTypeKeycloak,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AdminOIDCProviderProviderType) MarshalText() ([]byte, error) {
+	switch s {
+	case AdminOIDCProviderProviderTypeGeneric:
+		return []byte(s), nil
+	case AdminOIDCProviderProviderTypeAuthentik:
+		return []byte(s), nil
+	case AdminOIDCProviderProviderTypeKeycloak:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AdminOIDCProviderProviderType) UnmarshalText(data []byte) error {
+	switch AdminOIDCProviderProviderType(data) {
+	case AdminOIDCProviderProviderTypeGeneric:
+		*s = AdminOIDCProviderProviderTypeGeneric
+		return nil
+	case AdminOIDCProviderProviderTypeAuthentik:
+		*s = AdminOIDCProviderProviderTypeAuthentik
+		return nil
+	case AdminOIDCProviderProviderTypeKeycloak:
+		*s = AdminOIDCProviderProviderTypeKeycloak
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type AdminOIDCProviderRoleMappings map[string]string
+
+func (s *AdminOIDCProviderRoleMappings) init() AdminOIDCProviderRoleMappings {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
+type AdminSetDefaultOIDCProviderForbidden Error
+
+func (*AdminSetDefaultOIDCProviderForbidden) adminSetDefaultOIDCProviderRes() {}
+
+// AdminSetDefaultOIDCProviderNoContent is response for AdminSetDefaultOIDCProvider operation.
+type AdminSetDefaultOIDCProviderNoContent struct{}
+
+func (*AdminSetDefaultOIDCProviderNoContent) adminSetDefaultOIDCProviderRes() {}
+
+type AdminSetDefaultOIDCProviderNotFound Error
+
+func (*AdminSetDefaultOIDCProviderNotFound) adminSetDefaultOIDCProviderRes() {}
+
+type AdminSetDefaultOIDCProviderUnauthorized Error
+
+func (*AdminSetDefaultOIDCProviderUnauthorized) adminSetDefaultOIDCProviderRes() {}
+
+type AdminUpdateOIDCProviderBadRequest Error
+
+func (*AdminUpdateOIDCProviderBadRequest) adminUpdateOIDCProviderRes() {}
+
+type AdminUpdateOIDCProviderForbidden Error
+
+func (*AdminUpdateOIDCProviderForbidden) adminUpdateOIDCProviderRes() {}
+
+type AdminUpdateOIDCProviderNotFound Error
+
+func (*AdminUpdateOIDCProviderNotFound) adminUpdateOIDCProviderRes() {}
+
+type AdminUpdateOIDCProviderUnauthorized Error
+
+func (*AdminUpdateOIDCProviderUnauthorized) adminUpdateOIDCProviderRes() {}
 
 type AssignRoleBadRequest Error
 
@@ -467,6 +1236,70 @@ type ChangePasswordUnauthorized Error
 
 func (*ChangePasswordUnauthorized) changePasswordRes() {}
 
+// Ref: #/components/schemas/ClaimMappings
+type ClaimMappings struct {
+	// Claim path for username.
+	Username OptString `json:"username"`
+	// Claim path for email.
+	Email OptString `json:"email"`
+	// Claim path for display name.
+	Name OptString `json:"name"`
+	// Claim path for avatar URL.
+	Picture OptString `json:"picture"`
+	// Claim path for roles/groups.
+	Roles OptString `json:"roles"`
+}
+
+// GetUsername returns the value of Username.
+func (s *ClaimMappings) GetUsername() OptString {
+	return s.Username
+}
+
+// GetEmail returns the value of Email.
+func (s *ClaimMappings) GetEmail() OptString {
+	return s.Email
+}
+
+// GetName returns the value of Name.
+func (s *ClaimMappings) GetName() OptString {
+	return s.Name
+}
+
+// GetPicture returns the value of Picture.
+func (s *ClaimMappings) GetPicture() OptString {
+	return s.Picture
+}
+
+// GetRoles returns the value of Roles.
+func (s *ClaimMappings) GetRoles() OptString {
+	return s.Roles
+}
+
+// SetUsername sets the value of Username.
+func (s *ClaimMappings) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetEmail sets the value of Email.
+func (s *ClaimMappings) SetEmail(val OptString) {
+	s.Email = val
+}
+
+// SetName sets the value of Name.
+func (s *ClaimMappings) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetPicture sets the value of Picture.
+func (s *ClaimMappings) SetPicture(val OptString) {
+	s.Picture = val
+}
+
+// SetRoles sets the value of Roles.
+func (s *ClaimMappings) SetRoles(val OptString) {
+	s.Roles = val
+}
+
 type CreateAPIKeyBadRequest Error
 
 func (*CreateAPIKeyBadRequest) createAPIKeyRes() {}
@@ -656,6 +1489,294 @@ type CreateAPIKeyUnauthorized Error
 
 func (*CreateAPIKeyUnauthorized) createAPIKeyRes() {}
 
+// Ref: #/components/schemas/CreateOIDCProviderRequest
+type CreateOIDCProviderRequest struct {
+	// Unique provider identifier.
+	Name string `json:"name"`
+	// Display name for UI.
+	DisplayName  string                                   `json:"displayName"`
+	ProviderType OptCreateOIDCProviderRequestProviderType `json:"providerType"`
+	// OIDC issuer URL.
+	IssuerUrl string `json:"issuerUrl"`
+	// OAuth2 client ID.
+	ClientId string `json:"clientId"`
+	// OAuth2 client secret.
+	ClientSecret string `json:"clientSecret"`
+	// Override authorization endpoint.
+	AuthorizationEndpoint OptString `json:"authorizationEndpoint"`
+	// Override token endpoint.
+	TokenEndpoint OptString `json:"tokenEndpoint"`
+	// Override user info endpoint.
+	UserInfoEndpoint OptString `json:"userInfoEndpoint"`
+	// Override JWKS URI.
+	JwksUri OptString `json:"jwksUri"`
+	// Override end session endpoint.
+	EndSessionEndpoint OptString `json:"endSessionEndpoint"`
+	// OAuth scopes (defaults to openid, profile, email).
+	Scopes        []string         `json:"scopes"`
+	ClaimMappings OptClaimMappings `json:"claimMappings"`
+	// Map provider roles to Revenge roles.
+	RoleMappings OptCreateOIDCProviderRequestRoleMappings `json:"roleMappings"`
+	// Create users on first OIDC login.
+	AutoCreateUsers OptBool `json:"autoCreateUsers"`
+	// Update user info on each login.
+	UpdateUserInfo OptBool `json:"updateUserInfo"`
+	// Allow users to link existing accounts.
+	AllowLinking OptBool `json:"allowLinking"`
+	IsEnabled    OptBool `json:"isEnabled"`
+	IsDefault    OptBool `json:"isDefault"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateOIDCProviderRequest) GetName() string {
+	return s.Name
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *CreateOIDCProviderRequest) GetDisplayName() string {
+	return s.DisplayName
+}
+
+// GetProviderType returns the value of ProviderType.
+func (s *CreateOIDCProviderRequest) GetProviderType() OptCreateOIDCProviderRequestProviderType {
+	return s.ProviderType
+}
+
+// GetIssuerUrl returns the value of IssuerUrl.
+func (s *CreateOIDCProviderRequest) GetIssuerUrl() string {
+	return s.IssuerUrl
+}
+
+// GetClientId returns the value of ClientId.
+func (s *CreateOIDCProviderRequest) GetClientId() string {
+	return s.ClientId
+}
+
+// GetClientSecret returns the value of ClientSecret.
+func (s *CreateOIDCProviderRequest) GetClientSecret() string {
+	return s.ClientSecret
+}
+
+// GetAuthorizationEndpoint returns the value of AuthorizationEndpoint.
+func (s *CreateOIDCProviderRequest) GetAuthorizationEndpoint() OptString {
+	return s.AuthorizationEndpoint
+}
+
+// GetTokenEndpoint returns the value of TokenEndpoint.
+func (s *CreateOIDCProviderRequest) GetTokenEndpoint() OptString {
+	return s.TokenEndpoint
+}
+
+// GetUserInfoEndpoint returns the value of UserInfoEndpoint.
+func (s *CreateOIDCProviderRequest) GetUserInfoEndpoint() OptString {
+	return s.UserInfoEndpoint
+}
+
+// GetJwksUri returns the value of JwksUri.
+func (s *CreateOIDCProviderRequest) GetJwksUri() OptString {
+	return s.JwksUri
+}
+
+// GetEndSessionEndpoint returns the value of EndSessionEndpoint.
+func (s *CreateOIDCProviderRequest) GetEndSessionEndpoint() OptString {
+	return s.EndSessionEndpoint
+}
+
+// GetScopes returns the value of Scopes.
+func (s *CreateOIDCProviderRequest) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetClaimMappings returns the value of ClaimMappings.
+func (s *CreateOIDCProviderRequest) GetClaimMappings() OptClaimMappings {
+	return s.ClaimMappings
+}
+
+// GetRoleMappings returns the value of RoleMappings.
+func (s *CreateOIDCProviderRequest) GetRoleMappings() OptCreateOIDCProviderRequestRoleMappings {
+	return s.RoleMappings
+}
+
+// GetAutoCreateUsers returns the value of AutoCreateUsers.
+func (s *CreateOIDCProviderRequest) GetAutoCreateUsers() OptBool {
+	return s.AutoCreateUsers
+}
+
+// GetUpdateUserInfo returns the value of UpdateUserInfo.
+func (s *CreateOIDCProviderRequest) GetUpdateUserInfo() OptBool {
+	return s.UpdateUserInfo
+}
+
+// GetAllowLinking returns the value of AllowLinking.
+func (s *CreateOIDCProviderRequest) GetAllowLinking() OptBool {
+	return s.AllowLinking
+}
+
+// GetIsEnabled returns the value of IsEnabled.
+func (s *CreateOIDCProviderRequest) GetIsEnabled() OptBool {
+	return s.IsEnabled
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *CreateOIDCProviderRequest) GetIsDefault() OptBool {
+	return s.IsDefault
+}
+
+// SetName sets the value of Name.
+func (s *CreateOIDCProviderRequest) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *CreateOIDCProviderRequest) SetDisplayName(val string) {
+	s.DisplayName = val
+}
+
+// SetProviderType sets the value of ProviderType.
+func (s *CreateOIDCProviderRequest) SetProviderType(val OptCreateOIDCProviderRequestProviderType) {
+	s.ProviderType = val
+}
+
+// SetIssuerUrl sets the value of IssuerUrl.
+func (s *CreateOIDCProviderRequest) SetIssuerUrl(val string) {
+	s.IssuerUrl = val
+}
+
+// SetClientId sets the value of ClientId.
+func (s *CreateOIDCProviderRequest) SetClientId(val string) {
+	s.ClientId = val
+}
+
+// SetClientSecret sets the value of ClientSecret.
+func (s *CreateOIDCProviderRequest) SetClientSecret(val string) {
+	s.ClientSecret = val
+}
+
+// SetAuthorizationEndpoint sets the value of AuthorizationEndpoint.
+func (s *CreateOIDCProviderRequest) SetAuthorizationEndpoint(val OptString) {
+	s.AuthorizationEndpoint = val
+}
+
+// SetTokenEndpoint sets the value of TokenEndpoint.
+func (s *CreateOIDCProviderRequest) SetTokenEndpoint(val OptString) {
+	s.TokenEndpoint = val
+}
+
+// SetUserInfoEndpoint sets the value of UserInfoEndpoint.
+func (s *CreateOIDCProviderRequest) SetUserInfoEndpoint(val OptString) {
+	s.UserInfoEndpoint = val
+}
+
+// SetJwksUri sets the value of JwksUri.
+func (s *CreateOIDCProviderRequest) SetJwksUri(val OptString) {
+	s.JwksUri = val
+}
+
+// SetEndSessionEndpoint sets the value of EndSessionEndpoint.
+func (s *CreateOIDCProviderRequest) SetEndSessionEndpoint(val OptString) {
+	s.EndSessionEndpoint = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *CreateOIDCProviderRequest) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetClaimMappings sets the value of ClaimMappings.
+func (s *CreateOIDCProviderRequest) SetClaimMappings(val OptClaimMappings) {
+	s.ClaimMappings = val
+}
+
+// SetRoleMappings sets the value of RoleMappings.
+func (s *CreateOIDCProviderRequest) SetRoleMappings(val OptCreateOIDCProviderRequestRoleMappings) {
+	s.RoleMappings = val
+}
+
+// SetAutoCreateUsers sets the value of AutoCreateUsers.
+func (s *CreateOIDCProviderRequest) SetAutoCreateUsers(val OptBool) {
+	s.AutoCreateUsers = val
+}
+
+// SetUpdateUserInfo sets the value of UpdateUserInfo.
+func (s *CreateOIDCProviderRequest) SetUpdateUserInfo(val OptBool) {
+	s.UpdateUserInfo = val
+}
+
+// SetAllowLinking sets the value of AllowLinking.
+func (s *CreateOIDCProviderRequest) SetAllowLinking(val OptBool) {
+	s.AllowLinking = val
+}
+
+// SetIsEnabled sets the value of IsEnabled.
+func (s *CreateOIDCProviderRequest) SetIsEnabled(val OptBool) {
+	s.IsEnabled = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *CreateOIDCProviderRequest) SetIsDefault(val OptBool) {
+	s.IsDefault = val
+}
+
+type CreateOIDCProviderRequestProviderType string
+
+const (
+	CreateOIDCProviderRequestProviderTypeGeneric   CreateOIDCProviderRequestProviderType = "generic"
+	CreateOIDCProviderRequestProviderTypeAuthentik CreateOIDCProviderRequestProviderType = "authentik"
+	CreateOIDCProviderRequestProviderTypeKeycloak  CreateOIDCProviderRequestProviderType = "keycloak"
+)
+
+// AllValues returns all CreateOIDCProviderRequestProviderType values.
+func (CreateOIDCProviderRequestProviderType) AllValues() []CreateOIDCProviderRequestProviderType {
+	return []CreateOIDCProviderRequestProviderType{
+		CreateOIDCProviderRequestProviderTypeGeneric,
+		CreateOIDCProviderRequestProviderTypeAuthentik,
+		CreateOIDCProviderRequestProviderTypeKeycloak,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateOIDCProviderRequestProviderType) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateOIDCProviderRequestProviderTypeGeneric:
+		return []byte(s), nil
+	case CreateOIDCProviderRequestProviderTypeAuthentik:
+		return []byte(s), nil
+	case CreateOIDCProviderRequestProviderTypeKeycloak:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateOIDCProviderRequestProviderType) UnmarshalText(data []byte) error {
+	switch CreateOIDCProviderRequestProviderType(data) {
+	case CreateOIDCProviderRequestProviderTypeGeneric:
+		*s = CreateOIDCProviderRequestProviderTypeGeneric
+		return nil
+	case CreateOIDCProviderRequestProviderTypeAuthentik:
+		*s = CreateOIDCProviderRequestProviderTypeAuthentik
+		return nil
+	case CreateOIDCProviderRequestProviderTypeKeycloak:
+		*s = CreateOIDCProviderRequestProviderTypeKeycloak
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Map provider roles to Revenge roles.
+type CreateOIDCProviderRequestRoleMappings map[string]string
+
+func (s *CreateOIDCProviderRequestRoleMappings) init() CreateOIDCProviderRequestRoleMappings {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
+
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
 
@@ -716,10 +1837,13 @@ func (*Error) getUserRolesRes()       {}
 func (*Error) listAPIKeysRes()        {}
 func (*Error) listServerSettingsRes() {}
 func (*Error) listSessionsRes()       {}
+func (*Error) listUserOIDCLinksRes()  {}
 func (*Error) listUserSettingsRes()   {}
 func (*Error) logoutAllRes()          {}
 func (*Error) logoutCurrentRes()      {}
 func (*Error) logoutRes()             {}
+func (*Error) oidcAuthorizeRes()      {}
+func (*Error) oidcCallbackRes()       {}
 func (*Error) refreshSessionRes()     {}
 func (*Error) registerRes()           {}
 func (*Error) resendVerificationRes() {}
@@ -793,6 +1917,14 @@ type GetAPIKeyUnauthorized Error
 
 func (*GetAPIKeyUnauthorized) getAPIKeyRes() {}
 
+type GetActivityStatsForbidden Error
+
+func (*GetActivityStatsForbidden) getActivityStatsRes() {}
+
+type GetActivityStatsUnauthorized Error
+
+func (*GetActivityStatsUnauthorized) getActivityStatsRes() {}
+
 type GetCurrentSessionNotFound Error
 
 func (*GetCurrentSessionNotFound) getCurrentSessionRes() {}
@@ -809,6 +1941,26 @@ type GetReadinessServiceUnavailable HealthCheck
 
 func (*GetReadinessServiceUnavailable) getReadinessRes() {}
 
+type GetRecentActionsForbidden Error
+
+func (*GetRecentActionsForbidden) getRecentActionsRes() {}
+
+type GetRecentActionsUnauthorized Error
+
+func (*GetRecentActionsUnauthorized) getRecentActionsRes() {}
+
+type GetResourceActivityLogsForbidden Error
+
+func (*GetResourceActivityLogsForbidden) getResourceActivityLogsRes() {}
+
+type GetResourceActivityLogsNotFound Error
+
+func (*GetResourceActivityLogsNotFound) getResourceActivityLogsRes() {}
+
+type GetResourceActivityLogsUnauthorized Error
+
+func (*GetResourceActivityLogsUnauthorized) getResourceActivityLogsRes() {}
+
 type GetServerSettingNotFound Error
 
 func (*GetServerSettingNotFound) getServerSettingRes() {}
@@ -824,6 +1976,18 @@ func (*GetStartupOK) getStartupRes() {}
 type GetStartupServiceUnavailable HealthCheck
 
 func (*GetStartupServiceUnavailable) getStartupRes() {}
+
+type GetUserActivityLogsForbidden Error
+
+func (*GetUserActivityLogsForbidden) getUserActivityLogsRes() {}
+
+type GetUserActivityLogsNotFound Error
+
+func (*GetUserActivityLogsNotFound) getUserActivityLogsRes() {}
+
+type GetUserActivityLogsUnauthorized Error
+
+func (*GetUserActivityLogsUnauthorized) getUserActivityLogsRes() {}
 
 type GetUserByIdNotFound Error
 
@@ -953,6 +2117,14 @@ func (s *HealthCheckStatus) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+type InitOIDCLinkNotFound Error
+
+func (*InitOIDCLinkNotFound) initOIDCLinkRes() {}
+
+type InitOIDCLinkUnauthorized Error
+
+func (*InitOIDCLinkUnauthorized) initOIDCLinkRes() {}
 
 type ListPoliciesForbidden Error
 
@@ -1114,6 +2286,379 @@ func (s *LogoutRequest) SetLogoutAll(val OptBool) {
 	s.LogoutAll = val
 }
 
+// Ref: #/components/schemas/OIDCAuthURLResponse
+type OIDCAuthURLResponse struct {
+	// URL to redirect for OIDC authentication.
+	AuthUrl string `json:"authUrl"`
+}
+
+// GetAuthUrl returns the value of AuthUrl.
+func (s *OIDCAuthURLResponse) GetAuthUrl() string {
+	return s.AuthUrl
+}
+
+// SetAuthUrl sets the value of AuthUrl.
+func (s *OIDCAuthURLResponse) SetAuthUrl(val string) {
+	s.AuthUrl = val
+}
+
+func (*OIDCAuthURLResponse) initOIDCLinkRes() {}
+
+// Ref: #/components/schemas/OIDCCallbackResponse
+type OIDCCallbackResponse struct {
+	// JWT access token.
+	AccessToken string `json:"accessToken"`
+	// Token type (Bearer).
+	TokenType string `json:"tokenType"`
+	// Token expiry in seconds.
+	ExpiresIn int `json:"expiresIn"`
+	// Refresh token (if issued).
+	RefreshToken OptString `json:"refreshToken"`
+	User         OptUser   `json:"user"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *OIDCCallbackResponse) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetTokenType returns the value of TokenType.
+func (s *OIDCCallbackResponse) GetTokenType() string {
+	return s.TokenType
+}
+
+// GetExpiresIn returns the value of ExpiresIn.
+func (s *OIDCCallbackResponse) GetExpiresIn() int {
+	return s.ExpiresIn
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *OIDCCallbackResponse) GetRefreshToken() OptString {
+	return s.RefreshToken
+}
+
+// GetUser returns the value of User.
+func (s *OIDCCallbackResponse) GetUser() OptUser {
+	return s.User
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *OIDCCallbackResponse) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetTokenType sets the value of TokenType.
+func (s *OIDCCallbackResponse) SetTokenType(val string) {
+	s.TokenType = val
+}
+
+// SetExpiresIn sets the value of ExpiresIn.
+func (s *OIDCCallbackResponse) SetExpiresIn(val int) {
+	s.ExpiresIn = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *OIDCCallbackResponse) SetRefreshToken(val OptString) {
+	s.RefreshToken = val
+}
+
+// SetUser sets the value of User.
+func (s *OIDCCallbackResponse) SetUser(val OptUser) {
+	s.User = val
+}
+
+func (*OIDCCallbackResponse) oidcCallbackRes() {}
+
+// Ref: #/components/schemas/OIDCProviderInfo
+type OIDCProviderInfo struct {
+	// Provider identifier.
+	Name string `json:"name"`
+	// Display name for UI.
+	DisplayName string `json:"displayName"`
+	// Whether this is the default provider.
+	IsDefault OptBool `json:"isDefault"`
+}
+
+// GetName returns the value of Name.
+func (s *OIDCProviderInfo) GetName() string {
+	return s.Name
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *OIDCProviderInfo) GetDisplayName() string {
+	return s.DisplayName
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *OIDCProviderInfo) GetIsDefault() OptBool {
+	return s.IsDefault
+}
+
+// SetName sets the value of Name.
+func (s *OIDCProviderInfo) SetName(val string) {
+	s.Name = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *OIDCProviderInfo) SetDisplayName(val string) {
+	s.DisplayName = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *OIDCProviderInfo) SetIsDefault(val OptBool) {
+	s.IsDefault = val
+}
+
+// Ref: #/components/schemas/OIDCProviderListResponse
+type OIDCProviderListResponse struct {
+	Providers []OIDCProviderInfo `json:"providers"`
+}
+
+// GetProviders returns the value of Providers.
+func (s *OIDCProviderListResponse) GetProviders() []OIDCProviderInfo {
+	return s.Providers
+}
+
+// SetProviders sets the value of Providers.
+func (s *OIDCProviderListResponse) SetProviders(val []OIDCProviderInfo) {
+	s.Providers = val
+}
+
+// Ref: #/components/schemas/OIDCUserLink
+type OIDCUserLink struct {
+	ID                  uuid.UUID   `json:"id"`
+	ProviderName        string      `json:"providerName"`
+	ProviderDisplayName string      `json:"providerDisplayName"`
+	Email               OptString   `json:"email"`
+	LastLoginAt         OptDateTime `json:"lastLoginAt"`
+	LinkedAt            time.Time   `json:"linkedAt"`
+}
+
+// GetID returns the value of ID.
+func (s *OIDCUserLink) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetProviderName returns the value of ProviderName.
+func (s *OIDCUserLink) GetProviderName() string {
+	return s.ProviderName
+}
+
+// GetProviderDisplayName returns the value of ProviderDisplayName.
+func (s *OIDCUserLink) GetProviderDisplayName() string {
+	return s.ProviderDisplayName
+}
+
+// GetEmail returns the value of Email.
+func (s *OIDCUserLink) GetEmail() OptString {
+	return s.Email
+}
+
+// GetLastLoginAt returns the value of LastLoginAt.
+func (s *OIDCUserLink) GetLastLoginAt() OptDateTime {
+	return s.LastLoginAt
+}
+
+// GetLinkedAt returns the value of LinkedAt.
+func (s *OIDCUserLink) GetLinkedAt() time.Time {
+	return s.LinkedAt
+}
+
+// SetID sets the value of ID.
+func (s *OIDCUserLink) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetProviderName sets the value of ProviderName.
+func (s *OIDCUserLink) SetProviderName(val string) {
+	s.ProviderName = val
+}
+
+// SetProviderDisplayName sets the value of ProviderDisplayName.
+func (s *OIDCUserLink) SetProviderDisplayName(val string) {
+	s.ProviderDisplayName = val
+}
+
+// SetEmail sets the value of Email.
+func (s *OIDCUserLink) SetEmail(val OptString) {
+	s.Email = val
+}
+
+// SetLastLoginAt sets the value of LastLoginAt.
+func (s *OIDCUserLink) SetLastLoginAt(val OptDateTime) {
+	s.LastLoginAt = val
+}
+
+// SetLinkedAt sets the value of LinkedAt.
+func (s *OIDCUserLink) SetLinkedAt(val time.Time) {
+	s.LinkedAt = val
+}
+
+// Ref: #/components/schemas/OIDCUserLinkListResponse
+type OIDCUserLinkListResponse struct {
+	Links []OIDCUserLink `json:"links"`
+}
+
+// GetLinks returns the value of Links.
+func (s *OIDCUserLinkListResponse) GetLinks() []OIDCUserLink {
+	return s.Links
+}
+
+// SetLinks sets the value of Links.
+func (s *OIDCUserLinkListResponse) SetLinks(val []OIDCUserLink) {
+	s.Links = val
+}
+
+func (*OIDCUserLinkListResponse) listUserOIDCLinksRes() {}
+
+// OidcAuthorizeFound is response for OidcAuthorize operation.
+type OidcAuthorizeFound struct{}
+
+func (*OidcAuthorizeFound) oidcAuthorizeRes() {}
+
+// OidcCallbackFound is response for OidcCallback operation.
+type OidcCallbackFound struct{}
+
+func (*OidcCallbackFound) oidcCallbackRes() {}
+
+// NewOptActivityLogEntryChanges returns new OptActivityLogEntryChanges with value set to v.
+func NewOptActivityLogEntryChanges(v ActivityLogEntryChanges) OptActivityLogEntryChanges {
+	return OptActivityLogEntryChanges{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptActivityLogEntryChanges is optional ActivityLogEntryChanges.
+type OptActivityLogEntryChanges struct {
+	Value ActivityLogEntryChanges
+	Set   bool
+}
+
+// IsSet returns true if OptActivityLogEntryChanges was set.
+func (o OptActivityLogEntryChanges) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptActivityLogEntryChanges) Reset() {
+	var v ActivityLogEntryChanges
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptActivityLogEntryChanges) SetTo(v ActivityLogEntryChanges) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptActivityLogEntryChanges) Get() (v ActivityLogEntryChanges, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptActivityLogEntryChanges) Or(d ActivityLogEntryChanges) ActivityLogEntryChanges {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptActivityLogEntryMetadata returns new OptActivityLogEntryMetadata with value set to v.
+func NewOptActivityLogEntryMetadata(v ActivityLogEntryMetadata) OptActivityLogEntryMetadata {
+	return OptActivityLogEntryMetadata{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptActivityLogEntryMetadata is optional ActivityLogEntryMetadata.
+type OptActivityLogEntryMetadata struct {
+	Value ActivityLogEntryMetadata
+	Set   bool
+}
+
+// IsSet returns true if OptActivityLogEntryMetadata was set.
+func (o OptActivityLogEntryMetadata) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptActivityLogEntryMetadata) Reset() {
+	var v ActivityLogEntryMetadata
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptActivityLogEntryMetadata) SetTo(v ActivityLogEntryMetadata) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptActivityLogEntryMetadata) Get() (v ActivityLogEntryMetadata, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptActivityLogEntryMetadata) Or(d ActivityLogEntryMetadata) ActivityLogEntryMetadata {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptAdminOIDCProviderRoleMappings returns new OptAdminOIDCProviderRoleMappings with value set to v.
+func NewOptAdminOIDCProviderRoleMappings(v AdminOIDCProviderRoleMappings) OptAdminOIDCProviderRoleMappings {
+	return OptAdminOIDCProviderRoleMappings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAdminOIDCProviderRoleMappings is optional AdminOIDCProviderRoleMappings.
+type OptAdminOIDCProviderRoleMappings struct {
+	Value AdminOIDCProviderRoleMappings
+	Set   bool
+}
+
+// IsSet returns true if OptAdminOIDCProviderRoleMappings was set.
+func (o OptAdminOIDCProviderRoleMappings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAdminOIDCProviderRoleMappings) Reset() {
+	var v AdminOIDCProviderRoleMappings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAdminOIDCProviderRoleMappings) SetTo(v AdminOIDCProviderRoleMappings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAdminOIDCProviderRoleMappings) Get() (v AdminOIDCProviderRoleMappings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAdminOIDCProviderRoleMappings) Or(d AdminOIDCProviderRoleMappings) AdminOIDCProviderRoleMappings {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -1154,6 +2699,144 @@ func (o OptBool) Get() (v bool, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptClaimMappings returns new OptClaimMappings with value set to v.
+func NewOptClaimMappings(v ClaimMappings) OptClaimMappings {
+	return OptClaimMappings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptClaimMappings is optional ClaimMappings.
+type OptClaimMappings struct {
+	Value ClaimMappings
+	Set   bool
+}
+
+// IsSet returns true if OptClaimMappings was set.
+func (o OptClaimMappings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptClaimMappings) Reset() {
+	var v ClaimMappings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptClaimMappings) SetTo(v ClaimMappings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptClaimMappings) Get() (v ClaimMappings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptClaimMappings) Or(d ClaimMappings) ClaimMappings {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateOIDCProviderRequestProviderType returns new OptCreateOIDCProviderRequestProviderType with value set to v.
+func NewOptCreateOIDCProviderRequestProviderType(v CreateOIDCProviderRequestProviderType) OptCreateOIDCProviderRequestProviderType {
+	return OptCreateOIDCProviderRequestProviderType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateOIDCProviderRequestProviderType is optional CreateOIDCProviderRequestProviderType.
+type OptCreateOIDCProviderRequestProviderType struct {
+	Value CreateOIDCProviderRequestProviderType
+	Set   bool
+}
+
+// IsSet returns true if OptCreateOIDCProviderRequestProviderType was set.
+func (o OptCreateOIDCProviderRequestProviderType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateOIDCProviderRequestProviderType) Reset() {
+	var v CreateOIDCProviderRequestProviderType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateOIDCProviderRequestProviderType) SetTo(v CreateOIDCProviderRequestProviderType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateOIDCProviderRequestProviderType) Get() (v CreateOIDCProviderRequestProviderType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateOIDCProviderRequestProviderType) Or(d CreateOIDCProviderRequestProviderType) CreateOIDCProviderRequestProviderType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptCreateOIDCProviderRequestRoleMappings returns new OptCreateOIDCProviderRequestRoleMappings with value set to v.
+func NewOptCreateOIDCProviderRequestRoleMappings(v CreateOIDCProviderRequestRoleMappings) OptCreateOIDCProviderRequestRoleMappings {
+	return OptCreateOIDCProviderRequestRoleMappings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptCreateOIDCProviderRequestRoleMappings is optional CreateOIDCProviderRequestRoleMappings.
+type OptCreateOIDCProviderRequestRoleMappings struct {
+	Value CreateOIDCProviderRequestRoleMappings
+	Set   bool
+}
+
+// IsSet returns true if OptCreateOIDCProviderRequestRoleMappings was set.
+func (o OptCreateOIDCProviderRequestRoleMappings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptCreateOIDCProviderRequestRoleMappings) Reset() {
+	var v CreateOIDCProviderRequestRoleMappings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptCreateOIDCProviderRequestRoleMappings) SetTo(v CreateOIDCProviderRequestRoleMappings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptCreateOIDCProviderRequestRoleMappings) Get() (v CreateOIDCProviderRequestRoleMappings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptCreateOIDCProviderRequestRoleMappings) Or(d CreateOIDCProviderRequestRoleMappings) CreateOIDCProviderRequestRoleMappings {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1510,6 +3193,190 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUUID returns new OptUUID with value set to v.
+func NewOptUUID(v uuid.UUID) OptUUID {
+	return OptUUID{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUUID is optional uuid.UUID.
+type OptUUID struct {
+	Value uuid.UUID
+	Set   bool
+}
+
+// IsSet returns true if OptUUID was set.
+func (o OptUUID) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUUID) Reset() {
+	var v uuid.UUID
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUUID) SetTo(v uuid.UUID) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUUID) Get() (v uuid.UUID, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUUID) Or(d uuid.UUID) uuid.UUID {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUpdateOIDCProviderRequestProviderType returns new OptUpdateOIDCProviderRequestProviderType with value set to v.
+func NewOptUpdateOIDCProviderRequestProviderType(v UpdateOIDCProviderRequestProviderType) OptUpdateOIDCProviderRequestProviderType {
+	return OptUpdateOIDCProviderRequestProviderType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUpdateOIDCProviderRequestProviderType is optional UpdateOIDCProviderRequestProviderType.
+type OptUpdateOIDCProviderRequestProviderType struct {
+	Value UpdateOIDCProviderRequestProviderType
+	Set   bool
+}
+
+// IsSet returns true if OptUpdateOIDCProviderRequestProviderType was set.
+func (o OptUpdateOIDCProviderRequestProviderType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUpdateOIDCProviderRequestProviderType) Reset() {
+	var v UpdateOIDCProviderRequestProviderType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUpdateOIDCProviderRequestProviderType) SetTo(v UpdateOIDCProviderRequestProviderType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUpdateOIDCProviderRequestProviderType) Get() (v UpdateOIDCProviderRequestProviderType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUpdateOIDCProviderRequestProviderType) Or(d UpdateOIDCProviderRequestProviderType) UpdateOIDCProviderRequestProviderType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUpdateOIDCProviderRequestRoleMappings returns new OptUpdateOIDCProviderRequestRoleMappings with value set to v.
+func NewOptUpdateOIDCProviderRequestRoleMappings(v UpdateOIDCProviderRequestRoleMappings) OptUpdateOIDCProviderRequestRoleMappings {
+	return OptUpdateOIDCProviderRequestRoleMappings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUpdateOIDCProviderRequestRoleMappings is optional UpdateOIDCProviderRequestRoleMappings.
+type OptUpdateOIDCProviderRequestRoleMappings struct {
+	Value UpdateOIDCProviderRequestRoleMappings
+	Set   bool
+}
+
+// IsSet returns true if OptUpdateOIDCProviderRequestRoleMappings was set.
+func (o OptUpdateOIDCProviderRequestRoleMappings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUpdateOIDCProviderRequestRoleMappings) Reset() {
+	var v UpdateOIDCProviderRequestRoleMappings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUpdateOIDCProviderRequestRoleMappings) SetTo(v UpdateOIDCProviderRequestRoleMappings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUpdateOIDCProviderRequestRoleMappings) Get() (v UpdateOIDCProviderRequestRoleMappings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUpdateOIDCProviderRequestRoleMappings) Or(d UpdateOIDCProviderRequestRoleMappings) UpdateOIDCProviderRequestRoleMappings {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUser returns new OptUser with value set to v.
+func NewOptUser(v User) OptUser {
+	return OptUser{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUser is optional User.
+type OptUser struct {
+	Value User
+	Set   bool
+}
+
+// IsSet returns true if OptUser was set.
+func (o OptUser) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUser) Reset() {
+	var v User
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUser) SetTo(v User) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUser) Get() (v User, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUser) Or(d User) User {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -2536,6 +4403,14 @@ func (s *RoleListResponse) SetRoles(val []string) {
 
 func (*RoleListResponse) getUserRolesRes() {}
 
+type SearchActivityLogsForbidden Error
+
+func (*SearchActivityLogsForbidden) searchActivityLogsRes() {}
+
+type SearchActivityLogsUnauthorized Error
+
+func (*SearchActivityLogsUnauthorized) searchActivityLogsRes() {}
+
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {
 	// Setting key.
@@ -3079,6 +4954,19 @@ func NewSettingValueValue3SettingValueValue(v SettingValueValue3) SettingValueVa
 
 type SettingValueValue3 struct{}
 
+// UnlinkOIDCProviderNoContent is response for UnlinkOIDCProvider operation.
+type UnlinkOIDCProviderNoContent struct{}
+
+func (*UnlinkOIDCProviderNoContent) unlinkOIDCProviderRes() {}
+
+type UnlinkOIDCProviderNotFound Error
+
+func (*UnlinkOIDCProviderNotFound) unlinkOIDCProviderRes() {}
+
+type UnlinkOIDCProviderUnauthorized Error
+
+func (*UnlinkOIDCProviderUnauthorized) unlinkOIDCProviderRes() {}
+
 type UpdateCurrentUserBadRequest Error
 
 func (*UpdateCurrentUserBadRequest) updateCurrentUserRes() {}
@@ -3086,6 +4974,267 @@ func (*UpdateCurrentUserBadRequest) updateCurrentUserRes() {}
 type UpdateCurrentUserUnauthorized Error
 
 func (*UpdateCurrentUserUnauthorized) updateCurrentUserRes() {}
+
+// Ref: #/components/schemas/UpdateOIDCProviderRequest
+type UpdateOIDCProviderRequest struct {
+	DisplayName           OptString                                `json:"displayName"`
+	ProviderType          OptUpdateOIDCProviderRequestProviderType `json:"providerType"`
+	IssuerUrl             OptString                                `json:"issuerUrl"`
+	ClientId              OptString                                `json:"clientId"`
+	ClientSecret          OptString                                `json:"clientSecret"`
+	AuthorizationEndpoint OptString                                `json:"authorizationEndpoint"`
+	TokenEndpoint         OptString                                `json:"tokenEndpoint"`
+	UserInfoEndpoint      OptString                                `json:"userInfoEndpoint"`
+	JwksUri               OptString                                `json:"jwksUri"`
+	EndSessionEndpoint    OptString                                `json:"endSessionEndpoint"`
+	Scopes                []string                                 `json:"scopes"`
+	ClaimMappings         OptClaimMappings                         `json:"claimMappings"`
+	RoleMappings          OptUpdateOIDCProviderRequestRoleMappings `json:"roleMappings"`
+	AutoCreateUsers       OptBool                                  `json:"autoCreateUsers"`
+	UpdateUserInfo        OptBool                                  `json:"updateUserInfo"`
+	AllowLinking          OptBool                                  `json:"allowLinking"`
+	IsEnabled             OptBool                                  `json:"isEnabled"`
+	IsDefault             OptBool                                  `json:"isDefault"`
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *UpdateOIDCProviderRequest) GetDisplayName() OptString {
+	return s.DisplayName
+}
+
+// GetProviderType returns the value of ProviderType.
+func (s *UpdateOIDCProviderRequest) GetProviderType() OptUpdateOIDCProviderRequestProviderType {
+	return s.ProviderType
+}
+
+// GetIssuerUrl returns the value of IssuerUrl.
+func (s *UpdateOIDCProviderRequest) GetIssuerUrl() OptString {
+	return s.IssuerUrl
+}
+
+// GetClientId returns the value of ClientId.
+func (s *UpdateOIDCProviderRequest) GetClientId() OptString {
+	return s.ClientId
+}
+
+// GetClientSecret returns the value of ClientSecret.
+func (s *UpdateOIDCProviderRequest) GetClientSecret() OptString {
+	return s.ClientSecret
+}
+
+// GetAuthorizationEndpoint returns the value of AuthorizationEndpoint.
+func (s *UpdateOIDCProviderRequest) GetAuthorizationEndpoint() OptString {
+	return s.AuthorizationEndpoint
+}
+
+// GetTokenEndpoint returns the value of TokenEndpoint.
+func (s *UpdateOIDCProviderRequest) GetTokenEndpoint() OptString {
+	return s.TokenEndpoint
+}
+
+// GetUserInfoEndpoint returns the value of UserInfoEndpoint.
+func (s *UpdateOIDCProviderRequest) GetUserInfoEndpoint() OptString {
+	return s.UserInfoEndpoint
+}
+
+// GetJwksUri returns the value of JwksUri.
+func (s *UpdateOIDCProviderRequest) GetJwksUri() OptString {
+	return s.JwksUri
+}
+
+// GetEndSessionEndpoint returns the value of EndSessionEndpoint.
+func (s *UpdateOIDCProviderRequest) GetEndSessionEndpoint() OptString {
+	return s.EndSessionEndpoint
+}
+
+// GetScopes returns the value of Scopes.
+func (s *UpdateOIDCProviderRequest) GetScopes() []string {
+	return s.Scopes
+}
+
+// GetClaimMappings returns the value of ClaimMappings.
+func (s *UpdateOIDCProviderRequest) GetClaimMappings() OptClaimMappings {
+	return s.ClaimMappings
+}
+
+// GetRoleMappings returns the value of RoleMappings.
+func (s *UpdateOIDCProviderRequest) GetRoleMappings() OptUpdateOIDCProviderRequestRoleMappings {
+	return s.RoleMappings
+}
+
+// GetAutoCreateUsers returns the value of AutoCreateUsers.
+func (s *UpdateOIDCProviderRequest) GetAutoCreateUsers() OptBool {
+	return s.AutoCreateUsers
+}
+
+// GetUpdateUserInfo returns the value of UpdateUserInfo.
+func (s *UpdateOIDCProviderRequest) GetUpdateUserInfo() OptBool {
+	return s.UpdateUserInfo
+}
+
+// GetAllowLinking returns the value of AllowLinking.
+func (s *UpdateOIDCProviderRequest) GetAllowLinking() OptBool {
+	return s.AllowLinking
+}
+
+// GetIsEnabled returns the value of IsEnabled.
+func (s *UpdateOIDCProviderRequest) GetIsEnabled() OptBool {
+	return s.IsEnabled
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *UpdateOIDCProviderRequest) GetIsDefault() OptBool {
+	return s.IsDefault
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *UpdateOIDCProviderRequest) SetDisplayName(val OptString) {
+	s.DisplayName = val
+}
+
+// SetProviderType sets the value of ProviderType.
+func (s *UpdateOIDCProviderRequest) SetProviderType(val OptUpdateOIDCProviderRequestProviderType) {
+	s.ProviderType = val
+}
+
+// SetIssuerUrl sets the value of IssuerUrl.
+func (s *UpdateOIDCProviderRequest) SetIssuerUrl(val OptString) {
+	s.IssuerUrl = val
+}
+
+// SetClientId sets the value of ClientId.
+func (s *UpdateOIDCProviderRequest) SetClientId(val OptString) {
+	s.ClientId = val
+}
+
+// SetClientSecret sets the value of ClientSecret.
+func (s *UpdateOIDCProviderRequest) SetClientSecret(val OptString) {
+	s.ClientSecret = val
+}
+
+// SetAuthorizationEndpoint sets the value of AuthorizationEndpoint.
+func (s *UpdateOIDCProviderRequest) SetAuthorizationEndpoint(val OptString) {
+	s.AuthorizationEndpoint = val
+}
+
+// SetTokenEndpoint sets the value of TokenEndpoint.
+func (s *UpdateOIDCProviderRequest) SetTokenEndpoint(val OptString) {
+	s.TokenEndpoint = val
+}
+
+// SetUserInfoEndpoint sets the value of UserInfoEndpoint.
+func (s *UpdateOIDCProviderRequest) SetUserInfoEndpoint(val OptString) {
+	s.UserInfoEndpoint = val
+}
+
+// SetJwksUri sets the value of JwksUri.
+func (s *UpdateOIDCProviderRequest) SetJwksUri(val OptString) {
+	s.JwksUri = val
+}
+
+// SetEndSessionEndpoint sets the value of EndSessionEndpoint.
+func (s *UpdateOIDCProviderRequest) SetEndSessionEndpoint(val OptString) {
+	s.EndSessionEndpoint = val
+}
+
+// SetScopes sets the value of Scopes.
+func (s *UpdateOIDCProviderRequest) SetScopes(val []string) {
+	s.Scopes = val
+}
+
+// SetClaimMappings sets the value of ClaimMappings.
+func (s *UpdateOIDCProviderRequest) SetClaimMappings(val OptClaimMappings) {
+	s.ClaimMappings = val
+}
+
+// SetRoleMappings sets the value of RoleMappings.
+func (s *UpdateOIDCProviderRequest) SetRoleMappings(val OptUpdateOIDCProviderRequestRoleMappings) {
+	s.RoleMappings = val
+}
+
+// SetAutoCreateUsers sets the value of AutoCreateUsers.
+func (s *UpdateOIDCProviderRequest) SetAutoCreateUsers(val OptBool) {
+	s.AutoCreateUsers = val
+}
+
+// SetUpdateUserInfo sets the value of UpdateUserInfo.
+func (s *UpdateOIDCProviderRequest) SetUpdateUserInfo(val OptBool) {
+	s.UpdateUserInfo = val
+}
+
+// SetAllowLinking sets the value of AllowLinking.
+func (s *UpdateOIDCProviderRequest) SetAllowLinking(val OptBool) {
+	s.AllowLinking = val
+}
+
+// SetIsEnabled sets the value of IsEnabled.
+func (s *UpdateOIDCProviderRequest) SetIsEnabled(val OptBool) {
+	s.IsEnabled = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *UpdateOIDCProviderRequest) SetIsDefault(val OptBool) {
+	s.IsDefault = val
+}
+
+type UpdateOIDCProviderRequestProviderType string
+
+const (
+	UpdateOIDCProviderRequestProviderTypeGeneric   UpdateOIDCProviderRequestProviderType = "generic"
+	UpdateOIDCProviderRequestProviderTypeAuthentik UpdateOIDCProviderRequestProviderType = "authentik"
+	UpdateOIDCProviderRequestProviderTypeKeycloak  UpdateOIDCProviderRequestProviderType = "keycloak"
+)
+
+// AllValues returns all UpdateOIDCProviderRequestProviderType values.
+func (UpdateOIDCProviderRequestProviderType) AllValues() []UpdateOIDCProviderRequestProviderType {
+	return []UpdateOIDCProviderRequestProviderType{
+		UpdateOIDCProviderRequestProviderTypeGeneric,
+		UpdateOIDCProviderRequestProviderTypeAuthentik,
+		UpdateOIDCProviderRequestProviderTypeKeycloak,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UpdateOIDCProviderRequestProviderType) MarshalText() ([]byte, error) {
+	switch s {
+	case UpdateOIDCProviderRequestProviderTypeGeneric:
+		return []byte(s), nil
+	case UpdateOIDCProviderRequestProviderTypeAuthentik:
+		return []byte(s), nil
+	case UpdateOIDCProviderRequestProviderTypeKeycloak:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UpdateOIDCProviderRequestProviderType) UnmarshalText(data []byte) error {
+	switch UpdateOIDCProviderRequestProviderType(data) {
+	case UpdateOIDCProviderRequestProviderTypeGeneric:
+		*s = UpdateOIDCProviderRequestProviderTypeGeneric
+		return nil
+	case UpdateOIDCProviderRequestProviderTypeAuthentik:
+		*s = UpdateOIDCProviderRequestProviderTypeAuthentik
+		return nil
+	case UpdateOIDCProviderRequestProviderTypeKeycloak:
+		*s = UpdateOIDCProviderRequestProviderTypeKeycloak
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type UpdateOIDCProviderRequestRoleMappings map[string]string
+
+func (s *UpdateOIDCProviderRequestRoleMappings) init() UpdateOIDCProviderRequestRoleMappings {
+	m := *s
+	if m == nil {
+		m = map[string]string{}
+		*s = m
+	}
+	return m
+}
 
 type UpdateServerSettingBadRequest Error
 

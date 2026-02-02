@@ -5,6 +5,38 @@ type AddPolicyRes interface {
 	addPolicyRes()
 }
 
+type AdminCreateOIDCProviderRes interface {
+	adminCreateOIDCProviderRes()
+}
+
+type AdminDeleteOIDCProviderRes interface {
+	adminDeleteOIDCProviderRes()
+}
+
+type AdminDisableOIDCProviderRes interface {
+	adminDisableOIDCProviderRes()
+}
+
+type AdminEnableOIDCProviderRes interface {
+	adminEnableOIDCProviderRes()
+}
+
+type AdminGetOIDCProviderRes interface {
+	adminGetOIDCProviderRes()
+}
+
+type AdminListOIDCProvidersRes interface {
+	adminListOIDCProvidersRes()
+}
+
+type AdminSetDefaultOIDCProviderRes interface {
+	adminSetDefaultOIDCProviderRes()
+}
+
+type AdminUpdateOIDCProviderRes interface {
+	adminUpdateOIDCProviderRes()
+}
+
 type AssignRoleRes interface {
 	assignRoleRes()
 }
@@ -29,6 +61,10 @@ type GetAPIKeyRes interface {
 	getAPIKeyRes()
 }
 
+type GetActivityStatsRes interface {
+	getActivityStatsRes()
+}
+
 type GetCurrentSessionRes interface {
 	getCurrentSessionRes()
 }
@@ -41,12 +77,24 @@ type GetReadinessRes interface {
 	getReadinessRes()
 }
 
+type GetRecentActionsRes interface {
+	getRecentActionsRes()
+}
+
+type GetResourceActivityLogsRes interface {
+	getResourceActivityLogsRes()
+}
+
 type GetServerSettingRes interface {
 	getServerSettingRes()
 }
 
 type GetStartupRes interface {
 	getStartupRes()
+}
+
+type GetUserActivityLogsRes interface {
+	getUserActivityLogsRes()
 }
 
 type GetUserByIdRes interface {
@@ -65,6 +113,10 @@ type GetUserSettingRes interface {
 	getUserSettingRes()
 }
 
+type InitOIDCLinkRes interface {
+	initOIDCLinkRes()
+}
+
 type ListAPIKeysRes interface {
 	listAPIKeysRes()
 }
@@ -79,6 +131,10 @@ type ListServerSettingsRes interface {
 
 type ListSessionsRes interface {
 	listSessionsRes()
+}
+
+type ListUserOIDCLinksRes interface {
+	listUserOIDCLinksRes()
 }
 
 type ListUserSettingsRes interface {
@@ -99,6 +155,14 @@ type LogoutCurrentRes interface {
 
 type LogoutRes interface {
 	logoutRes()
+}
+
+type OidcAuthorizeRes interface {
+	oidcAuthorizeRes()
+}
+
+type OidcCallbackRes interface {
+	oidcCallbackRes()
 }
 
 type RefreshSessionRes interface {
@@ -135,6 +199,14 @@ type RevokeAPIKeyRes interface {
 
 type RevokeSessionRes interface {
 	revokeSessionRes()
+}
+
+type SearchActivityLogsRes interface {
+	searchActivityLogsRes()
+}
+
+type UnlinkOIDCProviderRes interface {
+	unlinkOIDCProviderRes()
 }
 
 type UpdateCurrentUserRes interface {

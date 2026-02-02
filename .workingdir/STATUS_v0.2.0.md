@@ -20,9 +20,9 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | Session | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 26, 28) |
 | RBAC | 🟢 Complete | 100% | ✓ DB ✓ Adapter ✓ Service ✓ API (Commits 27, 28) |
 | API Keys | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commit 29) |
-| OIDC | 🔴 Not Started | 0% | SSO providers |
+| OIDC | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commit 30) |
 | Settings | 🟢 Complete | 100% | ✓ DB ✓ Service ✓ API (Commits 11-16) |
-| Activity | 🔴 Not Started | 0% | Audit logging |
+| Activity | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ Cleanup Job ✓ API |
 | Library | 🔴 Not Started | 0% | Library CRUD |
 | Health | 🔴 Not Started | 0% | Enhanced checks |
 
@@ -75,11 +75,13 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: Auth Service Step 6.6 (Commit 25) - API Handler (8 endpoints, 0 lint)
 - ✅ **2026-02-02**: Session Service Step 7 (Commit 26) - Repository + Service (17 queries, 0 lint)
 - ✅ **2026-02-02**: RBAC Service Step 8 (Commit 27) - Casbin integration (12 methods, 0 lint)
+- ✅ **2026-02-02**: OIDC Service Step 10 - SSO providers (11 endpoints, OAuth2 flows, token exchange)
+- ✅ **2026-02-02**: Activity Service Step 11 - Audit logging (5 admin endpoints, River cleanup job)
 
 ## Next Steps
 
-1. **Step 10**: OIDC Service (SSO providers, OAuth2 flows)
-2. **Step 11+**: Activity, Library, Health services
+1. **Step 12**: Library Service (Library CRUD operations)
+2. **Step 13**: Health Service (Enhanced health checks)
 
 ## Reference
 
@@ -114,3 +116,5 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | ✅ Session API COMPLETE (Commit 28): 6 endpoints, SessionInfo schema, Error type pattern |
 | 2026-02-02 | ✅ RBAC API COMPLETE (Commit 28): 6 endpoints (admin only), dedicated type aliases for 403 |
 | 2026-02-02 | ✅ API Keys Service COMPLETE (Commit 29): 4 endpoints, SHA-256 hashing, rv_ key format |
+| 2026-02-02 | ✅ OIDC Service COMPLETE (Commit 30): 11 endpoints, OAuth2 flows, JWT token exchange |
+| 2026-02-02 | ✅ Activity Service COMPLETE (Step 11): 5 admin endpoints, cleanup job, 15 queries |

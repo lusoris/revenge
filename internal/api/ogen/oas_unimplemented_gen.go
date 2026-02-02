@@ -22,6 +22,78 @@ func (UnimplementedHandler) AddPolicy(ctx context.Context, req *PolicyRequest) (
 	return r, ht.ErrNotImplemented
 }
 
+// AdminCreateOIDCProvider implements adminCreateOIDCProvider operation.
+//
+// Creates a new OIDC provider configuration.
+//
+// POST /api/v1/admin/oidc/providers
+func (UnimplementedHandler) AdminCreateOIDCProvider(ctx context.Context, req *CreateOIDCProviderRequest) (r AdminCreateOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminDeleteOIDCProvider implements adminDeleteOIDCProvider operation.
+//
+// Deletes an OIDC provider configuration.
+//
+// DELETE /api/v1/admin/oidc/providers/{providerId}
+func (UnimplementedHandler) AdminDeleteOIDCProvider(ctx context.Context, params AdminDeleteOIDCProviderParams) (r AdminDeleteOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
+//
+// Disables an OIDC provider.
+//
+// POST /api/v1/admin/oidc/providers/{providerId}/disable
+func (UnimplementedHandler) AdminDisableOIDCProvider(ctx context.Context, params AdminDisableOIDCProviderParams) (r AdminDisableOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminEnableOIDCProvider implements adminEnableOIDCProvider operation.
+//
+// Enables an OIDC provider.
+//
+// POST /api/v1/admin/oidc/providers/{providerId}/enable
+func (UnimplementedHandler) AdminEnableOIDCProvider(ctx context.Context, params AdminEnableOIDCProviderParams) (r AdminEnableOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminGetOIDCProvider implements adminGetOIDCProvider operation.
+//
+// Returns detailed OIDC provider configuration.
+//
+// GET /api/v1/admin/oidc/providers/{providerId}
+func (UnimplementedHandler) AdminGetOIDCProvider(ctx context.Context, params AdminGetOIDCProviderParams) (r AdminGetOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListOIDCProviders implements adminListOIDCProviders operation.
+//
+// Returns all OIDC providers including disabled ones.
+//
+// GET /api/v1/admin/oidc/providers
+func (UnimplementedHandler) AdminListOIDCProviders(ctx context.Context) (r AdminListOIDCProvidersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminSetDefaultOIDCProvider implements adminSetDefaultOIDCProvider operation.
+//
+// Sets an OIDC provider as the default for SSO.
+//
+// POST /api/v1/admin/oidc/providers/{providerId}/default
+func (UnimplementedHandler) AdminSetDefaultOIDCProvider(ctx context.Context, params AdminSetDefaultOIDCProviderParams) (r AdminSetDefaultOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUpdateOIDCProvider implements adminUpdateOIDCProvider operation.
+//
+// Updates an OIDC provider configuration.
+//
+// PATCH /api/v1/admin/oidc/providers/{providerId}
+func (UnimplementedHandler) AdminUpdateOIDCProvider(ctx context.Context, req *UpdateOIDCProviderRequest, params AdminUpdateOIDCProviderParams) (r AdminUpdateOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AssignRole implements assignRole operation.
 //
 // Assign a role to a user (admin only).
@@ -76,6 +148,15 @@ func (UnimplementedHandler) GetAPIKey(ctx context.Context, params GetAPIKeyParam
 	return r, ht.ErrNotImplemented
 }
 
+// GetActivityStats implements getActivityStats operation.
+//
+// Get activity log statistics.
+//
+// GET /api/v1/admin/activity/stats
+func (UnimplementedHandler) GetActivityStats(ctx context.Context) (r GetActivityStatsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetCurrentSession implements getCurrentSession operation.
 //
 // Get information about the current session.
@@ -116,6 +197,24 @@ func (UnimplementedHandler) GetReadiness(ctx context.Context) (r GetReadinessRes
 	return r, ht.ErrNotImplemented
 }
 
+// GetRecentActions implements getRecentActions operation.
+//
+// Get recent distinct action types for filtering.
+//
+// GET /api/v1/admin/activity/actions
+func (UnimplementedHandler) GetRecentActions(ctx context.Context, params GetRecentActionsParams) (r GetRecentActionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetResourceActivityLogs implements getResourceActivityLogs operation.
+//
+// Get activity logs for a specific resource.
+//
+// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
+func (UnimplementedHandler) GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (r GetResourceActivityLogsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetServerSetting implements getServerSetting operation.
 //
 // Retrieve a specific server setting by key.
@@ -133,6 +232,15 @@ func (UnimplementedHandler) GetServerSetting(ctx context.Context, params GetServ
 //
 // GET /health/startup
 func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserActivityLogs implements getUserActivityLogs operation.
+//
+// Get activity logs for a specific user.
+//
+// GET /api/v1/admin/activity/users/{userId}
+func (UnimplementedHandler) GetUserActivityLogs(ctx context.Context, params GetUserActivityLogsParams) (r GetUserActivityLogsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -172,12 +280,30 @@ func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSe
 	return r, ht.ErrNotImplemented
 }
 
+// InitOIDCLink implements initOIDCLink operation.
+//
+// Initiates the flow to link an OIDC provider to the user's account.
+//
+// POST /api/v1/users/me/oidc/{provider}/link
+func (UnimplementedHandler) InitOIDCLink(ctx context.Context, params InitOIDCLinkParams) (r InitOIDCLinkRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListAPIKeys implements listAPIKeys operation.
 //
 // Get all API keys for the authenticated user.
 //
 // GET /api/v1/apikeys
 func (UnimplementedHandler) ListAPIKeys(ctx context.Context) (r ListAPIKeysRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListOIDCProviders implements listOIDCProviders operation.
+//
+// Returns a list of enabled OIDC providers for login.
+//
+// GET /api/v1/oidc/providers
+func (UnimplementedHandler) ListOIDCProviders(ctx context.Context) (r *OIDCProviderListResponse, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -205,6 +331,15 @@ func (UnimplementedHandler) ListServerSettings(ctx context.Context) (r ListServe
 //
 // GET /api/v1/sessions
 func (UnimplementedHandler) ListSessions(ctx context.Context) (r ListSessionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListUserOIDCLinks implements listUserOIDCLinks operation.
+//
+// Returns all OIDC providers linked to the current user.
+//
+// GET /api/v1/users/me/oidc
+func (UnimplementedHandler) ListUserOIDCLinks(ctx context.Context) (r ListUserOIDCLinksRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -250,6 +385,24 @@ func (UnimplementedHandler) LogoutAll(ctx context.Context) (r LogoutAllRes, _ er
 //
 // DELETE /api/v1/sessions/current
 func (UnimplementedHandler) LogoutCurrent(ctx context.Context) (r LogoutCurrentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// OidcAuthorize implements oidcAuthorize operation.
+//
+// Redirects to the OIDC provider's authorization endpoint.
+//
+// GET /api/v1/oidc/auth/{provider}
+func (UnimplementedHandler) OidcAuthorize(ctx context.Context, params OidcAuthorizeParams) (r OidcAuthorizeRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// OidcCallback implements oidcCallback operation.
+//
+// Handles the OAuth2 callback from OIDC provider.
+//
+// GET /api/v1/oidc/callback/{provider}
+func (UnimplementedHandler) OidcCallback(ctx context.Context, params OidcCallbackParams) (r OidcCallbackRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -331,6 +484,24 @@ func (UnimplementedHandler) RevokeAPIKey(ctx context.Context, params RevokeAPIKe
 //
 // DELETE /api/v1/sessions/{sessionId}
 func (UnimplementedHandler) RevokeSession(ctx context.Context, params RevokeSessionParams) (r RevokeSessionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchActivityLogs implements searchActivityLogs operation.
+//
+// Search and filter activity logs with pagination.
+//
+// GET /api/v1/admin/activity
+func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (r SearchActivityLogsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UnlinkOIDCProvider implements unlinkOIDCProvider operation.
+//
+// Removes the link between user and OIDC provider.
+//
+// DELETE /api/v1/users/me/oidc/{provider}
+func (UnimplementedHandler) UnlinkOIDCProvider(ctx context.Context, params UnlinkOIDCProviderParams) (r UnlinkOIDCProviderRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

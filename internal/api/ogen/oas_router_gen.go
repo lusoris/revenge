@@ -85,6 +85,338 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 					switch elem[0] {
+					case 'd': // Prefix: "dmin/"
+
+						if l := len("dmin/"); len(elem) >= l && elem[0:l] == "dmin/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'a': // Prefix: "activity"
+
+							if l := len("activity"); len(elem) >= l && elem[0:l] == "activity" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleSearchActivityLogsRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "actions"
+
+									if l := len("actions"); len(elem) >= l && elem[0:l] == "actions" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetRecentActionsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'r': // Prefix: "resources/"
+
+									if l := len("resources/"); len(elem) >= l && elem[0:l] == "resources/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "resourceType"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/"
+
+										if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										// Param: "resourceId"
+										// Leaf parameter, slashes are prohibited
+										idx := strings.IndexByte(elem, '/')
+										if idx >= 0 {
+											break
+										}
+										args[1] = elem
+										elem = ""
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetResourceActivityLogsRequest([2]string{
+													args[0],
+													args[1],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									}
+
+								case 's': // Prefix: "stats"
+
+									if l := len("stats"); len(elem) >= l && elem[0:l] == "stats" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetActivityStatsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'u': // Prefix: "users/"
+
+									if l := len("users/"); len(elem) >= l && elem[0:l] == "users/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "userId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[0] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetUserActivityLogsRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
+						case 'o': // Prefix: "oidc/providers"
+
+							if l := len("oidc/providers"); len(elem) >= l && elem[0:l] == "oidc/providers" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleAdminListOIDCProvidersRequest([0]string{}, elemIsEscaped, w, r)
+								case "POST":
+									s.handleAdminCreateOIDCProviderRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET,POST")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "providerId"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[0] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "DELETE":
+										s.handleAdminDeleteOIDCProviderRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									case "GET":
+										s.handleAdminGetOIDCProviderRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									case "PATCH":
+										s.handleAdminUpdateOIDCProviderRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "DELETE,GET,PATCH")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 'd': // Prefix: "d"
+
+										if l := len("d"); len(elem) >= l && elem[0:l] == "d" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											break
+										}
+										switch elem[0] {
+										case 'e': // Prefix: "efault"
+
+											if l := len("efault"); len(elem) >= l && elem[0:l] == "efault" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch r.Method {
+												case "POST":
+													s.handleAdminSetDefaultOIDCProviderRequest([1]string{
+														args[0],
+													}, elemIsEscaped, w, r)
+												default:
+													s.notAllowed(w, r, "POST")
+												}
+
+												return
+											}
+
+										case 'i': // Prefix: "isable"
+
+											if l := len("isable"); len(elem) >= l && elem[0:l] == "isable" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch r.Method {
+												case "POST":
+													s.handleAdminDisableOIDCProviderRequest([1]string{
+														args[0],
+													}, elemIsEscaped, w, r)
+												default:
+													s.notAllowed(w, r, "POST")
+												}
+
+												return
+											}
+
+										}
+
+									case 'e': // Prefix: "enable"
+
+										if l := len("enable"); len(elem) >= l && elem[0:l] == "enable" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleAdminEnableOIDCProviderRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "POST")
+											}
+
+											return
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
 					case 'p': // Prefix: "pikeys"
 
 						if l := len("pikeys"); len(elem) >= l && elem[0:l] == "pikeys" {
@@ -377,6 +709,102 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								return
 							}
 
+						}
+
+					}
+
+				case 'o': // Prefix: "oidc/"
+
+					if l := len("oidc/"); len(elem) >= l && elem[0:l] == "oidc/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'a': // Prefix: "auth/"
+
+						if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "provider"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleOidcAuthorizeRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+
+					case 'c': // Prefix: "callback/"
+
+						if l := len("callback/"); len(elem) >= l && elem[0:l] == "callback/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "provider"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleOidcCallbackRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+
+					case 'p': // Prefix: "providers"
+
+						if l := len("providers"); len(elem) >= l && elem[0:l] == "providers" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleListOIDCProvidersRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
 						}
 
 					}
@@ -813,6 +1241,81 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									return
 								}
 
+							case 'o': // Prefix: "oidc"
+
+								if l := len("oidc"); len(elem) >= l && elem[0:l] == "oidc" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "GET":
+										s.handleListUserOIDCLinksRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "provider"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch r.Method {
+										case "DELETE":
+											s.handleUnlinkOIDCProviderRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "DELETE")
+										}
+
+										return
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/link"
+
+										if l := len("/link"); len(elem) >= l && elem[0:l] == "/link" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleInitOIDCLinkRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "POST")
+											}
+
+											return
+										}
+
+									}
+
+								}
+
 							case 'p': // Prefix: "preferences"
 
 								if l := len("preferences"); len(elem) >= l && elem[0:l] == "preferences" {
@@ -1064,6 +1567,392 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 					switch elem[0] {
+					case 'd': // Prefix: "dmin/"
+
+						if l := len("dmin/"); len(elem) >= l && elem[0:l] == "dmin/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'a': // Prefix: "activity"
+
+							if l := len("activity"); len(elem) >= l && elem[0:l] == "activity" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = SearchActivityLogsOperation
+									r.summary = "Search activity logs (admin)"
+									r.operationID = "searchActivityLogs"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/admin/activity"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "actions"
+
+									if l := len("actions"); len(elem) >= l && elem[0:l] == "actions" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetRecentActionsOperation
+											r.summary = "Get recent action types (admin)"
+											r.operationID = "getRecentActions"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/admin/activity/actions"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "resources/"
+
+									if l := len("resources/"); len(elem) >= l && elem[0:l] == "resources/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "resourceType"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/"
+
+										if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										// Param: "resourceId"
+										// Leaf parameter, slashes are prohibited
+										idx := strings.IndexByte(elem, '/')
+										if idx >= 0 {
+											break
+										}
+										args[1] = elem
+										elem = ""
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetResourceActivityLogsOperation
+												r.summary = "Get resource activity logs (admin)"
+												r.operationID = "getResourceActivityLogs"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/activity/resources/{resourceType}/{resourceId}"
+												r.args = args
+												r.count = 2
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								case 's': // Prefix: "stats"
+
+									if l := len("stats"); len(elem) >= l && elem[0:l] == "stats" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetActivityStatsOperation
+											r.summary = "Get activity statistics (admin)"
+											r.operationID = "getActivityStats"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/admin/activity/stats"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'u': // Prefix: "users/"
+
+									if l := len("users/"); len(elem) >= l && elem[0:l] == "users/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "userId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[0] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetUserActivityLogsOperation
+											r.summary = "Get user activity logs (admin)"
+											r.operationID = "getUserActivityLogs"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/admin/activity/users/{userId}"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							}
+
+						case 'o': // Prefix: "oidc/providers"
+
+							if l := len("oidc/providers"); len(elem) >= l && elem[0:l] == "oidc/providers" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = AdminListOIDCProvidersOperation
+									r.summary = "List all OIDC providers (admin)"
+									r.operationID = "adminListOIDCProviders"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/admin/oidc/providers"
+									r.args = args
+									r.count = 0
+									return r, true
+								case "POST":
+									r.name = AdminCreateOIDCProviderOperation
+									r.summary = "Create OIDC provider (admin)"
+									r.operationID = "adminCreateOIDCProvider"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/admin/oidc/providers"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "providerId"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[0] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch method {
+									case "DELETE":
+										r.name = AdminDeleteOIDCProviderOperation
+										r.summary = "Delete OIDC provider (admin)"
+										r.operationID = "adminDeleteOIDCProvider"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}"
+										r.args = args
+										r.count = 1
+										return r, true
+									case "GET":
+										r.name = AdminGetOIDCProviderOperation
+										r.summary = "Get OIDC provider (admin)"
+										r.operationID = "adminGetOIDCProvider"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}"
+										r.args = args
+										r.count = 1
+										return r, true
+									case "PATCH":
+										r.name = AdminUpdateOIDCProviderOperation
+										r.summary = "Update OIDC provider (admin)"
+										r.operationID = "adminUpdateOIDCProvider"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 'd': // Prefix: "d"
+
+										if l := len("d"); len(elem) >= l && elem[0:l] == "d" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											break
+										}
+										switch elem[0] {
+										case 'e': // Prefix: "efault"
+
+											if l := len("efault"); len(elem) >= l && elem[0:l] == "efault" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch method {
+												case "POST":
+													r.name = AdminSetDefaultOIDCProviderOperation
+													r.summary = "Set default OIDC provider (admin)"
+													r.operationID = "adminSetDefaultOIDCProvider"
+													r.operationGroup = ""
+													r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}/default"
+													r.args = args
+													r.count = 1
+													return r, true
+												default:
+													return
+												}
+											}
+
+										case 'i': // Prefix: "isable"
+
+											if l := len("isable"); len(elem) >= l && elem[0:l] == "isable" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch method {
+												case "POST":
+													r.name = AdminDisableOIDCProviderOperation
+													r.summary = "Disable OIDC provider (admin)"
+													r.operationID = "adminDisableOIDCProvider"
+													r.operationGroup = ""
+													r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}/disable"
+													r.args = args
+													r.count = 1
+													return r, true
+												default:
+													return
+												}
+											}
+
+										}
+
+									case 'e': // Prefix: "enable"
+
+										if l := len("enable"); len(elem) >= l && elem[0:l] == "enable" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = AdminEnableOIDCProviderOperation
+												r.summary = "Enable OIDC provider (admin)"
+												r.operationID = "adminEnableOIDCProvider"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/oidc/providers/{providerId}/enable"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
 					case 'p': // Prefix: "pikeys"
 
 						if l := len("pikeys"); len(elem) >= l && elem[0:l] == "pikeys" {
@@ -1421,6 +2310,113 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								}
 							}
 
+						}
+
+					}
+
+				case 'o': // Prefix: "oidc/"
+
+					if l := len("oidc/"); len(elem) >= l && elem[0:l] == "oidc/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'a': // Prefix: "auth/"
+
+						if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "provider"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = OidcAuthorizeOperation
+								r.summary = "Initiate OIDC login"
+								r.operationID = "oidcAuthorize"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/oidc/auth/{provider}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'c': // Prefix: "callback/"
+
+						if l := len("callback/"); len(elem) >= l && elem[0:l] == "callback/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "provider"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = OidcCallbackOperation
+								r.summary = "Handle OIDC callback"
+								r.operationID = "oidcCallback"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/oidc/callback/{provider}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'p': // Prefix: "providers"
+
+						if l := len("providers"); len(elem) >= l && elem[0:l] == "providers" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = ListOIDCProvidersOperation
+								r.summary = "List enabled OIDC providers"
+								r.operationID = "listOIDCProviders"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/oidc/providers"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
 						}
 
 					}
@@ -1964,6 +2960,92 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									default:
 										return
 									}
+								}
+
+							case 'o': // Prefix: "oidc"
+
+								if l := len("oidc"); len(elem) >= l && elem[0:l] == "oidc" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch method {
+									case "GET":
+										r.name = ListUserOIDCLinksOperation
+										r.summary = "List user's OIDC links"
+										r.operationID = "listUserOIDCLinks"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/users/me/oidc"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "provider"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch method {
+										case "DELETE":
+											r.name = UnlinkOIDCProviderOperation
+											r.summary = "Unlink OIDC provider"
+											r.operationID = "unlinkOIDCProvider"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/users/me/oidc/{provider}"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/link"
+
+										if l := len("/link"); len(elem) >= l && elem[0:l] == "/link" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = InitOIDCLinkOperation
+												r.summary = "Start linking OIDC provider"
+												r.operationID = "initOIDCLink"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/users/me/oidc/{provider}/link"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
 								}
 
 							case 'p': // Prefix: "preferences"

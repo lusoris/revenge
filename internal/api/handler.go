@@ -9,8 +9,10 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
@@ -29,6 +31,8 @@ type Handler struct {
 	sessionService  *session.Service
 	rbacService     *rbac.Service
 	apikeyService   *apikeys.Service
+	oidcService     *oidc.Service
+	activityService *activity.Service
 	tokenManager    auth.TokenManager
 }
 
@@ -313,6 +317,24 @@ func (h *Handler) getUserID(ctx context.Context) (uuid.UUID, bool) {
 func (h *Handler) getSessionID(ctx context.Context) (uuid.UUID, bool) {
 	sessionID, ok := ctx.Value(sessionIDKey).(uuid.UUID)
 	return sessionID, ok
+}
+
+// isAdmin checks if the current user has admin role via RBAC service.
+func (h *Handler) isAdmin(ctx context.Context) bool {
+	userID, ok := h.getUserID(ctx)
+	if !ok {
+		return false
+	}
+	roles, err := h.rbacService.GetUserRoles(ctx, userID)
+	if err != nil {
+		return false
+	}
+	for _, r := range roles {
+		if r == "admin" {
+			return true
+		}
+	}
+	return false
 }
 
 func stringPtrToString(s *string) string {

@@ -15,15 +15,39 @@ import (
 type Querier interface {
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
+	// Count total activity logs
+	CountActivityLogs(ctx context.Context) (int64, error)
+	// Count activity logs for a specific resource
+	CountResourceActivityLogs(ctx context.Context, arg CountResourceActivityLogsParams) (int64, error)
+	// Count activity logs matching search filters
+	CountSearchActivityLogs(ctx context.Context, arg CountSearchActivityLogsParams) (int64, error)
 	CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64, error)
+	// Count activity logs for a specific user
+	CountUserActivityLogs(ctx context.Context, userID pgtype.UUID) (int64, error)
+	// Counts how many OIDC providers a user is linked to
+	CountUserOIDCLinks(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count users matching filters
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
 	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (SharedApiKey, error)
+	// Insert a new activity log entry
+	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
 	CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error)
 	// Upload a new avatar (sets it as current)
 	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
 	// Email Verification Tokens
 	CreateEmailVerificationToken(ctx context.Context, arg CreateEmailVerificationTokenParams) (SharedEmailVerificationToken, error)
+	// Creates a new OIDC provider configuration
+	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (SharedOidcProvider, error)
+	// ============================================================================
+	// OIDC States (OAuth2 flow)
+	// ============================================================================
+	// Creates a new OAuth2 state for the auth flow
+	CreateOIDCState(ctx context.Context, arg CreateOIDCStateParams) (SharedOidcState, error)
+	// ============================================================================
+	// OIDC User Links
+	// ============================================================================
+	// Links a user to an OIDC provider
+	CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLinkParams) (SharedOidcUserLink, error)
 	// Password Reset Tokens
 	CreatePasswordResetToken(ctx context.Context, arg CreatePasswordResetTokenParams) (SharedPasswordResetToken, error)
 	// Create a new server setting
@@ -43,8 +67,22 @@ type Querier interface {
 	DeleteExpiredAPIKeys(ctx context.Context) error
 	DeleteExpiredAuthTokens(ctx context.Context) error
 	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
+	// Cleans up expired OAuth2 states
+	DeleteExpiredOIDCStates(ctx context.Context) (int64, error)
 	DeleteExpiredPasswordResetTokens(ctx context.Context) error
 	DeleteExpiredSessions(ctx context.Context) error
+	// Deletes an OIDC provider
+	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
+	// Deletes an OAuth2 state (after use or expiration)
+	DeleteOIDCState(ctx context.Context, state string) error
+	// Deletes all states for a provider (when disabling)
+	DeleteOIDCStatesByProvider(ctx context.Context, providerID uuid.UUID) error
+	// Unlinks a user from an OIDC provider
+	DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error
+	// Unlinks a user from an OIDC provider by user and provider ID
+	DeleteOIDCUserLinkByUserAndProvider(ctx context.Context, arg DeleteOIDCUserLinkByUserAndProviderParams) error
+	// Delete activity logs older than a specific date (for cleanup job)
+	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) (int64, error)
 	DeleteRevokedAuthTokens(ctx context.Context) error
 	DeleteRevokedSessions(ctx context.Context) error
 	// Delete a server setting
@@ -57,12 +95,24 @@ type Querier interface {
 	// Delete a user setting
 	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
 	DeleteVerifiedEmailTokens(ctx context.Context) error
+	// Disables an OIDC provider
+	DisableOIDCProvider(ctx context.Context, id uuid.UUID) error
+	// Enables an OIDC provider
+	EnableOIDCProvider(ctx context.Context, id uuid.UUID) error
 	GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error)
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (SharedApiKey, error)
 	// This is a placeholder - actual usage tracking would be in a separate table
 	// For now, we just return last_used_at
 	GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
+	// Get a single activity log entry by ID
+	GetActivityLog(ctx context.Context, id uuid.UUID) (ActivityLog, error)
+	// Get activity log statistics
+	GetActivityLogStats(ctx context.Context) (GetActivityLogStatsRow, error)
+	// Get activity logs by action type
+	GetActivityLogsByAction(ctx context.Context, arg GetActivityLogsByActionParams) ([]ActivityLog, error)
+	// Get activity logs from a specific IP address
+	GetActivityLogsByIP(ctx context.Context, arg GetActivityLogsByIPParams) ([]ActivityLog, error)
 	GetAuthTokenByHash(ctx context.Context, tokenHash string) (SharedAuthToken, error)
 	GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetAuthTokensByDeviceFingerprintParams) ([]SharedAuthToken, error)
 	GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) ([]SharedAuthToken, error)
@@ -73,17 +123,41 @@ type Querier interface {
 	// ============================================================================
 	// Get the current avatar for a user
 	GetCurrentAvatar(ctx context.Context, userID uuid.UUID) (SharedUserAvatar, error)
+	// Gets the default OIDC provider
+	GetDefaultOIDCProvider(ctx context.Context) (SharedOidcProvider, error)
 	GetEmailVerificationToken(ctx context.Context, tokenHash string) (SharedEmailVerificationToken, error)
+	// Get failed activity logs (for monitoring)
+	GetFailedActivityLogs(ctx context.Context, arg GetFailedActivityLogsParams) ([]ActivityLog, error)
 	// Sessions that haven't been active for N hours
 	GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]SharedSession, error)
 	// Get the latest avatar version number for a user
 	GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) (int32, error)
+	// Gets an OIDC provider by ID
+	GetOIDCProvider(ctx context.Context, id uuid.UUID) (SharedOidcProvider, error)
+	// Gets an OIDC provider by name
+	GetOIDCProviderByName(ctx context.Context, name string) (SharedOidcProvider, error)
+	// Gets an OAuth2 state by state token
+	GetOIDCState(ctx context.Context, state string) (SharedOidcState, error)
+	// Gets a user link by ID
+	GetOIDCUserLink(ctx context.Context, id uuid.UUID) (SharedOidcUserLink, error)
+	// Gets a user link by provider and subject
+	GetOIDCUserLinkBySubject(ctx context.Context, arg GetOIDCUserLinkBySubjectParams) (SharedOidcUserLink, error)
+	// Gets a user link by user and provider
+	GetOIDCUserLinkByUserAndProvider(ctx context.Context, arg GetOIDCUserLinkByUserAndProviderParams) (SharedOidcUserLink, error)
+	// Count activity logs older than a specific date (for dry-run)
+	GetOldActivityLogsCount(ctx context.Context, createdAt time.Time) (int64, error)
 	GetPasswordResetToken(ctx context.Context, tokenHash string) (SharedPasswordResetToken, error)
+	// Get recent distinct actions (for autocomplete/filtering)
+	GetRecentActions(ctx context.Context, limit int32) ([]GetRecentActionsRow, error)
+	// Get activity logs for a specific resource
+	GetResourceActivityLogs(ctx context.Context, arg GetResourceActivityLogsParams) ([]ActivityLog, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
 	GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSession, error)
 	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash *string) (SharedSession, error)
 	GetSessionByTokenHash(ctx context.Context, tokenHash string) (SharedSession, error)
+	// Get activity logs for a specific user
+	GetUserActivityLogs(ctx context.Context, arg GetUserActivityLogsParams) ([]ActivityLog, error)
 	// Get a user by email
 	GetUserByEmail(ctx context.Context, email string) (SharedUser, error)
 	// Get a user by their UUID
@@ -108,8 +182,14 @@ type Querier interface {
 	InvalidateUserEmailVerificationTokens(ctx context.Context, userID uuid.UUID) error
 	InvalidateUserPasswordResetTokens(ctx context.Context, userID uuid.UUID) error
 	ListActiveUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]SharedApiKey, error)
+	// List activity logs with pagination, ordered by created_at DESC
+	ListActivityLogs(ctx context.Context, arg ListActivityLogsParams) ([]ActivityLog, error)
 	// Includes expired but not revoked sessions (for user to see full history)
 	ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
+	// Lists all enabled OIDC providers
+	ListEnabledOIDCProviders(ctx context.Context) ([]SharedOidcProvider, error)
+	// Lists all OIDC providers
+	ListOIDCProviders(ctx context.Context) ([]SharedOidcProvider, error)
 	// Get public settings (exposed in API)
 	ListPublicServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get all server settings
@@ -119,6 +199,8 @@ type Querier interface {
 	ListUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]SharedApiKey, error)
 	// List all avatars for a user (for history)
 	ListUserAvatars(ctx context.Context, arg ListUserAvatarsParams) ([]SharedUserAvatar, error)
+	// Lists all OIDC links for a user
+	ListUserOIDCLinks(ctx context.Context, userID uuid.UUID) ([]ListUserOIDCLinksRow, error)
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
 	// Get all settings for a user
 	ListUserSettings(ctx context.Context, userID uuid.UUID) ([]SharedUserSetting, error)
@@ -138,8 +220,12 @@ type Querier interface {
 	RevokeInactiveSessions(ctx context.Context, inactiveSince time.Time) error
 	RevokeSession(ctx context.Context, arg RevokeSessionParams) error
 	RevokeSessionByTokenHash(ctx context.Context, arg RevokeSessionByTokenHashParams) error
+	// Search activity logs with optional filters
+	SearchActivityLogs(ctx context.Context, arg SearchActivityLogsParams) ([]ActivityLog, error)
 	// Set an existing avatar as current
 	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
+	// Sets a provider as default (clears other defaults first)
+	SetDefaultOIDCProvider(ctx context.Context) error
 	// Mark all user's avatars as not current (before setting a new current)
 	UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) error
 	UpdateAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error
@@ -147,6 +233,12 @@ type Querier interface {
 	UpdateAuthTokenLastUsed(ctx context.Context, id uuid.UUID) error
 	// Update user last login timestamp
 	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
+	// Updates an OIDC provider
+	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (SharedOidcProvider, error)
+	// Updates a user link (tokens, user info)
+	UpdateOIDCUserLink(ctx context.Context, arg UpdateOIDCUserLinkParams) (SharedOidcUserLink, error)
+	// Updates the last login timestamp
+	UpdateOIDCUserLinkLastLogin(ctx context.Context, id uuid.UUID) error
 	// Update user password hash
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	// Update a server setting value

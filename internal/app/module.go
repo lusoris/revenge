@@ -10,8 +10,10 @@ import (
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
@@ -39,6 +41,8 @@ var Module = fx.Module("app",
 	session.Module,
 	rbac.Module,
 	apikeys.Module,
+	oidc.Module,
+	activity.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,

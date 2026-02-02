@@ -14,6 +14,54 @@ type Handler interface {
 	//
 	// POST /api/v1/rbac/policies
 	AddPolicy(ctx context.Context, req *PolicyRequest) (AddPolicyRes, error)
+	// AdminCreateOIDCProvider implements adminCreateOIDCProvider operation.
+	//
+	// Creates a new OIDC provider configuration.
+	//
+	// POST /api/v1/admin/oidc/providers
+	AdminCreateOIDCProvider(ctx context.Context, req *CreateOIDCProviderRequest) (AdminCreateOIDCProviderRes, error)
+	// AdminDeleteOIDCProvider implements adminDeleteOIDCProvider operation.
+	//
+	// Deletes an OIDC provider configuration.
+	//
+	// DELETE /api/v1/admin/oidc/providers/{providerId}
+	AdminDeleteOIDCProvider(ctx context.Context, params AdminDeleteOIDCProviderParams) (AdminDeleteOIDCProviderRes, error)
+	// AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
+	//
+	// Disables an OIDC provider.
+	//
+	// POST /api/v1/admin/oidc/providers/{providerId}/disable
+	AdminDisableOIDCProvider(ctx context.Context, params AdminDisableOIDCProviderParams) (AdminDisableOIDCProviderRes, error)
+	// AdminEnableOIDCProvider implements adminEnableOIDCProvider operation.
+	//
+	// Enables an OIDC provider.
+	//
+	// POST /api/v1/admin/oidc/providers/{providerId}/enable
+	AdminEnableOIDCProvider(ctx context.Context, params AdminEnableOIDCProviderParams) (AdminEnableOIDCProviderRes, error)
+	// AdminGetOIDCProvider implements adminGetOIDCProvider operation.
+	//
+	// Returns detailed OIDC provider configuration.
+	//
+	// GET /api/v1/admin/oidc/providers/{providerId}
+	AdminGetOIDCProvider(ctx context.Context, params AdminGetOIDCProviderParams) (AdminGetOIDCProviderRes, error)
+	// AdminListOIDCProviders implements adminListOIDCProviders operation.
+	//
+	// Returns all OIDC providers including disabled ones.
+	//
+	// GET /api/v1/admin/oidc/providers
+	AdminListOIDCProviders(ctx context.Context) (AdminListOIDCProvidersRes, error)
+	// AdminSetDefaultOIDCProvider implements adminSetDefaultOIDCProvider operation.
+	//
+	// Sets an OIDC provider as the default for SSO.
+	//
+	// POST /api/v1/admin/oidc/providers/{providerId}/default
+	AdminSetDefaultOIDCProvider(ctx context.Context, params AdminSetDefaultOIDCProviderParams) (AdminSetDefaultOIDCProviderRes, error)
+	// AdminUpdateOIDCProvider implements adminUpdateOIDCProvider operation.
+	//
+	// Updates an OIDC provider configuration.
+	//
+	// PATCH /api/v1/admin/oidc/providers/{providerId}
+	AdminUpdateOIDCProvider(ctx context.Context, req *UpdateOIDCProviderRequest, params AdminUpdateOIDCProviderParams) (AdminUpdateOIDCProviderRes, error)
 	// AssignRole implements assignRole operation.
 	//
 	// Assign a role to a user (admin only).
@@ -50,6 +98,12 @@ type Handler interface {
 	//
 	// GET /api/v1/apikeys/{keyId}
 	GetAPIKey(ctx context.Context, params GetAPIKeyParams) (GetAPIKeyRes, error)
+	// GetActivityStats implements getActivityStats operation.
+	//
+	// Get activity log statistics.
+	//
+	// GET /api/v1/admin/activity/stats
+	GetActivityStats(ctx context.Context) (GetActivityStatsRes, error)
 	// GetCurrentSession implements getCurrentSession operation.
 	//
 	// Get information about the current session.
@@ -78,6 +132,18 @@ type Handler interface {
 	//
 	// GET /health/ready
 	GetReadiness(ctx context.Context) (GetReadinessRes, error)
+	// GetRecentActions implements getRecentActions operation.
+	//
+	// Get recent distinct action types for filtering.
+	//
+	// GET /api/v1/admin/activity/actions
+	GetRecentActions(ctx context.Context, params GetRecentActionsParams) (GetRecentActionsRes, error)
+	// GetResourceActivityLogs implements getResourceActivityLogs operation.
+	//
+	// Get activity logs for a specific resource.
+	//
+	// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
+	GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (GetResourceActivityLogsRes, error)
 	// GetServerSetting implements getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -92,6 +158,12 @@ type Handler interface {
 	//
 	// GET /health/startup
 	GetStartup(ctx context.Context) (GetStartupRes, error)
+	// GetUserActivityLogs implements getUserActivityLogs operation.
+	//
+	// Get activity logs for a specific user.
+	//
+	// GET /api/v1/admin/activity/users/{userId}
+	GetUserActivityLogs(ctx context.Context, params GetUserActivityLogsParams) (GetUserActivityLogsRes, error)
 	// GetUserById implements getUserById operation.
 	//
 	// Get a user's public profile information.
@@ -116,12 +188,24 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// InitOIDCLink implements initOIDCLink operation.
+	//
+	// Initiates the flow to link an OIDC provider to the user's account.
+	//
+	// POST /api/v1/users/me/oidc/{provider}/link
+	InitOIDCLink(ctx context.Context, params InitOIDCLinkParams) (InitOIDCLinkRes, error)
 	// ListAPIKeys implements listAPIKeys operation.
 	//
 	// Get all API keys for the authenticated user.
 	//
 	// GET /api/v1/apikeys
 	ListAPIKeys(ctx context.Context) (ListAPIKeysRes, error)
+	// ListOIDCProviders implements listOIDCProviders operation.
+	//
+	// Returns a list of enabled OIDC providers for login.
+	//
+	// GET /api/v1/oidc/providers
+	ListOIDCProviders(ctx context.Context) (*OIDCProviderListResponse, error)
 	// ListPolicies implements listPolicies operation.
 	//
 	// Get all authorization policies (admin only).
@@ -140,6 +224,12 @@ type Handler interface {
 	//
 	// GET /api/v1/sessions
 	ListSessions(ctx context.Context) (ListSessionsRes, error)
+	// ListUserOIDCLinks implements listUserOIDCLinks operation.
+	//
+	// Returns all OIDC providers linked to the current user.
+	//
+	// GET /api/v1/users/me/oidc
+	ListUserOIDCLinks(ctx context.Context) (ListUserOIDCLinksRes, error)
 	// ListUserSettings implements listUserSettings operation.
 	//
 	// Retrieve all settings for the authenticated user.
@@ -170,6 +260,18 @@ type Handler interface {
 	//
 	// DELETE /api/v1/sessions/current
 	LogoutCurrent(ctx context.Context) (LogoutCurrentRes, error)
+	// OidcAuthorize implements oidcAuthorize operation.
+	//
+	// Redirects to the OIDC provider's authorization endpoint.
+	//
+	// GET /api/v1/oidc/auth/{provider}
+	OidcAuthorize(ctx context.Context, params OidcAuthorizeParams) (OidcAuthorizeRes, error)
+	// OidcCallback implements oidcCallback operation.
+	//
+	// Handles the OAuth2 callback from OIDC provider.
+	//
+	// GET /api/v1/oidc/callback/{provider}
+	OidcCallback(ctx context.Context, params OidcCallbackParams) (OidcCallbackRes, error)
 	// RefreshSession implements refreshSession operation.
 	//
 	// Refresh access token using refresh token.
@@ -224,6 +326,18 @@ type Handler interface {
 	//
 	// DELETE /api/v1/sessions/{sessionId}
 	RevokeSession(ctx context.Context, params RevokeSessionParams) (RevokeSessionRes, error)
+	// SearchActivityLogs implements searchActivityLogs operation.
+	//
+	// Search and filter activity logs with pagination.
+	//
+	// GET /api/v1/admin/activity
+	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// UnlinkOIDCProvider implements unlinkOIDCProvider operation.
+	//
+	// Removes the link between user and OIDC provider.
+	//
+	// DELETE /api/v1/users/me/oidc/{provider}
+	UnlinkOIDCProvider(ctx context.Context, params UnlinkOIDCProviderParams) (UnlinkOIDCProviderRes, error)
 	// UpdateCurrentUser implements updateCurrentUser operation.
 	//
 	// Update the authenticated user's profile.

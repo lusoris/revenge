@@ -28,6 +28,34 @@ func encodeAddPolicyRequest(
 	return nil
 }
 
+func encodeAdminCreateOIDCProviderRequest(
+	req *CreateOIDCProviderRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeAdminUpdateOIDCProviderRequest(
+	req *UpdateOIDCProviderRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeAssignRoleRequest(
 	req *AssignRoleRequest,
 	r *http.Request,

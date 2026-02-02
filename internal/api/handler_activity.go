@@ -1,0 +1,304 @@
+package api
+
+import (
+	"context"
+	"encoding/json"
+
+	"github.com/go-faster/jx"
+	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/service/activity"
+	"go.uber.org/zap"
+)
+
+// ============================================================================
+// Activity Log Admin Endpoints (Admin only)
+// ============================================================================
+
+// SearchActivityLogs searches and filters activity logs with pagination.
+// GET /api/v1/admin/activity
+func (h *Handler) SearchActivityLogs(ctx context.Context, params ogen.SearchActivityLogsParams) (ogen.SearchActivityLogsRes, error) {
+	// Admin check
+	if !h.isAdmin(ctx) {
+		return &ogen.SearchActivityLogsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
+
+	// Build search filters
+	filters := activity.SearchFilters{
+		Limit:  50,
+		Offset: 0,
+	}
+
+	if params.UserID.IsSet() {
+		userID := params.UserID.Value
+		filters.UserID = &userID
+	}
+	if params.Action.IsSet() {
+		action := params.Action.Value
+		filters.Action = &action
+	}
+	if params.ResourceType.IsSet() {
+		rt := params.ResourceType.Value
+		filters.ResourceType = &rt
+	}
+	if params.ResourceID.IsSet() {
+		rid := params.ResourceID.Value
+		filters.ResourceID = &rid
+	}
+	if params.Success.IsSet() {
+		success := params.Success.Value
+		filters.Success = &success
+	}
+	if params.StartTime.IsSet() {
+		st := params.StartTime.Value
+		filters.StartTime = &st
+	}
+	if params.EndTime.IsSet() {
+		et := params.EndTime.Value
+		filters.EndTime = &et
+	}
+	if params.Limit.IsSet() {
+		filters.Limit = int32(params.Limit.Value)
+	}
+	if params.Offset.IsSet() {
+		filters.Offset = int32(params.Offset.Value)
+	}
+
+	entries, total, err := h.activityService.Search(ctx, filters)
+	if err != nil {
+		h.logger.Error("failed to search activity logs", zap.Error(err))
+		return &ogen.SearchActivityLogsForbidden{
+			Code:    500,
+			Message: "Failed to search activity logs",
+		}, nil
+	}
+
+	return &ogen.ActivityLogListResponse{
+		Entries:  convertActivityEntries(entries),
+		Total:    total,
+		Page:     ogen.NewOptInt(int(filters.Offset/filters.Limit) + 1),
+		PageSize: ogen.NewOptInt(int(filters.Limit)),
+	}, nil
+}
+
+// GetUserActivityLogs returns activity logs for a specific user.
+// GET /api/v1/admin/activity/users/{userId}
+func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserActivityLogsParams) (ogen.GetUserActivityLogsRes, error) {
+	// Admin check
+	if !h.isAdmin(ctx) {
+		return &ogen.GetUserActivityLogsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
+
+	limit := int32(50)
+	offset := int32(0)
+	if params.Limit.IsSet() {
+		limit = int32(params.Limit.Value)
+	}
+	if params.Offset.IsSet() {
+		offset = int32(params.Offset.Value)
+	}
+
+	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserId, limit, offset)
+	if err != nil {
+		h.logger.Error("failed to get user activity logs",
+			zap.String("user_id", params.UserId.String()),
+			zap.Error(err),
+		)
+		return &ogen.GetUserActivityLogsForbidden{
+			Code:    500,
+			Message: "Failed to get user activity logs",
+		}, nil
+	}
+
+	return &ogen.ActivityLogListResponse{
+		Entries:  convertActivityEntries(entries),
+		Total:    total,
+		Page:     ogen.NewOptInt(int(offset/limit) + 1),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
+}
+
+// GetResourceActivityLogs returns activity logs for a specific resource.
+// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
+func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetResourceActivityLogsParams) (ogen.GetResourceActivityLogsRes, error) {
+	// Admin check
+	if !h.isAdmin(ctx) {
+		return &ogen.GetResourceActivityLogsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
+
+	limit := int32(50)
+	offset := int32(0)
+	if params.Limit.IsSet() {
+		limit = int32(params.Limit.Value)
+	}
+	if params.Offset.IsSet() {
+		offset = int32(params.Offset.Value)
+	}
+
+	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceId, limit, offset)
+	if err != nil {
+		h.logger.Error("failed to get resource activity logs",
+			zap.String("resource_type", params.ResourceType),
+			zap.String("resource_id", params.ResourceId.String()),
+			zap.Error(err),
+		)
+		return &ogen.GetResourceActivityLogsForbidden{
+			Code:    500,
+			Message: "Failed to get resource activity logs",
+		}, nil
+	}
+
+	return &ogen.ActivityLogListResponse{
+		Entries:  convertActivityEntries(entries),
+		Total:    total,
+		Page:     ogen.NewOptInt(int(offset/limit) + 1),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
+}
+
+// GetActivityStats returns activity log statistics.
+// GET /api/v1/admin/activity/stats
+func (h *Handler) GetActivityStats(ctx context.Context) (ogen.GetActivityStatsRes, error) {
+	// Admin check
+	if !h.isAdmin(ctx) {
+		return &ogen.GetActivityStatsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
+
+	stats, err := h.activityService.GetStats(ctx)
+	if err != nil {
+		h.logger.Error("failed to get activity stats", zap.Error(err))
+		return &ogen.GetActivityStatsForbidden{
+			Code:    500,
+			Message: "Failed to get activity statistics",
+		}, nil
+	}
+
+	result := &ogen.ActivityStats{
+		TotalCount:   stats.TotalCount,
+		SuccessCount: stats.SuccessCount,
+		FailedCount:  stats.FailedCount,
+	}
+
+	if stats.OldestEntry != nil {
+		result.OldestEntry = ogen.NewOptDateTime(*stats.OldestEntry)
+	}
+	if stats.NewestEntry != nil {
+		result.NewestEntry = ogen.NewOptDateTime(*stats.NewestEntry)
+	}
+
+	return result, nil
+}
+
+// GetRecentActions returns recent distinct action types for filtering.
+// GET /api/v1/admin/activity/actions
+func (h *Handler) GetRecentActions(ctx context.Context, params ogen.GetRecentActionsParams) (ogen.GetRecentActionsRes, error) {
+	// Admin check
+	if !h.isAdmin(ctx) {
+		return &ogen.GetRecentActionsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
+
+	limit := int32(20)
+	if params.Limit.IsSet() {
+		limit = int32(params.Limit.Value)
+	}
+
+	actions, err := h.activityService.GetRecentActions(ctx, limit)
+	if err != nil {
+		h.logger.Error("failed to get recent actions", zap.Error(err))
+		return &ogen.GetRecentActionsForbidden{
+			Code:    500,
+			Message: "Failed to get recent actions",
+		}, nil
+	}
+
+	ogenActions := make([]ogen.ActionCount, len(actions))
+	for i, a := range actions {
+		ogenActions[i] = ogen.ActionCount{
+			Action: a.Action,
+			Count:  a.Count,
+		}
+	}
+
+	return &ogen.ActionCountListResponse{
+		Actions: ogenActions,
+	}, nil
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+// convertActivityEntries converts domain activity entries to ogen types.
+func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
+	result := make([]ogen.ActivityLogEntry, len(entries))
+	for i, e := range entries {
+		entry := ogen.ActivityLogEntry{
+			ID:        e.ID,
+			Action:    e.Action,
+			Success:   e.Success,
+			CreatedAt: e.CreatedAt,
+		}
+
+		if e.UserID != nil {
+			entry.UserId = ogen.NewOptUUID(*e.UserID)
+		}
+		if e.Username != nil {
+			entry.Username = ogen.NewOptString(*e.Username)
+		}
+		if e.ResourceType != nil {
+			entry.ResourceType = ogen.NewOptString(*e.ResourceType)
+		}
+		if e.ResourceID != nil {
+			entry.ResourceId = ogen.NewOptUUID(*e.ResourceID)
+		}
+		if e.IPAddress != nil {
+			entry.IpAddress = ogen.NewOptString(e.IPAddress.String())
+		}
+		if e.UserAgent != nil {
+			entry.UserAgent = ogen.NewOptString(*e.UserAgent)
+		}
+		if e.ErrorMessage != nil {
+			entry.ErrorMessage = ogen.NewOptString(*e.ErrorMessage)
+		}
+
+		// Convert changes map to ogen format
+		if len(e.Changes) > 0 {
+			changes := make(ogen.ActivityLogEntryChanges)
+			for k, v := range e.Changes {
+				if data, err := json.Marshal(v); err == nil {
+					changes[k] = jx.Raw(data)
+				}
+			}
+			entry.Changes = ogen.NewOptActivityLogEntryChanges(changes)
+		}
+
+		// Convert metadata map to ogen format
+		if len(e.Metadata) > 0 {
+			metadata := make(ogen.ActivityLogEntryMetadata)
+			for k, v := range e.Metadata {
+				if data, err := json.Marshal(v); err == nil {
+					metadata[k] = jx.Raw(data)
+				}
+			}
+			entry.Metadata = ogen.NewOptActivityLogEntryMetadata(metadata)
+		}
+
+		result[i] = entry
+	}
+	return result
+}
+

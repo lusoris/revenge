@@ -1103,6 +1103,671 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/Error'
+  # ==========================================================================
+  # OIDC Endpoints
+  # ==========================================================================
+
+  /api/v1/oidc/providers:
+    get:
+      operationId: listOIDCProviders
+      summary: List enabled OIDC providers
+      description: Returns a list of enabled OIDC providers for login
+      tags:
+        - OIDC
+      responses:
+        '200':
+          description: List of enabled OIDC providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCProviderListResponse'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/oidc/auth/{provider}:
+    get:
+      operationId: oidcAuthorize
+      summary: Initiate OIDC login
+      description: Redirects to the OIDC provider's authorization endpoint
+      tags:
+        - OIDC
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: Provider name (e.g., authentik, keycloak)
+          schema:
+            type: string
+        - name: redirect_url
+          in: query
+          required: false
+          description: URL to redirect after successful auth
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to OIDC provider
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/oidc/callback/{provider}:
+    get:
+      operationId: oidcCallback
+      summary: Handle OIDC callback
+      description: Handles the OAuth2 callback from OIDC provider
+      tags:
+        - OIDC
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: Provider name
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from provider
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          description: OAuth2 state parameter
+          schema:
+            type: string
+        - name: error
+          in: query
+          required: false
+          description: Error code if authorization failed
+          schema:
+            type: string
+        - name: error_description
+          in: query
+          required: false
+          description: Error description if authorization failed
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCCallbackResponse'
+        '302':
+          description: Redirect to app with tokens
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/users/me/oidc:
+    get:
+      operationId: listUserOIDCLinks
+      summary: List user's OIDC links
+      description: Returns all OIDC providers linked to the current user
+      tags:
+        - OIDC
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of OIDC links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCUserLinkListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/users/me/oidc/{provider}/link:
+    post:
+      operationId: initOIDCLink
+      summary: Start linking OIDC provider
+      description: Initiates the flow to link an OIDC provider to the user's account
+      tags:
+        - OIDC
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: Provider name to link
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Link initiation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCAuthURLResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/users/me/oidc/{provider}:
+    delete:
+      operationId: unlinkOIDCProvider
+      summary: Unlink OIDC provider
+      description: Removes the link between user and OIDC provider
+      tags:
+        - OIDC
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: Provider name to unlink
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully unlinked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # Admin OIDC endpoints
+  /api/v1/admin/oidc/providers:
+    get:
+      operationId: adminListOIDCProviders
+      summary: List all OIDC providers (admin)
+      description: Returns all OIDC providers including disabled ones
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all OIDC providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOIDCProviderListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+    post:
+      operationId: adminCreateOIDCProvider
+      summary: Create OIDC provider (admin)
+      description: Creates a new OIDC provider configuration
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOIDCProviderRequest'
+      responses:
+        '201':
+          description: Provider created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOIDCProvider'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Provider name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/oidc/providers/{providerId}:
+    get:
+      operationId: adminGetOIDCProvider
+      summary: Get OIDC provider (admin)
+      description: Returns detailed OIDC provider configuration
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Provider details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOIDCProvider'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    patch:
+      operationId: adminUpdateOIDCProvider
+      summary: Update OIDC provider (admin)
+      description: Updates an OIDC provider configuration
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOIDCProviderRequest'
+      responses:
+        '200':
+          description: Provider updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOIDCProvider'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      operationId: adminDeleteOIDCProvider
+      summary: Delete OIDC provider (admin)
+      description: Deletes an OIDC provider configuration
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Provider deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/oidc/providers/{providerId}/enable:
+    post:
+      operationId: adminEnableOIDCProvider
+      summary: Enable OIDC provider (admin)
+      description: Enables an OIDC provider
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Provider enabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/oidc/providers/{providerId}/disable:
+    post:
+      operationId: adminDisableOIDCProvider
+      summary: Disable OIDC provider (admin)
+      description: Disables an OIDC provider
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Provider disabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/oidc/providers/{providerId}/default:
+    post:
+      operationId: adminSetDefaultOIDCProvider
+      summary: Set default OIDC provider (admin)
+      description: Sets an OIDC provider as the default for SSO
+      tags:
+        - OIDC Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: Provider ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Provider set as default
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # ============================================================================
+  # Activity Endpoints (Admin only)
+  # ============================================================================
+
+  /api/v1/admin/activity:
+    get:
+      operationId: searchActivityLogs
+      summary: Search activity logs (admin)
+      description: Search and filter activity logs with pagination
+      tags:
+        - Activity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: user_id
+          in: query
+          description: Filter by user ID
+          schema:
+            type: string
+            format: uuid
+        - name: action
+          in: query
+          description: Filter by action type
+          schema:
+            type: string
+        - name: resource_type
+          in: query
+          description: Filter by resource type
+          schema:
+            type: string
+        - name: resource_id
+          in: query
+          description: Filter by resource ID
+          schema:
+            type: string
+            format: uuid
+        - name: success
+          in: query
+          description: Filter by success status
+          schema:
+            type: boolean
+        - name: start_time
+          in: query
+          description: Filter by start time (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: end_time
+          in: query
+          description: Filter by end time (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          description: Maximum number of results (default 50, max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Activity logs retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityLogListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/activity/users/{userId}:
+    get:
+      operationId: getUserActivityLogs
+      summary: Get user activity logs (admin)
+      description: Get activity logs for a specific user
+      tags:
+        - Activity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          description: Maximum number of results (default 50, max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: User activity logs retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityLogListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/activity/resources/{resourceType}/{resourceId}:
+    get:
+      operationId: getResourceActivityLogs
+      summary: Get resource activity logs (admin)
+      description: Get activity logs for a specific resource
+      tags:
+        - Activity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: resourceType
+          in: path
+          required: true
+          description: Resource type (user, library, movie, etc.)
+          schema:
+            type: string
+        - name: resourceId
+          in: path
+          required: true
+          description: Resource ID
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          description: Maximum number of results (default 50, max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Resource activity logs retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityLogListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/activity/stats:
+    get:
+      operationId: getActivityStats
+      summary: Get activity statistics (admin)
+      description: Get activity log statistics
+      tags:
+        - Activity
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Activity statistics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/activity/actions:
+    get:
+      operationId: getRecentActions
+      summary: Get recent action types (admin)
+      description: Get recent distinct action types for filtering
+      tags:
+        - Activity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of results (default 20, max 50)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: Recent actions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCountListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas
@@ -1881,6 +2546,452 @@ components:
         message:
           type: string
           description: Warning message about storing the key
+
+    # ==========================================================================
+    # OIDC Schemas
+    # ==========================================================================
+
+    # Public OIDC provider info (for login page)
+    OIDCProviderInfo:
+      type: object
+      required:
+        - name
+        - displayName
+      properties:
+        name:
+          type: string
+          description: Provider identifier
+        displayName:
+          type: string
+          description: Display name for UI
+        isDefault:
+          type: boolean
+          description: Whether this is the default provider
+
+    OIDCProviderListResponse:
+      type: object
+      required:
+        - providers
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OIDCProviderInfo'
+
+    OIDCAuthURLResponse:
+      type: object
+      required:
+        - authUrl
+      properties:
+        authUrl:
+          type: string
+          description: URL to redirect for OIDC authentication
+
+    OIDCCallbackResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        tokenType:
+          type: string
+          description: Token type (Bearer)
+        expiresIn:
+          type: integer
+          description: Token expiry in seconds
+        refreshToken:
+          type: string
+          description: Refresh token (if issued)
+        user:
+          $ref: '#/components/schemas/User'
+
+    OIDCUserLink:
+      type: object
+      required:
+        - id
+        - providerName
+        - providerDisplayName
+        - linkedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerName:
+          type: string
+        providerDisplayName:
+          type: string
+        email:
+          type: string
+        lastLoginAt:
+          type: string
+          format: date-time
+        linkedAt:
+          type: string
+          format: date-time
+
+    OIDCUserLinkListResponse:
+      type: object
+      required:
+        - links
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/OIDCUserLink'
+
+    # Admin OIDC schemas
+    ClaimMappings:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Claim path for username
+          default: preferred_username
+        email:
+          type: string
+          description: Claim path for email
+          default: email
+        name:
+          type: string
+          description: Claim path for display name
+          default: name
+        picture:
+          type: string
+          description: Claim path for avatar URL
+          default: picture
+        roles:
+          type: string
+          description: Claim path for roles/groups
+          default: groups
+
+    AdminOIDCProvider:
+      type: object
+      required:
+        - id
+        - name
+        - displayName
+        - providerType
+        - issuerUrl
+        - clientId
+        - scopes
+        - autoCreateUsers
+        - updateUserInfo
+        - allowLinking
+        - isEnabled
+        - isDefault
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        displayName:
+          type: string
+        providerType:
+          type: string
+          enum:
+            - generic
+            - authentik
+            - keycloak
+        issuerUrl:
+          type: string
+        clientId:
+          type: string
+        authorizationEndpoint:
+          type: string
+        tokenEndpoint:
+          type: string
+        userInfoEndpoint:
+          type: string
+        jwksUri:
+          type: string
+        endSessionEndpoint:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        claimMappings:
+          $ref: '#/components/schemas/ClaimMappings'
+        roleMappings:
+          type: object
+          additionalProperties:
+            type: string
+        autoCreateUsers:
+          type: boolean
+        updateUserInfo:
+          type: boolean
+        allowLinking:
+          type: boolean
+        isEnabled:
+          type: boolean
+        isDefault:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AdminOIDCProviderListResponse:
+      type: object
+      required:
+        - providers
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminOIDCProvider'
+
+    CreateOIDCProviderRequest:
+      type: object
+      required:
+        - name
+        - displayName
+        - issuerUrl
+        - clientId
+        - clientSecret
+      properties:
+        name:
+          type: string
+          description: Unique provider identifier
+          minLength: 1
+          maxLength: 100
+        displayName:
+          type: string
+          description: Display name for UI
+          minLength: 1
+          maxLength: 255
+        providerType:
+          type: string
+          enum:
+            - generic
+            - authentik
+            - keycloak
+          default: generic
+        issuerUrl:
+          type: string
+          description: OIDC issuer URL
+        clientId:
+          type: string
+          description: OAuth2 client ID
+        clientSecret:
+          type: string
+          description: OAuth2 client secret
+        authorizationEndpoint:
+          type: string
+          description: Override authorization endpoint
+        tokenEndpoint:
+          type: string
+          description: Override token endpoint
+        userInfoEndpoint:
+          type: string
+          description: Override user info endpoint
+        jwksUri:
+          type: string
+          description: Override JWKS URI
+        endSessionEndpoint:
+          type: string
+          description: Override end session endpoint
+        scopes:
+          type: array
+          items:
+            type: string
+          description: OAuth scopes (defaults to openid, profile, email)
+        claimMappings:
+          $ref: '#/components/schemas/ClaimMappings'
+        roleMappings:
+          type: object
+          additionalProperties:
+            type: string
+          description: Map provider roles to Revenge roles
+        autoCreateUsers:
+          type: boolean
+          default: true
+          description: Create users on first OIDC login
+        updateUserInfo:
+          type: boolean
+          default: true
+          description: Update user info on each login
+        allowLinking:
+          type: boolean
+          default: true
+          description: Allow users to link existing accounts
+        isEnabled:
+          type: boolean
+          default: true
+        isDefault:
+          type: boolean
+          default: false
+
+    UpdateOIDCProviderRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 255
+        providerType:
+          type: string
+          enum:
+            - generic
+            - authentik
+            - keycloak
+        issuerUrl:
+          type: string
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+        authorizationEndpoint:
+          type: string
+        tokenEndpoint:
+          type: string
+        userInfoEndpoint:
+          type: string
+        jwksUri:
+          type: string
+        endSessionEndpoint:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        claimMappings:
+          $ref: '#/components/schemas/ClaimMappings'
+        roleMappings:
+          type: object
+          additionalProperties:
+            type: string
+        autoCreateUsers:
+          type: boolean
+        updateUserInfo:
+          type: boolean
+        allowLinking:
+          type: boolean
+        isEnabled:
+          type: boolean
+        isDefault:
+          type: boolean
+
+    # Activity schemas
+    ActivityLogEntry:
+      type: object
+      required:
+        - id
+        - action
+        - success
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        username:
+          type: string
+        action:
+          type: string
+          description: Action type (e.g., user.login, settings.update)
+        resourceType:
+          type: string
+          description: Resource type (user, library, movie, etc.)
+        resourceId:
+          type: string
+          format: uuid
+        changes:
+          type: object
+          additionalProperties: true
+          description: Field changes as JSON
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional context
+        ipAddress:
+          type: string
+        userAgent:
+          type: string
+        success:
+          type: boolean
+        errorMessage:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ActivityLogListResponse:
+      type: object
+      required:
+        - entries
+        - total
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLogEntry'
+        total:
+          type: integer
+          format: int64
+          description: Total number of matching entries
+        page:
+          type: integer
+          description: Current page number
+        pageSize:
+          type: integer
+          description: Number of entries per page
+
+    ActivityStats:
+      type: object
+      required:
+        - totalCount
+        - successCount
+        - failedCount
+      properties:
+        totalCount:
+          type: integer
+          format: int64
+        successCount:
+          type: integer
+          format: int64
+        failedCount:
+          type: integer
+          format: int64
+        oldestEntry:
+          type: string
+          format: date-time
+        newestEntry:
+          type: string
+          format: date-time
+
+    ActionCount:
+      type: object
+      required:
+        - action
+        - count
+      properties:
+        action:
+          type: string
+        count:
+          type: integer
+          format: int64
+
+    ActionCountListResponse:
+      type: object
+      required:
+        - actions
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionCount'
 
     Error:
       type: object

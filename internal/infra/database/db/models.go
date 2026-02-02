@@ -13,6 +13,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// Audit log for tracking user actions and system events
+type ActivityLog struct {
+	ID       uuid.UUID   `json:"id"`
+	UserID   pgtype.UUID `json:"userId"`
+	Username *string     `json:"username"`
+	// Action type: user.login, user.logout, library.create, settings.update, etc.
+	Action       string      `json:"action"`
+	ResourceType *string     `json:"resourceType"`
+	ResourceID   pgtype.UUID `json:"resourceId"`
+	// JSON object with field changes: {"field": {"old": "...", "new": "..."}}
+	Changes []byte `json:"changes"`
+	// Additional context data as JSON
+	Metadata     []byte     `json:"metadata"`
+	IpAddress    netip.Addr `json:"ipAddress"`
+	UserAgent    *string    `json:"userAgent"`
+	Success      *bool      `json:"success"`
+	ErrorMessage *string    `json:"errorMessage"`
+	CreatedAt    time.Time  `json:"createdAt"`
+}
+
 // API keys for programmatic access with scope-based permissions
 type SharedApiKey struct {
 	ID          uuid.UUID `json:"id"`
@@ -84,6 +104,58 @@ type SharedEmailVerificationToken struct {
 	// Timestamp when token was used (prevents reuse)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+type SharedOidcProvider struct {
+	ID                    uuid.UUID       `json:"id"`
+	Name                  string          `json:"name"`
+	DisplayName           string          `json:"displayName"`
+	ProviderType          string          `json:"providerType"`
+	IssuerUrl             string          `json:"issuerUrl"`
+	ClientID              string          `json:"clientId"`
+	ClientSecretEncrypted []byte          `json:"clientSecretEncrypted"`
+	AuthorizationEndpoint *string         `json:"authorizationEndpoint"`
+	TokenEndpoint         *string         `json:"tokenEndpoint"`
+	UserinfoEndpoint      *string         `json:"userinfoEndpoint"`
+	JwksUri               *string         `json:"jwksUri"`
+	EndSessionEndpoint    *string         `json:"endSessionEndpoint"`
+	Scopes                []string        `json:"scopes"`
+	ClaimMappings         json.RawMessage `json:"claimMappings"`
+	RoleMappings          json.RawMessage `json:"roleMappings"`
+	AutoCreateUsers       bool            `json:"autoCreateUsers"`
+	UpdateUserInfo        bool            `json:"updateUserInfo"`
+	AllowLinking          bool            `json:"allowLinking"`
+	IsEnabled             bool            `json:"isEnabled"`
+	IsDefault             bool            `json:"isDefault"`
+	CreatedAt             time.Time       `json:"createdAt"`
+	UpdatedAt             time.Time       `json:"updatedAt"`
+}
+
+type SharedOidcState struct {
+	ID           uuid.UUID   `json:"id"`
+	State        string      `json:"state"`
+	CodeVerifier *string     `json:"codeVerifier"`
+	ProviderID   uuid.UUID   `json:"providerId"`
+	UserID       pgtype.UUID `json:"userId"`
+	RedirectUrl  *string     `json:"redirectUrl"`
+	ExpiresAt    time.Time   `json:"expiresAt"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type SharedOidcUserLink struct {
+	ID                    uuid.UUID          `json:"id"`
+	UserID                uuid.UUID          `json:"userId"`
+	ProviderID            uuid.UUID          `json:"providerId"`
+	Subject               string             `json:"subject"`
+	Email                 *string            `json:"email"`
+	Name                  *string            `json:"name"`
+	PictureUrl            *string            `json:"pictureUrl"`
+	AccessTokenEncrypted  []byte             `json:"accessTokenEncrypted"`
+	RefreshTokenEncrypted []byte             `json:"refreshTokenEncrypted"`
+	TokenExpiresAt        pgtype.Timestamptz `json:"tokenExpiresAt"`
+	LastLoginAt           pgtype.Timestamptz `json:"lastLoginAt"`
+	CreatedAt             time.Time          `json:"createdAt"`
+	UpdatedAt             time.Time          `json:"updatedAt"`
 }
 
 // One-time tokens for password reset flow
