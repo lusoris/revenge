@@ -14,9 +14,7 @@ rules:
     min-spaces-from-content: 1
   comments-indentation: disable
   document-start: disable
-  indentation:
-    spaces: 2
-    indent-sequences: true
+  indentation: disable
   braces:
     min-spaces-inside: 0
     max-spaces-inside: 1
@@ -28,7 +26,4 @@ ignore: |
   .github/
   node_modules/
   vendor/
-  data/
-  charts/
-  deploy/
-  docs/dev/sources/
+  charts/revenge/templates/
