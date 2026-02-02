@@ -16,6 +16,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - N/A
 
+## [0.1.2] - 2026-02-02
+
+### Added
+- **Errors Package Tests**: Complete test coverage for error handling utilities
+  - `internal/errors`: 44% → 100% coverage
+
+### Test Infrastructure
+- **errors/wrap_test.go**: Comprehensive tests for wrap.go functions
+  - `TestWrapf`: 6 subtests covering format args, nil handling, nesting
+  - `TestWithStack`: 5 subtests covering stack trace verification
+  - `TestWrapSentinel`: 8 subtests covering all sentinel errors
+  - `TestFormatError`: 7 subtests covering formatting scenarios
+  - `TestWrapChaining`: chaining Wrap, Wrapf, WithStack
+  - `TestConcurrentErrorCreation`: concurrent safety (100 goroutines)
+  - `TestErrorMessageFormat`: message format verification
+
 ## [0.1.1] - 2026-02-02
 
 ### Added
@@ -60,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **HTTP Server**: Fully functional HTTP server with ogen-generated code from OpenAPI spec
-- **Health Endpoints**: 
+- **Health Endpoints**:
   - `GET /health/live` - Liveness probe (Kubernetes)
   - `GET /health/ready` - Readiness probe with dependency checks
   - `GET /health/startup` - Startup probe
