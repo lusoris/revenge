@@ -57,10 +57,10 @@
 
 ```mermaid
 flowchart TD
-    node1[[Server<br/>[Services]]]
-    node2["pgxpool<br/>[Connection<br/>Pool]"]
-    node3[(PostgreSQL<br/>Server 18+)]
-    node4["sqlc<br/>[Query Gen]"]
+    node1[["Server<br/>(Services)"]]
+    node2["pgxpool<br/>(Connection<br/>Pool)"]
+    node3[("PostgreSQL<br/>Server 18+")]
+    node4["sqlc<br/>(Query Gen)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4

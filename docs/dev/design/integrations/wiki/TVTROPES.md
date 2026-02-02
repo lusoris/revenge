@@ -56,10 +56,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Detail Page<br/>[Movie/TV]"]
-    node2([TVTropes<br/>[web]])
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2(["TVTropes<br/>(web)"])
     node3["Trope Analysis<br/>- Used tropes<br/>- Character types"]
-    node4["Rate Limiter<br/>[0.5/sec]"]
+    node4["Rate Limiter<br/>(0.5/sec)"]
     node2 --> node3
     node1 --> node2
     node3 --> node4

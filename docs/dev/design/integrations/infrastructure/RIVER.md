@@ -57,10 +57,10 @@
 
 ```mermaid
 flowchart TD
-    node1[[Services<br/>[Enqueue]]]
-    node2([River<br/>Client])
-    node3[(PostgreSQL<br/>[Job Store])]
-    node4["Workers<br/>[Background]"]
+    node1[["Services<br/>(Enqueue)"]]
+    node2(["River<br/>Client"])
+    node3[("PostgreSQL<br/>(Job Store)")]
+    node4["Workers<br/>(Background)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4

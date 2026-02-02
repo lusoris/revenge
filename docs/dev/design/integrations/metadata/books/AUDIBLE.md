@@ -56,10 +56,10 @@
 
 ```mermaid
 flowchart TD
-    node1[[Revenge<br/>Audiobook<br/>Service]]
-    node2[(Chaptarr<br/>[LOCAL cache])]
-    node3["Audnexus<br/>[Audible<br/>metadata]"]
-    node4["Rate Limiter<br/>[1 req/sec]"]
+    node1[["Revenge<br/>Audiobook<br/>Service"]]
+    node2[("Chaptarr<br/>(LOCAL cache)")]
+    node3["Audnexus<br/>(Audible<br/>metadata)"]
+    node4["Rate Limiter<br/>(1 req/sec)"]
     node2 --> node3
     node1 --> node2
     node3 --> node4

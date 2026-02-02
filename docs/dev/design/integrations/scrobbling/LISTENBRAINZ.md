@@ -59,8 +59,8 @@
 flowchart TD
     node1["Revenge<br/>Playback<br/>Events"]
     node2["ListenBrainz<br/>Integration"]
-    node3[[ListenBrainz<br/>API]]
-    node4["Listen<br/>Queue [River]"]
+    node3[["ListenBrainz<br/>API"]]
+    node4["Listen<br/>Queue (River)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4

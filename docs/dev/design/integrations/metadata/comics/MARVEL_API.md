@@ -57,9 +57,9 @@
 ```mermaid
 flowchart TD
     node1["Revenge<br/>Comics<br/>Library"]
-    node2["ComicVine<br/>[all comics]"]
-    node3[[Marvel API<br/>[Marvel only]]]
-    node4[[API Auth<br/>[hash-based]]]
+    node2["ComicVine<br/>(all comics)"]
+    node3[["Marvel API<br/>(Marvel only)"]]
+    node4[["API Auth<br/>(hash-based)"]]
     node2 --> node3
     node1 --> node2
     node3 --> node4

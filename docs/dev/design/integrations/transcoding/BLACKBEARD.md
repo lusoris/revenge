@@ -56,13 +56,13 @@
 
 ```mermaid
 flowchart TD
-    node1([Revenge Server<br/>Playback Transcoding INTERNAL<br/>Service Service FFmpeg])
-    node2[[Playback<br/>Service]]
-    node3[[Transcoding<br/>Service]]
-    node4["INTERNAL<br/>FFmpeg<br/>[go-astiav]"]
-    node5([Transcoding Router<br/>[choose internal vs external]])
-    node6([EXTERNAL: Blackbeard Service<br/>[Third-party, NOT developed by us]<br/>Distributed Transcoding Workers])
-    node7[[Distributed Transcoding Workers<br/>- GPU acceleration [NVENC, QSV, VAAPI]<br/>- Multiple worker instances]]
+    node1(["Revenge Server<br/>Playback Transcoding INTERNAL<br/>Service Service FFmpeg"])
+    node2[["Playback<br/>Service"]]
+    node3[["Transcoding<br/>Service"]]
+    node4["INTERNAL<br/>FFmpeg<br/>(go-astiav)"]
+    node5(["Transcoding Router<br/>(choose internal vs external)"])
+    node6(["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>Distributed Transcoding Workers"])
+    node7[["Distributed Transcoding Workers<br/>- GPU acceleration (NVENC, QSV, VAAPI)<br/>- Multiple worker instances"]]
     node2 --> node3
     node3 --> node4
     node1 --> node2

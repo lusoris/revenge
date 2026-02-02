@@ -57,9 +57,9 @@
 ```mermaid
 flowchart TD
     node1["Revenge<br/>Comics<br/>Library"]
-    node2[[ComicVine<br/>API]]
+    node2[["ComicVine<br/>API"]]
     node3["Metadata<br/>- Series<br/>- Issues"]
-    node4["Rate Limiter<br/>[200/hour]"]
+    node4["Rate Limiter<br/>(200/hour)"]
     node2 --> node3
     node1 --> node2
     node3 --> node4

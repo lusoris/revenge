@@ -56,7 +56,7 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>QAR Module<br/>[Metadata]"]
+    node1["Revenge<br/>QAR Module<br/>(Metadata)"]
     node2["IAFD<br/>Scraper"]
     node3["Industry Data<br/>- Performer bio<br/>- Filmography"]
     node4["Rate Limiter<br/>+ Proxy Pool"]

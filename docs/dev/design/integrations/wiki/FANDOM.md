@@ -56,10 +56,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Detail Page<br/>[Movie/TV]"]
-    node2[[FANDOM<br/>MediaWiki<br/>API]]
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2[["FANDOM<br/>MediaWiki<br/>API"]]
     node3["Fan Wiki Links<br/>- Character pages<br/>- Episode guides"]
-    node4["Rate Limiter<br/>[polite]"]
+    node4["Rate Limiter<br/>(polite)"]
     node2 --> node3
     node1 --> node2
     node3 --> node4

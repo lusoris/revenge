@@ -275,24 +275,26 @@ class ASCIIToMermaid:
     def _get_node_shape(self, label: str, sublabels: list[str]) -> tuple[str, str]:
         """Determine the Mermaid node shape based on content.
 
+        All shapes use quoted labels to safely handle special characters.
+
         Returns:
             Tuple of (open_bracket, close_bracket)
         """
         combined = f"{label} {' '.join(sublabels)}".upper()
 
-        # Database/storage nodes - cylinder shape
+        # Database/storage nodes - cylinder shape with quotes
         if any(kw.upper() in combined for kw in self.database_keywords):
-            return "[(", ")]"
+            return '[("', '")]'
 
-        # External/client nodes - stadium shape
+        # External/client nodes - stadium shape with quotes
         if any(kw.upper() in combined for kw in self.external_keywords):
-            return "([", "])"
+            return '(["', '"])'
 
-        # Service nodes - subroutine shape
+        # Service nodes - subroutine shape with quotes
         if any(kw.upper() in combined for kw in self.service_keywords):
-            return "[[", "]]"
+            return '[["', '"]]'
 
-        # Default - rectangle
+        # Default - rectangle with quotes
         return '["', '"]'
 
     def generate_mermaid(
@@ -323,14 +325,12 @@ class ASCIIToMermaid:
         layer_box_ids = []
 
         def escape_label(text: str) -> str:
-            """Escape special characters that conflict with Mermaid syntax."""
-            return (
-                text.replace('"', "'")
-                .replace("(", "[")
-                .replace(")", "]")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-            )
+            """Escape special characters that conflict with Mermaid syntax.
+
+            Uses HTML entities and proper quoting per Mermaid docs.
+            Parentheses/brackets are safe inside quoted labels.
+            """
+            return text.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
 
         # Add all nodes with appropriate shapes
         for box in boxes:

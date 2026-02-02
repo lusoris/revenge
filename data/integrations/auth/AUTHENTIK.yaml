@@ -49,7 +49,7 @@ architecture_diagram: |-
       node1["User<br/>Browser"]
       node2["Authentik<br/>IdP Server"]
       node3["Revenge<br/>Server"]
-      node4[[Authentik<br/>OAuth2 API]]
+      node4[["Authentik<br/>OAuth2 API"]]
       node5["User<br/>Session"]
       node1 --> node2
       node3 --> node4
