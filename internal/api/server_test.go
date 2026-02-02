@@ -709,5 +709,3 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 		})
 	}
 }
-
-

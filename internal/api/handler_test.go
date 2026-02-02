@@ -274,4 +274,3 @@ func TestHandler_NewError_VariousErrors(t *testing.T) {
 		})
 	}
 }
-
