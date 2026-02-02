@@ -28,3 +28,7 @@ ignore: |
   .github/
   node_modules/
   vendor/
+  data/
+  charts/
+  deploy/
+  docs/dev/sources/
