@@ -293,9 +293,12 @@ dependencies: |
   - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
 
   **External APIs** (priority order):
-  - **Sonarr API v3** - PRIMARY metadata source (local TheTVDB cache) + download automation
-  - **TheTVDB API v4** - Supplementary metadata (via proxy/VPN when Sonarr lacks data)
-  - **TMDb API v3** - Additional fallback metadata source
+  - **Sonarr API v3** - PRIMARY metadata source + download automation
+  - **TheTVDB API v4** - Supplementary metadata (via optional proxy/VPN)
+  - **TMDb API v3** - Additional fallback
+
+  See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
+  priority chain (L1 cache → L2 cache → Arr → External APIs).
 
   **Database**:
   - PostgreSQL 18+ with trigram extension

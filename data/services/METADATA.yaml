@@ -485,64 +485,10 @@ dual_role_architecture: |
 provider_priority_chain: |
   **Priority Chain Resolution**:
 
-  ```go
-  type PriorityChainResolver struct {
-    l1Cache     otter.Cache           // L1: In-memory (5m TTL)
-    l2Cache     rueidis.Client        // L2: Distributed (24h TTL)
-    arrClients  map[string]ArrClient  // PRIMARY: Local Arr services
-    extClients  map[string]ExtClient  // SUPPLEMENTARY: External APIs
-  }
+  L1 Cache (otter) → L2 Cache (Dragonfly) → PRIMARY (Arr) → SUPPLEMENTARY (External APIs)
 
-  func (r *PriorityChainResolver) FetchMetadata(ctx context.Context, contentType, externalID string) (*Metadata, error) {
-    cacheKey := fmt.Sprintf("%s:%s", contentType, externalID)
-
-    // 1. L1 Cache (Otter - in-memory)
-    if cached, ok := r.l1Cache.Get(cacheKey); ok {
-      log.Debug("L1 cache hit", "key", cacheKey)
-      return cached.(*Metadata), nil
-    }
-
-    // 2. L2 Cache (Dragonfly - distributed)
-    if cached, err := r.l2Cache.Get(ctx, cacheKey).AsBytes(); err == nil {
-      var meta Metadata
-      json.Unmarshal(cached, &meta)
-      r.l1Cache.Set(cacheKey, &meta, 5*time.Minute) // Warm L1
-      log.Debug("L2 cache hit", "key", cacheKey)
-      return &meta, nil
-    }
-
-    // 3. PRIMARY: Arr Services (local, no proxy)
-    arrClient := r.getArrClient(contentType)
-    if arrClient != nil && arrClient.IsConfigured() {
-      meta, err := arrClient.LookupByID(ctx, externalID)
-      if err == nil {
-        r.cacheMetadata(ctx, cacheKey, meta) // Cache in L1 & L2
-        log.Info("Arr service hit", "service", arrClient.Name(), "id", externalID)
-        return meta, nil
-      }
-      log.Warn("Arr service miss, falling back to external API", "error", err)
-    }
-
-    // 4. SUPPLEMENTARY: External APIs (via optional proxy/VPN)
-    extClient := r.getExtClient(contentType)
-    if extClient == nil {
-      return nil, fmt.Errorf("no external provider for content type: %s", contentType)
-    }
-
-    meta, err := extClient.GetByID(ctx, externalID)
-    if err != nil {
-      return nil, fmt.Errorf("both PRIMARY (Arr) and SUPPLEMENTARY (external) failed: %w", err)
-    }
-
-    // 5. Cache the result
-    r.cacheMetadata(ctx, cacheKey, meta)
-
-    // 6. Optionally add to Arr service for future queries (background)
-    if arrClient != nil {
-      go r.addToArrIfNotExists(context.Background(), arrClient, externalID, meta)
-    }
-
-    log.Info("External API hit", "provider", extClient.Name(), "id", externalID)
+  See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
+  implementation including code examples, caching logic, and fallback behavior.
     return meta, nil
   }
 

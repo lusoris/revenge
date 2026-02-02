@@ -69,15 +69,11 @@
 > **CORE PRINCIPLE**: If data exists locally, ALWAYS use local first, then fallback to external.
 
 ```
-Priority Order (ALWAYS):
-1. LOCAL CACHE     → First, instant UI display
-2. ARR SERVICES    → Radarr, Sonarr, Whisparr (cached metadata)
-3. INTERNAL        → Stash-App (if connected)
-4. EXTERNAL        → TMDb, StashDB.org, MusicBrainz, etc.
-5. ENRICHMENT      → Background jobs, lower priority, seamless
+L1 Cache (otter) → L2 Cache (Dragonfly) → Arr Services (PRIMARY) → External APIs (SUPPLEMENTARY)
 ```
 
-This applies to ALL data types across all modules.
+See `data/architecture/03_METADATA_SYSTEM.yaml` for complete architecture details,
+including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and implementation patterns.
 
 ### Design Patterns
 

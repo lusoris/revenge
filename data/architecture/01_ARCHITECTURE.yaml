@@ -228,25 +228,15 @@ system_components: |
   - **Transactions**: pgx transaction support for atomic operations
 
   **5. Metadata Priority Chain**
-  **CRITICAL**: Metadata flows through a priority chain from fastest (cache) to slowest (external APIs):
+  Metadata flows through a priority chain from fastest (cache) to slowest (external APIs):
 
   ```
   Request → L1 Cache (otter) → L2 Cache (Dragonfly) →
            PRIMARY (Arr Services) → SUPPLEMENTARY (External APIs)
   ```
 
-  - **L1 Cache (otter)**: In-memory, sub-millisecond, per-instance
-  - **L2 Cache (Dragonfly)**: Distributed, multi-millisecond, shared across instances
-  - **PRIMARY (Arr Services)**: Local metadata aggregators (Radarr, Sonarr, Lidarr, Chaptarr, Whisparr)
-    - Serve DUAL purposes: (1) PRIMARY metadata cache, (2) Download automation
-    - Cache metadata from external sources locally (e.g., Radarr caches TMDb)
-    - Preferred over direct external API calls for performance and reliability
-  - **SUPPLEMENTARY (External APIs)**: Direct API calls when Arr unavailable or for enrichment
-    - **Fallback**: Used when Arr not setup/unreachable OR lacks specific metadata
-    - **Enrichment**: Additional data beyond what Arr provides
-    - **Proxy/VPN**: OPTIONAL routing through HTTP proxy, SOCKS5 (Tor), or VPN (disabled by default)
-
-  **See**: [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md) for complete metadata architecture
+  See [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md#metadata_priority_chain) for complete architecture,
+  including flow diagrams, caching strategies, and PRIMARY vs SUPPLEMENTARY provider roles.
 
   **6. Database (PostgreSQL)**
   - **Version**: PostgreSQL 18+
