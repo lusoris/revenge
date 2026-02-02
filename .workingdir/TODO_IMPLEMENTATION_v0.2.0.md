@@ -380,9 +380,47 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 
 ---
 
-## Step 9: API Keys Service
+## Step 9: API Keys Service ✅ COMPLETE (Commit 29)
 
-(Following same pattern)
+### 9.1 Database Schema ✅
+- [x] Create api_keys table migration (000012)
+- [x] SHA-256 key hashing (store key_hash, never plaintext)
+- [x] Key prefix for identification (rv_xxxxx)
+- [x] Scopes array (read, write, admin)
+- [x] Indexes: user_id, key_hash WHERE active, key_prefix
+
+### 9.2 sqlc Queries ✅
+- [x] 12 query methods in shared/apikeys.sql
+- [x] CreateAPIKey, GetAPIKey, GetAPIKeyByHash, GetAPIKeyByPrefix
+- [x] ListUserAPIKeys, ListActiveUserAPIKeys, CountUserAPIKeys
+- [x] RevokeAPIKey, UpdateAPIKeyLastUsed, UpdateAPIKeyScopes
+- [x] DeleteAPIKey, DeleteExpiredAPIKeys
+
+### 9.3 Repository Layer ✅
+- [x] Repository interface (12 methods)
+- [x] RepositoryPg PostgreSQL implementation
+- [x] Types: CreateKeyRequest, APIKey, CreateKeyResponse
+
+### 9.4 Service Layer ✅
+- [x] Key generation with crypto/rand (32 bytes)
+- [x] rv_<hex> format (prefix + 64 hex chars)
+- [x] SHA-256 hashing before storage
+- [x] Scope validation (read, write, admin)
+- [x] CreateKey, ValidateKey, RevokeKey, CheckScope
+- [x] Error handling: NotFound, Inactive, Expired, MaxKeys
+
+### 9.5 API Layer ✅
+- [x] OpenAPI: 4 endpoints (GET/POST /apikeys, GET/DELETE /apikeys/{keyId})
+- [x] Schemas: APIKeyInfo, CreateAPIKeyRequest/Response, APIKeyListResponse
+- [x] handler_apikeys.go with ownership verification
+- [x] Raw key returned only once on creation
+- [x] Security warning in response message
+
+### 9.6 Integration ✅
+- [x] fx module wiring (apikeys.Module)
+- [x] **Build**: 0 errors
+- [x] **Lint**: 0 issues
+- [x] **Commit**: ae0ad75 (31 files, +6490/-663)
 
 ---
 

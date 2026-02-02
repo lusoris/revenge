@@ -19,7 +19,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | User | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 17-19) |
 | Session | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 26, 28) |
 | RBAC | 🟢 Complete | 100% | ✓ DB ✓ Adapter ✓ Service ✓ API (Commits 27, 28) |
-| API Keys | 🔴 Not Started | 0% | Key generation, validation |
+| API Keys | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commit 29) |
 | OIDC | 🔴 Not Started | 0% | SSO providers |
 | Settings | 🟢 Complete | 100% | ✓ DB ✓ Service ✓ API (Commits 11-16) |
 | Activity | 🔴 Not Started | 0% | Audit logging |
@@ -78,9 +78,8 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 ## Next Steps
 
-1. **Step 7**: Session Service (Active sessions, device management, session history)
-2. **Step 8**: RBAC Service (Casbin integration, roles, permissions)
-3. **Step 9+**: API Keys, OIDC, Activity, Library services
+1. **Step 10**: OIDC Service (SSO providers, OAuth2 flows)
+2. **Step 11+**: Activity, Library, Health services
 
 ## Reference
 
@@ -114,3 +113,4 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | RBAC Service 80% (Commit 27): Casbin adapter + Service (API deferred) |
 | 2026-02-02 | ✅ Session API COMPLETE (Commit 28): 6 endpoints, SessionInfo schema, Error type pattern |
 | 2026-02-02 | ✅ RBAC API COMPLETE (Commit 28): 6 endpoints (admin only), dedicated type aliases for 403 |
+| 2026-02-02 | ✅ API Keys Service COMPLETE (Commit 29): 4 endpoints, SHA-256 hashing, rv_ key format |
