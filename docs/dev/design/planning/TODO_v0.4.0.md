@@ -345,11 +345,26 @@ This milestone adds TV show support with full series/season/episode hierarchy, T
 
 ---
 
+## Design Documentation
+
+> **Note**: Design work for v0.4.0 scope is **COMPLETE**. The following design documents exist and should be referenced during implementation:
+
+### Core Module Designs
+- [TVSHOW_MODULE.md](../features/video/TVSHOW_MODULE.md) - Complete TV show module design with series/season/episode hierarchy
+- [WATCH_NEXT_CONTINUE_WATCHING.md](../features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Advanced watch progress and next episode logic
+
+### Integration Designs
+- [THETVDB.md](../integrations/metadata/video/THETVDB.md) - TheTVDB v4 API integration (JWT auth, rate limiting)
+- [TMDB.md](../integrations/metadata/video/TMDB.md) - TMDb TV show metadata support
+- [SONARR.md](../integrations/servarr/SONARR.md) - Sonarr integration design (webhooks, sync, quality profiles)
+
+### Related Playback Features (Designed)
+- [TRICKPLAY.md](../features/playback/TRICKPLAY.md) - Timeline thumbnails for episodes
+- [SKIP_INTRO.md](../features/playback/SKIP_INTRO.md) - Episode intro/credits detection
+
+---
+
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
-- [TVSHOW_MODULE.md](../features/video/TVSHOW_MODULE.md) - TV show module design
-- [THETVDB.md](../integrations/metadata/video/THETVDB.md) - TheTVDB integration
-- [SONARR.md](../integrations/servarr/SONARR.md) - Sonarr integration
-- [WATCH_NEXT_CONTINUE_WATCHING.md](../features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Watch progress design

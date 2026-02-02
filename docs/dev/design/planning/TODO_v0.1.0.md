@@ -293,9 +293,34 @@ This milestone establishes the Go project structure, dependency injection framew
 
 ---
 
+## Design Documentation
+
+> **Note**: Design work for v0.1.0 scope is **COMPLETE**. The following design documents exist and should be referenced during implementation:
+
+### Architecture & Foundation
+- [01_ARCHITECTURE.md](../architecture/01_ARCHITECTURE.md) - Complete system architecture with all layers and components
+- [02_DESIGN_PRINCIPLES.md](../architecture/02_DESIGN_PRINCIPLES.md) - Design principles guiding all implementation
+- [TECH_STACK.md](../technical/TECH_STACK.md) - Full technology stack with rationale
+
+### Integration Designs (Foundation)
+- [POSTGRESQL.md](../integrations/infrastructure/POSTGRESQL.md) - Database patterns, migrations, pgx usage
+- [DRAGONFLY.md](../integrations/infrastructure/DRAGONFLY.md) - Cache architecture (rueidis, otter)
+- [RIVER.md](../integrations/infrastructure/RIVER.md) - Job queue setup with fx
+- [TYPESENSE.md](../integrations/infrastructure/TYPESENSE.md) - Search infrastructure
+
+### Technical Patterns
+- [API.md](../technical/API.md) - OpenAPI design patterns with ogen
+- [CONFIGURATION.md](../technical/CONFIGURATION.md) - Configuration system with koanf
+- [OBSERVABILITY.md](../technical/OBSERVABILITY.md) - Logging, metrics, tracing setup
+- [TESTING.md](../technical/TESTING.md) - Testing patterns and infrastructure
+
+### Operations
+- [DEVELOPMENT.md](../operations/DEVELOPMENT.md) - Development environment setup
+- [BEST_PRACTICES.md](../operations/BEST_PRACTICES.md) - Go best practices
+
+---
+
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
-- [TECH_STACK.md](../technical/TECH_STACK.md) - Technology rationale
-- [01_ARCHITECTURE.md](../architecture/01_ARCHITECTURE.md) - System architecture

@@ -421,11 +421,40 @@ The MVP is complete when a user can:
 
 ---
 
+## Design Documentation
+
+> **Note**: Design work for v0.3.0 scope is **COMPLETE**. The following design documents exist and should be referenced during implementation:
+
+### Core Module Designs
+- [MOVIE_MODULE.md](../features/video/MOVIE_MODULE.md) - Complete movie module design with schemas, services, and handlers
+- [COLLECTIONS.md](../features/shared/COLLECTIONS.md) - Collection support design
+- [LIBRARY_TYPES.md](../features/shared/LIBRARY_TYPES.md) - Library provider architecture
+
+### Integration Designs
+- [TMDB.md](../integrations/metadata/video/TMDB.md) - TMDb metadata provider design (rate limiting, caching, retry logic)
+- [RADARR.md](../integrations/servarr/RADARR.md) - Radarr integration design (webhooks, sync, quality profiles)
+- [TYPESENSE.md](../integrations/infrastructure/TYPESENSE.md) - Search service integration
+- [POSTGRESQL.md](../integrations/infrastructure/POSTGRESQL.md) - Database integration patterns
+- [DRAGONFLY.md](../integrations/infrastructure/DRAGONFLY.md) - Cache integration patterns
+
+### Service Designs
+- [METADATA.md](../services/METADATA.md) - Metadata service architecture
+- [SEARCH.md](../services/SEARCH.md) - Search service implementation
+- [LIBRARY.md](../services/LIBRARY.md) - Library scanner service
+
+### Playback Features (Designed, can be added post-MVP)
+- [WATCH_NEXT_CONTINUE_WATCHING.md](../features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Continue watching system
+- [TRICKPLAY.md](../features/playback/TRICKPLAY.md) - Timeline thumbnails (optional enhancement)
+- [SKIP_INTRO.md](../features/playback/SKIP_INTRO.md) - Skip intro detection (optional enhancement)
+
+### Technical Architecture
+- [FRONTEND.md](../technical/FRONTEND.md) - Frontend architecture with SvelteKit 2 + Svelte 5
+- [API.md](../technical/API.md) - API design patterns
+- [HTTP_CLIENT.md](../patterns/HTTP_CLIENT.md) - HTTP client pattern for external integrations
+
+---
+
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
-- [MOVIE_MODULE.md](../features/video/MOVIE_MODULE.md) - Movie module design
-- [TMDB.md](../integrations/metadata/video/TMDB.md) - TMDb integration
-- [RADARR.md](../integrations/servarr/RADARR.md) - Radarr integration
-- [TYPESENSE.md](../integrations/infrastructure/TYPESENSE.md) - Search setup

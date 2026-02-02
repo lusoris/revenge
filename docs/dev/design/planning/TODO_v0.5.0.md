@@ -395,11 +395,29 @@ This milestone adds music library support with artist/album/track hierarchy, Mus
 
 ---
 
+## Design Documentation
+
+> **Note**: Design work for v0.5.0 scope is **COMPLETE**. The following design documents exist and should be referenced during implementation:
+
+### Core Module Designs
+- [MUSIC_MODULE.md](../features/music/MUSIC_MODULE.md) - Complete music module design (artists, albums, tracks, playlists)
+- [AUDIO_STREAMING.md](../technical/AUDIO_STREAMING.md) - Audio streaming and progress tracking architecture
+
+### Integration Designs
+- [MUSICBRAINZ.md](../integrations/metadata/music/MUSICBRAINZ.md) - MusicBrainz metadata provider
+- [LASTFM.md](../integrations/metadata/music/LASTFM.md) - Last.fm integration (scrobbling, metadata)
+- [LASTFM_SCROBBLE.md](../integrations/scrobbling/LASTFM_SCROBBLE.md) - Last.fm scrobbling service
+- [LISTENBRAINZ.md](../integrations/scrobbling/LISTENBRAINZ.md) - ListenBrainz scrobbling (designed, bonus feature)
+- [LIDARR.md](../integrations/servarr/LIDARR.md) - Lidarr integration design
+- [SPOTIFY.md](../integrations/metadata/music/SPOTIFY.md) - Spotify metadata enrichment (designed, bonus)
+- [DISCOGS.md](../integrations/metadata/music/DISCOGS.md) - Discogs metadata (designed, bonus)
+
+### Related Features (Designed, Future Enhancement)
+- [SCROBBLING.md](../features/shared/SCROBBLING.md) - External scrobbling architecture (Trakt, Last.fm, etc.)
+
+---
+
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
-- [MUSIC_MODULE.md](../features/music/MUSIC_MODULE.md) - Music module design
-- [MUSICBRAINZ.md](../integrations/metadata/music/MUSICBRAINZ.md) - MusicBrainz integration
-- [LASTFM.md](../integrations/metadata/music/LASTFM.md) - Last.fm integration
-- [LIDARR.md](../integrations/servarr/LIDARR.md) - Lidarr integration

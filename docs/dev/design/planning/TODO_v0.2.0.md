@@ -463,11 +463,39 @@ This milestone implements all core backend services: authentication, user manage
 
 ---
 
+## Design Documentation
+
+> **Note**: Design work for v0.2.0 scope is **COMPLETE**. The following design documents exist and should be referenced during implementation:
+
+### Core Service Designs (All 19 services are designed)
+- [AUTH.md](../services/AUTH.md) - Authentication service (login, register, JWT, tokens)
+- [USER.md](../services/USER.md) - User management service (profiles, preferences, avatars)
+- [SESSION.md](../services/SESSION.md) - Session service (persistent sessions, device tracking)
+- [RBAC.md](../services/RBAC.md) - RBAC service with Casbin (roles, permissions, policies)
+- [APIKEYS.md](../services/APIKEYS.md) - API key management service
+- [OIDC.md](../services/OIDC.md) - OIDC authentication integration
+- [SETTINGS.md](../services/SETTINGS.md) - Settings service (user + server settings)
+- [ACTIVITY.md](../services/ACTIVITY.md) - Activity logging service (audit trail)
+- [LIBRARY.md](../services/LIBRARY.md) - Library scanner service (file watching, providers)
+
+### Integration Designs
+- [DRAGONFLY.md](../integrations/infrastructure/DRAGONFLY.md) - Session storage, caching patterns
+- [RIVER.md](../integrations/infrastructure/RIVER.md) - Background job processing
+- [POSTGRESQL.md](../integrations/infrastructure/POSTGRESQL.md) - Database schema patterns
+
+### Auth Provider Integrations (Designed, can add post-v0.2.0)
+- [AUTHELIA.md](../integrations/auth/AUTHELIA.md) - Authelia OIDC integration
+- [AUTHENTIK.md](../integrations/auth/AUTHENTIK.md) - Authentik OIDC integration
+- [KEYCLOAK.md](../integrations/auth/KEYCLOAK.md) - Keycloak OIDC integration
+- [GENERIC_OIDC.md](../integrations/auth/GENERIC_OIDC.md) - Generic OIDC provider support
+
+### Technical Architecture
+- [EMAIL.md](../technical/EMAIL.md) - Email sending system (verification, password reset)
+- [RBAC_CASBIN.md](../features/shared/RBAC_CASBIN.md) - Dynamic RBAC architecture with Casbin
+
+---
+
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
-- [AUTH.md](../services/AUTH.md) - Auth service design
-- [USER.md](../services/USER.md) - User service design
-- [RBAC.md](../services/RBAC.md) - RBAC service design
-- [LIBRARY.md](../services/LIBRARY.md) - Library service design
