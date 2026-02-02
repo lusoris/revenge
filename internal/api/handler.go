@@ -7,8 +7,11 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/rbac"
+	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/zap"
@@ -17,10 +20,13 @@ import (
 // Handler implements the ogen.Handler interface for health check endpoints.
 type Handler struct {
 	logger          *zap.Logger
+	cfg             *config.Config
 	healthService   *health.Service
 	settingsService settings.Service
 	userService     *user.Service
 	authService     *auth.Service
+	sessionService  *session.Service
+	rbacService     *rbac.Service
 	tokenManager    auth.TokenManager
 }
 
@@ -293,6 +299,18 @@ func toOgenUserSetting(s *settings.UserSetting) ogen.UserSetting {
 		Category:    ogen.NewOptString(stringPtrToString(s.Category)),
 		DataType:    ogen.UserSettingDataType(s.DataType),
 	}
+}
+
+// getUserID retrieves the user ID from the context (convenience wrapper).
+func (h *Handler) getUserID(ctx context.Context) (uuid.UUID, bool) {
+	userID, err := GetUserID(ctx)
+	return userID, err == nil
+}
+
+// getSessionID retrieves the session ID from the context.
+func (h *Handler) getSessionID(ctx context.Context) (uuid.UUID, bool) {
+	sessionID, ok := ctx.Value(sessionIDKey).(uuid.UUID)
+	return sessionID, ok
 }
 
 func stringPtrToString(s *string) string {

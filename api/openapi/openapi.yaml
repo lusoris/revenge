@@ -685,6 +685,317 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Session management endpoints
+  /api/v1/sessions:
+    get:
+      summary: List user sessions
+      description: Get all active sessions for the authenticated user
+      operationId: listSessions
+      tags:
+        - sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Logout all sessions
+      description: Revoke all sessions for the authenticated user (logout everywhere)
+      operationId: logoutAll
+      tags:
+        - sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: All sessions revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/sessions/current:
+    get:
+      summary: Get current session
+      description: Get information about the current session
+      operationId: getCurrentSession
+      tags:
+        - sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Logout current session
+      description: Revoke the current session (logout)
+      operationId: logoutCurrent
+      tags:
+        - sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Session revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/sessions/refresh:
+    post:
+      summary: Refresh session
+      description: Refresh access token using refresh token
+      operationId: refreshSession
+      tags:
+        - sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshSessionRequest'
+      responses:
+        '200':
+          description: New access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshSessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/sessions/{sessionId}:
+    delete:
+      summary: Revoke session
+      description: Revoke a specific session by ID
+      operationId: revokeSession
+      tags:
+        - sessions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Session ID
+      responses:
+        '204':
+          description: Session revoked
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # RBAC endpoints
+  /api/v1/rbac/policies:
+    get:
+      summary: List policies
+      description: Get all authorization policies (admin only)
+      operationId: listPolicies
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of policies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+    post:
+      summary: Add policy
+      description: Add a new authorization policy (admin only)
+      operationId: addPolicy
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyRequest'
+      responses:
+        '201':
+          description: Policy created
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Remove policy
+      description: Remove an authorization policy (admin only)
+      operationId: removePolicy
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyRequest'
+      responses:
+        '204':
+          description: Policy removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/rbac/users/{userId}/roles:
+    get:
+      summary: Get user roles
+      description: Get all roles assigned to a user
+      operationId: getUserRoles
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User ID
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+    post:
+      summary: Assign role
+      description: Assign a role to a user (admin only)
+      operationId: assignRole
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRoleRequest'
+      responses:
+        '201':
+          description: Role assigned
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/rbac/users/{userId}/roles/{role}:
+    delete:
+      summary: Remove role
+      description: Remove a role from a user (admin only)
+      operationId: removeRole
+      tags:
+        - rbac
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User ID
+        - name: role
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Role name
+      responses:
+        '204':
+          description: Role removed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas
@@ -1208,6 +1519,146 @@ components:
               status: healthy
               message: database is healthy
 
+    # Session schemas
+    SessionInfo:
+      type: object
+      required:
+        - id
+        - ip_address
+        - created_at
+        - last_activity_at
+        - expires_at
+        - is_active
+        - is_current
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Session ID
+        device_name:
+          type: string
+          description: Device name
+        ip_address:
+          type: string
+          description: IP address
+        user_agent:
+          type: string
+          description: User agent string
+        created_at:
+          type: string
+          format: date-time
+          description: Session creation timestamp
+        last_activity_at:
+          type: string
+          format: date-time
+          description: Last activity timestamp
+        expires_at:
+          type: string
+          format: date-time
+          description: Session expiration timestamp
+        is_active:
+          type: boolean
+          description: Whether session is active
+        is_current:
+          type: boolean
+          description: Whether this is the current session
+
+    SessionListResponse:
+      type: object
+      required:
+        - sessions
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionInfo'
+
+    RefreshSessionRequest:
+      type: object
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+          description: Refresh token
+
+    RefreshSessionResponse:
+      type: object
+      required:
+        - access_token
+        - expires_in
+      properties:
+        access_token:
+          type: string
+          description: New access token
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+
+    # RBAC schemas
+    Policy:
+      type: object
+      required:
+        - subject
+        - object
+        - action
+      properties:
+        subject:
+          type: string
+          description: Subject (user, role, or group)
+        object:
+          type: string
+          description: Object (resource or endpoint)
+        action:
+          type: string
+          description: Action (read, write, delete, etc.)
+
+    PolicyRequest:
+      type: object
+      required:
+        - subject
+        - object
+        - action
+      properties:
+        subject:
+          type: string
+          description: Subject (user, role, or group)
+        object:
+          type: string
+          description: Object (resource or endpoint)
+        action:
+          type: string
+          description: Action (read, write, delete, etc.)
+
+    PolicyListResponse:
+      type: object
+      required:
+        - policies
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+
+    RoleListResponse:
+      type: object
+      required:
+        - roles
+      properties:
+        roles:
+          type: array
+          items:
+            type: string
+
+    AssignRoleRequest:
+      type: object
+      required:
+        - role
+      properties:
+        role:
+          type: string
+          description: Role name to assign
+
     Error:
       type: object
       required:
@@ -1244,6 +1695,13 @@ components:
 
     Unauthorized:
       description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
       content:
         application/json:
           schema:

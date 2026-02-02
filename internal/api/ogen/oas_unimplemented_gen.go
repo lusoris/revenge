@@ -13,6 +13,24 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AddPolicy implements addPolicy operation.
+//
+// Add a new authorization policy (admin only).
+//
+// POST /api/v1/rbac/policies
+func (UnimplementedHandler) AddPolicy(ctx context.Context, req *PolicyRequest) (r AddPolicyRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AssignRole implements assignRole operation.
+//
+// Assign a role to a user (admin only).
+//
+// POST /api/v1/rbac/users/{userId}/roles
+func (UnimplementedHandler) AssignRole(ctx context.Context, req *AssignRoleRequest, params AssignRoleParams) (r AssignRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ChangePassword implements changePassword operation.
 //
 // Change password for authenticated user (requires old password).
@@ -37,6 +55,15 @@ func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params Delete
 //
 // POST /api/v1/auth/forgot-password
 func (UnimplementedHandler) ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (r ForgotPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCurrentSession implements getCurrentSession operation.
+//
+// Get information about the current session.
+//
+// GET /api/v1/sessions/current
+func (UnimplementedHandler) GetCurrentSession(ctx context.Context) (r GetCurrentSessionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -109,6 +136,15 @@ func (UnimplementedHandler) GetUserPreferences(ctx context.Context) (r GetUserPr
 	return r, ht.ErrNotImplemented
 }
 
+// GetUserRoles implements getUserRoles operation.
+//
+// Get all roles assigned to a user.
+//
+// GET /api/v1/rbac/users/{userId}/roles
+func (UnimplementedHandler) GetUserRoles(ctx context.Context, params GetUserRolesParams) (r GetUserRolesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetUserSetting implements getUserSetting operation.
 //
 // Retrieve a specific user setting by key.
@@ -118,12 +154,30 @@ func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSe
 	return r, ht.ErrNotImplemented
 }
 
+// ListPolicies implements listPolicies operation.
+//
+// Get all authorization policies (admin only).
+//
+// GET /api/v1/rbac/policies
+func (UnimplementedHandler) ListPolicies(ctx context.Context) (r ListPoliciesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListServerSettings implements listServerSettings operation.
 //
 // Retrieve all server-wide configuration settings.
 //
 // GET /api/v1/settings/server
 func (UnimplementedHandler) ListServerSettings(ctx context.Context) (r ListServerSettingsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListSessions implements listSessions operation.
+//
+// Get all active sessions for the authenticated user.
+//
+// GET /api/v1/sessions
+func (UnimplementedHandler) ListSessions(ctx context.Context) (r ListSessionsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -154,6 +208,33 @@ func (UnimplementedHandler) Logout(ctx context.Context, req *LogoutRequest) (r L
 	return r, ht.ErrNotImplemented
 }
 
+// LogoutAll implements logoutAll operation.
+//
+// Revoke all sessions for the authenticated user (logout everywhere).
+//
+// DELETE /api/v1/sessions
+func (UnimplementedHandler) LogoutAll(ctx context.Context) (r LogoutAllRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// LogoutCurrent implements logoutCurrent operation.
+//
+// Revoke the current session (logout).
+//
+// DELETE /api/v1/sessions/current
+func (UnimplementedHandler) LogoutCurrent(ctx context.Context) (r LogoutCurrentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshSession implements refreshSession operation.
+//
+// Refresh access token using refresh token.
+//
+// POST /api/v1/sessions/refresh
+func (UnimplementedHandler) RefreshSession(ctx context.Context, req *RefreshSessionRequest) (r RefreshSessionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RefreshToken implements refreshToken operation.
 //
 // Exchange refresh token for a new access token.
@@ -172,6 +253,24 @@ func (UnimplementedHandler) Register(ctx context.Context, req *RegisterRequest) 
 	return r, ht.ErrNotImplemented
 }
 
+// RemovePolicy implements removePolicy operation.
+//
+// Remove an authorization policy (admin only).
+//
+// DELETE /api/v1/rbac/policies
+func (UnimplementedHandler) RemovePolicy(ctx context.Context, req *PolicyRequest) (r RemovePolicyRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RemoveRole implements removeRole operation.
+//
+// Remove a role from a user (admin only).
+//
+// DELETE /api/v1/rbac/users/{userId}/roles/{role}
+func (UnimplementedHandler) RemoveRole(ctx context.Context, params RemoveRoleParams) (r RemoveRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ResendVerification implements resendVerification operation.
 //
 // Resend email verification token to user's email address.
@@ -187,6 +286,15 @@ func (UnimplementedHandler) ResendVerification(ctx context.Context) (r ResendVer
 //
 // POST /api/v1/auth/reset-password
 func (UnimplementedHandler) ResetPassword(ctx context.Context, req *ResetPasswordRequest) (r ResetPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RevokeSession implements revokeSession operation.
+//
+// Revoke a specific session by ID.
+//
+// DELETE /api/v1/sessions/{sessionId}
+func (UnimplementedHandler) RevokeSession(ctx context.Context, params RevokeSessionParams) (r RevokeSessionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

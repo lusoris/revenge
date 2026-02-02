@@ -13,6 +13,7 @@ type contextKey int
 const (
 	contextKeyUserID contextKey = iota
 	contextKeyUsername
+	sessionIDKey
 )
 
 var (

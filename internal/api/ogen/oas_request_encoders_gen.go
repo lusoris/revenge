@@ -14,6 +14,34 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
+func encodeAddPolicyRequest(
+	req *PolicyRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeAssignRoleRequest(
+	req *AssignRoleRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
 	r *http.Request,
@@ -70,6 +98,20 @@ func encodeLogoutRequest(
 	return nil
 }
 
+func encodeRefreshSessionRequest(
+	req *RefreshSessionRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeRefreshTokenRequest(
 	req *RefreshRequest,
 	r *http.Request,
@@ -86,6 +128,20 @@ func encodeRefreshTokenRequest(
 
 func encodeRegisterRequest(
 	req *RegisterRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeRemovePolicyRequest(
+	req *PolicyRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

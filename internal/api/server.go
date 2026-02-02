@@ -10,6 +10,8 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/rbac"
+	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
@@ -33,6 +35,8 @@ type ServerParams struct {
 	SettingsService settings.Service
 	UserService     *user.Service
 	AuthService     *auth.Service
+	SessionService  *session.Service
+	RBACService     *rbac.Service
 	TokenManager    auth.TokenManager
 	Lifecycle       fx.Lifecycle
 }
@@ -42,10 +46,13 @@ func NewServer(p ServerParams) (*Server, error) {
 	// Create the handler implementation
 	handler := &Handler{
 		logger:          p.Logger.Named("api"),
+		cfg:             p.Config,
 		healthService:   p.HealthService,
 		userService:     p.UserService,
 		settingsService: p.SettingsService,
 		authService:     p.AuthService,
+		sessionService:  p.SessionService,
+		rbacService:     p.RBACService,
 		tokenManager:    p.TokenManager,
 	}
 

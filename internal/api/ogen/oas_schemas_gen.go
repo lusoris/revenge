@@ -16,6 +16,60 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+type AddPolicyBadRequest Error
+
+func (*AddPolicyBadRequest) addPolicyRes() {}
+
+// AddPolicyCreated is response for AddPolicy operation.
+type AddPolicyCreated struct{}
+
+func (*AddPolicyCreated) addPolicyRes() {}
+
+type AddPolicyForbidden Error
+
+func (*AddPolicyForbidden) addPolicyRes() {}
+
+type AddPolicyUnauthorized Error
+
+func (*AddPolicyUnauthorized) addPolicyRes() {}
+
+type AssignRoleBadRequest Error
+
+func (*AssignRoleBadRequest) assignRoleRes() {}
+
+// AssignRoleCreated is response for AssignRole operation.
+type AssignRoleCreated struct{}
+
+func (*AssignRoleCreated) assignRoleRes() {}
+
+type AssignRoleForbidden Error
+
+func (*AssignRoleForbidden) assignRoleRes() {}
+
+type AssignRoleNotFound Error
+
+func (*AssignRoleNotFound) assignRoleRes() {}
+
+// Ref: #/components/schemas/AssignRoleRequest
+type AssignRoleRequest struct {
+	// Role name to assign.
+	Role string `json:"role"`
+}
+
+// GetRole returns the value of Role.
+func (s *AssignRoleRequest) GetRole() string {
+	return s.Role
+}
+
+// SetRole sets the value of Role.
+func (s *AssignRoleRequest) SetRole(val string) {
+	s.Role = val
+}
+
+type AssignRoleUnauthorized Error
+
+func (*AssignRoleUnauthorized) assignRoleRes() {}
+
 // Ref: #/components/schemas/Avatar
 type Avatar struct {
 	// Avatar ID.
@@ -276,9 +330,14 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 func (*Error) forgotPasswordRes()     {}
 func (*Error) getCurrentUserRes()     {}
 func (*Error) getUserPreferencesRes() {}
+func (*Error) getUserRolesRes()       {}
 func (*Error) listServerSettingsRes() {}
+func (*Error) listSessionsRes()       {}
 func (*Error) listUserSettingsRes()   {}
+func (*Error) logoutAllRes()          {}
+func (*Error) logoutCurrentRes()      {}
 func (*Error) logoutRes()             {}
+func (*Error) refreshSessionRes()     {}
 func (*Error) registerRes()           {}
 func (*Error) resendVerificationRes() {}
 func (*Error) resetPasswordRes()      {}
@@ -342,6 +401,14 @@ func (s *ForgotPasswordRequest) GetEmail() string {
 func (s *ForgotPasswordRequest) SetEmail(val string) {
 	s.Email = val
 }
+
+type GetCurrentSessionNotFound Error
+
+func (*GetCurrentSessionNotFound) getCurrentSessionRes() {}
+
+type GetCurrentSessionUnauthorized Error
+
+func (*GetCurrentSessionUnauthorized) getCurrentSessionRes() {}
 
 type GetReadinessOK HealthCheck
 
@@ -496,6 +563,14 @@ func (s *HealthCheckStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+type ListPoliciesForbidden Error
+
+func (*ListPoliciesForbidden) listPoliciesRes() {}
+
+type ListPoliciesUnauthorized Error
+
+func (*ListPoliciesUnauthorized) listPoliciesRes() {}
+
 type ListServerSettingsOKApplicationJSON []ServerSetting
 
 func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
@@ -604,6 +679,16 @@ func (*LoginResponse) loginRes() {}
 type LoginUnauthorized Error
 
 func (*LoginUnauthorized) loginRes() {}
+
+// LogoutAllNoContent is response for LogoutAll operation.
+type LogoutAllNoContent struct{}
+
+func (*LogoutAllNoContent) logoutAllRes() {}
+
+// LogoutCurrentNoContent is response for LogoutCurrent operation.
+type LogoutCurrentNoContent struct{}
+
+func (*LogoutCurrentNoContent) logoutCurrentRes() {}
 
 // LogoutNoContent is response for Logout operation.
 type LogoutNoContent struct{}
@@ -1558,6 +1643,103 @@ func (o OptUserPreferencesUpdateTheme) Or(d UserPreferencesUpdateTheme) UserPref
 	return d
 }
 
+// Ref: #/components/schemas/Policy
+type Policy struct {
+	// Subject (user, role, or group).
+	Subject string `json:"subject"`
+	// Object (resource or endpoint).
+	Object string `json:"object"`
+	// Action (read, write, delete, etc.).
+	Action string `json:"action"`
+}
+
+// GetSubject returns the value of Subject.
+func (s *Policy) GetSubject() string {
+	return s.Subject
+}
+
+// GetObject returns the value of Object.
+func (s *Policy) GetObject() string {
+	return s.Object
+}
+
+// GetAction returns the value of Action.
+func (s *Policy) GetAction() string {
+	return s.Action
+}
+
+// SetSubject sets the value of Subject.
+func (s *Policy) SetSubject(val string) {
+	s.Subject = val
+}
+
+// SetObject sets the value of Object.
+func (s *Policy) SetObject(val string) {
+	s.Object = val
+}
+
+// SetAction sets the value of Action.
+func (s *Policy) SetAction(val string) {
+	s.Action = val
+}
+
+// Ref: #/components/schemas/PolicyListResponse
+type PolicyListResponse struct {
+	Policies []Policy `json:"policies"`
+}
+
+// GetPolicies returns the value of Policies.
+func (s *PolicyListResponse) GetPolicies() []Policy {
+	return s.Policies
+}
+
+// SetPolicies sets the value of Policies.
+func (s *PolicyListResponse) SetPolicies(val []Policy) {
+	s.Policies = val
+}
+
+func (*PolicyListResponse) listPoliciesRes() {}
+
+// Ref: #/components/schemas/PolicyRequest
+type PolicyRequest struct {
+	// Subject (user, role, or group).
+	Subject string `json:"subject"`
+	// Object (resource or endpoint).
+	Object string `json:"object"`
+	// Action (read, write, delete, etc.).
+	Action string `json:"action"`
+}
+
+// GetSubject returns the value of Subject.
+func (s *PolicyRequest) GetSubject() string {
+	return s.Subject
+}
+
+// GetObject returns the value of Object.
+func (s *PolicyRequest) GetObject() string {
+	return s.Object
+}
+
+// GetAction returns the value of Action.
+func (s *PolicyRequest) GetAction() string {
+	return s.Action
+}
+
+// SetSubject sets the value of Subject.
+func (s *PolicyRequest) SetSubject(val string) {
+	s.Subject = val
+}
+
+// SetObject sets the value of Object.
+func (s *PolicyRequest) SetObject(val string) {
+	s.Object = val
+}
+
+// SetAction sets the value of Action.
+func (s *PolicyRequest) SetAction(val string) {
+	s.Action = val
+}
+
 // Ref: #/components/schemas/RefreshRequest
 type RefreshRequest struct {
 	// Refresh token.
@@ -1603,6 +1785,52 @@ func (s *RefreshResponse) SetExpiresIn(val int) {
 }
 
 func (*RefreshResponse) refreshTokenRes() {}
+
+// Ref: #/components/schemas/RefreshSessionRequest
+type RefreshSessionRequest struct {
+	// Refresh token.
+	RefreshToken string `json:"refresh_token"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *RefreshSessionRequest) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *RefreshSessionRequest) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+// Ref: #/components/schemas/RefreshSessionResponse
+type RefreshSessionResponse struct {
+	// New access token.
+	AccessToken string `json:"access_token"`
+	// Token expiration time in seconds.
+	ExpiresIn int `json:"expires_in"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *RefreshSessionResponse) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetExpiresIn returns the value of ExpiresIn.
+func (s *RefreshSessionResponse) GetExpiresIn() int {
+	return s.ExpiresIn
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *RefreshSessionResponse) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetExpiresIn sets the value of ExpiresIn.
+func (s *RefreshSessionResponse) SetExpiresIn(val int) {
+	s.ExpiresIn = val
+}
+
+func (*RefreshSessionResponse) refreshSessionRes() {}
 
 type RefreshTokenBadRequest Error
 
@@ -1664,6 +1892,48 @@ func (s *RegisterRequest) SetDisplayName(val OptString) {
 	s.DisplayName = val
 }
 
+type RemovePolicyBadRequest Error
+
+func (*RemovePolicyBadRequest) removePolicyRes() {}
+
+type RemovePolicyForbidden Error
+
+func (*RemovePolicyForbidden) removePolicyRes() {}
+
+// RemovePolicyNoContent is response for RemovePolicy operation.
+type RemovePolicyNoContent struct{}
+
+func (*RemovePolicyNoContent) removePolicyRes() {}
+
+type RemovePolicyNotFound Error
+
+func (*RemovePolicyNotFound) removePolicyRes() {}
+
+type RemovePolicyUnauthorized Error
+
+func (*RemovePolicyUnauthorized) removePolicyRes() {}
+
+type RemoveRoleBadRequest Error
+
+func (*RemoveRoleBadRequest) removeRoleRes() {}
+
+type RemoveRoleForbidden Error
+
+func (*RemoveRoleForbidden) removeRoleRes() {}
+
+// RemoveRoleNoContent is response for RemoveRole operation.
+type RemoveRoleNoContent struct{}
+
+func (*RemoveRoleNoContent) removeRoleRes() {}
+
+type RemoveRoleNotFound Error
+
+func (*RemoveRoleNotFound) removeRoleRes() {}
+
+type RemoveRoleUnauthorized Error
+
+func (*RemoveRoleUnauthorized) removeRoleRes() {}
+
 // ResendVerificationNoContent is response for ResendVerification operation.
 type ResendVerificationNoContent struct{}
 
@@ -1701,6 +1971,40 @@ func (s *ResetPasswordRequest) SetToken(val string) {
 func (s *ResetPasswordRequest) SetNewPassword(val string) {
 	s.NewPassword = val
 }
+
+type RevokeSessionBadRequest Error
+
+func (*RevokeSessionBadRequest) revokeSessionRes() {}
+
+// RevokeSessionNoContent is response for RevokeSession operation.
+type RevokeSessionNoContent struct{}
+
+func (*RevokeSessionNoContent) revokeSessionRes() {}
+
+type RevokeSessionNotFound Error
+
+func (*RevokeSessionNotFound) revokeSessionRes() {}
+
+type RevokeSessionUnauthorized Error
+
+func (*RevokeSessionUnauthorized) revokeSessionRes() {}
+
+// Ref: #/components/schemas/RoleListResponse
+type RoleListResponse struct {
+	Roles []string `json:"roles"`
+}
+
+// GetRoles returns the value of Roles.
+func (s *RoleListResponse) GetRoles() []string {
+	return s.Roles
+}
+
+// SetRoles sets the value of Roles.
+func (s *RoleListResponse) SetRoles(val []string) {
+	s.Roles = val
+}
+
+func (*RoleListResponse) getUserRolesRes() {}
 
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {
@@ -1976,6 +2280,137 @@ func NewServerSettingValue3ServerSettingValue(v ServerSettingValue3) ServerSetti
 }
 
 type ServerSettingValue3 struct{}
+
+// Ref: #/components/schemas/SessionInfo
+type SessionInfo struct {
+	// Session ID.
+	ID uuid.UUID `json:"id"`
+	// Device name.
+	DeviceName OptString `json:"device_name"`
+	// IP address.
+	IPAddress string `json:"ip_address"`
+	// User agent string.
+	UserAgent OptString `json:"user_agent"`
+	// Session creation timestamp.
+	CreatedAt time.Time `json:"created_at"`
+	// Last activity timestamp.
+	LastActivityAt time.Time `json:"last_activity_at"`
+	// Session expiration timestamp.
+	ExpiresAt time.Time `json:"expires_at"`
+	// Whether session is active.
+	IsActive bool `json:"is_active"`
+	// Whether this is the current session.
+	IsCurrent bool `json:"is_current"`
+}
+
+// GetID returns the value of ID.
+func (s *SessionInfo) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetDeviceName returns the value of DeviceName.
+func (s *SessionInfo) GetDeviceName() OptString {
+	return s.DeviceName
+}
+
+// GetIPAddress returns the value of IPAddress.
+func (s *SessionInfo) GetIPAddress() string {
+	return s.IPAddress
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *SessionInfo) GetUserAgent() OptString {
+	return s.UserAgent
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *SessionInfo) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetLastActivityAt returns the value of LastActivityAt.
+func (s *SessionInfo) GetLastActivityAt() time.Time {
+	return s.LastActivityAt
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *SessionInfo) GetExpiresAt() time.Time {
+	return s.ExpiresAt
+}
+
+// GetIsActive returns the value of IsActive.
+func (s *SessionInfo) GetIsActive() bool {
+	return s.IsActive
+}
+
+// GetIsCurrent returns the value of IsCurrent.
+func (s *SessionInfo) GetIsCurrent() bool {
+	return s.IsCurrent
+}
+
+// SetID sets the value of ID.
+func (s *SessionInfo) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetDeviceName sets the value of DeviceName.
+func (s *SessionInfo) SetDeviceName(val OptString) {
+	s.DeviceName = val
+}
+
+// SetIPAddress sets the value of IPAddress.
+func (s *SessionInfo) SetIPAddress(val string) {
+	s.IPAddress = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *SessionInfo) SetUserAgent(val OptString) {
+	s.UserAgent = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *SessionInfo) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetLastActivityAt sets the value of LastActivityAt.
+func (s *SessionInfo) SetLastActivityAt(val time.Time) {
+	s.LastActivityAt = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *SessionInfo) SetExpiresAt(val time.Time) {
+	s.ExpiresAt = val
+}
+
+// SetIsActive sets the value of IsActive.
+func (s *SessionInfo) SetIsActive(val bool) {
+	s.IsActive = val
+}
+
+// SetIsCurrent sets the value of IsCurrent.
+func (s *SessionInfo) SetIsCurrent(val bool) {
+	s.IsCurrent = val
+}
+
+func (*SessionInfo) getCurrentSessionRes() {}
+
+// Ref: #/components/schemas/SessionListResponse
+type SessionListResponse struct {
+	Sessions []SessionInfo `json:"sessions"`
+}
+
+// GetSessions returns the value of Sessions.
+func (s *SessionListResponse) GetSessions() []SessionInfo {
+	return s.Sessions
+}
+
+// SetSessions sets the value of Sessions.
+func (s *SessionListResponse) SetSessions(val []SessionInfo) {
+	s.Sessions = val
+}
+
+func (*SessionListResponse) listSessionsRes() {}
 
 // Ref: #/components/schemas/SettingValue
 type SettingValue struct {

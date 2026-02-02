@@ -8,6 +8,18 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AddPolicy implements addPolicy operation.
+	//
+	// Add a new authorization policy (admin only).
+	//
+	// POST /api/v1/rbac/policies
+	AddPolicy(ctx context.Context, req *PolicyRequest) (AddPolicyRes, error)
+	// AssignRole implements assignRole operation.
+	//
+	// Assign a role to a user (admin only).
+	//
+	// POST /api/v1/rbac/users/{userId}/roles
+	AssignRole(ctx context.Context, req *AssignRoleRequest, params AssignRoleParams) (AssignRoleRes, error)
 	// ChangePassword implements changePassword operation.
 	//
 	// Change password for authenticated user (requires old password).
@@ -26,6 +38,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/forgot-password
 	ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (ForgotPasswordRes, error)
+	// GetCurrentSession implements getCurrentSession operation.
+	//
+	// Get information about the current session.
+	//
+	// GET /api/v1/sessions/current
+	GetCurrentSession(ctx context.Context) (GetCurrentSessionRes, error)
 	// GetCurrentUser implements getCurrentUser operation.
 	//
 	// Get the currently authenticated user's profile.
@@ -74,18 +92,36 @@ type Handler interface {
 	//
 	// GET /api/v1/users/me/preferences
 	GetUserPreferences(ctx context.Context) (GetUserPreferencesRes, error)
+	// GetUserRoles implements getUserRoles operation.
+	//
+	// Get all roles assigned to a user.
+	//
+	// GET /api/v1/rbac/users/{userId}/roles
+	GetUserRoles(ctx context.Context, params GetUserRolesParams) (GetUserRolesRes, error)
 	// GetUserSetting implements getUserSetting operation.
 	//
 	// Retrieve a specific user setting by key.
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// ListPolicies implements listPolicies operation.
+	//
+	// Get all authorization policies (admin only).
+	//
+	// GET /api/v1/rbac/policies
+	ListPolicies(ctx context.Context) (ListPoliciesRes, error)
 	// ListServerSettings implements listServerSettings operation.
 	//
 	// Retrieve all server-wide configuration settings.
 	//
 	// GET /api/v1/settings/server
 	ListServerSettings(ctx context.Context) (ListServerSettingsRes, error)
+	// ListSessions implements listSessions operation.
+	//
+	// Get all active sessions for the authenticated user.
+	//
+	// GET /api/v1/sessions
+	ListSessions(ctx context.Context) (ListSessionsRes, error)
 	// ListUserSettings implements listUserSettings operation.
 	//
 	// Retrieve all settings for the authenticated user.
@@ -104,6 +140,24 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/logout
 	Logout(ctx context.Context, req *LogoutRequest) (LogoutRes, error)
+	// LogoutAll implements logoutAll operation.
+	//
+	// Revoke all sessions for the authenticated user (logout everywhere).
+	//
+	// DELETE /api/v1/sessions
+	LogoutAll(ctx context.Context) (LogoutAllRes, error)
+	// LogoutCurrent implements logoutCurrent operation.
+	//
+	// Revoke the current session (logout).
+	//
+	// DELETE /api/v1/sessions/current
+	LogoutCurrent(ctx context.Context) (LogoutCurrentRes, error)
+	// RefreshSession implements refreshSession operation.
+	//
+	// Refresh access token using refresh token.
+	//
+	// POST /api/v1/sessions/refresh
+	RefreshSession(ctx context.Context, req *RefreshSessionRequest) (RefreshSessionRes, error)
 	// RefreshToken implements refreshToken operation.
 	//
 	// Exchange refresh token for a new access token.
@@ -116,6 +170,18 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/register
 	Register(ctx context.Context, req *RegisterRequest) (RegisterRes, error)
+	// RemovePolicy implements removePolicy operation.
+	//
+	// Remove an authorization policy (admin only).
+	//
+	// DELETE /api/v1/rbac/policies
+	RemovePolicy(ctx context.Context, req *PolicyRequest) (RemovePolicyRes, error)
+	// RemoveRole implements removeRole operation.
+	//
+	// Remove a role from a user (admin only).
+	//
+	// DELETE /api/v1/rbac/users/{userId}/roles/{role}
+	RemoveRole(ctx context.Context, params RemoveRoleParams) (RemoveRoleRes, error)
 	// ResendVerification implements resendVerification operation.
 	//
 	// Resend email verification token to user's email address.
@@ -128,6 +194,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/reset-password
 	ResetPassword(ctx context.Context, req *ResetPasswordRequest) (ResetPasswordRes, error)
+	// RevokeSession implements revokeSession operation.
+	//
+	// Revoke a specific session by ID.
+	//
+	// DELETE /api/v1/sessions/{sessionId}
+	RevokeSession(ctx context.Context, params RevokeSessionParams) (RevokeSessionRes, error)
 	// UpdateCurrentUser implements updateCurrentUser operation.
 	//
 	// Update the authenticated user's profile.
