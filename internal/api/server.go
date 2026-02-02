@@ -9,6 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/service/settings"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -24,22 +25,24 @@ type Server struct {
 type ServerParams struct {
 	fx.In
 
-	Config        *config.Config
-	Logger        *zap.Logger
-	HealthService *health.Service
-	Lifecycle     fx.Lifecycle
+	Config          *config.Config
+	Logger          *zap.Logger
+	HealthService   *health.Service
+	SettingsService settings.Service
+	Lifecycle       fx.Lifecycle
 }
 
 // NewServer creates a new HTTP API server with ogen-generated handlers.
 func NewServer(p ServerParams) (*Server, error) {
 	// Create the handler implementation
 	handler := &Handler{
-		logger:        p.Logger.Named("api"),
-		healthService: p.HealthService,
+		logger:          p.Logger.Named("api"),
+		healthService:   p.HealthService,
+		settingsService: p.SettingsService,
 	}
 
 	// Create ogen server
-	ogenServer, err := ogen.NewServer(handler)
+	ogenServer, err := ogen.NewServer(handler, handler)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create ogen server: %w", err)
 	}

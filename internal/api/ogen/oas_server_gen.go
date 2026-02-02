@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// DeleteUserSetting implements deleteUserSetting operation.
+	//
+	// Delete a user setting (revert to default).
+	//
+	// DELETE /api/v1/settings/user/{key}
+	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
 	// GetLiveness implements getLiveness operation.
 	//
 	// Checks if the service is alive and running.
@@ -24,6 +30,12 @@ type Handler interface {
 	//
 	// GET /health/ready
 	GetReadiness(ctx context.Context) (GetReadinessRes, error)
+	// GetServerSetting implements getServerSetting operation.
+	//
+	// Retrieve a specific server setting by key.
+	//
+	// GET /api/v1/settings/server/{key}
+	GetServerSetting(ctx context.Context, params GetServerSettingParams) (GetServerSettingRes, error)
 	// GetStartup implements getStartup operation.
 	//
 	// Checks if the service has completed initialization.
@@ -32,6 +44,36 @@ type Handler interface {
 	//
 	// GET /health/startup
 	GetStartup(ctx context.Context) (GetStartupRes, error)
+	// GetUserSetting implements getUserSetting operation.
+	//
+	// Retrieve a specific user setting by key.
+	//
+	// GET /api/v1/settings/user/{key}
+	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// ListServerSettings implements listServerSettings operation.
+	//
+	// Retrieve all server-wide configuration settings.
+	//
+	// GET /api/v1/settings/server
+	ListServerSettings(ctx context.Context) (ListServerSettingsRes, error)
+	// ListUserSettings implements listUserSettings operation.
+	//
+	// Retrieve all settings for the authenticated user.
+	//
+	// GET /api/v1/settings/user
+	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// UpdateServerSetting implements updateServerSetting operation.
+	//
+	// Update the value of a server setting.
+	//
+	// PUT /api/v1/settings/server/{key}
+	UpdateServerSetting(ctx context.Context, req *SettingValue, params UpdateServerSettingParams) (UpdateServerSettingRes, error)
+	// UpdateUserSetting implements updateUserSetting operation.
+	//
+	// Update the value of a user setting.
+	//
+	// PUT /api/v1/settings/user/{key}
+	UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (UpdateUserSettingRes, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.
@@ -41,18 +83,20 @@ type Handler interface {
 // Server implements http server based on OpenAPI v3 specification and
 // calls Handler to handle requests.
 type Server struct {
-	h Handler
+	h   Handler
+	sec SecurityHandler
 	baseServer
 }
 
 // NewServer creates new Server.
-func NewServer(h Handler, opts ...ServerOption) (*Server, error) {
+func NewServer(h Handler, sec SecurityHandler, opts ...ServerOption) (*Server, error) {
 	s, err := newServerConfig(opts...).baseServer()
 	if err != nil {
 		return nil, err
 	}
 	return &Server{
 		h:          h,
+		sec:        sec,
 		baseServer: s,
 	}, nil
 }

@@ -7,11 +7,50 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
+	"github.com/google/uuid"
 )
 
 func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
+
+type BearerAuth struct {
+	Token string
+	Roles []string
+}
+
+// GetToken returns the value of Token.
+func (s *BearerAuth) GetToken() string {
+	return s.Token
+}
+
+// GetRoles returns the value of Roles.
+func (s *BearerAuth) GetRoles() []string {
+	return s.Roles
+}
+
+// SetToken sets the value of Token.
+func (s *BearerAuth) SetToken(val string) {
+	s.Token = val
+}
+
+// SetRoles sets the value of Roles.
+func (s *BearerAuth) SetRoles(val []string) {
+	s.Roles = val
+}
+
+// DeleteUserSettingNoContent is response for DeleteUserSetting operation.
+type DeleteUserSettingNoContent struct{}
+
+func (*DeleteUserSettingNoContent) deleteUserSettingRes() {}
+
+type DeleteUserSettingNotFound Error
+
+func (*DeleteUserSettingNotFound) deleteUserSettingRes() {}
+
+type DeleteUserSettingUnauthorized Error
+
+func (*DeleteUserSettingUnauthorized) deleteUserSettingRes() {}
 
 // Ref: #/components/schemas/Error
 type Error struct {
@@ -52,6 +91,9 @@ func (s *Error) SetMessage(val string) {
 func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
+
+func (*Error) listServerSettingsRes() {}
+func (*Error) listUserSettingsRes()   {}
 
 // Additional error details.
 type ErrorDetails map[string]jx.Raw
@@ -99,6 +141,14 @@ type GetReadinessServiceUnavailable HealthCheck
 
 func (*GetReadinessServiceUnavailable) getReadinessRes() {}
 
+type GetServerSettingNotFound Error
+
+func (*GetServerSettingNotFound) getServerSettingRes() {}
+
+type GetServerSettingUnauthorized Error
+
+func (*GetServerSettingUnauthorized) getServerSettingRes() {}
+
 type GetStartupOK HealthCheck
 
 func (*GetStartupOK) getStartupRes() {}
@@ -106,6 +156,14 @@ func (*GetStartupOK) getStartupRes() {}
 type GetStartupServiceUnavailable HealthCheck
 
 func (*GetStartupServiceUnavailable) getStartupRes() {}
+
+type GetUserSettingNotFound Error
+
+func (*GetUserSettingNotFound) getUserSettingRes() {}
+
+type GetUserSettingUnauthorized Error
+
+func (*GetUserSettingUnauthorized) getUserSettingRes() {}
 
 // Ref: #/components/schemas/HealthCheck
 type HealthCheck struct {
@@ -218,6 +276,60 @@ func (s *HealthCheckStatus) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+type ListServerSettingsOKApplicationJSON []ServerSetting
+
+func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
+
+type ListUserSettingsOKApplicationJSON []UserSetting
+
+func (*ListUserSettingsOKApplicationJSON) listUserSettingsRes() {}
+
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptErrorDetails returns new OptErrorDetails with value set to v.
@@ -357,3 +469,698 @@ func (o OptString) Or(d string) string {
 	}
 	return d
 }
+
+// Ref: #/components/schemas/ServerSetting
+type ServerSetting struct {
+	// Setting key.
+	Key string `json:"key"`
+	// Setting value (type varies based on data_type).
+	Value ServerSettingValue `json:"value"`
+	// Human-readable description.
+	Description OptString `json:"description"`
+	// Setting category for organization.
+	Category OptString `json:"category"`
+	// Expected data type.
+	DataType ServerSettingDataType `json:"data_type"`
+	// Whether the setting contains sensitive data.
+	IsSecret OptBool `json:"is_secret"`
+	// Whether the setting is exposed in public API.
+	IsPublic OptBool `json:"is_public"`
+}
+
+// GetKey returns the value of Key.
+func (s *ServerSetting) GetKey() string {
+	return s.Key
+}
+
+// GetValue returns the value of Value.
+func (s *ServerSetting) GetValue() ServerSettingValue {
+	return s.Value
+}
+
+// GetDescription returns the value of Description.
+func (s *ServerSetting) GetDescription() OptString {
+	return s.Description
+}
+
+// GetCategory returns the value of Category.
+func (s *ServerSetting) GetCategory() OptString {
+	return s.Category
+}
+
+// GetDataType returns the value of DataType.
+func (s *ServerSetting) GetDataType() ServerSettingDataType {
+	return s.DataType
+}
+
+// GetIsSecret returns the value of IsSecret.
+func (s *ServerSetting) GetIsSecret() OptBool {
+	return s.IsSecret
+}
+
+// GetIsPublic returns the value of IsPublic.
+func (s *ServerSetting) GetIsPublic() OptBool {
+	return s.IsPublic
+}
+
+// SetKey sets the value of Key.
+func (s *ServerSetting) SetKey(val string) {
+	s.Key = val
+}
+
+// SetValue sets the value of Value.
+func (s *ServerSetting) SetValue(val ServerSettingValue) {
+	s.Value = val
+}
+
+// SetDescription sets the value of Description.
+func (s *ServerSetting) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetCategory sets the value of Category.
+func (s *ServerSetting) SetCategory(val OptString) {
+	s.Category = val
+}
+
+// SetDataType sets the value of DataType.
+func (s *ServerSetting) SetDataType(val ServerSettingDataType) {
+	s.DataType = val
+}
+
+// SetIsSecret sets the value of IsSecret.
+func (s *ServerSetting) SetIsSecret(val OptBool) {
+	s.IsSecret = val
+}
+
+// SetIsPublic sets the value of IsPublic.
+func (s *ServerSetting) SetIsPublic(val OptBool) {
+	s.IsPublic = val
+}
+
+func (*ServerSetting) getServerSettingRes()    {}
+func (*ServerSetting) updateServerSettingRes() {}
+
+// Expected data type.
+type ServerSettingDataType string
+
+const (
+	ServerSettingDataTypeString  ServerSettingDataType = "string"
+	ServerSettingDataTypeInteger ServerSettingDataType = "integer"
+	ServerSettingDataTypeBoolean ServerSettingDataType = "boolean"
+	ServerSettingDataTypeFloat   ServerSettingDataType = "float"
+	ServerSettingDataTypeJSON    ServerSettingDataType = "json"
+)
+
+// AllValues returns all ServerSettingDataType values.
+func (ServerSettingDataType) AllValues() []ServerSettingDataType {
+	return []ServerSettingDataType{
+		ServerSettingDataTypeString,
+		ServerSettingDataTypeInteger,
+		ServerSettingDataTypeBoolean,
+		ServerSettingDataTypeFloat,
+		ServerSettingDataTypeJSON,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ServerSettingDataType) MarshalText() ([]byte, error) {
+	switch s {
+	case ServerSettingDataTypeString:
+		return []byte(s), nil
+	case ServerSettingDataTypeInteger:
+		return []byte(s), nil
+	case ServerSettingDataTypeBoolean:
+		return []byte(s), nil
+	case ServerSettingDataTypeFloat:
+		return []byte(s), nil
+	case ServerSettingDataTypeJSON:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ServerSettingDataType) UnmarshalText(data []byte) error {
+	switch ServerSettingDataType(data) {
+	case ServerSettingDataTypeString:
+		*s = ServerSettingDataTypeString
+		return nil
+	case ServerSettingDataTypeInteger:
+		*s = ServerSettingDataTypeInteger
+		return nil
+	case ServerSettingDataTypeBoolean:
+		*s = ServerSettingDataTypeBoolean
+		return nil
+	case ServerSettingDataTypeFloat:
+		*s = ServerSettingDataTypeFloat
+		return nil
+	case ServerSettingDataTypeJSON:
+		*s = ServerSettingDataTypeJSON
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Setting value (type varies based on data_type).
+// ServerSettingValue represents sum type.
+type ServerSettingValue struct {
+	Type                ServerSettingValueType // switch on this field
+	String              string
+	Float64             float64
+	Bool                bool
+	ServerSettingValue3 ServerSettingValue3
+}
+
+// ServerSettingValueType is oneOf type of ServerSettingValue.
+type ServerSettingValueType string
+
+// Possible values for ServerSettingValueType.
+const (
+	StringServerSettingValue              ServerSettingValueType = "string"
+	Float64ServerSettingValue             ServerSettingValueType = "float64"
+	BoolServerSettingValue                ServerSettingValueType = "bool"
+	ServerSettingValue3ServerSettingValue ServerSettingValueType = "ServerSettingValue3"
+)
+
+// IsString reports whether ServerSettingValue is string.
+func (s ServerSettingValue) IsString() bool { return s.Type == StringServerSettingValue }
+
+// IsFloat64 reports whether ServerSettingValue is float64.
+func (s ServerSettingValue) IsFloat64() bool { return s.Type == Float64ServerSettingValue }
+
+// IsBool reports whether ServerSettingValue is bool.
+func (s ServerSettingValue) IsBool() bool { return s.Type == BoolServerSettingValue }
+
+// IsServerSettingValue3 reports whether ServerSettingValue is ServerSettingValue3.
+func (s ServerSettingValue) IsServerSettingValue3() bool {
+	return s.Type == ServerSettingValue3ServerSettingValue
+}
+
+// SetString sets ServerSettingValue to string.
+func (s *ServerSettingValue) SetString(v string) {
+	s.Type = StringServerSettingValue
+	s.String = v
+}
+
+// GetString returns string and true boolean if ServerSettingValue is string.
+func (s ServerSettingValue) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringServerSettingValue returns new ServerSettingValue from string.
+func NewStringServerSettingValue(v string) ServerSettingValue {
+	var s ServerSettingValue
+	s.SetString(v)
+	return s
+}
+
+// SetFloat64 sets ServerSettingValue to float64.
+func (s *ServerSettingValue) SetFloat64(v float64) {
+	s.Type = Float64ServerSettingValue
+	s.Float64 = v
+}
+
+// GetFloat64 returns float64 and true boolean if ServerSettingValue is float64.
+func (s ServerSettingValue) GetFloat64() (v float64, ok bool) {
+	if !s.IsFloat64() {
+		return v, false
+	}
+	return s.Float64, true
+}
+
+// NewFloat64ServerSettingValue returns new ServerSettingValue from float64.
+func NewFloat64ServerSettingValue(v float64) ServerSettingValue {
+	var s ServerSettingValue
+	s.SetFloat64(v)
+	return s
+}
+
+// SetBool sets ServerSettingValue to bool.
+func (s *ServerSettingValue) SetBool(v bool) {
+	s.Type = BoolServerSettingValue
+	s.Bool = v
+}
+
+// GetBool returns bool and true boolean if ServerSettingValue is bool.
+func (s ServerSettingValue) GetBool() (v bool, ok bool) {
+	if !s.IsBool() {
+		return v, false
+	}
+	return s.Bool, true
+}
+
+// NewBoolServerSettingValue returns new ServerSettingValue from bool.
+func NewBoolServerSettingValue(v bool) ServerSettingValue {
+	var s ServerSettingValue
+	s.SetBool(v)
+	return s
+}
+
+// SetServerSettingValue3 sets ServerSettingValue to ServerSettingValue3.
+func (s *ServerSettingValue) SetServerSettingValue3(v ServerSettingValue3) {
+	s.Type = ServerSettingValue3ServerSettingValue
+	s.ServerSettingValue3 = v
+}
+
+// GetServerSettingValue3 returns ServerSettingValue3 and true boolean if ServerSettingValue is ServerSettingValue3.
+func (s ServerSettingValue) GetServerSettingValue3() (v ServerSettingValue3, ok bool) {
+	if !s.IsServerSettingValue3() {
+		return v, false
+	}
+	return s.ServerSettingValue3, true
+}
+
+// NewServerSettingValue3ServerSettingValue returns new ServerSettingValue from ServerSettingValue3.
+func NewServerSettingValue3ServerSettingValue(v ServerSettingValue3) ServerSettingValue {
+	var s ServerSettingValue
+	s.SetServerSettingValue3(v)
+	return s
+}
+
+type ServerSettingValue3 struct{}
+
+// Ref: #/components/schemas/SettingValue
+type SettingValue struct {
+	// The new value for the setting.
+	Value SettingValueValue `json:"value"`
+}
+
+// GetValue returns the value of Value.
+func (s *SettingValue) GetValue() SettingValueValue {
+	return s.Value
+}
+
+// SetValue sets the value of Value.
+func (s *SettingValue) SetValue(val SettingValueValue) {
+	s.Value = val
+}
+
+// The new value for the setting.
+// SettingValueValue represents sum type.
+type SettingValueValue struct {
+	Type               SettingValueValueType // switch on this field
+	String             string
+	Float64            float64
+	Bool               bool
+	SettingValueValue3 SettingValueValue3
+}
+
+// SettingValueValueType is oneOf type of SettingValueValue.
+type SettingValueValueType string
+
+// Possible values for SettingValueValueType.
+const (
+	StringSettingValueValue             SettingValueValueType = "string"
+	Float64SettingValueValue            SettingValueValueType = "float64"
+	BoolSettingValueValue               SettingValueValueType = "bool"
+	SettingValueValue3SettingValueValue SettingValueValueType = "SettingValueValue3"
+)
+
+// IsString reports whether SettingValueValue is string.
+func (s SettingValueValue) IsString() bool { return s.Type == StringSettingValueValue }
+
+// IsFloat64 reports whether SettingValueValue is float64.
+func (s SettingValueValue) IsFloat64() bool { return s.Type == Float64SettingValueValue }
+
+// IsBool reports whether SettingValueValue is bool.
+func (s SettingValueValue) IsBool() bool { return s.Type == BoolSettingValueValue }
+
+// IsSettingValueValue3 reports whether SettingValueValue is SettingValueValue3.
+func (s SettingValueValue) IsSettingValueValue3() bool {
+	return s.Type == SettingValueValue3SettingValueValue
+}
+
+// SetString sets SettingValueValue to string.
+func (s *SettingValueValue) SetString(v string) {
+	s.Type = StringSettingValueValue
+	s.String = v
+}
+
+// GetString returns string and true boolean if SettingValueValue is string.
+func (s SettingValueValue) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringSettingValueValue returns new SettingValueValue from string.
+func NewStringSettingValueValue(v string) SettingValueValue {
+	var s SettingValueValue
+	s.SetString(v)
+	return s
+}
+
+// SetFloat64 sets SettingValueValue to float64.
+func (s *SettingValueValue) SetFloat64(v float64) {
+	s.Type = Float64SettingValueValue
+	s.Float64 = v
+}
+
+// GetFloat64 returns float64 and true boolean if SettingValueValue is float64.
+func (s SettingValueValue) GetFloat64() (v float64, ok bool) {
+	if !s.IsFloat64() {
+		return v, false
+	}
+	return s.Float64, true
+}
+
+// NewFloat64SettingValueValue returns new SettingValueValue from float64.
+func NewFloat64SettingValueValue(v float64) SettingValueValue {
+	var s SettingValueValue
+	s.SetFloat64(v)
+	return s
+}
+
+// SetBool sets SettingValueValue to bool.
+func (s *SettingValueValue) SetBool(v bool) {
+	s.Type = BoolSettingValueValue
+	s.Bool = v
+}
+
+// GetBool returns bool and true boolean if SettingValueValue is bool.
+func (s SettingValueValue) GetBool() (v bool, ok bool) {
+	if !s.IsBool() {
+		return v, false
+	}
+	return s.Bool, true
+}
+
+// NewBoolSettingValueValue returns new SettingValueValue from bool.
+func NewBoolSettingValueValue(v bool) SettingValueValue {
+	var s SettingValueValue
+	s.SetBool(v)
+	return s
+}
+
+// SetSettingValueValue3 sets SettingValueValue to SettingValueValue3.
+func (s *SettingValueValue) SetSettingValueValue3(v SettingValueValue3) {
+	s.Type = SettingValueValue3SettingValueValue
+	s.SettingValueValue3 = v
+}
+
+// GetSettingValueValue3 returns SettingValueValue3 and true boolean if SettingValueValue is SettingValueValue3.
+func (s SettingValueValue) GetSettingValueValue3() (v SettingValueValue3, ok bool) {
+	if !s.IsSettingValueValue3() {
+		return v, false
+	}
+	return s.SettingValueValue3, true
+}
+
+// NewSettingValueValue3SettingValueValue returns new SettingValueValue from SettingValueValue3.
+func NewSettingValueValue3SettingValueValue(v SettingValueValue3) SettingValueValue {
+	var s SettingValueValue
+	s.SetSettingValueValue3(v)
+	return s
+}
+
+type SettingValueValue3 struct{}
+
+type UpdateServerSettingBadRequest Error
+
+func (*UpdateServerSettingBadRequest) updateServerSettingRes() {}
+
+type UpdateServerSettingNotFound Error
+
+func (*UpdateServerSettingNotFound) updateServerSettingRes() {}
+
+type UpdateServerSettingUnauthorized Error
+
+func (*UpdateServerSettingUnauthorized) updateServerSettingRes() {}
+
+type UpdateUserSettingBadRequest Error
+
+func (*UpdateUserSettingBadRequest) updateUserSettingRes() {}
+
+type UpdateUserSettingUnauthorized Error
+
+func (*UpdateUserSettingUnauthorized) updateUserSettingRes() {}
+
+// Ref: #/components/schemas/UserSetting
+type UserSetting struct {
+	// User ID.
+	UserID uuid.UUID `json:"user_id"`
+	// Setting key.
+	Key string `json:"key"`
+	// Setting value (type varies based on data_type).
+	Value UserSettingValue `json:"value"`
+	// Human-readable description.
+	Description OptString `json:"description"`
+	// Setting category for organization.
+	Category OptString `json:"category"`
+	// Expected data type.
+	DataType UserSettingDataType `json:"data_type"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *UserSetting) GetUserID() uuid.UUID {
+	return s.UserID
+}
+
+// GetKey returns the value of Key.
+func (s *UserSetting) GetKey() string {
+	return s.Key
+}
+
+// GetValue returns the value of Value.
+func (s *UserSetting) GetValue() UserSettingValue {
+	return s.Value
+}
+
+// GetDescription returns the value of Description.
+func (s *UserSetting) GetDescription() OptString {
+	return s.Description
+}
+
+// GetCategory returns the value of Category.
+func (s *UserSetting) GetCategory() OptString {
+	return s.Category
+}
+
+// GetDataType returns the value of DataType.
+func (s *UserSetting) GetDataType() UserSettingDataType {
+	return s.DataType
+}
+
+// SetUserID sets the value of UserID.
+func (s *UserSetting) SetUserID(val uuid.UUID) {
+	s.UserID = val
+}
+
+// SetKey sets the value of Key.
+func (s *UserSetting) SetKey(val string) {
+	s.Key = val
+}
+
+// SetValue sets the value of Value.
+func (s *UserSetting) SetValue(val UserSettingValue) {
+	s.Value = val
+}
+
+// SetDescription sets the value of Description.
+func (s *UserSetting) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetCategory sets the value of Category.
+func (s *UserSetting) SetCategory(val OptString) {
+	s.Category = val
+}
+
+// SetDataType sets the value of DataType.
+func (s *UserSetting) SetDataType(val UserSettingDataType) {
+	s.DataType = val
+}
+
+func (*UserSetting) getUserSettingRes()    {}
+func (*UserSetting) updateUserSettingRes() {}
+
+// Expected data type.
+type UserSettingDataType string
+
+const (
+	UserSettingDataTypeString  UserSettingDataType = "string"
+	UserSettingDataTypeInteger UserSettingDataType = "integer"
+	UserSettingDataTypeBoolean UserSettingDataType = "boolean"
+	UserSettingDataTypeFloat   UserSettingDataType = "float"
+	UserSettingDataTypeJSON    UserSettingDataType = "json"
+)
+
+// AllValues returns all UserSettingDataType values.
+func (UserSettingDataType) AllValues() []UserSettingDataType {
+	return []UserSettingDataType{
+		UserSettingDataTypeString,
+		UserSettingDataTypeInteger,
+		UserSettingDataTypeBoolean,
+		UserSettingDataTypeFloat,
+		UserSettingDataTypeJSON,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserSettingDataType) MarshalText() ([]byte, error) {
+	switch s {
+	case UserSettingDataTypeString:
+		return []byte(s), nil
+	case UserSettingDataTypeInteger:
+		return []byte(s), nil
+	case UserSettingDataTypeBoolean:
+		return []byte(s), nil
+	case UserSettingDataTypeFloat:
+		return []byte(s), nil
+	case UserSettingDataTypeJSON:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserSettingDataType) UnmarshalText(data []byte) error {
+	switch UserSettingDataType(data) {
+	case UserSettingDataTypeString:
+		*s = UserSettingDataTypeString
+		return nil
+	case UserSettingDataTypeInteger:
+		*s = UserSettingDataTypeInteger
+		return nil
+	case UserSettingDataTypeBoolean:
+		*s = UserSettingDataTypeBoolean
+		return nil
+	case UserSettingDataTypeFloat:
+		*s = UserSettingDataTypeFloat
+		return nil
+	case UserSettingDataTypeJSON:
+		*s = UserSettingDataTypeJSON
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Setting value (type varies based on data_type).
+// UserSettingValue represents sum type.
+type UserSettingValue struct {
+	Type              UserSettingValueType // switch on this field
+	String            string
+	Float64           float64
+	Bool              bool
+	UserSettingValue3 UserSettingValue3
+}
+
+// UserSettingValueType is oneOf type of UserSettingValue.
+type UserSettingValueType string
+
+// Possible values for UserSettingValueType.
+const (
+	StringUserSettingValue            UserSettingValueType = "string"
+	Float64UserSettingValue           UserSettingValueType = "float64"
+	BoolUserSettingValue              UserSettingValueType = "bool"
+	UserSettingValue3UserSettingValue UserSettingValueType = "UserSettingValue3"
+)
+
+// IsString reports whether UserSettingValue is string.
+func (s UserSettingValue) IsString() bool { return s.Type == StringUserSettingValue }
+
+// IsFloat64 reports whether UserSettingValue is float64.
+func (s UserSettingValue) IsFloat64() bool { return s.Type == Float64UserSettingValue }
+
+// IsBool reports whether UserSettingValue is bool.
+func (s UserSettingValue) IsBool() bool { return s.Type == BoolUserSettingValue }
+
+// IsUserSettingValue3 reports whether UserSettingValue is UserSettingValue3.
+func (s UserSettingValue) IsUserSettingValue3() bool {
+	return s.Type == UserSettingValue3UserSettingValue
+}
+
+// SetString sets UserSettingValue to string.
+func (s *UserSettingValue) SetString(v string) {
+	s.Type = StringUserSettingValue
+	s.String = v
+}
+
+// GetString returns string and true boolean if UserSettingValue is string.
+func (s UserSettingValue) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringUserSettingValue returns new UserSettingValue from string.
+func NewStringUserSettingValue(v string) UserSettingValue {
+	var s UserSettingValue
+	s.SetString(v)
+	return s
+}
+
+// SetFloat64 sets UserSettingValue to float64.
+func (s *UserSettingValue) SetFloat64(v float64) {
+	s.Type = Float64UserSettingValue
+	s.Float64 = v
+}
+
+// GetFloat64 returns float64 and true boolean if UserSettingValue is float64.
+func (s UserSettingValue) GetFloat64() (v float64, ok bool) {
+	if !s.IsFloat64() {
+		return v, false
+	}
+	return s.Float64, true
+}
+
+// NewFloat64UserSettingValue returns new UserSettingValue from float64.
+func NewFloat64UserSettingValue(v float64) UserSettingValue {
+	var s UserSettingValue
+	s.SetFloat64(v)
+	return s
+}
+
+// SetBool sets UserSettingValue to bool.
+func (s *UserSettingValue) SetBool(v bool) {
+	s.Type = BoolUserSettingValue
+	s.Bool = v
+}
+
+// GetBool returns bool and true boolean if UserSettingValue is bool.
+func (s UserSettingValue) GetBool() (v bool, ok bool) {
+	if !s.IsBool() {
+		return v, false
+	}
+	return s.Bool, true
+}
+
+// NewBoolUserSettingValue returns new UserSettingValue from bool.
+func NewBoolUserSettingValue(v bool) UserSettingValue {
+	var s UserSettingValue
+	s.SetBool(v)
+	return s
+}
+
+// SetUserSettingValue3 sets UserSettingValue to UserSettingValue3.
+func (s *UserSettingValue) SetUserSettingValue3(v UserSettingValue3) {
+	s.Type = UserSettingValue3UserSettingValue
+	s.UserSettingValue3 = v
+}
+
+// GetUserSettingValue3 returns UserSettingValue3 and true boolean if UserSettingValue is UserSettingValue3.
+func (s UserSettingValue) GetUserSettingValue3() (v UserSettingValue3, ok bool) {
+	if !s.IsUserSettingValue3() {
+		return v, false
+	}
+	return s.UserSettingValue3, true
+}
+
+// NewUserSettingValue3UserSettingValue returns new UserSettingValue from UserSettingValue3.
+func NewUserSettingValue3UserSettingValue(v UserSettingValue3) UserSettingValue {
+	var s UserSettingValue
+	s.SetUserSettingValue3(v)
+	return s
+}
+
+type UserSettingValue3 struct{}

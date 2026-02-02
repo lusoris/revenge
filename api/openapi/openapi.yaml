@@ -22,6 +22,8 @@ servers:
 tags:
   - name: health
     description: Health check endpoints for monitoring and Kubernetes probes
+  - name: settings
+    description: Server and user settings management
 
 paths:
   /health/live:
@@ -96,8 +98,311 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Settings endpoints
+  /api/v1/settings/server:
+    get:
+      summary: List all server settings
+      description: Retrieve all server-wide configuration settings
+      operationId: listServerSettings
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of server settings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServerSetting'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/settings/server/{key}:
+    get:
+      summary: Get a server setting
+      description: Retrieve a specific server setting by key
+      operationId: getServerSetting
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Setting key
+          example: server.name
+      responses:
+        '200':
+          description: Server setting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerSetting'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    put:
+      summary: Update a server setting
+      description: Update the value of a server setting
+      operationId: updateServerSetting
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Setting key
+          example: server.name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingValue'
+      responses:
+        '200':
+          description: Updated server setting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerSetting'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/settings/user:
+    get:
+      summary: List current user's settings
+      description: Retrieve all settings for the authenticated user
+      operationId: listUserSettings
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of user settings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSetting'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/settings/user/{key}:
+    get:
+      summary: Get a user setting
+      description: Retrieve a specific user setting by key
+      operationId: getUserSetting
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Setting key
+          example: theme
+      responses:
+        '200':
+          description: User setting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSetting'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    put:
+      summary: Update a user setting
+      description: Update the value of a user setting
+      operationId: updateUserSetting
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Setting key
+          example: theme
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingValue'
+      responses:
+        '200':
+          description: Updated user setting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSetting'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Delete a user setting
+      description: Delete a user setting (revert to default)
+      operationId: deleteUserSetting
+      tags:
+        - settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Setting key
+          example: theme
+      responses:
+        '204':
+          description: Setting deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
+    ServerSetting:
+      type: object
+      required:
+        - key
+        - value
+        - data_type
+      properties:
+        key:
+          type: string
+          description: Setting key
+          example: server.name
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: object
+          description: Setting value (type varies based on data_type)
+          example: "My Revenge Server"
+        description:
+          type: string
+          description: Human-readable description
+          example: Server display name
+        category:
+          type: string
+          description: Setting category for organization
+          example: general
+        data_type:
+          type: string
+          description: Expected data type
+          enum: [string, integer, boolean, float, json]
+          example: string
+        is_secret:
+          type: boolean
+          description: Whether the setting contains sensitive data
+          example: false
+        is_public:
+          type: boolean
+          description: Whether the setting is exposed in public API
+          example: true
+
+    UserSetting:
+      type: object
+      required:
+        - user_id
+        - key
+        - value
+        - data_type
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User ID
+          example: 550e8400-e29b-41d4-a716-446655440000
+        key:
+          type: string
+          description: Setting key
+          example: theme
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: object
+          description: Setting value (type varies based on data_type)
+          example: "dark"
+        description:
+          type: string
+          description: Human-readable description
+          example: UI theme preference
+        category:
+          type: string
+          description: Setting category for organization
+          example: ui
+        data_type:
+          type: string
+          description: Expected data type
+          enum: [string, integer, boolean, float, json]
+          example: string
+
+    SettingValue:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: object
+          description: The new value for the setting
+          example: "dark"
+
     HealthCheck:
       type: object
       required:
@@ -152,6 +457,27 @@ components:
   responses:
     Error:
       description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    BadRequest:
+      description: Bad request - invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
       content:
         application/json:
           schema:

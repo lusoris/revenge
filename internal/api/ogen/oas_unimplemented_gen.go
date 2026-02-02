@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// DeleteUserSetting implements deleteUserSetting operation.
+//
+// Delete a user setting (revert to default).
+//
+// DELETE /api/v1/settings/user/{key}
+func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (r DeleteUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetLiveness implements getLiveness operation.
 //
 // Checks if the service is alive and running.
@@ -35,6 +44,15 @@ func (UnimplementedHandler) GetReadiness(ctx context.Context) (r GetReadinessRes
 	return r, ht.ErrNotImplemented
 }
 
+// GetServerSetting implements getServerSetting operation.
+//
+// Retrieve a specific server setting by key.
+//
+// GET /api/v1/settings/server/{key}
+func (UnimplementedHandler) GetServerSetting(ctx context.Context, params GetServerSettingParams) (r GetServerSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetStartup implements getStartup operation.
 //
 // Checks if the service has completed initialization.
@@ -43,6 +61,51 @@ func (UnimplementedHandler) GetReadiness(ctx context.Context) (r GetReadinessRes
 //
 // GET /health/startup
 func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserSetting implements getUserSetting operation.
+//
+// Retrieve a specific user setting by key.
+//
+// GET /api/v1/settings/user/{key}
+func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSettingParams) (r GetUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListServerSettings implements listServerSettings operation.
+//
+// Retrieve all server-wide configuration settings.
+//
+// GET /api/v1/settings/server
+func (UnimplementedHandler) ListServerSettings(ctx context.Context) (r ListServerSettingsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListUserSettings implements listUserSettings operation.
+//
+// Retrieve all settings for the authenticated user.
+//
+// GET /api/v1/settings/user
+func (UnimplementedHandler) ListUserSettings(ctx context.Context) (r ListUserSettingsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateServerSetting implements updateServerSetting operation.
+//
+// Update the value of a server setting.
+//
+// PUT /api/v1/settings/server/{key}
+func (UnimplementedHandler) UpdateServerSetting(ctx context.Context, req *SettingValue, params UpdateServerSettingParams) (r UpdateServerSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateUserSetting implements updateUserSetting operation.
+//
+// Update the value of a user setting.
+//
+// PUT /api/v1/settings/user/{key}
+func (UnimplementedHandler) UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (r UpdateUserSettingRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

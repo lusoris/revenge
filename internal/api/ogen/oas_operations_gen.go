@@ -6,7 +6,14 @@ package ogen
 type OperationName = string
 
 const (
-	GetLivenessOperation  OperationName = "GetLiveness"
-	GetReadinessOperation OperationName = "GetReadiness"
-	GetStartupOperation   OperationName = "GetStartup"
+	DeleteUserSettingOperation   OperationName = "DeleteUserSetting"
+	GetLivenessOperation         OperationName = "GetLiveness"
+	GetReadinessOperation        OperationName = "GetReadiness"
+	GetServerSettingOperation    OperationName = "GetServerSetting"
+	GetStartupOperation          OperationName = "GetStartup"
+	GetUserSettingOperation      OperationName = "GetUserSetting"
+	ListServerSettingsOperation  OperationName = "ListServerSettings"
+	ListUserSettingsOperation    OperationName = "ListUserSettings"
+	UpdateServerSettingOperation OperationName = "UpdateServerSetting"
+	UpdateUserSettingOperation   OperationName = "UpdateUserSetting"
 )

@@ -40,6 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
+	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -48,9 +49,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/health/"
+		case '/': // Prefix: "/"
 
-			if l := len("/health/"); len(elem) >= l && elem[0:l] == "/health/" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -60,64 +61,208 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'l': // Prefix: "live"
+			case 'a': // Prefix: "api/v1/settings/"
 
-				if l := len("live"); len(elem) >= l && elem[0:l] == "live" {
+				if l := len("api/v1/settings/"); len(elem) >= l && elem[0:l] == "api/v1/settings/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "GET":
-						s.handleGetLivenessRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "GET")
+					break
+				}
+				switch elem[0] {
+				case 's': // Prefix: "server"
+
+					if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
+						elem = elem[l:]
+					} else {
+						break
 					}
 
-					return
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListServerSettingsRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "key"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleGetServerSettingRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateServerSettingRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET,PUT")
+							}
+
+							return
+						}
+
+					}
+
+				case 'u': // Prefix: "user"
+
+					if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListUserSettingsRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "key"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleDeleteUserSettingRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "GET":
+								s.handleGetUserSettingRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleUpdateUserSettingRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,GET,PUT")
+							}
+
+							return
+						}
+
+					}
+
 				}
 
-			case 'r': // Prefix: "ready"
+			case 'h': // Prefix: "health/"
 
-				if l := len("ready"); len(elem) >= l && elem[0:l] == "ready" {
+				if l := len("health/"); len(elem) >= l && elem[0:l] == "health/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "GET":
-						s.handleGetReadinessRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "GET")
-					}
-
-					return
-				}
-
-			case 's': // Prefix: "startup"
-
-				if l := len("startup"); len(elem) >= l && elem[0:l] == "startup" {
-					elem = elem[l:]
-				} else {
 					break
 				}
+				switch elem[0] {
+				case 'l': // Prefix: "live"
 
-				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "GET":
-						s.handleGetStartupRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "GET")
+					if l := len("live"); len(elem) >= l && elem[0:l] == "live" {
+						elem = elem[l:]
+					} else {
+						break
 					}
 
-					return
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetLivenessRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+				case 'r': // Prefix: "ready"
+
+					if l := len("ready"); len(elem) >= l && elem[0:l] == "ready" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetReadinessRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+				case 's': // Prefix: "startup"
+
+					if l := len("startup"); len(elem) >= l && elem[0:l] == "startup" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetStartupRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
 				}
 
 			}
@@ -135,7 +280,7 @@ type Route struct {
 	operationGroup string
 	pathPattern    string
 	count          int
-	args           [0]string
+	args           [1]string
 }
 
 // Name returns ogen operation name.
@@ -208,9 +353,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/health/"
+		case '/': // Prefix: "/"
 
-			if l := len("/health/"); len(elem) >= l && elem[0:l] == "/health/" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -220,79 +365,254 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'l': // Prefix: "live"
+			case 'a': // Prefix: "api/v1/settings/"
 
-				if l := len("live"); len(elem) >= l && elem[0:l] == "live" {
+				if l := len("api/v1/settings/"); len(elem) >= l && elem[0:l] == "api/v1/settings/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
-					case "GET":
-						r.name = GetLivenessOperation
-						r.summary = "Liveness probe"
-						r.operationID = "getLiveness"
-						r.operationGroup = ""
-						r.pathPattern = "/health/live"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
+					break
+				}
+				switch elem[0] {
+				case 's': // Prefix: "server"
+
+					if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
+						elem = elem[l:]
+					} else {
+						break
 					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListServerSettingsOperation
+							r.summary = "List all server settings"
+							r.operationID = "listServerSettings"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/settings/server"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "key"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = GetServerSettingOperation
+								r.summary = "Get a server setting"
+								r.operationID = "getServerSetting"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/server/{key}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "PUT":
+								r.name = UpdateServerSettingOperation
+								r.summary = "Update a server setting"
+								r.operationID = "updateServerSetting"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/server/{key}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
+				case 'u': // Prefix: "user"
+
+					if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListUserSettingsOperation
+							r.summary = "List current user's settings"
+							r.operationID = "listUserSettings"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/settings/user"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "key"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = DeleteUserSettingOperation
+								r.summary = "Delete a user setting"
+								r.operationID = "deleteUserSetting"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/user/{key}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "GET":
+								r.name = GetUserSettingOperation
+								r.summary = "Get a user setting"
+								r.operationID = "getUserSetting"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/user/{key}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "PUT":
+								r.name = UpdateUserSettingOperation
+								r.summary = "Update a user setting"
+								r.operationID = "updateUserSetting"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/user/{key}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
 				}
 
-			case 'r': // Prefix: "ready"
+			case 'h': // Prefix: "health/"
 
-				if l := len("ready"); len(elem) >= l && elem[0:l] == "ready" {
+				if l := len("health/"); len(elem) >= l && elem[0:l] == "health/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
-					case "GET":
-						r.name = GetReadinessOperation
-						r.summary = "Readiness probe"
-						r.operationID = "getReadiness"
-						r.operationGroup = ""
-						r.pathPattern = "/health/ready"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
-					}
-				}
-
-			case 's': // Prefix: "startup"
-
-				if l := len("startup"); len(elem) >= l && elem[0:l] == "startup" {
-					elem = elem[l:]
-				} else {
 					break
 				}
+				switch elem[0] {
+				case 'l': // Prefix: "live"
 
-				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
-					case "GET":
-						r.name = GetStartupOperation
-						r.summary = "Startup probe"
-						r.operationID = "getStartup"
-						r.operationGroup = ""
-						r.pathPattern = "/health/startup"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
+					if l := len("live"); len(elem) >= l && elem[0:l] == "live" {
+						elem = elem[l:]
+					} else {
+						break
 					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetLivenessOperation
+							r.summary = "Liveness probe"
+							r.operationID = "getLiveness"
+							r.operationGroup = ""
+							r.pathPattern = "/health/live"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 'r': // Prefix: "ready"
+
+					if l := len("ready"); len(elem) >= l && elem[0:l] == "ready" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetReadinessOperation
+							r.summary = "Readiness probe"
+							r.operationID = "getReadiness"
+							r.operationGroup = ""
+							r.pathPattern = "/health/ready"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 's': // Prefix: "startup"
+
+					if l := len("startup"); len(elem) >= l && elem[0:l] == "startup" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetStartupOperation
+							r.summary = "Startup probe"
+							r.operationID = "getStartup"
+							r.operationGroup = ""
+							r.pathPattern = "/health/startup"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
 				}
 
 			}
