@@ -143,7 +143,7 @@ generate: ogen sqlc ## Run all code generation (ogen, sqlc, go generate)
 
 ogen: ## Generate ogen code from OpenAPI spec
 	@echo "Generating ogen code..."
-	go run github.com/ogen-go/ogen/cmd/ogen@latest --config ogen.yaml
+	go run github.com/ogen-go/ogen/cmd/ogen@v1.18.0 --target internal/api/ogen --package ogen --clean api/openapi/openapi.yaml
 
 sqlc: ## Generate sqlc code
 	@echo "Generating sqlc code..."

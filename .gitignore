@@ -92,7 +92,9 @@ __debug_bin*
 # Generated files
 /generated/
 *.pb.go
-*_gen.go
+# *_gen.go  # Disabled: We commit ogen-generated code for reproducibility
+# Exclude specific generated code if needed:
+# sqlc_gen.go
 
 # Documentation build
 /site/
