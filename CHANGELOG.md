@@ -16,6 +16,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - N/A
 
+## [0.1.1] - 2026-02-02
+
+### Added
+- **Comprehensive Unit Tests**: Major test coverage improvements across core packages
+  - `internal/api`: 41% → 97.1% coverage with fx.Lifecycle integration tests
+  - `internal/config`: 10% → 76.2% coverage with loader and validation tests
+  - `internal/infra/health`: 55% → 68.1% coverage with health check tests
+  - `internal/infra/database`: 20% → 22% coverage with PoolConfig tests
+
+### Test Infrastructure
+- **api/handler_test.go**: Tests for GetLiveness, GetStartup, GetReadiness, NewError
+  - Embedded-postgres integration for realistic database testing
+  - Concurrent request handling tests
+  - Error response validation
+- **api/server_test.go**: Full fx.Lifecycle tests using fxtest.New
+  - Server startup/shutdown lifecycle
+  - Graceful shutdown verification
+  - Concurrent request handling (50 parallel requests)
+  - Configuration application tests
+  - Multiple port sequence tests
+- **config/loader_test.go**: Comprehensive configuration tests
+  - Default value loading
+  - YAML file loading
+  - Environment variable overrides (REVENGE_* prefix)
+  - Validation failure scenarios
+  - MustLoad panic handling
+- **database/pool_test.go**: Connection pool configuration tests
+  - MaxConns calculation (CPU * 2 + 1)
+  - URL parsing and validation
+  - Connection timeout settings
+- **health/checks_test.go**: Stub health check tests
+  - CheckCache, CheckSearch, CheckJobs
+  - Status constants validation
+  - Concurrent check execution
+
+### Notes
+- Tests use embedded-postgres for integration testing
+- Run with `-p 1` flag to avoid port conflicts in parallel mode
+- Full test suite: `go test ./internal/... -cover -count=1 -p 1`
+
 ## [0.1.0] - 2026-02-02
 
 ### Added
