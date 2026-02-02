@@ -4,15 +4,155 @@ package ogen
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 	"github.com/google/uuid"
+	ht "github.com/ogen-go/ogen/http"
 )
 
 func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
+
+// Ref: #/components/schemas/Avatar
+type Avatar struct {
+	// Avatar ID.
+	ID uuid.UUID `json:"id"`
+	// User ID.
+	UserID uuid.UUID `json:"user_id"`
+	// File path.
+	FilePath string `json:"file_path"`
+	// File size in bytes.
+	FileSizeBytes OptInt `json:"file_size_bytes"`
+	// MIME type.
+	MimeType OptString `json:"mime_type"`
+	// Image width.
+	Width OptInt `json:"width"`
+	// Image height.
+	Height OptInt `json:"height"`
+	// Is animated (GIF).
+	IsAnimated OptBool `json:"is_animated"`
+	// Avatar version number.
+	Version int `json:"version"`
+	// Is the current avatar.
+	IsCurrent bool `json:"is_current"`
+	// Upload timestamp.
+	UploadedAt OptDateTime `json:"uploaded_at"`
+}
+
+// GetID returns the value of ID.
+func (s *Avatar) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *Avatar) GetUserID() uuid.UUID {
+	return s.UserID
+}
+
+// GetFilePath returns the value of FilePath.
+func (s *Avatar) GetFilePath() string {
+	return s.FilePath
+}
+
+// GetFileSizeBytes returns the value of FileSizeBytes.
+func (s *Avatar) GetFileSizeBytes() OptInt {
+	return s.FileSizeBytes
+}
+
+// GetMimeType returns the value of MimeType.
+func (s *Avatar) GetMimeType() OptString {
+	return s.MimeType
+}
+
+// GetWidth returns the value of Width.
+func (s *Avatar) GetWidth() OptInt {
+	return s.Width
+}
+
+// GetHeight returns the value of Height.
+func (s *Avatar) GetHeight() OptInt {
+	return s.Height
+}
+
+// GetIsAnimated returns the value of IsAnimated.
+func (s *Avatar) GetIsAnimated() OptBool {
+	return s.IsAnimated
+}
+
+// GetVersion returns the value of Version.
+func (s *Avatar) GetVersion() int {
+	return s.Version
+}
+
+// GetIsCurrent returns the value of IsCurrent.
+func (s *Avatar) GetIsCurrent() bool {
+	return s.IsCurrent
+}
+
+// GetUploadedAt returns the value of UploadedAt.
+func (s *Avatar) GetUploadedAt() OptDateTime {
+	return s.UploadedAt
+}
+
+// SetID sets the value of ID.
+func (s *Avatar) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *Avatar) SetUserID(val uuid.UUID) {
+	s.UserID = val
+}
+
+// SetFilePath sets the value of FilePath.
+func (s *Avatar) SetFilePath(val string) {
+	s.FilePath = val
+}
+
+// SetFileSizeBytes sets the value of FileSizeBytes.
+func (s *Avatar) SetFileSizeBytes(val OptInt) {
+	s.FileSizeBytes = val
+}
+
+// SetMimeType sets the value of MimeType.
+func (s *Avatar) SetMimeType(val OptString) {
+	s.MimeType = val
+}
+
+// SetWidth sets the value of Width.
+func (s *Avatar) SetWidth(val OptInt) {
+	s.Width = val
+}
+
+// SetHeight sets the value of Height.
+func (s *Avatar) SetHeight(val OptInt) {
+	s.Height = val
+}
+
+// SetIsAnimated sets the value of IsAnimated.
+func (s *Avatar) SetIsAnimated(val OptBool) {
+	s.IsAnimated = val
+}
+
+// SetVersion sets the value of Version.
+func (s *Avatar) SetVersion(val int) {
+	s.Version = val
+}
+
+// SetIsCurrent sets the value of IsCurrent.
+func (s *Avatar) SetIsCurrent(val bool) {
+	s.IsCurrent = val
+}
+
+// SetUploadedAt sets the value of UploadedAt.
+func (s *Avatar) SetUploadedAt(val OptDateTime) {
+	s.UploadedAt = val
+}
+
+func (*Avatar) uploadAvatarRes() {}
 
 type BearerAuth struct {
 	Token string
@@ -92,6 +232,8 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
 
+func (*Error) getCurrentUserRes()     {}
+func (*Error) getUserPreferencesRes() {}
 func (*Error) listServerSettingsRes() {}
 func (*Error) listUserSettingsRes()   {}
 
@@ -156,6 +298,14 @@ func (*GetStartupOK) getStartupRes() {}
 type GetStartupServiceUnavailable HealthCheck
 
 func (*GetStartupServiceUnavailable) getStartupRes() {}
+
+type GetUserByIdNotFound Error
+
+func (*GetUserByIdNotFound) getUserByIdRes() {}
+
+type GetUserByIdUnauthorized Error
+
+func (*GetUserByIdUnauthorized) getUserByIdRes() {}
 
 type GetUserSettingNotFound Error
 
@@ -332,6 +482,52 @@ func (o OptBool) Or(d bool) bool {
 	return d
 }
 
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptErrorDetails returns new OptErrorDetails with value set to v.
 func NewOptErrorDetails(v ErrorDetails) OptErrorDetails {
 	return OptErrorDetails{
@@ -424,6 +620,52 @@ func (o OptHealthCheckDetails) Or(d HealthCheckDetails) HealthCheckDetails {
 	return d
 }
 
+// NewOptInt returns new OptInt with value set to v.
+func NewOptInt(v int) OptInt {
+	return OptInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt is optional int.
+type OptInt struct {
+	Value int
+	Set   bool
+}
+
+// IsSet returns true if OptInt was set.
+func (o OptInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt) SetTo(v int) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt) Get() (v int, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -464,6 +706,650 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesDigestNotifications returns new OptUserPreferencesDigestNotifications with value set to v.
+func NewOptUserPreferencesDigestNotifications(v UserPreferencesDigestNotifications) OptUserPreferencesDigestNotifications {
+	return OptUserPreferencesDigestNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesDigestNotifications is optional UserPreferencesDigestNotifications.
+type OptUserPreferencesDigestNotifications struct {
+	Value UserPreferencesDigestNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesDigestNotifications was set.
+func (o OptUserPreferencesDigestNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesDigestNotifications) Reset() {
+	var v UserPreferencesDigestNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesDigestNotifications) SetTo(v UserPreferencesDigestNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesDigestNotifications) Get() (v UserPreferencesDigestNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesDigestNotifications) Or(d UserPreferencesDigestNotifications) UserPreferencesDigestNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesDigestNotificationsFrequency returns new OptUserPreferencesDigestNotificationsFrequency with value set to v.
+func NewOptUserPreferencesDigestNotificationsFrequency(v UserPreferencesDigestNotificationsFrequency) OptUserPreferencesDigestNotificationsFrequency {
+	return OptUserPreferencesDigestNotificationsFrequency{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesDigestNotificationsFrequency is optional UserPreferencesDigestNotificationsFrequency.
+type OptUserPreferencesDigestNotificationsFrequency struct {
+	Value UserPreferencesDigestNotificationsFrequency
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesDigestNotificationsFrequency was set.
+func (o OptUserPreferencesDigestNotificationsFrequency) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesDigestNotificationsFrequency) Reset() {
+	var v UserPreferencesDigestNotificationsFrequency
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesDigestNotificationsFrequency) SetTo(v UserPreferencesDigestNotificationsFrequency) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesDigestNotificationsFrequency) Get() (v UserPreferencesDigestNotificationsFrequency, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesDigestNotificationsFrequency) Or(d UserPreferencesDigestNotificationsFrequency) UserPreferencesDigestNotificationsFrequency {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesEmailNotifications returns new OptUserPreferencesEmailNotifications with value set to v.
+func NewOptUserPreferencesEmailNotifications(v UserPreferencesEmailNotifications) OptUserPreferencesEmailNotifications {
+	return OptUserPreferencesEmailNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesEmailNotifications is optional UserPreferencesEmailNotifications.
+type OptUserPreferencesEmailNotifications struct {
+	Value UserPreferencesEmailNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesEmailNotifications was set.
+func (o OptUserPreferencesEmailNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesEmailNotifications) Reset() {
+	var v UserPreferencesEmailNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesEmailNotifications) SetTo(v UserPreferencesEmailNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesEmailNotifications) Get() (v UserPreferencesEmailNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesEmailNotifications) Or(d UserPreferencesEmailNotifications) UserPreferencesEmailNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesEmailNotificationsFrequency returns new OptUserPreferencesEmailNotificationsFrequency with value set to v.
+func NewOptUserPreferencesEmailNotificationsFrequency(v UserPreferencesEmailNotificationsFrequency) OptUserPreferencesEmailNotificationsFrequency {
+	return OptUserPreferencesEmailNotificationsFrequency{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesEmailNotificationsFrequency is optional UserPreferencesEmailNotificationsFrequency.
+type OptUserPreferencesEmailNotificationsFrequency struct {
+	Value UserPreferencesEmailNotificationsFrequency
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesEmailNotificationsFrequency was set.
+func (o OptUserPreferencesEmailNotificationsFrequency) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesEmailNotificationsFrequency) Reset() {
+	var v UserPreferencesEmailNotificationsFrequency
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesEmailNotificationsFrequency) SetTo(v UserPreferencesEmailNotificationsFrequency) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesEmailNotificationsFrequency) Get() (v UserPreferencesEmailNotificationsFrequency, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesEmailNotificationsFrequency) Or(d UserPreferencesEmailNotificationsFrequency) UserPreferencesEmailNotificationsFrequency {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesProfileVisibility returns new OptUserPreferencesProfileVisibility with value set to v.
+func NewOptUserPreferencesProfileVisibility(v UserPreferencesProfileVisibility) OptUserPreferencesProfileVisibility {
+	return OptUserPreferencesProfileVisibility{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesProfileVisibility is optional UserPreferencesProfileVisibility.
+type OptUserPreferencesProfileVisibility struct {
+	Value UserPreferencesProfileVisibility
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesProfileVisibility was set.
+func (o OptUserPreferencesProfileVisibility) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesProfileVisibility) Reset() {
+	var v UserPreferencesProfileVisibility
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesProfileVisibility) SetTo(v UserPreferencesProfileVisibility) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesProfileVisibility) Get() (v UserPreferencesProfileVisibility, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesProfileVisibility) Or(d UserPreferencesProfileVisibility) UserPreferencesProfileVisibility {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesPushNotifications returns new OptUserPreferencesPushNotifications with value set to v.
+func NewOptUserPreferencesPushNotifications(v UserPreferencesPushNotifications) OptUserPreferencesPushNotifications {
+	return OptUserPreferencesPushNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesPushNotifications is optional UserPreferencesPushNotifications.
+type OptUserPreferencesPushNotifications struct {
+	Value UserPreferencesPushNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesPushNotifications was set.
+func (o OptUserPreferencesPushNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesPushNotifications) Reset() {
+	var v UserPreferencesPushNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesPushNotifications) SetTo(v UserPreferencesPushNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesPushNotifications) Get() (v UserPreferencesPushNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesPushNotifications) Or(d UserPreferencesPushNotifications) UserPreferencesPushNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesTheme returns new OptUserPreferencesTheme with value set to v.
+func NewOptUserPreferencesTheme(v UserPreferencesTheme) OptUserPreferencesTheme {
+	return OptUserPreferencesTheme{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesTheme is optional UserPreferencesTheme.
+type OptUserPreferencesTheme struct {
+	Value UserPreferencesTheme
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesTheme was set.
+func (o OptUserPreferencesTheme) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesTheme) Reset() {
+	var v UserPreferencesTheme
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesTheme) SetTo(v UserPreferencesTheme) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesTheme) Get() (v UserPreferencesTheme, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesTheme) Or(d UserPreferencesTheme) UserPreferencesTheme {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateDigestNotifications returns new OptUserPreferencesUpdateDigestNotifications with value set to v.
+func NewOptUserPreferencesUpdateDigestNotifications(v UserPreferencesUpdateDigestNotifications) OptUserPreferencesUpdateDigestNotifications {
+	return OptUserPreferencesUpdateDigestNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateDigestNotifications is optional UserPreferencesUpdateDigestNotifications.
+type OptUserPreferencesUpdateDigestNotifications struct {
+	Value UserPreferencesUpdateDigestNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateDigestNotifications was set.
+func (o OptUserPreferencesUpdateDigestNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateDigestNotifications) Reset() {
+	var v UserPreferencesUpdateDigestNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateDigestNotifications) SetTo(v UserPreferencesUpdateDigestNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateDigestNotifications) Get() (v UserPreferencesUpdateDigestNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateDigestNotifications) Or(d UserPreferencesUpdateDigestNotifications) UserPreferencesUpdateDigestNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateDigestNotificationsFrequency returns new OptUserPreferencesUpdateDigestNotificationsFrequency with value set to v.
+func NewOptUserPreferencesUpdateDigestNotificationsFrequency(v UserPreferencesUpdateDigestNotificationsFrequency) OptUserPreferencesUpdateDigestNotificationsFrequency {
+	return OptUserPreferencesUpdateDigestNotificationsFrequency{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateDigestNotificationsFrequency is optional UserPreferencesUpdateDigestNotificationsFrequency.
+type OptUserPreferencesUpdateDigestNotificationsFrequency struct {
+	Value UserPreferencesUpdateDigestNotificationsFrequency
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateDigestNotificationsFrequency was set.
+func (o OptUserPreferencesUpdateDigestNotificationsFrequency) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateDigestNotificationsFrequency) Reset() {
+	var v UserPreferencesUpdateDigestNotificationsFrequency
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateDigestNotificationsFrequency) SetTo(v UserPreferencesUpdateDigestNotificationsFrequency) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateDigestNotificationsFrequency) Get() (v UserPreferencesUpdateDigestNotificationsFrequency, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateDigestNotificationsFrequency) Or(d UserPreferencesUpdateDigestNotificationsFrequency) UserPreferencesUpdateDigestNotificationsFrequency {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateEmailNotifications returns new OptUserPreferencesUpdateEmailNotifications with value set to v.
+func NewOptUserPreferencesUpdateEmailNotifications(v UserPreferencesUpdateEmailNotifications) OptUserPreferencesUpdateEmailNotifications {
+	return OptUserPreferencesUpdateEmailNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateEmailNotifications is optional UserPreferencesUpdateEmailNotifications.
+type OptUserPreferencesUpdateEmailNotifications struct {
+	Value UserPreferencesUpdateEmailNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateEmailNotifications was set.
+func (o OptUserPreferencesUpdateEmailNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateEmailNotifications) Reset() {
+	var v UserPreferencesUpdateEmailNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateEmailNotifications) SetTo(v UserPreferencesUpdateEmailNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateEmailNotifications) Get() (v UserPreferencesUpdateEmailNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateEmailNotifications) Or(d UserPreferencesUpdateEmailNotifications) UserPreferencesUpdateEmailNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateEmailNotificationsFrequency returns new OptUserPreferencesUpdateEmailNotificationsFrequency with value set to v.
+func NewOptUserPreferencesUpdateEmailNotificationsFrequency(v UserPreferencesUpdateEmailNotificationsFrequency) OptUserPreferencesUpdateEmailNotificationsFrequency {
+	return OptUserPreferencesUpdateEmailNotificationsFrequency{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateEmailNotificationsFrequency is optional UserPreferencesUpdateEmailNotificationsFrequency.
+type OptUserPreferencesUpdateEmailNotificationsFrequency struct {
+	Value UserPreferencesUpdateEmailNotificationsFrequency
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateEmailNotificationsFrequency was set.
+func (o OptUserPreferencesUpdateEmailNotificationsFrequency) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateEmailNotificationsFrequency) Reset() {
+	var v UserPreferencesUpdateEmailNotificationsFrequency
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateEmailNotificationsFrequency) SetTo(v UserPreferencesUpdateEmailNotificationsFrequency) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateEmailNotificationsFrequency) Get() (v UserPreferencesUpdateEmailNotificationsFrequency, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateEmailNotificationsFrequency) Or(d UserPreferencesUpdateEmailNotificationsFrequency) UserPreferencesUpdateEmailNotificationsFrequency {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateProfileVisibility returns new OptUserPreferencesUpdateProfileVisibility with value set to v.
+func NewOptUserPreferencesUpdateProfileVisibility(v UserPreferencesUpdateProfileVisibility) OptUserPreferencesUpdateProfileVisibility {
+	return OptUserPreferencesUpdateProfileVisibility{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateProfileVisibility is optional UserPreferencesUpdateProfileVisibility.
+type OptUserPreferencesUpdateProfileVisibility struct {
+	Value UserPreferencesUpdateProfileVisibility
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateProfileVisibility was set.
+func (o OptUserPreferencesUpdateProfileVisibility) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateProfileVisibility) Reset() {
+	var v UserPreferencesUpdateProfileVisibility
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateProfileVisibility) SetTo(v UserPreferencesUpdateProfileVisibility) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateProfileVisibility) Get() (v UserPreferencesUpdateProfileVisibility, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateProfileVisibility) Or(d UserPreferencesUpdateProfileVisibility) UserPreferencesUpdateProfileVisibility {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdatePushNotifications returns new OptUserPreferencesUpdatePushNotifications with value set to v.
+func NewOptUserPreferencesUpdatePushNotifications(v UserPreferencesUpdatePushNotifications) OptUserPreferencesUpdatePushNotifications {
+	return OptUserPreferencesUpdatePushNotifications{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdatePushNotifications is optional UserPreferencesUpdatePushNotifications.
+type OptUserPreferencesUpdatePushNotifications struct {
+	Value UserPreferencesUpdatePushNotifications
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdatePushNotifications was set.
+func (o OptUserPreferencesUpdatePushNotifications) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdatePushNotifications) Reset() {
+	var v UserPreferencesUpdatePushNotifications
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdatePushNotifications) SetTo(v UserPreferencesUpdatePushNotifications) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdatePushNotifications) Get() (v UserPreferencesUpdatePushNotifications, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdatePushNotifications) Or(d UserPreferencesUpdatePushNotifications) UserPreferencesUpdatePushNotifications {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptUserPreferencesUpdateTheme returns new OptUserPreferencesUpdateTheme with value set to v.
+func NewOptUserPreferencesUpdateTheme(v UserPreferencesUpdateTheme) OptUserPreferencesUpdateTheme {
+	return OptUserPreferencesUpdateTheme{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptUserPreferencesUpdateTheme is optional UserPreferencesUpdateTheme.
+type OptUserPreferencesUpdateTheme struct {
+	Value UserPreferencesUpdateTheme
+	Set   bool
+}
+
+// IsSet returns true if OptUserPreferencesUpdateTheme was set.
+func (o OptUserPreferencesUpdateTheme) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptUserPreferencesUpdateTheme) Reset() {
+	var v UserPreferencesUpdateTheme
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptUserPreferencesUpdateTheme) SetTo(v UserPreferencesUpdateTheme) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptUserPreferencesUpdateTheme) Get() (v UserPreferencesUpdateTheme, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptUserPreferencesUpdateTheme) Or(d UserPreferencesUpdateTheme) UserPreferencesUpdateTheme {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -882,6 +1768,14 @@ func NewSettingValueValue3SettingValueValue(v SettingValueValue3) SettingValueVa
 
 type SettingValueValue3 struct{}
 
+type UpdateCurrentUserBadRequest Error
+
+func (*UpdateCurrentUserBadRequest) updateCurrentUserRes() {}
+
+type UpdateCurrentUserUnauthorized Error
+
+func (*UpdateCurrentUserUnauthorized) updateCurrentUserRes() {}
+
 type UpdateServerSettingBadRequest Error
 
 func (*UpdateServerSettingBadRequest) updateServerSettingRes() {}
@@ -894,6 +1788,14 @@ type UpdateServerSettingUnauthorized Error
 
 func (*UpdateServerSettingUnauthorized) updateServerSettingRes() {}
 
+type UpdateUserPreferencesBadRequest Error
+
+func (*UpdateUserPreferencesBadRequest) updateUserPreferencesRes() {}
+
+type UpdateUserPreferencesUnauthorized Error
+
+func (*UpdateUserPreferencesUnauthorized) updateUserPreferencesRes() {}
+
 type UpdateUserSettingBadRequest Error
 
 func (*UpdateUserSettingBadRequest) updateUserSettingRes() {}
@@ -901,6 +1803,1009 @@ func (*UpdateUserSettingBadRequest) updateUserSettingRes() {}
 type UpdateUserSettingUnauthorized Error
 
 func (*UpdateUserSettingUnauthorized) updateUserSettingRes() {}
+
+type UploadAvatarBadRequest Error
+
+func (*UploadAvatarBadRequest) uploadAvatarRes() {}
+
+type UploadAvatarReq struct {
+	// Avatar image file (JPEG, PNG, GIF, WebP, max 5MB).
+	File ht.MultipartFile `json:"file"`
+}
+
+// GetFile returns the value of File.
+func (s *UploadAvatarReq) GetFile() ht.MultipartFile {
+	return s.File
+}
+
+// SetFile sets the value of File.
+func (s *UploadAvatarReq) SetFile(val ht.MultipartFile) {
+	s.File = val
+}
+
+type UploadAvatarUnauthorized Error
+
+func (*UploadAvatarUnauthorized) uploadAvatarRes() {}
+
+// Ref: #/components/schemas/User
+type User struct {
+	// User ID.
+	ID uuid.UUID `json:"id"`
+	// Unique username.
+	Username string `json:"username"`
+	// Email address.
+	Email string `json:"email"`
+	// Display name.
+	DisplayName OptString `json:"display_name"`
+	// Avatar image URL.
+	AvatarURL OptString `json:"avatar_url"`
+	// Locale preference.
+	Locale OptString `json:"locale"`
+	// Timezone.
+	Timezone OptString `json:"timezone"`
+	// QAR (adult content) access enabled.
+	QarEnabled OptBool `json:"qar_enabled"`
+	// Account is active.
+	IsActive bool `json:"is_active"`
+	// Has admin privileges.
+	IsAdmin OptBool `json:"is_admin"`
+	// Email has been verified.
+	EmailVerified OptBool `json:"email_verified"`
+	// Account creation timestamp.
+	CreatedAt time.Time `json:"created_at"`
+	// Last login timestamp.
+	LastLoginAt OptDateTime `json:"last_login_at"`
+}
+
+// GetID returns the value of ID.
+func (s *User) GetID() uuid.UUID {
+	return s.ID
+}
+
+// GetUsername returns the value of Username.
+func (s *User) GetUsername() string {
+	return s.Username
+}
+
+// GetEmail returns the value of Email.
+func (s *User) GetEmail() string {
+	return s.Email
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *User) GetDisplayName() OptString {
+	return s.DisplayName
+}
+
+// GetAvatarURL returns the value of AvatarURL.
+func (s *User) GetAvatarURL() OptString {
+	return s.AvatarURL
+}
+
+// GetLocale returns the value of Locale.
+func (s *User) GetLocale() OptString {
+	return s.Locale
+}
+
+// GetTimezone returns the value of Timezone.
+func (s *User) GetTimezone() OptString {
+	return s.Timezone
+}
+
+// GetQarEnabled returns the value of QarEnabled.
+func (s *User) GetQarEnabled() OptBool {
+	return s.QarEnabled
+}
+
+// GetIsActive returns the value of IsActive.
+func (s *User) GetIsActive() bool {
+	return s.IsActive
+}
+
+// GetIsAdmin returns the value of IsAdmin.
+func (s *User) GetIsAdmin() OptBool {
+	return s.IsAdmin
+}
+
+// GetEmailVerified returns the value of EmailVerified.
+func (s *User) GetEmailVerified() OptBool {
+	return s.EmailVerified
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *User) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetLastLoginAt returns the value of LastLoginAt.
+func (s *User) GetLastLoginAt() OptDateTime {
+	return s.LastLoginAt
+}
+
+// SetID sets the value of ID.
+func (s *User) SetID(val uuid.UUID) {
+	s.ID = val
+}
+
+// SetUsername sets the value of Username.
+func (s *User) SetUsername(val string) {
+	s.Username = val
+}
+
+// SetEmail sets the value of Email.
+func (s *User) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *User) SetDisplayName(val OptString) {
+	s.DisplayName = val
+}
+
+// SetAvatarURL sets the value of AvatarURL.
+func (s *User) SetAvatarURL(val OptString) {
+	s.AvatarURL = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *User) SetLocale(val OptString) {
+	s.Locale = val
+}
+
+// SetTimezone sets the value of Timezone.
+func (s *User) SetTimezone(val OptString) {
+	s.Timezone = val
+}
+
+// SetQarEnabled sets the value of QarEnabled.
+func (s *User) SetQarEnabled(val OptBool) {
+	s.QarEnabled = val
+}
+
+// SetIsActive sets the value of IsActive.
+func (s *User) SetIsActive(val bool) {
+	s.IsActive = val
+}
+
+// SetIsAdmin sets the value of IsAdmin.
+func (s *User) SetIsAdmin(val OptBool) {
+	s.IsAdmin = val
+}
+
+// SetEmailVerified sets the value of EmailVerified.
+func (s *User) SetEmailVerified(val OptBool) {
+	s.EmailVerified = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *User) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetLastLoginAt sets the value of LastLoginAt.
+func (s *User) SetLastLoginAt(val OptDateTime) {
+	s.LastLoginAt = val
+}
+
+func (*User) getCurrentUserRes()    {}
+func (*User) getUserByIdRes()       {}
+func (*User) updateCurrentUserRes() {}
+
+// Ref: #/components/schemas/UserPreferences
+type UserPreferences struct {
+	// User ID.
+	UserID uuid.UUID `json:"user_id"`
+	// Email notification settings.
+	EmailNotifications OptUserPreferencesEmailNotifications `json:"email_notifications"`
+	// Push notification settings.
+	PushNotifications OptUserPreferencesPushNotifications `json:"push_notifications"`
+	// Digest notification settings.
+	DigestNotifications OptUserPreferencesDigestNotifications `json:"digest_notifications"`
+	// Profile visibility setting.
+	ProfileVisibility OptUserPreferencesProfileVisibility `json:"profile_visibility"`
+	// Show email on profile.
+	ShowEmail OptBool `json:"show_email"`
+	// Show activity on profile.
+	ShowActivity OptBool `json:"show_activity"`
+	// UI theme.
+	Theme OptUserPreferencesTheme `json:"theme"`
+	// Display language.
+	DisplayLanguage OptString `json:"display_language"`
+	// Preferred content languages (comma-separated).
+	ContentLanguage OptString `json:"content_language"`
+	// Show adult content.
+	ShowAdultContent OptBool `json:"show_adult_content"`
+	// Show spoilers.
+	ShowSpoilers OptBool `json:"show_spoilers"`
+	// Auto-play videos.
+	AutoPlayVideos OptBool `json:"auto_play_videos"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *UserPreferences) GetUserID() uuid.UUID {
+	return s.UserID
+}
+
+// GetEmailNotifications returns the value of EmailNotifications.
+func (s *UserPreferences) GetEmailNotifications() OptUserPreferencesEmailNotifications {
+	return s.EmailNotifications
+}
+
+// GetPushNotifications returns the value of PushNotifications.
+func (s *UserPreferences) GetPushNotifications() OptUserPreferencesPushNotifications {
+	return s.PushNotifications
+}
+
+// GetDigestNotifications returns the value of DigestNotifications.
+func (s *UserPreferences) GetDigestNotifications() OptUserPreferencesDigestNotifications {
+	return s.DigestNotifications
+}
+
+// GetProfileVisibility returns the value of ProfileVisibility.
+func (s *UserPreferences) GetProfileVisibility() OptUserPreferencesProfileVisibility {
+	return s.ProfileVisibility
+}
+
+// GetShowEmail returns the value of ShowEmail.
+func (s *UserPreferences) GetShowEmail() OptBool {
+	return s.ShowEmail
+}
+
+// GetShowActivity returns the value of ShowActivity.
+func (s *UserPreferences) GetShowActivity() OptBool {
+	return s.ShowActivity
+}
+
+// GetTheme returns the value of Theme.
+func (s *UserPreferences) GetTheme() OptUserPreferencesTheme {
+	return s.Theme
+}
+
+// GetDisplayLanguage returns the value of DisplayLanguage.
+func (s *UserPreferences) GetDisplayLanguage() OptString {
+	return s.DisplayLanguage
+}
+
+// GetContentLanguage returns the value of ContentLanguage.
+func (s *UserPreferences) GetContentLanguage() OptString {
+	return s.ContentLanguage
+}
+
+// GetShowAdultContent returns the value of ShowAdultContent.
+func (s *UserPreferences) GetShowAdultContent() OptBool {
+	return s.ShowAdultContent
+}
+
+// GetShowSpoilers returns the value of ShowSpoilers.
+func (s *UserPreferences) GetShowSpoilers() OptBool {
+	return s.ShowSpoilers
+}
+
+// GetAutoPlayVideos returns the value of AutoPlayVideos.
+func (s *UserPreferences) GetAutoPlayVideos() OptBool {
+	return s.AutoPlayVideos
+}
+
+// SetUserID sets the value of UserID.
+func (s *UserPreferences) SetUserID(val uuid.UUID) {
+	s.UserID = val
+}
+
+// SetEmailNotifications sets the value of EmailNotifications.
+func (s *UserPreferences) SetEmailNotifications(val OptUserPreferencesEmailNotifications) {
+	s.EmailNotifications = val
+}
+
+// SetPushNotifications sets the value of PushNotifications.
+func (s *UserPreferences) SetPushNotifications(val OptUserPreferencesPushNotifications) {
+	s.PushNotifications = val
+}
+
+// SetDigestNotifications sets the value of DigestNotifications.
+func (s *UserPreferences) SetDigestNotifications(val OptUserPreferencesDigestNotifications) {
+	s.DigestNotifications = val
+}
+
+// SetProfileVisibility sets the value of ProfileVisibility.
+func (s *UserPreferences) SetProfileVisibility(val OptUserPreferencesProfileVisibility) {
+	s.ProfileVisibility = val
+}
+
+// SetShowEmail sets the value of ShowEmail.
+func (s *UserPreferences) SetShowEmail(val OptBool) {
+	s.ShowEmail = val
+}
+
+// SetShowActivity sets the value of ShowActivity.
+func (s *UserPreferences) SetShowActivity(val OptBool) {
+	s.ShowActivity = val
+}
+
+// SetTheme sets the value of Theme.
+func (s *UserPreferences) SetTheme(val OptUserPreferencesTheme) {
+	s.Theme = val
+}
+
+// SetDisplayLanguage sets the value of DisplayLanguage.
+func (s *UserPreferences) SetDisplayLanguage(val OptString) {
+	s.DisplayLanguage = val
+}
+
+// SetContentLanguage sets the value of ContentLanguage.
+func (s *UserPreferences) SetContentLanguage(val OptString) {
+	s.ContentLanguage = val
+}
+
+// SetShowAdultContent sets the value of ShowAdultContent.
+func (s *UserPreferences) SetShowAdultContent(val OptBool) {
+	s.ShowAdultContent = val
+}
+
+// SetShowSpoilers sets the value of ShowSpoilers.
+func (s *UserPreferences) SetShowSpoilers(val OptBool) {
+	s.ShowSpoilers = val
+}
+
+// SetAutoPlayVideos sets the value of AutoPlayVideos.
+func (s *UserPreferences) SetAutoPlayVideos(val OptBool) {
+	s.AutoPlayVideos = val
+}
+
+func (*UserPreferences) getUserPreferencesRes()    {}
+func (*UserPreferences) updateUserPreferencesRes() {}
+
+// Digest notification settings.
+type UserPreferencesDigestNotifications struct {
+	Enabled   OptBool                                        `json:"enabled"`
+	Frequency OptUserPreferencesDigestNotificationsFrequency `json:"frequency"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesDigestNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetFrequency returns the value of Frequency.
+func (s *UserPreferencesDigestNotifications) GetFrequency() OptUserPreferencesDigestNotificationsFrequency {
+	return s.Frequency
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesDigestNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetFrequency sets the value of Frequency.
+func (s *UserPreferencesDigestNotifications) SetFrequency(val OptUserPreferencesDigestNotificationsFrequency) {
+	s.Frequency = val
+}
+
+type UserPreferencesDigestNotificationsFrequency string
+
+const (
+	UserPreferencesDigestNotificationsFrequencyDaily   UserPreferencesDigestNotificationsFrequency = "daily"
+	UserPreferencesDigestNotificationsFrequencyWeekly  UserPreferencesDigestNotificationsFrequency = "weekly"
+	UserPreferencesDigestNotificationsFrequencyMonthly UserPreferencesDigestNotificationsFrequency = "monthly"
+)
+
+// AllValues returns all UserPreferencesDigestNotificationsFrequency values.
+func (UserPreferencesDigestNotificationsFrequency) AllValues() []UserPreferencesDigestNotificationsFrequency {
+	return []UserPreferencesDigestNotificationsFrequency{
+		UserPreferencesDigestNotificationsFrequencyDaily,
+		UserPreferencesDigestNotificationsFrequencyWeekly,
+		UserPreferencesDigestNotificationsFrequencyMonthly,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesDigestNotificationsFrequency) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesDigestNotificationsFrequencyDaily:
+		return []byte(s), nil
+	case UserPreferencesDigestNotificationsFrequencyWeekly:
+		return []byte(s), nil
+	case UserPreferencesDigestNotificationsFrequencyMonthly:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesDigestNotificationsFrequency) UnmarshalText(data []byte) error {
+	switch UserPreferencesDigestNotificationsFrequency(data) {
+	case UserPreferencesDigestNotificationsFrequencyDaily:
+		*s = UserPreferencesDigestNotificationsFrequencyDaily
+		return nil
+	case UserPreferencesDigestNotificationsFrequencyWeekly:
+		*s = UserPreferencesDigestNotificationsFrequencyWeekly
+		return nil
+	case UserPreferencesDigestNotificationsFrequencyMonthly:
+		*s = UserPreferencesDigestNotificationsFrequencyMonthly
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Email notification settings.
+type UserPreferencesEmailNotifications struct {
+	Enabled   OptBool                                       `json:"enabled"`
+	Frequency OptUserPreferencesEmailNotificationsFrequency `json:"frequency"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesEmailNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetFrequency returns the value of Frequency.
+func (s *UserPreferencesEmailNotifications) GetFrequency() OptUserPreferencesEmailNotificationsFrequency {
+	return s.Frequency
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesEmailNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetFrequency sets the value of Frequency.
+func (s *UserPreferencesEmailNotifications) SetFrequency(val OptUserPreferencesEmailNotificationsFrequency) {
+	s.Frequency = val
+}
+
+type UserPreferencesEmailNotificationsFrequency string
+
+const (
+	UserPreferencesEmailNotificationsFrequencyInstant UserPreferencesEmailNotificationsFrequency = "instant"
+	UserPreferencesEmailNotificationsFrequencyDaily   UserPreferencesEmailNotificationsFrequency = "daily"
+	UserPreferencesEmailNotificationsFrequencyWeekly  UserPreferencesEmailNotificationsFrequency = "weekly"
+)
+
+// AllValues returns all UserPreferencesEmailNotificationsFrequency values.
+func (UserPreferencesEmailNotificationsFrequency) AllValues() []UserPreferencesEmailNotificationsFrequency {
+	return []UserPreferencesEmailNotificationsFrequency{
+		UserPreferencesEmailNotificationsFrequencyInstant,
+		UserPreferencesEmailNotificationsFrequencyDaily,
+		UserPreferencesEmailNotificationsFrequencyWeekly,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesEmailNotificationsFrequency) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesEmailNotificationsFrequencyInstant:
+		return []byte(s), nil
+	case UserPreferencesEmailNotificationsFrequencyDaily:
+		return []byte(s), nil
+	case UserPreferencesEmailNotificationsFrequencyWeekly:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesEmailNotificationsFrequency) UnmarshalText(data []byte) error {
+	switch UserPreferencesEmailNotificationsFrequency(data) {
+	case UserPreferencesEmailNotificationsFrequencyInstant:
+		*s = UserPreferencesEmailNotificationsFrequencyInstant
+		return nil
+	case UserPreferencesEmailNotificationsFrequencyDaily:
+		*s = UserPreferencesEmailNotificationsFrequencyDaily
+		return nil
+	case UserPreferencesEmailNotificationsFrequencyWeekly:
+		*s = UserPreferencesEmailNotificationsFrequencyWeekly
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Profile visibility setting.
+type UserPreferencesProfileVisibility string
+
+const (
+	UserPreferencesProfileVisibilityPublic  UserPreferencesProfileVisibility = "public"
+	UserPreferencesProfileVisibilityFriends UserPreferencesProfileVisibility = "friends"
+	UserPreferencesProfileVisibilityPrivate UserPreferencesProfileVisibility = "private"
+)
+
+// AllValues returns all UserPreferencesProfileVisibility values.
+func (UserPreferencesProfileVisibility) AllValues() []UserPreferencesProfileVisibility {
+	return []UserPreferencesProfileVisibility{
+		UserPreferencesProfileVisibilityPublic,
+		UserPreferencesProfileVisibilityFriends,
+		UserPreferencesProfileVisibilityPrivate,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesProfileVisibility) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesProfileVisibilityPublic:
+		return []byte(s), nil
+	case UserPreferencesProfileVisibilityFriends:
+		return []byte(s), nil
+	case UserPreferencesProfileVisibilityPrivate:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesProfileVisibility) UnmarshalText(data []byte) error {
+	switch UserPreferencesProfileVisibility(data) {
+	case UserPreferencesProfileVisibilityPublic:
+		*s = UserPreferencesProfileVisibilityPublic
+		return nil
+	case UserPreferencesProfileVisibilityFriends:
+		*s = UserPreferencesProfileVisibilityFriends
+		return nil
+	case UserPreferencesProfileVisibilityPrivate:
+		*s = UserPreferencesProfileVisibilityPrivate
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Push notification settings.
+type UserPreferencesPushNotifications struct {
+	Enabled OptBool `json:"enabled"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesPushNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesPushNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// UI theme.
+type UserPreferencesTheme string
+
+const (
+	UserPreferencesThemeLight  UserPreferencesTheme = "light"
+	UserPreferencesThemeDark   UserPreferencesTheme = "dark"
+	UserPreferencesThemeSystem UserPreferencesTheme = "system"
+)
+
+// AllValues returns all UserPreferencesTheme values.
+func (UserPreferencesTheme) AllValues() []UserPreferencesTheme {
+	return []UserPreferencesTheme{
+		UserPreferencesThemeLight,
+		UserPreferencesThemeDark,
+		UserPreferencesThemeSystem,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesTheme) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesThemeLight:
+		return []byte(s), nil
+	case UserPreferencesThemeDark:
+		return []byte(s), nil
+	case UserPreferencesThemeSystem:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesTheme) UnmarshalText(data []byte) error {
+	switch UserPreferencesTheme(data) {
+	case UserPreferencesThemeLight:
+		*s = UserPreferencesThemeLight
+		return nil
+	case UserPreferencesThemeDark:
+		*s = UserPreferencesThemeDark
+		return nil
+	case UserPreferencesThemeSystem:
+		*s = UserPreferencesThemeSystem
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/UserPreferencesUpdate
+type UserPreferencesUpdate struct {
+	EmailNotifications  OptUserPreferencesUpdateEmailNotifications  `json:"email_notifications"`
+	PushNotifications   OptUserPreferencesUpdatePushNotifications   `json:"push_notifications"`
+	DigestNotifications OptUserPreferencesUpdateDigestNotifications `json:"digest_notifications"`
+	ProfileVisibility   OptUserPreferencesUpdateProfileVisibility   `json:"profile_visibility"`
+	ShowEmail           OptBool                                     `json:"show_email"`
+	ShowActivity        OptBool                                     `json:"show_activity"`
+	Theme               OptUserPreferencesUpdateTheme               `json:"theme"`
+	DisplayLanguage     OptString                                   `json:"display_language"`
+	ContentLanguage     OptString                                   `json:"content_language"`
+	ShowAdultContent    OptBool                                     `json:"show_adult_content"`
+	ShowSpoilers        OptBool                                     `json:"show_spoilers"`
+	AutoPlayVideos      OptBool                                     `json:"auto_play_videos"`
+}
+
+// GetEmailNotifications returns the value of EmailNotifications.
+func (s *UserPreferencesUpdate) GetEmailNotifications() OptUserPreferencesUpdateEmailNotifications {
+	return s.EmailNotifications
+}
+
+// GetPushNotifications returns the value of PushNotifications.
+func (s *UserPreferencesUpdate) GetPushNotifications() OptUserPreferencesUpdatePushNotifications {
+	return s.PushNotifications
+}
+
+// GetDigestNotifications returns the value of DigestNotifications.
+func (s *UserPreferencesUpdate) GetDigestNotifications() OptUserPreferencesUpdateDigestNotifications {
+	return s.DigestNotifications
+}
+
+// GetProfileVisibility returns the value of ProfileVisibility.
+func (s *UserPreferencesUpdate) GetProfileVisibility() OptUserPreferencesUpdateProfileVisibility {
+	return s.ProfileVisibility
+}
+
+// GetShowEmail returns the value of ShowEmail.
+func (s *UserPreferencesUpdate) GetShowEmail() OptBool {
+	return s.ShowEmail
+}
+
+// GetShowActivity returns the value of ShowActivity.
+func (s *UserPreferencesUpdate) GetShowActivity() OptBool {
+	return s.ShowActivity
+}
+
+// GetTheme returns the value of Theme.
+func (s *UserPreferencesUpdate) GetTheme() OptUserPreferencesUpdateTheme {
+	return s.Theme
+}
+
+// GetDisplayLanguage returns the value of DisplayLanguage.
+func (s *UserPreferencesUpdate) GetDisplayLanguage() OptString {
+	return s.DisplayLanguage
+}
+
+// GetContentLanguage returns the value of ContentLanguage.
+func (s *UserPreferencesUpdate) GetContentLanguage() OptString {
+	return s.ContentLanguage
+}
+
+// GetShowAdultContent returns the value of ShowAdultContent.
+func (s *UserPreferencesUpdate) GetShowAdultContent() OptBool {
+	return s.ShowAdultContent
+}
+
+// GetShowSpoilers returns the value of ShowSpoilers.
+func (s *UserPreferencesUpdate) GetShowSpoilers() OptBool {
+	return s.ShowSpoilers
+}
+
+// GetAutoPlayVideos returns the value of AutoPlayVideos.
+func (s *UserPreferencesUpdate) GetAutoPlayVideos() OptBool {
+	return s.AutoPlayVideos
+}
+
+// SetEmailNotifications sets the value of EmailNotifications.
+func (s *UserPreferencesUpdate) SetEmailNotifications(val OptUserPreferencesUpdateEmailNotifications) {
+	s.EmailNotifications = val
+}
+
+// SetPushNotifications sets the value of PushNotifications.
+func (s *UserPreferencesUpdate) SetPushNotifications(val OptUserPreferencesUpdatePushNotifications) {
+	s.PushNotifications = val
+}
+
+// SetDigestNotifications sets the value of DigestNotifications.
+func (s *UserPreferencesUpdate) SetDigestNotifications(val OptUserPreferencesUpdateDigestNotifications) {
+	s.DigestNotifications = val
+}
+
+// SetProfileVisibility sets the value of ProfileVisibility.
+func (s *UserPreferencesUpdate) SetProfileVisibility(val OptUserPreferencesUpdateProfileVisibility) {
+	s.ProfileVisibility = val
+}
+
+// SetShowEmail sets the value of ShowEmail.
+func (s *UserPreferencesUpdate) SetShowEmail(val OptBool) {
+	s.ShowEmail = val
+}
+
+// SetShowActivity sets the value of ShowActivity.
+func (s *UserPreferencesUpdate) SetShowActivity(val OptBool) {
+	s.ShowActivity = val
+}
+
+// SetTheme sets the value of Theme.
+func (s *UserPreferencesUpdate) SetTheme(val OptUserPreferencesUpdateTheme) {
+	s.Theme = val
+}
+
+// SetDisplayLanguage sets the value of DisplayLanguage.
+func (s *UserPreferencesUpdate) SetDisplayLanguage(val OptString) {
+	s.DisplayLanguage = val
+}
+
+// SetContentLanguage sets the value of ContentLanguage.
+func (s *UserPreferencesUpdate) SetContentLanguage(val OptString) {
+	s.ContentLanguage = val
+}
+
+// SetShowAdultContent sets the value of ShowAdultContent.
+func (s *UserPreferencesUpdate) SetShowAdultContent(val OptBool) {
+	s.ShowAdultContent = val
+}
+
+// SetShowSpoilers sets the value of ShowSpoilers.
+func (s *UserPreferencesUpdate) SetShowSpoilers(val OptBool) {
+	s.ShowSpoilers = val
+}
+
+// SetAutoPlayVideos sets the value of AutoPlayVideos.
+func (s *UserPreferencesUpdate) SetAutoPlayVideos(val OptBool) {
+	s.AutoPlayVideos = val
+}
+
+type UserPreferencesUpdateDigestNotifications struct {
+	Enabled   OptBool                                              `json:"enabled"`
+	Frequency OptUserPreferencesUpdateDigestNotificationsFrequency `json:"frequency"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesUpdateDigestNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetFrequency returns the value of Frequency.
+func (s *UserPreferencesUpdateDigestNotifications) GetFrequency() OptUserPreferencesUpdateDigestNotificationsFrequency {
+	return s.Frequency
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesUpdateDigestNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetFrequency sets the value of Frequency.
+func (s *UserPreferencesUpdateDigestNotifications) SetFrequency(val OptUserPreferencesUpdateDigestNotificationsFrequency) {
+	s.Frequency = val
+}
+
+type UserPreferencesUpdateDigestNotificationsFrequency string
+
+const (
+	UserPreferencesUpdateDigestNotificationsFrequencyDaily   UserPreferencesUpdateDigestNotificationsFrequency = "daily"
+	UserPreferencesUpdateDigestNotificationsFrequencyWeekly  UserPreferencesUpdateDigestNotificationsFrequency = "weekly"
+	UserPreferencesUpdateDigestNotificationsFrequencyMonthly UserPreferencesUpdateDigestNotificationsFrequency = "monthly"
+)
+
+// AllValues returns all UserPreferencesUpdateDigestNotificationsFrequency values.
+func (UserPreferencesUpdateDigestNotificationsFrequency) AllValues() []UserPreferencesUpdateDigestNotificationsFrequency {
+	return []UserPreferencesUpdateDigestNotificationsFrequency{
+		UserPreferencesUpdateDigestNotificationsFrequencyDaily,
+		UserPreferencesUpdateDigestNotificationsFrequencyWeekly,
+		UserPreferencesUpdateDigestNotificationsFrequencyMonthly,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesUpdateDigestNotificationsFrequency) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesUpdateDigestNotificationsFrequencyDaily:
+		return []byte(s), nil
+	case UserPreferencesUpdateDigestNotificationsFrequencyWeekly:
+		return []byte(s), nil
+	case UserPreferencesUpdateDigestNotificationsFrequencyMonthly:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesUpdateDigestNotificationsFrequency) UnmarshalText(data []byte) error {
+	switch UserPreferencesUpdateDigestNotificationsFrequency(data) {
+	case UserPreferencesUpdateDigestNotificationsFrequencyDaily:
+		*s = UserPreferencesUpdateDigestNotificationsFrequencyDaily
+		return nil
+	case UserPreferencesUpdateDigestNotificationsFrequencyWeekly:
+		*s = UserPreferencesUpdateDigestNotificationsFrequencyWeekly
+		return nil
+	case UserPreferencesUpdateDigestNotificationsFrequencyMonthly:
+		*s = UserPreferencesUpdateDigestNotificationsFrequencyMonthly
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type UserPreferencesUpdateEmailNotifications struct {
+	Enabled   OptBool                                             `json:"enabled"`
+	Frequency OptUserPreferencesUpdateEmailNotificationsFrequency `json:"frequency"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesUpdateEmailNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// GetFrequency returns the value of Frequency.
+func (s *UserPreferencesUpdateEmailNotifications) GetFrequency() OptUserPreferencesUpdateEmailNotificationsFrequency {
+	return s.Frequency
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesUpdateEmailNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+// SetFrequency sets the value of Frequency.
+func (s *UserPreferencesUpdateEmailNotifications) SetFrequency(val OptUserPreferencesUpdateEmailNotificationsFrequency) {
+	s.Frequency = val
+}
+
+type UserPreferencesUpdateEmailNotificationsFrequency string
+
+const (
+	UserPreferencesUpdateEmailNotificationsFrequencyInstant UserPreferencesUpdateEmailNotificationsFrequency = "instant"
+	UserPreferencesUpdateEmailNotificationsFrequencyDaily   UserPreferencesUpdateEmailNotificationsFrequency = "daily"
+	UserPreferencesUpdateEmailNotificationsFrequencyWeekly  UserPreferencesUpdateEmailNotificationsFrequency = "weekly"
+)
+
+// AllValues returns all UserPreferencesUpdateEmailNotificationsFrequency values.
+func (UserPreferencesUpdateEmailNotificationsFrequency) AllValues() []UserPreferencesUpdateEmailNotificationsFrequency {
+	return []UserPreferencesUpdateEmailNotificationsFrequency{
+		UserPreferencesUpdateEmailNotificationsFrequencyInstant,
+		UserPreferencesUpdateEmailNotificationsFrequencyDaily,
+		UserPreferencesUpdateEmailNotificationsFrequencyWeekly,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesUpdateEmailNotificationsFrequency) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesUpdateEmailNotificationsFrequencyInstant:
+		return []byte(s), nil
+	case UserPreferencesUpdateEmailNotificationsFrequencyDaily:
+		return []byte(s), nil
+	case UserPreferencesUpdateEmailNotificationsFrequencyWeekly:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesUpdateEmailNotificationsFrequency) UnmarshalText(data []byte) error {
+	switch UserPreferencesUpdateEmailNotificationsFrequency(data) {
+	case UserPreferencesUpdateEmailNotificationsFrequencyInstant:
+		*s = UserPreferencesUpdateEmailNotificationsFrequencyInstant
+		return nil
+	case UserPreferencesUpdateEmailNotificationsFrequencyDaily:
+		*s = UserPreferencesUpdateEmailNotificationsFrequencyDaily
+		return nil
+	case UserPreferencesUpdateEmailNotificationsFrequencyWeekly:
+		*s = UserPreferencesUpdateEmailNotificationsFrequencyWeekly
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type UserPreferencesUpdateProfileVisibility string
+
+const (
+	UserPreferencesUpdateProfileVisibilityPublic  UserPreferencesUpdateProfileVisibility = "public"
+	UserPreferencesUpdateProfileVisibilityFriends UserPreferencesUpdateProfileVisibility = "friends"
+	UserPreferencesUpdateProfileVisibilityPrivate UserPreferencesUpdateProfileVisibility = "private"
+)
+
+// AllValues returns all UserPreferencesUpdateProfileVisibility values.
+func (UserPreferencesUpdateProfileVisibility) AllValues() []UserPreferencesUpdateProfileVisibility {
+	return []UserPreferencesUpdateProfileVisibility{
+		UserPreferencesUpdateProfileVisibilityPublic,
+		UserPreferencesUpdateProfileVisibilityFriends,
+		UserPreferencesUpdateProfileVisibilityPrivate,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesUpdateProfileVisibility) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesUpdateProfileVisibilityPublic:
+		return []byte(s), nil
+	case UserPreferencesUpdateProfileVisibilityFriends:
+		return []byte(s), nil
+	case UserPreferencesUpdateProfileVisibilityPrivate:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesUpdateProfileVisibility) UnmarshalText(data []byte) error {
+	switch UserPreferencesUpdateProfileVisibility(data) {
+	case UserPreferencesUpdateProfileVisibilityPublic:
+		*s = UserPreferencesUpdateProfileVisibilityPublic
+		return nil
+	case UserPreferencesUpdateProfileVisibilityFriends:
+		*s = UserPreferencesUpdateProfileVisibilityFriends
+		return nil
+	case UserPreferencesUpdateProfileVisibilityPrivate:
+		*s = UserPreferencesUpdateProfileVisibilityPrivate
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type UserPreferencesUpdatePushNotifications struct {
+	Enabled OptBool `json:"enabled"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *UserPreferencesUpdatePushNotifications) GetEnabled() OptBool {
+	return s.Enabled
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *UserPreferencesUpdatePushNotifications) SetEnabled(val OptBool) {
+	s.Enabled = val
+}
+
+type UserPreferencesUpdateTheme string
+
+const (
+	UserPreferencesUpdateThemeLight  UserPreferencesUpdateTheme = "light"
+	UserPreferencesUpdateThemeDark   UserPreferencesUpdateTheme = "dark"
+	UserPreferencesUpdateThemeSystem UserPreferencesUpdateTheme = "system"
+)
+
+// AllValues returns all UserPreferencesUpdateTheme values.
+func (UserPreferencesUpdateTheme) AllValues() []UserPreferencesUpdateTheme {
+	return []UserPreferencesUpdateTheme{
+		UserPreferencesUpdateThemeLight,
+		UserPreferencesUpdateThemeDark,
+		UserPreferencesUpdateThemeSystem,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserPreferencesUpdateTheme) MarshalText() ([]byte, error) {
+	switch s {
+	case UserPreferencesUpdateThemeLight:
+		return []byte(s), nil
+	case UserPreferencesUpdateThemeDark:
+		return []byte(s), nil
+	case UserPreferencesUpdateThemeSystem:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserPreferencesUpdateTheme) UnmarshalText(data []byte) error {
+	switch UserPreferencesUpdateTheme(data) {
+	case UserPreferencesUpdateThemeLight:
+		*s = UserPreferencesUpdateThemeLight
+		return nil
+	case UserPreferencesUpdateThemeDark:
+		*s = UserPreferencesUpdateThemeDark
+		return nil
+	case UserPreferencesUpdateThemeSystem:
+		*s = UserPreferencesUpdateThemeSystem
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
 
 // Ref: #/components/schemas/UserSetting
 type UserSetting struct {
@@ -1164,3 +3069,43 @@ func NewUserSettingValue3UserSettingValue(v UserSettingValue3) UserSettingValue 
 }
 
 type UserSettingValue3 struct{}
+
+// Ref: #/components/schemas/UserUpdate
+type UserUpdate struct {
+	// New email address.
+	Email OptString `json:"email"`
+	// New display name.
+	DisplayName OptString `json:"display_name"`
+	// New timezone.
+	Timezone OptString `json:"timezone"`
+}
+
+// GetEmail returns the value of Email.
+func (s *UserUpdate) GetEmail() OptString {
+	return s.Email
+}
+
+// GetDisplayName returns the value of DisplayName.
+func (s *UserUpdate) GetDisplayName() OptString {
+	return s.DisplayName
+}
+
+// GetTimezone returns the value of Timezone.
+func (s *UserUpdate) GetTimezone() OptString {
+	return s.Timezone
+}
+
+// SetEmail sets the value of Email.
+func (s *UserUpdate) SetEmail(val OptString) {
+	s.Email = val
+}
+
+// SetDisplayName sets the value of DisplayName.
+func (s *UserUpdate) SetDisplayName(val OptString) {
+	s.DisplayName = val
+}
+
+// SetTimezone sets the value of Timezone.
+func (s *UserUpdate) SetTimezone(val OptString) {
+	s.Timezone = val
+}

@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -29,6 +30,7 @@ type ServerParams struct {
 	Logger          *zap.Logger
 	HealthService   *health.Service
 	SettingsService settings.Service
+	UserService     *user.Service
 	Lifecycle       fx.Lifecycle
 }
 
@@ -38,6 +40,7 @@ func NewServer(p ServerParams) (*Server, error) {
 	handler := &Handler{
 		logger:          p.Logger.Named("api"),
 		healthService:   p.HealthService,
+		userService:     p.UserService,
 		settingsService: p.SettingsService,
 	}
 

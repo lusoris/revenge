@@ -14,6 +14,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/settings/user/{key}
 	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
+	// GetCurrentUser implements getCurrentUser operation.
+	//
+	// Get the currently authenticated user's profile.
+	//
+	// GET /api/v1/users/me
+	GetCurrentUser(ctx context.Context) (GetCurrentUserRes, error)
 	// GetLiveness implements getLiveness operation.
 	//
 	// Checks if the service is alive and running.
@@ -44,6 +50,18 @@ type Handler interface {
 	//
 	// GET /health/startup
 	GetStartup(ctx context.Context) (GetStartupRes, error)
+	// GetUserById implements getUserById operation.
+	//
+	// Get a user's public profile information.
+	//
+	// GET /api/v1/users/{userId}
+	GetUserById(ctx context.Context, params GetUserByIdParams) (GetUserByIdRes, error)
+	// GetUserPreferences implements getUserPreferences operation.
+	//
+	// Get notification and display preferences for the authenticated user.
+	//
+	// GET /api/v1/users/me/preferences
+	GetUserPreferences(ctx context.Context) (GetUserPreferencesRes, error)
 	// GetUserSetting implements getUserSetting operation.
 	//
 	// Retrieve a specific user setting by key.
@@ -62,18 +80,36 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user
 	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// UpdateCurrentUser implements updateCurrentUser operation.
+	//
+	// Update the authenticated user's profile.
+	//
+	// PUT /api/v1/users/me
+	UpdateCurrentUser(ctx context.Context, req *UserUpdate) (UpdateCurrentUserRes, error)
 	// UpdateServerSetting implements updateServerSetting operation.
 	//
 	// Update the value of a server setting.
 	//
 	// PUT /api/v1/settings/server/{key}
 	UpdateServerSetting(ctx context.Context, req *SettingValue, params UpdateServerSettingParams) (UpdateServerSettingRes, error)
+	// UpdateUserPreferences implements updateUserPreferences operation.
+	//
+	// Update notification and display preferences.
+	//
+	// PUT /api/v1/users/me/preferences
+	UpdateUserPreferences(ctx context.Context, req *UserPreferencesUpdate) (UpdateUserPreferencesRes, error)
 	// UpdateUserSetting implements updateUserSetting operation.
 	//
 	// Update the value of a user setting.
 	//
 	// PUT /api/v1/settings/user/{key}
 	UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (UpdateUserSettingRes, error)
+	// UploadAvatar implements uploadAvatar operation.
+	//
+	// Upload a new avatar image.
+	//
+	// POST /api/v1/users/me/avatar
+	UploadAvatar(ctx context.Context, req *UploadAvatarReq) (UploadAvatarRes, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

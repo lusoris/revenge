@@ -61,9 +61,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'a': // Prefix: "api/v1/settings/"
+			case 'a': // Prefix: "api/v1/"
 
-				if l := len("api/v1/settings/"); len(elem) >= l && elem[0:l] == "api/v1/settings/" {
+				if l := len("api/v1/"); len(elem) >= l && elem[0:l] == "api/v1/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -73,120 +73,250 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				switch elem[0] {
-				case 's': // Prefix: "server"
+				case 's': // Prefix: "settings/"
 
-					if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
+					if l := len("settings/"); len(elem) >= l && elem[0:l] == "settings/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch r.Method {
-						case "GET":
-							s.handleListServerSettingsRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "GET")
-						}
-
-						return
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 's': // Prefix: "server"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "key"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch r.Method {
 							case "GET":
-								s.handleGetServerSettingRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
+								s.handleListServerSettingsRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "key"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetServerSettingRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PUT":
+									s.handleUpdateServerSettingRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET,PUT")
+								}
+
+								return
+							}
+
+						}
+
+					case 'u': // Prefix: "user"
+
+						if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "GET":
+								s.handleListUserSettingsRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "key"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteUserSettingRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetUserSettingRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PUT":
+									s.handleUpdateUserSettingRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PUT")
+								}
+
+								return
+							}
+
+						}
+
+					}
+
+				case 'u': // Prefix: "users/"
+
+					if l := len("users/"); len(elem) >= l && elem[0:l] == "users/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'm': // Prefix: "me"
+						origElem := elem
+						if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "GET":
+								s.handleGetCurrentUserRequest([0]string{}, elemIsEscaped, w, r)
 							case "PUT":
-								s.handleUpdateServerSettingRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
+								s.handleUpdateCurrentUserRequest([0]string{}, elemIsEscaped, w, r)
 							default:
 								s.notAllowed(w, r, "GET,PUT")
 							}
 
 							return
 						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
 
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'a': // Prefix: "avatar"
+
+								if l := len("avatar"); len(elem) >= l && elem[0:l] == "avatar" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleUploadAvatarRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							case 'p': // Prefix: "preferences"
+
+								if l := len("preferences"); len(elem) >= l && elem[0:l] == "preferences" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetUserPreferencesRequest([0]string{}, elemIsEscaped, w, r)
+									case "PUT":
+										s.handleUpdateUserPreferencesRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET,PUT")
+									}
+
+									return
+								}
+
+							}
+
+						}
+
+						elem = origElem
 					}
-
-				case 'u': // Prefix: "user"
-
-					if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
-						elem = elem[l:]
-					} else {
+					// Param: "userId"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
 						break
 					}
+					args[0] = elem
+					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch r.Method {
 						case "GET":
-							s.handleListUserSettingsRequest([0]string{}, elemIsEscaped, w, r)
+							s.handleGetUserByIdRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, "GET")
 						}
 
 						return
-					}
-					switch elem[0] {
-					case '/': // Prefix: "/"
-
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						// Param: "key"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "DELETE":
-								s.handleDeleteUserSettingRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "GET":
-								s.handleGetUserSettingRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "PUT":
-								s.handleUpdateUserSettingRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE,GET,PUT")
-							}
-
-							return
-						}
-
 					}
 
 				}
@@ -365,9 +495,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'a': // Prefix: "api/v1/settings/"
+			case 'a': // Prefix: "api/v1/"
 
-				if l := len("api/v1/settings/"); len(elem) >= l && elem[0:l] == "api/v1/settings/" {
+				if l := len("api/v1/"); len(elem) >= l && elem[0:l] == "api/v1/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -377,151 +507,313 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 				switch elem[0] {
-				case 's': // Prefix: "server"
+				case 's': // Prefix: "settings/"
 
-					if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
+					if l := len("settings/"); len(elem) >= l && elem[0:l] == "settings/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch method {
-						case "GET":
-							r.name = ListServerSettingsOperation
-							r.summary = "List all server settings"
-							r.operationID = "listServerSettings"
-							r.operationGroup = ""
-							r.pathPattern = "/api/v1/settings/server"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
-						}
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 's': // Prefix: "server"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("server"); len(elem) >= l && elem[0:l] == "server" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "key"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch method {
 							case "GET":
-								r.name = GetServerSettingOperation
-								r.summary = "Get a server setting"
-								r.operationID = "getServerSetting"
+								r.name = ListServerSettingsOperation
+								r.summary = "List all server settings"
+								r.operationID = "listServerSettings"
 								r.operationGroup = ""
-								r.pathPattern = "/api/v1/settings/server/{key}"
+								r.pathPattern = "/api/v1/settings/server"
 								r.args = args
-								r.count = 1
-								return r, true
-							case "PUT":
-								r.name = UpdateServerSettingOperation
-								r.summary = "Update a server setting"
-								r.operationID = "updateServerSetting"
-								r.operationGroup = ""
-								r.pathPattern = "/api/v1/settings/server/{key}"
-								r.args = args
-								r.count = 1
+								r.count = 0
 								return r, true
 							default:
 								return
 							}
 						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "key"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetServerSettingOperation
+									r.summary = "Get a server setting"
+									r.operationID = "getServerSetting"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/settings/server/{key}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PUT":
+									r.name = UpdateServerSettingOperation
+									r.summary = "Update a server setting"
+									r.operationID = "updateServerSetting"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/settings/server/{key}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'u': // Prefix: "user"
+
+						if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "GET":
+								r.name = ListUserSettingsOperation
+								r.summary = "List current user's settings"
+								r.operationID = "listUserSettings"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/settings/user"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "key"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteUserSettingOperation
+									r.summary = "Delete a user setting"
+									r.operationID = "deleteUserSetting"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/settings/user/{key}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetUserSettingOperation
+									r.summary = "Get a user setting"
+									r.operationID = "getUserSetting"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/settings/user/{key}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PUT":
+									r.name = UpdateUserSettingOperation
+									r.summary = "Update a user setting"
+									r.operationID = "updateUserSetting"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/settings/user/{key}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
 
 					}
 
-				case 'u': // Prefix: "user"
+				case 'u': // Prefix: "users/"
 
-					if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
+					if l := len("users/"); len(elem) >= l && elem[0:l] == "users/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch method {
-						case "GET":
-							r.name = ListUserSettingsOperation
-							r.summary = "List current user's settings"
-							r.operationID = "listUserSettings"
-							r.operationGroup = ""
-							r.pathPattern = "/api/v1/settings/user"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
-						}
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
-
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+					case 'm': // Prefix: "me"
+						origElem := elem
+						if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "key"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch method {
-							case "DELETE":
-								r.name = DeleteUserSettingOperation
-								r.summary = "Delete a user setting"
-								r.operationID = "deleteUserSetting"
-								r.operationGroup = ""
-								r.pathPattern = "/api/v1/settings/user/{key}"
-								r.args = args
-								r.count = 1
-								return r, true
 							case "GET":
-								r.name = GetUserSettingOperation
-								r.summary = "Get a user setting"
-								r.operationID = "getUserSetting"
+								r.name = GetCurrentUserOperation
+								r.summary = "Get current user"
+								r.operationID = "getCurrentUser"
 								r.operationGroup = ""
-								r.pathPattern = "/api/v1/settings/user/{key}"
+								r.pathPattern = "/api/v1/users/me"
 								r.args = args
-								r.count = 1
+								r.count = 0
 								return r, true
 							case "PUT":
-								r.name = UpdateUserSettingOperation
-								r.summary = "Update a user setting"
-								r.operationID = "updateUserSetting"
+								r.name = UpdateCurrentUserOperation
+								r.summary = "Update current user"
+								r.operationID = "updateCurrentUser"
 								r.operationGroup = ""
-								r.pathPattern = "/api/v1/settings/user/{key}"
+								r.pathPattern = "/api/v1/users/me"
 								r.args = args
-								r.count = 1
+								r.count = 0
 								return r, true
 							default:
 								return
 							}
 						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
 
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'a': // Prefix: "avatar"
+
+								if l := len("avatar"); len(elem) >= l && elem[0:l] == "avatar" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = UploadAvatarOperation
+										r.summary = "Upload avatar"
+										r.operationID = "uploadAvatar"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/users/me/avatar"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'p': // Prefix: "preferences"
+
+								if l := len("preferences"); len(elem) >= l && elem[0:l] == "preferences" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetUserPreferencesOperation
+										r.summary = "Get user preferences"
+										r.operationID = "getUserPreferences"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/users/me/preferences"
+										r.args = args
+										r.count = 0
+										return r, true
+									case "PUT":
+										r.name = UpdateUserPreferencesOperation
+										r.summary = "Update user preferences"
+										r.operationID = "updateUserPreferences"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/users/me/preferences"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						}
+
+						elem = origElem
+					}
+					// Param: "userId"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetUserByIdOperation
+							r.summary = "Get user by ID"
+							r.operationID = "getUserById"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/users/{userId}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
 					}
 
 				}

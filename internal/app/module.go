@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
 )
 
@@ -29,6 +30,7 @@ var Module = fx.Module("app",
 
 	// Services
 	settings.Module,
+	user.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,

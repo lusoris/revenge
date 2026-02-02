@@ -5,6 +5,10 @@ type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
 
+type GetCurrentUserRes interface {
+	getCurrentUserRes()
+}
+
 type GetReadinessRes interface {
 	getReadinessRes()
 }
@@ -15,6 +19,14 @@ type GetServerSettingRes interface {
 
 type GetStartupRes interface {
 	getStartupRes()
+}
+
+type GetUserByIdRes interface {
+	getUserByIdRes()
+}
+
+type GetUserPreferencesRes interface {
+	getUserPreferencesRes()
 }
 
 type GetUserSettingRes interface {
@@ -29,10 +41,22 @@ type ListUserSettingsRes interface {
 	listUserSettingsRes()
 }
 
+type UpdateCurrentUserRes interface {
+	updateCurrentUserRes()
+}
+
 type UpdateServerSettingRes interface {
 	updateServerSettingRes()
 }
 
+type UpdateUserPreferencesRes interface {
+	updateUserPreferencesRes()
+}
+
 type UpdateUserSettingRes interface {
 	updateUserSettingRes()
+}
+
+type UploadAvatarRes interface {
+	uploadAvatarRes()
 }

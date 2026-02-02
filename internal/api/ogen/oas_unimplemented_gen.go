@@ -22,6 +22,15 @@ func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params Delete
 	return r, ht.ErrNotImplemented
 }
 
+// GetCurrentUser implements getCurrentUser operation.
+//
+// Get the currently authenticated user's profile.
+//
+// GET /api/v1/users/me
+func (UnimplementedHandler) GetCurrentUser(ctx context.Context) (r GetCurrentUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetLiveness implements getLiveness operation.
 //
 // Checks if the service is alive and running.
@@ -64,6 +73,24 @@ func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ 
 	return r, ht.ErrNotImplemented
 }
 
+// GetUserById implements getUserById operation.
+//
+// Get a user's public profile information.
+//
+// GET /api/v1/users/{userId}
+func (UnimplementedHandler) GetUserById(ctx context.Context, params GetUserByIdParams) (r GetUserByIdRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserPreferences implements getUserPreferences operation.
+//
+// Get notification and display preferences for the authenticated user.
+//
+// GET /api/v1/users/me/preferences
+func (UnimplementedHandler) GetUserPreferences(ctx context.Context) (r GetUserPreferencesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetUserSetting implements getUserSetting operation.
 //
 // Retrieve a specific user setting by key.
@@ -91,6 +118,15 @@ func (UnimplementedHandler) ListUserSettings(ctx context.Context) (r ListUserSet
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateCurrentUser implements updateCurrentUser operation.
+//
+// Update the authenticated user's profile.
+//
+// PUT /api/v1/users/me
+func (UnimplementedHandler) UpdateCurrentUser(ctx context.Context, req *UserUpdate) (r UpdateCurrentUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateServerSetting implements updateServerSetting operation.
 //
 // Update the value of a server setting.
@@ -100,12 +136,30 @@ func (UnimplementedHandler) UpdateServerSetting(ctx context.Context, req *Settin
 	return r, ht.ErrNotImplemented
 }
 
+// UpdateUserPreferences implements updateUserPreferences operation.
+//
+// Update notification and display preferences.
+//
+// PUT /api/v1/users/me/preferences
+func (UnimplementedHandler) UpdateUserPreferences(ctx context.Context, req *UserPreferencesUpdate) (r UpdateUserPreferencesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // UpdateUserSetting implements updateUserSetting operation.
 //
 // Update the value of a user setting.
 //
 // PUT /api/v1/settings/user/{key}
 func (UnimplementedHandler) UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (r UpdateUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UploadAvatar implements uploadAvatar operation.
+//
+// Upload a new avatar image.
+//
+// POST /api/v1/users/me/avatar
+func (UnimplementedHandler) UploadAvatar(ctx context.Context, req *UploadAvatarReq) (r UploadAvatarRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

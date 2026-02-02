@@ -8,6 +8,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/zap"
 )
 
@@ -16,6 +17,7 @@ type Handler struct {
 	logger          *zap.Logger
 	healthService   *health.Service
 	settingsService settings.Service
+	userService     *user.Service
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.
@@ -287,4 +289,193 @@ func boolPtrToBool(b *bool) bool {
 		return false
 	}
 	return *b
+}
+
+// ============================================================================
+// User Endpoints
+// ============================================================================
+
+// GetCurrentUser returns the authenticated user's profile
+func (h *Handler) GetCurrentUser(ctx context.Context) (ogen.GetCurrentUserRes, error) {
+	// TODO: Get user ID from JWT token in context
+	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+
+	user, err := h.userService.GetUser(ctx, userID)
+	if err != nil {
+		return &ogen.Error{}, fmt.Errorf("user not found: %w", err)
+	}
+
+	return &ogen.User{
+		ID:            user.ID,
+		Username:      user.Username,
+		Email:         user.Email,
+		DisplayName:   ogen.NewOptString(stringPtrToString(user.DisplayName)),
+		AvatarURL:     ogen.NewOptString(stringPtrToString(user.AvatarUrl)),
+		Locale:        ogen.NewOptString(stringPtrToString(user.Locale)),
+		Timezone:      ogen.NewOptString(stringPtrToString(user.Timezone)),
+		QarEnabled:    ogen.NewOptBool(boolPtrToBool(user.QarEnabled)),
+		IsActive:      boolPtrToBool(user.IsActive),
+		IsAdmin:       ogen.NewOptBool(boolPtrToBool(user.IsAdmin)),
+		EmailVerified: ogen.NewOptBool(boolPtrToBool(user.EmailVerified)),
+		CreatedAt:     user.CreatedAt,
+		LastLoginAt:   ogen.NewOptDateTime(user.LastLoginAt.Time),
+	}, nil
+}
+
+// UpdateCurrentUser updates the authenticated user's profile
+func (h *Handler) UpdateCurrentUser(ctx context.Context, req *ogen.UserUpdate) (ogen.UpdateCurrentUserRes, error) {
+	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+
+	params := user.UpdateUserParams{}
+	if email, ok := req.Email.Get(); ok {
+		params.Email = &email
+	}
+	if displayName, ok := req.DisplayName.Get(); ok {
+		params.DisplayName = &displayName
+	}
+	if timezone, ok := req.Timezone.Get(); ok {
+		params.Timezone = &timezone
+	}
+
+	updatedUser, err := h.userService.UpdateUser(ctx, userID, params)
+	if err != nil {
+		return &ogen.UpdateCurrentUserBadRequest{}, fmt.Errorf("failed to update user: %w", err)
+	}
+
+	return &ogen.User{
+		ID:            updatedUser.ID,
+		Username:      updatedUser.Username,
+		Email:         updatedUser.Email,
+		DisplayName:   ogen.NewOptString(stringPtrToString(updatedUser.DisplayName)),
+		AvatarURL:     ogen.NewOptString(stringPtrToString(updatedUser.AvatarUrl)),
+		Locale:        ogen.NewOptString(stringPtrToString(updatedUser.Locale)),
+		Timezone:      ogen.NewOptString(stringPtrToString(updatedUser.Timezone)),
+		QarEnabled:    ogen.NewOptBool(boolPtrToBool(updatedUser.QarEnabled)),
+		IsActive:      boolPtrToBool(updatedUser.IsActive),
+		IsAdmin:       ogen.NewOptBool(boolPtrToBool(updatedUser.IsAdmin)),
+		EmailVerified: ogen.NewOptBool(boolPtrToBool(updatedUser.EmailVerified)),
+		CreatedAt:     updatedUser.CreatedAt,
+		LastLoginAt:   ogen.NewOptDateTime(updatedUser.LastLoginAt.Time),
+	}, nil
+}
+
+// GetUserById returns a user's public profile
+func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams) (ogen.GetUserByIdRes, error) {
+	user, err := h.userService.GetUser(ctx, params.UserId)
+	if err != nil {
+		return &ogen.GetUserByIdNotFound{}, fmt.Errorf("user not found: %w", err)
+	}
+
+	return &ogen.User{
+		ID:            user.ID,
+		Username:      user.Username,
+		Email:         user.Email,
+		DisplayName:   ogen.NewOptString(stringPtrToString(user.DisplayName)),
+		AvatarURL:     ogen.NewOptString(stringPtrToString(user.AvatarUrl)),
+		Locale:        ogen.NewOptString(stringPtrToString(user.Locale)),
+		Timezone:      ogen.NewOptString(stringPtrToString(user.Timezone)),
+		QarEnabled:    ogen.NewOptBool(boolPtrToBool(user.QarEnabled)),
+		IsActive:      boolPtrToBool(user.IsActive),
+		IsAdmin:       ogen.NewOptBool(boolPtrToBool(user.IsAdmin)),
+		EmailVerified: ogen.NewOptBool(boolPtrToBool(user.EmailVerified)),
+		CreatedAt:     user.CreatedAt,
+		LastLoginAt:   ogen.NewOptDateTime(user.LastLoginAt.Time),
+	}, nil
+}
+
+// GetUserPreferences returns user preferences
+func (h *Handler) GetUserPreferences(ctx context.Context) (ogen.GetUserPreferencesRes, error) {
+	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+
+	prefs, err := h.userService.GetUserPreferences(ctx, userID)
+	if err != nil {
+		return &ogen.Error{}, fmt.Errorf("failed to get preferences: %w", err)
+	}
+
+	return &ogen.UserPreferences{
+		UserID: prefs.UserID,
+		ProfileVisibility: ogen.NewOptUserPreferencesProfileVisibility(
+			ogen.UserPreferencesProfileVisibility(stringPtrToString(prefs.ProfileVisibility)),
+		),
+		ShowEmail:        ogen.NewOptBool(boolPtrToBool(prefs.ShowEmail)),
+		ShowActivity:     ogen.NewOptBool(boolPtrToBool(prefs.ShowActivity)),
+		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
+		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
+		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
+		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
+		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
+		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
+	}, nil
+}
+
+// UpdateUserPreferences updates user preferences
+func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPreferencesUpdate) (ogen.UpdateUserPreferencesRes, error) {
+	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+
+	params := user.UpsertPreferencesParams{
+		UserID: userID,
+	}
+
+	// TODO: Handle notification settings (JSONB fields)
+
+	if vis, ok := req.ProfileVisibility.Get(); ok {
+		v := string(vis)
+		params.ProfileVisibility = &v
+	}
+	if showEmail, ok := req.ShowEmail.Get(); ok {
+		params.ShowEmail = &showEmail
+	}
+	if showActivity, ok := req.ShowActivity.Get(); ok {
+		params.ShowActivity = &showActivity
+	}
+	if theme, ok := req.Theme.Get(); ok {
+		t := string(theme)
+		params.Theme = &t
+	}
+	if lang, ok := req.DisplayLanguage.Get(); ok {
+		params.DisplayLanguage = &lang
+	}
+	if contentLang, ok := req.ContentLanguage.Get(); ok {
+		params.ContentLanguage = &contentLang
+	}
+	if showAdult, ok := req.ShowAdultContent.Get(); ok {
+		params.ShowAdultContent = &showAdult
+	}
+	if showSpoilers, ok := req.ShowSpoilers.Get(); ok {
+		params.ShowSpoilers = &showSpoilers
+	}
+	if autoPlay, ok := req.AutoPlayVideos.Get(); ok {
+		params.AutoPlayVideos = &autoPlay
+	}
+
+	prefs, err := h.userService.UpdateUserPreferences(ctx, params)
+	if err != nil {
+		return &ogen.UpdateUserPreferencesBadRequest{}, fmt.Errorf("failed to update preferences: %w", err)
+	}
+
+	return &ogen.UserPreferences{
+		UserID: prefs.UserID,
+		ProfileVisibility: ogen.NewOptUserPreferencesProfileVisibility(
+			ogen.UserPreferencesProfileVisibility(stringPtrToString(prefs.ProfileVisibility)),
+		),
+		ShowEmail:        ogen.NewOptBool(boolPtrToBool(prefs.ShowEmail)),
+		ShowActivity:     ogen.NewOptBool(boolPtrToBool(prefs.ShowActivity)),
+		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
+		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
+		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
+		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
+		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
+		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
+	}, nil
+}
+
+// UploadAvatar handles avatar upload
+func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (ogen.UploadAvatarRes, error) {
+	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+
+	// TODO: Parse multipart form and get file metadata
+	// For now, return a placeholder response
+	h.logger.Info("Avatar upload requested", zap.String("user_id", userID.String()))
+
+	return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("avatar upload not yet implemented")
 }
