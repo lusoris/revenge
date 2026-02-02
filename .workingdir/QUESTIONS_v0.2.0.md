@@ -5,6 +5,22 @@
 
 ## Open Questions
 
+### Database & Schema Design
+
+#### Q0: Server Settings Schema Mismatch
+**Question**: SETTINGS.yaml design doc specifies `public.settings` table with `settings_history` audit table, but implementation used `shared.server_settings` without history. Which is correct?
+
+**Options**:
+- Follow design doc exactly: `public.settings` + `settings_history`
+- Keep current implementation: `shared.server_settings` (follows users/sessions pattern)
+- Hybrid: `shared.server_settings` + add history table later
+
+**Decision**: **Keep current implementation** - follows existing schema pattern (shared schema for infrastructure)
+**Notes**: History/audit functionality can be added later via triggers or separate audit service. Current JSONB approach is more flexible for runtime config.
+**Date Decided**: 2026-02-02
+
+---
+
 ### Authentication & Security
 
 #### Q1: JWT Token Expiry Times

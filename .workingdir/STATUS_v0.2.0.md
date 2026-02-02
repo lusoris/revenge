@@ -3,7 +3,7 @@
 **Version**: v0.2.0 - Core Backend Services
 **Start Date**: 2026-02-02
 **Target**: TBD
-**Current Status**: 🔴 Not Started
+**Current Status**: � In Progress (Database Layer: 80% complete)
 
 ## Overview
 
@@ -21,7 +21,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | RBAC | 🔴 Not Started | 0% | Casbin integration |
 | API Keys | 🔴 Not Started | 0% | Key generation, validation |
 | OIDC | 🔴 Not Started | 0% | SSO providers |
-| Settings | � In Progress | 20% | Database layer done |
+| Settings | 🟡 In Progress | 30% | ✓ Database layer ⏳ Service layer |
 | Activity | 🔴 Not Started | 0% | Audit logging |
 | Library | 🔴 Not Started | 0% | Library CRUD |
 | Health | 🔴 Not Started | 0% | Enhanced checks |
@@ -30,7 +30,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 | Component | Status | Progress | Notes |
 |-----------|--------|----------|-------|
-| PostgreSQL | � In Progress | 30% | ✓ Migrations ✓ sqlc ⏳ Metrics |
+| PostgreSQL | 🟢 Almost Complete | 80% | ✓ Migrations ✓ sqlc ✓ Metrics ✓ Query Logging |
 | Dragonfly | 🔴 Not Started | 0% | rueidis, otter L1 |
 | River | 🔴 Not Started | 0% | Job queue setup |
 
