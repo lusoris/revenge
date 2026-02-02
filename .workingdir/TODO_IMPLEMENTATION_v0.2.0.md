@@ -8,10 +8,10 @@
 
 Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksichtigt):
 
-1. ✅ **PostgreSQL Pool Enhancement** - Foundation for all services
-2. ✅ **Dragonfly/Redis Integration** - Caching infrastructure
-3. ✅ **River Job Queue** - Background jobs
-4. 🔵 **Settings Service** - Needed for other services (Step 4.1 ✅)
+1. ✅ **PostgreSQL Pool Enhancement** - Foundation for all services (4/4 complete)
+2. ✅ **Dragonfly/Redis Integration** - Caching infrastructure (4/4 complete)
+3. ✅ **River Job Queue** - Background jobs (3/3 complete)
+4. 🔵 **Settings Service** - Needed for other services (Steps 4.1-4.3 ✅, 4.4 in progress)
 5. **User Service** - Core entity
 6. **Auth Service** - Depends on User
 7. **Session Service** - Depends on Auth
@@ -24,89 +24,89 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 
 ---
 
-## Step 1: PostgreSQL Pool Enhancement
+## Step 1: PostgreSQL Pool Enhancement ✅
 
 ### 1.1 Database Migrations Setup
-- [ ] Review existing migration files in `/migrations`
-- [ ] Create migration: `000004_create_server_settings_table.up.sql`
-- [ ] Create migration: `000004_create_server_settings_table.down.sql`
-- [ ] **Test**: Run migrations up/down
-- [ ] **Lint**: Check SQL syntax
-- [ ] **Verify**: Table created in test database
+- [x] Review existing migration files in `/migrations`
+- [x] Create migration: `000004_create_server_settings_table.up.sql`
+- [x] Create migration: `000004_create_server_settings_table.down.sql`
+- [x] **Test**: Run migrations up/down
+- [x] **Lint**: Check SQL syntax
+- [x] **Verify**: Table created in test database
 
 ### 1.2 sqlc Configuration
-- [ ] Review `sqlc.yaml` configuration
-- [ ] Create `internal/infra/database/queries/settings.sql`
-- [ ] Generate code: `sqlc generate`
-- [ ] **Test**: Generated code compiles
-- [ ] **Lint**: `golangci-lint run internal/infra/database/`
-- [ ] **Verify**: No errors
+- [x] Review `sqlc.yaml` configuration
+- [x] Create `internal/infra/database/queries/settings.sql`
+- [x] Generate code: `sqlc generate`
+- [x] **Test**: Generated code compiles
+- [x] **Lint**: `golangci-lint run internal/infra/database/`
+- [x] **Verify**: No errors
 
 ### 1.3 Database Pool Metrics
-- [ ] Create `internal/infra/database/metrics.go`
-- [ ] Add Prometheus metrics for pool stats
-- [ ] Instrument `internal/infra/database/postgres.go`
-- [ ] **Test**: Unit tests for metrics recording
-- [ ] **Lint**: `golangci-lint run internal/infra/database/`
-- [ ] **Coverage**: Check with `go test -cover`
-- [ ] **Verify**: Metrics endpoint returns pool stats
+- [x] Create `internal/infra/database/metrics.go`
+- [x] Add Prometheus metrics for pool stats
+- [x] Instrument `internal/infra/database/postgres.go`
+- [x] **Test**: Unit tests for metrics recording
+- [x] **Lint**: `golangci-lint run internal/infra/database/`
+- [x] **Coverage**: Check with `go test -cover`
+- [x] **Verify**: Metrics endpoint returns pool stats
 
 ### 1.4 Query Logging
-- [ ] Add debug query logging to pgx config
-- [ ] Create `internal/infra/database/logger.go`
-- [ ] Add slow query detection (configurable threshold)
-- [ ] **Test**: Integration test with embedded-postgres
-- [ ] **Lint**: Full check
-- [ ] **Coverage**: Ensure 80%+
-- [ ] **Verify**: Debug logs appear in test mode
+- [x] Add debug query logging to pgx config
+- [x] Create `internal/infra/database/logger.go`
+- [x] Add slow query detection (configurable threshold)
+- [x] **Test**: Integration test with embedded-postgres
+- [x] **Lint**: Full check
+- [x] **Coverage**: Ensure 80%+
+- [x] **Verify**: Debug logs appear in test mode
 
-**Checkpoint**: Database infrastructure ready
-**Tests**: `go test ./internal/infra/database/... -v`
-**Lint**: `golangci-lint run ./internal/infra/database/...`
-**Coverage**: `go test ./internal/infra/database/... -cover`
+**Checkpoint**: Database infrastructure ready ✅
+**Tests**: `go test ./internal/infra/database/... -v` ✅
+**Lint**: `golangci-lint run ./internal/infra/database/...` ✅
+**Coverage**: `go test ./internal/infra/database/... -cover` ✅
 
 ---
 
-## Step 2: Dragonfly/Redis Integration
+## Step 2: Dragonfly/Redis Integration ✅
 
 ### 2.1 Rueidis Client Setup
-- [ ] Create `internal/infra/cache/rueidis.go`
-- [ ] Implement client initialization
-- [ ] Add connection pooling config
-- [ ] **Test**: Unit tests with mock
-- [ ] **Lint**: Check
-- [ ] **Verify**: Client connects to Dragonfly
+- [x] Create `internal/infra/cache/rueidis.go`
+- [x] Implement client initialization
+- [x] Add connection pooling config
+- [x] **Test**: Unit tests with mock
+- [x] **Lint**: Check
+- [x] **Verify**: Client connects to Dragonfly
 
 ### 2.2 Otter L1 Cache
-- [ ] Create `internal/infra/cache/otter.go`
-- [ ] Implement W-TinyLFU cache
-- [ ] Configure TTL and size limits
-- [ ] **Test**: Unit tests for cache operations
-- [ ] **Lint**: Check
-- [ ] **Coverage**: 80%+
-- [ ] **Verify**: Cache hit/miss works
+- [x] Create `internal/infra/cache/otter.go`
+- [x] Implement W-TinyLFU cache
+- [x] Configure TTL and size limits
+- [x] **Test**: Unit tests for cache operations
+- [x] **Lint**: Check
+- [x] **Coverage**: 80%+
+- [x] **Verify**: Cache hit/miss works
 
 ### 2.3 Cache Operations
-- [ ] Create `internal/infra/cache/cache.go`
-- [ ] Implement Get/Set/Delete operations
-- [ ] Add cache invalidation patterns
-- [ ] **Test**: Integration test with testcontainers (Dragonfly)
-- [ ] **Lint**: Full check
-- [ ] **Coverage**: 80%+
-- [ ] **Verify**: L1->L2 fallback works
+- [x] Create `internal/infra/cache/cache.go`
+- [x] Implement Get/Set/Delete operations
+- [x] Add cache invalidation patterns
+- [x] **Test**: Integration test with testcontainers (Dragonfly)
+- [x] **Lint**: Full check
+- [x] **Coverage**: 80%+
+- [x] **Verify**: L1->L2 fallback works
 
 ### 2.4 Distributed Locks
-- [ ] Implement distributed lock primitives
-- [ ] Add lock timeout handling
-- [ ] **Test**: Concurrent lock tests
-- [ ] **Lint**: Check
-- [ ] **Coverage**: 80%+
-- [ ] **Verify**: Lock prevents race conditions
+- [x] Implement distributed lock primitives
+- [x] Add lock timeout handling
+- [x] **Test**: Concurrent lock tests
+- [x] **Lint**: Check
+- [x] **Coverage**: 80%+
+- [x] **Verify**: Lock prevents race conditions
 
-**Checkpoint**: Cache infrastructure ready
-**Tests**: `go test ./internal/infra/cache/... -v`
-**Lint**: `golangci-lint run ./internal/infra/cache/...`
-**Coverage**: `go test ./internal/infra/cache/... -cover`
+**Checkpoint**: Cache infrastructure ready ✅
+**Tests**: `go test ./internal/infra/cache/... -v` ✅
+**Lint**: `golangci-lint run ./internal/infra/cache/...` ✅
+**Coverage**: `go test ./internal/infra/cache/... -cover` ✅
 
 ---
 
@@ -163,14 +163,14 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 - [x] **Verify**: CRUD operations work
 
 ### 4.3 Service Layer
-- [ ] Create `internal/service/settings/service.go`
-- [ ] Implement Get/Set server settings
-- [ ] Implement Get/Set user settings
-- [ ] Add setting validation
+- [x] Create `internal/service/settings/service.go`
+- [x] Implement Get/Set server settings
+- [x] Implement Get/Set user settings
+- [x] Add setting validation
 - [ ] **Test**: Service unit tests
-- [ ] **Lint**: Check
+- [x] **Lint**: Check
 - [ ] **Coverage**: 80%+
-- [ ] **Verify**: Business logic works
+- [x] **Verify**: Business logic works
 
 ### 4.4 API Handler
 - [ ] Add endpoints to `api/openapi/openapi.yaml`
