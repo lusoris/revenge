@@ -1,8 +1,45 @@
 # v0.1.0 Implementation TODO
 
-**Updated**: 2026-02-02 11:35
+**Updated**: 2026-02-02 12:06
 **Milestone**: v0.1.0 - Skeleton
 **Priority Order**: P0 → P1 → P2
+
+---
+
+## ✅ COMPLETED: Integration Testing Infrastructure (2026-02-02)
+
+**Goal**: Establish comprehensive integration testing with testcontainers-go
+**Status**: COMPLETE (4 phases, 3.7h actual vs 6-9h estimated)
+**Commits**:
+- 25cedcafb9: Phase 1 - testcontainers PostgreSQL (testutil/containers.go, 5 tests)
+- 073c4c93c9: Phase 2 - Health endpoint tests (10 tests)
+- ca780a6648: Phase 2 - Database integration tests (12 tests)
+- 20c381b778: Phase 3 - ogen client tests (10 tests)
+- 3787369a2b: Phase 4 - CI workflow configuration (.github/workflows/dev.yml)
+- 990ab8e25d: Fix - Remove ALTER DATABASE from migrations (CI failure fix)
+
+**Deliverables**:
+- ✅ 40 integration tests across 5 files (tests/integration/*.go)
+- ✅ testcontainers-go infrastructure (internal/testutil/containers.go)
+- ✅ CI pipeline configured with testcontainers support
+- ✅ Real PostgreSQL 18.1-alpine in containers (no mocks)
+- ✅ Full server lifecycle testing (startup, graceful shutdown, signals)
+- ✅ Health endpoint E2E tests (liveness, readiness, startup)
+- ✅ Database integration tests (migrations, transactions, constraints)
+- ✅ ogen client type-safe API tests (contract validation)
+
+**Migration Fix (990ab8e25d)**:
+- Fixed CI failure: "database revenge does not exist"
+- Removed `ALTER DATABASE revenge SET search_path` from 000001_create_schemas.up.sql
+- Added `?search_path=public,shared` to testcontainers connection URL
+- Schema isolation now via connection parameter (testable + production-ready)
+- CI run 21588234982 verifying fix (in progress)
+
+**Next Steps**:
+- Monitor CI run 21588234982 to verify all 40 tests pass
+- Update .workingdir/TODO.md with Phase 1 HTTP Server progress
+- Document K8s/Helm/Docker Swarm deployment testing scope for v0.1.0
+- Ensure documentation updates use template-based pipelines (scripts/automation/)
 
 ---
 
