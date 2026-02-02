@@ -1,0 +1,179 @@
+package cache
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"time"
+)
+
+// Cache provides unified L1 (otter) + L2 (rueidis) caching operations.
+type Cache struct {
+	l1 *L1Cache[string, []byte]
+	client *Client
+}
+
+// NewCache creates a new unified cache with L1 and L2 layers.
+func NewCache(client *Client, l1MaxSize int, l1TTL time.Duration) (*Cache, error) {
+	l1, err := NewL1Cache[string, []byte](l1MaxSize, l1TTL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create L1 cache: %w", err)
+	}
+
+	return &Cache{
+		l1:     l1,
+		client: client,
+	}, nil
+}
+
+// Get retrieves a value from cache (L1 first, then L2).
+func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
+	// Try L1 first
+	if val, ok := c.l1.Get(key); ok {
+		return val, nil
+	}
+
+	// L1 miss - try L2 (rueidis)
+	if c.client == nil || c.client.rueidisClient == nil {
+		return nil, fmt.Errorf("cache miss: key not found in L1 and L2 unavailable")
+	}
+
+	cmd := c.client.rueidisClient.B().Get().Key(key).Build()
+	resp := c.client.rueidisClient.Do(ctx, cmd)
+	
+	if err := resp.Error(); err != nil {
+		return nil, fmt.Errorf("L2 cache get failed: %w", err)
+	}
+
+	val, err := resp.AsBytes()
+	if err != nil {
+		return nil, fmt.Errorf("L2 cache value decode failed: %w", err)
+	}
+
+	// Populate L1 on L2 hit
+	c.l1.Set(key, val)
+
+	return val, nil
+}
+
+// Set stores a value in both L1 and L2 caches.
+func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
+	// Store in L1
+	c.l1.Set(key, value)
+
+	// Store in L2 if available
+	if c.client != nil && c.client.rueidisClient != nil {
+		cmd := c.client.rueidisClient.B().Set().Key(key).Value(string(value)).Ex(ttl).Build()
+		if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+			return fmt.Errorf("L2 cache set failed: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// Delete removes a value from both L1 and L2 caches.
+func (c *Cache) Delete(ctx context.Context, key string) error {
+	// Delete from L1
+	c.l1.Delete(key)
+
+	// Delete from L2 if available
+	if c.client != nil && c.client.rueidisClient != nil {
+		cmd := c.client.rueidisClient.B().Del().Key(key).Build()
+		if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+			return fmt.Errorf("L2 cache delete failed: %w", err)
+		}
+	}
+
+	return nil
+}
+
+// Exists checks if a key exists in L1 or L2 cache.
+func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
+	// Check L1 first
+	if c.l1.Has(key) {
+		return true, nil
+	}
+
+	// Check L2 if available
+	if c.client != nil && c.client.rueidisClient != nil {
+		cmd := c.client.rueidisClient.B().Exists().Key(key).Build()
+		resp := c.client.rueidisClient.Do(ctx, cmd)
+		
+		if err := resp.Error(); err != nil {
+			return false, fmt.Errorf("L2 cache exists check failed: %w", err)
+		}
+
+		count, err := resp.AsInt64()
+		if err != nil {
+			return false, fmt.Errorf("L2 cache exists response decode failed: %w", err)
+		}
+
+		return count > 0, nil
+	}
+
+	return false, nil
+}
+
+// Invalidate removes all keys matching a pattern from L2 cache.
+// Note: L1 is fully cleared as pattern matching is not supported.
+func (c *Cache) Invalidate(ctx context.Context, pattern string) error {
+	// Clear entire L1 (pattern matching not supported in otter)
+	c.l1.Clear()
+
+	// Invalidate pattern in L2 if available
+	if c.client != nil && c.client.rueidisClient != nil {
+		// Use KEYS command to find matching keys (not recommended for production large datasets)
+		keysCmd := c.client.rueidisClient.B().Keys().Pattern(pattern).Build()
+		keysResp := c.client.rueidisClient.Do(ctx, keysCmd)
+		
+		if err := keysResp.Error(); err != nil {
+			return fmt.Errorf("L2 cache keys lookup failed: %w", err)
+		}
+
+		keys, err := keysResp.AsStrSlice()
+		if err != nil {
+			return fmt.Errorf("L2 cache keys decode failed: %w", err)
+		}
+
+		if len(keys) > 0 {
+			delCmd := c.client.rueidisClient.B().Del().Key(keys...).Build()
+			if err := c.client.rueidisClient.Do(ctx, delCmd).Error(); err != nil {
+				return fmt.Errorf("L2 cache pattern delete failed: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+// Close closes both L1 and L2 caches.
+func (c *Cache) Close() {
+	if c.l1 != nil {
+		c.l1.Close()
+	}
+}
+
+// GetJSON retrieves and unmarshals a JSON value from cache.
+func (c *Cache) GetJSON(ctx context.Context, key string, dest interface{}) error {
+	data, err := c.Get(ctx, key)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(data, dest); err != nil {
+		return fmt.Errorf("failed to unmarshal cached JSON: %w", err)
+	}
+
+	return nil
+}
+
+// SetJSON marshals and stores a JSON value in cache.
+func (c *Cache) SetJSON(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Errorf("failed to marshal value to JSON: %w", err)
+	}
+
+	return c.Set(ctx, key, data, ttl)
+}

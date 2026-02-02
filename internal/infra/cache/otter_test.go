@@ -173,7 +173,7 @@ func TestL1Cache_MaxSize(t *testing.T) {
 	// Size should not exceed max (approximately, due to async eviction)
 	// Give it a moment for eviction to happen
 	time.Sleep(50 * time.Millisecond)
-	
+
 	size := cache.Size()
 	assert.LessOrEqual(t, size, maxSize*2, "Size should be bounded by eviction policy")
 }
