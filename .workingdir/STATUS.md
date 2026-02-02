@@ -107,7 +107,7 @@
 
 ## Phase 5: Consolidate Duplicates (~900+ lines)
 
-**Status**: Deferred - requires separate focused effort
+**Status**: In Progress
 
 ### Identified Duplicate Content
 1. **Metadata Priority Chain** (~125 lines across 6 files)
@@ -115,7 +115,60 @@
 3. **Proxy/VPN** (~425 lines across 5 files)
 4. **Cache Architecture** (~60 lines across 4 files)
 
-**Recommendation**: Address in Phase 5 with dedicated commit per duplicate type
+### Step 5.1: Analyze duplicate locations
+- [x] Read detailed analysis from CONTENT_INCONSISTENCY_ANALYSIS.md
+- [x] Identify exact file locations and line numbers
+- [x] Determine canonical location for each duplicate type
+- [x] Plan consolidation strategy
+
+**Status**: Analysis complete ✅
+
+**Key Findings**:
+- **Metadata Priority Chain**: 8 files, ~125 lines total
+  - Canonical: `03_METADATA_SYSTEM.yaml`
+  - Others: Add cross-reference, remove duplicate text
+
+- **Arr Dual-Role**: 7 files, ~300 lines total
+  - Canonical: `03_METADATA_SYSTEM.yaml`
+  - Others: Add cross-reference, remove duplicate text
+
+- **Proxy/VPN**: 5 files, ~425 lines total
+  - **Need to CREATE**: `data/patterns/HTTP_CLIENT.yaml`
+  - Others: Add cross-reference, remove duplicate text
+
+- **Cache Architecture**: 4 files, ~60 lines total
+  - Canonical: `DRAGONFLY.yaml`
+  - Others: Add cross-reference, remove duplicate text
+
+### Step 5.2: Create HTTP_CLIENT.yaml pattern
+- [ ] Create `data/patterns/HTTP_CLIENT.yaml` following template
+- [ ] Consolidate all proxy/VPN documentation (~425 lines)
+- [ ] Add to SOT pattern index
+- [ ] Test YAML validation
+- [ ] Commit
+
+### Step 5.3: Consolidate Cache Architecture
+- [ ] Keep full description in DRAGONFLY.yaml
+- [ ] Update 3 other files with cross-references
+- [ ] Remove duplicate text (~60 lines)
+- [ ] Test validation
+- [ ] Commit
+
+### Step 5.4: Consolidate Arr Dual-Role
+- [ ] Keep full description in 03_METADATA_SYSTEM.yaml
+- [ ] Update 6 other files with cross-references
+- [ ] Remove duplicate text (~300 lines)
+- [ ] Test validation
+- [ ] Commit
+
+### Step 5.5: Consolidate Metadata Priority Chain
+- [ ] Keep full description in 03_METADATA_SYSTEM.yaml
+- [ ] Update 7 other files with cross-references
+- [ ] Remove duplicate text (~125 lines)
+- [ ] Test validation
+- [ ] Commit
+
+**Current**: Starting Phase 5, Step 5.2 (HTTP_CLIENT creation)
 
 ---
 
