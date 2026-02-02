@@ -16,12 +16,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import yaml
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
+
 # Add repo root to Python path for imports
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
-
-import yaml  # noqa: E402
-from jinja2 import Environment, FileSystemLoader, StrictUndefined  # noqa: E402
 
 # Import TOCGenerator - handle both script and module contexts
 try:
