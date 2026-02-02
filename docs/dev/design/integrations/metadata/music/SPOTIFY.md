@@ -58,10 +58,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Metadata<br/>Service"]
-    node2["Spotify<br/>Provider"]
-    node3["Spotify<br/>Web API"]
-    node4["Client Creds<br/>OAuth 2.0"]
+    node1[[Metadata<br/>Service]]
+    node2([Spotify<br/>Provider])
+    node3([Spotify<br/>Web API])
+    node4([Client Creds<br/>OAuth 2.0])
     node1 --> node2
     node2 --> node3
     node3 --> node4

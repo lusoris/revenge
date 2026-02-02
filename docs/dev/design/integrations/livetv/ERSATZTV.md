@@ -62,15 +62,18 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Web Client"]
-    node2["EPG Service<br/>(Revenge)"]
-    node3["ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml"]
+    node1([Revenge<br/>Web Client])
+    node2[[EPG Service<br/>(Revenge)]]
+    node3[[ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml]]
     node4["Player<br/>(Vidstack)"]
     node5["Media Files<br/>(your library)"]
     node1 --> node2
     node2 --> node3
     node3 --> node4
     node4 --> node5
+
+    %% Layer styling
+    style node4 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
 ### Integration Structure

@@ -59,17 +59,21 @@
 
 ```mermaid
 flowchart TD
-    node1["Client<br/>(Web/App)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["sitory<br/>Typesense<br/>RB"]
-    node5["PostgreSQL<br/>(pgx)"]
-    node6["Typesense<br/>Server"]
+    node1([Client<br/>(Web/App)])
+    node2[[API Handler<br/>(ogen)]]
+    node3[[Service<br/>(Logic)]]
+    node4["Repository<br/>(sqlc)"]
+    node5([Typesense<br/>Client])
+    node6[[RBAC<br/>Service]]
+    node7[(PostgreSQL<br/>(pgx))]
+    node8["Typesense<br/>Server"]
     node1 --> node2
     node2 --> node3
-    node5 --> node6
-    node3 --> node4
     node4 --> node5
+    node5 --> node6
+    node7 --> node8
+    node3 --> node4
+    node6 --> node7
 ```
 
 ### Service Structure

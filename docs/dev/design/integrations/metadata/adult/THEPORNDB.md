@@ -60,10 +60,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Metadata<br/>Service"]
-    node2["Whisparr<br/>(LOCAL cache)"]
-    node3["ThePornDB<br/>(fallback +<br/>enrichment)"]
-    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node1[[Revenge<br/>Metadata<br/>Service]]
+    node2[(Whisparr<br/>(LOCAL cache))]
+    node3[(ThePornDB<br/>(fallback +<br/>enrichment))]
+    node4[(StashDB<br/>(external))]
     node5["Rate Limiter<br/>(10 req/sec)"]
     node2 --> node3
     node1 --> node2

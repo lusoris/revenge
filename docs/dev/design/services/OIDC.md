@@ -59,13 +59,15 @@
 
 ```mermaid
 flowchart TD
-    node1["Client<br/>(Browser)"]
-    node2["API Handler<br/>(ogen)"]
-    node3["Service<br/>(Logic)"]
-    node4["PostgreSQL"]
+    node1([Client<br/>(Browser)])
+    node2[[API Handler<br/>(ogen)]]
+    node3[[Service<br/>(Logic)]]
+    node4([OIDC<br/>Provider<br/>(Authentik)])
+    node5[(PostgreSQL)]
     node1 --> node2
     node2 --> node3
     node3 --> node4
+    node4 --> node5
 ```
 
 ### Service Structure

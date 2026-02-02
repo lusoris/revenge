@@ -62,7 +62,7 @@ flowchart TD
     node2["Twitter/X Link<br/>(verified URL)"]
     node3["x.com<br/>(login wall)"]
     node4["Followers<br/>(limited)"]
-    node5["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+    node5([HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)])
     node3 --> node4
     node1 --> node2
     node2 --> node3

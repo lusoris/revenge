@@ -57,10 +57,12 @@
 ```mermaid
 flowchart TD
     node1["Revenge<br/>QAR Module<br/>(Performer)"]
-    node2["Boobpedia<br/>MediaWiki<br/>API"]
+    node2[[Boobpedia<br/>MediaWiki<br/>API]]
     node3["Performer Data<br/>- Biography<br/>- Career history"]
+    node4["Rate Limiter<br/>(polite)"]
     node2 --> node3
     node1 --> node2
+    node3 --> node4
 ```
 
 ### Integration Structure

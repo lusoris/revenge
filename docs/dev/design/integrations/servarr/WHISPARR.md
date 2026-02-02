@@ -53,7 +53,7 @@ flowchart TD
     node1["Revenge<br/>QAR Module"]
     node2["Whisparr<br/>Integration"]
     node3["Whisparr<br/>(eros)"]
-    node4["Webhook<br/>Handler"]
+    node4([Webhook<br/>Handler])
     node1 --> node2
     node2 --> node3
     node3 --> node4

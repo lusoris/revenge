@@ -58,10 +58,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Request"]
+    node1["Revenge<br/>Request<br/>System"]
     node2["Chaptarr<br/>Integration"]
     node3["Chaptarr<br/>(Readarr)"]
-    node4["Webhook<br/>Handler"]
+    node4([Webhook<br/>Handler])
     node1 --> node2
     node2 --> node3
     node3 --> node4

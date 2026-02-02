@@ -58,9 +58,9 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Playback"]
+    node1["Revenge<br/>Playback<br/>Events"]
     node2["Simkl<br/>Integration"]
-    node3["Simkl<br/>API"]
+    node3[[Simkl<br/>API]]
     node4["Scrobble<br/>Queue (River)"]
     node1 --> node2
     node2 --> node3

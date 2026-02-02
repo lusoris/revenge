@@ -59,10 +59,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Metadata<br/>Service"]
-    node2["Radarr/Sonarr<br/>(LOCAL cache)"]
-    node3["TMDb API<br/>(fallback +<br/>enrichment)"]
-    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node1[[Revenge<br/>Metadata<br/>Service]]
+    node2[(Radarr/Sonarr<br/>(LOCAL cache))]
+    node3[(TMDb API<br/>(fallback +<br/>enrichment))]
+    node4[(TMDb API<br/>(external))]
     node5["Rate Limiter<br/>(40 req/10s)"]
     node2 --> node3
     node1 --> node2

@@ -58,10 +58,10 @@
 ```mermaid
 flowchart TD
     node1["Scanner<br/>(Library)"]
-    node2["Service<br/>(Logic)"]
+    node2[[Service<br/>(Logic)]]
     node3["Repository<br/>(sqlc)"]
     node4["FFmpeg<br/>(go-astiav)"]
-    node5["PostgreSQL<br/>(pgx)"]
+    node5[(PostgreSQL<br/>(pgx))]
     node1 --> node2
     node2 --> node3
     node4 --> node5

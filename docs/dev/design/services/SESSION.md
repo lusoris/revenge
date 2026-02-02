@@ -57,15 +57,19 @@
 
 ```mermaid
 flowchart TD
-    node1["Client<br/>(Web/App)"]
+    node1([Client<br/>(Web/App)])
     node2["Middleware<br/>(Auth)"]
-    node3["Service<br/>(Logic)"]
-    node4["tory<br/>Cache<br/>Redi"]
-    node5["PostgreSQL<br/>(pgx)"]
+    node3[[Service<br/>(Logic)]]
+    node4["Repository<br/>(sqlc)"]
+    node5[(Cache<br/>(otter))]
+    node6[(Redis<br/>(rueidis))]
+    node7[(PostgreSQL<br/>(pgx))]
     node1 --> node2
     node2 --> node3
-    node3 --> node4
     node4 --> node5
+    node5 --> node6
+    node3 --> node4
+    node6 --> node7
 ```
 
 ### Service Structure

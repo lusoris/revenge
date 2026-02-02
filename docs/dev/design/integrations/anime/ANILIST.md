@@ -62,13 +62,13 @@
 
 ```mermaid
 flowchart TD
-    node1["Revenge<br/>Web Player"]
-    node2["Anime Item<br/>(TV Show)"]
-    node3["Scrobbling<br/>Service"]
+    node1([Revenge<br/>Web Player])
+    node2["Anime Item<br/>(TV Show)<br/>River Queue"]
+    node3[[Scrobbling<br/>Service]]
     node4["River Queue<br/>(Background)"]
     node5["AniList<br/>Scrobbler"]
-    node6["Database<br/>(history)"]
-    node7["AniList API<br/>(GraphQL)"]
+    node6[(Database<br/>(history))]
+    node7[[AniList API<br/>(GraphQL)]]
     node8["AniList<br/>User Profile"]
     node1 --> node2
     node3 --> node4

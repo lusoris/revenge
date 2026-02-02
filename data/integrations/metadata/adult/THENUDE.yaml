@@ -55,9 +55,9 @@ data_access_method: web_scraping
 architecture_diagram: |-
   ```mermaid
   flowchart TD
-      node1["Data<br/>Reconciliation<br/>Service"]
-      node2["TheNude<br/>(Alias Database)"]
-      node3["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
+      node1[[Data<br/>Reconciliation<br/>Service]]
+      node2[(TheNude<br/>(Alias Database))]
+      node3([HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)])
       node4["Rate Limiter<br/>(1 req/sec)"]
       node1 --> node2
       node2 --> node3

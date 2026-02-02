@@ -58,8 +58,8 @@
 flowchart TD
     node1["Revenge<br/>QAR Module<br/>(Performer)"]
     node2["Babepedia<br/>Scraper"]
-    node3["Performer Data<br/>- Biography"]
-    node4["Rate Limiter"]
+    node3["Performer Data<br/>- Biography<br/>- Measurements"]
+    node4["Rate Limiter<br/>+ Proxy Pool"]
     node2 --> node3
     node1 --> node2
     node3 --> node4

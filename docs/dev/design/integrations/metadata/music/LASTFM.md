@@ -58,9 +58,9 @@
 
 ```mermaid
 flowchart TD
-    node1["Metadata<br/>Service"]
-    node2["Last.fm<br/>Provider"]
-    node3["Last.fm<br/>API"]
+    node1[[Metadata<br/>Service]]
+    node2([Last.fm<br/>Provider])
+    node3[[Last.fm<br/>API]]
     node1 --> node2
     node2 --> node3
 ```

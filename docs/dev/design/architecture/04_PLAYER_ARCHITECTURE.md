@@ -60,23 +60,50 @@ Player components:
 
 ```mermaid
 flowchart TD
-    node1["CLIENT LAYER<br/>Web Player<br/>Mobile App"]
-    node2["HLS.js<br/>(Adaptive)"]
-    node3["STREAMING LAYER<br/>HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)"]
-    node4["Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)"]
-    node5["FEATURE LAYER<br/>Skip Intro<br/>Trickplay"]
-    node6["SyncPlay<br/>- WebSocket<br/>- Sync State"]
-    node7["Casting<br/>- Chromecast<br/>- DLNA"]
-    node8["Subtitles<br/>- SSA/ASS<br/>- WebVTT"]
-    node9["STORAGE LAYER<br/>Media Files<br/>Metadata DB"]
-    node6 --> node7
-    node7 --> node8
-    node1 --> node2
+    node1["CLIENT LAYER<br/>Web Player Mobile App TV App<br/>(Vidstack) (React Native) (Android TV)"]
+    node2["Web Player<br/>(Vidstack)"]
+    node3([Mobile App<br/>(React Native)])
+    node4([TV App<br/>(Android TV)])
+    node5["HLS.js<br/>(Adaptive)"]
+    node6["STREAMING LAYER<br/>HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)"]
+    node7["HLS Manifest Generator [gohlslib]<br/>- Master Playlist (.m3u8)<br/>- Media Playlists (video/audio/subs)"]
+    node8[[Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)]]
+    node9["FEATURE LAYER<br/>Skip Intro Trickplay Chapters<br/>- Timeline - Thumbnails - Markers"]
+    node10["Skip Intro<br/>- Timeline<br/>- Detection"]
+    node11["Trickplay<br/>- Thumbnails<br/>- Scrubbing"]
+    node12["Chapters<br/>- Markers<br/>- Navigation"]
+    node13([SyncPlay<br/>- WebSocket<br/>- Sync State])
+    node14["Casting<br/>- Chromecast<br/>- DLNA"]
+    node15([Subtitles<br/>- SSA/ASS<br/>- WebVTT])
+    node16["STORAGE LAYER<br/>Media Files Metadata DB Cache<br/>- Video Streams - Playback State - Transcodes"]
+    node17["Media Files<br/>- Video Streams<br/>- Audio Tracks"]
+    node18[(Metadata DB<br/>- Playback State<br/>- User Progress)]
+    node19[(Cache<br/>- Transcodes<br/>- Trickplay)]
     node2 --> node3
     node3 --> node4
+    node10 --> node11
+    node11 --> node12
+    node13 --> node14
+    node14 --> node15
+    node17 --> node18
+    node18 --> node19
+    node1 --> node2
     node4 --> node5
     node5 --> node6
+    node6 --> node7
+    node7 --> node8
     node8 --> node9
+    node9 --> node10
+    node12 --> node13
+    node15 --> node16
+    node16 --> node17
+
+    %% Layer styling
+    style node1 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
+    style node2 fill:#388E3C,stroke:#fff,stroke-width:2px,color:#fff
+    style node6 fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
+    style node9 fill:#F57C00,stroke:#fff,stroke-width:2px,color:#fff
+    style node16 fill:#C2185B,stroke:#fff,stroke-width:2px,color:#fff
 ```
 ## Implementation
 

@@ -46,10 +46,38 @@ class ASCIIToMermaid:
         self.arrow_right = re.compile(r"[─▶→►]")
         self.arrow_left = re.compile(r"[◀←]")
 
+        # Keywords for node type detection
+        self.layer_keywords = {"LAYER", "TIER", "LEVEL"}
+        self.database_keywords = {
+            "PostgreSQL",
+            "Database",
+            "DB",
+            "Cache",
+            "Redis",
+            "Storage",
+        }
+        self.service_keywords = {
+            "Service",
+            "API",
+            "Handler",
+            "Engine",
+            "Manager",
+            "Controller",
+        }
+        self.external_keywords = {
+            "External",
+            "Third-party",
+            "Provider",
+            "Client",
+            "Web",
+            "App",
+        }
+
     def extract_boxes(self, ascii_text: str) -> list[dict]:
         """Extract box labels from ASCII diagram.
 
         Handles both vertical and horizontal box arrangements.
+        Properly extracts multi-line text from within box borders.
 
         Args:
             ascii_text: ASCII diagram text
@@ -61,79 +89,131 @@ class ASCIIToMermaid:
         lines = ascii_text.split("\n")
         box_id = 0
 
-        # Find box boundaries by looking for ┌ and └ patterns
-        i = 0
-        while i < len(lines):
-            line = lines[i]
+        # Box-drawing characters to filter from text
+        box_chars = "┌┐└┘├┤┬┴┼─━═║╔╗╚╝╠╣╦╩╬"
+        arrow_chars = "▶◀▼▲►◄→←↓↑"
 
-            # Look for row with box tops (┌...┐)
-            if "┌" in line:
-                # Find all box starts on this line
-                box_starts = []
-                col = 0
-                while True:
-                    start = line.find("┌", col)
-                    if start == -1:
+        def clean_text(text: str) -> str:
+            """Clean text by removing box/arrow characters."""
+            for c in box_chars + arrow_chars + "│":
+                text = text.replace(c, " ")
+            return " ".join(text.split()).strip()
+
+        def find_box_at(row: int, col: int) -> dict | None:
+            """Find a complete box starting at (row, col).
+
+            Returns box info or None if not a valid box start.
+            """
+            if row >= len(lines):
+                return None
+            line = lines[row]
+            if col >= len(line) or line[col] != "┌":
+                return None
+
+            # Find the matching ┐ on the same line
+            # Must handle the exact box, not grab text from adjacent boxes
+            end_col = col + 1
+            depth = 1
+            while end_col < len(line) and depth > 0:
+                if line[end_col] == "┌":
+                    depth += 1
+                elif line[end_col] == "┐":
+                    depth -= 1
+                end_col += 1
+
+            if depth != 0:
+                return None
+            end_col -= 1  # Point to the ┐
+
+            # Now find the bottom row - look for └ at col position
+            bottom_row = row + 1
+            while bottom_row < len(lines):
+                bottom_line = lines[bottom_row]
+                if len(bottom_line) > col and bottom_line[col] == "└":
+                    break
+                bottom_row += 1
+
+            if bottom_row >= len(lines):
+                return None
+
+            # Verify the box corners match
+            bottom_line = lines[bottom_row]
+            if len(bottom_line) <= end_col or bottom_line[end_col] != "┘":
+                # Try to find the actual ┘ near end_col
+                for ec in range(
+                    max(col, end_col - 2), min(len(bottom_line), end_col + 3)
+                ):
+                    if bottom_line[ec] == "┘":
+                        end_col = ec
                         break
-                    end = line.find("┐", start)
-                    if end == -1:
-                        break
-                    box_starts.append((start, end))
-                    col = end + 1
 
-                if box_starts:
-                    # Collect content lines until we hit └
-                    content_lines = []
-                    j = i + 1
-                    while j < len(lines) and "└" not in lines[j]:
-                        content_lines.append(lines[j])
-                        j += 1
+            # Extract text from content rows
+            content_texts = []
+            for r in range(row + 1, bottom_row):
+                if r >= len(lines):
+                    break
+                content_line = lines[r]
 
-                    # Extract text for each box position
-                    for start_col, end_col in box_starts:
-                        box_texts = []
-                        for content_line in content_lines:
-                            # Extract text between │ at column range
-                            if len(content_line) > start_col:
-                                segment = content_line[start_col : end_col + 1]
-                                # Find text between │ characters
-                                parts = segment.split("│")
-                                for part in parts:
-                                    # Remove ALL box-drawing characters
-                                    box_chars = "┌┐└┘├┤┬┴┼─━═║╔╗╚╝╠╣╦╩╬"
-                                    text = part
-                                    for c in box_chars:
-                                        text = text.replace(c, " ")
-                                    # Remove arrow/decoration characters
-                                    arrow_chars = "▶◀▼▲►◄→←↓↑"
-                                    for c in arrow_chars:
-                                        text = text.replace(c, " ")
-                                    # Clean up whitespace
-                                    text = " ".join(text.split()).strip()
-                                    # Only keep if has actual content
-                                    if text and len(text) > 1:
-                                        box_texts.append(text)
+                # Find text between │ characters within our column range
+                if len(content_line) > col:
+                    # Look for │ at start and end of box
+                    segment = content_line[col : min(end_col + 1, len(content_line))]
 
-                        if box_texts:
-                            box_id += 1
-                            # Combine multi-line text
-                            main_label = box_texts[0]
-                            sublabels = box_texts[1:] if box_texts[1:] else []
-                            boxes.append(
-                                {
-                                    "id": f"node{box_id}",
-                                    "label": main_label,
-                                    "sublabels": sublabels,
-                                    "row": i,  # Track row for connection inference
-                                    "col": start_col,  # Track column
-                                }
-                            )
+                    # Check if this line has the vertical borders
+                    if "│" in segment:
+                        # Extract text between │ characters
+                        first_pipe = segment.find("│")
+                        last_pipe = segment.rfind("│")
+                        if first_pipe != last_pipe:
+                            inner_text = segment[first_pipe + 1 : last_pipe]
+                            cleaned = clean_text(inner_text)
+                            if cleaned:
+                                content_texts.append(cleaned)
+                        elif first_pipe >= 0:
+                            # Single pipe or edge - try to extract any text
+                            inner_text = segment.replace("│", " ")
+                            cleaned = clean_text(inner_text)
+                            if cleaned:
+                                content_texts.append(cleaned)
 
-                    # Skip to after the └ line
-                    i = j + 1
-                    continue
+            if content_texts:
+                return {
+                    "row": row,
+                    "col": col,
+                    "end_col": end_col,
+                    "bottom_row": bottom_row,
+                    "texts": content_texts,
+                }
+            return None
 
-            i += 1
+        # Scan for all box starts
+        for row_idx, line in enumerate(lines):
+            col = 0
+            while col < len(line):
+                if line[col] == "┌":
+                    box_info = find_box_at(row_idx, col)
+                    if box_info:
+                        box_id += 1
+                        boxes.append(
+                            {
+                                "id": f"node{box_id}",
+                                "label": box_info["texts"][0],
+                                "sublabels": (
+                                    box_info["texts"][1:]
+                                    if len(box_info["texts"]) > 1
+                                    else []
+                                ),
+                                "row": box_info["row"],
+                                "col": box_info["col"],
+                                "bottom_row": box_info["bottom_row"],
+                            }
+                        )
+                        # Skip to end of this box
+                        col = box_info["end_col"] + 1
+                    else:
+                        col += 1
+                else:
+                    col += 1
 
         return boxes
 
@@ -187,6 +267,34 @@ class ASCIIToMermaid:
 
         return connections
 
+    def _is_layer_box(self, label: str) -> bool:
+        """Check if a box represents a layer/tier heading."""
+        upper = label.upper()
+        return any(kw in upper for kw in self.layer_keywords)
+
+    def _get_node_shape(self, label: str, sublabels: list[str]) -> tuple[str, str]:
+        """Determine the Mermaid node shape based on content.
+
+        Returns:
+            Tuple of (open_bracket, close_bracket)
+        """
+        combined = f"{label} {' '.join(sublabels)}".upper()
+
+        # Database/storage nodes - cylinder shape
+        if any(kw.upper() in combined for kw in self.database_keywords):
+            return "[(", ")]"
+
+        # External/client nodes - stadium shape
+        if any(kw.upper() in combined for kw in self.external_keywords):
+            return "([", "])"
+
+        # Service nodes - subroutine shape
+        if any(kw.upper() in combined for kw in self.service_keywords):
+            return "[[", "]]"
+
+        # Default - rectangle
+        return '["', '"]'
+
     def generate_mermaid(
         self,
         boxes: list[dict],
@@ -194,6 +302,9 @@ class ASCIIToMermaid:
         diagram_type: str = "flowchart",
     ) -> str:
         """Generate Mermaid diagram from boxes and connections.
+
+        Uses different node shapes based on content type for visual distinction.
+        Layer boxes get a special banner shape for clear section headings.
 
         Args:
             boxes: List of box dicts
@@ -208,20 +319,29 @@ class ASCIIToMermaid:
 
         lines = [f"{diagram_type} TD"]
 
-        # Add nodes
+        # Track layer boxes for styling
+        layer_box_ids = []
+
+        # Add all nodes with appropriate shapes
         for box in boxes:
-            label = box["label"]
-            # Escape special characters for Mermaid
-            label = label.replace('"', "'")
-            label = label.replace("(", "[")
-            label = label.replace(")", "]")
+            label = box["label"].replace('"', "'").replace("(", "[").replace(")", "]")
 
             # Add sublabels if present
             if box.get("sublabels"):
-                sublabels = "<br/>".join(box["sublabels"][:2])  # Limit sublabels
+                sublabels = "<br/>".join(box["sublabels"][:2])
                 label = f"{label}<br/>{sublabels}"
 
-            lines.append(f'    {box["id"]}["{label}"]')
+            # Check if this is a layer/tier box - use banner shape
+            if self._is_layer_box(box["label"]):
+                layer_box_ids.append(box["id"])
+                # Use banner shape for layers: >label]
+                lines.append(f'    {box["id"]}["{label}"]')
+            else:
+                # Use appropriate shape based on content
+                open_br, close_br = self._get_node_shape(
+                    box["label"], box.get("sublabels", [])
+                )
+                lines.append(f"    {box['id']}{open_br}{label}{close_br}")
 
         # Add connections
         for from_id, to_id, conn_label in connections:
@@ -229,6 +349,18 @@ class ASCIIToMermaid:
                 lines.append(f"    {from_id} -->|{conn_label}| {to_id}")
             else:
                 lines.append(f"    {from_id} --> {to_id}")
+
+        # Add styling for layer boxes to make them stand out
+        if layer_box_ids:
+            lines.append("")
+            lines.append("    %% Layer styling")
+            colors = ["#1976D2", "#388E3C", "#7B1FA2", "#F57C00", "#C2185B"]
+            for i, layer_id in enumerate(layer_box_ids):
+                color = colors[i % len(colors)]
+                lines.append(
+                    f"    style {layer_id} fill:{color},stroke:#fff,"
+                    f"stroke-width:2px,color:#fff"
+                )
 
         return "\n".join(lines)
 

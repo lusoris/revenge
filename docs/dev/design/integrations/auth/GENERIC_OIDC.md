@@ -59,9 +59,9 @@
 ```mermaid
 flowchart TD
     node1["User<br/>Browser"]
-    node2["OIDC Provider<br/>(Any Provider)"]
+    node2([OIDC Provider<br/>(Any Provider)])
     node3["Revenge<br/>Server"]
-    node4["Provider<br/>Token API"]
+    node4([Provider<br/>Token API])
     node5["User<br/>Session"]
     node1 --> node2
     node3 --> node4

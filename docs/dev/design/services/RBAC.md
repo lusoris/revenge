@@ -59,10 +59,10 @@
 
 ```mermaid
 flowchart TD
-    node1["Client<br/>(Web/App)"]
+    node1([Client<br/>(Web/App)])
     node2["Middleware<br/>(Auth)"]
     node3["Casbin<br/>Enforcer"]
-    node4["PostgreSQL<br/>casbin_rule"]
+    node4[(PostgreSQL<br/>casbin_rule)]
     node1 --> node2
     node2 --> node3
     node3 --> node4

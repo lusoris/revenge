@@ -63,15 +63,30 @@ Revenge follows a **layered architecture** with clear separation of concerns:
 flowchart TD
     node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
     node2["API Layer<br/>(ogen-generated handlers + validation)"]
-    node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content"]
-    node4["tory<br/>Metada<br/>er"]
-    node5["PostgreSQL<br/>Database<br/>(pgx pool)"]
-    node6["L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly"]
+    node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content Metadata Auth Media"]
+    node4[[Content<br/>Services]]
+    node5[[Metadata<br/>Services]]
+    node6[[Auth<br/>Services]]
+    node7["Media<br/>Processing"]
+    node8["Repository<br/>Layer<br/>(sqlc + pgx)"]
+    node9["Metadata Priority<br/>Chain"]
+    node10[(PostgreSQL<br/>Database<br/>(pgx pool))]
+    node11[(L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly)]
+    node4 --> node5
     node5 --> node6
+    node6 --> node7
+    node8 --> node9
+    node10 --> node11
     node1 --> node2
     node2 --> node3
     node3 --> node4
-    node4 --> node5
+    node7 --> node8
+    node9 --> node10
+
+    %% Layer styling
+    style node1 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
+    style node2 fill:#388E3C,stroke:#fff,stroke-width:2px,color:#fff
+    style node3 fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
 ```
 ## Implementation
 
