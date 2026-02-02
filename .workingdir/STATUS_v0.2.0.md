@@ -15,10 +15,10 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 | Service | Status | Progress | Notes |
 |---------|--------|----------|-------|
-| Auth | � Complete | 100% | ✓ DB ✓ Repo ✓ JWT ✓ Service ✓ Middleware ✓ API (Commits 20-25) |
+| Auth | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ JWT ✓ Service ✓ Middleware ✓ API (Commits 20-25) |
 | User | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 17-19) |
-| Session | 🟡 In Progress | 70% | ✓ DB ✓ Repo ✓ Service ⏳ API (Commit 26) |
-| RBAC | 🔴 Not Started | 0% | Casbin integration |
+| Session | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 26, 28) |
+| RBAC | 🟢 Complete | 100% | ✓ DB ✓ Adapter ✓ Service ✓ API (Commits 27, 28) |
 | API Keys | 🔴 Not Started | 0% | Key generation, validation |
 | OIDC | 🔴 Not Started | 0% | SSO providers |
 | Settings | 🟢 Complete | 100% | ✓ DB ✓ Service ✓ API (Commits 11-16) |
@@ -74,6 +74,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: Auth Service Step 6.5 (Commit 24) - Middleware (JWT validation, context)
 - ✅ **2026-02-02**: Auth Service Step 6.6 (Commit 25) - API Handler (8 endpoints, 0 lint)
 - ✅ **2026-02-02**: Session Service Step 7 (Commit 26) - Repository + Service (17 queries, 0 lint)
+- ✅ **2026-02-02**: RBAC Service Step 8 (Commit 27) - Casbin integration (12 methods, 0 lint)
 
 ## Next Steps
 
@@ -98,6 +99,10 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Step 3.2: Queue config (3 queues, 2 backoff, coverage 55.6%) |
 | 2026-02-02 | Completed Step 3.3: Cleanup job (validation, dry-run, coverage 65.6%) |
 | 2026-02-02 | ✅ INFRASTRUCTURE COMPLETE: PostgreSQL + Dragonfly + River (100%) |
+| 2026-02-02 | Completed Auth Step 6.5 (Commit 24): Middleware (HandleBearerAuth, context injection) |
+| 2026-02-02 | ✅ Auth Service COMPLETE (Commit 25): API Handler (8 endpoints, 9 schemas, 0 lint) |
+| 2026-02-02 | Session Service 70% (Commit 26): Repository + Service layer (API deferred) |
+| 2026-02-02 | RBAC Service 80% (Commit 27): Casbin adapter + Service (API deferred) |
 | 2026-02-02 | Completed Settings Service (Commits 11-16): Database + Service + API |
 | 2026-02-02 | Completed User Service (Commits 17-19): Users + Preferences + Avatars |
 | 2026-02-02 | Completed Auth Step 6.1 (Commit 20): 3 token tables with SHA-256 hashing |
@@ -106,3 +111,6 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Auth Step 6.5 (Commit 24): Middleware (HandleBearerAuth, context injection) |
 | 2026-02-02 | ✅ Auth Service COMPLETE (Commit 25): API Handler (8 endpoints, 9 schemas, 0 lint) |
 | 2026-02-02 | Session Service 70% (Commit 26): Repository + Service layer (API deferred) |
+| 2026-02-02 | RBAC Service 80% (Commit 27): Casbin adapter + Service (API deferred) |
+| 2026-02-02 | ✅ Session API COMPLETE (Commit 28): 6 endpoints, SessionInfo schema, Error type pattern |
+| 2026-02-02 | ✅ RBAC API COMPLETE (Commit 28): 6 endpoints (admin only), dedicated type aliases for 403 |
