@@ -40,8 +40,8 @@ LINK-ONLY integration for QAR performer profiles. Stores verified Instagram prof
 
 Official documentation and guides:
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

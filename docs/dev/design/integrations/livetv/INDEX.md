@@ -1,8 +1,6 @@
-# Live TV Integration
+# Integrations\Livetv
 
-← Back to [Design Docs](..)
-
-> PVR backend integration
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,17 +10,13 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [ErsatzTV](ERSATZTV.md) | Integration with ErsatzTV | 🟡 Planned |
-| [NextPVR](NEXTPVR.md) | Integration with NextPVR | 🟡 Planned |
-| [TVHeadend](TVHEADEND.md) | Integration with TVHeadend | 🟡 Planned |
+| [ErsatzTV](ERSATZTV.md) | Integration with ErsatzTV | ✅ Designed |
+| [NextPVR](NEXTPVR.md) | Integration with NextPVR | ✅ Designed |
+| [TVHeadend](TVHEADEND.md) | Integration with TVHeadend | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Live TV Module](../../features/livetv/)
 
 ---
 

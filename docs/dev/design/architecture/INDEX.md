@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Architecture v2](01_ARCHITECTURE.md) | > Modern media server architecture with Go backend, SvelteKi... | 🟡 Planned |
+| [Revenge - Architecture v2](01_ARCHITECTURE.md) | > Modern media server architecture with Go backend, SvelteKi... | ✅ Designed |
 | [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md) | > Core design principles and patterns guiding Revenge develo... | 🟡 Planned |
 | [Revenge - Metadata System](03_METADATA_SYSTEM.md) | > Multi-source metadata system with caching and priority cha... | 🟡 Planned |
-| [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md) | > Media playback system with HLS streaming and Vidstack play... | 🟡 Planned |
+| [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md) | > Media playback system with HLS streaming and Vidstack play... | ✅ Designed |
 | [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md) | > ADR: Decision to use integrations over plugins | 🟡 Planned |
 
 ---

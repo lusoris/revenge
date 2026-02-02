@@ -8,6 +8,8 @@
 
 # Observability Pattern
 
+<!-- DESIGN: patterns, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -40,8 +42,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

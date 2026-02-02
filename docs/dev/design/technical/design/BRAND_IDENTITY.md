@@ -8,6 +8,8 @@
 
 # Brand Identity
 
+<!-- DESIGN: technical/design, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -39,8 +41,6 @@ Brand personality and visual identity:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

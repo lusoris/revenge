@@ -39,7 +39,7 @@ Connect Revenge to your Authelia identity provider for centralized authenticatio
 ### Learn More
 
 Official documentation and guides:
-- [Authelia Documentation](../../../sources/security/authelia.md)
+- [Authelia Documentation](../../sources/security/authelia.md)
 - [Authelia OIDC Guide](https://www.authelia.com/integration/openid-connect/introduction/)
 - [Authelia Configuration](https://www.authelia.com/configuration/prologue/introduction/)
 

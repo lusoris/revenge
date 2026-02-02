@@ -47,13 +47,13 @@ Set rules for when users can access content. Limit viewing to certain hours (kid
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [rueidis](../../../sources/tooling/rueidis.md)
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Casbin](../../sources/security/casbin.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

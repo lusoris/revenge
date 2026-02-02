@@ -19,6 +19,8 @@
 
 # TVHeadend
 
+<!-- DESIGN: integrations/livetv, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -297,6 +298,6 @@ Response:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
 

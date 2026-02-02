@@ -12,6 +12,8 @@
 
 # OpenLibrary
 
+<!-- DESIGN: integrations/metadata/books, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -39,8 +41,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Architecture
@@ -71,6 +71,6 @@ internal/integration/openlibrary/
 - [AUDIOBOOK_MODULE](../../../features/audiobook/AUDIOBOOK_MODULE.md)
 
 ### External Sources
-- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Open Library API](../../../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Open Library API](../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

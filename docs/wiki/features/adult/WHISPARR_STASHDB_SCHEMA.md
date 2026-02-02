@@ -47,21 +47,21 @@ Browse adult scenes with rich metadata from StashDB via Whisparr integration. Sc
 ### Learn More
 
 Official documentation and guides:
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md)
-- [StashDB GraphQL API](../../../sources/apis/stashdb-schema.graphql)
-- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
-- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
-- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
-- [Whisparr OpenAPI Spec](../../../sources/apis/whisparr-openapi.json)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md)
+- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
+- [Whisparr OpenAPI Spec](../../sources/apis/whisparr-openapi.json)
 
 
 

@@ -13,6 +13,8 @@
 
 # Email System
 
+<!-- DESIGN: technical, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -44,7 +46,6 @@ Complete email infrastructure:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---

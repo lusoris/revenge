@@ -35,8 +35,8 @@ SUPPLEMENTARY metadata source for books/audiobooks. Used as: (1) **Fallback** wh
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [Open Library API](../../../../sources/apis/openlibrary.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [Open Library API](../../sources/apis/openlibrary.md)
 
 
 

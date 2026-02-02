@@ -39,18 +39,18 @@ PostgreSQL is the only supported database for Revenge (no SQLite). Stores all me
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [Prometheus Go Client](../../../sources/observability/prometheus.md)
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [River Documentation](../../../sources/tooling/river-guide.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [Typesense API](../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [Prometheus Go Client](../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [River Documentation](../../sources/tooling/river-guide.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

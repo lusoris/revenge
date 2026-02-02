@@ -37,16 +37,16 @@ Lidarr integration automates music library management. Add artists and Lidarr do
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [Lidarr API Docs](../../../sources/apis/lidarr-docs.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Servarr Wiki](../../../sources/apis/servarr-wiki.md)
-- [Typesense API](../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [Lidarr API Docs](../../sources/apis/lidarr-docs.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

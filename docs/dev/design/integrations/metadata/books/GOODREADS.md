@@ -12,6 +12,8 @@
 
 # Goodreads
 
+<!-- DESIGN: integrations/metadata/books, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -41,8 +43,6 @@
 **Overall**: ✅ Complete
 
 
-
-
 ## Architecture
 
 ### Integration Structure
@@ -69,6 +69,6 @@ internal/integration/goodreads/
 - [OPENLIBRARY (metadata fallback)](./OPENLIBRARY.md)
 
 ### External Sources
-- [Google Books API](../../../../sources/apis/google-books.md) - Auto-resolved from google-books
-- [Open Library API](../../../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [Google Books API](../../sources/apis/google-books.md) - Auto-resolved from google-books
+- [Open Library API](../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

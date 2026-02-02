@@ -39,16 +39,16 @@ Radarr integration enables automatic movie downloads and library management. Req
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [Go context](../../../sources/go/stdlib/context.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [Radarr API Docs](../../../sources/apis/radarr-docs.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Servarr Wiki](../../../sources/apis/servarr-wiki.md)
-- [Typesense API](../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Go context](../../sources/go/stdlib/context.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [Radarr API Docs](../../sources/apis/radarr-docs.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

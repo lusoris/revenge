@@ -20,6 +20,8 @@
 
 # Chromecast
 
+<!-- DESIGN: integrations/casting, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -300,5 +301,5 @@ POST /api/v1/cast/sessions
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-chromecast](../../../sources/casting/go-chromecast.md) - Auto-resolved from go-chromecast
+- [go-chromecast](../../sources/casting/go-chromecast.md) - Auto-resolved from go-chromecast
 

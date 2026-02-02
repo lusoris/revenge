@@ -39,10 +39,10 @@ ENRICHMENT metadata source providing encyclopedic context. Plot summaries, produ
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [MediaWiki API](../../../sources/wiki/mediawiki.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [golang.org/x/time](../../../sources/go/x/time.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [MediaWiki API](../../sources/wiki/mediawiki.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

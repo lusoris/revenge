@@ -20,6 +20,8 @@
 
 # Authentik
 
+<!-- DESIGN: integrations/auth, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -266,7 +267,7 @@ GET /api/v1/auth/oidc/callback?
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../../../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../../../sources/security/authentik.md) - Auto-resolved from authentik
-- [Keycloak Documentation](../../../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../../sources/security/authentik.md) - Auto-resolved from authentik
+- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
 

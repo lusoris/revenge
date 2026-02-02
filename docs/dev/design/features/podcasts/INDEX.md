@@ -1,8 +1,6 @@
-# Podcasts Module
+# Features\Podcasts
 
-← Back to [Design Docs](..)
-
-> Podcast management features
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,15 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Podcasts](PODCASTS.md) | Content module for Podcasts, Episodes | 🟡 Planned |
+| [Podcasts](PODCASTS.md) | Content module for Podcasts, Episodes | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Audiobook & Podcast Integration](../../integrations/audiobook/)
 
 ---
 

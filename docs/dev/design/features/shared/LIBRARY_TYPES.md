@@ -20,6 +20,8 @@
 
 # Library Types
 
+<!-- DESIGN: features/shared, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -172,11 +173,11 @@ POST   /api/v1/libraries/:id/scan # Trigger scan
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../../../sources/security/casbin.md) - Auto-resolved from casbin
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [StashDB GraphQL API](../../../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
+- [Casbin](../../sources/security/casbin.md) - Auto-resolved from casbin
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
 

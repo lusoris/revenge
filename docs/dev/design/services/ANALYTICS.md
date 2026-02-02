@@ -20,6 +20,8 @@
 
 # Analytics Service
 
+<!-- DESIGN: services, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---

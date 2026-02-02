@@ -47,11 +47,11 @@ The Podcasts Module provides a complete podcast listening experience with RSS fe
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

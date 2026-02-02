@@ -20,6 +20,8 @@
 
 # Keycloak
 
+<!-- DESIGN: integrations/auth, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -331,7 +332,7 @@ POST /api/v1/auth/oidc/introspect
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Keycloak Documentation](../../../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
 - [Keycloak OIDC Guide](https://www.keycloak.org/docs/latest/securing_apps/#_oidc) - OIDC implementation details
 - [Keycloak Server Admin](https://www.keycloak.org/docs/latest/server_admin/) - Server administration guide
 

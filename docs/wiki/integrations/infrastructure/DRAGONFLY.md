@@ -39,17 +39,17 @@ Dragonfly provides high-speed caching for Revenge. Stores session data, API resp
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [Prometheus Go Client](../../../sources/observability/prometheus.md)
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [rueidis](../../../sources/tooling/rueidis.md)
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
-- [Typesense API](../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [Prometheus Go Client](../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

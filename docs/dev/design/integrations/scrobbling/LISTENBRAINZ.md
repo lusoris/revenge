@@ -19,6 +19,8 @@
 
 # ListenBrainz
 
+<!-- DESIGN: integrations/scrobbling, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -170,6 +171,6 @@ integrations:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Last.fm API](../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

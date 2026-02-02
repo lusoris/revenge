@@ -1,8 +1,6 @@
-# Wiki Integration
+# Integrations\Wiki
 
-← Back to [Design Docs](..)
-
-> Supplementary information sources
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -10,7 +8,7 @@
 
 ## Subdirectories
 
-- [Adult Wiki Integration](adult/INDEX.md) - Adult performer information sources
+- [Adult](adult/INDEX.md)
 
 ---
 
@@ -18,17 +16,13 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [FANDOM](FANDOM.md) | Integration with FANDOM | 🟡 Planned |
-| [TVTropes](TVTROPES.md) | Integration with TVTropes | 🟡 Planned |
-| [Wikipedia](WIKIPEDIA.md) | Integration with Wikipedia | 🟡 Planned |
+| [FANDOM](FANDOM.md) | Integration with FANDOM (Wikia) | ✅ Designed |
+| [TVTropes](TVTROPES.md) | Integration with TVTropes | ✅ Designed |
+| [Wikipedia](WIKIPEDIA.md) | Integration with Wikipedia | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Shared Features](../../features/shared/)
 
 ---
 

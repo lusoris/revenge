@@ -34,6 +34,8 @@
 
 # Trickplay (Timeline Thumbnails)
 
+<!-- DESIGN: features/playback, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -60,7 +62,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -229,14 +230,14 @@ type FFmpegExtractor interface {
 require (
     // Core
     github.com/google/uuid v1.6.0
-    go.uber.org/fx v1.24.0
+    go.uber.org/fx v1.23.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.8.0
-    github.com/sqlc-dev/sqlc v1.30.0
+    github.com/jackc/pgx/v5 v5.7.2
+    github.com/sqlc-dev/sqlc v1.28.0
 
     // API
-    github.com/ogen-go/ogen v1.18.0
+    github.com/ogen-go/ogen v1.7.0
 
     // Caching
     github.com/maypok86/otter v1.2.4
@@ -249,11 +250,11 @@ require (
     image/jpeg  // Standard library JPEG encoding
 
     // Job queue
-    github.com/riverqueue/river v0.26.0
+    github.com/riverqueue/river v0.15.0
 
     // Testing
-    github.com/stretchr/testify v1.11.1
-    github.com/testcontainers/testcontainers-go v0.40.0
+    github.com/stretchr/testify v1.10.0
+    github.com/testcontainers/testcontainers-go v0.35.0
 )
 ```
 
@@ -387,13 +388,13 @@ Delete trickplay tiles
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Roku BIF Format](../../../sources/protocols/bif.md) - Auto-resolved from bif-spec
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [Jellyfin Trickplay](../../../sources/apis/jellyfin-trickplay.md) - Auto-resolved from jellyfin-trickplay
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [WebVTT Specification](../../../sources/protocols/webvtt.md) - Auto-resolved from webvtt
+- [Roku BIF Format](../../sources/protocols/bif.md) - Auto-resolved from bif-spec
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [Jellyfin Trickplay](../../sources/apis/jellyfin-trickplay.md) - Auto-resolved from jellyfin-trickplay
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [WebVTT Specification](../../sources/protocols/webvtt.md) - Auto-resolved from webvtt
 

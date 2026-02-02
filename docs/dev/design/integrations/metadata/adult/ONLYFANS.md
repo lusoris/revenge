@@ -20,6 +20,8 @@
 
 # OnlyFans
 
+<!-- DESIGN: integrations/metadata/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -224,6 +225,6 @@ metadata:
 - [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
 
 ### External Sources
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
-- [River Job Queue](../../../../sources/tooling/river.md) - Background verification jobs
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Background verification jobs
 

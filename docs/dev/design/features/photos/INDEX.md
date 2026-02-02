@@ -1,8 +1,6 @@
-# Photos Module
+# Features\Photos
 
-← Back to [Design Docs](..)
-
-> Photo library features
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,15 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Photos Library](PHOTOS_LIBRARY.md) | Content module for Albums, Photos | 🟡 Planned |
+| [Photos Library](PHOTOS_LIBRARY.md) | Content module for Albums, Photos | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Shared Features](../shared/)
 
 ---
 

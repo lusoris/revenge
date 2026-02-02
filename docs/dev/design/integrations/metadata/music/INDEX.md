@@ -1,8 +1,6 @@
-# Music Metadata Providers
+# Integrations\Metadata\Music
 
-← Back to [Design Docs](..)
-
-> MusicBrainz, Last.fm, Spotify, Discogs
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,10 +10,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Discogs](DISCOGS.md) | Integration with Discogs | 🟡 Planned |
-| [Last.fm](LASTFM.md) | Integration with Last.fm | 🟡 Planned |
-| [MusicBrainz](MUSICBRAINZ.md) | Integration with MusicBrainz | 🟡 Planned |
-| [Spotify](SPOTIFY.md) | Integration with Spotify | 🟡 Planned |
+| [Discogs](DISCOGS.md) | Integration with Discogs | ✅ Designed |
+| [Last.fm](LASTFM.md) | Integration with Last.fm | ✅ Designed |
+| [MusicBrainz](MUSICBRAINZ.md) | Integration with MusicBrainz | ✅ Designed |
+| [Spotify](SPOTIFY.md) | Integration with Spotify | ✅ Designed |
 
 ---
 

@@ -1,8 +1,6 @@
-# Comic Metadata Providers
+# Integrations\Metadata\Comics
 
-← Back to [Design Docs](..)
-
-> ComicVine, Marvel API, GCD
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,17 +10,13 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [ComicVine API](COMICVINE.md) | Integration with ComicVine API | 🟡 Planned |
-| [Grand Comics Database (GCD)](GRAND_COMICS_DATABASE.md) | Integration with Grand Comics Database (GCD) | 🟡 Planned |
-| [Marvel API](MARVEL_API.md) | Integration with Marvel API | 🟡 Planned |
+| [ComicVine API](COMICVINE.md) | Integration with ComicVine API | ✅ Designed |
+| [Grand Comics Database (GCD)](GRAND_COMICS_DATABASE.md) | Integration with Grand Comics Database | ✅ Designed |
+| [Marvel API](MARVEL_API.md) | Integration with Marvel Developer API | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../../sources/SOURCES.md)
-
-## Related
-
-- [Comics Module](../../../features/comics/)
 
 ---
 

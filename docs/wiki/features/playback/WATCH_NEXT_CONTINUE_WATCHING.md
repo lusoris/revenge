@@ -47,7 +47,7 @@ Never lose your place. Continue Watching shows partially-watched content with pr
 ### Learn More
 
 Official documentation and guides:
-- [Jellyfin API](../../../sources/apis/jellyfin.md)
+- [Jellyfin API](../../sources/apis/jellyfin.md)
 
 
 

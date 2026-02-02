@@ -18,6 +18,8 @@
 
 # TVTropes
 
+<!-- DESIGN: integrations/wiki, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -199,6 +200,6 @@ metadata:
 ### External Sources
 - [TVTropes](https://tvtropes.org) - Main site
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery) - HTML parsing for verification
-- [golang.org/x/time](../../../sources/go/x/time.md) - Rate limiting
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

@@ -49,8 +49,8 @@ The Collections system lets you group any media into custom collections. Create 
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
 
 
 

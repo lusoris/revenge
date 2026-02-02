@@ -39,15 +39,15 @@ Typesense powers the search functionality in Revenge. Search results appear inst
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [Prometheus Go Client](../../../sources/observability/prometheus.md)
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Typesense API](../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [Prometheus Go Client](../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

@@ -39,9 +39,9 @@ Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRu
 ### Learn More
 
 Official documentation and guides:
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
-- [NextPVR Documentation](../../../sources/livetv/nextpvr.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
+- [NextPVR Documentation](../../sources/livetv/nextpvr.md)
 
 
 

@@ -39,9 +39,9 @@ LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X prof
 ### Learn More
 
 Official documentation and guides:
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [River Job Queue](../../sources/tooling/river.md)
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

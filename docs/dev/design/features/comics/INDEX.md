@@ -1,8 +1,6 @@
-# Comics Module
+# Features\Comics
 
-← Back to [Design Docs](..)
-
-> Comic book features
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,15 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Comics Module](COMICS_MODULE.md) | Content module for Comics, Issues, Series | 🟡 Planned |
+| [Comics Module](COMICS_MODULE.md) | Content module for Comics, Issues, Series | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Comic Metadata Providers](../../integrations/metadata/comics/)
 
 ---
 

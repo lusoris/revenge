@@ -22,6 +22,8 @@
 
 # FreeOnes
 
+<!-- DESIGN: integrations/metadata/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -49,7 +51,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -275,9 +276,9 @@ metadata:
 - [DATA_RECONCILIATION](../../../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [Go io](../../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery) - HTML parsing for web scraping
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
 

@@ -39,7 +39,7 @@ Link your Kitsu account to track anime watching. Kitsu provides metadata, commun
 ### Learn More
 
 Official documentation and guides:
-- [River Job Queue](../../../sources/tooling/river.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

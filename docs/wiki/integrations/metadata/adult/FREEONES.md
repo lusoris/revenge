@@ -39,11 +39,11 @@ ENRICHMENT-only metadata source for QAR performers (crew). Provides additional b
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
-- [Go io](../../../../sources/go/stdlib/io.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [Go io](../../sources/go/stdlib/io.md)
+- [River Job Queue](../../sources/tooling/river.md)
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

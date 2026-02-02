@@ -46,6 +46,8 @@ design_refs:
 
 # UX/UI Design & Frontend Resources
 
+<!-- DESIGN: research, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 <!-- TOC-START -->
 
@@ -71,7 +73,6 @@ design_refs:
 
 <!-- TOC-END -->
 
-<!-- DESIGN: research, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: 🔴 Not Started

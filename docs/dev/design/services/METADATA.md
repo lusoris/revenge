@@ -24,6 +24,8 @@
 
 # Metadata Service
 
+<!-- DESIGN: services, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -51,7 +53,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -351,6 +352,7 @@ PUT    /api/v1/metadata/providers/:name  # Configure provider
 ## Related Documentation
 ### Design Documents
 - [03_METADATA_SYSTEM (PRIMARY architecture doc)](../architecture/03_METADATA_SYSTEM.md)
+- [DRAGONFLY (cache architecture)](../integrations/infrastructure/DRAGONFLY.md)
 - [HTTP_CLIENT (proxy/VPN support)](./HTTP_CLIENT.md)
 - [RADARR (PRIMARY for movies)](../integrations/servarr/RADARR.md)
 - [SONARR (PRIMARY for TV shows)](../integrations/servarr/SONARR.md)

@@ -1,8 +1,6 @@
-# Infrastructure Components
+# Integrations\Infrastructure
 
-← Back to [Design Docs](..)
-
-> Core stack: PostgreSQL, Dragonfly, Typesense, River
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,19 +10,14 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Dragonfly](DRAGONFLY.md) | Integration with Dragonfly | 🟡 Planned |
-| [PostgreSQL](POSTGRESQL.md) | Integration with PostgreSQL | 🟡 Planned |
-| [River](RIVER.md) | Integration with River | 🟡 Planned |
-| [Typesense](TYPESENSE.md) | Integration with Typesense | 🟡 Planned |
+| [Dragonfly](DRAGONFLY.md) | Integration with Dragonfly | ✅ Designed |
+| [PostgreSQL](POSTGRESQL.md) | Integration with PostgreSQL | ✅ Designed |
+| [River](RIVER.md) | Integration with River | ✅ Designed |
+| [Typesense](TYPESENSE.md) | Integration with Typesense | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Architecture Documentation](../../architecture/)
-- [Operations Documentation](../../operations/)
 
 ---
 

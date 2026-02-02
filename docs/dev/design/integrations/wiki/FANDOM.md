@@ -18,6 +18,8 @@
 
 # FANDOM
 
+<!-- DESIGN: integrations/wiki, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -209,7 +210,7 @@ metadata:
 
 ### External Sources
 - [FANDOM API](https://community.fandom.com/wiki/Community_Central:API) - MediaWiki-based API
-- [MediaWiki API](../../../sources/wiki/mediawiki.md) - Underlying API
-- [golang.org/x/time](../../../sources/go/x/time.md) - Rate limiting
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [MediaWiki API](../../sources/wiki/mediawiki.md) - Underlying API
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

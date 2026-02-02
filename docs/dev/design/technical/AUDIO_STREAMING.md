@@ -14,6 +14,8 @@
 
 # Audio Streaming & Progress Tracking
 
+<!-- DESIGN: technical, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -45,7 +47,6 @@ Audio streaming architecture:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---

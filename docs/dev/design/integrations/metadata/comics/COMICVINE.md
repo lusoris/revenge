@@ -18,6 +18,8 @@
 
 # ComicVine API
 
+<!-- DESIGN: integrations/metadata/comics, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -190,10 +191,10 @@ metadata:
 - [HTTP_CLIENT](../../../services/HTTP_CLIENT.md)
 
 ### External Sources
-- [ComicVine API](../../../../sources/apis/comicvine.md) - Auto-resolved from comicvine
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
+- [ComicVine API](../../sources/apis/comicvine.md) - Auto-resolved from comicvine
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
 

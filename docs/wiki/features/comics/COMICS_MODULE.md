@@ -47,17 +47,17 @@ The Comics Module provides a comprehensive digital comics experience supporting 
 ### Learn More
 
 Official documentation and guides:
-- [AniList GraphQL API](../../../sources/apis/anilist.md)
-- [ComicVine API](../../../sources/apis/comicvine.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [MyAnimeList API](../../../sources/apis/myanimelist.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
-- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
-- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
+- [AniList GraphQL API](../../sources/apis/anilist.md)
+- [ComicVine API](../../sources/apis/comicvine.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [MyAnimeList API](../../sources/apis/myanimelist.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
 
 
 

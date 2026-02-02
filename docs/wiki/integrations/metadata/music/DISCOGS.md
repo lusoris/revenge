@@ -39,8 +39,8 @@ SUPPLEMENTARY enrichment for physical music releases. Provides: (1) Vinyl/CD pre
 ### Learn More
 
 Official documentation and guides:
-- [Discogs API](../../../../sources/apis/discogs.md)
-- [Last.fm API](../../../../sources/apis/lastfm.md)
+- [Discogs API](../../sources/apis/discogs.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
 
 
 

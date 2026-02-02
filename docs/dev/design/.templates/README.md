@@ -1,5 +1,7 @@
 # Design Documentation Templates
 
+<!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
 
 <!-- TOC-START -->
 
@@ -40,7 +42,6 @@
 
 <!-- TOC-END -->
 
-<!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 **Purpose**: Jinja2 templates for generating both Claude-optimized and Wiki documentation from a single source.
 

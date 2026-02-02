@@ -39,11 +39,11 @@ SUPPLEMENTARY ratings enrichment for movies/TV shows. Provides: (1) IMDb ratings
 ### Learn More
 
 Official documentation and guides:
-- [OMDb API](../../../../sources/apis/omdb.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [OMDb API](../../sources/apis/omdb.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

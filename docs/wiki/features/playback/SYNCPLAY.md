@@ -47,8 +47,8 @@ Watch movies and shows together with friends, even when apart. SyncPlay keeps ev
 ### Learn More
 
 Official documentation and guides:
-- [Go sync](../../../sources/go/stdlib/sync.md)
-- [Jellyfin SyncPlay](../../../sources/apis/jellyfin-syncplay.md)
+- [Go sync](../../sources/go/stdlib/sync.md)
+- [Jellyfin SyncPlay](../../sources/apis/jellyfin-syncplay.md)
 
 
 

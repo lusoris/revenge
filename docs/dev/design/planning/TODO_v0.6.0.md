@@ -1,5 +1,7 @@
 # TODO v0.6.0 - Playback
 
+<!-- DESIGN: planning, README, test_output_claude, test_output_wiki -->
+
 
 <!-- TOC-START -->
 
@@ -20,7 +22,6 @@
 
 <!-- TOC-END -->
 
-<!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Playback Features
 

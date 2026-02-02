@@ -8,6 +8,8 @@
 
 # {{ FEATURE_NAME }}
 
+<!-- DESIGN: .templates -->
+
 
 **Created**: 2026-01-31
 **Status**: 🔴 PLANNED
@@ -32,8 +34,6 @@
 | Integration Testing | 🔴 NOT STARTED | - |
 
 **Overall**: 🔴 PLANNED
-
-
 
 
 ## Related Documentation

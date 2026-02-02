@@ -35,15 +35,15 @@ Migration and sync integration for local Stash libraries. GraphQL API enables: (
 ### Learn More
 
 Official documentation and guides:
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md)
-- [genqlient GitHub README](../../../../sources/tooling/genqlient-guide.md)
-- [gohlslib (HLS)](../../../../sources/media/gohlslib.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [Typesense API](../../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
+- [Khan/genqlient](../../sources/tooling/genqlient.md)
+- [genqlient GitHub README](../../sources/tooling/genqlient-guide.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

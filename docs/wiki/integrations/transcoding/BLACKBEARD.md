@@ -39,10 +39,10 @@ EXTERNAL transcoding service integration. Blackbeard is a **third-party distribu
 ### Learn More
 
 Official documentation and guides:
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

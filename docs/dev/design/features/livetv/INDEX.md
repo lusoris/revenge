@@ -1,8 +1,6 @@
-# Live TV Module
+# Features\Livetv
 
-← Back to [Design Docs](..)
-
-> Live TV and DVR features
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,15 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Live TV & DVR](LIVE_TV_DVR.md) | Content module for TV Shows, Seasons, Episodes | 🟡 Planned |
+| [Live TV & DVR](LIVE_TV_DVR.md) | Content module for TV Shows, Seasons, Episodes | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Live TV Integration](../../integrations/livetv/)
 
 ---
 

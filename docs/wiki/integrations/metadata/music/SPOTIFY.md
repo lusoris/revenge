@@ -39,9 +39,9 @@ SUPPLEMENTARY enrichment for music metadata. Provides: (1) High-quality album ar
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [Last.fm API](../../../../sources/apis/lastfm.md)
-- [Spotify Web API](../../../../sources/apis/spotify.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [Spotify Web API](../../sources/apis/spotify.md)
 
 
 

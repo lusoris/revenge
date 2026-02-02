@@ -47,12 +47,12 @@ See upcoming releases and recent additions at a glance. The calendar pulls data 
 ### Learn More
 
 Official documentation and guides:
-- [Go context](../../../sources/go/stdlib/context.md)
-- [Radarr API Docs](../../../sources/apis/radarr-docs.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Sonarr API Docs](../../../sources/apis/sonarr-docs.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Go context](../../sources/go/stdlib/context.md)
+- [Radarr API Docs](../../sources/apis/radarr-docs.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

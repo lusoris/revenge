@@ -18,6 +18,8 @@
 
 # Hardcover
 
+<!-- DESIGN: integrations/metadata/books, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -171,7 +172,7 @@ scrobbling:
 - [CHAPTARR](../../servarr/CHAPTARR.md)
 
 ### External Sources
-- [Hardcover API](../../../../sources/apis/hardcover.md) - Auto-resolved from hardcover
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md) - GraphQL client
+- [Hardcover API](../../sources/apis/hardcover.md) - Auto-resolved from hardcover
+- [Khan/genqlient](../../sources/tooling/genqlient.md) - GraphQL client
 - [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) - OAuth 2.0
 

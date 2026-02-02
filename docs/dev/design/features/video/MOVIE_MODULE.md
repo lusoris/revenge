@@ -21,6 +21,8 @@
 
 # Movie Module
 
+<!-- DESIGN: features/video, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 Not Started | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -197,9 +198,12 @@ type MetadataProvider interface {
 - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
 
 **External APIs** (priority order):
-- **Radarr API v3** - PRIMARY metadata source (local TMDb cache) + download automation
-- **TMDb API v3** - Supplementary metadata (via proxy/VPN when Radarr lacks data)
-- **TheTVDB API** - Additional fallback metadata source
+- **Radarr API v3** - PRIMARY metadata source + download automation
+- **TMDb API v3** - Supplementary metadata (via optional proxy/VPN)
+- **TheTVDB API** - Additional fallback
+
+See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
+priority chain (L1 cache → L2 cache → Arr → External APIs).
 
 **Database**:
 - PostgreSQL 18+ with trigram extension for fuzzy search

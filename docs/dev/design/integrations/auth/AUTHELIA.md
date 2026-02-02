@@ -20,6 +20,8 @@
 
 # Authelia
 
+<!-- DESIGN: integrations/auth, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -297,7 +298,7 @@ Content-Type: application/json
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../../../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
 - [Authelia OIDC Guide](https://www.authelia.com/integration/openid-connect/introduction/) - OIDC implementation details
 - [Authelia Configuration](https://www.authelia.com/configuration/prologue/introduction/) - Configuration reference
 

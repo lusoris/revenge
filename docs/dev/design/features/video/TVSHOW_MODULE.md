@@ -21,6 +21,8 @@
 
 # TV Show Module
 
+<!-- DESIGN: features/video, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -47,7 +49,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -207,9 +208,12 @@ type MetadataProvider interface {
 - `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
 
 **External APIs** (priority order):
-- **Sonarr API v3** - PRIMARY metadata source (local TheTVDB cache) + download automation
-- **TheTVDB API v4** - Supplementary metadata (via proxy/VPN when Sonarr lacks data)
-- **TMDb API v3** - Additional fallback metadata source
+- **Sonarr API v3** - PRIMARY metadata source + download automation
+- **TheTVDB API v4** - Supplementary metadata (via optional proxy/VPN)
+- **TMDb API v3** - Additional fallback
+
+See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
+priority chain (L1 cache → L2 cache → Arr → External APIs).
 
 **Database**:
 - PostgreSQL 18+ with trigram extension
@@ -270,15 +274,15 @@ tv:
 - [TRAKT (scrobbling + metadata enrichment)](../../integrations/scrobbling/TRAKT.md)
 
 ### External Sources
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [Sonarr API Docs](../../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [TheTVDB API](../../../sources/apis/thetvdb.md) - Auto-resolved from thetvdb
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [TheTVDB API](../../sources/apis/thetvdb.md) - Auto-resolved from thetvdb
 

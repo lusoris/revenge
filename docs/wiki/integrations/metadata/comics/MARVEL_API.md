@@ -40,9 +40,9 @@ SUPPLEMENTARY metadata source for Marvel comics ONLY. Official Marvel Developer 
 
 Official documentation and guides:
 - [Marvel Developer Portal](https://developer.marvel.com/docs)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

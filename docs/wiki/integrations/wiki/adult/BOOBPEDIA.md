@@ -39,8 +39,8 @@ Boobpedia provides detailed performer profiles for the adult content system. Car
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

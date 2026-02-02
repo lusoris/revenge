@@ -18,6 +18,8 @@
 
 # Audible
 
+<!-- DESIGN: integrations/metadata/books, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -190,8 +191,8 @@ metadata:
 - [HTTP_CLIENT](../../../services/HTTP_CLIENT.md)
 
 ### External Sources
-- [Audnexus API](../../../../sources/apis/audnexus.md) - Auto-resolved from audnexus
-- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
-- [River Job Queue](../../../../sources/tooling/river.md) - Background jobs
+- [Audnexus API](../../sources/apis/audnexus.md) - Auto-resolved from audnexus
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Background jobs
 

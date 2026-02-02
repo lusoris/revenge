@@ -47,14 +47,14 @@ Stay informed with server announcements and entertainment news. Admins can post 
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [mmcdole/gofeed](../../../sources/tooling/gofeed.md)
-- [gofeed GitHub README](../../../sources/tooling/gofeed-guide.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Casbin](../../sources/security/casbin.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [mmcdole/gofeed](../../sources/tooling/gofeed.md)
+- [gofeed GitHub README](../../sources/tooling/gofeed-guide.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

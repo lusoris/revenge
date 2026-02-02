@@ -18,6 +18,8 @@
 
 # Boobpedia
 
+<!-- DESIGN: integrations/wiki/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -218,6 +219,6 @@ qar:
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

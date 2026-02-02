@@ -23,6 +23,8 @@
 
 # Adult Gallery Module (QAR: Treasures)
 
+<!-- DESIGN: features/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -49,7 +51,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -483,15 +484,15 @@ Response 201 Created:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [google/uuid](../../../sources/tooling/uuid.md) - Auto-resolved from google-uuid
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [Servarr Wiki](../../../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [Typesense API](../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [google/uuid](../../sources/tooling/uuid.md) - Auto-resolved from google-uuid
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

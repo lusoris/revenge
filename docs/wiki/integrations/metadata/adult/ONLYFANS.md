@@ -39,8 +39,8 @@ LINK-ONLY integration for QAR performer profiles. Stores verified OnlyFans profi
 ### Learn More
 
 Official documentation and guides:
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

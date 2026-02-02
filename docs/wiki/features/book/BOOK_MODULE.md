@@ -47,16 +47,16 @@ The Book Module provides a comprehensive eBook library with support for multiple
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [Google Books API](../../../sources/apis/google-books.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [Open Library API](../../../sources/apis/openlibrary.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Google Books API](../../sources/apis/google-books.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [Open Library API](../../sources/apis/openlibrary.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

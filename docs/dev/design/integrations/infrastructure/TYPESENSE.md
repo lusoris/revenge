@@ -21,6 +21,8 @@
 
 # Typesense
 
+<!-- DESIGN: integrations/infrastructure, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -216,13 +217,13 @@ GET /api/v1/search/autocomplete?q=inc&collection=movies
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [Prometheus Go Client](../../../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [Typesense API](../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [Prometheus Go Client](../../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

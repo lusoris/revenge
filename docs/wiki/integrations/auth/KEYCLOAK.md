@@ -39,7 +39,7 @@ Connect Revenge to your Keycloak identity and access management system for enter
 ### Learn More
 
 Official documentation and guides:
-- [Keycloak Documentation](../../../sources/security/keycloak.md)
+- [Keycloak Documentation](../../sources/security/keycloak.md)
 - [Keycloak OIDC Guide](https://www.keycloak.org/docs/latest/securing_apps/#_oidc)
 - [Keycloak Server Admin](https://www.keycloak.org/docs/latest/server_admin/)
 

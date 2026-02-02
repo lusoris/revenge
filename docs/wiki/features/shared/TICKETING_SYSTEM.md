@@ -47,20 +47,20 @@ Built-in support system for your media server. Users can submit bug reports, req
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [rueidis](../../../sources/tooling/rueidis.md)
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
-- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
-- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
-- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
 
 
 

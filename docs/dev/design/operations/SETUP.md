@@ -8,6 +8,8 @@
 
 # Production Deployment Setup
 
+<!-- DESIGN: operations, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -39,8 +41,6 @@ Multiple deployment options:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

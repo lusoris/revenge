@@ -1,8 +1,6 @@
-# Playback Features
+# Features\Playback
 
-← Back to [Design Docs](..)
-
-> Media playback and streaming features
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,21 +10,16 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md) | Content module for  | 🟡 Planned |
-| [Release Calendar System](RELEASE_CALENDAR.md) | Content module for  | 🟡 Planned |
-| [Skip Intro / Credits Detection](SKIP_INTRO.md) | Content module for  | 🟡 Planned |
-| [SyncPlay (Watch Together)](SYNCPLAY.md) | Content module for  | 🟡 Planned |
-| [Trickplay (Timeline Thumbnails)](TRICKPLAY.md) | Content module for  | 🟡 Planned |
-| [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md) | Content module for  | 🟡 Planned |
+| [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md) | Content module for  | ✅ Designed |
+| [Release Calendar System](RELEASE_CALENDAR.md) | Content module for  | ✅ Designed |
+| [Skip Intro / Credits Detection](SKIP_INTRO.md) | Content module for  | ✅ Designed |
+| [SyncPlay (Watch Together)](SYNCPLAY.md) | Content module for  | ✅ Designed |
+| [Trickplay (Timeline Thumbnails)](TRICKPLAY.md) | Content module for  | ✅ Designed |
+| [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md) | Content module for  | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Shared Features](../shared/)
-- [Transcoding Services](../../integrations/transcoding/)
 
 ---
 

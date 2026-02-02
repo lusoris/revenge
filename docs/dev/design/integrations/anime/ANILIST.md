@@ -24,6 +24,8 @@
 
 # AniList
 
+<!-- DESIGN: integrations/anime, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -52,7 +54,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -418,8 +419,8 @@ Response:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../../../sources/apis/anilist.md) - Auto-resolved from anilist
-- [AniList GraphQL Schema](../../../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
-- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [AniList GraphQL API](../../sources/apis/anilist.md) - Auto-resolved from anilist
+- [AniList GraphQL Schema](../../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

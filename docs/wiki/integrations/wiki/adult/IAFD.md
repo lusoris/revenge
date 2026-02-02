@@ -39,9 +39,9 @@ Internet Adult Film Database (IAFD) provides comprehensive industry data. Perfor
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
-- [Go io](../../../../sources/go/stdlib/io.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [Go io](../../sources/go/stdlib/io.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

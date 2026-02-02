@@ -39,8 +39,8 @@ Social reading platform with open GraphQL API. Sync reading progress and shelves
 ### Learn More
 
 Official documentation and guides:
-- [Hardcover API](../../../../sources/apis/hardcover.md)
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md)
+- [Hardcover API](../../sources/apis/hardcover.md)
+- [Khan/genqlient](../../sources/tooling/genqlient.md)
 - [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2)
 
 

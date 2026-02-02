@@ -47,17 +47,17 @@ Define exactly what each user can do with role-based access control. Create cust
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [Casbin Documentation](../../../sources/security/casbin-guide.md)
-- [Casbin pgx Adapter](../../../sources/security/casbin-pgx.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Casbin](../../sources/security/casbin.md)
+- [Casbin Documentation](../../sources/security/casbin-guide.md)
+- [Casbin pgx Adapter](../../sources/security/casbin-pgx.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

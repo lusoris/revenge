@@ -40,9 +40,9 @@ SUPPLEMENTARY metadata source for comics libraries. Specializes in historical co
 
 Official documentation and guides:
 - [GCD REST API](https://www.comics.org/api/)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

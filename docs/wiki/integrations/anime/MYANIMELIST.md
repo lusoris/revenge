@@ -39,8 +39,8 @@ Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the large
 ### Learn More
 
 Official documentation and guides:
-- [MyAnimeList API](../../../sources/apis/myanimelist.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [MyAnimeList API](../../sources/apis/myanimelist.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

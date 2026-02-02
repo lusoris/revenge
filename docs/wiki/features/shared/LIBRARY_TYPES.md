@@ -47,13 +47,13 @@ Create separate libraries for different content types. Movies, TV Shows, Music, 
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [rueidis](../../../sources/tooling/rueidis.md)
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [StashDB GraphQL API](../../../sources/apis/stashdb-schema.graphql)
+- [Casbin](../../sources/security/casbin.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql)
 
 
 

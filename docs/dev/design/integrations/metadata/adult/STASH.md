@@ -12,6 +12,8 @@
 
 # Stash
 
+<!-- DESIGN: integrations/metadata/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -41,8 +43,6 @@
 **Overall**: ✅ Complete
 
 
-
-
 ## Architecture
 
 ### Integration Structure
@@ -69,13 +69,13 @@ internal/integration/stash/
 - [WHISPARR (PRIMARY for QAR)](../../servarr/WHISPARR.md)
 
 ### External Sources
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md) - Auto-resolved from genqlient
-- [genqlient GitHub README](../../../../sources/tooling/genqlient-guide.md) - Auto-resolved from genqlient-docs
-- [gohlslib (HLS)](../../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
-- [Typesense API](../../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Khan/genqlient](../../sources/tooling/genqlient.md) - Auto-resolved from genqlient
+- [genqlient GitHub README](../../sources/tooling/genqlient-guide.md) - Auto-resolved from genqlient-docs
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

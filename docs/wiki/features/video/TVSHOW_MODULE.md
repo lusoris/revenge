@@ -16,7 +16,7 @@
 
 > Organize TV series with seasons, episodes, and watch progress
 
-Manage TV shows organized by series, season, and episode. Automatic metadata from Sonarr (PRIMARY source, aggregates from TheTVDB locally) with direct TheTVDB/TMDb API as supplementary enrichment. Adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr integration provides both metadata caching and download automation.
+Manage TV shows organized by series, season, and episode. Automatic metadata from Sonarr (PRIMARY aggregator, see data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role) with direct TheTVDB/TMDb API as supplementary enrichment. Adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr provides both metadata and download automation.
 
 ---
 
@@ -47,17 +47,17 @@ Manage TV shows organized by series, season, and episode. Automatic metadata fro
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [go-blurhash](../../../sources/media/go-blurhash.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Sonarr API Docs](../../../sources/apis/sonarr-docs.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [TheTVDB API](../../../sources/apis/thetvdb.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [TheTVDB API](../../sources/apis/thetvdb.md)
 
 
 

@@ -39,10 +39,10 @@ ENRICHMENT-only metadata source for QAR performer alias resolution. Comprehensiv
 ### Learn More
 
 Official documentation and guides:
-- [Go io](../../../../sources/go/stdlib/io.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Go io](../../sources/go/stdlib/io.md)
+- [River Job Queue](../../sources/tooling/river.md)
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

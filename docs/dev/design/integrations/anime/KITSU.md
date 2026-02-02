@@ -26,6 +26,8 @@
 
 # Kitsu
 
+<!-- DESIGN: integrations/anime, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -54,7 +56,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -421,5 +422,5 @@ Response:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

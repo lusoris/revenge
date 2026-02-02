@@ -39,10 +39,10 @@ SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Cha
 ### Learn More
 
 Official documentation and guides:
-- [Audnexus API](../../../../sources/apis/audnexus.md)
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Audnexus API](../../sources/apis/audnexus.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

@@ -19,6 +19,8 @@
 
 # Letterboxd
 
+<!-- DESIGN: integrations/scrobbling, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -176,7 +177,7 @@ integrations:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [Last.fm API](../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [Letterboxd API](../../../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Letterboxd API](../../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
 

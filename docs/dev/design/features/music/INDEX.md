@@ -1,6 +1,6 @@
-# Features - Music
+# Features\Music
 
-← Back to [Design Docs](..)
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -10,7 +10,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Music Module](MUSIC_MODULE.md) | Content module for Artists, Albums, Tracks | 🟡 Planned |
+| [Music Module](MUSIC_MODULE.md) | Content module for Artists, Albums, Tracks | ✅ Designed |
 
 ---
 

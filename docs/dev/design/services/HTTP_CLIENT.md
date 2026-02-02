@@ -23,6 +23,8 @@
 
 # HTTP Client & Proxy
 
+<!-- DESIGN: services, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -115,7 +117,6 @@ fx.Provide(
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---

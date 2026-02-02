@@ -8,6 +8,8 @@
 
 # User Pain Points Research - Existing Media Servers
 
+<!-- DESIGN: research, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -40,8 +42,6 @@ Pain points identified:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

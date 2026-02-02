@@ -1,8 +1,6 @@
-# Servarr Stack
+# Integrations\Servarr
 
-← Back to [Design Docs](..)
-
-> Media management automation (Radarr, Sonarr, etc.)
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,20 +10,15 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Chaptarr](CHAPTARR.md) | Integration with Chaptarr | 🟡 Planned |
+| [Chaptarr](CHAPTARR.md) | Integration with Chaptarr | ✅ Designed |
 | [Lidarr](LIDARR.md) | Integration with Lidarr | 🟡 Planned |
-| [Radarr](RADARR.md) | Integration with Radarr | 🟡 Planned |
-| [Sonarr](SONARR.md) | Integration with Sonarr | 🟡 Planned |
+| [Radarr](RADARR.md) | Integration with Radarr | ✅ Designed |
+| [Sonarr](SONARR.md) | Integration with Sonarr | ✅ Designed |
 | [Whisparr v3](WHISPARR.md) | Integration with Whisparr v3 | 🟡 Planned |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Video Module](../../features/video/)
-- [Operations Documentation](../../operations/)
 
 ---
 

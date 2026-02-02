@@ -34,6 +34,8 @@
 
 # Podcasts
 
+<!-- DESIGN: features/podcasts, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -67,7 +69,6 @@ Complete podcast experience:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -413,9 +414,9 @@ Export podcast subscriptions as OPML file
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

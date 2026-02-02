@@ -8,6 +8,8 @@
 
 # Revenge - Metadata System
 
+<!-- DESIGN: architecture, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -42,14 +44,13 @@ Metadata handling:
 **Overall**: ✅ Complete
 
 
-
-
 ## Related Documentation
 ### Design Documents
 - [architecture](INDEX.md)
 - [ADULT_CONTENT_SYSTEM](../features/adult/ADULT_CONTENT_SYSTEM.md)
 - [ADULT_METADATA](../features/adult/ADULT_METADATA.md)
 - [DATA_RECONCILIATION](../features/adult/DATA_RECONCILIATION.md)
+- [DRAGONFLY (cache architecture)](../integrations/infrastructure/DRAGONFLY.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

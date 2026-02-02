@@ -15,6 +15,8 @@
 
 # Design System
 
+<!-- DESIGN: technical, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,8 +50,6 @@ Design system index with pirate-themed elegance:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Implementation Checklist

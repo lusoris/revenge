@@ -18,6 +18,8 @@
 
 # Wikipedia
 
+<!-- DESIGN: integrations/wiki, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -191,8 +192,8 @@ metadata:
 - [WIKI_SYSTEM](../../features/shared/WIKI_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [MediaWiki API](../../../sources/wiki/mediawiki.md) - Auto-resolved from mediawiki-api
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [golang.org/x/time](../../../sources/go/x/time.md) - Rate limiting
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [MediaWiki API](../../sources/wiki/mediawiki.md) - Auto-resolved from mediawiki-api
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
 

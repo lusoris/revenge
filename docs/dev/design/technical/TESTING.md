@@ -8,6 +8,8 @@
 
 # Testing Patterns and Practices
 
+<!-- DESIGN: technical, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -40,8 +42,6 @@ Testing approach:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

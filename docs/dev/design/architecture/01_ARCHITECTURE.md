@@ -16,6 +16,8 @@
 
 # Revenge - Architecture v2
 
+<!-- DESIGN: architecture, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -49,7 +51,6 @@ Core components:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -228,7 +229,7 @@ type ClientFactory interface {
 - `go.uber.org/fx` - Dependency injection
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
 - `github.com/maypok86/otter` - L1 cache
-- `github.com/valkey-io/valkey-go` - L2 cache (Dragonfly client)
+- `github.com/redis/rueidis` - L2 cache (Dragonfly client)
 - `github.com/riverqueue/river` - Background jobs
 
 **API & Web**:
@@ -388,6 +389,7 @@ jobs:
 - [architecture](INDEX.md)
 - [03_METADATA_SYSTEM](03_METADATA_SYSTEM.md)
 - [METADATA (service)](../services/METADATA.md)
+- [DRAGONFLY (integration)](../integrations/infrastructure/DRAGONFLY.md)
 - [HTTP_CLIENT (service)](../services/HTTP_CLIENT.md)
 - [RADARR (PRIMARY metadata + downloads)](../integrations/servarr/RADARR.md)
 - [SONARR (PRIMARY metadata + downloads)](../integrations/servarr/SONARR.md)

@@ -1,6 +1,6 @@
-# Technical - Design
+# Technical\Design
 
-← Back to [Design Docs](..)
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 

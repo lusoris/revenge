@@ -20,6 +20,8 @@
 
 # Content Rating System
 
+<!-- DESIGN: features/shared, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -202,11 +203,11 @@ GET  /api/v1/ratings/check?content=:id       # Check if content allowed for user
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../../../sources/security/casbin.md) - Auto-resolved from casbin
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Casbin](../../sources/security/casbin.md) - Auto-resolved from casbin
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

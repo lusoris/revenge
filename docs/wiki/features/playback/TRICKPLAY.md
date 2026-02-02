@@ -47,15 +47,15 @@ See where you are going when scrubbing through videos. Trickplay generates thumb
 ### Learn More
 
 Official documentation and guides:
-- [Roku BIF Format](../../../sources/protocols/bif.md)
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
-- [Jellyfin Trickplay](../../../sources/apis/jellyfin-trickplay.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [WebVTT Specification](../../../sources/protocols/webvtt.md)
+- [Roku BIF Format](../../sources/protocols/bif.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [Jellyfin Trickplay](../../sources/apis/jellyfin-trickplay.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [WebVTT Specification](../../sources/protocols/webvtt.md)
 
 
 

@@ -42,6 +42,8 @@
 
 # Photos Library
 
+<!-- DESIGN: features/photos, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -75,7 +77,6 @@ Complete photo library:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -309,18 +310,18 @@ type GeocodingProvider interface {
 require (
     // Core
     github.com/google/uuid v1.6.0
-    go.uber.org/fx v1.24.0
+    go.uber.org/fx v1.23.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.8.0
-    github.com/sqlc-dev/sqlc v1.30.0
+    github.com/jackc/pgx/v5 v5.7.2
+    github.com/sqlc-dev/sqlc v1.28.0
 
     // API
-    github.com/ogen-go/ogen v1.18.0
+    github.com/ogen-go/ogen v1.7.0
 
     // Caching
     github.com/maypok86/otter v1.2.4
-    github.com/redis/rueidis v1.0.49
+    github.com/redis/rueidis v1.0.50
     github.com/philippgille/sturdyc v1.1.0
 
     // Image processing
@@ -332,11 +333,11 @@ require (
     github.com/minio/minio-go/v7 v7.0.82
 
     // Job queue
-    github.com/riverqueue/river v0.26.0
+    github.com/riverqueue/river v0.15.0
 
     // Testing
-    github.com/stretchr/testify v1.11.1
-    github.com/testcontainers/testcontainers-go v0.40.0
+    github.com/stretchr/testify v1.10.0
+    github.com/testcontainers/testcontainers-go v0.35.0
 )
 ```
 
@@ -554,13 +555,13 @@ Get photos with location data for map view
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

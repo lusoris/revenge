@@ -39,11 +39,11 @@ SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback**
 ### Learn More
 
 Official documentation and guides:
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [ThePornDB API](../../../../sources/apis/theporndb.md)
-- [Typesense API](../../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [ThePornDB API](../../sources/apis/theporndb.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

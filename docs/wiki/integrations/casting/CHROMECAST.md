@@ -39,7 +39,7 @@ Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled device. C
 ### Learn More
 
 Official documentation and guides:
-- [go-chromecast](../../../sources/casting/go-chromecast.md)
+- [go-chromecast](../../sources/casting/go-chromecast.md)
 
 
 

@@ -47,13 +47,13 @@ Skip repetitive intros and credits with one click. Revenge automatically detects
 ### Learn More
 
 Official documentation and guides:
-- [Chromaprint/AcoustID](../../../sources/standards/chromaprint.md)
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [Chromaprint/AcoustID](../../sources/standards/chromaprint.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

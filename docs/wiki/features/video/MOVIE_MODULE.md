@@ -15,7 +15,7 @@
 
 > Your movie library with rich metadata and artwork
 
-Manage your movie collection with automatic metadata from Radarr (PRIMARY source, aggregates from TMDb locally), with direct TMDb API as supplementary enrichment. Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Radarr integration provides both metadata caching and download automation.
+Manage your movie collection with automatic metadata from Radarr (PRIMARY aggregator, see data/architecture/03_METADATA_SYSTEM.yaml#arr_services_dual_role) with direct TMDb API as supplementary enrichment. Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Radarr provides both metadata and download automation.
 
 ---
 

@@ -39,6 +39,8 @@
 
 # SyncPlay (Watch Together)
 
+<!-- DESIGN: features/playback, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -65,7 +67,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -252,14 +253,14 @@ type WebSocketManager interface {
 require (
     // Core
     github.com/google/uuid v1.6.0
-    go.uber.org/fx v1.24.0
+    go.uber.org/fx v1.23.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.8.0
-    github.com/sqlc-dev/sqlc v1.30.0
+    github.com/jackc/pgx/v5 v5.7.2
+    github.com/sqlc-dev/sqlc v1.28.0
 
     // API
-    github.com/ogen-go/ogen v1.18.0
+    github.com/ogen-go/ogen v1.7.0
 
     // WebSocket
     github.com/gorilla/websocket v1.5.3
@@ -268,11 +269,11 @@ require (
     github.com/maypok86/otter v1.2.4
 
     // Password hashing
-    golang.org/x/crypto v0.47.0
+    golang.org/x/crypto v0.31.0
 
     // Testing
-    github.com/stretchr/testify v1.11.1
-    github.com/testcontainers/testcontainers-go v0.40.0
+    github.com/stretchr/testify v1.10.0
+    github.com/testcontainers/testcontainers-go v0.35.0
 )
 ```
 
@@ -434,6 +435,6 @@ WebSocket connection for real-time sync
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go sync](../../../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
-- [Jellyfin SyncPlay](../../../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay
+- [Go sync](../../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
+- [Jellyfin SyncPlay](../../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay
 

@@ -1,8 +1,6 @@
-# Transcoding Services
+# Integrations\Transcoding
 
-← Back to [Design Docs](..)
-
-> External transcoding (Blackbeard)
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,15 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Blackbeard](BLACKBEARD.md) | Integration with Blackbeard | 🟡 Planned |
+| [Blackbeard](BLACKBEARD.md) | Integration with Blackbeard | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Playback Features](../../features/playback/)
 
 ---
 

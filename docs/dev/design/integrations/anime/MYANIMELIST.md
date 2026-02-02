@@ -24,6 +24,8 @@
 
 # MyAnimeList (MAL)
 
+<!-- DESIGN: integrations/anime, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -52,7 +54,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -397,6 +398,6 @@ POST /api/v1/scrobbling/mal/sync
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [MyAnimeList API](../../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [MyAnimeList API](../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

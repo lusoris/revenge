@@ -39,10 +39,10 @@ Use any OpenID Connect compatible identity provider with Revenge. Works with cor
 ### Learn More
 
 Official documentation and guides:
-- [Authelia Documentation](../../../sources/security/authelia.md)
-- [Authentik Documentation](../../../sources/security/authentik.md)
-- [Keycloak Documentation](../../../sources/security/keycloak.md)
-- [OpenID Connect Core](../../../sources/security/oidc-core.md)
+- [Authelia Documentation](../../sources/security/authelia.md)
+- [Authentik Documentation](../../sources/security/authentik.md)
+- [Keycloak Documentation](../../sources/security/keycloak.md)
+- [OpenID Connect Core](../../sources/security/oidc-core.md)
 
 
 

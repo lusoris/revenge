@@ -21,6 +21,8 @@
 
 # TMDb (The Movie Database)
 
+<!-- DESIGN: integrations/metadata/video, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -49,7 +51,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -219,12 +220,12 @@ metadata:
 - [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
 
 ### External Sources
-- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Auto-resolved from golang-x-time
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
-- [Typesense API](../../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [golang.org/x/time](../../sources/go/x/time.md) - Auto-resolved from golang-x-time
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

@@ -39,9 +39,9 @@ Babepedia provides biographical information for adult performers. Physical attri
 ### Learn More
 
 Official documentation and guides:
-- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
-- [Go io](../../../../sources/go/stdlib/io.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [Go io](../../sources/go/stdlib/io.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

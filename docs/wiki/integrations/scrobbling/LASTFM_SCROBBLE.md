@@ -35,8 +35,8 @@ Send your music listening history to Last.fm automatically. Tracks scrobble afte
 ### Learn More
 
 Official documentation and guides:
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

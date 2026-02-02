@@ -39,9 +39,9 @@ Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata
 ### Learn More
 
 Official documentation and guides:
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Trakt API](../../../sources/apis/trakt.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Trakt API](../../sources/apis/trakt.md)
 
 
 

@@ -22,6 +22,8 @@
 
 # ThePornDB
 
+<!-- DESIGN: integrations/metadata/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -50,7 +52,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -265,9 +266,9 @@ metadata:
 - [DATA_RECONCILIATION](../../../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
-- [ThePornDB API](../../../../sources/apis/theporndb.md) - Auto-resolved from theporndb
-- [Typesense API](../../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [ThePornDB API](../../sources/apis/theporndb.md) - Auto-resolved from theporndb
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
 

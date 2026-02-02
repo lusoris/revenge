@@ -12,23 +12,24 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Activity Service](ACTIVITY.md) | > Audit logging and event tracking | 🟡 Planned |
-| [Analytics Service](ANALYTICS.md) | > Usage analytics, playback statistics, and library insights | 🟡 Planned |
-| [API Keys Service](APIKEYS.md) | > API key generation, validation, and management | 🟡 Planned |
-| [Auth Service](AUTH.md) | > Authentication, registration, and password management | 🟡 Planned |
+| [Activity Service](ACTIVITY.md) | > Audit logging and event tracking | ✅ Designed |
+| [Analytics Service](ANALYTICS.md) | > Usage analytics, playback statistics, and library insights | ✅ Designed |
+| [API Keys Service](APIKEYS.md) | > API key generation, validation, and management | ✅ Designed |
+| [Auth Service](AUTH.md) | > Authentication, registration, and password management | ✅ Designed |
 | [EPG Service](EPG.md) | > TV program schedule and guide data management service | 🟡 Planned |
-| [Fingerprint Service](FINGERPRINT.md) | > Media file identification via perceptual hashing and acous... | 🟡 Planned |
-| [Grants Service](GRANTS.md) | > Polymorphic resource access grants for fine-grained sharin... | 🟡 Planned |
-| [Library Service](LIBRARY.md) | > Library management and access control | 🟡 Planned |
-| [Metadata Service](METADATA.md) | > External metadata providers for media enrichment | 🟡 Planned |
-| [Notification Service](NOTIFICATION.md) | > Multi-channel notifications for users and admins | 🟡 Planned |
-| [OIDC Service](OIDC.md) | > OpenID Connect / SSO provider management | 🟡 Planned |
-| [RBAC Service](RBAC.md) | > Role-based access control with Casbin | 🟡 Planned |
-| [Search Service](SEARCH.md) | > Full-text search via Typesense with per-module collections | 🟡 Planned |
-| [Session Service](SESSION.md) | > Session token management and device tracking | 🟡 Planned |
-| [Settings Service](SETTINGS.md) | > Server settings persistence and retrieval | 🟡 Planned |
-| [Transcoding Service](TRANSCODING.md) | > On-demand video/audio transcoding service with hardware ac... | 🟡 Planned |
-| [User Service](USER.md) | > User account management and authentication | 🟡 Planned |
+| [Fingerprint Service](FINGERPRINT.md) | > Media file identification via perceptual hashing and acous... | ✅ Designed |
+| [Grants Service](GRANTS.md) | > Polymorphic resource access grants for fine-grained sharin... | ✅ Designed |
+| [HTTP Client & Proxy](HTTP_CLIENT.md) | > Centralized HTTP client factory with proxy/VPN support for... | ✅ Designed |
+| [Library Service](LIBRARY.md) | > Library management and access control | ✅ Designed |
+| [Metadata Service](METADATA.md) | > Metadata aggregation with PRIMARY (Arr) and SUPPLEMENTARY ... | ✅ Designed |
+| [Notification Service](NOTIFICATION.md) | > Multi-channel notifications for users and admins | ✅ Designed |
+| [OIDC Service](OIDC.md) | > OpenID Connect / SSO provider management | ✅ Designed |
+| [RBAC Service](RBAC.md) | > Role-based access control with Casbin | ✅ Designed |
+| [Search Service](SEARCH.md) | > Full-text search via Typesense with per-module collections | ✅ Designed |
+| [Session Service](SESSION.md) | > Session token management and device tracking | ✅ Designed |
+| [Settings Service](SETTINGS.md) | > Server settings persistence and retrieval | ✅ Designed |
+| [Transcoding Service](TRANSCODING.md) | > On-demand video/audio transcoding service with hardware ac... | ✅ Designed |
+| [User Service](USER.md) | > User account management and authentication | ✅ Designed |
 
 ---
 

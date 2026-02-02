@@ -28,6 +28,8 @@
 
 # Collections & Playlists
 
+<!-- DESIGN: features/shared, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -62,7 +64,6 @@ Collections allow users to group media items together:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -340,6 +341,6 @@ Remove item from collection
 - [LIBRARY_TYPES](../../features/shared/LIBRARY_TYPES.md)
 
 ### External Sources
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
 

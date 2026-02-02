@@ -39,14 +39,14 @@ SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonar
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [TheTVDB API](../../../../sources/apis/thetvdb.md)
-- [Typesense API](../../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [TheTVDB API](../../sources/apis/thetvdb.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

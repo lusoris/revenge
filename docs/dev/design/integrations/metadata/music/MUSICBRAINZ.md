@@ -23,6 +23,8 @@
 
 # MusicBrainz
 
+<!-- DESIGN: integrations/metadata/music, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -50,7 +52,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -233,7 +234,7 @@ metadata:
 - [LISTENBRAINZ (scrobbling)](../../scrobbling/LISTENBRAINZ.md)
 
 ### External Sources
-- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [MusicBrainz API](../../../../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [MusicBrainz API](../../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
 

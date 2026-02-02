@@ -20,6 +20,8 @@
 
 # Revenge - External Scrobbling & Sync
 
+<!-- DESIGN: features/shared, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -246,10 +247,10 @@ GET  /api/v1/scrobble/imported                 # List imported items
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
-- [Last.fm API](../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

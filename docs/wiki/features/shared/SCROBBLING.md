@@ -47,12 +47,12 @@ Scrobble your viewing and listening history to external services. Connect Trakt 
 ### Learn More
 
 Official documentation and guides:
-- [Uber fx](../../../sources/tooling/fx.md)
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

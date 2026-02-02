@@ -39,8 +39,8 @@ ListenBrainz is an open-source alternative to Last.fm for tracking music listeni
 ### Learn More
 
 Official documentation and guides:
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

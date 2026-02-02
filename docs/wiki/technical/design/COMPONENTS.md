@@ -31,8 +31,8 @@ Component library built on shadcn-svelte and Bits UI. Media cards with hover inf
 ### Learn More
 
 Official documentation and guides:
-- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md)
-- [Bits UI](../../../sources/frontend/bits-ui.md)
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md)
+- [Bits UI](../../sources/frontend/bits-ui.md)
 - [Vidstack Player](https://www.vidstack.io/docs/player)
 - [Lucide Icons](https://lucide.dev/icons/)
 

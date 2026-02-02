@@ -1,8 +1,6 @@
-# Casting Protocols
+# Integrations\Casting
 
-← Back to [Design Docs](..)
-
-> Chromecast, DLNA device casting
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,16 +10,12 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Chromecast](CHROMECAST.md) | Integration with Chromecast | 🟡 Planned |
-| [DLNA/UPnP](DLNA.md) | Integration with DLNA/UPnP | 🟡 Planned |
+| [Chromecast](CHROMECAST.md) | Integration with Chromecast | ✅ Designed |
+| [DLNA/UPnP](DLNA.md) | Integration with DLNA/UPnP | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../sources/SOURCES.md)
-
-## Related
-
-- [Playback Features](../../features/playback/)
 
 ---
 

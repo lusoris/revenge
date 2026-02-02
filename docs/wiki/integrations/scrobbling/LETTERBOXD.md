@@ -39,9 +39,9 @@ Letterboxd integration logs movies to your film diary. Rate films as you watch a
 ### Learn More
 
 Official documentation and guides:
-- [Go io](../../../sources/go/stdlib/io.md)
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [Letterboxd API](../../../sources/apis/letterboxd.md)
+- [Go io](../../sources/go/stdlib/io.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [Letterboxd API](../../sources/apis/letterboxd.md)
 
 
 

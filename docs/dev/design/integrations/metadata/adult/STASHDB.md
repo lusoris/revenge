@@ -12,6 +12,8 @@
 
 # StashDB
 
+<!-- DESIGN: integrations/metadata/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -39,8 +41,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Architecture
@@ -71,18 +71,18 @@ internal/integration/stashdb/
 - [DATA_RECONCILIATION](../../../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
-- [FFmpeg Documentation](../../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../../../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../../../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md) - Auto-resolved from genqlient
-- [genqlient GitHub README](../../../../sources/tooling/genqlient-guide.md) - Auto-resolved from genqlient-docs
-- [go-astiav (FFmpeg bindings)](../../../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../../../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
-- [StashDB GraphQL API](../../../../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
-- [Typesense API](../../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [Khan/genqlient](../../sources/tooling/genqlient.md) - Auto-resolved from genqlient
+- [genqlient GitHub README](../../sources/tooling/genqlient-guide.md) - Auto-resolved from genqlient-docs
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

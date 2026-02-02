@@ -39,9 +39,9 @@ Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrob
 ### Learn More
 
 Official documentation and guides:
-- [Last.fm API](../../../sources/apis/lastfm.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Simkl API](../../../sources/apis/simkl.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Simkl API](../../sources/apis/simkl.md)
 
 
 

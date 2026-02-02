@@ -1,5 +1,7 @@
 # Revenge Roadmap
 
+<!-- DESIGN: planning, README, test_output_claude, test_output_wiki -->
+
 
 <!-- TOC-START -->
 
@@ -59,12 +61,11 @@
 
 <!-- TOC-END -->
 
-<!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Version progression from v0.0.0 to v1.0.0
 
-**Last Updated**: 2026-02-01
-**Current Version**: v0.0.0 (CI/CD Infrastructure)
+**Last Updated**: 2026-02-02
+**Current Version**: v0.0.0 (CI/CD Infrastructure + Phase 5 Documentation)
 **MVP Milestone**: v0.3.0
 **Release Candidate**: v0.9.0
 **First Stable**: v1.0.0
@@ -75,7 +76,7 @@
 
 | Version | Codename | Focus | Key Deliverables |
 |---------|----------|-------|------------------|
-| v0.0.0 | **Foundation** | CI/CD Infrastructure | Pipelines, Deploy configs, Testing framework |
+| v0.0.0 | **Foundation** | CI/CD + Documentation | Pipelines, Deploy configs, YAML data structure, Doc generation |
 | v0.1.0 | **Skeleton** | Project Structure | Go modules, fx setup, Database schema |
 | v0.2.0 | **Core** | Backend Services | Auth, User, Session, RBAC, Library |
 | **v0.3.0** | **MVP** | Movie Module | Full backend + Movies + Basic UI |
@@ -130,7 +131,8 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 
 **Status**: ✅ Complete
 **Tag**: `v0.0.0`
-**Focus**: CI/CD Infrastructure
+**Focus**: CI/CD Infrastructure + Documentation System
+**Completed**: 2026-02-02
 
 ### Deliverables
 
@@ -143,6 +145,13 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 - [x] Documentation validation
 - [x] Dependabot configuration
 - [x] Release Please setup
+- [x] **Phase 5: Documentation Infrastructure**
+  - [x] YAML data structure (159 files)
+  - [x] Doc generation pipeline (batch_regenerate.py)
+  - [x] UTF-8 encoding fixes
+  - [x] Windows compatibility fixes
+  - [x] CI pipeline validation
+  - [x] Yamllint configuration
 
 ### Detailed TODO
 

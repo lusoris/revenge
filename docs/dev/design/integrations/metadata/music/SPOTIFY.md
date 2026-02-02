@@ -20,6 +20,8 @@
 
 # Spotify
 
+<!-- DESIGN: integrations/metadata/music, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -199,7 +200,7 @@ metadata:
 - [MUSIC_MODULE](../../../features/music/MUSIC_MODULE.md)
 
 ### External Sources
-- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [Spotify Web API](../../../../sources/apis/spotify.md) - Auto-resolved from spotify
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Spotify Web API](../../sources/apis/spotify.md) - Auto-resolved from spotify
 

@@ -1,8 +1,6 @@
-# Adult Wiki Integration
+# Integrations\Wiki\Adult
 
-← Back to [Design Docs](..)
-
-> Adult performer information sources
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,17 +10,13 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Babepedia](BABEPEDIA.md) | Integration with Babepedia | 🟡 Planned |
-| [Boobpedia](BOOBPEDIA.md) | Integration with Boobpedia | 🟡 Planned |
-| [IAFD](IAFD.md) | Integration with IAFD | 🟡 Planned |
+| [Babepedia](BABEPEDIA.md) | Integration with Babepedia | ✅ Designed |
+| [Boobpedia](BOOBPEDIA.md) | Integration with Boobpedia | ✅ Designed |
+| [IAFD](IAFD.md) | Integration with IAFD | ✅ Designed |
 
 ---
 
 **Sources**: [External Sources Index](../../../../sources/SOURCES.md)
-
-## Related
-
-- [Adult Content Module](../../../features/adult/)
 
 ---
 

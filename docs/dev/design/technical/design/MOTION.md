@@ -8,6 +8,8 @@
 
 # Motion & Animation
 
+<!-- DESIGN: technical/design, README, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -40,8 +42,6 @@ Motion system features:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

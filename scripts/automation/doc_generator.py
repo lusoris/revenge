@@ -16,14 +16,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 # Add repo root to Python path for imports
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
 import yaml  # noqa: E402
 from jinja2 import Environment, FileSystemLoader, StrictUndefined  # noqa: E402
-
 
 # Import TOCGenerator - handle both script and module contexts
 try:
@@ -70,7 +68,7 @@ class DocGenerator:
             print(f"⚠️  Warning: {shared_path} not found, using empty shared data")
             return {}
 
-        with open(shared_path) as f:
+        with open(shared_path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
             print(f"✓ Loaded shared data from {shared_path}")
             return data
@@ -82,7 +80,7 @@ class DocGenerator:
             print(f"⚠️  Warning: {sources_path} not found, using empty sources mapping")
             return {}
 
-        with open(sources_path) as f:
+        with open(sources_path, encoding="utf-8") as f:
             sources_config = yaml.safe_load(f)
 
         # Build mapping: URL -> relative path in docs/dev/sources/
@@ -135,7 +133,7 @@ class DocGenerator:
         print(f"\n📄 Generating: {data_file.stem}")
 
         # Load doc-specific data
-        with open(data_file) as f:
+        with open(data_file, encoding="utf-8") as f:
             doc_data = yaml.safe_load(f)
 
         # Merge shared data with doc-specific data
@@ -234,10 +232,12 @@ class DocGenerator:
         # Atomic write: write to temp, then rename
         temp_path = output_path.with_suffix(".tmp")
         try:
-            with open(temp_path, "w") as f:
+            with open(temp_path, "w", encoding="utf-8") as f:
                 f.write(content)
 
-            # Rename to final path (atomic on POSIX systems)
+            # Rename to final path (atomic on POSIX, requires unlink on Windows)
+            if output_path.exists():
+                output_path.unlink()
             temp_path.rename(output_path)
 
         except Exception as e:

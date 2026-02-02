@@ -39,8 +39,8 @@ SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (
 ### Learn More
 
 Official documentation and guides:
-- [Go context](../../../../sources/go/stdlib/context.md)
-- [Last.fm API](../../../../sources/apis/lastfm.md)
+- [Go context](../../sources/go/stdlib/context.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
 
 
 

@@ -39,12 +39,12 @@ PRIMARY metadata source for comics libraries. Comprehensive database covering Ma
 ### Learn More
 
 Official documentation and guides:
-- [ComicVine API](../../../../sources/apis/comicvine.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
+- [ComicVine API](../../sources/apis/comicvine.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
 
 
 

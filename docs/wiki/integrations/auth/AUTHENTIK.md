@@ -39,9 +39,9 @@ Connect Revenge to your Authentik identity provider for centralized user managem
 ### Learn More
 
 Official documentation and guides:
-- [Authelia Documentation](../../../sources/security/authelia.md)
-- [Authentik Documentation](../../../sources/security/authentik.md)
-- [Keycloak Documentation](../../../sources/security/keycloak.md)
+- [Authelia Documentation](../../sources/security/authelia.md)
+- [Authentik Documentation](../../sources/security/authentik.md)
+- [Keycloak Documentation](../../sources/security/keycloak.md)
 
 
 

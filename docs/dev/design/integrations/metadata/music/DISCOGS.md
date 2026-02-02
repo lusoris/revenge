@@ -21,6 +21,8 @@
 
 # Discogs
 
+<!-- DESIGN: integrations/metadata/music, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -49,7 +51,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -180,6 +181,6 @@ metadata:
 - [MUSIC_MODULE](../../../features/music/MUSIC_MODULE.md)
 
 ### External Sources
-- [Discogs API](../../../../sources/apis/discogs.md) - Auto-resolved from discogs
-- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Discogs API](../../sources/apis/discogs.md) - Auto-resolved from discogs
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 

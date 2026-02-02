@@ -18,6 +18,8 @@
 
 # Marvel API
 
+<!-- DESIGN: integrations/metadata/comics, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -202,7 +203,7 @@ metadata:
 
 ### External Sources
 - [Marvel Developer Portal](https://developer.marvel.com/docs) - Official Marvel API documentation
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md) - Auto-resolved from pgx
-- [golang.org/x/time](../../../../sources/go/x/time.md) - Rate limiting
-- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [golang.org/x/time](../../sources/go/x/time.md) - Rate limiting
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
 

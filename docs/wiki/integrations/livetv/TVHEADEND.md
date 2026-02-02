@@ -39,8 +39,8 @@ TVHeadend integration brings live TV and DVR to Revenge. Supports DVB, IPTV, and
 ### Learn More
 
 Official documentation and guides:
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
 
 
 

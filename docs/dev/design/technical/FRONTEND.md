@@ -8,6 +8,8 @@
 
 # Frontend Architecture
 
+<!-- DESIGN: technical, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -41,8 +43,6 @@ Modern reactive frontend for Revenge:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

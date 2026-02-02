@@ -39,12 +39,12 @@ ThePosterDB offers designer-quality posters and artwork for your library. Commun
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [ThePosterDB API](../../../../sources/apis/theposterdb.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [ThePosterDB API](../../sources/apis/theposterdb.md)
 
 
 

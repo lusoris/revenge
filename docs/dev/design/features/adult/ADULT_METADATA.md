@@ -72,6 +72,8 @@ design_refs:
 
 # Revenge - Adult Content Metadata System
 
+<!-- DESIGN: features/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -98,7 +100,6 @@ design_refs:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -144,9 +145,6 @@ internal/content/revenge___adult_content_metadata_system/
 <!-- Dependency list -->
 
 
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -176,11 +174,6 @@ internal/content/revenge___adult_content_metadata_system/
 ### Test Coverage
 
 Target: **80% minimum**
-
-
-
-
-
 
 
 ## Related Documentation

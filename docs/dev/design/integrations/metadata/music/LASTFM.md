@@ -20,6 +20,8 @@
 
 # Last.fm
 
+<!-- DESIGN: integrations/metadata/music, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -192,6 +193,6 @@ metadata:
 - [SCROBBLING (Last.fm scrobbling)](../../../features/shared/SCROBBLING.md)
 
 ### External Sources
-- [Go context](../../../../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Go context](../../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 

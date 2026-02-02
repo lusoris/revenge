@@ -39,14 +39,14 @@ SUPPLEMENTARY metadata source for movies/TV shows. Used as: (1) **Fallback** whe
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [golang.org/x/time](../../../../sources/go/x/time.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [Typesense API](../../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

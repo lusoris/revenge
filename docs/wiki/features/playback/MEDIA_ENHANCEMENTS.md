@@ -47,16 +47,16 @@ Enhanced playback features that make watching more enjoyable. Includes trailer p
 ### Learn More
 
 Official documentation and guides:
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
-- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
-- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
 
 
 

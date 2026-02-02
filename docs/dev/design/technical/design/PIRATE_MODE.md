@@ -8,6 +8,8 @@
 
 # Pirate Mode Easter Eggs
 
+<!-- DESIGN: technical/design, README, 04_PLAYER_ARCHITECTURE, 05_PLUGIN_ARCHITECTURE_DECISION -->
+
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
@@ -39,8 +41,6 @@ Pirate mode features:
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
-
 
 
 ## Related Documentation

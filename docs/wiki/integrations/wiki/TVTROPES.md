@@ -41,8 +41,8 @@ ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, T
 Official documentation and guides:
 - [TVTropes](https://tvtropes.org)
 - [PuerkitoBio/goquery](https://pkg.go.dev/github.com/PuerkitoBio/goquery)
-- [golang.org/x/time](../../../sources/go/x/time.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

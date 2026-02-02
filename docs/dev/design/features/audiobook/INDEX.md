@@ -1,6 +1,6 @@
-# Features - Audiobook
+# Features\Audiobook
 
-← Back to [Design Docs](..)
+← Back to [Design Docs](../)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -10,7 +10,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Audiobook Module](AUDIOBOOK_MODULE.md) | Content module for Books, Authors, Series | 🟡 Planned |
+| [Audiobook Module](AUDIOBOOK_MODULE.md) | Content module for Books, Authors, Series | ✅ Designed |
 
 ---
 

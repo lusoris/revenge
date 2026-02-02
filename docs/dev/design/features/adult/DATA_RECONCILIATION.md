@@ -22,6 +22,8 @@
 
 # Adult Data Reconciliation
 
+<!-- DESIGN: features/adult, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -48,7 +50,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -437,8 +438,8 @@ Response 200 OK:
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../../../sources/security/casbin.md) - Auto-resolved from casbin
-- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Casbin](../../sources/security/casbin.md) - Auto-resolved from casbin
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

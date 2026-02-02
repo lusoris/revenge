@@ -20,6 +20,8 @@
 
 # Blackbeard
 
+<!-- DESIGN: integrations/transcoding, README, test_output_claude, test_output_wiki -->
+
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
@@ -46,7 +48,6 @@
 | Integration Testing | 🔴 | - |
 
 **Overall**: ✅ Complete
-
 
 
 ---
@@ -246,8 +247,8 @@ transcoding:
 - [HTTP_CLIENT (for Blackbeard API)](../../services/HTTP_CLIENT.md)
 
 ### External Sources
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md) - Internal transcoding (go-astiav)
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [River Job Queue](../../../sources/tooling/river.md) - Job queue for transcoding tasks
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Internal transcoding (go-astiav)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [River Job Queue](../../sources/tooling/river.md) - Job queue for transcoding tasks
 

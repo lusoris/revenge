@@ -35,8 +35,8 @@ Data import integration for Goodreads library. CSV-based import (Goodreads API i
 ### Learn More
 
 Official documentation and guides:
-- [Google Books API](../../../../sources/apis/google-books.md)
-- [Open Library API](../../../../sources/apis/openlibrary.md)
+- [Google Books API](../../sources/apis/google-books.md)
+- [Open Library API](../../sources/apis/openlibrary.md)
 
 
 

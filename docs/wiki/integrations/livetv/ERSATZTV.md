@@ -39,11 +39,11 @@ ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 mov
 ### Learn More
 
 Official documentation and guides:
-- [ErsatzTV Documentation](../../../sources/livetv/ersatztv-guide.md)
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [XMLTV Format](../../../sources/protocols/xmltv.md)
+- [ErsatzTV Documentation](../../sources/livetv/ersatztv-guide.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [XMLTV Format](../../sources/protocols/xmltv.md)
 
 
 

@@ -35,20 +35,20 @@ SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback**
 ### Learn More
 
 Official documentation and guides:
-- [FFmpeg Documentation](../../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../../sources/media/ffmpeg-formats.md)
-- [Khan/genqlient](../../../../sources/tooling/genqlient.md)
-- [genqlient GitHub README](../../../../sources/tooling/genqlient-guide.md)
-- [go-astiav (FFmpeg bindings)](../../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../../sources/media/go-astiav-guide.md)
-- [pgx PostgreSQL Driver](../../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../../sources/tooling/river.md)
-- [StashDB GraphQL API](../../../../sources/apis/stashdb-schema.graphql)
-- [Typesense API](../../../../sources/infrastructure/typesense.md)
-- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [Khan/genqlient](../../sources/tooling/genqlient.md)
+- [genqlient GitHub README](../../sources/tooling/genqlient-guide.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
 
 
 

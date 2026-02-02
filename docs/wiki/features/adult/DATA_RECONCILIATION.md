@@ -47,10 +47,10 @@ When multiple metadata sources provide conflicting information, the reconciliati
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Casbin](../../sources/security/casbin.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

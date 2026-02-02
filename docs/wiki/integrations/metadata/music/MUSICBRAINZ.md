@@ -39,9 +39,9 @@ SUPPLEMENTARY metadata source for music. Used as: (1) **Fallback** when Lidarr n
 ### Learn More
 
 Official documentation and guides:
-- [go-blurhash](../../../../sources/media/go-blurhash.md)
-- [Last.fm API](../../../../sources/apis/lastfm.md)
-- [MusicBrainz API](../../../../sources/apis/musicbrainz.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [MusicBrainz API](../../sources/apis/musicbrainz.md)
 
 
 

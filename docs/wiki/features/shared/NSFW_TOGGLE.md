@@ -47,21 +47,21 @@ Control adult content visibility per user. When disabled, adult libraries are co
 ### Learn More
 
 Official documentation and guides:
-- [Casbin](../../../sources/security/casbin.md)
-- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
-- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
-- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [rueidis](../../../sources/tooling/rueidis.md)
-- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
-- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
-- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
+- [Casbin](../../sources/security/casbin.md)
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
 
 
 

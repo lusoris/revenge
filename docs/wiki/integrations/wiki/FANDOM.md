@@ -40,9 +40,9 @@ ENRICHMENT metadata source providing links to fan-curated wikis. Deep links to c
 
 Official documentation and guides:
 - [FANDOM API](https://community.fandom.com/wiki/Community_Central:API)
-- [MediaWiki API](../../../sources/wiki/mediawiki.md)
-- [golang.org/x/time](../../../sources/go/x/time.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [MediaWiki API](../../sources/wiki/mediawiki.md)
+- [golang.org/x/time](../../sources/go/x/time.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

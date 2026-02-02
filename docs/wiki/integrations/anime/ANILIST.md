@@ -39,10 +39,10 @@ Connect your AniList account to sync anime watching progress. Metadata for anime
 ### Learn More
 
 Official documentation and guides:
-- [AniList GraphQL API](../../../sources/apis/anilist.md)
-- [AniList GraphQL Schema](../../../sources/apis/anilist-schema.graphql)
-- [go-blurhash](../../../sources/media/go-blurhash.md)
-- [River Job Queue](../../../sources/tooling/river.md)
+- [AniList GraphQL API](../../sources/apis/anilist.md)
+- [AniList GraphQL Schema](../../sources/apis/anilist-schema.graphql)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [River Job Queue](../../sources/tooling/river.md)
 
 
 

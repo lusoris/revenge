@@ -47,20 +47,20 @@ Stream live TV channels through Revenge with support for multiple backends (TVHe
 ### Learn More
 
 Official documentation and guides:
-- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
-- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
-- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
-- [Uber fx](../../../sources/tooling/fx.md)
-- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
-- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
-- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
-- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
-- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
-- [River Job Queue](../../../sources/tooling/river.md)
-- [sqlc](../../../sources/database/sqlc.md)
-- [sqlc Configuration](../../../sources/database/sqlc-config.md)
-- [XMLTV Format](../../../sources/protocols/xmltv.md)
-- [XMLTV Wiki](../../../sources/protocols/xmltv-format.md)
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [XMLTV Format](../../sources/protocols/xmltv.md)
+- [XMLTV Wiki](../../sources/protocols/xmltv-format.md)
 
 
 
