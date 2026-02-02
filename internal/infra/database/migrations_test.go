@@ -75,10 +75,15 @@ func TestMigrationsUpDown(t *testing.T) {
 		require.NoError(t, err)
 		assert.True(t, tableExists, "sessions table should exist")
 
-		// Check server_settings table (our new migration)
+		// Check server_settings table
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'server_settings')").Scan(&tableExists)
 		require.NoError(t, err)
 		assert.True(t, tableExists, "server_settings table should exist")
+
+		// Check user_settings table (our new migration)
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_settings')").Scan(&tableExists)
+		require.NoError(t, err)
+		assert.True(t, tableExists, "user_settings table should exist")
 
 		// Verify default settings were inserted
 		var count int
@@ -98,11 +103,16 @@ func TestMigrationsUpDown(t *testing.T) {
 		err := m.Steps(-1)
 		require.NoError(t, err, "failed to migrate down one step")
 
-		// Verify server_settings table is gone
+		// Verify user_settings table is gone (our new migration)
 		var tableExists bool
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_settings')").Scan(&tableExists)
+		require.NoError(t, err)
+		assert.False(t, tableExists, "user_settings table should not exist after down migration")
+
+		// server_settings should still exist (previous migration)
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'server_settings')").Scan(&tableExists)
 		require.NoError(t, err)
-		assert.False(t, tableExists, "server_settings table should not exist after down migration")
+		assert.True(t, tableExists, "server_settings table should still exist")
 
 		// Other tables should still exist
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&tableExists)
@@ -186,6 +196,80 @@ func TestServerSettingsTableStructure(t *testing.T) {
 		"created_at":     {"timestamp with time zone", "NO"},
 		"updated_at":     {"timestamp with time zone", "NO"},
 		"updated_by":     {"uuid", "YES"},
+	}
+
+	foundColumns := make(map[string]bool)
+	for rows.Next() {
+		var colName, dataType, nullable string
+		err := rows.Scan(&colName, &dataType, &nullable)
+		require.NoError(t, err)
+
+		expected, exists := expectedColumns[colName]
+		assert.True(t, exists, "unexpected column: %s", colName)
+		if exists {
+			assert.Equal(t, expected.dataType, dataType, "column %s has wrong type", colName)
+			assert.Equal(t, expected.isNullable, nullable, "column %s has wrong nullable", colName)
+		}
+		foundColumns[colName] = true
+	}
+
+	// Verify all expected columns were found
+	for colName := range expectedColumns {
+		assert.True(t, foundColumns[colName], "missing column: %s", colName)
+	}
+}
+
+// TestUserSettingsTableStructure verifies the user_settings table structure.
+func TestUserSettingsTableStructure(t *testing.T) {
+	// Start embedded PostgreSQL
+	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
+		Port(15434).
+		Database("test_user_settings_structure"))
+
+	require.NoError(t, embeddedPG.Start())
+	defer func() {
+		_ = embeddedPG.Stop()
+	}()
+
+	// Connect
+	db, err := sql.Open("postgres", "host=localhost port=15434 user=postgres password=postgres dbname=test_user_settings_structure sslmode=disable")
+	require.NoError(t, err)
+	defer func() { _ = db.Close() }()
+
+	require.NoError(t, db.Ping())
+
+	// Run migrations
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	require.NoError(t, err)
+
+	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	require.NoError(t, err)
+
+	err = m.Up()
+	require.NoError(t, err)
+
+	// Test column existence and types
+	rows, err := db.Query(`
+		SELECT column_name, data_type, is_nullable
+		FROM information_schema.columns
+		WHERE table_schema = 'shared' AND table_name = 'user_settings'
+		ORDER BY ordinal_position
+	`)
+	require.NoError(t, err)
+	defer func() { _ = rows.Close() }()
+
+	expectedColumns := map[string]struct {
+		dataType   string
+		isNullable string
+	}{
+		"user_id":     {"uuid", "NO"},
+		"key":         {"character varying", "NO"},
+		"value":       {"jsonb", "NO"},
+		"description": {"text", "YES"},
+		"category":    {"character varying", "YES"},
+		"data_type":   {"character varying", "NO"},
+		"created_at":  {"timestamp with time zone", "NO"},
+		"updated_at":  {"timestamp with time zone", "NO"},
 	}
 
 	foundColumns := make(map[string]bool)

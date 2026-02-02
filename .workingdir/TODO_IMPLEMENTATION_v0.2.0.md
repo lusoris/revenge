@@ -8,10 +8,10 @@
 
 Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksichtigt):
 
-1. **PostgreSQL Pool Enhancement** - Foundation for all services
-2. **Dragonfly/Redis Integration** - Caching infrastructure
-3. **River Job Queue** - Background jobs
-4. **Settings Service** - Needed for other services
+1. ✅ **PostgreSQL Pool Enhancement** - Foundation for all services
+2. ✅ **Dragonfly/Redis Integration** - Caching infrastructure
+3. ✅ **River Job Queue** - Background jobs
+4. 🔵 **Settings Service** - Needed for other services (Step 4.1 ✅)
 5. **User Service** - Core entity
 6. **Auth Service** - Depends on User
 7. **Session Service** - Depends on Auth
@@ -129,28 +129,28 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 - [x] **Verify**: Queues registered
 
 ### 3.3 Base Job Types
-- [ ] Create `internal/infra/jobs/cleanup_job.go`
-- [ ] Implement periodic cleanup job
-- [ ] **Test**: Job execution test
-- [ ] **Lint**: Check
-- [ ] **Coverage**: 80%+
-- [ ] **Verify**: Job runs and completes
+- [x] Create `internal/infra/jobs/cleanup_job.go`
+- [x] Implement periodic cleanup job
+- [x] **Test**: Job execution test
+- [x] **Lint**: Check
+- [x] **Coverage**: 80%+
+- [x] **Verify**: Job runs and completes
 
-**Checkpoint**: Job queue ready
-**Tests**: `go test ./internal/infra/jobs/... -v`
-**Lint**: `golangci-lint run ./internal/infra/jobs/...`
-**Coverage**: `go test ./internal/infra/jobs/... -cover`
+**Checkpoint**: Job queue ready ✅
+**Tests**: `go test ./internal/infra/jobs/... -v` ✅
+**Lint**: `golangci-lint run ./internal/infra/jobs/...` ✅
+**Coverage**: `go test ./internal/infra/jobs/... -cover` ✅ 65.6%
 
 ---
 
 ## Step 4: Settings Service
 
 ### 4.1 Database Schema
-- [ ] Migration: `000005_create_user_settings_table.up.sql`
-- [ ] Migration: `000005_create_user_settings_table.down.sql`
-- [ ] Run migrations
-- [ ] **Test**: Migration up/down
-- [ ] **Verify**: Tables exist
+- [x] Migration: `000005_create_user_settings_table.up.sql`
+- [x] Migration: `000005_create_user_settings_table.down.sql`
+- [x] Run migrations
+- [x] **Test**: Migration up/down
+- [x] **Verify**: Tables exist
 
 ### 4.2 Repository Layer
 - [ ] Create `internal/service/settings/repository.go` (interface)
