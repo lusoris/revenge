@@ -23,6 +23,7 @@ from pathlib import Path
 
 import yaml
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
