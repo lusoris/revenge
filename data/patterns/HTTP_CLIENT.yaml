@@ -18,6 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: |
   > Reusable HTTP client factory with optional proxy/VPN routing for external API calls
+wiki_tagline: HTTP client pattern for proxy and VPN support
+wiki_overview: Provides HTTP client factory with support for HTTP/HTTPS proxies, SOCKS5 (Tor),
+  and VPN interface binding for external API calls requiring privacy or geo-access.
+design_refs: []
 
   Provides HTTP clients with configurable proxy/VPN routing:
   - **HTTP/HTTPS Proxy**: Standard proxy with authentication
