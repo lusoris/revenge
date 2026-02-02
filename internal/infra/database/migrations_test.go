@@ -95,6 +95,21 @@ func TestMigrationsUpDown(t *testing.T) {
 		require.NoError(t, err)
 		assert.True(t, tableExists, "user_avatars table should exist")
 
+		// Check auth_tokens table
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'auth_tokens')").Scan(&tableExists)
+		require.NoError(t, err)
+		assert.True(t, tableExists, "auth_tokens table should exist")
+
+		// Check password_reset_tokens table
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'password_reset_tokens')").Scan(&tableExists)
+		require.NoError(t, err)
+		assert.True(t, tableExists, "password_reset_tokens table should exist")
+
+		// Check email_verification_tokens table
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'email_verification_tokens')").Scan(&tableExists)
+		require.NoError(t, err)
+		assert.True(t, tableExists, "email_verification_tokens table should exist")
+
 		// Verify default settings were inserted
 		var count int
 		err = db.QueryRow("SELECT COUNT(*) FROM shared.server_settings").Scan(&count)

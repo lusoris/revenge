@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS shared.user_avatars (
 );
 
 -- Partial unique index to ensure only one current avatar per user
-CREATE UNIQUE INDEX idx_user_avatars_unique_current 
-    ON shared.user_avatars(user_id) 
+CREATE UNIQUE INDEX idx_user_avatars_unique_current
+    ON shared.user_avatars(user_id)
     WHERE is_current = TRUE AND deleted_at IS NULL;
 
 -- Indexes

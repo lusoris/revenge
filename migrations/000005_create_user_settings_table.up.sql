@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS shared.user_settings (
     -- Composite primary key
     user_id UUID NOT NULL REFERENCES shared.users(id) ON DELETE CASCADE,
     key VARCHAR(255) NOT NULL,
-    
+
     -- Setting value (JSON for flexibility)
     value JSONB NOT NULL,
 
