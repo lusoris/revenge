@@ -59,7 +59,7 @@
 - Configurable via settings
 
 **Decision**: TBD
-**Notes**: Consider using zxcvbn for password strength
+**Notes**: Consider using zxcvbn for password strength. AUTH.md specifies minimum 8 characters (currently implemented).
 
 ---
 
@@ -98,6 +98,69 @@
 
 **Options**:
 - Coarse: movie:read, movie:write, movie:delete
+
+---
+
+### Implementation Details
+
+#### Q6: Email Service Provider
+**Question**: Which email delivery mechanism should we use?
+
+**Options**:
+- SMTP directly (Postfix, SendGrid SMTP, etc.)
+- Transactional email API (SendGrid API, Mailgun, AWS SES)
+- Queue-based async (River job + external service)
+- Hybrid (queue for reliability + API for delivery)
+
+**Decision**: TBD
+**Notes**: River job queue already in place, could use for async email delivery
+**Related**: DEBT-002 (Email Service Integration)
+
+---
+
+#### Q7: Device Fingerprinting Method
+**Question**: How should we generate device fingerprints for session tracking?
+
+**Options**:
+- Browser fingerprinting (FingerprintJS, canvas, WebGL)
+- TLS fingerprint (JA3, JA3S)
+- Simple hash (IP + User-Agent + Accept headers)
+- Client-provided device ID
+- No fingerprinting (rely on refresh tokens only)
+
+**Decision**: TBD
+**Notes**: Privacy implications - GDPR compliance needed
+**Related**: DEBT-001 (HTTP Request Metadata)
+
+---
+
+#### Q8: IP Address Extraction Strategy
+**Question**: Which headers should we trust for client IP extraction?
+
+**Options**:
+- Trust `X-Forwarded-For` (if behind proxy/CDN)
+- Trust `X-Real-IP` (Nginx default)
+- Use `RemoteAddr` only (direct connection)
+- Configurable header priority list
+
+**Decision**: TBD
+**Notes**: Security risk if wrong header trusted (IP spoofing), depends on deployment (Docker, K8s, CDN)
+**Related**: DEBT-001 (HTTP Request Metadata)
+
+---
+
+#### Q9: Email Template Engine
+**Question**: What templating system for emails?
+
+**Options**:
+- Go templates (html/template, text/template)
+- External service (SendGrid templates, Mailgun templates)
+- Prerendered HTML strings
+- Markdown → HTML converter
+
+**Decision**: TBD
+**Notes**: Need both HTML and plain text versions for email clients
+**Related**: DEBT-002 (Email Service Integration)
 - Fine: movie:list, movie:get, movie:create, movie:update, movie:delete
 - Very fine: movie:read:own, movie:read:library, movie:read:all
 

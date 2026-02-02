@@ -85,31 +85,24 @@ type SharedServerSetting struct {
 	UpdatedBy     pgtype.UUID    `json:"updatedBy"`
 }
 
-// User sessions and refresh tokens
+// User sessions with JWT token management
 type SharedSession struct {
-	// Unique session identifier
-	ID uuid.UUID `json:"id"`
-	// User who owns this session
+	ID     uuid.UUID `json:"id"`
 	UserID uuid.UUID `json:"userId"`
-	// Refresh token (secure random string)
-	RefreshToken string `json:"refreshToken"`
-	// Optional hash of current access token
-	AccessTokenHash *string `json:"accessTokenHash"`
-	// IP address of the session
-	IpAddress netip.Addr `json:"ipAddress"`
-	// User agent string
-	UserAgent *string `json:"userAgent"`
-	// Friendly device name (e.g., "iPhone 12")
-	DeviceName *string `json:"deviceName"`
-	// When the refresh token expires
-	ExpiresAt time.Time `json:"expiresAt"`
-	// Whether the session is active
-	IsActive bool `json:"isActive"`
-	// When the session was revoked (if applicable)
-	RevokedAt pgtype.Timestamptz `json:"revokedAt"`
-	CreatedAt time.Time          `json:"createdAt"`
-	// When the session was last used
-	LastUsedAt time.Time `json:"lastUsedAt"`
+	// SHA256 hash of JWT access token for validation
+	TokenHash string `json:"tokenHash"`
+	// SHA256 hash of refresh token for token rotation
+	RefreshTokenHash *string    `json:"refreshTokenHash"`
+	IpAddress        netip.Addr `json:"ipAddress"`
+	UserAgent        *string    `json:"userAgent"`
+	DeviceName       *string    `json:"deviceName"`
+	// OAuth2-style scopes (e.g., legacy:read for QAR access)
+	Scopes         []string           `json:"scopes"`
+	ExpiresAt      time.Time          `json:"expiresAt"`
+	LastActivityAt time.Time          `json:"lastActivityAt"`
+	CreatedAt      time.Time          `json:"createdAt"`
+	RevokedAt      pgtype.Timestamptz `json:"revokedAt"`
+	RevokeReason   *string            `json:"revokeReason"`
 }
 
 // User accounts with authentication and profile information

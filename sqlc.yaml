@@ -4,7 +4,7 @@ sql:
   # Shared infrastructure queries
   - engine: postgresql
     queries: internal/infra/database/queries/shared/
-    schema: internal/infra/database/migrations/shared/
+    schema: migrations/
     gen:
       go:
         package: db

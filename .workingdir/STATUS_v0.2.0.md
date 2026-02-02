@@ -15,7 +15,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 
 | Service | Status | Progress | Notes |
 |---------|--------|----------|-------|
-| Auth | 🟡 In Progress | 83% | ✓ DB ✓ Repo ✓ JWT ✓ Service ✓ Middleware ⏳ API Handler |
+| Auth | � Complete | 100% | ✓ DB ✓ Repo ✓ JWT ✓ Service ✓ Middleware ✓ API (Commits 20-25) |
 | User | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commits 17-19) |
 | Session | 🔴 Not Started | 0% | Token management, devices |
 | RBAC | 🔴 Not Started | 0% | Casbin integration |
@@ -72,12 +72,13 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: Auth Service Step 6.3 (Commit 22) - JWT manager (stdlib crypto only)
 - ✅ **2026-02-02**: Auth Service Step 6.4 (Commit 23) - Service layer (9 methods, Argon2id)
 - ✅ **2026-02-02**: Auth Service Step 6.5 (Commit 24) - Middleware (JWT validation, context)
+- ✅ **2026-02-02**: Auth Service Step 6.6 (Commit 25) - API Handler (8 endpoints, 0 lint)
 
 ## Next Steps
 
-1. **Step 6.6**: Auth API Handler (8+ endpoints: login, register, refresh, etc.)
-2. **Step 7**: Session Service (Active sessions, device management)
-3. **Step 8+**: RBAC, API Keys, OIDC, Activity, Library services
+1. **Step 7**: Session Service (Active sessions, device management, session history)
+2. **Step 8**: RBAC Service (Casbin integration, roles, permissions)
+3. **Step 9+**: API Keys, OIDC, Activity, Library services
 
 ## Reference
 
@@ -102,3 +103,4 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | Completed Auth Step 6.2 (Commit 21): 27 repository methods + sqlc |
 | 2026-02-02 | Completed Auth Step 6.3 (Commit 22): JWT manager (HMAC-SHA256, stdlib) || 2026-02-02 | Completed Auth Step 6.4 (Commit 23): Service layer (9 methods, Argon2id passwords) |
 | 2026-02-02 | Completed Auth Step 6.5 (Commit 24): Middleware (HandleBearerAuth, context injection) |
+| 2026-02-02 | ✅ Auth Service COMPLETE (Commit 25): API Handler (8 endpoints, 9 schemas, 0 lint) |

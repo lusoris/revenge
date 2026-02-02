@@ -6,12 +6,14 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type Querier interface {
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count users matching filters
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
 	CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error)
@@ -23,6 +25,9 @@ type Querier interface {
 	CreatePasswordResetToken(ctx context.Context, arg CreatePasswordResetTokenParams) (SharedPasswordResetToken, error)
 	// Create a new server setting
 	CreateServerSetting(ctx context.Context, arg CreateServerSettingParams) (SharedServerSetting, error)
+	// Session Management Queries
+	// Persistent session tracking with device information
+	CreateSession(ctx context.Context, arg CreateSessionParams) (SharedSession, error)
 	// Create a new user
 	CreateUser(ctx context.Context, arg CreateUserParams) (SharedUser, error)
 	// Create a new user setting
@@ -34,7 +39,9 @@ type Querier interface {
 	DeleteExpiredAuthTokens(ctx context.Context) error
 	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
 	DeleteExpiredPasswordResetTokens(ctx context.Context) error
+	DeleteExpiredSessions(ctx context.Context) error
 	DeleteRevokedAuthTokens(ctx context.Context) error
+	DeleteRevokedSessions(ctx context.Context) error
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
 	DeleteUsedPasswordResetTokens(ctx context.Context) error
@@ -56,11 +63,16 @@ type Querier interface {
 	// Get the current avatar for a user
 	GetCurrentAvatar(ctx context.Context, userID uuid.UUID) (SharedUserAvatar, error)
 	GetEmailVerificationToken(ctx context.Context, tokenHash string) (SharedEmailVerificationToken, error)
+	// Sessions that haven't been active for N hours
+	GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]SharedSession, error)
 	// Get the latest avatar version number for a user
 	GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) (int32, error)
 	GetPasswordResetToken(ctx context.Context, tokenHash string) (SharedPasswordResetToken, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
+	GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSession, error)
+	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash *string) (SharedSession, error)
+	GetSessionByTokenHash(ctx context.Context, tokenHash string) (SharedSession, error)
 	// Get a user by email
 	GetUserByEmail(ctx context.Context, email string) (SharedUser, error)
 	// Get a user by their UUID
@@ -84,6 +96,8 @@ type Querier interface {
 	InvalidateEmailVerificationTokensByEmail(ctx context.Context, email string) error
 	InvalidateUserEmailVerificationTokens(ctx context.Context, userID uuid.UUID) error
 	InvalidateUserPasswordResetTokens(ctx context.Context, userID uuid.UUID) error
+	// Includes expired but not revoked sessions (for user to see full history)
+	ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
 	// Get public settings (exposed in API)
 	ListPublicServerSettings(ctx context.Context) ([]SharedServerSetting, error)
 	// Get all server settings
@@ -92,6 +106,7 @@ type Querier interface {
 	ListServerSettingsByCategory(ctx context.Context, category *string) ([]SharedServerSetting, error)
 	// List all avatars for a user (for history)
 	ListUserAvatars(ctx context.Context, arg ListUserAvatarsParams) ([]SharedUserAvatar, error)
+	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
 	// Get all settings for a user
 	ListUserSettings(ctx context.Context, userID uuid.UUID) ([]SharedUserSetting, error)
 	// Get user settings by category
@@ -102,8 +117,13 @@ type Querier interface {
 	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
 	RevokeAllUserAuthTokens(ctx context.Context, userID uuid.UUID) error
 	RevokeAllUserAuthTokensExcept(ctx context.Context, arg RevokeAllUserAuthTokensExceptParams) error
+	RevokeAllUserSessions(ctx context.Context, arg RevokeAllUserSessionsParams) error
+	RevokeAllUserSessionsExcept(ctx context.Context, arg RevokeAllUserSessionsExceptParams) error
 	RevokeAuthToken(ctx context.Context, id uuid.UUID) error
 	RevokeAuthTokenByHash(ctx context.Context, tokenHash string) error
+	RevokeInactiveSessions(ctx context.Context, inactiveSince time.Time) error
+	RevokeSession(ctx context.Context, arg RevokeSessionParams) error
+	RevokeSessionByTokenHash(ctx context.Context, arg RevokeSessionByTokenHashParams) error
 	// Set an existing avatar as current
 	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
 	// Mark all user's avatars as not current (before setting a new current)
@@ -115,6 +135,8 @@ type Querier interface {
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	// Update a server setting value
 	UpdateServerSetting(ctx context.Context, arg UpdateServerSettingParams) (SharedServerSetting, error)
+	UpdateSessionActivity(ctx context.Context, id uuid.UUID) error
+	UpdateSessionActivityByTokenHash(ctx context.Context, tokenHash string) error
 	// Update user fields
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (SharedUser, error)
 	// Update a user setting value
