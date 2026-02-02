@@ -285,7 +285,12 @@ system_components: |
   - **Chaptarr**: Books & Audiobooks (aggregates OpenLibrary/Audnexus locally)
   - **Whisparr**: Adult Content (aggregates StashDB locally)
 
-  **See**: [RADARR](../integrations/servarr/RADARR.md), [SONARR](../integrations/servarr/SONARR.md), [LIDARR](../integrations/servarr/LIDARR.md), [CHAPTARR](../integrations/servarr/CHAPTARR.md), [WHISPARR](../integrations/servarr/WHISPARR.md)
+  **See**:
+  - [RADARR](../integrations/servarr/RADARR.md)
+  - [SONARR](../integrations/servarr/SONARR.md)
+  - [LIDARR](../integrations/servarr/LIDARR.md)
+  - [CHAPTARR](../integrations/servarr/CHAPTARR.md)
+  - [WHISPARR](../integrations/servarr/WHISPARR.md)
 
   **11. Proxy/VPN Support (Optional)**
   **OPTIONAL** routing for external metadata API calls (NOT for Arr services):
@@ -412,7 +417,7 @@ dependencies: |
   - `go.uber.org/fx` - Dependency injection
   - `github.com/jackc/pgx/v5` - PostgreSQL driver
   - `github.com/maypok86/otter` - L1 cache
-  - `github.com/valkey-io/valkey-go` - L2 cache (Dragonfly client)
+  - `github.com/redis/rueidis` - L2 cache (Dragonfly client)
   - `github.com/riverqueue/river` - Background jobs
 
   **API & Web**:

@@ -1,0 +1,123 @@
+# Content Inconsistency Fix - Status Tracker
+
+**Started**: 2026-02-02
+**Goal**: Fix critical content errors, build status sync, consolidate duplicates
+
+---
+
+## Progress Overview
+
+- [ ] **Phase 1**: Fix Critical Issues (valkey-go, versions)
+- [ ] **Phase 2**: Build Status Sync Script with Tests
+- [ ] **Phase 3**: Integrate into Pipeline & CI
+- [ ] **Phase 4**: Run Status Sync & Verify
+- [ ] **Phase 5**: Consolidate Duplicate Content
+
+---
+
+## Phase 1: Fix Critical Issues
+
+### Step 1.1: Fix valkey-go → rueidis
+- [x] Update line 415 in `data/architecture/01_ARCHITECTURE.yaml`
+- [x] Run `scripts/sync-versions.py` to verify no other issues (FOUND 60 drifts, FIXED)
+- [x] Run yamllint on the file (FIXED line-length warning; indentation tracked as BUG-005)
+- [x] Commit changes
+
+**Completed**: Phase 1, Step 1.1 ✅
+
+### Step 1.2: Enhance sync-versions.py
+- [ ] Add `--strict` mode that errors on violations
+- [ ] Test on current codebase
+- [ ] Fix any violations found
+- [ ] Add tests for the new mode
+- [ ] Run tests until passing
+- [ ] Commit changes
+
+---
+
+## Phase 2: Build Status Sync Script
+
+### Step 2.1: Create sync-sot-status.py
+- [ ] Create `scripts/doc-pipeline/04-sync-sot-status.py`
+- [ ] Implement backup creation
+- [ ] Implement SOT table parsing
+- [ ] Implement status-only updates (safe mode)
+- [ ] Add dry-run mode
+
+### Step 2.2: Write Tests
+- [ ] Create test file in `tests/unit/`
+- [ ] Test backup functionality
+- [ ] Test parsing of SOT tables
+- [ ] Test safe status updates
+- [ ] Test error handling
+- [ ] Run tests until all passing
+
+---
+
+## Phase 3: Pipeline Integration
+
+### Step 3.1: Add to doc-pipeline.sh
+- [ ] Update `scripts/doc-pipeline.sh`
+- [ ] Test locally
+
+### Step 3.2: Create GitHub Action
+- [ ] Add yamllint job to `doc-validation.yml` (fix existing flaw)
+- [ ] Add status sync job
+- [ ] Test in CI
+
+### Step 3.3: Enhance validate-sot.yml
+- [ ] Extend version validation to all packages (not just Go)
+- [ ] Add tests
+- [ ] Verify
+
+---
+
+## Phase 4: Run Status Sync
+
+### Step 4.1: Execute Sync
+- [ ] Run `04-sync-sot-status.py`
+- [ ] Review git diff
+- [ ] Verify ONLY status cells changed
+- [ ] Run all validation scripts
+
+### Step 4.2: Fix Any Issues
+- [ ] Document bugs found
+- [ ] Fix script
+- [ ] Add regression tests
+- [ ] Re-run until clean
+
+---
+
+## Phase 5: Consolidate Duplicates
+
+### Step 5.1: Metadata Priority Chain (~125 lines)
+- [ ] Keep canonical in `03_METADATA_SYSTEM.yaml`
+- [ ] Remove from 6 files, add cross-references
+- [ ] Validate all files
+- [ ] Check for broken links
+- [ ] Verify content integrity
+
+### Step 5.2: Arr Dual-Role Description (~300 lines)
+- [ ] Keep canonical in `03_METADATA_SYSTEM.yaml`
+- [ ] Remove from 6 files, add cross-references
+- [ ] Validate, verify
+
+### Step 5.3: Proxy/VPN Documentation (~425 lines)
+- [ ] Create `data/patterns/HTTP_CLIENT.yaml`
+- [ ] Move canonical content
+- [ ] Update 5 files with cross-references
+- [ ] Validate, verify
+
+### Step 5.4: Cache Architecture (~60 lines)
+- [ ] Keep canonical in `DRAGONFLY.yaml`
+- [ ] Update 4 files with cross-references
+- [ ] Validate, verify
+
+---
+
+## Current Status
+
+**Current Phase**: Phase 1 - Setup
+**Current Step**: Creating tracking files
+**Blockers**: None
+**Next Action**: Create other tracking files, then start Step 1.1

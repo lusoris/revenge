@@ -24,7 +24,7 @@ Stack overview:
 - **DI Framework**: fx v1.24.0 for dependency injection and lifecycle management
 - **API Layer**: ogen v1.18.0 for type-safe OpenAPI code generation
 - **Database**: PostgreSQL 18+ with pgx v5.8.0 driver, sqlc v1.30.0 code generation
-- **Caching**: L1 (otter v2.3.1 in-memory), L2 (Dragonfly v1.26.1 via rueidis v1.0.54)
+- **Caching**: L1 (otter v2.3.1 in-memory), L2 (Dragonfly v1.26.1 via rueidis v1.0.49)
 - **Search**: Typesense 27.1 for full-text search with typo tolerance
 - **Jobs**: River v0.20.1 for PostgreSQL-backed job queue
 - **Logging**: slog/tint v1.1.2 (dev), zap v1.27.1 (prod)

@@ -263,14 +263,14 @@ type FFmpegClient interface {
 require (
     // Core
     github.com/google/uuid v1.6.0
-    go.uber.org/fx v1.23.0
+    go.uber.org/fx v1.24.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.7.2
-    github.com/sqlc-dev/sqlc v1.28.0
+    github.com/jackc/pgx/v5 v5.7.5
+    github.com/sqlc-dev/sqlc v1.30.0
 
     // API
-    github.com/ogen-go/ogen v1.7.0
+    github.com/ogen-go/ogen v1.18.0
 
     // Caching
     github.com/maypok86/otter v1.2.4
@@ -283,11 +283,11 @@ require (
     github.com/acoustid/chromaprint v1.0.0  // Hypothetical Go bindings
 
     // Job queue
-    github.com/riverqueue/river v0.15.0
+    github.com/riverqueue/river v0.26.0
 
     // Testing
-    github.com/stretchr/testify v1.10.0
-    github.com/testcontainers/testcontainers-go v0.35.0
+    github.com/stretchr/testify v1.11.1
+    github.com/testcontainers/testcontainers-go v0.40.0
 )
 ```
 

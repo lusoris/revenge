@@ -252,14 +252,14 @@ type WebSocketManager interface {
 require (
     // Core
     github.com/google/uuid v1.6.0
-    go.uber.org/fx v1.23.0
+    go.uber.org/fx v1.24.0
 
     // Database
-    github.com/jackc/pgx/v5 v5.7.2
-    github.com/sqlc-dev/sqlc v1.28.0
+    github.com/jackc/pgx/v5 v5.7.5
+    github.com/sqlc-dev/sqlc v1.30.0
 
     // API
-    github.com/ogen-go/ogen v1.7.0
+    github.com/ogen-go/ogen v1.18.0
 
     // WebSocket
     github.com/gorilla/websocket v1.5.3
@@ -268,11 +268,11 @@ require (
     github.com/maypok86/otter v1.2.4
 
     // Password hashing
-    golang.org/x/crypto v0.31.0
+    golang.org/x/crypto v0.47.0
 
     // Testing
-    github.com/stretchr/testify v1.10.0
-    github.com/testcontainers/testcontainers-go v0.35.0
+    github.com/stretchr/testify v1.11.1
+    github.com/testcontainers/testcontainers-go v0.40.0
 )
 ```
 
