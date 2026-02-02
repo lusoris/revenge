@@ -28,6 +28,9 @@ type Config struct {
 	// Auth configuration
 	Auth AuthConfig `koanf:"auth"`
 
+	// RBAC configuration
+	RBAC RBACConfig `koanf:"rbac"`
+
 	// Legacy (QAR) module configuration
 	Legacy LegacyConfig `koanf:"legacy"`
 }
@@ -135,6 +138,15 @@ type AuthConfig struct {
 	RefreshExpiry time.Duration `koanf:"refresh_expiry"`
 }
 
+// RBACConfig holds RBAC configuration.
+type RBACConfig struct {
+	// ModelPath is the path to the Casbin model file.
+	ModelPath string `koanf:"model_path"`
+
+	// PolicyReloadInterval is the interval to reload policies from database.
+	PolicyReloadInterval time.Duration `koanf:"policy_reload_interval"`
+}
+
 // LegacyConfig holds QAR (adult content) module configuration.
 type LegacyConfig struct {
 	// Enabled indicates if the QAR module is enabled.
@@ -199,6 +211,10 @@ func Defaults() map[string]interface{} {
 		"auth.jwt_secret":     "",
 		"auth.jwt_expiry":     "24h",
 		"auth.refresh_expiry": "168h", // 7 days
+
+		// RBAC defaults
+		"rbac.model_path":             "config/casbin_model.conf",
+		"rbac.policy_reload_interval": "5m",
 
 		// Legacy defaults
 		"legacy.enabled":                  false,

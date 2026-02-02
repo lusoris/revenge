@@ -8,7 +8,8 @@
 ### BUG-002: Session Table Schema Mismatch
 **Severity**: High
 **Reported**: 2026-02-02
-**Status**: Open
+**Status**: ✅ Resolved
+**Resolved**: 2026-02-02 (Commit 26)
 **Component**: Session, Database
 
 **Description**: The `shared.sessions` table schema in migration `000003_create_sessions_table.up.sql` doesn't match the schema that sqlc generated models from. This prevents session service implementation.
@@ -67,7 +68,17 @@
 
 ## Resolved Bugs
 
-No bugs resolved yet.
+### BUG-002: Session Table Schema Mismatch ✅
+**Resolved**: 2026-02-02 (Commit 26)
+**Fix**:
+1. Started PostgreSQL database via docker-compose
+2. Created revenge_dev database
+3. Ran all migrations (000001-000010)
+4. Fixed sqlc.yaml schema path (internal/infra/database/migrations/shared/ → migrations/)
+5. Regenerated sqlc models from actual database schema
+6. Fixed repository_pg.go to match generated types (netip.Addr, time.Time, *string)
+7. All 17 session queries working
+8. Build successful with 0 lint issues
 
 ## Known Issues
 

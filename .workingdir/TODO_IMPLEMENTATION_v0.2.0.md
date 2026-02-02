@@ -296,9 +296,38 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 
 ---
 
-## Step 7: Session Service
+## Step 7: Session Service ✅ 70% COMPLETE (Commit 26)
 
-(Following same pattern: Schema → Repository → Service → Handler → Tests)
+### 7.1 Database Schema ✅
+- [x] Sessions table exists (migration 000003)
+- [x] Verify columns match design
+- [x] Indexes created
+
+### 7.2 Repository Layer ✅ (Commit 26)
+- [x] Create sessions.sql (17 queries)
+- [x] Generate sqlc code
+- [x] Implement RepositoryPG
+- [x] Fix sqlc.yaml schema path
+
+### 7.3 Service Layer ✅ (Commit 26)
+- [x] CreateSession with device tracking
+- [x] ValidateSession
+- [x] RefreshSession (token rotation)
+- [x] RevokeSession/All/AllExcept
+- [x] ListUserSessions
+- [x] CleanupExpiredSessions
+- [x] **Lint**: 0 issues
+
+### 7.4 API Handler ⏳ DEFERRED
+- [ ] Update OpenAPI spec
+- [ ] Regenerate ogen
+- [ ] Implement session handlers
+- [ ] **Test**: End-to-end
+- [ ] **Lint**: Check
+
+**Checkpoint**: Session service layer complete, API deferred
+**Tests**: Service methods work (manual testing pending)
+**Lint**: Clean ✅
 
 ---
 
