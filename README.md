@@ -147,19 +147,87 @@ User-facing wiki documentation is available in [docs/wiki/](docs/wiki/).
 
 ## Development
 
+### Building
+
 ```bash
-# Build
+# Build with experiments
 GOEXPERIMENT=greenteagc,jsonv2 go build -o bin/revenge ./cmd/revenge
 
-# Test
-go test ./...
+# Build all platforms
+make build-all
+```
 
-# Lint
-golangci-lint run
+### Testing
 
-# Generate (after schema/query changes)
-sqlc generate
-go generate ./api/...
+```bash
+# Run unit tests
+make test
+
+# Run unit tests with coverage
+make test-coverage
+
+# Run integration tests (requires Docker)
+make test-integration
+
+# Run specific test
+go test -v ./internal/api -run TestHealthEndpoints
+```
+
+#### Integration Tests
+
+Integration tests use [testcontainers-go](https://testcontainers.com/) to spin up real PostgreSQL instances in Docker containers. This ensures tests run against actual database behavior.
+
+**Requirements**:
+- Docker Desktop or Docker Engine
+- On Windows: Docker Desktop with WSL2 backend enabled
+
+**Test Structure**:
+- `tests/integration/health_test.go` - Health endpoint E2E tests
+- `tests/integration/server_test.go` - Server lifecycle tests
+- `tests/integration/database_test.go` - Database integration tests
+- `tests/integration/api_client_test.go` - ogen client tests
+
+**Running Integration Tests**:
+```bash
+# Run all integration tests
+make test-integration
+
+# Run with verbose output
+go test -v -tags=integration ./tests/integration/...
+
+# Run specific integration test
+go test -v -tags=integration ./tests/integration -run TestHealthLivenessEndpoint
+```
+
+**Troubleshooting**:
+- **Windows**: Ensure Docker Desktop uses WSL2 backend (Settings → General → "Use WSL 2 based engine")
+- **Linux**: Ensure Docker daemon is running and user is in `docker` group
+- **Mac**: Ensure Docker Desktop is running
+
+### Code Generation
+
+```bash
+# Generate all (ogen, sqlc, go generate)
+make generate
+
+# Generate only OpenAPI code
+make ogen
+
+# Generate only sqlc code
+make sqlc
+```
+
+### Linting
+
+```bash
+# Run linters
+make lint
+
+# Auto-fix formatting
+make fmt
+
+# Run go vet
+make vet
 ```
 
 ---
