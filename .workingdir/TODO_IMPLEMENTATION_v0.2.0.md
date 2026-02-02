@@ -153,14 +153,14 @@ Services werden in dieser Reihenfolge implementiert (Abhängigkeiten berücksich
 - [x] **Verify**: Tables exist
 
 ### 4.2 Repository Layer
-- [ ] Create `internal/service/settings/repository.go` (interface)
-- [ ] Create `internal/service/settings/repository_pg.go` (implementation)
-- [ ] sqlc queries: `internal/infra/database/queries/settings.sql`
-- [ ] Generate sqlc code
+- [x] Create `internal/service/settings/repository.go` (interface)
+- [x] Create `internal/service/settings/repository_pg.go` (implementation)
+- [x] sqlc queries: `internal/infra/database/queries/settings.sql`
+- [x] Generate sqlc code
 - [ ] **Test**: Repository unit tests with mockery
-- [ ] **Lint**: Check
+- [x] **Lint**: Check
 - [ ] **Coverage**: 80%+
-- [ ] **Verify**: CRUD operations work
+- [x] **Verify**: CRUD operations work
 
 ### 4.3 Service Layer
 - [ ] Create `internal/service/settings/service.go`
