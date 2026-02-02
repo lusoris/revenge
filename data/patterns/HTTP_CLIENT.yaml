@@ -39,7 +39,6 @@ wiki_overview: |
   - VPN interface binding
   - Connection pooling and timeout management
   - Optional by default - must be explicitly enabled
-design_refs: []
 
 rationale: |
   **Why HTTP Client Factory?**

@@ -20,9 +20,9 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 import yaml
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
@@ -210,10 +210,7 @@ def find_table_section(content: str, section_name: str) -> tuple[int, int]:
 
     # Find next heading of same or higher level or end of file
     next_heading = re.search(r"^###?\s+", content[start_pos:], re.MULTILINE)
-    if next_heading:
-        end_pos = start_pos + next_heading.start()
-    else:
-        end_pos = len(content)
+    end_pos = start_pos + next_heading.start() if next_heading else len(content)
 
     return start_pos, end_pos
 
@@ -237,7 +234,7 @@ def update_table_status(
         return content, 0
 
     table_content = content[start_pos:end_pos]
-    rows, table_rel_start, table_rel_end = parse_markdown_table(
+    rows, _table_rel_start, _table_rel_end = parse_markdown_table(
         content, start_pos + table_content.find("|")
     )
 
