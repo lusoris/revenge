@@ -79,20 +79,23 @@ integration_id: river
 external_service: River
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1[["Services<br/>(Enqueue)"]]
           node2(["River<br/>Client"])
           node3[("PostgreSQL<br/>(Job Store)")]
       end
-      node4["Workers<br/>(Background)"]
-      node1 --> node2
-      node2 --> node3
+
+      subgraph Layer2["Layer 2"]
+          node4["Workers<br/>(Background)"]
+      end
+
+      %% Connections
       node3 --> node4
 
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
   ```
 connection_details: |
   **Job Queue**: River (PostgreSQL-native background job processor)

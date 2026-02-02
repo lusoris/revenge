@@ -53,22 +53,29 @@ module_name: http_client
 package_path: internal/httpclient
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1[("External APIs<br/>(TMDb, TVDB)")]
           node2(["HTTP Client<br/>Factory<br/>- Proxy Router"])
           node3[["Services<br/>(Metadata,<br/>Requests)"]]
       end
-      node4["Proxy/VPN<br/>(Tor, HTTP)"]
-      node5[["Local Services<br/>(Arr, Stash)"]]
-      node1 --> node2
-      node2 --> node3
+
+      subgraph Layer2["Layer 2"]
+          node4["Proxy/VPN<br/>(Tor, HTTP)"]
+      end
+
+      subgraph Layer3["Layer 3"]
+          node5[["Local Services<br/>(Arr, Stash)"]]
+      end
+
+      %% Connections
       node3 --> node4
       node4 --> node5
 
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+      style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
   ```
 design_rationale: |
   **Why a Dedicated HTTP Client Service?**

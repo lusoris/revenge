@@ -47,26 +47,29 @@ api_base_url: https://api.hardcover.app/v1/graphql
 auth_method: oauth2
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1["Revenge<br/>Book Library"]
           node2["Hardcover<br/>Account<br/>User Shelves"]
       end
-      subgraph row2[ ]
-          direction LR
+
+      subgraph Layer2["Layer 2"]
           node3["River Queue<br/>(background)"]
           node4["User Shelves<br/>- Want to Read<br/>- Reading"]
       end
-      node5[["Hardcover API<br/>(GraphQL)"]]
-      node1 --> node2
-      node3 --> node4
+
+      subgraph Layer3["Layer 3"]
+          node5[["Hardcover API<br/>(GraphQL)"]]
+      end
+
+      %% Connections
       node2 --> node3
       node4 --> node5
 
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
-      style row2 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+      style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
   ```
 api_details: |
   **Protocol**: GraphQL

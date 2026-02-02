@@ -305,9 +305,8 @@ class ASCIIToMermaid:
     ) -> str:
         """Generate Mermaid diagram from boxes and connections.
 
-        Uses different node shapes based on content type for visual distinction.
-        Layer boxes get a special banner shape for clear section headings.
-        Groups horizontal boxes using subgraphs with direction LR.
+        Uses flowchart LR with subgraphs for each layer/row.
+        This renders well on GitHub with horizontal nodes per layer.
 
         Args:
             boxes: List of box dicts
@@ -320,20 +319,17 @@ class ASCIIToMermaid:
         if not boxes:
             return ""
 
-        lines = [f"{diagram_type} TD"]
+        lines = [f"{diagram_type} LR"]
 
-        # Track layer boxes for styling
-        layer_box_ids = []
+        # Colors for subgraph styling
+        colors = ["#1976D2", "#388E3C", "#7B1FA2", "#F57C00", "#C2185B", "#00796B"]
+        subgraph_names = []
 
         def escape_label(text: str) -> str:
-            """Escape special characters that conflict with Mermaid syntax.
-
-            Uses HTML entities and proper quoting per Mermaid docs.
-            Parentheses/brackets are safe inside quoted labels.
-            """
+            """Escape special characters that conflict with Mermaid syntax."""
             return text.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
 
-        def make_node(box: dict) -> str:
+        def make_node(box: dict, indent: str = "        ") -> str:
             """Generate node definition string."""
             label = escape_label(box["label"])
             if box.get("sublabels"):
@@ -341,16 +337,18 @@ class ASCIIToMermaid:
                 sublabels = "<br/>".join(escaped_sublabels)
                 label = f"{label}<br/>{sublabels}"
 
-            if self._is_layer_box(box["label"]):
-                layer_box_ids.append(box["id"])
-                return f'{box["id"]}["{label}"]'
-            else:
-                open_br, close_br = self._get_node_shape(
-                    box["label"], box.get("sublabels", [])
-                )
-                return f"{box['id']}{open_br}{label}{close_br}"
+            open_br, close_br = self._get_node_shape(
+                box["label"], box.get("sublabels", [])
+            )
+            return f"{indent}{box['id']}{open_br}{label}{close_br}"
 
-        # Group boxes by row to detect horizontal arrangements
+        def make_subgraph_id(label: str) -> str:
+            """Create a valid subgraph ID from label."""
+            # Remove special chars, use first word
+            clean = "".join(c for c in label if c.isalnum() or c == " ")
+            return clean.split()[0] if clean.split() else "Layer"
+
+        # Group boxes by row
         rows: dict[int, list[dict]] = {}
         for box in boxes:
             row = box.get("row", 0)
@@ -362,51 +360,68 @@ class ASCIIToMermaid:
         for row_boxes in rows.values():
             row_boxes.sort(key=lambda b: b.get("col", 0))
 
-        # Generate nodes, using subgraphs for horizontal groups
-        subgraph_id = 0
         sorted_rows = sorted(rows.keys())
 
-        for row_num in sorted_rows:
+        # Generate subgraphs for each row
+        for idx, row_num in enumerate(sorted_rows):
             row_boxes = rows[row_num]
 
-            if len(row_boxes) > 1:
-                # Multiple boxes on same row - create horizontal subgraph
-                subgraph_id += 1
-                lines.append(f"    subgraph row{subgraph_id}[ ]")
-                lines.append("        direction LR")
-                for box in row_boxes:
-                    lines.append(f"        {make_node(box)}")
-                lines.append("    end")
-            else:
-                # Single box - add directly
-                for box in row_boxes:
-                    lines.append(f"    {make_node(box)}")
+            # Check if first box is a layer heading
+            layer_box = None
+            content_boxes = row_boxes
 
-        # Add connections
+            if row_boxes and self._is_layer_box(row_boxes[0]["label"]):
+                layer_box = row_boxes[0]
+                content_boxes = row_boxes[1:] if len(row_boxes) > 1 else []
+
+            # Determine subgraph name
+            if layer_box:
+                sg_label = escape_label(layer_box["label"])
+                sg_id = make_subgraph_id(layer_box["label"])
+            else:
+                sg_label = f"Layer {idx + 1}"
+                sg_id = f"Layer{idx + 1}"
+
+            # Ensure unique subgraph ID
+            base_id = sg_id
+            counter = 1
+            while sg_id in subgraph_names:
+                sg_id = f"{base_id}{counter}"
+                counter += 1
+            subgraph_names.append(sg_id)
+
+            lines.append(f'    subgraph {sg_id}["{sg_label}"]')
+
+            # Add content nodes to subgraph
+            if content_boxes:
+                for box in content_boxes:
+                    lines.append(make_node(box))
+            elif layer_box:
+                # If only layer box, add a placeholder or the layer itself
+                lines.append(f'        {layer_box["id"]}[" "]')
+
+            lines.append("    end")
+            lines.append("")
+
+        # Add connections between nodes
+        lines.append("    %% Connections")
         for from_id, to_id, conn_label in connections:
-            if conn_label:
-                lines.append(f"    {from_id} -->|{conn_label}| {to_id}")
-            else:
-                lines.append(f"    {from_id} --> {to_id}")
+            # Skip connections to/from layer-only boxes
+            from_row = next((b["row"] for b in boxes if b["id"] == from_id), -1)
+            to_row = next((b["row"] for b in boxes if b["id"] == to_id), -1)
 
-        # Add styling for layer boxes to make them stand out
-        if layer_box_ids:
-            lines.append("")
-            lines.append("    %% Layer styling")
-            colors = ["#1976D2", "#388E3C", "#7B1FA2", "#F57C00", "#C2185B"]
-            for i, layer_id in enumerate(layer_box_ids):
-                color = colors[i % len(colors)]
-                lines.append(
-                    f"    style {layer_id} fill:{color},stroke:#fff,"
-                    f"stroke-width:2px,color:#fff"
-                )
+            if from_row != to_row:
+                if conn_label:
+                    lines.append(f"    {from_id} -->|{conn_label}| {to_id}")
+                else:
+                    lines.append(f"    {from_id} --> {to_id}")
 
-        # Hide subgraph borders (transparent styling)
-        if subgraph_id > 0:
-            lines.append("")
-            lines.append("    %% Hide row subgraph borders")
-            for i in range(1, subgraph_id + 1):
-                lines.append(f"    style row{i} fill:transparent,stroke:transparent")
+        # Add subgraph styling
+        lines.append("")
+        lines.append("    %% Styling")
+        for idx, sg_name in enumerate(subgraph_names):
+            color = colors[idx % len(colors)]
+            lines.append(f"    style {sg_name} fill:{color},stroke:{color},color:#fff")
 
         return "\n".join(lines)
 

@@ -45,26 +45,29 @@ api_base_url: https://authentik.company.local
 auth_method: oidc
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1["User<br/>Browser"]
           node2["Authentik<br/>IdP Server"]
       end
-      subgraph row2[ ]
-          direction LR
+
+      subgraph Layer2["Layer 2"]
           node3["Revenge<br/>Server"]
           node4[["Authentik<br/>OAuth2 API"]]
       end
-      node5["User<br/>Session"]
-      node1 --> node2
-      node3 --> node4
+
+      subgraph Layer3["Layer 3"]
+          node5["User<br/>Session"]
+      end
+
+      %% Connections
       node2 --> node3
       node4 --> node5
 
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
-      style row2 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+      style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
   ```
 protocol_details: |
   **OpenID Connect (OIDC)** with Authentik:

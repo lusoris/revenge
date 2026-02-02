@@ -60,50 +60,81 @@ Player components:
 
 ```mermaid
 flowchart LR
-    subgraph Clients["CLIENT LAYER"]
-        Web["Web Player<br/>(Vidstack)"]
-        Mobile(["Mobile App<br/>(React Native)"])
-        TV(["TV App<br/>(Android TV)"])
+    subgraph CLIENT["CLIENT LAYER"]
+        node1[" "]
     end
 
-    subgraph Streaming["STREAMING LAYER"]
-        HLS[["HLS Generator<br/>(gohlslib)"]]
-        Trans[["Transcoder<br/>(FFmpeg)"]]
+    subgraph Web["Web Player"]
+        node3(["Mobile App<br/>(React Native)"])
+        node4(["TV App<br/>(Android TV)"])
     end
 
-    subgraph Features["FEATURE LAYER"]
-        Skip["Skip Intro"]
-        Trick["Trickplay"]
-        Chap["Chapters"]
-        Sync(["SyncPlay"])
-        Cast["Casting"]
-        Subs(["Subtitles"])
+    subgraph Layer3["Layer 3"]
+        node5["HLS.js<br/>(Adaptive)"]
     end
 
-    subgraph Storage["STORAGE LAYER"]
-        Media["Media Files"]
-        MetaDB[("Metadata DB")]
-        Cache[("Cache")]
+    subgraph STREAMING["STREAMING LAYER"]
+        node6[" "]
     end
 
-    Web --> HLS
-    Mobile --> HLS
-    TV --> HLS
-    HLS --> Trans
-    Trans --> Skip
-    Trans --> Trick
-    Trans --> Chap
-    Skip --> Sync
-    Trick --> Cast
-    Chap --> Subs
-    Sync --> Media
-    Cast --> MetaDB
-    Subs --> Cache
+    subgraph Layer5["Layer 5"]
+        node7["HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)<br/>- Media Playlists (video/audio/subs)"]
+    end
 
-    style Clients fill:#1976D2,stroke:#1976D2,color:#fff
-    style Streaming fill:#388E3C,stroke:#388E3C,color:#fff
-    style Features fill:#7B1FA2,stroke:#7B1FA2,color:#fff
-    style Storage fill:#F57C00,stroke:#F57C00,color:#fff
+    subgraph Layer6["Layer 6"]
+        node8[["Transcoding Engine (FFmpeg/go-astiav)<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)"]]
+    end
+
+    subgraph FEATURE["FEATURE LAYER"]
+        node9[" "]
+    end
+
+    subgraph Layer8["Layer 8"]
+        node10["Skip Intro<br/>- Timeline<br/>- Detection"]
+        node11["Trickplay<br/>- Thumbnails<br/>- Scrubbing"]
+        node12["Chapters<br/>- Markers<br/>- Navigation"]
+    end
+
+    subgraph Layer9["Layer 9"]
+        node13(["SyncPlay<br/>- WebSocket<br/>- Sync State"])
+        node14["Casting<br/>- Chromecast<br/>- DLNA"]
+        node15(["Subtitles<br/>- SSA/ASS<br/>- WebVTT"])
+    end
+
+    subgraph STORAGE["STORAGE LAYER"]
+        node16[" "]
+    end
+
+    subgraph Layer11["Layer 11"]
+        node17["Media Files<br/>- Video Streams<br/>- Audio Tracks"]
+        node18[("Metadata DB<br/>- Playback State<br/>- User Progress")]
+        node19[("Cache<br/>- Transcodes<br/>- Trickplay")]
+    end
+
+    %% Connections
+    node1 --> node2
+    node4 --> node5
+    node5 --> node6
+    node6 --> node7
+    node7 --> node8
+    node8 --> node9
+    node9 --> node10
+    node12 --> node13
+    node15 --> node16
+    node16 --> node17
+
+    %% Styling
+    style CLIENT fill:#1976D2,stroke:#1976D2,color:#fff
+    style Web fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style STREAMING fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
+    style Layer6 fill:#00796B,stroke:#00796B,color:#fff
+    style FEATURE fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer8 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer9 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style STORAGE fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer11 fill:#C2185B,stroke:#C2185B,color:#fff
 ```
 ## Implementation
 

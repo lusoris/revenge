@@ -56,20 +56,23 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1["Revenge<br/>Playback<br/>Events"]
         node2["ListenBrainz<br/>Integration"]
         node3[["ListenBrainz<br/>API"]]
     end
-    node4["Listen<br/>Queue (River)"]
-    node1 --> node2
-    node2 --> node3
+
+    subgraph Layer2["Layer 2"]
+        node4["Listen<br/>Queue (River)"]
+    end
+
+    %% Connections
     node3 --> node4
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Integration Structure

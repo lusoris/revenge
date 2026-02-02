@@ -57,18 +57,17 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1[["Metadata<br/>Service"]]
         node2(["Last.fm<br/>Provider"])
         node3[["Last.fm<br/>API"]]
     end
-    node1 --> node2
-    node2 --> node3
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Connections
+
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
 ```
 
 ### Integration Structure

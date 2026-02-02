@@ -57,20 +57,23 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1(["Client<br/>(Search)"])
         node2[["Search<br/>Service"]]
         node3["Typesense<br/>Server"]
     end
-    node4[("Sync Job<br/>(PostgreSQL<br/>Typesense)")]
-    node1 --> node2
-    node2 --> node3
+
+    subgraph Layer2["Layer 2"]
+        node4[("Sync Job<br/>(PostgreSQL<br/>Typesense)")]
+    end
+
+    %% Connections
     node3 --> node4
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Integration Structure

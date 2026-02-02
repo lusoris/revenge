@@ -59,24 +59,40 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-    node2["Pornhub Link<br/>(verified URL)"]
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
+        node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    end
+
+    subgraph Layer2["Layer 2"]
+        node2["Pornhub Link<br/>(verified URL)"]
+    end
+
+    subgraph Layer3["Layer 3"]
         node3["Pornhub.com<br/>(Cloudflare)"]
         node4["View Count<br/>Subscribers<br/>Video Count"]
     end
-    node5(["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"])
-    node6["Headless<br/>Browser<br/>(Cloudflare)"]
-    node3 --> node4
+
+    subgraph Layer4["Layer 4"]
+        node5(["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"])
+    end
+
+    subgraph Layer5["Layer 5"]
+        node6["Headless<br/>Browser<br/>(Cloudflare)"]
+    end
+
+    %% Connections
     node1 --> node2
     node2 --> node3
     node4 --> node5
     node5 --> node6
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
 ```
 
 ### Integration Structure

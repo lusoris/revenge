@@ -56,24 +56,23 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1(["Revenge<br/>Web App"])
         node2["Chromecast<br/>Device"]
     end
-    subgraph row2[ ]
-        direction LR
+
+    subgraph Layer2["Layer 2"]
         node3["Revenge<br/>Server<br/>(HLS Stream)"]
         node4(["Receiver<br/>Application<br/>(Custom)"])
     end
-    node1 --> node2
-    node3 --> node4
+
+    %% Connections
     node2 --> node3
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
-    style row2 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Integration Structure

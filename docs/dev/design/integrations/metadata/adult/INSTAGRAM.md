@@ -56,22 +56,34 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
-    node2["Instagram Link<br/>(verified URL)"]
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
+        node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    end
+
+    subgraph Layer2["Layer 2"]
+        node2["Instagram Link<br/>(verified URL)"]
+    end
+
+    subgraph Layer3["Layer 3"]
         node3["Instagram.com<br/>(login wall)"]
         node4["Followers<br/>Post Count<br/>Bio"]
     end
-    node5(["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"])
-    node3 --> node4
+
+    subgraph Layer4["Layer 4"]
+        node5(["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"])
+    end
+
+    %% Connections
     node1 --> node2
     node2 --> node3
     node4 --> node5
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
 ```
 
 ### Integration Structure

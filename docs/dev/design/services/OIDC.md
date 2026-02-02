@@ -58,22 +58,29 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1(["Client<br/>(Browser)"])
         node2[["API Handler<br/>(ogen)"]]
         node3[["Service<br/>(Logic)"]]
     end
-    node4(["OIDC<br/>Provider<br/>(Authentik)"])
-    node5[("PostgreSQL")]
-    node1 --> node2
-    node2 --> node3
+
+    subgraph Layer2["Layer 2"]
+        node4(["OIDC<br/>Provider<br/>(Authentik)"])
+    end
+
+    subgraph Layer3["Layer 3"]
+        node5[("PostgreSQL")]
+    end
+
+    %% Connections
     node3 --> node4
     node4 --> node5
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
 ```
 
 ### Service Structure

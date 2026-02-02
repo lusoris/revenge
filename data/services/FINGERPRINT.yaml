@@ -66,26 +66,24 @@ package_path: internal/service/fingerprint
 fx_module: fingerprint.Module
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1["Scanner<br/>(Library)"]
           node2[["Service<br/>(Logic)"]]
           node3["Repository<br/>(sqlc)"]
       end
-      subgraph row2[ ]
-          direction LR
+
+      subgraph Layer2["Layer 2"]
           node4["FFmpeg<br/>(go-astiav)"]
           node5[("PostgreSQL<br/>(pgx)")]
       end
-      node1 --> node2
-      node2 --> node3
-      node4 --> node5
+
+      %% Connections
       node3 --> node4
 
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
-      style row2 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
   ```
 database_schema: |
   **Schema**: `public`

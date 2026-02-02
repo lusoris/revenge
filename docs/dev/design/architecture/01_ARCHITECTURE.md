@@ -60,47 +60,50 @@ Core components:
 Revenge follows a **layered architecture** with clear separation of concerns:
 
 ```mermaid
-flowchart TD
-    node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
-    node2["API Layer<br/>(ogen-generated handlers + validation)"]
-    node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content Metadata Auth Media"]
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Client["Client Layer"]
+        node1[" "]
+    end
+
+    subgraph API["API Layer"]
+        node2[" "]
+    end
+
+    subgraph Service["Service Layer"]
+        node3[" "]
+    end
+
+    subgraph Layer4["Layer 4"]
         node4[["Content<br/>Services"]]
         node5[["Metadata<br/>Services"]]
         node6[["Auth<br/>Services"]]
         node7["Media<br/>Processing"]
     end
-    subgraph row2[ ]
-        direction LR
+
+    subgraph Layer5["Layer 5"]
         node8["Repository<br/>Layer<br/>(sqlc + pgx)"]
         node9["Metadata Priority<br/>Chain"]
     end
-    subgraph row3[ ]
-        direction LR
+
+    subgraph Layer6["Layer 6"]
         node10[("PostgreSQL<br/>Database<br/>(pgx pool)")]
         node11[("L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly")]
     end
-    node4 --> node5
-    node5 --> node6
-    node6 --> node7
-    node8 --> node9
-    node10 --> node11
+
+    %% Connections
     node1 --> node2
     node2 --> node3
     node3 --> node4
     node7 --> node8
     node9 --> node10
 
-    %% Layer styling
-    style node1 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
-    style node2 fill:#388E3C,stroke:#fff,stroke-width:2px,color:#fff
-    style node3 fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
-
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
-    style row2 fill:transparent,stroke:transparent
-    style row3 fill:transparent,stroke:transparent
+    %% Styling
+    style Client fill:#1976D2,stroke:#1976D2,color:#fff
+    style API fill:#388E3C,stroke:#388E3C,color:#fff
+    style Service fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
+    style Layer6 fill:#00796B,stroke:#00796B,color:#fff
 ```
 ## Implementation
 

@@ -61,36 +61,42 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1(["Revenge<br/>Web Player"])
         node2["Anime Item<br/>(TV Show)<br/>River Queue"]
     end
-    subgraph row2[ ]
-        direction LR
+
+    subgraph Layer2["Layer 2"]
         node3[["Scrobbling<br/>Service"]]
         node4["River Queue<br/>(Background)"]
     end
-    node5["MAL<br/>Scrobbler"]
-    subgraph row3[ ]
-        direction LR
+
+    subgraph Layer3["Layer 3"]
+        node5["MAL<br/>Scrobbler"]
+    end
+
+    subgraph Layer4["Layer 4"]
         node6[("Database<br/>(history)")]
         node7[["MAL API v2<br/>(REST)"]]
     end
-    node8["MAL<br/>User Profile"]
-    node1 --> node2
-    node3 --> node4
-    node6 --> node7
+
+    subgraph Layer5["Layer 5"]
+        node8["MAL<br/>User Profile"]
+    end
+
+    %% Connections
     node2 --> node3
     node4 --> node5
     node5 --> node6
     node7 --> node8
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
-    style row2 fill:transparent,stroke:transparent
-    style row3 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
 ```
 
 ### Integration Structure

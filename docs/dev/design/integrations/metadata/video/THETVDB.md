@@ -57,22 +57,34 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    node1[["Revenge<br/>Metadata<br/>Service"]]
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
+        node1[["Revenge<br/>Metadata<br/>Service"]]
+    end
+
+    subgraph Layer2["Layer 2"]
         node2[("Sonarr<br/>(LOCAL cache)")]
         node3[("TheTVDB API<br/>(fallback +<br/>enrichment)")]
     end
-    node4[("TheTVDB API<br/>(external)")]
-    node5[["JWT Token<br/>Manager"]]
-    node2 --> node3
+
+    subgraph Layer3["Layer 3"]
+        node4[("TheTVDB API<br/>(external)")]
+    end
+
+    subgraph Layer4["Layer 4"]
+        node5[["JWT Token<br/>Manager"]]
+    end
+
+    %% Connections
     node1 --> node2
     node3 --> node4
     node4 --> node5
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
 ```
 
 ### Integration Structure

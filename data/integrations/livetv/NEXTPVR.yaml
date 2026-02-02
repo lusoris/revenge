@@ -45,25 +45,34 @@ api_base_url: http://nextpvr.local:8866
 auth_method: api_key
 architecture_diagram: |-
   ```mermaid
-  flowchart TD
-      subgraph row1[ ]
-          direction LR
+  flowchart LR
+      subgraph Layer1["Layer 1"]
           node1(["Revenge<br/>Web Client"])
           node2[["EPG Service<br/>(Revenge)"]]
       end
-      node3[["NextPVR API<br/>/service"]]
-      node4["Player<br/>(Vidstack)"]
-      node5["TV Tuner/<br/>Recordings"]
-      node1 --> node2
+
+      subgraph Layer2["Layer 2"]
+          node3[["NextPVR API<br/>/service"]]
+      end
+
+      subgraph Player["Player"]
+          node4[" "]
+      end
+
+      subgraph Layer4["Layer 4"]
+          node5["TV Tuner/<br/>Recordings"]
+      end
+
+      %% Connections
       node2 --> node3
       node3 --> node4
       node4 --> node5
 
-      %% Layer styling
-      style node4 fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
-
-      %% Hide row subgraph borders
-      style row1 fill:transparent,stroke:transparent
+      %% Styling
+      style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+      style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+      style Player fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+      style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
   ```
 protocol_details: |
   **NextPVR JSON-RPC API**:

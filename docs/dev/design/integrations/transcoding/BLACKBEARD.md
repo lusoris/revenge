@@ -55,26 +55,41 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    node1(["Revenge Server<br/>Playback Transcoding INTERNAL<br/>Service Service FFmpeg"])
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
+        node1(["Revenge Server<br/>Playback Transcoding INTERNAL<br/>Service Service FFmpeg"])
+    end
+
+    subgraph Layer2["Layer 2"]
         node2[["Playback<br/>Service"]]
         node3[["Transcoding<br/>Service"]]
         node4["INTERNAL<br/>FFmpeg<br/>(go-astiav)"]
     end
-    node5(["Transcoding Router<br/>(choose internal vs external)"])
-    node6(["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>Distributed Transcoding Workers"])
-    node7[["Distributed Transcoding Workers<br/>- GPU acceleration (NVENC, QSV, VAAPI)<br/>- Multiple worker instances"]]
-    node2 --> node3
-    node3 --> node4
+
+    subgraph Layer3["Layer 3"]
+        node5(["Transcoding Router<br/>(choose internal vs external)"])
+    end
+
+    subgraph Layer4["Layer 4"]
+        node6(["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>Distributed Transcoding Workers"])
+    end
+
+    subgraph Layer5["Layer 5"]
+        node7[["Distributed Transcoding Workers<br/>- GPU acceleration (NVENC, QSV, VAAPI)<br/>- Multiple worker instances"]]
+    end
+
+    %% Connections
     node1 --> node2
     node4 --> node5
     node5 --> node6
     node6 --> node7
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
 ```
 
 ### Integration Structure

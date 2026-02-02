@@ -58,20 +58,23 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1[["Server<br/>(Services)"]]
         node2[("rueidis<br/>(Redis Client<br/>with Auto-")]
         node3["Dragonfly<br/>Server"]
     end
-    node4["sturdyc<br/>(Coalescing)"]
-    node1 --> node2
-    node2 --> node3
+
+    subgraph Layer2["Layer 2"]
+        node4["sturdyc<br/>(Coalescing)"]
+    end
+
+    %% Connections
     node3 --> node4
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Integration Structure

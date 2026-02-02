@@ -55,20 +55,28 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
+        node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    end
+
+    subgraph Layer2["Layer 2"]
         node2[["FANDOM<br/>MediaWiki<br/>API"]]
         node3["Fan Wiki Links<br/>- Character pages<br/>- Episode guides"]
     end
-    node4["Rate Limiter<br/>(polite)"]
-    node2 --> node3
+
+    subgraph Layer3["Layer 3"]
+        node4["Rate Limiter<br/>(polite)"]
+    end
+
+    %% Connections
     node1 --> node2
     node3 --> node4
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
 ```
 
 ### Integration Structure

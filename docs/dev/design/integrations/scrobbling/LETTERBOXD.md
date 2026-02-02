@@ -55,20 +55,23 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1["Revenge<br/>Watch<br/>History"]
         node2["Letterboxd<br/>Integration"]
         node3(["Letterboxd<br/>Website"])
     end
-    node4["CSV Export/<br/>Import"]
-    node1 --> node2
-    node2 --> node3
+
+    subgraph Layer2["Layer 2"]
+        node4["CSV Export/<br/>Import"]
+    end
+
+    %% Connections
     node3 --> node4
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Integration Structure

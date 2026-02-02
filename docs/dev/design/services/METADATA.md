@@ -60,45 +60,49 @@
 ## Architecture
 
 ```mermaid
-flowchart TD
-    subgraph row1[ ]
-        direction LR
+flowchart LR
+    subgraph Layer1["Layer 1"]
         node1(["Client<br/>(Web/App)"])
         node2[["API Handler<br/>(ogen)"]]
         node3[["Metadata<br/>Service"]]
     end
-    node4["Priority<br/>Chain"]
-    node5[("L1 Cache L2 Cache<br/>Dragonfly<br/>(distrib)")]
-    subgraph row2[ ]
-        direction LR
+
+    subgraph Layer2["Layer 2"]
+        node4["Priority<br/>Chain"]
+    end
+
+    subgraph Layer3["Layer 3"]
+        node5[("L1 Cache L2 Cache<br/>Dragonfly<br/>(distrib)")]
+    end
+
+    subgraph Layer4["Layer 4"]
         node6["Otter<br/>(in-mem)"]
         node7["Dragonfly<br/>(distrib)"]
     end
-    node8[["PRIMARY (local Arr services)<br/>Lidarr Chaptarr Whisparr<br/>(music) (books) (QAR)"]]
-    subgraph row3[ ]
-        direction LR
+
+    subgraph Layer5["Layer 5"]
+        node8[["PRIMARY (local Arr services)<br/>Lidarr Chaptarr Whisparr<br/>(music) (books) (QAR)"]]
+    end
+
+    subgraph Layer6["Layer 6"]
         node9[("Radarr/Sonarr<br/>(LOCAL cache)")]
         node10["Lidarr<br/>(music)"]
         node11["Chaptarr<br/>(books)"]
         node12["Whisparr<br/>(QAR)"]
     end
-    subgraph row4[ ]
-        direction LR
+
+    subgraph Layer7["Layer 7"]
         node13[("TMDb/TVDB<br/>(via proxy)")]
         node14["MusicBrainz<br/>(via proxy)"]
         node15["OpenLibrary<br/>(via proxy)"]
         node16[("StashDB<br/>(via proxy)")]
     end
-    node17(["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"])
-    node1 --> node2
-    node2 --> node3
-    node6 --> node7
-    node9 --> node10
-    node10 --> node11
-    node11 --> node12
-    node13 --> node14
-    node14 --> node15
-    node15 --> node16
+
+    subgraph Layer8["Layer 8"]
+        node17(["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"])
+    end
+
+    %% Connections
     node3 --> node4
     node4 --> node5
     node5 --> node6
@@ -107,11 +111,15 @@ flowchart TD
     node12 --> node13
     node16 --> node17
 
-    %% Hide row subgraph borders
-    style row1 fill:transparent,stroke:transparent
-    style row2 fill:transparent,stroke:transparent
-    style row3 fill:transparent,stroke:transparent
-    style row4 fill:transparent,stroke:transparent
+    %% Styling
+    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
+    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
+    style Layer5 fill:#C2185B,stroke:#C2185B,color:#fff
+    style Layer6 fill:#00796B,stroke:#00796B,color:#fff
+    style Layer7 fill:#1976D2,stroke:#1976D2,color:#fff
+    style Layer8 fill:#388E3C,stroke:#388E3C,color:#fff
 ```
 
 ### Service Structure
