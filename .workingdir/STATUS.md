@@ -40,11 +40,26 @@
 ## Phase 2: Build Status Sync Script
 
 ### Step 2.1: Create sync-sot-status.py
-- [ ] Create `scripts/doc-pipeline/04-sync-sot-status.py`
-- [ ] Implement backup creation
-- [ ] Implement SOT table parsing
-- [ ] Implement status-only updates (safe mode)
-- [ ] Add dry-run mode
+- [x] Create `scripts/doc-pipeline/04-sync-sot-status.py`
+- [x] Implement backup creation
+- [x] Implement SOT table parsing
+- [x] Implement status-only updates (safe mode)
+- [x] Add dry-run mode
+- [x] Test dry-run - found 13 status mismatches
+
+**Status**: Complete ✅
+**Findings**: Script detected 13 status inconsistencies including 4 undocumented in Arr Ecosystem table
+
+### Step 2.2: Write tests for sync-sot-status.py
+- [x] Create `tests/unit/test_sync_sot_status.py`
+- [x] Test backup functionality
+- [x] Test SOT table parsing
+- [x] Test status-only updates
+- [x] Test dry-run vs apply modes
+- [x] Test strict mode
+- [x] Run all tests until passing
+
+**Status**: Complete ✅ (10/10 tests passing)
 
 ### Step 2.2: Write Tests
 - [ ] Create test file in `tests/unit/`

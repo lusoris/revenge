@@ -49,14 +49,14 @@
 - **Fix**: Ran `python scripts/sync-versions.py --fix`
 
 ### BUG-005: Systemic YAML indentation errors across ALL data files
-- **Scope**: ALL YAML files in `data/` directory 
+- **Scope**: ALL YAML files in `data/` directory
 - **Issue**: yamllint reports wrong indentation for `sources:`, `design_refs:`, and nested structures
   - Example: Expected 2 spaces but found 0 for top-level keys
   - Example: Expected 4/6 spaces but found 2/4 for nested structures
 - **Root Cause**: Either .yamllint.yml config is wrong OR all YAML files have incorrect indentation
 - **Impact**: HIGH - This affects hundreds of files, not just 01_ARCHITECTURE.yaml
 - **Status**: Found - This is systemic, not an isolated issue
-- **Decision Needed**: 
+- **Decision Needed**:
   1. Fix .yamllint.yml config (if config is wrong)
   2. OR bulk-fix all YAML files (if files are wrong)
   3. OR disable yamllint indentation rule until proper fix
@@ -64,7 +64,7 @@
 
 ### BUG-006: Duplicate pgx versions in SOT
 - **File**: `docs/dev/design/00_SOURCE_OF_TRUTH.md`
-- **Issue**: 
+- **Issue**:
   - Line 145: `pgx/v5` listed as v5.7.5 (Infrastructure table)
   - Line 157: `github.com/jackc/pgx/v5` listed as v5.8.0 (Dependencies table)
 - **Impact**: sync-versions.py picks up BOTH entries causing permanent drift
