@@ -8,13 +8,20 @@ import (
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/search"
 )
 
 // CheckDatabase checks if the PostgreSQL database is healthy.
 func CheckDatabase(ctx context.Context, pool *pgxpool.Pool) CheckResult {
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
+
+	if pool == nil {
+		return CheckResult{
+			Name:    "database",
+			Status:  StatusUnhealthy,
+			Message: "database pool not initialized",
+		}
+	}
 
 	if err := database.Health(ctx, pool); err != nil {
 		return CheckResult{
@@ -36,50 +43,65 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool) CheckResult {
 }
 
 // CheckCache checks if the Dragonfly/Redis cache is healthy.
-// This is a stub for v0.1.0 skeleton.
 func CheckCache(ctx context.Context, client *cache.Client) CheckResult {
-	_ = ctx // Unused in stub implementation
+	if client == nil {
+		return CheckResult{
+			Name:    "cache",
+			Status:  StatusDegraded,
+			Message: "cache client not initialized (disabled)",
+		}
+	}
 
-	// TODO: Implement actual cache health check when cache client is implemented
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	if err := client.Ping(ctx); err != nil {
+		return CheckResult{
+			Name:    "cache",
+			Status:  StatusUnhealthy,
+			Message: err.Error(),
+		}
+	}
+
 	return CheckResult{
 		Name:    "cache",
 		Status:  StatusHealthy,
-		Message: "cache check not implemented (stub)",
+		Message: "cache is healthy",
 	}
 }
 
-// CheckSearch checks if the Typesense search service is healthy.
-// This is a stub for v0.1.0 skeleton.
-func CheckSearch(ctx context.Context, client *search.Client) CheckResult {
-	_ = ctx // Unused in stub implementation
-
-	// TODO: Implement actual search health check when search client is implemented
-	return CheckResult{
-		Name:    "search",
-		Status:  StatusHealthy,
-		Message: "search check not implemented (stub)",
+// CheckJobs checks if the River job queue client is healthy.
+func CheckJobs(ctx context.Context, client *jobs.Client) CheckResult {
+	if client == nil {
+		return CheckResult{
+			Name:    "jobs",
+			Status:  StatusDegraded,
+			Message: "job queue client not initialized",
+		}
 	}
-}
 
-// CheckJobs checks if the River job queue workers are healthy.
-// This is a stub for v0.1.0 skeleton.
-func CheckJobs(ctx context.Context, workers *jobs.Workers) CheckResult {
-	_ = ctx // Unused in stub implementation
+	// Check if the underlying River client is available
+	riverClient := client.RiverClient()
+	if riverClient == nil {
+		return CheckResult{
+			Name:    "jobs",
+			Status:  StatusUnhealthy,
+			Message: "river client not initialized",
+		}
+	}
 
-	// TODO: Implement actual job workers health check when workers are implemented
 	return CheckResult{
 		Name:    "jobs",
 		Status:  StatusHealthy,
-		Message: "jobs check not implemented (stub)",
+		Message: "job queue is healthy",
 	}
 }
 
 // CheckAll runs all dependency health checks.
-func CheckAll(ctx context.Context, pool *pgxpool.Pool, cacheClient *cache.Client, searchClient *search.Client, jobWorkers *jobs.Workers) map[string]CheckResult {
+func CheckAll(ctx context.Context, pool *pgxpool.Pool, cacheClient *cache.Client, jobClient *jobs.Client) map[string]CheckResult {
 	return map[string]CheckResult{
 		"database": CheckDatabase(ctx, pool),
 		"cache":    CheckCache(ctx, cacheClient),
-		"search":   CheckSearch(ctx, searchClient),
-		"jobs":     CheckJobs(ctx, jobWorkers),
+		"jobs":     CheckJobs(ctx, jobClient),
 	}
 }

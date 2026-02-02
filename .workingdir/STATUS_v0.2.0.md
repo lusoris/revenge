@@ -3,7 +3,7 @@
 **Version**: v0.2.0 - Core Backend Services
 **Start Date**: 2026-02-02
 **Target**: TBD
-**Current Status**: � Infrastructure Complete (Database, Cache, Jobs 100%)
+**Current Status**: 🟢 COMPLETE - All 10 services implemented
 
 ## Overview
 
@@ -23,8 +23,8 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | OIDC | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Commit 30) |
 | Settings | 🟢 Complete | 100% | ✓ DB ✓ Service ✓ API (Commits 11-16) |
 | Activity | 🟢 Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ Cleanup Job ✓ API |
-| Library | 🔴 Not Started | 0% | Library CRUD |
-| Health | 🔴 Not Started | 0% | Enhanced checks |
+| Library | � Complete | 100% | ✓ DB ✓ Repo ✓ Service ✓ API (Step 12) |
+| Health | 🟢 Complete | 100% | ✓ Real checks for Cache/Jobs/DB (Step 13) |
 
 ### Infrastructure
 
@@ -46,16 +46,16 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | OIDC | 0% | 80% | 🔴 Not Started |
 | Settings | ~50% | 80% | 🟡 Partial (DB tests exist) |
 | Activity | 0% | 80% | 🔴 Not Started |
-| Library | 0% | 80% | 🔴 Not Started |
+| Library | ~0% | 80% | 🔴 Not Started |
 
 ## Current Sprint
 
-**Sprint**: Not Started
-**Focus**: TBD
+**Sprint**: v0.2.0 Complete
+**Focus**: Core Backend Services
 
 ### Active Tasks
 
-- None yet
+- ✅ Step 13: Health Service - Complete
 
 ## Completed Milestones
 
@@ -77,11 +77,15 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 - ✅ **2026-02-02**: RBAC Service Step 8 (Commit 27) - Casbin integration (12 methods, 0 lint)
 - ✅ **2026-02-02**: OIDC Service Step 10 - SSO providers (11 endpoints, OAuth2 flows, token exchange)
 - ✅ **2026-02-02**: Activity Service Step 11 - Audit logging (5 admin endpoints, River cleanup job)
+- ✅ **2026-02-02**: Library Service Step 12 - Library CRUD (10 endpoints, scans, permissions)
+- ✅ **2026-02-02**: Health Service Step 13 - Enhanced checks (cache/jobs/db real checks, 18 tests)
 
 ## Next Steps
 
-1. **Step 12**: Library Service (Library CRUD operations)
-2. **Step 13**: Health Service (Enhanced health checks)
+v0.2.0 Core Backend Services is complete. Remaining work deferred to v0.3.0+:
+- Content Services (Movies, Shows, Music, Collections)
+- Search Integration (Meilisearch)
+- Transcoding Integration
 
 ## Reference
 
@@ -118,3 +122,6 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | 2026-02-02 | ✅ API Keys Service COMPLETE (Commit 29): 4 endpoints, SHA-256 hashing, rv_ key format |
 | 2026-02-02 | ✅ OIDC Service COMPLETE (Commit 30): 11 endpoints, OAuth2 flows, JWT token exchange |
 | 2026-02-02 | ✅ Activity Service COMPLETE (Step 11): 5 admin endpoints, cleanup job, 15 queries |
+| 2026-02-02 | ✅ Library Service COMPLETE (Step 12): 10 endpoints, CRUD, scans, permissions |
+| 2026-02-02 | ✅ Health Service COMPLETE (Step 13): Real checks for Cache/Jobs/DB, 18 tests |
+| 2026-02-02 | ✅ v0.2.0 CORE BACKEND SERVICES COMPLETE - All 10 services implemented |

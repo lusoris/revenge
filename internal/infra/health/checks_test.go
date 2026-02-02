@@ -9,40 +9,60 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/search"
 )
 
-func TestCheckCache(t *testing.T) {
+func TestCheckCache_NilClient(t *testing.T) {
 	ctx := context.Background()
+
+	result := CheckCache(ctx, nil)
+
+	assert.Equal(t, "cache", result.Name)
+	assert.Equal(t, StatusDegraded, result.Status)
+	assert.Contains(t, result.Message, "not initialized")
+}
+
+func TestCheckCache_WithClient(t *testing.T) {
+	ctx := context.Background()
+	// Create an empty client (rueidis not connected)
 	client := &cache.Client{}
 
 	result := CheckCache(ctx, client)
 
 	assert.Equal(t, "cache", result.Name)
-	assert.Equal(t, StatusHealthy, result.Status)
-	assert.Contains(t, result.Message, "stub")
+	// Without actual rueidis connection, Ping will fail
+	assert.Equal(t, StatusUnhealthy, result.Status)
 }
 
-func TestCheckSearch(t *testing.T) {
+func TestCheckJobs_NilClient(t *testing.T) {
 	ctx := context.Background()
-	client := &search.Client{}
 
-	result := CheckSearch(ctx, client)
-
-	assert.Equal(t, "search", result.Name)
-	assert.Equal(t, StatusHealthy, result.Status)
-	assert.Contains(t, result.Message, "stub")
-}
-
-func TestCheckJobs(t *testing.T) {
-	ctx := context.Background()
-	workers := &jobs.Workers{}
-
-	result := CheckJobs(ctx, workers)
+	result := CheckJobs(ctx, nil)
 
 	assert.Equal(t, "jobs", result.Name)
-	assert.Equal(t, StatusHealthy, result.Status)
-	assert.Contains(t, result.Message, "stub")
+	assert.Equal(t, StatusDegraded, result.Status)
+	assert.Contains(t, result.Message, "not initialized")
+}
+
+func TestCheckJobs_NilRiverClient(t *testing.T) {
+	ctx := context.Background()
+	// Client exists but River client inside is nil
+	client := &jobs.Client{}
+
+	result := CheckJobs(ctx, client)
+
+	assert.Equal(t, "jobs", result.Name)
+	assert.Equal(t, StatusUnhealthy, result.Status)
+	assert.Contains(t, result.Message, "river client not initialized")
+}
+
+func TestCheckDatabase_NilPool(t *testing.T) {
+	ctx := context.Background()
+
+	result := CheckDatabase(ctx, nil)
+
+	assert.Equal(t, "database", result.Name)
+	assert.Equal(t, StatusUnhealthy, result.Status)
+	assert.Contains(t, result.Message, "not initialized")
 }
 
 func TestStatusConstants(t *testing.T) {
@@ -70,53 +90,32 @@ func TestCheckResult_Fields(t *testing.T) {
 
 func TestCheckAll(t *testing.T) {
 	ctx := context.Background()
-	cacheClient := &cache.Client{}
-	searchClient := &search.Client{}
-	jobWorkers := &jobs.Workers{}
 
-	// CheckAll needs a real pool for database check, so we only test stub checks
-	// For now, just verify the function doesn't panic with nil pool
-	// In real scenario, this would be an integration test
-	t.Run("stub checks work", func(t *testing.T) {
-		// Test individual stub checks
-		cacheResult := CheckCache(ctx, cacheClient)
-		assert.Equal(t, StatusHealthy, cacheResult.Status)
+	// Test with all nil dependencies
+	results := CheckAll(ctx, nil, nil, nil)
 
-		searchResult := CheckSearch(ctx, searchClient)
-		assert.Equal(t, StatusHealthy, searchResult.Status)
+	assert.Contains(t, results, "database")
+	assert.Contains(t, results, "cache")
+	assert.Contains(t, results, "jobs")
 
-		jobsResult := CheckJobs(ctx, jobWorkers)
-		assert.Equal(t, StatusHealthy, jobsResult.Status)
-	})
+	// Nil pool means unhealthy database
+	assert.Equal(t, StatusUnhealthy, results["database"].Status)
+	// Nil cache client means degraded
+	assert.Equal(t, StatusDegraded, results["cache"].Status)
+	// Nil jobs client means degraded
+	assert.Equal(t, StatusDegraded, results["jobs"].Status)
 }
 
 func TestCheckCache_Concurrent(t *testing.T) {
 	ctx := context.Background()
-	client := &cache.Client{}
 
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			result := CheckCache(ctx, client)
-			assert.Equal(t, StatusHealthy, result.Status)
-		}()
-	}
-	wg.Wait()
-}
-
-func TestCheckSearch_Concurrent(t *testing.T) {
-	ctx := context.Background()
-	client := &search.Client{}
-
-	var wg sync.WaitGroup
-	for i := 0; i < 100; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			result := CheckSearch(ctx, client)
-			assert.Equal(t, StatusHealthy, result.Status)
+			result := CheckCache(ctx, nil)
+			assert.Equal(t, StatusDegraded, result.Status)
 		}()
 	}
 	wg.Wait()
@@ -124,15 +123,14 @@ func TestCheckSearch_Concurrent(t *testing.T) {
 
 func TestCheckJobs_Concurrent(t *testing.T) {
 	ctx := context.Background()
-	workers := &jobs.Workers{}
 
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			result := CheckJobs(ctx, workers)
-			assert.Equal(t, StatusHealthy, result.Status)
+			result := CheckJobs(ctx, nil)
+			assert.Equal(t, StatusDegraded, result.Status)
 		}()
 	}
 	wg.Wait()
