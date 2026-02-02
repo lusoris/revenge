@@ -6,8 +6,8 @@
 ## Active Bugs
 
 ### BUG-001: Terminal heredoc corruption with file creation tools
-**Severity**: Medium  
-**Reported**: 2026-02-02  
+**Severity**: Medium
+**Reported**: 2026-02-02
 **Status**: Workaround implemented
 
 **Description**: When using `cat << 'EOF'` or `dd << 'EOF'` in terminal, the shell's prompt hook executes `ls` which injects directory listings into the heredoc content, corrupting the files being created.

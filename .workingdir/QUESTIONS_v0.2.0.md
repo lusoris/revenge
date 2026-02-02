@@ -21,6 +21,19 @@
 
 ---
 
+#### Q1.5: Cache Integration Test Coverage
+**Question**: Cache package has 50% coverage due to skipped integration tests (require running Redis/Dragonfly). Should we accept lower coverage for packages with external dependencies or implement testcontainers-based integration tests?
+
+**Options**:
+- Accept 50% coverage for cache package (only unit tests)
+- Implement testcontainers Redis integration tests to reach 80%
+- Create mock-based tests for code paths without actual connection
+
+**Decision**: TBD
+**Notes**: Current tests cover all unit-testable code (config parsing, error handling, client creation). fx lifecycle hooks not easily testable without full integration.
+
+---
+
 ### Authentication & Security
 
 #### Q1: JWT Token Expiry Times

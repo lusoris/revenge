@@ -31,7 +31,7 @@ Backend services implementation: Auth, User, Session, RBAC, API Keys, OIDC, Sett
 | Component | Status | Progress | Notes |
 |-----------|--------|----------|-------|
 | PostgreSQL | 🟢 Almost Complete | 80% | ✓ Migrations ✓ sqlc ✓ Metrics ✓ Query Logging |
-| Dragonfly | 🔴 Not Started | 0% | rueidis, otter L1 |
+| Dragonfly | � In Progress | 20% | ✓ Rueidis client ⏳ Otter L1 ⏳ Operations |
 | River | 🔴 Not Started | 0% | Job queue setup |
 
 ### Testing
