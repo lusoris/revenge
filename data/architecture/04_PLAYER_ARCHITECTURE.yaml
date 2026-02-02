@@ -74,67 +74,51 @@ architecture_diagram: |-
   # Player Architecture
 
   ```mermaid
-  flowchart TD
-      %% CLIENT LAYER
-      CL["CLIENT LAYER"]
-      Web["Web Player<br/>(Vidstack)"]
-      Mobile(["Mobile App<br/>(React Native)"])
-      TV(["TV App<br/>(Android TV)"])
+  flowchart LR
+      subgraph Clients["CLIENT LAYER"]
+          Web["Web Player<br/>(Vidstack)"]
+          Mobile(["Mobile App<br/>(React Native)"])
+          TV(["TV App<br/>(Android TV)"])
+      end
 
-      %% STREAMING LAYER
-      SL["STREAMING LAYER"]
-      HLS[["HLS Manifest Generator<br/>(gohlslib)"]]
-      Trans[["Transcoding Engine<br/>(FFmpeg)"]]
+      subgraph Streaming["STREAMING LAYER"]
+          HLS[["HLS Generator<br/>(gohlslib)"]]
+          Trans[["Transcoder<br/>(FFmpeg)"]]
+      end
 
-      %% FEATURE LAYER
-      FL["FEATURE LAYER"]
-      Skip["Skip Intro"]
-      Trick["Trickplay"]
-      Chap["Chapters"]
-      Sync(["SyncPlay"])
-      Cast["Casting"]
-      Subs(["Subtitles"])
+      subgraph Features["FEATURE LAYER"]
+          Skip["Skip Intro"]
+          Trick["Trickplay"]
+          Chap["Chapters"]
+          Sync(["SyncPlay"])
+          Cast["Casting"]
+          Subs(["Subtitles"])
+      end
 
-      %% STORAGE LAYER
-      STL["STORAGE LAYER"]
-      Media["Media Files"]
-      MetaDB[("Metadata DB")]
-      Cache[("Cache")]
+      subgraph Storage["STORAGE LAYER"]
+          Media["Media Files"]
+          MetaDB[("Metadata DB")]
+          Cache[("Cache")]
+      end
 
-      %% Invisible links for horizontal layout
-      Web ~~~ Mobile ~~~ TV
-      Skip ~~~ Trick ~~~ Chap
-      Sync ~~~ Cast ~~~ Subs
-      Media ~~~ MetaDB ~~~ Cache
-
-      %% Vertical connections between layers
-      CL --> Web
-      CL --> Mobile
-      CL --> TV
       Web --> HLS
       Mobile --> HLS
       TV --> HLS
-      SL --> HLS
       HLS --> Trans
-      Trans --> FL
-      FL --> Skip
-      FL --> Trick
-      FL --> Chap
+      Trans --> Skip
+      Trans --> Trick
+      Trans --> Chap
       Skip --> Sync
       Trick --> Cast
       Chap --> Subs
-      Sync --> STL
-      Cast --> STL
-      Subs --> STL
-      STL --> Media
-      STL --> MetaDB
-      STL --> Cache
+      Sync --> Media
+      Cast --> MetaDB
+      Subs --> Cache
 
-      %% Layer styling
-      style CL fill:#1976D2,stroke:#fff,stroke-width:2px,color:#fff
-      style SL fill:#388E3C,stroke:#fff,stroke-width:2px,color:#fff
-      style FL fill:#7B1FA2,stroke:#fff,stroke-width:2px,color:#fff
-      style STL fill:#F57C00,stroke:#fff,stroke-width:2px,color:#fff
+      style Clients fill:#1976D2,stroke:#1976D2,color:#fff
+      style Streaming fill:#388E3C,stroke:#388E3C,color:#fff
+      style Features fill:#7B1FA2,stroke:#7B1FA2,color:#fff
+      style Storage fill:#F57C00,stroke:#F57C00,color:#fff
   ```
 system_components:
 - name: Web Player (Vidstack)
