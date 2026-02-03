@@ -3,6 +3,7 @@ package jobs
 import (
 	"time"
 
+	"github.com/lusoris/revenge/internal/validate"
 	"github.com/riverqueue/river"
 )
 
@@ -60,7 +61,9 @@ func ExponentialBackoff(attempt int) time.Duration {
 		return max
 	}
 
-	duration := base * (1 << uint(attempt)) // 2^attempt
+	// Safe conversion for bitshift operation
+	attemptUint := validate.MustUint(attempt)
+	duration := base * (1 << attemptUint) // 2^attempt
 	if duration > max {
 		return max
 	}
