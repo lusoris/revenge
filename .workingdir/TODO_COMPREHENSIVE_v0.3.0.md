@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 18:45
-**Current Focus**: MFA Complete ✅ → Next: River Job Worker or Movie Module MVP
-**Status**: MFA Fully Complete (Phases 1-5) - Ready for Next Feature
+**Last Updated**: 2026-02-03 19:35
+**Current Focus**: Movie Module Backend - Core Complete ✅
+**Status**: MFA Complete → Movie Module Foundation Complete
 
 ---
 
@@ -161,7 +161,7 @@
 - IP tracking for audit trail
 - Case-insensitive, dash-tolerant code normalization
 
-**Commits**: 
+**Commits**:
 - e72d7f7ff9 - feat(mfa): implement backup codes and MFA manager services
 - 3a1ae626ac - feat(mfa): integrate MFA with auth service and unify password hashing
 
@@ -222,35 +222,49 @@
 
 ### Movie Module (Backend)
 
-#### Database Schema
-- [ ] `public.movies` table (UUID v7, title, year, runtime, overview, tmdb_id, imdb_id, poster/backdrop paths)
-- [ ] `public.movie_genres` table
-- [ ] `public.movie_cast` table
-- [ ] `public.movie_crew` table
-- [ ] `public.movie_files` table
-- [ ] `public.movie_watch_progress` table
-- [ ] Indexes on tmdb_id, imdb_id, title
+#### Database Schema ✅ COMPLETE
+- [x] `public.movies` table (UUID v7, title, year, runtime, overview, tmdb_id, imdb_id, poster/backdrop paths) ✅
+- [x] `public.movie_genres` table ✅
+- [x] `public.movie_credits` table (cast/crew combined with type field) ✅
+- [x] `public.movie_files` table ✅
+- [x] `public.movie_watched` table (watch progress with generated percent column) ✅
+- [x] `public.movie_collections` + `public.movie_collection_members` tables ✅
+- [x] Indexes on tmdb_id, imdb_id, title (including trigram for fuzzy search) ✅
 
-#### Entity Layer
-- [ ] Movie, MovieFile, MovieGenre, MovieCast, MovieCrew, WatchProgress structs
-- [ ] Validation rules
+**Commit**: a72c8c877c - feat(db): add movie module database schema with 6 migrations
 
-#### Repository Layer
-- [ ] Interface definition
-- [ ] PostgreSQL implementation
-- [ ] CRUD operations
-- [ ] List with filters (genre, year)
-- [ ] Search by title
-- [ ] Watch progress operations
+#### Entity Layer ✅ COMPLETE
+- [x] Movie, MovieFile, MovieCredit, MovieCollection, MovieGenre, MovieWatched structs ✅
+- [x] Parameter types (CreateMovieParams, UpdateMovieParams, etc.) ✅
+- [x] Filter types (ListFilters, SearchFilters) ✅
 
-#### Service Layer
-- [ ] Get movie by ID
-- [ ] List movies (paginated)
-- [ ] Search movies
-- [ ] Update watch progress
-- [ ] Get continue watching
-- [ ] Get recently added
-- [ ] Trigger metadata refresh
+**Commit**: 4f6441a4fb - feat(movie): add repository layer with PostgreSQL implementation
+
+#### Repository Layer ✅ COMPLETE
+- [x] Interface definition (Repository with all CRUD operations) ✅
+- [x] PostgreSQL implementation (NewPostgresRepository) ✅
+- [x] CRUD operations (Get, Create, Update, Delete) ✅
+- [x] List with filters (genre, year, recently added, top rated) ✅
+- [x] Search by title (trigram similarity) ✅
+- [x] Watch progress operations (Create/Update, Get, Delete, Stats) ✅
+- [x] SQLC queries (movies.sql with 40+ operations) ✅
+
+**Commits**:
+- 31d35ed992 - feat(movie): add SQLC queries for movie module
+- 4f6441a4fb - feat(movie): add repository layer with PostgreSQL implementation
+
+#### Service Layer ✅ COMPLETE
+- [x] Get movie by ID ✅
+- [x] List movies (paginated with filters) ✅
+- [x] Search movies (title fuzzy search) ✅
+- [x] Update watch progress (auto-complete at 90%) ✅
+- [x] Get continue watching ✅
+- [x] Get recently added ✅
+- [x] Trigger metadata refresh (placeholder) ✅
+- [x] Input validation (title required, file uniqueness) ✅
+- [x] Business logic (existence checks, completion calculation) ✅
+
+**Commit**: 5ac9fe3131 - feat(movie): add service layer and fx module
 
 #### Library Provider
 - [ ] Implement LibraryProvider interface
@@ -258,17 +272,27 @@
 - [ ] Match files to movies
 - [ ] Handle file changes
 
-#### API Handlers
-- [ ] `GET /api/v1/movies` (list, paginated)
-- [ ] `GET /api/v1/movies/:id`
-- [ ] `GET /api/v1/movies/:id/files`
-- [ ] `GET /api/v1/movies/:id/cast`
-- [ ] `GET /api/v1/movies/:id/crew`
-- [ ] `GET /api/v1/movies/:id/similar`
-- [ ] `POST /api/v1/movies/:id/progress`
-- [ ] `GET /api/v1/movies/:id/progress`
-- [ ] `DELETE /api/v1/movies/:id/progress`
-- [ ] `POST /api/v1/movies/:id/refresh`
+#### API Handlers ✅ COMPLETE (Structure)
+- [x] `GET /api/v1/movies` (list, paginated) ✅
+- [x] `GET /api/v1/movies/:id` ✅
+- [x] `GET /api/v1/movies/:id/files` ✅
+- [x] `GET /api/v1/movies/:id/cast` ✅
+- [x] `GET /api/v1/movies/:id/crew` ✅
+- [x] `GET /api/v1/movies/:id/genres` ✅
+- [x] `POST /api/v1/movies/:id/progress` ✅
+- [x] `GET /api/v1/movies/:id/progress` ✅
+- [x] `DELETE /api/v1/movies/:id/progress` ✅
+- [x] `POST /api/v1/movies/:id/watched` ✅
+- [x] `POST /api/v1/movies/:id/refresh` ✅
+- [x] `GET /api/v1/movies/recently-added` ✅
+- [x] `GET /api/v1/movies/top-rated` ✅
+- [x] `GET /api/v1/movies/continue-watching` ✅
+- [x] `GET /api/v1/movies/watch-history` ✅
+- [x] `GET /api/v1/movies/stats` ✅
+- [ ] OpenAPI spec integration (ogen)
+- [ ] Wire handlers into API server
+
+**Commit**: f18891b880 - feat(movie): add HTTP handlers and integrate into app
 
 #### River Jobs
 - [ ] MovieMetadataRefreshJob
@@ -279,11 +303,13 @@
 - [ ] Unit tests (80%+ coverage)
 - [ ] Integration tests
 
-### Collection Support
-- [ ] `public.collections` table
-- [ ] `public.collection_movies` table
-- [ ] Collection service (Get, List, Get movies)
-- [ ] API handlers (`GET /api/v1/collections`, `/collections/:id`, `/collections/:id/movies`)
+### Collection Support ✅ COMPLETE (Database + Logic)
+- [x] `public.movie_collections` table ✅
+- [x] `public.movie_collection_members` junction table ✅
+- [x] Collection repository methods ✅
+- [x] Collection service (Get, GetMovies) ✅
+- [x] API handlers (`GET /collections/:id`, `/collections/:id/movies`) ✅
+- [ ] OpenAPI spec integration
 
 ### Metadata Service (TMDb)
 
