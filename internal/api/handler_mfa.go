@@ -241,7 +241,7 @@ func (h *MFAHandler) EnableMFA(ctx context.Context) (ogen.EnableMFARes, error) {
 		h.logger.Error("failed to enable MFA",
 			zap.String("user_id", userID.String()),
 			zap.Error(err))
-		
+
 		// Check if error is due to no MFA methods configured
 		if err == mfa.ErrNoMFAMethod {
 			return (*ogen.EnableMFABadRequest)(&ogen.Error{
@@ -249,7 +249,7 @@ func (h *MFAHandler) EnableMFA(ctx context.Context) (ogen.EnableMFARes, error) {
 				Message: "At least one MFA method must be configured before enabling MFA",
 			}), nil
 		}
-		
+
 		return (*ogen.EnableMFABadRequest)(&ogen.Error{
 			Code:    500,
 			Message: "Failed to enable MFA requirement",

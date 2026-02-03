@@ -26,6 +26,10 @@ tags:
     description: Authentication and user registration
   - name: mfa
     description: Multi-factor authentication (TOTP, WebAuthn, backup codes)
+  - name: movies
+    description: Movie library management and playback
+  - name: collections
+    description: Movie collections (e.g., MCU, Star Wars)
   - name: settings
     description: Server and user settings management
   - name: users
@@ -543,6 +547,683 @@ paths:
                     example: true
         '401':
           $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # Movie endpoints
+  /api/v1/movies:
+    get:
+      summary: List movies
+      description: Get a paginated list of movies with optional filtering and sorting
+      operationId: listMovies
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: orderBy
+          in: query
+          description: Sort order (title, year, added, rating)
+          schema:
+            type: string
+            enum: [title, year, added, rating]
+            default: added
+        - name: limit
+          in: query
+          description: Number of movies per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Number of movies to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/search:
+    get:
+      summary: Search movies
+      description: Search movies by title using fuzzy matching
+      operationId: searchMovies
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          required: true
+          description: Search query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/recently-added:
+    get:
+      summary: Get recently added movies
+      description: Get movies ordered by when they were added to the library
+      operationId: getRecentlyAdded
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Recently added movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/top-rated:
+    get:
+      summary: Get top-rated movies
+      description: Get highest-rated movies
+      operationId: getTopRated
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: minVotes
+          in: query
+          description: Minimum number of votes required
+          schema:
+            type: integer
+            minimum: 0
+            default: 100
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Top-rated movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/continue-watching:
+    get:
+      summary: Get continue watching list
+      description: Get movies the user is currently watching
+      operationId: getContinueWatching
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Continue watching list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContinueWatchingItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/watch-history:
+    get:
+      summary: Get watch history
+      description: Get user's watched movies
+      operationId: getWatchHistory
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Watch history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WatchedMovieItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/stats:
+    get:
+      summary: Get user movie statistics
+      description: Get statistics about user's movie watching
+      operationId: getUserMovieStats
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMovieStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}:
+    get:
+      summary: Get movie details
+      description: Get detailed information about a movie
+      operationId: getMovie
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/files:
+    get:
+      summary: Get movie files
+      description: Get physical files for a movie
+      operationId: getMovieFiles
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieFile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/cast:
+    get:
+      summary: Get movie cast
+      description: Get cast members for a movie
+      operationId: getMovieCast
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie cast
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieCredit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/crew:
+    get:
+      summary: Get movie crew
+      description: Get crew members for a movie
+      operationId: getMovieCrew
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie crew
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieCredit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/genres:
+    get:
+      summary: Get movie genres
+      description: Get genres for a movie
+      operationId: getMovieGenres
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie genres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieGenre'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/collection:
+    get:
+      summary: Get movie collection
+      description: Get the collection this movie belongs to
+      operationId: getMovieCollection
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Movie collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/progress:
+    get:
+      summary: Get watch progress
+      description: Get user's watch progress for a movie
+      operationId: getWatchProgress
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Watch progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieWatched'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    post:
+      summary: Update watch progress
+      description: Update or create watch progress for a movie
+      operationId: updateWatchProgress
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - progressSeconds
+                - durationSeconds
+              properties:
+                progressSeconds:
+                  type: integer
+                  minimum: 0
+                  description: Current playback position in seconds
+                durationSeconds:
+                  type: integer
+                  minimum: 1
+                  description: Total duration in seconds
+      responses:
+        '200':
+          description: Watch progress updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieWatched'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Delete watch progress
+      description: Remove watch progress for a movie
+      operationId: deleteWatchProgress
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Watch progress deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/watched:
+    post:
+      summary: Mark movie as watched
+      description: Mark a movie as fully watched
+      operationId: markAsWatched
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Movie marked as watched
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/movies/{id}/refresh:
+    post:
+      summary: Refresh movie metadata
+      description: Trigger a metadata refresh from TMDb/Radarr
+      operationId: refreshMovieMetadata
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '202':
+          description: Metadata refresh queued
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/collections/{id}:
+    get:
+      summary: Get collection details
+      description: Get detailed information about a collection
+      operationId: getCollection
+      tags:
+        - collections
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Collection ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Collection details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/collections/{id}/movies:
+    get:
+      summary: Get collection movies
+      description: Get all movies in a collection
+      operationId: getCollectionMovies
+      tags:
+        - collections
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Collection ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Collection movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/Error'
 
@@ -2603,6 +3284,385 @@ components:
           format: uri
           description: otpauth:// URL for the QR code
           example: "otpauth://totp/Revenge:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Revenge"
+
+    # Movie schemas
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Movie ID
+        tmdb_id:
+          type: integer
+          nullable: true
+          description: TMDb ID
+        imdb_id:
+          type: string
+          nullable: true
+          description: IMDb ID (tt1234567 format)
+        title:
+          type: string
+          description: Movie title
+        original_title:
+          type: string
+          nullable: true
+          description: Original title (if different)
+        year:
+          type: integer
+          nullable: true
+          description: Release year
+        release_date:
+          type: string
+          format: date
+          nullable: true
+          description: Release date
+        runtime:
+          type: integer
+          nullable: true
+          description: Runtime in minutes
+        overview:
+          type: string
+          nullable: true
+          description: Plot synopsis
+        tagline:
+          type: string
+          nullable: true
+          description: Movie tagline
+        status:
+          type: string
+          nullable: true
+          description: Release status (released, post-production, etc.)
+        original_language:
+          type: string
+          nullable: true
+          description: ISO 639-1 language code
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+        trailer_url:
+          type: string
+          nullable: true
+          description: Trailer URL
+        vote_average:
+          type: number
+          format: float
+          nullable: true
+          description: Average rating (0-10)
+        vote_count:
+          type: integer
+          nullable: true
+          description: Number of votes
+        popularity:
+          type: number
+          format: float
+          nullable: true
+          description: Popularity score
+        budget:
+          type: integer
+          format: int64
+          nullable: true
+          description: Production budget
+        revenue:
+          type: integer
+          format: int64
+          nullable: true
+          description: Box office revenue
+        library_added_at:
+          type: string
+          format: date-time
+          description: When added to library
+        metadata_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last metadata update
+        radarr_id:
+          type: integer
+          nullable: true
+          description: Radarr movie ID
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    MovieFile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        movie_id:
+          type: string
+          format: uuid
+        file_path:
+          type: string
+          description: Full file path
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        file_name:
+          type: string
+          description: File name
+        resolution:
+          type: string
+          nullable: true
+          description: Video resolution (1080p, 2160p, etc.)
+        quality_profile:
+          type: string
+          nullable: true
+          description: Quality profile from Radarr
+        video_codec:
+          type: string
+          nullable: true
+          description: Video codec (h264, h265, av1)
+        audio_codec:
+          type: string
+          nullable: true
+          description: Audio codec (aac, ac3, dts)
+        container:
+          type: string
+          nullable: true
+          description: Container format (mkv, mp4, avi)
+        duration_seconds:
+          type: integer
+          nullable: true
+          description: Duration in seconds
+        bitrate_kbps:
+          type: integer
+          nullable: true
+          description: Bitrate in kbps
+        framerate:
+          type: number
+          format: float
+          nullable: true
+          description: Frames per second
+        dynamic_range:
+          type: string
+          nullable: true
+          description: HDR type (SDR, HDR10, Dolby Vision)
+        color_space:
+          type: string
+          nullable: true
+          description: Color space (BT.709, BT.2020)
+        audio_channels:
+          type: string
+          nullable: true
+          description: Audio channels (2.0, 5.1, 7.1)
+        audio_languages:
+          type: array
+          items:
+            type: string
+          description: Audio language codes
+        subtitle_languages:
+          type: array
+          items:
+            type: string
+          description: Subtitle language codes
+        radarr_file_id:
+          type: integer
+          nullable: true
+        last_scanned_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_monitored:
+          type: boolean
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    MovieCredit:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        movie_id:
+          type: string
+          format: uuid
+        tmdb_person_id:
+          type: integer
+          description: TMDb person ID
+        name:
+          type: string
+          description: Person name
+        credit_type:
+          type: string
+          enum: [cast, crew]
+          description: Credit type
+        character:
+          type: string
+          nullable: true
+          description: Character name (for cast)
+        job:
+          type: string
+          nullable: true
+          description: Job title (for crew)
+        department:
+          type: string
+          nullable: true
+          description: Department (for crew)
+        cast_order:
+          type: integer
+          nullable: true
+          description: Billing order (for cast)
+        profile_path:
+          type: string
+          nullable: true
+          description: Profile image path
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    MovieCollection:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tmdb_collection_id:
+          type: integer
+          nullable: true
+          description: TMDb collection ID
+        name:
+          type: string
+          description: Collection name
+        overview:
+          type: string
+          nullable: true
+          description: Collection overview
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    MovieGenre:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        movie_id:
+          type: string
+          format: uuid
+        tmdb_genre_id:
+          type: integer
+          description: TMDb genre ID
+        name:
+          type: string
+          description: Genre name
+        created_at:
+          type: string
+          format: date-time
+
+    MovieWatched:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        movie_id:
+          type: string
+          format: uuid
+        progress_seconds:
+          type: integer
+          description: Current position in seconds
+        duration_seconds:
+          type: integer
+          description: Total duration in seconds
+        progress_percent:
+          type: integer
+          nullable: true
+          description: Progress percentage (generated)
+        is_completed:
+          type: boolean
+          description: Whether movie is fully watched
+        watch_count:
+          type: integer
+          description: Number of times watched
+        last_watched_at:
+          type: string
+          format: date-time
+          description: Last watch time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ContinueWatchingItem:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+        - type: object
+          properties:
+            progress_seconds:
+              type: integer
+            duration_seconds:
+              type: integer
+            progress_percent:
+              type: integer
+              nullable: true
+            last_watched_at:
+              type: string
+              format: date-time
+
+    WatchedMovieItem:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+        - type: object
+          properties:
+            watch_count:
+              type: integer
+            last_watched_at:
+              type: string
+              format: date-time
+
+    UserMovieStats:
+      type: object
+      properties:
+        watched_count:
+          type: integer
+          format: int64
+          description: Number of movies watched
+        in_progress_count:
+          type: integer
+          format: int64
+          description: Number of movies in progress
+        total_watches:
+          type: integer
+          format: int64
+          nullable: true
+          description: Total watch count across all movies
 
     # Settings schemas
     ServerSetting:

@@ -148,6 +148,15 @@ func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params Delete
 	return r, ht.ErrNotImplemented
 }
 
+// DeleteWatchProgress implements deleteWatchProgress operation.
+//
+// Remove watch progress for a movie.
+//
+// DELETE /api/v1/movies/{id}/progress
+func (UnimplementedHandler) DeleteWatchProgress(ctx context.Context, params DeleteWatchProgressParams) (r DeleteWatchProgressRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DisableMFA implements disableMFA operation.
 //
 // Turn off MFA requirement for login.
@@ -211,6 +220,33 @@ func (UnimplementedHandler) GetActivityStats(ctx context.Context) (r GetActivity
 	return r, ht.ErrNotImplemented
 }
 
+// GetCollection implements getCollection operation.
+//
+// Get detailed information about a collection.
+//
+// GET /api/v1/collections/{id}
+func (UnimplementedHandler) GetCollection(ctx context.Context, params GetCollectionParams) (r GetCollectionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetCollectionMovies implements getCollectionMovies operation.
+//
+// Get all movies in a collection.
+//
+// GET /api/v1/collections/{id}/movies
+func (UnimplementedHandler) GetCollectionMovies(ctx context.Context, params GetCollectionMoviesParams) (r GetCollectionMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetContinueWatching implements getContinueWatching operation.
+//
+// Get movies the user is currently watching.
+//
+// GET /api/v1/movies/continue-watching
+func (UnimplementedHandler) GetContinueWatching(ctx context.Context, params GetContinueWatchingParams) (r GetContinueWatchingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetCurrentSession implements getCurrentSession operation.
 //
 // Get information about the current session.
@@ -258,6 +294,60 @@ func (UnimplementedHandler) GetMFAStatus(ctx context.Context) (r GetMFAStatusRes
 	return r, ht.ErrNotImplemented
 }
 
+// GetMovie implements getMovie operation.
+//
+// Get detailed information about a movie.
+//
+// GET /api/v1/movies/{id}
+func (UnimplementedHandler) GetMovie(ctx context.Context, params GetMovieParams) (r GetMovieRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieCast implements getMovieCast operation.
+//
+// Get cast members for a movie.
+//
+// GET /api/v1/movies/{id}/cast
+func (UnimplementedHandler) GetMovieCast(ctx context.Context, params GetMovieCastParams) (r GetMovieCastRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieCollection implements getMovieCollection operation.
+//
+// Get the collection this movie belongs to.
+//
+// GET /api/v1/movies/{id}/collection
+func (UnimplementedHandler) GetMovieCollection(ctx context.Context, params GetMovieCollectionParams) (r GetMovieCollectionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieCrew implements getMovieCrew operation.
+//
+// Get crew members for a movie.
+//
+// GET /api/v1/movies/{id}/crew
+func (UnimplementedHandler) GetMovieCrew(ctx context.Context, params GetMovieCrewParams) (r GetMovieCrewRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieFiles implements getMovieFiles operation.
+//
+// Get physical files for a movie.
+//
+// GET /api/v1/movies/{id}/files
+func (UnimplementedHandler) GetMovieFiles(ctx context.Context, params GetMovieFilesParams) (r GetMovieFilesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieGenres implements getMovieGenres operation.
+//
+// Get genres for a movie.
+//
+// GET /api/v1/movies/{id}/genres
+func (UnimplementedHandler) GetMovieGenres(ctx context.Context, params GetMovieGenresParams) (r GetMovieGenresRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetReadiness implements getReadiness operation.
 //
 // Checks if the service is ready to accept traffic.
@@ -275,6 +365,15 @@ func (UnimplementedHandler) GetReadiness(ctx context.Context) (r GetReadinessRes
 //
 // GET /api/v1/admin/activity/actions
 func (UnimplementedHandler) GetRecentActions(ctx context.Context, params GetRecentActionsParams) (r GetRecentActionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetRecentlyAdded implements getRecentlyAdded operation.
+//
+// Get movies ordered by when they were added to the library.
+//
+// GET /api/v1/movies/recently-added
+func (UnimplementedHandler) GetRecentlyAdded(ctx context.Context, params GetRecentlyAddedParams) (r GetRecentlyAddedRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -307,6 +406,15 @@ func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ 
 	return r, ht.ErrNotImplemented
 }
 
+// GetTopRated implements getTopRated operation.
+//
+// Get highest-rated movies.
+//
+// GET /api/v1/movies/top-rated
+func (UnimplementedHandler) GetTopRated(ctx context.Context, params GetTopRatedParams) (r GetTopRatedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetUserActivityLogs implements getUserActivityLogs operation.
 //
 // Get activity logs for a specific user.
@@ -322,6 +430,15 @@ func (UnimplementedHandler) GetUserActivityLogs(ctx context.Context, params GetU
 //
 // GET /api/v1/users/{userId}
 func (UnimplementedHandler) GetUserById(ctx context.Context, params GetUserByIdParams) (r GetUserByIdRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserMovieStats implements getUserMovieStats operation.
+//
+// Get statistics about user's movie watching.
+//
+// GET /api/v1/movies/stats
+func (UnimplementedHandler) GetUserMovieStats(ctx context.Context) (r GetUserMovieStatsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -349,6 +466,24 @@ func (UnimplementedHandler) GetUserRoles(ctx context.Context, params GetUserRole
 //
 // GET /api/v1/settings/user/{key}
 func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSettingParams) (r GetUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetWatchHistory implements getWatchHistory operation.
+//
+// Get user's watched movies.
+//
+// GET /api/v1/movies/watch-history
+func (UnimplementedHandler) GetWatchHistory(ctx context.Context, params GetWatchHistoryParams) (r GetWatchHistoryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetWatchProgress implements getWatchProgress operation.
+//
+// Get user's watch progress for a movie.
+//
+// GET /api/v1/movies/{id}/progress
+func (UnimplementedHandler) GetWatchProgress(ctx context.Context, params GetWatchProgressParams) (r GetWatchProgressRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -403,6 +538,15 @@ func (UnimplementedHandler) ListLibraryPermissions(ctx context.Context, params L
 //
 // GET /api/v1/libraries/{libraryId}/scans
 func (UnimplementedHandler) ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (r ListLibraryScansRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMovies implements listMovies operation.
+//
+// Get a paginated list of movies with optional filtering and sorting.
+//
+// GET /api/v1/movies
+func (UnimplementedHandler) ListMovies(ctx context.Context, params ListMoviesParams) (r ListMoviesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -496,6 +640,15 @@ func (UnimplementedHandler) LogoutCurrent(ctx context.Context) (r LogoutCurrentR
 	return r, ht.ErrNotImplemented
 }
 
+// MarkAsWatched implements markAsWatched operation.
+//
+// Mark a movie as fully watched.
+//
+// POST /api/v1/movies/{id}/watched
+func (UnimplementedHandler) MarkAsWatched(ctx context.Context, params MarkAsWatchedParams) (r MarkAsWatchedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // OidcAuthorize implements oidcAuthorize operation.
 //
 // Redirects to the OIDC provider's authorization endpoint.
@@ -511,6 +664,15 @@ func (UnimplementedHandler) OidcAuthorize(ctx context.Context, params OidcAuthor
 //
 // GET /api/v1/oidc/callback/{provider}
 func (UnimplementedHandler) OidcCallback(ctx context.Context, params OidcCallbackParams) (r OidcCallbackRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshMovieMetadata implements refreshMovieMetadata operation.
+//
+// Trigger a metadata refresh from TMDb/Radarr.
+//
+// POST /api/v1/movies/{id}/refresh
+func (UnimplementedHandler) RefreshMovieMetadata(ctx context.Context, params RefreshMovieMetadataParams) (r RefreshMovieMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -622,6 +784,15 @@ func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params Searc
 	return r, ht.ErrNotImplemented
 }
 
+// SearchMovies implements searchMovies operation.
+//
+// Search movies by title using fuzzy matching.
+//
+// GET /api/v1/movies/search
+func (UnimplementedHandler) SearchMovies(ctx context.Context, params SearchMoviesParams) (r SearchMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SetupTOTP implements setupTOTP operation.
 //
 // Generate TOTP secret and QR code for enrollment.
@@ -691,6 +862,15 @@ func (UnimplementedHandler) UpdateUserPreferences(ctx context.Context, req *User
 //
 // PUT /api/v1/settings/user/{key}
 func (UnimplementedHandler) UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (r UpdateUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateWatchProgress implements updateWatchProgress operation.
+//
+// Update or create watch progress for a movie.
+//
+// POST /api/v1/movies/{id}/progress
+func (UnimplementedHandler) UpdateWatchProgress(ctx context.Context, req *UpdateWatchProgressReq, params UpdateWatchProgressParams) (r UpdateWatchProgressRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

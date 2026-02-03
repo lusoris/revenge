@@ -96,6 +96,156 @@ type MfaBackupCode struct {
 	CreatedAt  time.Time  `json:"createdAt"`
 }
 
+// Movie metadata from TMDb/Radarr with library tracking
+type Movie struct {
+	// UUID v7 primary key (time-ordered)
+	ID uuid.UUID `json:"id"`
+	// The Movie Database (TMDb) ID - primary metadata source
+	TmdbID *int32 `json:"tmdbId"`
+	// Internet Movie Database ID (tt1234567 format)
+	ImdbID        *string     `json:"imdbId"`
+	Title         string      `json:"title"`
+	OriginalTitle *string     `json:"originalTitle"`
+	Year          *int32      `json:"year"`
+	ReleaseDate   pgtype.Date `json:"releaseDate"`
+	Runtime       *int32      `json:"runtime"`
+	Overview      *string     `json:"overview"`
+	Tagline       *string     `json:"tagline"`
+	// Release status (released, post-production, in-production, etc.)
+	Status           *string `json:"status"`
+	OriginalLanguage *string `json:"originalLanguage"`
+	// Relative path to poster image (from TMDb/Radarr)
+	PosterPath *string `json:"posterPath"`
+	// Relative path to backdrop image (from TMDb/Radarr)
+	BackdropPath *string `json:"backdropPath"`
+	TrailerUrl   *string `json:"trailerUrl"`
+	// TMDb average rating (0-10 scale)
+	VoteAverage pgtype.Numeric `json:"voteAverage"`
+	VoteCount   *int32         `json:"voteCount"`
+	Popularity  pgtype.Numeric `json:"popularity"`
+	Budget      *int64         `json:"budget"`
+	Revenue     *int64         `json:"revenue"`
+	// When the movie was added to library
+	LibraryAddedAt time.Time `json:"libraryAddedAt"`
+	// Last metadata refresh from TMDb/Radarr
+	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
+	// Radarr movie ID for PRIMARY metadata sync
+	RadarrID  *int32    `json:"radarrId"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// Movie collections from TMDb (e.g., MCU, Star Wars)
+type MovieCollection struct {
+	ID uuid.UUID `json:"id"`
+	// TMDb collection ID for metadata sync
+	TmdbCollectionID *int32    `json:"tmdbCollectionId"`
+	Name             string    `json:"name"`
+	Overview         *string   `json:"overview"`
+	PosterPath       *string   `json:"posterPath"`
+	BackdropPath     *string   `json:"backdropPath"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
+}
+
+// Junction table linking movies to collections
+type MovieCollectionMember struct {
+	ID           uuid.UUID `json:"id"`
+	CollectionID uuid.UUID `json:"collectionId"`
+	MovieID      uuid.UUID `json:"movieId"`
+	// Order in collection (1 = first movie, 2 = sequel, etc.)
+	CollectionOrder *int32    `json:"collectionOrder"`
+	CreatedAt       time.Time `json:"createdAt"`
+}
+
+// Cast and crew information from TMDb
+type MovieCredit struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// TMDb person ID for linking to person data
+	TmdbPersonID int32   `json:"tmdbPersonId"`
+	Name         string  `json:"name"`
+	ProfilePath  *string `json:"profilePath"`
+	// Either cast (actor) or crew (director, writer, etc.)
+	CreditType string `json:"creditType"`
+	// Character name for cast members
+	Character *string `json:"character"`
+	// Order in cast list (0 = lead actor)
+	CastOrder *int32 `json:"castOrder"`
+	// Job title for crew members (Director, Writer, etc.)
+	Job *string `json:"job"`
+	// Department for crew members (Directing, Writing, etc.)
+	Department *string   `json:"department"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+// Physical media files associated with movies
+type MovieFile struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// Absolute path to file on disk
+	FilePath   string  `json:"filePath"`
+	FileSize   int64   `json:"fileSize"`
+	FileName   string  `json:"fileName"`
+	Resolution *string `json:"resolution"`
+	// Quality profile from Radarr (e.g., Bluray-1080p)
+	QualityProfile *string `json:"qualityProfile"`
+	VideoCodec     *string `json:"videoCodec"`
+	AudioCodec     *string `json:"audioCodec"`
+	Container      *string `json:"container"`
+	// Actual file duration (may differ from movie runtime)
+	DurationSeconds *int32         `json:"durationSeconds"`
+	BitrateKbps     *int32         `json:"bitrateKbps"`
+	Framerate       pgtype.Numeric `json:"framerate"`
+	DynamicRange    *string        `json:"dynamicRange"`
+	ColorSpace      *string        `json:"colorSpace"`
+	AudioChannels   *string        `json:"audioChannels"`
+	// Array of audio track language codes
+	AudioLanguages []string `json:"audioLanguages"`
+	// Array of subtitle language codes
+	SubtitleLanguages []string `json:"subtitleLanguages"`
+	// Radarr file ID for sync with PRIMARY metadata source
+	RadarrFileID  *int32             `json:"radarrFileId"`
+	LastScannedAt pgtype.Timestamptz `json:"lastScannedAt"`
+	IsMonitored   *bool              `json:"isMonitored"`
+	CreatedAt     time.Time          `json:"createdAt"`
+	UpdatedAt     time.Time          `json:"updatedAt"`
+}
+
+// Junction table linking movies to TMDb genres
+type MovieGenre struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// TMDb genre ID (28=Action, 35=Comedy, etc.)
+	TmdbGenreID int32 `json:"tmdbGenreId"`
+	// Genre name for display (Action, Comedy, Drama, etc.)
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// User watch history and progress tracking for movies
+type MovieWatched struct {
+	ID      uuid.UUID `json:"id"`
+	UserID  uuid.UUID `json:"userId"`
+	MovieID uuid.UUID `json:"movieId"`
+	// Current playback position in seconds
+	ProgressSeconds int32  `json:"progressSeconds"`
+	DurationSeconds *int32 `json:"durationSeconds"`
+	// Calculated progress percentage (0-100)
+	ProgressPercent pgtype.Numeric `json:"progressPercent"`
+	// TRUE when user has watched >90% of the movie
+	IsCompleted *bool `json:"isCompleted"`
+	// Most recent watch time (for continue watching)
+	LastWatchedAt time.Time `json:"lastWatchedAt"`
+	// Timestamp when user completed watching
+	CompletedAt pgtype.Timestamptz `json:"completedAt"`
+	// Number of times user has watched this movie
+	WatchCount *int32    `json:"watchCount"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
 // API keys for programmatic access with scope-based permissions
 type SharedApiKey struct {
 	ID          uuid.UUID `json:"id"`

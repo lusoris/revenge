@@ -336,6 +336,20 @@ func encodeUpdateUserSettingRequest(
 	return nil
 }
 
+func encodeUpdateWatchProgressRequest(
+	req *UpdateWatchProgressReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUploadAvatarRequest(
 	req *UploadAvatarReq,
 	r *http.Request,

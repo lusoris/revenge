@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
@@ -37,6 +38,7 @@ type Handler struct {
 	libraryService  *library.Service
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
+	movieHandler    *movie.Handler
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.

@@ -61,6 +61,10 @@ type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
 
+type DeleteWatchProgressRes interface {
+	deleteWatchProgressRes()
+}
+
 type DisableMFARes interface {
 	disableMFARes()
 }
@@ -89,6 +93,18 @@ type GetActivityStatsRes interface {
 	getActivityStatsRes()
 }
 
+type GetCollectionMoviesRes interface {
+	getCollectionMoviesRes()
+}
+
+type GetCollectionRes interface {
+	getCollectionRes()
+}
+
+type GetContinueWatchingRes interface {
+	getContinueWatchingRes()
+}
+
 type GetCurrentSessionRes interface {
 	getCurrentSessionRes()
 }
@@ -105,12 +121,40 @@ type GetMFAStatusRes interface {
 	getMFAStatusRes()
 }
 
+type GetMovieCastRes interface {
+	getMovieCastRes()
+}
+
+type GetMovieCollectionRes interface {
+	getMovieCollectionRes()
+}
+
+type GetMovieCrewRes interface {
+	getMovieCrewRes()
+}
+
+type GetMovieFilesRes interface {
+	getMovieFilesRes()
+}
+
+type GetMovieGenresRes interface {
+	getMovieGenresRes()
+}
+
+type GetMovieRes interface {
+	getMovieRes()
+}
+
 type GetReadinessRes interface {
 	getReadinessRes()
 }
 
 type GetRecentActionsRes interface {
 	getRecentActionsRes()
+}
+
+type GetRecentlyAddedRes interface {
+	getRecentlyAddedRes()
 }
 
 type GetResourceActivityLogsRes interface {
@@ -125,12 +169,20 @@ type GetStartupRes interface {
 	getStartupRes()
 }
 
+type GetTopRatedRes interface {
+	getTopRatedRes()
+}
+
 type GetUserActivityLogsRes interface {
 	getUserActivityLogsRes()
 }
 
 type GetUserByIdRes interface {
 	getUserByIdRes()
+}
+
+type GetUserMovieStatsRes interface {
+	getUserMovieStatsRes()
 }
 
 type GetUserPreferencesRes interface {
@@ -143,6 +195,14 @@ type GetUserRolesRes interface {
 
 type GetUserSettingRes interface {
 	getUserSettingRes()
+}
+
+type GetWatchHistoryRes interface {
+	getWatchHistoryRes()
+}
+
+type GetWatchProgressRes interface {
+	getWatchProgressRes()
 }
 
 type GrantLibraryPermissionRes interface {
@@ -167,6 +227,10 @@ type ListLibraryPermissionsRes interface {
 
 type ListLibraryScansRes interface {
 	listLibraryScansRes()
+}
+
+type ListMoviesRes interface {
+	listMoviesRes()
 }
 
 type ListPoliciesRes interface {
@@ -205,12 +269,20 @@ type LogoutRes interface {
 	logoutRes()
 }
 
+type MarkAsWatchedRes interface {
+	markAsWatchedRes()
+}
+
 type OidcAuthorizeRes interface {
 	oidcAuthorizeRes()
 }
 
 type OidcCallbackRes interface {
 	oidcCallbackRes()
+}
+
+type RefreshMovieMetadataRes interface {
+	refreshMovieMetadataRes()
 }
 
 type RefreshSessionRes interface {
@@ -261,6 +333,10 @@ type SearchActivityLogsRes interface {
 	searchActivityLogsRes()
 }
 
+type SearchMoviesRes interface {
+	searchMoviesRes()
+}
+
 type SetupTOTPRes interface {
 	setupTOTPRes()
 }
@@ -291,6 +367,10 @@ type UpdateUserPreferencesRes interface {
 
 type UpdateUserSettingRes interface {
 	updateUserSettingRes()
+}
+
+type UpdateWatchProgressRes interface {
+	updateWatchProgressRes()
 }
 
 type UploadAvatarRes interface {

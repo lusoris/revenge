@@ -98,6 +98,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/settings/user/{key}
 	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
+	// DeleteWatchProgress implements deleteWatchProgress operation.
+	//
+	// Remove watch progress for a movie.
+	//
+	// DELETE /api/v1/movies/{id}/progress
+	DeleteWatchProgress(ctx context.Context, params DeleteWatchProgressParams) (DeleteWatchProgressRes, error)
 	// DisableMFA implements disableMFA operation.
 	//
 	// Turn off MFA requirement for login.
@@ -140,6 +146,24 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity/stats
 	GetActivityStats(ctx context.Context) (GetActivityStatsRes, error)
+	// GetCollection implements getCollection operation.
+	//
+	// Get detailed information about a collection.
+	//
+	// GET /api/v1/collections/{id}
+	GetCollection(ctx context.Context, params GetCollectionParams) (GetCollectionRes, error)
+	// GetCollectionMovies implements getCollectionMovies operation.
+	//
+	// Get all movies in a collection.
+	//
+	// GET /api/v1/collections/{id}/movies
+	GetCollectionMovies(ctx context.Context, params GetCollectionMoviesParams) (GetCollectionMoviesRes, error)
+	// GetContinueWatching implements getContinueWatching operation.
+	//
+	// Get movies the user is currently watching.
+	//
+	// GET /api/v1/movies/continue-watching
+	GetContinueWatching(ctx context.Context, params GetContinueWatchingParams) (GetContinueWatchingRes, error)
 	// GetCurrentSession implements getCurrentSession operation.
 	//
 	// Get information about the current session.
@@ -172,6 +196,42 @@ type Handler interface {
 	//
 	// GET /api/v1/mfa/status
 	GetMFAStatus(ctx context.Context) (GetMFAStatusRes, error)
+	// GetMovie implements getMovie operation.
+	//
+	// Get detailed information about a movie.
+	//
+	// GET /api/v1/movies/{id}
+	GetMovie(ctx context.Context, params GetMovieParams) (GetMovieRes, error)
+	// GetMovieCast implements getMovieCast operation.
+	//
+	// Get cast members for a movie.
+	//
+	// GET /api/v1/movies/{id}/cast
+	GetMovieCast(ctx context.Context, params GetMovieCastParams) (GetMovieCastRes, error)
+	// GetMovieCollection implements getMovieCollection operation.
+	//
+	// Get the collection this movie belongs to.
+	//
+	// GET /api/v1/movies/{id}/collection
+	GetMovieCollection(ctx context.Context, params GetMovieCollectionParams) (GetMovieCollectionRes, error)
+	// GetMovieCrew implements getMovieCrew operation.
+	//
+	// Get crew members for a movie.
+	//
+	// GET /api/v1/movies/{id}/crew
+	GetMovieCrew(ctx context.Context, params GetMovieCrewParams) (GetMovieCrewRes, error)
+	// GetMovieFiles implements getMovieFiles operation.
+	//
+	// Get physical files for a movie.
+	//
+	// GET /api/v1/movies/{id}/files
+	GetMovieFiles(ctx context.Context, params GetMovieFilesParams) (GetMovieFilesRes, error)
+	// GetMovieGenres implements getMovieGenres operation.
+	//
+	// Get genres for a movie.
+	//
+	// GET /api/v1/movies/{id}/genres
+	GetMovieGenres(ctx context.Context, params GetMovieGenresParams) (GetMovieGenresRes, error)
 	// GetReadiness implements getReadiness operation.
 	//
 	// Checks if the service is ready to accept traffic.
@@ -186,6 +246,12 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity/actions
 	GetRecentActions(ctx context.Context, params GetRecentActionsParams) (GetRecentActionsRes, error)
+	// GetRecentlyAdded implements getRecentlyAdded operation.
+	//
+	// Get movies ordered by when they were added to the library.
+	//
+	// GET /api/v1/movies/recently-added
+	GetRecentlyAdded(ctx context.Context, params GetRecentlyAddedParams) (GetRecentlyAddedRes, error)
 	// GetResourceActivityLogs implements getResourceActivityLogs operation.
 	//
 	// Get activity logs for a specific resource.
@@ -206,6 +272,12 @@ type Handler interface {
 	//
 	// GET /startupz
 	GetStartup(ctx context.Context) (GetStartupRes, error)
+	// GetTopRated implements getTopRated operation.
+	//
+	// Get highest-rated movies.
+	//
+	// GET /api/v1/movies/top-rated
+	GetTopRated(ctx context.Context, params GetTopRatedParams) (GetTopRatedRes, error)
 	// GetUserActivityLogs implements getUserActivityLogs operation.
 	//
 	// Get activity logs for a specific user.
@@ -218,6 +290,12 @@ type Handler interface {
 	//
 	// GET /api/v1/users/{userId}
 	GetUserById(ctx context.Context, params GetUserByIdParams) (GetUserByIdRes, error)
+	// GetUserMovieStats implements getUserMovieStats operation.
+	//
+	// Get statistics about user's movie watching.
+	//
+	// GET /api/v1/movies/stats
+	GetUserMovieStats(ctx context.Context) (GetUserMovieStatsRes, error)
 	// GetUserPreferences implements getUserPreferences operation.
 	//
 	// Get notification and display preferences for the authenticated user.
@@ -236,6 +314,18 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// GetWatchHistory implements getWatchHistory operation.
+	//
+	// Get user's watched movies.
+	//
+	// GET /api/v1/movies/watch-history
+	GetWatchHistory(ctx context.Context, params GetWatchHistoryParams) (GetWatchHistoryRes, error)
+	// GetWatchProgress implements getWatchProgress operation.
+	//
+	// Get user's watch progress for a movie.
+	//
+	// GET /api/v1/movies/{id}/progress
+	GetWatchProgress(ctx context.Context, params GetWatchProgressParams) (GetWatchProgressRes, error)
 	// GrantLibraryPermission implements grantLibraryPermission operation.
 	//
 	// Grant a user permission to access a library. Admin only.
@@ -272,6 +362,12 @@ type Handler interface {
 	//
 	// GET /api/v1/libraries/{libraryId}/scans
 	ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (ListLibraryScansRes, error)
+	// ListMovies implements listMovies operation.
+	//
+	// Get a paginated list of movies with optional filtering and sorting.
+	//
+	// GET /api/v1/movies
+	ListMovies(ctx context.Context, params ListMoviesParams) (ListMoviesRes, error)
 	// ListOIDCProviders implements listOIDCProviders operation.
 	//
 	// Returns a list of enabled OIDC providers for login.
@@ -332,6 +428,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/sessions/current
 	LogoutCurrent(ctx context.Context) (LogoutCurrentRes, error)
+	// MarkAsWatched implements markAsWatched operation.
+	//
+	// Mark a movie as fully watched.
+	//
+	// POST /api/v1/movies/{id}/watched
+	MarkAsWatched(ctx context.Context, params MarkAsWatchedParams) (MarkAsWatchedRes, error)
 	// OidcAuthorize implements oidcAuthorize operation.
 	//
 	// Redirects to the OIDC provider's authorization endpoint.
@@ -344,6 +446,12 @@ type Handler interface {
 	//
 	// GET /api/v1/oidc/callback/{provider}
 	OidcCallback(ctx context.Context, params OidcCallbackParams) (OidcCallbackRes, error)
+	// RefreshMovieMetadata implements refreshMovieMetadata operation.
+	//
+	// Trigger a metadata refresh from TMDb/Radarr.
+	//
+	// POST /api/v1/movies/{id}/refresh
+	RefreshMovieMetadata(ctx context.Context, params RefreshMovieMetadataParams) (RefreshMovieMetadataRes, error)
 	// RefreshSession implements refreshSession operation.
 	//
 	// Refresh access token using refresh token.
@@ -416,6 +524,12 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity
 	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// SearchMovies implements searchMovies operation.
+	//
+	// Search movies by title using fuzzy matching.
+	//
+	// GET /api/v1/movies/search
+	SearchMovies(ctx context.Context, params SearchMoviesParams) (SearchMoviesRes, error)
 	// SetupTOTP implements setupTOTP operation.
 	//
 	// Generate TOTP secret and QR code for enrollment.
@@ -464,6 +578,12 @@ type Handler interface {
 	//
 	// PUT /api/v1/settings/user/{key}
 	UpdateUserSetting(ctx context.Context, req *SettingValue, params UpdateUserSettingParams) (UpdateUserSettingRes, error)
+	// UpdateWatchProgress implements updateWatchProgress operation.
+	//
+	// Update or create watch progress for a movie.
+	//
+	// POST /api/v1/movies/{id}/progress
+	UpdateWatchProgress(ctx context.Context, req *UpdateWatchProgressReq, params UpdateWatchProgressParams) (UpdateWatchProgressRes, error)
 	// UploadAvatar implements uploadAvatar operation.
 	//
 	// Upload a new avatar image.

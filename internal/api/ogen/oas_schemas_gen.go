@@ -1301,6 +1301,353 @@ func (s *ClaimMappings) SetRoles(val OptString) {
 	s.Roles = val
 }
 
+// Merged schema.
+// Ref: #/components/schemas/ContinueWatchingItem
+type ContinueWatchingItem struct {
+	// Movie ID.
+	ID OptUUID `json:"id"`
+	// TMDb ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// IMDb ID (tt1234567 format).
+	ImdbID OptNilString `json:"imdb_id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title (if different).
+	OriginalTitle OptNilString `json:"original_title"`
+	// Release year.
+	Year OptNilInt `json:"year"`
+	// Release date.
+	ReleaseDate OptNilDate `json:"release_date"`
+	// Runtime in minutes.
+	Runtime OptNilInt `json:"runtime"`
+	// Plot synopsis.
+	Overview OptNilString `json:"overview"`
+	// Movie tagline.
+	Tagline OptNilString `json:"tagline"`
+	// Release status (released, post-production, etc.).
+	Status OptNilString `json:"status"`
+	// ISO 639-1 language code.
+	OriginalLanguage OptNilString `json:"original_language"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	// Trailer URL.
+	TrailerURL OptNilString `json:"trailer_url"`
+	// Average rating (0-10).
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptNilInt `json:"vote_count"`
+	// Popularity score.
+	Popularity OptNilFloat32 `json:"popularity"`
+	// Production budget.
+	Budget OptNilInt64 `json:"budget"`
+	// Box office revenue.
+	Revenue OptNilInt64 `json:"revenue"`
+	// When added to library.
+	LibraryAddedAt OptDateTime `json:"library_added_at"`
+	// Last metadata update.
+	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
+	// Radarr movie ID.
+	RadarrID        OptNilInt   `json:"radarr_id"`
+	CreatedAt       OptDateTime `json:"created_at"`
+	UpdatedAt       OptDateTime `json:"updated_at"`
+	ProgressSeconds OptInt      `json:"progress_seconds"`
+	DurationSeconds OptInt      `json:"duration_seconds"`
+	ProgressPercent OptNilInt   `json:"progress_percent"`
+	LastWatchedAt   OptDateTime `json:"last_watched_at"`
+}
+
+// GetID returns the value of ID.
+func (s *ContinueWatchingItem) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *ContinueWatchingItem) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *ContinueWatchingItem) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *ContinueWatchingItem) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *ContinueWatchingItem) GetOriginalTitle() OptNilString {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *ContinueWatchingItem) GetYear() OptNilInt {
+	return s.Year
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *ContinueWatchingItem) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *ContinueWatchingItem) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetOverview returns the value of Overview.
+func (s *ContinueWatchingItem) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetTagline returns the value of Tagline.
+func (s *ContinueWatchingItem) GetTagline() OptNilString {
+	return s.Tagline
+}
+
+// GetStatus returns the value of Status.
+func (s *ContinueWatchingItem) GetStatus() OptNilString {
+	return s.Status
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *ContinueWatchingItem) GetOriginalLanguage() OptNilString {
+	return s.OriginalLanguage
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *ContinueWatchingItem) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *ContinueWatchingItem) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetTrailerURL returns the value of TrailerURL.
+func (s *ContinueWatchingItem) GetTrailerURL() OptNilString {
+	return s.TrailerURL
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *ContinueWatchingItem) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *ContinueWatchingItem) GetVoteCount() OptNilInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *ContinueWatchingItem) GetPopularity() OptNilFloat32 {
+	return s.Popularity
+}
+
+// GetBudget returns the value of Budget.
+func (s *ContinueWatchingItem) GetBudget() OptNilInt64 {
+	return s.Budget
+}
+
+// GetRevenue returns the value of Revenue.
+func (s *ContinueWatchingItem) GetRevenue() OptNilInt64 {
+	return s.Revenue
+}
+
+// GetLibraryAddedAt returns the value of LibraryAddedAt.
+func (s *ContinueWatchingItem) GetLibraryAddedAt() OptDateTime {
+	return s.LibraryAddedAt
+}
+
+// GetMetadataUpdatedAt returns the value of MetadataUpdatedAt.
+func (s *ContinueWatchingItem) GetMetadataUpdatedAt() OptNilDateTime {
+	return s.MetadataUpdatedAt
+}
+
+// GetRadarrID returns the value of RadarrID.
+func (s *ContinueWatchingItem) GetRadarrID() OptNilInt {
+	return s.RadarrID
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *ContinueWatchingItem) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *ContinueWatchingItem) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *ContinueWatchingItem) GetProgressSeconds() OptInt {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *ContinueWatchingItem) GetDurationSeconds() OptInt {
+	return s.DurationSeconds
+}
+
+// GetProgressPercent returns the value of ProgressPercent.
+func (s *ContinueWatchingItem) GetProgressPercent() OptNilInt {
+	return s.ProgressPercent
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *ContinueWatchingItem) GetLastWatchedAt() OptDateTime {
+	return s.LastWatchedAt
+}
+
+// SetID sets the value of ID.
+func (s *ContinueWatchingItem) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *ContinueWatchingItem) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *ContinueWatchingItem) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ContinueWatchingItem) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *ContinueWatchingItem) SetOriginalTitle(val OptNilString) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *ContinueWatchingItem) SetYear(val OptNilInt) {
+	s.Year = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *ContinueWatchingItem) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *ContinueWatchingItem) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *ContinueWatchingItem) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *ContinueWatchingItem) SetTagline(val OptNilString) {
+	s.Tagline = val
+}
+
+// SetStatus sets the value of Status.
+func (s *ContinueWatchingItem) SetStatus(val OptNilString) {
+	s.Status = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *ContinueWatchingItem) SetOriginalLanguage(val OptNilString) {
+	s.OriginalLanguage = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *ContinueWatchingItem) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *ContinueWatchingItem) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetTrailerURL sets the value of TrailerURL.
+func (s *ContinueWatchingItem) SetTrailerURL(val OptNilString) {
+	s.TrailerURL = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *ContinueWatchingItem) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *ContinueWatchingItem) SetVoteCount(val OptNilInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *ContinueWatchingItem) SetPopularity(val OptNilFloat32) {
+	s.Popularity = val
+}
+
+// SetBudget sets the value of Budget.
+func (s *ContinueWatchingItem) SetBudget(val OptNilInt64) {
+	s.Budget = val
+}
+
+// SetRevenue sets the value of Revenue.
+func (s *ContinueWatchingItem) SetRevenue(val OptNilInt64) {
+	s.Revenue = val
+}
+
+// SetLibraryAddedAt sets the value of LibraryAddedAt.
+func (s *ContinueWatchingItem) SetLibraryAddedAt(val OptDateTime) {
+	s.LibraryAddedAt = val
+}
+
+// SetMetadataUpdatedAt sets the value of MetadataUpdatedAt.
+func (s *ContinueWatchingItem) SetMetadataUpdatedAt(val OptNilDateTime) {
+	s.MetadataUpdatedAt = val
+}
+
+// SetRadarrID sets the value of RadarrID.
+func (s *ContinueWatchingItem) SetRadarrID(val OptNilInt) {
+	s.RadarrID = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *ContinueWatchingItem) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *ContinueWatchingItem) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *ContinueWatchingItem) SetProgressSeconds(val OptInt) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *ContinueWatchingItem) SetDurationSeconds(val OptInt) {
+	s.DurationSeconds = val
+}
+
+// SetProgressPercent sets the value of ProgressPercent.
+func (s *ContinueWatchingItem) SetProgressPercent(val OptNilInt) {
+	s.ProgressPercent = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *ContinueWatchingItem) SetLastWatchedAt(val OptDateTime) {
+	s.LastWatchedAt = val
+}
+
 type CreateAPIKeyBadRequest Error
 
 func (*CreateAPIKeyBadRequest) createAPIKeyRes() {}
@@ -2039,6 +2386,19 @@ type DeleteUserSettingUnauthorized Error
 
 func (*DeleteUserSettingUnauthorized) deleteUserSettingRes() {}
 
+// DeleteWatchProgressNoContent is response for DeleteWatchProgress operation.
+type DeleteWatchProgressNoContent struct{}
+
+func (*DeleteWatchProgressNoContent) deleteWatchProgressRes() {}
+
+type DeleteWatchProgressNotFound Error
+
+func (*DeleteWatchProgressNotFound) deleteWatchProgressRes() {}
+
+type DeleteWatchProgressUnauthorized Error
+
+func (*DeleteWatchProgressUnauthorized) deleteWatchProgressRes() {}
+
 type DisableMFAOK struct {
 	Success OptBool `json:"success"`
 }
@@ -2128,12 +2488,18 @@ func (*Error) disableMFARes()            {}
 func (*Error) disableTOTPRes()           {}
 func (*Error) forgotPasswordRes()        {}
 func (*Error) generateBackupCodesRes()   {}
+func (*Error) getContinueWatchingRes()   {}
 func (*Error) getCurrentUserRes()        {}
 func (*Error) getMFAStatusRes()          {}
+func (*Error) getRecentlyAddedRes()      {}
+func (*Error) getTopRatedRes()           {}
+func (*Error) getUserMovieStatsRes()     {}
 func (*Error) getUserPreferencesRes()    {}
 func (*Error) getUserRolesRes()          {}
+func (*Error) getWatchHistoryRes()       {}
 func (*Error) listAPIKeysRes()           {}
 func (*Error) listLibrariesRes()         {}
+func (*Error) listMoviesRes()            {}
 func (*Error) listServerSettingsRes()    {}
 func (*Error) listSessionsRes()          {}
 func (*Error) listUserOIDCLinksRes()     {}
@@ -2148,6 +2514,7 @@ func (*Error) regenerateBackupCodesRes() {}
 func (*Error) registerRes()              {}
 func (*Error) resendVerificationRes()    {}
 func (*Error) resetPasswordRes()         {}
+func (*Error) searchMoviesRes()          {}
 func (*Error) setupTOTPRes()             {}
 func (*Error) verifyEmailRes()           {}
 
@@ -2254,6 +2621,30 @@ type GetActivityStatsUnauthorized Error
 
 func (*GetActivityStatsUnauthorized) getActivityStatsRes() {}
 
+type GetCollectionMoviesNotFound Error
+
+func (*GetCollectionMoviesNotFound) getCollectionMoviesRes() {}
+
+type GetCollectionMoviesOKApplicationJSON []Movie
+
+func (*GetCollectionMoviesOKApplicationJSON) getCollectionMoviesRes() {}
+
+type GetCollectionMoviesUnauthorized Error
+
+func (*GetCollectionMoviesUnauthorized) getCollectionMoviesRes() {}
+
+type GetCollectionNotFound Error
+
+func (*GetCollectionNotFound) getCollectionRes() {}
+
+type GetCollectionUnauthorized Error
+
+func (*GetCollectionUnauthorized) getCollectionRes() {}
+
+type GetContinueWatchingOKApplicationJSON []ContinueWatchingItem
+
+func (*GetContinueWatchingOKApplicationJSON) getContinueWatchingRes() {}
+
 type GetCurrentSessionNotFound Error
 
 func (*GetCurrentSessionNotFound) getCurrentSessionRes() {}
@@ -2274,6 +2665,70 @@ type GetLibraryUnauthorized Error
 
 func (*GetLibraryUnauthorized) getLibraryRes() {}
 
+type GetMovieCastNotFound Error
+
+func (*GetMovieCastNotFound) getMovieCastRes() {}
+
+type GetMovieCastOKApplicationJSON []MovieCredit
+
+func (*GetMovieCastOKApplicationJSON) getMovieCastRes() {}
+
+type GetMovieCastUnauthorized Error
+
+func (*GetMovieCastUnauthorized) getMovieCastRes() {}
+
+type GetMovieCollectionNotFound Error
+
+func (*GetMovieCollectionNotFound) getMovieCollectionRes() {}
+
+type GetMovieCollectionUnauthorized Error
+
+func (*GetMovieCollectionUnauthorized) getMovieCollectionRes() {}
+
+type GetMovieCrewNotFound Error
+
+func (*GetMovieCrewNotFound) getMovieCrewRes() {}
+
+type GetMovieCrewOKApplicationJSON []MovieCredit
+
+func (*GetMovieCrewOKApplicationJSON) getMovieCrewRes() {}
+
+type GetMovieCrewUnauthorized Error
+
+func (*GetMovieCrewUnauthorized) getMovieCrewRes() {}
+
+type GetMovieFilesNotFound Error
+
+func (*GetMovieFilesNotFound) getMovieFilesRes() {}
+
+type GetMovieFilesOKApplicationJSON []MovieFile
+
+func (*GetMovieFilesOKApplicationJSON) getMovieFilesRes() {}
+
+type GetMovieFilesUnauthorized Error
+
+func (*GetMovieFilesUnauthorized) getMovieFilesRes() {}
+
+type GetMovieGenresNotFound Error
+
+func (*GetMovieGenresNotFound) getMovieGenresRes() {}
+
+type GetMovieGenresOKApplicationJSON []MovieGenre
+
+func (*GetMovieGenresOKApplicationJSON) getMovieGenresRes() {}
+
+type GetMovieGenresUnauthorized Error
+
+func (*GetMovieGenresUnauthorized) getMovieGenresRes() {}
+
+type GetMovieNotFound Error
+
+func (*GetMovieNotFound) getMovieRes() {}
+
+type GetMovieUnauthorized Error
+
+func (*GetMovieUnauthorized) getMovieRes() {}
+
 type GetReadinessOK HealthCheck
 
 func (*GetReadinessOK) getReadinessRes() {}
@@ -2289,6 +2744,10 @@ func (*GetRecentActionsForbidden) getRecentActionsRes() {}
 type GetRecentActionsUnauthorized Error
 
 func (*GetRecentActionsUnauthorized) getRecentActionsRes() {}
+
+type GetRecentlyAddedOKApplicationJSON []Movie
+
+func (*GetRecentlyAddedOKApplicationJSON) getRecentlyAddedRes() {}
 
 type GetResourceActivityLogsForbidden Error
 
@@ -2318,6 +2777,10 @@ type GetStartupServiceUnavailable HealthCheck
 
 func (*GetStartupServiceUnavailable) getStartupRes() {}
 
+type GetTopRatedOKApplicationJSON []Movie
+
+func (*GetTopRatedOKApplicationJSON) getTopRatedRes() {}
+
 type GetUserActivityLogsForbidden Error
 
 func (*GetUserActivityLogsForbidden) getUserActivityLogsRes() {}
@@ -2345,6 +2808,18 @@ func (*GetUserSettingNotFound) getUserSettingRes() {}
 type GetUserSettingUnauthorized Error
 
 func (*GetUserSettingUnauthorized) getUserSettingRes() {}
+
+type GetWatchHistoryOKApplicationJSON []WatchedMovieItem
+
+func (*GetWatchHistoryOKApplicationJSON) getWatchHistoryRes() {}
+
+type GetWatchProgressNotFound Error
+
+func (*GetWatchProgressNotFound) getWatchProgressRes() {}
+
+type GetWatchProgressUnauthorized Error
+
+func (*GetWatchProgressUnauthorized) getWatchProgressRes() {}
 
 type GrantLibraryPermissionBadRequest Error
 
@@ -3299,6 +3774,65 @@ type ListLibraryScansUnauthorized Error
 
 func (*ListLibraryScansUnauthorized) listLibraryScansRes() {}
 
+type ListMoviesOKApplicationJSON []Movie
+
+func (*ListMoviesOKApplicationJSON) listMoviesRes() {}
+
+type ListMoviesOrderBy string
+
+const (
+	ListMoviesOrderByTitle  ListMoviesOrderBy = "title"
+	ListMoviesOrderByYear   ListMoviesOrderBy = "year"
+	ListMoviesOrderByAdded  ListMoviesOrderBy = "added"
+	ListMoviesOrderByRating ListMoviesOrderBy = "rating"
+)
+
+// AllValues returns all ListMoviesOrderBy values.
+func (ListMoviesOrderBy) AllValues() []ListMoviesOrderBy {
+	return []ListMoviesOrderBy{
+		ListMoviesOrderByTitle,
+		ListMoviesOrderByYear,
+		ListMoviesOrderByAdded,
+		ListMoviesOrderByRating,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListMoviesOrderBy) MarshalText() ([]byte, error) {
+	switch s {
+	case ListMoviesOrderByTitle:
+		return []byte(s), nil
+	case ListMoviesOrderByYear:
+		return []byte(s), nil
+	case ListMoviesOrderByAdded:
+		return []byte(s), nil
+	case ListMoviesOrderByRating:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListMoviesOrderBy) UnmarshalText(data []byte) error {
+	switch ListMoviesOrderBy(data) {
+	case ListMoviesOrderByTitle:
+		*s = ListMoviesOrderByTitle
+		return nil
+	case ListMoviesOrderByYear:
+		*s = ListMoviesOrderByYear
+		return nil
+	case ListMoviesOrderByAdded:
+		*s = ListMoviesOrderByAdded
+		return nil
+	case ListMoviesOrderByRating:
+		*s = ListMoviesOrderByRating
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type ListPoliciesForbidden Error
 
 func (*ListPoliciesForbidden) listPoliciesRes() {}
@@ -3524,6 +4058,1077 @@ func (s *MFAStatus) SetRequireMfa(val OptBool) {
 }
 
 func (*MFAStatus) getMFAStatusRes() {}
+
+// MarkAsWatchedNoContent is response for MarkAsWatched operation.
+type MarkAsWatchedNoContent struct{}
+
+func (*MarkAsWatchedNoContent) markAsWatchedRes() {}
+
+type MarkAsWatchedNotFound Error
+
+func (*MarkAsWatchedNotFound) markAsWatchedRes() {}
+
+type MarkAsWatchedUnauthorized Error
+
+func (*MarkAsWatchedUnauthorized) markAsWatchedRes() {}
+
+// Ref: #/components/schemas/Movie
+type Movie struct {
+	// Movie ID.
+	ID OptUUID `json:"id"`
+	// TMDb ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// IMDb ID (tt1234567 format).
+	ImdbID OptNilString `json:"imdb_id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title (if different).
+	OriginalTitle OptNilString `json:"original_title"`
+	// Release year.
+	Year OptNilInt `json:"year"`
+	// Release date.
+	ReleaseDate OptNilDate `json:"release_date"`
+	// Runtime in minutes.
+	Runtime OptNilInt `json:"runtime"`
+	// Plot synopsis.
+	Overview OptNilString `json:"overview"`
+	// Movie tagline.
+	Tagline OptNilString `json:"tagline"`
+	// Release status (released, post-production, etc.).
+	Status OptNilString `json:"status"`
+	// ISO 639-1 language code.
+	OriginalLanguage OptNilString `json:"original_language"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	// Trailer URL.
+	TrailerURL OptNilString `json:"trailer_url"`
+	// Average rating (0-10).
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptNilInt `json:"vote_count"`
+	// Popularity score.
+	Popularity OptNilFloat32 `json:"popularity"`
+	// Production budget.
+	Budget OptNilInt64 `json:"budget"`
+	// Box office revenue.
+	Revenue OptNilInt64 `json:"revenue"`
+	// When added to library.
+	LibraryAddedAt OptDateTime `json:"library_added_at"`
+	// Last metadata update.
+	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
+	// Radarr movie ID.
+	RadarrID  OptNilInt   `json:"radarr_id"`
+	CreatedAt OptDateTime `json:"created_at"`
+	UpdatedAt OptDateTime `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *Movie) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *Movie) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *Movie) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *Movie) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *Movie) GetOriginalTitle() OptNilString {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *Movie) GetYear() OptNilInt {
+	return s.Year
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *Movie) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *Movie) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetOverview returns the value of Overview.
+func (s *Movie) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetTagline returns the value of Tagline.
+func (s *Movie) GetTagline() OptNilString {
+	return s.Tagline
+}
+
+// GetStatus returns the value of Status.
+func (s *Movie) GetStatus() OptNilString {
+	return s.Status
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *Movie) GetOriginalLanguage() OptNilString {
+	return s.OriginalLanguage
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *Movie) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *Movie) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetTrailerURL returns the value of TrailerURL.
+func (s *Movie) GetTrailerURL() OptNilString {
+	return s.TrailerURL
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *Movie) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *Movie) GetVoteCount() OptNilInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *Movie) GetPopularity() OptNilFloat32 {
+	return s.Popularity
+}
+
+// GetBudget returns the value of Budget.
+func (s *Movie) GetBudget() OptNilInt64 {
+	return s.Budget
+}
+
+// GetRevenue returns the value of Revenue.
+func (s *Movie) GetRevenue() OptNilInt64 {
+	return s.Revenue
+}
+
+// GetLibraryAddedAt returns the value of LibraryAddedAt.
+func (s *Movie) GetLibraryAddedAt() OptDateTime {
+	return s.LibraryAddedAt
+}
+
+// GetMetadataUpdatedAt returns the value of MetadataUpdatedAt.
+func (s *Movie) GetMetadataUpdatedAt() OptNilDateTime {
+	return s.MetadataUpdatedAt
+}
+
+// GetRadarrID returns the value of RadarrID.
+func (s *Movie) GetRadarrID() OptNilInt {
+	return s.RadarrID
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Movie) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *Movie) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Movie) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *Movie) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *Movie) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Movie) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *Movie) SetOriginalTitle(val OptNilString) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *Movie) SetYear(val OptNilInt) {
+	s.Year = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *Movie) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *Movie) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *Movie) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *Movie) SetTagline(val OptNilString) {
+	s.Tagline = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Movie) SetStatus(val OptNilString) {
+	s.Status = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *Movie) SetOriginalLanguage(val OptNilString) {
+	s.OriginalLanguage = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *Movie) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *Movie) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetTrailerURL sets the value of TrailerURL.
+func (s *Movie) SetTrailerURL(val OptNilString) {
+	s.TrailerURL = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *Movie) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *Movie) SetVoteCount(val OptNilInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *Movie) SetPopularity(val OptNilFloat32) {
+	s.Popularity = val
+}
+
+// SetBudget sets the value of Budget.
+func (s *Movie) SetBudget(val OptNilInt64) {
+	s.Budget = val
+}
+
+// SetRevenue sets the value of Revenue.
+func (s *Movie) SetRevenue(val OptNilInt64) {
+	s.Revenue = val
+}
+
+// SetLibraryAddedAt sets the value of LibraryAddedAt.
+func (s *Movie) SetLibraryAddedAt(val OptDateTime) {
+	s.LibraryAddedAt = val
+}
+
+// SetMetadataUpdatedAt sets the value of MetadataUpdatedAt.
+func (s *Movie) SetMetadataUpdatedAt(val OptNilDateTime) {
+	s.MetadataUpdatedAt = val
+}
+
+// SetRadarrID sets the value of RadarrID.
+func (s *Movie) SetRadarrID(val OptNilInt) {
+	s.RadarrID = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Movie) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *Movie) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*Movie) getMovieRes() {}
+
+// Ref: #/components/schemas/MovieCollection
+type MovieCollection struct {
+	ID OptUUID `json:"id"`
+	// TMDb collection ID.
+	TmdbCollectionID OptNilInt `json:"tmdb_collection_id"`
+	// Collection name.
+	Name OptString `json:"name"`
+	// Collection overview.
+	Overview OptNilString `json:"overview"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	CreatedAt    OptDateTime  `json:"created_at"`
+	UpdatedAt    OptDateTime  `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieCollection) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbCollectionID returns the value of TmdbCollectionID.
+func (s *MovieCollection) GetTmdbCollectionID() OptNilInt {
+	return s.TmdbCollectionID
+}
+
+// GetName returns the value of Name.
+func (s *MovieCollection) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MovieCollection) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MovieCollection) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *MovieCollection) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MovieCollection) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MovieCollection) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieCollection) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbCollectionID sets the value of TmdbCollectionID.
+func (s *MovieCollection) SetTmdbCollectionID(val OptNilInt) {
+	s.TmdbCollectionID = val
+}
+
+// SetName sets the value of Name.
+func (s *MovieCollection) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MovieCollection) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MovieCollection) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *MovieCollection) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MovieCollection) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MovieCollection) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*MovieCollection) getCollectionRes()      {}
+func (*MovieCollection) getMovieCollectionRes() {}
+
+// Ref: #/components/schemas/MovieCredit
+type MovieCredit struct {
+	ID      OptUUID `json:"id"`
+	MovieID OptUUID `json:"movie_id"`
+	// TMDb person ID.
+	TmdbPersonID OptInt `json:"tmdb_person_id"`
+	// Person name.
+	Name OptString `json:"name"`
+	// Credit type.
+	CreditType OptMovieCreditCreditType `json:"credit_type"`
+	// Character name (for cast).
+	Character OptNilString `json:"character"`
+	// Job title (for crew).
+	Job OptNilString `json:"job"`
+	// Department (for crew).
+	Department OptNilString `json:"department"`
+	// Billing order (for cast).
+	CastOrder OptNilInt `json:"cast_order"`
+	// Profile image path.
+	ProfilePath OptNilString `json:"profile_path"`
+	CreatedAt   OptDateTime  `json:"created_at"`
+	UpdatedAt   OptDateTime  `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieCredit) GetID() OptUUID {
+	return s.ID
+}
+
+// GetMovieID returns the value of MovieID.
+func (s *MovieCredit) GetMovieID() OptUUID {
+	return s.MovieID
+}
+
+// GetTmdbPersonID returns the value of TmdbPersonID.
+func (s *MovieCredit) GetTmdbPersonID() OptInt {
+	return s.TmdbPersonID
+}
+
+// GetName returns the value of Name.
+func (s *MovieCredit) GetName() OptString {
+	return s.Name
+}
+
+// GetCreditType returns the value of CreditType.
+func (s *MovieCredit) GetCreditType() OptMovieCreditCreditType {
+	return s.CreditType
+}
+
+// GetCharacter returns the value of Character.
+func (s *MovieCredit) GetCharacter() OptNilString {
+	return s.Character
+}
+
+// GetJob returns the value of Job.
+func (s *MovieCredit) GetJob() OptNilString {
+	return s.Job
+}
+
+// GetDepartment returns the value of Department.
+func (s *MovieCredit) GetDepartment() OptNilString {
+	return s.Department
+}
+
+// GetCastOrder returns the value of CastOrder.
+func (s *MovieCredit) GetCastOrder() OptNilInt {
+	return s.CastOrder
+}
+
+// GetProfilePath returns the value of ProfilePath.
+func (s *MovieCredit) GetProfilePath() OptNilString {
+	return s.ProfilePath
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MovieCredit) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MovieCredit) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieCredit) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetMovieID sets the value of MovieID.
+func (s *MovieCredit) SetMovieID(val OptUUID) {
+	s.MovieID = val
+}
+
+// SetTmdbPersonID sets the value of TmdbPersonID.
+func (s *MovieCredit) SetTmdbPersonID(val OptInt) {
+	s.TmdbPersonID = val
+}
+
+// SetName sets the value of Name.
+func (s *MovieCredit) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreditType sets the value of CreditType.
+func (s *MovieCredit) SetCreditType(val OptMovieCreditCreditType) {
+	s.CreditType = val
+}
+
+// SetCharacter sets the value of Character.
+func (s *MovieCredit) SetCharacter(val OptNilString) {
+	s.Character = val
+}
+
+// SetJob sets the value of Job.
+func (s *MovieCredit) SetJob(val OptNilString) {
+	s.Job = val
+}
+
+// SetDepartment sets the value of Department.
+func (s *MovieCredit) SetDepartment(val OptNilString) {
+	s.Department = val
+}
+
+// SetCastOrder sets the value of CastOrder.
+func (s *MovieCredit) SetCastOrder(val OptNilInt) {
+	s.CastOrder = val
+}
+
+// SetProfilePath sets the value of ProfilePath.
+func (s *MovieCredit) SetProfilePath(val OptNilString) {
+	s.ProfilePath = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MovieCredit) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MovieCredit) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// Credit type.
+type MovieCreditCreditType string
+
+const (
+	MovieCreditCreditTypeCast MovieCreditCreditType = "cast"
+	MovieCreditCreditTypeCrew MovieCreditCreditType = "crew"
+)
+
+// AllValues returns all MovieCreditCreditType values.
+func (MovieCreditCreditType) AllValues() []MovieCreditCreditType {
+	return []MovieCreditCreditType{
+		MovieCreditCreditTypeCast,
+		MovieCreditCreditTypeCrew,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MovieCreditCreditType) MarshalText() ([]byte, error) {
+	switch s {
+	case MovieCreditCreditTypeCast:
+		return []byte(s), nil
+	case MovieCreditCreditTypeCrew:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MovieCreditCreditType) UnmarshalText(data []byte) error {
+	switch MovieCreditCreditType(data) {
+	case MovieCreditCreditTypeCast:
+		*s = MovieCreditCreditTypeCast
+		return nil
+	case MovieCreditCreditTypeCrew:
+		*s = MovieCreditCreditTypeCrew
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MovieFile
+type MovieFile struct {
+	ID      OptUUID `json:"id"`
+	MovieID OptUUID `json:"movie_id"`
+	// Full file path.
+	FilePath OptString `json:"file_path"`
+	// File size in bytes.
+	FileSize OptInt64 `json:"file_size"`
+	// File name.
+	FileName OptString `json:"file_name"`
+	// Video resolution (1080p, 2160p, etc.).
+	Resolution OptNilString `json:"resolution"`
+	// Quality profile from Radarr.
+	QualityProfile OptNilString `json:"quality_profile"`
+	// Video codec (h264, h265, av1).
+	VideoCodec OptNilString `json:"video_codec"`
+	// Audio codec (aac, ac3, dts).
+	AudioCodec OptNilString `json:"audio_codec"`
+	// Container format (mkv, mp4, avi).
+	Container OptNilString `json:"container"`
+	// Duration in seconds.
+	DurationSeconds OptNilInt `json:"duration_seconds"`
+	// Bitrate in kbps.
+	BitrateKbps OptNilInt `json:"bitrate_kbps"`
+	// Frames per second.
+	Framerate OptNilFloat32 `json:"framerate"`
+	// HDR type (SDR, HDR10, Dolby Vision).
+	DynamicRange OptNilString `json:"dynamic_range"`
+	// Color space (BT.709, BT.2020).
+	ColorSpace OptNilString `json:"color_space"`
+	// Audio channels (2.0, 5.1, 7.1).
+	AudioChannels OptNilString `json:"audio_channels"`
+	// Audio language codes.
+	AudioLanguages []string `json:"audio_languages"`
+	// Subtitle language codes.
+	SubtitleLanguages []string       `json:"subtitle_languages"`
+	RadarrFileID      OptNilInt      `json:"radarr_file_id"`
+	LastScannedAt     OptNilDateTime `json:"last_scanned_at"`
+	IsMonitored       OptNilBool     `json:"is_monitored"`
+	CreatedAt         OptDateTime    `json:"created_at"`
+	UpdatedAt         OptDateTime    `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieFile) GetID() OptUUID {
+	return s.ID
+}
+
+// GetMovieID returns the value of MovieID.
+func (s *MovieFile) GetMovieID() OptUUID {
+	return s.MovieID
+}
+
+// GetFilePath returns the value of FilePath.
+func (s *MovieFile) GetFilePath() OptString {
+	return s.FilePath
+}
+
+// GetFileSize returns the value of FileSize.
+func (s *MovieFile) GetFileSize() OptInt64 {
+	return s.FileSize
+}
+
+// GetFileName returns the value of FileName.
+func (s *MovieFile) GetFileName() OptString {
+	return s.FileName
+}
+
+// GetResolution returns the value of Resolution.
+func (s *MovieFile) GetResolution() OptNilString {
+	return s.Resolution
+}
+
+// GetQualityProfile returns the value of QualityProfile.
+func (s *MovieFile) GetQualityProfile() OptNilString {
+	return s.QualityProfile
+}
+
+// GetVideoCodec returns the value of VideoCodec.
+func (s *MovieFile) GetVideoCodec() OptNilString {
+	return s.VideoCodec
+}
+
+// GetAudioCodec returns the value of AudioCodec.
+func (s *MovieFile) GetAudioCodec() OptNilString {
+	return s.AudioCodec
+}
+
+// GetContainer returns the value of Container.
+func (s *MovieFile) GetContainer() OptNilString {
+	return s.Container
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *MovieFile) GetDurationSeconds() OptNilInt {
+	return s.DurationSeconds
+}
+
+// GetBitrateKbps returns the value of BitrateKbps.
+func (s *MovieFile) GetBitrateKbps() OptNilInt {
+	return s.BitrateKbps
+}
+
+// GetFramerate returns the value of Framerate.
+func (s *MovieFile) GetFramerate() OptNilFloat32 {
+	return s.Framerate
+}
+
+// GetDynamicRange returns the value of DynamicRange.
+func (s *MovieFile) GetDynamicRange() OptNilString {
+	return s.DynamicRange
+}
+
+// GetColorSpace returns the value of ColorSpace.
+func (s *MovieFile) GetColorSpace() OptNilString {
+	return s.ColorSpace
+}
+
+// GetAudioChannels returns the value of AudioChannels.
+func (s *MovieFile) GetAudioChannels() OptNilString {
+	return s.AudioChannels
+}
+
+// GetAudioLanguages returns the value of AudioLanguages.
+func (s *MovieFile) GetAudioLanguages() []string {
+	return s.AudioLanguages
+}
+
+// GetSubtitleLanguages returns the value of SubtitleLanguages.
+func (s *MovieFile) GetSubtitleLanguages() []string {
+	return s.SubtitleLanguages
+}
+
+// GetRadarrFileID returns the value of RadarrFileID.
+func (s *MovieFile) GetRadarrFileID() OptNilInt {
+	return s.RadarrFileID
+}
+
+// GetLastScannedAt returns the value of LastScannedAt.
+func (s *MovieFile) GetLastScannedAt() OptNilDateTime {
+	return s.LastScannedAt
+}
+
+// GetIsMonitored returns the value of IsMonitored.
+func (s *MovieFile) GetIsMonitored() OptNilBool {
+	return s.IsMonitored
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MovieFile) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MovieFile) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieFile) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetMovieID sets the value of MovieID.
+func (s *MovieFile) SetMovieID(val OptUUID) {
+	s.MovieID = val
+}
+
+// SetFilePath sets the value of FilePath.
+func (s *MovieFile) SetFilePath(val OptString) {
+	s.FilePath = val
+}
+
+// SetFileSize sets the value of FileSize.
+func (s *MovieFile) SetFileSize(val OptInt64) {
+	s.FileSize = val
+}
+
+// SetFileName sets the value of FileName.
+func (s *MovieFile) SetFileName(val OptString) {
+	s.FileName = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *MovieFile) SetResolution(val OptNilString) {
+	s.Resolution = val
+}
+
+// SetQualityProfile sets the value of QualityProfile.
+func (s *MovieFile) SetQualityProfile(val OptNilString) {
+	s.QualityProfile = val
+}
+
+// SetVideoCodec sets the value of VideoCodec.
+func (s *MovieFile) SetVideoCodec(val OptNilString) {
+	s.VideoCodec = val
+}
+
+// SetAudioCodec sets the value of AudioCodec.
+func (s *MovieFile) SetAudioCodec(val OptNilString) {
+	s.AudioCodec = val
+}
+
+// SetContainer sets the value of Container.
+func (s *MovieFile) SetContainer(val OptNilString) {
+	s.Container = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *MovieFile) SetDurationSeconds(val OptNilInt) {
+	s.DurationSeconds = val
+}
+
+// SetBitrateKbps sets the value of BitrateKbps.
+func (s *MovieFile) SetBitrateKbps(val OptNilInt) {
+	s.BitrateKbps = val
+}
+
+// SetFramerate sets the value of Framerate.
+func (s *MovieFile) SetFramerate(val OptNilFloat32) {
+	s.Framerate = val
+}
+
+// SetDynamicRange sets the value of DynamicRange.
+func (s *MovieFile) SetDynamicRange(val OptNilString) {
+	s.DynamicRange = val
+}
+
+// SetColorSpace sets the value of ColorSpace.
+func (s *MovieFile) SetColorSpace(val OptNilString) {
+	s.ColorSpace = val
+}
+
+// SetAudioChannels sets the value of AudioChannels.
+func (s *MovieFile) SetAudioChannels(val OptNilString) {
+	s.AudioChannels = val
+}
+
+// SetAudioLanguages sets the value of AudioLanguages.
+func (s *MovieFile) SetAudioLanguages(val []string) {
+	s.AudioLanguages = val
+}
+
+// SetSubtitleLanguages sets the value of SubtitleLanguages.
+func (s *MovieFile) SetSubtitleLanguages(val []string) {
+	s.SubtitleLanguages = val
+}
+
+// SetRadarrFileID sets the value of RadarrFileID.
+func (s *MovieFile) SetRadarrFileID(val OptNilInt) {
+	s.RadarrFileID = val
+}
+
+// SetLastScannedAt sets the value of LastScannedAt.
+func (s *MovieFile) SetLastScannedAt(val OptNilDateTime) {
+	s.LastScannedAt = val
+}
+
+// SetIsMonitored sets the value of IsMonitored.
+func (s *MovieFile) SetIsMonitored(val OptNilBool) {
+	s.IsMonitored = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MovieFile) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MovieFile) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/MovieGenre
+type MovieGenre struct {
+	ID      OptUUID `json:"id"`
+	MovieID OptUUID `json:"movie_id"`
+	// TMDb genre ID.
+	TmdbGenreID OptInt `json:"tmdb_genre_id"`
+	// Genre name.
+	Name      OptString   `json:"name"`
+	CreatedAt OptDateTime `json:"created_at"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieGenre) GetID() OptUUID {
+	return s.ID
+}
+
+// GetMovieID returns the value of MovieID.
+func (s *MovieGenre) GetMovieID() OptUUID {
+	return s.MovieID
+}
+
+// GetTmdbGenreID returns the value of TmdbGenreID.
+func (s *MovieGenre) GetTmdbGenreID() OptInt {
+	return s.TmdbGenreID
+}
+
+// GetName returns the value of Name.
+func (s *MovieGenre) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MovieGenre) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieGenre) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetMovieID sets the value of MovieID.
+func (s *MovieGenre) SetMovieID(val OptUUID) {
+	s.MovieID = val
+}
+
+// SetTmdbGenreID sets the value of TmdbGenreID.
+func (s *MovieGenre) SetTmdbGenreID(val OptInt) {
+	s.TmdbGenreID = val
+}
+
+// SetName sets the value of Name.
+func (s *MovieGenre) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MovieGenre) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/MovieWatched
+type MovieWatched struct {
+	ID      OptUUID `json:"id"`
+	UserID  OptUUID `json:"user_id"`
+	MovieID OptUUID `json:"movie_id"`
+	// Current position in seconds.
+	ProgressSeconds OptInt `json:"progress_seconds"`
+	// Total duration in seconds.
+	DurationSeconds OptInt `json:"duration_seconds"`
+	// Progress percentage (generated).
+	ProgressPercent OptNilInt `json:"progress_percent"`
+	// Whether movie is fully watched.
+	IsCompleted OptBool `json:"is_completed"`
+	// Number of times watched.
+	WatchCount OptInt `json:"watch_count"`
+	// Last watch time.
+	LastWatchedAt OptDateTime `json:"last_watched_at"`
+	CreatedAt     OptDateTime `json:"created_at"`
+	UpdatedAt     OptDateTime `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *MovieWatched) GetID() OptUUID {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *MovieWatched) GetUserID() OptUUID {
+	return s.UserID
+}
+
+// GetMovieID returns the value of MovieID.
+func (s *MovieWatched) GetMovieID() OptUUID {
+	return s.MovieID
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *MovieWatched) GetProgressSeconds() OptInt {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *MovieWatched) GetDurationSeconds() OptInt {
+	return s.DurationSeconds
+}
+
+// GetProgressPercent returns the value of ProgressPercent.
+func (s *MovieWatched) GetProgressPercent() OptNilInt {
+	return s.ProgressPercent
+}
+
+// GetIsCompleted returns the value of IsCompleted.
+func (s *MovieWatched) GetIsCompleted() OptBool {
+	return s.IsCompleted
+}
+
+// GetWatchCount returns the value of WatchCount.
+func (s *MovieWatched) GetWatchCount() OptInt {
+	return s.WatchCount
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *MovieWatched) GetLastWatchedAt() OptDateTime {
+	return s.LastWatchedAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *MovieWatched) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *MovieWatched) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *MovieWatched) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *MovieWatched) SetUserID(val OptUUID) {
+	s.UserID = val
+}
+
+// SetMovieID sets the value of MovieID.
+func (s *MovieWatched) SetMovieID(val OptUUID) {
+	s.MovieID = val
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *MovieWatched) SetProgressSeconds(val OptInt) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *MovieWatched) SetDurationSeconds(val OptInt) {
+	s.DurationSeconds = val
+}
+
+// SetProgressPercent sets the value of ProgressPercent.
+func (s *MovieWatched) SetProgressPercent(val OptNilInt) {
+	s.ProgressPercent = val
+}
+
+// SetIsCompleted sets the value of IsCompleted.
+func (s *MovieWatched) SetIsCompleted(val OptBool) {
+	s.IsCompleted = val
+}
+
+// SetWatchCount sets the value of WatchCount.
+func (s *MovieWatched) SetWatchCount(val OptInt) {
+	s.WatchCount = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *MovieWatched) SetLastWatchedAt(val OptDateTime) {
+	s.LastWatchedAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *MovieWatched) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *MovieWatched) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*MovieWatched) getWatchProgressRes()    {}
+func (*MovieWatched) updateWatchProgressRes() {}
 
 // Ref: #/components/schemas/OIDCAuthURLResponse
 type OIDCAuthURLResponse struct {
@@ -4450,6 +6055,224 @@ func (o OptLibraryScannerConfig) Or(d LibraryScannerConfig) LibraryScannerConfig
 	return d
 }
 
+// NewOptListMoviesOrderBy returns new OptListMoviesOrderBy with value set to v.
+func NewOptListMoviesOrderBy(v ListMoviesOrderBy) OptListMoviesOrderBy {
+	return OptListMoviesOrderBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListMoviesOrderBy is optional ListMoviesOrderBy.
+type OptListMoviesOrderBy struct {
+	Value ListMoviesOrderBy
+	Set   bool
+}
+
+// IsSet returns true if OptListMoviesOrderBy was set.
+func (o OptListMoviesOrderBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListMoviesOrderBy) Reset() {
+	var v ListMoviesOrderBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListMoviesOrderBy) SetTo(v ListMoviesOrderBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListMoviesOrderBy) Get() (v ListMoviesOrderBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListMoviesOrderBy) Or(d ListMoviesOrderBy) ListMoviesOrderBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMovieCreditCreditType returns new OptMovieCreditCreditType with value set to v.
+func NewOptMovieCreditCreditType(v MovieCreditCreditType) OptMovieCreditCreditType {
+	return OptMovieCreditCreditType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMovieCreditCreditType is optional MovieCreditCreditType.
+type OptMovieCreditCreditType struct {
+	Value MovieCreditCreditType
+	Set   bool
+}
+
+// IsSet returns true if OptMovieCreditCreditType was set.
+func (o OptMovieCreditCreditType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMovieCreditCreditType) Reset() {
+	var v MovieCreditCreditType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMovieCreditCreditType) SetTo(v MovieCreditCreditType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMovieCreditCreditType) Get() (v MovieCreditCreditType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMovieCreditCreditType) Or(d MovieCreditCreditType) MovieCreditCreditType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilBool returns new OptNilBool with value set to v.
+func NewOptNilBool(v bool) OptNilBool {
+	return OptNilBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilBool is optional nullable bool.
+type OptNilBool struct {
+	Value bool
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilBool was set.
+func (o OptNilBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilBool) SetTo(v bool) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilBool) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilBool) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v bool
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilBool) Get() (v bool, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilDate returns new OptNilDate with value set to v.
+func NewOptNilDate(v time.Time) OptNilDate {
+	return OptNilDate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilDate is optional nullable time.Time.
+type OptNilDate struct {
+	Value time.Time
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilDate was set.
+func (o OptNilDate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilDate) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilDate) SetTo(v time.Time) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilDate) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilDate) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v time.Time
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilDate) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilDate) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptNilDateTime returns new OptNilDateTime with value set to v.
 func NewOptNilDateTime(v time.Time) OptNilDateTime {
 	return OptNilDateTime{
@@ -4507,6 +6330,195 @@ func (o OptNilDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptNilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilFloat32 returns new OptNilFloat32 with value set to v.
+func NewOptNilFloat32(v float32) OptNilFloat32 {
+	return OptNilFloat32{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilFloat32 is optional nullable float32.
+type OptNilFloat32 struct {
+	Value float32
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilFloat32 was set.
+func (o OptNilFloat32) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilFloat32) Reset() {
+	var v float32
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilFloat32) SetTo(v float32) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilFloat32) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilFloat32) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v float32
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilFloat32) Get() (v float32, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilFloat32) Or(d float32) float32 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilInt returns new OptNilInt with value set to v.
+func NewOptNilInt(v int) OptNilInt {
+	return OptNilInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilInt is optional nullable int.
+type OptNilInt struct {
+	Value int
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilInt was set.
+func (o OptNilInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilInt) SetTo(v int) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilInt) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilInt) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v int
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilInt) Get() (v int, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilInt64 returns new OptNilInt64 with value set to v.
+func NewOptNilInt64(v int64) OptNilInt64 {
+	return OptNilInt64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilInt64 is optional nullable int64.
+type OptNilInt64 struct {
+	Value int64
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilInt64 was set.
+func (o OptNilInt64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilInt64) Reset() {
+	var v int64
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilInt64) SetTo(v int64) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilInt64) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilInt64) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v int64
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilInt64) Get() (v int64, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilInt64) Or(d int64) int64 {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -5639,6 +7651,19 @@ func (s *PolicyRequest) SetAction(val string) {
 	s.Action = val
 }
 
+// RefreshMovieMetadataAccepted is response for RefreshMovieMetadata operation.
+type RefreshMovieMetadataAccepted struct{}
+
+func (*RefreshMovieMetadataAccepted) refreshMovieMetadataRes() {}
+
+type RefreshMovieMetadataNotFound Error
+
+func (*RefreshMovieMetadataNotFound) refreshMovieMetadataRes() {}
+
+type RefreshMovieMetadataUnauthorized Error
+
+func (*RefreshMovieMetadataUnauthorized) refreshMovieMetadataRes() {}
+
 // Ref: #/components/schemas/RefreshRequest
 type RefreshRequest struct {
 	// Refresh token.
@@ -6033,6 +8058,10 @@ func (*SearchActivityLogsForbidden) searchActivityLogsRes() {}
 type SearchActivityLogsUnauthorized Error
 
 func (*SearchActivityLogsUnauthorized) searchActivityLogsRes() {}
+
+type SearchMoviesOKApplicationJSON []Movie
+
+func (*SearchMoviesOKApplicationJSON) searchMoviesRes() {}
 
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {
@@ -7160,6 +9189,41 @@ type UpdateUserSettingUnauthorized Error
 
 func (*UpdateUserSettingUnauthorized) updateUserSettingRes() {}
 
+type UpdateWatchProgressNotFound Error
+
+func (*UpdateWatchProgressNotFound) updateWatchProgressRes() {}
+
+type UpdateWatchProgressReq struct {
+	// Current playback position in seconds.
+	ProgressSeconds int `json:"progressSeconds"`
+	// Total duration in seconds.
+	DurationSeconds int `json:"durationSeconds"`
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *UpdateWatchProgressReq) GetProgressSeconds() int {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *UpdateWatchProgressReq) GetDurationSeconds() int {
+	return s.DurationSeconds
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *UpdateWatchProgressReq) SetProgressSeconds(val int) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *UpdateWatchProgressReq) SetDurationSeconds(val int) {
+	s.DurationSeconds = val
+}
+
+type UpdateWatchProgressUnauthorized Error
+
+func (*UpdateWatchProgressUnauthorized) updateWatchProgressRes() {}
+
 type UploadAvatarBadRequest Error
 
 func (*UploadAvatarBadRequest) uploadAvatarRes() {}
@@ -7347,6 +9411,48 @@ func (*User) getCurrentUserRes()    {}
 func (*User) getUserByIdRes()       {}
 func (*User) registerRes()          {}
 func (*User) updateCurrentUserRes() {}
+
+// Ref: #/components/schemas/UserMovieStats
+type UserMovieStats struct {
+	// Number of movies watched.
+	WatchedCount OptInt64 `json:"watched_count"`
+	// Number of movies in progress.
+	InProgressCount OptInt64 `json:"in_progress_count"`
+	// Total watch count across all movies.
+	TotalWatches OptNilInt64 `json:"total_watches"`
+}
+
+// GetWatchedCount returns the value of WatchedCount.
+func (s *UserMovieStats) GetWatchedCount() OptInt64 {
+	return s.WatchedCount
+}
+
+// GetInProgressCount returns the value of InProgressCount.
+func (s *UserMovieStats) GetInProgressCount() OptInt64 {
+	return s.InProgressCount
+}
+
+// GetTotalWatches returns the value of TotalWatches.
+func (s *UserMovieStats) GetTotalWatches() OptNilInt64 {
+	return s.TotalWatches
+}
+
+// SetWatchedCount sets the value of WatchedCount.
+func (s *UserMovieStats) SetWatchedCount(val OptInt64) {
+	s.WatchedCount = val
+}
+
+// SetInProgressCount sets the value of InProgressCount.
+func (s *UserMovieStats) SetInProgressCount(val OptInt64) {
+	s.InProgressCount = val
+}
+
+// SetTotalWatches sets the value of TotalWatches.
+func (s *UserMovieStats) SetTotalWatches(val OptNilInt64) {
+	s.TotalWatches = val
+}
+
+func (*UserMovieStats) getUserMovieStatsRes() {}
 
 // Ref: #/components/schemas/UserPreferences
 type UserPreferences struct {
@@ -8537,3 +10643,328 @@ func (s *VerifyTOTPReq) SetCode(val string) {
 type VerifyTOTPUnauthorized Error
 
 func (*VerifyTOTPUnauthorized) verifyTOTPRes() {}
+
+// Merged schema.
+// Ref: #/components/schemas/WatchedMovieItem
+type WatchedMovieItem struct {
+	// Movie ID.
+	ID OptUUID `json:"id"`
+	// TMDb ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// IMDb ID (tt1234567 format).
+	ImdbID OptNilString `json:"imdb_id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title (if different).
+	OriginalTitle OptNilString `json:"original_title"`
+	// Release year.
+	Year OptNilInt `json:"year"`
+	// Release date.
+	ReleaseDate OptNilDate `json:"release_date"`
+	// Runtime in minutes.
+	Runtime OptNilInt `json:"runtime"`
+	// Plot synopsis.
+	Overview OptNilString `json:"overview"`
+	// Movie tagline.
+	Tagline OptNilString `json:"tagline"`
+	// Release status (released, post-production, etc.).
+	Status OptNilString `json:"status"`
+	// ISO 639-1 language code.
+	OriginalLanguage OptNilString `json:"original_language"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	// Trailer URL.
+	TrailerURL OptNilString `json:"trailer_url"`
+	// Average rating (0-10).
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptNilInt `json:"vote_count"`
+	// Popularity score.
+	Popularity OptNilFloat32 `json:"popularity"`
+	// Production budget.
+	Budget OptNilInt64 `json:"budget"`
+	// Box office revenue.
+	Revenue OptNilInt64 `json:"revenue"`
+	// When added to library.
+	LibraryAddedAt OptDateTime `json:"library_added_at"`
+	// Last metadata update.
+	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
+	// Radarr movie ID.
+	RadarrID      OptNilInt   `json:"radarr_id"`
+	CreatedAt     OptDateTime `json:"created_at"`
+	UpdatedAt     OptDateTime `json:"updated_at"`
+	WatchCount    OptInt      `json:"watch_count"`
+	LastWatchedAt OptDateTime `json:"last_watched_at"`
+}
+
+// GetID returns the value of ID.
+func (s *WatchedMovieItem) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *WatchedMovieItem) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *WatchedMovieItem) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *WatchedMovieItem) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *WatchedMovieItem) GetOriginalTitle() OptNilString {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *WatchedMovieItem) GetYear() OptNilInt {
+	return s.Year
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *WatchedMovieItem) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *WatchedMovieItem) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetOverview returns the value of Overview.
+func (s *WatchedMovieItem) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetTagline returns the value of Tagline.
+func (s *WatchedMovieItem) GetTagline() OptNilString {
+	return s.Tagline
+}
+
+// GetStatus returns the value of Status.
+func (s *WatchedMovieItem) GetStatus() OptNilString {
+	return s.Status
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *WatchedMovieItem) GetOriginalLanguage() OptNilString {
+	return s.OriginalLanguage
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *WatchedMovieItem) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *WatchedMovieItem) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetTrailerURL returns the value of TrailerURL.
+func (s *WatchedMovieItem) GetTrailerURL() OptNilString {
+	return s.TrailerURL
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *WatchedMovieItem) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *WatchedMovieItem) GetVoteCount() OptNilInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *WatchedMovieItem) GetPopularity() OptNilFloat32 {
+	return s.Popularity
+}
+
+// GetBudget returns the value of Budget.
+func (s *WatchedMovieItem) GetBudget() OptNilInt64 {
+	return s.Budget
+}
+
+// GetRevenue returns the value of Revenue.
+func (s *WatchedMovieItem) GetRevenue() OptNilInt64 {
+	return s.Revenue
+}
+
+// GetLibraryAddedAt returns the value of LibraryAddedAt.
+func (s *WatchedMovieItem) GetLibraryAddedAt() OptDateTime {
+	return s.LibraryAddedAt
+}
+
+// GetMetadataUpdatedAt returns the value of MetadataUpdatedAt.
+func (s *WatchedMovieItem) GetMetadataUpdatedAt() OptNilDateTime {
+	return s.MetadataUpdatedAt
+}
+
+// GetRadarrID returns the value of RadarrID.
+func (s *WatchedMovieItem) GetRadarrID() OptNilInt {
+	return s.RadarrID
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *WatchedMovieItem) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *WatchedMovieItem) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// GetWatchCount returns the value of WatchCount.
+func (s *WatchedMovieItem) GetWatchCount() OptInt {
+	return s.WatchCount
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *WatchedMovieItem) GetLastWatchedAt() OptDateTime {
+	return s.LastWatchedAt
+}
+
+// SetID sets the value of ID.
+func (s *WatchedMovieItem) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *WatchedMovieItem) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *WatchedMovieItem) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *WatchedMovieItem) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *WatchedMovieItem) SetOriginalTitle(val OptNilString) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *WatchedMovieItem) SetYear(val OptNilInt) {
+	s.Year = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *WatchedMovieItem) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *WatchedMovieItem) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *WatchedMovieItem) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *WatchedMovieItem) SetTagline(val OptNilString) {
+	s.Tagline = val
+}
+
+// SetStatus sets the value of Status.
+func (s *WatchedMovieItem) SetStatus(val OptNilString) {
+	s.Status = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *WatchedMovieItem) SetOriginalLanguage(val OptNilString) {
+	s.OriginalLanguage = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *WatchedMovieItem) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *WatchedMovieItem) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetTrailerURL sets the value of TrailerURL.
+func (s *WatchedMovieItem) SetTrailerURL(val OptNilString) {
+	s.TrailerURL = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *WatchedMovieItem) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *WatchedMovieItem) SetVoteCount(val OptNilInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *WatchedMovieItem) SetPopularity(val OptNilFloat32) {
+	s.Popularity = val
+}
+
+// SetBudget sets the value of Budget.
+func (s *WatchedMovieItem) SetBudget(val OptNilInt64) {
+	s.Budget = val
+}
+
+// SetRevenue sets the value of Revenue.
+func (s *WatchedMovieItem) SetRevenue(val OptNilInt64) {
+	s.Revenue = val
+}
+
+// SetLibraryAddedAt sets the value of LibraryAddedAt.
+func (s *WatchedMovieItem) SetLibraryAddedAt(val OptDateTime) {
+	s.LibraryAddedAt = val
+}
+
+// SetMetadataUpdatedAt sets the value of MetadataUpdatedAt.
+func (s *WatchedMovieItem) SetMetadataUpdatedAt(val OptNilDateTime) {
+	s.MetadataUpdatedAt = val
+}
+
+// SetRadarrID sets the value of RadarrID.
+func (s *WatchedMovieItem) SetRadarrID(val OptNilInt) {
+	s.RadarrID = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *WatchedMovieItem) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *WatchedMovieItem) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// SetWatchCount sets the value of WatchCount.
+func (s *WatchedMovieItem) SetWatchCount(val OptInt) {
+	s.WatchCount = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *WatchedMovieItem) SetLastWatchedAt(val OptDateTime) {
+	s.LastWatchedAt = val
+}

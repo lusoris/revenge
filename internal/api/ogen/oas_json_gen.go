@@ -3947,6 +3947,545 @@ func (s *ClaimMappings) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode implements json.Marshaler.
+func (s *ContinueWatchingItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ContinueWatchingItem) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.ImdbID.Set {
+			e.FieldStart("imdb_id")
+			s.ImdbID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.OriginalTitle.Set {
+			e.FieldStart("original_title")
+			s.OriginalTitle.Encode(e)
+		}
+	}
+	{
+		if s.Year.Set {
+			e.FieldStart("year")
+			s.Year.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("release_date")
+			s.ReleaseDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.Tagline.Set {
+			e.FieldStart("tagline")
+			s.Tagline.Encode(e)
+		}
+	}
+	{
+		if s.Status.Set {
+			e.FieldStart("status")
+			s.Status.Encode(e)
+		}
+	}
+	{
+		if s.OriginalLanguage.Set {
+			e.FieldStart("original_language")
+			s.OriginalLanguage.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.TrailerURL.Set {
+			e.FieldStart("trailer_url")
+			s.TrailerURL.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+	{
+		if s.Budget.Set {
+			e.FieldStart("budget")
+			s.Budget.Encode(e)
+		}
+	}
+	{
+		if s.Revenue.Set {
+			e.FieldStart("revenue")
+			s.Revenue.Encode(e)
+		}
+	}
+	{
+		if s.LibraryAddedAt.Set {
+			e.FieldStart("library_added_at")
+			s.LibraryAddedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.MetadataUpdatedAt.Set {
+			e.FieldStart("metadata_updated_at")
+			s.MetadataUpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.RadarrID.Set {
+			e.FieldStart("radarr_id")
+			s.RadarrID.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.ProgressSeconds.Set {
+			e.FieldStart("progress_seconds")
+			s.ProgressSeconds.Encode(e)
+		}
+	}
+	{
+		if s.DurationSeconds.Set {
+			e.FieldStart("duration_seconds")
+			s.DurationSeconds.Encode(e)
+		}
+	}
+	{
+		if s.ProgressPercent.Set {
+			e.FieldStart("progress_percent")
+			s.ProgressPercent.Encode(e)
+		}
+	}
+	{
+		if s.LastWatchedAt.Set {
+			e.FieldStart("last_watched_at")
+			s.LastWatchedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfContinueWatchingItem = [29]string{
+	0:  "id",
+	1:  "tmdb_id",
+	2:  "imdb_id",
+	3:  "title",
+	4:  "original_title",
+	5:  "year",
+	6:  "release_date",
+	7:  "runtime",
+	8:  "overview",
+	9:  "tagline",
+	10: "status",
+	11: "original_language",
+	12: "poster_path",
+	13: "backdrop_path",
+	14: "trailer_url",
+	15: "vote_average",
+	16: "vote_count",
+	17: "popularity",
+	18: "budget",
+	19: "revenue",
+	20: "library_added_at",
+	21: "metadata_updated_at",
+	22: "radarr_id",
+	23: "created_at",
+	24: "updated_at",
+	25: "progress_seconds",
+	26: "duration_seconds",
+	27: "progress_percent",
+	28: "last_watched_at",
+}
+
+// Decode decodes ContinueWatchingItem from json.
+func (s *ContinueWatchingItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ContinueWatchingItem to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "imdb_id":
+			if err := func() error {
+				s.ImdbID.Reset()
+				if err := s.ImdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdb_id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "original_title":
+			if err := func() error {
+				s.OriginalTitle.Reset()
+				if err := s.OriginalTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_title\"")
+			}
+		case "year":
+			if err := func() error {
+				s.Year.Reset()
+				if err := s.Year.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "release_date":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "tagline":
+			if err := func() error {
+				s.Tagline.Reset()
+				if err := s.Tagline.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tagline\"")
+			}
+		case "status":
+			if err := func() error {
+				s.Status.Reset()
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "original_language":
+			if err := func() error {
+				s.OriginalLanguage.Reset()
+				if err := s.OriginalLanguage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_language\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "trailer_url":
+			if err := func() error {
+				s.TrailerURL.Reset()
+				if err := s.TrailerURL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"trailer_url\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		case "budget":
+			if err := func() error {
+				s.Budget.Reset()
+				if err := s.Budget.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"budget\"")
+			}
+		case "revenue":
+			if err := func() error {
+				s.Revenue.Reset()
+				if err := s.Revenue.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"revenue\"")
+			}
+		case "library_added_at":
+			if err := func() error {
+				s.LibraryAddedAt.Reset()
+				if err := s.LibraryAddedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"library_added_at\"")
+			}
+		case "metadata_updated_at":
+			if err := func() error {
+				s.MetadataUpdatedAt.Reset()
+				if err := s.MetadataUpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata_updated_at\"")
+			}
+		case "radarr_id":
+			if err := func() error {
+				s.RadarrID.Reset()
+				if err := s.RadarrID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		case "progress_seconds":
+			if err := func() error {
+				s.ProgressSeconds.Reset()
+				if err := s.ProgressSeconds.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"progress_seconds\"")
+			}
+		case "duration_seconds":
+			if err := func() error {
+				s.DurationSeconds.Reset()
+				if err := s.DurationSeconds.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"duration_seconds\"")
+			}
+		case "progress_percent":
+			if err := func() error {
+				s.ProgressPercent.Reset()
+				if err := s.ProgressPercent.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"progress_percent\"")
+			}
+		case "last_watched_at":
+			if err := func() error {
+				s.LastWatchedAt.Reset()
+				if err := s.LastWatchedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"last_watched_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ContinueWatchingItem")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ContinueWatchingItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ContinueWatchingItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes CreateAPIKeyBadRequest as json.
 func (s *CreateAPIKeyBadRequest) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -5646,6 +6185,82 @@ func (s *DeleteUserSettingUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes DeleteWatchProgressNotFound as json.
+func (s *DeleteWatchProgressNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes DeleteWatchProgressNotFound from json.
+func (s *DeleteWatchProgressNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode DeleteWatchProgressNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = DeleteWatchProgressNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *DeleteWatchProgressNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *DeleteWatchProgressNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes DeleteWatchProgressUnauthorized as json.
+func (s *DeleteWatchProgressUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes DeleteWatchProgressUnauthorized from json.
+func (s *DeleteWatchProgressUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode DeleteWatchProgressUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = DeleteWatchProgressUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *DeleteWatchProgressUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *DeleteWatchProgressUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *DisableMFAOK) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -6377,6 +6992,258 @@ func (s *GetActivityStatsUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetCollectionMoviesNotFound as json.
+func (s *GetCollectionMoviesNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetCollectionMoviesNotFound from json.
+func (s *GetCollectionMoviesNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCollectionMoviesNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCollectionMoviesNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetCollectionMoviesNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCollectionMoviesNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetCollectionMoviesOKApplicationJSON as json.
+func (s GetCollectionMoviesOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []Movie(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetCollectionMoviesOKApplicationJSON from json.
+func (s *GetCollectionMoviesOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCollectionMoviesOKApplicationJSON to nil")
+	}
+	var unwrapped []Movie
+	if err := func() error {
+		unwrapped = make([]Movie, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem Movie
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCollectionMoviesOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetCollectionMoviesOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCollectionMoviesOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetCollectionMoviesUnauthorized as json.
+func (s *GetCollectionMoviesUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetCollectionMoviesUnauthorized from json.
+func (s *GetCollectionMoviesUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCollectionMoviesUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCollectionMoviesUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetCollectionMoviesUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCollectionMoviesUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetCollectionNotFound as json.
+func (s *GetCollectionNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetCollectionNotFound from json.
+func (s *GetCollectionNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCollectionNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCollectionNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetCollectionNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCollectionNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetCollectionUnauthorized as json.
+func (s *GetCollectionUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetCollectionUnauthorized from json.
+func (s *GetCollectionUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCollectionUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCollectionUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetCollectionUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCollectionUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetContinueWatchingOKApplicationJSON as json.
+func (s GetContinueWatchingOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []ContinueWatchingItem(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetContinueWatchingOKApplicationJSON from json.
+func (s *GetContinueWatchingOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetContinueWatchingOKApplicationJSON to nil")
+	}
+	var unwrapped []ContinueWatchingItem
+	if err := func() error {
+		unwrapped = make([]ContinueWatchingItem, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem ContinueWatchingItem
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetContinueWatchingOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetContinueWatchingOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetContinueWatchingOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetCurrentSessionNotFound as json.
 func (s *GetCurrentSessionNotFound) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -6567,6 +7434,662 @@ func (s *GetLibraryUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetMovieCastNotFound as json.
+func (s *GetMovieCastNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCastNotFound from json.
+func (s *GetMovieCastNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCastNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCastNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCastNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCastNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCastOKApplicationJSON as json.
+func (s GetMovieCastOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MovieCredit(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetMovieCastOKApplicationJSON from json.
+func (s *GetMovieCastOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCastOKApplicationJSON to nil")
+	}
+	var unwrapped []MovieCredit
+	if err := func() error {
+		unwrapped = make([]MovieCredit, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MovieCredit
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCastOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetMovieCastOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCastOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCastUnauthorized as json.
+func (s *GetMovieCastUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCastUnauthorized from json.
+func (s *GetMovieCastUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCastUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCastUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCastUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCastUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCollectionNotFound as json.
+func (s *GetMovieCollectionNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCollectionNotFound from json.
+func (s *GetMovieCollectionNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCollectionNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCollectionNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCollectionNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCollectionNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCollectionUnauthorized as json.
+func (s *GetMovieCollectionUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCollectionUnauthorized from json.
+func (s *GetMovieCollectionUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCollectionUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCollectionUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCollectionUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCollectionUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCrewNotFound as json.
+func (s *GetMovieCrewNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCrewNotFound from json.
+func (s *GetMovieCrewNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCrewNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCrewNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCrewNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCrewNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCrewOKApplicationJSON as json.
+func (s GetMovieCrewOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MovieCredit(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetMovieCrewOKApplicationJSON from json.
+func (s *GetMovieCrewOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCrewOKApplicationJSON to nil")
+	}
+	var unwrapped []MovieCredit
+	if err := func() error {
+		unwrapped = make([]MovieCredit, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MovieCredit
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCrewOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetMovieCrewOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCrewOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieCrewUnauthorized as json.
+func (s *GetMovieCrewUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieCrewUnauthorized from json.
+func (s *GetMovieCrewUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieCrewUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieCrewUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieCrewUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieCrewUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieFilesNotFound as json.
+func (s *GetMovieFilesNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieFilesNotFound from json.
+func (s *GetMovieFilesNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieFilesNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieFilesNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieFilesNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieFilesNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieFilesOKApplicationJSON as json.
+func (s GetMovieFilesOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MovieFile(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetMovieFilesOKApplicationJSON from json.
+func (s *GetMovieFilesOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieFilesOKApplicationJSON to nil")
+	}
+	var unwrapped []MovieFile
+	if err := func() error {
+		unwrapped = make([]MovieFile, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MovieFile
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieFilesOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetMovieFilesOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieFilesOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieFilesUnauthorized as json.
+func (s *GetMovieFilesUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieFilesUnauthorized from json.
+func (s *GetMovieFilesUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieFilesUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieFilesUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieFilesUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieFilesUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieGenresNotFound as json.
+func (s *GetMovieGenresNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieGenresNotFound from json.
+func (s *GetMovieGenresNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieGenresNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieGenresNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieGenresNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieGenresNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieGenresOKApplicationJSON as json.
+func (s GetMovieGenresOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []MovieGenre(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetMovieGenresOKApplicationJSON from json.
+func (s *GetMovieGenresOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieGenresOKApplicationJSON to nil")
+	}
+	var unwrapped []MovieGenre
+	if err := func() error {
+		unwrapped = make([]MovieGenre, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem MovieGenre
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieGenresOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetMovieGenresOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieGenresOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieGenresUnauthorized as json.
+func (s *GetMovieGenresUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieGenresUnauthorized from json.
+func (s *GetMovieGenresUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieGenresUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieGenresUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieGenresUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieGenresUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieNotFound as json.
+func (s *GetMovieNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieNotFound from json.
+func (s *GetMovieNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieUnauthorized as json.
+func (s *GetMovieUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieUnauthorized from json.
+func (s *GetMovieUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetReadinessOK as json.
 func (s *GetReadinessOK) Encode(e *jx.Encoder) {
 	unwrapped := (*HealthCheck)(s)
@@ -6715,6 +8238,56 @@ func (s *GetRecentActionsUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetRecentActionsUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetRecentlyAddedOKApplicationJSON as json.
+func (s GetRecentlyAddedOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []Movie(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetRecentlyAddedOKApplicationJSON from json.
+func (s *GetRecentlyAddedOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetRecentlyAddedOKApplicationJSON to nil")
+	}
+	var unwrapped []Movie
+	if err := func() error {
+		unwrapped = make([]Movie, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem Movie
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetRecentlyAddedOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetRecentlyAddedOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetRecentlyAddedOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -6985,6 +8558,56 @@ func (s *GetStartupServiceUnavailable) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetTopRatedOKApplicationJSON as json.
+func (s GetTopRatedOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []Movie(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetTopRatedOKApplicationJSON from json.
+func (s *GetTopRatedOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetTopRatedOKApplicationJSON to nil")
+	}
+	var unwrapped []Movie
+	if err := func() error {
+		unwrapped = make([]Movie, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem Movie
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetTopRatedOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetTopRatedOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetTopRatedOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetUserActivityLogsForbidden as json.
 func (s *GetUserActivityLogsForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -7247,6 +8870,132 @@ func (s *GetUserSettingUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetUserSettingUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetWatchHistoryOKApplicationJSON as json.
+func (s GetWatchHistoryOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []WatchedMovieItem(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes GetWatchHistoryOKApplicationJSON from json.
+func (s *GetWatchHistoryOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetWatchHistoryOKApplicationJSON to nil")
+	}
+	var unwrapped []WatchedMovieItem
+	if err := func() error {
+		unwrapped = make([]WatchedMovieItem, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem WatchedMovieItem
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetWatchHistoryOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s GetWatchHistoryOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetWatchHistoryOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetWatchProgressNotFound as json.
+func (s *GetWatchProgressNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetWatchProgressNotFound from json.
+func (s *GetWatchProgressNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetWatchProgressNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetWatchProgressNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetWatchProgressNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetWatchProgressNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetWatchProgressUnauthorized as json.
+func (s *GetWatchProgressUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetWatchProgressUnauthorized from json.
+func (s *GetWatchProgressUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetWatchProgressUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetWatchProgressUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetWatchProgressUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetWatchProgressUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -9469,6 +11218,56 @@ func (s *ListLibraryScansUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes ListMoviesOKApplicationJSON as json.
+func (s ListMoviesOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []Movie(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes ListMoviesOKApplicationJSON from json.
+func (s *ListMoviesOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ListMoviesOKApplicationJSON to nil")
+	}
+	var unwrapped []Movie
+	if err := func() error {
+		unwrapped = make([]Movie, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem Movie
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = ListMoviesOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ListMoviesOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ListMoviesOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes ListPoliciesForbidden as json.
 func (s *ListPoliciesForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -10236,6 +12035,1852 @@ func (s *MFAStatus) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MFAStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MarkAsWatchedNotFound as json.
+func (s *MarkAsWatchedNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes MarkAsWatchedNotFound from json.
+func (s *MarkAsWatchedNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MarkAsWatchedNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = MarkAsWatchedNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MarkAsWatchedNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MarkAsWatchedNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MarkAsWatchedUnauthorized as json.
+func (s *MarkAsWatchedUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes MarkAsWatchedUnauthorized from json.
+func (s *MarkAsWatchedUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MarkAsWatchedUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = MarkAsWatchedUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MarkAsWatchedUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MarkAsWatchedUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *Movie) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *Movie) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.ImdbID.Set {
+			e.FieldStart("imdb_id")
+			s.ImdbID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.OriginalTitle.Set {
+			e.FieldStart("original_title")
+			s.OriginalTitle.Encode(e)
+		}
+	}
+	{
+		if s.Year.Set {
+			e.FieldStart("year")
+			s.Year.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("release_date")
+			s.ReleaseDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.Tagline.Set {
+			e.FieldStart("tagline")
+			s.Tagline.Encode(e)
+		}
+	}
+	{
+		if s.Status.Set {
+			e.FieldStart("status")
+			s.Status.Encode(e)
+		}
+	}
+	{
+		if s.OriginalLanguage.Set {
+			e.FieldStart("original_language")
+			s.OriginalLanguage.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.TrailerURL.Set {
+			e.FieldStart("trailer_url")
+			s.TrailerURL.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+	{
+		if s.Budget.Set {
+			e.FieldStart("budget")
+			s.Budget.Encode(e)
+		}
+	}
+	{
+		if s.Revenue.Set {
+			e.FieldStart("revenue")
+			s.Revenue.Encode(e)
+		}
+	}
+	{
+		if s.LibraryAddedAt.Set {
+			e.FieldStart("library_added_at")
+			s.LibraryAddedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.MetadataUpdatedAt.Set {
+			e.FieldStart("metadata_updated_at")
+			s.MetadataUpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.RadarrID.Set {
+			e.FieldStart("radarr_id")
+			s.RadarrID.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovie = [25]string{
+	0:  "id",
+	1:  "tmdb_id",
+	2:  "imdb_id",
+	3:  "title",
+	4:  "original_title",
+	5:  "year",
+	6:  "release_date",
+	7:  "runtime",
+	8:  "overview",
+	9:  "tagline",
+	10: "status",
+	11: "original_language",
+	12: "poster_path",
+	13: "backdrop_path",
+	14: "trailer_url",
+	15: "vote_average",
+	16: "vote_count",
+	17: "popularity",
+	18: "budget",
+	19: "revenue",
+	20: "library_added_at",
+	21: "metadata_updated_at",
+	22: "radarr_id",
+	23: "created_at",
+	24: "updated_at",
+}
+
+// Decode decodes Movie from json.
+func (s *Movie) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode Movie to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "imdb_id":
+			if err := func() error {
+				s.ImdbID.Reset()
+				if err := s.ImdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdb_id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "original_title":
+			if err := func() error {
+				s.OriginalTitle.Reset()
+				if err := s.OriginalTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_title\"")
+			}
+		case "year":
+			if err := func() error {
+				s.Year.Reset()
+				if err := s.Year.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "release_date":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "tagline":
+			if err := func() error {
+				s.Tagline.Reset()
+				if err := s.Tagline.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tagline\"")
+			}
+		case "status":
+			if err := func() error {
+				s.Status.Reset()
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "original_language":
+			if err := func() error {
+				s.OriginalLanguage.Reset()
+				if err := s.OriginalLanguage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_language\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "trailer_url":
+			if err := func() error {
+				s.TrailerURL.Reset()
+				if err := s.TrailerURL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"trailer_url\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		case "budget":
+			if err := func() error {
+				s.Budget.Reset()
+				if err := s.Budget.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"budget\"")
+			}
+		case "revenue":
+			if err := func() error {
+				s.Revenue.Reset()
+				if err := s.Revenue.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"revenue\"")
+			}
+		case "library_added_at":
+			if err := func() error {
+				s.LibraryAddedAt.Reset()
+				if err := s.LibraryAddedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"library_added_at\"")
+			}
+		case "metadata_updated_at":
+			if err := func() error {
+				s.MetadataUpdatedAt.Reset()
+				if err := s.MetadataUpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata_updated_at\"")
+			}
+		case "radarr_id":
+			if err := func() error {
+				s.RadarrID.Reset()
+				if err := s.RadarrID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode Movie")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *Movie) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *Movie) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MovieCollection) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MovieCollection) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbCollectionID.Set {
+			e.FieldStart("tmdb_collection_id")
+			s.TmdbCollectionID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovieCollection = [8]string{
+	0: "id",
+	1: "tmdb_collection_id",
+	2: "name",
+	3: "overview",
+	4: "poster_path",
+	5: "backdrop_path",
+	6: "created_at",
+	7: "updated_at",
+}
+
+// Decode decodes MovieCollection from json.
+func (s *MovieCollection) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieCollection to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_collection_id":
+			if err := func() error {
+				s.TmdbCollectionID.Reset()
+				if err := s.TmdbCollectionID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_collection_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MovieCollection")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MovieCollection) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieCollection) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MovieCredit) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MovieCredit) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.MovieID.Set {
+			e.FieldStart("movie_id")
+			s.MovieID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbPersonID.Set {
+			e.FieldStart("tmdb_person_id")
+			s.TmdbPersonID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.CreditType.Set {
+			e.FieldStart("credit_type")
+			s.CreditType.Encode(e)
+		}
+	}
+	{
+		if s.Character.Set {
+			e.FieldStart("character")
+			s.Character.Encode(e)
+		}
+	}
+	{
+		if s.Job.Set {
+			e.FieldStart("job")
+			s.Job.Encode(e)
+		}
+	}
+	{
+		if s.Department.Set {
+			e.FieldStart("department")
+			s.Department.Encode(e)
+		}
+	}
+	{
+		if s.CastOrder.Set {
+			e.FieldStart("cast_order")
+			s.CastOrder.Encode(e)
+		}
+	}
+	{
+		if s.ProfilePath.Set {
+			e.FieldStart("profile_path")
+			s.ProfilePath.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovieCredit = [12]string{
+	0:  "id",
+	1:  "movie_id",
+	2:  "tmdb_person_id",
+	3:  "name",
+	4:  "credit_type",
+	5:  "character",
+	6:  "job",
+	7:  "department",
+	8:  "cast_order",
+	9:  "profile_path",
+	10: "created_at",
+	11: "updated_at",
+}
+
+// Decode decodes MovieCredit from json.
+func (s *MovieCredit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieCredit to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "movie_id":
+			if err := func() error {
+				s.MovieID.Reset()
+				if err := s.MovieID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie_id\"")
+			}
+		case "tmdb_person_id":
+			if err := func() error {
+				s.TmdbPersonID.Reset()
+				if err := s.TmdbPersonID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_person_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "credit_type":
+			if err := func() error {
+				s.CreditType.Reset()
+				if err := s.CreditType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"credit_type\"")
+			}
+		case "character":
+			if err := func() error {
+				s.Character.Reset()
+				if err := s.Character.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"character\"")
+			}
+		case "job":
+			if err := func() error {
+				s.Job.Reset()
+				if err := s.Job.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"job\"")
+			}
+		case "department":
+			if err := func() error {
+				s.Department.Reset()
+				if err := s.Department.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"department\"")
+			}
+		case "cast_order":
+			if err := func() error {
+				s.CastOrder.Reset()
+				if err := s.CastOrder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cast_order\"")
+			}
+		case "profile_path":
+			if err := func() error {
+				s.ProfilePath.Reset()
+				if err := s.ProfilePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"profile_path\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MovieCredit")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MovieCredit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieCredit) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MovieCreditCreditType as json.
+func (s MovieCreditCreditType) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes MovieCreditCreditType from json.
+func (s *MovieCreditCreditType) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieCreditCreditType to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch MovieCreditCreditType(v) {
+	case MovieCreditCreditTypeCast:
+		*s = MovieCreditCreditTypeCast
+	case MovieCreditCreditTypeCrew:
+		*s = MovieCreditCreditTypeCrew
+	default:
+		*s = MovieCreditCreditType(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s MovieCreditCreditType) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieCreditCreditType) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MovieFile) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MovieFile) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.MovieID.Set {
+			e.FieldStart("movie_id")
+			s.MovieID.Encode(e)
+		}
+	}
+	{
+		if s.FilePath.Set {
+			e.FieldStart("file_path")
+			s.FilePath.Encode(e)
+		}
+	}
+	{
+		if s.FileSize.Set {
+			e.FieldStart("file_size")
+			s.FileSize.Encode(e)
+		}
+	}
+	{
+		if s.FileName.Set {
+			e.FieldStart("file_name")
+			s.FileName.Encode(e)
+		}
+	}
+	{
+		if s.Resolution.Set {
+			e.FieldStart("resolution")
+			s.Resolution.Encode(e)
+		}
+	}
+	{
+		if s.QualityProfile.Set {
+			e.FieldStart("quality_profile")
+			s.QualityProfile.Encode(e)
+		}
+	}
+	{
+		if s.VideoCodec.Set {
+			e.FieldStart("video_codec")
+			s.VideoCodec.Encode(e)
+		}
+	}
+	{
+		if s.AudioCodec.Set {
+			e.FieldStart("audio_codec")
+			s.AudioCodec.Encode(e)
+		}
+	}
+	{
+		if s.Container.Set {
+			e.FieldStart("container")
+			s.Container.Encode(e)
+		}
+	}
+	{
+		if s.DurationSeconds.Set {
+			e.FieldStart("duration_seconds")
+			s.DurationSeconds.Encode(e)
+		}
+	}
+	{
+		if s.BitrateKbps.Set {
+			e.FieldStart("bitrate_kbps")
+			s.BitrateKbps.Encode(e)
+		}
+	}
+	{
+		if s.Framerate.Set {
+			e.FieldStart("framerate")
+			s.Framerate.Encode(e)
+		}
+	}
+	{
+		if s.DynamicRange.Set {
+			e.FieldStart("dynamic_range")
+			s.DynamicRange.Encode(e)
+		}
+	}
+	{
+		if s.ColorSpace.Set {
+			e.FieldStart("color_space")
+			s.ColorSpace.Encode(e)
+		}
+	}
+	{
+		if s.AudioChannels.Set {
+			e.FieldStart("audio_channels")
+			s.AudioChannels.Encode(e)
+		}
+	}
+	{
+		if s.AudioLanguages != nil {
+			e.FieldStart("audio_languages")
+			e.ArrStart()
+			for _, elem := range s.AudioLanguages {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.SubtitleLanguages != nil {
+			e.FieldStart("subtitle_languages")
+			e.ArrStart()
+			for _, elem := range s.SubtitleLanguages {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.RadarrFileID.Set {
+			e.FieldStart("radarr_file_id")
+			s.RadarrFileID.Encode(e)
+		}
+	}
+	{
+		if s.LastScannedAt.Set {
+			e.FieldStart("last_scanned_at")
+			s.LastScannedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.IsMonitored.Set {
+			e.FieldStart("is_monitored")
+			s.IsMonitored.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovieFile = [23]string{
+	0:  "id",
+	1:  "movie_id",
+	2:  "file_path",
+	3:  "file_size",
+	4:  "file_name",
+	5:  "resolution",
+	6:  "quality_profile",
+	7:  "video_codec",
+	8:  "audio_codec",
+	9:  "container",
+	10: "duration_seconds",
+	11: "bitrate_kbps",
+	12: "framerate",
+	13: "dynamic_range",
+	14: "color_space",
+	15: "audio_channels",
+	16: "audio_languages",
+	17: "subtitle_languages",
+	18: "radarr_file_id",
+	19: "last_scanned_at",
+	20: "is_monitored",
+	21: "created_at",
+	22: "updated_at",
+}
+
+// Decode decodes MovieFile from json.
+func (s *MovieFile) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieFile to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "movie_id":
+			if err := func() error {
+				s.MovieID.Reset()
+				if err := s.MovieID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie_id\"")
+			}
+		case "file_path":
+			if err := func() error {
+				s.FilePath.Reset()
+				if err := s.FilePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"file_path\"")
+			}
+		case "file_size":
+			if err := func() error {
+				s.FileSize.Reset()
+				if err := s.FileSize.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"file_size\"")
+			}
+		case "file_name":
+			if err := func() error {
+				s.FileName.Reset()
+				if err := s.FileName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"file_name\"")
+			}
+		case "resolution":
+			if err := func() error {
+				s.Resolution.Reset()
+				if err := s.Resolution.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"resolution\"")
+			}
+		case "quality_profile":
+			if err := func() error {
+				s.QualityProfile.Reset()
+				if err := s.QualityProfile.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quality_profile\"")
+			}
+		case "video_codec":
+			if err := func() error {
+				s.VideoCodec.Reset()
+				if err := s.VideoCodec.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"video_codec\"")
+			}
+		case "audio_codec":
+			if err := func() error {
+				s.AudioCodec.Reset()
+				if err := s.AudioCodec.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"audio_codec\"")
+			}
+		case "container":
+			if err := func() error {
+				s.Container.Reset()
+				if err := s.Container.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"container\"")
+			}
+		case "duration_seconds":
+			if err := func() error {
+				s.DurationSeconds.Reset()
+				if err := s.DurationSeconds.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"duration_seconds\"")
+			}
+		case "bitrate_kbps":
+			if err := func() error {
+				s.BitrateKbps.Reset()
+				if err := s.BitrateKbps.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"bitrate_kbps\"")
+			}
+		case "framerate":
+			if err := func() error {
+				s.Framerate.Reset()
+				if err := s.Framerate.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"framerate\"")
+			}
+		case "dynamic_range":
+			if err := func() error {
+				s.DynamicRange.Reset()
+				if err := s.DynamicRange.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"dynamic_range\"")
+			}
+		case "color_space":
+			if err := func() error {
+				s.ColorSpace.Reset()
+				if err := s.ColorSpace.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"color_space\"")
+			}
+		case "audio_channels":
+			if err := func() error {
+				s.AudioChannels.Reset()
+				if err := s.AudioChannels.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"audio_channels\"")
+			}
+		case "audio_languages":
+			if err := func() error {
+				s.AudioLanguages = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.AudioLanguages = append(s.AudioLanguages, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"audio_languages\"")
+			}
+		case "subtitle_languages":
+			if err := func() error {
+				s.SubtitleLanguages = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.SubtitleLanguages = append(s.SubtitleLanguages, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"subtitle_languages\"")
+			}
+		case "radarr_file_id":
+			if err := func() error {
+				s.RadarrFileID.Reset()
+				if err := s.RadarrFileID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"radarr_file_id\"")
+			}
+		case "last_scanned_at":
+			if err := func() error {
+				s.LastScannedAt.Reset()
+				if err := s.LastScannedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"last_scanned_at\"")
+			}
+		case "is_monitored":
+			if err := func() error {
+				s.IsMonitored.Reset()
+				if err := s.IsMonitored.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"is_monitored\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MovieFile")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MovieFile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieFile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MovieGenre) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MovieGenre) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.MovieID.Set {
+			e.FieldStart("movie_id")
+			s.MovieID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbGenreID.Set {
+			e.FieldStart("tmdb_genre_id")
+			s.TmdbGenreID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovieGenre = [5]string{
+	0: "id",
+	1: "movie_id",
+	2: "tmdb_genre_id",
+	3: "name",
+	4: "created_at",
+}
+
+// Decode decodes MovieGenre from json.
+func (s *MovieGenre) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieGenre to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "movie_id":
+			if err := func() error {
+				s.MovieID.Reset()
+				if err := s.MovieID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie_id\"")
+			}
+		case "tmdb_genre_id":
+			if err := func() error {
+				s.TmdbGenreID.Reset()
+				if err := s.TmdbGenreID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_genre_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MovieGenre")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MovieGenre) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieGenre) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MovieWatched) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MovieWatched) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.UserID.Set {
+			e.FieldStart("user_id")
+			s.UserID.Encode(e)
+		}
+	}
+	{
+		if s.MovieID.Set {
+			e.FieldStart("movie_id")
+			s.MovieID.Encode(e)
+		}
+	}
+	{
+		if s.ProgressSeconds.Set {
+			e.FieldStart("progress_seconds")
+			s.ProgressSeconds.Encode(e)
+		}
+	}
+	{
+		if s.DurationSeconds.Set {
+			e.FieldStart("duration_seconds")
+			s.DurationSeconds.Encode(e)
+		}
+	}
+	{
+		if s.ProgressPercent.Set {
+			e.FieldStart("progress_percent")
+			s.ProgressPercent.Encode(e)
+		}
+	}
+	{
+		if s.IsCompleted.Set {
+			e.FieldStart("is_completed")
+			s.IsCompleted.Encode(e)
+		}
+	}
+	{
+		if s.WatchCount.Set {
+			e.FieldStart("watch_count")
+			s.WatchCount.Encode(e)
+		}
+	}
+	{
+		if s.LastWatchedAt.Set {
+			e.FieldStart("last_watched_at")
+			s.LastWatchedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfMovieWatched = [11]string{
+	0:  "id",
+	1:  "user_id",
+	2:  "movie_id",
+	3:  "progress_seconds",
+	4:  "duration_seconds",
+	5:  "progress_percent",
+	6:  "is_completed",
+	7:  "watch_count",
+	8:  "last_watched_at",
+	9:  "created_at",
+	10: "updated_at",
+}
+
+// Decode decodes MovieWatched from json.
+func (s *MovieWatched) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MovieWatched to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "user_id":
+			if err := func() error {
+				s.UserID.Reset()
+				if err := s.UserID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"user_id\"")
+			}
+		case "movie_id":
+			if err := func() error {
+				s.MovieID.Reset()
+				if err := s.MovieID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie_id\"")
+			}
+		case "progress_seconds":
+			if err := func() error {
+				s.ProgressSeconds.Reset()
+				if err := s.ProgressSeconds.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"progress_seconds\"")
+			}
+		case "duration_seconds":
+			if err := func() error {
+				s.DurationSeconds.Reset()
+				if err := s.DurationSeconds.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"duration_seconds\"")
+			}
+		case "progress_percent":
+			if err := func() error {
+				s.ProgressPercent.Reset()
+				if err := s.ProgressPercent.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"progress_percent\"")
+			}
+		case "is_completed":
+			if err := func() error {
+				s.IsCompleted.Reset()
+				if err := s.IsCompleted.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"is_completed\"")
+			}
+		case "watch_count":
+			if err := func() error {
+				s.WatchCount.Reset()
+				if err := s.WatchCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"watch_count\"")
+			}
+		case "last_watched_at":
+			if err := func() error {
+				s.LastWatchedAt.Reset()
+				if err := s.LastWatchedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"last_watched_at\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MovieWatched")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MovieWatched) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MovieWatched) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -11534,6 +15179,141 @@ func (s *OptLibraryScannerConfig) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes MovieCreditCreditType as json.
+func (o OptMovieCreditCreditType) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes MovieCreditCreditType from json.
+func (o *OptMovieCreditCreditType) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMovieCreditCreditType to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMovieCreditCreditType) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMovieCreditCreditType) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes bool as json.
+func (o OptNilBool) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Bool(bool(o.Value))
+}
+
+// Decode decodes bool from json.
+func (o *OptNilBool) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilBool to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v bool
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	v, err := d.Bool()
+	if err != nil {
+		return err
+	}
+	o.Value = bool(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilBool) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilBool) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes time.Time as json.
+func (o OptNilDate) Encode(e *jx.Encoder, format func(*jx.Encoder, time.Time)) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	format(e, o.Value)
+}
+
+// Decode decodes time.Time from json.
+func (o *OptNilDate) Decode(d *jx.Decoder, format func(*jx.Decoder) (time.Time, error)) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilDate to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v time.Time
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	v, err := format(d)
+	if err != nil {
+		return err
+	}
+	o.Value = v
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilDate) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e, json.EncodeDate)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilDate) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d, json.DecodeDate)
+}
+
 // Encode encodes time.Time as json.
 func (o OptNilDateTime) Encode(e *jx.Encoder, format func(*jx.Encoder, time.Time)) {
 	if !o.Set {
@@ -11583,6 +15363,159 @@ func (s OptNilDateTime) MarshalJSON() ([]byte, error) {
 func (s *OptNilDateTime) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d, json.DecodeDateTime)
+}
+
+// Encode encodes float32 as json.
+func (o OptNilFloat32) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Float32(float32(o.Value))
+}
+
+// Decode decodes float32 from json.
+func (o *OptNilFloat32) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilFloat32 to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v float32
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	v, err := d.Float32()
+	if err != nil {
+		return err
+	}
+	o.Value = float32(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilFloat32) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilFloat32) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes int as json.
+func (o OptNilInt) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Int(int(o.Value))
+}
+
+// Decode decodes int from json.
+func (o *OptNilInt) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilInt to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v int
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	v, err := d.Int()
+	if err != nil {
+		return err
+	}
+	o.Value = int(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilInt) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilInt) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes int64 as json.
+func (o OptNilInt64) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Int64(int64(o.Value))
+}
+
+// Decode decodes int64 from json.
+func (o *OptNilInt64) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilInt64 to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v int64
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	v, err := d.Int64()
+	if err != nil {
+		return err
+	}
+	o.Value = int64(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilInt64) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilInt64) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
 }
 
 // Encode encodes string as json.
@@ -12699,6 +16632,82 @@ func (s *PolicyRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PolicyRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RefreshMovieMetadataNotFound as json.
+func (s *RefreshMovieMetadataNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes RefreshMovieMetadataNotFound from json.
+func (s *RefreshMovieMetadataNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RefreshMovieMetadataNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = RefreshMovieMetadataNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RefreshMovieMetadataNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RefreshMovieMetadataNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RefreshMovieMetadataUnauthorized as json.
+func (s *RefreshMovieMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes RefreshMovieMetadataUnauthorized from json.
+func (s *RefreshMovieMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RefreshMovieMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = RefreshMovieMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RefreshMovieMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RefreshMovieMetadataUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -14393,6 +18402,56 @@ func (s *SearchActivityLogsUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SearchActivityLogsUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SearchMoviesOKApplicationJSON as json.
+func (s SearchMoviesOKApplicationJSON) Encode(e *jx.Encoder) {
+	unwrapped := []Movie(s)
+
+	e.ArrStart()
+	for _, elem := range unwrapped {
+		elem.Encode(e)
+	}
+	e.ArrEnd()
+}
+
+// Decode decodes SearchMoviesOKApplicationJSON from json.
+func (s *SearchMoviesOKApplicationJSON) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SearchMoviesOKApplicationJSON to nil")
+	}
+	var unwrapped []Movie
+	if err := func() error {
+		unwrapped = make([]Movie, 0)
+		if err := d.Arr(func(d *jx.Decoder) error {
+			var elem Movie
+			if err := elem.Decode(d); err != nil {
+				return err
+			}
+			unwrapped = append(unwrapped, elem)
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SearchMoviesOKApplicationJSON(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SearchMoviesOKApplicationJSON) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SearchMoviesOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -17132,6 +21191,195 @@ func (s *UpdateUserSettingUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes UpdateWatchProgressNotFound as json.
+func (s *UpdateWatchProgressNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes UpdateWatchProgressNotFound from json.
+func (s *UpdateWatchProgressNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode UpdateWatchProgressNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = UpdateWatchProgressNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *UpdateWatchProgressNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *UpdateWatchProgressNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *UpdateWatchProgressReq) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *UpdateWatchProgressReq) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("progressSeconds")
+		e.Int(s.ProgressSeconds)
+	}
+	{
+		e.FieldStart("durationSeconds")
+		e.Int(s.DurationSeconds)
+	}
+}
+
+var jsonFieldsNameOfUpdateWatchProgressReq = [2]string{
+	0: "progressSeconds",
+	1: "durationSeconds",
+}
+
+// Decode decodes UpdateWatchProgressReq from json.
+func (s *UpdateWatchProgressReq) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode UpdateWatchProgressReq to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "progressSeconds":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.ProgressSeconds = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"progressSeconds\"")
+			}
+		case "durationSeconds":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int()
+				s.DurationSeconds = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"durationSeconds\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode UpdateWatchProgressReq")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfUpdateWatchProgressReq) {
+					name = jsonFieldsNameOfUpdateWatchProgressReq[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *UpdateWatchProgressReq) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *UpdateWatchProgressReq) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes UpdateWatchProgressUnauthorized as json.
+func (s *UpdateWatchProgressUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes UpdateWatchProgressUnauthorized from json.
+func (s *UpdateWatchProgressUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode UpdateWatchProgressUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = UpdateWatchProgressUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *UpdateWatchProgressUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *UpdateWatchProgressUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes UploadAvatarBadRequest as json.
 func (s *UploadAvatarBadRequest) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -17505,6 +21753,103 @@ func (s *User) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *User) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *UserMovieStats) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *UserMovieStats) encodeFields(e *jx.Encoder) {
+	{
+		if s.WatchedCount.Set {
+			e.FieldStart("watched_count")
+			s.WatchedCount.Encode(e)
+		}
+	}
+	{
+		if s.InProgressCount.Set {
+			e.FieldStart("in_progress_count")
+			s.InProgressCount.Encode(e)
+		}
+	}
+	{
+		if s.TotalWatches.Set {
+			e.FieldStart("total_watches")
+			s.TotalWatches.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfUserMovieStats = [3]string{
+	0: "watched_count",
+	1: "in_progress_count",
+	2: "total_watches",
+}
+
+// Decode decodes UserMovieStats from json.
+func (s *UserMovieStats) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode UserMovieStats to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "watched_count":
+			if err := func() error {
+				s.WatchedCount.Reset()
+				if err := s.WatchedCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"watched_count\"")
+			}
+		case "in_progress_count":
+			if err := func() error {
+				s.InProgressCount.Reset()
+				if err := s.InProgressCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"in_progress_count\"")
+			}
+		case "total_watches":
+			if err := func() error {
+				s.TotalWatches.Reset()
+				if err := s.TotalWatches.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_watches\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode UserMovieStats")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *UserMovieStats) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *UserMovieStats) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -19616,6 +23961,511 @@ func (s *VerifyTOTPUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *VerifyTOTPUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *WatchedMovieItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *WatchedMovieItem) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.ImdbID.Set {
+			e.FieldStart("imdb_id")
+			s.ImdbID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.OriginalTitle.Set {
+			e.FieldStart("original_title")
+			s.OriginalTitle.Encode(e)
+		}
+	}
+	{
+		if s.Year.Set {
+			e.FieldStart("year")
+			s.Year.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("release_date")
+			s.ReleaseDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.Tagline.Set {
+			e.FieldStart("tagline")
+			s.Tagline.Encode(e)
+		}
+	}
+	{
+		if s.Status.Set {
+			e.FieldStart("status")
+			s.Status.Encode(e)
+		}
+	}
+	{
+		if s.OriginalLanguage.Set {
+			e.FieldStart("original_language")
+			s.OriginalLanguage.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.TrailerURL.Set {
+			e.FieldStart("trailer_url")
+			s.TrailerURL.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+	{
+		if s.Budget.Set {
+			e.FieldStart("budget")
+			s.Budget.Encode(e)
+		}
+	}
+	{
+		if s.Revenue.Set {
+			e.FieldStart("revenue")
+			s.Revenue.Encode(e)
+		}
+	}
+	{
+		if s.LibraryAddedAt.Set {
+			e.FieldStart("library_added_at")
+			s.LibraryAddedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.MetadataUpdatedAt.Set {
+			e.FieldStart("metadata_updated_at")
+			s.MetadataUpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.RadarrID.Set {
+			e.FieldStart("radarr_id")
+			s.RadarrID.Encode(e)
+		}
+	}
+	{
+		if s.CreatedAt.Set {
+			e.FieldStart("created_at")
+			s.CreatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.UpdatedAt.Set {
+			e.FieldStart("updated_at")
+			s.UpdatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.WatchCount.Set {
+			e.FieldStart("watch_count")
+			s.WatchCount.Encode(e)
+		}
+	}
+	{
+		if s.LastWatchedAt.Set {
+			e.FieldStart("last_watched_at")
+			s.LastWatchedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfWatchedMovieItem = [27]string{
+	0:  "id",
+	1:  "tmdb_id",
+	2:  "imdb_id",
+	3:  "title",
+	4:  "original_title",
+	5:  "year",
+	6:  "release_date",
+	7:  "runtime",
+	8:  "overview",
+	9:  "tagline",
+	10: "status",
+	11: "original_language",
+	12: "poster_path",
+	13: "backdrop_path",
+	14: "trailer_url",
+	15: "vote_average",
+	16: "vote_count",
+	17: "popularity",
+	18: "budget",
+	19: "revenue",
+	20: "library_added_at",
+	21: "metadata_updated_at",
+	22: "radarr_id",
+	23: "created_at",
+	24: "updated_at",
+	25: "watch_count",
+	26: "last_watched_at",
+}
+
+// Decode decodes WatchedMovieItem from json.
+func (s *WatchedMovieItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode WatchedMovieItem to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "imdb_id":
+			if err := func() error {
+				s.ImdbID.Reset()
+				if err := s.ImdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdb_id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "original_title":
+			if err := func() error {
+				s.OriginalTitle.Reset()
+				if err := s.OriginalTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_title\"")
+			}
+		case "year":
+			if err := func() error {
+				s.Year.Reset()
+				if err := s.Year.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "release_date":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "tagline":
+			if err := func() error {
+				s.Tagline.Reset()
+				if err := s.Tagline.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tagline\"")
+			}
+		case "status":
+			if err := func() error {
+				s.Status.Reset()
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "original_language":
+			if err := func() error {
+				s.OriginalLanguage.Reset()
+				if err := s.OriginalLanguage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_language\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "trailer_url":
+			if err := func() error {
+				s.TrailerURL.Reset()
+				if err := s.TrailerURL.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"trailer_url\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		case "budget":
+			if err := func() error {
+				s.Budget.Reset()
+				if err := s.Budget.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"budget\"")
+			}
+		case "revenue":
+			if err := func() error {
+				s.Revenue.Reset()
+				if err := s.Revenue.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"revenue\"")
+			}
+		case "library_added_at":
+			if err := func() error {
+				s.LibraryAddedAt.Reset()
+				if err := s.LibraryAddedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"library_added_at\"")
+			}
+		case "metadata_updated_at":
+			if err := func() error {
+				s.MetadataUpdatedAt.Reset()
+				if err := s.MetadataUpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata_updated_at\"")
+			}
+		case "radarr_id":
+			if err := func() error {
+				s.RadarrID.Reset()
+				if err := s.RadarrID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "created_at":
+			if err := func() error {
+				s.CreatedAt.Reset()
+				if err := s.CreatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			if err := func() error {
+				s.UpdatedAt.Reset()
+				if err := s.UpdatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
+		case "watch_count":
+			if err := func() error {
+				s.WatchCount.Reset()
+				if err := s.WatchCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"watch_count\"")
+			}
+		case "last_watched_at":
+			if err := func() error {
+				s.LastWatchedAt.Reset()
+				if err := s.LastWatchedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"last_watched_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode WatchedMovieItem")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *WatchedMovieItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *WatchedMovieItem) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

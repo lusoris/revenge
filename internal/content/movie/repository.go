@@ -2,6 +2,7 @@ package movie
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -181,14 +182,14 @@ type ContinueWatchingItem struct {
 	ProgressSeconds int32
 	DurationSeconds int32
 	ProgressPercent *int32
-	LastWatchedAt   *string
+	LastWatchedAt   time.Time
 }
 
 // WatchedMovieItem represents a watched movie with statistics
 type WatchedMovieItem struct {
 	Movie
 	WatchCount    int32
-	LastWatchedAt *string
+	LastWatchedAt time.Time
 }
 
 // UserMovieStats represents statistics for a user's movie watching
