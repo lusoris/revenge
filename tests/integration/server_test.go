@@ -23,7 +23,7 @@ func TestServerStartup(t *testing.T) {
 	assert.NotNil(t, ts.App, "fx app should be running")
 
 	// Verify server is accessible
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 	require.NoError(t, err, "should be able to reach server")
 	defer resp.Body.Close()
 
@@ -35,7 +35,7 @@ func TestServerGracefulShutdown(t *testing.T) {
 	ts := setupServer(t)
 
 	// Verify server is running
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 	require.NoError(t, err, "server should be running")
 	resp.Body.Close()
 
@@ -49,7 +49,7 @@ func TestServerGracefulShutdown(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", ts.BaseURL+"/health/live", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", ts.BaseURL+"/healthz", nil)
 	require.NoError(t, err)
 
 	_, err = ts.HTTPClient.Do(req)
@@ -65,7 +65,7 @@ func TestServerSignalHandling(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Verify server is running
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 	require.NoError(t, err, "server should be running")
 	resp.Body.Close()
 
@@ -100,7 +100,7 @@ func TestServerModuleInitialization(t *testing.T) {
 	// Verify all modules initialized by checking their endpoints/functionality
 
 	// 1. API module - health endpoints accessible
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 	require.NoError(t, err, "API module should be initialized")
 	resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -111,7 +111,7 @@ func TestServerModuleInitialization(t *testing.T) {
 	assert.NoError(t, err, "Database module should be initialized")
 
 	// 3. Health module - readiness check works
-	resp, err = ts.HTTPClient.Get(ts.BaseURL + "/health/ready")
+	resp, err = ts.HTTPClient.Get(ts.BaseURL + "/readyz")
 	require.NoError(t, err, "Health module should be initialized")
 	resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -130,7 +130,7 @@ func TestServerConcurrentRequests(t *testing.T) {
 
 	for i := 0; i < numRequests; i++ {
 		go func() {
-			resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+			resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 			if err != nil {
 				results <- err
 				return

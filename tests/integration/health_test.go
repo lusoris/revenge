@@ -28,7 +28,7 @@ func TestHealthLivenessEndpoint(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Make request to liveness endpoint
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/live")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/healthz")
 	require.NoError(t, err, "should be able to reach liveness endpoint")
 	defer resp.Body.Close()
 
@@ -58,7 +58,7 @@ func TestHealthReadinessEndpointWithDB(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Make request to readiness endpoint
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/ready")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/readyz")
 	require.NoError(t, err, "should be able to reach readiness endpoint")
 	defer resp.Body.Close()
 
@@ -96,7 +96,7 @@ func TestHealthReadinessEndpointWithoutDB(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Make request to readiness endpoint
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/ready")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/readyz")
 	require.NoError(t, err, "should be able to reach readiness endpoint")
 	defer resp.Body.Close()
 
@@ -123,7 +123,7 @@ func TestHealthStartupEndpoint(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Make request to startup endpoint
-	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/health/startup")
+	resp, err := ts.HTTPClient.Get(ts.BaseURL + "/startupz")
 	require.NoError(t, err, "should be able to reach startup endpoint")
 	defer resp.Body.Close()
 
@@ -154,9 +154,9 @@ func TestHealthResponseFormat(t *testing.T) {
 		path           string
 		expectedStatus string
 	}{
-		{"/health/live", "healthy"},
-		{"/health/ready", "healthy"},
-		{"/health/startup", "healthy"},
+		{"/healthz", "healthy"},
+		{"/readyz", "healthy"},
+		{"/startupz", "healthy"},
 	}
 
 	for _, endpoint := range endpoints {
@@ -200,7 +200,7 @@ func TestHealthConcurrentRequests(t *testing.T) {
 
 	for i := 0; i < numRequests; i++ {
 		go func(idx int) {
-			endpoint := []string{"/health/live", "/health/ready", "/health/startup"}[idx%3]
+			endpoint := []string{"/healthz", "/readyz", "/startupz"}[idx%3]
 			resp, err := ts.HTTPClient.Get(ts.BaseURL + endpoint)
 			if err != nil {
 				results <- err
@@ -233,7 +233,7 @@ func TestHealthEndpointsResponseTime(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Health endpoints should respond quickly (< 100ms)
-	endpoints := []string{"/health/live", "/health/ready", "/health/startup"}
+	endpoints := []string{"/healthz", "/readyz", "/startupz"}
 
 	for _, endpoint := range endpoints {
 		t.Run(endpoint, func(t *testing.T) {
@@ -256,7 +256,7 @@ func TestHealthEndpointsIdempotency(t *testing.T) {
 	defer teardownServer(t, ts)
 
 	// Health endpoints should return consistent results
-	endpoint := "/health/live"
+	endpoint := "/healthz"
 
 	// Make multiple requests
 	var responses []HealthCheck

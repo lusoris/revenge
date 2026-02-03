@@ -26,7 +26,7 @@ Audit identified **3 categories of deviations** between implementation and desig
 - Database migrations exist:
   - `000005_create_user_settings_table.up.sql` (shared schema)
   - `000006_create_user_preferences_table.up.sql` (shared schema)
-  
+
 - Tables implemented:
   ```sql
   shared.user_settings (
@@ -41,7 +41,7 @@ Audit identified **3 categories of deviations** between implementation and desig
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ
   )
-  
+
   shared.user_preferences (
     user_id UUID PRIMARY KEY REFERENCES shared.users(id),
     email_notifications JSONB DEFAULT '{}',
@@ -104,10 +104,10 @@ func (s *Service) generateToken() (string, string, error) {
     if _, err := rand.Read(token); err != nil {
         return "", "", err
     }
-    
+
     tokenStr := hex.EncodeToString(token)
     tokenHash := s.hashToken(tokenStr)
-    
+
     return tokenStr, tokenHash, nil
 }
 
@@ -353,7 +353,7 @@ Password hashing implementation uses `github.com/alexedwards/argon2id` but SOURC
 **Possible Reasons**:
 1. **Performance**: Structured columns faster than JSONB queries
 2. **Type Safety**: Known columns vs dynamic keys
-3. **Use Cases**: 
+3. **Use Cases**:
    - Settings = custom app-specific config
    - Preferences = UI/UX/notification settings
 

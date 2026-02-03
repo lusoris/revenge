@@ -1,8 +1,8 @@
 # BUG #29: Password Hash Migration (bcrypt → argon2id)
 
-**Discovered**: 2026-02-03 17:20 CET  
-**Severity**: HIGH  
-**Status**: IDENTIFIED  
+**Discovered**: 2026-02-03 17:20 CET
+**Severity**: HIGH
+**Status**: IDENTIFIED
 **Type**: Data Migration Issue
 
 ---
@@ -22,7 +22,7 @@ username="testuser"
 Database contains passwords hashed with bcrypt (`$2a$12$...`):
 ```sql
 SELECT username, substring(password_hash, 1, 50) FROM shared.users WHERE username='testuser';
- username |                    hash_preview                    
+ username |                    hash_preview
 ----------+----------------------------------------------------
  testuser | $2a$12$6ee8jJHoXzrWnRUSfcpxkuLnhQegt2gNqybYQ8EqA4U
 ```
@@ -119,9 +119,9 @@ Force rehash all passwords (requires password reset).
 
 ```sql
 -- Mark all users for password reset
-UPDATE shared.users 
-SET password_hash = NULL, 
-    email_verified = false 
+UPDATE shared.users
+SET password_hash = NULL,
+    email_verified = false
 WHERE password_hash LIKE '$2a$%';
 ```
 
@@ -142,7 +142,7 @@ Combine Option 1 with automatic rehashing on successful login.
 ```go
 func (s *AuthService) Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error) {
     // ... existing code ...
-    
+
     match, err := s.hasher.VerifyPassword(req.Password, user.PasswordHash)
     if err != nil {
         return nil, err
@@ -209,10 +209,10 @@ func (s *AuthService) Login(ctx context.Context, req *LoginRequest) (*LoginRespo
 ```go
 func TestPasswordHasher_VerifyBcryptPassword(t *testing.T) {
     hasher := NewPasswordHasher()
-    
+
     // bcrypt hash of "TestPass123!"
     bcryptHash := "$2a$12$6ee8jJHoXzrWnRUSfcpxkuLnhQegt2gNqybYQ8EqA4U"
-    
+
     match, err := hasher.VerifyPassword("TestPass123!", bcryptHash)
     assert.NoError(t, err)
     assert.True(t, match)
@@ -220,11 +220,11 @@ func TestPasswordHasher_VerifyBcryptPassword(t *testing.T) {
 
 func TestPasswordHasher_VerifyArgon2idPassword(t *testing.T) {
     hasher := NewPasswordHasher()
-    
+
     // Create new argon2id hash
     hash, err := hasher.HashPassword("TestPass123!")
     require.NoError(t, err)
-    
+
     match, err := hasher.VerifyPassword("TestPass123!", hash)
     assert.NoError(t, err)
     assert.True(t, match)
@@ -288,6 +288,6 @@ prometheus.NewCounter(
 
 ---
 
-**Priority**: HIGH (blocks authentication)  
-**Estimated Effort**: 3-4 hours  
+**Priority**: HIGH (blocks authentication)
+**Estimated Effort**: 3-4 hours
 **Risk**: Low (backward compatible fix)

@@ -4121,14 +4121,14 @@ func (s *Server) handleGetLibraryRequest(args [1]string, argsEscaped bool, w htt
 // This should always return 200 unless the process is deadlocked.
 // Used by Kubernetes liveness probes.
 //
-// GET /health/live
+// GET /healthz
 func (s *Server) handleGetLivenessRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getLiveness"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/health/live"),
+		semconv.HTTPRouteKey.String("/healthz"),
 	}
 
 	// Start a span for this request.
@@ -4256,14 +4256,14 @@ func (s *Server) handleGetLivenessRequest(args [0]string, argsEscaped bool, w ht
 // Returns 200 only if all dependencies (database, cache, etc.) are available.
 // Used by Kubernetes readiness probes.
 //
-// GET /health/ready
+// GET /readyz
 func (s *Server) handleGetReadinessRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getReadiness"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/health/ready"),
+		semconv.HTTPRouteKey.String("/readyz"),
 	}
 
 	// Start a span for this request.
@@ -4997,14 +4997,14 @@ func (s *Server) handleGetServerSettingRequest(args [1]string, argsEscaped bool,
 // Returns 200 only after startup is complete.
 // Used by Kubernetes startup probes.
 //
-// GET /health/startup
+// GET /startupz
 func (s *Server) handleGetStartupRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getStartup"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/health/startup"),
+		semconv.HTTPRouteKey.String("/startupz"),
 	}
 
 	// Start a span for this request.

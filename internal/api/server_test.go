@@ -94,7 +94,7 @@ func TestNewServer_WithFxLifecycle(t *testing.T) {
 	assert.NotNil(t, server.ogenServer)
 
 	// Test that server is actually listening
-	resp, err := http.Get("http://127.0.0.1:15451/health/live")
+	resp, err := http.Get("http://127.0.0.1:15451/healthz")
 	require.NoError(t, err)
 	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -155,21 +155,21 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 
 	// Test all health endpoints
 	t.Run("liveness endpoint", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15453/health/live")
+		resp, err := http.Get("http://127.0.0.1:15453/healthz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
 
 	t.Run("readiness endpoint", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15453/health/ready")
+		resp, err := http.Get("http://127.0.0.1:15453/readyz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 	})
 
 	t.Run("startup endpoint", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15453/health/startup")
+		resp, err := http.Get("http://127.0.0.1:15453/startupz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -179,7 +179,7 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 
 	// After stop, server should not respond
 	time.Sleep(100 * time.Millisecond)
-	_, err = http.Get("http://127.0.0.1:15453/health/live")
+	_, err = http.Get("http://127.0.0.1:15453/healthz")
 	assert.Error(t, err) // Connection should be refused
 }
 
@@ -232,7 +232,7 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// First verify readiness is healthy
-	resp, err := http.Get("http://127.0.0.1:15455/health/ready")
+	resp, err := http.Get("http://127.0.0.1:15455/readyz")
 	require.NoError(t, err)
 	_ = resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -245,13 +245,13 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Readiness should now return 503 Service Unavailable
-	resp, err = http.Get("http://127.0.0.1:15455/health/ready")
+	resp, err = http.Get("http://127.0.0.1:15455/readyz")
 	require.NoError(t, err)
 	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusServiceUnavailable, resp.StatusCode)
 
 	// But liveness should still work (process is alive)
-	resp2, err := http.Get("http://127.0.0.1:15455/health/live")
+	resp2, err := http.Get("http://127.0.0.1:15455/healthz")
 	require.NoError(t, err)
 	defer func() { _ = resp2.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp2.StatusCode)
@@ -310,7 +310,7 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Startup should be unhealthy (503)
-	resp, err := http.Get("http://127.0.0.1:15457/health/startup")
+	resp, err := http.Get("http://127.0.0.1:15457/startupz")
 	require.NoError(t, err)
 	defer func() { _ = resp.Body.Close() }()
 	assert.Equal(t, http.StatusServiceUnavailable, resp.StatusCode)
@@ -319,7 +319,7 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	healthService.MarkStartupComplete()
 
 	// Now startup should be healthy
-	resp2, err := http.Get("http://127.0.0.1:15457/health/startup")
+	resp2, err := http.Get("http://127.0.0.1:15457/startupz")
 	require.NoError(t, err)
 	defer func() { _ = resp2.Body.Close() }()
 	assert.Equal(t, http.StatusOK, resp2.StatusCode)
@@ -378,7 +378,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	t.Run("liveness response contains correct JSON", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15459/health/live")
+		resp, err := http.Get("http://127.0.0.1:15459/healthz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -391,7 +391,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	})
 
 	t.Run("readiness response contains correct JSON", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15459/health/ready")
+		resp, err := http.Get("http://127.0.0.1:15459/readyz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -404,7 +404,7 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	})
 
 	t.Run("startup response contains correct JSON", func(t *testing.T) {
-		resp, err := http.Get("http://127.0.0.1:15459/health/startup")
+		resp, err := http.Get("http://127.0.0.1:15459/startupz")
 		require.NoError(t, err)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -476,7 +476,7 @@ func TestNewServer_ConcurrentRequests(t *testing.T) {
 
 	for i := 0; i < numRequests; i++ {
 		go func() {
-			resp, err := http.Get("http://127.0.0.1:15461/health/live")
+			resp, err := http.Get("http://127.0.0.1:15461/healthz")
 			if err != nil {
 				errors <- err
 				return
@@ -621,7 +621,7 @@ func TestNewServer_GracefulShutdown(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Verify server is running
-	resp, err := http.Get("http://127.0.0.1:15465/health/live")
+	resp, err := http.Get("http://127.0.0.1:15465/healthz")
 	require.NoError(t, err)
 	_ = resp.Body.Close()
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -699,7 +699,7 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 			time.Sleep(100 * time.Millisecond)
 
 			// Verify server is running
-			resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/health/live", port))
+			resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/healthz", port))
 			require.NoError(t, err)
 			_ = resp.Body.Close()
 			assert.Equal(t, http.StatusOK, resp.StatusCode)

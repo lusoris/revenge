@@ -208,7 +208,7 @@ func (UnimplementedHandler) GetLibrary(ctx context.Context, params GetLibraryPar
 // This should always return 200 unless the process is deadlocked.
 // Used by Kubernetes liveness probes.
 //
-// GET /health/live
+// GET /healthz
 func (UnimplementedHandler) GetLiveness(ctx context.Context) (r *HealthCheck, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -219,7 +219,7 @@ func (UnimplementedHandler) GetLiveness(ctx context.Context) (r *HealthCheck, _ 
 // Returns 200 only if all dependencies (database, cache, etc.) are available.
 // Used by Kubernetes readiness probes.
 //
-// GET /health/ready
+// GET /readyz
 func (UnimplementedHandler) GetReadiness(ctx context.Context) (r GetReadinessRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -257,7 +257,7 @@ func (UnimplementedHandler) GetServerSetting(ctx context.Context, params GetServ
 // Returns 200 only after startup is complete.
 // Used by Kubernetes startup probes.
 //
-// GET /health/startup
+// GET /startupz
 func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ error) {
 	return r, ht.ErrNotImplemented
 }

@@ -3,8 +3,8 @@
 ## High Priority
 
 ### ✅ BUG #29: Password Hash Migration (bcrypt → argon2id)
-**Status**: FIXED ✅  
-**Resolution**: Added hybrid password verifier with bcrypt backward compatibility  
+**Status**: FIXED ✅
+**Resolution**: Added hybrid password verifier with bcrypt backward compatibility
 **Completed**: 2026-02-03
 
 **Solution Implemented**:
@@ -19,8 +19,8 @@
 ---
 
 ### 🟡 River Job Worker Implementation
-**Status**: Currently a stub  
-**Impact**: Background jobs not processing  
+**Status**: Currently a stub
+**Impact**: Background jobs not processing
 **Effort**: 8-16 hours
 
 **Current State**: `internal/infra/jobs/` has stub implementation:
@@ -54,9 +54,9 @@
 ## Medium Priority
 
 ### 🔵 Security: Fix G602 Slice Bounds Issues
-**Status**: Identified  
-**Count**: 10 issues  
-**Location**: `internal/api/ogen/oas_router_gen.go` (generated code)  
+**Status**: Identified
+**Count**: 10 issues
+**Location**: `internal/api/ogen/oas_router_gen.go` (generated code)
 **Effort**: 2-4 hours
 
 **Tasks**:
@@ -68,9 +68,9 @@
 ---
 
 ### 🔵 Security: Suppress G101 False Positives
-**Status**: Identified  
-**Count**: 43 issues  
-**Location**: `internal/infra/database/db/*.sql.go` (SQLC-generated)  
+**Status**: Identified
+**Count**: 43 issues
+**Location**: `internal/infra/database/db/*.sql.go` (SQLC-generated)
 **Effort**: 1 hour
 
 **Tasks**:
@@ -82,9 +82,9 @@
 ---
 
 ### 🔵 Security: Fix G204 Subprocess Issue
-**Status**: Identified  
-**Count**: 1 issue  
-**Location**: `internal/testutil/testdb.go:292`  
+**Status**: Identified
+**Count**: 1 issue
+**Location**: `internal/testutil/testdb.go:292`
 **Effort**: 30 minutes
 
 **Tasks**:
@@ -98,8 +98,8 @@
 ## Completed ✅
 
 ### ✅ Security: Integer Overflow Fixes (G115)
-**Completed**: 2026-02-03  
-**Result**: 14/14 vulnerabilities fixed  
+**Completed**: 2026-02-03
+**Result**: 14/14 vulnerabilities fixed
 
 - ✅ Created `internal/validate` package with safe conversions
 - ✅ Fixed database pool configuration (3 issues)

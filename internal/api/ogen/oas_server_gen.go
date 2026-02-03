@@ -140,7 +140,7 @@ type Handler interface {
 	// This should always return 200 unless the process is deadlocked.
 	// Used by Kubernetes liveness probes.
 	//
-	// GET /health/live
+	// GET /healthz
 	GetLiveness(ctx context.Context) (*HealthCheck, error)
 	// GetReadiness implements getReadiness operation.
 	//
@@ -148,7 +148,7 @@ type Handler interface {
 	// Returns 200 only if all dependencies (database, cache, etc.) are available.
 	// Used by Kubernetes readiness probes.
 	//
-	// GET /health/ready
+	// GET /readyz
 	GetReadiness(ctx context.Context) (GetReadinessRes, error)
 	// GetRecentActions implements getRecentActions operation.
 	//
@@ -174,7 +174,7 @@ type Handler interface {
 	// Returns 200 only after startup is complete.
 	// Used by Kubernetes startup probes.
 	//
-	// GET /health/startup
+	// GET /startupz
 	GetStartup(ctx context.Context) (GetStartupRes, error)
 	// GetUserActivityLogs implements getUserActivityLogs operation.
 	//

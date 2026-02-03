@@ -160,7 +160,7 @@ type Invoker interface {
 	// This should always return 200 unless the process is deadlocked.
 	// Used by Kubernetes liveness probes.
 	//
-	// GET /health/live
+	// GET /healthz
 	GetLiveness(ctx context.Context) (*HealthCheck, error)
 	// GetReadiness invokes getReadiness operation.
 	//
@@ -168,7 +168,7 @@ type Invoker interface {
 	// Returns 200 only if all dependencies (database, cache, etc.) are available.
 	// Used by Kubernetes readiness probes.
 	//
-	// GET /health/ready
+	// GET /readyz
 	GetReadiness(ctx context.Context) (GetReadinessRes, error)
 	// GetRecentActions invokes getRecentActions operation.
 	//
@@ -194,7 +194,7 @@ type Invoker interface {
 	// Returns 200 only after startup is complete.
 	// Used by Kubernetes startup probes.
 	//
-	// GET /health/startup
+	// GET /startupz
 	GetStartup(ctx context.Context) (GetStartupRes, error)
 	// GetUserActivityLogs invokes getUserActivityLogs operation.
 	//
@@ -2930,7 +2930,7 @@ func (c *Client) sendGetLibrary(ctx context.Context, params GetLibraryParams) (r
 // This should always return 200 unless the process is deadlocked.
 // Used by Kubernetes liveness probes.
 //
-// GET /health/live
+// GET /healthz
 func (c *Client) GetLiveness(ctx context.Context) (*HealthCheck, error) {
 	res, err := c.sendGetLiveness(ctx)
 	return res, err
@@ -2940,7 +2940,7 @@ func (c *Client) sendGetLiveness(ctx context.Context) (res *HealthCheck, err err
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getLiveness"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/health/live"),
+		semconv.URLTemplateKey.String("/healthz"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2974,7 +2974,7 @@ func (c *Client) sendGetLiveness(ctx context.Context) (res *HealthCheck, err err
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/health/live"
+	pathParts[0] = "/healthz"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -3005,7 +3005,7 @@ func (c *Client) sendGetLiveness(ctx context.Context) (res *HealthCheck, err err
 // Returns 200 only if all dependencies (database, cache, etc.) are available.
 // Used by Kubernetes readiness probes.
 //
-// GET /health/ready
+// GET /readyz
 func (c *Client) GetReadiness(ctx context.Context) (GetReadinessRes, error) {
 	res, err := c.sendGetReadiness(ctx)
 	return res, err
@@ -3015,7 +3015,7 @@ func (c *Client) sendGetReadiness(ctx context.Context) (res GetReadinessRes, err
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getReadiness"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/health/ready"),
+		semconv.URLTemplateKey.String("/readyz"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3049,7 +3049,7 @@ func (c *Client) sendGetReadiness(ctx context.Context) (res GetReadinessRes, err
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/health/ready"
+	pathParts[0] = "/readyz"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -3512,7 +3512,7 @@ func (c *Client) sendGetServerSetting(ctx context.Context, params GetServerSetti
 // Returns 200 only after startup is complete.
 // Used by Kubernetes startup probes.
 //
-// GET /health/startup
+// GET /startupz
 func (c *Client) GetStartup(ctx context.Context) (GetStartupRes, error) {
 	res, err := c.sendGetStartup(ctx)
 	return res, err
@@ -3522,7 +3522,7 @@ func (c *Client) sendGetStartup(ctx context.Context) (res GetStartupRes, err err
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getStartup"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/health/startup"),
+		semconv.URLTemplateKey.String("/startupz"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3556,7 +3556,7 @@ func (c *Client) sendGetStartup(ctx context.Context) (res GetStartupRes, err err
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/health/startup"
+	pathParts[0] = "/startupz"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"

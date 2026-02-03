@@ -46,7 +46,7 @@ func (q *Queries) CountResourceActivityLogs(ctx context.Context, arg CountResour
 
 const countSearchActivityLogs = `-- name: CountSearchActivityLogs :one
 SELECT COUNT(*) FROM public.activity_log
-WHERE 
+WHERE
     ($1::UUID IS NULL OR user_id = $1)
     AND ($2::VARCHAR IS NULL OR action = $2)
     AND ($3::VARCHAR IS NULL OR resource_type = $3)
@@ -201,7 +201,7 @@ func (q *Queries) GetActivityLog(ctx context.Context, id uuid.UUID) (ActivityLog
 }
 
 const getActivityLogStats = `-- name: GetActivityLogStats :one
-SELECT 
+SELECT
     COUNT(*) as total_count,
     COUNT(*) FILTER (WHERE success = true) as success_count,
     COUNT(*) FILTER (WHERE success = false) as failed_count,
@@ -573,7 +573,7 @@ func (q *Queries) ListActivityLogs(ctx context.Context, arg ListActivityLogsPara
 
 const searchActivityLogs = `-- name: SearchActivityLogs :many
 SELECT id, user_id, username, action, resource_type, resource_id, changes, metadata, ip_address, user_agent, success, error_message, created_at FROM public.activity_log
-WHERE 
+WHERE
     ($1::UUID IS NULL OR user_id = $1)
     AND ($2::VARCHAR IS NULL OR action = $2)
     AND ($3::VARCHAR IS NULL OR resource_type = $3)

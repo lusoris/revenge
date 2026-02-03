@@ -517,19 +517,19 @@ package user_settings
 type UserSettingsService interface {
 	// Get a specific setting
 	GetSetting(ctx context.Context, userID uuid.UUID, key string) (*Setting, error)
-	
+
 	// Get all settings for a user (optional category filter)
 	GetSettings(ctx context.Context, userID uuid.UUID, category *string) ([]Setting, error)
-	
+
 	// Set/update a setting
 	SetSetting(ctx context.Context, userID uuid.UUID, setting Setting) error
-	
+
 	// Delete a setting
 	DeleteSetting(ctx context.Context, userID uuid.UUID, key string) error
-	
+
 	// Bulk operations
 	SetSettings(ctx context.Context, userID uuid.UUID, settings []Setting) error
-	
+
 	// Encrypted settings
 	GetEncryptedSetting(ctx context.Context, userID uuid.UUID, key string) (string, error)
 	SetEncryptedSetting(ctx context.Context, userID uuid.UUID, key string, value string) error
@@ -539,16 +539,16 @@ type UserSettingsService interface {
 type UserPreferencesService interface {
 	// Get all preferences for a user
 	GetPreferences(ctx context.Context, userID uuid.UUID) (*Preferences, error)
-	
+
 	// Update entire preferences
 	UpdatePreferences(ctx context.Context, userID uuid.UUID, prefs Preferences) error
-	
+
 	// Update specific preference fields
 	UpdateTheme(ctx context.Context, userID uuid.UUID, theme string) error
 	UpdateLanguage(ctx context.Context, userID uuid.UUID, language string) error
 	UpdateNotifications(ctx context.Context, userID uuid.UUID, notifications NotificationPrefs) error
 	UpdatePrivacy(ctx context.Context, userID uuid.UUID, privacy PrivacyPrefs) error
-	
+
 	// Initialize default preferences for new user
 	InitializeDefaults(ctx context.Context, userID uuid.UUID) error
 }
@@ -736,12 +736,12 @@ func (s *UserSettingsService) SetEncryptedSetting(ctx context.Context, userID uu
     if err != nil {
         return fmt.Errorf("encryption failed: %w", err)
     }
-    
+
     value := map[string]string{
         "ciphertext": hex.EncodeToString(ciphertext),
         "nonce":      hex.EncodeToString(nonce),
     }
-    
+
     return s.SetSetting(ctx, userID, Setting{
         Key:      key,
         Value:    value,
@@ -872,15 +872,15 @@ user_settings:
   encryption:
     key: ${USER_SETTINGS_ENCRYPTION_KEY}
     algorithm: aes-256-gcm
-  
+
   rate_limiting:
     reads_per_hour: 1000
     writes_per_hour: 100
-  
+
   cache:
     settings_ttl: 5m
     preferences_ttl: 10m
-  
+
   validation:
     max_key_length: 255
     max_value_size_kb: 100
@@ -921,7 +921,7 @@ user_settings:
 
 **Document Status**: ✅ Complete (comprehensive design with all discovered requirements)
 **Implementation Status**: 🟡 Partial (database exists, service layer needed)
-**Next Steps**: 
+**Next Steps**:
 1. Implement service layer (`settings_service.go`, `preferences_service.go`)
 2. Add encryption helpers (`encryption.go`)
 3. Generate SQLC queries

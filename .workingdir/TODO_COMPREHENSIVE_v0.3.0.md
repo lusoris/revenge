@@ -1,0 +1,562 @@
+# Comprehensive TODO - v0.3.0 MVP
+
+**Last Updated**: 2026-02-03
+**Current Focus**: MFA Implementation → Movie Module MVP
+**Status**: In Progress
+
+---
+
+## Pre-MFA: Quick Fixes
+
+### Standardize Health Endpoints (30 minutes) 🔴
+**Current**: `/health/live`, `/health/ready`, `/health/startup`
+**Standard**: `/livez`, `/readyz`, `/startupz` (Kubernetes convention)
+
+- [ ] Update OpenAPI spec: Rename endpoints to `/livez`, `/readyz`, `/startupz`
+- [ ] Update handler routes
+- [ ] Update integration tests
+- [ ] Optional: Keep old endpoints as deprecated aliases for backward compatibility
+
+**References**:
+- [Kubernetes Liveness/Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+- [GKE Health Check Standards](https://cloud.google.com/kubernetes-engine/docs/concepts/ingress#health_checks)
+
+---
+
+## Current Sprint: MFA Implementation (10-20 hours)
+
+> **Design Complete**: [MFA.md](../docs/dev/design/services/MFA.md)
+> **Status**: Ready to implement
+
+### Phase 1: Foundation (2-3 hours) ✅ COMPLETE
+- [x] **Database Migrations** ✅
+  - [x] `000016_create_user_totp_secrets.up.sql`
+  - [x] `000017_create_webauthn_credentials.up.sql`
+  - [x] `000018_create_mfa_backup_codes.up.sql`
+  - [x] `000019_create_user_mfa_settings.up.sql`
+  - [x] Migrations tested and applied successfully
+
+- [x] **Encryption Service** (`internal/crypto/encryption.go`) ✅
+  - [x] Implement AES-256-GCM encryption
+  - [x] Encrypt/Decrypt helpers with nonce handling
+  - [x] Tests with 85.1% coverage
+  - [x] Extracted from OIDC service for reuse
+
+- [x] **SQLC Queries** (`internal/infra/database/queries/shared/mfa.sql`) ✅
+  - [x] TOTP queries (Create, Get, Verify, Enable/Disable, UpdateLastUsed)
+  - [x] WebAuthn queries (Create, List, Get, UpdateCounter, CloneDetection)
+  - [x] Backup codes queries (Create copyfrom, GetUnused, Use, Count, DeleteAll)
+  - [x] Settings queries (CRUD, Enable/Disable methods, TrustedDevices)
+  - [x] Combined status queries (GetUserMFAStatus, HasAnyMFAMethod)
+  - [x] Generated SQLC code compiles successfully (30+ operations)
+
+**Commits**:
+- 782a470b0d: feat(crypto): add shared AES-256-GCM encryption service
+- 5e1913a5b3: feat(mfa): add database migrations for MFA tables
+- aa3c2b6b7d: feat(mfa): add SQLC queries for MFA operations
+
+### Phase 2: TOTP Implementation (2-3 hours) 🔴
+  - [ ] Implement AES-256-GCM encryption
+  - [ ] Key derivation from master key (env var)
+  - [ ] Encrypt/Decrypt helpers
+  - [ ] Tests with 80%+ coverage
+
+- [ ] **SQLC Queries** (`internal/infra/database/queries/mfa.sql`)
+  - [ ] TOTP queries (Create, Get, Update, Delete, MarkVerified)
+  - [ ] WebAuthn queries (Create, Get, List, UpdateSignCount, MarkCloneDetected)
+  - [ ] Backup codes queries (Create, Get, MarkUsed, CountUnused)
+  - [ ] Settings queries (Get, Update, Toggle methods)
+  - [ ] Generate: `sqlc generate`
+
+### Phase 2: TOTP (2-3 hours) 🔴
+- [ ] **TOTP Service** (`internal/service/mfa/totp.go`)
+  - [ ] Generate secret (32 bytes, base32-encoded)
+  - [ ] Generate QR code (PNG, otpauth://totp/...)
+  - [ ] Verify TOTP code (RFC 6238, 30s window, ±1 step skew)
+  - [ ] Store encrypted secret
+  - [ ] Enable/disable TOTP
+
+- [ ] **Repository** (`internal/service/mfa/repository.go`)
+  - [ ] Interface definition
+  - [ ] PostgreSQL implementation
+  - [ ] CRUD operations for TOTP secrets
+
+- [ ] **Tests**
+  - [ ] Unit tests for TOTP generation/verification
+  - [ ] Test time skew tolerance
+  - [ ] Test secret encryption
+  - [ ] Coverage 80%+
+
+### Phase 3: WebAuthn (3-4 hours) 🔴
+- [ ] **WebAuthn Service** (`internal/service/mfa/webauthn.go`)
+  - [ ] Use `github.com/go-webauthn/webauthn` v0.11.2
+  - [ ] Registration flow (challenge generation, verification)
+  - [ ] Authentication flow (challenge, verification)
+  - [ ] Credential storage
+  - [ ] Clone detection (sign count verification)
+
+- [ ] **Repository Extensions**
+  - [ ] WebAuthn credential CRUD
+  - [ ] List user credentials
+  - [ ] Update sign count
+
+- [ ] **Tests**
+  - [ ] Unit tests with mock credentials
+  - [ ] Test clone detection
+  - [ ] Coverage 80%+
+
+### Phase 4: Backup Codes + Integration (2-3 hours) 🔴
+- [ ] **Backup Codes Service** (`internal/service/mfa/backup_codes.go`)
+  - [ ] Generate 10 backup codes (16 chars each, alphanumeric)
+  - [ ] Hash codes (bcrypt cost 10)
+  - [ ] Verify backup code
+  - [ ] Mark as used (single-use)
+
+- [ ] **Auth Service Integration** (`internal/service/auth/mfa.go`)
+  - [ ] Add MFA verification to login flow
+  - [ ] Return MFA challenge if enabled
+  - [ ] Verify MFA response (TOTP/WebAuthn/backup)
+  - [ ] Session enhancement (mark MFA-verified)
+
+- [ ] **Session Updates** (`internal/service/session/`)
+  - [ ] Add `mfa_verified` boolean to session
+  - [ ] Add `mfa_verified_at` timestamp
+
+### Phase 5: Production Hardening (2-3 hours) 🔴
+- [ ] **Rate Limiting**
+  - [ ] TOTP: 5 attempts per 5 minutes
+  - [ ] WebAuthn: 10 attempts per 10 minutes
+  - [ ] Backup codes: 3 attempts per hour
+
+- [ ] **Audit Logging**
+  - [ ] Log MFA enrollment
+  - [ ] Log MFA verification attempts
+  - [ ] Log backup code usage
+  - [ ] Log clone detection
+
+- [ ] **API Handlers** (`internal/api/mfa_handler.go`)
+  - [ ] `POST /api/v1/mfa/totp/setup` - Generate secret + QR
+  - [ ] `POST /api/v1/mfa/totp/verify` - Verify and enable
+  - [ ] `DELETE /api/v1/mfa/totp` - Disable TOTP
+  - [ ] `POST /api/v1/mfa/webauthn/register/begin` - Start registration
+  - [ ] `POST /api/v1/mfa/webauthn/register/finish` - Complete registration
+  - [ ] `GET /api/v1/mfa/webauthn/credentials` - List credentials
+  - [ ] `DELETE /api/v1/mfa/webauthn/credentials/:id` - Remove credential
+  - [ ] `POST /api/v1/mfa/backup-codes/generate` - Generate codes
+  - [ ] Update `api/openapi/openapi.yaml`
+  - [ ] Regenerate ogen: `go generate ./...`
+
+- [ ] **Comprehensive Testing**
+  - [ ] Unit tests all services
+  - [ ] Integration tests (auth flow with MFA)
+  - [ ] API endpoint tests
+  - [ ] Coverage 80%+
+
+- [ ] **Documentation**
+  - [ ] Update README with MFA setup guide
+  - [ ] API documentation
+  - [ ] User guide for MFA enrollment
+
+---
+
+## v0.3.0 MVP Scope (After MFA)
+
+> **Design Complete**: All required design docs exist (see TODO_v0.3.0.md)
+> **Focus**: Movie Module + TMDb + Radarr + Typesense + Frontend
+
+### Movie Module (Backend)
+
+#### Database Schema
+- [ ] `public.movies` table (UUID v7, title, year, runtime, overview, tmdb_id, imdb_id, poster/backdrop paths)
+- [ ] `public.movie_genres` table
+- [ ] `public.movie_cast` table
+- [ ] `public.movie_crew` table
+- [ ] `public.movie_files` table
+- [ ] `public.movie_watch_progress` table
+- [ ] Indexes on tmdb_id, imdb_id, title
+
+#### Entity Layer
+- [ ] Movie, MovieFile, MovieGenre, MovieCast, MovieCrew, WatchProgress structs
+- [ ] Validation rules
+
+#### Repository Layer
+- [ ] Interface definition
+- [ ] PostgreSQL implementation
+- [ ] CRUD operations
+- [ ] List with filters (genre, year)
+- [ ] Search by title
+- [ ] Watch progress operations
+
+#### Service Layer
+- [ ] Get movie by ID
+- [ ] List movies (paginated)
+- [ ] Search movies
+- [ ] Update watch progress
+- [ ] Get continue watching
+- [ ] Get recently added
+- [ ] Trigger metadata refresh
+
+#### Library Provider
+- [ ] Implement LibraryProvider interface
+- [ ] Scan library path
+- [ ] Match files to movies
+- [ ] Handle file changes
+
+#### API Handlers
+- [ ] `GET /api/v1/movies` (list, paginated)
+- [ ] `GET /api/v1/movies/:id`
+- [ ] `GET /api/v1/movies/:id/files`
+- [ ] `GET /api/v1/movies/:id/cast`
+- [ ] `GET /api/v1/movies/:id/crew`
+- [ ] `GET /api/v1/movies/:id/similar`
+- [ ] `POST /api/v1/movies/:id/progress`
+- [ ] `GET /api/v1/movies/:id/progress`
+- [ ] `DELETE /api/v1/movies/:id/progress`
+- [ ] `POST /api/v1/movies/:id/refresh`
+
+#### River Jobs
+- [ ] MovieMetadataRefreshJob
+- [ ] MovieLibraryScanJob
+- [ ] MovieFileMatchJob
+
+#### Tests
+- [ ] Unit tests (80%+ coverage)
+- [ ] Integration tests
+
+### Collection Support
+- [ ] `public.collections` table
+- [ ] `public.collection_movies` table
+- [ ] Collection service (Get, List, Get movies)
+- [ ] API handlers (`GET /api/v1/collections`, `/collections/:id`, `/collections/:id/movies`)
+
+### Metadata Service (TMDb)
+
+#### TMDb Client
+- [ ] API key configuration
+- [ ] Rate limiting (50 req/s)
+- [ ] Retry with backoff
+- [ ] Response caching
+
+#### TMDb Service
+- [ ] Search movie
+- [ ] Get movie details
+- [ ] Get movie credits (cast/crew)
+- [ ] Get movie images
+- [ ] Get similar movies
+- [ ] Get collection details
+
+#### Image Handler
+- [ ] Poster download/cache
+- [ ] Backdrop download/cache
+- [ ] Profile image download/cache
+- [ ] Image proxy endpoint
+
+#### API Handlers
+- [ ] `GET /api/v1/metadata/search/movie?q=`
+- [ ] `GET /api/v1/metadata/movie/:tmdbId`
+- [ ] `GET /api/v1/images/:type/:path` (proxy)
+
+#### Tests
+- [ ] Unit tests with mock API
+- [ ] Integration tests (optional, needs API key)
+
+### Search Service (Typesense)
+
+#### Typesense Setup
+- [ ] Client configuration
+- [ ] Collection schemas
+- [ ] Index management
+
+#### Movie Collection Schema
+- [ ] Define schema (title, original_title, overview, year, genres, cast, director, rating, added_at)
+
+#### Search Service
+- [ ] Index movie
+- [ ] Remove from index
+- [ ] Search movies (full-text)
+- [ ] Faceted search (genre, year)
+- [ ] Autocomplete
+
+#### API Handlers
+- [ ] `GET /api/v1/search?q=&type=movie`
+- [ ] `GET /api/v1/search/autocomplete?q=`
+
+#### River Jobs
+- [ ] SearchIndexJob - Index single item
+- [ ] SearchReindexJob - Full reindex
+
+#### Tests
+- [ ] Unit tests
+- [ ] Integration tests with Typesense container
+
+### Radarr Integration
+
+#### Radarr Client
+- [ ] API v3 implementation
+- [ ] Authentication (API key)
+- [ ] Error handling
+
+#### Radarr Service
+- [ ] Get all movies
+- [ ] Get movie by ID
+- [ ] Get movie files
+- [ ] Sync library (Radarr → Revenge)
+- [ ] Trigger refresh in Radarr
+- [ ] Get quality profiles
+- [ ] Get root folders
+
+#### Sync Logic
+- [ ] Full sync (initial)
+- [ ] Incremental sync (changes only)
+- [ ] File path mapping
+- [ ] Conflict resolution
+
+#### Webhook Handler
+- [ ] `POST /api/v1/webhooks/radarr`
+- [ ] Handle: Grab, Download, Rename, Delete events
+
+#### API Handlers
+- [ ] `GET /api/v1/admin/integrations/radarr/status`
+- [ ] `POST /api/v1/admin/integrations/radarr/sync`
+- [ ] `GET /api/v1/admin/integrations/radarr/quality-profiles`
+
+#### River Jobs
+- [ ] RadarrSyncJob - Full library sync
+- [ ] RadarrWebhookJob - Process webhook events
+
+#### Tests
+- [ ] Unit tests with mock API
+- [ ] Integration tests (optional)
+
+### Frontend (Basic SvelteKit)
+
+#### Project Setup
+- [ ] SvelteKit 2 initialization
+- [ ] Svelte 5 configuration
+- [ ] TypeScript setup
+- [ ] Tailwind CSS 4 setup
+- [ ] shadcn-svelte components
+
+#### Authentication Flow
+- [ ] Login page (`/login`)
+- [ ] Registration page (`/register`)
+- [ ] Password reset flow
+- [ ] JWT storage (httpOnly cookie)
+- [ ] Auth store (Svelte store)
+- [ ] Protected routes
+
+#### Layout
+- [ ] Navigation sidebar
+- [ ] Header with user menu
+- [ ] Responsive design
+- [ ] Dark mode (default)
+
+#### Library Browser
+- [ ] Movies grid view (`/movies`)
+- [ ] Movie card component
+- [ ] Sorting (title, year, added)
+- [ ] Filtering (genre, year)
+- [ ] Pagination/infinite scroll
+- [ ] Search integration
+
+#### Movie Detail Page
+- [ ] Hero backdrop
+- [ ] Poster image
+- [ ] Title, year, runtime
+- [ ] Overview
+- [ ] Cast carousel
+- [ ] Crew list
+- [ ] Similar movies
+- [ ] Play button
+- [ ] Watch progress
+
+#### Search
+- [ ] Global search bar
+- [ ] Search results page
+- [ ] Autocomplete dropdown
+
+#### Basic Player
+- [ ] Player page (`/play/[id]`)
+- [ ] HLS.js integration
+- [ ] Basic controls (play, pause, seek)
+- [ ] Progress tracking
+- [ ] Quality selection
+- [ ] Subtitle selection
+
+#### Settings
+- [ ] Profile settings
+- [ ] Playback preferences
+- [ ] Language preference
+
+#### Admin Pages
+- [ ] Dashboard overview
+- [ ] Library management
+- [ ] User management
+- [ ] Integration settings (Radarr)
+
+#### Components (shadcn-svelte)
+- [ ] Button, Input, Card
+- [ ] Dialog, Sheet
+- [ ] Select, Dropdown
+- [ ] Avatar, Badge
+- [ ] Skeleton loaders
+- [ ] Toast notifications
+
+#### API Client
+- [ ] Type-safe API client
+- [ ] Error handling
+- [ ] Token refresh logic
+- [ ] TanStack Query integration
+
+### Infrastructure
+
+#### Typesense Deployment
+- [ ] Docker Compose service
+- [ ] Helm chart subchart
+- [ ] Environment variables
+
+#### Full Docker Compose Stack
+- [ ] revenge (backend)
+- [ ] revenge-frontend
+- [ ] postgresql
+- [ ] dragonfly
+- [ ] typesense
+- [ ] traefik (reverse proxy)
+
+#### Docker Images
+- [ ] Backend multi-stage Dockerfile
+- [ ] Frontend multi-stage Dockerfile
+- [ ] Combined nginx config
+
+### Documentation
+- [ ] Getting started guide
+- [ ] Installation guide (Docker)
+- [ ] Configuration reference
+- [ ] Radarr setup guide
+- [ ] Complete OpenAPI spec
+- [ ] Swagger UI endpoint
+- [ ] API authentication guide
+
+---
+
+## MVP Verification Checklist
+
+- [ ] Movies display in frontend
+- [ ] Search works end-to-end
+- [ ] Radarr sync imports movies
+- [ ] Watch progress saves and restores
+- [ ] Player plays video files
+- [ ] Authentication works (login/logout)
+- [ ] MFA works (TOTP + WebAuthn + backup codes)
+- [ ] RBAC enforced on admin pages
+- [ ] All tests pass (80%+ coverage)
+- [ ] CI pipeline passes
+- [ ] Docker Compose stack works
+
+---
+
+## Design Documentation References
+
+All design work is **COMPLETE**. Reference these during implementation:
+
+### MFA
+- [MFA.md](../docs/dev/design/services/MFA.md) - Complete MFA implementation plan
+
+### Movie Module
+- [MOVIE_MODULE.md](../docs/dev/design/features/video/MOVIE_MODULE.md)
+- [COLLECTIONS.md](../docs/dev/design/features/shared/COLLECTIONS.md)
+- [LIBRARY_TYPES.md](../docs/dev/design/features/shared/LIBRARY_TYPES.md)
+
+### Integrations
+- [TMDB.md](../docs/dev/design/integrations/metadata/video/TMDB.md)
+- [RADARR.md](../docs/dev/design/integrations/servarr/RADARR.md)
+- [TYPESENSE.md](../docs/dev/design/integrations/infrastructure/TYPESENSE.md)
+
+### Services
+- [METADATA.md](../docs/dev/design/services/METADATA.md)
+- [SEARCH.md](../docs/dev/design/services/SEARCH.md)
+- [LIBRARY.md](../docs/dev/design/services/LIBRARY.md)
+- [USER_SETTINGS.md](../docs/dev/design/services/USER_SETTINGS.md)
+
+### Technical
+- [FRONTEND.md](../docs/dev/design/technical/FRONTEND.md)
+- [API.md](../docs/dev/design/technical/API.md)
+- [HTTP_CLIENT.md](../docs/dev/design/patterns/HTTP_CLIENT.md)
+
+---
+
+## Current Progress Summary
+
+### ✅ Completed (v0.2.0)
+- PostgreSQL pool with metrics
+- Dragonfly/Redis L2 cache
+- Otter L1 cache
+- River job queue
+- Settings service (server-level)
+- User service foundation
+- Auth service foundation
+- Session service foundation
+- Password hashing (argon2id with bcrypt backward compat)
+
+### 🔄 In Progress
+- **MFA Implementation** (10-20 hours) - Current Sprint
+  - Phase 1: Foundation (migrations + encryption)
+  - Phase 2: TOTP
+  - Phase 3: WebAuthn
+  - Phase 4: Integration
+  - Phase 5: Hardening
+
+### 🔴 Not Started (v0.3.0 MVP)
+- Movie Module (backend)
+- TMDb metadata service
+- Radarr integration
+- Typesense search
+- Frontend (SvelteKit)
+- Full Docker Compose stack
+
+---
+
+## Execution Strategy
+
+1. **MFA First** (Current Sprint, 10-20 hours)
+   - Provides essential security feature
+   - Tests auth/session integration
+   - Proves encryption patterns
+
+2. **Movie Module Backend** (~20-30 hours)
+   - Core business logic
+   - Database schema
+   - Library scanning
+   - TMDb integration
+   - Radarr integration
+
+3. **Search Integration** (~8-12 hours)
+   - Typesense setup
+   - Movie indexing
+   - Search API
+
+4. **Frontend Development** (~40-60 hours)
+   - SvelteKit setup
+   - Authentication UI
+   - Movie browser
+   - Movie detail pages
+   - Basic player
+   - Admin panel
+
+5. **Infrastructure & Testing** (~8-16 hours)
+   - Docker Compose full stack
+   - End-to-end tests
+   - Documentation
+   - Deployment guides
+
+**Total Estimated Effort**: 86-138 hours (~2-3 weeks full-time)
+
+---
+
+## Notes
+
+- All design documents are complete and ready
+- Test-first approach with 80%+ coverage target
+- Commit after each major milestone
+- Keep TODO updated with progress
+- Run tests and linter before each commit

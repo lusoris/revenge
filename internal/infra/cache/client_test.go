@@ -279,7 +279,7 @@ func TestNewClient_URLParsing(t *testing.T) {
 					t.Logf("Got expected error (service not available or auth failed): %v", err)
 				}
 			}
-			
+
 			// Always cleanup if client was created
 			if client != nil {
 				client.Close()

@@ -133,7 +133,7 @@ func waitForServer(t *testing.T, baseURL string, timeout time.Duration) {
 	defer ticker.Stop()
 
 	client := &http.Client{Timeout: 1 * time.Second}
-	healthURL := baseURL + "/health/live"
+	healthURL := baseURL + "/healthz"
 
 	for {
 		select {

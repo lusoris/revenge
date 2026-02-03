@@ -30,7 +30,7 @@ tags:
     description: User account and profile management
 
 paths:
-  /health/live:
+  /healthz:
     get:
       summary: Liveness probe
       description: |
@@ -50,7 +50,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /health/ready:
+  /readyz:
     get:
       summary: Readiness probe
       description: |
@@ -76,7 +76,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /health/startup:
+  /startupz:
     get:
       summary: Startup probe
       description: |
