@@ -50,6 +50,10 @@ type Repository interface {
 	InvalidateEmailVerificationTokensByEmail(ctx context.Context, email string) error
 	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
 	DeleteVerifiedEmailTokens(ctx context.Context) error
+
+	// Session Operations (for MFA tracking)
+	GetSessionByID(ctx context.Context, sessionID uuid.UUID) (*db.SharedSession, error)
+	MarkSessionMFAVerified(ctx context.Context, sessionID uuid.UUID) error
 }
 
 // CreateAuthTokenParams parameters for creating an auth token

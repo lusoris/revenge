@@ -136,7 +136,6 @@ func TestBackupCodeLength(t *testing.T) {
 	// Verify constants are correct
 	assert.Equal(t, 10, BackupCodeCount, "should generate 10 backup codes")
 	assert.Equal(t, 8, BackupCodeLength, "code should be 8 bytes (16 hex chars)")
-	assert.Equal(t, 12, BackupCodeCost, "bcrypt cost should be 12")
 }
 
 // Integration tests would go here
@@ -149,7 +148,7 @@ func TestBackupCodesService_GenerateCodes(t *testing.T) {
 	// 1. GenerateCodes creates exactly 10 codes
 	// 2. All codes are unique
 	// 3. All codes are properly formatted (XXXX-XXXX-XXXX-XXXX)
-	// 4. All codes are stored as bcrypt hashes in database
+	// 4. All codes are stored as Argon2id hashes in database
 	// 5. Plain text codes are returned
 }
 

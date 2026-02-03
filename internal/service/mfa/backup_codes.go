@@ -13,8 +13,8 @@ import (
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/bcrypt"
 
+	"github.com/lusoris/revenge/internal/crypto"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -23,8 +23,6 @@ const (
 	BackupCodeCount = 10
 	// BackupCodeLength is the length of each backup code in bytes (hex encoded to 16 chars)
 	BackupCodeLength = 8
-	// BackupCodeCost is the bcrypt cost for hashing backup codes
-	BackupCodeCost = 12
 )
 
 var (
@@ -36,6 +34,7 @@ var (
 // BackupCodesService handles backup code generation and verification.
 type BackupCodesService struct {
 	queries *db.Queries
+	hasher  *crypto.PasswordHasher
 	logger  *zap.Logger
 }
 
@@ -43,6 +42,7 @@ type BackupCodesService struct {
 func NewBackupCodesService(queries *db.Queries, logger *zap.Logger) *BackupCodesService {
 	return &BackupCodesService{
 		queries: queries,
+		hasher:  crypto.NewPasswordHasher(),
 		logger:  logger,
 	}
 }
@@ -50,7 +50,7 @@ func NewBackupCodesService(queries *db.Queries, logger *zap.Logger) *BackupCodes
 // BackupCode represents a generated backup code before hashing.
 type BackupCode struct {
 	Code      string    // Plain text code (shown to user only once)
-	Hash      string    // Bcrypt hash (stored in database)
+	Hash      string    // Argon2id hash (stored in database)
 	CreatedAt time.Time
 }
 
@@ -68,8 +68,8 @@ func (s *BackupCodesService) GenerateCodes(ctx context.Context, userID uuid.UUID
 			return nil, fmt.Errorf("failed to generate code: %w", err)
 		}
 
-		// Hash the code with bcrypt
-		hash, err := bcrypt.GenerateFromPassword([]byte(code), BackupCodeCost)
+		// Hash the code with Argon2id
+		hash, err := s.hasher.HashPassword(code)
 		if err != nil {
 			return nil, fmt.Errorf("failed to hash code: %w", err)
 		}
@@ -77,7 +77,7 @@ func (s *BackupCodesService) GenerateCodes(ctx context.Context, userID uuid.UUID
 		codes[i] = formatCode(code)
 		params[i] = db.CreateBackupCodesParams{
 			UserID:   userID,
-			CodeHash: string(hash),
+			CodeHash: hash,
 		}
 	}
 
@@ -129,8 +129,8 @@ func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, c
 	// Use constant-time comparison to prevent timing attacks
 	var matchedCodeID *uuid.UUID
 	for _, bc := range backupCodes {
-		err := bcrypt.CompareHashAndPassword([]byte(bc.CodeHash), []byte(normalizedCode))
-		if err == nil {
+		match, err := s.hasher.VerifyPassword(normalizedCode, bc.CodeHash)
+		if err == nil && match {
 			// Found a match
 			id := bc.ID
 			matchedCodeID = &id

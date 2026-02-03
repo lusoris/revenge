@@ -116,3 +116,27 @@ SET revoked_at = NOW(),
     revoke_reason = 'Inactivity timeout'
 WHERE last_activity_at < sqlc.arg('inactive_since')::TIMESTAMPTZ
   AND revoked_at IS NULL;
+
+-- MFA Session Tracking
+
+-- name: MarkSessionMFAVerified :exec
+UPDATE shared.sessions
+SET mfa_verified = TRUE,
+    mfa_verified_at = NOW()
+WHERE id = $1
+  AND revoked_at IS NULL;
+
+-- name: MarkSessionMFAVerifiedByTokenHash :exec
+UPDATE shared.sessions
+SET mfa_verified = TRUE,
+    mfa_verified_at = NOW()
+WHERE token_hash = $1
+  AND revoked_at IS NULL;
+
+-- name: GetMFAVerifiedSessions :many
+SELECT * FROM shared.sessions
+WHERE user_id = $1
+  AND mfa_verified = TRUE
+  AND revoked_at IS NULL
+  AND expires_at > NOW()
+ORDER BY mfa_verified_at DESC;

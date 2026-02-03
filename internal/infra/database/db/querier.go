@@ -209,6 +209,7 @@ type Querier interface {
 	GetLibraryPermission(ctx context.Context, arg GetLibraryPermissionParams) (LibraryPermission, error)
 	// Gets a library scan by ID
 	GetLibraryScan(ctx context.Context, id uuid.UUID) (LibraryScan, error)
+	GetMFAVerifiedSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error)
 	// Gets an OIDC provider by ID
 	GetOIDCProvider(ctx context.Context, id uuid.UUID) (SharedOidcProvider, error)
 	// Gets an OIDC provider by name
@@ -332,6 +333,9 @@ type Querier interface {
 	ListWebAuthnCredentials(ctx context.Context, userID uuid.UUID) ([]WebauthnCredential, error)
 	MarkEmailVerificationTokenUsed(ctx context.Context, id uuid.UUID) error
 	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
+	// MFA Session Tracking
+	MarkSessionMFAVerified(ctx context.Context, id uuid.UUID) error
+	MarkSessionMFAVerifiedByTokenHash(ctx context.Context, tokenHash string) error
 	// Mark a credential as potentially cloned
 	MarkWebAuthnCloneDetected(ctx context.Context, credentialID []byte) error
 	RevokeAPIKey(ctx context.Context, id uuid.UUID) error

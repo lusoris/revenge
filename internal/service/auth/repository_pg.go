@@ -405,3 +405,17 @@ func emailVerificationTokenFromDB(row db.SharedEmailVerificationToken) EmailVeri
 		CreatedAt:  row.CreatedAt,
 	}
 }
+
+// Session Operations (for MFA tracking)
+
+func (r *RepositoryPG) GetSessionByID(ctx context.Context, sessionID uuid.UUID) (*db.SharedSession, error) {
+	session, err := r.queries.GetSessionByID(ctx, sessionID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get session: %w", err)
+	}
+	return &session, nil
+}
+
+func (r *RepositoryPG) MarkSessionMFAVerified(ctx context.Context, sessionID uuid.UUID) error {
+	return r.queries.MarkSessionMFAVerified(ctx, sessionID)
+}

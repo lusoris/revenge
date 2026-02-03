@@ -41,7 +41,7 @@ INSERT INTO shared.sessions (
     last_activity_at
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, NOW()
-) RETURNING id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason
+) RETURNING id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at
 `
 
 type CreateSessionParams struct {
@@ -83,6 +83,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.CreatedAt,
 		&i.RevokedAt,
 		&i.RevokeReason,
+		&i.MfaVerified,
+		&i.MfaVerifiedAt,
 	)
 	return i, err
 }
@@ -108,7 +110,7 @@ func (q *Queries) DeleteRevokedSessions(ctx context.Context) error {
 }
 
 const getInactiveSessions = `-- name: GetInactiveSessions :many
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE last_activity_at < $1::TIMESTAMPTZ
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -138,6 +140,53 @@ func (q *Queries) GetInactiveSessions(ctx context.Context, inactiveSince time.Ti
 			&i.CreatedAt,
 			&i.RevokedAt,
 			&i.RevokeReason,
+			&i.MfaVerified,
+			&i.MfaVerifiedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getMFAVerifiedSessions = `-- name: GetMFAVerifiedSessions :many
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
+WHERE user_id = $1
+  AND mfa_verified = TRUE
+  AND revoked_at IS NULL
+  AND expires_at > NOW()
+ORDER BY mfa_verified_at DESC
+`
+
+func (q *Queries) GetMFAVerifiedSessions(ctx context.Context, userID uuid.UUID) ([]SharedSession, error) {
+	rows, err := q.db.Query(ctx, getMFAVerifiedSessions, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SharedSession{}
+	for rows.Next() {
+		var i SharedSession
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.TokenHash,
+			&i.RefreshTokenHash,
+			&i.IpAddress,
+			&i.UserAgent,
+			&i.DeviceName,
+			&i.Scopes,
+			&i.ExpiresAt,
+			&i.LastActivityAt,
+			&i.CreatedAt,
+			&i.RevokedAt,
+			&i.RevokeReason,
+			&i.MfaVerified,
+			&i.MfaVerifiedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -150,7 +199,7 @@ func (q *Queries) GetInactiveSessions(ctx context.Context, inactiveSince time.Ti
 }
 
 const getSessionByID = `-- name: GetSessionByID :one
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE id = $1
   AND revoked_at IS NULL
 LIMIT 1
@@ -173,12 +222,14 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSessi
 		&i.CreatedAt,
 		&i.RevokedAt,
 		&i.RevokeReason,
+		&i.MfaVerified,
+		&i.MfaVerifiedAt,
 	)
 	return i, err
 }
 
 const getSessionByRefreshTokenHash = `-- name: GetSessionByRefreshTokenHash :one
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE refresh_token_hash = $1
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -202,12 +253,14 @@ func (q *Queries) GetSessionByRefreshTokenHash(ctx context.Context, refreshToken
 		&i.CreatedAt,
 		&i.RevokedAt,
 		&i.RevokeReason,
+		&i.MfaVerified,
+		&i.MfaVerifiedAt,
 	)
 	return i, err
 }
 
 const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE token_hash = $1
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -231,12 +284,14 @@ func (q *Queries) GetSessionByTokenHash(ctx context.Context, tokenHash string) (
 		&i.CreatedAt,
 		&i.RevokedAt,
 		&i.RevokeReason,
+		&i.MfaVerified,
+		&i.MfaVerifiedAt,
 	)
 	return i, err
 }
 
 const listAllUserSessions = `-- name: ListAllUserSessions :many
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE user_id = $1
   AND revoked_at IS NULL
 ORDER BY last_activity_at DESC
@@ -266,6 +321,8 @@ func (q *Queries) ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]
 			&i.CreatedAt,
 			&i.RevokedAt,
 			&i.RevokeReason,
+			&i.MfaVerified,
+			&i.MfaVerifiedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -278,7 +335,7 @@ func (q *Queries) ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]
 }
 
 const listUserSessions = `-- name: ListUserSessions :many
-SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions
+SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions
 WHERE user_id = $1
   AND revoked_at IS NULL
   AND expires_at > NOW()
@@ -308,6 +365,8 @@ func (q *Queries) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Sha
 			&i.CreatedAt,
 			&i.RevokedAt,
 			&i.RevokeReason,
+			&i.MfaVerified,
+			&i.MfaVerifiedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -317,6 +376,34 @@ func (q *Queries) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Sha
 		return nil, err
 	}
 	return items, nil
+}
+
+const markSessionMFAVerified = `-- name: MarkSessionMFAVerified :exec
+
+UPDATE shared.sessions
+SET mfa_verified = TRUE,
+    mfa_verified_at = NOW()
+WHERE id = $1
+  AND revoked_at IS NULL
+`
+
+// MFA Session Tracking
+func (q *Queries) MarkSessionMFAVerified(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, markSessionMFAVerified, id)
+	return err
+}
+
+const markSessionMFAVerifiedByTokenHash = `-- name: MarkSessionMFAVerifiedByTokenHash :exec
+UPDATE shared.sessions
+SET mfa_verified = TRUE,
+    mfa_verified_at = NOW()
+WHERE token_hash = $1
+  AND revoked_at IS NULL
+`
+
+func (q *Queries) MarkSessionMFAVerifiedByTokenHash(ctx context.Context, tokenHash string) error {
+	_, err := q.db.Exec(ctx, markSessionMFAVerifiedByTokenHash, tokenHash)
+	return err
 }
 
 const revokeAllUserSessions = `-- name: RevokeAllUserSessions :exec

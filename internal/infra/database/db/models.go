@@ -275,6 +275,10 @@ type SharedSession struct {
 	CreatedAt      time.Time          `json:"createdAt"`
 	RevokedAt      pgtype.Timestamptz `json:"revokedAt"`
 	RevokeReason   *string            `json:"revokeReason"`
+	// Whether this session has passed MFA verification
+	MfaVerified bool `json:"mfaVerified"`
+	// Timestamp when MFA was verified for this session
+	MfaVerifiedAt pgtype.Timestamptz `json:"mfaVerifiedAt"`
 }
 
 // User accounts with authentication and profile information
