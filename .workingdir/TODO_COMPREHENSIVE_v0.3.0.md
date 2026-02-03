@@ -1,8 +1,11 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-04 03:40
-**Current Focus**: Tests → Collection OpenAPI → Frontend
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Radarr Complete ✅ → Tests 🟡 (46.7%)
+**Last Updated**: 2026-02-04 03:00
+**Current Focus**: Feature Gap Analysis ✅ → Pre-Frontend Fixes → Tests → Frontend
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Radarr Complete ✅ → Rate Limiting Complete ✅ → **Feature Gaps Identified ✅** → Pre-Frontend Fixes 🟡 → Tests 🟡 (46.7%)
+
+**Reports erstellt**:
+- [FEATURE_GAP_ANALYSIS.md](./FEATURE_GAP_ANALYSIS.md) - Umfassende Feature-Analyse
 
 ---
 
@@ -201,7 +204,7 @@
 - e8928e6f9d - fix(mfa): implement GetUserIDFromContext using existing context helper
 
 **Pending (Deferred)**:
-- [ ] Rate Limiting (per-endpoint)
+- [x] Rate Limiting (per-endpoint) ✅ - Added with configurable auth/global tiers
 - [ ] Comprehensive audit logging
 - [ ] WebAuthn API endpoints (registration/login flows)
 - [ ] Full end-to-end integration tests with database
@@ -347,19 +350,21 @@
 - [x] Get movie details ✅
 - [x] Get movie credits (cast/crew) ✅
 - [x] Get movie images ✅
-- [ ] Get similar movies (deferred - nice-to-have)
-- [ ] Get collection details (deferred - nice-to-have)
+- [x] Get similar movies ✅
+- [x] Get collection details ✅
 
 #### Image Handler ✅ COMPLETE (internal/infra/image)
 - [x] Poster download/cache ✅
 - [x] Backdrop download/cache ✅
 - [x] Profile image download/cache ✅
-- [x] Image proxy endpoint (`GET /api/v1/images/{type}/{tmdbId}`) ✅
+- [x] Image proxy endpoint (`GET /api/v1/images/{type}/{size}/{path}`) ✅
 
 #### API Handlers ✅ COMPLETE (internal/api/handler_metadata.go)
 - [x] `GET /api/v1/metadata/search/movie?q=` ✅
-- [ ] `GET /api/v1/metadata/movie/:tmdbId`
-- [ ] `GET /api/v1/images/:type/:path` (proxy)
+- [x] `GET /api/v1/metadata/movie/:tmdbId` ✅
+- [x] `GET /api/v1/metadata/collection/:tmdbId` ✅
+- [x] `GET /api/v1/images/:type/:size/:path` (proxy) ✅
+- [x] `GET /api/v1/movies/:id/similar` ✅
 
 #### Tests
 - [ ] Unit tests with mock API
@@ -637,6 +642,384 @@ All design work is **COMPLETE**. Reference these during implementation:
 ### 🔴 Not Started (v0.3.0 MVP)
 - Frontend (SvelteKit)
 - Full Docker Compose stack
+
+---
+
+## 🚨 Feature Gap Analysis (2026-02-04)
+
+> **Analysis Complete**: Compared against Jellyfin, Plex, Overseerr, Tautulli, Navidrome, Audiobookshelf, Kavita, Immich
+
+### Critical Gaps for v0.3.0 MVP
+
+#### 1. Library Scanner - Missing FFprobe Integration ❌
+**Current State**: `ExtractFileInfo()` in `library_scanner.go` is a stub - only gets file size and container extension
+**Problem**: Without FFprobe, self-scanned files have NO mediainfo (resolution, codec, bitrate, HDR, audio tracks, subtitles)
+**Workaround**: Radarr sync fills these fields via Radarr API, but direct scanning doesn't work
+
+**Required**:
+- [ ] FFprobe binary detection and wrapper
+- [ ] Parse FFprobe JSON output → `MovieFile` struct
+- [ ] Extract: resolution, video codec, audio codec, duration, bitrate, framerate, HDR info
+- [ ] Extract: audio tracks with languages
+- [ ] Extract: subtitle tracks with languages
+- [ ] Update `ExtractFileInfo()` to use FFprobe
+
+**Files to modify**:
+- `internal/content/movie/library_scanner.go` - Add FFprobe integration
+- `internal/content/movie/ffprobe.go` (NEW) - FFprobe wrapper
+- `config/config.yaml` - Add `ffprobe.path` config
+
+#### 2. Real-time File Watching - Not Implemented ❌
+**Current State**: fsnotify is in go.mod but NOT used anywhere in code
+**Problem**: Library changes require manual scan trigger - no auto-detection of new/changed/deleted files
+**Priority**: Nice-to-have for v0.3.0 (Radarr webhooks cover this), required for standalone mode
+
+**Deferred to v0.4.0**:
+- [ ] fsnotify watcher service
+- [ ] Debounced file change events
+- [ ] Trigger library scan on changes
+- [ ] Config: `library.watch_enabled: true`
+
+#### 3. Notification Service - Schema Only ❌
+**Current State**: DB schema exists (`user_preferences.email_notifications`, etc.) but NO implementation
+**Problem**: No way to notify users about anything (requests, new content, etc.)
+
+**Required for v0.3.0** (minimal):
+- [ ] Notification service interface
+- [ ] Webhook notification agent (generic)
+- [ ] Discord notification agent
+- [ ] Config: `notifications.agents[]`
+
+**Deferred**:
+- [ ] Email (SMTP) agent
+- [ ] Telegram agent
+- [ ] Apprise integration
+- [ ] Push notifications
+
+### Important Gaps (v0.4.0+)
+
+#### 4. Request System - Design Only ❌
+**Current State**: Wiki page exists, NO implementation
+**Roadmap**: Scheduled for v0.8.0 (Intelligence milestone)
+**Recommendation**: Consider moving to v0.4.0 - high user value
+
+**Features**:
+- [ ] Request table and SQLC queries
+- [ ] Request service (create, approve, deny, auto-approve rules)
+- [ ] Integration with Radarr/Sonarr (add movie on approval)
+- [ ] Request API endpoints
+- [ ] Request notifications
+
+#### 5. Transcoding Service - Not Started ❌
+**Current State**: Design exists (`04_PLAYER_ARCHITECTURE.md`), config keys defined, NO implementation
+**Roadmap**: v0.6.0 (Playback milestone)
+**Required for**: Playback of unsupported formats, quality selection
+
+**Files referenced in design**:
+- `internal/playback/transcoder/` - Not created
+- `internal/playback/hls/` - Not created
+- FFmpeg/go-astiav integration - Not started
+
+#### 6. Hardware Acceleration - Not Started ❌
+**Current State**: Config key `playback.transcode.hw_accel` defined but no implementation
+**Support needed**: VAAPI, NVENC, QSV, VideoToolbox
+**Priority**: Required for production transcoding performance
+
+### Nice-to-Have Gaps (v1.0)
+
+#### 7. Analytics/Statistics - Minimal ❌
+**Current State**: `movie_watched` table tracks progress, but NO analytics dashboard
+**Missing**: Play count per movie, user watch time, concurrent streams, bandwidth
+
+#### 8. Skip Intro Detection - Not Started ❌
+**Roadmap**: v0.6.0
+**Design**: Exists in player architecture
+
+#### 9. Trickplay Thumbnails - Not Started ❌
+**Roadmap**: v0.6.0
+**Design**: Exists in player architecture
+
+#### 10. SyncPlay (Watch Together) - Not Started ❌
+**Roadmap**: v0.6.0
+**Design**: Exists in player architecture
+
+---
+
+### Action Items for v0.3.0 (ALLES VOR FRONTEND)
+
+> **Entscheidung**: Alle Items müssen vor Frontend-Start abgeschlossen sein.
+> **Geschätzter Gesamtaufwand**: ~45-55 Stunden
+
+#### Phase 1: MediaInfo mit go-astiav (4-6h)
+
+**Warum go-astiav statt FFprobe CLI?**
+- Bereits für Transcoding (v0.6.0) geplant → keine zusätzliche Dependency
+- Native Go Bindings → keine Exec-Calls
+- Typed API → sicherer als JSON-Parsing
+- CGO erforderlich, aber das brauchen wir eh für HW-Acceleration
+
+**Tasks**:
+1. [ ] `internal/content/movie/mediainfo.go` - go-astiav Wrapper
+   - [ ] `ProbeFile(path string) (*MediaInfo, error)` - Hauptfunktion
+   - [ ] Duration, Bitrate, Container Format
+   - [ ] Video Stream: Codec, Resolution, Framerate, HDR Info
+   - [ ] Audio Streams: Codec, Channels, Language, Title
+   - [ ] Subtitle Streams: Codec, Language, Forced
+   - [ ] Color Space, Color Range, Color Primaries
+2. [ ] `internal/content/movie/mediainfo_test.go` - Unit Tests mit Testfiles
+3. [ ] `ExtractFileInfo()` in `library_scanner.go` updaten
+4. [ ] go-astiav zu go.mod hinzufügen
+5. [ ] Dockerfile updaten (FFmpeg libs für CGO)
+
+#### Phase 2: Notification Service (6-8h)
+
+**Agents für v0.3.0**:
+- [x] Webhook (generisch) - Kann alles anbinden
+- [x] Discord - Sehr populär bei Self-Hostern
+- [x] Gotify/ntfy - Self-Hosted Push Notifications
+- [x] Email (SMTP) - Klassisch
+
+**Tasks**:
+1. [ ] `internal/service/notification/` - Service Package
+   - [ ] `notification.go` - Interface + Event Types
+   - [ ] `dispatcher.go` - Event Router + User Preferences
+   - [ ] `agents/webhook.go` - Generic Webhook Agent
+   - [ ] `agents/discord.go` - Discord Webhook Agent
+   - [ ] `agents/email.go` - SMTP Email Agent
+   - [ ] `agents/gotify.go` - Gotify/ntfy Push Agent
+2. [ ] River Job für async Notification Dispatch
+3. [ ] User Notification Preferences API
+4. [ ] Admin Notification Settings API
+5. [ ] Tests für alle Agents
+
+**Event Types**:
+```go
+const (
+    EventMovieAdded       EventType = "movie.added"
+    EventMovieAvailable   EventType = "movie.available"
+    EventRequestCreated   EventType = "request.created"
+    EventRequestApproved  EventType = "request.approved"
+    EventUserCreated      EventType = "user.created"
+    EventPlaybackStarted  EventType = "playback.started"
+    EventLibraryScanDone  EventType = "library.scan_done"
+    EventLoginSuccess     EventType = "auth.login_success"
+    EventLoginFailed      EventType = "auth.login_failed"
+    EventMFAEnabled       EventType = "auth.mfa_enabled"
+    EventPasswordChanged  EventType = "auth.password_changed"
+)
+```
+
+#### Phase 3: Audit Logging (3-4h)
+
+**Schema existiert** (`activity_log`), muss aktiviert werden.
+
+**Alle Events loggen**:
+- Security: Login, Logout, Failed Login, MFA Events
+- User Management: Create, Update, Delete, Role Changes
+- Content: Add, Update, Delete Movies/Libraries
+- Admin: Settings Changes, Integrations
+- System: Library Scans, Sync Events
+
+**Tasks**:
+1. [ ] `internal/service/audit/` - Audit Service
+   - [ ] `audit.go` - Interface + Logger
+   - [ ] `events.go` - Event Type Definitions
+2. [ ] Integration in Auth Service (Login/Logout/Failed)
+3. [ ] Integration in User Service (CRUD + Roles)
+4. [ ] Integration in Content Services (Movies/Libraries)
+5. [ ] Integration in Admin Services (Settings)
+6. [ ] API Endpoint für Audit Log Abruf (Admin only)
+7. [ ] Tests
+
+#### Phase 4: RBAC Erweiterungen (6-8h)
+
+**Alle 4 Rollen implementieren**:
+
+| Rolle | Permissions |
+|-------|-------------|
+| `admin` | `*:*` - Alles |
+| `moderator` | `users:read`, `users:update`, `requests:*`, `content:moderate`, `audit:read` |
+| `user` | `movies:read`, `libraries:read`, `requests:create`, `self:*` |
+| `guest` | `movies:read`, `libraries:read` (kein Write, keine History) |
+
+**Tasks**:
+1. [ ] Migration für Moderator + Guest Rollen
+2. [ ] `CreateRole(name, permissions)` - Admin API
+3. [ ] `DeleteRole(name)` - Admin API
+4. [ ] `UpdateRolePermissions()` - Admin API
+5. [ ] `ListRoles()` - Admin API
+6. [ ] `ListPermissions()` - Verfügbare Permissions auflisten
+7. [ ] Tests für alle neuen Endpoints
+8. [ ] Dokumentation der Permission Strings
+
+#### Phase 5: Rate Limiter Migration (2-3h)
+
+**Von sync.Map zu Dragonfly** für Multi-Instance Support.
+
+**Tasks**:
+1. [ ] `internal/api/middleware/rate_limit_redis.go` - Neuer Limiter
+   - [ ] Sliding Window mit Rueidis
+   - [ ] Atomare Operationen via Lua Script
+2. [ ] Config: `rate_limit.backend: "memory" | "redis"`
+3. [ ] Fallback zu Memory wenn Dragonfly nicht erreichbar
+4. [ ] Tests mit Docker Compose
+
+#### Phase 6: Cache für Hot Paths (4-6h)
+
+**Endpoints die gecached werden sollen**:
+
+| Endpoint | TTL | Invalidierung |
+|----------|-----|---------------|
+| `GET /api/v1/movies/{id}` | 5 min | Bei Update/Delete |
+| `GET /api/v1/users/me/roles` | 1 min | Bei Role Change |
+| `GET /api/v1/libraries/{id}/stats` | 10 min | Bei Library Scan |
+| `GET /api/v1/search/*` | 30 sec | Bei Index Update |
+
+**Tasks**:
+1. [ ] Cache Layer in Movie Service
+2. [ ] Cache Layer in RBAC Service (User Roles)
+3. [ ] Cache Layer in Library Service (Stats)
+4. [ ] Cache Invalidation Events
+5. [ ] Cache Metrics (Hit/Miss Ratio)
+6. [ ] Tests
+
+#### Phase 7: Observability (4-5h)
+
+**pprof (nur Dev Mode)**:
+```go
+if config.Debug {
+    mux.HandleFunc("/debug/pprof/", pprof.Index)
+    // ...
+}
+```
+
+**Prometheus Metrics**:
+- HTTP Request Latency (Histogram)
+- HTTP Request Count (Counter)
+- Active Sessions (Gauge)
+- Cache Hit/Miss Ratio (Counter)
+- Database Query Latency (Histogram)
+- River Job Queue Size (Gauge)
+
+**Tasks**:
+1. [ ] pprof Endpoint (nur wenn `config.debug: true`)
+2. [ ] `/metrics` Endpoint mit Prometheus Registry
+3. [ ] HTTP Middleware für Request Metrics
+4. [ ] Cache Metrics Integration
+5. [ ] Database Query Metrics
+6. [ ] River Metrics
+7. [ ] Grafana Dashboard Template
+
+#### Phase 8: Test Coverage 80%+ (8-12h)
+
+**Focus Areas**:
+- Movie Service + Library Scanner
+- Notification Service
+- Audit Service
+- RBAC Service Extensions
+- Cache Layer
+- Rate Limiter
+
+**Tasks**:
+1. [ ] Movie Service Tests
+2. [ ] Library Scanner Tests (mit go-astiav Mocks)
+3. [ ] Notification Agent Tests
+4. [ ] Audit Service Tests
+5. [ ] RBAC Extension Tests
+6. [ ] Cache Integration Tests
+7. [ ] E2E Tests für neue APIs
+
+---
+
+### Zusammenfassung Pre-Frontend
+
+| Phase | Aufwand | Status |
+|-------|---------|--------|
+| 1. MediaInfo (go-astiav) | 4-6h | ⬜ |
+| 2. Notification Service | 6-8h | ⬜ |
+| 3. Audit Logging | 3-4h | ⬜ |
+| 4. RBAC Erweiterungen | 6-8h | ⬜ |
+| 5. Rate Limiter Migration | 2-3h | ⬜ |
+| 6. Cache Hot Paths | 4-6h | ⬜ |
+| 7. Observability | 4-5h | ⬜ |
+| 8. Test Coverage 80% | 8-12h | ⬜ |
+| **Total** | **37-52h** | |
+
+**Realistisch**: ~45-55 Stunden (~1.5 Wochen Vollzeit)
+
+---
+
+### Zusätzliche Erkenntnisse aus Architektur-Review
+
+#### RBAC/Permissions Gaps
+
+**Aktueller Stand**:
+- Casbin mit simplem RBAC Model (sub, obj, act)
+- Nur 2 Rollen hardcoded: `admin`, `user`
+- Keine Moderator-Rolle
+- Keine Custom Groups
+- Keine per-Library Permissions
+
+**Service-Methoden vorhanden**:
+- `AssignRole()`, `RemoveRole()`, `GetUserRoles()`, `HasRole()`, `GetUsersForRole()`
+- ABER: Kein `CreateRole()`, `DeleteRole()`, `CreateGroup()`
+
+**OIDC Group Mapping**:
+- Keycloak Design referenziert `revenge-moderator` Gruppe
+- Aber nur via externem IdP - keine interne Gruppenverwaltung
+
+**TODO für RBAC**:
+- [x] Moderator-Rolle in Migrations hinzufügen (Phase 4)
+- [x] API für Custom Role CRUD (Phase 4)
+- [ ] Per-Library Access Control (v0.4.0)
+
+#### Cluster/Multi-Instance Gaps
+
+**Rate Limiter Problem**:
+```go
+// internal/api/middleware/rate_limit.go
+var visitors = sync.Map{}  // ❌ In-Memory - funktioniert nicht in Cluster!
+```
+
+**Lösung**: Rate Limiter State in Dragonfly speichern via Rueidis (Phase 5)
+
+**Aktuell Cluster-Ready** ✅:
+- PostgreSQL für State
+- Dragonfly für Cache
+- River für Job Queue
+- Casbin mit PostgreSQL Adapter
+
+**Benötigt Anpassung**:
+- Rate Limiter → Dragonfly (Phase 5)
+- WebSocket für SyncPlay später → Redis PubSub
+
+#### Profiling/Monitoring Gaps
+
+**Benchmarks vorhanden** ✅:
+- `internal/crypto/password_bench_test.go` - Password hashing benchmarks
+
+**Wird implementiert** (Phase 7):
+- `/debug/pprof/*` Endpoint (nur in Dev Mode)
+- `/metrics` Endpoint (Prometheus)
+- OpenTelemetry Traces (Dependency da, nicht konfiguriert)
+
+#### Cache Best Practices Review
+
+**Aktuell implementiert** ✅:
+- L1: Otter (In-Memory, configurable)
+- L2: Rueidis → Dragonfly
+- TTL Handling mit L1/L2 Koordination
+- TMDb Client hat eigenen Cache
+
+**Wird gecached** (Phase 6):
+- Movie Details API
+- User Permissions/Roles
+- Library Stats
+- Search Results
+
+**Cache Invalidation**:
+- Event-basierte Invalidierung (Phase 6)
+- Cache-Tags für Gruppeninvalidierung
 
 ---
 
