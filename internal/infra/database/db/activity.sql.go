@@ -57,25 +57,25 @@ WHERE
 `
 
 type CountSearchActivityLogsParams struct {
-	Column1 uuid.UUID `json:"column1"`
-	Column2 string    `json:"column2"`
-	Column3 string    `json:"column3"`
-	Column4 uuid.UUID `json:"column4"`
-	Column5 bool      `json:"column5"`
-	Column6 time.Time `json:"column6"`
-	Column7 time.Time `json:"column7"`
+	UserID       pgtype.UUID        `json:"userId"`
+	Action       *string            `json:"action"`
+	ResourceType *string            `json:"resourceType"`
+	ResourceID   pgtype.UUID        `json:"resourceId"`
+	Success      *bool              `json:"success"`
+	StartTime    pgtype.Timestamptz `json:"startTime"`
+	EndTime      pgtype.Timestamptz `json:"endTime"`
 }
 
 // Count activity logs matching search filters
 func (q *Queries) CountSearchActivityLogs(ctx context.Context, arg CountSearchActivityLogsParams) (int64, error) {
 	row := q.db.QueryRow(ctx, countSearchActivityLogs,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
-		arg.Column4,
-		arg.Column5,
-		arg.Column6,
-		arg.Column7,
+		arg.UserID,
+		arg.Action,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.Success,
+		arg.StartTime,
+		arg.EndTime,
 	)
 	var count int64
 	err := row.Scan(&count)
@@ -582,33 +582,33 @@ WHERE
     AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
     AND ($7::TIMESTAMPTZ IS NULL OR created_at <= $7)
 ORDER BY created_at DESC
-LIMIT $8 OFFSET $9
+LIMIT $9 OFFSET $8
 `
 
 type SearchActivityLogsParams struct {
-	Column1 uuid.UUID `json:"column1"`
-	Column2 string    `json:"column2"`
-	Column3 string    `json:"column3"`
-	Column4 uuid.UUID `json:"column4"`
-	Column5 bool      `json:"column5"`
-	Column6 time.Time `json:"column6"`
-	Column7 time.Time `json:"column7"`
-	Limit   int32     `json:"limit"`
-	Offset  int32     `json:"offset"`
+	UserID       pgtype.UUID        `json:"userId"`
+	Action       *string            `json:"action"`
+	ResourceType *string            `json:"resourceType"`
+	ResourceID   pgtype.UUID        `json:"resourceId"`
+	Success      *bool              `json:"success"`
+	StartTime    pgtype.Timestamptz `json:"startTime"`
+	EndTime      pgtype.Timestamptz `json:"endTime"`
+	Offset       int32              `json:"offset"`
+	Limit        int32              `json:"limit"`
 }
 
 // Search activity logs with optional filters
 func (q *Queries) SearchActivityLogs(ctx context.Context, arg SearchActivityLogsParams) ([]ActivityLog, error) {
 	rows, err := q.db.Query(ctx, searchActivityLogs,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
-		arg.Column4,
-		arg.Column5,
-		arg.Column6,
-		arg.Column7,
-		arg.Limit,
+		arg.UserID,
+		arg.Action,
+		arg.ResourceType,
+		arg.ResourceID,
+		arg.Success,
+		arg.StartTime,
+		arg.EndTime,
 		arg.Offset,
+		arg.Limit,
 	)
 	if err != nil {
 		return nil, err

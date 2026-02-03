@@ -15,19 +15,20 @@ WHERE email = $1 AND deleted_at IS NULL;
 
 -- name: ListUsers :many
 -- List all active users with optional filters
+-- Use sqlc.narg for nullable parameters
 SELECT * FROM shared.users
 WHERE deleted_at IS NULL
-  AND ($1::boolean IS NULL OR is_active = $1)
-  AND ($2::boolean IS NULL OR is_admin = $2)
+  AND (sqlc.narg('is_active')::boolean IS NULL OR is_active = sqlc.narg('is_active'))
+  AND (sqlc.narg('is_admin')::boolean IS NULL OR is_admin = sqlc.narg('is_admin'))
 ORDER BY created_at DESC
-LIMIT $3 OFFSET $4;
+LIMIT sqlc.arg('limit') OFFSET sqlc.arg('offset');
 
 -- name: CountUsers :one
 -- Count users matching filters
 SELECT COUNT(*) FROM shared.users
 WHERE deleted_at IS NULL
-  AND ($1::boolean IS NULL OR is_active = $1)
-  AND ($2::boolean IS NULL OR is_admin = $2);
+  AND (sqlc.narg('is_active')::boolean IS NULL OR is_active = sqlc.narg('is_active'))
+  AND (sqlc.narg('is_admin')::boolean IS NULL OR is_admin = sqlc.narg('is_admin'));
 
 -- name: CreateUser :one
 -- Create a new user

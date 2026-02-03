@@ -33,28 +33,28 @@ SELECT COUNT(*) FROM public.activity_log;
 -- name: SearchActivityLogs :many
 -- Search activity logs with optional filters
 SELECT * FROM public.activity_log
-WHERE 
-    ($1::UUID IS NULL OR user_id = $1)
-    AND ($2::VARCHAR IS NULL OR action = $2)
-    AND ($3::VARCHAR IS NULL OR resource_type = $3)
-    AND ($4::UUID IS NULL OR resource_id = $4)
-    AND ($5::BOOLEAN IS NULL OR success = $5)
-    AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
-    AND ($7::TIMESTAMPTZ IS NULL OR created_at <= $7)
+WHERE
+    (sqlc.narg('user_id')::UUID IS NULL OR user_id = sqlc.narg('user_id'))
+    AND (sqlc.narg('action')::VARCHAR IS NULL OR action = sqlc.narg('action'))
+    AND (sqlc.narg('resource_type')::VARCHAR IS NULL OR resource_type = sqlc.narg('resource_type'))
+    AND (sqlc.narg('resource_id')::UUID IS NULL OR resource_id = sqlc.narg('resource_id'))
+    AND (sqlc.narg('success')::BOOLEAN IS NULL OR success = sqlc.narg('success'))
+    AND (sqlc.narg('start_time')::TIMESTAMPTZ IS NULL OR created_at >= sqlc.narg('start_time'))
+    AND (sqlc.narg('end_time')::TIMESTAMPTZ IS NULL OR created_at <= sqlc.narg('end_time'))
 ORDER BY created_at DESC
-LIMIT $8 OFFSET $9;
+LIMIT sqlc.arg('limit') OFFSET sqlc.arg('offset');
 
 -- name: CountSearchActivityLogs :one
 -- Count activity logs matching search filters
 SELECT COUNT(*) FROM public.activity_log
-WHERE 
-    ($1::UUID IS NULL OR user_id = $1)
-    AND ($2::VARCHAR IS NULL OR action = $2)
-    AND ($3::VARCHAR IS NULL OR resource_type = $3)
-    AND ($4::UUID IS NULL OR resource_id = $4)
-    AND ($5::BOOLEAN IS NULL OR success = $5)
-    AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
-    AND ($7::TIMESTAMPTZ IS NULL OR created_at <= $7);
+WHERE
+    (sqlc.narg('user_id')::UUID IS NULL OR user_id = sqlc.narg('user_id'))
+    AND (sqlc.narg('action')::VARCHAR IS NULL OR action = sqlc.narg('action'))
+    AND (sqlc.narg('resource_type')::VARCHAR IS NULL OR resource_type = sqlc.narg('resource_type'))
+    AND (sqlc.narg('resource_id')::UUID IS NULL OR resource_id = sqlc.narg('resource_id'))
+    AND (sqlc.narg('success')::BOOLEAN IS NULL OR success = sqlc.narg('success'))
+    AND (sqlc.narg('start_time')::TIMESTAMPTZ IS NULL OR created_at >= sqlc.narg('start_time'))
+    AND (sqlc.narg('end_time')::TIMESTAMPTZ IS NULL OR created_at <= sqlc.narg('end_time'));
 
 -- name: GetUserActivityLogs :many
 -- Get activity logs for a specific user
@@ -112,7 +112,7 @@ WHERE created_at < $1;
 
 -- name: GetActivityLogStats :one
 -- Get activity log statistics
-SELECT 
+SELECT
     COUNT(*) as total_count,
     COUNT(*) FILTER (WHERE success = true) as success_count,
     COUNT(*) FILTER (WHERE success = false) as failed_count,

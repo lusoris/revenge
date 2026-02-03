@@ -20,13 +20,13 @@ WHERE deleted_at IS NULL
 `
 
 type CountUsersParams struct {
-	Column1 bool `json:"column1"`
-	Column2 bool `json:"column2"`
+	IsActive *bool `json:"isActive"`
+	IsAdmin  *bool `json:"isAdmin"`
 }
 
 // Count users matching filters
 func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countUsers, arg.Column1, arg.Column2)
+	row := q.db.QueryRow(ctx, countUsers, arg.IsActive, arg.IsAdmin)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -478,23 +478,24 @@ WHERE deleted_at IS NULL
   AND ($1::boolean IS NULL OR is_active = $1)
   AND ($2::boolean IS NULL OR is_admin = $2)
 ORDER BY created_at DESC
-LIMIT $3 OFFSET $4
+LIMIT $4 OFFSET $3
 `
 
 type ListUsersParams struct {
-	Column1 bool  `json:"column1"`
-	Column2 bool  `json:"column2"`
-	Limit   int32 `json:"limit"`
-	Offset  int32 `json:"offset"`
+	IsActive *bool `json:"isActive"`
+	IsAdmin  *bool `json:"isAdmin"`
+	Offset   int32 `json:"offset"`
+	Limit    int32 `json:"limit"`
 }
 
 // List all active users with optional filters
+// Use sqlc.narg for nullable parameters
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error) {
 	rows, err := q.db.Query(ctx, listUsers,
-		arg.Column1,
-		arg.Column2,
-		arg.Limit,
+		arg.IsActive,
+		arg.IsAdmin,
 		arg.Offset,
+		arg.Limit,
 	)
 	if err != nil {
 		return nil, err

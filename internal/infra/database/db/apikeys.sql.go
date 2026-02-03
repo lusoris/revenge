@@ -88,7 +88,7 @@ func (q *Queries) DeleteAPIKey(ctx context.Context, id uuid.UUID) error {
 
 const deleteExpiredAPIKeys = `-- name: DeleteExpiredAPIKeys :exec
 DELETE FROM shared.api_keys
-WHERE expires_at IS NOT NULL 
+WHERE expires_at IS NOT NULL
   AND expires_at < NOW()
   AND is_active = false
 `
@@ -125,7 +125,7 @@ func (q *Queries) GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, er
 
 const getAPIKeyByHash = `-- name: GetAPIKeyByHash :one
 SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE key_hash = $1 AND is_active = true
+WHERE key_hash = $1
 `
 
 func (q *Queries) GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error) {

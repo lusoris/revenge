@@ -17,7 +17,7 @@ WHERE id = $1;
 
 -- name: GetAPIKeyByHash :one
 SELECT * FROM shared.api_keys
-WHERE key_hash = $1 AND is_active = true;
+WHERE key_hash = $1;
 
 -- name: GetAPIKeyByPrefix :one
 SELECT * FROM shared.api_keys
@@ -59,7 +59,7 @@ WHERE id = $1;
 
 -- name: DeleteExpiredAPIKeys :exec
 DELETE FROM shared.api_keys
-WHERE expires_at IS NOT NULL 
+WHERE expires_at IS NOT NULL
   AND expires_at < NOW()
   AND is_active = false;
 

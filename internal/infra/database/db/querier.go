@@ -265,6 +265,7 @@ type Querier interface {
 	// Get user settings by category
 	ListUserSettingsByCategory(ctx context.Context, arg ListUserSettingsByCategoryParams) ([]SharedUserSetting, error)
 	// List all active users with optional filters
+	// Use sqlc.narg for nullable parameters
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error)
 	MarkEmailVerificationTokenUsed(ctx context.Context, id uuid.UUID) error
 	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
