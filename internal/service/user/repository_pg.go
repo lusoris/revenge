@@ -59,17 +59,10 @@ func (r *postgresRepository) GetUserByEmail(ctx context.Context, email string) (
 
 func (r *postgresRepository) ListUsers(ctx context.Context, filters UserFilters) ([]db.SharedUser, int64, error) {
 	// Count total users matching filters
-	var isActive, isAdmin bool
-	if filters.IsActive != nil {
-		isActive = *filters.IsActive
-	}
-	if filters.IsAdmin != nil {
-		isAdmin = *filters.IsAdmin
-	}
-
+	// Pass nil pointers to queries when filters are not set - SQL handles NULL checking
 	count, err := r.queries.CountUsers(ctx, db.CountUsersParams{
-		Column1: isActive,
-		Column2: isAdmin,
+		IsActive: filters.IsActive,
+		IsAdmin:  filters.IsAdmin,
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to count users: %w", err)
@@ -77,10 +70,10 @@ func (r *postgresRepository) ListUsers(ctx context.Context, filters UserFilters)
 
 	// List users with pagination
 	users, err := r.queries.ListUsers(ctx, db.ListUsersParams{
-		Column1: isActive,
-		Column2: isAdmin,
-		Limit:   filters.Limit,
-		Offset:  filters.Offset,
+		IsActive: filters.IsActive,
+		IsAdmin:  filters.IsAdmin,
+		Limit:    filters.Limit,
+		Offset:   filters.Offset,
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to list users: %w", err)

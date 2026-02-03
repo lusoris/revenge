@@ -3,10 +3,12 @@ package session
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"net/netip"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -38,7 +40,7 @@ func (r *RepositoryPG) CreateSession(ctx context.Context, params CreateSessionPa
 func (r *RepositoryPG) GetSessionByTokenHash(ctx context.Context, tokenHash string) (*db.SharedSession, error) {
 	session, err := r.queries.GetSessionByTokenHash(ctx, tokenHash)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
@@ -50,7 +52,7 @@ func (r *RepositoryPG) GetSessionByTokenHash(ctx context.Context, tokenHash stri
 func (r *RepositoryPG) GetSessionByID(ctx context.Context, sessionID uuid.UUID) (*db.SharedSession, error) {
 	session, err := r.queries.GetSessionByID(ctx, sessionID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
@@ -62,7 +64,7 @@ func (r *RepositoryPG) GetSessionByID(ctx context.Context, sessionID uuid.UUID) 
 func (r *RepositoryPG) GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash string) (*db.SharedSession, error) {
 	session, err := r.queries.GetSessionByRefreshTokenHash(ctx, &refreshTokenHash)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err

@@ -3,11 +3,13 @@ package activity
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net"
 	"net/netip"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
@@ -81,6 +83,9 @@ func (r *RepositoryPg) Create(ctx context.Context, entry *Entry) error {
 func (r *RepositoryPg) Get(ctx context.Context, id uuid.UUID) (*Entry, error) {
 	result, err := r.queries.GetActivityLog(ctx, id)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrNotFound
+		}
 		return nil, err
 	}
 	return dbActivityToEntry(result), nil
@@ -110,46 +115,47 @@ func (r *RepositoryPg) Count(ctx context.Context) (int64, error) {
 
 // Search returns activity logs matching filters.
 func (r *RepositoryPg) Search(ctx context.Context, filters SearchFilters) ([]Entry, int64, error) {
-	params := db.SearchActivityLogsParams{
-		Limit:  filters.Limit,
-		Offset: filters.Offset,
-	}
-
-	countParams := db.CountSearchActivityLogsParams{}
-
+	// Convert filter parameters to nullable types for SQLC
+	var userIDParam pgtype.UUID
 	if filters.UserID != nil {
-		params.Column1 = *filters.UserID
-		countParams.Column1 = *filters.UserID
+		userIDParam = pgtype.UUID{Bytes: *filters.UserID, Valid: true}
 	}
 
-	if filters.Action != nil {
-		params.Column2 = *filters.Action
-		countParams.Column2 = *filters.Action
-	}
-
-	if filters.ResourceType != nil {
-		params.Column3 = *filters.ResourceType
-		countParams.Column3 = *filters.ResourceType
-	}
-
+	var resourceIDParam pgtype.UUID
 	if filters.ResourceID != nil {
-		params.Column4 = *filters.ResourceID
-		countParams.Column4 = *filters.ResourceID
+		resourceIDParam = pgtype.UUID{Bytes: *filters.ResourceID, Valid: true}
 	}
 
-	if filters.Success != nil {
-		params.Column5 = *filters.Success
-		countParams.Column5 = *filters.Success
-	}
-
+	var startTimeParam pgtype.Timestamptz
 	if filters.StartTime != nil {
-		params.Column6 = *filters.StartTime
-		countParams.Column6 = *filters.StartTime
+		startTimeParam = pgtype.Timestamptz{Time: *filters.StartTime, Valid: true}
 	}
 
+	var endTimeParam pgtype.Timestamptz
 	if filters.EndTime != nil {
-		params.Column7 = *filters.EndTime
-		countParams.Column7 = *filters.EndTime
+		endTimeParam = pgtype.Timestamptz{Time: *filters.EndTime, Valid: true}
+	}
+
+	params := db.SearchActivityLogsParams{
+		UserID:       userIDParam,
+		Action:       filters.Action,
+		ResourceType: filters.ResourceType,
+		ResourceID:   resourceIDParam,
+		Success:      filters.Success,
+		StartTime:    startTimeParam,
+		EndTime:      endTimeParam,
+		Limit:        filters.Limit,
+		Offset:       filters.Offset,
+	}
+
+	countParams := db.CountSearchActivityLogsParams{
+		UserID:       userIDParam,
+		Action:       filters.Action,
+		ResourceType: filters.ResourceType,
+		ResourceID:   resourceIDParam,
+		Success:      filters.Success,
+		StartTime:    startTimeParam,
+		EndTime:      endTimeParam,
 	}
 
 	count, err := r.queries.CountSearchActivityLogs(ctx, countParams)
