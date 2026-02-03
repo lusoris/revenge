@@ -28,6 +28,7 @@ type Repository interface {
 	CreateMovieFile(ctx context.Context, params CreateMovieFileParams) (*MovieFile, error)
 	GetMovieFile(ctx context.Context, id uuid.UUID) (*MovieFile, error)
 	GetMovieFileByPath(ctx context.Context, path string) (*MovieFile, error)
+	GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error)
 	ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error)
 	UpdateMovieFile(ctx context.Context, params UpdateMovieFileParams) (*MovieFile, error)
 	DeleteMovieFile(ctx context.Context, id uuid.UUID) error
@@ -42,6 +43,7 @@ type Repository interface {
 	CreateMovieCollection(ctx context.Context, params CreateMovieCollectionParams) (*MovieCollection, error)
 	GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error)
 	GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*MovieCollection, error)
+	UpdateMovieCollection(ctx context.Context, params UpdateMovieCollectionParams) (*MovieCollection, error)
 	AddMovieToCollection(ctx context.Context, collectionID, movieID uuid.UUID, collectionOrder *int32) error
 	RemoveMovieFromCollection(ctx context.Context, collectionID, movieID uuid.UUID) error
 	ListMoviesByCollection(ctx context.Context, collectionID uuid.UUID) ([]Movie, error)
@@ -162,6 +164,16 @@ type CreateMovieCreditParams struct {
 type CreateMovieCollectionParams struct {
 	TMDbCollectionID *int32
 	Name             string
+	Overview         *string
+	PosterPath       *string
+	BackdropPath     *string
+}
+
+// UpdateMovieCollectionParams contains parameters for updating a movie collection
+type UpdateMovieCollectionParams struct {
+	ID               uuid.UUID
+	TMDbCollectionID *int32
+	Name             *string
 	Overview         *string
 	PosterPath       *string
 	BackdropPath     *string

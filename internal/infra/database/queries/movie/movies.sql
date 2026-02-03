@@ -151,6 +151,10 @@ ORDER BY created_at DESC;
 SELECT * FROM public.movie_files
 WHERE file_path = $1 AND deleted_at IS NULL;
 
+-- name: GetMovieFileByRadarrID :one
+SELECT * FROM public.movie_files
+WHERE radarr_file_id = $1 AND deleted_at IS NULL;
+
 -- name: UpdateMovieFile :one
 UPDATE public.movie_files
 SET
@@ -234,6 +238,17 @@ WHERE id = $1 AND deleted_at IS NULL;
 -- name: GetMovieCollectionByTMDbID :one
 SELECT * FROM public.movie_collections
 WHERE tmdb_collection_id = $1 AND deleted_at IS NULL;
+
+-- name: UpdateMovieCollection :one
+UPDATE public.movie_collections
+SET
+    tmdb_collection_id = COALESCE(sqlc.narg('tmdb_collection_id'), tmdb_collection_id),
+    name = COALESCE(sqlc.narg('name'), name),
+    overview = COALESCE(sqlc.narg('overview'), overview),
+    poster_path = COALESCE(sqlc.narg('poster_path'), poster_path),
+    backdrop_path = COALESCE(sqlc.narg('backdrop_path'), backdrop_path)
+WHERE id = sqlc.arg('id') AND deleted_at IS NULL
+RETURNING *;
 
 -- name: AddMovieToCollection :exec
 INSERT INTO public.movie_collection_members (

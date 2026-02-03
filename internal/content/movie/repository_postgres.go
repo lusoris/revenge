@@ -184,6 +184,17 @@ func (r *postgresRepository) GetMovieFileByPath(ctx context.Context, path string
 	return nil, fmt.Errorf("not implemented")
 }
 
+func (r *postgresRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error) {
+	file, err := r.queries.GetMovieFileByRadarrID(ctx, &radarrFileID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrMovieFileNotFound
+		}
+		return nil, fmt.Errorf("failed to get movie file by Radarr ID: %w", err)
+	}
+	return dbMovieFileToMovieFile(file), nil
+}
+
 func (r *postgresRepository) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error) {
 	return nil, fmt.Errorf("not implemented")
 }
@@ -248,6 +259,24 @@ func (r *postgresRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmd
 	return dbCollectionToCollection(coll), nil
 }
 
+func (r *postgresRepository) UpdateMovieCollection(ctx context.Context, params UpdateMovieCollectionParams) (*MovieCollection, error) {
+	coll, err := r.queries.UpdateMovieCollection(ctx, moviedb.UpdateMovieCollectionParams{
+		ID:               params.ID,
+		TmdbCollectionID: params.TMDbCollectionID,
+		Name:             params.Name,
+		Overview:         params.Overview,
+		PosterPath:       params.PosterPath,
+		BackdropPath:     params.BackdropPath,
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrCollectionNotFound
+		}
+		return nil, fmt.Errorf("failed to update movie collection: %w", err)
+	}
+	return dbCollectionToCollection(coll), nil
+}
+
 func (r *postgresRepository) AddMovieToCollection(ctx context.Context, collectionID, movieID uuid.UUID, collectionOrder *int32) error {
 	return r.queries.AddMovieToCollection(ctx, moviedb.AddMovieToCollectionParams{
 		CollectionID:    collectionID,
@@ -297,6 +326,27 @@ func dbCollectionToCollection(dbColl moviedb.MovieCollection) *MovieCollection {
 		BackdropPath:     dbColl.BackdropPath,
 		CreatedAt:        dbColl.CreatedAt,
 		UpdatedAt:        dbColl.UpdatedAt,
+	}
+}
+
+// dbMovieFileToMovieFile converts a database movie file to a domain movie file
+func dbMovieFileToMovieFile(dbFile moviedb.MovieFile) *MovieFile {
+	return &MovieFile{
+		ID:                dbFile.ID,
+		MovieID:           dbFile.MovieID,
+		FilePath:          dbFile.FilePath,
+		FileSize:          dbFile.FileSize,
+		Resolution:        dbFile.Resolution,
+		QualityProfile:    dbFile.QualityProfile,
+		VideoCodec:        dbFile.VideoCodec,
+		AudioCodec:        dbFile.AudioCodec,
+		Container:         dbFile.Container,
+		BitrateKbps:       dbFile.BitrateKbps,
+		AudioLanguages:    dbFile.AudioLanguages,
+		SubtitleLanguages: dbFile.SubtitleLanguages,
+		RadarrFileID:      dbFile.RadarrFileID,
+		CreatedAt:         dbFile.CreatedAt,
+		UpdatedAt:         dbFile.UpdatedAt,
 	}
 }
 

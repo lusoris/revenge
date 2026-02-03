@@ -1,0 +1,535 @@
+package radarr
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+
+	"github.com/go-resty/resty/v2"
+	"golang.org/x/time/rate"
+)
+
+// Client is a client for the Radarr API v3.
+// Radarr is a PRIMARY metadata provider - local, no proxy needed.
+type Client struct {
+	client      *resty.Client
+	baseURL     string
+	apiKey      string
+	rateLimiter *rate.Limiter
+	cache       sync.Map
+	cacheTTL    time.Duration
+}
+
+// Config contains configuration for the Radarr client.
+type Config struct {
+	BaseURL   string
+	APIKey    string
+	RateLimit rate.Limit // requests per second
+	CacheTTL  time.Duration
+	Timeout   time.Duration
+}
+
+// NewClient creates a new Radarr API client.
+func NewClient(config Config) *Client {
+	if config.Timeout == 0 {
+		config.Timeout = 30 * time.Second
+	}
+	if config.RateLimit == 0 {
+		config.RateLimit = rate.Limit(10.0) // 10 req/s default for local service
+	}
+	if config.CacheTTL == 0 {
+		config.CacheTTL = 5 * time.Minute // Short TTL for local cache
+	}
+
+	client := resty.New().
+		SetBaseURL(config.BaseURL+"/api/v3").
+		SetTimeout(config.Timeout).
+		SetHeader("X-Api-Key", config.APIKey).
+		SetHeader("Content-Type", "application/json").
+		SetRetryCount(3).
+		SetRetryWaitTime(1 * time.Second).
+		SetRetryMaxWaitTime(10 * time.Second)
+
+	return &Client{
+		client:      client,
+		baseURL:     config.BaseURL,
+		apiKey:      config.APIKey,
+		rateLimiter: rate.NewLimiter(config.RateLimit, 20), // burst of 20
+		cacheTTL:    config.CacheTTL,
+	}
+}
+
+// cacheEntry represents a cached item with expiration.
+type cacheEntry struct {
+	data      any
+	expiresAt time.Time
+}
+
+// getFromCache retrieves a value from cache if not expired.
+func (c *Client) getFromCache(key string) any {
+	if entry, ok := c.cache.Load(key); ok {
+		e := entry.(cacheEntry)
+		if time.Now().Before(e.expiresAt) {
+			return e.data
+		}
+		c.cache.Delete(key)
+	}
+	return nil
+}
+
+// setCache stores a value in cache.
+func (c *Client) setCache(key string, data any) {
+	c.cache.Store(key, cacheEntry{
+		data:      data,
+		expiresAt: time.Now().Add(c.cacheTTL),
+	})
+}
+
+// GetSystemStatus returns Radarr system status.
+func (c *Client) GetSystemStatus(ctx context.Context) (*SystemStatus, error) {
+	cacheKey := "system:status"
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.(*SystemStatus), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result SystemStatus
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get("/system/status")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
+// GetAllMovies returns all movies from Radarr.
+func (c *Client) GetAllMovies(ctx context.Context) ([]Movie, error) {
+	cacheKey := "movies:all"
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.([]Movie), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get("/movie")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// GetMovie returns a specific movie by ID.
+func (c *Client) GetMovie(ctx context.Context, movieID int) (*Movie, error) {
+	cacheKey := fmt.Sprintf("movie:%d", movieID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.(*Movie), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get(fmt.Sprintf("/movie/%d", movieID))
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		if resp.StatusCode() == 404 {
+			return nil, ErrMovieNotFound
+		}
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
+// GetMovieByTMDbID returns a movie by TMDb ID.
+func (c *Client) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, error) {
+	cacheKey := fmt.Sprintf("movie:tmdb:%d", tmdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.(*Movie), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("tmdbId", fmt.Sprintf("%d", tmdbID)).
+		SetResult(&result).
+		Get("/movie")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	if len(result) == 0 {
+		return nil, ErrMovieNotFound
+	}
+
+	c.setCache(cacheKey, &result[0])
+	return &result[0], nil
+}
+
+// GetMovieFiles returns all movie files for a movie.
+func (c *Client) GetMovieFiles(ctx context.Context, movieID int) ([]MovieFile, error) {
+	cacheKey := fmt.Sprintf("movie:%d:files", movieID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.([]MovieFile), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []MovieFile
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("movieId", fmt.Sprintf("%d", movieID)).
+		SetResult(&result).
+		Get("/moviefile")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// GetQualityProfiles returns all quality profiles.
+func (c *Client) GetQualityProfiles(ctx context.Context) ([]QualityProfile, error) {
+	cacheKey := "qualityprofiles"
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.([]QualityProfile), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []QualityProfile
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get("/qualityprofile")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// GetRootFolders returns all root folders.
+func (c *Client) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
+	cacheKey := "rootfolders"
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.([]RootFolder), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []RootFolder
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get("/rootfolder")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// GetTags returns all tags.
+func (c *Client) GetTags(ctx context.Context) ([]Tag, error) {
+	cacheKey := "tags"
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.([]Tag), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []Tag
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get("/tag")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// GetCalendar returns movies with releases in the specified date range.
+func (c *Client) GetCalendar(ctx context.Context, start, end time.Time) ([]CalendarEntry, error) {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []CalendarEntry
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParams(map[string]string{
+			"start":              start.Format(time.RFC3339),
+			"end":                end.Format(time.RFC3339),
+			"unmonitored":        "false",
+			"includeSeries":      "false",
+			"includeEpisodeFile": "false",
+			"includeEpisodeImages": "false",
+		}).
+		SetResult(&result).
+		Get("/calendar")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	return result, nil
+}
+
+// GetHistory returns movie history with pagination.
+func (c *Client) GetHistory(ctx context.Context, page, pageSize int, movieID *int) (*HistoryResponse, error) {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	params := map[string]string{
+		"page":          fmt.Sprintf("%d", page),
+		"pageSize":      fmt.Sprintf("%d", pageSize),
+		"sortKey":       "date",
+		"sortDirection": "descending",
+	}
+	if movieID != nil {
+		params["movieId"] = fmt.Sprintf("%d", *movieID)
+	}
+
+	var result HistoryResponse
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParams(params).
+		SetResult(&result).
+		Get("/history")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	return &result, nil
+}
+
+// AddMovie adds a new movie to Radarr.
+func (c *Client) AddMovie(ctx context.Context, req AddMovieRequest) (*Movie, error) {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetBody(req).
+		SetResult(&result).
+		Post("/movie")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status(), resp.String())
+	}
+
+	// Invalidate cache
+	c.cache.Delete("movies:all")
+
+	return &result, nil
+}
+
+// DeleteMovie deletes a movie from Radarr.
+func (c *Client) DeleteMovie(ctx context.Context, movieID int, deleteFiles, addImportExclusion bool) error {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParams(map[string]string{
+			"deleteFiles":        fmt.Sprintf("%t", deleteFiles),
+			"addImportExclusion": fmt.Sprintf("%t", addImportExclusion),
+		}).
+		Delete(fmt.Sprintf("/movie/%d", movieID))
+
+	if err != nil {
+		return fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		if resp.StatusCode() == 404 {
+			return ErrMovieNotFound
+		}
+		return fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	// Invalidate cache
+	c.cache.Delete("movies:all")
+	c.cache.Delete(fmt.Sprintf("movie:%d", movieID))
+
+	return nil
+}
+
+// RefreshMovie triggers a metadata refresh for a movie.
+func (c *Client) RefreshMovie(ctx context.Context, movieID int) (*Command, error) {
+	return c.runCommand(ctx, "RefreshMovie", &movieID)
+}
+
+// RescanMovie triggers a file rescan for a movie.
+func (c *Client) RescanMovie(ctx context.Context, movieID int) (*Command, error) {
+	return c.runCommand(ctx, "RescanMovie", &movieID)
+}
+
+// SearchMovie triggers a search for a movie.
+func (c *Client) SearchMovie(ctx context.Context, movieID int) (*Command, error) {
+	return c.runCommand(ctx, "MoviesSearch", &movieID)
+}
+
+// runCommand executes a command in Radarr.
+func (c *Client) runCommand(ctx context.Context, name string, movieID *int) (*Command, error) {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	body := map[string]any{
+		"name": name,
+	}
+	if movieID != nil {
+		body["movieIds"] = []int{*movieID}
+	}
+
+	var result Command
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetBody(body).
+		SetResult(&result).
+		Post("/command")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status(), resp.String())
+	}
+
+	return &result, nil
+}
+
+// GetCommand gets the status of a command.
+func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error) {
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result Command
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetResult(&result).
+		Get(fmt.Sprintf("/command/%d", commandID))
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	}
+
+	return &result, nil
+}
+
+// ClearCache clears all cached data.
+func (c *Client) ClearCache() {
+	c.cache = sync.Map{}
+}
+
+// IsHealthy checks if Radarr is reachable and healthy.
+func (c *Client) IsHealthy(ctx context.Context) bool {
+	status, err := c.GetSystemStatus(ctx)
+	if err != nil {
+		return false
+	}
+	return status.Version != ""
+}

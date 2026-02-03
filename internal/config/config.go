@@ -34,6 +34,9 @@ type Config struct {
 	// Movie module configuration
 	Movie MovieConfig `koanf:"movie"`
 
+	// Integrations configuration
+	Integrations IntegrationsConfig `koanf:"integrations"`
+
 	// Legacy (QAR) module configuration
 	Legacy LegacyConfig `koanf:"legacy"`
 }
@@ -204,6 +207,35 @@ type LibraryConfig struct {
 	ScanInterval time.Duration `koanf:"scan_interval"`
 }
 
+// IntegrationsConfig holds all external integrations configuration.
+type IntegrationsConfig struct {
+	// Radarr integration configuration
+	Radarr RadarrConfig `koanf:"radarr"`
+}
+
+// RadarrConfig holds Radarr integration configuration.
+type RadarrConfig struct {
+	// Enabled indicates if Radarr integration is enabled.
+	Enabled bool `koanf:"enabled"`
+
+	// BaseURL is the Radarr server URL (e.g., http://localhost:7878).
+	BaseURL string `koanf:"base_url"`
+
+	// APIKey is the Radarr API key.
+	APIKey string `koanf:"api_key"`
+
+	// AutoSync enables automatic library sync.
+	AutoSync bool `koanf:"auto_sync"`
+
+	// SyncInterval is the interval between automatic syncs (seconds).
+	SyncInterval int `koanf:"sync_interval"`
+}
+
+// GetRadarrConfig returns the Radarr configuration.
+func (c *Config) GetRadarrConfig() RadarrConfig {
+	return c.Integrations.Radarr
+}
+
 // Defaults returns a map of default configuration values.
 func Defaults() map[string]interface{} {
 	return map[string]interface{}{
@@ -265,5 +297,12 @@ func Defaults() map[string]interface{} {
 		"legacy.encryption_key":           "",
 		"legacy.privacy.require_pin":      true,
 		"legacy.privacy.audit_all_access": true,
+
+		// Integrations defaults
+		"integrations.radarr.enabled":       false,
+		"integrations.radarr.base_url":      "http://localhost:7878",
+		"integrations.radarr.api_key":       "",
+		"integrations.radarr.auto_sync":     false,
+		"integrations.radarr.sync_interval": 300, // 5 minutes
 	}
 }

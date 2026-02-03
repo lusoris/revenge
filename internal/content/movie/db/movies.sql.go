@@ -761,6 +761,42 @@ func (q *Queries) GetMovieFileByPath(ctx context.Context, filePath string) (Movi
 	return i, err
 }
 
+const getMovieFileByRadarrID = `-- name: GetMovieFileByRadarrID :one
+SELECT id, movie_id, file_path, file_size, file_name, resolution, quality_profile, video_codec, audio_codec, container, duration_seconds, bitrate_kbps, framerate, dynamic_range, color_space, audio_channels, audio_languages, subtitle_languages, radarr_file_id, last_scanned_at, is_monitored, created_at, updated_at FROM public.movie_files
+WHERE radarr_file_id = $1 AND deleted_at IS NULL
+`
+
+func (q *Queries) GetMovieFileByRadarrID(ctx context.Context, radarrFileID *int32) (MovieFile, error) {
+	row := q.db.QueryRow(ctx, getMovieFileByRadarrID, radarrFileID)
+	var i MovieFile
+	err := row.Scan(
+		&i.ID,
+		&i.MovieID,
+		&i.FilePath,
+		&i.FileSize,
+		&i.FileName,
+		&i.Resolution,
+		&i.QualityProfile,
+		&i.VideoCodec,
+		&i.AudioCodec,
+		&i.Container,
+		&i.DurationSeconds,
+		&i.BitrateKbps,
+		&i.Framerate,
+		&i.DynamicRange,
+		&i.ColorSpace,
+		&i.AudioChannels,
+		&i.AudioLanguages,
+		&i.SubtitleLanguages,
+		&i.RadarrFileID,
+		&i.LastScannedAt,
+		&i.IsMonitored,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getUserMovieStats = `-- name: GetUserMovieStats :one
 SELECT
     COUNT(*) FILTER (WHERE is_completed) as watched_count,
@@ -1716,6 +1752,50 @@ func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie
 		&i.LibraryAddedAt,
 		&i.MetadataUpdatedAt,
 		&i.RadarrID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateMovieCollection = `-- name: UpdateMovieCollection :one
+UPDATE public.movie_collections
+SET
+    tmdb_collection_id = COALESCE($1, tmdb_collection_id),
+    name = COALESCE($2, name),
+    overview = COALESCE($3, overview),
+    poster_path = COALESCE($4, poster_path),
+    backdrop_path = COALESCE($5, backdrop_path)
+WHERE id = $6 AND deleted_at IS NULL
+RETURNING id, tmdb_collection_id, name, overview, poster_path, backdrop_path, created_at, updated_at
+`
+
+type UpdateMovieCollectionParams struct {
+	TmdbCollectionID *int32    `json:"tmdbCollectionId"`
+	Name             *string   `json:"name"`
+	Overview         *string   `json:"overview"`
+	PosterPath       *string   `json:"posterPath"`
+	BackdropPath     *string   `json:"backdropPath"`
+	ID               uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateMovieCollection(ctx context.Context, arg UpdateMovieCollectionParams) (MovieCollection, error) {
+	row := q.db.QueryRow(ctx, updateMovieCollection,
+		arg.TmdbCollectionID,
+		arg.Name,
+		arg.Overview,
+		arg.PosterPath,
+		arg.BackdropPath,
+		arg.ID,
+	)
+	var i MovieCollection
+	err := row.Scan(
+		&i.ID,
+		&i.TmdbCollectionID,
+		&i.Name,
+		&i.Overview,
+		&i.PosterPath,
+		&i.BackdropPath,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

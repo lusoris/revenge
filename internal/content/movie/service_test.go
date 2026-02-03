@@ -139,6 +139,14 @@ func (m *MockRepository) GetMovieFileByPath(ctx context.Context, path string) (*
 	return args.Get(0).(*MovieFile), args.Error(1)
 }
 
+func (m *MockRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error) {
+	args := m.Called(ctx, radarrFileID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*MovieFile), args.Error(1)
+}
+
 func (m *MockRepository) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error) {
 	args := m.Called(ctx, movieID)
 	if args.Get(0) == nil {
@@ -207,6 +215,14 @@ func (m *MockRepository) GetMovieCollection(ctx context.Context, id uuid.UUID) (
 
 func (m *MockRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*MovieCollection, error) {
 	args := m.Called(ctx, tmdbCollectionID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*MovieCollection), args.Error(1)
+}
+
+func (m *MockRepository) UpdateMovieCollection(ctx context.Context, params UpdateMovieCollectionParams) (*MovieCollection, error) {
+	args := m.Called(ctx, params)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
