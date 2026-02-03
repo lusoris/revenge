@@ -6,13 +6,61 @@ package moviedb
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	// Movie Genres Operations
+	AddMovieGenre(ctx context.Context, arg AddMovieGenreParams) error
+	AddMovieToCollection(ctx context.Context, arg AddMovieToCollectionParams) error
+	CountMovies(ctx context.Context) (int64, error)
+	// Movie CRUD Operations
+	CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie, error)
+	// Movie Collections Operations
+	CreateMovieCollection(ctx context.Context, arg CreateMovieCollectionParams) (MovieCollection, error)
+	// Movie Credits Operations
+	CreateMovieCredit(ctx context.Context, arg CreateMovieCreditParams) (MovieCredit, error)
+	// Movie Files Operations
+	CreateMovieFile(ctx context.Context, arg CreateMovieFileParams) (MovieFile, error)
+	// Movie Watch Progress Operations
+	CreateOrUpdateWatchProgress(ctx context.Context, arg CreateOrUpdateWatchProgressParams) (MovieWatched, error)
+	DeleteMovie(ctx context.Context, id uuid.UUID) error
+	DeleteMovieCredits(ctx context.Context, movieID uuid.UUID) error
+	DeleteMovieFile(ctx context.Context, id uuid.UUID) error
+	DeleteMovieGenres(ctx context.Context, movieID uuid.UUID) error
+	DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgressParams) error
+	GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (MovieCollection, error)
+	GetMovie(ctx context.Context, id uuid.UUID) (Movie, error)
+	GetMovieByIMDbID(ctx context.Context, imdbID *string) (Movie, error)
+	GetMovieByRadarrID(ctx context.Context, radarrID *int32) (Movie, error)
+	GetMovieByTMDbID(ctx context.Context, tmdbID *int32) (Movie, error)
+	GetMovieCollection(ctx context.Context, id uuid.UUID) (MovieCollection, error)
+	GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID *int32) (MovieCollection, error)
+	GetMovieFile(ctx context.Context, id uuid.UUID) (MovieFile, error)
+	GetMovieFileByPath(ctx context.Context, filePath string) (MovieFile, error)
+	GetUserMovieStats(ctx context.Context, userID uuid.UUID) (GetUserMovieStatsRow, error)
+	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (MovieWatched, error)
+	ListContinueWatching(ctx context.Context, arg ListContinueWatchingParams) ([]ListContinueWatchingRow, error)
+	ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error)
+	ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
+	ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie, error)
+	ListMoviesByCollection(ctx context.Context, collectionID uuid.UUID) ([]Movie, error)
+	ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenreParams) ([]Movie, error)
+	ListMoviesByYear(ctx context.Context, arg ListMoviesByYearParams) ([]Movie, error)
+	ListRecentlyAdded(ctx context.Context, arg ListRecentlyAddedParams) ([]Movie, error)
+	ListTopRated(ctx context.Context, arg ListTopRatedParams) ([]Movie, error)
+	ListWatchedMovies(ctx context.Context, arg ListWatchedMoviesParams) ([]ListWatchedMoviesRow, error)
 	// Placeholder query for movie content module (v0.3.0+)
 	// This minimal query is here to satisfy sqlc's requirement for non-empty query directories
 	// Real movie queries will be implemented in v0.3.0
 	MoviePlaceholder(ctx context.Context) (int32, error)
+	RemoveMovieFromCollection(ctx context.Context, arg RemoveMovieFromCollectionParams) error
+	SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTitleParams) ([]Movie, error)
+	UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie, error)
+	UpdateMovieFile(ctx context.Context, arg UpdateMovieFileParams) (MovieFile, error)
 }
 
 var _ Querier = (*Queries)(nil)

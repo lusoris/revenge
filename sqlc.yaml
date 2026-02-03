@@ -42,9 +42,7 @@ sql:
   # Movie content module
   - engine: postgresql
     queries: internal/infra/database/queries/movie/
-    schema:
-      - internal/infra/database/migrations/shared/
-      - internal/infra/database/migrations/movie/
+    schema: migrations/
     gen:
       go:
         package: moviedb
