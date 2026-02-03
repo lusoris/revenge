@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/errors"
+	"github.com/lusoris/revenge/internal/validate"
 )
 
 // PoolConfig converts application config to pgxpool config.
@@ -22,14 +23,26 @@ func PoolConfig(cfg *config.Config) (*pgxpool.Config, error) {
 
 	// Apply connection pool settings from config
 	if cfg.Database.MaxConns > 0 {
-		poolConfig.MaxConns = int32(cfg.Database.MaxConns)
+		maxConns, err := validate.SafeInt32(cfg.Database.MaxConns)
+		if err != nil {
+			return nil, errors.Wrap(err, "invalid max connections value")
+		}
+		poolConfig.MaxConns = maxConns
 	} else {
 		// Default: (CPU * 2) + 1
-		poolConfig.MaxConns = int32((runtime.NumCPU() * 2) + 1)
+		defaultConns, err := validate.SafeInt32((runtime.NumCPU() * 2) + 1)
+		if err != nil {
+			return nil, errors.Wrap(err, "invalid default max connections value")
+		}
+		poolConfig.MaxConns = defaultConns
 	}
 
 	if cfg.Database.MinConns > 0 {
-		poolConfig.MinConns = int32(cfg.Database.MinConns)
+		minConns, err := validate.SafeInt32(cfg.Database.MinConns)
+		if err != nil {
+			return nil, errors.Wrap(err, "invalid min connections value")
+		}
+		poolConfig.MinConns = minConns
 	}
 
 	if cfg.Database.MaxConnLifetime > 0 {
