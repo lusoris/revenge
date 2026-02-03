@@ -113,7 +113,8 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 
 | Service | Package | fx Module | Status | Design Doc |
 |---------|---------|-----------|--------|------------|
-| Auth | `internal/service/auth` | `auth.Module` | ✅ Complete | [AUTH.md](services/AUTH.md) |
+| Auth | `internal/service/auth` | `auth.Module` | 🟡 Partial | [AUTH.md](services/AUTH.md) |
+| **MFA** | `internal/service/mfa` | `mfa.Module` | 🔴 Planned | [MFA.md](services/MFA.md) |
 | User | `internal/service/user` | `user.Module` | ✅ Complete | [USER.md](services/USER.md) |
 | Session | `internal/service/session` | `session.Module` | ✅ Complete | [SESSION.md](services/SESSION.md) |
 | RBAC | `internal/service/rbac` | `rbac.Module` | ✅ Complete | [RBAC.md](services/RBAC.md) |
@@ -170,7 +171,10 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 | `github.com/casbin/casbin/v2` | v2.135.0 | RBAC framework | Role-based policies |
 | `github.com/pckhoi/casbin-pgx-adapter/v3` | v3.2.0 | Casbin PostgreSQL | Async policy sync |
 | `github.com/open-policy-agent/opa` | v1.5.0 | Policy engine | Complex ABAC/data-driven policies |
-| `golang.org/x/crypto` | v0.47.0 | Cryptography | Argon2, bcrypt, etc. |
+| `golang.org/x/crypto` | v0.47.0 | Cryptography | Argon2, bcrypt, AES-GCM |
+| `github.com/pquerna/otp` | v1.4.0 | TOTP/HOTP (2FA) | RFC 6238/4226, QR codes, Google Authenticator compatible |
+| `github.com/go-webauthn/webauthn` | v0.11.2 | WebAuthn/FIDO2 | Passkeys, YubiKey, biometrics, W3C Level 3 |
+| `github.com/skip2/go-qrcode` | v0.0.0-20200617195104-da1b6568686e | QR code generation | PNG/SVG output for TOTP enrollment |
 
 ## Go Dependencies (Observability)
 
