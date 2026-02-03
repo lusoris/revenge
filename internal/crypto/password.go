@@ -5,8 +5,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"github.com/alexedwards/argon2id"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // PasswordHasher provides password hashing and verification
@@ -43,7 +45,10 @@ func (h *PasswordHasher) HashPassword(password string) (string, error) {
 	return hash, nil
 }
 
-// VerifyPassword verifies a password against an Argon2id hash
+// VerifyPassword verifies a password against a hash
+// Supports both bcrypt (legacy) and argon2id (current) formats
+// Bcrypt hashes start with $2a$, $2b$, or $2y$
+// Argon2id hashes start with $argon2id$
 func (h *PasswordHasher) VerifyPassword(password, hash string) (bool, error) {
 	if password == "" {
 		return false, fmt.Errorf("password cannot be empty")
@@ -52,12 +57,30 @@ func (h *PasswordHasher) VerifyPassword(password, hash string) (bool, error) {
 		return false, fmt.Errorf("hash cannot be empty")
 	}
 
+	// Check if this is a bcrypt hash (legacy format)
+	if strings.HasPrefix(hash, "$2a$") || strings.HasPrefix(hash, "$2b$") || strings.HasPrefix(hash, "$2y$") {
+		err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return false, nil
+		}
+		if err != nil {
+			return false, fmt.Errorf("bcrypt verification failed: %w", err)
+		}
+		return true, nil
+	}
+
+	// Argon2id format (current)
 	match, err := argon2id.ComparePasswordAndHash(password, hash)
 	if err != nil {
-		return false, fmt.Errorf("failed to verify password: %w", err)
+		return false, fmt.Errorf("argon2id verification failed: %w", err)
 	}
 
 	return match, nil
+}
+
+// NeedsMigration checks if a password hash needs to be migrated from bcrypt to argon2id
+func (h *PasswordHasher) NeedsMigration(hash string) bool {
+	return strings.HasPrefix(hash, "$2a$") || strings.HasPrefix(hash, "$2b$") || strings.HasPrefix(hash, "$2y$")
 }
 
 // GenerateSecureToken generates a cryptographically secure random token

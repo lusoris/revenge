@@ -7,6 +7,7 @@ import (
 	"github.com/alexedwards/argon2id"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestPasswordHasher_HashPassword(t *testing.T) {
@@ -118,6 +119,97 @@ func TestGenerateSecureTokenVariousLengths(t *testing.T) {
 			token, err := GenerateSecureToken(tt.byteLength)
 			require.NoError(t, err)
 			assert.Len(t, token, tt.hexLength)
+		})
+	}
+}
+
+func TestPasswordHasher_VerifyBcryptPassword(t *testing.T) {
+	hasher := NewPasswordHasher()
+
+	// Test with a real bcrypt hash (password: "TestPass123!")
+	// Generated with: bcrypt.GenerateFromPassword([]byte("TestPass123!"), bcrypt.DefaultCost)
+	password := "TestPass123!"
+	bcryptHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	require.NoError(t, err)
+
+	// Should successfully verify bcrypt hash
+	match, err := hasher.VerifyPassword(password, string(bcryptHash))
+	require.NoError(t, err)
+	assert.True(t, match, "bcrypt password should match")
+
+	// Wrong password should not match
+	match, err = hasher.VerifyPassword("WrongPassword", string(bcryptHash))
+	require.NoError(t, err)
+	assert.False(t, match, "wrong password should not match")
+}
+
+func TestPasswordHasher_VerifyArgon2idPassword(t *testing.T) {
+	hasher := NewPasswordHasher()
+
+	password := "TestPass123!"
+	hash, err := hasher.HashPassword(password)
+	require.NoError(t, err)
+
+	// Should successfully verify argon2id hash
+	match, err := hasher.VerifyPassword(password, hash)
+	require.NoError(t, err)
+	assert.True(t, match, "argon2id password should match")
+
+	// Wrong password should not match
+	match, err = hasher.VerifyPassword("WrongPassword", hash)
+	require.NoError(t, err)
+	assert.False(t, match, "wrong password should not match")
+}
+
+func TestPasswordHasher_VerifyBothFormats(t *testing.T) {
+	hasher := NewPasswordHasher()
+	password := "SecurePass456!"
+
+	// Generate both formats
+	bcryptHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	require.NoError(t, err)
+
+	argon2idHash, err := hasher.HashPassword(password)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name   string
+		hash   string
+		format string
+	}{
+		{"bcrypt_2a", string(bcryptHash), "bcrypt"},
+		{"argon2id", argon2idHash, "argon2id"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match, err := hasher.VerifyPassword(password, tt.hash)
+			require.NoError(t, err)
+			assert.True(t, match, "%s format should verify correctly", tt.format)
+		})
+	}
+}
+
+func TestPasswordHasher_NeedsMigration(t *testing.T) {
+	hasher := NewPasswordHasher()
+
+	tests := []struct {
+		name          string
+		hash          string
+		needsMigration bool
+	}{
+		{"bcrypt_2a", "$2a$12$abc123...", true},
+		{"bcrypt_2b", "$2b$12$abc123...", true},
+		{"bcrypt_2y", "$2y$12$abc123...", true},
+		{"argon2id", "$argon2id$v=19$m=65536,t=3,p=2$...", false},
+		{"unknown", "$unknown$...", false},
+		{"empty", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := hasher.NeedsMigration(tt.hash)
+			assert.Equal(t, tt.needsMigration, result)
 		})
 	}
 }
