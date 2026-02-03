@@ -15,6 +15,14 @@ const (
 )
 
 // L1Cache wraps otter cache for in-memory L1 caching using W-TinyLFU eviction.
+//
+// IMPORTANT: Evictions are performed asynchronously in background goroutines
+// for performance reasons. The cache size may temporarily exceed MaximumSize
+// during eviction processing, typically settling within milliseconds.
+//
+// When configuring memory limits, plan for ~20% headroom above the max size
+// to account for this async behavior. Monitor cache size in production to
+// verify memory usage stays within acceptable bounds.
 type L1Cache[K comparable, V any] struct {
 	cache *otter.Cache[K, V]
 }

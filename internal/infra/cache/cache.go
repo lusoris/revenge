@@ -9,7 +9,8 @@ import (
 
 // Cache provides unified L1 (otter) + L2 (rueidis) caching operations.
 type Cache struct {
-	l1 *L1Cache[string, []byte]
+	l1    *L1Cache[string, []byte]
+	l1TTL time.Duration
 	client *Client
 }
 
@@ -22,6 +23,7 @@ func NewCache(client *Client, l1MaxSize int, l1TTL time.Duration) (*Cache, error
 
 	return &Cache{
 		l1:     l1,
+		l1TTL:  l1TTL,
 		client: client,
 	}, nil
 }
@@ -57,15 +59,38 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 }
 
 // Set stores a value in both L1 and L2 caches.
+// For TTLs shorter than L1's TTL, skips L1 to ensure accurate expiration.
 func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
-	// Store in L1
-	c.l1.Set(key, value)
+	// Only use L1 if TTL is longer than or equal to L1's TTL
+	// This ensures short-lived items expire accurately in L2
+	if ttl == 0 || ttl >= c.l1TTL {
+		c.l1.Set(key, value)
+	} else {
+		// For short TTLs, remove from L1 to prevent stale reads
+		c.l1.Delete(key)
+	}
 
 	// Store in L2 if available
 	if c.client != nil && c.client.rueidisClient != nil {
-		cmd := c.client.rueidisClient.B().Set().Key(key).Value(string(value)).Ex(ttl).Build()
-		if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
-			return fmt.Errorf("L2 cache set failed: %w", err)
+		// Use PX (milliseconds) for sub-second precision, EX (seconds) otherwise
+		if ttl < time.Second && ttl > 0 {
+			// Use PX for millisecond precision
+			cmd := c.client.rueidisClient.B().Set().Key(key).Value(string(value)).Px(ttl).Build()
+			if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+				return fmt.Errorf("L2 cache set failed: %w", err)
+			}
+		} else if ttl > 0 {
+			// Use EX for second precision
+			cmd := c.client.rueidisClient.B().Set().Key(key).Value(string(value)).Ex(ttl).Build()
+			if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+				return fmt.Errorf("L2 cache set failed: %w", err)
+			}
+		} else {
+			// No expiration
+			cmd := c.client.rueidisClient.B().Set().Key(key).Value(string(value)).Build()
+			if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+				return fmt.Errorf("L2 cache set failed: %w", err)
+			}
 		}
 	}
 
