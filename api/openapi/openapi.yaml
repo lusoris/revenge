@@ -2756,11 +2756,15 @@ components:
       type: object
       required:
         - access_token
+        - refresh_token
         - expires_in
       properties:
         access_token:
           type: string
           description: New access token
+        refresh_token:
+          type: string
+          description: New refresh token (token rotation)
         expires_in:
           type: integer
           description: Token expiration time in seconds
