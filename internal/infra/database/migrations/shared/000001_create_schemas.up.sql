@@ -1,20 +1,23 @@
--- Create database schemas
--- public: Main content (movies, TV, music, etc.)
+-- Create schemas for Revenge
+-- public: Main content (movies, TV shows, music, etc.)
 -- shared: Shared services (users, sessions, settings, etc.)
--- qar: Adult content (isolated for privacy)
+-- qar: Adult content (isolated with access control)
 
--- public schema already exists by default
+-- public schema already exists by default in PostgreSQL
+-- Ensure it's configured correctly
 COMMENT ON SCHEMA public IS 'Main content: movies, TV shows, music, audiobooks, books, podcasts';
 
 -- Create shared schema for shared services
 CREATE SCHEMA IF NOT EXISTS shared;
 COMMENT ON SCHEMA shared IS 'Shared services: users, sessions, settings, RBAC, activity';
 
--- Create qar schema for adult content (isolated)
+-- Create qar schema for adult content (requires legacy:read scope)
 CREATE SCHEMA IF NOT EXISTS qar;
-COMMENT ON SCHEMA qar IS 'QAR (Adult content): requires legacy:read scope';
+COMMENT ON SCHEMA qar IS 'QAR (Adult content): voyages, expeditions, treasures - requires legacy:read scope';
 
--- Grant usage permissions
-GRANT USAGE ON SCHEMA public TO PUBLIC;
-GRANT USAGE ON SCHEMA shared TO PUBLIC;
-GRANT USAGE ON SCHEMA qar TO PUBLIC;
+-- Set search path to include all schemas
+-- Application will set this per-connection based on user permissions
+-- Default search path: public, shared (qar requires explicit scope)
+-- Note: We don't use ALTER DATABASE here because it requires knowing the DB name
+-- Instead, the application will SET search_path per connection
+-- or via pgxpool config: "search_path=public,shared"

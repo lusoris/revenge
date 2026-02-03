@@ -1,6 +1,13 @@
--- Drop schemas (reverse migration)
--- Note: This will CASCADE delete all tables in these schemas!
+-- Rollback schema creation
+-- Drop schemas in reverse order (qar, shared, keep public)
 
+-- Drop qar schema and all its objects
 DROP SCHEMA IF EXISTS qar CASCADE;
+
+-- Drop shared schema and all its objects
 DROP SCHEMA IF EXISTS shared CASCADE;
--- Don't drop public schema as it's a PostgreSQL default
+
+-- Reset search path to default
+ALTER DATABASE revenge RESET search_path;
+
+-- Note: We don't drop the public schema as it's a PostgreSQL default
