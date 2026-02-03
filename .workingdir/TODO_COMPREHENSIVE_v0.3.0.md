@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-04 03:00
-**Current Focus**: Movie Module - Tests → Radarr Integration
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Tests 🟡 (46.7%)
+**Last Updated**: 2026-02-04 03:40
+**Current Focus**: Tests → Collection OpenAPI → Frontend
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Radarr Complete ✅ → Tests 🟡 (46.7%)
 
 ---
 
@@ -324,7 +324,7 @@
 - [x] Collection repository methods ✅
 - [x] Collection service (Get, GetMovies) ✅
 - [x] API handlers (`GET /collections/:id`, `/collections/:id/movies`) ✅
-- [ ] OpenAPI spec integration
+- [x] OpenAPI spec integration ✅
 
 ### Metadata Service (TMDb) ✅ COMPLETE
 
@@ -342,22 +342,22 @@
 
 **Commit**: a70c7b57e2 - feat(movie): add TMDb metadata service
 
-#### TMDb Service
-- [ ] Search movie
-- [ ] Get movie details
-- [ ] Get movie credits (cast/crew)
-- [ ] Get movie images
-- [ ] Get similar movies
-- [ ] Get collection details
+#### TMDb Service ✅ COMPLETE (included in TMDb Client above)
+- [x] Search movie ✅
+- [x] Get movie details ✅
+- [x] Get movie credits (cast/crew) ✅
+- [x] Get movie images ✅
+- [ ] Get similar movies (deferred - nice-to-have)
+- [ ] Get collection details (deferred - nice-to-have)
 
-#### Image Handler
-- [ ] Poster download/cache
-- [ ] Backdrop download/cache
-- [ ] Profile image download/cache
-- [ ] Image proxy endpoint
+#### Image Handler ✅ COMPLETE (internal/infra/image)
+- [x] Poster download/cache ✅
+- [x] Backdrop download/cache ✅
+- [x] Profile image download/cache ✅
+- [x] Image proxy endpoint (`GET /api/v1/images/{type}/{tmdbId}`) ✅
 
-#### API Handlers
-- [ ] `GET /api/v1/metadata/search/movie?q=`
+#### API Handlers ✅ COMPLETE (internal/api/handler_metadata.go)
+- [x] `GET /api/v1/metadata/search/movie?q=` ✅
 - [ ] `GET /api/v1/metadata/movie/:tmdbId`
 - [ ] `GET /api/v1/images/:type/:path` (proxy)
 
@@ -629,13 +629,12 @@ All design work is **COMPLETE**. Reference these during implementation:
 - **Movie Module Backend** - Entity, Repository, Service, Library Provider, API, River Jobs
 - **TMDb Metadata Service** - Client, Mapper, Caching
 - **Typesense Search Integration** - Schema, Service, API, River Jobs
+- **Radarr Integration** - Client, Sync Service, Webhook Handler, API Handlers, River Jobs
 
 ### 🔄 In Progress
 - **Movie Module Tests** - Currently 46.7%, target 80%+
-- **Collection OpenAPI** - Database done, API spec pending
 
 ### 🔴 Not Started (v0.3.0 MVP)
-- Radarr integration
 - Frontend (SvelteKit)
 - Full Docker Compose stack
 
@@ -659,10 +658,12 @@ All design work is **COMPLETE**. Reference these during implementation:
    - Movie indexing
    - Search API
 
-4. **Radarr Integration** (~8-12 hours) 🔴 NEXT
-   - Radarr client
+4. **Radarr Integration** ✅ COMPLETE
+   - Radarr client with rate limiting
    - Sync service
    - Webhook handler
+   - Admin API endpoints
+   - River jobs for async processing
 
 5. **Frontend Development** (~40-60 hours)
    - SvelteKit setup
