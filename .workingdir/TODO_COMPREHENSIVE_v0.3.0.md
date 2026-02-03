@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 23:55
-**Current Focus**: Movie Module - Tests
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Tests 🟡 (46.7%)
+**Last Updated**: 2026-02-04 03:00
+**Current Focus**: Movie Module - Tests → Radarr Integration
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Tests 🟡 (46.7%)
 
 ---
 
@@ -365,34 +365,47 @@
 - [ ] Unit tests with mock API
 - [ ] Integration tests (optional, needs API key)
 
-### Search Service (Typesense)
+### Search Service (Typesense) ✅ COMPLETE
 
-#### Typesense Setup
-- [ ] Client configuration
-- [ ] Collection schemas
-- [ ] Index management
+#### Typesense Setup ✅ COMPLETE
+- [x] Client configuration (`internal/infra/search/module.go`) ✅
+- [x] Collection schemas (`internal/service/search/movie_schema.go`) ✅
+- [x] Index management (create collection, bulk indexing, reindex) ✅
 
-#### Movie Collection Schema
-- [ ] Define schema (title, original_title, overview, year, genres, cast, director, rating, added_at)
+#### Movie Collection Schema ✅ COMPLETE
+- [x] Define schema (title, original_title, overview, year, genres, cast, director, rating, added_at) ✅
+- [x] Facets: genres, year, status, directors, resolution, has_file ✅
+- [x] Sortable: popularity, vote_average, release_date, library_added_at ✅
+- [x] Infix search on title fields for partial matching ✅
 
-#### Search Service
-- [ ] Index movie
-- [ ] Remove from index
-- [ ] Search movies (full-text)
-- [ ] Faceted search (genre, year)
-- [ ] Autocomplete
+#### Search Service ✅ COMPLETE (`internal/service/search/movie_service.go`)
+- [x] Index movie ✅
+- [x] Remove from index ✅
+- [x] Search movies (full-text) ✅
+- [x] Faceted search (genre, year, status, resolution) ✅
+- [x] Autocomplete ✅
+- [x] Bulk indexing ✅
+- [x] Full reindex ✅
 
-#### API Handlers
-- [ ] `GET /api/v1/search?q=&type=movie`
-- [ ] `GET /api/v1/search/autocomplete?q=`
+#### API Handlers ✅ COMPLETE (`internal/api/handler_search.go`)
+- [x] `GET /api/v1/search/movies` (full-text search with facets) ✅
+- [x] `GET /api/v1/search/movies/autocomplete` ✅
+- [x] `GET /api/v1/search/movies/facets` ✅
+- [x] `POST /api/v1/search/reindex` (admin-only) ✅
 
-#### River Jobs
-- [ ] SearchIndexJob - Index single item
-- [ ] SearchReindexJob - Full reindex
+#### River Jobs ✅ COMPLETE (`internal/content/movie/moviejobs/search_index.go`)
+- [x] MovieSearchIndexWorker - Index/remove single movie ✅
+- [x] SearchReindexJob - Full reindex ✅
+- [x] FX module integration ✅
 
-#### Tests
-- [ ] Unit tests
-- [ ] Integration tests with Typesense container
+#### Tests ✅ COMPLETE
+- [x] Unit tests (`internal/service/search/movie_service_test.go` - 18+ tests) ✅
+- [x] Worker tests (`internal/content/movie/moviejobs/search_index_test.go`) ✅
+- [ ] Integration tests with Typesense container (deferred)
+
+**Commits**:
+- 6a8701c12f - feat(search): add Typesense movie search service and API endpoints
+- 19b3f209e9 - feat(search): add River job for search index operations
 
 ### Radarr Integration
 
@@ -603,19 +616,18 @@ All design work is **COMPLETE**. Reference these during implementation:
 - Session service foundation
 - Password hashing (argon2id with bcrypt backward compat)
 
+### ✅ Completed (v0.3.0 Sprint)
+- **MFA Implementation** (Phases 1-5) - TOTP, WebAuthn, Backup Codes
+- **Movie Module Backend** - Entity, Repository, Service, Library Provider, API, River Jobs
+- **TMDb Metadata Service** - Client, Mapper, Caching
+- **Typesense Search Integration** - Schema, Service, API, River Jobs
+
 ### 🔄 In Progress
-- **MFA Implementation** (10-20 hours) - Current Sprint
-  - Phase 1: Foundation (migrations + encryption)
-  - Phase 2: TOTP
-  - Phase 3: WebAuthn
-  - Phase 4: Integration
-  - Phase 5: Hardening
+- **Movie Module Tests** - Currently 46.7%, target 80%+
+- **Collection OpenAPI** - Database done, API spec pending
 
 ### 🔴 Not Started (v0.3.0 MVP)
-- Movie Module (backend)
-- TMDb metadata service
 - Radarr integration
-- Typesense search
 - Frontend (SvelteKit)
 - Full Docker Compose stack
 
@@ -623,24 +635,28 @@ All design work is **COMPLETE**. Reference these during implementation:
 
 ## Execution Strategy
 
-1. **MFA First** (Current Sprint, 10-20 hours)
+1. **MFA First** ✅ COMPLETE
    - Provides essential security feature
    - Tests auth/session integration
    - Proves encryption patterns
 
-2. **Movie Module Backend** (~20-30 hours)
+2. **Movie Module Backend** ✅ COMPLETE
    - Core business logic
    - Database schema
    - Library scanning
    - TMDb integration
-   - Radarr integration
 
-3. **Search Integration** (~8-12 hours)
+3. **Search Integration** ✅ COMPLETE
    - Typesense setup
    - Movie indexing
    - Search API
 
-4. **Frontend Development** (~40-60 hours)
+4. **Radarr Integration** (~8-12 hours) 🔴 NEXT
+   - Radarr client
+   - Sync service
+   - Webhook handler
+
+5. **Frontend Development** (~40-60 hours)
    - SvelteKit setup
    - Authentication UI
    - Movie browser
@@ -648,13 +664,13 @@ All design work is **COMPLETE**. Reference these during implementation:
    - Basic player
    - Admin panel
 
-5. **Infrastructure & Testing** (~8-16 hours)
+6. **Infrastructure & Testing** (~8-16 hours)
    - Docker Compose full stack
    - End-to-end tests
    - Documentation
    - Deployment guides
 
-**Total Estimated Effort**: 86-138 hours (~2-3 weeks full-time)
+**Remaining Estimated Effort**: 56-88 hours (~1.5-2 weeks full-time)
 
 ---
 
