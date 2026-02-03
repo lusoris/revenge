@@ -39,9 +39,11 @@ FROM alpine:latest
 # - Light video processing
 # See: docs/dev/design/technical/AUDIO_STREAMING.md
 # See: docs/dev/design/00_SOURCE_OF_TRUTH.md (go-astiav)
+# postgresql-client for pg_isready in entrypoint script
 RUN apk add --no-cache \
     ca-certificates \
     ffmpeg \
+    postgresql-client \
     tzdata \
     && rm -rf /var/cache/apk/*
 
@@ -53,6 +55,13 @@ WORKDIR /app
 
 # Copy binary from builder
 COPY --from=builder /build/revenge .
+
+# Copy config files
+COPY config/casbin_model.conf ./config/casbin_model.conf
+
+# Copy entrypoint script
+COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Create directories
 RUN mkdir -p /data /config /cache /media && \
@@ -73,4 +82,4 @@ ENV REVENGE_DATA_DIR=/data \
     REVENGE_CONFIG_DIR=/config \
     REVENGE_CACHE_DIR=/cache
 
-ENTRYPOINT ["/app/revenge"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

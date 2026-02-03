@@ -15,17 +15,14 @@ services:
       - REVENGE_LOG_LEVEL=debug
       - REVENGE_LOG_FORMAT=console
       - REVENGE_SERVER_PORT=8096
-      - REVENGE_DATABASE_HOST=postgres
-      - REVENGE_DATABASE_PORT=5432
-      - REVENGE_DATABASE_USER=revenge
-      - REVENGE_DATABASE_PASSWORD=revenge_dev_pass
-      - REVENGE_DATABASE_NAME=revenge
-      - REVENGE_CACHE_ADDR=dragonfly:6379
-      - REVENGE_SEARCH_HOST=typesense
-      - REVENGE_SEARCH_PORT=8108
+      - REVENGE_DATABASE_URL=postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable
+      - REVENGE_CACHE_ENABLED=true
+      - REVENGE_CACHE_URL=redis://dragonfly:6379
+      - REVENGE_SEARCH_ENABLED=true
+      - REVENGE_SEARCH_URL=http://typesense:8108
       - REVENGE_SEARCH_API_KEY=dev_api_key
     volumes:
-      - ./:/app
+      # ./:/app - Disabled for Docker-based testing (overwrites binary)
       - revenge-data:/data
       - revenge-config:/config
       - revenge-cache:/cache
@@ -61,7 +58,7 @@ services:
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     container_name: revenge-dragonfly-dev
-    command: ["--maxmemory=1gb", "--maxmemory-policy=allkeys-lru"]
+    command: ["--cache_mode"]
     ports:
       - "6379:6379"
     volumes:
@@ -74,7 +71,10 @@ services:
 
   # Typesense 0.25+ (REQUIRED)
   typesense:
-    image: typesense/typesense:0.25.2
+    build:
+      context: .
+      dockerfile: deploy/typesense.Dockerfile
+    image: revenge/typesense:dev
     container_name: revenge-typesense-dev
     ports:
       - "8108:8108"
