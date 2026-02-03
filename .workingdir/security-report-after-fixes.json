@@ -1,0 +1,892 @@
+{
+	"Golang errors": {},
+	"Issues": [
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_activity.go",
+			"code": "264: \tif params.Limit.IsSet() {\n265: \t\tlimit = int32(params.Limit.Value)\n266: \t}\n",
+			"line": "265",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/users.sql.go",
+			"code": "571: \n572: const updatePassword = `-- name: UpdatePassword :exec\n573: UPDATE shared.users\n574: SET password_hash = $2, updated_at = NOW()\n575: WHERE id = $1 AND deleted_at IS NULL\n576: `\n577: \n",
+			"line": "572-576",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "418: \n419: const updateSessionActivityByTokenHash = `-- name: UpdateSessionActivityByTokenHash :exec\n420: UPDATE shared.sessions\n421: SET last_activity_at = NOW()\n422: WHERE token_hash = $1\n423:   AND revoked_at IS NULL\n424: `\n425: \n",
+			"line": "419-424",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "389: \n390: const revokeSessionByTokenHash = `-- name: RevokeSessionByTokenHash :exec\n391: UPDATE shared.sessions\n392: SET revoked_at = NOW(),\n393:     revoke_reason = $2\n394: WHERE token_hash = $1\n395: `\n396: \n",
+			"line": "390-395",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "208: \n209: const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one\n210: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions\n211: WHERE token_hash = $1\n212:   AND revoked_at IS NULL\n213:   AND expires_at \u003e NOW()\n214: LIMIT 1\n215: `\n216: \n",
+			"line": "209-215",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "179: \n180: const getSessionByRefreshTokenHash = `-- name: GetSessionByRefreshTokenHash :one\n181: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason FROM shared.sessions\n182: WHERE refresh_token_hash = $1\n183:   AND revoked_at IS NULL\n184:   AND expires_at \u003e NOW()\n185: LIMIT 1\n186: `\n187: \n",
+			"line": "180-186",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "522: \n523: const updateAuthTokenLastUsed = `-- name: UpdateAuthTokenLastUsed :exec\n524: UPDATE shared.auth_tokens\n525: SET last_used_at = NOW(),\n526:     updated_at = NOW()\n527: WHERE id = $1\n528: `\n529: \n",
+			"line": "523-528",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "510: \n511: const revokeAuthTokenByHash = `-- name: RevokeAuthTokenByHash :exec\n512: UPDATE shared.auth_tokens\n513: SET revoked_at = NOW(),\n514:     updated_at = NOW()\n515: WHERE token_hash = $1\n516: `\n517: \n",
+			"line": "511-516",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "498: \n499: const revokeAuthToken = `-- name: RevokeAuthToken :exec\n500: UPDATE shared.auth_tokens\n501: SET revoked_at = NOW(),\n502:     updated_at = NOW()\n503: WHERE id = $1\n504: `\n505: \n",
+			"line": "499-504",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "479: \n480: const revokeAllUserAuthTokensExcept = `-- name: RevokeAllUserAuthTokensExcept :exec\n481: UPDATE shared.auth_tokens\n482: SET revoked_at = NOW(),\n483:     updated_at = NOW()\n484: WHERE user_id = $1\n485:   AND id != $2\n486:   AND revoked_at IS NULL\n487: `\n488: \n",
+			"line": "480-487",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "466: \n467: const revokeAllUserAuthTokens = `-- name: RevokeAllUserAuthTokens :exec\n468: UPDATE shared.auth_tokens\n469: SET revoked_at = NOW(),\n470:     updated_at = NOW()\n471: WHERE user_id = $1\n472:   AND revoked_at IS NULL\n473: `\n474: \n",
+			"line": "467-473",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "455: \n456: const markPasswordResetTokenUsed = `-- name: MarkPasswordResetTokenUsed :exec\n457: UPDATE shared.password_reset_tokens\n458: SET used_at = NOW()\n459: WHERE id = $1\n460: `\n461: \n",
+			"line": "456-460",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "444: \n445: const markEmailVerificationTokenUsed = `-- name: MarkEmailVerificationTokenUsed :exec\n446: UPDATE shared.email_verification_tokens\n447: SET verified_at = NOW()\n448: WHERE id = $1\n449: `\n450: \n",
+			"line": "445-449",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "432: \n433: const invalidateUserPasswordResetTokens = `-- name: InvalidateUserPasswordResetTokens :exec\n434: UPDATE shared.password_reset_tokens\n435: SET used_at = NOW()\n436: WHERE user_id = $1\n437:   AND used_at IS NULL\n438: `\n439: \n",
+			"line": "433-438",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "420: \n421: const invalidateUserEmailVerificationTokens = `-- name: InvalidateUserEmailVerificationTokens :exec\n422: UPDATE shared.email_verification_tokens\n423: SET verified_at = NOW()\n424: WHERE user_id = $1\n425:   AND verified_at IS NULL\n426: `\n427: \n",
+			"line": "421-426",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "408: \n409: const invalidateEmailVerificationTokensByEmail = `-- name: InvalidateEmailVerificationTokensByEmail :exec\n410: UPDATE shared.email_verification_tokens\n411: SET verified_at = NOW()\n412: WHERE email = $1\n413:   AND verified_at IS NULL\n414: `\n415: \n",
+			"line": "409-414",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "384: \n385: const getPasswordResetToken = `-- name: GetPasswordResetToken :one\n386: SELECT id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at FROM shared.password_reset_tokens\n387: WHERE token_hash = $1\n388:   AND used_at IS NULL\n389:   AND expires_at \u003e NOW()\n390: LIMIT 1\n391: `\n392: \n",
+			"line": "385-391",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "359: \n360: const getEmailVerificationToken = `-- name: GetEmailVerificationToken :one\n361: SELECT id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at FROM shared.email_verification_tokens\n362: WHERE token_hash = $1\n363:   AND verified_at IS NULL\n364:   AND expires_at \u003e NOW()\n365: LIMIT 1\n366: `\n367: \n",
+			"line": "360-366",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "317: \n318: const getAuthTokensByUserID = `-- name: GetAuthTokensByUserID :many\n319: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n320: WHERE user_id = $1\n321:   AND revoked_at IS NULL\n322:   AND expires_at \u003e NOW()\n323: ORDER BY created_at DESC\n324: `\n325: \n",
+			"line": "318-324",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "269: \n270: const getAuthTokensByDeviceFingerprint = `-- name: GetAuthTokensByDeviceFingerprint :many\n271: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n272: WHERE user_id = $1\n273:   AND device_fingerprint = $2\n274:   AND revoked_at IS NULL\n275:   AND expires_at \u003e NOW()\n276: ORDER BY created_at DESC\n277: `\n278: \n",
+			"line": "270-277",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "240: \n241: const getAuthTokenByHash = `-- name: GetAuthTokenByHash :one\n242: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n243: WHERE token_hash = $1\n244:   AND revoked_at IS NULL\n245:   AND expires_at \u003e NOW()\n246: LIMIT 1\n247: `\n248: \n",
+			"line": "241-247",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "229: \n230: const deleteVerifiedEmailTokens = `-- name: DeleteVerifiedEmailTokens :exec\n231: DELETE FROM shared.email_verification_tokens\n232: WHERE verified_at IS NOT NULL\n233:   AND verified_at \u003c NOW() - INTERVAL '7 days'\n234: `\n235: \n",
+			"line": "230-234",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "218: \n219: const deleteUsedPasswordResetTokens = `-- name: DeleteUsedPasswordResetTokens :exec\n220: DELETE FROM shared.password_reset_tokens\n221: WHERE used_at IS NOT NULL\n222:   AND used_at \u003c NOW() - INTERVAL '7 days'\n223: `\n224: \n",
+			"line": "219-223",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "207: \n208: const deleteRevokedAuthTokens = `-- name: DeleteRevokedAuthTokens :exec\n209: DELETE FROM shared.auth_tokens\n210: WHERE revoked_at IS NOT NULL\n211:   AND revoked_at \u003c NOW() - INTERVAL '30 days'\n212: `\n213: \n",
+			"line": "208-212",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "197: \n198: const deleteExpiredPasswordResetTokens = `-- name: DeleteExpiredPasswordResetTokens :exec\n199: DELETE FROM shared.password_reset_tokens\n200: WHERE expires_at \u003c NOW()\n201: `\n202: \n",
+			"line": "198-201",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "187: \n188: const deleteExpiredEmailVerificationTokens = `-- name: DeleteExpiredEmailVerificationTokens :exec\n189: DELETE FROM shared.email_verification_tokens\n190: WHERE expires_at \u003c NOW()\n191: `\n192: \n",
+			"line": "188-191",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "177: \n178: const deleteExpiredAuthTokens = `-- name: DeleteExpiredAuthTokens :exec\n179: DELETE FROM shared.auth_tokens\n180: WHERE expires_at \u003c NOW()\n181: `\n182: \n",
+			"line": "178-181",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "133: \n134: const createPasswordResetToken = `-- name: CreatePasswordResetToken :one\n135: \n136: INSERT INTO shared.password_reset_tokens (\n137:     user_id,\n138:     token_hash,\n139:     ip_address,\n140:     user_agent,\n141:     expires_at\n142: ) VALUES (\n143:     $1, $2, $3, $4, $5\n144: ) RETURNING id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at\n145: `\n146: \n",
+			"line": "134-145",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "85: \n86: const createEmailVerificationToken = `-- name: CreateEmailVerificationToken :one\n87: \n88: INSERT INTO shared.email_verification_tokens (\n89:     user_id,\n90:     token_hash,\n91:     email,\n92:     ip_address,\n93:     user_agent,\n94:     expires_at\n95: ) VALUES (\n96:     $1, $2, $3, $4, $5, $6\n97: ) RETURNING id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at\n98: `\n99: \n",
+			"line": "86-98",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "29: \n30: const createAuthToken = `-- name: CreateAuthToken :one\n31: INSERT INTO shared.auth_tokens (\n32:     user_id,\n33:     token_hash,\n34:     token_type,\n35:     device_name,\n36:     device_fingerprint,\n37:     ip_address,\n38:     user_agent,\n39:     expires_at\n40: ) VALUES (\n41:     $1, $2, $3, $4, $5, $6, $7, $8\n42: ) RETURNING id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at\n43: `\n44: \n",
+			"line": "30-43",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "15: \n16: const countActiveAuthTokensByUser = `-- name: CountActiveAuthTokensByUser :one\n17: SELECT COUNT(*) FROM shared.auth_tokens\n18: WHERE user_id = $1\n19:   AND revoked_at IS NULL\n20:   AND expires_at \u003e NOW()\n21: `\n22: \n",
+			"line": "16-21",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "290: \n291: const updateAPIKeyScopes = `-- name: UpdateAPIKeyScopes :exec\n292: UPDATE shared.api_keys\n293: SET scopes = $2, updated_at = NOW()\n294: WHERE id = $1\n295: `\n296: \n",
+			"line": "291-295",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "279: \n280: const updateAPIKeyLastUsed = `-- name: UpdateAPIKeyLastUsed :exec\n281: UPDATE shared.api_keys\n282: SET last_used_at = NOW(), updated_at = NOW()\n283: WHERE id = $1\n284: `\n285: \n",
+			"line": "280-284",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "268: \n269: const revokeAPIKey = `-- name: RevokeAPIKey :exec\n270: UPDATE shared.api_keys\n271: SET is_active = false, updated_at = NOW()\n272: WHERE id = $1\n273: `\n274: \n",
+			"line": "269-273",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "229: \n230: const listUserAPIKeys = `-- name: ListUserAPIKeys :many\n231: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n232: WHERE user_id = $1\n233: ORDER BY created_at DESC\n234: `\n235: \n",
+			"line": "230-234",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "190: \n191: const listActiveUserAPIKeys = `-- name: ListActiveUserAPIKeys :many\n192: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n193: WHERE user_id = $1 AND is_active = true\n194: ORDER BY created_at DESC\n195: `\n196: \n",
+			"line": "191-195",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "176: \n177: const getAPIKeyUsageCount = `-- name: GetAPIKeyUsageCount :one\n178: SELECT last_used_at FROM shared.api_keys\n179: WHERE id = $1\n180: `\n181: \n",
+			"line": "177-180",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "150: \n151: const getAPIKeyByPrefix = `-- name: GetAPIKeyByPrefix :one\n152: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n153: WHERE key_prefix = $1 AND is_active = true\n154: LIMIT 1\n155: `\n156: \n",
+			"line": "151-155",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "125: \n126: const getAPIKeyByHash = `-- name: GetAPIKeyByHash :one\n127: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n128: WHERE key_hash = $1\n129: `\n130: \n",
+			"line": "126-129",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "100: \n101: const getAPIKey = `-- name: GetAPIKey :one\n102: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n103: WHERE id = $1\n104: `\n105: \n",
+			"line": "101-104",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "88: \n89: const deleteExpiredAPIKeys = `-- name: DeleteExpiredAPIKeys :exec\n90: DELETE FROM shared.api_keys\n91: WHERE expires_at IS NOT NULL\n92:   AND expires_at \u003c NOW()\n93:   AND is_active = false\n94: `\n95: \n",
+			"line": "89-94",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "78: \n79: const deleteAPIKey = `-- name: DeleteAPIKey :exec\n80: DELETE FROM shared.api_keys\n81: WHERE id = $1\n82: `\n83: \n",
+			"line": "79-82",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "26: \n27: const createAPIKey = `-- name: CreateAPIKey :one\n28: INSERT INTO shared.api_keys (\n29:     user_id,\n30:     name,\n31:     description,\n32:     key_hash,\n33:     key_prefix,\n34:     scopes,\n35:     expires_at\n36: ) VALUES (\n37:     $1, $2, $3, $4, $5, $6, $7\n38: ) RETURNING id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at\n39: `\n40: \n",
+			"line": "27-39",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "14: \n15: const countUserAPIKeys = `-- name: CountUserAPIKeys :one\n16: SELECT COUNT(*) FROM shared.api_keys\n17: WHERE user_id = $1 AND is_active = true\n18: `\n19: \n",
+			"line": "15-18",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "78",
+				"url": "https://cwe.mitre.org/data/definitions/78.html"
+			},
+			"rule_id": "G204",
+			"details": "Subprocess launched with a potential tainted input or cmd arguments",
+			"file": "/home/kilian/dev/revenge/internal/testutil/testdb.go",
+			"code": "291: \t// Kill any process listening on our port\n292: \tcmd := exec.Command(\"sh\", \"-c\", fmt.Sprintf(\"lsof -ti:%d 2\u003e/dev/null | xargs -r kill -9 2\u003e/dev/null || true\", sharedPort))\n293: \t_ = cmd.Run()\n",
+			"line": "292",
+			"column": "9",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "3405: \t\t\t\t\t\t\t\t\t}\n3406: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n3407: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "3406",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "2895: \t\t\t\t\t\t}\n2896: \t\t\t\t\t\targs[0] = elem[:idx]\n2897: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "2896",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "2544: \t\t\t\t\t\t}\n2545: \t\t\t\t\t\targs[0] = elem[:idx]\n2546: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "2545",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "1990: \t\t\t\t\t\t\t\t}\n1991: \t\t\t\t\t\t\t\targs[0] = elem[:idx]\n1992: \t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "1991",
+			"column": "13",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "1837: \t\t\t\t\t\t\t\t\t}\n1838: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n1839: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "1838",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "1457: \t\t\t\t\t\t\t\t\t}\n1458: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n1459: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "1458",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "1042: \t\t\t\t\t\t}\n1043: \t\t\t\t\t\targs[0] = elem[:idx]\n1044: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "1043",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "750: \t\t\t\t\t\t}\n751: \t\t\t\t\t\targs[0] = elem[:idx]\n752: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "751",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "295: \t\t\t\t\t\t\t\t}\n296: \t\t\t\t\t\t\t\targs[0] = elem[:idx]\n297: \t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "296",
+			"column": "13",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "/home/kilian/dev/revenge/internal/api/ogen/oas_router_gen.go",
+			"code": "164: \t\t\t\t\t\t\t\t\t}\n165: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n166: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "165",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		}
+	],
+	"Stats": {
+		"files": 128,
+		"lines": 98974,
+		"nosec": 0,
+		"found": 55
+	},
+	"GosecVersion": "2.22.11"
+}
