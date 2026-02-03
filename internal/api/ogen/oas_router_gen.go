@@ -40,7 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
-	args := [2]string{}
+	args := [3]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -767,6 +767,85 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'i': // Prefix: "images/"
+
+					if l := len("images/"); len(elem) >= l && elem[0:l] == "images/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "type"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
+					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "size"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[1] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "path"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[2] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetProxiedImageRequest([3]string{
+										args[0],
+										args[1],
+										args[2],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						}
+
+					}
+
 				case 'l': // Prefix: "libraries"
 
 					if l := len("libraries"); len(elem) >= l && elem[0:l] == "libraries" {
@@ -960,6 +1039,71 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 					switch elem[0] {
+					case 'e': // Prefix: "etadata/"
+
+						if l := len("etadata/"); len(elem) >= l && elem[0:l] == "etadata/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'm': // Prefix: "movie/"
+
+							if l := len("movie/"); len(elem) >= l && elem[0:l] == "movie/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetMovieMetadataRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						case 's': // Prefix: "search/movie"
+
+							if l := len("search/movie"); len(elem) >= l && elem[0:l] == "search/movie" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleSearchMoviesMetadataRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						}
+
 					case 'f': // Prefix: "fa/"
 
 						if l := len("fa/"); len(elem) >= l && elem[0:l] == "fa/" {
@@ -2305,7 +2449,7 @@ type Route struct {
 	operationGroup string
 	pathPattern    string
 	count          int
-	args           [2]string
+	args           [3]string
 }
 
 // Name returns ogen operation name.
@@ -3221,6 +3365,86 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 					}
 
+				case 'i': // Prefix: "images/"
+
+					if l := len("images/"); len(elem) >= l && elem[0:l] == "images/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "type"
+					// Match until "/"
+					idx := strings.IndexByte(elem, '/')
+					if idx < 0 {
+						idx = len(elem)
+					}
+					args[0] = elem[:idx]
+					elem = elem[idx:]
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "size"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[1] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "path"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[2] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetProxiedImageOperation
+									r.summary = "Proxy image from TMDb"
+									r.operationID = "getProxiedImage"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/images/{type}/{size}/{path}"
+									r.args = args
+									r.count = 3
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					}
+
 				case 'l': // Prefix: "libraries"
 
 					if l := len("libraries"); len(elem) >= l && elem[0:l] == "libraries" {
@@ -3455,6 +3679,79 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 					switch elem[0] {
+					case 'e': // Prefix: "etadata/"
+
+						if l := len("etadata/"); len(elem) >= l && elem[0:l] == "etadata/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'm': // Prefix: "movie/"
+
+							if l := len("movie/"); len(elem) >= l && elem[0:l] == "movie/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetMovieMetadataOperation
+									r.summary = "Get movie details from TMDb"
+									r.operationID = "getMovieMetadata"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/metadata/movie/{tmdbId}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 's': // Prefix: "search/movie"
+
+							if l := len("search/movie"); len(elem) >= l && elem[0:l] == "search/movie" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = SearchMoviesMetadataOperation
+									r.summary = "Search movies on TMDb"
+									r.operationID = "searchMoviesMetadata"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/metadata/search/movie"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
 					case 'f': // Prefix: "fa/"
 
 						if l := len("fa/"); len(elem) >= l && elem[0:l] == "fa/" {

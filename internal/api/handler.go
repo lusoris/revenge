@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/infra/image"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -39,6 +40,8 @@ type Handler struct {
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
 	movieHandler    *movie.Handler
+	metadataService *movie.MetadataService
+	imageService    *image.Service
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.

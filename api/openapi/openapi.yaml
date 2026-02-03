@@ -30,6 +30,10 @@ tags:
     description: Movie library management and playback
   - name: collections
     description: Movie collections (e.g., MCU, Star Wars)
+  - name: metadata
+    description: External metadata lookup (TMDb)
+  - name: images
+    description: Image proxy for TMDb images
   - name: settings
     description: Server and user settings management
   - name: users
@@ -1222,6 +1226,146 @@ paths:
                   $ref: '#/components/schemas/Movie'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # Metadata endpoints (external lookup)
+  /api/v1/metadata/search/movie:
+    get:
+      summary: Search movies on TMDb
+      description: |
+        Search for movies in the TMDb database. This searches the external
+        metadata provider, not the local library. Use this to find movies
+        to add to your library or to identify unmatched files.
+      operationId: searchMoviesMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+          description: Search query (movie title)
+          example: "The Matrix"
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1888
+            maximum: 2100
+          description: Filter by release year
+          example: 1999
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+          description: Maximum results to return
+      responses:
+        '200':
+          description: Search results from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataSearchResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/movie/{tmdbId}:
+    get:
+      summary: Get movie details from TMDb
+      description: |
+        Fetch detailed movie information from TMDb by TMDb ID.
+        Returns full metadata including cast, crew, and images.
+      operationId: getMovieMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 603
+      responses:
+        '200':
+          description: Movie metadata from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataMovie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/images/{type}/{size}/{path}:
+    get:
+      summary: Proxy image from TMDb
+      description: |
+        Proxy images from TMDb image server. This caches images locally
+        and serves them to clients without exposing TMDb API keys.
+      operationId: getProxiedImage
+      tags:
+        - images
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [poster, backdrop, profile, logo]
+          description: Image type
+          example: poster
+        - name: size
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [w185, w342, w500, w780, w300, w1280, w45, h632, original]
+          description: Image size
+          example: w500
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+          description: TMDb image path (e.g., /abc123.jpg)
+          example: /f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg
+      responses:
+        '200':
+          description: Image data
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
         default:
@@ -3580,6 +3724,221 @@ components:
         created_at:
           type: string
           format: date-time
+
+    # Metadata schemas (TMDb lookup)
+    MetadataSearchResults:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        total_results:
+          type: integer
+          description: Total number of results
+        total_pages:
+          type: integer
+          description: Total number of pages
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataSearchResult'
+
+    MetadataSearchResult:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+          description: TMDb movie ID
+          example: 603
+        title:
+          type: string
+          description: Movie title
+          example: "The Matrix"
+        original_title:
+          type: string
+          description: Original title (if different)
+          example: "The Matrix"
+        overview:
+          type: string
+          nullable: true
+          description: Plot summary
+        release_date:
+          type: string
+          format: date
+          nullable: true
+          description: Release date
+          example: "1999-03-31"
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path (use /api/v1/images/poster/{size}/{path})
+          example: "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+        vote_average:
+          type: number
+          format: float
+          description: Average rating (0-10)
+          example: 8.7
+        vote_count:
+          type: integer
+          description: Number of votes
+          example: 20000
+        popularity:
+          type: number
+          format: float
+          description: TMDb popularity score
+
+    MetadataMovie:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+          description: TMDb movie ID
+          example: 603
+        imdb_id:
+          type: string
+          nullable: true
+          description: IMDb ID
+          example: "tt0133093"
+        title:
+          type: string
+          description: Movie title
+        original_title:
+          type: string
+          description: Original title
+        tagline:
+          type: string
+          nullable: true
+          description: Movie tagline
+          example: "Welcome to the Real World"
+        overview:
+          type: string
+          nullable: true
+          description: Plot summary
+        release_date:
+          type: string
+          format: date
+          nullable: true
+        runtime:
+          type: integer
+          nullable: true
+          description: Runtime in minutes
+          example: 136
+        status:
+          type: string
+          description: Release status
+          example: "Released"
+        budget:
+          type: integer
+          nullable: true
+          description: Budget in USD
+        revenue:
+          type: integer
+          nullable: true
+          description: Revenue in USD
+        poster_path:
+          type: string
+          nullable: true
+        backdrop_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        popularity:
+          type: number
+          format: float
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataGenre'
+        cast:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCastMember'
+        crew:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCrewMember'
+        belongs_to_collection:
+          $ref: '#/components/schemas/MetadataCollection'
+          nullable: true
+
+    MetadataGenre:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb genre ID
+        name:
+          type: string
+          description: Genre name
+          example: "Science Fiction"
+
+    MetadataCastMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb person ID
+        name:
+          type: string
+          description: Actor name
+          example: "Keanu Reeves"
+        character:
+          type: string
+          description: Character name
+          example: "Thomas A. Anderson / Neo"
+        order:
+          type: integer
+          description: Cast billing order
+        profile_path:
+          type: string
+          nullable: true
+          description: Profile image path
+
+    MetadataCrewMember:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb person ID
+        name:
+          type: string
+          description: Crew member name
+        job:
+          type: string
+          description: Job title
+          example: "Director"
+        department:
+          type: string
+          description: Department
+          example: "Directing"
+        profile_path:
+          type: string
+          nullable: true
+
+    MetadataCollection:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb collection ID
+        name:
+          type: string
+          description: Collection name
+          example: "The Matrix Collection"
+        poster_path:
+          type: string
+          nullable: true
+        backdrop_path:
+          type: string
+          nullable: true
 
     MovieWatched:
       type: object

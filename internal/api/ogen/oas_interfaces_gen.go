@@ -141,8 +141,16 @@ type GetMovieGenresRes interface {
 	getMovieGenresRes()
 }
 
+type GetMovieMetadataRes interface {
+	getMovieMetadataRes()
+}
+
 type GetMovieRes interface {
 	getMovieRes()
+}
+
+type GetProxiedImageRes interface {
+	getProxiedImageRes()
 }
 
 type GetReadinessRes interface {
@@ -331,6 +339,10 @@ type RevokeSessionRes interface {
 
 type SearchActivityLogsRes interface {
 	searchActivityLogsRes()
+}
+
+type SearchMoviesMetadataRes interface {
+	searchMoviesMetadataRes()
 }
 
 type SearchMoviesRes interface {

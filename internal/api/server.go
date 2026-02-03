@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/infra/image"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -53,8 +54,10 @@ type ServerParams struct {
 	BackupCodesService *mfa.BackupCodesService
 	MFAManager         *mfa.MFAManager
 	// Content modules
-	MovieHandler *movie.Handler
-	Lifecycle    fx.Lifecycle
+	MovieHandler    *movie.Handler
+	MetadataService *movie.MetadataService `optional:"true"`
+	ImageService    *image.Service         `optional:"true"`
+	Lifecycle       fx.Lifecycle
 }
 
 // NewServer creates a new HTTP API server with ogen-generated handlers.
@@ -84,6 +87,8 @@ func NewServer(p ServerParams) (*Server, error) {
 		tokenManager:    p.TokenManager,
 		mfaHandler:      mfaHandler,
 		movieHandler:    p.MovieHandler,
+		metadataService: p.MetadataService,
+		imageService:    p.ImageService,
 	}
 
 	// Create ogen server

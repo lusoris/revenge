@@ -232,6 +232,20 @@ type Handler interface {
 	//
 	// GET /api/v1/movies/{id}/genres
 	GetMovieGenres(ctx context.Context, params GetMovieGenresParams) (GetMovieGenresRes, error)
+	// GetMovieMetadata implements getMovieMetadata operation.
+	//
+	// Fetch detailed movie information from TMDb by TMDb ID.
+	// Returns full metadata including cast, crew, and images.
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}
+	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
+	// GetProxiedImage implements getProxiedImage operation.
+	//
+	// Proxy images from TMDb image server. This caches images locally
+	// and serves them to clients without exposing TMDb API keys.
+	//
+	// GET /api/v1/images/{type}/{size}/{path}
+	GetProxiedImage(ctx context.Context, params GetProxiedImageParams) (GetProxiedImageRes, error)
 	// GetReadiness implements getReadiness operation.
 	//
 	// Checks if the service is ready to accept traffic.
@@ -530,6 +544,14 @@ type Handler interface {
 	//
 	// GET /api/v1/movies/search
 	SearchMovies(ctx context.Context, params SearchMoviesParams) (SearchMoviesRes, error)
+	// SearchMoviesMetadata implements searchMoviesMetadata operation.
+	//
+	// Search for movies in the TMDb database. This searches the external
+	// metadata provider, not the local library. Use this to find movies
+	// to add to your library or to identify unmatched files.
+	//
+	// GET /api/v1/metadata/search/movie
+	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
 	// SetupTOTP implements setupTOTP operation.
 	//
 	// Generate TOTP secret and QR code for enrollment.

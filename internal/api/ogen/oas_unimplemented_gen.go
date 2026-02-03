@@ -348,6 +348,26 @@ func (UnimplementedHandler) GetMovieGenres(ctx context.Context, params GetMovieG
 	return r, ht.ErrNotImplemented
 }
 
+// GetMovieMetadata implements getMovieMetadata operation.
+//
+// Fetch detailed movie information from TMDb by TMDb ID.
+// Returns full metadata including cast, crew, and images.
+//
+// GET /api/v1/metadata/movie/{tmdbId}
+func (UnimplementedHandler) GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (r GetMovieMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetProxiedImage implements getProxiedImage operation.
+//
+// Proxy images from TMDb image server. This caches images locally
+// and serves them to clients without exposing TMDb API keys.
+//
+// GET /api/v1/images/{type}/{size}/{path}
+func (UnimplementedHandler) GetProxiedImage(ctx context.Context, params GetProxiedImageParams) (r GetProxiedImageRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetReadiness implements getReadiness operation.
 //
 // Checks if the service is ready to accept traffic.
@@ -790,6 +810,17 @@ func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params Searc
 //
 // GET /api/v1/movies/search
 func (UnimplementedHandler) SearchMovies(ctx context.Context, params SearchMoviesParams) (r SearchMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchMoviesMetadata implements searchMoviesMetadata operation.
+//
+// Search for movies in the TMDb database. This searches the external
+// metadata provider, not the local library. Use this to find movies
+// to add to your library or to identify unmatched files.
+//
+// GET /api/v1/metadata/search/movie
+func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (r SearchMoviesMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -8014,6 +8014,82 @@ func (s *GetMovieGenresUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetMovieMetadataNotFound as json.
+func (s *GetMovieMetadataNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieMetadataNotFound from json.
+func (s *GetMovieMetadataNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieMetadataNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieMetadataNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieMetadataNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieMetadataNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetMovieMetadataUnauthorized as json.
+func (s *GetMovieMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetMovieMetadataUnauthorized from json.
+func (s *GetMovieMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetMovieMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetMovieMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetMovieMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetMovieMetadataUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetMovieNotFound as json.
 func (s *GetMovieNotFound) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -8086,6 +8162,82 @@ func (s *GetMovieUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetMovieUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetProxiedImageBadRequest as json.
+func (s *GetProxiedImageBadRequest) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetProxiedImageBadRequest from json.
+func (s *GetProxiedImageBadRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetProxiedImageBadRequest to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetProxiedImageBadRequest(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetProxiedImageBadRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetProxiedImageBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetProxiedImageNotFound as json.
+func (s *GetProxiedImageNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetProxiedImageNotFound from json.
+func (s *GetProxiedImageNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetProxiedImageNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetProxiedImageNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetProxiedImageNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetProxiedImageNotFound) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -12116,6 +12268,1222 @@ func (s *MarkAsWatchedUnauthorized) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *MetadataCastMember) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataCastMember) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Character.Set {
+			e.FieldStart("character")
+			s.Character.Encode(e)
+		}
+	}
+	{
+		if s.Order.Set {
+			e.FieldStart("order")
+			s.Order.Encode(e)
+		}
+	}
+	{
+		if s.ProfilePath.Set {
+			e.FieldStart("profile_path")
+			s.ProfilePath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataCastMember = [5]string{
+	0: "id",
+	1: "name",
+	2: "character",
+	3: "order",
+	4: "profile_path",
+}
+
+// Decode decodes MetadataCastMember from json.
+func (s *MetadataCastMember) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataCastMember to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "character":
+			if err := func() error {
+				s.Character.Reset()
+				if err := s.Character.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"character\"")
+			}
+		case "order":
+			if err := func() error {
+				s.Order.Reset()
+				if err := s.Order.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"order\"")
+			}
+		case "profile_path":
+			if err := func() error {
+				s.ProfilePath.Reset()
+				if err := s.ProfilePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"profile_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataCastMember")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataCastMember) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataCastMember) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataCollection) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataCollection) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataCollection = [4]string{
+	0: "id",
+	1: "name",
+	2: "poster_path",
+	3: "backdrop_path",
+}
+
+// Decode decodes MetadataCollection from json.
+func (s *MetadataCollection) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataCollection to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataCollection")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataCollection) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataCollection) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataCrewMember) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataCrewMember) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Job.Set {
+			e.FieldStart("job")
+			s.Job.Encode(e)
+		}
+	}
+	{
+		if s.Department.Set {
+			e.FieldStart("department")
+			s.Department.Encode(e)
+		}
+	}
+	{
+		if s.ProfilePath.Set {
+			e.FieldStart("profile_path")
+			s.ProfilePath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataCrewMember = [5]string{
+	0: "id",
+	1: "name",
+	2: "job",
+	3: "department",
+	4: "profile_path",
+}
+
+// Decode decodes MetadataCrewMember from json.
+func (s *MetadataCrewMember) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataCrewMember to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "job":
+			if err := func() error {
+				s.Job.Reset()
+				if err := s.Job.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"job\"")
+			}
+		case "department":
+			if err := func() error {
+				s.Department.Reset()
+				if err := s.Department.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"department\"")
+			}
+		case "profile_path":
+			if err := func() error {
+				s.ProfilePath.Reset()
+				if err := s.ProfilePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"profile_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataCrewMember")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataCrewMember) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataCrewMember) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataGenre) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataGenre) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataGenre = [2]string{
+	0: "id",
+	1: "name",
+}
+
+// Decode decodes MetadataGenre from json.
+func (s *MetadataGenre) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataGenre to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataGenre")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataGenre) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataGenre) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataMovie) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataMovie) encodeFields(e *jx.Encoder) {
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.ImdbID.Set {
+			e.FieldStart("imdb_id")
+			s.ImdbID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.OriginalTitle.Set {
+			e.FieldStart("original_title")
+			s.OriginalTitle.Encode(e)
+		}
+	}
+	{
+		if s.Tagline.Set {
+			e.FieldStart("tagline")
+			s.Tagline.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("release_date")
+			s.ReleaseDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.Status.Set {
+			e.FieldStart("status")
+			s.Status.Encode(e)
+		}
+	}
+	{
+		if s.Budget.Set {
+			e.FieldStart("budget")
+			s.Budget.Encode(e)
+		}
+	}
+	{
+		if s.Revenue.Set {
+			e.FieldStart("revenue")
+			s.Revenue.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+	{
+		if s.Genres != nil {
+			e.FieldStart("genres")
+			e.ArrStart()
+			for _, elem := range s.Genres {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Cast != nil {
+			e.FieldStart("cast")
+			e.ArrStart()
+			for _, elem := range s.Cast {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Crew != nil {
+			e.FieldStart("crew")
+			e.ArrStart()
+			for _, elem := range s.Crew {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.BelongsToCollection.Set {
+			e.FieldStart("belongs_to_collection")
+			s.BelongsToCollection.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataMovie = [20]string{
+	0:  "tmdb_id",
+	1:  "imdb_id",
+	2:  "title",
+	3:  "original_title",
+	4:  "tagline",
+	5:  "overview",
+	6:  "release_date",
+	7:  "runtime",
+	8:  "status",
+	9:  "budget",
+	10: "revenue",
+	11: "poster_path",
+	12: "backdrop_path",
+	13: "vote_average",
+	14: "vote_count",
+	15: "popularity",
+	16: "genres",
+	17: "cast",
+	18: "crew",
+	19: "belongs_to_collection",
+}
+
+// Decode decodes MetadataMovie from json.
+func (s *MetadataMovie) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataMovie to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "imdb_id":
+			if err := func() error {
+				s.ImdbID.Reset()
+				if err := s.ImdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdb_id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "original_title":
+			if err := func() error {
+				s.OriginalTitle.Reset()
+				if err := s.OriginalTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_title\"")
+			}
+		case "tagline":
+			if err := func() error {
+				s.Tagline.Reset()
+				if err := s.Tagline.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tagline\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "release_date":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "status":
+			if err := func() error {
+				s.Status.Reset()
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "budget":
+			if err := func() error {
+				s.Budget.Reset()
+				if err := s.Budget.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"budget\"")
+			}
+		case "revenue":
+			if err := func() error {
+				s.Revenue.Reset()
+				if err := s.Revenue.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"revenue\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		case "genres":
+			if err := func() error {
+				s.Genres = make([]MetadataGenre, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataGenre
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Genres = append(s.Genres, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"genres\"")
+			}
+		case "cast":
+			if err := func() error {
+				s.Cast = make([]MetadataCastMember, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataCastMember
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Cast = append(s.Cast, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cast\"")
+			}
+		case "crew":
+			if err := func() error {
+				s.Crew = make([]MetadataCrewMember, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataCrewMember
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Crew = append(s.Crew, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"crew\"")
+			}
+		case "belongs_to_collection":
+			if err := func() error {
+				s.BelongsToCollection.Reset()
+				if err := s.BelongsToCollection.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"belongs_to_collection\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataMovie")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataMovie) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataMovie) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataSearchResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataSearchResult) encodeFields(e *jx.Encoder) {
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.OriginalTitle.Set {
+			e.FieldStart("original_title")
+			s.OriginalTitle.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseDate.Set {
+			e.FieldStart("release_date")
+			s.ReleaseDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataSearchResult = [10]string{
+	0: "tmdb_id",
+	1: "title",
+	2: "original_title",
+	3: "overview",
+	4: "release_date",
+	5: "poster_path",
+	6: "backdrop_path",
+	7: "vote_average",
+	8: "vote_count",
+	9: "popularity",
+}
+
+// Decode decodes MetadataSearchResult from json.
+func (s *MetadataSearchResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSearchResult to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "original_title":
+			if err := func() error {
+				s.OriginalTitle.Reset()
+				if err := s.OriginalTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_title\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "release_date":
+			if err := func() error {
+				s.ReleaseDate.Reset()
+				if err := s.ReleaseDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release_date\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataSearchResult")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataSearchResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSearchResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Page.Set {
+			e.FieldStart("page")
+			s.Page.Encode(e)
+		}
+	}
+	{
+		if s.TotalResults.Set {
+			e.FieldStart("total_results")
+			s.TotalResults.Encode(e)
+		}
+	}
+	{
+		if s.TotalPages.Set {
+			e.FieldStart("total_pages")
+			s.TotalPages.Encode(e)
+		}
+	}
+	{
+		if s.Results != nil {
+			e.FieldStart("results")
+			e.ArrStart()
+			for _, elem := range s.Results {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataSearchResults = [4]string{
+	0: "page",
+	1: "total_results",
+	2: "total_pages",
+	3: "results",
+}
+
+// Decode decodes MetadataSearchResults from json.
+func (s *MetadataSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "page":
+			if err := func() error {
+				s.Page.Reset()
+				if err := s.Page.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"page\"")
+			}
+		case "total_results":
+			if err := func() error {
+				s.TotalResults.Reset()
+				if err := s.TotalResults.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_results\"")
+			}
+		case "total_pages":
+			if err := func() error {
+				s.TotalPages.Reset()
+				if err := s.TotalPages.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_pages\"")
+			}
+		case "results":
+			if err := func() error {
+				s.Results = make([]MetadataSearchResult, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataSearchResult
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Results = append(s.Results, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"results\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *Movie) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -15008,6 +16376,41 @@ func (s *OptErrorDetails) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes float32 as json.
+func (o OptFloat32) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Float32(float32(o.Value))
+}
+
+// Decode decodes float32 from json.
+func (o *OptFloat32) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptFloat32 to nil")
+	}
+	o.Set = true
+	v, err := d.Float32()
+	if err != nil {
+		return err
+	}
+	o.Value = float32(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptFloat32) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptFloat32) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes HealthCheckDetails as json.
 func (o OptHealthCheckDetails) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -15175,6 +16578,39 @@ func (s OptLibraryScannerConfig) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptLibraryScannerConfig) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes MetadataCollection as json.
+func (o OptMetadataCollection) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes MetadataCollection from json.
+func (o *OptMetadataCollection) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptMetadataCollection to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptMetadataCollection) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptMetadataCollection) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -18402,6 +19838,82 @@ func (s *SearchActivityLogsUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SearchActivityLogsUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SearchMoviesMetadataBadRequest as json.
+func (s *SearchMoviesMetadataBadRequest) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes SearchMoviesMetadataBadRequest from json.
+func (s *SearchMoviesMetadataBadRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SearchMoviesMetadataBadRequest to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SearchMoviesMetadataBadRequest(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SearchMoviesMetadataBadRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SearchMoviesMetadataBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SearchMoviesMetadataUnauthorized as json.
+func (s *SearchMoviesMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes SearchMoviesMetadataUnauthorized from json.
+func (s *SearchMoviesMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SearchMoviesMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SearchMoviesMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SearchMoviesMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SearchMoviesMetadataUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
