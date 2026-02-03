@@ -52,7 +52,7 @@ See [02_DESIGN_PRINCIPLES.md](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.
 | Database    | PostgreSQL 18+      | sqlc for type-safe queries       |
 | Cache       | Dragonfly + rueidis | Redis-compatible, auto-pipelining|
 | Local Cache | otter v2.x          | W-TinyLFU eviction               |
-| Search      | Typesense           | typesense-go/v4 client           |
+| Search      | Typesense           | typesense-go/v2 client           |
 | Job Queue   | River               | PostgreSQL-native                |
 | API         | ogen                | OpenAPI spec-first               |
 | DI          | uber-go/fx          | Dependency injection             |

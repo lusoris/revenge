@@ -140,7 +140,7 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 |-----------|-----------------|---------|---------|------------|
 | PostgreSQL | `github.com/jackc/pgx/v5` | v5.8.0 | Primary database | [POSTGRESQL.md](integrations/infrastructure/) |
 | Dragonfly | `rueidis` | v1.0.49 | Cache/sessions | [DRAGONFLY.md](integrations/infrastructure/) |
-| Typesense | `typesense-go/v4` | v4.x | Full-text search | [TYPESENSE.md](integrations/infrastructure/) |
+| Typesense | `typesense-go/v2` | v2.0.0 | Full-text search | [TYPESENSE.md](integrations/infrastructure/) |
 | River | `riverqueue/river` | v0.26.0 | Job queue | [RIVER.md](integrations/infrastructure/) |
 
 ---

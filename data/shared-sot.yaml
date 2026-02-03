@@ -181,8 +181,8 @@ infrastructure:
     purpose: Cache/sessions
     design_doc: integrations/infrastructure/
   - name: Typesense
-    package: '`typesense-go/v4`'
-    version: v4.x
+    package: '`typesense-go/v2`'
+    version: v2.0.0
     purpose: Full-text search
     design_doc: integrations/infrastructure/
   - name: River
@@ -325,3 +325,40 @@ design_principles:
     - pattern: Unit Tests
       decision: embedded-postgres-go
       notes: Fast, no containers needed
+    - pattern: Parallel DB Tests
+      decision: Template Database Pattern
+      notes: PostgreSQL CREATE DATABASE ... TEMPLATE for 60-500x speedup
+
+# External Research & Sources
+# Documentation of research findings and external references
+research_sources:
+  parallel_database_testing:
+    title: "Parallel Database Testing with Template Pattern"
+    research_doc: ".workingdir/RESEARCH_parallel_db_testing.md"
+    summary: |
+      PostgreSQL template database pattern enables instant database cloning (~10ms vs 3-5s).
+      One shared PostgreSQL instance with pre-migrated template. Each test clones template.
+      60-500x speedup compared to per-test database initialization.
+    sources:
+      - name: PostgreSQL Template Databases
+        url: https://www.postgresql.org/docs/current/manage-ag-templatedbs.html
+        notes: Official docs on CREATE DATABASE ... TEMPLATE syntax
+      - name: embedded-postgres-go
+        url: https://github.com/fergusstrange/embedded-postgres
+        notes: RuntimePath config for parallel processes, version selection
+      - name: testcontainers-go
+        url: https://github.com/testcontainers/testcontainers-go
+        notes: Docker-based testing, parallel.go for concurrent containers
+      - name: pgx Testing Patterns
+        url: https://github.com/jackc/pgx
+        notes: t.Parallel() usage, PGX_TEST_DATABASE env var, connection pool testing
+      - name: Golang Testing Best Practices
+        url: https://go.dev/doc/tutorial/add-a-test
+        notes: t.Cleanup(), t.Parallel(), subtests
+    implementation:
+      location: "internal/testutil/testdb.go"
+      pattern: |
+        - sync.Once for shared PostgreSQL instance
+        - Template database with all migrations applied
+        - NewTestDB(t) clones template instantly
+        - t.Cleanup() drops test database after test

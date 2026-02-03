@@ -10,8 +10,8 @@
 # typesense-go
 
 [![Build Status](https://cloud.drone.io/api/badges/typesense/typesense-go/status.svg)](https://cloud.drone.io/typesense/typesense-go)
-[![GoReportCard Status](https://goreportcard.com/badge/github.com/typesense/typesense-go/v4)](https://goreportcard.com/report/github.com/typesense/typesense-go/v4)
-[![Go Reference](https://pkg.go.dev/badge/github.com/typesense/typesense-go/v4.svg)](https://pkg.go.dev/github.com/typesense/typesense-go/v4)
+[![GoReportCard Status](https://goreportcard.com/badge/github.com/typesense/typesense-go/v2)](https://goreportcard.com/report/github.com/typesense/typesense-go/v2)
+[![Go Reference](https://pkg.go.dev/badge/github.com/typesense/typesense-go/v2.svg)](https://pkg.go.dev/github.com/typesense/typesense-go/v2)
 [![GitHub release](https://img.shields.io/github/v/release/typesense/typesense-go)](https://github.com/typesense/typesense-go/releases/latest)
 [![Gitter](https://badges.gitter.im/typesense-go/community.svg)](https://gitter.im/typesense-go/community)
 
@@ -20,7 +20,7 @@ Go client for the Typesense API: https://github.com/typesense/typesense
 ## Installation
 
 ```
-go get github.com/typesense/typesense-go/v4/typesense
+go get github.com/typesense/typesense-go/v2/typesense
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ go get github.com/typesense/typesense-go/v4/typesense
 Import the the package into your code :
 
 ```go
-import "github.com/typesense/typesense-go/v4/typesense"
+import "github.com/typesense/typesense-go/v2/typesense"
 ```
 
 Create new client:
