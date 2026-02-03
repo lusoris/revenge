@@ -182,8 +182,8 @@ type MovieConfig struct {
 
 // TMDbConfig holds TMDb API configuration.
 type TMDbConfig struct {
-	// APIKey is the TMDb API key.
-	APIKey string `koanf:"api_key" validate:"required"`
+	// APIKey is the TMDb API key (required if using TMDb metadata).
+	APIKey string `koanf:"api_key"`
 
 	// RateLimit is requests per 10 seconds (default: 40).
 	RateLimit int `koanf:"rate_limit"`
@@ -198,7 +198,7 @@ type TMDbConfig struct {
 // LibraryConfig holds movie library configuration.
 type LibraryConfig struct {
 	// Paths are the directories to scan for movie files.
-	Paths []string `koanf:"paths" validate:"required,min=1"`
+	Paths []string `koanf:"paths"`
 
 	// ScanInterval is how often to automatically scan libraries (0 = disabled).
 	ScanInterval time.Duration `koanf:"scan_interval"`

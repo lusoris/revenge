@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 21:00
-**Current Focus**: Movie Module - River Jobs & Tests
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs 🟡
+**Last Updated**: 2026-02-03 23:45
+**Current Focus**: Movie Module - Tests
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Tests 🔴
 
 ---
 
@@ -309,9 +309,9 @@
 - [x] Worker registration and FX module integration ✅
 - [x] Config added (movie.tmdb and movie.library settings) ✅
 
-**Commit**: [TODO] - feat(movie): add River Jobs for background processing
+**Commit**: 033accd17b - feat(movie): add River Jobs for background processing
 
-#### Tests
+#### Tests 🔴 IN PROGRESS
 - [ ] Unit tests (80%+ coverage)
 - [ ] Integration tests
 

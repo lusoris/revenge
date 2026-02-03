@@ -2,6 +2,43 @@
 
 ## Fixed Bugs
 
+### BUG-004: Migration test hardcoded to check wrong table (2026-02-03)
+
+**Problem**: 
+`TestMigrationsUpDown/MigrateDown` failed with `Should be false` / `Should be true`.
+
+**Root Cause**:
+Test was hardcoded to check for `user_avatars` table (migration 000007) as the newest
+migration, but the project now has 26 migrations with `movie_watched` (000026) being
+the latest.
+
+**Solution**:
+Updated test to check for `movie_watched` table in `public` schema (000026) and verify
+`movie_genres` (000025) still exists after stepping down one migration.
+
+**Files Changed**:
+- `internal/infra/database/migrations_test.go` - Updated MigrateDown subtest
+
+---
+
+### BUG-003: Config required validation on optional Movie fields (2026-02-03)
+
+**Problem**: 
+Config tests failed with validation errors on `Movie.TMDb.APIKey` and `Movie.Library.Paths`.
+
+**Root Cause**:
+These fields had `validate:"required"` and `validate:"required,min=1"` tags, but they
+are optional features. The Movie service is only used when explicitly enabled, so having
+an API key shouldn't be required at startup.
+
+**Solution**:
+Removed `required` validation tags from `TMDbConfig.APIKey` and `LibraryConfig.Paths`.
+
+**Files Changed**:
+- `internal/config/config.go`
+
+---
+
 ### BUG-002: User service tests expected bcrypt instead of Argon2id (2026-02-03)
 
 **Problem**: 

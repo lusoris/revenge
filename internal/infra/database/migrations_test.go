@@ -128,18 +128,18 @@ func TestMigrationsUpDown(t *testing.T) {
 		err := m.Steps(-1)
 		require.NoError(t, err, "failed to migrate down one step")
 
-		// Verify user_avatars table is gone (our newest migration 000007)
+		// Verify movie_watched table is gone (our newest migration 000026)
 		var tableExists bool
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_avatars')").Scan(&tableExists)
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'movie_watched')").Scan(&tableExists)
 		require.NoError(t, err)
-		assert.False(t, tableExists, "user_avatars table should not exist after down migration")
+		assert.False(t, tableExists, "movie_watched table should not exist after down migration")
 
-		// user_preferences should still exist (migration 000006)
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_preferences')").Scan(&tableExists)
+		// movie_genres should still exist (migration 000025)
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'movie_genres')").Scan(&tableExists)
 		require.NoError(t, err)
-		assert.True(t, tableExists, "user_preferences table should still exist")
+		assert.True(t, tableExists, "movie_genres table should still exist")
 
-		// Other tables should still exist
+		// Core tables should still exist
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&tableExists)
 		require.NoError(t, err)
 		assert.True(t, tableExists, "sessions table should still exist")
