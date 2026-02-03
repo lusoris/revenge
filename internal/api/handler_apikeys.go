@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/apikeys"
@@ -87,14 +88,14 @@ func (h *Handler) CreateAPIKey(ctx context.Context, req *ogen.CreateAPIKeyReques
 		)
 
 		// Check for specific errors
-		if err == apikeys.ErrMaxKeysExceeded {
+		if errors.Is(err, apikeys.ErrMaxKeysExceeded) {
 			return &ogen.CreateAPIKeyBadRequest{
 				Code:    400,
 				Message: "Maximum number of API keys exceeded",
 			}, nil
 		}
 
-		if err == apikeys.ErrInvalidScope {
+		if errors.Is(err, apikeys.ErrInvalidScope) {
 			return &ogen.CreateAPIKeyBadRequest{
 				Code:    400,
 				Message: err.Error(),
@@ -127,7 +128,7 @@ func (h *Handler) GetAPIKey(ctx context.Context, params ogen.GetAPIKeyParams) (o
 
 	key, err := h.apikeyService.GetKey(ctx, params.KeyId)
 	if err != nil {
-		if err == apikeys.ErrKeyNotFound {
+		if errors.Is(err, apikeys.ErrKeyNotFound) {
 			return &ogen.GetAPIKeyNotFound{}, nil
 		}
 
@@ -160,7 +161,7 @@ func (h *Handler) RevokeAPIKey(ctx context.Context, params ogen.RevokeAPIKeyPara
 	// Verify ownership first
 	key, err := h.apikeyService.GetKey(ctx, params.KeyId)
 	if err != nil {
-		if err == apikeys.ErrKeyNotFound {
+		if errors.Is(err, apikeys.ErrKeyNotFound) {
 			return &ogen.RevokeAPIKeyNotFound{}, nil
 		}
 

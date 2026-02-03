@@ -155,7 +155,7 @@ func (h *Handler) LogoutAll(ctx context.Context) (ogen.LogoutAllRes, error) {
 
 // RefreshSession refreshes access token using refresh token.
 func (h *Handler) RefreshSession(ctx context.Context, req *ogen.RefreshSessionRequest) (ogen.RefreshSessionRes, error) {
-	accessToken, err := h.sessionService.RefreshSession(ctx, req.RefreshToken)
+	accessToken, refreshToken, err := h.sessionService.RefreshSession(ctx, req.RefreshToken)
 	if err != nil {
 		h.logger.Warn("failed to refresh session",
 			zap.Error(err),
@@ -170,8 +170,9 @@ func (h *Handler) RefreshSession(ctx context.Context, req *ogen.RefreshSessionRe
 	expiresIn := int(h.cfg.Auth.JWTExpiry.Seconds())
 
 	return &ogen.RefreshSessionResponse{
-		AccessToken: accessToken,
-		ExpiresIn:   expiresIn,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresIn:    expiresIn,
 	}, nil
 }
 
