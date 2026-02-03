@@ -2,6 +2,24 @@
 
 ## Fixed Bugs
 
+### BUG-002: User service tests expected bcrypt instead of Argon2id (2026-02-03)
+
+**Problem**: 
+User service tests failed with `Should be true` when checking password hash prefix.
+
+**Root Cause**:
+Tests in `internal/service/user/service_test.go` expected password hashes to start with 
+`$2a$` (bcrypt format), but the crypto package was changed to use Argon2id which 
+produces hashes starting with `$argon2id$`.
+
+**Solution**:
+Updated test assertions to check for `$argon2id$` prefix instead of `$2a$`.
+
+**Files Changed**:
+- `internal/service/user/service_test.go` - Lines 49, 373
+
+---
+
 ### BUG-001: Testutil used duplicated/outdated migrations (2026-02-03)
 
 **Problem**: 

@@ -44,9 +44,9 @@ func TestService_CreateUser(t *testing.T) {
 		assert.NotEmpty(t, user.ID)
 		assert.Equal(t, "testuser", user.Username)
 		assert.Equal(t, "test@example.com", user.Email)
-		// Password should be hashed
+		// Password should be hashed with Argon2id
 		assert.NotEqual(t, "password123", user.PasswordHash)
-		assert.True(t, strings.HasPrefix(user.PasswordHash, "$2a$"))
+		assert.True(t, strings.HasPrefix(user.PasswordHash, "$argon2id$"))
 	})
 
 	t.Run("missing username", func(t *testing.T) {
@@ -370,7 +370,7 @@ func TestService_HashPassword(t *testing.T) {
 
 	hash, err := svc.HashPassword("testpassword")
 	require.NoError(t, err)
-	assert.True(t, strings.HasPrefix(hash, "$2a$"))
+	assert.True(t, strings.HasPrefix(hash, "$argon2id$"))
 	assert.NotEqual(t, "testpassword", hash)
 }
 
