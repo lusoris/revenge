@@ -13,8 +13,14 @@ import (
 )
 
 type Querier interface {
+	// Add a device fingerprint to trusted devices
+	AddTrustedDevice(ctx context.Context, arg AddTrustedDeviceParams) error
 	// Checks if a user has a specific permission for a library
 	CheckLibraryPermission(ctx context.Context, arg CheckLibraryPermissionParams) (bool, error)
+	// NOTE: RemoveTrustedDevice removed - implement in application code
+	// Use ClearTrustedDevices to reset all devices
+	// Clear all trusted devices for a user
+	ClearTrustedDevices(ctx context.Context, userID uuid.UUID) error
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count total activity logs
@@ -31,6 +37,8 @@ type Querier interface {
 	CountResourceActivityLogs(ctx context.Context, arg CountResourceActivityLogsParams) (int64, error)
 	// Count activity logs matching search filters
 	CountSearchActivityLogs(ctx context.Context, arg CountSearchActivityLogsParams) (int64, error)
+	// Count unused backup codes for a user
+	CountUnusedBackupCodes(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count activity logs for a specific user
 	CountUserActivityLogs(ctx context.Context, userID pgtype.UUID) (int64, error)
@@ -38,12 +46,19 @@ type Querier interface {
 	CountUserOIDCLinks(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count users matching filters
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
+	// Count WebAuthn credentials for a user
+	CountWebAuthnCredentials(ctx context.Context, userID uuid.UUID) (int64, error)
 	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (SharedApiKey, error)
 	// Insert a new activity log entry
 	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
 	CreateAuthToken(ctx context.Context, arg CreateAuthTokenParams) (SharedAuthToken, error)
 	// Upload a new avatar (sets it as current)
 	CreateAvatar(ctx context.Context, arg CreateAvatarParams) (SharedUserAvatar, error)
+	// ============================================================================
+	// Backup Code Queries
+	// ============================================================================
+	// Bulk insert backup codes
+	CreateBackupCodes(ctx context.Context, arg []CreateBackupCodesParams) (int64, error)
 	// Email Verification Tokens
 	CreateEmailVerificationToken(ctx context.Context, arg CreateEmailVerificationTokenParams) (SharedEmailVerificationToken, error)
 	// Creates a new library
@@ -77,11 +92,19 @@ type Querier interface {
 	// Session Management Queries
 	// Persistent session tracking with device information
 	CreateSession(ctx context.Context, arg CreateSessionParams) (SharedSession, error)
+	// Create a new TOTP secret for a user
+	CreateTOTPSecret(ctx context.Context, arg CreateTOTPSecretParams) (UserTotpSecret, error)
 	// Create a new user
 	CreateUser(ctx context.Context, arg CreateUserParams) (SharedUser, error)
+	// Create MFA settings for a user
+	CreateUserMFASettings(ctx context.Context, arg CreateUserMFASettingsParams) (UserMfaSetting, error)
 	// Create a new user setting
 	CreateUserSetting(ctx context.Context, arg CreateUserSettingParams) (SharedUserSetting, error)
+	// Create a new WebAuthn credential
+	CreateWebAuthnCredential(ctx context.Context, arg CreateWebAuthnCredentialParams) (WebauthnCredential, error)
 	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
+	// Delete all backup codes for a user (when regenerating)
+	DeleteAllBackupCodes(ctx context.Context, userID uuid.UUID) error
 	// Revokes all permissions for a library (used when deleting library)
 	DeleteAllLibraryPermissions(ctx context.Context, libraryID uuid.UUID) error
 	// Delete all settings for a user (used when user is deleted)
@@ -117,20 +140,30 @@ type Querier interface {
 	DeleteRevokedSessions(ctx context.Context) error
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
+	// Delete TOTP secret for a user
+	DeleteTOTPSecret(ctx context.Context, userID uuid.UUID) error
 	DeleteUsedPasswordResetTokens(ctx context.Context) error
 	// Soft delete a user
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	// Revokes all library permissions for a user
 	DeleteUserLibraryPermissions(ctx context.Context, userID uuid.UUID) error
+	// Delete MFA settings for a user
+	DeleteUserMFASettings(ctx context.Context, userID uuid.UUID) error
 	// Delete user preferences (cleanup on user deletion)
 	DeleteUserPreferences(ctx context.Context, userID uuid.UUID) error
 	// Delete a user setting
 	DeleteUserSetting(ctx context.Context, arg DeleteUserSettingParams) error
 	DeleteVerifiedEmailTokens(ctx context.Context) error
+	// Delete a WebAuthn credential
+	DeleteWebAuthnCredential(ctx context.Context, arg DeleteWebAuthnCredentialParams) error
 	// Disables an OIDC provider
 	DisableOIDCProvider(ctx context.Context, id uuid.UUID) error
+	// Disable TOTP for a user
+	DisableTOTP(ctx context.Context, userID uuid.UUID) error
 	// Enables an OIDC provider
 	EnableOIDCProvider(ctx context.Context, id uuid.UUID) error
+	// Enable TOTP for a user (after verification)
+	EnableTOTP(ctx context.Context, userID uuid.UUID) error
 	GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error)
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (SharedApiKey, error)
@@ -150,6 +183,8 @@ type Querier interface {
 	GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) ([]SharedAuthToken, error)
 	// Get a specific avatar by ID
 	GetAvatarByID(ctx context.Context, id uuid.UUID) (SharedUserAvatar, error)
+	// Get a backup code by its hash
+	GetBackupCodeByHash(ctx context.Context, arg GetBackupCodeByHashParams) (MfaBackupCode, error)
 	// ============================================================================
 	// User Avatars Queries
 	// ============================================================================
@@ -200,6 +235,8 @@ type Querier interface {
 	GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSession, error)
 	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash *string) (SharedSession, error)
 	GetSessionByTokenHash(ctx context.Context, tokenHash string) (SharedSession, error)
+	// Get all unused backup codes for a user
+	GetUnusedBackupCodes(ctx context.Context, userID uuid.UUID) ([]MfaBackupCode, error)
 	// Gets all libraries a user has view access to
 	GetUserAccessibleLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error)
 	// Get activity logs for a specific user
@@ -211,6 +248,16 @@ type Querier interface {
 	// Get a user by username
 	GetUserByUsername(ctx context.Context, username string) (SharedUser, error)
 	// ============================================================================
+	// MFA Settings Queries
+	// ============================================================================
+	// Get MFA settings for a user
+	GetUserMFASettings(ctx context.Context, userID uuid.UUID) (UserMfaSetting, error)
+	// ============================================================================
+	// Combined Status Queries
+	// ============================================================================
+	// Get comprehensive MFA status for a user
+	GetUserMFAStatus(ctx context.Context, userID uuid.UUID) (GetUserMFAStatusRow, error)
+	// ============================================================================
 	// User Preferences Queries
 	// ============================================================================
 	// Get user preferences
@@ -220,10 +267,21 @@ type Querier interface {
 	// ============================================================================
 	// Get a user setting by user_id and key
 	GetUserSetting(ctx context.Context, arg GetUserSettingParams) (SharedUserSetting, error)
+	// ============================================================================
+	// TOTP (Time-based One-Time Password) Queries
+	// ============================================================================
+	// Get TOTP secret for a user
+	GetUserTOTPSecret(ctx context.Context, userID uuid.UUID) (UserTotpSecret, error)
+	// Get a specific WebAuthn credential by ID
+	GetWebAuthnCredential(ctx context.Context, id uuid.UUID) (WebauthnCredential, error)
+	// Get a WebAuthn credential by its credential ID
+	GetWebAuthnCredentialByCredentialID(ctx context.Context, credentialID []byte) (WebauthnCredential, error)
 	// Permanently delete an avatar file
 	HardDeleteAvatar(ctx context.Context, id uuid.UUID) error
 	// Permanently delete a user (GDPR compliance)
 	HardDeleteUser(ctx context.Context, id uuid.UUID) error
+	// Check if user has any MFA method enabled
+	HasAnyMFAMethod(ctx context.Context, userID uuid.UUID) (*bool, error)
 	InvalidateEmailVerificationTokensByEmail(ctx context.Context, email string) error
 	InvalidateUserEmailVerificationTokens(ctx context.Context, userID uuid.UUID) error
 	InvalidateUserPasswordResetTokens(ctx context.Context, userID uuid.UUID) error
@@ -267,8 +325,15 @@ type Querier interface {
 	// List all active users with optional filters
 	// Use sqlc.narg for nullable parameters
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedUser, error)
+	// ============================================================================
+	// WebAuthn Credential Queries
+	// ============================================================================
+	// List all WebAuthn credentials for a user
+	ListWebAuthnCredentials(ctx context.Context, userID uuid.UUID) ([]WebauthnCredential, error)
 	MarkEmailVerificationTokenUsed(ctx context.Context, id uuid.UUID) error
 	MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error
+	// Mark a credential as potentially cloned
+	MarkWebAuthnCloneDetected(ctx context.Context, credentialID []byte) error
 	RevokeAPIKey(ctx context.Context, id uuid.UUID) error
 	RevokeAllUserAuthTokens(ctx context.Context, userID uuid.UUID) error
 	RevokeAllUserAuthTokensExcept(ctx context.Context, arg RevokeAllUserAuthTokensExceptParams) error
@@ -298,6 +363,16 @@ type Querier interface {
 	UpdateLibraryScanProgress(ctx context.Context, arg UpdateLibraryScanProgressParams) (LibraryScan, error)
 	// Updates scan status
 	UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) (LibraryScan, error)
+	// Update backup codes generated flag
+	UpdateMFASettingsBackupCodesGenerated(ctx context.Context, arg UpdateMFASettingsBackupCodesGeneratedParams) error
+	// Update remember device settings
+	UpdateMFASettingsRememberDevice(ctx context.Context, arg UpdateMFASettingsRememberDeviceParams) error
+	// Update require MFA flag (admin setting)
+	UpdateMFASettingsRequireMFA(ctx context.Context, arg UpdateMFASettingsRequireMFAParams) error
+	// Update TOTP enabled flag
+	UpdateMFASettingsTOTPEnabled(ctx context.Context, arg UpdateMFASettingsTOTPEnabledParams) error
+	// Update WebAuthn enabled flag
+	UpdateMFASettingsWebAuthnEnabled(ctx context.Context, arg UpdateMFASettingsWebAuthnEnabledParams) error
 	// Updates an OIDC provider
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (SharedOidcProvider, error)
 	// Updates a user link (tokens, user info)
@@ -310,18 +385,30 @@ type Querier interface {
 	UpdateServerSetting(ctx context.Context, arg UpdateServerSettingParams) (SharedServerSetting, error)
 	UpdateSessionActivity(ctx context.Context, id uuid.UUID) error
 	UpdateSessionActivityByTokenHash(ctx context.Context, tokenHash string) error
+	// Update last used timestamp for TOTP
+	UpdateTOTPLastUsed(ctx context.Context, userID uuid.UUID) error
+	// Update TOTP secret (for re-enrollment)
+	UpdateTOTPSecret(ctx context.Context, arg UpdateTOTPSecretParams) error
 	// Update user fields
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (SharedUser, error)
 	// Update a user setting value
 	UpdateUserSetting(ctx context.Context, arg UpdateUserSettingParams) (SharedUserSetting, error)
+	// Update sign count and last used timestamp
+	UpdateWebAuthnCounter(ctx context.Context, arg UpdateWebAuthnCounterParams) error
+	// Update the user-facing name of a credential
+	UpdateWebAuthnCredentialName(ctx context.Context, arg UpdateWebAuthnCredentialNameParams) error
 	// Insert or update a server setting
 	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (SharedServerSetting, error)
 	// Create or update user preferences
 	UpsertUserPreferences(ctx context.Context, arg UpsertUserPreferencesParams) (SharedUserPreference, error)
 	// Insert or update a user setting
 	UpsertUserSetting(ctx context.Context, arg UpsertUserSettingParams) (SharedUserSetting, error)
+	// Mark a backup code as used
+	UseBackupCode(ctx context.Context, arg UseBackupCodeParams) error
 	// Mark email as verified
 	VerifyEmail(ctx context.Context, id uuid.UUID) error
+	// Mark TOTP as verified and enabled
+	VerifyTOTPSecret(ctx context.Context, userID uuid.UUID) error
 }
 
 var _ Querier = (*Queries)(nil)

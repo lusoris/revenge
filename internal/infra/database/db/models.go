@@ -83,6 +83,19 @@ type LibraryScan struct {
 	CreatedAt       time.Time          `json:"createdAt"`
 }
 
+// One-time backup codes for MFA account recovery
+type MfaBackupCode struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Bcrypt hash of the backup code (codes are 16 chars alphanumeric)
+	CodeHash string `json:"codeHash"`
+	// When this code was used (NULL if unused)
+	UsedAt pgtype.Timestamptz `json:"usedAt"`
+	// IP address where code was used (for audit trail)
+	UsedFromIp netip.Addr `json:"usedFromIp"`
+	CreatedAt  time.Time  `json:"createdAt"`
+}
+
 // API keys for programmatic access with scope-based permissions
 type SharedApiKey struct {
 	ID          uuid.UUID `json:"id"`
@@ -346,4 +359,64 @@ type SharedUserSetting struct {
 	DataType  string    `json:"dataType"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// Per-user MFA configuration and enforcement settings
+type UserMfaSetting struct {
+	UserID uuid.UUID `json:"userId"`
+	// Whether TOTP (authenticator app) is enabled for this user
+	TotpEnabled bool `json:"totpEnabled"`
+	// Whether WebAuthn (passkeys/security keys) is enabled for this user
+	WebauthnEnabled bool `json:"webauthnEnabled"`
+	// Whether backup recovery codes have been generated
+	BackupCodesGenerated bool `json:"backupCodesGenerated"`
+	// Admin override to force MFA for this user
+	RequireMfa                 bool  `json:"requireMfa"`
+	RememberDeviceEnabled      bool  `json:"rememberDeviceEnabled"`
+	RememberDeviceDurationDays int32 `json:"rememberDeviceDurationDays"`
+	// JSON array of device fingerprints that skip MFA challenge
+	TrustedDevices json.RawMessage `json:"trustedDevices"`
+	CreatedAt      time.Time       `json:"createdAt"`
+	UpdatedAt      time.Time       `json:"updatedAt"`
+}
+
+// TOTP (Time-based One-Time Password) secrets for multi-factor authentication
+type UserTotpSecret struct {
+	UserID uuid.UUID `json:"userId"`
+	// AES-256-GCM encrypted base32-encoded TOTP secret
+	EncryptedSecret []byte `json:"encryptedSecret"`
+	// GCM nonce used for encryption (12 bytes)
+	Nonce []byte `json:"nonce"`
+	// When the TOTP was first successfully verified (enrollment completion)
+	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
+	Enabled    bool               `json:"enabled"`
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
+// WebAuthn/FIDO2 credentials for passwordless and multi-factor authentication
+type WebauthnCredential struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Unique credential identifier from the authenticator
+	CredentialID []byte `json:"credentialId"`
+	// COSE-encoded public key for verifying assertions
+	PublicKey []byte `json:"publicKey"`
+	// Signature counter for detecting cloned authenticators (must increment)
+	SignCount int32 `json:"signCount"`
+	// Flag indicating potential authenticator cloning (counter decreased)
+	CloneDetected bool `json:"cloneDetected"`
+	// Authenticator Attestation GUID (identifies authenticator model)
+	Aaguid          []byte `json:"aaguid"`
+	AttestationType string `json:"attestationType"`
+	// Communication methods supported by authenticator
+	Transports     []string           `json:"transports"`
+	BackupEligible bool               `json:"backupEligible"`
+	BackupState    bool               `json:"backupState"`
+	UserPresent    bool               `json:"userPresent"`
+	UserVerified   bool               `json:"userVerified"`
+	Name           *string            `json:"name"`
+	CreatedAt      time.Time          `json:"createdAt"`
+	LastUsedAt     pgtype.Timestamptz `json:"lastUsedAt"`
 }
