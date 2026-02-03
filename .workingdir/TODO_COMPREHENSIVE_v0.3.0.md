@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 20:25
-**Current Focus**: Movie Module - Tests & Integration
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Testing 🔴
+**Last Updated**: 2026-02-03 21:00
+**Current Focus**: Movie Module - River Jobs & Tests
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs 🟡
 
 ---
 
@@ -266,11 +266,16 @@
 
 **Commit**: 5ac9fe3131 - feat(movie): add service layer and fx module
 
-#### Library Provider
-- [ ] Implement LibraryProvider interface
-- [ ] Scan library path
-- [ ] Match files to movies
-- [ ] Handle file changes
+#### Library Provider ✅ COMPLETE
+- [x] Scanner (walk filesystem, parse filenames, extract title/year) ✅
+- [x] Matcher (TMDb search, confidence scoring, create movies) ✅
+- [x] Service (ScanLibrary, RefreshMovie workflows) ✅
+- [x] Filename parsing patterns (Title (YEAR), Title.YEAR) ✅
+- [x] Quality marker removal (1080p, BluRay, x264, etc.) ✅
+- [x] Video extensions support (13 formats) ✅
+- [x] Confidence algorithm (title similarity + year match + popularity) ✅
+
+**Commit**: d8789fc4d3 - feat(movie): add Library Provider for file scanning and matching
 
 #### API Handlers ✅ COMPLETE
 - [x] `GET /api/v1/movies` (list, paginated) ✅
