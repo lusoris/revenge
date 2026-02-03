@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 23:45
+**Last Updated**: 2026-02-03 23:55
 **Current Focus**: Movie Module - Tests
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Tests 🔴
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Tests 🟡 (46.7%)
 
 ---
 
@@ -311,9 +311,12 @@
 
 **Commit**: 033accd17b - feat(movie): add River Jobs for background processing
 
-#### Tests 🔴 IN PROGRESS
-- [ ] Unit tests (80%+ coverage)
-- [ ] Integration tests
+#### Tests � IN PROGRESS (46.7% Coverage)
+- [x] Unit tests for service (mock repository)
+- [x] Unit tests for handler
+- [x] Unit tests for TMDb mapper
+- [x] Lint fixes (handler.go, library_scanner.go, tmdb_client_test.go)
+- [ ] Integration tests with database (target: 80%+ coverage)
 
 ### Collection Support ✅ COMPLETE (Database + Logic)
 - [x] `public.movie_collections` table ✅
