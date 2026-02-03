@@ -28,6 +28,12 @@ var VideoExtensions = map[string]bool{
 	".m2ts": true,
 }
 
+// isVideoFile checks if a filename has a video extension
+func isVideoFile(filename string) bool {
+	ext := strings.ToLower(filepath.Ext(filename))
+	return VideoExtensions[ext]
+}
+
 // Scanner handles file system scanning for movie files
 type Scanner struct {
 	libraryPaths []string
@@ -163,12 +169,31 @@ func cleanTitle(title string) string {
 		"x264", "x265", "h264", "h265", "HEVC",
 		"AAC", "DTS", "AC3", "DD5.1",
 		"EXTENDED", "UNRATED", "REMASTERED",
+		"REMUX", // REMUX releases
+	}
+
+	// Remove release group tags (usually all caps at the end)
+	// Common groups: SPARKS, RARBG, YTS, YIFY, etc.
+	releaseGroups := []string{
+		"SPARKS", "RARBG", "YTS", "YIFY", "ETRG", "FGT",
+		"STUTTERSHIT", "PSYCHD", "CMRG", "ION10", "AMZN",
 	}
 
 	titleLower := strings.ToLower(title)
+	
+	// Remove quality markers
 	for _, marker := range qualityMarkers {
 		markerLower := strings.ToLower(marker)
 		if idx := strings.Index(titleLower, markerLower); idx != -1 {
+			title = title[:idx]
+			titleLower = titleLower[:idx]
+		}
+	}
+
+	// Remove release groups (case-insensitive)
+	for _, group := range releaseGroups {
+		groupLower := strings.ToLower(group)
+		if idx := strings.Index(titleLower, groupLower); idx != -1 {
 			title = title[:idx]
 			titleLower = titleLower[:idx]
 		}
