@@ -5513,6 +5513,8 @@ func (s *RefreshSessionRequest) SetRefreshToken(val string) {
 type RefreshSessionResponse struct {
 	// New access token.
 	AccessToken string `json:"access_token"`
+	// New refresh token (token rotation).
+	RefreshToken string `json:"refresh_token"`
 	// Token expiration time in seconds.
 	ExpiresIn int `json:"expires_in"`
 }
@@ -5520,6 +5522,11 @@ type RefreshSessionResponse struct {
 // GetAccessToken returns the value of AccessToken.
 func (s *RefreshSessionResponse) GetAccessToken() string {
 	return s.AccessToken
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *RefreshSessionResponse) GetRefreshToken() string {
+	return s.RefreshToken
 }
 
 // GetExpiresIn returns the value of ExpiresIn.
@@ -5530,6 +5537,11 @@ func (s *RefreshSessionResponse) GetExpiresIn() int {
 // SetAccessToken sets the value of AccessToken.
 func (s *RefreshSessionResponse) SetAccessToken(val string) {
 	s.AccessToken = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *RefreshSessionResponse) SetRefreshToken(val string) {
+	s.RefreshToken = val
 }
 
 // SetExpiresIn sets the value of ExpiresIn.

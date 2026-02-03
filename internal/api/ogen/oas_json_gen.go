@@ -12561,14 +12561,19 @@ func (s *RefreshSessionResponse) encodeFields(e *jx.Encoder) {
 		e.Str(s.AccessToken)
 	}
 	{
+		e.FieldStart("refresh_token")
+		e.Str(s.RefreshToken)
+	}
+	{
 		e.FieldStart("expires_in")
 		e.Int(s.ExpiresIn)
 	}
 }
 
-var jsonFieldsNameOfRefreshSessionResponse = [2]string{
+var jsonFieldsNameOfRefreshSessionResponse = [3]string{
 	0: "access_token",
-	1: "expires_in",
+	1: "refresh_token",
+	2: "expires_in",
 }
 
 // Decode decodes RefreshSessionResponse from json.
@@ -12592,8 +12597,20 @@ func (s *RefreshSessionResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"access_token\"")
 			}
-		case "expires_in":
+		case "refresh_token":
 			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.RefreshToken = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"refresh_token\"")
+			}
+		case "expires_in":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Int()
 				s.ExpiresIn = int(v)
@@ -12614,7 +12631,7 @@ func (s *RefreshSessionResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
