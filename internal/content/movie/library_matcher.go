@@ -205,7 +205,7 @@ func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *Movie) float
 	}
 
 	// Popularity boost (higher popularity = more likely correct)
-	if !tmdbMovie.Popularity.IsZero() {
+	if tmdbMovie.Popularity != nil && !tmdbMovie.Popularity.IsZero() {
 		pop, _ := tmdbMovie.Popularity.Float64()
 		if pop > 50 {
 			confidence += 0.1
