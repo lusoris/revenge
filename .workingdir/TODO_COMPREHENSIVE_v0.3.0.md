@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 20:15
-**Current Focus**: Movie Module - TMDb Metadata Service
-**Status**: Backend Complete ✅ → TMDb Integration 🟡
+**Last Updated**: 2026-02-03 20:25
+**Current Focus**: Movie Module - Tests & Integration
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Testing 🔴
 
 ---
 
@@ -314,19 +314,21 @@
 - [x] API handlers (`GET /collections/:id`, `/collections/:id/movies`) ✅
 - [ ] OpenAPI spec integration
 
-### Metadata Service (TMDb)
+### Metadata Service (TMDb) ✅ COMPLETE
 
-#### TMDb Client 🟡 IN PROGRESS
-- [ ] API key configuration
-- [ ] Rate limiting (40 req/10s)
-- [ ] Retry with backoff
-- [ ] Response caching
-- [ ] TMDb types (Movie, Credits, Images, Collections)
-- [ ] TMDb client (SearchMovies, GetMovie, GetCredits, GetImages)
-- [ ] TMDb mapper (TMDb → domain types)
-- [ ] Metadata service (unified interface)
+#### TMDb Client ✅ COMPLETE
+- [x] API key configuration ✅
+- [x] Rate limiting (40 req/10s) ✅
+- [x] Retry with backoff ✅
+- [x] Response caching (sync.Map with TTL) ✅
+- [x] TMDb types (Movie, Credits, Images, Collections) ✅
+- [x] TMDb client (SearchMovies, GetMovie, GetCredits, GetImages, GetCollection) ✅
+- [x] TMDb mapper (TMDb → domain types) ✅
+- [x] Metadata service (unified interface) ✅
+- [x] Image URL construction and downloading ✅
+- [x] Proxy/VPN support ✅
 
-**Status**: Design complete, ready for implementation
+**Commit**: a70c7b57e2 - feat(movie): add TMDb metadata service
 
 #### TMDb Service
 - [ ] Search movie
