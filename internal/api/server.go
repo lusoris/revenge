@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -30,9 +31,11 @@ import (
 
 // Server wraps the ogen-generated HTTP server with lifecycle management.
 type Server struct {
-	httpServer *http.Server
-	ogenServer *ogen.Server
-	logger     *zap.Logger
+	httpServer    *http.Server
+	ogenServer    *ogen.Server
+	logger        *zap.Logger
+	authLimiter   *middleware.RateLimiter
+	globalLimiter *middleware.RateLimiter
 }
 // ServerParams defines the dependencies required to create the API server.
 type ServerParams struct {
@@ -106,8 +109,53 @@ func NewServer(p ServerParams) (*Server, error) {
 		handler.riverClient = p.RiverClient
 	}
 
-	// Create ogen server
-	ogenServer, err := ogen.NewServer(handler, handler)
+	// Create ogen server, optionally with rate limiting middleware
+	var ogenServer *ogen.Server
+	var authLimiter, globalLimiter *middleware.RateLimiter
+	var err error
+
+	if p.Config.Server.RateLimit.Enabled {
+		// Create rate limiters from config (or use defaults)
+		authConfig := middleware.AuthRateLimitConfig()
+		globalConfig := middleware.DefaultRateLimitConfig()
+
+		// Override with custom config if provided
+		if p.Config.Server.RateLimit.Auth.RequestsPerSecond > 0 {
+			authConfig.RequestsPerSecond = p.Config.Server.RateLimit.Auth.RequestsPerSecond
+		}
+		if p.Config.Server.RateLimit.Auth.Burst > 0 {
+			authConfig.Burst = p.Config.Server.RateLimit.Auth.Burst
+		}
+		if p.Config.Server.RateLimit.Global.RequestsPerSecond > 0 {
+			globalConfig.RequestsPerSecond = p.Config.Server.RateLimit.Global.RequestsPerSecond
+		}
+		if p.Config.Server.RateLimit.Global.Burst > 0 {
+			globalConfig.Burst = p.Config.Server.RateLimit.Global.Burst
+		}
+
+		// Auth rate limiter: strict limits for login/MFA endpoints
+		authLimiter = middleware.NewRateLimiter(authConfig, p.Logger)
+		// Global rate limiter: generous limits for all endpoints
+		globalLimiter = middleware.NewRateLimiter(globalConfig, p.Logger)
+
+		// Create ogen server with rate limiting middleware
+		ogenServer, err = ogen.NewServer(
+			handler,
+			handler,
+			ogen.WithMiddleware(
+				authLimiter.Middleware(),
+				globalLimiter.Middleware(),
+			),
+			ogen.WithErrorHandler(middleware.ErrorHandler),
+		)
+	} else {
+		// Create ogen server without rate limiting
+		ogenServer, err = ogen.NewServer(
+			handler,
+			handler,
+			ogen.WithErrorHandler(middleware.ErrorHandler),
+		)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to create ogen server: %w", err)
 	}
@@ -122,9 +170,11 @@ func NewServer(p ServerParams) (*Server, error) {
 	}
 
 	server := &Server{
-		httpServer: httpServer,
-		ogenServer: ogenServer,
-		logger:     p.Logger.Named("server"),
+		httpServer:    httpServer,
+		ogenServer:    ogenServer,
+		logger:        p.Logger.Named("server"),
+		authLimiter:   authLimiter,
+		globalLimiter: globalLimiter,
 	}
 
 	// Register lifecycle hooks
@@ -133,9 +183,18 @@ func NewServer(p ServerParams) (*Server, error) {
 			// Start HTTP server in background
 			go func() {
 				addr := fmt.Sprintf("%s:%d", p.Config.Server.Host, p.Config.Server.Port)
-				server.logger.Info("Starting HTTP server",
-					zap.String("address", addr),
-				)
+				if p.Config.Server.RateLimit.Enabled {
+					server.logger.Info("Starting HTTP server",
+						zap.String("address", addr),
+						zap.String("ratelimit.auth", "1 req/s, burst 5"),
+						zap.String("ratelimit.global", "10 req/s, burst 20"),
+					)
+				} else {
+					server.logger.Info("Starting HTTP server",
+						zap.String("address", addr),
+						zap.Bool("ratelimit.enabled", false),
+					)
+				}
 				if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 					server.logger.Error("HTTP server error", zap.Error(err))
 				}
@@ -144,6 +203,13 @@ func NewServer(p ServerParams) (*Server, error) {
 		},
 		OnStop: func(ctx context.Context) error {
 			server.logger.Info("Stopping HTTP server")
+			// Stop rate limiters if they were created
+			if server.authLimiter != nil {
+				server.authLimiter.Stop()
+			}
+			if server.globalLimiter != nil {
+				server.globalLimiter.Stop()
+			}
 			return httpServer.Shutdown(ctx)
 		},
 	})

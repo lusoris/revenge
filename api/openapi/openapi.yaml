@@ -1014,6 +1014,37 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/movies/{id}/similar:
+    get:
+      summary: Get similar movies
+      description: Get movies similar to this one based on TMDb recommendations
+      operationId: getSimilarMovies
+      tags:
+        - movies
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of similar movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimilarMoviesResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
   /api/v1/movies/{id}/progress:
     get:
       summary: Get watch progress
@@ -1318,6 +1349,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MetadataMovie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/collection/{tmdbId}:
+    get:
+      summary: Get collection details from TMDb
+      description: |
+        Fetch detailed collection information from TMDb by collection ID.
+        Returns collection metadata including all movies in the collection.
+      operationId: getCollectionMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb collection ID
+          example: 86311
+      responses:
+        '200':
+          description: Collection metadata from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataCollection'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -4442,12 +4506,110 @@ components:
           type: string
           description: Collection name
           example: "The Matrix Collection"
+        overview:
+          type: string
+          nullable: true
+          description: Collection overview/description
         poster_path:
           type: string
           nullable: true
         backdrop_path:
           type: string
           nullable: true
+        parts:
+          type: array
+          description: Movies in the collection
+          items:
+            $ref: '#/components/schemas/MetadataCollectionPart'
+
+    MetadataCollectionPart:
+      type: object
+      description: A movie that is part of a collection
+      properties:
+        id:
+          type: integer
+          description: TMDb movie ID
+        title:
+          type: string
+          description: Movie title
+        original_title:
+          type: string
+          description: Original title
+        overview:
+          type: string
+          nullable: true
+        release_date:
+          type: string
+          format: date
+          nullable: true
+        poster_path:
+          type: string
+          nullable: true
+        backdrop_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        popularity:
+          type: number
+          format: float
+
+    SimilarMoviesResponse:
+      type: object
+      properties:
+        movie_id:
+          type: string
+          format: uuid
+          description: The source movie ID
+        similar_movies:
+          type: array
+          description: List of similar movies from TMDb
+          items:
+            $ref: '#/components/schemas/SimilarMovie'
+        total_results:
+          type: integer
+          description: Total number of similar movies available
+
+    SimilarMovie:
+      type: object
+      description: A similar movie recommendation from TMDb
+      properties:
+        tmdb_id:
+          type: integer
+          description: TMDb movie ID
+        title:
+          type: string
+          description: Movie title
+        original_title:
+          type: string
+          description: Original title
+        overview:
+          type: string
+          nullable: true
+        release_date:
+          type: string
+          format: date
+          nullable: true
+        poster_path:
+          type: string
+          nullable: true
+        backdrop_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        popularity:
+          type: number
+          format: float
+        in_library:
+          type: boolean
+          description: Whether this movie is already in the library
 
     MovieWatched:
       type: object

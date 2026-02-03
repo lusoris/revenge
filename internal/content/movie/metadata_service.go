@@ -98,6 +98,27 @@ func (s *MetadataService) GetCollectionMovies(ctx context.Context, collectionID 
 	return movies, nil
 }
 
+// GetSimilarMovies returns movies similar to the given movie.
+func (s *MetadataService) GetSimilarMovies(ctx context.Context, tmdbID int) ([]*Movie, int, error) {
+	response, err := s.client.GetSimilarMovies(ctx, tmdbID)
+	if err != nil {
+		return nil, 0, fmt.Errorf("get similar movies: %w", err)
+	}
+
+	movies := make([]*Movie, 0, len(response.Results))
+	for i := range response.Results {
+		mov := s.mapper.MapSearchResult(&response.Results[i])
+		movies = append(movies, mov)
+	}
+
+	return movies, response.TotalResults, nil
+}
+
+// GetCollectionDetails returns full collection details from TMDb.
+func (s *MetadataService) GetCollectionDetails(ctx context.Context, collectionID int) (*TMDbCollectionDetails, error) {
+	return s.client.GetCollection(ctx, collectionID)
+}
+
 func (s *MetadataService) EnrichMovie(ctx context.Context, mov *Movie) error {
 	if mov.TMDbID == nil {
 		return fmt.Errorf("movie has no TMDb ID")

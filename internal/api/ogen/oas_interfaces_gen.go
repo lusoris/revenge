@@ -113,6 +113,10 @@ type GetActivityStatsRes interface {
 	getActivityStatsRes()
 }
 
+type GetCollectionMetadataRes interface {
+	getCollectionMetadataRes()
+}
+
 type GetCollectionMoviesRes interface {
 	getCollectionMoviesRes()
 }
@@ -195,6 +199,10 @@ type GetSearchFacetsRes interface {
 
 type GetServerSettingRes interface {
 	getServerSettingRes()
+}
+
+type GetSimilarMoviesRes interface {
+	getSimilarMoviesRes()
 }
 
 type GetStartupRes interface {

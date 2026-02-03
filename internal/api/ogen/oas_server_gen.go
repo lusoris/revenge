@@ -190,6 +190,13 @@ type Handler interface {
 	//
 	// GET /api/v1/collections/{id}
 	GetCollection(ctx context.Context, params GetCollectionParams) (GetCollectionRes, error)
+	// GetCollectionMetadata implements getCollectionMetadata operation.
+	//
+	// Fetch detailed collection information from TMDb by collection ID.
+	// Returns collection metadata including all movies in the collection.
+	//
+	// GET /api/v1/metadata/collection/{tmdbId}
+	GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error)
 	// GetCollectionMovies implements getCollectionMovies operation.
 	//
 	// Get all movies in a collection.
@@ -323,6 +330,12 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/server/{key}
 	GetServerSetting(ctx context.Context, params GetServerSettingParams) (GetServerSettingRes, error)
+	// GetSimilarMovies implements getSimilarMovies operation.
+	//
+	// Get movies similar to this one based on TMDb recommendations.
+	//
+	// GET /api/v1/movies/{id}/similar
+	GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (GetSimilarMoviesRes, error)
 	// GetStartup implements getStartup operation.
 	//
 	// Checks if the service has completed initialization.

@@ -2730,6 +2730,14 @@ type GetActivityStatsUnauthorized Error
 
 func (*GetActivityStatsUnauthorized) getActivityStatsRes() {}
 
+type GetCollectionMetadataNotFound Error
+
+func (*GetCollectionMetadataNotFound) getCollectionMetadataRes() {}
+
+type GetCollectionMetadataUnauthorized Error
+
+func (*GetCollectionMetadataUnauthorized) getCollectionMetadataRes() {}
+
 type GetCollectionMoviesNotFound Error
 
 func (*GetCollectionMoviesNotFound) getCollectionMoviesRes() {}
@@ -3070,6 +3078,14 @@ func (*GetServerSettingNotFound) getServerSettingRes() {}
 type GetServerSettingUnauthorized Error
 
 func (*GetServerSettingUnauthorized) getServerSettingRes() {}
+
+type GetSimilarMoviesNotFound Error
+
+func (*GetSimilarMoviesNotFound) getSimilarMoviesRes() {}
+
+type GetSimilarMoviesUnauthorized Error
+
+func (*GetSimilarMoviesUnauthorized) getSimilarMoviesRes() {}
 
 type GetStartupOK HealthCheck
 
@@ -4448,9 +4464,13 @@ type MetadataCollection struct {
 	// TMDb collection ID.
 	ID OptInt `json:"id"`
 	// Collection name.
-	Name         OptString    `json:"name"`
+	Name OptString `json:"name"`
+	// Collection overview/description.
+	Overview     OptNilString `json:"overview"`
 	PosterPath   OptNilString `json:"poster_path"`
 	BackdropPath OptNilString `json:"backdrop_path"`
+	// Movies in the collection.
+	Parts []MetadataCollectionPart `json:"parts"`
 }
 
 // GetID returns the value of ID.
@@ -4463,6 +4483,11 @@ func (s *MetadataCollection) GetName() OptString {
 	return s.Name
 }
 
+// GetOverview returns the value of Overview.
+func (s *MetadataCollection) GetOverview() OptNilString {
+	return s.Overview
+}
+
 // GetPosterPath returns the value of PosterPath.
 func (s *MetadataCollection) GetPosterPath() OptNilString {
 	return s.PosterPath
@@ -4471,6 +4496,11 @@ func (s *MetadataCollection) GetPosterPath() OptNilString {
 // GetBackdropPath returns the value of BackdropPath.
 func (s *MetadataCollection) GetBackdropPath() OptNilString {
 	return s.BackdropPath
+}
+
+// GetParts returns the value of Parts.
+func (s *MetadataCollection) GetParts() []MetadataCollectionPart {
+	return s.Parts
 }
 
 // SetID sets the value of ID.
@@ -4483,6 +4513,11 @@ func (s *MetadataCollection) SetName(val OptString) {
 	s.Name = val
 }
 
+// SetOverview sets the value of Overview.
+func (s *MetadataCollection) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
 // SetPosterPath sets the value of PosterPath.
 func (s *MetadataCollection) SetPosterPath(val OptNilString) {
 	s.PosterPath = val
@@ -4491,6 +4526,131 @@ func (s *MetadataCollection) SetPosterPath(val OptNilString) {
 // SetBackdropPath sets the value of BackdropPath.
 func (s *MetadataCollection) SetBackdropPath(val OptNilString) {
 	s.BackdropPath = val
+}
+
+// SetParts sets the value of Parts.
+func (s *MetadataCollection) SetParts(val []MetadataCollectionPart) {
+	s.Parts = val
+}
+
+func (*MetadataCollection) getCollectionMetadataRes() {}
+
+// A movie that is part of a collection.
+// Ref: #/components/schemas/MetadataCollectionPart
+type MetadataCollectionPart struct {
+	// TMDb movie ID.
+	ID OptInt `json:"id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title.
+	OriginalTitle OptString    `json:"original_title"`
+	Overview      OptNilString `json:"overview"`
+	ReleaseDate   OptNilDate   `json:"release_date"`
+	PosterPath    OptNilString `json:"poster_path"`
+	BackdropPath  OptNilString `json:"backdrop_path"`
+	VoteAverage   OptFloat32   `json:"vote_average"`
+	VoteCount     OptInt       `json:"vote_count"`
+	Popularity    OptFloat32   `json:"popularity"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataCollectionPart) GetID() OptInt {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *MetadataCollectionPart) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *MetadataCollectionPart) GetOriginalTitle() OptString {
+	return s.OriginalTitle
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataCollectionPart) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *MetadataCollectionPart) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataCollectionPart) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *MetadataCollectionPart) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataCollectionPart) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataCollectionPart) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MetadataCollectionPart) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// SetID sets the value of ID.
+func (s *MetadataCollectionPart) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MetadataCollectionPart) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *MetadataCollectionPart) SetOriginalTitle(val OptString) {
+	s.OriginalTitle = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataCollectionPart) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *MetadataCollectionPart) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataCollectionPart) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *MetadataCollectionPart) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataCollectionPart) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataCollectionPart) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MetadataCollectionPart) SetPopularity(val OptFloat32) {
+	s.Popularity = val
 }
 
 // Ref: #/components/schemas/MetadataCrewMember
@@ -11430,6 +11590,178 @@ func (s *SetupTOTPReq) GetAccountName() string {
 func (s *SetupTOTPReq) SetAccountName(val string) {
 	s.AccountName = val
 }
+
+// A similar movie recommendation from TMDb.
+// Ref: #/components/schemas/SimilarMovie
+type SimilarMovie struct {
+	// TMDb movie ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title.
+	OriginalTitle OptString    `json:"original_title"`
+	Overview      OptNilString `json:"overview"`
+	ReleaseDate   OptNilDate   `json:"release_date"`
+	PosterPath    OptNilString `json:"poster_path"`
+	BackdropPath  OptNilString `json:"backdrop_path"`
+	VoteAverage   OptFloat32   `json:"vote_average"`
+	VoteCount     OptInt       `json:"vote_count"`
+	Popularity    OptFloat32   `json:"popularity"`
+	// Whether this movie is already in the library.
+	InLibrary OptBool `json:"in_library"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *SimilarMovie) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *SimilarMovie) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *SimilarMovie) GetOriginalTitle() OptString {
+	return s.OriginalTitle
+}
+
+// GetOverview returns the value of Overview.
+func (s *SimilarMovie) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *SimilarMovie) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *SimilarMovie) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *SimilarMovie) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *SimilarMovie) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *SimilarMovie) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *SimilarMovie) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetInLibrary returns the value of InLibrary.
+func (s *SimilarMovie) GetInLibrary() OptBool {
+	return s.InLibrary
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *SimilarMovie) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SimilarMovie) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *SimilarMovie) SetOriginalTitle(val OptString) {
+	s.OriginalTitle = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SimilarMovie) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *SimilarMovie) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *SimilarMovie) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *SimilarMovie) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *SimilarMovie) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *SimilarMovie) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *SimilarMovie) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetInLibrary sets the value of InLibrary.
+func (s *SimilarMovie) SetInLibrary(val OptBool) {
+	s.InLibrary = val
+}
+
+// Ref: #/components/schemas/SimilarMoviesResponse
+type SimilarMoviesResponse struct {
+	// The source movie ID.
+	MovieID OptUUID `json:"movie_id"`
+	// List of similar movies from TMDb.
+	SimilarMovies []SimilarMovie `json:"similar_movies"`
+	// Total number of similar movies available.
+	TotalResults OptInt `json:"total_results"`
+}
+
+// GetMovieID returns the value of MovieID.
+func (s *SimilarMoviesResponse) GetMovieID() OptUUID {
+	return s.MovieID
+}
+
+// GetSimilarMovies returns the value of SimilarMovies.
+func (s *SimilarMoviesResponse) GetSimilarMovies() []SimilarMovie {
+	return s.SimilarMovies
+}
+
+// GetTotalResults returns the value of TotalResults.
+func (s *SimilarMoviesResponse) GetTotalResults() OptInt {
+	return s.TotalResults
+}
+
+// SetMovieID sets the value of MovieID.
+func (s *SimilarMoviesResponse) SetMovieID(val OptUUID) {
+	s.MovieID = val
+}
+
+// SetSimilarMovies sets the value of SimilarMovies.
+func (s *SimilarMoviesResponse) SetSimilarMovies(val []SimilarMovie) {
+	s.SimilarMovies = val
+}
+
+// SetTotalResults sets the value of TotalResults.
+func (s *SimilarMoviesResponse) SetTotalResults(val OptInt) {
+	s.TotalResults = val
+}
+
+func (*SimilarMoviesResponse) getSimilarMoviesRes() {}
 
 // Ref: #/components/schemas/TOTPSetup
 type TOTPSetup struct {

@@ -1159,6 +1159,37 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							break
 						}
 						switch elem[0] {
+						case 'c': // Prefix: "collection/"
+
+							if l := len("collection/"); len(elem) >= l && elem[0:l] == "collection/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetCollectionMetadataRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
 						case 'm': // Prefix: "movie/"
 
 							if l := len("movie/"); len(elem) >= l && elem[0:l] == "movie/" {
@@ -1791,6 +1822,28 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 											}, elemIsEscaped, w, r)
 										default:
 											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								case 's': // Prefix: "similar"
+
+									if l := len("similar"); len(elem) >= l && elem[0:l] == "similar" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetSimilarMoviesRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
 										}
 
 										return
@@ -4056,6 +4109,40 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							break
 						}
 						switch elem[0] {
+						case 'c': // Prefix: "collection/"
+
+							if l := len("collection/"); len(elem) >= l && elem[0:l] == "collection/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetCollectionMetadataOperation
+									r.summary = "Get collection details from TMDb"
+									r.operationID = "getCollectionMetadata"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/metadata/collection/{tmdbId}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						case 'm': // Prefix: "movie/"
 
 							if l := len("movie/"); len(elem) >= l && elem[0:l] == "movie/" {
@@ -4802,6 +4889,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.operationID = "refreshMovieMetadata"
 											r.operationGroup = ""
 											r.pathPattern = "/api/v1/movies/{id}/refresh"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 's': // Prefix: "similar"
+
+									if l := len("similar"); len(elem) >= l && elem[0:l] == "similar" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetSimilarMoviesOperation
+											r.summary = "Get similar movies"
+											r.operationID = "getSimilarMovies"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/movies/{id}/similar"
 											r.args = args
 											r.count = 1
 											return r, true

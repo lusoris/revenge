@@ -282,6 +282,16 @@ func (UnimplementedHandler) GetCollection(ctx context.Context, params GetCollect
 	return r, ht.ErrNotImplemented
 }
 
+// GetCollectionMetadata implements getCollectionMetadata operation.
+//
+// Fetch detailed collection information from TMDb by collection ID.
+// Returns collection metadata including all movies in the collection.
+//
+// GET /api/v1/metadata/collection/{tmdbId}
+func (UnimplementedHandler) GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (r GetCollectionMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetCollectionMovies implements getCollectionMovies operation.
 //
 // Get all movies in a collection.
@@ -475,6 +485,15 @@ func (UnimplementedHandler) GetSearchFacets(ctx context.Context) (r GetSearchFac
 //
 // GET /api/v1/settings/server/{key}
 func (UnimplementedHandler) GetServerSetting(ctx context.Context, params GetServerSettingParams) (r GetServerSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSimilarMovies implements getSimilarMovies operation.
+//
+// Get movies similar to this one based on TMDb recommendations.
+//
+// GET /api/v1/movies/{id}/similar
+func (UnimplementedHandler) GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (r GetSimilarMoviesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

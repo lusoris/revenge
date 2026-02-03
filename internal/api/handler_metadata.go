@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"context"
+	"time"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -172,6 +173,77 @@ func (h *Handler) GetProxiedImage(ctx context.Context, params ogen.GetProxiedIma
 			Data: bytes.NewReader(data),
 		}, nil
 	}
+}
+
+// GetCollectionMetadata gets detailed collection info from TMDb.
+func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetCollectionMetadataParams) (ogen.GetCollectionMetadataRes, error) {
+	// Get collection details from TMDb
+	collection, err := h.metadataService.GetCollectionDetails(ctx, params.TmdbId)
+	if err != nil {
+		if err == movie.ErrCollectionNotFound {
+			return &ogen.GetCollectionMetadataNotFound{}, nil
+		}
+		h.logger.Error("TMDb get collection failed", zap.Error(err))
+		return nil, err
+	}
+
+	// Convert to API response
+	response := &ogen.MetadataCollection{
+		ID:   ogen.NewOptInt(collection.ID),
+		Name: ogen.NewOptString(collection.Name),
+	}
+
+	if collection.Overview != "" {
+		response.Overview = ogen.NewOptNilString(collection.Overview)
+	}
+	if collection.PosterPath != nil {
+		response.PosterPath = ogen.NewOptNilString(*collection.PosterPath)
+	}
+	if collection.BackdropPath != nil {
+		response.BackdropPath = ogen.NewOptNilString(*collection.BackdropPath)
+	}
+
+	// Map parts (movies in collection)
+	parts := make([]ogen.MetadataCollectionPart, 0, len(collection.Parts))
+	for _, part := range collection.Parts {
+		p := ogen.MetadataCollectionPart{
+			ID:    ogen.NewOptInt(part.ID),
+			Title: ogen.NewOptString(part.Title),
+		}
+
+		if part.OriginalTitle != "" {
+			p.OriginalTitle = ogen.NewOptString(part.OriginalTitle)
+		}
+		if part.Overview != "" {
+			p.Overview = ogen.NewOptNilString(part.Overview)
+		}
+		if part.ReleaseDate != "" {
+			// Parse date
+			date, dateErr := parseDate(part.ReleaseDate)
+			if dateErr == nil {
+				p.ReleaseDate = ogen.NewOptNilDate(date)
+			}
+		}
+		if part.PosterPath != nil {
+			p.PosterPath = ogen.NewOptNilString(*part.PosterPath)
+		}
+		if part.BackdropPath != nil {
+			p.BackdropPath = ogen.NewOptNilString(*part.BackdropPath)
+		}
+		p.VoteAverage = ogen.NewOptFloat32(float32(part.VoteAverage))
+		p.VoteCount = ogen.NewOptInt(part.VoteCount)
+		p.Popularity = ogen.NewOptFloat32(float32(part.Popularity))
+
+		parts = append(parts, p)
+	}
+	response.Parts = parts
+
+	return response, nil
+}
+
+// parseDate parses a date string in YYYY-MM-DD format.
+func parseDate(dateStr string) (time.Time, error) {
+	return time.Parse("2006-01-02", dateStr)
 }
 
 // Helper functions

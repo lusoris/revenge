@@ -60,6 +60,30 @@ type ServerConfig struct {
 
 	// ShutdownTimeout is the maximum duration to wait for active connections to finish.
 	ShutdownTimeout time.Duration `koanf:"shutdown_timeout"`
+
+	// RateLimit configures API rate limiting.
+	RateLimit RateLimitConfig `koanf:"rate_limit"`
+}
+
+// RateLimitConfig holds rate limiting configuration.
+type RateLimitConfig struct {
+	// Enabled controls whether rate limiting is active.
+	Enabled bool `koanf:"enabled"`
+
+	// Global configures global rate limiting for all endpoints.
+	Global RateLimitTier `koanf:"global"`
+
+	// Auth configures stricter rate limiting for auth endpoints.
+	Auth RateLimitTier `koanf:"auth"`
+}
+
+// RateLimitTier holds rate limiting settings for a specific tier.
+type RateLimitTier struct {
+	// RequestsPerSecond is the number of requests allowed per second per IP.
+	RequestsPerSecond float64 `koanf:"requests_per_second"`
+
+	// Burst is the maximum number of requests allowed in a burst.
+	Burst int `koanf:"burst"`
 }
 
 // DatabaseConfig holds database connection configuration.

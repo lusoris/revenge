@@ -368,3 +368,87 @@ func (h *Handler) GetCollectionMovies(ctx context.Context, params ogen.GetCollec
 
 	return (*ogen.GetCollectionMoviesOKApplicationJSON)(&result), nil
 }
+
+// GetSimilarMovies returns movies similar to the given movie.
+func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMoviesParams) (ogen.GetSimilarMoviesRes, error) {
+	// Get the movie to find its TMDb ID
+	m, err := h.movieHandler.GetMovie(ctx, params.ID.String())
+	if err != nil {
+		if err == movie.ErrMovieNotFound {
+			return &ogen.GetSimilarMoviesNotFound{}, nil
+		}
+		return nil, err
+	}
+
+	if m.TMDbID == nil {
+		return &ogen.SimilarMoviesResponse{
+			MovieID:       ogen.NewOptUUID(params.ID),
+			SimilarMovies: []ogen.SimilarMovie{},
+			TotalResults:  ogen.NewOptInt(0),
+		}, nil
+	}
+
+	// Get similar movies from TMDb
+	similar, totalResults, err := h.metadataService.GetSimilarMovies(ctx, int(*m.TMDbID))
+	if err != nil {
+		return nil, err
+	}
+
+	// Get all TMDb IDs in library for in_library flag
+	libraryTMDbIDs := make(map[int32]bool)
+	libraryMovies, _ := h.movieHandler.ListMovies(ctx, movie.ListMoviesParams{Limit: 10000})
+	for _, lm := range libraryMovies {
+		if lm.TMDbID != nil {
+			libraryTMDbIDs[*lm.TMDbID] = true
+		}
+	}
+
+	// Convert to API response
+	similarMovies := make([]ogen.SimilarMovie, 0, len(similar))
+	for _, sm := range similar {
+		sim := ogen.SimilarMovie{
+			Title: ogen.NewOptString(sm.Title),
+		}
+
+		if sm.TMDbID != nil {
+			sim.TmdbID = ogen.NewOptInt(int(*sm.TMDbID))
+			sim.InLibrary = ogen.NewOptBool(libraryTMDbIDs[*sm.TMDbID])
+		}
+		if sm.OriginalTitle != nil {
+			sim.OriginalTitle = ogen.NewOptString(*sm.OriginalTitle)
+		}
+		if sm.Overview != nil {
+			sim.Overview = ogen.NewOptNilString(*sm.Overview)
+		}
+		if sm.ReleaseDate != nil {
+			sim.ReleaseDate = ogen.NewOptNilDate(*sm.ReleaseDate)
+		}
+		if sm.PosterPath != nil {
+			sim.PosterPath = ogen.NewOptNilString(*sm.PosterPath)
+		}
+		if sm.BackdropPath != nil {
+			sim.BackdropPath = ogen.NewOptNilString(*sm.BackdropPath)
+		}
+		if sm.VoteAverage != nil {
+			if f, ok := sm.VoteAverage.Float64(); ok {
+				sim.VoteAverage = ogen.NewOptFloat32(float32(f))
+			}
+		}
+		if sm.VoteCount != nil {
+			sim.VoteCount = ogen.NewOptInt(int(*sm.VoteCount))
+		}
+		if sm.Popularity != nil {
+			if f, ok := sm.Popularity.Float64(); ok {
+				sim.Popularity = ogen.NewOptFloat32(float32(f))
+			}
+		}
+
+		similarMovies = append(similarMovies, sim)
+	}
+
+	return &ogen.SimilarMoviesResponse{
+		MovieID:       ogen.NewOptUUID(params.ID),
+		SimilarMovies: similarMovies,
+		TotalResults:  ogen.NewOptInt(totalResults),
+	}, nil
+}

@@ -210,6 +210,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/collections/{id}
 	GetCollection(ctx context.Context, params GetCollectionParams) (GetCollectionRes, error)
+	// GetCollectionMetadata invokes getCollectionMetadata operation.
+	//
+	// Fetch detailed collection information from TMDb by collection ID.
+	// Returns collection metadata including all movies in the collection.
+	//
+	// GET /api/v1/metadata/collection/{tmdbId}
+	GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error)
 	// GetCollectionMovies invokes getCollectionMovies operation.
 	//
 	// Get all movies in a collection.
@@ -343,6 +350,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/settings/server/{key}
 	GetServerSetting(ctx context.Context, params GetServerSettingParams) (GetServerSettingRes, error)
+	// GetSimilarMovies invokes getSimilarMovies operation.
+	//
+	// Get movies similar to this one based on TMDb recommendations.
+	//
+	// GET /api/v1/movies/{id}/similar
+	GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (GetSimilarMoviesRes, error)
 	// GetStartup invokes getStartup operation.
 	//
 	// Checks if the service has completed initialization.
@@ -4092,6 +4105,131 @@ func (c *Client) sendGetCollection(ctx context.Context, params GetCollectionPara
 	return result, nil
 }
 
+// GetCollectionMetadata invokes getCollectionMetadata operation.
+//
+// Fetch detailed collection information from TMDb by collection ID.
+// Returns collection metadata including all movies in the collection.
+//
+// GET /api/v1/metadata/collection/{tmdbId}
+func (c *Client) GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error) {
+	res, err := c.sendGetCollectionMetadata(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (res GetCollectionMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getCollectionMetadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/collection/{tmdbId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetCollectionMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/metadata/collection/"
+	{
+		// Encode "tmdbId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tmdbId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.TmdbId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetCollectionMetadataOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetCollectionMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetCollectionMovies invokes getCollectionMovies operation.
 //
 // Get all movies in a collection.
@@ -6616,6 +6754,131 @@ func (c *Client) sendGetServerSetting(ctx context.Context, params GetServerSetti
 
 	stage = "DecodeResponse"
 	result, err := decodeGetServerSettingResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSimilarMovies invokes getSimilarMovies operation.
+//
+// Get movies similar to this one based on TMDb recommendations.
+//
+// GET /api/v1/movies/{id}/similar
+func (c *Client) GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (GetSimilarMoviesRes, error) {
+	res, err := c.sendGetSimilarMovies(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (res GetSimilarMoviesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSimilarMovies"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/movies/{id}/similar"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSimilarMoviesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/v1/movies/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/similar"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetSimilarMoviesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSimilarMoviesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

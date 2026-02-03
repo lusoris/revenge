@@ -260,6 +260,39 @@ func (c *TMDbClient) DownloadImage(ctx context.Context, path string, size string
 	return resp.Body(), nil
 }
 
+// GetSimilarMovies returns movies similar to the given movie.
+func (c *TMDbClient) GetSimilarMovies(ctx context.Context, tmdbID int) (*TMDbSearchResponse, error) {
+	cacheKey := fmt.Sprintf("similar:%d", tmdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		return cached.(*TMDbSearchResponse), nil
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result TMDbSearchResponse
+	var errResp TMDbError
+
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("api_key", c.apiKey).
+		SetResult(&result).
+		SetError(&errResp).
+		Get(fmt.Sprintf("/movie/%d/similar", tmdbID))
+
+	if err != nil {
+		return nil, fmt.Errorf("tmdb api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, c.parseError(resp.StatusCode(), &errResp)
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
 func (c *TMDbClient) getFromCache(key string) interface{} {
 	if val, ok := c.cache.Load(key); ok {
 		entry := val.(*CacheEntry)
