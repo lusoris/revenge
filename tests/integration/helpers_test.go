@@ -1,5 +1,3 @@
-//go:build integration
-
 package integration
 
 import (
@@ -18,6 +16,15 @@ import (
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/apikeys"
+	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/service/rbac"
+	"github.com/lusoris/revenge/internal/service/session"
+	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/internal/testutil"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxtest"
@@ -69,6 +76,19 @@ func setupServer(t *testing.T) *TestServer {
 		search.Module,
 		jobs.Module,
 		health.Module,
+
+		// Service modules (required by API)
+		user.Module,
+		auth.Module,
+		session.Module,
+		settings.Module,
+		rbac.Module,
+		apikeys.Module,
+		oidc.Module,
+		activity.Module,
+		library.Module,
+
+		// API module
 		api.Module,
 	)
 
