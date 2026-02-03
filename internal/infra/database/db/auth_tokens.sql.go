@@ -2,6 +2,10 @@
 // versions:
 //   sqlc v1.30.0
 // source: auth_tokens.sql
+//
+// Security note: gosec G101 warnings suppressed - these are SQL query names
+// and field names (like TokenHash), not actual credentials or secrets.
+// #nosec G101 -- SQLC generated code, query/field names not credentials
 
 package db
 

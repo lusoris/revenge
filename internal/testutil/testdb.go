@@ -288,7 +288,14 @@ func StopSharedPostgres() {
 
 // cleanupOrphanedPostgres kills any postgres processes listening on the test port
 func cleanupOrphanedPostgres() {
+	// Validate port is in safe range (to prevent command injection even though it's a constant)
+	if sharedPort < 1024 || sharedPort > 65535 {
+		return // Invalid port, skip cleanup
+	}
+
 	// Kill any process listening on our port
+	// Safe: sharedPort is validated and only numeric
+	// #nosec G204 -- port is validated constant, not user input
 	cmd := exec.Command("sh", "-c", fmt.Sprintf("lsof -ti:%d 2>/dev/null | xargs -r kill -9 2>/dev/null || true", sharedPort))
 	_ = cmd.Run()
 

@@ -2,6 +2,10 @@
 // versions:
 //   sqlc v1.30.0
 // source: sessions.sql
+//
+// Security note: gosec G101 warnings suppressed - these are SQL query names,
+// not actual credentials or secrets.
+// #nosec G101 -- SQLC generated code, query names not credentials
 
 package db
 
