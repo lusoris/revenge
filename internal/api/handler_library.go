@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/validate"
 	"go.uber.org/zap"
 )
 
@@ -347,10 +348,26 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	limit := int32(20)
 	offset := int32(0)
 	if params.Limit.IsSet() {
-		limit = int32(params.Limit.Value)
+		l, err := validate.SafeInt32(params.Limit.Value)
+		if err != nil {
+			h.logger.Error("invalid limit value", zap.Error(err))
+			return &ogen.ListLibraryScansForbidden{
+				Code:    400,
+				Message: "Invalid limit parameter",
+			}, nil
+		}
+		limit = l
 	}
 	if params.Offset.IsSet() {
-		offset = int32(params.Offset.Value)
+		o, err := validate.SafeInt32(params.Offset.Value)
+		if err != nil {
+			h.logger.Error("invalid offset value", zap.Error(err))
+			return &ogen.ListLibraryScansForbidden{
+				Code:    400,
+				Message: "Invalid offset parameter",
+			}, nil
+		}
+		offset = o
 	}
 
 	scans, total, err := h.libraryService.ListScans(ctx, params.LibraryId, limit, offset)
