@@ -1,6 +1,9 @@
 -- Rollback schema creation
 -- Drop schemas in reverse order (qar, shared, keep public)
 
+-- Drop utility function
+DROP FUNCTION IF EXISTS shared.update_updated_at_column CASCADE;
+
 -- Drop qar schema and all its objects
 DROP SCHEMA IF EXISTS qar CASCADE;
 

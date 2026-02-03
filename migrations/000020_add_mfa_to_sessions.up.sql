@@ -6,7 +6,7 @@ ALTER TABLE shared.sessions
     ADD COLUMN mfa_verified_at TIMESTAMPTZ;
 
 -- Index for querying MFA-verified sessions
-CREATE INDEX idx_sessions_mfa_verified ON shared.sessions(user_id, mfa_verified) 
+CREATE INDEX idx_sessions_mfa_verified ON shared.sessions(user_id, mfa_verified)
     WHERE revoked_at IS NULL;
 
 -- Comments
