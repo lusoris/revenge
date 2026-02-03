@@ -13,6 +13,97 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// Audit log for tracking user actions and system events
+type ActivityLog struct {
+	ID       uuid.UUID   `json:"id"`
+	UserID   pgtype.UUID `json:"userId"`
+	Username *string     `json:"username"`
+	// Action type: user.login, user.logout, library.create, settings.update, etc.
+	Action       string      `json:"action"`
+	ResourceType *string     `json:"resourceType"`
+	ResourceID   pgtype.UUID `json:"resourceId"`
+	// JSON object with field changes: {"field": {"old": "...", "new": "..."}}
+	Changes []byte `json:"changes"`
+	// Additional context data as JSON
+	Metadata     []byte     `json:"metadata"`
+	IpAddress    netip.Addr `json:"ipAddress"`
+	UserAgent    *string    `json:"userAgent"`
+	Success      *bool      `json:"success"`
+	ErrorMessage *string    `json:"errorMessage"`
+	CreatedAt    time.Time  `json:"createdAt"`
+}
+
+// Media libraries organizing content by type and location
+type Library struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+	// Library content type: movie, tvshow, music, photo, book, audiobook, comic, podcast, adult
+	Type string `json:"type"`
+	// Array of file system paths to scan for this library
+	Paths              []string `json:"paths"`
+	Enabled            bool     `json:"enabled"`
+	ScanOnStartup      bool     `json:"scanOnStartup"`
+	RealtimeMonitoring bool     `json:"realtimeMonitoring"`
+	// Primary metadata provider: tmdb, tvdb, musicbrainz, openlib, etc.
+	MetadataProvider  *string `json:"metadataProvider"`
+	PreferredLanguage string  `json:"preferredLanguage"`
+	// Type-specific scanner configuration as JSONB
+	ScannerConfig []byte    `json:"scannerConfig"`
+	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+}
+
+// Per-user access permissions to libraries
+type LibraryPermission struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	// Permission type: view, download, manage
+	Permission string    `json:"permission"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
+// Track library scan jobs and their progress
+type LibraryScan struct {
+	ID        uuid.UUID `json:"id"`
+	LibraryID uuid.UUID `json:"libraryId"`
+	// Type of scan: full, incremental, metadata
+	ScanType string `json:"scanType"`
+	// Scan status: pending, running, completed, failed, cancelled
+	Status          string             `json:"status"`
+	ItemsScanned    int32              `json:"itemsScanned"`
+	ItemsAdded      int32              `json:"itemsAdded"`
+	ItemsUpdated    int32              `json:"itemsUpdated"`
+	ItemsRemoved    int32              `json:"itemsRemoved"`
+	ErrorsCount     int32              `json:"errorsCount"`
+	ErrorMessage    *string            `json:"errorMessage"`
+	StartedAt       pgtype.Timestamptz `json:"startedAt"`
+	CompletedAt     pgtype.Timestamptz `json:"completedAt"`
+	DurationSeconds *int32             `json:"durationSeconds"`
+	CreatedAt       time.Time          `json:"createdAt"`
+}
+
+// API keys for programmatic access with scope-based permissions
+type SharedApiKey struct {
+	ID          uuid.UUID `json:"id"`
+	UserID      uuid.UUID `json:"userId"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	// SHA-256 hash of the API key (never store plaintext)
+	KeyHash string `json:"keyHash"`
+	// First 8 chars for key identification (rv_xxxxxxxx)
+	KeyPrefix string `json:"keyPrefix"`
+	// Permission scopes: read, write, admin
+	Scopes []string `json:"scopes"`
+	// Key can be revoked by setting to false
+	IsActive  bool               `json:"isActive"`
+	ExpiresAt pgtype.Timestamptz `json:"expiresAt"`
+	// Timestamp of last successful authentication
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
 // JWT refresh tokens for persistent user sessions
 type SharedAuthToken struct {
 	ID     uuid.UUID `json:"id"`
@@ -33,6 +124,22 @@ type SharedAuthToken struct {
 	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
+// Default policies created. First user should be assigned admin role manually.
+type SharedCasbinRule struct {
+	ID int32 `json:"id"`
+	// Policy type: p (policy) or g (role)
+	Ptype string `json:"ptype"`
+	// Subject (user/role)
+	V0 *string `json:"v0"`
+	// Object (resource)
+	V1 *string `json:"v1"`
+	// Action (read/write/delete)
+	V2 *string `json:"v2"`
+	V3 *string `json:"v3"`
+	V4 *string `json:"v4"`
+	V5 *string `json:"v5"`
+}
+
 // One-time tokens for email verification and email change flow
 type SharedEmailVerificationToken struct {
 	ID     uuid.UUID `json:"id"`
@@ -47,6 +154,58 @@ type SharedEmailVerificationToken struct {
 	// Timestamp when token was used (prevents reuse)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+type SharedOidcProvider struct {
+	ID                    uuid.UUID       `json:"id"`
+	Name                  string          `json:"name"`
+	DisplayName           string          `json:"displayName"`
+	ProviderType          string          `json:"providerType"`
+	IssuerUrl             string          `json:"issuerUrl"`
+	ClientID              string          `json:"clientId"`
+	ClientSecretEncrypted []byte          `json:"clientSecretEncrypted"`
+	AuthorizationEndpoint *string         `json:"authorizationEndpoint"`
+	TokenEndpoint         *string         `json:"tokenEndpoint"`
+	UserinfoEndpoint      *string         `json:"userinfoEndpoint"`
+	JwksUri               *string         `json:"jwksUri"`
+	EndSessionEndpoint    *string         `json:"endSessionEndpoint"`
+	Scopes                []string        `json:"scopes"`
+	ClaimMappings         json.RawMessage `json:"claimMappings"`
+	RoleMappings          json.RawMessage `json:"roleMappings"`
+	AutoCreateUsers       bool            `json:"autoCreateUsers"`
+	UpdateUserInfo        bool            `json:"updateUserInfo"`
+	AllowLinking          bool            `json:"allowLinking"`
+	IsEnabled             bool            `json:"isEnabled"`
+	IsDefault             bool            `json:"isDefault"`
+	CreatedAt             time.Time       `json:"createdAt"`
+	UpdatedAt             time.Time       `json:"updatedAt"`
+}
+
+type SharedOidcState struct {
+	ID           uuid.UUID   `json:"id"`
+	State        string      `json:"state"`
+	CodeVerifier *string     `json:"codeVerifier"`
+	ProviderID   uuid.UUID   `json:"providerId"`
+	UserID       pgtype.UUID `json:"userId"`
+	RedirectUrl  *string     `json:"redirectUrl"`
+	ExpiresAt    time.Time   `json:"expiresAt"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type SharedOidcUserLink struct {
+	ID                    uuid.UUID          `json:"id"`
+	UserID                uuid.UUID          `json:"userId"`
+	ProviderID            uuid.UUID          `json:"providerId"`
+	Subject               string             `json:"subject"`
+	Email                 *string            `json:"email"`
+	Name                  *string            `json:"name"`
+	PictureUrl            *string            `json:"pictureUrl"`
+	AccessTokenEncrypted  []byte             `json:"accessTokenEncrypted"`
+	RefreshTokenEncrypted []byte             `json:"refreshTokenEncrypted"`
+	TokenExpiresAt        pgtype.Timestamptz `json:"tokenExpiresAt"`
+	LastLoginAt           pgtype.Timestamptz `json:"lastLoginAt"`
+	CreatedAt             time.Time          `json:"createdAt"`
+	UpdatedAt             time.Time          `json:"updatedAt"`
 }
 
 // One-time tokens for password reset flow
@@ -85,31 +244,24 @@ type SharedServerSetting struct {
 	UpdatedBy     pgtype.UUID    `json:"updatedBy"`
 }
 
-// User sessions and refresh tokens
+// User sessions with JWT token management
 type SharedSession struct {
-	// Unique session identifier
-	ID uuid.UUID `json:"id"`
-	// User who owns this session
+	ID     uuid.UUID `json:"id"`
 	UserID uuid.UUID `json:"userId"`
-	// Refresh token (secure random string)
-	RefreshToken string `json:"refreshToken"`
-	// Optional hash of current access token
-	AccessTokenHash *string `json:"accessTokenHash"`
-	// IP address of the session
-	IpAddress netip.Addr `json:"ipAddress"`
-	// User agent string
-	UserAgent *string `json:"userAgent"`
-	// Friendly device name (e.g., "iPhone 12")
-	DeviceName *string `json:"deviceName"`
-	// When the refresh token expires
-	ExpiresAt time.Time `json:"expiresAt"`
-	// Whether the session is active
-	IsActive bool `json:"isActive"`
-	// When the session was revoked (if applicable)
-	RevokedAt pgtype.Timestamptz `json:"revokedAt"`
-	CreatedAt time.Time          `json:"createdAt"`
-	// When the session was last used
-	LastUsedAt time.Time `json:"lastUsedAt"`
+	// SHA256 hash of JWT access token for validation
+	TokenHash string `json:"tokenHash"`
+	// SHA256 hash of refresh token for token rotation
+	RefreshTokenHash *string    `json:"refreshTokenHash"`
+	IpAddress        netip.Addr `json:"ipAddress"`
+	UserAgent        *string    `json:"userAgent"`
+	DeviceName       *string    `json:"deviceName"`
+	// OAuth2-style scopes (e.g., legacy:read for QAR access)
+	Scopes         []string           `json:"scopes"`
+	ExpiresAt      time.Time          `json:"expiresAt"`
+	LastActivityAt time.Time          `json:"lastActivityAt"`
+	CreatedAt      time.Time          `json:"createdAt"`
+	RevokedAt      pgtype.Timestamptz `json:"revokedAt"`
+	RevokeReason   *string            `json:"revokeReason"`
 }
 
 // User accounts with authentication and profile information
