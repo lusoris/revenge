@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-03 19:35
-**Current Focus**: Movie Module Backend - Core Complete ✅
-**Status**: MFA Complete → Movie Module Foundation Complete
+**Last Updated**: 2026-02-03 20:15
+**Current Focus**: Movie Module - TMDb Metadata Service
+**Status**: Backend Complete ✅ → TMDb Integration 🟡
 
 ---
 
@@ -272,7 +272,7 @@
 - [ ] Match files to movies
 - [ ] Handle file changes
 
-#### API Handlers ✅ COMPLETE (Structure)
+#### API Handlers ✅ COMPLETE
 - [x] `GET /api/v1/movies` (list, paginated) ✅
 - [x] `GET /api/v1/movies/:id` ✅
 - [x] `GET /api/v1/movies/:id/files` ✅
@@ -289,10 +289,13 @@
 - [x] `GET /api/v1/movies/continue-watching` ✅
 - [x] `GET /api/v1/movies/watch-history` ✅
 - [x] `GET /api/v1/movies/stats` ✅
-- [ ] OpenAPI spec integration (ogen)
-- [ ] Wire handlers into API server
+- [x] OpenAPI spec integration (ogen) ✅
+- [x] Wire handlers into API server ✅
+- [x] Type converters (domain ↔ ogen) ✅
 
-**Commit**: f18891b880 - feat(movie): add HTTP handlers and integrate into app
+**Commits**:
+- f18891b880 - feat(movie): add HTTP handlers and integrate into app
+- 59fb5d1350 - feat: Add Movie Module backend foundation
 
 #### River Jobs
 - [ ] MovieMetadataRefreshJob
@@ -313,11 +316,17 @@
 
 ### Metadata Service (TMDb)
 
-#### TMDb Client
+#### TMDb Client 🟡 IN PROGRESS
 - [ ] API key configuration
-- [ ] Rate limiting (50 req/s)
+- [ ] Rate limiting (40 req/10s)
 - [ ] Retry with backoff
 - [ ] Response caching
+- [ ] TMDb types (Movie, Credits, Images, Collections)
+- [ ] TMDb client (SearchMovies, GetMovie, GetCredits, GetImages)
+- [ ] TMDb mapper (TMDb → domain types)
+- [ ] Metadata service (unified interface)
+
+**Status**: Design complete, ready for implementation
 
 #### TMDb Service
 - [ ] Search movie
