@@ -188,12 +188,47 @@ SESSION_CLEANUP_INTERVAL=1h
 ### Config Keys
 ```yaml
 session:
-  token_length: 32
-  expiry: 720h
-  refresh_token_expiry: 2160h
-  inactivity_timeout: 168h
+  token_length: 32                    # bytes (results in 64-char hex string)
+  token_hash_algorithm: sha256        # SHA-256 for token hashing
+  token_format: hex                   # Hex encoding for tokens
+  expiry: 720h                        # 30 days
+  refresh_token_expiry: 2160h         # 90 days
+  inactivity_timeout: 168h            # 7 days
   cleanup_interval: 1h
   max_sessions_per_user: 10
+```
+
+### Token Security Model
+
+**Token Generation**:
+- Generate 32 random bytes using `crypto/rand`
+- Hex encode → 64-character token string
+- Example: `a1b2c3d4e5f6...` (64 chars)
+
+**Token Storage**:
+- Hash token using SHA-256
+- Store only hash in database (never plaintext)
+- Hash format: Hex-encoded SHA-256 (64 chars)
+- Database column: `token_hash TEXT NOT NULL`
+
+**Why SHA-256 (not bcrypt/argon2id)?**:
+- Tokens are random, not user-chosen passwords
+- No need for slow key derivation
+- Fast lookup performance (session validation)
+- Sufficient security for ephemeral tokens
+
+**Implementation**:
+```go
+// Generate token
+token := make([]byte, 32)  // 32 bytes
+rand.Read(token)
+tokenStr := hex.EncodeToString(token)  // 64 hex chars
+
+// Hash for storage
+hash := sha256.Sum256([]byte(tokenStr))
+tokenHash := hex.EncodeToString(hash[:])  // 64 hex chars
+
+// Store tokenHash in database
 ```
 
 ## API Endpoints

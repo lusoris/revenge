@@ -28,10 +28,12 @@
 **Category**: service
 
 
-> > Server settings persistence and retrieval
+> > Server-level settings persistence and retrieval
 
 **Package**: `internal/service/settings`
 **fx Module**: `settings.Module`
+
+**Scope**: This service manages **server-level settings** (global configuration). For **per-user settings and preferences**, see [USER_SETTINGS.md](USER_SETTINGS.md).
 
 ---
 

@@ -120,6 +120,7 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 | RBAC | `internal/service/rbac` | `rbac.Module` | ✅ Complete | [RBAC.md](services/RBAC.md) |
 | Activity | `internal/service/activity` | `activity.Module` | ✅ Complete | [ACTIVITY.md](services/ACTIVITY.md) |
 | Settings | `internal/service/settings` | `settings.Module` | ✅ Complete | [SETTINGS.md](services/SETTINGS.md) |
+| User Settings | `internal/service/user_settings` | `user_settings.Module` | 🟡 Partial | [USER_SETTINGS.md](services/USER_SETTINGS.md) |
 | API Keys | `internal/service/apikeys` | `apikeys.Module` | ✅ Complete | [APIKEYS.md](services/APIKEYS.md) |
 | OIDC | `internal/service/oidc` | `oidc.Module` | ✅ Complete | [OIDC.md](services/OIDC.md) |
 | Grants | `internal/service/grants` | `grants.Module` | ✅ Complete | [GRANTS.md](services/GRANTS.md) |
@@ -153,9 +154,9 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 | `go.uber.org/fx` | v1.24.0 | Dependency injection | Lifecycle hooks, graceful shutdown |
 | `github.com/jackc/pgx/v5` | v5.8.0 | PostgreSQL driver | Self-healing pool via pgxpool |
 | `github.com/riverqueue/river` | v0.26.0 | Job queue | PostgreSQL-backed, transactional |
-| `github.com/redis/rueidis` | v1.0.49 | Redis/Dragonfly client | Pipelining, client-side cache |
-| `github.com/maypok86/otter` | v1.2.4 | In-memory cache | W-TinyLFU, faster than Ristretto |
-| `github.com/knadh/koanf/v2` | v2.3.0 | Configuration | Hot reload via Watch() |
+| `github.com/redis/rueidis` | v1.0.71 | Redis/Dragonfly client | Pipelining, client-side cache |
+| `github.com/maypok86/otter/v2` | v2.3.0 | In-memory cache | W-TinyLFU, faster than Ristretto |
+| `github.com/knadh/koanf/v2` | v2.3.2 | Configuration | Hot reload via Watch() |
 | `github.com/ogen-go/ogen` | v1.18.0 | OpenAPI codegen | Type-safe handlers |
 | `github.com/golang-migrate/migrate/v4` | v4.19.1 | DB migrations | Embedded SQL support |
 | `github.com/gobwas/ws` | latest | WebSocket | Zero-alloc, maximum performance |
@@ -171,6 +172,7 @@ including flow diagrams, PRIMARY vs SUPPLEMENTARY provider terminology, and impl
 | `github.com/casbin/casbin/v2` | v2.135.0 | RBAC framework | Role-based policies |
 | `github.com/pckhoi/casbin-pgx-adapter/v3` | v3.2.0 | Casbin PostgreSQL | Async policy sync |
 | `github.com/open-policy-agent/opa` | v1.5.0 | Policy engine | Complex ABAC/data-driven policies |
+| `github.com/alexedwards/argon2id` | v1.0.0 | Password hashing | Secure defaults, timing-attack protection |
 | `golang.org/x/crypto` | v0.47.0 | Cryptography | Argon2, bcrypt, AES-GCM |
 | `github.com/pquerna/otp` | v1.4.0 | TOTP/HOTP (2FA) | RFC 6238/4226, QR codes, Google Authenticator compatible |
 | `github.com/go-webauthn/webauthn` | v0.11.2 | WebAuthn/FIDO2 | Passkeys, YubiKey, biometrics, W3C Level 3 |
