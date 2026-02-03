@@ -238,6 +238,20 @@ func encodeResetPasswordRequest(
 	return nil
 }
 
+func encodeSetupTOTPRequest(
+	req *SetupTOTPReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeTriggerLibraryScanRequest(
 	req *TriggerLibraryScanReq,
 	r *http.Request,
@@ -345,6 +359,20 @@ func encodeUploadAvatarRequest(
 
 func encodeVerifyEmailRequest(
 	req *VerifyEmailRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeVerifyTOTPRequest(
+	req *VerifyTOTPReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

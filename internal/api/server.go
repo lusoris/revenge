@@ -13,6 +13,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -46,11 +47,23 @@ type ServerParams struct {
 	ActivityService *activity.Service
 	LibraryService  *library.Service
 	TokenManager    auth.TokenManager
-	Lifecycle       fx.Lifecycle
+	// MFA services
+	TOTPService        *mfa.TOTPService
+	BackupCodesService *mfa.BackupCodesService
+	MFAManager         *mfa.MFAManager
+	Lifecycle          fx.Lifecycle
 }
 
 // NewServer creates a new HTTP API server with ogen-generated handlers.
 func NewServer(p ServerParams) (*Server, error) {
+	// Create MFA handler
+	mfaHandler := NewMFAHandler(
+		p.TOTPService,
+		p.BackupCodesService,
+		p.MFAManager,
+		p.Logger.Named("mfa"),
+	)
+
 	// Create the handler implementation
 	handler := &Handler{
 		logger:          p.Logger.Named("api"),
@@ -66,6 +79,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		activityService: p.ActivityService,
 		libraryService:  p.LibraryService,
 		tokenManager:    p.TokenManager,
+		mfaHandler:      mfaHandler,
 	}
 
 	// Create ogen server

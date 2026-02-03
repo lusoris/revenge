@@ -61,8 +61,24 @@ type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
 
+type DisableMFARes interface {
+	disableMFARes()
+}
+
+type DisableTOTPRes interface {
+	disableTOTPRes()
+}
+
+type EnableMFARes interface {
+	enableMFARes()
+}
+
 type ForgotPasswordRes interface {
 	forgotPasswordRes()
+}
+
+type GenerateBackupCodesRes interface {
+	generateBackupCodesRes()
 }
 
 type GetAPIKeyRes interface {
@@ -83,6 +99,10 @@ type GetCurrentUserRes interface {
 
 type GetLibraryRes interface {
 	getLibraryRes()
+}
+
+type GetMFAStatusRes interface {
+	getMFAStatusRes()
 }
 
 type GetReadinessRes interface {
@@ -201,6 +221,10 @@ type RefreshTokenRes interface {
 	refreshTokenRes()
 }
 
+type RegenerateBackupCodesRes interface {
+	regenerateBackupCodesRes()
+}
+
 type RegisterRes interface {
 	registerRes()
 }
@@ -237,6 +261,10 @@ type SearchActivityLogsRes interface {
 	searchActivityLogsRes()
 }
 
+type SetupTOTPRes interface {
+	setupTOTPRes()
+}
+
 type TriggerLibraryScanRes interface {
 	triggerLibraryScanRes()
 }
@@ -271,4 +299,8 @@ type UploadAvatarRes interface {
 
 type VerifyEmailRes interface {
 	verifyEmailRes()
+}
+
+type VerifyTOTPRes interface {
+	verifyTOTPRes()
 }

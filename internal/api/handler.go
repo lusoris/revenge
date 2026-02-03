@@ -36,6 +36,7 @@ type Handler struct {
 	activityService *activity.Service
 	libraryService  *library.Service
 	tokenManager    auth.TokenManager
+	mfaHandler      *MFAHandler
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.
@@ -763,4 +764,38 @@ func (h *Handler) ChangePassword(ctx context.Context, req *ogen.ChangePasswordRe
 
 	h.logger.Info("Password changed successfully")
 	return &ogen.ChangePasswordNoContent{}, nil
+}
+
+// MFA-related methods - delegate to MFAHandler
+
+func (h *Handler) GetMFAStatus(ctx context.Context) (ogen.GetMFAStatusRes, error) {
+	return h.mfaHandler.GetMFAStatus(ctx)
+}
+
+func (h *Handler) SetupTOTP(ctx context.Context, req *ogen.SetupTOTPReq) (ogen.SetupTOTPRes, error) {
+	return h.mfaHandler.SetupTOTP(ctx, req)
+}
+
+func (h *Handler) VerifyTOTP(ctx context.Context, req *ogen.VerifyTOTPReq) (ogen.VerifyTOTPRes, error) {
+	return h.mfaHandler.VerifyTOTP(ctx, req)
+}
+
+func (h *Handler) DisableTOTP(ctx context.Context) (ogen.DisableTOTPRes, error) {
+	return h.mfaHandler.DisableTOTP(ctx)
+}
+
+func (h *Handler) GenerateBackupCodes(ctx context.Context) (ogen.GenerateBackupCodesRes, error) {
+	return h.mfaHandler.GenerateBackupCodes(ctx)
+}
+
+func (h *Handler) RegenerateBackupCodes(ctx context.Context) (ogen.RegenerateBackupCodesRes, error) {
+	return h.mfaHandler.RegenerateBackupCodes(ctx)
+}
+
+func (h *Handler) EnableMFA(ctx context.Context) (ogen.EnableMFARes, error) {
+	return h.mfaHandler.EnableMFA(ctx)
+}
+
+func (h *Handler) DisableMFA(ctx context.Context) (ogen.DisableMFARes, error) {
+	return h.mfaHandler.DisableMFA(ctx)
 }

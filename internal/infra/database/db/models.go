@@ -87,7 +87,7 @@ type LibraryScan struct {
 type MfaBackupCode struct {
 	ID     uuid.UUID `json:"id"`
 	UserID uuid.UUID `json:"userId"`
-	// Bcrypt hash of the backup code (codes are 16 chars alphanumeric)
+	// Argon2id hash of the backup code (codes are 16 chars hex-encoded)
 	CodeHash string `json:"codeHash"`
 	// When this code was used (NULL if unused)
 	UsedAt pgtype.Timestamptz `json:"usedAt"`

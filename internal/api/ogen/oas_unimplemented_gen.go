@@ -148,12 +148,48 @@ func (UnimplementedHandler) DeleteUserSetting(ctx context.Context, params Delete
 	return r, ht.ErrNotImplemented
 }
 
+// DisableMFA implements disableMFA operation.
+//
+// Turn off MFA requirement for login.
+//
+// POST /api/v1/mfa/disable
+func (UnimplementedHandler) DisableMFA(ctx context.Context) (r DisableMFARes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// DisableTOTP implements disableTOTP operation.
+//
+// Remove TOTP from user's MFA methods.
+//
+// DELETE /api/v1/mfa/totp
+func (UnimplementedHandler) DisableTOTP(ctx context.Context) (r DisableTOTPRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// EnableMFA implements enableMFA operation.
+//
+// Require MFA for login (at least one method must be configured).
+//
+// POST /api/v1/mfa/enable
+func (UnimplementedHandler) EnableMFA(ctx context.Context) (r EnableMFARes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ForgotPassword implements forgotPassword operation.
 //
 // Send password reset token to user's email address.
 //
 // POST /api/v1/auth/forgot-password
 func (UnimplementedHandler) ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (r ForgotPasswordRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GenerateBackupCodes implements generateBackupCodes operation.
+//
+// Generate new set of 10 one-time use backup codes.
+//
+// POST /api/v1/mfa/backup-codes/generate
+func (UnimplementedHandler) GenerateBackupCodes(ctx context.Context) (r GenerateBackupCodesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -210,6 +246,15 @@ func (UnimplementedHandler) GetLibrary(ctx context.Context, params GetLibraryPar
 //
 // GET /healthz
 func (UnimplementedHandler) GetLiveness(ctx context.Context) (r *HealthCheck, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMFAStatus implements getMFAStatus operation.
+//
+// Get current MFA configuration status for authenticated user.
+//
+// GET /api/v1/mfa/status
+func (UnimplementedHandler) GetMFAStatus(ctx context.Context) (r GetMFAStatusRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -487,6 +532,15 @@ func (UnimplementedHandler) RefreshToken(ctx context.Context, req *RefreshReques
 	return r, ht.ErrNotImplemented
 }
 
+// RegenerateBackupCodes implements regenerateBackupCodes operation.
+//
+// Delete all existing backup codes and generate a new set.
+//
+// POST /api/v1/mfa/backup-codes/regenerate
+func (UnimplementedHandler) RegenerateBackupCodes(ctx context.Context) (r RegenerateBackupCodesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Register implements register operation.
 //
 // Create a new user account with username, email, and password.
@@ -568,6 +622,15 @@ func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params Searc
 	return r, ht.ErrNotImplemented
 }
 
+// SetupTOTP implements setupTOTP operation.
+//
+// Generate TOTP secret and QR code for enrollment.
+//
+// POST /api/v1/mfa/totp/setup
+func (UnimplementedHandler) SetupTOTP(ctx context.Context, req *SetupTOTPReq) (r SetupTOTPRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // TriggerLibraryScan implements triggerLibraryScan operation.
 //
 // Start a library scan job. Admin only.
@@ -646,6 +709,15 @@ func (UnimplementedHandler) UploadAvatar(ctx context.Context, req *UploadAvatarR
 //
 // POST /api/v1/auth/verify-email
 func (UnimplementedHandler) VerifyEmail(ctx context.Context, req *VerifyEmailRequest) (r VerifyEmailRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// VerifyTOTP implements verifyTOTP operation.
+//
+// Verify TOTP code to complete enrollment and enable TOTP.
+//
+// POST /api/v1/mfa/totp/verify
+func (UnimplementedHandler) VerifyTOTP(ctx context.Context, req *VerifyTOTPReq) (r VerifyTOTPRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

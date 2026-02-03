@@ -894,6 +894,209 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'm': // Prefix: "mfa/"
+
+					if l := len("mfa/"); len(elem) >= l && elem[0:l] == "mfa/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'b': // Prefix: "backup-codes/"
+
+						if l := len("backup-codes/"); len(elem) >= l && elem[0:l] == "backup-codes/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'g': // Prefix: "generate"
+
+							if l := len("generate"); len(elem) >= l && elem[0:l] == "generate" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleGenerateBackupCodesRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						case 'r': // Prefix: "regenerate"
+
+							if l := len("regenerate"); len(elem) >= l && elem[0:l] == "regenerate" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleRegenerateBackupCodesRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						}
+
+					case 'd': // Prefix: "disable"
+
+						if l := len("disable"); len(elem) >= l && elem[0:l] == "disable" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleDisableMFARequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 'e': // Prefix: "enable"
+
+						if l := len("enable"); len(elem) >= l && elem[0:l] == "enable" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleEnableMFARequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 's': // Prefix: "status"
+
+						if l := len("status"); len(elem) >= l && elem[0:l] == "status" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleGetMFAStatusRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+
+					case 't': // Prefix: "totp"
+
+						if l := len("totp"); len(elem) >= l && elem[0:l] == "totp" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "DELETE":
+								s.handleDisableTOTPRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 's': // Prefix: "setup"
+
+								if l := len("setup"); len(elem) >= l && elem[0:l] == "setup" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleSetupTOTPRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							case 'v': // Prefix: "verify"
+
+								if l := len("verify"); len(elem) >= l && elem[0:l] == "verify" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleVerifyTOTPRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							}
+
+						}
+
+					}
+
 				case 'o': // Prefix: "oidc/"
 
 					if l := len("oidc/"); len(elem) >= l && elem[0:l] == "oidc/" {
@@ -2695,6 +2898,249 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										}
 									}
 
+								}
+
+							}
+
+						}
+
+					}
+
+				case 'm': // Prefix: "mfa/"
+
+					if l := len("mfa/"); len(elem) >= l && elem[0:l] == "mfa/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'b': // Prefix: "backup-codes/"
+
+						if l := len("backup-codes/"); len(elem) >= l && elem[0:l] == "backup-codes/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'g': // Prefix: "generate"
+
+							if l := len("generate"); len(elem) >= l && elem[0:l] == "generate" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = GenerateBackupCodesOperation
+									r.summary = "Generate backup codes"
+									r.operationID = "generateBackupCodes"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/mfa/backup-codes/generate"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'r': // Prefix: "regenerate"
+
+							if l := len("regenerate"); len(elem) >= l && elem[0:l] == "regenerate" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = RegenerateBackupCodesOperation
+									r.summary = "Regenerate backup codes"
+									r.operationID = "regenerateBackupCodes"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/mfa/backup-codes/regenerate"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'd': // Prefix: "disable"
+
+						if l := len("disable"); len(elem) >= l && elem[0:l] == "disable" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = DisableMFAOperation
+								r.summary = "Disable MFA requirement"
+								r.operationID = "disableMFA"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/mfa/disable"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 'e': // Prefix: "enable"
+
+						if l := len("enable"); len(elem) >= l && elem[0:l] == "enable" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = EnableMFAOperation
+								r.summary = "Enable MFA requirement"
+								r.operationID = "enableMFA"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/mfa/enable"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 's': // Prefix: "status"
+
+						if l := len("status"); len(elem) >= l && elem[0:l] == "status" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = GetMFAStatusOperation
+								r.summary = "Get MFA status"
+								r.operationID = "getMFAStatus"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/mfa/status"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 't': // Prefix: "totp"
+
+						if l := len("totp"); len(elem) >= l && elem[0:l] == "totp" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								r.name = DisableTOTPOperation
+								r.summary = "Disable TOTP"
+								r.operationID = "disableTOTP"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/mfa/totp"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 's': // Prefix: "setup"
+
+								if l := len("setup"); len(elem) >= l && elem[0:l] == "setup" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = SetupTOTPOperation
+										r.summary = "Setup TOTP"
+										r.operationID = "setupTOTP"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/mfa/totp/setup"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'v': // Prefix: "verify"
+
+								if l := len("verify"); len(elem) >= l && elem[0:l] == "verify" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = VerifyTOTPOperation
+										r.summary = "Verify and enable TOTP"
+										r.operationID = "verifyTOTP"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/mfa/totp/verify"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
 								}
 
 							}

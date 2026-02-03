@@ -98,12 +98,36 @@ type Handler interface {
 	//
 	// DELETE /api/v1/settings/user/{key}
 	DeleteUserSetting(ctx context.Context, params DeleteUserSettingParams) (DeleteUserSettingRes, error)
+	// DisableMFA implements disableMFA operation.
+	//
+	// Turn off MFA requirement for login.
+	//
+	// POST /api/v1/mfa/disable
+	DisableMFA(ctx context.Context) (DisableMFARes, error)
+	// DisableTOTP implements disableTOTP operation.
+	//
+	// Remove TOTP from user's MFA methods.
+	//
+	// DELETE /api/v1/mfa/totp
+	DisableTOTP(ctx context.Context) (DisableTOTPRes, error)
+	// EnableMFA implements enableMFA operation.
+	//
+	// Require MFA for login (at least one method must be configured).
+	//
+	// POST /api/v1/mfa/enable
+	EnableMFA(ctx context.Context) (EnableMFARes, error)
 	// ForgotPassword implements forgotPassword operation.
 	//
 	// Send password reset token to user's email address.
 	//
 	// POST /api/v1/auth/forgot-password
 	ForgotPassword(ctx context.Context, req *ForgotPasswordRequest) (ForgotPasswordRes, error)
+	// GenerateBackupCodes implements generateBackupCodes operation.
+	//
+	// Generate new set of 10 one-time use backup codes.
+	//
+	// POST /api/v1/mfa/backup-codes/generate
+	GenerateBackupCodes(ctx context.Context) (GenerateBackupCodesRes, error)
 	// GetAPIKey implements getAPIKey operation.
 	//
 	// Get details of a specific API key.
@@ -142,6 +166,12 @@ type Handler interface {
 	//
 	// GET /healthz
 	GetLiveness(ctx context.Context) (*HealthCheck, error)
+	// GetMFAStatus implements getMFAStatus operation.
+	//
+	// Get current MFA configuration status for authenticated user.
+	//
+	// GET /api/v1/mfa/status
+	GetMFAStatus(ctx context.Context) (GetMFAStatusRes, error)
 	// GetReadiness implements getReadiness operation.
 	//
 	// Checks if the service is ready to accept traffic.
@@ -326,6 +356,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/refresh
 	RefreshToken(ctx context.Context, req *RefreshRequest) (RefreshTokenRes, error)
+	// RegenerateBackupCodes implements regenerateBackupCodes operation.
+	//
+	// Delete all existing backup codes and generate a new set.
+	//
+	// POST /api/v1/mfa/backup-codes/regenerate
+	RegenerateBackupCodes(ctx context.Context) (RegenerateBackupCodesRes, error)
 	// Register implements register operation.
 	//
 	// Create a new user account with username, email, and password.
@@ -380,6 +416,12 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity
 	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// SetupTOTP implements setupTOTP operation.
+	//
+	// Generate TOTP secret and QR code for enrollment.
+	//
+	// POST /api/v1/mfa/totp/setup
+	SetupTOTP(ctx context.Context, req *SetupTOTPReq) (SetupTOTPRes, error)
 	// TriggerLibraryScan implements triggerLibraryScan operation.
 	//
 	// Start a library scan job. Admin only.
@@ -434,6 +476,12 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/verify-email
 	VerifyEmail(ctx context.Context, req *VerifyEmailRequest) (VerifyEmailRes, error)
+	// VerifyTOTP implements verifyTOTP operation.
+	//
+	// Verify TOTP code to complete enrollment and enable TOTP.
+	//
+	// POST /api/v1/mfa/totp/verify
+	VerifyTOTP(ctx context.Context, req *VerifyTOTPReq) (VerifyTOTPRes, error)
 	// NewError creates *ErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.

@@ -24,6 +24,8 @@ tags:
     description: Health check endpoints for monitoring and Kubernetes probes
   - name: auth
     description: Authentication and user registration
+  - name: mfa
+    description: Multi-factor authentication (TOTP, WebAuthn, backup codes)
   - name: settings
     description: Server and user settings management
   - name: users
@@ -305,6 +307,240 @@ paths:
           description: Password changed successfully
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # MFA endpoints
+  /api/v1/mfa/status:
+    get:
+      summary: Get MFA status
+      description: Get current MFA configuration status for authenticated user
+      operationId: getMFAStatus
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MFA status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MFAStatus'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/totp/setup:
+    post:
+      summary: Setup TOTP
+      description: Generate TOTP secret and QR code for enrollment
+      operationId: setupTOTP
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accountName
+              properties:
+                accountName:
+                  type: string
+                  description: Account name to display in authenticator app (usually email or username)
+                  example: user@example.com
+      responses:
+        '200':
+          description: TOTP setup information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TOTPSetup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/totp/verify:
+    post:
+      summary: Verify and enable TOTP
+      description: Verify TOTP code to complete enrollment and enable TOTP
+      operationId: verifyTOTP
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  description: 6-digit TOTP code
+                  pattern: '^\d{6}$'
+                  example: "123456"
+      responses:
+        '200':
+          description: TOTP verified and enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: TOTP enabled successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/totp:
+    delete:
+      summary: Disable TOTP
+      description: Remove TOTP from user's MFA methods
+      operationId: disableTOTP
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: TOTP disabled successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/backup-codes/generate:
+    post:
+      summary: Generate backup codes
+      description: Generate new set of 10 one-time use backup codes
+      operationId: generateBackupCodes
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Backup codes generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codes:
+                    type: array
+                    items:
+                      type: string
+                      pattern: '^[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}$'
+                    description: List of backup codes (shown only once)
+                    example:
+                      - "1a2b-3c4d-5e6f-7890"
+                      - "9876-5432-10ab-cdef"
+                  count:
+                    type: integer
+                    example: 10
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/backup-codes/regenerate:
+    post:
+      summary: Regenerate backup codes
+      description: Delete all existing backup codes and generate a new set
+      operationId: regenerateBackupCodes
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Backup codes regenerated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  codes:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - "1a2b-3c4d-5e6f-7890"
+                  count:
+                    type: integer
+                    example: 10
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/enable:
+    post:
+      summary: Enable MFA requirement
+      description: Require MFA for login (at least one method must be configured)
+      operationId: enableMFA
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MFA requirement enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/disable:
+    post:
+      summary: Disable MFA requirement
+      description: Turn off MFA requirement for login
+      operationId: disableMFA
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: MFA requirement disabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -2325,6 +2561,48 @@ components:
           type: string
           minLength: 8
           description: New password (minimum 8 characters)
+
+    # MFA schemas
+    MFAStatus:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User ID
+        has_totp:
+          type: boolean
+          description: Whether TOTP is configured
+          example: true
+        webauthn_count:
+          type: integer
+          description: Number of WebAuthn credentials registered
+          example: 2
+        unused_backup_codes:
+          type: integer
+          description: Number of unused backup codes
+          example: 8
+        require_mfa:
+          type: boolean
+          description: Whether MFA is required for login
+          example: true
+
+    TOTPSetup:
+      type: object
+      properties:
+        secret:
+          type: string
+          description: Base32-encoded TOTP secret (for manual entry)
+          example: "JBSWY3DPEHPK3PXP"
+        qr_code:
+          type: string
+          format: byte
+          description: Base64-encoded PNG QR code
+        url:
+          type: string
+          format: uri
+          description: otpauth:// URL for the QR code
+          example: "otpauth://totp/Revenge:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Revenge"
 
     # Settings schemas
     ServerSetting:

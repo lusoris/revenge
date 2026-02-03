@@ -4,6 +4,7 @@ package ogen
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -2038,6 +2039,51 @@ type DeleteUserSettingUnauthorized Error
 
 func (*DeleteUserSettingUnauthorized) deleteUserSettingRes() {}
 
+type DisableMFAOK struct {
+	Success OptBool `json:"success"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *DisableMFAOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// SetSuccess sets the value of Success.
+func (s *DisableMFAOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+func (*DisableMFAOK) disableMFARes() {}
+
+// DisableTOTPNoContent is response for DisableTOTP operation.
+type DisableTOTPNoContent struct{}
+
+func (*DisableTOTPNoContent) disableTOTPRes() {}
+
+type EnableMFABadRequest Error
+
+func (*EnableMFABadRequest) enableMFARes() {}
+
+type EnableMFAOK struct {
+	Success OptBool `json:"success"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *EnableMFAOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// SetSuccess sets the value of Success.
+func (s *EnableMFAOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+func (*EnableMFAOK) enableMFARes() {}
+
+type EnableMFAUnauthorized Error
+
+func (*EnableMFAUnauthorized) enableMFARes() {}
+
 // Ref: #/components/schemas/Error
 type Error struct {
 	// HTTP status code.
@@ -2078,26 +2124,32 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
 
-func (*Error) forgotPasswordRes()     {}
-func (*Error) getCurrentUserRes()     {}
-func (*Error) getUserPreferencesRes() {}
-func (*Error) getUserRolesRes()       {}
-func (*Error) listAPIKeysRes()        {}
-func (*Error) listLibrariesRes()      {}
-func (*Error) listServerSettingsRes() {}
-func (*Error) listSessionsRes()       {}
-func (*Error) listUserOIDCLinksRes()  {}
-func (*Error) listUserSettingsRes()   {}
-func (*Error) logoutAllRes()          {}
-func (*Error) logoutCurrentRes()      {}
-func (*Error) logoutRes()             {}
-func (*Error) oidcAuthorizeRes()      {}
-func (*Error) oidcCallbackRes()       {}
-func (*Error) refreshSessionRes()     {}
-func (*Error) registerRes()           {}
-func (*Error) resendVerificationRes() {}
-func (*Error) resetPasswordRes()      {}
-func (*Error) verifyEmailRes()        {}
+func (*Error) disableMFARes()            {}
+func (*Error) disableTOTPRes()           {}
+func (*Error) forgotPasswordRes()        {}
+func (*Error) generateBackupCodesRes()   {}
+func (*Error) getCurrentUserRes()        {}
+func (*Error) getMFAStatusRes()          {}
+func (*Error) getUserPreferencesRes()    {}
+func (*Error) getUserRolesRes()          {}
+func (*Error) listAPIKeysRes()           {}
+func (*Error) listLibrariesRes()         {}
+func (*Error) listServerSettingsRes()    {}
+func (*Error) listSessionsRes()          {}
+func (*Error) listUserOIDCLinksRes()     {}
+func (*Error) listUserSettingsRes()      {}
+func (*Error) logoutAllRes()             {}
+func (*Error) logoutCurrentRes()         {}
+func (*Error) logoutRes()                {}
+func (*Error) oidcAuthorizeRes()         {}
+func (*Error) oidcCallbackRes()          {}
+func (*Error) refreshSessionRes()        {}
+func (*Error) regenerateBackupCodesRes() {}
+func (*Error) registerRes()              {}
+func (*Error) resendVerificationRes()    {}
+func (*Error) resetPasswordRes()         {}
+func (*Error) setupTOTPRes()             {}
+func (*Error) verifyEmailRes()           {}
 
 // Additional error details.
 type ErrorDetails map[string]jx.Raw
@@ -2157,6 +2209,34 @@ func (s *ForgotPasswordRequest) GetEmail() string {
 func (s *ForgotPasswordRequest) SetEmail(val string) {
 	s.Email = val
 }
+
+type GenerateBackupCodesOK struct {
+	// List of backup codes (shown only once).
+	Codes []string `json:"codes"`
+	Count OptInt   `json:"count"`
+}
+
+// GetCodes returns the value of Codes.
+func (s *GenerateBackupCodesOK) GetCodes() []string {
+	return s.Codes
+}
+
+// GetCount returns the value of Count.
+func (s *GenerateBackupCodesOK) GetCount() OptInt {
+	return s.Count
+}
+
+// SetCodes sets the value of Codes.
+func (s *GenerateBackupCodesOK) SetCodes(val []string) {
+	s.Codes = val
+}
+
+// SetCount sets the value of Count.
+func (s *GenerateBackupCodesOK) SetCount(val OptInt) {
+	s.Count = val
+}
+
+func (*GenerateBackupCodesOK) generateBackupCodesRes() {}
 
 type GetAPIKeyNotFound Error
 
@@ -3379,6 +3459,72 @@ func (s *LogoutRequest) SetLogoutAll(val OptBool) {
 	s.LogoutAll = val
 }
 
+// Ref: #/components/schemas/MFAStatus
+type MFAStatus struct {
+	// User ID.
+	UserID OptUUID `json:"user_id"`
+	// Whether TOTP is configured.
+	HasTotp OptBool `json:"has_totp"`
+	// Number of WebAuthn credentials registered.
+	WebauthnCount OptInt `json:"webauthn_count"`
+	// Number of unused backup codes.
+	UnusedBackupCodes OptInt `json:"unused_backup_codes"`
+	// Whether MFA is required for login.
+	RequireMfa OptBool `json:"require_mfa"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *MFAStatus) GetUserID() OptUUID {
+	return s.UserID
+}
+
+// GetHasTotp returns the value of HasTotp.
+func (s *MFAStatus) GetHasTotp() OptBool {
+	return s.HasTotp
+}
+
+// GetWebauthnCount returns the value of WebauthnCount.
+func (s *MFAStatus) GetWebauthnCount() OptInt {
+	return s.WebauthnCount
+}
+
+// GetUnusedBackupCodes returns the value of UnusedBackupCodes.
+func (s *MFAStatus) GetUnusedBackupCodes() OptInt {
+	return s.UnusedBackupCodes
+}
+
+// GetRequireMfa returns the value of RequireMfa.
+func (s *MFAStatus) GetRequireMfa() OptBool {
+	return s.RequireMfa
+}
+
+// SetUserID sets the value of UserID.
+func (s *MFAStatus) SetUserID(val OptUUID) {
+	s.UserID = val
+}
+
+// SetHasTotp sets the value of HasTotp.
+func (s *MFAStatus) SetHasTotp(val OptBool) {
+	s.HasTotp = val
+}
+
+// SetWebauthnCount sets the value of WebauthnCount.
+func (s *MFAStatus) SetWebauthnCount(val OptInt) {
+	s.WebauthnCount = val
+}
+
+// SetUnusedBackupCodes sets the value of UnusedBackupCodes.
+func (s *MFAStatus) SetUnusedBackupCodes(val OptInt) {
+	s.UnusedBackupCodes = val
+}
+
+// SetRequireMfa sets the value of RequireMfa.
+func (s *MFAStatus) SetRequireMfa(val OptBool) {
+	s.RequireMfa = val
+}
+
+func (*MFAStatus) getMFAStatusRes() {}
+
 // Ref: #/components/schemas/OIDCAuthURLResponse
 type OIDCAuthURLResponse struct {
 	// URL to redirect for OIDC authentication.
@@ -4476,6 +4622,52 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
+// NewOptURI returns new OptURI with value set to v.
+func NewOptURI(v url.URL) OptURI {
+	return OptURI{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptURI is optional url.URL.
+type OptURI struct {
+	Value url.URL
+	Set   bool
+}
+
+// IsSet returns true if OptURI was set.
+func (o OptURI) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptURI) Reset() {
+	var v url.URL
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptURI) SetTo(v url.URL) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptURI) Get() (v url.URL, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptURI) Or(d url.URL) url.URL {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptUUID returns new OptUUID with value set to v.
 func NewOptUUID(v uuid.UUID) OptUUID {
 	return OptUUID{
@@ -5559,6 +5751,33 @@ type RefreshTokenUnauthorized Error
 
 func (*RefreshTokenUnauthorized) refreshTokenRes() {}
 
+type RegenerateBackupCodesOK struct {
+	Codes []string `json:"codes"`
+	Count OptInt   `json:"count"`
+}
+
+// GetCodes returns the value of Codes.
+func (s *RegenerateBackupCodesOK) GetCodes() []string {
+	return s.Codes
+}
+
+// GetCount returns the value of Count.
+func (s *RegenerateBackupCodesOK) GetCount() OptInt {
+	return s.Count
+}
+
+// SetCodes sets the value of Codes.
+func (s *RegenerateBackupCodesOK) SetCodes(val []string) {
+	s.Codes = val
+}
+
+// SetCount sets the value of Count.
+func (s *RegenerateBackupCodesOK) SetCount(val OptInt) {
+	s.Count = val
+}
+
+func (*RegenerateBackupCodesOK) regenerateBackupCodesRes() {}
+
 // Ref: #/components/schemas/RegisterRequest
 type RegisterRequest struct {
 	// Username (alphanumeric, dash, underscore).
@@ -6357,6 +6576,63 @@ func NewSettingValueValue3SettingValueValue(v SettingValueValue3) SettingValueVa
 }
 
 type SettingValueValue3 struct{}
+
+type SetupTOTPReq struct {
+	// Account name to display in authenticator app (usually email or username).
+	AccountName string `json:"accountName"`
+}
+
+// GetAccountName returns the value of AccountName.
+func (s *SetupTOTPReq) GetAccountName() string {
+	return s.AccountName
+}
+
+// SetAccountName sets the value of AccountName.
+func (s *SetupTOTPReq) SetAccountName(val string) {
+	s.AccountName = val
+}
+
+// Ref: #/components/schemas/TOTPSetup
+type TOTPSetup struct {
+	// Base32-encoded TOTP secret (for manual entry).
+	Secret OptString `json:"secret"`
+	// Base64-encoded PNG QR code.
+	QrCode []byte `json:"qr_code"`
+	// Otpauth:// URL for the QR code.
+	URL OptURI `json:"url"`
+}
+
+// GetSecret returns the value of Secret.
+func (s *TOTPSetup) GetSecret() OptString {
+	return s.Secret
+}
+
+// GetQrCode returns the value of QrCode.
+func (s *TOTPSetup) GetQrCode() []byte {
+	return s.QrCode
+}
+
+// GetURL returns the value of URL.
+func (s *TOTPSetup) GetURL() OptURI {
+	return s.URL
+}
+
+// SetSecret sets the value of Secret.
+func (s *TOTPSetup) SetSecret(val OptString) {
+	s.Secret = val
+}
+
+// SetQrCode sets the value of QrCode.
+func (s *TOTPSetup) SetQrCode(val []byte) {
+	s.QrCode = val
+}
+
+// SetURL sets the value of URL.
+func (s *TOTPSetup) SetURL(val OptURI) {
+	s.URL = val
+}
+
+func (*TOTPSetup) setupTOTPRes() {}
 
 type TriggerLibraryScanBadRequest Error
 
@@ -8211,3 +8487,53 @@ func (s *VerifyEmailRequest) GetToken() string {
 func (s *VerifyEmailRequest) SetToken(val string) {
 	s.Token = val
 }
+
+type VerifyTOTPBadRequest Error
+
+func (*VerifyTOTPBadRequest) verifyTOTPRes() {}
+
+type VerifyTOTPOK struct {
+	Success OptBool   `json:"success"`
+	Message OptString `json:"message"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *VerifyTOTPOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// GetMessage returns the value of Message.
+func (s *VerifyTOTPOK) GetMessage() OptString {
+	return s.Message
+}
+
+// SetSuccess sets the value of Success.
+func (s *VerifyTOTPOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+// SetMessage sets the value of Message.
+func (s *VerifyTOTPOK) SetMessage(val OptString) {
+	s.Message = val
+}
+
+func (*VerifyTOTPOK) verifyTOTPRes() {}
+
+type VerifyTOTPReq struct {
+	// 6-digit TOTP code.
+	Code string `json:"code"`
+}
+
+// GetCode returns the value of Code.
+func (s *VerifyTOTPReq) GetCode() string {
+	return s.Code
+}
+
+// SetCode sets the value of Code.
+func (s *VerifyTOTPReq) SetCode(val string) {
+	s.Code = val
+}
+
+type VerifyTOTPUnauthorized Error
+
+func (*VerifyTOTPUnauthorized) verifyTOTPRes() {}
