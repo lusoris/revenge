@@ -233,9 +233,9 @@ func TestJWTManager_TokenExpiry(t *testing.T) {
 		claims, err := manager.ValidateAccessToken(token)
 		require.NoError(t, err)
 
-		// Expiry should be ~24 hours from now
-		expectedExpiry := time.Now().Add(24 * time.Hour).Unix()
-		assert.InDelta(t, expectedExpiry, claims.ExpiresAt, 5) // Within 5 seconds
+		// Expiry should be ~24 hours from now (timestamps are in milliseconds)
+		expectedExpiry := time.Now().Add(24 * time.Hour).UnixMilli()
+		assert.InDelta(t, expectedExpiry, claims.ExpiresAt, 5000) // Within 5 seconds (5000ms)
 	})
 }
 
@@ -258,7 +258,7 @@ func TestJWTManager_ClaimsFields(t *testing.T) {
 	assert.Greater(t, claims.IssuedAt, int64(0))
 	assert.Greater(t, claims.ExpiresAt, claims.IssuedAt)
 
-	// IssuedAt should be recent
-	now := time.Now().Unix()
-	assert.InDelta(t, now, claims.IssuedAt, 5) // Within 5 seconds
+	// IssuedAt should be recent (timestamps are in milliseconds)
+	now := time.Now().UnixMilli()
+	assert.InDelta(t, now, claims.IssuedAt, 5000) // Within 5 seconds (5000ms)
 }
