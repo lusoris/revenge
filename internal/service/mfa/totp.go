@@ -2,12 +2,12 @@
 package mfa
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base32"
 	"fmt"
 	"image/png"
-	"bytes"
 
 	"github.com/google/uuid"
 	"github.com/pquerna/otp"

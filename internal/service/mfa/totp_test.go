@@ -21,10 +21,10 @@ func TestTOTPService_GenerateSecret(t *testing.T) {
 
 	encryptor, err := crypto.NewEncryptor(key)
 	require.NoError(t, err)
-	
+
 	// Note: This test is conceptual - in reality we'd need proper mocks
 	// For now, let's test the encryption/decryption flow
-	
+
 	t.Run("secret generation", func(t *testing.T) {
 		// Generate a test secret
 		secret := make([]byte, 20)
@@ -102,7 +102,7 @@ func TestTOTPService_TimeSkew(t *testing.T) {
 			// totp.Validate uses current time with ±1 time step tolerance
 			// We need to validate against the same reference time
 			valid := totp.Validate(code, secretStr)
-			
+
 			// Note: This test is time-dependent and may be flaky
 			// In production, we'd use a time-mocked TOTP validator
 			if tt.offset == 0 {
@@ -164,7 +164,7 @@ func TestTOTPService_Uniqueness(t *testing.T) {
 	// Different secrets should produce different codes
 	secret1 := make([]byte, 20)
 	secret2 := make([]byte, 20)
-	
+
 	_, err := rand.Read(secret1)
 	require.NoError(t, err)
 	_, err = rand.Read(secret2)
@@ -225,7 +225,7 @@ func TestTOTPService_EncryptionIntegration(t *testing.T) {
 
 	// Store encrypted secret (simulated)
 	// In real DB, we'd store: encrypted_secret, nonce
-	
+
 	// Decrypt secret
 	decrypted, err := encryptor.DecryptString(encrypted)
 	require.NoError(t, err)

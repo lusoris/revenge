@@ -13,11 +13,11 @@ func TestGenerateRandomCode(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		code, err := generateRandomCode()
 		require.NoError(t, err)
-		
+
 		// Should be hex string
 		assert.Len(t, code, 16, "code should be 16 characters (8 bytes hex encoded)")
 		assert.Regexp(t, `^[0-9a-f]{16}$`, code, "code should be lowercase hex")
-		
+
 		// Should be unique
 		assert.False(t, codes[code], "code should be unique")
 		codes[code] = true

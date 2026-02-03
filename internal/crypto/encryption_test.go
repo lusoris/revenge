@@ -79,7 +79,7 @@ func TestEncryptDecrypt(t *testing.T) {
 			// Decrypt
 			decrypted, err := encryptor.Decrypt(ciphertext)
 			require.NoError(t, err)
-			
+
 			// For empty input, both empty slice and nil are acceptable
 			if len(tt.plaintext) == 0 {
 				assert.Empty(t, decrypted)

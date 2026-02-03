@@ -44,7 +44,7 @@ func TestNewWebAuthnService(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			service, err := NewWebAuthnService(nil, logger, tt.rpDisplayName, tt.rpID, tt.rpOrigins)
-			
+
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, service)
@@ -142,7 +142,7 @@ func TestSessionDataSerialization(t *testing.T) {
 
 func TestSessionDataSerialization_InvalidJSON(t *testing.T) {
 	invalidJSON := []byte(`{"challenge": "invalid}`)
-	
+
 	_, err := SessionDataFromJSON(invalidJSON)
 	assert.Error(t, err)
 }
