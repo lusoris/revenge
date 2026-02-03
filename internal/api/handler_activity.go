@@ -7,6 +7,7 @@ import (
 	"github.com/go-faster/jx"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/validate"
 	"go.uber.org/zap"
 )
 
@@ -60,10 +61,26 @@ func (h *Handler) SearchActivityLogs(ctx context.Context, params ogen.SearchActi
 		filters.EndTime = &et
 	}
 	if params.Limit.IsSet() {
-		filters.Limit = int32(params.Limit.Value)
+		limit, err := validate.SafeInt32(params.Limit.Value)
+		if err != nil {
+			h.logger.Error("invalid limit value", zap.Error(err))
+			return &ogen.SearchActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid limit parameter",
+			}, nil
+		}
+		filters.Limit = limit
 	}
 	if params.Offset.IsSet() {
-		filters.Offset = int32(params.Offset.Value)
+		offset, err := validate.SafeInt32(params.Offset.Value)
+		if err != nil {
+			h.logger.Error("invalid offset value", zap.Error(err))
+			return &ogen.SearchActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid offset parameter",
+			}, nil
+		}
+		filters.Offset = offset
 	}
 
 	entries, total, err := h.activityService.Search(ctx, filters)
@@ -97,10 +114,26 @@ func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserAc
 	limit := int32(50)
 	offset := int32(0)
 	if params.Limit.IsSet() {
-		limit = int32(params.Limit.Value)
+		l, err := validate.SafeInt32(params.Limit.Value)
+		if err != nil {
+			h.logger.Error("invalid limit value", zap.Error(err))
+			return &ogen.GetUserActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid limit parameter",
+			}, nil
+		}
+		limit = l
 	}
 	if params.Offset.IsSet() {
-		offset = int32(params.Offset.Value)
+		o, err := validate.SafeInt32(params.Offset.Value)
+		if err != nil {
+			h.logger.Error("invalid offset value", zap.Error(err))
+			return &ogen.GetUserActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid offset parameter",
+			}, nil
+		}
+		offset = o
 	}
 
 	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserId, limit, offset)
@@ -137,10 +170,26 @@ func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetRe
 	limit := int32(50)
 	offset := int32(0)
 	if params.Limit.IsSet() {
-		limit = int32(params.Limit.Value)
+		l, err := validate.SafeInt32(params.Limit.Value)
+		if err != nil {
+			h.logger.Error("invalid limit value", zap.Error(err))
+			return &ogen.GetResourceActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid limit parameter",
+			}, nil
+		}
+		limit = l
 	}
 	if params.Offset.IsSet() {
-		offset = int32(params.Offset.Value)
+		o, err := validate.SafeInt32(params.Offset.Value)
+		if err != nil {
+			h.logger.Error("invalid offset value", zap.Error(err))
+			return &ogen.GetResourceActivityLogsForbidden{
+				Code:    400,
+				Message: "Invalid offset parameter",
+			}, nil
+		}
+		offset = o
 	}
 
 	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceId, limit, offset)
@@ -213,7 +262,15 @@ func (h *Handler) GetRecentActions(ctx context.Context, params ogen.GetRecentAct
 
 	limit := int32(20)
 	if params.Limit.IsSet() {
-		limit = int32(params.Limit.Value)
+		l, err := validate.SafeInt32(params.Limit.Value)
+		if err != nil {
+			h.logger.Error("invalid limit value", zap.Error(err))
+			return &ogen.GetRecentActionsForbidden{
+				Code:    400,
+				Message: "Invalid limit parameter",
+			}, nil
+		}
+		limit = l
 	}
 
 	actions, err := h.activityService.GetRecentActions(ctx, limit)
