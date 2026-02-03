@@ -30,6 +30,8 @@ tags:
     description: Movie library management and playback
   - name: collections
     description: Movie collections (e.g., MCU, Star Wars)
+  - name: search
+    description: Full-text search across the library using Typesense
   - name: metadata
     description: External metadata lookup (TMDb)
   - name: images
@@ -1368,6 +1370,179 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # Search endpoints
+  /api/v1/search/movies:
+    get:
+      summary: Search movies in library
+      description: |
+        Full-text search across the movie library using Typesense.
+        Supports filtering by genres, year, status, and more.
+        Returns faceted results for filtering.
+      operationId: searchLibraryMovies
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Search query (searches title, overview, cast, directors)
+          example: "Matrix"
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Results per page
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [popularity:desc, popularity:asc, vote_average:desc, vote_average:asc, release_date:desc, release_date:asc, library_added_at:desc, library_added_at:asc, title:asc, title:desc]
+            default: popularity:desc
+          description: Sort field and direction
+        - name: filter_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            Typesense filter syntax. Examples:
+            - `genres:=Action`
+            - `year:>=2020`
+            - `has_file:=true && genres:=Action`
+          example: "genres:=Action"
+      responses:
+        '200':
+          description: Search results with facets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/movies/autocomplete:
+    get:
+      summary: Autocomplete movie titles
+      description: |
+        Provides search suggestions for movie titles.
+        Useful for search-as-you-type interfaces.
+      operationId: autocompleteMovies
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+          description: Partial search query
+          example: "Matr"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 5
+          description: Maximum suggestions to return
+      responses:
+        '200':
+          description: Autocomplete suggestions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutocompleteResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/movies/facets:
+    get:
+      summary: Get search facets
+      description: |
+        Returns available facet values for filtering (genres, years, etc.).
+        Use this to populate filter dropdowns in the UI.
+      operationId: getSearchFacets
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Available facet values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFacets'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/reindex:
+    post:
+      summary: Reindex all movies
+      description: |
+        Triggers a full reindex of all movies in the search engine.
+        This is an admin-only operation and may take a while for large libraries.
+      operationId: reindexSearch
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+      responses:
+        '202':
+          description: Reindex started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Reindex job started"
+                  job_id:
+                    type: string
+                    format: uuid
+                    description: Job ID for tracking progress
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         default:
           $ref: '#/components/responses/Error'
 
@@ -3724,6 +3899,178 @@ components:
         created_at:
           type: string
           format: date-time
+
+    # Search schemas (Typesense library search)
+    SearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching documents
+        total_pages:
+          type: integer
+          description: Total number of pages
+        current_page:
+          type: integer
+          description: Current page number
+        search_time_ms:
+          type: integer
+          description: Search execution time in milliseconds
+        facets:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FacetValue'
+          description: Facet counts for filtering
+
+    SearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/SearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Highlighted snippets for matching fields
+
+    SearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Movie ID
+        tmdb_id:
+          type: integer
+          description: TMDb movie ID
+        imdb_id:
+          type: string
+          description: IMDb ID
+        title:
+          type: string
+          description: Movie title
+        original_title:
+          type: string
+          description: Original title
+        year:
+          type: integer
+          description: Release year
+        release_date:
+          type: string
+          format: date
+          description: Release date
+        runtime:
+          type: integer
+          description: Runtime in minutes
+        overview:
+          type: string
+          description: Plot summary
+        status:
+          type: string
+          description: Release status
+        poster_path:
+          type: string
+          description: Poster image path
+        backdrop_path:
+          type: string
+          description: Backdrop image path
+        vote_average:
+          type: number
+          format: float
+          description: Average rating (0-10)
+        popularity:
+          type: number
+          format: float
+          description: Popularity score
+        genres:
+          type: array
+          items:
+            type: string
+          description: Genre names
+        cast:
+          type: array
+          items:
+            type: string
+          description: Cast member names (top 20)
+        directors:
+          type: array
+          items:
+            type: string
+          description: Director names
+        has_file:
+          type: boolean
+          description: Whether movie has a file in the library
+        resolution:
+          type: string
+          description: Video resolution (e.g., 2160p, 1080p)
+        quality_profile:
+          type: string
+          description: Quality profile
+
+    FacetValue:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Facet value
+        count:
+          type: integer
+          description: Number of documents with this value
+
+    AutocompleteResults:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            type: string
+          description: Matching movie titles
+
+    SearchFacets:
+      type: object
+      properties:
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available genres
+        years:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available release years
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available statuses
+        directors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available directors
+        resolution:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available resolutions
+        has_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: File availability
 
     # Metadata schemas (TMDb lookup)
     MetadataSearchResults:

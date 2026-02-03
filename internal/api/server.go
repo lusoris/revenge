@@ -18,6 +18,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
+	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
@@ -48,6 +49,7 @@ type ServerParams struct {
 	OIDCService     *oidc.Service
 	ActivityService *activity.Service
 	LibraryService  *library.Service
+	SearchService   *search.MovieSearchService `optional:"true"`
 	TokenManager    auth.TokenManager
 	// MFA services
 	TOTPService        *mfa.TOTPService
@@ -84,6 +86,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		oidcService:     p.OIDCService,
 		activityService: p.ActivityService,
 		libraryService:  p.LibraryService,
+		searchService:   p.SearchService,
 		tokenManager:    p.TokenManager,
 		mfaHandler:      mfaHandler,
 		movieHandler:    p.MovieHandler,

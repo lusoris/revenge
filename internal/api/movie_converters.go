@@ -127,10 +127,10 @@ func movieFileToOgen(f *movie.MovieFile) *ogen.MovieFile {
 	if f.AudioChannels != nil {
 		o.AudioChannels.SetTo(*f.AudioChannels)
 	}
-	if f.AudioLanguages != nil && len(f.AudioLanguages) > 0 {
+	if len(f.AudioLanguages) > 0 {
 		o.AudioLanguages = f.AudioLanguages
 	}
-	if f.SubtitleLanguages != nil && len(f.SubtitleLanguages) > 0 {
+	if len(f.SubtitleLanguages) > 0 {
 		o.SubtitleLanguages = f.SubtitleLanguages
 	}
 	if f.RadarrFileID != nil {

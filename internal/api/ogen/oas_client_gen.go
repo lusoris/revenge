@@ -88,6 +88,13 @@ type Invoker interface {
 	//
 	// POST /api/v1/rbac/users/{userId}/roles
 	AssignRole(ctx context.Context, request *AssignRoleRequest, params AssignRoleParams) (AssignRoleRes, error)
+	// AutocompleteMovies invokes autocompleteMovies operation.
+	//
+	// Provides search suggestions for movie titles.
+	// Useful for search-as-you-type interfaces.
+	//
+	// GET /api/v1/search/movies/autocomplete
+	AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error)
 	// ChangePassword invokes changePassword operation.
 	//
 	// Change password for authenticated user (requires old password).
@@ -292,6 +299,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
 	GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (GetResourceActivityLogsRes, error)
+	// GetSearchFacets invokes getSearchFacets operation.
+	//
+	// Returns available facet values for filtering (genres, years, etc.).
+	// Use this to populate filter dropdowns in the UI.
+	//
+	// GET /api/v1/search/movies/facets
+	GetSearchFacets(ctx context.Context) (GetSearchFacetsRes, error)
 	// GetServerSetting invokes getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -510,6 +524,13 @@ type Invoker interface {
 	//
 	// POST /api/v1/auth/register
 	Register(ctx context.Context, request *RegisterRequest) (RegisterRes, error)
+	// ReindexSearch invokes reindexSearch operation.
+	//
+	// Triggers a full reindex of all movies in the search engine.
+	// This is an admin-only operation and may take a while for large libraries.
+	//
+	// POST /api/v1/search/reindex
+	ReindexSearch(ctx context.Context) (ReindexSearchRes, error)
 	// RemovePolicy invokes removePolicy operation.
 	//
 	// Remove an authorization policy (admin only).
@@ -558,6 +579,14 @@ type Invoker interface {
 	//
 	// GET /api/v1/admin/activity
 	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// SearchLibraryMovies invokes searchLibraryMovies operation.
+	//
+	// Full-text search across the movie library using Typesense.
+	// Supports filtering by genres, year, status, and more.
+	// Returns faceted results for filtering.
+	//
+	// GET /api/v1/search/movies
+	SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (SearchLibraryMoviesRes, error)
 	// SearchMovies invokes searchMovies operation.
 	//
 	// Search movies by title using fuzzy matching.
@@ -1890,6 +1919,148 @@ func (c *Client) sendAssignRole(ctx context.Context, request *AssignRoleRequest,
 
 	stage = "DecodeResponse"
 	result, err := decodeAssignRoleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AutocompleteMovies invokes autocompleteMovies operation.
+//
+// Provides search suggestions for movie titles.
+// Useful for search-as-you-type interfaces.
+//
+// GET /api/v1/search/movies/autocomplete
+func (c *Client) AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error) {
+	res, err := c.sendAutocompleteMovies(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (res AutocompleteMoviesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("autocompleteMovies"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/search/movies/autocomplete"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AutocompleteMoviesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/search/movies/autocomplete"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Q))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AutocompleteMoviesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAutocompleteMoviesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5744,6 +5915,113 @@ func (c *Client) sendGetResourceActivityLogs(ctx context.Context, params GetReso
 
 	stage = "DecodeResponse"
 	result, err := decodeGetResourceActivityLogsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSearchFacets invokes getSearchFacets operation.
+//
+// Returns available facet values for filtering (genres, years, etc.).
+// Use this to populate filter dropdowns in the UI.
+//
+// GET /api/v1/search/movies/facets
+func (c *Client) GetSearchFacets(ctx context.Context) (GetSearchFacetsRes, error) {
+	res, err := c.sendGetSearchFacets(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetSearchFacets(ctx context.Context) (res GetSearchFacetsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSearchFacets"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/search/movies/facets"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSearchFacetsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/search/movies/facets"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetSearchFacetsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSearchFacetsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -9894,6 +10172,113 @@ func (c *Client) sendRegister(ctx context.Context, request *RegisterRequest) (re
 	return result, nil
 }
 
+// ReindexSearch invokes reindexSearch operation.
+//
+// Triggers a full reindex of all movies in the search engine.
+// This is an admin-only operation and may take a while for large libraries.
+//
+// POST /api/v1/search/reindex
+func (c *Client) ReindexSearch(ctx context.Context) (ReindexSearchRes, error) {
+	res, err := c.sendReindexSearch(ctx)
+	return res, err
+}
+
+func (c *Client) sendReindexSearch(ctx context.Context) (res ReindexSearchRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("reindexSearch"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/search/reindex"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ReindexSearchOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/search/reindex"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, ReindexSearchOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeReindexSearchResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // RemovePolicy invokes removePolicy operation.
 //
 // Remove an authorization policy (admin only).
@@ -10993,6 +11378,200 @@ func (c *Client) sendSearchActivityLogs(ctx context.Context, params SearchActivi
 
 	stage = "DecodeResponse"
 	result, err := decodeSearchActivityLogsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SearchLibraryMovies invokes searchLibraryMovies operation.
+//
+// Full-text search across the movie library using Typesense.
+// Supports filtering by genres, year, status, and more.
+// Returns faceted results for filtering.
+//
+// GET /api/v1/search/movies
+func (c *Client) SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (SearchLibraryMoviesRes, error) {
+	res, err := c.sendSearchLibraryMovies(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (res SearchLibraryMoviesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("searchLibraryMovies"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/search/movies"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchLibraryMoviesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/search/movies"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Q))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Page.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "per_page" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "per_page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PerPage.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_by" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortBy.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "filter_by" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "filter_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.FilterBy.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, SearchLibraryMoviesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchLibraryMoviesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

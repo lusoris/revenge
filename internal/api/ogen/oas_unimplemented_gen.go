@@ -103,6 +103,16 @@ func (UnimplementedHandler) AssignRole(ctx context.Context, req *AssignRoleReque
 	return r, ht.ErrNotImplemented
 }
 
+// AutocompleteMovies implements autocompleteMovies operation.
+//
+// Provides search suggestions for movie titles.
+// Useful for search-as-you-type interfaces.
+//
+// GET /api/v1/search/movies/autocomplete
+func (UnimplementedHandler) AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (r AutocompleteMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ChangePassword implements changePassword operation.
 //
 // Change password for authenticated user (requires old password).
@@ -403,6 +413,16 @@ func (UnimplementedHandler) GetRecentlyAdded(ctx context.Context, params GetRece
 //
 // GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
 func (UnimplementedHandler) GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (r GetResourceActivityLogsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSearchFacets implements getSearchFacets operation.
+//
+// Returns available facet values for filtering (genres, years, etc.).
+// Use this to populate filter dropdowns in the UI.
+//
+// GET /api/v1/search/movies/facets
+func (UnimplementedHandler) GetSearchFacets(ctx context.Context) (r GetSearchFacetsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -732,6 +752,16 @@ func (UnimplementedHandler) Register(ctx context.Context, req *RegisterRequest) 
 	return r, ht.ErrNotImplemented
 }
 
+// ReindexSearch implements reindexSearch operation.
+//
+// Triggers a full reindex of all movies in the search engine.
+// This is an admin-only operation and may take a while for large libraries.
+//
+// POST /api/v1/search/reindex
+func (UnimplementedHandler) ReindexSearch(ctx context.Context) (r ReindexSearchRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RemovePolicy implements removePolicy operation.
 //
 // Remove an authorization policy (admin only).
@@ -801,6 +831,17 @@ func (UnimplementedHandler) RevokeSession(ctx context.Context, params RevokeSess
 //
 // GET /api/v1/admin/activity
 func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (r SearchActivityLogsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchLibraryMovies implements searchLibraryMovies operation.
+//
+// Full-text search across the movie library using Typesense.
+// Supports filtering by genres, year, status, and more.
+// Returns faceted results for filtering.
+//
+// GET /api/v1/search/movies
+func (UnimplementedHandler) SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (r SearchLibraryMoviesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -41,6 +41,10 @@ type AssignRoleRes interface {
 	assignRoleRes()
 }
 
+type AutocompleteMoviesRes interface {
+	autocompleteMoviesRes()
+}
+
 type ChangePasswordRes interface {
 	changePasswordRes()
 }
@@ -167,6 +171,10 @@ type GetRecentlyAddedRes interface {
 
 type GetResourceActivityLogsRes interface {
 	getResourceActivityLogsRes()
+}
+
+type GetSearchFacetsRes interface {
+	getSearchFacetsRes()
 }
 
 type GetServerSettingRes interface {
@@ -309,6 +317,10 @@ type RegisterRes interface {
 	registerRes()
 }
 
+type ReindexSearchRes interface {
+	reindexSearchRes()
+}
+
 type RemovePolicyRes interface {
 	removePolicyRes()
 }
@@ -339,6 +351,10 @@ type RevokeSessionRes interface {
 
 type SearchActivityLogsRes interface {
 	searchActivityLogsRes()
+}
+
+type SearchLibraryMoviesRes interface {
+	searchLibraryMoviesRes()
 }
 
 type SearchMoviesMetadataRes interface {

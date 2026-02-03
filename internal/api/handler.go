@@ -17,6 +17,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
+	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
@@ -37,6 +38,7 @@ type Handler struct {
 	oidcService     *oidc.Service
 	activityService *activity.Service
 	libraryService  *library.Service
+	searchService   *search.MovieSearchService
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
 	movieHandler    *movie.Handler

@@ -68,6 +68,13 @@ type Handler interface {
 	//
 	// POST /api/v1/rbac/users/{userId}/roles
 	AssignRole(ctx context.Context, req *AssignRoleRequest, params AssignRoleParams) (AssignRoleRes, error)
+	// AutocompleteMovies implements autocompleteMovies operation.
+	//
+	// Provides search suggestions for movie titles.
+	// Useful for search-as-you-type interfaces.
+	//
+	// GET /api/v1/search/movies/autocomplete
+	AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error)
 	// ChangePassword implements changePassword operation.
 	//
 	// Change password for authenticated user (requires old password).
@@ -272,6 +279,13 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
 	GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (GetResourceActivityLogsRes, error)
+	// GetSearchFacets implements getSearchFacets operation.
+	//
+	// Returns available facet values for filtering (genres, years, etc.).
+	// Use this to populate filter dropdowns in the UI.
+	//
+	// GET /api/v1/search/movies/facets
+	GetSearchFacets(ctx context.Context) (GetSearchFacetsRes, error)
 	// GetServerSetting implements getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -490,6 +504,13 @@ type Handler interface {
 	//
 	// POST /api/v1/auth/register
 	Register(ctx context.Context, req *RegisterRequest) (RegisterRes, error)
+	// ReindexSearch implements reindexSearch operation.
+	//
+	// Triggers a full reindex of all movies in the search engine.
+	// This is an admin-only operation and may take a while for large libraries.
+	//
+	// POST /api/v1/search/reindex
+	ReindexSearch(ctx context.Context) (ReindexSearchRes, error)
 	// RemovePolicy implements removePolicy operation.
 	//
 	// Remove an authorization policy (admin only).
@@ -538,6 +559,14 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity
 	SearchActivityLogs(ctx context.Context, params SearchActivityLogsParams) (SearchActivityLogsRes, error)
+	// SearchLibraryMovies implements searchLibraryMovies operation.
+	//
+	// Full-text search across the movie library using Typesense.
+	// Supports filtering by genres, year, status, and more.
+	// Returns faceted results for filtering.
+	//
+	// GET /api/v1/search/movies
+	SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (SearchLibraryMoviesRes, error)
 	// SearchMovies implements searchMovies operation.
 	//
 	// Search movies by title using fuzzy matching.

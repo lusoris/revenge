@@ -1034,6 +1034,32 @@ type AssignRoleUnauthorized Error
 
 func (*AssignRoleUnauthorized) assignRoleRes() {}
 
+type AutocompleteMoviesBadRequest Error
+
+func (*AutocompleteMoviesBadRequest) autocompleteMoviesRes() {}
+
+type AutocompleteMoviesUnauthorized Error
+
+func (*AutocompleteMoviesUnauthorized) autocompleteMoviesRes() {}
+
+// Ref: #/components/schemas/AutocompleteResults
+type AutocompleteResults struct {
+	// Matching movie titles.
+	Suggestions []string `json:"suggestions"`
+}
+
+// GetSuggestions returns the value of Suggestions.
+func (s *AutocompleteResults) GetSuggestions() []string {
+	return s.Suggestions
+}
+
+// SetSuggestions sets the value of Suggestions.
+func (s *AutocompleteResults) SetSuggestions(val []string) {
+	s.Suggestions = val
+}
+
+func (*AutocompleteResults) autocompleteMoviesRes() {}
+
 // Ref: #/components/schemas/Avatar
 type Avatar struct {
 	// Avatar ID.
@@ -2493,6 +2519,7 @@ func (*Error) getContinueWatchingRes()   {}
 func (*Error) getCurrentUserRes()        {}
 func (*Error) getMFAStatusRes()          {}
 func (*Error) getRecentlyAddedRes()      {}
+func (*Error) getSearchFacetsRes()       {}
 func (*Error) getTopRatedRes()           {}
 func (*Error) getUserMovieStatsRes()     {}
 func (*Error) getUserPreferencesRes()    {}
@@ -2555,6 +2582,34 @@ func (s *ErrorStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/FacetValue
+type FacetValue struct {
+	// Facet value.
+	Value OptString `json:"value"`
+	// Number of documents with this value.
+	Count OptInt `json:"count"`
+}
+
+// GetValue returns the value of Value.
+func (s *FacetValue) GetValue() OptString {
+	return s.Value
+}
+
+// GetCount returns the value of Count.
+func (s *FacetValue) GetCount() OptInt {
+	return s.Count
+}
+
+// SetValue sets the value of Value.
+func (s *FacetValue) SetValue(val OptString) {
+	s.Value = val
+}
+
+// SetCount sets the value of Count.
+func (s *FacetValue) SetCount(val OptInt) {
+	s.Count = val
 }
 
 // ForgotPasswordNoContent is response for ForgotPassword operation.
@@ -6545,6 +6600,52 @@ func (o OptCreateOIDCProviderRequestRoleMappings) Or(d CreateOIDCProviderRequest
 	return d
 }
 
+// NewOptDate returns new OptDate with value set to v.
+func NewOptDate(v time.Time) OptDate {
+	return OptDate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDate is optional time.Time.
+type OptDate struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDate was set.
+func (o OptDate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDate) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDate) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDate) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDate) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptDateTime returns new OptDateTime with value set to v.
 func NewOptDateTime(v time.Time) OptDateTime {
 	return OptDateTime{
@@ -7486,6 +7587,190 @@ func (o OptNilString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptNilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchDocument returns new OptSearchDocument with value set to v.
+func NewOptSearchDocument(v SearchDocument) OptSearchDocument {
+	return OptSearchDocument{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchDocument is optional SearchDocument.
+type OptSearchDocument struct {
+	Value SearchDocument
+	Set   bool
+}
+
+// IsSet returns true if OptSearchDocument was set.
+func (o OptSearchDocument) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchDocument) Reset() {
+	var v SearchDocument
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchDocument) SetTo(v SearchDocument) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchDocument) Get() (v SearchDocument, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchDocument) Or(d SearchDocument) SearchDocument {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchHitHighlights returns new OptSearchHitHighlights with value set to v.
+func NewOptSearchHitHighlights(v SearchHitHighlights) OptSearchHitHighlights {
+	return OptSearchHitHighlights{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchHitHighlights is optional SearchHitHighlights.
+type OptSearchHitHighlights struct {
+	Value SearchHitHighlights
+	Set   bool
+}
+
+// IsSet returns true if OptSearchHitHighlights was set.
+func (o OptSearchHitHighlights) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchHitHighlights) Reset() {
+	var v SearchHitHighlights
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchHitHighlights) SetTo(v SearchHitHighlights) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchHitHighlights) Get() (v SearchHitHighlights, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchHitHighlights) Or(d SearchHitHighlights) SearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchLibraryMoviesSortBy returns new OptSearchLibraryMoviesSortBy with value set to v.
+func NewOptSearchLibraryMoviesSortBy(v SearchLibraryMoviesSortBy) OptSearchLibraryMoviesSortBy {
+	return OptSearchLibraryMoviesSortBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchLibraryMoviesSortBy is optional SearchLibraryMoviesSortBy.
+type OptSearchLibraryMoviesSortBy struct {
+	Value SearchLibraryMoviesSortBy
+	Set   bool
+}
+
+// IsSet returns true if OptSearchLibraryMoviesSortBy was set.
+func (o OptSearchLibraryMoviesSortBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchLibraryMoviesSortBy) Reset() {
+	var v SearchLibraryMoviesSortBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchLibraryMoviesSortBy) SetTo(v SearchLibraryMoviesSortBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchLibraryMoviesSortBy) Get() (v SearchLibraryMoviesSortBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchLibraryMoviesSortBy) Or(d SearchLibraryMoviesSortBy) SearchLibraryMoviesSortBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchResultsFacets returns new OptSearchResultsFacets with value set to v.
+func NewOptSearchResultsFacets(v SearchResultsFacets) OptSearchResultsFacets {
+	return OptSearchResultsFacets{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchResultsFacets is optional SearchResultsFacets.
+type OptSearchResultsFacets struct {
+	Value SearchResultsFacets
+	Set   bool
+}
+
+// IsSet returns true if OptSearchResultsFacets was set.
+func (o OptSearchResultsFacets) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchResultsFacets) Reset() {
+	var v SearchResultsFacets
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchResultsFacets) SetTo(v SearchResultsFacets) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchResultsFacets) Get() (v SearchResultsFacets, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchResultsFacets) Or(d SearchResultsFacets) SearchResultsFacets {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -8759,6 +9044,42 @@ func (s *RegisterRequest) SetDisplayName(val OptString) {
 	s.DisplayName = val
 }
 
+type ReindexSearchAccepted struct {
+	Message OptString `json:"message"`
+	// Job ID for tracking progress.
+	JobID OptUUID `json:"job_id"`
+}
+
+// GetMessage returns the value of Message.
+func (s *ReindexSearchAccepted) GetMessage() OptString {
+	return s.Message
+}
+
+// GetJobID returns the value of JobID.
+func (s *ReindexSearchAccepted) GetJobID() OptUUID {
+	return s.JobID
+}
+
+// SetMessage sets the value of Message.
+func (s *ReindexSearchAccepted) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetJobID sets the value of JobID.
+func (s *ReindexSearchAccepted) SetJobID(val OptUUID) {
+	s.JobID = val
+}
+
+func (*ReindexSearchAccepted) reindexSearchRes() {}
+
+type ReindexSearchForbidden Error
+
+func (*ReindexSearchForbidden) reindexSearchRes() {}
+
+type ReindexSearchUnauthorized Error
+
+func (*ReindexSearchUnauthorized) reindexSearchRes() {}
+
 type RemovePolicyBadRequest Error
 
 func (*RemovePolicyBadRequest) removePolicyRes() {}
@@ -8963,6 +9284,484 @@ type SearchActivityLogsUnauthorized Error
 
 func (*SearchActivityLogsUnauthorized) searchActivityLogsRes() {}
 
+// Ref: #/components/schemas/SearchDocument
+type SearchDocument struct {
+	// Movie ID.
+	ID OptUUID `json:"id"`
+	// TMDb movie ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// IMDb ID.
+	ImdbID OptString `json:"imdb_id"`
+	// Movie title.
+	Title OptString `json:"title"`
+	// Original title.
+	OriginalTitle OptString `json:"original_title"`
+	// Release year.
+	Year OptInt `json:"year"`
+	// Release date.
+	ReleaseDate OptDate `json:"release_date"`
+	// Runtime in minutes.
+	Runtime OptInt `json:"runtime"`
+	// Plot summary.
+	Overview OptString `json:"overview"`
+	// Release status.
+	Status OptString `json:"status"`
+	// Poster image path.
+	PosterPath OptString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptString `json:"backdrop_path"`
+	// Average rating (0-10).
+	VoteAverage OptFloat32 `json:"vote_average"`
+	// Popularity score.
+	Popularity OptFloat32 `json:"popularity"`
+	// Genre names.
+	Genres []string `json:"genres"`
+	// Cast member names (top 20).
+	Cast []string `json:"cast"`
+	// Director names.
+	Directors []string `json:"directors"`
+	// Whether movie has a file in the library.
+	HasFile OptBool `json:"has_file"`
+	// Video resolution (e.g., 2160p, 1080p).
+	Resolution OptString `json:"resolution"`
+	// Quality profile.
+	QualityProfile OptString `json:"quality_profile"`
+}
+
+// GetID returns the value of ID.
+func (s *SearchDocument) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *SearchDocument) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *SearchDocument) GetImdbID() OptString {
+	return s.ImdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *SearchDocument) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *SearchDocument) GetOriginalTitle() OptString {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *SearchDocument) GetYear() OptInt {
+	return s.Year
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *SearchDocument) GetReleaseDate() OptDate {
+	return s.ReleaseDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *SearchDocument) GetRuntime() OptInt {
+	return s.Runtime
+}
+
+// GetOverview returns the value of Overview.
+func (s *SearchDocument) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetStatus returns the value of Status.
+func (s *SearchDocument) GetStatus() OptString {
+	return s.Status
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *SearchDocument) GetPosterPath() OptString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *SearchDocument) GetBackdropPath() OptString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *SearchDocument) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *SearchDocument) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetGenres returns the value of Genres.
+func (s *SearchDocument) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCast returns the value of Cast.
+func (s *SearchDocument) GetCast() []string {
+	return s.Cast
+}
+
+// GetDirectors returns the value of Directors.
+func (s *SearchDocument) GetDirectors() []string {
+	return s.Directors
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *SearchDocument) GetHasFile() OptBool {
+	return s.HasFile
+}
+
+// GetResolution returns the value of Resolution.
+func (s *SearchDocument) GetResolution() OptString {
+	return s.Resolution
+}
+
+// GetQualityProfile returns the value of QualityProfile.
+func (s *SearchDocument) GetQualityProfile() OptString {
+	return s.QualityProfile
+}
+
+// SetID sets the value of ID.
+func (s *SearchDocument) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *SearchDocument) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *SearchDocument) SetImdbID(val OptString) {
+	s.ImdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SearchDocument) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *SearchDocument) SetOriginalTitle(val OptString) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *SearchDocument) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *SearchDocument) SetReleaseDate(val OptDate) {
+	s.ReleaseDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *SearchDocument) SetRuntime(val OptInt) {
+	s.Runtime = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SearchDocument) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SearchDocument) SetStatus(val OptString) {
+	s.Status = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *SearchDocument) SetPosterPath(val OptString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *SearchDocument) SetBackdropPath(val OptString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *SearchDocument) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *SearchDocument) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *SearchDocument) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCast sets the value of Cast.
+func (s *SearchDocument) SetCast(val []string) {
+	s.Cast = val
+}
+
+// SetDirectors sets the value of Directors.
+func (s *SearchDocument) SetDirectors(val []string) {
+	s.Directors = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *SearchDocument) SetHasFile(val OptBool) {
+	s.HasFile = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *SearchDocument) SetResolution(val OptString) {
+	s.Resolution = val
+}
+
+// SetQualityProfile sets the value of QualityProfile.
+func (s *SearchDocument) SetQualityProfile(val OptString) {
+	s.QualityProfile = val
+}
+
+// Ref: #/components/schemas/SearchFacets
+type SearchFacets struct {
+	// Available genres.
+	Genres []FacetValue `json:"genres"`
+	// Available release years.
+	Years []FacetValue `json:"years"`
+	// Available statuses.
+	Status []FacetValue `json:"status"`
+	// Available directors.
+	Directors []FacetValue `json:"directors"`
+	// Available resolutions.
+	Resolution []FacetValue `json:"resolution"`
+	// File availability.
+	HasFile []FacetValue `json:"has_file"`
+}
+
+// GetGenres returns the value of Genres.
+func (s *SearchFacets) GetGenres() []FacetValue {
+	return s.Genres
+}
+
+// GetYears returns the value of Years.
+func (s *SearchFacets) GetYears() []FacetValue {
+	return s.Years
+}
+
+// GetStatus returns the value of Status.
+func (s *SearchFacets) GetStatus() []FacetValue {
+	return s.Status
+}
+
+// GetDirectors returns the value of Directors.
+func (s *SearchFacets) GetDirectors() []FacetValue {
+	return s.Directors
+}
+
+// GetResolution returns the value of Resolution.
+func (s *SearchFacets) GetResolution() []FacetValue {
+	return s.Resolution
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *SearchFacets) GetHasFile() []FacetValue {
+	return s.HasFile
+}
+
+// SetGenres sets the value of Genres.
+func (s *SearchFacets) SetGenres(val []FacetValue) {
+	s.Genres = val
+}
+
+// SetYears sets the value of Years.
+func (s *SearchFacets) SetYears(val []FacetValue) {
+	s.Years = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SearchFacets) SetStatus(val []FacetValue) {
+	s.Status = val
+}
+
+// SetDirectors sets the value of Directors.
+func (s *SearchFacets) SetDirectors(val []FacetValue) {
+	s.Directors = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *SearchFacets) SetResolution(val []FacetValue) {
+	s.Resolution = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *SearchFacets) SetHasFile(val []FacetValue) {
+	s.HasFile = val
+}
+
+func (*SearchFacets) getSearchFacetsRes() {}
+
+// Ref: #/components/schemas/SearchHit
+type SearchHit struct {
+	Document OptSearchDocument `json:"document"`
+	// Search relevance score.
+	Score OptFloat32 `json:"score"`
+	// Highlighted snippets for matching fields.
+	Highlights OptSearchHitHighlights `json:"highlights"`
+}
+
+// GetDocument returns the value of Document.
+func (s *SearchHit) GetDocument() OptSearchDocument {
+	return s.Document
+}
+
+// GetScore returns the value of Score.
+func (s *SearchHit) GetScore() OptFloat32 {
+	return s.Score
+}
+
+// GetHighlights returns the value of Highlights.
+func (s *SearchHit) GetHighlights() OptSearchHitHighlights {
+	return s.Highlights
+}
+
+// SetDocument sets the value of Document.
+func (s *SearchHit) SetDocument(val OptSearchDocument) {
+	s.Document = val
+}
+
+// SetScore sets the value of Score.
+func (s *SearchHit) SetScore(val OptFloat32) {
+	s.Score = val
+}
+
+// SetHighlights sets the value of Highlights.
+func (s *SearchHit) SetHighlights(val OptSearchHitHighlights) {
+	s.Highlights = val
+}
+
+// Highlighted snippets for matching fields.
+type SearchHitHighlights map[string][]string
+
+func (s *SearchHitHighlights) init() SearchHitHighlights {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+type SearchLibraryMoviesBadRequest Error
+
+func (*SearchLibraryMoviesBadRequest) searchLibraryMoviesRes() {}
+
+type SearchLibraryMoviesSortBy string
+
+const (
+	SearchLibraryMoviesSortByPopularityDesc     SearchLibraryMoviesSortBy = "popularity:desc"
+	SearchLibraryMoviesSortByPopularityAsc      SearchLibraryMoviesSortBy = "popularity:asc"
+	SearchLibraryMoviesSortByVoteAverageDesc    SearchLibraryMoviesSortBy = "vote_average:desc"
+	SearchLibraryMoviesSortByVoteAverageAsc     SearchLibraryMoviesSortBy = "vote_average:asc"
+	SearchLibraryMoviesSortByReleaseDateDesc    SearchLibraryMoviesSortBy = "release_date:desc"
+	SearchLibraryMoviesSortByReleaseDateAsc     SearchLibraryMoviesSortBy = "release_date:asc"
+	SearchLibraryMoviesSortByLibraryAddedAtDesc SearchLibraryMoviesSortBy = "library_added_at:desc"
+	SearchLibraryMoviesSortByLibraryAddedAtAsc  SearchLibraryMoviesSortBy = "library_added_at:asc"
+	SearchLibraryMoviesSortByTitleAsc           SearchLibraryMoviesSortBy = "title:asc"
+	SearchLibraryMoviesSortByTitleDesc          SearchLibraryMoviesSortBy = "title:desc"
+)
+
+// AllValues returns all SearchLibraryMoviesSortBy values.
+func (SearchLibraryMoviesSortBy) AllValues() []SearchLibraryMoviesSortBy {
+	return []SearchLibraryMoviesSortBy{
+		SearchLibraryMoviesSortByPopularityDesc,
+		SearchLibraryMoviesSortByPopularityAsc,
+		SearchLibraryMoviesSortByVoteAverageDesc,
+		SearchLibraryMoviesSortByVoteAverageAsc,
+		SearchLibraryMoviesSortByReleaseDateDesc,
+		SearchLibraryMoviesSortByReleaseDateAsc,
+		SearchLibraryMoviesSortByLibraryAddedAtDesc,
+		SearchLibraryMoviesSortByLibraryAddedAtAsc,
+		SearchLibraryMoviesSortByTitleAsc,
+		SearchLibraryMoviesSortByTitleDesc,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchLibraryMoviesSortBy) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchLibraryMoviesSortByPopularityDesc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByPopularityAsc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByVoteAverageDesc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByVoteAverageAsc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByReleaseDateDesc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByReleaseDateAsc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByLibraryAddedAtDesc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByLibraryAddedAtAsc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByTitleAsc:
+		return []byte(s), nil
+	case SearchLibraryMoviesSortByTitleDesc:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchLibraryMoviesSortBy) UnmarshalText(data []byte) error {
+	switch SearchLibraryMoviesSortBy(data) {
+	case SearchLibraryMoviesSortByPopularityDesc:
+		*s = SearchLibraryMoviesSortByPopularityDesc
+		return nil
+	case SearchLibraryMoviesSortByPopularityAsc:
+		*s = SearchLibraryMoviesSortByPopularityAsc
+		return nil
+	case SearchLibraryMoviesSortByVoteAverageDesc:
+		*s = SearchLibraryMoviesSortByVoteAverageDesc
+		return nil
+	case SearchLibraryMoviesSortByVoteAverageAsc:
+		*s = SearchLibraryMoviesSortByVoteAverageAsc
+		return nil
+	case SearchLibraryMoviesSortByReleaseDateDesc:
+		*s = SearchLibraryMoviesSortByReleaseDateDesc
+		return nil
+	case SearchLibraryMoviesSortByReleaseDateAsc:
+		*s = SearchLibraryMoviesSortByReleaseDateAsc
+		return nil
+	case SearchLibraryMoviesSortByLibraryAddedAtDesc:
+		*s = SearchLibraryMoviesSortByLibraryAddedAtDesc
+		return nil
+	case SearchLibraryMoviesSortByLibraryAddedAtAsc:
+		*s = SearchLibraryMoviesSortByLibraryAddedAtAsc
+		return nil
+	case SearchLibraryMoviesSortByTitleAsc:
+		*s = SearchLibraryMoviesSortByTitleAsc
+		return nil
+	case SearchLibraryMoviesSortByTitleDesc:
+		*s = SearchLibraryMoviesSortByTitleDesc
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SearchLibraryMoviesUnauthorized Error
+
+func (*SearchLibraryMoviesUnauthorized) searchLibraryMoviesRes() {}
+
 type SearchMoviesMetadataBadRequest Error
 
 func (*SearchMoviesMetadataBadRequest) searchMoviesMetadataRes() {}
@@ -8974,6 +9773,95 @@ func (*SearchMoviesMetadataUnauthorized) searchMoviesMetadataRes() {}
 type SearchMoviesOKApplicationJSON []Movie
 
 func (*SearchMoviesOKApplicationJSON) searchMoviesRes() {}
+
+// Ref: #/components/schemas/SearchResults
+type SearchResults struct {
+	Hits []SearchHit `json:"hits"`
+	// Total number of matching documents.
+	TotalHits OptInt `json:"total_hits"`
+	// Total number of pages.
+	TotalPages OptInt `json:"total_pages"`
+	// Current page number.
+	CurrentPage OptInt `json:"current_page"`
+	// Search execution time in milliseconds.
+	SearchTimeMs OptInt `json:"search_time_ms"`
+	// Facet counts for filtering.
+	Facets OptSearchResultsFacets `json:"facets"`
+}
+
+// GetHits returns the value of Hits.
+func (s *SearchResults) GetHits() []SearchHit {
+	return s.Hits
+}
+
+// GetTotalHits returns the value of TotalHits.
+func (s *SearchResults) GetTotalHits() OptInt {
+	return s.TotalHits
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *SearchResults) GetTotalPages() OptInt {
+	return s.TotalPages
+}
+
+// GetCurrentPage returns the value of CurrentPage.
+func (s *SearchResults) GetCurrentPage() OptInt {
+	return s.CurrentPage
+}
+
+// GetSearchTimeMs returns the value of SearchTimeMs.
+func (s *SearchResults) GetSearchTimeMs() OptInt {
+	return s.SearchTimeMs
+}
+
+// GetFacets returns the value of Facets.
+func (s *SearchResults) GetFacets() OptSearchResultsFacets {
+	return s.Facets
+}
+
+// SetHits sets the value of Hits.
+func (s *SearchResults) SetHits(val []SearchHit) {
+	s.Hits = val
+}
+
+// SetTotalHits sets the value of TotalHits.
+func (s *SearchResults) SetTotalHits(val OptInt) {
+	s.TotalHits = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *SearchResults) SetTotalPages(val OptInt) {
+	s.TotalPages = val
+}
+
+// SetCurrentPage sets the value of CurrentPage.
+func (s *SearchResults) SetCurrentPage(val OptInt) {
+	s.CurrentPage = val
+}
+
+// SetSearchTimeMs sets the value of SearchTimeMs.
+func (s *SearchResults) SetSearchTimeMs(val OptInt) {
+	s.SearchTimeMs = val
+}
+
+// SetFacets sets the value of Facets.
+func (s *SearchResults) SetFacets(val OptSearchResultsFacets) {
+	s.Facets = val
+}
+
+func (*SearchResults) searchLibraryMoviesRes() {}
+
+// Facet counts for filtering.
+type SearchResultsFacets map[string][]FacetValue
+
+func (s *SearchResultsFacets) init() SearchResultsFacets {
+	m := *s
+	if m == nil {
+		m = map[string][]FacetValue{}
+		*s = m
+	}
+	return m
+}
 
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {

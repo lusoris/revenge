@@ -1946,6 +1946,115 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 					switch elem[0] {
+					case 'a': // Prefix: "arch/"
+
+						if l := len("arch/"); len(elem) >= l && elem[0:l] == "arch/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'm': // Prefix: "movies"
+
+							if l := len("movies"); len(elem) >= l && elem[0:l] == "movies" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleSearchLibraryMoviesRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "autocomplete"
+
+									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleAutocompleteMoviesRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'f': // Prefix: "facets"
+
+									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetSearchFacetsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
+						case 'r': // Prefix: "reindex"
+
+							if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleReindexSearchRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+						}
+
 					case 's': // Prefix: "ssions"
 
 						if l := len("ssions"); len(elem) >= l && elem[0:l] == "ssions" {
@@ -4746,6 +4855,135 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 					switch elem[0] {
+					case 'a': // Prefix: "arch/"
+
+						if l := len("arch/"); len(elem) >= l && elem[0:l] == "arch/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'm': // Prefix: "movies"
+
+							if l := len("movies"); len(elem) >= l && elem[0:l] == "movies" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = SearchLibraryMoviesOperation
+									r.summary = "Search movies in library"
+									r.operationID = "searchLibraryMovies"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/search/movies"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "autocomplete"
+
+									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = AutocompleteMoviesOperation
+											r.summary = "Autocomplete movie titles"
+											r.operationID = "autocompleteMovies"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/movies/autocomplete"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'f': // Prefix: "facets"
+
+									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetSearchFacetsOperation
+											r.summary = "Get search facets"
+											r.operationID = "getSearchFacets"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/movies/facets"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							}
+
+						case 'r': // Prefix: "reindex"
+
+							if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = ReindexSearchOperation
+									r.summary = "Reindex all movies"
+									r.operationID = "reindexSearch"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/search/reindex"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
 					case 's': // Prefix: "ssions"
 
 						if l := len("ssions"); len(elem) >= l && elem[0:l] == "ssions" {
