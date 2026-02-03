@@ -2,6 +2,8 @@ package oidc
 
 import (
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
@@ -597,9 +599,28 @@ func (s *Service) encryptSecret(plaintext []byte) ([]byte, error) {
 		// No encryption configured - return as-is (for dev only)
 		return plaintext, nil
 	}
-	// In production, implement proper AES-GCM encryption
-	// For now, return plaintext (encryption to be implemented with proper KMS)
-	return plaintext, nil
+
+	// Create AES cipher
+	block, err := aes.NewCipher(s.encryptKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create cipher: %w", err)
+	}
+
+	// Create GCM mode
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM: %w", err)
+	}
+
+	// Generate nonce
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err := rand.Read(nonce); err != nil {
+		return nil, fmt.Errorf("failed to generate nonce: %w", err)
+	}
+
+	// Encrypt and prepend nonce
+	ciphertext := gcm.Seal(nonce, nonce, plaintext, nil)
+	return ciphertext, nil
 }
 
 func (s *Service) decryptSecret(ciphertext []byte) []byte {
@@ -607,8 +628,38 @@ func (s *Service) decryptSecret(ciphertext []byte) []byte {
 		// No encryption configured - return as-is
 		return ciphertext
 	}
-	// In production, implement proper AES-GCM decryption
-	return ciphertext
+
+	// Create AES cipher
+	block, err := aes.NewCipher(s.encryptKey)
+	if err != nil {
+		s.logger.Error("failed to create cipher for decryption", zap.Error(err))
+		return ciphertext // Fallback to returning as-is
+	}
+
+	// Create GCM mode
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		s.logger.Error("failed to create GCM for decryption", zap.Error(err))
+		return ciphertext
+	}
+
+	// Extract nonce
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		s.logger.Error("ciphertext too short")
+		return ciphertext
+	}
+
+	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+
+	// Decrypt
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		s.logger.Error("failed to decrypt secret", zap.Error(err))
+		return ciphertext // Fallback
+	}
+
+	return plaintext
 }
 
 // ============================================================================
@@ -617,7 +668,7 @@ func (s *Service) decryptSecret(ciphertext []byte) []byte {
 
 func isValidProviderType(t string) bool {
 	switch t {
-	case ProviderTypeGeneric, ProviderTypeAuthentik, ProviderTypeKeycloak:
+	case "oidc", ProviderTypeGeneric, ProviderTypeAuthentik, ProviderTypeKeycloak:
 		return true
 	default:
 		return false
@@ -629,7 +680,7 @@ func generateRandomString(length int) (string, error) {
 	if _, err := rand.Read(b); err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(b)[:length], nil
+	return hex.EncodeToString(b), nil
 }
 
 func generateCodeChallenge(verifier string) string {
