@@ -58,8 +58,9 @@ func NewTokenManager(secret string, jwtExpiry time.Duration) TokenManager {
 // GenerateAccessToken creates a JWT access token
 // Format: header.payload.signature (all base64url encoded)
 func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string) (string, error) {
-	now := time.Now().Unix()
-	expires := time.Now().Add(m.jwtExpiry).Unix()
+	now := time.Now()
+	issuedAt := now.UnixNano() / int64(time.Millisecond)  // Millisecond precision
+	expiresAt := now.Add(m.jwtExpiry).UnixNano() / int64(time.Millisecond)
 
 	// JWT Header (HS256)
 	header := map[string]string{
@@ -76,8 +77,8 @@ func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string) (str
 	payload := Claims{
 		UserID:    userID,
 		Username:  username,
-		IssuedAt:  now,
-		ExpiresAt: expires,
+		IssuedAt:  issuedAt,
+		ExpiresAt: expiresAt,
 	}
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -135,8 +136,9 @@ func (m *jwtManager) ValidateAccessToken(token string) (*Claims, error) {
 		return nil, fmt.Errorf("failed to unmarshal claims: %w", err)
 	}
 
-	// Check expiry
-	if time.Now().Unix() > claims.ExpiresAt {
+	// Check expiry (claims are in milliseconds, convert to compare)
+	nowMs := time.Now().UnixNano() / int64(time.Millisecond)
+	if nowMs > claims.ExpiresAt {
 		return nil, errors.New("token expired")
 	}
 

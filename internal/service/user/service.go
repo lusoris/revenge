@@ -7,19 +7,21 @@ import (
 	"io"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Service implements user business logic
 type Service struct {
-	repo Repository
+	repo   Repository
+	hasher *crypto.PasswordHasher
 }
 
 // NewService creates a new user service
 func NewService(repo Repository) *Service {
 	return &Service{
-		repo: repo,
+		repo:   repo,
+		hasher: crypto.NewPasswordHasher(),
 	}
 }
 
@@ -160,20 +162,18 @@ func (s *Service) RecordLogin(ctx context.Context, userID uuid.UUID) error {
 // Password Management
 // ============================================================================
 
-// HashPassword hashes a password using bcrypt
+// HashPassword hashes a password using Argon2id
 func (s *Service) HashPassword(password string) (string, error) {
-	// Use bcrypt with cost factor 12 (good balance of security and performance)
-	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		return "", fmt.Errorf("failed to hash password: %w", err)
-	}
-	return string(hashedBytes), nil
+	return s.hasher.HashPassword(password)
 }
 
 // VerifyPassword verifies a password against a hash
 func (s *Service) VerifyPassword(hashedPassword, password string) error {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	match, err := s.hasher.VerifyPassword(password, hashedPassword)
 	if err != nil {
+		return err
+	}
+	if !match {
 		return fmt.Errorf("password verification failed")
 	}
 	return nil

@@ -2,15 +2,13 @@ package auth
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/netip"
 	"time"
 
-	"github.com/alexedwards/argon2id"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -18,6 +16,7 @@ import (
 type Service struct {
 	repo          Repository
 	tokenManager  TokenManager
+	hasher        *crypto.PasswordHasher
 	jwtExpiry     time.Duration
 	refreshExpiry time.Duration
 }
@@ -27,6 +26,7 @@ func NewService(repo Repository, tokenManager TokenManager, jwtExpiry, refreshEx
 	return &Service{
 		repo:          repo,
 		tokenManager:  tokenManager,
+		hasher:        crypto.NewPasswordHasher(),
 		jwtExpiry:     jwtExpiry,
 		refreshExpiry: refreshExpiry,
 	}
@@ -55,7 +55,7 @@ type LoginResponse struct {
 // Register creates a new user account
 func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.SharedUser, error) {
 	// Hash password using Argon2id (per AUTH.md)
-	passwordHash, err := argon2id.CreateHash(req.Password, argon2id.DefaultParams)
+	passwordHash, err := s.hasher.HashPassword(req.Password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -72,7 +72,7 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 	}
 
 	// Generate email verification token
-	token, err := generateSecureToken(32)
+	token, err := crypto.GenerateSecureToken(32)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate verification token: %w", err)
 	}
@@ -126,7 +126,7 @@ func (s *Service) ResendVerification(ctx context.Context, userID uuid.UUID) erro
 	}
 
 	// Generate new token
-	token, err := generateSecureToken(32)
+	token, err := crypto.GenerateSecureToken(32)
 	if err != nil {
 		return fmt.Errorf("failed to generate verification token: %w", err)
 	}
@@ -170,7 +170,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	}
 
 	// Verify password using Argon2id
-	match, err := argon2id.ComparePasswordAndHash(password, user.PasswordHash)
+	match, err := s.hasher.VerifyPassword(password, user.PasswordHash)
 	if err != nil {
 		return nil, fmt.Errorf("password verification failed: %w", err)
 	}
@@ -285,7 +285,7 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 	}
 
 	// Verify old password
-	match, err := argon2id.ComparePasswordAndHash(oldPassword, user.PasswordHash)
+	match, err := s.hasher.VerifyPassword(oldPassword, user.PasswordHash)
 	if err != nil {
 		return fmt.Errorf("password verification failed: %w", err)
 	}
@@ -294,7 +294,7 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 	}
 
 	// Hash new password
-	newPasswordHash, err := argon2id.CreateHash(newPassword, argon2id.DefaultParams)
+	newPasswordHash, err := s.hasher.HashPassword(newPassword)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -329,7 +329,7 @@ func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddr
 	}
 
 	// Generate reset token
-	token, err := generateSecureToken(32)
+	token, err := crypto.GenerateSecureToken(32)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate reset token: %w", err)
 	}
@@ -362,7 +362,7 @@ func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) 
 	}
 
 	// Hash new password
-	newPasswordHash, err := argon2id.CreateHash(newPassword, argon2id.DefaultParams)
+	newPasswordHash, err := s.hasher.HashPassword(newPassword)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -390,11 +390,4 @@ func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) 
 // Helper Functions
 // ============================================================================
 
-// generateSecureToken generates a cryptographically secure random token
-func generateSecureToken(length int) (string, error) {
-	b := make([]byte, length)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
-}
+

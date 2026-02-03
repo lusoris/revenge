@@ -119,22 +119,28 @@ func (s *Service) ValidateSession(ctx context.Context, token string) (*db.Shared
 }
 
 // RefreshSession exchanges a refresh token for a new session token
-func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (string, error) {
+func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (string, string, error) {
 	refreshTokenHash := s.hashToken(refreshToken)
 
 	session, err := s.repo.GetSessionByRefreshTokenHash(ctx, refreshTokenHash)
 	if err != nil {
-		return "", fmt.Errorf("failed to get session by refresh token: %w", err)
+		return "", "", fmt.Errorf("failed to get session by refresh token: %w", err)
 	}
 
 	if session == nil {
-		return "", errors.ErrUnauthorized
+		return "", "", errors.ErrUnauthorized
 	}
 
 	// Generate new session token
 	newToken, newTokenHash, err := s.generateToken()
 	if err != nil {
-		return "", fmt.Errorf("failed to generate new session token: %w", err)
+		return "", "", fmt.Errorf("failed to generate new session token: %w", err)
+	}
+
+	// Generate new refresh token (fix duplicate key bug)
+	newRefreshToken, newRefreshTokenHash, err := s.generateToken()
+	if err != nil {
+		return "", "", fmt.Errorf("failed to generate new refresh token: %w", err)
 	}
 
 	// Update session with new token hash
@@ -142,7 +148,7 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 	// For now, we'll create a new session and revoke the old one
 	reason := "Refresh token rotation"
 	if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
-		return "", fmt.Errorf("failed to revoke old session: %w", err)
+		return "", "", fmt.Errorf("failed to revoke old session: %w", err)
 	}
 
 	// Create new session with same metadata
@@ -163,7 +169,7 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 	_, err = s.repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           session.UserID,
 		TokenHash:        newTokenHash,
-		RefreshTokenHash: &refreshTokenHash, // Reuse refresh token
+		RefreshTokenHash: &newRefreshTokenHash, // Use NEW refresh token
 		DeviceName:       deviceName,
 		UserAgent:        userAgent,
 		IPAddress:        ipAddr,
@@ -171,12 +177,12 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 		ExpiresAt:        time.Now().Add(s.expiry),
 	})
 	if err != nil {
-		return "", fmt.Errorf("failed to create refreshed session: %w", err)
+		return "", "", fmt.Errorf("failed to create refreshed session: %w", err)
 	}
 
 	s.logger.Info("Session refreshed", zap.String("user_id", session.UserID.String()))
 
-	return newToken, nil
+	return newToken, newRefreshToken, nil
 }
 
 // ListUserSessions lists all active sessions for a user
