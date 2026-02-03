@@ -9,7 +9,7 @@ import (
 	embeddedpostgres "github.com/fergusstrange/embedded-postgres"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/require"
 )
@@ -37,15 +37,14 @@ func setupTestDB(t *testing.T, port uint32) (*sql.DB, func()) {
 	err = db.PingContext(context.Background())
 	require.NoError(t, err, "database not ready")
 
-	// Run migrations
+	// Run migrations using embedded migrations
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err, "failed to create postgres driver")
 
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://../../migrations",
-		"postgres",
-		driver,
-	)
+	sourceDriver, err := iofs.New(migrationsFS, "migrations/shared")
+	require.NoError(t, err, "failed to create source driver from embedded migrations")
+
+	m, err := migrate.NewWithInstance("iofs", sourceDriver, "postgres", driver)
 	require.NoError(t, err, "failed to create migrate instance")
 
 	err = m.Up()

@@ -146,7 +146,7 @@ func newMigrate(databaseURL string) (*migrate.Migrate, error) {
 	}
 
 	// Create source from embedded filesystem
-	sourceDriver, err := iofs.New(migrationsFS, "migrations")
+	sourceDriver, err := iofs.New(migrationsFS, "migrations/shared")
 	if err != nil {
 		_ = db.Close() // Best-effort cleanup
 		return nil, errors.Wrap(err, "failed to create source driver")
