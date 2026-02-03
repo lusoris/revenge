@@ -4,6 +4,7 @@ package app
 import (
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
@@ -47,6 +48,9 @@ var Module = fx.Module("app",
 	oidc.Module,
 	activity.Module,
 	library.Module,
+
+	// Content Modules
+	movie.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,

@@ -9,5 +9,6 @@ var Module = fx.Module("movie",
 	fx.Provide(
 		NewPostgresRepository,
 		NewService,
+		NewHandler,
 	),
 )
