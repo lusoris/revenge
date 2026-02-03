@@ -2117,6 +2117,348 @@ func (s *AdminGetOIDCProviderUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes AdminGetRadarrQualityProfilesForbidden as json.
+func (s *AdminGetRadarrQualityProfilesForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrQualityProfilesForbidden from json.
+func (s *AdminGetRadarrQualityProfilesForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrQualityProfilesForbidden to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrQualityProfilesForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrQualityProfilesForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrQualityProfilesForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrQualityProfilesServiceUnavailable as json.
+func (s *AdminGetRadarrQualityProfilesServiceUnavailable) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrQualityProfilesServiceUnavailable from json.
+func (s *AdminGetRadarrQualityProfilesServiceUnavailable) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrQualityProfilesServiceUnavailable to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrQualityProfilesServiceUnavailable(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrQualityProfilesServiceUnavailable) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrQualityProfilesServiceUnavailable) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrQualityProfilesUnauthorized as json.
+func (s *AdminGetRadarrQualityProfilesUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrQualityProfilesUnauthorized from json.
+func (s *AdminGetRadarrQualityProfilesUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrQualityProfilesUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrQualityProfilesUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrQualityProfilesUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrQualityProfilesUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrRootFoldersForbidden as json.
+func (s *AdminGetRadarrRootFoldersForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrRootFoldersForbidden from json.
+func (s *AdminGetRadarrRootFoldersForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrRootFoldersForbidden to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrRootFoldersForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrRootFoldersForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrRootFoldersForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrRootFoldersServiceUnavailable as json.
+func (s *AdminGetRadarrRootFoldersServiceUnavailable) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrRootFoldersServiceUnavailable from json.
+func (s *AdminGetRadarrRootFoldersServiceUnavailable) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrRootFoldersServiceUnavailable to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrRootFoldersServiceUnavailable(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrRootFoldersServiceUnavailable) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrRootFoldersServiceUnavailable) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrRootFoldersUnauthorized as json.
+func (s *AdminGetRadarrRootFoldersUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrRootFoldersUnauthorized from json.
+func (s *AdminGetRadarrRootFoldersUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrRootFoldersUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrRootFoldersUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrRootFoldersUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrRootFoldersUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrStatusForbidden as json.
+func (s *AdminGetRadarrStatusForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrStatusForbidden from json.
+func (s *AdminGetRadarrStatusForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrStatusForbidden to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrStatusForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrStatusForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrStatusForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrStatusServiceUnavailable as json.
+func (s *AdminGetRadarrStatusServiceUnavailable) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrStatusServiceUnavailable from json.
+func (s *AdminGetRadarrStatusServiceUnavailable) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrStatusServiceUnavailable to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrStatusServiceUnavailable(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrStatusServiceUnavailable) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrStatusServiceUnavailable) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminGetRadarrStatusUnauthorized as json.
+func (s *AdminGetRadarrStatusUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminGetRadarrStatusUnauthorized from json.
+func (s *AdminGetRadarrStatusUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminGetRadarrStatusUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminGetRadarrStatusUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminGetRadarrStatusUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminGetRadarrStatusUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes AdminListOIDCProvidersForbidden as json.
 func (s *AdminListOIDCProvidersForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -2955,6 +3297,158 @@ func (s *AdminSetDefaultOIDCProviderUnauthorized) MarshalJSON() ([]byte, error) 
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *AdminSetDefaultOIDCProviderUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminTriggerRadarrSyncConflict as json.
+func (s *AdminTriggerRadarrSyncConflict) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminTriggerRadarrSyncConflict from json.
+func (s *AdminTriggerRadarrSyncConflict) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminTriggerRadarrSyncConflict to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminTriggerRadarrSyncConflict(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminTriggerRadarrSyncConflict) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminTriggerRadarrSyncConflict) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminTriggerRadarrSyncForbidden as json.
+func (s *AdminTriggerRadarrSyncForbidden) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminTriggerRadarrSyncForbidden from json.
+func (s *AdminTriggerRadarrSyncForbidden) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminTriggerRadarrSyncForbidden to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminTriggerRadarrSyncForbidden(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminTriggerRadarrSyncForbidden) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminTriggerRadarrSyncForbidden) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminTriggerRadarrSyncServiceUnavailable as json.
+func (s *AdminTriggerRadarrSyncServiceUnavailable) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminTriggerRadarrSyncServiceUnavailable from json.
+func (s *AdminTriggerRadarrSyncServiceUnavailable) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminTriggerRadarrSyncServiceUnavailable to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminTriggerRadarrSyncServiceUnavailable(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminTriggerRadarrSyncServiceUnavailable) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminTriggerRadarrSyncServiceUnavailable) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes AdminTriggerRadarrSyncUnauthorized as json.
+func (s *AdminTriggerRadarrSyncUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes AdminTriggerRadarrSyncUnauthorized from json.
+func (s *AdminTriggerRadarrSyncUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode AdminTriggerRadarrSyncUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = AdminTriggerRadarrSyncUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *AdminTriggerRadarrSyncUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *AdminTriggerRadarrSyncUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -17272,6 +17766,105 @@ func (s *OptNilString) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes RadarrWebhookMovie as json.
+func (o OptRadarrWebhookMovie) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RadarrWebhookMovie from json.
+func (o *OptRadarrWebhookMovie) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRadarrWebhookMovie to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRadarrWebhookMovie) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRadarrWebhookMovie) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RadarrWebhookMovieFile as json.
+func (o OptRadarrWebhookMovieFile) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RadarrWebhookMovieFile from json.
+func (o *OptRadarrWebhookMovieFile) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRadarrWebhookMovieFile to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRadarrWebhookMovieFile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRadarrWebhookMovieFile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RadarrWebhookRelease as json.
+func (o OptRadarrWebhookRelease) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes RadarrWebhookRelease from json.
+func (o *OptRadarrWebhookRelease) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptRadarrWebhookRelease to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptRadarrWebhookRelease) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptRadarrWebhookRelease) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes SearchDocument as json.
 func (o OptSearchDocument) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -18436,6 +19029,1829 @@ func (s *PolicyRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PolicyRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrQualityProfile) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrQualityProfile) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int(s.ID)
+	}
+	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
+		if s.UpgradeAllowed.Set {
+			e.FieldStart("upgradeAllowed")
+			s.UpgradeAllowed.Encode(e)
+		}
+	}
+	{
+		if s.Cutoff.Set {
+			e.FieldStart("cutoff")
+			s.Cutoff.Encode(e)
+		}
+	}
+	{
+		if s.MinFormatScore.Set {
+			e.FieldStart("minFormatScore")
+			s.MinFormatScore.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrQualityProfile = [5]string{
+	0: "id",
+	1: "name",
+	2: "upgradeAllowed",
+	3: "cutoff",
+	4: "minFormatScore",
+}
+
+// Decode decodes RadarrQualityProfile from json.
+func (s *RadarrQualityProfile) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrQualityProfile to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.ID = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Name = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "upgradeAllowed":
+			if err := func() error {
+				s.UpgradeAllowed.Reset()
+				if err := s.UpgradeAllowed.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"upgradeAllowed\"")
+			}
+		case "cutoff":
+			if err := func() error {
+				s.Cutoff.Reset()
+				if err := s.Cutoff.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"cutoff\"")
+			}
+		case "minFormatScore":
+			if err := func() error {
+				s.MinFormatScore.Reset()
+				if err := s.MinFormatScore.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"minFormatScore\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrQualityProfile")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrQualityProfile) {
+					name = jsonFieldsNameOfRadarrQualityProfile[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrQualityProfile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrQualityProfile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrQualityProfileList) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrQualityProfileList) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("profiles")
+		e.ArrStart()
+		for _, elem := range s.Profiles {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfRadarrQualityProfileList = [1]string{
+	0: "profiles",
+}
+
+// Decode decodes RadarrQualityProfileList from json.
+func (s *RadarrQualityProfileList) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrQualityProfileList to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "profiles":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.Profiles = make([]RadarrQualityProfile, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem RadarrQualityProfile
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Profiles = append(s.Profiles, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"profiles\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrQualityProfileList")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrQualityProfileList) {
+					name = jsonFieldsNameOfRadarrQualityProfileList[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrQualityProfileList) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrQualityProfileList) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrRootFolder) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrRootFolder) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int(s.ID)
+	}
+	{
+		e.FieldStart("path")
+		e.Str(s.Path)
+	}
+	{
+		e.FieldStart("accessible")
+		e.Bool(s.Accessible)
+	}
+	{
+		if s.FreeSpace.Set {
+			e.FieldStart("freeSpace")
+			s.FreeSpace.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrRootFolder = [4]string{
+	0: "id",
+	1: "path",
+	2: "accessible",
+	3: "freeSpace",
+}
+
+// Decode decodes RadarrRootFolder from json.
+func (s *RadarrRootFolder) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrRootFolder to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.ID = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "path":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Path = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "accessible":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Bool()
+				s.Accessible = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"accessible\"")
+			}
+		case "freeSpace":
+			if err := func() error {
+				s.FreeSpace.Reset()
+				if err := s.FreeSpace.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"freeSpace\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrRootFolder")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrRootFolder) {
+					name = jsonFieldsNameOfRadarrRootFolder[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrRootFolder) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrRootFolder) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrRootFolderList) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrRootFolderList) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("folders")
+		e.ArrStart()
+		for _, elem := range s.Folders {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfRadarrRootFolderList = [1]string{
+	0: "folders",
+}
+
+// Decode decodes RadarrRootFolderList from json.
+func (s *RadarrRootFolderList) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrRootFolderList to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "folders":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.Folders = make([]RadarrRootFolder, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem RadarrRootFolder
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Folders = append(s.Folders, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"folders\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrRootFolderList")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrRootFolderList) {
+					name = jsonFieldsNameOfRadarrRootFolderList[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrRootFolderList) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrRootFolderList) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrStatus) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrStatus) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("connected")
+		e.Bool(s.Connected)
+	}
+	{
+		if s.Version.Set {
+			e.FieldStart("version")
+			s.Version.Encode(e)
+		}
+	}
+	{
+		if s.InstanceName.Set {
+			e.FieldStart("instanceName")
+			s.InstanceName.Encode(e)
+		}
+	}
+	{
+		if s.StartTime.Set {
+			e.FieldStart("startTime")
+			s.StartTime.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		e.FieldStart("syncStatus")
+		s.SyncStatus.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfRadarrStatus = [5]string{
+	0: "connected",
+	1: "version",
+	2: "instanceName",
+	3: "startTime",
+	4: "syncStatus",
+}
+
+// Decode decodes RadarrStatus from json.
+func (s *RadarrStatus) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrStatus to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "connected":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Bool()
+				s.Connected = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"connected\"")
+			}
+		case "version":
+			if err := func() error {
+				s.Version.Reset()
+				if err := s.Version.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"version\"")
+			}
+		case "instanceName":
+			if err := func() error {
+				s.InstanceName.Reset()
+				if err := s.InstanceName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"instanceName\"")
+			}
+		case "startTime":
+			if err := func() error {
+				s.StartTime.Reset()
+				if err := s.StartTime.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"startTime\"")
+			}
+		case "syncStatus":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				if err := s.SyncStatus.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"syncStatus\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrStatus")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00010001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrStatus) {
+					name = jsonFieldsNameOfRadarrStatus[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrStatus) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrSyncResponse) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrSyncResponse) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("message")
+		e.Str(s.Message)
+	}
+	{
+		e.FieldStart("status")
+		s.Status.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfRadarrSyncResponse = [2]string{
+	0: "message",
+	1: "status",
+}
+
+// Decode decodes RadarrSyncResponse from json.
+func (s *RadarrSyncResponse) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrSyncResponse to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "message":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Message = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"message\"")
+			}
+		case "status":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrSyncResponse")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrSyncResponse) {
+					name = jsonFieldsNameOfRadarrSyncResponse[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrSyncResponse) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrSyncResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RadarrSyncResponseStatus as json.
+func (s RadarrSyncResponseStatus) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes RadarrSyncResponseStatus from json.
+func (s *RadarrSyncResponseStatus) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrSyncResponseStatus to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch RadarrSyncResponseStatus(v) {
+	case RadarrSyncResponseStatusStarted:
+		*s = RadarrSyncResponseStatusStarted
+	case RadarrSyncResponseStatusQueued:
+		*s = RadarrSyncResponseStatusQueued
+	default:
+		*s = RadarrSyncResponseStatus(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s RadarrSyncResponseStatus) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrSyncResponseStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrSyncStatus) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrSyncStatus) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("isRunning")
+		e.Bool(s.IsRunning)
+	}
+	{
+		if s.LastSync.Set {
+			e.FieldStart("lastSync")
+			s.LastSync.Encode(e, json.EncodeDateTime)
+		}
+	}
+	{
+		if s.LastSyncError.Set {
+			e.FieldStart("lastSyncError")
+			s.LastSyncError.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("moviesAdded")
+		e.Int(s.MoviesAdded)
+	}
+	{
+		e.FieldStart("moviesUpdated")
+		e.Int(s.MoviesUpdated)
+	}
+	{
+		e.FieldStart("moviesRemoved")
+		e.Int(s.MoviesRemoved)
+	}
+	{
+		e.FieldStart("totalMovies")
+		e.Int(s.TotalMovies)
+	}
+}
+
+var jsonFieldsNameOfRadarrSyncStatus = [7]string{
+	0: "isRunning",
+	1: "lastSync",
+	2: "lastSyncError",
+	3: "moviesAdded",
+	4: "moviesUpdated",
+	5: "moviesRemoved",
+	6: "totalMovies",
+}
+
+// Decode decodes RadarrSyncStatus from json.
+func (s *RadarrSyncStatus) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrSyncStatus to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "isRunning":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Bool()
+				s.IsRunning = bool(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"isRunning\"")
+			}
+		case "lastSync":
+			if err := func() error {
+				s.LastSync.Reset()
+				if err := s.LastSync.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastSync\"")
+			}
+		case "lastSyncError":
+			if err := func() error {
+				s.LastSyncError.Reset()
+				if err := s.LastSyncError.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lastSyncError\"")
+			}
+		case "moviesAdded":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := d.Int()
+				s.MoviesAdded = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"moviesAdded\"")
+			}
+		case "moviesUpdated":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				v, err := d.Int()
+				s.MoviesUpdated = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"moviesUpdated\"")
+			}
+		case "moviesRemoved":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				v, err := d.Int()
+				s.MoviesRemoved = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"moviesRemoved\"")
+			}
+		case "totalMovies":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				v, err := d.Int()
+				s.TotalMovies = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"totalMovies\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrSyncStatus")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01111001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrSyncStatus) {
+					name = jsonFieldsNameOfRadarrSyncStatus[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrSyncStatus) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrSyncStatus) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrWebhookMovie) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrWebhookMovie) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.Year.Set {
+			e.FieldStart("year")
+			s.Year.Encode(e)
+		}
+	}
+	{
+		if s.TmdbId.Set {
+			e.FieldStart("tmdbId")
+			s.TmdbId.Encode(e)
+		}
+	}
+	{
+		if s.ImdbId.Set {
+			e.FieldStart("imdbId")
+			s.ImdbId.Encode(e)
+		}
+	}
+	{
+		if s.FolderPath.Set {
+			e.FieldStart("folderPath")
+			s.FolderPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrWebhookMovie = [6]string{
+	0: "id",
+	1: "title",
+	2: "year",
+	3: "tmdbId",
+	4: "imdbId",
+	5: "folderPath",
+}
+
+// Decode decodes RadarrWebhookMovie from json.
+func (s *RadarrWebhookMovie) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrWebhookMovie to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "year":
+			if err := func() error {
+				s.Year.Reset()
+				if err := s.Year.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"year\"")
+			}
+		case "tmdbId":
+			if err := func() error {
+				s.TmdbId.Reset()
+				if err := s.TmdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdbId\"")
+			}
+		case "imdbId":
+			if err := func() error {
+				s.ImdbId.Reset()
+				if err := s.ImdbId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdbId\"")
+			}
+		case "folderPath":
+			if err := func() error {
+				s.FolderPath.Reset()
+				if err := s.FolderPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"folderPath\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrWebhookMovie")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrWebhookMovie) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrWebhookMovie) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrWebhookMovieFile) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrWebhookMovieFile) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.RelativePath.Set {
+			e.FieldStart("relativePath")
+			s.RelativePath.Encode(e)
+		}
+	}
+	{
+		if s.Path.Set {
+			e.FieldStart("path")
+			s.Path.Encode(e)
+		}
+	}
+	{
+		if s.Quality.Set {
+			e.FieldStart("quality")
+			s.Quality.Encode(e)
+		}
+	}
+	{
+		if s.QualityVersion.Set {
+			e.FieldStart("qualityVersion")
+			s.QualityVersion.Encode(e)
+		}
+	}
+	{
+		if s.Size.Set {
+			e.FieldStart("size")
+			s.Size.Encode(e)
+		}
+	}
+	{
+		if s.DateAdded.Set {
+			e.FieldStart("dateAdded")
+			s.DateAdded.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrWebhookMovieFile = [7]string{
+	0: "id",
+	1: "relativePath",
+	2: "path",
+	3: "quality",
+	4: "qualityVersion",
+	5: "size",
+	6: "dateAdded",
+}
+
+// Decode decodes RadarrWebhookMovieFile from json.
+func (s *RadarrWebhookMovieFile) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrWebhookMovieFile to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "relativePath":
+			if err := func() error {
+				s.RelativePath.Reset()
+				if err := s.RelativePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"relativePath\"")
+			}
+		case "path":
+			if err := func() error {
+				s.Path.Reset()
+				if err := s.Path.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"path\"")
+			}
+		case "quality":
+			if err := func() error {
+				s.Quality.Reset()
+				if err := s.Quality.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quality\"")
+			}
+		case "qualityVersion":
+			if err := func() error {
+				s.QualityVersion.Reset()
+				if err := s.QualityVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityVersion\"")
+			}
+		case "size":
+			if err := func() error {
+				s.Size.Reset()
+				if err := s.Size.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"size\"")
+			}
+		case "dateAdded":
+			if err := func() error {
+				s.DateAdded.Reset()
+				if err := s.DateAdded.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"dateAdded\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrWebhookMovieFile")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrWebhookMovieFile) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrWebhookMovieFile) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrWebhookPayload) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrWebhookPayload) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("eventType")
+		s.EventType.Encode(e)
+	}
+	{
+		if s.InstanceName.Set {
+			e.FieldStart("instanceName")
+			s.InstanceName.Encode(e)
+		}
+	}
+	{
+		if s.ApplicationUrl.Set {
+			e.FieldStart("applicationUrl")
+			s.ApplicationUrl.Encode(e)
+		}
+	}
+	{
+		if s.Movie.Set {
+			e.FieldStart("movie")
+			s.Movie.Encode(e)
+		}
+	}
+	{
+		if s.MovieFile.Set {
+			e.FieldStart("movieFile")
+			s.MovieFile.Encode(e)
+		}
+	}
+	{
+		if s.DeletedFiles != nil {
+			e.FieldStart("deletedFiles")
+			e.ArrStart()
+			for _, elem := range s.DeletedFiles {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Release.Set {
+			e.FieldStart("release")
+			s.Release.Encode(e)
+		}
+	}
+	{
+		if s.DownloadClient.Set {
+			e.FieldStart("downloadClient")
+			s.DownloadClient.Encode(e)
+		}
+	}
+	{
+		if s.DownloadClientType.Set {
+			e.FieldStart("downloadClientType")
+			s.DownloadClientType.Encode(e)
+		}
+	}
+	{
+		if s.DownloadId.Set {
+			e.FieldStart("downloadId")
+			s.DownloadId.Encode(e)
+		}
+	}
+	{
+		if s.IsUpgrade.Set {
+			e.FieldStart("isUpgrade")
+			s.IsUpgrade.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrWebhookPayload = [11]string{
+	0:  "eventType",
+	1:  "instanceName",
+	2:  "applicationUrl",
+	3:  "movie",
+	4:  "movieFile",
+	5:  "deletedFiles",
+	6:  "release",
+	7:  "downloadClient",
+	8:  "downloadClientType",
+	9:  "downloadId",
+	10: "isUpgrade",
+}
+
+// Decode decodes RadarrWebhookPayload from json.
+func (s *RadarrWebhookPayload) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrWebhookPayload to nil")
+	}
+	var requiredBitSet [2]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "eventType":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				if err := s.EventType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"eventType\"")
+			}
+		case "instanceName":
+			if err := func() error {
+				s.InstanceName.Reset()
+				if err := s.InstanceName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"instanceName\"")
+			}
+		case "applicationUrl":
+			if err := func() error {
+				s.ApplicationUrl.Reset()
+				if err := s.ApplicationUrl.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"applicationUrl\"")
+			}
+		case "movie":
+			if err := func() error {
+				s.Movie.Reset()
+				if err := s.Movie.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie\"")
+			}
+		case "movieFile":
+			if err := func() error {
+				s.MovieFile.Reset()
+				if err := s.MovieFile.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movieFile\"")
+			}
+		case "deletedFiles":
+			if err := func() error {
+				s.DeletedFiles = make([]RadarrWebhookMovieFile, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem RadarrWebhookMovieFile
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.DeletedFiles = append(s.DeletedFiles, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"deletedFiles\"")
+			}
+		case "release":
+			if err := func() error {
+				s.Release.Reset()
+				if err := s.Release.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"release\"")
+			}
+		case "downloadClient":
+			if err := func() error {
+				s.DownloadClient.Reset()
+				if err := s.DownloadClient.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloadClient\"")
+			}
+		case "downloadClientType":
+			if err := func() error {
+				s.DownloadClientType.Reset()
+				if err := s.DownloadClientType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloadClientType\"")
+			}
+		case "downloadId":
+			if err := func() error {
+				s.DownloadId.Reset()
+				if err := s.DownloadId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"downloadId\"")
+			}
+		case "isUpgrade":
+			if err := func() error {
+				s.IsUpgrade.Reset()
+				if err := s.IsUpgrade.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"isUpgrade\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrWebhookPayload")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [2]uint8{
+		0b00000001,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfRadarrWebhookPayload) {
+					name = jsonFieldsNameOfRadarrWebhookPayload[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrWebhookPayload) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrWebhookPayload) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes RadarrWebhookPayloadEventType as json.
+func (s RadarrWebhookPayloadEventType) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes RadarrWebhookPayloadEventType from json.
+func (s *RadarrWebhookPayloadEventType) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrWebhookPayloadEventType to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch RadarrWebhookPayloadEventType(v) {
+	case RadarrWebhookPayloadEventTypeGrab:
+		*s = RadarrWebhookPayloadEventTypeGrab
+	case RadarrWebhookPayloadEventTypeDownload:
+		*s = RadarrWebhookPayloadEventTypeDownload
+	case RadarrWebhookPayloadEventTypeRename:
+		*s = RadarrWebhookPayloadEventTypeRename
+	case RadarrWebhookPayloadEventTypeMovieDelete:
+		*s = RadarrWebhookPayloadEventTypeMovieDelete
+	case RadarrWebhookPayloadEventTypeMovieFileDelete:
+		*s = RadarrWebhookPayloadEventTypeMovieFileDelete
+	case RadarrWebhookPayloadEventTypeHealth:
+		*s = RadarrWebhookPayloadEventTypeHealth
+	case RadarrWebhookPayloadEventTypeApplicationUpdate:
+		*s = RadarrWebhookPayloadEventTypeApplicationUpdate
+	case RadarrWebhookPayloadEventTypeTest:
+		*s = RadarrWebhookPayloadEventTypeTest
+	default:
+		*s = RadarrWebhookPayloadEventType(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s RadarrWebhookPayloadEventType) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrWebhookPayloadEventType) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *RadarrWebhookRelease) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *RadarrWebhookRelease) encodeFields(e *jx.Encoder) {
+	{
+		if s.Quality.Set {
+			e.FieldStart("quality")
+			s.Quality.Encode(e)
+		}
+	}
+	{
+		if s.QualityVersion.Set {
+			e.FieldStart("qualityVersion")
+			s.QualityVersion.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseGroup.Set {
+			e.FieldStart("releaseGroup")
+			s.ReleaseGroup.Encode(e)
+		}
+	}
+	{
+		if s.ReleaseTitle.Set {
+			e.FieldStart("releaseTitle")
+			s.ReleaseTitle.Encode(e)
+		}
+	}
+	{
+		if s.Indexer.Set {
+			e.FieldStart("indexer")
+			s.Indexer.Encode(e)
+		}
+	}
+	{
+		if s.Size.Set {
+			e.FieldStart("size")
+			s.Size.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfRadarrWebhookRelease = [6]string{
+	0: "quality",
+	1: "qualityVersion",
+	2: "releaseGroup",
+	3: "releaseTitle",
+	4: "indexer",
+	5: "size",
+}
+
+// Decode decodes RadarrWebhookRelease from json.
+func (s *RadarrWebhookRelease) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode RadarrWebhookRelease to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "quality":
+			if err := func() error {
+				s.Quality.Reset()
+				if err := s.Quality.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"quality\"")
+			}
+		case "qualityVersion":
+			if err := func() error {
+				s.QualityVersion.Reset()
+				if err := s.QualityVersion.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qualityVersion\"")
+			}
+		case "releaseGroup":
+			if err := func() error {
+				s.ReleaseGroup.Reset()
+				if err := s.ReleaseGroup.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"releaseGroup\"")
+			}
+		case "releaseTitle":
+			if err := func() error {
+				s.ReleaseTitle.Reset()
+				if err := s.ReleaseTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"releaseTitle\"")
+			}
+		case "indexer":
+			if err := func() error {
+				s.Indexer.Reset()
+				if err := s.Indexer.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"indexer\"")
+			}
+		case "size":
+			if err := func() error {
+				s.Size.Reset()
+				if err := s.Size.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"size\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode RadarrWebhookRelease")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *RadarrWebhookRelease) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *RadarrWebhookRelease) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

@@ -40,6 +40,10 @@ tags:
     description: Server and user settings management
   - name: users
     description: User account and profile management
+  - name: Integrations Admin
+    description: Admin endpoints for managing integrations (Radarr, Sonarr, etc.)
+  - name: Webhooks
+    description: Webhook endpoints for external service notifications
 
 paths:
   /healthz:
@@ -3402,6 +3406,164 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Radarr Integration Admin Endpoints
+  /api/v1/admin/integrations/radarr/status:
+    get:
+      operationId: adminGetRadarrStatus
+      summary: Get Radarr integration status (admin)
+      description: |
+        Returns the current Radarr integration status including connection health,
+        sync status, and last sync information. Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Radarr status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrStatus'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Radarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/radarr/sync:
+    post:
+      operationId: adminTriggerRadarrSync
+      summary: Trigger Radarr library sync (admin)
+      description: |
+        Triggers a full library sync from Radarr to Revenge.
+        This is an asynchronous operation - check status endpoint for progress.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '202':
+          description: Sync started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrSyncResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Sync already in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Radarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/radarr/quality-profiles:
+    get:
+      operationId: adminGetRadarrQualityProfiles
+      summary: Get Radarr quality profiles (admin)
+      description: |
+        Returns all quality profiles configured in Radarr.
+        Useful for mapping quality profiles during sync configuration.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of quality profiles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrQualityProfileList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Radarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/radarr/root-folders:
+    get:
+      operationId: adminGetRadarrRootFolders
+      summary: Get Radarr root folders (admin)
+      description: |
+        Returns all root folders configured in Radarr.
+        These are the library paths that Radarr monitors for movies.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of root folders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadarrRootFolderList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Radarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/webhooks/radarr:
+    post:
+      operationId: handleRadarrWebhook
+      summary: Handle Radarr webhook
+      description: |
+        Endpoint for receiving webhook notifications from Radarr.
+        Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
+        Configure this URL in Radarr Settings > Connect > Webhook.
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadarrWebhookPayload'
+      responses:
+        '202':
+          description: Webhook accepted for processing
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas
@@ -5438,6 +5600,236 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ActionCount'
+
+    # Radarr Integration schemas
+    RadarrStatus:
+      type: object
+      required:
+        - connected
+        - syncStatus
+      properties:
+        connected:
+          type: boolean
+          description: Whether Radarr is reachable
+        version:
+          type: string
+          description: Radarr version
+          example: "5.3.6.8612"
+        instanceName:
+          type: string
+          description: Radarr instance name
+          example: "Radarr"
+        startTime:
+          type: string
+          format: date-time
+          description: When Radarr was started
+        syncStatus:
+          $ref: '#/components/schemas/RadarrSyncStatus'
+
+    RadarrSyncStatus:
+      type: object
+      required:
+        - isRunning
+        - moviesAdded
+        - moviesUpdated
+        - moviesRemoved
+        - totalMovies
+      properties:
+        isRunning:
+          type: boolean
+          description: Whether a sync is currently in progress
+        lastSync:
+          type: string
+          format: date-time
+          description: When the last sync completed
+        lastSyncError:
+          type: string
+          description: Error message from last sync, if any
+        moviesAdded:
+          type: integer
+          description: Number of movies added in last sync
+        moviesUpdated:
+          type: integer
+          description: Number of movies updated in last sync
+        moviesRemoved:
+          type: integer
+          description: Number of movies removed in last sync
+        totalMovies:
+          type: integer
+          description: Total movies in Radarr library
+
+    RadarrSyncResponse:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+          description: Status message
+          example: "Sync started"
+        status:
+          type: string
+          enum: [started, queued]
+          description: Whether sync started immediately or was queued
+
+    RadarrQualityProfile:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Quality profile ID
+        name:
+          type: string
+          description: Quality profile name
+          example: "HD-1080p"
+        upgradeAllowed:
+          type: boolean
+          description: Whether quality upgrades are allowed
+        cutoff:
+          type: integer
+          description: Quality cutoff ID
+        minFormatScore:
+          type: integer
+          description: Minimum custom format score
+
+    RadarrQualityProfileList:
+      type: object
+      required:
+        - profiles
+      properties:
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadarrQualityProfile'
+
+    RadarrRootFolder:
+      type: object
+      required:
+        - id
+        - path
+        - accessible
+      properties:
+        id:
+          type: integer
+          description: Root folder ID
+        path:
+          type: string
+          description: Folder path
+          example: "/movies"
+        accessible:
+          type: boolean
+          description: Whether the folder is accessible
+        freeSpace:
+          type: integer
+          format: int64
+          description: Free space in bytes
+
+    RadarrRootFolderList:
+      type: object
+      required:
+        - folders
+      properties:
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadarrRootFolder'
+
+    RadarrWebhookPayload:
+      type: object
+      required:
+        - eventType
+      properties:
+        eventType:
+          type: string
+          description: Type of webhook event
+          enum: [Grab, Download, Rename, MovieDelete, MovieFileDelete, Health, ApplicationUpdate, Test]
+        instanceName:
+          type: string
+          description: Radarr instance name
+        applicationUrl:
+          type: string
+          description: Radarr application URL
+        movie:
+          $ref: '#/components/schemas/RadarrWebhookMovie'
+        movieFile:
+          $ref: '#/components/schemas/RadarrWebhookMovieFile'
+        deletedFiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadarrWebhookMovieFile'
+        release:
+          $ref: '#/components/schemas/RadarrWebhookRelease'
+        downloadClient:
+          type: string
+          description: Download client name
+        downloadClientType:
+          type: string
+          description: Download client type
+        downloadId:
+          type: string
+          description: Download ID
+        isUpgrade:
+          type: boolean
+          description: Whether this is a quality upgrade
+
+    RadarrWebhookMovie:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Radarr movie ID
+        title:
+          type: string
+        year:
+          type: integer
+        tmdbId:
+          type: integer
+        imdbId:
+          type: string
+        folderPath:
+          type: string
+
+    RadarrWebhookMovieFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Radarr file ID
+        relativePath:
+          type: string
+        path:
+          type: string
+        quality:
+          type: string
+        qualityVersion:
+          type: integer
+        size:
+          type: integer
+          format: int64
+        dateAdded:
+          type: string
+          format: date-time
+
+    RadarrWebhookRelease:
+      type: object
+      properties:
+        quality:
+          type: string
+        qualityVersion:
+          type: integer
+        releaseGroup:
+          type: string
+        releaseTitle:
+          type: string
+        indexer:
+          type: string
+        size:
+          type: integer
+          format: int64
 
     # Library schemas
     Library:

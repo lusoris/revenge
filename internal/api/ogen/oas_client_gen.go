@@ -64,6 +64,29 @@ type Invoker interface {
 	//
 	// GET /api/v1/admin/oidc/providers/{providerId}
 	AdminGetOIDCProvider(ctx context.Context, params AdminGetOIDCProviderParams) (AdminGetOIDCProviderRes, error)
+	// AdminGetRadarrQualityProfiles invokes adminGetRadarrQualityProfiles operation.
+	//
+	// Returns all quality profiles configured in Radarr.
+	// Useful for mapping quality profiles during sync configuration.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/quality-profiles
+	AdminGetRadarrQualityProfiles(ctx context.Context) (AdminGetRadarrQualityProfilesRes, error)
+	// AdminGetRadarrRootFolders invokes adminGetRadarrRootFolders operation.
+	//
+	// Returns all root folders configured in Radarr.
+	// These are the library paths that Radarr monitors for movies.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/root-folders
+	AdminGetRadarrRootFolders(ctx context.Context) (AdminGetRadarrRootFoldersRes, error)
+	// AdminGetRadarrStatus invokes adminGetRadarrStatus operation.
+	//
+	// Returns the current Radarr integration status including connection health,
+	// sync status, and last sync information. Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/status
+	AdminGetRadarrStatus(ctx context.Context) (AdminGetRadarrStatusRes, error)
 	// AdminListOIDCProviders invokes adminListOIDCProviders operation.
 	//
 	// Returns all OIDC providers including disabled ones.
@@ -76,6 +99,14 @@ type Invoker interface {
 	//
 	// POST /api/v1/admin/oidc/providers/{providerId}/default
 	AdminSetDefaultOIDCProvider(ctx context.Context, params AdminSetDefaultOIDCProviderParams) (AdminSetDefaultOIDCProviderRes, error)
+	// AdminTriggerRadarrSync invokes adminTriggerRadarrSync operation.
+	//
+	// Triggers a full library sync from Radarr to Revenge.
+	// This is an asynchronous operation - check status endpoint for progress.
+	// Admin only.
+	//
+	// POST /api/v1/admin/integrations/radarr/sync
+	AdminTriggerRadarrSync(ctx context.Context) (AdminTriggerRadarrSyncRes, error)
 	// AdminUpdateOIDCProvider invokes adminUpdateOIDCProvider operation.
 	//
 	// Updates an OIDC provider configuration.
@@ -380,6 +411,14 @@ type Invoker interface {
 	//
 	// POST /api/v1/libraries/{libraryId}/permissions
 	GrantLibraryPermission(ctx context.Context, request *GrantLibraryPermissionReq, params GrantLibraryPermissionParams) (GrantLibraryPermissionRes, error)
+	// HandleRadarrWebhook invokes handleRadarrWebhook operation.
+	//
+	// Endpoint for receiving webhook notifications from Radarr.
+	// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
+	// Configure this URL in Radarr Settings > Connect > Webhook.
+	//
+	// POST /api/v1/webhooks/radarr
+	HandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
 	// InitOIDCLink invokes initOIDCLink operation.
 	//
 	// Initiates the flow to link an OIDC provider to the user's account.
@@ -1440,6 +1479,329 @@ func (c *Client) sendAdminGetOIDCProvider(ctx context.Context, params AdminGetOI
 	return result, nil
 }
 
+// AdminGetRadarrQualityProfiles invokes adminGetRadarrQualityProfiles operation.
+//
+// Returns all quality profiles configured in Radarr.
+// Useful for mapping quality profiles during sync configuration.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/quality-profiles
+func (c *Client) AdminGetRadarrQualityProfiles(ctx context.Context) (AdminGetRadarrQualityProfilesRes, error) {
+	res, err := c.sendAdminGetRadarrQualityProfiles(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetRadarrQualityProfiles(ctx context.Context) (res AdminGetRadarrQualityProfilesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetRadarrQualityProfiles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/radarr/quality-profiles"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetRadarrQualityProfilesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/radarr/quality-profiles"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetRadarrQualityProfilesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetRadarrQualityProfilesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminGetRadarrRootFolders invokes adminGetRadarrRootFolders operation.
+//
+// Returns all root folders configured in Radarr.
+// These are the library paths that Radarr monitors for movies.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/root-folders
+func (c *Client) AdminGetRadarrRootFolders(ctx context.Context) (AdminGetRadarrRootFoldersRes, error) {
+	res, err := c.sendAdminGetRadarrRootFolders(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetRadarrRootFolders(ctx context.Context) (res AdminGetRadarrRootFoldersRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetRadarrRootFolders"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/radarr/root-folders"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetRadarrRootFoldersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/radarr/root-folders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetRadarrRootFoldersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetRadarrRootFoldersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminGetRadarrStatus invokes adminGetRadarrStatus operation.
+//
+// Returns the current Radarr integration status including connection health,
+// sync status, and last sync information. Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/status
+func (c *Client) AdminGetRadarrStatus(ctx context.Context) (AdminGetRadarrStatusRes, error) {
+	res, err := c.sendAdminGetRadarrStatus(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetRadarrStatus(ctx context.Context) (res AdminGetRadarrStatusRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetRadarrStatus"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/radarr/status"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetRadarrStatusOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/radarr/status"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetRadarrStatusOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetRadarrStatusResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // AdminListOIDCProviders invokes adminListOIDCProviders operation.
 //
 // Returns all OIDC providers including disabled ones.
@@ -1664,6 +2026,114 @@ func (c *Client) sendAdminSetDefaultOIDCProvider(ctx context.Context, params Adm
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminSetDefaultOIDCProviderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminTriggerRadarrSync invokes adminTriggerRadarrSync operation.
+//
+// Triggers a full library sync from Radarr to Revenge.
+// This is an asynchronous operation - check status endpoint for progress.
+// Admin only.
+//
+// POST /api/v1/admin/integrations/radarr/sync
+func (c *Client) AdminTriggerRadarrSync(ctx context.Context) (AdminTriggerRadarrSyncRes, error) {
+	res, err := c.sendAdminTriggerRadarrSync(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminTriggerRadarrSync(ctx context.Context) (res AdminTriggerRadarrSyncRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminTriggerRadarrSync"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/radarr/sync"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminTriggerRadarrSyncOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/radarr/sync"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminTriggerRadarrSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminTriggerRadarrSyncResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -7526,6 +7996,84 @@ func (c *Client) sendGrantLibraryPermission(ctx context.Context, request *GrantL
 
 	stage = "DecodeResponse"
 	result, err := decodeGrantLibraryPermissionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// HandleRadarrWebhook invokes handleRadarrWebhook operation.
+//
+// Endpoint for receiving webhook notifications from Radarr.
+// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
+// Configure this URL in Radarr Settings > Connect > Webhook.
+//
+// POST /api/v1/webhooks/radarr
+func (c *Client) HandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (HandleRadarrWebhookRes, error) {
+	res, err := c.sendHandleRadarrWebhook(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendHandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (res HandleRadarrWebhookRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("handleRadarrWebhook"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/webhooks/radarr"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, HandleRadarrWebhookOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/webhooks/radarr"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeHandleRadarrWebhookRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeHandleRadarrWebhookResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

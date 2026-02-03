@@ -67,6 +67,38 @@ func (UnimplementedHandler) AdminGetOIDCProvider(ctx context.Context, params Adm
 	return r, ht.ErrNotImplemented
 }
 
+// AdminGetRadarrQualityProfiles implements adminGetRadarrQualityProfiles operation.
+//
+// Returns all quality profiles configured in Radarr.
+// Useful for mapping quality profiles during sync configuration.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/quality-profiles
+func (UnimplementedHandler) AdminGetRadarrQualityProfiles(ctx context.Context) (r AdminGetRadarrQualityProfilesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminGetRadarrRootFolders implements adminGetRadarrRootFolders operation.
+//
+// Returns all root folders configured in Radarr.
+// These are the library paths that Radarr monitors for movies.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/root-folders
+func (UnimplementedHandler) AdminGetRadarrRootFolders(ctx context.Context) (r AdminGetRadarrRootFoldersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminGetRadarrStatus implements adminGetRadarrStatus operation.
+//
+// Returns the current Radarr integration status including connection health,
+// sync status, and last sync information. Admin only.
+//
+// GET /api/v1/admin/integrations/radarr/status
+func (UnimplementedHandler) AdminGetRadarrStatus(ctx context.Context) (r AdminGetRadarrStatusRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListOIDCProviders implements adminListOIDCProviders operation.
 //
 // Returns all OIDC providers including disabled ones.
@@ -82,6 +114,17 @@ func (UnimplementedHandler) AdminListOIDCProviders(ctx context.Context) (r Admin
 //
 // POST /api/v1/admin/oidc/providers/{providerId}/default
 func (UnimplementedHandler) AdminSetDefaultOIDCProvider(ctx context.Context, params AdminSetDefaultOIDCProviderParams) (r AdminSetDefaultOIDCProviderRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminTriggerRadarrSync implements adminTriggerRadarrSync operation.
+//
+// Triggers a full library sync from Radarr to Revenge.
+// This is an asynchronous operation - check status endpoint for progress.
+// Admin only.
+//
+// POST /api/v1/admin/integrations/radarr/sync
+func (UnimplementedHandler) AdminTriggerRadarrSync(ctx context.Context) (r AdminTriggerRadarrSyncRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -533,6 +576,17 @@ func (UnimplementedHandler) GetWatchProgress(ctx context.Context, params GetWatc
 //
 // POST /api/v1/libraries/{libraryId}/permissions
 func (UnimplementedHandler) GrantLibraryPermission(ctx context.Context, req *GrantLibraryPermissionReq, params GrantLibraryPermissionParams) (r GrantLibraryPermissionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// HandleRadarrWebhook implements handleRadarrWebhook operation.
+//
+// Endpoint for receiving webhook notifications from Radarr.
+// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
+// Configure this URL in Radarr Settings > Connect > Webhook.
+//
+// POST /api/v1/webhooks/radarr
+func (UnimplementedHandler) HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookPayload) (r HandleRadarrWebhookRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

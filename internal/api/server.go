@@ -11,6 +11,8 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
+	"github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/integration/radarr"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -32,7 +34,6 @@ type Server struct {
 	ogenServer *ogen.Server
 	logger     *zap.Logger
 }
-
 // ServerParams defines the dependencies required to create the API server.
 type ServerParams struct {
 	fx.In
@@ -59,7 +60,10 @@ type ServerParams struct {
 	MovieHandler    *movie.Handler
 	MetadataService *movie.MetadataService `optional:"true"`
 	ImageService    *image.Service         `optional:"true"`
-	Lifecycle       fx.Lifecycle
+	// Integration services (optional)
+	RadarrService *radarr.SyncService `optional:"true"`
+	RiverClient   *jobs.Client        `optional:"true"`
+	Lifecycle     fx.Lifecycle
 }
 
 // NewServer creates a new HTTP API server with ogen-generated handlers.
@@ -92,6 +96,14 @@ func NewServer(p ServerParams) (*Server, error) {
 		movieHandler:    p.MovieHandler,
 		metadataService: p.MetadataService,
 		imageService:    p.ImageService,
+	}
+
+	// Wire up optional Radarr integration
+	if p.RadarrService != nil {
+		handler.radarrService = p.RadarrService
+	}
+	if p.RiverClient != nil {
+		handler.riverClient = p.RiverClient
 	}
 
 	// Create ogen server

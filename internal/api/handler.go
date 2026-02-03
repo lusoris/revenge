@@ -21,6 +21,8 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/rivertype"
 	"go.uber.org/zap"
 )
 
@@ -44,6 +46,13 @@ type Handler struct {
 	movieHandler    *movie.Handler
 	metadataService *movie.MetadataService
 	imageService    *image.Service
+	radarrService   radarrService // Optional: Radarr sync service
+	riverClient     riverClient   // Optional: River job queue client
+}
+
+// riverClient is an interface for the River job queue client.
+type riverClient interface {
+	Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error)
 }
 
 // HandleBearerAuth implements the SecurityHandler interface.

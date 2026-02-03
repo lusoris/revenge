@@ -25,12 +25,28 @@ type AdminGetOIDCProviderRes interface {
 	adminGetOIDCProviderRes()
 }
 
+type AdminGetRadarrQualityProfilesRes interface {
+	adminGetRadarrQualityProfilesRes()
+}
+
+type AdminGetRadarrRootFoldersRes interface {
+	adminGetRadarrRootFoldersRes()
+}
+
+type AdminGetRadarrStatusRes interface {
+	adminGetRadarrStatusRes()
+}
+
 type AdminListOIDCProvidersRes interface {
 	adminListOIDCProvidersRes()
 }
 
 type AdminSetDefaultOIDCProviderRes interface {
 	adminSetDefaultOIDCProviderRes()
+}
+
+type AdminTriggerRadarrSyncRes interface {
+	adminTriggerRadarrSyncRes()
 }
 
 type AdminUpdateOIDCProviderRes interface {
@@ -223,6 +239,10 @@ type GetWatchProgressRes interface {
 
 type GrantLibraryPermissionRes interface {
 	grantLibraryPermissionRes()
+}
+
+type HandleRadarrWebhookRes interface {
+	handleRadarrWebhookRes()
 }
 
 type InitOIDCLinkRes interface {

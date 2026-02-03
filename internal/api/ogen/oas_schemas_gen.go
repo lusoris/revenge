@@ -641,6 +641,42 @@ type AdminGetOIDCProviderUnauthorized Error
 
 func (*AdminGetOIDCProviderUnauthorized) adminGetOIDCProviderRes() {}
 
+type AdminGetRadarrQualityProfilesForbidden Error
+
+func (*AdminGetRadarrQualityProfilesForbidden) adminGetRadarrQualityProfilesRes() {}
+
+type AdminGetRadarrQualityProfilesServiceUnavailable Error
+
+func (*AdminGetRadarrQualityProfilesServiceUnavailable) adminGetRadarrQualityProfilesRes() {}
+
+type AdminGetRadarrQualityProfilesUnauthorized Error
+
+func (*AdminGetRadarrQualityProfilesUnauthorized) adminGetRadarrQualityProfilesRes() {}
+
+type AdminGetRadarrRootFoldersForbidden Error
+
+func (*AdminGetRadarrRootFoldersForbidden) adminGetRadarrRootFoldersRes() {}
+
+type AdminGetRadarrRootFoldersServiceUnavailable Error
+
+func (*AdminGetRadarrRootFoldersServiceUnavailable) adminGetRadarrRootFoldersRes() {}
+
+type AdminGetRadarrRootFoldersUnauthorized Error
+
+func (*AdminGetRadarrRootFoldersUnauthorized) adminGetRadarrRootFoldersRes() {}
+
+type AdminGetRadarrStatusForbidden Error
+
+func (*AdminGetRadarrStatusForbidden) adminGetRadarrStatusRes() {}
+
+type AdminGetRadarrStatusServiceUnavailable Error
+
+func (*AdminGetRadarrStatusServiceUnavailable) adminGetRadarrStatusRes() {}
+
+type AdminGetRadarrStatusUnauthorized Error
+
+func (*AdminGetRadarrStatusUnauthorized) adminGetRadarrStatusRes() {}
+
 type AdminListOIDCProvidersForbidden Error
 
 func (*AdminListOIDCProvidersForbidden) adminListOIDCProvidersRes() {}
@@ -980,6 +1016,22 @@ func (*AdminSetDefaultOIDCProviderNotFound) adminSetDefaultOIDCProviderRes() {}
 type AdminSetDefaultOIDCProviderUnauthorized Error
 
 func (*AdminSetDefaultOIDCProviderUnauthorized) adminSetDefaultOIDCProviderRes() {}
+
+type AdminTriggerRadarrSyncConflict Error
+
+func (*AdminTriggerRadarrSyncConflict) adminTriggerRadarrSyncRes() {}
+
+type AdminTriggerRadarrSyncForbidden Error
+
+func (*AdminTriggerRadarrSyncForbidden) adminTriggerRadarrSyncRes() {}
+
+type AdminTriggerRadarrSyncServiceUnavailable Error
+
+func (*AdminTriggerRadarrSyncServiceUnavailable) adminTriggerRadarrSyncRes() {}
+
+type AdminTriggerRadarrSyncUnauthorized Error
+
+func (*AdminTriggerRadarrSyncUnauthorized) adminTriggerRadarrSyncRes() {}
 
 type AdminUpdateOIDCProviderBadRequest Error
 
@@ -2525,6 +2577,7 @@ func (*Error) getUserMovieStatsRes()     {}
 func (*Error) getUserPreferencesRes()    {}
 func (*Error) getUserRolesRes()          {}
 func (*Error) getWatchHistoryRes()       {}
+func (*Error) handleRadarrWebhookRes()   {}
 func (*Error) listAPIKeysRes()           {}
 func (*Error) listLibrariesRes()         {}
 func (*Error) listMoviesRes()            {}
@@ -3161,6 +3214,11 @@ func (s *GrantLibraryPermissionReqPermission) UnmarshalText(data []byte) error {
 type GrantLibraryPermissionUnauthorized Error
 
 func (*GrantLibraryPermissionUnauthorized) grantLibraryPermissionRes() {}
+
+// HandleRadarrWebhookAccepted is response for HandleRadarrWebhook operation.
+type HandleRadarrWebhookAccepted struct{}
+
+func (*HandleRadarrWebhookAccepted) handleRadarrWebhookRes() {}
 
 // Ref: #/components/schemas/HealthCheck
 type HealthCheck struct {
@@ -7593,6 +7651,144 @@ func (o OptNilString) Or(d string) string {
 	return d
 }
 
+// NewOptRadarrWebhookMovie returns new OptRadarrWebhookMovie with value set to v.
+func NewOptRadarrWebhookMovie(v RadarrWebhookMovie) OptRadarrWebhookMovie {
+	return OptRadarrWebhookMovie{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRadarrWebhookMovie is optional RadarrWebhookMovie.
+type OptRadarrWebhookMovie struct {
+	Value RadarrWebhookMovie
+	Set   bool
+}
+
+// IsSet returns true if OptRadarrWebhookMovie was set.
+func (o OptRadarrWebhookMovie) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRadarrWebhookMovie) Reset() {
+	var v RadarrWebhookMovie
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRadarrWebhookMovie) SetTo(v RadarrWebhookMovie) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRadarrWebhookMovie) Get() (v RadarrWebhookMovie, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRadarrWebhookMovie) Or(d RadarrWebhookMovie) RadarrWebhookMovie {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRadarrWebhookMovieFile returns new OptRadarrWebhookMovieFile with value set to v.
+func NewOptRadarrWebhookMovieFile(v RadarrWebhookMovieFile) OptRadarrWebhookMovieFile {
+	return OptRadarrWebhookMovieFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRadarrWebhookMovieFile is optional RadarrWebhookMovieFile.
+type OptRadarrWebhookMovieFile struct {
+	Value RadarrWebhookMovieFile
+	Set   bool
+}
+
+// IsSet returns true if OptRadarrWebhookMovieFile was set.
+func (o OptRadarrWebhookMovieFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRadarrWebhookMovieFile) Reset() {
+	var v RadarrWebhookMovieFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRadarrWebhookMovieFile) SetTo(v RadarrWebhookMovieFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRadarrWebhookMovieFile) Get() (v RadarrWebhookMovieFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRadarrWebhookMovieFile) Or(d RadarrWebhookMovieFile) RadarrWebhookMovieFile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptRadarrWebhookRelease returns new OptRadarrWebhookRelease with value set to v.
+func NewOptRadarrWebhookRelease(v RadarrWebhookRelease) OptRadarrWebhookRelease {
+	return OptRadarrWebhookRelease{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptRadarrWebhookRelease is optional RadarrWebhookRelease.
+type OptRadarrWebhookRelease struct {
+	Value RadarrWebhookRelease
+	Set   bool
+}
+
+// IsSet returns true if OptRadarrWebhookRelease was set.
+func (o OptRadarrWebhookRelease) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptRadarrWebhookRelease) Reset() {
+	var v RadarrWebhookRelease
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptRadarrWebhookRelease) SetTo(v RadarrWebhookRelease) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptRadarrWebhookRelease) Get() (v RadarrWebhookRelease, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptRadarrWebhookRelease) Or(d RadarrWebhookRelease) RadarrWebhookRelease {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchDocument returns new OptSearchDocument with value set to v.
 func NewOptSearchDocument(v SearchDocument) OptSearchDocument {
 	return OptSearchDocument{
@@ -8838,6 +9034,820 @@ func (s *PolicyRequest) SetObject(val string) {
 // SetAction sets the value of Action.
 func (s *PolicyRequest) SetAction(val string) {
 	s.Action = val
+}
+
+// Ref: #/components/schemas/RadarrQualityProfile
+type RadarrQualityProfile struct {
+	// Quality profile ID.
+	ID int `json:"id"`
+	// Quality profile name.
+	Name string `json:"name"`
+	// Whether quality upgrades are allowed.
+	UpgradeAllowed OptBool `json:"upgradeAllowed"`
+	// Quality cutoff ID.
+	Cutoff OptInt `json:"cutoff"`
+	// Minimum custom format score.
+	MinFormatScore OptInt `json:"minFormatScore"`
+}
+
+// GetID returns the value of ID.
+func (s *RadarrQualityProfile) GetID() int {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *RadarrQualityProfile) GetName() string {
+	return s.Name
+}
+
+// GetUpgradeAllowed returns the value of UpgradeAllowed.
+func (s *RadarrQualityProfile) GetUpgradeAllowed() OptBool {
+	return s.UpgradeAllowed
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *RadarrQualityProfile) GetCutoff() OptInt {
+	return s.Cutoff
+}
+
+// GetMinFormatScore returns the value of MinFormatScore.
+func (s *RadarrQualityProfile) GetMinFormatScore() OptInt {
+	return s.MinFormatScore
+}
+
+// SetID sets the value of ID.
+func (s *RadarrQualityProfile) SetID(val int) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *RadarrQualityProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetUpgradeAllowed sets the value of UpgradeAllowed.
+func (s *RadarrQualityProfile) SetUpgradeAllowed(val OptBool) {
+	s.UpgradeAllowed = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *RadarrQualityProfile) SetCutoff(val OptInt) {
+	s.Cutoff = val
+}
+
+// SetMinFormatScore sets the value of MinFormatScore.
+func (s *RadarrQualityProfile) SetMinFormatScore(val OptInt) {
+	s.MinFormatScore = val
+}
+
+// Ref: #/components/schemas/RadarrQualityProfileList
+type RadarrQualityProfileList struct {
+	Profiles []RadarrQualityProfile `json:"profiles"`
+}
+
+// GetProfiles returns the value of Profiles.
+func (s *RadarrQualityProfileList) GetProfiles() []RadarrQualityProfile {
+	return s.Profiles
+}
+
+// SetProfiles sets the value of Profiles.
+func (s *RadarrQualityProfileList) SetProfiles(val []RadarrQualityProfile) {
+	s.Profiles = val
+}
+
+func (*RadarrQualityProfileList) adminGetRadarrQualityProfilesRes() {}
+
+// Ref: #/components/schemas/RadarrRootFolder
+type RadarrRootFolder struct {
+	// Root folder ID.
+	ID int `json:"id"`
+	// Folder path.
+	Path string `json:"path"`
+	// Whether the folder is accessible.
+	Accessible bool `json:"accessible"`
+	// Free space in bytes.
+	FreeSpace OptInt64 `json:"freeSpace"`
+}
+
+// GetID returns the value of ID.
+func (s *RadarrRootFolder) GetID() int {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *RadarrRootFolder) GetPath() string {
+	return s.Path
+}
+
+// GetAccessible returns the value of Accessible.
+func (s *RadarrRootFolder) GetAccessible() bool {
+	return s.Accessible
+}
+
+// GetFreeSpace returns the value of FreeSpace.
+func (s *RadarrRootFolder) GetFreeSpace() OptInt64 {
+	return s.FreeSpace
+}
+
+// SetID sets the value of ID.
+func (s *RadarrRootFolder) SetID(val int) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *RadarrRootFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetAccessible sets the value of Accessible.
+func (s *RadarrRootFolder) SetAccessible(val bool) {
+	s.Accessible = val
+}
+
+// SetFreeSpace sets the value of FreeSpace.
+func (s *RadarrRootFolder) SetFreeSpace(val OptInt64) {
+	s.FreeSpace = val
+}
+
+// Ref: #/components/schemas/RadarrRootFolderList
+type RadarrRootFolderList struct {
+	Folders []RadarrRootFolder `json:"folders"`
+}
+
+// GetFolders returns the value of Folders.
+func (s *RadarrRootFolderList) GetFolders() []RadarrRootFolder {
+	return s.Folders
+}
+
+// SetFolders sets the value of Folders.
+func (s *RadarrRootFolderList) SetFolders(val []RadarrRootFolder) {
+	s.Folders = val
+}
+
+func (*RadarrRootFolderList) adminGetRadarrRootFoldersRes() {}
+
+// Ref: #/components/schemas/RadarrStatus
+type RadarrStatus struct {
+	// Whether Radarr is reachable.
+	Connected bool `json:"connected"`
+	// Radarr version.
+	Version OptString `json:"version"`
+	// Radarr instance name.
+	InstanceName OptString `json:"instanceName"`
+	// When Radarr was started.
+	StartTime  OptDateTime      `json:"startTime"`
+	SyncStatus RadarrSyncStatus `json:"syncStatus"`
+}
+
+// GetConnected returns the value of Connected.
+func (s *RadarrStatus) GetConnected() bool {
+	return s.Connected
+}
+
+// GetVersion returns the value of Version.
+func (s *RadarrStatus) GetVersion() OptString {
+	return s.Version
+}
+
+// GetInstanceName returns the value of InstanceName.
+func (s *RadarrStatus) GetInstanceName() OptString {
+	return s.InstanceName
+}
+
+// GetStartTime returns the value of StartTime.
+func (s *RadarrStatus) GetStartTime() OptDateTime {
+	return s.StartTime
+}
+
+// GetSyncStatus returns the value of SyncStatus.
+func (s *RadarrStatus) GetSyncStatus() RadarrSyncStatus {
+	return s.SyncStatus
+}
+
+// SetConnected sets the value of Connected.
+func (s *RadarrStatus) SetConnected(val bool) {
+	s.Connected = val
+}
+
+// SetVersion sets the value of Version.
+func (s *RadarrStatus) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetInstanceName sets the value of InstanceName.
+func (s *RadarrStatus) SetInstanceName(val OptString) {
+	s.InstanceName = val
+}
+
+// SetStartTime sets the value of StartTime.
+func (s *RadarrStatus) SetStartTime(val OptDateTime) {
+	s.StartTime = val
+}
+
+// SetSyncStatus sets the value of SyncStatus.
+func (s *RadarrStatus) SetSyncStatus(val RadarrSyncStatus) {
+	s.SyncStatus = val
+}
+
+func (*RadarrStatus) adminGetRadarrStatusRes() {}
+
+// Ref: #/components/schemas/RadarrSyncResponse
+type RadarrSyncResponse struct {
+	// Status message.
+	Message string `json:"message"`
+	// Whether sync started immediately or was queued.
+	Status RadarrSyncResponseStatus `json:"status"`
+}
+
+// GetMessage returns the value of Message.
+func (s *RadarrSyncResponse) GetMessage() string {
+	return s.Message
+}
+
+// GetStatus returns the value of Status.
+func (s *RadarrSyncResponse) GetStatus() RadarrSyncResponseStatus {
+	return s.Status
+}
+
+// SetMessage sets the value of Message.
+func (s *RadarrSyncResponse) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetStatus sets the value of Status.
+func (s *RadarrSyncResponse) SetStatus(val RadarrSyncResponseStatus) {
+	s.Status = val
+}
+
+func (*RadarrSyncResponse) adminTriggerRadarrSyncRes() {}
+
+// Whether sync started immediately or was queued.
+type RadarrSyncResponseStatus string
+
+const (
+	RadarrSyncResponseStatusStarted RadarrSyncResponseStatus = "started"
+	RadarrSyncResponseStatusQueued  RadarrSyncResponseStatus = "queued"
+)
+
+// AllValues returns all RadarrSyncResponseStatus values.
+func (RadarrSyncResponseStatus) AllValues() []RadarrSyncResponseStatus {
+	return []RadarrSyncResponseStatus{
+		RadarrSyncResponseStatusStarted,
+		RadarrSyncResponseStatusQueued,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RadarrSyncResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case RadarrSyncResponseStatusStarted:
+		return []byte(s), nil
+	case RadarrSyncResponseStatusQueued:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RadarrSyncResponseStatus) UnmarshalText(data []byte) error {
+	switch RadarrSyncResponseStatus(data) {
+	case RadarrSyncResponseStatusStarted:
+		*s = RadarrSyncResponseStatusStarted
+		return nil
+	case RadarrSyncResponseStatusQueued:
+		*s = RadarrSyncResponseStatusQueued
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RadarrSyncStatus
+type RadarrSyncStatus struct {
+	// Whether a sync is currently in progress.
+	IsRunning bool `json:"isRunning"`
+	// When the last sync completed.
+	LastSync OptDateTime `json:"lastSync"`
+	// Error message from last sync, if any.
+	LastSyncError OptString `json:"lastSyncError"`
+	// Number of movies added in last sync.
+	MoviesAdded int `json:"moviesAdded"`
+	// Number of movies updated in last sync.
+	MoviesUpdated int `json:"moviesUpdated"`
+	// Number of movies removed in last sync.
+	MoviesRemoved int `json:"moviesRemoved"`
+	// Total movies in Radarr library.
+	TotalMovies int `json:"totalMovies"`
+}
+
+// GetIsRunning returns the value of IsRunning.
+func (s *RadarrSyncStatus) GetIsRunning() bool {
+	return s.IsRunning
+}
+
+// GetLastSync returns the value of LastSync.
+func (s *RadarrSyncStatus) GetLastSync() OptDateTime {
+	return s.LastSync
+}
+
+// GetLastSyncError returns the value of LastSyncError.
+func (s *RadarrSyncStatus) GetLastSyncError() OptString {
+	return s.LastSyncError
+}
+
+// GetMoviesAdded returns the value of MoviesAdded.
+func (s *RadarrSyncStatus) GetMoviesAdded() int {
+	return s.MoviesAdded
+}
+
+// GetMoviesUpdated returns the value of MoviesUpdated.
+func (s *RadarrSyncStatus) GetMoviesUpdated() int {
+	return s.MoviesUpdated
+}
+
+// GetMoviesRemoved returns the value of MoviesRemoved.
+func (s *RadarrSyncStatus) GetMoviesRemoved() int {
+	return s.MoviesRemoved
+}
+
+// GetTotalMovies returns the value of TotalMovies.
+func (s *RadarrSyncStatus) GetTotalMovies() int {
+	return s.TotalMovies
+}
+
+// SetIsRunning sets the value of IsRunning.
+func (s *RadarrSyncStatus) SetIsRunning(val bool) {
+	s.IsRunning = val
+}
+
+// SetLastSync sets the value of LastSync.
+func (s *RadarrSyncStatus) SetLastSync(val OptDateTime) {
+	s.LastSync = val
+}
+
+// SetLastSyncError sets the value of LastSyncError.
+func (s *RadarrSyncStatus) SetLastSyncError(val OptString) {
+	s.LastSyncError = val
+}
+
+// SetMoviesAdded sets the value of MoviesAdded.
+func (s *RadarrSyncStatus) SetMoviesAdded(val int) {
+	s.MoviesAdded = val
+}
+
+// SetMoviesUpdated sets the value of MoviesUpdated.
+func (s *RadarrSyncStatus) SetMoviesUpdated(val int) {
+	s.MoviesUpdated = val
+}
+
+// SetMoviesRemoved sets the value of MoviesRemoved.
+func (s *RadarrSyncStatus) SetMoviesRemoved(val int) {
+	s.MoviesRemoved = val
+}
+
+// SetTotalMovies sets the value of TotalMovies.
+func (s *RadarrSyncStatus) SetTotalMovies(val int) {
+	s.TotalMovies = val
+}
+
+// Ref: #/components/schemas/RadarrWebhookMovie
+type RadarrWebhookMovie struct {
+	// Radarr movie ID.
+	ID         OptInt    `json:"id"`
+	Title      OptString `json:"title"`
+	Year       OptInt    `json:"year"`
+	TmdbId     OptInt    `json:"tmdbId"`
+	ImdbId     OptString `json:"imdbId"`
+	FolderPath OptString `json:"folderPath"`
+}
+
+// GetID returns the value of ID.
+func (s *RadarrWebhookMovie) GetID() OptInt {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *RadarrWebhookMovie) GetTitle() OptString {
+	return s.Title
+}
+
+// GetYear returns the value of Year.
+func (s *RadarrWebhookMovie) GetYear() OptInt {
+	return s.Year
+}
+
+// GetTmdbId returns the value of TmdbId.
+func (s *RadarrWebhookMovie) GetTmdbId() OptInt {
+	return s.TmdbId
+}
+
+// GetImdbId returns the value of ImdbId.
+func (s *RadarrWebhookMovie) GetImdbId() OptString {
+	return s.ImdbId
+}
+
+// GetFolderPath returns the value of FolderPath.
+func (s *RadarrWebhookMovie) GetFolderPath() OptString {
+	return s.FolderPath
+}
+
+// SetID sets the value of ID.
+func (s *RadarrWebhookMovie) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *RadarrWebhookMovie) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetYear sets the value of Year.
+func (s *RadarrWebhookMovie) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetTmdbId sets the value of TmdbId.
+func (s *RadarrWebhookMovie) SetTmdbId(val OptInt) {
+	s.TmdbId = val
+}
+
+// SetImdbId sets the value of ImdbId.
+func (s *RadarrWebhookMovie) SetImdbId(val OptString) {
+	s.ImdbId = val
+}
+
+// SetFolderPath sets the value of FolderPath.
+func (s *RadarrWebhookMovie) SetFolderPath(val OptString) {
+	s.FolderPath = val
+}
+
+// Ref: #/components/schemas/RadarrWebhookMovieFile
+type RadarrWebhookMovieFile struct {
+	// Radarr file ID.
+	ID             OptInt      `json:"id"`
+	RelativePath   OptString   `json:"relativePath"`
+	Path           OptString   `json:"path"`
+	Quality        OptString   `json:"quality"`
+	QualityVersion OptInt      `json:"qualityVersion"`
+	Size           OptInt64    `json:"size"`
+	DateAdded      OptDateTime `json:"dateAdded"`
+}
+
+// GetID returns the value of ID.
+func (s *RadarrWebhookMovieFile) GetID() OptInt {
+	return s.ID
+}
+
+// GetRelativePath returns the value of RelativePath.
+func (s *RadarrWebhookMovieFile) GetRelativePath() OptString {
+	return s.RelativePath
+}
+
+// GetPath returns the value of Path.
+func (s *RadarrWebhookMovieFile) GetPath() OptString {
+	return s.Path
+}
+
+// GetQuality returns the value of Quality.
+func (s *RadarrWebhookMovieFile) GetQuality() OptString {
+	return s.Quality
+}
+
+// GetQualityVersion returns the value of QualityVersion.
+func (s *RadarrWebhookMovieFile) GetQualityVersion() OptInt {
+	return s.QualityVersion
+}
+
+// GetSize returns the value of Size.
+func (s *RadarrWebhookMovieFile) GetSize() OptInt64 {
+	return s.Size
+}
+
+// GetDateAdded returns the value of DateAdded.
+func (s *RadarrWebhookMovieFile) GetDateAdded() OptDateTime {
+	return s.DateAdded
+}
+
+// SetID sets the value of ID.
+func (s *RadarrWebhookMovieFile) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetRelativePath sets the value of RelativePath.
+func (s *RadarrWebhookMovieFile) SetRelativePath(val OptString) {
+	s.RelativePath = val
+}
+
+// SetPath sets the value of Path.
+func (s *RadarrWebhookMovieFile) SetPath(val OptString) {
+	s.Path = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *RadarrWebhookMovieFile) SetQuality(val OptString) {
+	s.Quality = val
+}
+
+// SetQualityVersion sets the value of QualityVersion.
+func (s *RadarrWebhookMovieFile) SetQualityVersion(val OptInt) {
+	s.QualityVersion = val
+}
+
+// SetSize sets the value of Size.
+func (s *RadarrWebhookMovieFile) SetSize(val OptInt64) {
+	s.Size = val
+}
+
+// SetDateAdded sets the value of DateAdded.
+func (s *RadarrWebhookMovieFile) SetDateAdded(val OptDateTime) {
+	s.DateAdded = val
+}
+
+// Ref: #/components/schemas/RadarrWebhookPayload
+type RadarrWebhookPayload struct {
+	// Type of webhook event.
+	EventType RadarrWebhookPayloadEventType `json:"eventType"`
+	// Radarr instance name.
+	InstanceName OptString `json:"instanceName"`
+	// Radarr application URL.
+	ApplicationUrl OptString                 `json:"applicationUrl"`
+	Movie          OptRadarrWebhookMovie     `json:"movie"`
+	MovieFile      OptRadarrWebhookMovieFile `json:"movieFile"`
+	DeletedFiles   []RadarrWebhookMovieFile  `json:"deletedFiles"`
+	Release        OptRadarrWebhookRelease   `json:"release"`
+	// Download client name.
+	DownloadClient OptString `json:"downloadClient"`
+	// Download client type.
+	DownloadClientType OptString `json:"downloadClientType"`
+	// Download ID.
+	DownloadId OptString `json:"downloadId"`
+	// Whether this is a quality upgrade.
+	IsUpgrade OptBool `json:"isUpgrade"`
+}
+
+// GetEventType returns the value of EventType.
+func (s *RadarrWebhookPayload) GetEventType() RadarrWebhookPayloadEventType {
+	return s.EventType
+}
+
+// GetInstanceName returns the value of InstanceName.
+func (s *RadarrWebhookPayload) GetInstanceName() OptString {
+	return s.InstanceName
+}
+
+// GetApplicationUrl returns the value of ApplicationUrl.
+func (s *RadarrWebhookPayload) GetApplicationUrl() OptString {
+	return s.ApplicationUrl
+}
+
+// GetMovie returns the value of Movie.
+func (s *RadarrWebhookPayload) GetMovie() OptRadarrWebhookMovie {
+	return s.Movie
+}
+
+// GetMovieFile returns the value of MovieFile.
+func (s *RadarrWebhookPayload) GetMovieFile() OptRadarrWebhookMovieFile {
+	return s.MovieFile
+}
+
+// GetDeletedFiles returns the value of DeletedFiles.
+func (s *RadarrWebhookPayload) GetDeletedFiles() []RadarrWebhookMovieFile {
+	return s.DeletedFiles
+}
+
+// GetRelease returns the value of Release.
+func (s *RadarrWebhookPayload) GetRelease() OptRadarrWebhookRelease {
+	return s.Release
+}
+
+// GetDownloadClient returns the value of DownloadClient.
+func (s *RadarrWebhookPayload) GetDownloadClient() OptString {
+	return s.DownloadClient
+}
+
+// GetDownloadClientType returns the value of DownloadClientType.
+func (s *RadarrWebhookPayload) GetDownloadClientType() OptString {
+	return s.DownloadClientType
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *RadarrWebhookPayload) GetDownloadId() OptString {
+	return s.DownloadId
+}
+
+// GetIsUpgrade returns the value of IsUpgrade.
+func (s *RadarrWebhookPayload) GetIsUpgrade() OptBool {
+	return s.IsUpgrade
+}
+
+// SetEventType sets the value of EventType.
+func (s *RadarrWebhookPayload) SetEventType(val RadarrWebhookPayloadEventType) {
+	s.EventType = val
+}
+
+// SetInstanceName sets the value of InstanceName.
+func (s *RadarrWebhookPayload) SetInstanceName(val OptString) {
+	s.InstanceName = val
+}
+
+// SetApplicationUrl sets the value of ApplicationUrl.
+func (s *RadarrWebhookPayload) SetApplicationUrl(val OptString) {
+	s.ApplicationUrl = val
+}
+
+// SetMovie sets the value of Movie.
+func (s *RadarrWebhookPayload) SetMovie(val OptRadarrWebhookMovie) {
+	s.Movie = val
+}
+
+// SetMovieFile sets the value of MovieFile.
+func (s *RadarrWebhookPayload) SetMovieFile(val OptRadarrWebhookMovieFile) {
+	s.MovieFile = val
+}
+
+// SetDeletedFiles sets the value of DeletedFiles.
+func (s *RadarrWebhookPayload) SetDeletedFiles(val []RadarrWebhookMovieFile) {
+	s.DeletedFiles = val
+}
+
+// SetRelease sets the value of Release.
+func (s *RadarrWebhookPayload) SetRelease(val OptRadarrWebhookRelease) {
+	s.Release = val
+}
+
+// SetDownloadClient sets the value of DownloadClient.
+func (s *RadarrWebhookPayload) SetDownloadClient(val OptString) {
+	s.DownloadClient = val
+}
+
+// SetDownloadClientType sets the value of DownloadClientType.
+func (s *RadarrWebhookPayload) SetDownloadClientType(val OptString) {
+	s.DownloadClientType = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *RadarrWebhookPayload) SetDownloadId(val OptString) {
+	s.DownloadId = val
+}
+
+// SetIsUpgrade sets the value of IsUpgrade.
+func (s *RadarrWebhookPayload) SetIsUpgrade(val OptBool) {
+	s.IsUpgrade = val
+}
+
+// Type of webhook event.
+type RadarrWebhookPayloadEventType string
+
+const (
+	RadarrWebhookPayloadEventTypeGrab              RadarrWebhookPayloadEventType = "Grab"
+	RadarrWebhookPayloadEventTypeDownload          RadarrWebhookPayloadEventType = "Download"
+	RadarrWebhookPayloadEventTypeRename            RadarrWebhookPayloadEventType = "Rename"
+	RadarrWebhookPayloadEventTypeMovieDelete       RadarrWebhookPayloadEventType = "MovieDelete"
+	RadarrWebhookPayloadEventTypeMovieFileDelete   RadarrWebhookPayloadEventType = "MovieFileDelete"
+	RadarrWebhookPayloadEventTypeHealth            RadarrWebhookPayloadEventType = "Health"
+	RadarrWebhookPayloadEventTypeApplicationUpdate RadarrWebhookPayloadEventType = "ApplicationUpdate"
+	RadarrWebhookPayloadEventTypeTest              RadarrWebhookPayloadEventType = "Test"
+)
+
+// AllValues returns all RadarrWebhookPayloadEventType values.
+func (RadarrWebhookPayloadEventType) AllValues() []RadarrWebhookPayloadEventType {
+	return []RadarrWebhookPayloadEventType{
+		RadarrWebhookPayloadEventTypeGrab,
+		RadarrWebhookPayloadEventTypeDownload,
+		RadarrWebhookPayloadEventTypeRename,
+		RadarrWebhookPayloadEventTypeMovieDelete,
+		RadarrWebhookPayloadEventTypeMovieFileDelete,
+		RadarrWebhookPayloadEventTypeHealth,
+		RadarrWebhookPayloadEventTypeApplicationUpdate,
+		RadarrWebhookPayloadEventTypeTest,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s RadarrWebhookPayloadEventType) MarshalText() ([]byte, error) {
+	switch s {
+	case RadarrWebhookPayloadEventTypeGrab:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeDownload:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeRename:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeMovieDelete:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeMovieFileDelete:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeHealth:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeApplicationUpdate:
+		return []byte(s), nil
+	case RadarrWebhookPayloadEventTypeTest:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *RadarrWebhookPayloadEventType) UnmarshalText(data []byte) error {
+	switch RadarrWebhookPayloadEventType(data) {
+	case RadarrWebhookPayloadEventTypeGrab:
+		*s = RadarrWebhookPayloadEventTypeGrab
+		return nil
+	case RadarrWebhookPayloadEventTypeDownload:
+		*s = RadarrWebhookPayloadEventTypeDownload
+		return nil
+	case RadarrWebhookPayloadEventTypeRename:
+		*s = RadarrWebhookPayloadEventTypeRename
+		return nil
+	case RadarrWebhookPayloadEventTypeMovieDelete:
+		*s = RadarrWebhookPayloadEventTypeMovieDelete
+		return nil
+	case RadarrWebhookPayloadEventTypeMovieFileDelete:
+		*s = RadarrWebhookPayloadEventTypeMovieFileDelete
+		return nil
+	case RadarrWebhookPayloadEventTypeHealth:
+		*s = RadarrWebhookPayloadEventTypeHealth
+		return nil
+	case RadarrWebhookPayloadEventTypeApplicationUpdate:
+		*s = RadarrWebhookPayloadEventTypeApplicationUpdate
+		return nil
+	case RadarrWebhookPayloadEventTypeTest:
+		*s = RadarrWebhookPayloadEventTypeTest
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RadarrWebhookRelease
+type RadarrWebhookRelease struct {
+	Quality        OptString `json:"quality"`
+	QualityVersion OptInt    `json:"qualityVersion"`
+	ReleaseGroup   OptString `json:"releaseGroup"`
+	ReleaseTitle   OptString `json:"releaseTitle"`
+	Indexer        OptString `json:"indexer"`
+	Size           OptInt64  `json:"size"`
+}
+
+// GetQuality returns the value of Quality.
+func (s *RadarrWebhookRelease) GetQuality() OptString {
+	return s.Quality
+}
+
+// GetQualityVersion returns the value of QualityVersion.
+func (s *RadarrWebhookRelease) GetQualityVersion() OptInt {
+	return s.QualityVersion
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *RadarrWebhookRelease) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetReleaseTitle returns the value of ReleaseTitle.
+func (s *RadarrWebhookRelease) GetReleaseTitle() OptString {
+	return s.ReleaseTitle
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *RadarrWebhookRelease) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetSize returns the value of Size.
+func (s *RadarrWebhookRelease) GetSize() OptInt64 {
+	return s.Size
+}
+
+// SetQuality sets the value of Quality.
+func (s *RadarrWebhookRelease) SetQuality(val OptString) {
+	s.Quality = val
+}
+
+// SetQualityVersion sets the value of QualityVersion.
+func (s *RadarrWebhookRelease) SetQualityVersion(val OptInt) {
+	s.QualityVersion = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *RadarrWebhookRelease) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetReleaseTitle sets the value of ReleaseTitle.
+func (s *RadarrWebhookRelease) SetReleaseTitle(val OptString) {
+	s.ReleaseTitle = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *RadarrWebhookRelease) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetSize sets the value of Size.
+func (s *RadarrWebhookRelease) SetSize(val OptInt64) {
+	s.Size = val
 }
 
 // RefreshMovieMetadataAccepted is response for RefreshMovieMetadata operation.

@@ -44,6 +44,29 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/oidc/providers/{providerId}
 	AdminGetOIDCProvider(ctx context.Context, params AdminGetOIDCProviderParams) (AdminGetOIDCProviderRes, error)
+	// AdminGetRadarrQualityProfiles implements adminGetRadarrQualityProfiles operation.
+	//
+	// Returns all quality profiles configured in Radarr.
+	// Useful for mapping quality profiles during sync configuration.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/quality-profiles
+	AdminGetRadarrQualityProfiles(ctx context.Context) (AdminGetRadarrQualityProfilesRes, error)
+	// AdminGetRadarrRootFolders implements adminGetRadarrRootFolders operation.
+	//
+	// Returns all root folders configured in Radarr.
+	// These are the library paths that Radarr monitors for movies.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/root-folders
+	AdminGetRadarrRootFolders(ctx context.Context) (AdminGetRadarrRootFoldersRes, error)
+	// AdminGetRadarrStatus implements adminGetRadarrStatus operation.
+	//
+	// Returns the current Radarr integration status including connection health,
+	// sync status, and last sync information. Admin only.
+	//
+	// GET /api/v1/admin/integrations/radarr/status
+	AdminGetRadarrStatus(ctx context.Context) (AdminGetRadarrStatusRes, error)
 	// AdminListOIDCProviders implements adminListOIDCProviders operation.
 	//
 	// Returns all OIDC providers including disabled ones.
@@ -56,6 +79,14 @@ type Handler interface {
 	//
 	// POST /api/v1/admin/oidc/providers/{providerId}/default
 	AdminSetDefaultOIDCProvider(ctx context.Context, params AdminSetDefaultOIDCProviderParams) (AdminSetDefaultOIDCProviderRes, error)
+	// AdminTriggerRadarrSync implements adminTriggerRadarrSync operation.
+	//
+	// Triggers a full library sync from Radarr to Revenge.
+	// This is an asynchronous operation - check status endpoint for progress.
+	// Admin only.
+	//
+	// POST /api/v1/admin/integrations/radarr/sync
+	AdminTriggerRadarrSync(ctx context.Context) (AdminTriggerRadarrSyncRes, error)
 	// AdminUpdateOIDCProvider implements adminUpdateOIDCProvider operation.
 	//
 	// Updates an OIDC provider configuration.
@@ -360,6 +391,14 @@ type Handler interface {
 	//
 	// POST /api/v1/libraries/{libraryId}/permissions
 	GrantLibraryPermission(ctx context.Context, req *GrantLibraryPermissionReq, params GrantLibraryPermissionParams) (GrantLibraryPermissionRes, error)
+	// HandleRadarrWebhook implements handleRadarrWebhook operation.
+	//
+	// Endpoint for receiving webhook notifications from Radarr.
+	// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
+	// Configure this URL in Radarr Settings > Connect > Webhook.
+	//
+	// POST /api/v1/webhooks/radarr
+	HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
 	// InitOIDCLink implements initOIDCLink operation.
 	//
 	// Initiates the flow to link an OIDC provider to the user's account.
