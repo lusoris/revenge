@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 
 	"github.com/google/uuid"
@@ -288,9 +287,6 @@ func (h *MFAHandler) DisableMFA(ctx context.Context) (ogen.DisableMFARes, error)
 }
 
 // GetUserIDFromContext extracts user ID from request context
-// This is a placeholder - actual implementation depends on your auth middleware
 func GetUserIDFromContext(ctx context.Context) (uuid.UUID, error) {
-	// TODO: Implement actual user ID extraction from JWT/session context
-	// For now, return an error
-	return uuid.Nil, fmt.Errorf("user ID extraction not implemented")
+	return GetUserID(ctx)
 }
