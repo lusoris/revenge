@@ -309,7 +309,7 @@ func TestUserService_PasswordHashing(t *testing.T) {
 
 	// Verify password is hashed
 	assert.NotEqual(t, password, created.PasswordHash)
-	assert.Greater(t, len(created.PasswordHash), 50, "bcrypt hash should be long")
+	assert.Greater(t, len(created.PasswordHash), 50, "argon2id hash should be long")
 
 	// Verify password verification works
 	err = svc.VerifyPassword(created.PasswordHash, password)
