@@ -391,6 +391,7 @@ func TestServerSettingsDefaultValues(t *testing.T) {
 		})
 	}
 }
+
 // TestUserPreferencesTableStructure verifies the user_preferences table schema
 func TestUserPreferencesTableStructure(t *testing.T) {
 	if testing.Short() {
@@ -439,21 +440,21 @@ func TestUserPreferencesTableStructure(t *testing.T) {
 		dataType   string
 		isNullable string
 	}{
-		"user_id":               {"uuid", "NO"},
-		"email_notifications":   {"jsonb", "YES"},
-		"push_notifications":    {"jsonb", "YES"},
-		"digest_notifications":  {"jsonb", "YES"},
-		"profile_visibility":    {"character varying", "YES"},
-		"show_email":            {"boolean", "YES"},
-		"show_activity":         {"boolean", "YES"},
-		"theme":                 {"character varying", "YES"},
-		"display_language":      {"character varying", "YES"},
-		"content_language":      {"character varying", "YES"},
-		"show_adult_content":    {"boolean", "YES"},
-		"show_spoilers":         {"boolean", "YES"},
-		"auto_play_videos":      {"boolean", "YES"},
-		"created_at":            {"timestamp with time zone", "NO"},
-		"updated_at":            {"timestamp with time zone", "NO"},
+		"user_id":              {"uuid", "NO"},
+		"email_notifications":  {"jsonb", "YES"},
+		"push_notifications":   {"jsonb", "YES"},
+		"digest_notifications": {"jsonb", "YES"},
+		"profile_visibility":   {"character varying", "YES"},
+		"show_email":           {"boolean", "YES"},
+		"show_activity":        {"boolean", "YES"},
+		"theme":                {"character varying", "YES"},
+		"display_language":     {"character varying", "YES"},
+		"content_language":     {"character varying", "YES"},
+		"show_adult_content":   {"boolean", "YES"},
+		"show_spoilers":        {"boolean", "YES"},
+		"auto_play_videos":     {"boolean", "YES"},
+		"created_at":           {"timestamp with time zone", "NO"},
+		"updated_at":           {"timestamp with time zone", "NO"},
 	}
 
 	foundColumns := make(map[string]bool)

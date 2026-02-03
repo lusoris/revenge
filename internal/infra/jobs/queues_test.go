@@ -84,7 +84,7 @@ func TestLinearBackoff(t *testing.T) {
 		{"attempt 2", 2, 60 * time.Second},
 		{"attempt 5", 5, 150 * time.Second},
 		{"attempt 10", 10, 300 * time.Second},
-		{"attempt 60", 60, 30 * time.Minute}, // max cap
+		{"attempt 60", 60, 30 * time.Minute},   // max cap
 		{"attempt 100", 100, 30 * time.Minute}, // max cap
 		{"negative attempt", -5, 0 * time.Second},
 	}

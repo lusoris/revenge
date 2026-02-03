@@ -5,43 +5,54 @@ import (
 	"log/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/lusoris/revenge/internal/config"
+	"github.com/riverqueue/river"
 	"go.uber.org/fx"
+
+	"github.com/lusoris/revenge/internal/config"
 )
 
 // Module provides job queue dependencies.
 var Module = fx.Module("jobs",
-	fx.Provide(NewWorkers),
+	fx.Provide(
+		NewRiverWorkers,
+		NewRiverClient,
+	),
 	fx.Invoke(registerHooks),
 )
 
-// Workers represents the River job queue workers.
-// This is a placeholder stub for v0.1.0 skeleton.
-type Workers struct {
-	config *config.Config
-	pool   *pgxpool.Pool
-	logger *slog.Logger
+// NewRiverWorkers creates a new River workers registry.
+func NewRiverWorkers() *river.Workers {
+	return river.NewWorkers()
 }
 
-// NewWorkers creates new job queue workers.
-func NewWorkers(cfg *config.Config, pool *pgxpool.Pool, logger *slog.Logger) (*Workers, error) {
-	return &Workers{
-		config: cfg,
-		pool:   pool,
-		logger: logger,
-	}, nil
+// NewRiverClient creates a new River client.
+func NewRiverClient(
+	pool *pgxpool.Pool,
+	workers *river.Workers,
+	cfg *config.Config,
+	logger *slog.Logger,
+) (*Client, error) {
+	jobsConfig := &Config{
+		Queues: map[string]river.QueueConfig{
+			river.QueueDefault: {MaxWorkers: cfg.Jobs.MaxWorkers},
+		},
+		FetchCooldown: cfg.Jobs.FetchCooldown,
+		MaxAttempts:   25, // TODO: Make configurable
+	}
+
+	return NewClient(pool, workers, jobsConfig, logger)
 }
 
-// registerHooks registers lifecycle hooks for the job workers.
-func registerHooks(lc fx.Lifecycle, workers *Workers, logger *slog.Logger) {
+// registerHooks registers lifecycle hooks for the job client.
+func registerHooks(lc fx.Lifecycle, client *Client, logger *slog.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			logger.Info("job workers started (stub)")
-			return nil
+			logger.Info("starting River job queue client")
+			return client.Start(ctx)
 		},
 		OnStop: func(ctx context.Context) error {
-			logger.Info("job workers stopped")
-			return nil
+			logger.Info("stopping River job queue client")
+			return client.Stop(ctx)
 		},
 	})
 }

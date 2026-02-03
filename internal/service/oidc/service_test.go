@@ -533,9 +533,9 @@ func TestService_ExtractUserInfo(t *testing.T) {
 
 	claims := map[string]any{
 		"preferred_username": "testuser",
-		"email":             "test@example.com",
-		"name":              "Test User",
-		"picture":           "http://example.com/pic.jpg",
+		"email":              "test@example.com",
+		"name":               "Test User",
+		"picture":            "http://example.com/pic.jpg",
 	}
 
 	userInfo := svc.extractUserInfo(provider, claims)

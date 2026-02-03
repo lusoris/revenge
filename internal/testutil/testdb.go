@@ -79,7 +79,7 @@ func startSharedPostgres() error {
 				Password(adminPassword).
 				Database("postgres").
 				RuntimePath(runtimePath).
-				StartTimeout(60*time.Second),
+				StartTimeout(60 * time.Second),
 		)
 
 		sharedPostgresErr = sharedPostgres.Start()

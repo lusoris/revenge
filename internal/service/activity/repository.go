@@ -134,10 +134,10 @@ const (
 	ActionAPIKeyRevoke = "apikey.revoke"
 
 	// OIDC actions
-	ActionOIDCLogin         = "oidc.login"
-	ActionOIDCLink          = "oidc.link"
-	ActionOIDCUnlink        = "oidc.unlink"
-	ActionOIDCProviderAdd   = "oidc.provider.add"
+	ActionOIDCLogin          = "oidc.login"
+	ActionOIDCLink           = "oidc.link"
+	ActionOIDCUnlink         = "oidc.unlink"
+	ActionOIDCProviderAdd    = "oidc.provider.add"
 	ActionOIDCProviderUpdate = "oidc.provider.update"
 	ActionOIDCProviderDelete = "oidc.provider.delete"
 
@@ -151,21 +151,21 @@ const (
 	ActionLibraryScan   = "library.scan"
 
 	// Admin actions
-	ActionAdminRoleAssign   = "admin.role.assign"
-	ActionAdminRoleRevoke   = "admin.role.revoke"
-	ActionAdminUserBan      = "admin.user.ban"
-	ActionAdminUserUnban    = "admin.user.unban"
+	ActionAdminRoleAssign = "admin.role.assign"
+	ActionAdminRoleRevoke = "admin.role.revoke"
+	ActionAdminUserBan    = "admin.user.ban"
+	ActionAdminUserUnban  = "admin.user.unban"
 )
 
 // Resource type constants
 const (
-	ResourceTypeUser     = "user"
-	ResourceTypeSession  = "session"
-	ResourceTypeAPIKey   = "apikey"
-	ResourceTypeOIDC     = "oidc"
-	ResourceTypeSetting  = "setting"
-	ResourceTypeLibrary  = "library"
-	ResourceTypeMovie    = "movie"
-	ResourceTypeTVShow   = "tvshow"
-	ResourceTypeEpisode  = "episode"
+	ResourceTypeUser    = "user"
+	ResourceTypeSession = "session"
+	ResourceTypeAPIKey  = "apikey"
+	ResourceTypeOIDC    = "oidc"
+	ResourceTypeSetting = "setting"
+	ResourceTypeLibrary = "library"
+	ResourceTypeMovie   = "movie"
+	ResourceTypeTVShow  = "tvshow"
+	ResourceTypeEpisode = "episode"
 )

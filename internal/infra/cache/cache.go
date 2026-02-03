@@ -9,8 +9,8 @@ import (
 
 // Cache provides unified L1 (otter) + L2 (rueidis) caching operations.
 type Cache struct {
-	l1    *L1Cache[string, []byte]
-	l1TTL time.Duration
+	l1     *L1Cache[string, []byte]
+	l1TTL  time.Duration
 	client *Client
 }
 

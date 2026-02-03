@@ -1,25 +1,20 @@
-package library
+package movie
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/content/movie"
-	"github.com/lusoris/revenge/internal/content/movie/metadata"
+
+	"github.com/lusoris/revenge/internal/config"
 )
 
-// Service manages movie library operations
-type Service struct {
-	repo            movie.Repository
-	metadataService *metadata.MetadataService
+// LibraryService manages movie library operations
+type LibraryService struct {
+	repo            Repository
+	metadataService *MetadataService
 	scanner         *Scanner
 	matcher         *Matcher
-}
-
-// Config holds library service configuration
-type Config struct {
-	LibraryPaths []string
 }
 
 // ScanSummary contains statistics from a library scan
@@ -32,16 +27,16 @@ type ScanSummary struct {
 	Errors         []error
 }
 
-// NewService creates a new library service
-func NewService(
-	repo movie.Repository,
-	metadataService *metadata.MetadataService,
-	config Config,
-) *Service {
-	scanner := NewScanner(config.LibraryPaths)
+// NewLibraryService creates a new library service
+func NewLibraryService(
+	repo Repository,
+	metadataService *MetadataService,
+	libConfig config.LibraryConfig,
+) *LibraryService {
+	scanner := NewScanner(libConfig.Paths)
 	matcher := NewMatcher(repo, metadataService)
 
-	return &Service{
+	return &LibraryService{
 		repo:            repo,
 		metadataService: metadataService,
 		scanner:         scanner,
@@ -50,7 +45,7 @@ func NewService(
 }
 
 // ScanLibrary scans all library paths and matches files to movies
-func (s *Service) ScanLibrary(ctx context.Context) (*ScanSummary, error) {
+func (s *LibraryService) ScanLibrary(ctx context.Context) (*ScanSummary, error) {
 	// Scan file system
 	scanResults, err := s.scanner.Scan(ctx)
 	if err != nil {
@@ -103,8 +98,8 @@ func (s *Service) ScanLibrary(ctx context.Context) (*ScanSummary, error) {
 }
 
 // createMovieFile creates a movie file record
-func (s *Service) createMovieFile(ctx context.Context, movieFile *movie.MovieFile) error {
-	params := movie.CreateMovieFileParams{
+func (s *LibraryService) createMovieFile(ctx context.Context, movieFile *MovieFile) error {
+	params := CreateMovieFileParams{
 		MovieID:     movieFile.MovieID,
 		FilePath:    movieFile.FilePath,
 		FileSize:    movieFile.FileSize,
@@ -120,7 +115,7 @@ func (s *Service) createMovieFile(ctx context.Context, movieFile *movie.MovieFil
 }
 
 // RefreshMovie updates a movie's metadata from TMDb
-func (s *Service) RefreshMovie(ctx context.Context, movieID uuid.UUID) error {
+func (s *LibraryService) RefreshMovie(ctx context.Context, movieID uuid.UUID) error {
 	// Get existing movie
 	existingMovie, err := s.repo.GetMovie(ctx, movieID)
 	if err != nil {
@@ -163,7 +158,7 @@ func (s *Service) RefreshMovie(ctx context.Context, movieID uuid.UUID) error {
 }
 
 // GetLibraryStats returns statistics about the library
-func (s *Service) GetLibraryStats(ctx context.Context) (map[string]int, error) {
+func (s *LibraryService) GetLibraryStats(ctx context.Context) (map[string]int, error) {
 	// This would query the repository for counts
 	// For now, return placeholder
 	return map[string]int{

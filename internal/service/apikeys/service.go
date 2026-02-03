@@ -35,10 +35,10 @@ var (
 
 // Service implements API keys business logic
 type Service struct {
-	repo          Repository
-	logger        *zap.Logger
+	repo           Repository
+	logger         *zap.Logger
 	maxKeysPerUser int
-	defaultExpiry time.Duration // 0 = never expire
+	defaultExpiry  time.Duration // 0 = never expire
 }
 
 // NewService creates a new API keys service

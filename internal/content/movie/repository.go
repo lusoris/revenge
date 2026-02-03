@@ -64,53 +64,53 @@ type Repository interface {
 
 // CreateMovieParams contains parameters for creating a movie
 type CreateMovieParams struct {
-	TMDbID              *int32
-	IMDbID              *string
-	Title               string
-	OriginalTitle       *string
-	Year                *int32
-	ReleaseDate         *string
-	Runtime             *int32
-	Overview            *string
-	Tagline             *string
-	Status              *string
-	OriginalLanguage    *string
-	PosterPath          *string
-	BackdropPath        *string
-	TrailerURL          *string
-	VoteAverage         *string
-	VoteCount           *int32
-	Popularity          *string
-	Budget              *int64
-	Revenue             *int64
-	RadarrID            *int32
-	MetadataUpdatedAt   *string
+	TMDbID            *int32
+	IMDbID            *string
+	Title             string
+	OriginalTitle     *string
+	Year              *int32
+	ReleaseDate       *string
+	Runtime           *int32
+	Overview          *string
+	Tagline           *string
+	Status            *string
+	OriginalLanguage  *string
+	PosterPath        *string
+	BackdropPath      *string
+	TrailerURL        *string
+	VoteAverage       *string
+	VoteCount         *int32
+	Popularity        *string
+	Budget            *int64
+	Revenue           *int64
+	RadarrID          *int32
+	MetadataUpdatedAt *string
 }
 
 // UpdateMovieParams contains parameters for updating a movie
 type UpdateMovieParams struct {
-	ID                  uuid.UUID
-	TMDbID              *int32
-	IMDbID              *string
-	Title               *string
-	OriginalTitle       *string
-	Year                *int32
-	ReleaseDate         *string
-	Runtime             *int32
-	Overview            *string
-	Tagline             *string
-	Status              *string
-	OriginalLanguage    *string
-	PosterPath          *string
-	BackdropPath        *string
-	TrailerURL          *string
-	VoteAverage         *string
-	VoteCount           *int32
-	Popularity          *string
-	Budget              *int64
-	Revenue             *int64
-	RadarrID            *int32
-	MetadataUpdatedAt   *string
+	ID                uuid.UUID
+	TMDbID            *int32
+	IMDbID            *string
+	Title             *string
+	OriginalTitle     *string
+	Year              *int32
+	ReleaseDate       *string
+	Runtime           *int32
+	Overview          *string
+	Tagline           *string
+	Status            *string
+	OriginalLanguage  *string
+	PosterPath        *string
+	BackdropPath      *string
+	TrailerURL        *string
+	VoteAverage       *string
+	VoteCount         *int32
+	Popularity        *string
+	Budget            *int64
+	Revenue           *int64
+	RadarrID          *int32
+	MetadataUpdatedAt *string
 }
 
 // CreateMovieFileParams contains parameters for creating a movie file
@@ -131,18 +131,18 @@ type CreateMovieFileParams struct {
 
 // UpdateMovieFileParams contains parameters for updating a movie file
 type UpdateMovieFileParams struct {
-	ID                 uuid.UUID
-	FilePath           *string
-	FileSize           *int64
-	Resolution         *string
-	QualityProfile     *string
-	VideoCodec         *string
-	AudioCodec         *string
-	Container          *string
-	BitrateKbps        *int32
-	AudioLanguages     []string
-	SubtitleLanguages  []string
-	RadarrFileID       *int32
+	ID                uuid.UUID
+	FilePath          *string
+	FileSize          *int64
+	Resolution        *string
+	QualityProfile    *string
+	VideoCodec        *string
+	AudioCodec        *string
+	Container         *string
+	BitrateKbps       *int32
+	AudioLanguages    []string
+	SubtitleLanguages []string
+	RadarrFileID      *int32
 }
 
 // CreateMovieCreditParams contains parameters for creating a movie credit

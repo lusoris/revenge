@@ -1,4 +1,4 @@
-package metadata
+package movie
 
 import (
 	"strconv"
@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/shopspring/decimal"
 )
 
@@ -20,94 +19,94 @@ func NewTMDbMapper(client *TMDbClient) *TMDbMapper {
 	}
 }
 
-func (m *TMDbMapper) MapMovie(tmdbMovie *TMDbMovie) *movie.Movie {
-	mov := &movie.Movie{
+func (m *TMDbMapper) MapMovie(tmdbMovie *TMDbMovie) *Movie {
+	mov := &Movie{
 		ID:               uuid.New(),
-		TMDbID:           parseOptionalInt32(tmdbMovie.ID),
-		IMDbID:           parseOptionalString(tmdbMovie.IMDbID),
+		TMDbID:           tmdbParseOptionalInt32(tmdbMovie.ID),
+		IMDbID:           tmdbParseOptionalString(tmdbMovie.IMDbID),
 		Title:            tmdbMovie.Title,
-		OriginalTitle:    parseOptionalString(&tmdbMovie.OriginalTitle),
-		OriginalLanguage: parseOptionalString(&tmdbMovie.OriginalLanguage),
-		Overview:         parseOptionalString(tmdbMovie.Overview),
-		Tagline:          parseOptionalString(tmdbMovie.Tagline),
+		OriginalTitle:    tmdbParseOptionalString(&tmdbMovie.OriginalTitle),
+		OriginalLanguage: tmdbParseOptionalString(&tmdbMovie.OriginalLanguage),
+		Overview:         tmdbParseOptionalString(tmdbMovie.Overview),
+		Tagline:          tmdbParseOptionalString(tmdbMovie.Tagline),
 		ReleaseDate:      parseReleaseDate(tmdbMovie.ReleaseDate),
-		Runtime:          parseOptionalInt32Ptr(tmdbMovie.Runtime),
+		Runtime:          tmdbParseOptionalInt32Ptr(tmdbMovie.Runtime),
 		Budget:           parseOptionalInt64Ptr(tmdbMovie.Budget),
 		Revenue:          parseOptionalInt64Ptr(tmdbMovie.Revenue),
-		Status:           parseOptionalString(&tmdbMovie.Status),
+		Status:           tmdbParseOptionalString(&tmdbMovie.Status),
 		VoteAverage:      parseDecimal(tmdbMovie.VoteAverage),
-		VoteCount:        parseOptionalInt32(tmdbMovie.VoteCount),
+		VoteCount:        tmdbParseOptionalInt32(tmdbMovie.VoteCount),
 		Popularity:       parseDecimal(tmdbMovie.Popularity),
-		PosterPath:       parseOptionalString(tmdbMovie.PosterPath),
-		BackdropPath:     parseOptionalString(tmdbMovie.BackdropPath),
+		PosterPath:       tmdbParseOptionalString(tmdbMovie.PosterPath),
+		BackdropPath:     tmdbParseOptionalString(tmdbMovie.BackdropPath),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
 
 	if tmdbMovie.ReleaseDate != "" {
-		mov.Year = parseOptionalInt32Ptr(ExtractYear(tmdbMovie.ReleaseDate))
+		mov.Year = tmdbParseOptionalInt32Ptr(ExtractYear(tmdbMovie.ReleaseDate))
 	}
 
 	return mov
 }
 
-func (m *TMDbMapper) MapSearchResult(result *TMDbSearchResult) *movie.Movie {
-	mov := &movie.Movie{
+func (m *TMDbMapper) MapSearchResult(result *TMDbSearchResult) *Movie {
+	mov := &Movie{
 		ID:               uuid.New(),
-		TMDbID:           parseOptionalInt32(result.ID),
+		TMDbID:           tmdbParseOptionalInt32(result.ID),
 		Title:            result.Title,
-		OriginalTitle:    parseOptionalString(&result.OriginalTitle),
-		OriginalLanguage: parseOptionalString(&result.OriginalLanguage),
-		Overview:         parseOptionalString(&result.Overview),
+		OriginalTitle:    tmdbParseOptionalString(&result.OriginalTitle),
+		OriginalLanguage: tmdbParseOptionalString(&result.OriginalLanguage),
+		Overview:         tmdbParseOptionalString(&result.Overview),
 		ReleaseDate:      parseReleaseDate(result.ReleaseDate),
 		VoteAverage:      parseDecimal(result.VoteAverage),
-		VoteCount:        parseOptionalInt32(result.VoteCount),
+		VoteCount:        tmdbParseOptionalInt32(result.VoteCount),
 		Popularity:       parseDecimal(result.Popularity),
-		PosterPath:       parseOptionalString(result.PosterPath),
-		BackdropPath:     parseOptionalString(result.BackdropPath),
+		PosterPath:       tmdbParseOptionalString(result.PosterPath),
+		BackdropPath:     tmdbParseOptionalString(result.BackdropPath),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
 
 	if result.ReleaseDate != "" {
-		mov.Year = parseOptionalInt32Ptr(ExtractYear(result.ReleaseDate))
+		mov.Year = tmdbParseOptionalInt32Ptr(ExtractYear(result.ReleaseDate))
 	}
 
 	return mov
 }
 
-func (m *TMDbMapper) MapCredits(movieID uuid.UUID, credits *TMDbCredits) []movie.MovieCredit {
-	var result []movie.MovieCredit
+func (m *TMDbMapper) MapCredits(movieID uuid.UUID, credits *TMDbCredits) []MovieCredit {
+	var result []MovieCredit
 
 	for _, cast := range credits.Cast {
-		result = append(result, movie.MovieCredit{
+		result = append(result, MovieCredit{
 			ID:           uuid.New(),
 			MovieID:      movieID,
 			TMDbPersonID: int32(cast.ID),
 			Name:         cast.Name,
 			CreditType:   "cast",
-			Character:    parseOptionalString(&cast.Character),
+			Character:    tmdbParseOptionalString(&cast.Character),
 			Department:   nil,
 			Job:          nil,
-			CastOrder:    parseOptionalInt32Ptr(&cast.Order),
-			ProfilePath:  parseOptionalString(cast.ProfilePath),
+			CastOrder:    tmdbParseOptionalInt32Ptr(&cast.Order),
+			ProfilePath:  tmdbParseOptionalString(cast.ProfilePath),
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
 		})
 	}
 
 	for _, crew := range credits.Crew {
-		result = append(result, movie.MovieCredit{
+		result = append(result, MovieCredit{
 			ID:           uuid.New(),
 			MovieID:      movieID,
 			TMDbPersonID: int32(crew.ID),
 			Name:         crew.Name,
 			CreditType:   "crew",
 			Character:    nil,
-			Department:   parseOptionalString(&crew.Department),
-			Job:          parseOptionalString(&crew.Job),
+			Department:   tmdbParseOptionalString(&crew.Department),
+			Job:          tmdbParseOptionalString(&crew.Job),
 			CastOrder:    nil,
-			ProfilePath:  parseOptionalString(crew.ProfilePath),
+			ProfilePath:  tmdbParseOptionalString(crew.ProfilePath),
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
 		})
@@ -116,11 +115,11 @@ func (m *TMDbMapper) MapCredits(movieID uuid.UUID, credits *TMDbCredits) []movie
 	return result
 }
 
-func (m *TMDbMapper) MapGenres(movieID uuid.UUID, genres []Genre) []movie.MovieGenre {
-	var result []movie.MovieGenre
+func (m *TMDbMapper) MapGenres(movieID uuid.UUID, genres []Genre) []MovieGenre {
+	var result []MovieGenre
 
 	for _, genre := range genres {
-		result = append(result, movie.MovieGenre{
+		result = append(result, MovieGenre{
 			ID:          uuid.New(),
 			MovieID:     movieID,
 			TMDbGenreID: int32(genre.ID),
@@ -132,14 +131,14 @@ func (m *TMDbMapper) MapGenres(movieID uuid.UUID, genres []Genre) []movie.MovieG
 	return result
 }
 
-func (m *TMDbMapper) MapCollection(collection *TMDbCollectionDetails) *movie.MovieCollection {
-	return &movie.MovieCollection{
+func (m *TMDbMapper) MapCollection(collection *TMDbCollectionDetails) *MovieCollection {
+	return &MovieCollection{
 		ID:               uuid.New(),
-		TMDbCollectionID: parseOptionalInt32(collection.ID),
+		TMDbCollectionID: tmdbParseOptionalInt32(collection.ID),
 		Name:             collection.Name,
-		Overview:         parseOptionalString(&collection.Overview),
-		PosterPath:       parseOptionalString(collection.PosterPath),
-		BackdropPath:     parseOptionalString(collection.BackdropPath),
+		Overview:         tmdbParseOptionalString(&collection.Overview),
+		PosterPath:       tmdbParseOptionalString(collection.PosterPath),
+		BackdropPath:     tmdbParseOptionalString(collection.BackdropPath),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
@@ -171,14 +170,14 @@ func (m *TMDbMapper) GetBackdropURL(backdropPath *string, size string) *string {
 	return &url
 }
 
-func parseOptionalString(s *string) *string {
+func tmdbParseOptionalString(s *string) *string {
 	if s == nil || *s == "" {
 		return nil
 	}
 	return s
 }
 
-func parseOptionalInt32(i int) *int32 {
+func tmdbParseOptionalInt32(i int) *int32 {
 	if i == 0 {
 		return nil
 	}
@@ -186,7 +185,7 @@ func parseOptionalInt32(i int) *int32 {
 	return &val
 }
 
-func parseOptionalInt32Ptr(i *int) *int32 {
+func tmdbParseOptionalInt32Ptr(i *int) *int32 {
 	if i == nil || *i == 0 {
 		return nil
 	}

@@ -27,8 +27,8 @@ func (r *RepositoryPG) CreateSession(ctx context.Context, params CreateSessionPa
 	return r.queries.CreateSession(ctx, db.CreateSessionParams{
 		UserID:           params.UserID,
 		TokenHash:        params.TokenHash,
-		RefreshTokenHash:params.RefreshTokenHash,
-		IpAddress:         ipAddr,
+		RefreshTokenHash: params.RefreshTokenHash,
+		IpAddress:        ipAddr,
 		UserAgent:        params.UserAgent,
 		DeviceName:       params.DeviceName,
 		Scopes:           params.Scopes,

@@ -169,8 +169,7 @@ func TestClient_RueidisClient(t *testing.T) {
 
 		assert.Nil(t, client.RueidisClient())
 	})
-t.Skip("Skipping test - requires running Redis/Dragonfly instance")
-
+	t.Skip("Skipping test - requires running Redis/Dragonfly instance")
 
 	t.Run("Enabled", func(t *testing.T) {
 		cfg := &config.Config{

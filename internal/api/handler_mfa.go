@@ -99,9 +99,9 @@ func (h *MFAHandler) SetupTOTP(ctx context.Context, req *ogen.SetupTOTPReq) (oge
 	}
 
 	return &ogen.TOTPSetup{
-		Secret:  ogen.NewOptString(setup.Secret),
-		QrCode:  setup.QRCode,
-		URL:     ogen.NewOptURI(*parsedURL),
+		Secret: ogen.NewOptString(setup.Secret),
+		QrCode: setup.QRCode,
+		URL:    ogen.NewOptURI(*parsedURL),
 	}, nil
 }
 

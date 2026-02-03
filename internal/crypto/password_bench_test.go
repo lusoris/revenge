@@ -124,9 +124,9 @@ func BenchmarkPasswordHasherWithCustomParams(b *testing.B) {
 		memory uint32
 		time   uint32
 	}{
-		{"Low", 32 * 1024, 1},        // 32 MB, 1 iteration
-		{"Medium", 64 * 1024, 3},     // 64 MB, 3 iterations (default)
-		{"High", 128 * 1024, 5},      // 128 MB, 5 iterations
+		{"Low", 32 * 1024, 1},    // 32 MB, 1 iteration
+		{"Medium", 64 * 1024, 3}, // 64 MB, 3 iterations (default)
+		{"High", 128 * 1024, 5},  // 128 MB, 5 iterations
 	}
 
 	password := "TestPassword123!SecureAndLong"

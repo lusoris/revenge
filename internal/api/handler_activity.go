@@ -358,4 +358,3 @@ func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
 	}
 	return result
 }
-

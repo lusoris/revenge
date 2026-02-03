@@ -8,11 +8,11 @@ import (
 // movieToOgen converts a movie domain type to ogen Movie.
 func movieToOgen(m *movie.Movie) *ogen.Movie {
 	o := &ogen.Movie{
-		ID:               ogen.NewOptUUID(m.ID),
-		Title:            ogen.NewOptString(m.Title),
-		CreatedAt:        ogen.NewOptDateTime(m.CreatedAt),
-		UpdatedAt:        ogen.NewOptDateTime(m.UpdatedAt),
-		LibraryAddedAt:   ogen.NewOptDateTime(m.LibraryAddedAt),
+		ID:             ogen.NewOptUUID(m.ID),
+		Title:          ogen.NewOptString(m.Title),
+		CreatedAt:      ogen.NewOptDateTime(m.CreatedAt),
+		UpdatedAt:      ogen.NewOptDateTime(m.UpdatedAt),
+		LibraryAddedAt: ogen.NewOptDateTime(m.LibraryAddedAt),
 	}
 
 	if m.TMDbID != nil {
@@ -149,13 +149,13 @@ func movieFileToOgen(f *movie.MovieFile) *ogen.MovieFile {
 // movieCreditToOgen converts a movie credit domain type to ogen MovieCredit.
 func movieCreditToOgen(c *movie.MovieCredit) *ogen.MovieCredit {
 	o := &ogen.MovieCredit{
-		ID:             ogen.NewOptUUID(c.ID),
-		MovieID:        ogen.NewOptUUID(c.MovieID),
-		TmdbPersonID:   ogen.NewOptInt(int(c.TMDbPersonID)),
-		Name:           ogen.NewOptString(c.Name),
-		CreditType:     ogen.NewOptMovieCreditCreditType(ogen.MovieCreditCreditType(c.CreditType)),
-		CreatedAt:      ogen.NewOptDateTime(c.CreatedAt),
-		UpdatedAt:      ogen.NewOptDateTime(c.UpdatedAt),
+		ID:           ogen.NewOptUUID(c.ID),
+		MovieID:      ogen.NewOptUUID(c.MovieID),
+		TmdbPersonID: ogen.NewOptInt(int(c.TMDbPersonID)),
+		Name:         ogen.NewOptString(c.Name),
+		CreditType:   ogen.NewOptMovieCreditCreditType(ogen.MovieCreditCreditType(c.CreditType)),
+		CreatedAt:    ogen.NewOptDateTime(c.CreatedAt),
+		UpdatedAt:    ogen.NewOptDateTime(c.UpdatedAt),
 	}
 
 	if c.Character != nil {
@@ -238,14 +238,14 @@ func movieWatchedToOgen(w *movie.MovieWatched) *ogen.MovieWatched {
 // continueWatchingItemToOgen converts a continue watching item to ogen type.
 func continueWatchingItemToOgen(item *movie.ContinueWatchingItem) ogen.ContinueWatchingItem {
 	o := ogen.ContinueWatchingItem{
-		ID:               ogen.NewOptUUID(item.ID),
-		Title:            ogen.NewOptString(item.Title),
-		CreatedAt:        ogen.NewOptDateTime(item.CreatedAt),
-		UpdatedAt:        ogen.NewOptDateTime(item.UpdatedAt),
-		LibraryAddedAt:   ogen.NewOptDateTime(item.LibraryAddedAt),
-		ProgressSeconds:  ogen.NewOptInt(int(item.ProgressSeconds)),
-		DurationSeconds:  ogen.NewOptInt(int(item.DurationSeconds)),
-		LastWatchedAt:    ogen.NewOptDateTime(item.LastWatchedAt),
+		ID:              ogen.NewOptUUID(item.ID),
+		Title:           ogen.NewOptString(item.Title),
+		CreatedAt:       ogen.NewOptDateTime(item.CreatedAt),
+		UpdatedAt:       ogen.NewOptDateTime(item.UpdatedAt),
+		LibraryAddedAt:  ogen.NewOptDateTime(item.LibraryAddedAt),
+		ProgressSeconds: ogen.NewOptInt(int(item.ProgressSeconds)),
+		DurationSeconds: ogen.NewOptInt(int(item.DurationSeconds)),
+		LastWatchedAt:   ogen.NewOptDateTime(item.LastWatchedAt),
 	}
 
 	// Copy all movie fields

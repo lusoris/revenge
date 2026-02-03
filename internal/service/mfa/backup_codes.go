@@ -49,8 +49,8 @@ func NewBackupCodesService(queries *db.Queries, logger *zap.Logger) *BackupCodes
 
 // BackupCode represents a generated backup code before hashing.
 type BackupCode struct {
-	Code      string    // Plain text code (shown to user only once)
-	Hash      string    // Argon2id hash (stored in database)
+	Code      string // Plain text code (shown to user only once)
+	Hash      string // Argon2id hash (stored in database)
 	CreatedAt time.Time
 }
 

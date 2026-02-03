@@ -66,7 +66,7 @@ func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, acco
 		Secret:      secret,
 		Algorithm:   otp.AlgorithmSHA1, // Most compatible with authenticator apps
 		Digits:      otp.DigitsSix,     // Standard 6-digit codes
-		Period:      30,                 // 30-second time window
+		Period:      30,                // 30-second time window
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate TOTP key: %w", err)

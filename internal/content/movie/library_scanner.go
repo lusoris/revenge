@@ -1,4 +1,4 @@
-package library
+package movie
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/content/movie"
 )
 
 // VideoExtensions are supported video file extensions
@@ -222,8 +221,8 @@ func ExtractFileInfo(filePath string) (*MovieFileInfo, error) {
 }
 
 // CreateMovieFile creates a domain MovieFile from file info
-func CreateMovieFile(movieID uuid.UUID, info *MovieFileInfo) *movie.MovieFile {
-	return &movie.MovieFile{
+func CreateMovieFile(movieID uuid.UUID, info *MovieFileInfo) *MovieFile {
+	return &MovieFile{
 		ID:         uuid.New(),
 		MovieID:    movieID,
 		FilePath:   info.Path,

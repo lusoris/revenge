@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-
 func TestAuthTokensTableStructure(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping table structure test in short mode")
@@ -25,7 +24,7 @@ func TestAuthTokensTableStructure(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { _ = rows.Close() }()
 
-	expected := map[string]struct{
+	expected := map[string]struct {
 		dataType   string
 		isNullable string
 	}{
@@ -78,18 +77,18 @@ func TestPasswordResetTokensTableStructure(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { _ = rows.Close() }()
 
-	expected := map[string]struct{
+	expected := map[string]struct {
 		dataType   string
 		isNullable string
 	}{
-		"id":          {"uuid", "NO"},
-		"user_id":     {"uuid", "NO"},
-		"token_hash":  {"text", "NO"},
-		"ip_address":  {"inet", "YES"},
-		"user_agent":  {"text", "YES"},
-		"expires_at":  {"timestamp with time zone", "NO"},
-		"used_at":     {"timestamp with time zone", "YES"},
-		"created_at":  {"timestamp with time zone", "NO"},
+		"id":         {"uuid", "NO"},
+		"user_id":    {"uuid", "NO"},
+		"token_hash": {"text", "NO"},
+		"ip_address": {"inet", "YES"},
+		"user_agent": {"text", "YES"},
+		"expires_at": {"timestamp with time zone", "NO"},
+		"used_at":    {"timestamp with time zone", "YES"},
+		"created_at": {"timestamp with time zone", "NO"},
 	}
 
 	found := make(map[string]bool)
@@ -126,7 +125,7 @@ func TestEmailVerificationTokensTableStructure(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { _ = rows.Close() }()
 
-	expected := map[string]struct{
+	expected := map[string]struct {
 		dataType   string
 		isNullable string
 	}{

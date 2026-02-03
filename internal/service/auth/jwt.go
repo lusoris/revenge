@@ -35,16 +35,16 @@ type TokenManager interface {
 
 // Claims represents JWT token claims
 type Claims struct {
-	UserID   uuid.UUID `json:"user_id"`
-	Username string    `json:"username"`
-	IssuedAt int64     `json:"iat"`
-	ExpiresAt int64    `json:"exp"`
+	UserID    uuid.UUID `json:"user_id"`
+	Username  string    `json:"username"`
+	IssuedAt  int64     `json:"iat"`
+	ExpiresAt int64     `json:"exp"`
 }
 
 // jwtManager implements TokenManager using stdlib crypto
 type jwtManager struct {
-	secret     []byte
-	jwtExpiry  time.Duration
+	secret    []byte
+	jwtExpiry time.Duration
 }
 
 // NewTokenManager creates a new JWT token manager
@@ -59,7 +59,7 @@ func NewTokenManager(secret string, jwtExpiry time.Duration) TokenManager {
 // Format: header.payload.signature (all base64url encoded)
 func (m *jwtManager) GenerateAccessToken(userID uuid.UUID, username string) (string, error) {
 	now := time.Now()
-	issuedAt := now.UnixNano() / int64(time.Millisecond)  // Millisecond precision
+	issuedAt := now.UnixNano() / int64(time.Millisecond) // Millisecond precision
 	expiresAt := now.Add(m.jwtExpiry).UnixNano() / int64(time.Millisecond)
 
 	// JWT Header (HS256)

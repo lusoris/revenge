@@ -17,12 +17,12 @@ import (
 
 // Service handles session management operations
 type Service struct {
-	repo           Repository
-	logger         *zap.Logger
-	tokenLength    int
-	expiry         time.Duration
-	refreshExpiry  time.Duration
-	maxPerUser     int
+	repo          Repository
+	logger        *zap.Logger
+	tokenLength   int
+	expiry        time.Duration
+	refreshExpiry time.Duration
+	maxPerUser    int
 }
 
 // DeviceInfo contains device metadata for session creation

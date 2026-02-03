@@ -82,7 +82,7 @@ func (h *Handler) GetCurrentSession(ctx context.Context) (ogen.GetCurrentSession
 			return &ogen.SessionInfo{
 				ID:             s.ID,
 				DeviceName:     ogen.NewOptString(stringPtrToValue(s.DeviceName)),
-			IPAddress:      stringPtrToValue(s.IPAddress),
+				IPAddress:      stringPtrToValue(s.IPAddress),
 				UserAgent:      ogen.NewOptString(stringPtrToValue(s.UserAgent)),
 				CreatedAt:      s.CreatedAt,
 				LastActivityAt: s.LastActivityAt,

@@ -102,3 +102,33 @@ jobs:
   # Number of worker goroutines for processing jobs
   # Set to 0 to disable job processing
   workers: 4
+
+# =============================================================================
+# Movie Module Configuration
+# =============================================================================
+movie:
+  # TMDb (The Movie Database) API configuration
+  tmdb:
+    # TMDb API key (get from https://www.themoviedb.org/settings/api)
+    api_key: ""
+
+    # Rate limit (requests per 10 seconds, TMDb allows 40)
+    rate_limit: 40
+
+    # Cache TTL for TMDb responses
+    cache_ttl: "5m"
+
+    # Optional SOCKS5/HTTP proxy URL for TMDb requests
+    # Example: socks5://localhost:9050 (Tor) or http://proxy:3128
+    proxy_url: ""
+
+  # Library scanning configuration
+  library:
+    # Paths to scan for movie files
+    paths:
+      - "/media/movies"
+      # - "/mnt/storage/movies"
+
+    # Automatic scan interval (0s = disabled, requires manual trigger)
+    # Example: "1h" for hourly scans
+    scan_interval: "0s"

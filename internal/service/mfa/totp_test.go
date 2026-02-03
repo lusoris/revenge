@@ -88,9 +88,9 @@ func TestTOTPService_TimeSkew(t *testing.T) {
 		expected bool
 	}{
 		{"current time", 0, true},
-		{"30s in past", -30 * time.Second, true},  // Previous window
-		{"30s in future", 30 * time.Second, true}, // Next window
-		{"60s in past", -60 * time.Second, false}, // Too old
+		{"30s in past", -30 * time.Second, true},   // Previous window
+		{"30s in future", 30 * time.Second, true},  // Next window
+		{"60s in past", -60 * time.Second, false},  // Too old
 		{"60s in future", 60 * time.Second, false}, // Too far ahead
 	}
 

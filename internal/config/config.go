@@ -31,6 +31,9 @@ type Config struct {
 	// RBAC configuration
 	RBAC RBACConfig `koanf:"rbac"`
 
+	// Movie module configuration
+	Movie MovieConfig `koanf:"movie"`
+
 	// Legacy (QAR) module configuration
 	Legacy LegacyConfig `koanf:"legacy"`
 }
@@ -168,6 +171,39 @@ type LegacyPrivacyConfig struct {
 	AuditAllAccess bool `koanf:"audit_all_access"`
 }
 
+// MovieConfig holds movie module configuration.
+type MovieConfig struct {
+	// TMDb configuration for metadata
+	TMDb TMDbConfig `koanf:"tmdb"`
+
+	// Library configuration for file scanning
+	Library LibraryConfig `koanf:"library"`
+}
+
+// TMDbConfig holds TMDb API configuration.
+type TMDbConfig struct {
+	// APIKey is the TMDb API key.
+	APIKey string `koanf:"api_key" validate:"required"`
+
+	// RateLimit is requests per 10 seconds (default: 40).
+	RateLimit int `koanf:"rate_limit"`
+
+	// CacheTTL is how long to cache TMDb responses (default: 5m).
+	CacheTTL time.Duration `koanf:"cache_ttl"`
+
+	// ProxyURL is optional SOCKS5/HTTP proxy for TMDb requests.
+	ProxyURL string `koanf:"proxy_url"`
+}
+
+// LibraryConfig holds movie library configuration.
+type LibraryConfig struct {
+	// Paths are the directories to scan for movie files.
+	Paths []string `koanf:"paths" validate:"required,min=1"`
+
+	// ScanInterval is how often to automatically scan libraries (0 = disabled).
+	ScanInterval time.Duration `koanf:"scan_interval"`
+}
+
 // Defaults returns a map of default configuration values.
 func Defaults() map[string]interface{} {
 	return map[string]interface{}{
@@ -188,6 +224,14 @@ func Defaults() map[string]interface{} {
 		"database.health_check_period": "30s",
 
 		// Cache defaults
+
+		// Movie defaults
+		"movie.tmdb.api_key":    "",
+		"movie.tmdb.rate_limit": 40,
+		"movie.tmdb.cache_ttl":  "5m",
+		"movie.tmdb.proxy_url":  "",
+		"movie.library.paths":   []string{},
+		"movie.library.scan_interval": "0s", // Disabled by default
 		"cache.url":     "",
 		"cache.enabled": false,
 

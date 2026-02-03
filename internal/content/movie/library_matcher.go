@@ -1,4 +1,4 @@
-package library
+package movie
 
 import (
 	"context"
@@ -6,21 +6,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lusoris/revenge/internal/content/movie"
-	"github.com/lusoris/revenge/internal/content/movie/metadata"
 	"github.com/shopspring/decimal"
 )
 
 // Matcher handles matching scanned files to movies
 type Matcher struct {
-	repo            movie.Repository
-	metadataService *metadata.MetadataService
+	repo            Repository
+	metadataService *MetadataService
 }
 
 // MatchResult represents the result of matching a file
 type MatchResult struct {
 	ScanResult      ScanResult
-	Movie           *movie.Movie
+	Movie           *Movie
 	MatchType       MatchType
 	Confidence      float64
 	Error           error
@@ -39,7 +37,7 @@ const (
 )
 
 // NewMatcher creates a new file matcher
-func NewMatcher(repo movie.Repository, metadataService *metadata.MetadataService) *Matcher {
+func NewMatcher(repo Repository, metadataService *MetadataService) *Matcher {
 	return &Matcher{
 		repo:            repo,
 		metadataService: metadataService,
@@ -115,14 +113,14 @@ func (m *Matcher) matchFile(ctx context.Context, result ScanResult) MatchResult 
 }
 
 // findExistingMovie searches for an existing movie in the database
-func (m *Matcher) findExistingMovie(ctx context.Context, result ScanResult) (*movie.Movie, error) {
+func (m *Matcher) findExistingMovie(ctx context.Context, result ScanResult) (*Movie, error) {
 	// Note: We'd need to add SearchMoviesByTitle to the repository
 	// For now, we'll return not found to trigger TMDb search
 	return nil, fmt.Errorf("not implemented")
 }
 
 // createMovieFromTMDb creates a new movie record from TMDb data
-func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *movie.Movie) (*movie.Movie, error) {
+func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*Movie, error) {
 	// Enrich with full metadata if we only have search result
 	if tmdbMovie.TMDbID != nil {
 		if err := m.metadataService.EnrichMovie(ctx, tmdbMovie); err != nil {
@@ -132,7 +130,7 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *movie.Movi
 	}
 
 	// Save to database
-	params := movie.CreateMovieParams{
+	params := CreateMovieParams{
 		TMDbID:        tmdbMovie.TMDbID,
 		IMDbID:        tmdbMovie.IMDbID,
 		Title:         tmdbMovie.Title,
@@ -178,7 +176,7 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *movie.Movi
 }
 
 // calculateConfidence calculates match confidence score
-func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *movie.Movie) float64 {
+func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *Movie) float64 {
 	confidence := 0.0
 
 	// Title similarity

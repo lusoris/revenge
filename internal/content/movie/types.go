@@ -9,74 +9,74 @@ import (
 
 // Movie represents a movie with metadata from TMDb/Radarr
 type Movie struct {
-	ID                  uuid.UUID
-	TMDbID              *int32
-	IMDbID              *string
-	Title               string
-	OriginalTitle       *string
-	Year                *int32
-	ReleaseDate         *time.Time
-	Runtime             *int32
-	Overview            *string
-	Tagline             *string
-	Status              *string
-	OriginalLanguage    *string
-	PosterPath          *string
-	BackdropPath        *string
-	TrailerURL          *string
-	VoteAverage         *decimal.Decimal
-	VoteCount           *int32
-	Popularity          *decimal.Decimal
-	Budget              *int64
-	Revenue             *int64
-	LibraryAddedAt      time.Time
-	MetadataUpdatedAt   *time.Time
-	RadarrID            *int32
-	CreatedAt           time.Time
-	UpdatedAt           time.Time
+	ID                uuid.UUID
+	TMDbID            *int32
+	IMDbID            *string
+	Title             string
+	OriginalTitle     *string
+	Year              *int32
+	ReleaseDate       *time.Time
+	Runtime           *int32
+	Overview          *string
+	Tagline           *string
+	Status            *string
+	OriginalLanguage  *string
+	PosterPath        *string
+	BackdropPath      *string
+	TrailerURL        *string
+	VoteAverage       *decimal.Decimal
+	VoteCount         *int32
+	Popularity        *decimal.Decimal
+	Budget            *int64
+	Revenue           *int64
+	LibraryAddedAt    time.Time
+	MetadataUpdatedAt *time.Time
+	RadarrID          *int32
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 // MovieFile represents a physical media file for a movie
 type MovieFile struct {
-	ID                 uuid.UUID
-	MovieID            uuid.UUID
-	FilePath           string
-	FileSize           int64
-	FileName           string
-	Resolution         *string
-	QualityProfile     *string
-	VideoCodec         *string
-	AudioCodec         *string
-	Container          *string
-	DurationSeconds    *int32
-	BitrateKbps        *int32
-	Framerate          *decimal.Decimal
-	DynamicRange       *string
-	ColorSpace         *string
-	AudioChannels      *string
-	AudioLanguages     []string
-	SubtitleLanguages  []string
-	RadarrFileID       *int32
-	LastScannedAt      *time.Time
-	IsMonitored        *bool
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
+	ID                uuid.UUID
+	MovieID           uuid.UUID
+	FilePath          string
+	FileSize          int64
+	FileName          string
+	Resolution        *string
+	QualityProfile    *string
+	VideoCodec        *string
+	AudioCodec        *string
+	Container         *string
+	DurationSeconds   *int32
+	BitrateKbps       *int32
+	Framerate         *decimal.Decimal
+	DynamicRange      *string
+	ColorSpace        *string
+	AudioChannels     *string
+	AudioLanguages    []string
+	SubtitleLanguages []string
+	RadarrFileID      *int32
+	LastScannedAt     *time.Time
+	IsMonitored       *bool
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 // MovieCredit represents cast or crew member for a movie
 type MovieCredit struct {
-	ID            uuid.UUID
-	MovieID       uuid.UUID
-	TMDbPersonID  int32
-	Name          string
-	CreditType    string // 'cast' or 'crew'
-	Character     *string
-	Job           *string
-	Department    *string
-	CastOrder     *int32
-	ProfilePath   *string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID           uuid.UUID
+	MovieID      uuid.UUID
+	TMDbPersonID int32
+	Name         string
+	CreditType   string // 'cast' or 'crew'
+	Character    *string
+	Job          *string
+	Department   *string
+	CastOrder    *int32
+	ProfilePath  *string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 // MovieCollection represents a collection of related movies

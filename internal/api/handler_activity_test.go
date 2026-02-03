@@ -379,4 +379,3 @@ func stringPtr(s string) *string {
 func uuidPtr(u uuid.UUID) *uuid.UUID {
 	return &u
 }
-

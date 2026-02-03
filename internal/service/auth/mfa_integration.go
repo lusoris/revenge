@@ -34,19 +34,19 @@ func NewMFAAuthenticator(mfaManager *mfa.MFAManager) *MFAAuthenticator {
 
 // MFALoginResponse contains the MFA challenge information
 type MFALoginResponse struct {
-	RequiresMFA     bool      `json:"requires_mfa"`
-	UserID          uuid.UUID `json:"user_id"`
-	AvailableMethods []string `json:"available_methods"`
+	RequiresMFA      bool      `json:"requires_mfa"`
+	UserID           uuid.UUID `json:"user_id"`
+	AvailableMethods []string  `json:"available_methods"`
 	// WebAuthn options would go here when implemented
 	// WebAuthnOptions *WebAuthnLoginOptions `json:"webauthn_options,omitempty"`
 }
 
 // MFAVerifyRequest contains MFA verification data
 type MFAVerifyRequest struct {
-	UserID          uuid.UUID   `json:"user_id"`
-	Method          string      `json:"method"` // "totp", "webauthn", "backup_code"
-	Code            string      `json:"code,omitempty"`             // For TOTP or backup code
-	ClientIP        *netip.Addr `json:"-"`                          // For backup code IP tracking
+	UserID            uuid.UUID   `json:"user_id"`
+	Method            string      `json:"method"`                       // "totp", "webauthn", "backup_code"
+	Code              string      `json:"code,omitempty"`               // For TOTP or backup code
+	ClientIP          *netip.Addr `json:"-"`                            // For backup code IP tracking
 	WebAuthnAssertion interface{} `json:"webauthn_assertion,omitempty"` // For WebAuthn
 }
 

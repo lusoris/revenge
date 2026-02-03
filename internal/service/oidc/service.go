@@ -22,32 +22,32 @@ import (
 
 // Errors
 var (
-	ErrProviderNotFound     = errors.New("OIDC provider not found")
-	ErrProviderDisabled     = errors.New("OIDC provider is disabled")
-	ErrUserLinkNotFound     = errors.New("OIDC user link not found")
-	ErrUserLinkExists       = errors.New("user already linked to this provider")
-	ErrStateNotFound        = errors.New("OAuth state not found")
-	ErrStateExpired         = errors.New("OAuth state expired")
-	ErrInvalidState         = errors.New("invalid OAuth state")
-	ErrInvalidCode          = errors.New("invalid authorization code")
-	ErrTokenExchange        = errors.New("failed to exchange token")
-	ErrUserInfoFetch        = errors.New("failed to fetch user info")
-	ErrAutoCreateDisabled   = errors.New("auto-create users is disabled for this provider")
-	ErrLinkingDisabled      = errors.New("account linking is disabled for this provider")
-	ErrProviderNameExists   = errors.New("provider with this name already exists")
-	ErrInvalidProviderType  = errors.New("invalid provider type")
-	ErrInvalidIssuerURL     = errors.New("invalid issuer URL")
-	ErrDiscoveryFailed      = errors.New("OIDC discovery failed")
-	ErrInvalidCallbackURL   = errors.New("invalid callback URL")
-	ErrEncryptionFailed     = errors.New("failed to encrypt sensitive data")
-	ErrDecryptionFailed     = errors.New("failed to decrypt sensitive data")
+	ErrProviderNotFound    = errors.New("OIDC provider not found")
+	ErrProviderDisabled    = errors.New("OIDC provider is disabled")
+	ErrUserLinkNotFound    = errors.New("OIDC user link not found")
+	ErrUserLinkExists      = errors.New("user already linked to this provider")
+	ErrStateNotFound       = errors.New("OAuth state not found")
+	ErrStateExpired        = errors.New("OAuth state expired")
+	ErrInvalidState        = errors.New("invalid OAuth state")
+	ErrInvalidCode         = errors.New("invalid authorization code")
+	ErrTokenExchange       = errors.New("failed to exchange token")
+	ErrUserInfoFetch       = errors.New("failed to fetch user info")
+	ErrAutoCreateDisabled  = errors.New("auto-create users is disabled for this provider")
+	ErrLinkingDisabled     = errors.New("account linking is disabled for this provider")
+	ErrProviderNameExists  = errors.New("provider with this name already exists")
+	ErrInvalidProviderType = errors.New("invalid provider type")
+	ErrInvalidIssuerURL    = errors.New("invalid issuer URL")
+	ErrDiscoveryFailed     = errors.New("OIDC discovery failed")
+	ErrInvalidCallbackURL  = errors.New("invalid callback URL")
+	ErrEncryptionFailed    = errors.New("failed to encrypt sensitive data")
+	ErrDecryptionFailed    = errors.New("failed to decrypt sensitive data")
 )
 
 // Constants
 const (
-	StateExpiry       = 10 * time.Minute
-	CodeVerifierLen   = 64
-	StateLen          = 32
+	StateExpiry           = 10 * time.Minute
+	CodeVerifierLen       = 64
+	StateLen              = 32
 	ProviderTypeGeneric   = "generic"
 	ProviderTypeAuthentik = "authentik"
 	ProviderTypeKeycloak  = "keycloak"
@@ -279,13 +279,13 @@ type CallbackResult struct {
 
 // UserInfo contains user information from the OIDC provider
 type UserInfo struct {
-	Subject   string
-	Email     string
-	Name      string
-	Username  string
-	Picture   string
-	Roles     []string
-	Claims    map[string]any
+	Subject  string
+	Email    string
+	Name     string
+	Username string
+	Picture  string
+	Roles    []string
+	Claims   map[string]any
 }
 
 // HandleCallback handles the OAuth callback

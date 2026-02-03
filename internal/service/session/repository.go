@@ -41,12 +41,12 @@ type Repository interface {
 
 // CreateSessionParams parameters for creating a session
 type CreateSessionParams struct {
-	UserID             uuid.UUID
-	TokenHash          string
-	RefreshTokenHash   *string
-	IPAddress          *netip.Addr
-	UserAgent          *string
-	DeviceName         *string
-	Scopes             []string
-	ExpiresAt          time.Time
+	UserID           uuid.UUID
+	TokenHash        string
+	RefreshTokenHash *string
+	IPAddress        *netip.Addr
+	UserAgent        *string
+	DeviceName       *string
+	Scopes           []string
+	ExpiresAt        time.Time
 }

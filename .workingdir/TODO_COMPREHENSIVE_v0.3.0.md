@@ -302,10 +302,14 @@
 - f18891b880 - feat(movie): add HTTP handlers and integrate into app
 - 59fb5d1350 - feat: Add Movie Module backend foundation
 
-#### River Jobs
-- [ ] MovieMetadataRefreshJob
-- [ ] MovieLibraryScanJob
-- [ ] MovieFileMatchJob
+#### River Jobs ✅ COMPLETE
+- [x] MovieMetadataRefreshJob (refresh TMDb metadata for movie by ID) ✅
+- [x] MovieLibraryScanJob (scan library paths for new/changed files) ✅
+- [x] MovieFileMatchJob (stub - match single file to movie) ✅
+- [x] Worker registration and FX module integration ✅
+- [x] Config added (movie.tmdb and movie.library settings) ✅
+
+**Commit**: [TODO] - feat(movie): add River Jobs for background processing
 
 #### Tests
 - [ ] Unit tests (80%+ coverage)

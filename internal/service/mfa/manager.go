@@ -19,11 +19,11 @@ var (
 
 // MFAManager coordinates all MFA methods (TOTP, WebAuthn, backup codes).
 type MFAManager struct {
-	queries      *db.Queries
-	totp         *TOTPService
-	webauthn     *WebAuthnService
-	backupCodes  *BackupCodesService
-	logger       *zap.Logger
+	queries     *db.Queries
+	totp        *TOTPService
+	webauthn    *WebAuthnService
+	backupCodes *BackupCodesService
+	logger      *zap.Logger
 }
 
 // NewMFAManager creates a new MFA manager.
@@ -45,12 +45,12 @@ func NewMFAManager(
 
 // MFAStatus represents the current MFA configuration for a user.
 type MFAStatus struct {
-	UserID              uuid.UUID `json:"user_id"`
-	HasTOTP             bool      `json:"has_totp"`
-	WebAuthnCount       int64     `json:"webauthn_count"`
-	UnusedBackupCodes   int64     `json:"unused_backup_codes"`
-	RequireMFA          bool      `json:"require_mfa"`
-	RememberDeviceEnabled bool    `json:"remember_device_enabled"`
+	UserID                uuid.UUID `json:"user_id"`
+	HasTOTP               bool      `json:"has_totp"`
+	WebAuthnCount         int64     `json:"webauthn_count"`
+	UnusedBackupCodes     int64     `json:"unused_backup_codes"`
+	RequireMFA            bool      `json:"require_mfa"`
+	RememberDeviceEnabled bool      `json:"remember_device_enabled"`
 }
 
 // GetStatus returns the current MFA status for a user.
@@ -59,21 +59,21 @@ func (m *MFAManager) GetStatus(ctx context.Context, userID uuid.UUID) (*MFAStatu
 	if err != nil {
 		// If no status record exists, return default status
 		return &MFAStatus{
-			UserID:              userID,
-			HasTOTP:             false,
-			WebAuthnCount:       0,
-			UnusedBackupCodes:   0,
-			RequireMFA:          false,
+			UserID:                userID,
+			HasTOTP:               false,
+			WebAuthnCount:         0,
+			UnusedBackupCodes:     0,
+			RequireMFA:            false,
 			RememberDeviceEnabled: false,
 		}, nil
 	}
 
 	return &MFAStatus{
-		UserID:              userID,
-		HasTOTP:             status.HasTotp,
-		WebAuthnCount:       status.WebauthnCount,
-		UnusedBackupCodes:   status.UnusedBackupCodes,
-		RequireMFA:          status.RequireMfa,
+		UserID:                userID,
+		HasTOTP:               status.HasTotp,
+		WebAuthnCount:         status.WebauthnCount,
+		UnusedBackupCodes:     status.UnusedBackupCodes,
+		RequireMFA:            status.RequireMfa,
 		RememberDeviceEnabled: false, // TODO: Get from user_mfa_settings
 	}, nil
 }
@@ -164,8 +164,8 @@ func (m *MFAManager) DisableMFA(ctx context.Context, userID uuid.UUID) error {
 type VerifyMethod string
 
 const (
-	VerifyMethodTOTP      VerifyMethod = "totp"
-	VerifyMethodWebAuthn  VerifyMethod = "webauthn"
+	VerifyMethodTOTP       VerifyMethod = "totp"
+	VerifyMethodWebAuthn   VerifyMethod = "webauthn"
 	VerifyMethodBackupCode VerifyMethod = "backup_code"
 )
 

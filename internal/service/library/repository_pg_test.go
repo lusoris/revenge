@@ -313,7 +313,7 @@ func TestRepositoryPg_ListScans(t *testing.T) {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
-		Status:    "completed",
+			Status:    "completed",
 		}
 		require.NoError(t, repo.CreateScan(ctx, scan))
 	}
@@ -336,7 +336,7 @@ func TestRepositoryPg_CountScans(t *testing.T) {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
-		Status:    "completed",
+			Status:    "completed",
 		}
 		require.NoError(t, repo.CreateScan(ctx, scan))
 	}
@@ -360,7 +360,7 @@ func TestRepositoryPg_GetLatestScan(t *testing.T) {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
-		Status:    "completed",
+			Status:    "completed",
 		}
 		require.NoError(t, repo.CreateScan(ctx, scan))
 		lastScan = scan

@@ -181,16 +181,16 @@ func (r *postgresRepository) GetUserPreferences(ctx context.Context, userID uuid
 
 func (r *postgresRepository) UpsertUserPreferences(ctx context.Context, params UpsertPreferencesParams) (*db.SharedUserPreference, error) {
 	upsertParams := db.UpsertUserPreferencesParams{
-		UserID:              params.UserID,
-		ProfileVisibility:   params.ProfileVisibility,
-		ShowEmail:           params.ShowEmail,
-		ShowActivity:        params.ShowActivity,
-		Theme:               params.Theme,
-		DisplayLanguage:     params.DisplayLanguage,
-		ContentLanguage:     params.ContentLanguage,
-		ShowAdultContent:    params.ShowAdultContent,
-		ShowSpoilers:        params.ShowSpoilers,
-		AutoPlayVideos:      params.AutoPlayVideos,
+		UserID:            params.UserID,
+		ProfileVisibility: params.ProfileVisibility,
+		ShowEmail:         params.ShowEmail,
+		ShowActivity:      params.ShowActivity,
+		Theme:             params.Theme,
+		DisplayLanguage:   params.DisplayLanguage,
+		ContentLanguage:   params.ContentLanguage,
+		ShowAdultContent:  params.ShowAdultContent,
+		ShowSpoilers:      params.ShowSpoilers,
+		AutoPlayVideos:    params.AutoPlayVideos,
 	}
 
 	// Convert JSONB fields (json.RawMessage is []byte)

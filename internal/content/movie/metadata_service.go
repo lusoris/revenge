@@ -1,12 +1,10 @@
-package metadata
+package movie
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/content/movie"
-	"golang.org/x/time/rate"
 )
 
 type MetadataService struct {
@@ -14,36 +12,23 @@ type MetadataService struct {
 	mapper *TMDbMapper
 }
 
-type MetadataServiceConfig struct {
-	TMDbAPIKey    string
-	TMDbRateLimit rate.Limit
-	TMDbCacheTTL  string
-	TMDbProxyURL  string
-}
-
-func NewMetadataService(config MetadataServiceConfig) (*MetadataService, error) {
-	tmdbConfig := TMDbConfig{
-		APIKey:    config.TMDbAPIKey,
-		RateLimit: config.TMDbRateLimit,
-		ProxyURL:  config.TMDbProxyURL,
-	}
-
-	client := NewTMDbClient(tmdbConfig)
+func NewMetadataService(config TMDbConfig) *MetadataService {
+	client := NewTMDbClient(config)
 	mapper := NewTMDbMapper(client)
 
 	return &MetadataService{
 		client: client,
 		mapper: mapper,
-	}, nil
+	}
 }
 
-func (s *MetadataService) SearchMovies(ctx context.Context, query string, year *int) ([]*movie.Movie, error) {
+func (s *MetadataService) SearchMovies(ctx context.Context, query string, year *int) ([]*Movie, error) {
 	response, err := s.client.SearchMovies(ctx, query, year)
 	if err != nil {
 		return nil, fmt.Errorf("search movies: %w", err)
 	}
 
-	movies := make([]*movie.Movie, 0, len(response.Results))
+	movies := make([]*Movie, 0, len(response.Results))
 	for i := range response.Results {
 		mov := s.mapper.MapSearchResult(&response.Results[i])
 		movies = append(movies, mov)
@@ -52,7 +37,7 @@ func (s *MetadataService) SearchMovies(ctx context.Context, query string, year *
 	return movies, nil
 }
 
-func (s *MetadataService) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*movie.Movie, error) {
+func (s *MetadataService) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, error) {
 	tmdbMovie, err := s.client.GetMovie(ctx, tmdbID)
 	if err != nil {
 		return nil, fmt.Errorf("get movie: %w", err)
@@ -62,7 +47,7 @@ func (s *MetadataService) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*mo
 	return mov, nil
 }
 
-func (s *MetadataService) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]movie.MovieCredit, error) {
+func (s *MetadataService) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieCredit, error) {
 	credits, err := s.client.GetMovieCredits(ctx, tmdbID)
 	if err != nil {
 		return nil, fmt.Errorf("get movie credits: %w", err)
@@ -80,7 +65,7 @@ func (s *MetadataService) GetMovieImages(ctx context.Context, tmdbID int) (*TMDb
 	return images, nil
 }
 
-func (s *MetadataService) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]movie.MovieGenre, error) {
+func (s *MetadataService) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieGenre, error) {
 	tmdbMovie, err := s.client.GetMovie(ctx, tmdbID)
 	if err != nil {
 		return nil, fmt.Errorf("get movie for genres: %w", err)
@@ -89,7 +74,7 @@ func (s *MetadataService) GetMovieGenres(ctx context.Context, movieID uuid.UUID,
 	return s.mapper.MapGenres(movieID, tmdbMovie.Genres), nil
 }
 
-func (s *MetadataService) GetCollection(ctx context.Context, collectionID int) (*movie.MovieCollection, error) {
+func (s *MetadataService) GetCollection(ctx context.Context, collectionID int) (*MovieCollection, error) {
 	collection, err := s.client.GetCollection(ctx, collectionID)
 	if err != nil {
 		return nil, fmt.Errorf("get collection: %w", err)
@@ -98,13 +83,13 @@ func (s *MetadataService) GetCollection(ctx context.Context, collectionID int) (
 	return s.mapper.MapCollection(collection), nil
 }
 
-func (s *MetadataService) GetCollectionMovies(ctx context.Context, collectionID int) ([]*movie.Movie, error) {
+func (s *MetadataService) GetCollectionMovies(ctx context.Context, collectionID int) ([]*Movie, error) {
 	collection, err := s.client.GetCollection(ctx, collectionID)
 	if err != nil {
 		return nil, fmt.Errorf("get collection movies: %w", err)
 	}
 
-	movies := make([]*movie.Movie, 0, len(collection.Parts))
+	movies := make([]*Movie, 0, len(collection.Parts))
 	for i := range collection.Parts {
 		mov := s.mapper.MapSearchResult(&collection.Parts[i])
 		movies = append(movies, mov)
@@ -113,7 +98,7 @@ func (s *MetadataService) GetCollectionMovies(ctx context.Context, collectionID 
 	return movies, nil
 }
 
-func (s *MetadataService) EnrichMovie(ctx context.Context, mov *movie.Movie) error {
+func (s *MetadataService) EnrichMovie(ctx context.Context, mov *Movie) error {
 	if mov.TMDbID == nil {
 		return fmt.Errorf("movie has no TMDb ID")
 	}
