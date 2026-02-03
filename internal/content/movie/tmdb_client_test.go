@@ -14,6 +14,14 @@ import (
 	"golang.org/x/time/rate"
 )
 
+// writeJSON is a test helper that writes JSON to response writer
+func writeJSON(w http.ResponseWriter, v interface{}) {
+	if err := json.NewEncoder(w).Encode(v); err != nil {
+		// In tests, panic on encoding errors
+		panic(err)
+	}
+}
+
 func TestNewTMDbClient(t *testing.T) {
 	t.Run("With default settings", func(t *testing.T) {
 		client := NewTMDbClient(TMDbConfig{
@@ -71,7 +79,7 @@ func TestTMDbClient_SearchMovies(t *testing.T) {
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			writeJSON(w, response)
 		}))
 		defer server.Close()
 
@@ -104,7 +112,7 @@ func TestTMDbClient_SearchMovies(t *testing.T) {
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			writeJSON(w, response)
 		}))
 		defer server.Close()
 
@@ -122,7 +130,7 @@ func TestTMDbClient_SearchMovies(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(TMDbError{
+			writeJSON(w, TMDbError{
 				StatusMessage: "Invalid API key",
 				StatusCode:    7,
 			})
@@ -148,7 +156,7 @@ func TestTMDbClient_SearchMovies(t *testing.T) {
 				Results:      []TMDbSearchResult{},
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			writeJSON(w, response)
 		}))
 		defer server.Close()
 
@@ -190,7 +198,7 @@ func TestTMDbClient_GetMovie(t *testing.T) {
 				BackdropPath: &backdropPath,
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(movie)
+			writeJSON(w, movie)
 		}))
 		defer server.Close()
 
@@ -212,7 +220,7 @@ func TestTMDbClient_GetMovie(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(TMDbError{
+			writeJSON(w, TMDbError{
 				StatusMessage: "The resource you requested could not be found.",
 				StatusCode:    34,
 			})
@@ -275,7 +283,7 @@ func TestTMDbClient_GetMovieCredits(t *testing.T) {
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(credits)
+			writeJSON(w, credits)
 		}))
 		defer server.Close()
 
@@ -304,7 +312,7 @@ func TestTMDbClient_Cache(t *testing.T) {
 				Title: "The Matrix",
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(movie)
+			writeJSON(w, movie)
 		}))
 		defer server.Close()
 
@@ -333,7 +341,7 @@ func TestTMDbClient_Cache(t *testing.T) {
 				Title: "The Matrix",
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(movie)
+			writeJSON(w, movie)
 		}))
 		defer server.Close()
 

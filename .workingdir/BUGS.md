@@ -4,7 +4,7 @@
 
 ### BUG-004: Migration test hardcoded to check wrong table (2026-02-03)
 
-**Problem**: 
+**Problem**:
 `TestMigrationsUpDown/MigrateDown` failed with `Should be false` / `Should be true`.
 
 **Root Cause**:
@@ -23,7 +23,7 @@ Updated test to check for `movie_watched` table in `public` schema (000026) and 
 
 ### BUG-003: Config required validation on optional Movie fields (2026-02-03)
 
-**Problem**: 
+**Problem**:
 Config tests failed with validation errors on `Movie.TMDb.APIKey` and `Movie.Library.Paths`.
 
 **Root Cause**:
@@ -41,12 +41,12 @@ Removed `required` validation tags from `TMDbConfig.APIKey` and `LibraryConfig.P
 
 ### BUG-002: User service tests expected bcrypt instead of Argon2id (2026-02-03)
 
-**Problem**: 
+**Problem**:
 User service tests failed with `Should be true` when checking password hash prefix.
 
 **Root Cause**:
-Tests in `internal/service/user/service_test.go` expected password hashes to start with 
-`$2a$` (bcrypt format), but the crypto package was changed to use Argon2id which 
+Tests in `internal/service/user/service_test.go` expected password hashes to start with
+`$2a$` (bcrypt format), but the crypto package was changed to use Argon2id which
 produces hashes starting with `$argon2id$`.
 
 **Solution**:
@@ -59,11 +59,11 @@ Updated test assertions to check for `$argon2id$` prefix instead of `$2a$`.
 
 ### BUG-001: Testutil used duplicated/outdated migrations (2026-02-03)
 
-**Problem**: 
+**Problem**:
 Tests in `internal/api/` failed with `ERROR: column "mfa_verified" does not exist`.
 
 **Root Cause**:
-`internal/testutil/testdb_migrate.go` used `//go:embed migrations/*.sql` which embedded 
+`internal/testutil/testdb_migrate.go` used `//go:embed migrations/*.sql` which embedded
 a local copy of migrations from `internal/testutil/migrations/`. This copy was outdated
 (only 15 migrations) while the real migrations in `migrations/` had 26 files including
 the MFA migration (000020).

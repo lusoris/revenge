@@ -32,11 +32,7 @@ func (h *Handler) GetMovie(ctx context.Context, id string) (*Movie, error) {
 
 // ListMovies handles GET /api/v1/movies
 func (h *Handler) ListMovies(ctx context.Context, params ListMoviesParams) ([]Movie, error) {
-	filters := ListFilters{
-		OrderBy: params.OrderBy,
-		Limit:   params.Limit,
-		Offset:  params.Offset,
-	}
+	filters := ListFilters(params)
 
 	return h.service.ListMovies(ctx, filters)
 }

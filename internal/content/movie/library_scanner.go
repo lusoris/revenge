@@ -180,7 +180,7 @@ func cleanTitle(title string) string {
 	}
 
 	titleLower := strings.ToLower(title)
-	
+
 	// Remove quality markers
 	for _, marker := range qualityMarkers {
 		markerLower := strings.ToLower(marker)
@@ -265,12 +265,4 @@ func parseOptionalString(s string) *string {
 		return nil
 	}
 	return &s
-}
-
-func parseOptionalInt32(i int) *int32 {
-	if i == 0 {
-		return nil
-	}
-	val := int32(i)
-	return &val
 }
