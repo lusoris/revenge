@@ -338,14 +338,33 @@ func (h *Handler) RefreshMovieMetadata(ctx context.Context, params ogen.RefreshM
 	return &ogen.RefreshMovieMetadataAccepted{}, nil
 }
 
-// GetCollection delegates to the movie handler (not implemented yet).
+// GetCollection returns details about a movie collection.
 func (h *Handler) GetCollection(ctx context.Context, params ogen.GetCollectionParams) (ogen.GetCollectionRes, error) {
-	// TODO: Implement collection details endpoint
-	return &ogen.GetCollectionNotFound{}, nil
+	collection, err := h.movieHandler.GetCollection(ctx, params.ID.String())
+	if err != nil {
+		if err == movie.ErrCollectionNotFound {
+			return &ogen.GetCollectionNotFound{}, nil
+		}
+		return nil, err
+	}
+
+	return movieCollectionToOgen(collection), nil
 }
 
-// GetCollectionMovies delegates to the movie handler (not implemented yet).
+// GetCollectionMovies returns all movies in a collection.
 func (h *Handler) GetCollectionMovies(ctx context.Context, params ogen.GetCollectionMoviesParams) (ogen.GetCollectionMoviesRes, error) {
-	// TODO: Implement collection movies endpoint
-	return &ogen.GetCollectionMoviesNotFound{}, nil
+	movies, err := h.movieHandler.GetCollectionMovies(ctx, params.ID.String())
+	if err != nil {
+		if err == movie.ErrCollectionNotFound {
+			return &ogen.GetCollectionMoviesNotFound{}, nil
+		}
+		return nil, err
+	}
+
+	result := make([]ogen.Movie, len(movies))
+	for i, m := range movies {
+		result[i] = *movieToOgen(&m)
+	}
+
+	return (*ogen.GetCollectionMoviesOKApplicationJSON)(&result), nil
 }

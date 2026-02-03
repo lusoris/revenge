@@ -213,31 +213,91 @@ func (r *postgresRepository) DeleteMovieCredits(ctx context.Context, movieID uui
 }
 
 func (r *postgresRepository) CreateMovieCollection(ctx context.Context, params CreateMovieCollectionParams) (*MovieCollection, error) {
-	return nil, fmt.Errorf("not implemented")
+	coll, err := r.queries.CreateMovieCollection(ctx, moviedb.CreateMovieCollectionParams{
+		TmdbCollectionID: params.TMDbCollectionID,
+		Name:             params.Name,
+		Overview:         params.Overview,
+		PosterPath:       params.PosterPath,
+		BackdropPath:     params.BackdropPath,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create movie collection: %w", err)
+	}
+	return dbCollectionToCollection(coll), nil
 }
 
 func (r *postgresRepository) GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error) {
-	return nil, fmt.Errorf("not implemented")
+	coll, err := r.queries.GetMovieCollection(ctx, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrCollectionNotFound
+		}
+		return nil, fmt.Errorf("failed to get movie collection: %w", err)
+	}
+	return dbCollectionToCollection(coll), nil
 }
 
 func (r *postgresRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*MovieCollection, error) {
-	return nil, fmt.Errorf("not implemented")
+	coll, err := r.queries.GetMovieCollectionByTMDbID(ctx, &tmdbCollectionID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrCollectionNotFound
+		}
+		return nil, fmt.Errorf("failed to get movie collection by TMDb ID: %w", err)
+	}
+	return dbCollectionToCollection(coll), nil
 }
 
 func (r *postgresRepository) AddMovieToCollection(ctx context.Context, collectionID, movieID uuid.UUID, collectionOrder *int32) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.AddMovieToCollection(ctx, moviedb.AddMovieToCollectionParams{
+		CollectionID:    collectionID,
+		MovieID:         movieID,
+		CollectionOrder: collectionOrder,
+	})
 }
 
 func (r *postgresRepository) RemoveMovieFromCollection(ctx context.Context, collectionID, movieID uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.RemoveMovieFromCollection(ctx, moviedb.RemoveMovieFromCollectionParams{
+		CollectionID: collectionID,
+		MovieID:      movieID,
+	})
 }
 
 func (r *postgresRepository) ListMoviesByCollection(ctx context.Context, collectionID uuid.UUID) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListMoviesByCollection(ctx, collectionID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movies by collection: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (*MovieCollection, error) {
-	return nil, fmt.Errorf("not implemented")
+	coll, err := r.queries.GetCollectionForMovie(ctx, movieID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotInCollection
+		}
+		return nil, fmt.Errorf("failed to get collection for movie: %w", err)
+	}
+	return dbCollectionToCollection(coll), nil
+}
+
+// dbCollectionToCollection converts a database collection to a domain collection
+func dbCollectionToCollection(dbColl moviedb.MovieCollection) *MovieCollection {
+	return &MovieCollection{
+		ID:               dbColl.ID,
+		TMDbCollectionID: dbColl.TmdbCollectionID,
+		Name:             dbColl.Name,
+		Overview:         dbColl.Overview,
+		PosterPath:       dbColl.PosterPath,
+		BackdropPath:     dbColl.BackdropPath,
+		CreatedAt:        dbColl.CreatedAt,
+		UpdatedAt:        dbColl.UpdatedAt,
+	}
 }
 
 func (r *postgresRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error {
