@@ -22,6 +22,9 @@ packages:
       Repository:
         config:
           mockname: "MockAuthRepository"
+      TokenManager:
+        config:
+          mockname: "MockTokenManager"
 
   github.com/lusoris/revenge/internal/service/user:
     interfaces:
