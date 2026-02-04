@@ -61,7 +61,9 @@ func NewTMDbClient(config TMDbConfig) *TMDbClient {
 func (c *TMDbClient) SearchMovies(ctx context.Context, query string, year *int) (*TMDbSearchResponse, error) {
 	cacheKey := fmt.Sprintf("search:%s:%v", query, year)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbSearchResponse), nil
+		if result, ok := cached.(*TMDbSearchResponse); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -102,7 +104,9 @@ func (c *TMDbClient) SearchMovies(ctx context.Context, query string, year *int) 
 func (c *TMDbClient) GetMovie(ctx context.Context, tmdbID int) (*TMDbMovie, error) {
 	cacheKey := fmt.Sprintf("movie:%d", tmdbID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbMovie), nil
+		if result, ok := cached.(*TMDbMovie); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -134,7 +138,9 @@ func (c *TMDbClient) GetMovie(ctx context.Context, tmdbID int) (*TMDbMovie, erro
 func (c *TMDbClient) GetMovieCredits(ctx context.Context, tmdbID int) (*TMDbCredits, error) {
 	cacheKey := fmt.Sprintf("credits:%d", tmdbID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbCredits), nil
+		if result, ok := cached.(*TMDbCredits); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -166,7 +172,9 @@ func (c *TMDbClient) GetMovieCredits(ctx context.Context, tmdbID int) (*TMDbCred
 func (c *TMDbClient) GetMovieImages(ctx context.Context, tmdbID int) (*TMDbImages, error) {
 	cacheKey := fmt.Sprintf("images:%d", tmdbID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbImages), nil
+		if result, ok := cached.(*TMDbImages); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -198,7 +206,9 @@ func (c *TMDbClient) GetMovieImages(ctx context.Context, tmdbID int) (*TMDbImage
 func (c *TMDbClient) GetCollection(ctx context.Context, collectionID int) (*TMDbCollectionDetails, error) {
 	cacheKey := fmt.Sprintf("collection:%d", collectionID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbCollectionDetails), nil
+		if result, ok := cached.(*TMDbCollectionDetails); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -264,7 +274,9 @@ func (c *TMDbClient) DownloadImage(ctx context.Context, path string, size string
 func (c *TMDbClient) GetSimilarMovies(ctx context.Context, tmdbID int) (*TMDbSearchResponse, error) {
 	cacheKey := fmt.Sprintf("similar:%d", tmdbID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*TMDbSearchResponse), nil
+		if result, ok := cached.(*TMDbSearchResponse); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -295,7 +307,10 @@ func (c *TMDbClient) GetSimilarMovies(ctx context.Context, tmdbID int) (*TMDbSea
 
 func (c *TMDbClient) getFromCache(key string) interface{} {
 	if val, ok := c.cache.Load(key); ok {
-		entry := val.(*CacheEntry)
+		entry, ok := val.(*CacheEntry)
+		if !ok {
+			return nil
+		}
 		if !entry.IsExpired() {
 			return entry.Data
 		}

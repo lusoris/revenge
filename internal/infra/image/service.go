@@ -57,12 +57,6 @@ type Service struct {
 	config   Config
 	logger   *zap.Logger
 	cache    sync.Map // path -> cachedImage
-	cacheMu  sync.RWMutex
-}
-
-type cachedImage struct {
-	path      string
-	fetchedAt time.Time
 }
 
 // NewService creates a new image service.
@@ -252,7 +246,9 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
 
-	w.Write(data)
+	if _, err := w.Write(data); err != nil {
+		s.logger.Error("failed to write image response", zap.Error(err))
+	}
 }
 
 // generateETag creates a stable ETag for an image based on path and size.

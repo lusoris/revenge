@@ -174,7 +174,11 @@ func (s *Service) CreateRole(ctx context.Context, name, description string, perm
 	for _, perm := range permissions {
 		if _, err := s.enforcer.AddPolicy(name, perm.Resource, perm.Action); err != nil {
 			// Rollback on failure
-			s.enforcer.RemoveFilteredPolicy(0, name)
+			if _, rollbackErr := s.enforcer.RemoveFilteredPolicy(0, name); rollbackErr != nil {
+				s.logger.Error("failed to rollback policies during role creation failure",
+					zap.String("role", name),
+					zap.Error(rollbackErr))
+			}
 			return nil, fmt.Errorf("failed to add permission %s: %w", perm.String(), err)
 		}
 	}

@@ -123,7 +123,10 @@ func (rl *RateLimiter) cleanupStale() {
 	cleaned := 0
 
 	rl.limiters.Range(func(key, value any) bool {
-		limiter := value.(*ipLimiter)
+		limiter, ok := value.(*ipLimiter)
+		if !ok {
+			return true
+		}
 		if now.Sub(limiter.lastSeen) > rl.config.TTL {
 			rl.limiters.Delete(key)
 			cleaned++
@@ -143,9 +146,13 @@ func (rl *RateLimiter) getLimiter(ip string) *rate.Limiter {
 	now := time.Now()
 
 	if v, ok := rl.limiters.Load(ip); ok {
-		il := v.(*ipLimiter)
-		il.lastSeen = now
-		return il.limiter
+		il, ok := v.(*ipLimiter)
+		if !ok {
+			// Type assertion failed, create new limiter below
+		} else {
+			il.lastSeen = now
+			return il.limiter
+		}
 	}
 
 	limiter := rate.NewLimiter(rate.Limit(rl.config.RequestsPerSecond), rl.config.Burst)
@@ -156,7 +163,11 @@ func (rl *RateLimiter) getLimiter(ip string) *rate.Limiter {
 
 	// Use LoadOrStore to handle race conditions
 	actual, _ := rl.limiters.LoadOrStore(ip, il)
-	return actual.(*ipLimiter).limiter
+	if actualLimiter, ok := actual.(*ipLimiter); ok {
+		return actualLimiter.limiter
+	}
+	// Fallback to the limiter we just created if type assertion fails
+	return limiter
 }
 
 // shouldLimit checks if the given operation should be rate limited.

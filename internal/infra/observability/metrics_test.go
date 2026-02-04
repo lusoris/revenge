@@ -149,8 +149,7 @@ func TestRecordMetrics(t *testing.T) {
 
 func TestStatusResponseWriter(t *testing.T) {
 	t.Run("default status is 200", func(t *testing.T) {
-		rec := httptest.NewRecorder()
-		wrapped := &statusResponseWriter{ResponseWriter: rec, status: 200}
+		wrapped := &statusResponseWriter{status: 200}
 		assert.Equal(t, 200, wrapped.status)
 	})
 

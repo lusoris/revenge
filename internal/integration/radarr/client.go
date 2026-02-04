@@ -69,7 +69,10 @@ type cacheEntry struct {
 // getFromCache retrieves a value from cache if not expired.
 func (c *Client) getFromCache(key string) any {
 	if entry, ok := c.cache.Load(key); ok {
-		e := entry.(cacheEntry)
+		e, ok := entry.(cacheEntry)
+		if !ok {
+			return nil
+		}
 		if time.Now().Before(e.expiresAt) {
 			return e.data
 		}
@@ -90,7 +93,9 @@ func (c *Client) setCache(key string, data any) {
 func (c *Client) GetSystemStatus(ctx context.Context) (*SystemStatus, error) {
 	cacheKey := "system:status"
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*SystemStatus), nil
+		if result, ok := cached.(*SystemStatus); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -119,7 +124,9 @@ func (c *Client) GetSystemStatus(ctx context.Context) (*SystemStatus, error) {
 func (c *Client) GetAllMovies(ctx context.Context) ([]Movie, error) {
 	cacheKey := "movies:all"
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.([]Movie), nil
+		if result, ok := cached.([]Movie); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -148,7 +155,9 @@ func (c *Client) GetAllMovies(ctx context.Context) ([]Movie, error) {
 func (c *Client) GetMovie(ctx context.Context, movieID int) (*Movie, error) {
 	cacheKey := fmt.Sprintf("movie:%d", movieID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*Movie), nil
+		if result, ok := cached.(*Movie); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -180,7 +189,9 @@ func (c *Client) GetMovie(ctx context.Context, movieID int) (*Movie, error) {
 func (c *Client) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, error) {
 	cacheKey := fmt.Sprintf("movie:tmdb:%d", tmdbID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.(*Movie), nil
+		if result, ok := cached.(*Movie); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -214,7 +225,9 @@ func (c *Client) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, erro
 func (c *Client) GetMovieFiles(ctx context.Context, movieID int) ([]MovieFile, error) {
 	cacheKey := fmt.Sprintf("movie:%d:files", movieID)
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.([]MovieFile), nil
+		if result, ok := cached.([]MovieFile); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -244,7 +257,9 @@ func (c *Client) GetMovieFiles(ctx context.Context, movieID int) ([]MovieFile, e
 func (c *Client) GetQualityProfiles(ctx context.Context) ([]QualityProfile, error) {
 	cacheKey := "qualityprofiles"
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.([]QualityProfile), nil
+		if result, ok := cached.([]QualityProfile); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -273,7 +288,9 @@ func (c *Client) GetQualityProfiles(ctx context.Context) ([]QualityProfile, erro
 func (c *Client) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
 	cacheKey := "rootfolders"
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.([]RootFolder), nil
+		if result, ok := cached.([]RootFolder); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
@@ -302,7 +319,9 @@ func (c *Client) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
 func (c *Client) GetTags(ctx context.Context) ([]Tag, error) {
 	cacheKey := "tags"
 	if cached := c.getFromCache(cacheKey); cached != nil {
-		return cached.([]Tag), nil
+		if result, ok := cached.([]Tag); ok {
+			return result, nil
+		}
 	}
 
 	if err := c.rateLimiter.Wait(ctx); err != nil {
