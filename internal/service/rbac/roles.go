@@ -57,27 +57,12 @@ var BuiltInRoles = map[string]string{
 }
 
 // AvailableResources defines all available resources in the system.
-var AvailableResources = []string{
-	"users",
-	"profile",
-	"library",
-	"movies",
-	"playback",
-	"requests",
-	"settings",
-	"audit",
-	"integrations",
-	"notifications",
-}
+// Uses FineGrainedResources from permissions.go for consistency.
+var AvailableResources = FineGrainedResources
 
 // AvailableActions defines all available actions.
-var AvailableActions = []string{
-	"read",
-	"write",
-	"delete",
-	"manage",
-	"*",
-}
+// Uses FineGrainedActions from permissions.go for consistency.
+var AvailableActions = FineGrainedActions
 
 // ListRoles returns all roles with their permissions.
 func (s *Service) ListRoles(ctx context.Context) ([]Role, error) {
