@@ -68,13 +68,21 @@ func (m *MFAManager) GetStatus(ctx context.Context, userID uuid.UUID) (*MFAStatu
 		}, nil
 	}
 
+	// Get remember device setting from MFA settings
+	rememberDeviceEnabled := false
+	settings, err := m.queries.GetUserMFASettings(ctx, userID)
+	if err == nil {
+		rememberDeviceEnabled = settings.RememberDeviceEnabled
+	}
+	// If settings don't exist, rememberDeviceEnabled stays false (default)
+
 	return &MFAStatus{
 		UserID:                userID,
 		HasTOTP:               status.HasTotp,
 		WebAuthnCount:         status.WebauthnCount,
 		UnusedBackupCodes:     status.UnusedBackupCodes,
 		RequireMFA:            status.RequireMfa,
-		RememberDeviceEnabled: false, // TODO: Get from user_mfa_settings
+		RememberDeviceEnabled: rememberDeviceEnabled,
 	}, nil
 }
 
@@ -158,6 +166,60 @@ func (m *MFAManager) DisableMFA(ctx context.Context, userID uuid.UUID) error {
 
 	m.logger.Info("mfa disabled", zap.String("user_id", userID.String()))
 	return nil
+}
+
+// SetRememberDevice enables or disables the remember device feature for a user.
+// When enabled, users can skip MFA verification on trusted devices for the specified duration.
+func (m *MFAManager) SetRememberDevice(ctx context.Context, userID uuid.UUID, enabled bool, durationDays int32) error {
+	// Ensure MFA settings exist first
+	_, err := m.queries.GetUserMFASettings(ctx, userID)
+	if err != nil {
+		// Create settings if they don't exist
+		_, err = m.queries.CreateUserMFASettings(ctx, db.CreateUserMFASettingsParams{
+			UserID:                     userID,
+			TotpEnabled:                false,
+			WebauthnEnabled:            false,
+			BackupCodesGenerated:       false,
+			RequireMfa:                 false,
+			RememberDeviceEnabled:      enabled,
+			RememberDeviceDurationDays: durationDays,
+			TrustedDevices:             []byte("[]"),
+		})
+		if err != nil {
+			return fmt.Errorf("failed to create mfa settings: %w", err)
+		}
+		m.logger.Info("mfa settings created with remember device",
+			zap.String("user_id", userID.String()),
+			zap.Bool("enabled", enabled),
+			zap.Int32("duration_days", durationDays))
+		return nil
+	}
+
+	// Update existing settings
+	err = m.queries.UpdateMFASettingsRememberDevice(ctx, db.UpdateMFASettingsRememberDeviceParams{
+		UserID:                     userID,
+		RememberDeviceEnabled:      enabled,
+		RememberDeviceDurationDays: durationDays,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to update remember device setting: %w", err)
+	}
+
+	m.logger.Info("remember device setting updated",
+		zap.String("user_id", userID.String()),
+		zap.Bool("enabled", enabled),
+		zap.Int32("duration_days", durationDays))
+	return nil
+}
+
+// GetRememberDeviceSettings returns the remember device settings for a user.
+func (m *MFAManager) GetRememberDeviceSettings(ctx context.Context, userID uuid.UUID) (enabled bool, durationDays int32, err error) {
+	settings, err := m.queries.GetUserMFASettings(ctx, userID)
+	if err != nil {
+		// No settings exist, return defaults
+		return false, 30, nil
+	}
+	return settings.RememberDeviceEnabled, settings.RememberDeviceDurationDays, nil
 }
 
 // VerifyMethod represents which MFA method was used for verification.

@@ -187,3 +187,36 @@ webauthnService.DeleteRegistrationSession(ctx, userID)
 // 6. Return access_token + refresh_token
 ```
 
+
+## A0.8: MFA Remember Device Setting [P2] - COMPLETED
+
+**Status**: Fixed
+**Date**: 2026-02-04
+
+### Changes Made:
+1. Fixed `GetStatus()` in `internal/service/mfa/manager.go`:
+   - Now properly fetches `remember_device_enabled` from `user_mfa_settings` table
+   - Removed TODO comment, implemented actual fetch
+
+2. Added new methods to `MFAManager`:
+   - `SetRememberDevice(ctx, userID, enabled, durationDays)` - enable/disable remember device
+   - `GetRememberDeviceSettings(ctx, userID)` - get remember device settings
+   - Both methods handle case when MFA settings don't exist (creates them)
+
+### Database:
+- Uses existing `UpdateMFASettingsRememberDevice` query
+- Uses existing `GetUserMFASettings` query
+- Settings created with defaults if they don't exist
+
+### Usage:
+```go
+// Enable remember device for 30 days
+err := mfaManager.SetRememberDevice(ctx, userID, true, 30)
+
+// Disable remember device
+err := mfaManager.SetRememberDevice(ctx, userID, false, 0)
+
+// Get current settings
+enabled, days, err := mfaManager.GetRememberDeviceSettings(ctx, userID)
+```
+
