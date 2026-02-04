@@ -8,36 +8,42 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestDefaultQueueConfig tests the default queue configuration.
+// TestDefaultQueueConfig tests the default queue configuration with 5 priority levels.
 func TestDefaultQueueConfig(t *testing.T) {
 	cfg := DefaultQueueConfig()
 
 	assert.NotNil(t, cfg)
 	assert.NotNil(t, cfg.Queues)
-	assert.Len(t, cfg.Queues, 4)
+	assert.Len(t, cfg.Queues, 5)
 
-	// Critical queue
+	// Critical queue - highest priority, most workers
 	assert.Contains(t, cfg.Queues, QueueCritical)
 	assert.Equal(t, 20, cfg.Queues[QueueCritical].MaxWorkers)
 
-	// Default queue
+	// High queue - notifications, user actions
+	assert.Contains(t, cfg.Queues, QueueHigh)
+	assert.Equal(t, 15, cfg.Queues[QueueHigh].MaxWorkers)
+
+	// Default queue - general tasks
 	assert.Contains(t, cfg.Queues, QueueDefault)
 	assert.Equal(t, 10, cfg.Queues[QueueDefault].MaxWorkers)
 
-	// Low priority queue
+	// Low priority queue - maintenance
 	assert.Contains(t, cfg.Queues, QueueLow)
 	assert.Equal(t, 5, cfg.Queues[QueueLow].MaxWorkers)
 
-	// Notifications queue
-	assert.Contains(t, cfg.Queues, QueueNotifications)
-	assert.Equal(t, 5, cfg.Queues[QueueNotifications].MaxWorkers)
+	// Bulk queue - batch operations, fewest workers
+	assert.Contains(t, cfg.Queues, QueueBulk)
+	assert.Equal(t, 3, cfg.Queues[QueueBulk].MaxWorkers)
 }
 
 // TestQueueConstants tests queue name constants.
 func TestQueueConstants(t *testing.T) {
 	assert.Equal(t, "critical", QueueCritical)
+	assert.Equal(t, "high", QueueHigh)
 	assert.Equal(t, river.QueueDefault, QueueDefault)
 	assert.Equal(t, "low", QueueLow)
+	assert.Equal(t, "bulk", QueueBulk)
 }
 
 // TestDefaultRetryPolicy tests the default retry policy.
@@ -101,23 +107,35 @@ func TestLinearBackoff(t *testing.T) {
 	}
 }
 
-// TestQueuePriority tests queue priority mapping.
+// TestQueuePriority tests queue priority mapping with 5 levels.
 func TestQueuePriority(t *testing.T) {
 	tests := []struct {
 		name     string
 		priority int
 		expected string
 	}{
-		{"critical priority 10", 10, QueueCritical},
-		{"critical priority 15", 15, QueueCritical},
+		// Critical: >= 20
+		{"critical priority 20", 20, QueueCritical},
+		{"critical priority 25", 25, QueueCritical},
 		{"critical priority 100", 100, QueueCritical},
+		// High: >= 10
+		{"high priority 10", 10, QueueHigh},
+		{"high priority 15", 15, QueueHigh},
+		{"high priority 19", 19, QueueHigh},
+		// Default: >= -9
 		{"default priority 0", 0, QueueDefault},
 		{"default priority 5", 5, QueueDefault},
-		{"default priority -5", -5, QueueDefault},
 		{"default priority 9", 9, QueueDefault},
+		{"default priority -5", -5, QueueDefault},
+		{"default priority -9", -9, QueueDefault},
+		// Low: >= -19
 		{"low priority -10", -10, QueueLow},
 		{"low priority -15", -15, QueueLow},
-		{"low priority -100", -100, QueueLow},
+		{"low priority -19", -19, QueueLow},
+		// Bulk: < -19
+		{"bulk priority -20", -20, QueueBulk},
+		{"bulk priority -50", -50, QueueBulk},
+		{"bulk priority -100", -100, QueueBulk},
 	}
 
 	for _, tt := range tests {

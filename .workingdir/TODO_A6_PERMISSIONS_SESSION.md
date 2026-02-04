@@ -54,31 +54,24 @@ Sessions now use Dragonfly/Redis L1 cache for performance.
 
 ---
 
-## A6.3: 5-Level River Queue Priorities
+## A6.3: 5-Level River Queue Priorities ✅
 
-**Priority**: MEDIUM | **Effort**: 2-3h
+**Priority**: MEDIUM | **Effort**: 2-3h | **Actual**: 0.5h
+**Status**: COMPLETED (2026-02-04)
 
-Currently using 3 priorities. Expand to 5 for better job management.
+Expanded from 4 queues to 5-level priority system.
 
-**Tasks**:
-- [ ] Update `internal/infra/jobs/queues.go`:
-  ```go
-  const (
-      QueueCritical = "critical"  // Security events, auth failures
-      QueueHigh     = "high"      // User actions, notifications
-      QueueDefault  = "default"   // Metadata fetching, sync
-      QueueLow      = "low"       // Cleanup, maintenance
-      QueueBulk     = "bulk"      // Library scans, batch ops
-  )
-  ```
-- [ ] Assign existing jobs to appropriate queues:
-  - `critical`: Auth audit events
-  - `high`: Notification dispatch, webhook processing
-  - `default`: Metadata refresh, Radarr sync
-  - `low`: Session cleanup, expired token cleanup
-  - `bulk`: Library scan, search reindex
-- [ ] Update River config with priority weights
-- [ ] Tests for queue assignment
+**Completed Tasks**:
+- [x] Update `internal/infra/jobs/queues.go`:
+  - QueueCritical: Security events, auth failures (20 workers)
+  - QueueHigh: Notifications, webhooks, user actions (15 workers)
+  - QueueDefault: Metadata fetching, sync (10 workers)
+  - QueueLow: Cleanup, maintenance (5 workers)
+  - QueueBulk: Library scans, batch ops (3 workers)
+- [x] Updated QueuePriority() function with 5-level thresholds
+- [x] Notification jobs now use QueueHigh instead of removed QueueNotifications
+- [x] Updated River config with worker allocation by priority
+- [x] Tests for queue assignment updated
 
 ---
 

@@ -7,12 +7,28 @@ import (
 	"github.com/riverqueue/river"
 )
 
-// Queue names for different priority levels.
+// Queue names for different priority levels (5-level system).
+// Higher priority queues are processed before lower priority ones.
 const (
-	QueueCritical      = "critical"
-	QueueDefault       = river.QueueDefault
-	QueueLow           = "low"
-	QueueNotifications = "notifications"
+	// QueueCritical handles security events, auth failures, urgent system tasks.
+	// Highest priority - always processed first.
+	QueueCritical = "critical"
+
+	// QueueHigh handles user-initiated actions, notifications, webhooks.
+	// High priority for responsive user experience.
+	QueueHigh = "high"
+
+	// QueueDefault handles metadata fetching, sync operations, general tasks.
+	// Standard priority for most background work.
+	QueueDefault = river.QueueDefault
+
+	// QueueLow handles cleanup, maintenance, session pruning, expired token cleanup.
+	// Low priority tasks that can wait.
+	QueueLow = "low"
+
+	// QueueBulk handles library scans, batch operations, search reindexing.
+	// Lowest priority for resource-intensive batch operations.
+	QueueBulk = "bulk"
 )
 
 // QueueConfig holds configuration for all queues.
@@ -20,14 +36,16 @@ type QueueConfig struct {
 	Queues map[string]river.QueueConfig
 }
 
-// DefaultQueueConfig returns the default queue configuration.
+// DefaultQueueConfig returns the default queue configuration with 5 priority levels.
+// Worker allocation reflects priority: critical gets most workers, bulk gets fewest.
 func DefaultQueueConfig() *QueueConfig {
 	return &QueueConfig{
 		Queues: map[string]river.QueueConfig{
-			QueueCritical:      {MaxWorkers: 20},
-			QueueDefault:       {MaxWorkers: 10},
-			QueueLow:           {MaxWorkers: 5},
-			QueueNotifications: {MaxWorkers: 5},
+			QueueCritical: {MaxWorkers: 20}, // Security events, auth failures
+			QueueHigh:     {MaxWorkers: 15}, // Notifications, webhooks, user actions
+			QueueDefault:  {MaxWorkers: 10}, // Metadata fetch, sync operations
+			QueueLow:      {MaxWorkers: 5},  // Cleanup, maintenance
+			QueueBulk:     {MaxWorkers: 3},  // Library scans, batch operations
 		},
 	}
 }
@@ -92,13 +110,24 @@ func LinearBackoff(attempt int) time.Duration {
 }
 
 // QueuePriority returns the queue name for a given priority level.
+// Priority mapping:
+//
+//	priority >= 20: critical (security, urgent)
+//	priority >= 10: high (user actions, notifications)
+//	priority >= -9: default (general tasks)
+//	priority >= -19: low (maintenance)
+//	priority < -19: bulk (batch operations)
 func QueuePriority(priority int) string {
 	switch {
-	case priority >= 10:
+	case priority >= 20:
 		return QueueCritical
-	case priority <= -10:
+	case priority >= 10:
+		return QueueHigh
+	case priority >= -9:
+		return QueueDefault
+	case priority >= -19:
 		return QueueLow
 	default:
-		return QueueDefault
+		return QueueBulk
 	}
 }

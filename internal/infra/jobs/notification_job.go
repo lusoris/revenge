@@ -50,9 +50,10 @@ func (NotificationArgs) Kind() string {
 }
 
 // InsertOpts returns the default insert options for notification jobs.
+// Notifications use QueueHigh for responsive user experience.
 func (NotificationArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue:    QueueNotifications,
+		Queue:       QueueHigh,
 		MaxAttempts: 5,
 	}
 }
