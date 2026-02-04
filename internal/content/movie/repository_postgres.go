@@ -133,55 +133,348 @@ func pgNumericToDecimalPtr(n pgtype.Numeric) *decimal.Decimal {
 	return &d
 }
 
+// stringToPgDate converts a string date (YYYY-MM-DD) to pgtype.Date
+func stringToPgDate(s *string) pgtype.Date {
+	if s == nil || *s == "" {
+		return pgtype.Date{Valid: false}
+	}
+	t, err := time.Parse("2006-01-02", *s)
+	if err != nil {
+		return pgtype.Date{Valid: false}
+	}
+	return pgtype.Date{Time: t, Valid: true}
+}
+
+// stringToPgNumeric converts a string number to pgtype.Numeric
+func stringToPgNumeric(s *string) pgtype.Numeric {
+	if s == nil || *s == "" {
+		return pgtype.Numeric{Valid: false}
+	}
+	var n pgtype.Numeric
+	if err := n.Scan(*s); err != nil {
+		return pgtype.Numeric{Valid: false}
+	}
+	return n
+}
+
+// stringToPgTimestamptz converts a string timestamp to pgtype.Timestamptz
+func stringToPgTimestamptz(s *string) pgtype.Timestamptz {
+	if s == nil || *s == "" {
+		return pgtype.Timestamptz{Valid: false}
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return pgtype.Timestamptz{Valid: false}
+	}
+	return pgtype.Timestamptz{Time: t, Valid: true}
+}
+
+// dbWatchedToWatched converts a database movie watched to a domain movie watched
+func dbWatchedToWatched(dbWatched moviedb.MovieWatched) *MovieWatched {
+	return &MovieWatched{
+		ID:              dbWatched.ID,
+		UserID:          dbWatched.UserID,
+		MovieID:         dbWatched.MovieID,
+		ProgressSeconds: dbWatched.ProgressSeconds,
+		DurationSeconds: derefInt32(dbWatched.DurationSeconds),
+		ProgressPercent: pgNumericToInt32Ptr(dbWatched.ProgressPercent),
+		IsCompleted:     derefBool(dbWatched.IsCompleted),
+		WatchCount:      derefInt32(dbWatched.WatchCount),
+		LastWatchedAt:   dbWatched.LastWatchedAt,
+		CreatedAt:       dbWatched.CreatedAt,
+		UpdatedAt:       dbWatched.UpdatedAt,
+	}
+}
+
+// dbContinueWatchingRowToMovie converts a ListContinueWatchingRow to a domain Movie
+func dbContinueWatchingRowToMovie(row moviedb.ListContinueWatchingRow) *Movie {
+	return &Movie{
+		ID:                row.ID,
+		TMDbID:            row.TmdbID,
+		IMDbID:            row.ImdbID,
+		Title:             row.Title,
+		OriginalTitle:     row.OriginalTitle,
+		Year:              row.Year,
+		ReleaseDate:       pgDateToTimePtr(row.ReleaseDate),
+		Runtime:           row.Runtime,
+		Overview:          row.Overview,
+		Tagline:           row.Tagline,
+		Status:            row.Status,
+		OriginalLanguage:  row.OriginalLanguage,
+		PosterPath:        row.PosterPath,
+		BackdropPath:      row.BackdropPath,
+		TrailerURL:        row.TrailerUrl,
+		VoteAverage:       pgNumericToDecimalPtr(row.VoteAverage),
+		VoteCount:         row.VoteCount,
+		Popularity:        pgNumericToDecimalPtr(row.Popularity),
+		Budget:            row.Budget,
+		Revenue:           row.Revenue,
+		LibraryAddedAt:    row.LibraryAddedAt,
+		MetadataUpdatedAt: pgTimestamptzToTimePtr(row.MetadataUpdatedAt),
+		RadarrID:          row.RadarrID,
+		CreatedAt:         row.CreatedAt,
+		UpdatedAt:         row.UpdatedAt,
+	}
+}
+
+// dbWatchedMovieRowToMovie converts a ListWatchedMoviesRow to a domain Movie
+func dbWatchedMovieRowToMovie(row moviedb.ListWatchedMoviesRow) *Movie {
+	return &Movie{
+		ID:                row.ID,
+		TMDbID:            row.TmdbID,
+		IMDbID:            row.ImdbID,
+		Title:             row.Title,
+		OriginalTitle:     row.OriginalTitle,
+		Year:              row.Year,
+		ReleaseDate:       pgDateToTimePtr(row.ReleaseDate),
+		Runtime:           row.Runtime,
+		Overview:          row.Overview,
+		Tagline:           row.Tagline,
+		Status:            row.Status,
+		OriginalLanguage:  row.OriginalLanguage,
+		PosterPath:        row.PosterPath,
+		BackdropPath:      row.BackdropPath,
+		TrailerURL:        row.TrailerUrl,
+		VoteAverage:       pgNumericToDecimalPtr(row.VoteAverage),
+		VoteCount:         row.VoteCount,
+		Popularity:        pgNumericToDecimalPtr(row.Popularity),
+		Budget:            row.Budget,
+		Revenue:           row.Revenue,
+		LibraryAddedAt:    row.LibraryAddedAt,
+		MetadataUpdatedAt: pgTimestamptzToTimePtr(row.MetadataUpdatedAt),
+		RadarrID:          row.RadarrID,
+		CreatedAt:         row.CreatedAt,
+		UpdatedAt:         row.UpdatedAt,
+	}
+}
+
+// pgNumericToInt32Ptr converts pgtype.Numeric to *int32
+func pgNumericToInt32Ptr(n pgtype.Numeric) *int32 {
+	if !n.Valid {
+		return nil
+	}
+	// Convert to int64 first
+	i64, err := n.Int64Value()
+	if err != nil || !i64.Valid {
+		return nil
+	}
+	i32 := int32(i64.Int64)
+	return &i32
+}
+
+// derefInt32 safely dereferences *int32, returning 0 if nil
+func derefInt32(p *int32) int32 {
+	if p == nil {
+		return 0
+	}
+	return *p
+}
+
+// derefBool safely dereferences *bool, returning false if nil
+func derefBool(p *bool) bool {
+	if p == nil {
+		return false
+	}
+	return *p
+}
+
 // Placeholder implementations for remaining methods
 // TODO: Implement all repository methods
 
 func (r *postgresRepository) ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListMovies(ctx, moviedb.ListMoviesParams{
+		Limit:   filters.Limit,
+		Offset:  filters.Offset,
+		OrderBy: &filters.OrderBy,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movies: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) CountMovies(ctx context.Context) (int64, error) {
-	return 0, fmt.Errorf("not implemented")
+	return r.queries.CountMovies(ctx)
 }
 
 func (r *postgresRepository) SearchMoviesByTitle(ctx context.Context, query string, limit, offset int32) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.SearchMoviesByTitle(ctx, moviedb.SearchMoviesByTitleParams{
+		Title:  query,
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to search movies: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) ListMoviesByYear(ctx context.Context, year int32, limit, offset int32) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListMoviesByYear(ctx, moviedb.ListMoviesByYearParams{
+		Year:   &year,
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movies by year: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListRecentlyAdded(ctx, moviedb.ListRecentlyAddedParams{
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list recently added movies: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListTopRated(ctx, moviedb.ListTopRatedParams{
+		VoteCount: &minVotes,
+		Limit:     limit,
+		Offset:    offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list top rated movies: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbParams := moviedb.CreateMovieParams{
+		TmdbID:           params.TMDbID,
+		ImdbID:           params.IMDbID,
+		Title:            params.Title,
+		OriginalTitle:    params.OriginalTitle,
+		Year:             params.Year,
+		ReleaseDate:      stringToPgDate(params.ReleaseDate),
+		Runtime:          params.Runtime,
+		Overview:         params.Overview,
+		Tagline:          params.Tagline,
+		Status:           params.Status,
+		OriginalLanguage: params.OriginalLanguage,
+		PosterPath:       params.PosterPath,
+		BackdropPath:     params.BackdropPath,
+		TrailerUrl:       params.TrailerURL,
+		VoteAverage:      stringToPgNumeric(params.VoteAverage),
+		VoteCount:        params.VoteCount,
+		Popularity:       stringToPgNumeric(params.Popularity),
+		Budget:           params.Budget,
+		Revenue:          params.Revenue,
+		RadarrID:         params.RadarrID,
+		MetadataUpdatedAt: stringToPgTimestamptz(params.MetadataUpdatedAt),
+	}
+	movie, err := r.queries.CreateMovie(ctx, dbParams)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create movie: %w", err)
+	}
+	return dbMovieToMovie(movie), nil
 }
 
 func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbParams := moviedb.UpdateMovieParams{
+		ID:                params.ID,
+		TmdbID:            params.TMDbID,
+		ImdbID:            params.IMDbID,
+		Title:             params.Title,
+		OriginalTitle:     params.OriginalTitle,
+		Year:              params.Year,
+		ReleaseDate:       stringToPgDate(params.ReleaseDate),
+		Runtime:           params.Runtime,
+		Overview:          params.Overview,
+		Tagline:           params.Tagline,
+		Status:            params.Status,
+		OriginalLanguage:  params.OriginalLanguage,
+		PosterPath:        params.PosterPath,
+		BackdropPath:      params.BackdropPath,
+		TrailerUrl:        params.TrailerURL,
+		VoteAverage:       stringToPgNumeric(params.VoteAverage),
+		VoteCount:         params.VoteCount,
+		Popularity:        stringToPgNumeric(params.Popularity),
+		Budget:            params.Budget,
+		Revenue:           params.Revenue,
+		RadarrID:          params.RadarrID,
+		MetadataUpdatedAt: stringToPgTimestamptz(params.MetadataUpdatedAt),
+	}
+	movie, err := r.queries.UpdateMovie(ctx, dbParams)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("movie not found: %w", err)
+		}
+		return nil, fmt.Errorf("failed to update movie: %w", err)
+	}
+	return dbMovieToMovie(movie), nil
 }
 
 func (r *postgresRepository) DeleteMovie(ctx context.Context, id uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.DeleteMovie(ctx, id)
 }
 
 func (r *postgresRepository) CreateMovieFile(ctx context.Context, params CreateMovieFileParams) (*MovieFile, error) {
-	return nil, fmt.Errorf("not implemented")
+	file, err := r.queries.CreateMovieFile(ctx, moviedb.CreateMovieFileParams{
+		MovieID:           params.MovieID,
+		FilePath:          params.FilePath,
+		FileSize:          params.FileSize,
+		Resolution:        params.Resolution,
+		QualityProfile:    params.QualityProfile,
+		VideoCodec:        params.VideoCodec,
+		AudioCodec:        params.AudioCodec,
+		Container:         params.Container,
+		BitrateKbps:       params.BitrateKbps,
+		AudioLanguages:    params.AudioLanguages,
+		SubtitleLanguages: params.SubtitleLanguages,
+		RadarrFileID:      params.RadarrFileID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create movie file: %w", err)
+	}
+	return dbMovieFileToMovieFile(file), nil
 }
 
 func (r *postgresRepository) GetMovieFile(ctx context.Context, id uuid.UUID) (*MovieFile, error) {
-	return nil, fmt.Errorf("not implemented")
+	file, err := r.queries.GetMovieFile(ctx, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrMovieFileNotFound
+		}
+		return nil, fmt.Errorf("failed to get movie file: %w", err)
+	}
+	return dbMovieFileToMovieFile(file), nil
 }
 
 func (r *postgresRepository) GetMovieFileByPath(ctx context.Context, path string) (*MovieFile, error) {
-	return nil, fmt.Errorf("not implemented")
+	file, err := r.queries.GetMovieFileByPath(ctx, path)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrMovieFileNotFound
+		}
+		return nil, fmt.Errorf("failed to get movie file by path: %w", err)
+	}
+	return dbMovieFileToMovieFile(file), nil
 }
 
 func (r *postgresRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error) {
@@ -196,31 +489,89 @@ func (r *postgresRepository) GetMovieFileByRadarrID(ctx context.Context, radarrF
 }
 
 func (r *postgresRepository) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbFiles, err := r.queries.ListMovieFilesByMovieID(ctx, movieID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movie files: %w", err)
+	}
+	files := make([]MovieFile, len(dbFiles))
+	for i, f := range dbFiles {
+		files[i] = *dbMovieFileToMovieFile(f)
+	}
+	return files, nil
 }
 
 func (r *postgresRepository) UpdateMovieFile(ctx context.Context, params UpdateMovieFileParams) (*MovieFile, error) {
-	return nil, fmt.Errorf("not implemented")
+	file, err := r.queries.UpdateMovieFile(ctx, moviedb.UpdateMovieFileParams{
+		ID:                params.ID,
+		FilePath:          params.FilePath,
+		FileSize:          params.FileSize,
+		Resolution:        params.Resolution,
+		QualityProfile:    params.QualityProfile,
+		VideoCodec:        params.VideoCodec,
+		AudioCodec:        params.AudioCodec,
+		Container:         params.Container,
+		BitrateKbps:       params.BitrateKbps,
+		AudioLanguages:    params.AudioLanguages,
+		SubtitleLanguages: params.SubtitleLanguages,
+		RadarrFileID:      params.RadarrFileID,
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrMovieFileNotFound
+		}
+		return nil, fmt.Errorf("failed to update movie file: %w", err)
+	}
+	return dbMovieFileToMovieFile(file), nil
 }
 
 func (r *postgresRepository) DeleteMovieFile(ctx context.Context, id uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.DeleteMovieFile(ctx, id)
 }
 
 func (r *postgresRepository) CreateMovieCredit(ctx context.Context, params CreateMovieCreditParams) (*MovieCredit, error) {
-	return nil, fmt.Errorf("not implemented")
+	credit, err := r.queries.CreateMovieCredit(ctx, moviedb.CreateMovieCreditParams{
+		MovieID:      params.MovieID,
+		TmdbPersonID: params.TMDbPersonID,
+		Name:         params.Name,
+		CreditType:   params.CreditType,
+		Character:    params.Character,
+		Job:          params.Job,
+		Department:   params.Department,
+		CastOrder:    params.CastOrder,
+		ProfilePath:  params.ProfilePath,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create movie credit: %w", err)
+	}
+	return dbCreditToCredit(credit), nil
 }
 
 func (r *postgresRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbCredits, err := r.queries.ListMovieCast(ctx, movieID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movie cast: %w", err)
+	}
+	credits := make([]MovieCredit, len(dbCredits))
+	for i, c := range dbCredits {
+		credits[i] = *dbCreditToCredit(c)
+	}
+	return credits, nil
 }
 
 func (r *postgresRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbCredits, err := r.queries.ListMovieCrew(ctx, movieID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movie crew: %w", err)
+	}
+	credits := make([]MovieCredit, len(dbCredits))
+	for i, c := range dbCredits {
+		credits[i] = *dbCreditToCredit(c)
+	}
+	return credits, nil
 }
 
 func (r *postgresRepository) DeleteMovieCredits(ctx context.Context, movieID uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.DeleteMovieCredits(ctx, movieID)
 }
 
 func (r *postgresRepository) CreateMovieCollection(ctx context.Context, params CreateMovieCollectionParams) (*MovieCollection, error) {
@@ -329,6 +680,35 @@ func dbCollectionToCollection(dbColl moviedb.MovieCollection) *MovieCollection {
 	}
 }
 
+// dbCreditToCredit converts a database movie credit to a domain movie credit
+func dbCreditToCredit(dbCredit moviedb.MovieCredit) *MovieCredit {
+	return &MovieCredit{
+		ID:           dbCredit.ID,
+		MovieID:      dbCredit.MovieID,
+		TMDbPersonID: dbCredit.TmdbPersonID,
+		Name:         dbCredit.Name,
+		CreditType:   dbCredit.CreditType,
+		Character:    dbCredit.Character,
+		Job:          dbCredit.Job,
+		Department:   dbCredit.Department,
+		CastOrder:    dbCredit.CastOrder,
+		ProfilePath:  dbCredit.ProfilePath,
+		CreatedAt:    dbCredit.CreatedAt,
+		UpdatedAt:    dbCredit.UpdatedAt,
+	}
+}
+
+// dbGenreToGenre converts a database movie genre to a domain movie genre
+func dbGenreToGenre(dbGenre moviedb.MovieGenre) *MovieGenre {
+	return &MovieGenre{
+		ID:          dbGenre.ID,
+		MovieID:     dbGenre.MovieID,
+		TMDbGenreID: dbGenre.TmdbGenreID,
+		Name:        dbGenre.Name,
+		CreatedAt:   dbGenre.CreatedAt,
+	}
+}
+
 // dbMovieFileToMovieFile converts a database movie file to a domain movie file
 func dbMovieFileToMovieFile(dbFile moviedb.MovieFile) *MovieFile {
 	return &MovieFile{
@@ -351,41 +731,129 @@ func dbMovieFileToMovieFile(dbFile moviedb.MovieFile) *MovieFile {
 }
 
 func (r *postgresRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.AddMovieGenre(ctx, moviedb.AddMovieGenreParams{
+		MovieID:     movieID,
+		TmdbGenreID: tmdbGenreID,
+		Name:        name,
+	})
 }
 
 func (r *postgresRepository) ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbGenres, err := r.queries.ListMovieGenres(ctx, movieID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movie genres: %w", err)
+	}
+	genres := make([]MovieGenre, len(dbGenres))
+	for i, g := range dbGenres {
+		genres[i] = *dbGenreToGenre(g)
+	}
+	return genres, nil
 }
 
 func (r *postgresRepository) DeleteMovieGenres(ctx context.Context, movieID uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.DeleteMovieGenres(ctx, movieID)
 }
 
 func (r *postgresRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
-	return nil, fmt.Errorf("not implemented")
+	dbMovies, err := r.queries.ListMoviesByGenre(ctx, moviedb.ListMoviesByGenreParams{
+		TmdbGenreID: tmdbGenreID,
+		Limit:       limit,
+		Offset:      offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list movies by genre: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
 }
 
 func (r *postgresRepository) CreateOrUpdateWatchProgress(ctx context.Context, params CreateWatchProgressParams) (*MovieWatched, error) {
-	return nil, fmt.Errorf("not implemented")
+	watched, err := r.queries.CreateOrUpdateWatchProgress(ctx, moviedb.CreateOrUpdateWatchProgressParams{
+		UserID:          params.UserID,
+		MovieID:         params.MovieID,
+		ProgressSeconds: params.ProgressSeconds,
+		DurationSeconds: &params.DurationSeconds,
+		IsCompleted:     &params.IsCompleted,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create/update watch progress: %w", err)
+	}
+	return dbWatchedToWatched(watched), nil
 }
 
 func (r *postgresRepository) GetWatchProgress(ctx context.Context, userID, movieID uuid.UUID) (*MovieWatched, error) {
-	return nil, fmt.Errorf("not implemented")
+	watched, err := r.queries.GetWatchProgress(ctx, moviedb.GetWatchProgressParams{
+		UserID:  userID,
+		MovieID: movieID,
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrProgressNotFound
+		}
+		return nil, fmt.Errorf("failed to get watch progress: %w", err)
+	}
+	return dbWatchedToWatched(watched), nil
 }
 
 func (r *postgresRepository) DeleteWatchProgress(ctx context.Context, userID, movieID uuid.UUID) error {
-	return fmt.Errorf("not implemented")
+	return r.queries.DeleteWatchProgress(ctx, moviedb.DeleteWatchProgressParams{
+		UserID:  userID,
+		MovieID: movieID,
+	})
 }
 
 func (r *postgresRepository) ListContinueWatching(ctx context.Context, userID uuid.UUID, limit int32) ([]ContinueWatchingItem, error) {
-	return nil, fmt.Errorf("not implemented")
+	rows, err := r.queries.ListContinueWatching(ctx, moviedb.ListContinueWatchingParams{
+		UserID: userID,
+		Limit:  limit,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list continue watching: %w", err)
+	}
+	items := make([]ContinueWatchingItem, len(rows))
+	for i, row := range rows {
+		items[i] = ContinueWatchingItem{
+			Movie:           *dbContinueWatchingRowToMovie(row),
+			ProgressSeconds: row.ProgressSeconds,
+			DurationSeconds: derefInt32(row.DurationSeconds),
+			ProgressPercent: pgNumericToInt32Ptr(row.ProgressPercent),
+			LastWatchedAt:   row.LastWatchedAt,
+		}
+	}
+	return items, nil
 }
 
 func (r *postgresRepository) ListWatchedMovies(ctx context.Context, userID uuid.UUID, limit, offset int32) ([]WatchedMovieItem, error) {
-	return nil, fmt.Errorf("not implemented")
+	rows, err := r.queries.ListWatchedMovies(ctx, moviedb.ListWatchedMoviesParams{
+		UserID: userID,
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list watched movies: %w", err)
+	}
+	items := make([]WatchedMovieItem, len(rows))
+	for i, row := range rows {
+		items[i] = WatchedMovieItem{
+			Movie:         *dbWatchedMovieRowToMovie(row),
+			WatchCount:    derefInt32(row.WatchCount),
+			LastWatchedAt: row.LastWatchedAt,
+		}
+	}
+	return items, nil
 }
 
 func (r *postgresRepository) GetUserMovieStats(ctx context.Context, userID uuid.UUID) (*UserMovieStats, error) {
-	return nil, fmt.Errorf("not implemented")
+	stats, err := r.queries.GetUserMovieStats(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user movie stats: %w", err)
+	}
+	return &UserMovieStats{
+		WatchedCount:    stats.WatchedCount,
+		InProgressCount: stats.InProgressCount,
+		TotalWatches:    &stats.TotalWatches,
+	}, nil
 }
