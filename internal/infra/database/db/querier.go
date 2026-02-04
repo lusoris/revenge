@@ -257,6 +257,7 @@ type Querier interface {
 	// Combined Status Queries
 	// ============================================================================
 	// Get comprehensive MFA status for a user
+	// Note: COALESCE is used for require_mfa to handle the case when user_mfa_settings doesn't exist
 	GetUserMFAStatus(ctx context.Context, userID uuid.UUID) (GetUserMFAStatusRow, error)
 	// ============================================================================
 	// User Preferences Queries

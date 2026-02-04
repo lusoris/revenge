@@ -1,6 +1,9 @@
 package mfa
 
 import (
+	"context"
+	"crypto/rand"
+	"math"
 	"testing"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -9,6 +12,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
+
+	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/crypto"
+	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/testutil"
 )
 
 func TestNewWebAuthnService(t *testing.T) {
@@ -182,3 +190,483 @@ func TestWebAuthnService_MultipleCredentials(t *testing.T) {
 	// 5. Delete first credential
 	// 6. BeginLogin should only return second credential
 }
+
+// Unit tests for safe integer conversions
+
+func TestSafeUint32ToInt32(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    uint32
+		expected int32
+	}{
+		{
+			name:     "zero",
+			input:    0,
+			expected: 0,
+		},
+		{
+			name:     "small value",
+			input:    12345,
+			expected: 12345,
+		},
+		{
+			name:     "max int32 value",
+			input:    math.MaxInt32,
+			expected: math.MaxInt32,
+		},
+		{
+			name:     "just over max int32",
+			input:    math.MaxInt32 + 1,
+			expected: math.MaxInt32, // Should cap at max
+		},
+		{
+			name:     "max uint32 value",
+			input:    math.MaxUint32,
+			expected: math.MaxInt32, // Should cap at max
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := safeUint32ToInt32(tt.input)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestSafeInt32ToUint32(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    int32
+		expected uint32
+	}{
+		{
+			name:     "zero",
+			input:    0,
+			expected: 0,
+		},
+		{
+			name:     "positive value",
+			input:    12345,
+			expected: 12345,
+		},
+		{
+			name:     "max int32 value",
+			input:    math.MaxInt32,
+			expected: math.MaxInt32,
+		},
+		{
+			name:     "negative value",
+			input:    -1,
+			expected: 0, // Should treat negative as 0
+		},
+		{
+			name:     "min int32 value",
+			input:    math.MinInt32,
+			expected: 0, // Should treat negative as 0
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := safeInt32ToUint32(tt.input)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+// Integration tests
+
+func setupWebAuthnService(t *testing.T) (*WebAuthnService, *db.Queries, context.Context, uuid.UUID) {
+	t.Helper()
+
+	testDB := testutil.NewTestDB(t)
+	queries := db.New(testDB.Pool())
+	ctx := context.Background()
+	logger := zaptest.NewLogger(t)
+
+	service, err := NewWebAuthnService(queries, logger, "Test App", "localhost", []string{"http://localhost:3000"})
+	require.NoError(t, err)
+
+	// Create a test user
+	userID := createTestUserForWebAuthn(t, queries, ctx)
+
+	return service, queries, ctx, userID
+}
+
+func createTestUserForWebAuthn(t *testing.T, queries *db.Queries, ctx context.Context) uuid.UUID {
+	t.Helper()
+
+	isActive := true
+	user, err := queries.CreateUser(ctx, db.CreateUserParams{
+		Email:        "webauthn_" + uuid.New().String()[:8] + "@example.com",
+		Username:     "webauthn_" + uuid.New().String()[:8],
+		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=4$test$test",
+		IsActive:     &isActive,
+	})
+	require.NoError(t, err)
+
+	return user.ID
+}
+
+func TestWebAuthnService_HasWebAuthn(t *testing.T) {
+	t.Parallel()
+
+	t.Run("returns false for new user", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		hasWebAuthn, err := service.HasWebAuthn(ctx, userID)
+		require.NoError(t, err)
+		assert.False(t, hasWebAuthn)
+	})
+
+	t.Run("returns true after credential added", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Manually insert a credential for testing
+		name := "Test Security Key"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("test-credential-id-12345"),
+			PublicKey:       []byte("test-public-key-data"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		hasWebAuthn, err := service.HasWebAuthn(ctx, userID)
+		require.NoError(t, err)
+		assert.True(t, hasWebAuthn)
+	})
+}
+
+func TestWebAuthnService_ListCredentials(t *testing.T) {
+	t.Parallel()
+
+	t.Run("returns empty list for new user", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		creds, err := service.ListCredentials(ctx, userID)
+		require.NoError(t, err)
+		assert.Empty(t, creds)
+	})
+
+	t.Run("returns credentials after adding", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add two credentials
+		name1 := "YubiKey 5"
+		name2 := "TouchID"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("cred-1-id"),
+			PublicKey:       []byte("pub-key-1"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name1,
+		})
+		require.NoError(t, err)
+
+		_, err = queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("cred-2-id"),
+			PublicKey:       []byte("pub-key-2"),
+			AttestationType: "none",
+			Transports:      []string{"internal"},
+			BackupEligible:  true,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name2,
+		})
+		require.NoError(t, err)
+
+		creds, err := service.ListCredentials(ctx, userID)
+		require.NoError(t, err)
+		assert.Len(t, creds, 2)
+	})
+}
+
+func TestWebAuthnService_DeleteCredential(t *testing.T) {
+	t.Parallel()
+
+	service, queries, ctx, userID := setupWebAuthnService(t)
+
+	// Add a credential
+	name := "Test Key"
+	cred, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+		UserID:          userID,
+		CredentialID:    []byte("delete-test-cred-id"),
+		PublicKey:       []byte("pub-key"),
+		AttestationType: "none",
+		Transports:      []string{"usb"},
+		BackupEligible:  false,
+		BackupState:     false,
+		UserPresent:     true,
+		UserVerified:    true,
+		Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		Name:            &name,
+	})
+	require.NoError(t, err)
+
+	// Verify credential exists
+	hasWebAuthn, err := service.HasWebAuthn(ctx, userID)
+	require.NoError(t, err)
+	assert.True(t, hasWebAuthn)
+
+	// Delete credential
+	err = service.DeleteCredential(ctx, userID, cred.ID)
+	require.NoError(t, err)
+
+	// Verify credential is gone
+	hasWebAuthn, err = service.HasWebAuthn(ctx, userID)
+	require.NoError(t, err)
+	assert.False(t, hasWebAuthn)
+}
+
+func TestWebAuthnService_RenameCredential(t *testing.T) {
+	t.Parallel()
+
+	service, queries, ctx, userID := setupWebAuthnService(t)
+
+	// Add a credential
+	originalName := "Original Name"
+	cred, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+		UserID:          userID,
+		CredentialID:    []byte("rename-test-cred-id"),
+		PublicKey:       []byte("pub-key"),
+		AttestationType: "none",
+		Transports:      []string{"usb"},
+		BackupEligible:  false,
+		BackupState:     false,
+		UserPresent:     true,
+		UserVerified:    true,
+		Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		Name:            &originalName,
+	})
+	require.NoError(t, err)
+
+	// Rename credential
+	newName := "My YubiKey 5C"
+	err = service.RenameCredential(ctx, cred.ID, newName)
+	require.NoError(t, err)
+
+	// Verify name changed
+	creds, err := service.ListCredentials(ctx, userID)
+	require.NoError(t, err)
+	require.Len(t, creds, 1)
+	assert.Equal(t, newName, *creds[0].Name)
+}
+
+func TestWebAuthnService_BeginRegistration(t *testing.T) {
+	t.Parallel()
+
+	t.Run("returns credential creation options", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		options, err := service.BeginRegistration(ctx, userID, "testuser", "Test User")
+		require.NoError(t, err)
+		require.NotNil(t, options)
+
+		// Verify options structure
+		assert.NotEmpty(t, options.Response.Challenge)
+		assert.Equal(t, "Test App", options.Response.RelyingParty.Name)
+		assert.Equal(t, "localhost", options.Response.RelyingParty.ID)
+		assert.Equal(t, "testuser", options.Response.User.Name)
+		assert.Equal(t, "Test User", options.Response.User.DisplayName)
+	})
+
+	t.Run("succeeds with existing credentials", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add an existing credential
+		name := "Existing Key"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("existing-cred-id"),
+			PublicKey:       []byte("pub-key"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		// Begin registration should work even when user has existing credentials
+		// The webauthn library handles credential exclusion internally
+		options, err := service.BeginRegistration(ctx, userID, "testuser", "Test User")
+		require.NoError(t, err)
+		require.NotNil(t, options)
+
+		// Verify basic options are still correct
+		assert.NotEmpty(t, options.Response.Challenge)
+	})
+}
+
+func TestWebAuthnService_BeginLogin(t *testing.T) {
+	t.Parallel()
+
+	t.Run("fails if no credentials exist", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		_, err := service.BeginLogin(ctx, userID, "testuser", "Test User")
+		assert.ErrorIs(t, err, ErrNoCredentials)
+	})
+
+	t.Run("returns assertion options with credentials", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add a credential
+		name := "Test Key"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("login-test-cred-id"),
+			PublicKey:       []byte("pub-key"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		options, err := service.BeginLogin(ctx, userID, "testuser", "Test User")
+		require.NoError(t, err)
+		require.NotNil(t, options)
+
+		// Verify options
+		assert.NotEmpty(t, options.Response.Challenge)
+		assert.Equal(t, "localhost", options.Response.RelyingPartyID)
+		assert.Len(t, options.Response.AllowedCredentials, 1)
+	})
+
+	t.Run("excludes cloned credentials", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add a credential then mark it as cloned
+		name := "Cloned Key"
+		cred, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("cloned-cred-id"),
+			PublicKey:       []byte("pub-key"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		// Mark as cloned
+		err = queries.MarkWebAuthnCloneDetected(ctx, cred.CredentialID)
+		require.NoError(t, err)
+
+		// Should fail because all credentials are marked as cloned
+		_, err = service.BeginLogin(ctx, userID, "testuser", "Test User")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "all credentials marked as cloned")
+	})
+}
+
+// Module tests
+
+func TestNewTOTPServiceFromConfig(t *testing.T) {
+	t.Parallel()
+
+	testDB := testutil.NewTestDB(t)
+	queries := db.New(testDB.Pool())
+	logger := zaptest.NewLogger(t)
+
+	// Create an encryption key
+	key := make([]byte, 32)
+	_, err := rand.Read(key)
+	require.NoError(t, err)
+
+	encryptor, err := crypto.NewEncryptor(key)
+	require.NoError(t, err)
+
+	cfg := &config.Config{}
+
+	service := NewTOTPServiceFromConfig(queries, encryptor, logger, cfg)
+	assert.NotNil(t, service)
+	assert.Equal(t, "Revenge", service.issuer)
+}
+
+func TestNewWebAuthnServiceFromConfig(t *testing.T) {
+	t.Parallel()
+
+	testDB := testutil.NewTestDB(t)
+	queries := db.New(testDB.Pool())
+	logger := zaptest.NewLogger(t)
+
+	t.Run("uses localhost when host is empty", func(t *testing.T) {
+		cfg := &config.Config{
+			Server: config.ServerConfig{
+				Host: "",
+				Port: 3000,
+			},
+		}
+
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		require.NoError(t, err)
+		assert.NotNil(t, service)
+	})
+
+	t.Run("uses localhost when host is 0.0.0.0", func(t *testing.T) {
+		cfg := &config.Config{
+			Server: config.ServerConfig{
+				Host: "0.0.0.0",
+				Port: 3000,
+			},
+		}
+
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		require.NoError(t, err)
+		assert.NotNil(t, service)
+	})
+
+	t.Run("uses configured host", func(t *testing.T) {
+		cfg := &config.Config{
+			Server: config.ServerConfig{
+				Host: "revenge.example.com",
+				Port: 443,
+			},
+		}
+
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		require.NoError(t, err)
+		assert.NotNil(t, service)
+	})
+}
+

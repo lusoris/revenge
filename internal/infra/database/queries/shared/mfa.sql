@@ -115,7 +115,7 @@ WHERE credential_id = $1;
 -- Update the user-facing name of a credential
 UPDATE public.webauthn_credentials
 SET name = $2
-WHERE id = $1 AND user_id = $2;
+WHERE id = $1;
 
 -- name: DeleteWebAuthnCredential :exec
 -- Delete a WebAuthn credential
@@ -256,11 +256,12 @@ WHERE user_id = $1;
 
 -- name: GetUserMFAStatus :one
 -- Get comprehensive MFA status for a user
+-- Note: COALESCE is used for require_mfa to handle the case when user_mfa_settings doesn't exist
 SELECT
     (SELECT COUNT(*) > 0 FROM public.user_totp_secrets WHERE user_totp_secrets.user_id = $1 AND enabled = true) as has_totp,
     (SELECT COUNT(*) FROM public.webauthn_credentials WHERE webauthn_credentials.user_id = $1) as webauthn_count,
     (SELECT COUNT(*) FROM public.mfa_backup_codes WHERE mfa_backup_codes.user_id = $1 AND used_at IS NULL) as unused_backup_codes,
-    (SELECT require_mfa FROM public.user_mfa_settings WHERE user_mfa_settings.user_id = $1) as require_mfa;
+    COALESCE((SELECT require_mfa FROM public.user_mfa_settings WHERE user_mfa_settings.user_id = $1), false)::boolean as require_mfa;
 
 -- name: HasAnyMFAMethod :one
 -- Check if user has any MFA method enabled
