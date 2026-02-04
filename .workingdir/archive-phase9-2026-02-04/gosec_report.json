@@ -1,0 +1,2147 @@
+[gosec] 2026/02/04 12:14:21 Including rules: default
+[gosec] 2026/02/04 12:14:21 Excluding rules: default
+[gosec] 2026/02/04 12:14:21 Including analyzers: default
+[gosec] 2026/02/04 12:14:21 Excluding analyzers: default
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\api\middleware
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\integration\radarr
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\health
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\logging
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\tests\integration\service
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\database
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\settings
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\search
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\image
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\api\ogen
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\session
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\content\tvshow\db
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\library
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\crypto
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\mfa
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\user
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\notification\agents
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\database\db
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\version
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\testutil
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\service\apikeys
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\tests\integration\cache
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\tests\integration\database
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\cache
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\app
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\config
+[gosec] 2026/02/04 12:14:21 Import directory: c:\Users\ms\dev\revenge\internal\infra\jobs
+[gosec] 2026/02/04 12:14:22 Checking package: version
+[gosec] 2026/02/04 12:14:22 Checking file: c:\Users\ms\dev\revenge\internal\version\version.go
+[gosec] 2026/02/04 12:14:22 Import directory: c:\Users\ms\dev\revenge\internal\infra\observability
+[gosec] 2026/02/04 12:14:23 Checking package: crypto
+[gosec] 2026/02/04 12:14:23 Checking file: c:\Users\ms\dev\revenge\internal\crypto\encryption.go
+[gosec] 2026/02/04 12:14:23 Import directory: c:\Users\ms\dev\revenge\internal\service\notification
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\crypto\password.go
+[gosec] 2026/02/04 12:14:24 Checking package: tvshowdb
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\content\tvshow\db\db.go
+[gosec] 2026/02/04 12:14:24 Import directory: c:\Users\ms\dev\revenge\internal\service\search
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\content\tvshow\db\models.go
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\content\tvshow\db\placeholder.sql.go
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\content\tvshow\db\querier.go
+[gosec] 2026/02/04 12:14:24 Checking package: db
+[gosec] 2026/02/04 12:14:24 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\activity.sql.go
+[gosec] 2026/02/04 12:14:24 Import directory: c:\Users\ms\dev\revenge\tests\integration
+[gosec] 2026/02/04 12:14:27 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\apikeys.sql.go
+[gosec] 2026/02/04 12:14:29 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\auth_tokens.sql.go
+[gosec] 2026/02/04 12:14:32 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\copyfrom.go
+[gosec] 2026/02/04 12:14:32 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\db.go
+[gosec] 2026/02/04 12:14:32 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\library.sql.go
+[gosec] 2026/02/04 12:14:37 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\mfa.sql.go
+[gosec] 2026/02/04 12:14:41 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\models.go
+[gosec] 2026/02/04 12:14:41 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\oidc.sql.go
+[gosec] 2026/02/04 12:14:47 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\querier.go
+[gosec] 2026/02/04 12:14:47 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\sessions.sql.go
+[gosec] 2026/02/04 12:14:51 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\settings.sql.go
+[gosec] 2026/02/04 12:14:55 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\db\users.sql.go
+[gosec] 2026/02/04 12:15:01 Checking package: agents
+[gosec] 2026/02/04 12:15:01 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\agents\discord.go
+[gosec] 2026/02/04 12:15:01 Import directory: c:\Users\ms\dev\revenge\tests\integration\services
+[gosec] 2026/02/04 12:15:02 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\agents\email.go
+[gosec] 2026/02/04 12:15:03 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\agents\gotify.go
+[gosec] 2026/02/04 12:15:05 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\agents\webhook.go
+[gosec] 2026/02/04 12:15:06 Checking package: config
+[gosec] 2026/02/04 12:15:06 Checking file: c:\Users\ms\dev\revenge\internal\config\config.go
+[gosec] 2026/02/04 12:15:06 Import directory: c:\Users\ms\dev\revenge\cmd\revenge
+[gosec] 2026/02/04 12:15:06 Checking file: c:\Users\ms\dev\revenge\internal\config\loader.go
+[gosec] 2026/02/04 12:15:07 Checking file: c:\Users\ms\dev\revenge\internal\config\module.go
+[gosec] 2026/02/04 12:15:07 Checking package: image
+[gosec] 2026/02/04 12:15:07 Checking file: c:\Users\ms\dev\revenge\internal\infra\image\module.go
+[gosec] 2026/02/04 12:15:07 Import directory: c:\Users\ms\dev\revenge\internal\service\activity
+[gosec] 2026/02/04 12:15:07 Checking file: c:\Users\ms\dev\revenge\internal\infra\image\service.go
+[gosec] 2026/02/04 12:15:08 Checking package: middleware
+[gosec] 2026/02/04 12:15:08 Checking file: c:\Users\ms\dev\revenge\internal\api\middleware\errors.go
+[gosec] 2026/02/04 12:15:08 Import directory: c:\Users\ms\dev\revenge\internal\service\auth
+[gosec] 2026/02/04 12:15:08 Checking file: c:\Users\ms\dev\revenge\internal\api\middleware\ratelimit.go
+[gosec] 2026/02/04 12:15:09 Checking file: c:\Users\ms\dev\revenge\internal\api\middleware\ratelimit_redis.go
+[gosec] 2026/02/04 12:15:10 Checking package: logging
+[gosec] 2026/02/04 12:15:10 Checking file: c:\Users\ms\dev\revenge\internal\infra\logging\logging.go
+[gosec] 2026/02/04 12:15:10 Import directory: c:\Users\ms\dev\revenge\internal\service\oidc
+[gosec] 2026/02/04 12:15:10 Checking file: c:\Users\ms\dev\revenge\internal\infra\logging\module.go
+[gosec] 2026/02/04 12:15:10 Checking package: search
+[gosec] 2026/02/04 12:15:10 Checking file: c:\Users\ms\dev\revenge\internal\infra\search\module.go
+[gosec] 2026/02/04 12:15:10 Import directory: c:\Users\ms\dev\revenge\internal\service\rbac
+[gosec] 2026/02/04 12:15:11 Checking package: apikeys
+[gosec] 2026/02/04 12:15:11 Checking file: c:\Users\ms\dev\revenge\internal\service\apikeys\module.go
+[gosec] 2026/02/04 12:15:11 Import directory: c:\Users\ms\dev\revenge\internal\validate
+[gosec] 2026/02/04 12:15:11 Checking file: c:\Users\ms\dev\revenge\internal\service\apikeys\repository.go
+[gosec] 2026/02/04 12:15:11 Checking file: c:\Users\ms\dev\revenge\internal\service\apikeys\repository_pg.go
+[gosec] 2026/02/04 12:15:12 Checking file: c:\Users\ms\dev\revenge\internal\service\apikeys\service.go
+[gosec] 2026/02/04 12:15:13 Checking package: jobs
+[gosec] 2026/02/04 12:15:13 Checking file: c:\Users\ms\dev\revenge\internal\infra\jobs\cleanup_job.go
+[gosec] 2026/02/04 12:15:13 Import directory: c:\Users\ms\dev\revenge\tests\integration\search
+[gosec] 2026/02/04 12:15:13 Checking file: c:\Users\ms\dev\revenge\internal\infra\jobs\module.go
+[gosec] 2026/02/04 12:15:13 Checking file: c:\Users\ms\dev\revenge\internal\infra\jobs\notification_job.go
+[gosec] 2026/02/04 12:15:13 Checking file: c:\Users\ms\dev\revenge\internal\infra\jobs\queues.go
+[gosec] 2026/02/04 12:15:14 Checking file: c:\Users\ms\dev\revenge\internal\infra\jobs\river.go
+[gosec] 2026/02/04 12:15:14 Checking package: notification
+[gosec] 2026/02/04 12:15:14 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\dispatcher.go
+[gosec] 2026/02/04 12:15:14 Import directory: c:\Users\ms\dev\revenge
+[gosec] 2026/02/04 12:15:15 Checking file: c:\Users\ms\dev\revenge\internal\service\notification\notification.go
+[gosec] 2026/02/04 12:15:15 Checking package: mfa
+[gosec] 2026/02/04 12:15:15 Checking file: c:\Users\ms\dev\revenge\internal\service\mfa\backup_codes.go
+[gosec] 2026/02/04 12:15:15 Import directory: c:\Users\ms\dev\revenge\internal\api
+[gosec] 2026/02/04 12:15:16 Checking file: c:\Users\ms\dev\revenge\internal\service\mfa\manager.go
+[gosec] 2026/02/04 12:15:17 Checking file: c:\Users\ms\dev\revenge\internal\service\mfa\module.go
+[gosec] 2026/02/04 12:15:17 Checking file: c:\Users\ms\dev\revenge\internal\service\mfa\totp.go
+[gosec] 2026/02/04 12:15:17 Checking file: c:\Users\ms\dev\revenge\internal\service\mfa\webauthn.go
+[gosec] 2026/02/04 12:15:19 Checking package: observability
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\observability\metrics.go
+[gosec] 2026/02/04 12:15:19 Import directory: c:\Users\ms\dev\revenge\internal\content\qar\db
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\observability\middleware.go
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\observability\module.go
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\observability\pprof.go
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\observability\server.go
+[gosec] 2026/02/04 12:15:19 Checking package: database
+[gosec] 2026/02/04 12:15:19 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\logger.go
+[gosec] 2026/02/04 12:15:19 Import directory: c:\Users\ms\dev\revenge\internal\errors
+[gosec] 2026/02/04 12:15:20 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\metrics.go
+[gosec] 2026/02/04 12:15:20 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\migrate.go
+[gosec] 2026/02/04 12:15:20 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\module.go
+[gosec] 2026/02/04 12:15:20 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\pool.go
+[gosec] 2026/02/04 12:15:21 Checking file: c:\Users\ms\dev\revenge\internal\infra\database\testing.go
+[gosec] 2026/02/04 12:15:21 Checking package: cache
+[gosec] 2026/02/04 12:15:21 Checking file: c:\Users\ms\dev\revenge\internal\infra\cache\cache.go
+[gosec] 2026/02/04 12:15:21 Checking file: c:\Users\ms\dev\revenge\internal\infra\cache\keys.go
+[gosec] 2026/02/04 12:15:23 Checking file: c:\Users\ms\dev\revenge\internal\infra\cache\module.go
+[gosec] 2026/02/04 12:15:23 Checking file: c:\Users\ms\dev\revenge\internal\infra\cache\otter.go
+[gosec] 2026/02/04 12:15:23 Checking package: health
+[gosec] 2026/02/04 12:15:23 Checking file: c:\Users\ms\dev\revenge\internal\infra\health\checks.go
+[gosec] 2026/02/04 12:15:23 Checking file: c:\Users\ms\dev\revenge\internal\infra\health\handler.go
+[gosec] 2026/02/04 12:15:24 Checking file: c:\Users\ms\dev\revenge\internal\infra\health\module.go
+[gosec] 2026/02/04 12:15:24 Checking file: c:\Users\ms\dev\revenge\internal\infra\health\service.go
+[gosec] 2026/02/04 12:15:24 Checking package: settings
+[gosec] 2026/02/04 12:15:24 Checking file: c:\Users\ms\dev\revenge\internal\service\settings\cached_service.go
+[gosec] 2026/02/04 12:15:25 Checking file: c:\Users\ms\dev\revenge\internal\service\settings\module.go
+[gosec] 2026/02/04 12:15:25 Checking file: c:\Users\ms\dev\revenge\internal\service\settings\repository.go
+[gosec] 2026/02/04 12:15:25 Checking file: c:\Users\ms\dev\revenge\internal\service\settings\repository_pg.go
+[gosec] 2026/02/04 12:15:25 Checking file: c:\Users\ms\dev\revenge\internal\service\settings\service.go
+[gosec] 2026/02/04 12:15:27 Checking package: library
+[gosec] 2026/02/04 12:15:27 Checking file: c:\Users\ms\dev\revenge\internal\service\library\cached_service.go
+[gosec] 2026/02/04 12:15:27 Checking file: c:\Users\ms\dev\revenge\internal\service\library\module.go
+[gosec] 2026/02/04 12:15:27 Checking file: c:\Users\ms\dev\revenge\internal\service\library\repository.go
+[gosec] 2026/02/04 12:15:28 Checking file: c:\Users\ms\dev\revenge\internal\service\library\repository_pg.go
+[gosec] 2026/02/04 12:15:30 Checking file: c:\Users\ms\dev\revenge\internal\service\library\service.go
+[gosec] 2026/02/04 12:15:31 Checking package: testutil
+[gosec] 2026/02/04 12:15:31 Checking file: c:\Users\ms\dev\revenge\internal\testutil\assertions.go
+[gosec] 2026/02/04 12:15:32 Checking file: c:\Users\ms\dev\revenge\internal\testutil\containers.go
+[gosec] 2026/02/04 12:15:32 Checking file: c:\Users\ms\dev\revenge\internal\testutil\database.go
+[gosec] 2026/02/04 12:15:32 Checking file: c:\Users\ms\dev\revenge\internal\testutil\fixtures.go
+[gosec] 2026/02/04 12:15:32 Checking file: c:\Users\ms\dev\revenge\internal\testutil\testdb.go
+[gosec] 2026/02/04 12:15:33 Checking file: c:\Users\ms\dev\revenge\internal\testutil\testdb_migrate.go
+[gosec] 2026/02/04 12:15:33 Checking package: radarr
+[gosec] 2026/02/04 12:15:33 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\client.go
+[gosec] 2026/02/04 12:15:36 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\doc.go
+[gosec] 2026/02/04 12:15:36 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\errors.go
+[gosec] 2026/02/04 12:15:36 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\jobs.go
+[gosec] 2026/02/04 12:15:36 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\mapper.go
+[gosec] 2026/02/04 12:15:37 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\module.go
+[gosec] 2026/02/04 12:15:37 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\service.go
+[gosec] 2026/02/04 12:15:38 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\types.go
+[gosec] 2026/02/04 12:15:38 Checking file: c:\Users\ms\dev\revenge\internal\integration\radarr\webhook_handler.go
+[gosec] 2026/02/04 12:15:39 Checking package: app
+[gosec] 2026/02/04 12:15:39 Checking file: c:\Users\ms\dev\revenge\internal\app\module.go
+[gosec] 2026/02/04 12:15:39 Checking package: ogen
+[gosec] 2026/02/04 12:15:39 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_cfg_gen.go
+[gosec] 2026/02/04 12:15:40 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_client_gen.go
+[gosec] 2026/02/04 12:16:17 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_defaults_gen.go
+[gosec] 2026/02/04 12:16:17 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_handlers_gen.go
+[gosec] 2026/02/04 12:16:57 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_interfaces_gen.go
+[gosec] 2026/02/04 12:16:57 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_json_gen.go
+[gosec] 2026/02/04 12:19:10 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_labeler_gen.go
+[gosec] 2026/02/04 12:19:10 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_middleware_gen.go
+[gosec] 2026/02/04 12:19:10 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_operations_gen.go
+[gosec] 2026/02/04 12:19:10 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_parameters_gen.go
+[gosec] 2026/02/04 12:19:38 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_request_decoders_gen.go
+[gosec] 2026/02/04 12:19:49 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_request_encoders_gen.go
+[gosec] 2026/02/04 12:19:49 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_response_decoders_gen.go
+[gosec] 2026/02/04 12:21:44 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_response_encoders_gen.go
+[gosec] 2026/02/04 12:22:01 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_router_gen.go
+[gosec] 2026/02/04 12:22:08 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_schemas_gen.go
+[gosec] 2026/02/04 12:22:41 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_security_gen.go
+[gosec] 2026/02/04 12:22:41 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_server_gen.go
+[gosec] 2026/02/04 12:22:41 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_unimplemented_gen.go
+[gosec] 2026/02/04 12:22:44 Checking file: c:\Users\ms\dev\revenge\internal\api\ogen\oas_validators_gen.go
+[gosec] 2026/02/04 12:23:06 Checking package: session
+[gosec] 2026/02/04 12:23:06 Checking file: c:\Users\ms\dev\revenge\internal\service\session\cached_service.go
+[gosec] 2026/02/04 12:23:07 Checking file: c:\Users\ms\dev\revenge\internal\service\session\module.go
+[gosec] 2026/02/04 12:23:07 Checking file: c:\Users\ms\dev\revenge\internal\service\session\repository.go
+[gosec] 2026/02/04 12:23:07 Checking file: c:\Users\ms\dev\revenge\internal\service\session\repository_pg.go
+[gosec] 2026/02/04 12:23:08 Checking file: c:\Users\ms\dev\revenge\internal\service\session\service.go
+[gosec] 2026/02/04 12:23:09 Checking file: c:\Users\ms\dev\revenge\internal\service\session\service_testing.go
+[gosec] 2026/02/04 12:23:09 Checking package: user
+[gosec] 2026/02/04 12:23:09 Checking file: c:\Users\ms\dev\revenge\internal\service\user\cached_service.go
+[gosec] 2026/02/04 12:23:09 Checking file: c:\Users\ms\dev\revenge\internal\service\user\module.go
+[gosec] 2026/02/04 12:23:09 Checking file: c:\Users\ms\dev\revenge\internal\service\user\repository.go
+[gosec] 2026/02/04 12:23:09 Checking file: c:\Users\ms\dev\revenge\internal\service\user\repository_pg.go
+[gosec] 2026/02/04 12:23:11 Checking file: c:\Users\ms\dev\revenge\internal\service\user\service.go
+[gosec] 2026/02/04 12:23:13 Checking package: search
+[gosec] 2026/02/04 12:23:13 Checking file: c:\Users\ms\dev\revenge\internal\service\search\cached_service.go
+[gosec] 2026/02/04 12:23:13 Checking file: c:\Users\ms\dev\revenge\internal\service\search\module.go
+[gosec] 2026/02/04 12:23:13 Checking file: c:\Users\ms\dev\revenge\internal\service\search\movie_schema.go
+[gosec] 2026/02/04 12:23:13 Checking file: c:\Users\ms\dev\revenge\internal\service\search\movie_service.go
+[gosec] 2026/02/04 12:23:15 Checking package: main
+[gosec] 2026/02/04 12:23:15 Checking file: c:\Users\ms\dev\revenge\cmd\revenge\main.go
+[gosec] 2026/02/04 12:23:15 Checking file: c:\Users\ms\dev\revenge\cmd\revenge\migrate.go
+[gosec] 2026/02/04 12:23:15 Checking package: activity
+[gosec] 2026/02/04 12:23:15 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\cleanup.go
+[gosec] 2026/02/04 12:23:15 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\logger.go
+[gosec] 2026/02/04 12:23:16 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\module.go
+[gosec] 2026/02/04 12:23:16 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\repository.go
+[gosec] 2026/02/04 12:23:16 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\repository_pg.go
+[gosec] 2026/02/04 12:23:17 Checking file: c:\Users\ms\dev\revenge\internal\service\activity\service.go
+[gosec] 2026/02/04 12:23:17 Checking package: auth
+[gosec] 2026/02/04 12:23:17 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\jwt.go
+[gosec] 2026/02/04 12:23:18 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\mfa_integration.go
+[gosec] 2026/02/04 12:23:18 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\module.go
+[gosec] 2026/02/04 12:23:18 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\repository.go
+[gosec] 2026/02/04 12:23:18 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\repository_pg.go
+[gosec] 2026/02/04 12:23:20 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\service.go
+[gosec] 2026/02/04 12:23:21 Checking file: c:\Users\ms\dev\revenge\internal\service\auth\service_testing.go
+[gosec] 2026/02/04 12:23:21 Checking package: oidc
+[gosec] 2026/02/04 12:23:21 Checking file: c:\Users\ms\dev\revenge\internal\service\oidc\module.go
+[gosec] 2026/02/04 12:23:22 Checking file: c:\Users\ms\dev\revenge\internal\service\oidc\repository.go
+[gosec] 2026/02/04 12:23:22 Checking file: c:\Users\ms\dev\revenge\internal\service\oidc\repository_pg.go
+[gosec] 2026/02/04 12:23:23 Checking file: c:\Users\ms\dev\revenge\internal\service\oidc\service.go
+[gosec] 2026/02/04 12:23:25 Checking package: rbac
+[gosec] 2026/02/04 12:23:25 Checking file: c:\Users\ms\dev\revenge\internal\service\rbac\adapter.go
+[gosec] 2026/02/04 12:23:26 Checking file: c:\Users\ms\dev\revenge\internal\service\rbac\cached_service.go
+[gosec] 2026/02/04 12:23:27 Checking file: c:\Users\ms\dev\revenge\internal\service\rbac\module.go
+[gosec] 2026/02/04 12:23:27 Checking file: c:\Users\ms\dev\revenge\internal\service\rbac\roles.go
+[gosec] 2026/02/04 12:23:28 Checking file: c:\Users\ms\dev\revenge\internal\service\rbac\service.go
+[gosec] 2026/02/04 12:23:28 Checking package: validate
+[gosec] 2026/02/04 12:23:28 Checking file: c:\Users\ms\dev\revenge\internal\validate\convert.go
+[gosec] 2026/02/04 12:23:29 Checking package: api
+[gosec] 2026/02/04 12:23:29 Checking file: c:\Users\ms\dev\revenge\internal\api\context.go
+[gosec] 2026/02/04 12:23:29 Checking file: c:\Users\ms\dev\revenge\internal\api\errors.go
+[gosec] 2026/02/04 12:23:29 Checking file: c:\Users\ms\dev\revenge\internal\api\handler.go
+[gosec] 2026/02/04 12:23:32 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_activity.go
+[gosec] 2026/02/04 12:23:33 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_apikeys.go
+[gosec] 2026/02/04 12:23:34 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_library.go
+[gosec] 2026/02/04 12:23:37 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_metadata.go
+[gosec] 2026/02/04 12:23:38 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_mfa.go
+[gosec] 2026/02/04 12:23:39 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_oidc.go
+[gosec] 2026/02/04 12:23:42 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_radarr.go
+[gosec] 2026/02/04 12:23:43 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_rbac.go
+[gosec] 2026/02/04 12:23:46 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_search.go
+[gosec] 2026/02/04 12:23:46 Checking file: c:\Users\ms\dev\revenge\internal\api\handler_session.go
+[gosec] 2026/02/04 12:23:48 Checking file: c:\Users\ms\dev\revenge\internal\api\module.go
+[gosec] 2026/02/04 12:23:48 Checking file: c:\Users\ms\dev\revenge\internal\api\movie_converters.go
+[gosec] 2026/02/04 12:23:48 Checking file: c:\Users\ms\dev\revenge\internal\api\movie_handlers.go
+[gosec] 2026/02/04 12:23:50 Checking file: c:\Users\ms\dev\revenge\internal\api\server.go
+[gosec] 2026/02/04 12:23:50 Checking package: adultdb
+[gosec] 2026/02/04 12:23:50 Checking file: c:\Users\ms\dev\revenge\internal\content\qar\db\db.go
+[gosec] 2026/02/04 12:23:51 Checking file: c:\Users\ms\dev\revenge\internal\content\qar\db\models.go
+[gosec] 2026/02/04 12:23:51 Checking file: c:\Users\ms\dev\revenge\internal\content\qar\db\placeholder.sql.go
+[gosec] 2026/02/04 12:23:51 Checking file: c:\Users\ms\dev\revenge\internal\content\qar\db\querier.go
+[gosec] 2026/02/04 12:23:51 Checking package: errors
+[gosec] 2026/02/04 12:23:51 Checking file: c:\Users\ms\dev\revenge\internal\errors\errors.go
+[gosec] 2026/02/04 12:23:51 Checking file: c:\Users\ms\dev\revenge\internal\errors\wrap.go
+{
+	"Golang errors": {},
+	"Issues": [
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion uint32 -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "408: \t\tCredentialID: credential.ID,\n409: \t\tSignCount:    int32(newCounter),\n410: \t})\n",
+			"line": "409",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int32 -\u003e uint32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "386: \tnewCounter := credential.Authenticator.SignCount\n387: \toldCounter := uint32(dbCred.SignCount)\n388: \n",
+			"line": "387",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int32 -\u003e uint32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "361: \t\t\t\tAAGUID:    cred.Aaguid,\n362: \t\t\t\tSignCount: uint32(cred.SignCount),\n363: \t\t\t},\n",
+			"line": "362",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int32 -\u003e uint32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "303: \t\t\t\tAAGUID:    cred.Aaguid,\n304: \t\t\t\tSignCount: uint32(cred.SignCount),\n305: \t\t\t},\n",
+			"line": "304",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int32 -\u003e uint32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "197: \t\t\t\tAAGUID:    cred.Aaguid,\n198: \t\t\t\tSignCount: uint32(cred.SignCount),\n199: \t\t\t},\n",
+			"line": "198",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int32 -\u003e uint32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\mfa\\webauthn.go",
+			"code": "137: \t\t\t\tAAGUID:    cred.Aaguid,\n138: \t\t\t\tSignCount: uint32(cred.SignCount),\n139: \t\t\t},\n",
+			"line": "138",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e uint",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\notification\\agents\\webhook.go",
+			"code": "165: \t\t\t// Exponential backoff: 1s, 2s, 4s...\n166: \t\t\tbackoff := time.Duration(1\u003c\u003cuint(attempt-1)) * time.Second\n167: \t\t\tselect {\n",
+			"line": "166",
+			"column": "36",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\service.go",
+			"code": "357: \t\t// Check if file already exists by RadarrFileID\n358: \t\texisting, err := s.movieRepo.GetMovieFileByRadarrID(ctx, int32(rf.ID))\n359: \t\tif err != nil \u0026\u0026 err != movie.ErrMovieFileNotFound {\n",
+			"line": "358",
+			"column": "65",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\service.go",
+			"code": "312: \t// Try to find existing collection by TMDb ID\n313: \texisting, err := s.movieRepo.GetMovieCollectionByTMDbID(ctx, int32(rc.TMDbID))\n314: \tif err != nil \u0026\u0026 err != movie.ErrCollectionNotFound {\n",
+			"line": "313",
+			"column": "68",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\service.go",
+			"code": "202: \t// Get existing movie by RadarrID\n203: \texisting, err := s.movieRepo.GetMovieByRadarrID(ctx, int32(radarrID))\n204: \tif err != nil \u0026\u0026 err != movie.ErrMovieNotFound {\n",
+			"line": "203",
+			"column": "60",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "164: \t\tID:               uuid.New(),\n165: \t\tTMDbCollectionID: ptr(int32(rc.TMDbID)),\n166: \t\tName:             rc.Name,\n",
+			"line": "165",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "123: \t\t}\n124: \t\tresult.BitrateKbps = ptr(int32(mi.VideoBitrate / 1000))\n125: \t\tif mi.AudioChannels \u003e 0 {\n",
+			"line": "124",
+			"column": "33",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "100: \t\tFileSize:     rmf.Size,\n101: \t\tRadarrFileID: ptr(int32(rmf.ID)),\n102: \t\tCreatedAt:    rmf.DateAdded,\n",
+			"line": "101",
+			"column": "26",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "54: \t\tresult.VoteAverage = \u0026d\n55: \t\tresult.VoteCount = ptr(int32(rm.Ratings.IMDb.Votes))\n56: \t}\n",
+			"line": "55",
+			"column": "31",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "50: \t\tresult.VoteAverage = \u0026d\n51: \t\tresult.VoteCount = ptr(int32(rm.Ratings.TMDb.Votes))\n52: \t} else if rm.Ratings.IMDb != nil {\n",
+			"line": "51",
+			"column": "31",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "32: \t\tOriginalLanguage: ptrString(rm.OriginalLanguage.Name),\n33: \t\tRadarrID:         ptr(int32(rm.ID)),\n34: \t\tCreatedAt:        time.Now(),\n",
+			"line": "33",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "28: \t\tYear:             ptr(int32(rm.Year)),\n29: \t\tRuntime:          ptr(int32(rm.Runtime)),\n30: \t\tOverview:         ptrString(rm.Overview),\n",
+			"line": "29",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "27: \t\tOriginalTitle:    ptrString(rm.OriginalTitle),\n28: \t\tYear:             ptr(int32(rm.Year)),\n29: \t\tRuntime:          ptr(int32(rm.Runtime)),\n",
+			"line": "28",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\integration\\radarr\\mapper.go",
+			"code": "23: \t\tID:               uuid.New(), // Generate new ID for local storage\n24: \t\tTMDbID:           ptr(int32(rm.TMDbID)),\n25: \t\tIMDbID:           ptrString(rm.IMDbID),\n",
+			"line": "24",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "277: \t\tProgressSeconds: int32(req.ProgressSeconds),\n278: \t\tDurationSeconds: int32(req.DurationSeconds),\n279: \t}\n",
+			"line": "278",
+			"column": "25",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "276: \tupdateParams := movie.UpdateWatchProgressParams{\n277: \t\tProgressSeconds: int32(req.ProgressSeconds),\n278: \t\tDurationSeconds: int32(req.DurationSeconds),\n",
+			"line": "277",
+			"column": "25",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "134: \t\tLimit:  int32(params.Limit.Or(20)),\n135: \t\tOffset: int32(params.Offset.Or(0)),\n136: \t}\n",
+			"line": "135",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "133: \thandlerParams := movie.PaginationParams{\n134: \t\tLimit:  int32(params.Limit.Or(20)),\n135: \t\tOffset: int32(params.Offset.Or(0)),\n",
+			"line": "134",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "111: \t}\n112: \tlimit := int32(params.Limit.Or(20))\n113: \n",
+			"line": "112",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "89: \t\tOffset:   0,\n90: \t\tMinVotes: func() *int32 { v := int32(params.MinVotes.Or(100)); return \u0026v }(),\n91: \t}\n",
+			"line": "90",
+			"column": "39",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "87: \thandlerParams := movie.TopRatedParams{\n88: \t\tLimit:    int32(params.Limit.Or(20)),\n89: \t\tOffset:   0,\n",
+			"line": "88",
+			"column": "18",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "67: \thandlerParams := movie.PaginationParams{\n68: \t\tLimit:  int32(params.Limit.Or(20)),\n69: \t\tOffset: 0,\n",
+			"line": "68",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "48: \t\tLimit:  int32(params.Limit.Or(20)),\n49: \t\tOffset: int32(params.Offset.Or(0)),\n50: \t}\n",
+			"line": "49",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "47: \t\tQuery:  params.Query,\n48: \t\tLimit:  int32(params.Limit.Or(20)),\n49: \t\tOffset: int32(params.Offset.Or(0)),\n",
+			"line": "48",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "27: \t\tLimit:   int32(params.Limit.Or(20)),\n28: \t\tOffset:  int32(params.Offset.Or(0)),\n29: \t}\n",
+			"line": "28",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\movie_handlers.go",
+			"code": "26: \t\tOrderBy: string(params.OrderBy.Or(\"created_at\")),\n27: \t\tLimit:   int32(params.Limit.Or(20)),\n28: \t\tOffset:  int32(params.Offset.Or(0)),\n",
+			"line": "27",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "295",
+				"url": "https://cwe.mitre.org/data/definitions/295.html"
+			},
+			"rule_id": "G402",
+			"details": "TLS InsecureSkipVerify may be true.",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\notification\\agents\\email.go",
+			"code": "347: \t\t\tServerName:         a.config.Host,\n348: \t\t\tInsecureSkipVerify: a.config.SkipVerify,\n349: \t\t}\n",
+			"line": "348",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "295",
+				"url": "https://cwe.mitre.org/data/definitions/295.html"
+			},
+			"rule_id": "G402",
+			"details": "TLS InsecureSkipVerify may be true.",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\notification\\agents\\email.go",
+			"code": "324: \t\t\tServerName:         a.config.Host,\n325: \t\t\tInsecureSkipVerify: a.config.SkipVerify,\n326: \t\t}\n",
+			"line": "325",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\users.sql.go",
+			"code": "571: \n572: const updatePassword = `-- name: UpdatePassword :exec\n573: UPDATE shared.users\n574: SET password_hash = $2, updated_at = NOW()\n575: WHERE id = $1 AND deleted_at IS NULL\n576: `\n577: \n",
+			"line": "572-576",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\sessions.sql.go",
+			"code": "505: \n506: const updateSessionActivityByTokenHash = `-- name: UpdateSessionActivityByTokenHash :exec\n507: UPDATE shared.sessions\n508: SET last_activity_at = NOW()\n509: WHERE token_hash = $1\n510:   AND revoked_at IS NULL\n511: `\n512: \n",
+			"line": "506-511",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\sessions.sql.go",
+			"code": "476: \n477: const revokeSessionByTokenHash = `-- name: RevokeSessionByTokenHash :exec\n478: UPDATE shared.sessions\n479: SET revoked_at = NOW(),\n480:     revoke_reason = $2\n481: WHERE token_hash = $1\n482: `\n483: \n",
+			"line": "477-482",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\sessions.sql.go",
+			"code": "395: \n396: const markSessionMFAVerifiedByTokenHash = `-- name: MarkSessionMFAVerifiedByTokenHash :exec\n397: UPDATE shared.sessions\n398: SET mfa_verified = TRUE,\n399:     mfa_verified_at = NOW()\n400: WHERE token_hash = $1\n401:   AND revoked_at IS NULL\n402: `\n403: \n",
+			"line": "396-402",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\sessions.sql.go",
+			"code": "261: \n262: const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one\n263: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions\n264: WHERE token_hash = $1\n265:   AND revoked_at IS NULL\n266:   AND expires_at \u003e NOW()\n267: LIMIT 1\n268: `\n269: \n",
+			"line": "262-268",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\sessions.sql.go",
+			"code": "230: \n231: const getSessionByRefreshTokenHash = `-- name: GetSessionByRefreshTokenHash :one\n232: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions\n233: WHERE refresh_token_hash = $1\n234:   AND revoked_at IS NULL\n235:   AND expires_at \u003e NOW()\n236: LIMIT 1\n237: `\n238: \n",
+			"line": "231-237",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "774: \n775: const verifyTOTPSecret = `-- name: VerifyTOTPSecret :exec\n776: UPDATE public.user_totp_secrets\n777: SET verified_at = NOW(),\n778:     enabled = true,\n779:     updated_at = NOW()\n780: WHERE user_id = $1 AND verified_at IS NULL\n781: `\n782: \n",
+			"line": "775-781",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "738: \n739: const updateWebAuthnCredentialName = `-- name: UpdateWebAuthnCredentialName :exec\n740: UPDATE public.webauthn_credentials\n741: SET name = $2\n742: WHERE id = $1 AND user_id = $2\n743: `\n744: \n",
+			"line": "739-743",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "698: \n699: const updateTOTPSecret = `-- name: UpdateTOTPSecret :exec\n700: UPDATE public.user_totp_secrets\n701: SET encrypted_secret = $2,\n702:     nonce = $3,\n703:     verified_at = NULL,\n704:     enabled = false,\n705:     updated_at = NOW()\n706: WHERE user_id = $1\n707: `\n708: \n",
+			"line": "699-707",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "533: \n534: const listWebAuthnCredentials = `-- name: ListWebAuthnCredentials :many\n535: \n536: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n537: WHERE user_id = $1\n538: ORDER BY last_used_at DESC NULLS LAST, created_at DESC\n539: `\n540: \n",
+			"line": "534-539",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "487: \n488: const getWebAuthnCredentialByCredentialID = `-- name: GetWebAuthnCredentialByCredentialID :one\n489: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n490: WHERE credential_id = $1\n491: `\n492: \n",
+			"line": "488-491",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "457: \n458: const getWebAuthnCredential = `-- name: GetWebAuthnCredential :one\n459: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n460: WHERE id = $1\n461: `\n462: \n",
+			"line": "458-461",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "431: \n432: const getUserTOTPSecret = `-- name: GetUserTOTPSecret :one\n433: \n434: SELECT user_id, encrypted_secret, nonce, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets\n435: WHERE user_id = $1\n436: `\n437: \n",
+			"line": "432-436",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "270: \n271: const deleteWebAuthnCredential = `-- name: DeleteWebAuthnCredential :exec\n272: DELETE FROM public.webauthn_credentials\n273: WHERE id = $1 AND user_id = $2\n274: `\n275: \n",
+			"line": "271-274",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "248: \n249: const deleteTOTPSecret = `-- name: DeleteTOTPSecret :exec\n250: DELETE FROM public.user_totp_secrets\n251: WHERE user_id = $1\n252: `\n253: \n",
+			"line": "249-252",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "168: \n169: const createWebAuthnCredential = `-- name: CreateWebAuthnCredential :one\n170: INSERT INTO public.webauthn_credentials (\n171:     user_id,\n172:     credential_id,\n173:     public_key,\n174:     attestation_type,\n175:     transports,\n176:     backup_eligible,\n177:     backup_state,\n178:     user_present,\n179:     user_verified,\n180:     aaguid,\n181:     name\n182: ) VALUES (\n183:     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11\n184: ) RETURNING id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at\n185: `\n186: \n",
+			"line": "169-185",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "80: \n81: const createTOTPSecret = `-- name: CreateTOTPSecret :one\n82: INSERT INTO public.user_totp_secrets (\n83:     user_id,\n84:     encrypted_secret,\n85:     nonce,\n86:     enabled\n87: ) VALUES (\n88:     $1, $2, $3, false\n89: ) RETURNING user_id, encrypted_secret, nonce, verified_at, enabled, last_used_at, created_at, updated_at\n90: `\n91: \n",
+			"line": "81-90",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\mfa.sql.go",
+			"code": "62: \n63: const countWebAuthnCredentials = `-- name: CountWebAuthnCredentials :one\n64: SELECT COUNT(*) FROM public.webauthn_credentials\n65: WHERE user_id = $1\n66: `\n67: \n",
+			"line": "63-66",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "522: \n523: const updateAuthTokenLastUsed = `-- name: UpdateAuthTokenLastUsed :exec\n524: UPDATE shared.auth_tokens\n525: SET last_used_at = NOW(),\n526:     updated_at = NOW()\n527: WHERE id = $1\n528: `\n529: \n",
+			"line": "523-528",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "510: \n511: const revokeAuthTokenByHash = `-- name: RevokeAuthTokenByHash :exec\n512: UPDATE shared.auth_tokens\n513: SET revoked_at = NOW(),\n514:     updated_at = NOW()\n515: WHERE token_hash = $1\n516: `\n517: \n",
+			"line": "511-516",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "498: \n499: const revokeAuthToken = `-- name: RevokeAuthToken :exec\n500: UPDATE shared.auth_tokens\n501: SET revoked_at = NOW(),\n502:     updated_at = NOW()\n503: WHERE id = $1\n504: `\n505: \n",
+			"line": "499-504",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "479: \n480: const revokeAllUserAuthTokensExcept = `-- name: RevokeAllUserAuthTokensExcept :exec\n481: UPDATE shared.auth_tokens\n482: SET revoked_at = NOW(),\n483:     updated_at = NOW()\n484: WHERE user_id = $1\n485:   AND id != $2\n486:   AND revoked_at IS NULL\n487: `\n488: \n",
+			"line": "480-487",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "466: \n467: const revokeAllUserAuthTokens = `-- name: RevokeAllUserAuthTokens :exec\n468: UPDATE shared.auth_tokens\n469: SET revoked_at = NOW(),\n470:     updated_at = NOW()\n471: WHERE user_id = $1\n472:   AND revoked_at IS NULL\n473: `\n474: \n",
+			"line": "467-473",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "455: \n456: const markPasswordResetTokenUsed = `-- name: MarkPasswordResetTokenUsed :exec\n457: UPDATE shared.password_reset_tokens\n458: SET used_at = NOW()\n459: WHERE id = $1\n460: `\n461: \n",
+			"line": "456-460",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "444: \n445: const markEmailVerificationTokenUsed = `-- name: MarkEmailVerificationTokenUsed :exec\n446: UPDATE shared.email_verification_tokens\n447: SET verified_at = NOW()\n448: WHERE id = $1\n449: `\n450: \n",
+			"line": "445-449",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "432: \n433: const invalidateUserPasswordResetTokens = `-- name: InvalidateUserPasswordResetTokens :exec\n434: UPDATE shared.password_reset_tokens\n435: SET used_at = NOW()\n436: WHERE user_id = $1\n437:   AND used_at IS NULL\n438: `\n439: \n",
+			"line": "433-438",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "420: \n421: const invalidateUserEmailVerificationTokens = `-- name: InvalidateUserEmailVerificationTokens :exec\n422: UPDATE shared.email_verification_tokens\n423: SET verified_at = NOW()\n424: WHERE user_id = $1\n425:   AND verified_at IS NULL\n426: `\n427: \n",
+			"line": "421-426",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "408: \n409: const invalidateEmailVerificationTokensByEmail = `-- name: InvalidateEmailVerificationTokensByEmail :exec\n410: UPDATE shared.email_verification_tokens\n411: SET verified_at = NOW()\n412: WHERE email = $1\n413:   AND verified_at IS NULL\n414: `\n415: \n",
+			"line": "409-414",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "384: \n385: const getPasswordResetToken = `-- name: GetPasswordResetToken :one\n386: SELECT id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at FROM shared.password_reset_tokens\n387: WHERE token_hash = $1\n388:   AND used_at IS NULL\n389:   AND expires_at \u003e NOW()\n390: LIMIT 1\n391: `\n392: \n",
+			"line": "385-391",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "359: \n360: const getEmailVerificationToken = `-- name: GetEmailVerificationToken :one\n361: SELECT id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at FROM shared.email_verification_tokens\n362: WHERE token_hash = $1\n363:   AND verified_at IS NULL\n364:   AND expires_at \u003e NOW()\n365: LIMIT 1\n366: `\n367: \n",
+			"line": "360-366",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "317: \n318: const getAuthTokensByUserID = `-- name: GetAuthTokensByUserID :many\n319: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n320: WHERE user_id = $1\n321:   AND revoked_at IS NULL\n322:   AND expires_at \u003e NOW()\n323: ORDER BY created_at DESC\n324: `\n325: \n",
+			"line": "318-324",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "269: \n270: const getAuthTokensByDeviceFingerprint = `-- name: GetAuthTokensByDeviceFingerprint :many\n271: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n272: WHERE user_id = $1\n273:   AND device_fingerprint = $2\n274:   AND revoked_at IS NULL\n275:   AND expires_at \u003e NOW()\n276: ORDER BY created_at DESC\n277: `\n278: \n",
+			"line": "270-277",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "240: \n241: const getAuthTokenByHash = `-- name: GetAuthTokenByHash :one\n242: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n243: WHERE token_hash = $1\n244:   AND revoked_at IS NULL\n245:   AND expires_at \u003e NOW()\n246: LIMIT 1\n247: `\n248: \n",
+			"line": "241-247",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "229: \n230: const deleteVerifiedEmailTokens = `-- name: DeleteVerifiedEmailTokens :exec\n231: DELETE FROM shared.email_verification_tokens\n232: WHERE verified_at IS NOT NULL\n233:   AND verified_at \u003c NOW() - INTERVAL '7 days'\n234: `\n235: \n",
+			"line": "230-234",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "218: \n219: const deleteUsedPasswordResetTokens = `-- name: DeleteUsedPasswordResetTokens :exec\n220: DELETE FROM shared.password_reset_tokens\n221: WHERE used_at IS NOT NULL\n222:   AND used_at \u003c NOW() - INTERVAL '7 days'\n223: `\n224: \n",
+			"line": "219-223",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "207: \n208: const deleteRevokedAuthTokens = `-- name: DeleteRevokedAuthTokens :exec\n209: DELETE FROM shared.auth_tokens\n210: WHERE revoked_at IS NOT NULL\n211:   AND revoked_at \u003c NOW() - INTERVAL '30 days'\n212: `\n213: \n",
+			"line": "208-212",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "197: \n198: const deleteExpiredPasswordResetTokens = `-- name: DeleteExpiredPasswordResetTokens :exec\n199: DELETE FROM shared.password_reset_tokens\n200: WHERE expires_at \u003c NOW()\n201: `\n202: \n",
+			"line": "198-201",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "187: \n188: const deleteExpiredEmailVerificationTokens = `-- name: DeleteExpiredEmailVerificationTokens :exec\n189: DELETE FROM shared.email_verification_tokens\n190: WHERE expires_at \u003c NOW()\n191: `\n192: \n",
+			"line": "188-191",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "177: \n178: const deleteExpiredAuthTokens = `-- name: DeleteExpiredAuthTokens :exec\n179: DELETE FROM shared.auth_tokens\n180: WHERE expires_at \u003c NOW()\n181: `\n182: \n",
+			"line": "178-181",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "133: \n134: const createPasswordResetToken = `-- name: CreatePasswordResetToken :one\n135: \n136: INSERT INTO shared.password_reset_tokens (\n137:     user_id,\n138:     token_hash,\n139:     ip_address,\n140:     user_agent,\n141:     expires_at\n142: ) VALUES (\n143:     $1, $2, $3, $4, $5\n144: ) RETURNING id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at\n145: `\n146: \n",
+			"line": "134-145",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "85: \n86: const createEmailVerificationToken = `-- name: CreateEmailVerificationToken :one\n87: \n88: INSERT INTO shared.email_verification_tokens (\n89:     user_id,\n90:     token_hash,\n91:     email,\n92:     ip_address,\n93:     user_agent,\n94:     expires_at\n95: ) VALUES (\n96:     $1, $2, $3, $4, $5, $6\n97: ) RETURNING id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at\n98: `\n99: \n",
+			"line": "86-98",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "29: \n30: const createAuthToken = `-- name: CreateAuthToken :one\n31: INSERT INTO shared.auth_tokens (\n32:     user_id,\n33:     token_hash,\n34:     token_type,\n35:     device_name,\n36:     device_fingerprint,\n37:     ip_address,\n38:     user_agent,\n39:     expires_at\n40: ) VALUES (\n41:     $1, $2, $3, $4, $5, $6, $7, $8\n42: ) RETURNING id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at\n43: `\n44: \n",
+			"line": "30-43",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\auth_tokens.sql.go",
+			"code": "15: \n16: const countActiveAuthTokensByUser = `-- name: CountActiveAuthTokensByUser :one\n17: SELECT COUNT(*) FROM shared.auth_tokens\n18: WHERE user_id = $1\n19:   AND revoked_at IS NULL\n20:   AND expires_at \u003e NOW()\n21: `\n22: \n",
+			"line": "16-21",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "290: \n291: const updateAPIKeyScopes = `-- name: UpdateAPIKeyScopes :exec\n292: UPDATE shared.api_keys\n293: SET scopes = $2, updated_at = NOW()\n294: WHERE id = $1\n295: `\n296: \n",
+			"line": "291-295",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "279: \n280: const updateAPIKeyLastUsed = `-- name: UpdateAPIKeyLastUsed :exec\n281: UPDATE shared.api_keys\n282: SET last_used_at = NOW(), updated_at = NOW()\n283: WHERE id = $1\n284: `\n285: \n",
+			"line": "280-284",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "268: \n269: const revokeAPIKey = `-- name: RevokeAPIKey :exec\n270: UPDATE shared.api_keys\n271: SET is_active = false, updated_at = NOW()\n272: WHERE id = $1\n273: `\n274: \n",
+			"line": "269-273",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "229: \n230: const listUserAPIKeys = `-- name: ListUserAPIKeys :many\n231: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n232: WHERE user_id = $1\n233: ORDER BY created_at DESC\n234: `\n235: \n",
+			"line": "230-234",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "190: \n191: const listActiveUserAPIKeys = `-- name: ListActiveUserAPIKeys :many\n192: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n193: WHERE user_id = $1 AND is_active = true\n194: ORDER BY created_at DESC\n195: `\n196: \n",
+			"line": "191-195",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "176: \n177: const getAPIKeyUsageCount = `-- name: GetAPIKeyUsageCount :one\n178: SELECT last_used_at FROM shared.api_keys\n179: WHERE id = $1\n180: `\n181: \n",
+			"line": "177-180",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "150: \n151: const getAPIKeyByPrefix = `-- name: GetAPIKeyByPrefix :one\n152: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n153: WHERE key_prefix = $1 AND is_active = true\n154: LIMIT 1\n155: `\n156: \n",
+			"line": "151-155",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "125: \n126: const getAPIKeyByHash = `-- name: GetAPIKeyByHash :one\n127: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n128: WHERE key_hash = $1\n129: `\n130: \n",
+			"line": "126-129",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "100: \n101: const getAPIKey = `-- name: GetAPIKey :one\n102: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n103: WHERE id = $1\n104: `\n105: \n",
+			"line": "101-104",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "88: \n89: const deleteExpiredAPIKeys = `-- name: DeleteExpiredAPIKeys :exec\n90: DELETE FROM shared.api_keys\n91: WHERE expires_at IS NOT NULL\n92:   AND expires_at \u003c NOW()\n93:   AND is_active = false\n94: `\n95: \n",
+			"line": "89-94",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "78: \n79: const deleteAPIKey = `-- name: DeleteAPIKey :exec\n80: DELETE FROM shared.api_keys\n81: WHERE id = $1\n82: `\n83: \n",
+			"line": "79-82",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "26: \n27: const createAPIKey = `-- name: CreateAPIKey :one\n28: INSERT INTO shared.api_keys (\n29:     user_id,\n30:     name,\n31:     description,\n32:     key_hash,\n33:     key_prefix,\n34:     scopes,\n35:     expires_at\n36: ) VALUES (\n37:     $1, $2, $3, $4, $5, $6, $7\n38: ) RETURNING id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at\n39: `\n40: \n",
+			"line": "27-39",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\database\\db\\apikeys.sql.go",
+			"code": "14: \n15: const countUserAPIKeys = `-- name: CountUserAPIKeys :one\n16: SELECT COUNT(*) FROM shared.api_keys\n17: WHERE user_id = $1 AND is_active = true\n18: `\n19: \n",
+			"line": "15-18",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "22",
+				"url": "https://cwe.mitre.org/data/definitions/22.html"
+			},
+			"rule_id": "G304",
+			"details": "Potential file inclusion via variable",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "315: \n316: \tdata, err := os.ReadFile(cachePath)\n317: \tif err != nil {\n",
+			"line": "316",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null,
+			"autofix": "Consider using os.Root to scope file access under a fixed root (Go \u003e=1.24). Prefer root.Open/root.Stat over os.Open/os.Stat to prevent directory traversal."
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "400",
+				"url": "https://cwe.mitre.org/data/definitions/400.html"
+			},
+			"rule_id": "G112",
+			"details": "Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\observability\\server.go",
+			"code": "59: \n60: \thttpServer := \u0026http.Server{\n61: \t\tAddr:    addr,\n62: \t\tHandler: mux,\n63: \t}\n64: \n",
+			"line": "60-63",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "331: \tdir := filepath.Dir(cachePath)\n332: \tif err := os.MkdirAll(dir, 0755); err != nil {\n333: \t\treturn err\n",
+			"line": "332",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "87: \tif cfg.CacheDir != \"\" {\n88: \t\tif err := os.MkdirAll(cfg.CacheDir, 0755); err != nil {\n89: \t\t\treturn nil, fmt.Errorf(\"create cache directory: %w\", err)\n",
+			"line": "88",
+			"column": "13",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G306",
+			"details": "Expect WriteFile permissions to be 0600 or less",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "335: \n336: \treturn os.WriteFile(cachePath, data, 0644)\n337: }\n",
+			"line": "336",
+			"column": "9",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "6030: \t\t\t\t\t\t\t\t\t}\n6031: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n6032: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "6031",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "5391: \t\t\t\t\t\t}\n5392: \t\t\t\t\t\targs[0] = elem[:idx]\n5393: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "5392",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "5320: \t\t\t\t\t\t\t}\n5321: \t\t\t\t\t\t\targs[0] = elem[:idx]\n5322: \t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "5321",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "4776: \t\t\t\t\t\t\t}\n4777: \t\t\t\t\t\t\targs[0] = elem[:idx]\n4778: \t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "4777",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "4027: \t\t\t\t\t\t}\n4028: \t\t\t\t\t\targs[0] = elem[:idx]\n4029: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "4028",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "3935: \t\t\t\t\t\t}\n3936: \t\t\t\t\t\targs[1] = elem[:idx]\n3937: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "3936",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "3914: \t\t\t\t\t}\n3915: \t\t\t\t\targs[0] = elem[:idx]\n3916: \t\t\t\t\telem = elem[idx:]\n",
+			"line": "3915",
+			"column": "10",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "3854: \t\t\t\t\t}\n3855: \t\t\t\t\targs[0] = elem[:idx]\n3856: \t\t\t\t\telem = elem[idx:]\n",
+			"line": "3855",
+			"column": "10",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "3333: \t\t\t\t\t\t\t\t}\n3334: \t\t\t\t\t\t\t\targs[0] = elem[:idx]\n3335: \t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "3334",
+			"column": "13",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "3052: \t\t\t\t\t\t\t\t\t}\n3053: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n3054: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "3053",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "2666: \t\t\t\t\t\t\t\t\t}\n2667: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n2668: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "2667",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "2142: \t\t\t\t\t\t}\n2143: \t\t\t\t\t\targs[0] = elem[:idx]\n2144: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "2143",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "2082: \t\t\t\t\t\t\t}\n2083: \t\t\t\t\t\t\targs[0] = elem[:idx]\n2084: \t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "2083",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "1625: \t\t\t\t\t\t\t}\n1626: \t\t\t\t\t\t\targs[0] = elem[:idx]\n1627: \t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "1626",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "991: \t\t\t\t\t\t}\n992: \t\t\t\t\t\targs[0] = elem[:idx]\n993: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "992",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "912: \t\t\t\t\t\t}\n913: \t\t\t\t\t\targs[1] = elem[:idx]\n914: \t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "913",
+			"column": "11",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "891: \t\t\t\t\t}\n892: \t\t\t\t\targs[0] = elem[:idx]\n893: \t\t\t\t\telem = elem[idx:]\n",
+			"line": "892",
+			"column": "10",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "837: \t\t\t\t\t}\n838: \t\t\t\t\targs[0] = elem[:idx]\n839: \t\t\t\t\telem = elem[idx:]\n",
+			"line": "838",
+			"column": "10",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "403: \t\t\t\t\t\t\t\t}\n404: \t\t\t\t\t\t\t\targs[0] = elem[:idx]\n405: \t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "404",
+			"column": "13",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "118",
+				"url": "https://cwe.mitre.org/data/definitions/118.html"
+			},
+			"rule_id": "G602",
+			"details": "slice index out of range",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\api\\ogen\\oas_router_gen.go",
+			"code": "164: \t\t\t\t\t\t\t\t\t}\n165: \t\t\t\t\t\t\t\t\targs[0] = elem[:idx]\n166: \t\t\t\t\t\t\t\t\telem = elem[idx:]\n",
+			"line": "165",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "703",
+				"url": "https://cwe.mitre.org/data/definitions/703.html"
+			},
+			"rule_id": "G104",
+			"details": "Errors unhandled",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\service\\rbac\\roles.go",
+			"code": "176: \t\t\t// Rollback on failure\n177: \t\t\ts.enforcer.RemoveFilteredPolicy(0, name)\n178: \t\t\treturn nil, fmt.Errorf(\"failed to add permission %s: %w\", perm.String(), err)\n",
+			"line": "177",
+			"column": "4",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "703",
+				"url": "https://cwe.mitre.org/data/definitions/703.html"
+			},
+			"rule_id": "G104",
+			"details": "Errors unhandled",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "311: \tif time.Since(info.ModTime()) \u003e s.config.CacheTTL {\n312: \t\tos.Remove(cachePath)\n313: \t\treturn nil, \"\", fmt.Errorf(\"cache expired\")\n",
+			"line": "312",
+			"column": "3",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "LOW",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "703",
+				"url": "https://cwe.mitre.org/data/definitions/703.html"
+			},
+			"rule_id": "G104",
+			"details": "Errors unhandled",
+			"file": "c:\\Users\\ms\\dev\\revenge\\internal\\infra\\image\\service.go",
+			"code": "254: \n255: \tw.Write(data)\n256: }\n",
+			"line": "255",
+			"column": "2",
+			"nosec": false,
+			"suppressions": null
+		}
+	],
+	"Stats": {
+		"files": 179,
+		"lines": 167104,
+		"nosec": 1,
+		"found": 117
+	},
+	"GosecVersion": "dev"
+}

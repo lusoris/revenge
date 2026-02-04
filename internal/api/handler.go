@@ -187,8 +187,10 @@ func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSet
 func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateServerSettingParams) (ogen.UpdateServerSettingRes, error) {
 	h.logger.Debug("Update server setting requested", zap.String("key", params.Key))
 
-	// TODO: Get user ID from auth context
-	userID := uuid.New() // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
 
 	setting, err := h.settingsService.SetServerSetting(ctx, params.Key, req.Value, userID)
 	if err != nil {
@@ -207,8 +209,10 @@ func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValu
 func (h *Handler) ListUserSettings(ctx context.Context) (ogen.ListUserSettingsRes, error) {
 	h.logger.Debug("List user settings requested")
 
-	// TODO: Get user ID from auth context
-	userID := uuid.New() // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
 
 	settingsList, err := h.settingsService.ListUserSettings(ctx, userID)
 	if err != nil {
@@ -227,8 +231,10 @@ func (h *Handler) ListUserSettings(ctx context.Context) (ogen.ListUserSettingsRe
 func (h *Handler) GetUserSetting(ctx context.Context, params ogen.GetUserSettingParams) (ogen.GetUserSettingRes, error) {
 	h.logger.Debug("Get user setting requested", zap.String("key", params.Key))
 
-	// TODO: Get user ID from auth context
-	userID := uuid.New() // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
 
 	setting, err := h.settingsService.GetUserSetting(ctx, userID, params.Key)
 	if err != nil {
@@ -243,8 +249,10 @@ func (h *Handler) GetUserSetting(ctx context.Context, params ogen.GetUserSetting
 func (h *Handler) UpdateUserSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateUserSettingParams) (ogen.UpdateUserSettingRes, error) {
 	h.logger.Debug("Update user setting requested", zap.String("key", params.Key))
 
-	// TODO: Get user ID from auth context
-	userID := uuid.New() // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
 
 	setting, err := h.settingsService.SetUserSetting(ctx, userID, params.Key, req.Value)
 	if err != nil {
@@ -259,8 +267,10 @@ func (h *Handler) UpdateUserSetting(ctx context.Context, req *ogen.SettingValue,
 func (h *Handler) DeleteUserSetting(ctx context.Context, params ogen.DeleteUserSettingParams) (ogen.DeleteUserSettingRes, error) {
 	h.logger.Debug("Delete user setting requested", zap.String("key", params.Key))
 
-	// TODO: Get user ID from auth context
-	userID := uuid.New() // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
 
 	if err := h.settingsService.DeleteUserSetting(ctx, userID, params.Key); err != nil {
 		return &ogen.DeleteUserSettingNotFound{}, nil
@@ -410,7 +420,10 @@ func (h *Handler) GetCurrentUser(ctx context.Context) (ogen.GetCurrentUserRes, e
 
 // UpdateCurrentUser updates the authenticated user's profile
 func (h *Handler) UpdateCurrentUser(ctx context.Context, req *ogen.UserUpdate) (ogen.UpdateCurrentUserRes, error) {
-	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return &ogen.UpdateCurrentUserBadRequest{}, errors.Wrap(err, "unauthorized")
+	}
 
 	params := user.UpdateUserParams{}
 	if email, ok := req.Email.Get(); ok {
@@ -471,7 +484,10 @@ func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams
 
 // GetUserPreferences returns user preferences
 func (h *Handler) GetUserPreferences(ctx context.Context) (ogen.GetUserPreferencesRes, error) {
-	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
+	}
 
 	prefs, err := h.userService.GetUserPreferences(ctx, userID)
 	if err != nil {
@@ -496,7 +512,10 @@ func (h *Handler) GetUserPreferences(ctx context.Context) (ogen.GetUserPreferenc
 
 // UpdateUserPreferences updates user preferences
 func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPreferencesUpdate) (ogen.UpdateUserPreferencesRes, error) {
-	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return &ogen.UpdateUserPreferencesBadRequest{}, errors.Wrap(err, "unauthorized")
+	}
 
 	params := user.UpsertPreferencesParams{
 		UserID: userID,
@@ -557,7 +576,10 @@ func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPrefe
 
 // UploadAvatar handles avatar upload
 func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (ogen.UploadAvatarRes, error) {
-	userID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440000") // Placeholder
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return &ogen.UploadAvatarBadRequest{}, errors.Wrap(err, "unauthorized")
+	}
 
 	// TODO: Parse multipart form and get file metadata
 	// For now, return a placeholder response
