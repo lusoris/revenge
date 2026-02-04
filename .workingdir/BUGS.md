@@ -66,3 +66,32 @@ _None yet_
 - File size validation before processing
 - MIME type allowlist validation
 
+
+## A0.5: Request Metadata Extraction [P1] - COMPLETED
+
+**Status**: Fixed
+**Date**: 2026-02-04
+
+### Changes Made:
+1. Created `internal/api/middleware/request_metadata.go`:
+   - `RequestMetadata` struct with IP, UserAgent, AcceptLanguage
+   - `RequestMetadataMiddleware()` ogen middleware
+   - `extractClientIP()` with X-Forwarded-For, X-Real-IP, RemoteAddr support
+   - `stripPort()` handling IPv4 and IPv6 correctly
+   - Context helpers: `WithRequestMetadata`, `GetRequestMetadata`, `GetIPAddress`, `GetUserAgent`
+
+2. Added comprehensive tests for all cases:
+   - X-Forwarded-For chain parsing
+   - X-Real-IP fallback
+   - IPv4 with/without port
+   - IPv6 with brackets and port: `[::1]:8080`
+   - IPv6 without port: `::1`
+
+### Usage:
+```go
+// In handler
+meta := middleware.GetRequestMetadata(ctx)
+ip := meta.IPAddress
+ua := meta.UserAgent
+```
+
