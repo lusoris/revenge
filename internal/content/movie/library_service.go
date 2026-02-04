@@ -153,31 +153,82 @@ func (s *LibraryService) RefreshMovie(ctx context.Context, movieID uuid.UUID) er
 		return fmt.Errorf("movie has no TMDb ID")
 	}
 
+	tmdbID := int(*existingMovie.TMDbID)
+
 	// Fetch fresh metadata from TMDb
 	if err := s.metadataService.EnrichMovie(ctx, existingMovie); err != nil {
 		return fmt.Errorf("failed to enrich movie: %w", err)
 	}
 
-	// Update in database - note: UpdateMovie signature needs to be checked
-	// For now, just use the enriched movie data
-	_ = existingMovie
+	// Update movie in database
+	params := UpdateMovieParams{
+		ID:               existingMovie.ID,
+		TMDbID:           existingMovie.TMDbID,
+		IMDbID:           existingMovie.IMDbID,
+		Title:            &existingMovie.Title,
+		OriginalTitle:    existingMovie.OriginalTitle,
+		Year:             existingMovie.Year,
+		ReleaseDate:      formatDate(existingMovie.ReleaseDate),
+		Runtime:          existingMovie.Runtime,
+		Overview:         existingMovie.Overview,
+		Tagline:          existingMovie.Tagline,
+		Status:           existingMovie.Status,
+		OriginalLanguage: existingMovie.OriginalLanguage,
+		PosterPath:       existingMovie.PosterPath,
+		BackdropPath:     existingMovie.BackdropPath,
+		VoteAverage:      formatDecimal(existingMovie.VoteAverage),
+		VoteCount:        existingMovie.VoteCount,
+		Popularity:       formatDecimal(existingMovie.Popularity),
+		Budget:           existingMovie.Budget,
+		Revenue:          existingMovie.Revenue,
+	}
+
+	if _, err := s.repo.UpdateMovie(ctx, params); err != nil {
+		return fmt.Errorf("failed to update movie: %w", err)
+	}
 
 	// Refresh credits
-	if existingMovie.TMDbID != nil {
-		credits, err := s.metadataService.GetMovieCredits(ctx, movieID, int(*existingMovie.TMDbID))
-		if err == nil && len(credits) > 0 {
-			// Delete old credits and insert new ones
-			// Would need DeleteMovieCredits and CreateMovieCredits methods
-			_ = credits
+	credits, err := s.metadataService.GetMovieCredits(ctx, movieID, tmdbID)
+	if err == nil && len(credits) > 0 {
+		// Delete old credits
+		if err := s.repo.DeleteMovieCredits(ctx, movieID); err != nil {
+			return fmt.Errorf("failed to delete old credits: %w", err)
+		}
+
+		// Insert new credits
+		for _, credit := range credits {
+			creditParams := CreateMovieCreditParams{
+				MovieID:      movieID,
+				TMDbPersonID: credit.TMDbPersonID,
+				Name:         credit.Name,
+				CreditType:   credit.CreditType,
+				Character:    credit.Character,
+				Job:          credit.Job,
+				Department:   credit.Department,
+				CastOrder:    credit.CastOrder,
+				ProfilePath:  credit.ProfilePath,
+			}
+			if _, err := s.repo.CreateMovieCredit(ctx, creditParams); err != nil {
+				// Log but continue with other credits
+				continue
+			}
 		}
 	}
 
 	// Refresh genres
-	if existingMovie.TMDbID != nil {
-		genres, err := s.metadataService.GetMovieGenres(ctx, movieID, int(*existingMovie.TMDbID))
-		if err == nil && len(genres) > 0 {
-			// Delete old genres and insert new ones
-			_ = genres
+	genres, err := s.metadataService.GetMovieGenres(ctx, movieID, tmdbID)
+	if err == nil && len(genres) > 0 {
+		// Delete old genres
+		if err := s.repo.DeleteMovieGenres(ctx, movieID); err != nil {
+			return fmt.Errorf("failed to delete old genres: %w", err)
+		}
+
+		// Add new genres
+		for _, genre := range genres {
+			if err := s.repo.AddMovieGenre(ctx, movieID, genre.TMDbGenreID, genre.Name); err != nil {
+				// Log but continue with other genres
+				continue
+			}
 		}
 	}
 
@@ -192,4 +243,72 @@ func (s *LibraryService) GetLibraryStats(ctx context.Context) (map[string]int, e
 		"total_movies": 0,
 		"total_files":  0,
 	}, nil
+}
+
+// MatchFile attempts to match a single file to a movie
+// This is used by the file match job to process individual files
+func (s *LibraryService) MatchFile(ctx context.Context, filePath string, forceRematch bool) (*MatchResult, error) {
+	// Check if file exists
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("file not found: %w", err)
+	}
+
+	// Check if it's a video file
+	if !isVideoFile(filePath) {
+		return nil, fmt.Errorf("not a video file: %s", filePath)
+	}
+
+	// Check if file is already matched (unless force rematch)
+	if !forceRematch {
+		existingFile, err := s.repo.GetMovieFileByPath(ctx, filePath)
+		if err == nil && existingFile != nil {
+			// File already matched
+			movie, err := s.repo.GetMovie(ctx, existingFile.MovieID)
+			if err == nil {
+				return &MatchResult{
+					ScanResult: ScanResult{
+						FilePath: filePath,
+						FileName: fileInfo.Name(),
+						FileSize: fileInfo.Size(),
+						IsVideo:  true,
+					},
+					Movie:      movie,
+					MatchType:  MatchTypeExact,
+					Confidence: 1.0,
+				}, nil
+			}
+		}
+	}
+
+	// Parse filename to get title and year
+	fileName := fileInfo.Name()
+	title, year := parseMovieFilename(fileName)
+
+	// Create scan result
+	scanResult := ScanResult{
+		FilePath:    filePath,
+		FileName:    fileName,
+		ParsedTitle: title,
+		ParsedYear:  year,
+		FileSize:    fileInfo.Size(),
+		IsVideo:     true,
+	}
+
+	// Use matcher to match the file
+	matchResult := s.matcher.MatchFile(ctx, scanResult)
+
+	// If match was successful and created a new movie, create the file record
+	if matchResult.Movie != nil && matchResult.Error == nil {
+		fileInfoExtracted, err := s.extractFileInfo(filePath)
+		if err == nil {
+			movieFile := CreateMovieFile(matchResult.Movie.ID, fileInfoExtracted)
+			if err := s.createMovieFile(ctx, movieFile); err != nil {
+				// Log error but don't fail the match
+				matchResult.Error = fmt.Errorf("matched but failed to create file record: %w", err)
+			}
+		}
+	}
+
+	return &matchResult, nil
 }

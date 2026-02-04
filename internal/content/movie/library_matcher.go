@@ -50,15 +50,15 @@ func (m *Matcher) MatchFiles(ctx context.Context, results []ScanResult) ([]Match
 	var matchResults []MatchResult
 
 	for _, result := range results {
-		matchResult := m.matchFile(ctx, result)
+		matchResult := m.MatchFile(ctx, result)
 		matchResults = append(matchResults, matchResult)
 	}
 
 	return matchResults, nil
 }
 
-// matchFile attempts to match a single file
-func (m *Matcher) matchFile(ctx context.Context, result ScanResult) MatchResult {
+// MatchFile attempts to match a single file (public for use by jobs)
+func (m *Matcher) MatchFile(ctx context.Context, result ScanResult) MatchResult {
 	// Try to find existing movie in DB first
 	existingMovie, err := m.findExistingMovie(ctx, result)
 	if err == nil && existingMovie != nil {

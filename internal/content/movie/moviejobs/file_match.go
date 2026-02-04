@@ -55,11 +55,41 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 		zap.Bool("force_rematch", args.ForceRematch),
 	)
 
-	// TODO: Implement once library.Service.MatchFile method is available
-	w.logger.Error("movie file match not implemented",
-		zap.String("file_path", args.FilePath),
-		zap.String("reason", "library.Service.MatchFile method not available"),
-	)
+	// Match the file using the library service
+	result, err := w.libraryService.MatchFile(ctx, args.FilePath, args.ForceRematch)
+	if err != nil {
+		w.logger.Error("file match failed",
+			zap.String("file_path", args.FilePath),
+			zap.Error(err),
+		)
+		return err
+	}
 
-	return errors.New("movie file match not implemented: library.Service.MatchFile method not available")
+	// Check for match errors
+	if result.Error != nil {
+		w.logger.Warn("file matched with warnings",
+			zap.String("file_path", args.FilePath),
+			zap.Error(result.Error),
+		)
+	}
+
+	// Log match result
+	if result.Movie != nil {
+		w.logger.Info("movie file matched successfully",
+			zap.String("file_path", args.FilePath),
+			zap.String("movie_id", result.Movie.ID.String()),
+			zap.String("movie_title", result.Movie.Title),
+			zap.String("match_type", string(result.MatchType)),
+			zap.Float64("confidence", result.Confidence),
+			zap.Bool("created_new_movie", result.CreatedNewMovie),
+		)
+	} else {
+		w.logger.Warn("file could not be matched",
+			zap.String("file_path", args.FilePath),
+			zap.String("match_type", string(result.MatchType)),
+		)
+		return errors.New("file could not be matched to any movie")
+	}
+
+	return nil
 }
