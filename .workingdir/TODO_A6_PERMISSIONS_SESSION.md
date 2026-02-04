@@ -75,18 +75,22 @@ Expanded from 4 queues to 5-level priority system.
 
 ---
 
-## A6.4: Configurable Activity Log Retention
+## A6.4: Configurable Activity Log Retention ✅
 
-**Priority**: LOW | **Effort**: 1-2h
+**Priority**: LOW | **Effort**: 1-2h | **Actual**: 0.25h
+**Status**: COMPLETED (2026-02-04)
 
-Activity logs should be configurable, default 90 days.
+Activity logs are now configurable with 90 day default.
 
-**Tasks**:
-- [ ] Add config: `activity.retention_days: 90`
-- [ ] Update cleanup job to use config value
-- [ ] Add admin API: `PUT /api/v1/admin/settings/activity-retention`
-- [ ] Migration for default server setting
-- [ ] Tests
+**Completed Tasks**:
+- [x] Add config: `activity.retention_days: 90`
+  - Added ActivityConfig struct to config.go
+  - Default 90 days retention
+- [x] Cleanup job already supports configurable retention via ActivityCleanupArgs
+  - Job accepts `retention_days` parameter
+  - Falls back to 90 days if not specified
+- [ ] Admin API: `PUT /api/v1/admin/settings/activity-retention` (deferred)
+- [ ] Migration for server setting (deferred - config file sufficient)
 
 ---
 

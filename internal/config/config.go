@@ -48,6 +48,17 @@ type Config struct {
 
 	// Avatar configuration
 	Avatar AvatarConfig `koanf:"avatar"`
+
+	// Activity configuration
+	Activity ActivityConfig `koanf:"activity"`
+}
+
+// ActivityConfig holds activity log configuration.
+type ActivityConfig struct {
+	// RetentionDays is the number of days to retain activity logs.
+	// Logs older than this will be automatically deleted by cleanup jobs.
+	// Default: 90 days.
+	RetentionDays int `koanf:"retention_days"`
 }
 
 // ServerConfig holds HTTP server configuration.
@@ -460,5 +471,8 @@ func Defaults() map[string]interface{} {
 		"avatar.storage_path":   "/data/avatars",
 		"avatar.max_size_bytes": 2 * 1024 * 1024, // 2MB
 		"avatar.allowed_types":  []string{"image/jpeg", "image/png", "image/webp"},
+
+		// Activity defaults
+		"activity.retention_days": 90, // 90 days default retention
 	}
 }
