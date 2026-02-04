@@ -79,7 +79,7 @@ func NewService(cfg Config, logger *zap.Logger) (*Service, error) {
 
 	// Ensure cache directory exists
 	if cfg.CacheDir != "" {
-		if err := os.MkdirAll(cfg.CacheDir, 0755); err != nil {
+		if err := os.MkdirAll(cfg.CacheDir, 0750); err != nil {
 			return nil, fmt.Errorf("create cache directory: %w", err)
 		}
 	}
@@ -305,10 +305,11 @@ func (s *Service) getFromCache(imageType, path, size string) ([]byte, string, er
 	}
 
 	if time.Since(info.ModTime()) > s.config.CacheTTL {
-		os.Remove(cachePath)
+		_ = os.Remove(cachePath) // Ignore error - cache cleanup is best-effort
 		return nil, "", fmt.Errorf("cache expired")
 	}
 
+	// #nosec G304 -- cachePath is constructed internally from validated imageType/path/size
 	data, err := os.ReadFile(cachePath)
 	if err != nil {
 		return nil, "", err
@@ -325,11 +326,11 @@ func (s *Service) saveToCache(imageType, path, size string, data []byte, content
 
 	// Create directory
 	dir := filepath.Dir(cachePath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0750); err != nil {
 		return err
 	}
 
-	return os.WriteFile(cachePath, data, 0644)
+	return os.WriteFile(cachePath, data, 0600)
 }
 
 func isValidImageType(contentType string) bool {

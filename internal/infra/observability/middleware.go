@@ -96,6 +96,7 @@ func isIDSegment(seg string) bool {
 // isAlphanumericWithHyphens checks if string contains only alphanumeric chars and hyphens.
 func isAlphanumericWithHyphens(s string) bool {
 	for _, r := range s {
+		//nolint:staticcheck // QF1001: current form is more readable than De Morgan's law
 		if !((r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '-') {
 			return false
 		}

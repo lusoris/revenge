@@ -333,14 +333,14 @@ func (a *EmailAgent) sendEmail(ctx context.Context, recipients []string, msg []b
 	if err != nil {
 		return fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	// Create SMTP client
 	client, err := smtp.NewClient(conn, a.config.Host)
 	if err != nil {
 		return fmt.Errorf("failed to create SMTP client: %w", err)
 	}
-	defer client.Close()
+	defer func() { _ = client.Close() }()
 
 	// STARTTLS if configured (and not already using TLS)
 	if a.config.UseStartTLS && !a.config.UseTLS {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -58,8 +59,9 @@ func NewServer(p ServerParams) *Server {
 	addr := fmt.Sprintf("%s:%d", p.Config.Server.Host, port)
 
 	httpServer := &http.Server{
-		Addr:    addr,
-		Handler: mux,
+		Addr:              addr,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second, // Prevent slowloris attacks
 	}
 
 	server := &Server{
