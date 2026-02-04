@@ -117,7 +117,8 @@
       "Bash(gosec:*)",
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "WebFetch(domain:golangci-lint.run)"
     ]
   }
 }
