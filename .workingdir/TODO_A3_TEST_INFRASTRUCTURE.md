@@ -3,46 +3,44 @@
 **Priority**: P2
 **Effort**: 3-4h
 **Dependencies**: A0
+**Status**: ✅ Complete (2026-02-04)
 
 ---
 
-## A3.1: Dragonfly Testcontainer
+## A3.1: Dragonfly Testcontainer ✅
 
-**Affected File**: `internal/testutil/containers.go:168-171`
+**Affected File**: `internal/testutil/containers.go`
 
-**Current State**:
-```go
-t.Skip("Dragonfly container not yet implemented - implement when cache module is needed")
-```
+**Completed Tasks**:
+- [x] Implement `NewDragonflyContainer(t) *DragonflyContainer`
+- [x] Use `docker.io/dragonflydb/dragonfly:latest` image
+- [x] Expose port 6379 (Redis-compatible)
+- [x] Wait for "accepting connections" log message
+- [x] Return connection URL, Host, Port
+- [x] Cleanup via `Close()` method
 
-**Tasks**:
-- [ ] Implement `NewDragonflyContainer(t) (*DragonflyContainer, error)`
-- [ ] Use `docker.io/dragonflydb/dragonfly:latest` image
-- [ ] Return connection string
-- [ ] Cleanup on test completion
-- [ ] Test the container helper itself
-
----
-
-## A3.2: Typesense Testcontainer
-
-**Affected File**: `internal/testutil/containers.go:182-185`
-
-**Current State**:
-```go
-t.Skip("Typesense container not yet implemented - implement when search module is needed")
-```
-
-**Tasks**:
-- [ ] Implement `NewTypesenseContainer(t) (*TypesenseContainer, error)`
-- [ ] Use `typesense/typesense:latest` image
-- [ ] Configure API key
-- [ ] Return connection details
-- [ ] Cleanup on test completion
-- [ ] Test the container helper itself
+**Implementation Details**:
+- Returns Redis-compatible URL: `redis://host:port`
+- Follows same pattern as PostgreSQL container
+- 60 second startup timeout
 
 ---
 
-## Notes
+## A3.2: Typesense Testcontainer ✅
 
-Both containers should follow the pattern established by the PostgreSQL testcontainer in the same file.
+**Affected File**: `internal/testutil/containers.go`
+
+**Completed Tasks**:
+- [x] Implement `NewTypesenseContainer(t) *TypesenseContainer`
+- [x] Use `typesense/typesense:27.1` image
+- [x] Configure test API key
+- [x] Expose port 8108 (HTTP API)
+- [x] Wait for `/health` endpoint
+- [x] Return connection URL, Host, Port, APIKey
+- [x] Cleanup via `Close()` method
+
+**Implementation Details**:
+- Uses test API key: `test-api-key-for-integration-tests`
+- Returns HTTP URL: `http://host:port`
+- Health check via HTTP endpoint
+- 60 second startup timeout

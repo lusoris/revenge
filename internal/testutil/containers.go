@@ -161,27 +161,170 @@ func (c *PostgreSQLContainer) Reset(t *testing.T) {
 
 // DragonflyContainer represents a Dragonfly (Redis-compatible) container for integration testing.
 type DragonflyContainer struct {
-	URL string
+	container testcontainers.Container
+	URL       string
+	Host      string
+	Port      string
 }
 
 // NewDragonflyContainer starts a Dragonfly container for integration testing.
-// Currently returns a stub - will be implemented when cache is needed.
+// Uses testcontainers-go to start a real Dragonfly instance in Docker.
+//
+// Example:
+//
+//	func TestCacheIntegration(t *testing.T) {
+//	    if testing.Short() {
+//	        t.Skip("skipping integration test")
+//	    }
+//
+//	    df := testutil.NewDragonflyContainer(t)
+//	    defer df.Close()
+//
+//	    // Use df.URL for cache client connection
+//	}
 func NewDragonflyContainer(t *testing.T) *DragonflyContainer {
 	t.Helper()
-	t.Skip("Dragonfly container not yet implemented - implement when cache module is needed")
-	return nil
+
+	ctx := context.Background()
+
+	// Create Dragonfly container request
+	req := testcontainers.ContainerRequest{
+		Image:        "docker.io/dragonflydb/dragonfly:latest",
+		ExposedPorts: []string{"6379/tcp"},
+		WaitingFor: wait.ForAll(
+			wait.ForLog("accepting connections").
+				WithStartupTimeout(60*time.Second),
+			wait.ForListeningPort("6379/tcp"),
+		),
+	}
+
+	// Start container
+	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: req,
+		Started:          true,
+	})
+	if err != nil {
+		t.Fatalf("failed to start Dragonfly container: %v", err)
+	}
+
+	// Get connection details
+	host, err := container.Host(ctx)
+	if err != nil {
+		_ = container.Terminate(ctx)
+		t.Fatalf("failed to get container host: %v", err)
+	}
+
+	port, err := container.MappedPort(ctx, "6379")
+	if err != nil {
+		_ = container.Terminate(ctx)
+		t.Fatalf("failed to get container port: %v", err)
+	}
+
+	// Build connection URL (Redis-compatible)
+	url := fmt.Sprintf("redis://%s:%s", host, port.Port())
+
+	return &DragonflyContainer{
+		container: container,
+		URL:       url,
+		Host:      host,
+		Port:      port.Port(),
+	}
+}
+
+// Close stops the Dragonfly container.
+func (c *DragonflyContainer) Close() {
+	if c.container != nil {
+		ctx := context.Background()
+		_ = c.container.Terminate(ctx)
+	}
 }
 
 // TypesenseContainer represents a Typesense container for integration testing.
 type TypesenseContainer struct {
-	URL    string
-	APIKey string
+	container testcontainers.Container
+	URL       string
+	Host      string
+	Port      string
+	APIKey    string
 }
 
 // NewTypesenseContainer starts a Typesense container for integration testing.
-// Currently returns a stub - will be implemented when search is needed.
+// Uses testcontainers-go to start a real Typesense instance in Docker.
+//
+// Example:
+//
+//	func TestSearchIntegration(t *testing.T) {
+//	    if testing.Short() {
+//	        t.Skip("skipping integration test")
+//	    }
+//
+//	    ts := testutil.NewTypesenseContainer(t)
+//	    defer ts.Close()
+//
+//	    // Use ts.URL and ts.APIKey for search client connection
+//	}
 func NewTypesenseContainer(t *testing.T) *TypesenseContainer {
 	t.Helper()
-	t.Skip("Typesense container not yet implemented - implement when search module is needed")
-	return nil
+
+	ctx := context.Background()
+
+	// Test API key for integration tests
+	apiKey := "test-api-key-for-integration-tests"
+
+	// Create Typesense container request
+	req := testcontainers.ContainerRequest{
+		Image:        "typesense/typesense:27.1",
+		ExposedPorts: []string{"8108/tcp"},
+		Env: map[string]string{
+			"TYPESENSE_API_KEY":  apiKey,
+			"TYPESENSE_DATA_DIR": "/data",
+		},
+		WaitingFor: wait.ForAll(
+			wait.ForHTTP("/health").
+				WithPort("8108/tcp").
+				WithStartupTimeout(60*time.Second),
+			wait.ForListeningPort("8108/tcp"),
+		),
+	}
+
+	// Start container
+	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: req,
+		Started:          true,
+	})
+	if err != nil {
+		t.Fatalf("failed to start Typesense container: %v", err)
+	}
+
+	// Get connection details
+	host, err := container.Host(ctx)
+	if err != nil {
+		_ = container.Terminate(ctx)
+		t.Fatalf("failed to get container host: %v", err)
+	}
+
+	port, err := container.MappedPort(ctx, "8108")
+	if err != nil {
+		_ = container.Terminate(ctx)
+		t.Fatalf("failed to get container port: %v", err)
+	}
+
+	// Build connection URL
+	url := fmt.Sprintf("http://%s:%s", host, port.Port())
+
+	return &TypesenseContainer{
+		container: container,
+		URL:       url,
+		Host:      host,
+		Port:      port.Port(),
+		APIKey:    apiKey,
+	}
+}
+
+// Close stops the Typesense container.
+func (c *TypesenseContainer) Close() {
+	if c.container != nil {
+		ctx := context.Background()
+		_ = c.container.Terminate(ctx)
+	}
 }
