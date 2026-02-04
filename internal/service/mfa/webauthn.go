@@ -14,6 +14,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 const (
@@ -31,25 +32,6 @@ var (
 	ErrNoCredentials         = errors.New("user has no webauthn credentials")
 	ErrCredentialAlreadyUsed = errors.New("credential ID already registered")
 )
-
-// Safe conversion helpers to prevent integer overflow
-
-// safeUint32ToInt32 safely converts uint32 to int32, capping at max int32
-func safeUint32ToInt32(val uint32) int32 {
-	const maxInt32 = 2147483647
-	if val > maxInt32 {
-		return maxInt32
-	}
-	return int32(val) // #nosec G115 -- validated above
-}
-
-// safeInt32ToUint32 safely converts int32 to uint32, treating negative as 0
-func safeInt32ToUint32(val int32) uint32 {
-	if val < 0 {
-		return 0
-	}
-	return uint32(val) // #nosec G115 -- validated above
-}
 
 // WebAuthnService handles WebAuthn credential management and authentication.
 type WebAuthnService struct {
@@ -224,7 +206,7 @@ func (s *WebAuthnService) BeginRegistration(
 			},
 			Authenticator: webauthn.Authenticator{
 				AAGUID:    cred.Aaguid,
-				SignCount: safeInt32ToUint32(cred.SignCount),
+				SignCount: util.SafeInt32ToUint32(cred.SignCount),
 			},
 		})
 	}
@@ -283,7 +265,7 @@ func (s *WebAuthnService) FinishRegistration(
 			},
 			Authenticator: webauthn.Authenticator{
 				AAGUID:    cred.Aaguid,
-				SignCount: safeInt32ToUint32(cred.SignCount),
+				SignCount: util.SafeInt32ToUint32(cred.SignCount),
 			},
 		})
 	}
@@ -389,7 +371,7 @@ func (s *WebAuthnService) BeginLogin(
 			},
 			Authenticator: webauthn.Authenticator{
 				AAGUID:    cred.Aaguid,
-				SignCount: safeInt32ToUint32(cred.SignCount),
+				SignCount: util.SafeInt32ToUint32(cred.SignCount),
 			},
 		})
 	}
@@ -451,7 +433,7 @@ func (s *WebAuthnService) FinishLogin(
 			},
 			Authenticator: webauthn.Authenticator{
 				AAGUID:    cred.Aaguid,
-				SignCount: safeInt32ToUint32(cred.SignCount),
+				SignCount: util.SafeInt32ToUint32(cred.SignCount),
 			},
 		})
 	}
@@ -476,7 +458,7 @@ func (s *WebAuthnService) FinishLogin(
 
 	// Clone detection: sign counter must always increment
 	newCounter := credential.Authenticator.SignCount
-	oldCounter := safeInt32ToUint32(dbCred.SignCount)
+	oldCounter := util.SafeInt32ToUint32(dbCred.SignCount)
 
 	if newCounter <= oldCounter {
 		// Sign counter did not increment - possible clone!
@@ -498,7 +480,7 @@ func (s *WebAuthnService) FinishLogin(
 	// Update sign counter
 	err = s.queries.UpdateWebAuthnCounter(ctx, db.UpdateWebAuthnCounterParams{
 		CredentialID: credential.ID,
-		SignCount:    safeUint32ToInt32(newCounter),
+		SignCount:    util.SafeUint32ToInt32(newCounter),
 	})
 	if err != nil {
 		return fmt.Errorf("failed to update sign counter: %w", err)

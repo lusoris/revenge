@@ -19,6 +19,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 func TestNewWebAuthnService(t *testing.T) {
@@ -230,7 +231,7 @@ func TestSafeUint32ToInt32(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := safeUint32ToInt32(tt.input)
+			result := util.SafeUint32ToInt32(tt.input)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
@@ -271,7 +272,7 @@ func TestSafeInt32ToUint32(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := safeInt32ToUint32(tt.input)
+			result := util.SafeInt32ToUint32(tt.input)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
