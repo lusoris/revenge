@@ -20,11 +20,6 @@ type radarrService interface {
 	SyncLibrary(ctx context.Context) (*radarr.SyncResult, error)
 }
 
-// webhookHandler processes Radarr webhook events.
-type webhookHandler interface {
-	HandleWebhook(ctx context.Context, payload *radarr.WebhookPayload) error
-}
-
 // AdminGetRadarrStatus returns the current Radarr integration status.
 // GET /api/v1/admin/integrations/radarr/status
 func (h *Handler) AdminGetRadarrStatus(ctx context.Context) (ogen.AdminGetRadarrStatusRes, error) {
