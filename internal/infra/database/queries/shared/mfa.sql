@@ -12,17 +12,15 @@ WHERE user_id = $1;
 INSERT INTO public.user_totp_secrets (
     user_id,
     encrypted_secret,
-    nonce,
     enabled
 ) VALUES (
-    $1, $2, $3, false
+    $1, $2, false
 ) RETURNING *;
 
 -- name: UpdateTOTPSecret :exec
 -- Update TOTP secret (for re-enrollment)
 UPDATE public.user_totp_secrets
 SET encrypted_secret = $2,
-    nonce = $3,
     verified_at = NULL,
     enabled = false,
     updated_at = NOW()

@@ -287,7 +287,7 @@ type SharedAuthToken struct {
 	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
-// Default policies created. First user should be assigned admin role manually.
+// RBAC policies with moderator role added
 type SharedCasbinRule struct {
 	ID int32 `json:"id"`
 	// Policy type: p (policy) or g (role)
@@ -537,10 +537,8 @@ type UserMfaSetting struct {
 // TOTP (Time-based One-Time Password) secrets for multi-factor authentication
 type UserTotpSecret struct {
 	UserID uuid.UUID `json:"userId"`
-	// AES-256-GCM encrypted base32-encoded TOTP secret
+	// AES-256-GCM encrypted base32-encoded TOTP secret (nonce prepended)
 	EncryptedSecret []byte `json:"encryptedSecret"`
-	// GCM nonce used for encryption (12 bytes)
-	Nonce []byte `json:"nonce"`
 	// When the TOTP was first successfully verified (enrollment completion)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	Enabled    bool               `json:"enabled"`

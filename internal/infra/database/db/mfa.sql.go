@@ -82,27 +82,24 @@ const createTOTPSecret = `-- name: CreateTOTPSecret :one
 INSERT INTO public.user_totp_secrets (
     user_id,
     encrypted_secret,
-    nonce,
     enabled
 ) VALUES (
-    $1, $2, $3, false
-) RETURNING user_id, encrypted_secret, nonce, verified_at, enabled, last_used_at, created_at, updated_at
+    $1, $2, false
+) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at
 `
 
 type CreateTOTPSecretParams struct {
 	UserID          uuid.UUID `json:"userId"`
 	EncryptedSecret []byte    `json:"encryptedSecret"`
-	Nonce           []byte    `json:"nonce"`
 }
 
 // Create a new TOTP secret for a user
 func (q *Queries) CreateTOTPSecret(ctx context.Context, arg CreateTOTPSecretParams) (UserTotpSecret, error) {
-	row := q.db.QueryRow(ctx, createTOTPSecret, arg.UserID, arg.EncryptedSecret, arg.Nonce)
+	row := q.db.QueryRow(ctx, createTOTPSecret, arg.UserID, arg.EncryptedSecret)
 	var i UserTotpSecret
 	err := row.Scan(
 		&i.UserID,
 		&i.EncryptedSecret,
-		&i.Nonce,
 		&i.VerifiedAt,
 		&i.Enabled,
 		&i.LastUsedAt,
@@ -431,7 +428,7 @@ func (q *Queries) GetUserMFAStatus(ctx context.Context, userID uuid.UUID) (GetUs
 
 const getUserTOTPSecret = `-- name: GetUserTOTPSecret :one
 
-SELECT user_id, encrypted_secret, nonce, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets
+SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets
 WHERE user_id = $1
 `
 
@@ -445,7 +442,6 @@ func (q *Queries) GetUserTOTPSecret(ctx context.Context, userID uuid.UUID) (User
 	err := row.Scan(
 		&i.UserID,
 		&i.EncryptedSecret,
-		&i.Nonce,
 		&i.VerifiedAt,
 		&i.Enabled,
 		&i.LastUsedAt,
@@ -699,7 +695,6 @@ func (q *Queries) UpdateTOTPLastUsed(ctx context.Context, userID uuid.UUID) erro
 const updateTOTPSecret = `-- name: UpdateTOTPSecret :exec
 UPDATE public.user_totp_secrets
 SET encrypted_secret = $2,
-    nonce = $3,
     verified_at = NULL,
     enabled = false,
     updated_at = NOW()
@@ -709,12 +704,11 @@ WHERE user_id = $1
 type UpdateTOTPSecretParams struct {
 	UserID          uuid.UUID `json:"userId"`
 	EncryptedSecret []byte    `json:"encryptedSecret"`
-	Nonce           []byte    `json:"nonce"`
 }
 
 // Update TOTP secret (for re-enrollment)
 func (q *Queries) UpdateTOTPSecret(ctx context.Context, arg UpdateTOTPSecretParams) error {
-	_, err := q.db.Exec(ctx, updateTOTPSecret, arg.UserID, arg.EncryptedSecret, arg.Nonce)
+	_, err := q.db.Exec(ctx, updateTOTPSecret, arg.UserID, arg.EncryptedSecret)
 	return err
 }
 

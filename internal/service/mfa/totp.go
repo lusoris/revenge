@@ -6,10 +6,12 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base32"
+	"errors"
 	"fmt"
 	"image/png"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"go.uber.org/zap"
@@ -89,14 +91,29 @@ func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, acco
 		return nil, fmt.Errorf("failed to encrypt secret: %w", err)
 	}
 
-	// Store encrypted secret in database
-	_, err = s.queries.CreateTOTPSecret(ctx, db.CreateTOTPSecretParams{
-		UserID:          userID,
-		EncryptedSecret: encryptedSecret,
-		Nonce:           encryptedSecret[:12], // First 12 bytes are the nonce (GCM standard)
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to store TOTP secret: %w", err)
+	// Store encrypted secret in database (upsert: update if exists, create if not)
+	// Note: nonce is prepended to encrypted_secret by AES-256-GCM, no separate storage needed
+	_, existsErr := s.queries.GetUserTOTPSecret(ctx, userID)
+	if existsErr == nil {
+		// User has existing secret, update it (re-enrollment)
+		err = s.queries.UpdateTOTPSecret(ctx, db.UpdateTOTPSecretParams{
+			UserID:          userID,
+			EncryptedSecret: encryptedSecret,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to update TOTP secret: %w", err)
+		}
+	} else if errors.Is(existsErr, pgx.ErrNoRows) {
+		// No existing secret, create new one
+		_, err = s.queries.CreateTOTPSecret(ctx, db.CreateTOTPSecretParams{
+			UserID:          userID,
+			EncryptedSecret: encryptedSecret,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to store TOTP secret: %w", err)
+		}
+	} else {
+		return nil, fmt.Errorf("failed to check existing TOTP secret: %w", existsErr)
 	}
 
 	s.logger.Info("generated TOTP secret",
@@ -200,8 +217,10 @@ func (s *TOTPService) DeleteTOTP(ctx context.Context, userID uuid.UUID) error {
 func (s *TOTPService) HasTOTP(ctx context.Context, userID uuid.UUID) (bool, error) {
 	_, err := s.queries.GetUserTOTPSecret(ctx, userID)
 	if err != nil {
-		// SQLC doesn't define a specific error, check for no rows
-		return false, nil
+		if errors.Is(err, pgx.ErrNoRows) {
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to check TOTP: %w", err)
 	}
 	return true, nil
 }
