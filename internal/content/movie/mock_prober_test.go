@@ -3,7 +3,6 @@
 package movie
 
 import (
-	movie "github.com/lusoris/revenge/internal/content/movie"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -21,23 +20,23 @@ func (_m *MockProber) EXPECT() *MockProber_Expecter {
 }
 
 // Probe provides a mock function with given fields: filePath
-func (_m *MockProber) Probe(filePath string) (*movie.MediaInfo, error) {
+func (_m *MockProber) Probe(filePath string) (*MediaInfo, error) {
 	ret := _m.Called(filePath)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Probe")
 	}
 
-	var r0 *movie.MediaInfo
+	var r0 *MediaInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*movie.MediaInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*MediaInfo, error)); ok {
 		return rf(filePath)
 	}
-	if rf, ok := ret.Get(0).(func(string) *movie.MediaInfo); ok {
+	if rf, ok := ret.Get(0).(func(string) *MediaInfo); ok {
 		r0 = rf(filePath)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MediaInfo)
+			r0 = ret.Get(0).(*MediaInfo)
 		}
 	}
 
@@ -68,12 +67,12 @@ func (_c *MockProber_Probe_Call) Run(run func(filePath string)) *MockProber_Prob
 	return _c
 }
 
-func (_c *MockProber_Probe_Call) Return(_a0 *movie.MediaInfo, _a1 error) *MockProber_Probe_Call {
+func (_c *MockProber_Probe_Call) Return(_a0 *MediaInfo, _a1 error) *MockProber_Probe_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockProber_Probe_Call) RunAndReturn(run func(string) (*movie.MediaInfo, error)) *MockProber_Probe_Call {
+func (_c *MockProber_Probe_Call) RunAndReturn(run func(string) (*MediaInfo, error)) *MockProber_Probe_Call {
 	_c.Call.Return(run)
 	return _c
 }

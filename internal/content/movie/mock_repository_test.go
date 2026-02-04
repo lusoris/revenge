@@ -5,7 +5,6 @@ package movie
 import (
 	context "context"
 
-	movie "github.com/lusoris/revenge/internal/content/movie"
 	mock "github.com/stretchr/testify/mock"
 
 	uuid "github.com/google/uuid"
@@ -179,27 +178,27 @@ func (_c *MockMovieRepository_CountMovies_Call) RunAndReturn(run func(context.Co
 }
 
 // CreateMovie provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) CreateMovie(ctx context.Context, params movie.CreateMovieParams) (*movie.Movie, error) {
+func (_m *MockMovieRepository) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateMovie")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieParams) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieParams) (*Movie, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieParams) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieParams) *Movie); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.CreateMovieParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, CreateMovieParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -215,50 +214,50 @@ type MockMovieRepository_CreateMovie_Call struct {
 
 // CreateMovie is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.CreateMovieParams
+//   - params CreateMovieParams
 func (_e *MockMovieRepository_Expecter) CreateMovie(ctx interface{}, params interface{}) *MockMovieRepository_CreateMovie_Call {
 	return &MockMovieRepository_CreateMovie_Call{Call: _e.mock.On("CreateMovie", ctx, params)}
 }
 
-func (_c *MockMovieRepository_CreateMovie_Call) Run(run func(ctx context.Context, params movie.CreateMovieParams)) *MockMovieRepository_CreateMovie_Call {
+func (_c *MockMovieRepository_CreateMovie_Call) Run(run func(ctx context.Context, params CreateMovieParams)) *MockMovieRepository_CreateMovie_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.CreateMovieParams))
+		run(args[0].(context.Context), args[1].(CreateMovieParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovie_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_CreateMovie_Call {
+func (_c *MockMovieRepository_CreateMovie_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_CreateMovie_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovie_Call) RunAndReturn(run func(context.Context, movie.CreateMovieParams) (*movie.Movie, error)) *MockMovieRepository_CreateMovie_Call {
+func (_c *MockMovieRepository_CreateMovie_Call) RunAndReturn(run func(context.Context, CreateMovieParams) (*Movie, error)) *MockMovieRepository_CreateMovie_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CreateMovieCollection provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) CreateMovieCollection(ctx context.Context, params movie.CreateMovieCollectionParams) (*movie.MovieCollection, error) {
+func (_m *MockMovieRepository) CreateMovieCollection(ctx context.Context, params CreateMovieCollectionParams) (*MovieCollection, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateMovieCollection")
 	}
 
-	var r0 *movie.MovieCollection
+	var r0 *MovieCollection
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieCollectionParams) (*movie.MovieCollection, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieCollectionParams) (*MovieCollection, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieCollectionParams) *movie.MovieCollection); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieCollectionParams) *MovieCollection); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCollection)
+			r0 = ret.Get(0).(*MovieCollection)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.CreateMovieCollectionParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, CreateMovieCollectionParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -274,50 +273,50 @@ type MockMovieRepository_CreateMovieCollection_Call struct {
 
 // CreateMovieCollection is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.CreateMovieCollectionParams
+//   - params CreateMovieCollectionParams
 func (_e *MockMovieRepository_Expecter) CreateMovieCollection(ctx interface{}, params interface{}) *MockMovieRepository_CreateMovieCollection_Call {
 	return &MockMovieRepository_CreateMovieCollection_Call{Call: _e.mock.On("CreateMovieCollection", ctx, params)}
 }
 
-func (_c *MockMovieRepository_CreateMovieCollection_Call) Run(run func(ctx context.Context, params movie.CreateMovieCollectionParams)) *MockMovieRepository_CreateMovieCollection_Call {
+func (_c *MockMovieRepository_CreateMovieCollection_Call) Run(run func(ctx context.Context, params CreateMovieCollectionParams)) *MockMovieRepository_CreateMovieCollection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.CreateMovieCollectionParams))
+		run(args[0].(context.Context), args[1].(CreateMovieCollectionParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieCollection_Call) Return(_a0 *movie.MovieCollection, _a1 error) *MockMovieRepository_CreateMovieCollection_Call {
+func (_c *MockMovieRepository_CreateMovieCollection_Call) Return(_a0 *MovieCollection, _a1 error) *MockMovieRepository_CreateMovieCollection_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieCollection_Call) RunAndReturn(run func(context.Context, movie.CreateMovieCollectionParams) (*movie.MovieCollection, error)) *MockMovieRepository_CreateMovieCollection_Call {
+func (_c *MockMovieRepository_CreateMovieCollection_Call) RunAndReturn(run func(context.Context, CreateMovieCollectionParams) (*MovieCollection, error)) *MockMovieRepository_CreateMovieCollection_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CreateMovieCredit provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) CreateMovieCredit(ctx context.Context, params movie.CreateMovieCreditParams) (*movie.MovieCredit, error) {
+func (_m *MockMovieRepository) CreateMovieCredit(ctx context.Context, params CreateMovieCreditParams) (*MovieCredit, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateMovieCredit")
 	}
 
-	var r0 *movie.MovieCredit
+	var r0 *MovieCredit
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieCreditParams) (*movie.MovieCredit, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieCreditParams) (*MovieCredit, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieCreditParams) *movie.MovieCredit); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieCreditParams) *MovieCredit); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCredit)
+			r0 = ret.Get(0).(*MovieCredit)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.CreateMovieCreditParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, CreateMovieCreditParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -333,50 +332,50 @@ type MockMovieRepository_CreateMovieCredit_Call struct {
 
 // CreateMovieCredit is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.CreateMovieCreditParams
+//   - params CreateMovieCreditParams
 func (_e *MockMovieRepository_Expecter) CreateMovieCredit(ctx interface{}, params interface{}) *MockMovieRepository_CreateMovieCredit_Call {
 	return &MockMovieRepository_CreateMovieCredit_Call{Call: _e.mock.On("CreateMovieCredit", ctx, params)}
 }
 
-func (_c *MockMovieRepository_CreateMovieCredit_Call) Run(run func(ctx context.Context, params movie.CreateMovieCreditParams)) *MockMovieRepository_CreateMovieCredit_Call {
+func (_c *MockMovieRepository_CreateMovieCredit_Call) Run(run func(ctx context.Context, params CreateMovieCreditParams)) *MockMovieRepository_CreateMovieCredit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.CreateMovieCreditParams))
+		run(args[0].(context.Context), args[1].(CreateMovieCreditParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieCredit_Call) Return(_a0 *movie.MovieCredit, _a1 error) *MockMovieRepository_CreateMovieCredit_Call {
+func (_c *MockMovieRepository_CreateMovieCredit_Call) Return(_a0 *MovieCredit, _a1 error) *MockMovieRepository_CreateMovieCredit_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieCredit_Call) RunAndReturn(run func(context.Context, movie.CreateMovieCreditParams) (*movie.MovieCredit, error)) *MockMovieRepository_CreateMovieCredit_Call {
+func (_c *MockMovieRepository_CreateMovieCredit_Call) RunAndReturn(run func(context.Context, CreateMovieCreditParams) (*MovieCredit, error)) *MockMovieRepository_CreateMovieCredit_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CreateMovieFile provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) CreateMovieFile(ctx context.Context, params movie.CreateMovieFileParams) (*movie.MovieFile, error) {
+func (_m *MockMovieRepository) CreateMovieFile(ctx context.Context, params CreateMovieFileParams) (*MovieFile, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateMovieFile")
 	}
 
-	var r0 *movie.MovieFile
+	var r0 *MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieFileParams) (*movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieFileParams) (*MovieFile, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateMovieFileParams) *movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateMovieFileParams) *MovieFile); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieFile)
+			r0 = ret.Get(0).(*MovieFile)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.CreateMovieFileParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, CreateMovieFileParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -392,50 +391,50 @@ type MockMovieRepository_CreateMovieFile_Call struct {
 
 // CreateMovieFile is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.CreateMovieFileParams
+//   - params CreateMovieFileParams
 func (_e *MockMovieRepository_Expecter) CreateMovieFile(ctx interface{}, params interface{}) *MockMovieRepository_CreateMovieFile_Call {
 	return &MockMovieRepository_CreateMovieFile_Call{Call: _e.mock.On("CreateMovieFile", ctx, params)}
 }
 
-func (_c *MockMovieRepository_CreateMovieFile_Call) Run(run func(ctx context.Context, params movie.CreateMovieFileParams)) *MockMovieRepository_CreateMovieFile_Call {
+func (_c *MockMovieRepository_CreateMovieFile_Call) Run(run func(ctx context.Context, params CreateMovieFileParams)) *MockMovieRepository_CreateMovieFile_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.CreateMovieFileParams))
+		run(args[0].(context.Context), args[1].(CreateMovieFileParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieFile_Call) Return(_a0 *movie.MovieFile, _a1 error) *MockMovieRepository_CreateMovieFile_Call {
+func (_c *MockMovieRepository_CreateMovieFile_Call) Return(_a0 *MovieFile, _a1 error) *MockMovieRepository_CreateMovieFile_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateMovieFile_Call) RunAndReturn(run func(context.Context, movie.CreateMovieFileParams) (*movie.MovieFile, error)) *MockMovieRepository_CreateMovieFile_Call {
+func (_c *MockMovieRepository_CreateMovieFile_Call) RunAndReturn(run func(context.Context, CreateMovieFileParams) (*MovieFile, error)) *MockMovieRepository_CreateMovieFile_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CreateOrUpdateWatchProgress provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) CreateOrUpdateWatchProgress(ctx context.Context, params movie.CreateWatchProgressParams) (*movie.MovieWatched, error) {
+func (_m *MockMovieRepository) CreateOrUpdateWatchProgress(ctx context.Context, params CreateWatchProgressParams) (*MovieWatched, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateOrUpdateWatchProgress")
 	}
 
-	var r0 *movie.MovieWatched
+	var r0 *MovieWatched
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateWatchProgressParams) (*movie.MovieWatched, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateWatchProgressParams) (*MovieWatched, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.CreateWatchProgressParams) *movie.MovieWatched); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, CreateWatchProgressParams) *MovieWatched); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieWatched)
+			r0 = ret.Get(0).(*MovieWatched)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.CreateWatchProgressParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, CreateWatchProgressParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -451,24 +450,24 @@ type MockMovieRepository_CreateOrUpdateWatchProgress_Call struct {
 
 // CreateOrUpdateWatchProgress is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.CreateWatchProgressParams
+//   - params CreateWatchProgressParams
 func (_e *MockMovieRepository_Expecter) CreateOrUpdateWatchProgress(ctx interface{}, params interface{}) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
 	return &MockMovieRepository_CreateOrUpdateWatchProgress_Call{Call: _e.mock.On("CreateOrUpdateWatchProgress", ctx, params)}
 }
 
-func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) Run(run func(ctx context.Context, params movie.CreateWatchProgressParams)) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
+func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) Run(run func(ctx context.Context, params CreateWatchProgressParams)) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.CreateWatchProgressParams))
+		run(args[0].(context.Context), args[1].(CreateWatchProgressParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) Return(_a0 *movie.MovieWatched, _a1 error) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
+func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) Return(_a0 *MovieWatched, _a1 error) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) RunAndReturn(run func(context.Context, movie.CreateWatchProgressParams) (*movie.MovieWatched, error)) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
+func (_c *MockMovieRepository_CreateOrUpdateWatchProgress_Call) RunAndReturn(run func(context.Context, CreateWatchProgressParams) (*MovieWatched, error)) *MockMovieRepository_CreateOrUpdateWatchProgress_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -710,23 +709,23 @@ func (_c *MockMovieRepository_DeleteWatchProgress_Call) RunAndReturn(run func(co
 }
 
 // GetCollectionForMovie provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (*movie.MovieCollection, error) {
+func (_m *MockMovieRepository) GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (*MovieCollection, error) {
 	ret := _m.Called(ctx, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetCollectionForMovie")
 	}
 
-	var r0 *movie.MovieCollection
+	var r0 *MovieCollection
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*movie.MovieCollection, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*MovieCollection, error)); ok {
 		return rf(ctx, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *movie.MovieCollection); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *MovieCollection); ok {
 		r0 = rf(ctx, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCollection)
+			r0 = ret.Get(0).(*MovieCollection)
 		}
 	}
 
@@ -758,34 +757,34 @@ func (_c *MockMovieRepository_GetCollectionForMovie_Call) Run(run func(ctx conte
 	return _c
 }
 
-func (_c *MockMovieRepository_GetCollectionForMovie_Call) Return(_a0 *movie.MovieCollection, _a1 error) *MockMovieRepository_GetCollectionForMovie_Call {
+func (_c *MockMovieRepository_GetCollectionForMovie_Call) Return(_a0 *MovieCollection, _a1 error) *MockMovieRepository_GetCollectionForMovie_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetCollectionForMovie_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*movie.MovieCollection, error)) *MockMovieRepository_GetCollectionForMovie_Call {
+func (_c *MockMovieRepository_GetCollectionForMovie_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*MovieCollection, error)) *MockMovieRepository_GetCollectionForMovie_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovie provides a mock function with given fields: ctx, id
-func (_m *MockMovieRepository) GetMovie(ctx context.Context, id uuid.UUID) (*movie.Movie, error) {
+func (_m *MockMovieRepository) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovie")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*Movie, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *Movie); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
@@ -817,34 +816,34 @@ func (_c *MockMovieRepository_GetMovie_Call) Run(run func(ctx context.Context, i
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovie_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_GetMovie_Call {
+func (_c *MockMovieRepository_GetMovie_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_GetMovie_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovie_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*movie.Movie, error)) *MockMovieRepository_GetMovie_Call {
+func (_c *MockMovieRepository_GetMovie_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*Movie, error)) *MockMovieRepository_GetMovie_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieByIMDbID provides a mock function with given fields: ctx, imdbID
-func (_m *MockMovieRepository) GetMovieByIMDbID(ctx context.Context, imdbID string) (*movie.Movie, error) {
+func (_m *MockMovieRepository) GetMovieByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
 	ret := _m.Called(ctx, imdbID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieByIMDbID")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*Movie, error)); ok {
 		return rf(ctx, imdbID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *Movie); ok {
 		r0 = rf(ctx, imdbID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
@@ -876,34 +875,34 @@ func (_c *MockMovieRepository_GetMovieByIMDbID_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByIMDbID_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_GetMovieByIMDbID_Call {
+func (_c *MockMovieRepository_GetMovieByIMDbID_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_GetMovieByIMDbID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByIMDbID_Call) RunAndReturn(run func(context.Context, string) (*movie.Movie, error)) *MockMovieRepository_GetMovieByIMDbID_Call {
+func (_c *MockMovieRepository_GetMovieByIMDbID_Call) RunAndReturn(run func(context.Context, string) (*Movie, error)) *MockMovieRepository_GetMovieByIMDbID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieByRadarrID provides a mock function with given fields: ctx, radarrID
-func (_m *MockMovieRepository) GetMovieByRadarrID(ctx context.Context, radarrID int32) (*movie.Movie, error) {
+func (_m *MockMovieRepository) GetMovieByRadarrID(ctx context.Context, radarrID int32) (*Movie, error) {
 	ret := _m.Called(ctx, radarrID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieByRadarrID")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) (*Movie, error)); ok {
 		return rf(ctx, radarrID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) *Movie); ok {
 		r0 = rf(ctx, radarrID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
@@ -935,34 +934,34 @@ func (_c *MockMovieRepository_GetMovieByRadarrID_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByRadarrID_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_GetMovieByRadarrID_Call {
+func (_c *MockMovieRepository_GetMovieByRadarrID_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_GetMovieByRadarrID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByRadarrID_Call) RunAndReturn(run func(context.Context, int32) (*movie.Movie, error)) *MockMovieRepository_GetMovieByRadarrID_Call {
+func (_c *MockMovieRepository_GetMovieByRadarrID_Call) RunAndReturn(run func(context.Context, int32) (*Movie, error)) *MockMovieRepository_GetMovieByRadarrID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieByTMDbID provides a mock function with given fields: ctx, tmdbID
-func (_m *MockMovieRepository) GetMovieByTMDbID(ctx context.Context, tmdbID int32) (*movie.Movie, error) {
+func (_m *MockMovieRepository) GetMovieByTMDbID(ctx context.Context, tmdbID int32) (*Movie, error) {
 	ret := _m.Called(ctx, tmdbID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieByTMDbID")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) (*Movie, error)); ok {
 		return rf(ctx, tmdbID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) *Movie); ok {
 		r0 = rf(ctx, tmdbID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
@@ -994,34 +993,34 @@ func (_c *MockMovieRepository_GetMovieByTMDbID_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByTMDbID_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_GetMovieByTMDbID_Call {
+func (_c *MockMovieRepository_GetMovieByTMDbID_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_GetMovieByTMDbID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieByTMDbID_Call) RunAndReturn(run func(context.Context, int32) (*movie.Movie, error)) *MockMovieRepository_GetMovieByTMDbID_Call {
+func (_c *MockMovieRepository_GetMovieByTMDbID_Call) RunAndReturn(run func(context.Context, int32) (*Movie, error)) *MockMovieRepository_GetMovieByTMDbID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieCollection provides a mock function with given fields: ctx, id
-func (_m *MockMovieRepository) GetMovieCollection(ctx context.Context, id uuid.UUID) (*movie.MovieCollection, error) {
+func (_m *MockMovieRepository) GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieCollection")
 	}
 
-	var r0 *movie.MovieCollection
+	var r0 *MovieCollection
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*movie.MovieCollection, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*MovieCollection, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *movie.MovieCollection); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *MovieCollection); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCollection)
+			r0 = ret.Get(0).(*MovieCollection)
 		}
 	}
 
@@ -1053,34 +1052,34 @@ func (_c *MockMovieRepository_GetMovieCollection_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieCollection_Call) Return(_a0 *movie.MovieCollection, _a1 error) *MockMovieRepository_GetMovieCollection_Call {
+func (_c *MockMovieRepository_GetMovieCollection_Call) Return(_a0 *MovieCollection, _a1 error) *MockMovieRepository_GetMovieCollection_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieCollection_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*movie.MovieCollection, error)) *MockMovieRepository_GetMovieCollection_Call {
+func (_c *MockMovieRepository_GetMovieCollection_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*MovieCollection, error)) *MockMovieRepository_GetMovieCollection_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieCollectionByTMDbID provides a mock function with given fields: ctx, tmdbCollectionID
-func (_m *MockMovieRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*movie.MovieCollection, error) {
+func (_m *MockMovieRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*MovieCollection, error) {
 	ret := _m.Called(ctx, tmdbCollectionID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieCollectionByTMDbID")
 	}
 
-	var r0 *movie.MovieCollection
+	var r0 *MovieCollection
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) (*movie.MovieCollection, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) (*MovieCollection, error)); ok {
 		return rf(ctx, tmdbCollectionID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32) *movie.MovieCollection); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) *MovieCollection); ok {
 		r0 = rf(ctx, tmdbCollectionID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCollection)
+			r0 = ret.Get(0).(*MovieCollection)
 		}
 	}
 
@@ -1112,34 +1111,34 @@ func (_c *MockMovieRepository_GetMovieCollectionByTMDbID_Call) Run(run func(ctx 
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieCollectionByTMDbID_Call) Return(_a0 *movie.MovieCollection, _a1 error) *MockMovieRepository_GetMovieCollectionByTMDbID_Call {
+func (_c *MockMovieRepository_GetMovieCollectionByTMDbID_Call) Return(_a0 *MovieCollection, _a1 error) *MockMovieRepository_GetMovieCollectionByTMDbID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieCollectionByTMDbID_Call) RunAndReturn(run func(context.Context, int32) (*movie.MovieCollection, error)) *MockMovieRepository_GetMovieCollectionByTMDbID_Call {
+func (_c *MockMovieRepository_GetMovieCollectionByTMDbID_Call) RunAndReturn(run func(context.Context, int32) (*MovieCollection, error)) *MockMovieRepository_GetMovieCollectionByTMDbID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieFile provides a mock function with given fields: ctx, id
-func (_m *MockMovieRepository) GetMovieFile(ctx context.Context, id uuid.UUID) (*movie.MovieFile, error) {
+func (_m *MockMovieRepository) GetMovieFile(ctx context.Context, id uuid.UUID) (*MovieFile, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieFile")
 	}
 
-	var r0 *movie.MovieFile
+	var r0 *MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*MovieFile, error)); ok {
 		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *MovieFile); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieFile)
+			r0 = ret.Get(0).(*MovieFile)
 		}
 	}
 
@@ -1171,34 +1170,34 @@ func (_c *MockMovieRepository_GetMovieFile_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFile_Call) Return(_a0 *movie.MovieFile, _a1 error) *MockMovieRepository_GetMovieFile_Call {
+func (_c *MockMovieRepository_GetMovieFile_Call) Return(_a0 *MovieFile, _a1 error) *MockMovieRepository_GetMovieFile_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFile_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*movie.MovieFile, error)) *MockMovieRepository_GetMovieFile_Call {
+func (_c *MockMovieRepository_GetMovieFile_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*MovieFile, error)) *MockMovieRepository_GetMovieFile_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieFileByPath provides a mock function with given fields: ctx, path
-func (_m *MockMovieRepository) GetMovieFileByPath(ctx context.Context, path string) (*movie.MovieFile, error) {
+func (_m *MockMovieRepository) GetMovieFileByPath(ctx context.Context, path string) (*MovieFile, error) {
 	ret := _m.Called(ctx, path)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieFileByPath")
 	}
 
-	var r0 *movie.MovieFile
+	var r0 *MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*MovieFile, error)); ok {
 		return rf(ctx, path)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *MovieFile); ok {
 		r0 = rf(ctx, path)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieFile)
+			r0 = ret.Get(0).(*MovieFile)
 		}
 	}
 
@@ -1230,34 +1229,34 @@ func (_c *MockMovieRepository_GetMovieFileByPath_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFileByPath_Call) Return(_a0 *movie.MovieFile, _a1 error) *MockMovieRepository_GetMovieFileByPath_Call {
+func (_c *MockMovieRepository_GetMovieFileByPath_Call) Return(_a0 *MovieFile, _a1 error) *MockMovieRepository_GetMovieFileByPath_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFileByPath_Call) RunAndReturn(run func(context.Context, string) (*movie.MovieFile, error)) *MockMovieRepository_GetMovieFileByPath_Call {
+func (_c *MockMovieRepository_GetMovieFileByPath_Call) RunAndReturn(run func(context.Context, string) (*MovieFile, error)) *MockMovieRepository_GetMovieFileByPath_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetMovieFileByRadarrID provides a mock function with given fields: ctx, radarrFileID
-func (_m *MockMovieRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*movie.MovieFile, error) {
+func (_m *MockMovieRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error) {
 	ret := _m.Called(ctx, radarrFileID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetMovieFileByRadarrID")
 	}
 
-	var r0 *movie.MovieFile
+	var r0 *MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) (*movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) (*MovieFile, error)); ok {
 		return rf(ctx, radarrFileID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32) *movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32) *MovieFile); ok {
 		r0 = rf(ctx, radarrFileID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieFile)
+			r0 = ret.Get(0).(*MovieFile)
 		}
 	}
 
@@ -1289,34 +1288,34 @@ func (_c *MockMovieRepository_GetMovieFileByRadarrID_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFileByRadarrID_Call) Return(_a0 *movie.MovieFile, _a1 error) *MockMovieRepository_GetMovieFileByRadarrID_Call {
+func (_c *MockMovieRepository_GetMovieFileByRadarrID_Call) Return(_a0 *MovieFile, _a1 error) *MockMovieRepository_GetMovieFileByRadarrID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetMovieFileByRadarrID_Call) RunAndReturn(run func(context.Context, int32) (*movie.MovieFile, error)) *MockMovieRepository_GetMovieFileByRadarrID_Call {
+func (_c *MockMovieRepository_GetMovieFileByRadarrID_Call) RunAndReturn(run func(context.Context, int32) (*MovieFile, error)) *MockMovieRepository_GetMovieFileByRadarrID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetUserMovieStats provides a mock function with given fields: ctx, userID
-func (_m *MockMovieRepository) GetUserMovieStats(ctx context.Context, userID uuid.UUID) (*movie.UserMovieStats, error) {
+func (_m *MockMovieRepository) GetUserMovieStats(ctx context.Context, userID uuid.UUID) (*UserMovieStats, error) {
 	ret := _m.Called(ctx, userID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetUserMovieStats")
 	}
 
-	var r0 *movie.UserMovieStats
+	var r0 *UserMovieStats
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*movie.UserMovieStats, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*UserMovieStats, error)); ok {
 		return rf(ctx, userID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *movie.UserMovieStats); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *UserMovieStats); ok {
 		r0 = rf(ctx, userID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.UserMovieStats)
+			r0 = ret.Get(0).(*UserMovieStats)
 		}
 	}
 
@@ -1348,34 +1347,34 @@ func (_c *MockMovieRepository_GetUserMovieStats_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockMovieRepository_GetUserMovieStats_Call) Return(_a0 *movie.UserMovieStats, _a1 error) *MockMovieRepository_GetUserMovieStats_Call {
+func (_c *MockMovieRepository_GetUserMovieStats_Call) Return(_a0 *UserMovieStats, _a1 error) *MockMovieRepository_GetUserMovieStats_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetUserMovieStats_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*movie.UserMovieStats, error)) *MockMovieRepository_GetUserMovieStats_Call {
+func (_c *MockMovieRepository_GetUserMovieStats_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*UserMovieStats, error)) *MockMovieRepository_GetUserMovieStats_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetWatchProgress provides a mock function with given fields: ctx, userID, movieID
-func (_m *MockMovieRepository) GetWatchProgress(ctx context.Context, userID uuid.UUID, movieID uuid.UUID) (*movie.MovieWatched, error) {
+func (_m *MockMovieRepository) GetWatchProgress(ctx context.Context, userID uuid.UUID, movieID uuid.UUID) (*MovieWatched, error) {
 	ret := _m.Called(ctx, userID, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetWatchProgress")
 	}
 
-	var r0 *movie.MovieWatched
+	var r0 *MovieWatched
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, uuid.UUID) (*movie.MovieWatched, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, uuid.UUID) (*MovieWatched, error)); ok {
 		return rf(ctx, userID, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, uuid.UUID) *movie.MovieWatched); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, uuid.UUID) *MovieWatched); ok {
 		r0 = rf(ctx, userID, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieWatched)
+			r0 = ret.Get(0).(*MovieWatched)
 		}
 	}
 
@@ -1408,34 +1407,34 @@ func (_c *MockMovieRepository_GetWatchProgress_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockMovieRepository_GetWatchProgress_Call) Return(_a0 *movie.MovieWatched, _a1 error) *MockMovieRepository_GetWatchProgress_Call {
+func (_c *MockMovieRepository_GetWatchProgress_Call) Return(_a0 *MovieWatched, _a1 error) *MockMovieRepository_GetWatchProgress_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_GetWatchProgress_Call) RunAndReturn(run func(context.Context, uuid.UUID, uuid.UUID) (*movie.MovieWatched, error)) *MockMovieRepository_GetWatchProgress_Call {
+func (_c *MockMovieRepository_GetWatchProgress_Call) RunAndReturn(run func(context.Context, uuid.UUID, uuid.UUID) (*MovieWatched, error)) *MockMovieRepository_GetWatchProgress_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListContinueWatching provides a mock function with given fields: ctx, userID, limit
-func (_m *MockMovieRepository) ListContinueWatching(ctx context.Context, userID uuid.UUID, limit int32) ([]movie.ContinueWatchingItem, error) {
+func (_m *MockMovieRepository) ListContinueWatching(ctx context.Context, userID uuid.UUID, limit int32) ([]ContinueWatchingItem, error) {
 	ret := _m.Called(ctx, userID, limit)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListContinueWatching")
 	}
 
-	var r0 []movie.ContinueWatchingItem
+	var r0 []ContinueWatchingItem
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32) ([]movie.ContinueWatchingItem, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32) ([]ContinueWatchingItem, error)); ok {
 		return rf(ctx, userID, limit)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32) []movie.ContinueWatchingItem); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32) []ContinueWatchingItem); ok {
 		r0 = rf(ctx, userID, limit)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.ContinueWatchingItem)
+			r0 = ret.Get(0).([]ContinueWatchingItem)
 		}
 	}
 
@@ -1468,34 +1467,34 @@ func (_c *MockMovieRepository_ListContinueWatching_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockMovieRepository_ListContinueWatching_Call) Return(_a0 []movie.ContinueWatchingItem, _a1 error) *MockMovieRepository_ListContinueWatching_Call {
+func (_c *MockMovieRepository_ListContinueWatching_Call) Return(_a0 []ContinueWatchingItem, _a1 error) *MockMovieRepository_ListContinueWatching_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListContinueWatching_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32) ([]movie.ContinueWatchingItem, error)) *MockMovieRepository_ListContinueWatching_Call {
+func (_c *MockMovieRepository_ListContinueWatching_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32) ([]ContinueWatchingItem, error)) *MockMovieRepository_ListContinueWatching_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMovieCast provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]movie.MovieCredit, error) {
+func (_m *MockMovieRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
 	ret := _m.Called(ctx, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieCast")
 	}
 
-	var r0 []movie.MovieCredit
+	var r0 []MovieCredit
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]movie.MovieCredit, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieCredit, error)); ok {
 		return rf(ctx, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []movie.MovieCredit); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieCredit); ok {
 		r0 = rf(ctx, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.MovieCredit)
+			r0 = ret.Get(0).([]MovieCredit)
 		}
 	}
 
@@ -1527,34 +1526,34 @@ func (_c *MockMovieRepository_ListMovieCast_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCast_Call) Return(_a0 []movie.MovieCredit, _a1 error) *MockMovieRepository_ListMovieCast_Call {
+func (_c *MockMovieRepository_ListMovieCast_Call) Return(_a0 []MovieCredit, _a1 error) *MockMovieRepository_ListMovieCast_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCast_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]movie.MovieCredit, error)) *MockMovieRepository_ListMovieCast_Call {
+func (_c *MockMovieRepository_ListMovieCast_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCast_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMovieCrew provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]movie.MovieCredit, error) {
+func (_m *MockMovieRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
 	ret := _m.Called(ctx, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieCrew")
 	}
 
-	var r0 []movie.MovieCredit
+	var r0 []MovieCredit
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]movie.MovieCredit, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieCredit, error)); ok {
 		return rf(ctx, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []movie.MovieCredit); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieCredit); ok {
 		r0 = rf(ctx, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.MovieCredit)
+			r0 = ret.Get(0).([]MovieCredit)
 		}
 	}
 
@@ -1586,34 +1585,34 @@ func (_c *MockMovieRepository_ListMovieCrew_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCrew_Call) Return(_a0 []movie.MovieCredit, _a1 error) *MockMovieRepository_ListMovieCrew_Call {
+func (_c *MockMovieRepository_ListMovieCrew_Call) Return(_a0 []MovieCredit, _a1 error) *MockMovieRepository_ListMovieCrew_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCrew_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]movie.MovieCredit, error)) *MockMovieRepository_ListMovieCrew_Call {
+func (_c *MockMovieRepository_ListMovieCrew_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCrew_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMovieFilesByMovieID provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]movie.MovieFile, error) {
+func (_m *MockMovieRepository) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error) {
 	ret := _m.Called(ctx, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieFilesByMovieID")
 	}
 
-	var r0 []movie.MovieFile
+	var r0 []MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieFile, error)); ok {
 		return rf(ctx, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieFile); ok {
 		r0 = rf(ctx, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.MovieFile)
+			r0 = ret.Get(0).([]MovieFile)
 		}
 	}
 
@@ -1645,34 +1644,34 @@ func (_c *MockMovieRepository_ListMovieFilesByMovieID_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieFilesByMovieID_Call) Return(_a0 []movie.MovieFile, _a1 error) *MockMovieRepository_ListMovieFilesByMovieID_Call {
+func (_c *MockMovieRepository_ListMovieFilesByMovieID_Call) Return(_a0 []MovieFile, _a1 error) *MockMovieRepository_ListMovieFilesByMovieID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieFilesByMovieID_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]movie.MovieFile, error)) *MockMovieRepository_ListMovieFilesByMovieID_Call {
+func (_c *MockMovieRepository_ListMovieFilesByMovieID_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieFile, error)) *MockMovieRepository_ListMovieFilesByMovieID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMovieGenres provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]movie.MovieGenre, error) {
+func (_m *MockMovieRepository) ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error) {
 	ret := _m.Called(ctx, movieID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieGenres")
 	}
 
-	var r0 []movie.MovieGenre
+	var r0 []MovieGenre
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]movie.MovieGenre, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieGenre, error)); ok {
 		return rf(ctx, movieID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []movie.MovieGenre); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieGenre); ok {
 		r0 = rf(ctx, movieID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.MovieGenre)
+			r0 = ret.Get(0).([]MovieGenre)
 		}
 	}
 
@@ -1704,38 +1703,38 @@ func (_c *MockMovieRepository_ListMovieGenres_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieGenres_Call) Return(_a0 []movie.MovieGenre, _a1 error) *MockMovieRepository_ListMovieGenres_Call {
+func (_c *MockMovieRepository_ListMovieGenres_Call) Return(_a0 []MovieGenre, _a1 error) *MockMovieRepository_ListMovieGenres_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieGenres_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]movie.MovieGenre, error)) *MockMovieRepository_ListMovieGenres_Call {
+func (_c *MockMovieRepository_ListMovieGenres_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieGenre, error)) *MockMovieRepository_ListMovieGenres_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMovies provides a mock function with given fields: ctx, filters
-func (_m *MockMovieRepository) ListMovies(ctx context.Context, filters movie.ListFilters) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error) {
 	ret := _m.Called(ctx, filters)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovies")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.ListFilters) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, ListFilters) ([]Movie, error)); ok {
 		return rf(ctx, filters)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.ListFilters) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, ListFilters) []Movie); ok {
 		r0 = rf(ctx, filters)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.ListFilters) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, ListFilters) error); ok {
 		r1 = rf(ctx, filters)
 	} else {
 		r1 = ret.Error(1)
@@ -1751,46 +1750,46 @@ type MockMovieRepository_ListMovies_Call struct {
 
 // ListMovies is a helper method to define mock.On call
 //   - ctx context.Context
-//   - filters movie.ListFilters
+//   - filters ListFilters
 func (_e *MockMovieRepository_Expecter) ListMovies(ctx interface{}, filters interface{}) *MockMovieRepository_ListMovies_Call {
 	return &MockMovieRepository_ListMovies_Call{Call: _e.mock.On("ListMovies", ctx, filters)}
 }
 
-func (_c *MockMovieRepository_ListMovies_Call) Run(run func(ctx context.Context, filters movie.ListFilters)) *MockMovieRepository_ListMovies_Call {
+func (_c *MockMovieRepository_ListMovies_Call) Run(run func(ctx context.Context, filters ListFilters)) *MockMovieRepository_ListMovies_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.ListFilters))
+		run(args[0].(context.Context), args[1].(ListFilters))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovies_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListMovies_Call {
+func (_c *MockMovieRepository_ListMovies_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListMovies_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovies_Call) RunAndReturn(run func(context.Context, movie.ListFilters) ([]movie.Movie, error)) *MockMovieRepository_ListMovies_Call {
+func (_c *MockMovieRepository_ListMovies_Call) RunAndReturn(run func(context.Context, ListFilters) ([]Movie, error)) *MockMovieRepository_ListMovies_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMoviesByCollection provides a mock function with given fields: ctx, collectionID
-func (_m *MockMovieRepository) ListMoviesByCollection(ctx context.Context, collectionID uuid.UUID) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListMoviesByCollection(ctx context.Context, collectionID uuid.UUID) ([]Movie, error) {
 	ret := _m.Called(ctx, collectionID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMoviesByCollection")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]Movie, error)); ok {
 		return rf(ctx, collectionID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []Movie); ok {
 		r0 = rf(ctx, collectionID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -1822,34 +1821,34 @@ func (_c *MockMovieRepository_ListMoviesByCollection_Call) Run(run func(ctx cont
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByCollection_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListMoviesByCollection_Call {
+func (_c *MockMovieRepository_ListMoviesByCollection_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListMoviesByCollection_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByCollection_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]movie.Movie, error)) *MockMovieRepository_ListMoviesByCollection_Call {
+func (_c *MockMovieRepository_ListMoviesByCollection_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]Movie, error)) *MockMovieRepository_ListMoviesByCollection_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMoviesByGenre provides a mock function with given fields: ctx, tmdbGenreID, limit, offset
-func (_m *MockMovieRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit int32, offset int32) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit int32, offset int32) ([]Movie, error) {
 	ret := _m.Called(ctx, tmdbGenreID, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMoviesByGenre")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]Movie, error)); ok {
 		return rf(ctx, tmdbGenreID, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []Movie); ok {
 		r0 = rf(ctx, tmdbGenreID, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -1883,34 +1882,34 @@ func (_c *MockMovieRepository_ListMoviesByGenre_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByGenre_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListMoviesByGenre_Call {
+func (_c *MockMovieRepository_ListMoviesByGenre_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListMoviesByGenre_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByGenre_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]movie.Movie, error)) *MockMovieRepository_ListMoviesByGenre_Call {
+func (_c *MockMovieRepository_ListMoviesByGenre_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]Movie, error)) *MockMovieRepository_ListMoviesByGenre_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListMoviesByYear provides a mock function with given fields: ctx, year, limit, offset
-func (_m *MockMovieRepository) ListMoviesByYear(ctx context.Context, year int32, limit int32, offset int32) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListMoviesByYear(ctx context.Context, year int32, limit int32, offset int32) ([]Movie, error) {
 	ret := _m.Called(ctx, year, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMoviesByYear")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]Movie, error)); ok {
 		return rf(ctx, year, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []Movie); ok {
 		r0 = rf(ctx, year, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -1944,34 +1943,34 @@ func (_c *MockMovieRepository_ListMoviesByYear_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByYear_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListMoviesByYear_Call {
+func (_c *MockMovieRepository_ListMoviesByYear_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListMoviesByYear_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMoviesByYear_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]movie.Movie, error)) *MockMovieRepository_ListMoviesByYear_Call {
+func (_c *MockMovieRepository_ListMoviesByYear_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]Movie, error)) *MockMovieRepository_ListMoviesByYear_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListRecentlyAdded provides a mock function with given fields: ctx, limit, offset
-func (_m *MockMovieRepository) ListRecentlyAdded(ctx context.Context, limit int32, offset int32) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListRecentlyAdded(ctx context.Context, limit int32, offset int32) ([]Movie, error) {
 	ret := _m.Called(ctx, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListRecentlyAdded")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32) ([]Movie, error)); ok {
 		return rf(ctx, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32) []Movie); ok {
 		r0 = rf(ctx, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -2004,34 +2003,34 @@ func (_c *MockMovieRepository_ListRecentlyAdded_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockMovieRepository_ListRecentlyAdded_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListRecentlyAdded_Call {
+func (_c *MockMovieRepository_ListRecentlyAdded_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListRecentlyAdded_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListRecentlyAdded_Call) RunAndReturn(run func(context.Context, int32, int32) ([]movie.Movie, error)) *MockMovieRepository_ListRecentlyAdded_Call {
+func (_c *MockMovieRepository_ListRecentlyAdded_Call) RunAndReturn(run func(context.Context, int32, int32) ([]Movie, error)) *MockMovieRepository_ListRecentlyAdded_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListTopRated provides a mock function with given fields: ctx, minVotes, limit, offset
-func (_m *MockMovieRepository) ListTopRated(ctx context.Context, minVotes int32, limit int32, offset int32) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) ListTopRated(ctx context.Context, minVotes int32, limit int32, offset int32) ([]Movie, error) {
 	ret := _m.Called(ctx, minVotes, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListTopRated")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]Movie, error)); ok {
 		return rf(ctx, minVotes, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []Movie); ok {
 		r0 = rf(ctx, minVotes, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -2065,34 +2064,34 @@ func (_c *MockMovieRepository_ListTopRated_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockMovieRepository_ListTopRated_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_ListTopRated_Call {
+func (_c *MockMovieRepository_ListTopRated_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_ListTopRated_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListTopRated_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]movie.Movie, error)) *MockMovieRepository_ListTopRated_Call {
+func (_c *MockMovieRepository_ListTopRated_Call) RunAndReturn(run func(context.Context, int32, int32, int32) ([]Movie, error)) *MockMovieRepository_ListTopRated_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListWatchedMovies provides a mock function with given fields: ctx, userID, limit, offset
-func (_m *MockMovieRepository) ListWatchedMovies(ctx context.Context, userID uuid.UUID, limit int32, offset int32) ([]movie.WatchedMovieItem, error) {
+func (_m *MockMovieRepository) ListWatchedMovies(ctx context.Context, userID uuid.UUID, limit int32, offset int32) ([]WatchedMovieItem, error) {
 	ret := _m.Called(ctx, userID, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListWatchedMovies")
 	}
 
-	var r0 []movie.WatchedMovieItem
+	var r0 []WatchedMovieItem
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) ([]movie.WatchedMovieItem, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) ([]WatchedMovieItem, error)); ok {
 		return rf(ctx, userID, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) []movie.WatchedMovieItem); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) []WatchedMovieItem); ok {
 		r0 = rf(ctx, userID, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.WatchedMovieItem)
+			r0 = ret.Get(0).([]WatchedMovieItem)
 		}
 	}
 
@@ -2126,12 +2125,12 @@ func (_c *MockMovieRepository_ListWatchedMovies_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockMovieRepository_ListWatchedMovies_Call) Return(_a0 []movie.WatchedMovieItem, _a1 error) *MockMovieRepository_ListWatchedMovies_Call {
+func (_c *MockMovieRepository_ListWatchedMovies_Call) Return(_a0 []WatchedMovieItem, _a1 error) *MockMovieRepository_ListWatchedMovies_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_ListWatchedMovies_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32, int32) ([]movie.WatchedMovieItem, error)) *MockMovieRepository_ListWatchedMovies_Call {
+func (_c *MockMovieRepository_ListWatchedMovies_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32, int32) ([]WatchedMovieItem, error)) *MockMovieRepository_ListWatchedMovies_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2185,23 +2184,23 @@ func (_c *MockMovieRepository_RemoveMovieFromCollection_Call) RunAndReturn(run f
 }
 
 // SearchMoviesByTitle provides a mock function with given fields: ctx, query, limit, offset
-func (_m *MockMovieRepository) SearchMoviesByTitle(ctx context.Context, query string, limit int32, offset int32) ([]movie.Movie, error) {
+func (_m *MockMovieRepository) SearchMoviesByTitle(ctx context.Context, query string, limit int32, offset int32) ([]Movie, error) {
 	ret := _m.Called(ctx, query, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchMoviesByTitle")
 	}
 
-	var r0 []movie.Movie
+	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) ([]movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) ([]Movie, error)); ok {
 		return rf(ctx, query, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) []movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) []Movie); ok {
 		r0 = rf(ctx, query, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]movie.Movie)
+			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
@@ -2235,38 +2234,38 @@ func (_c *MockMovieRepository_SearchMoviesByTitle_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockMovieRepository_SearchMoviesByTitle_Call) Return(_a0 []movie.Movie, _a1 error) *MockMovieRepository_SearchMoviesByTitle_Call {
+func (_c *MockMovieRepository_SearchMoviesByTitle_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_SearchMoviesByTitle_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_SearchMoviesByTitle_Call) RunAndReturn(run func(context.Context, string, int32, int32) ([]movie.Movie, error)) *MockMovieRepository_SearchMoviesByTitle_Call {
+func (_c *MockMovieRepository_SearchMoviesByTitle_Call) RunAndReturn(run func(context.Context, string, int32, int32) ([]Movie, error)) *MockMovieRepository_SearchMoviesByTitle_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateMovie provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) UpdateMovie(ctx context.Context, params movie.UpdateMovieParams) (*movie.Movie, error) {
+func (_m *MockMovieRepository) UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateMovie")
 	}
 
-	var r0 *movie.Movie
+	var r0 *Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieParams) (*movie.Movie, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieParams) (*Movie, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieParams) *movie.Movie); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieParams) *Movie); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.Movie)
+			r0 = ret.Get(0).(*Movie)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.UpdateMovieParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, UpdateMovieParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -2282,50 +2281,50 @@ type MockMovieRepository_UpdateMovie_Call struct {
 
 // UpdateMovie is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.UpdateMovieParams
+//   - params UpdateMovieParams
 func (_e *MockMovieRepository_Expecter) UpdateMovie(ctx interface{}, params interface{}) *MockMovieRepository_UpdateMovie_Call {
 	return &MockMovieRepository_UpdateMovie_Call{Call: _e.mock.On("UpdateMovie", ctx, params)}
 }
 
-func (_c *MockMovieRepository_UpdateMovie_Call) Run(run func(ctx context.Context, params movie.UpdateMovieParams)) *MockMovieRepository_UpdateMovie_Call {
+func (_c *MockMovieRepository_UpdateMovie_Call) Run(run func(ctx context.Context, params UpdateMovieParams)) *MockMovieRepository_UpdateMovie_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.UpdateMovieParams))
+		run(args[0].(context.Context), args[1].(UpdateMovieParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovie_Call) Return(_a0 *movie.Movie, _a1 error) *MockMovieRepository_UpdateMovie_Call {
+func (_c *MockMovieRepository_UpdateMovie_Call) Return(_a0 *Movie, _a1 error) *MockMovieRepository_UpdateMovie_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovie_Call) RunAndReturn(run func(context.Context, movie.UpdateMovieParams) (*movie.Movie, error)) *MockMovieRepository_UpdateMovie_Call {
+func (_c *MockMovieRepository_UpdateMovie_Call) RunAndReturn(run func(context.Context, UpdateMovieParams) (*Movie, error)) *MockMovieRepository_UpdateMovie_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateMovieCollection provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) UpdateMovieCollection(ctx context.Context, params movie.UpdateMovieCollectionParams) (*movie.MovieCollection, error) {
+func (_m *MockMovieRepository) UpdateMovieCollection(ctx context.Context, params UpdateMovieCollectionParams) (*MovieCollection, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateMovieCollection")
 	}
 
-	var r0 *movie.MovieCollection
+	var r0 *MovieCollection
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieCollectionParams) (*movie.MovieCollection, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieCollectionParams) (*MovieCollection, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieCollectionParams) *movie.MovieCollection); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieCollectionParams) *MovieCollection); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieCollection)
+			r0 = ret.Get(0).(*MovieCollection)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.UpdateMovieCollectionParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, UpdateMovieCollectionParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -2341,50 +2340,50 @@ type MockMovieRepository_UpdateMovieCollection_Call struct {
 
 // UpdateMovieCollection is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.UpdateMovieCollectionParams
+//   - params UpdateMovieCollectionParams
 func (_e *MockMovieRepository_Expecter) UpdateMovieCollection(ctx interface{}, params interface{}) *MockMovieRepository_UpdateMovieCollection_Call {
 	return &MockMovieRepository_UpdateMovieCollection_Call{Call: _e.mock.On("UpdateMovieCollection", ctx, params)}
 }
 
-func (_c *MockMovieRepository_UpdateMovieCollection_Call) Run(run func(ctx context.Context, params movie.UpdateMovieCollectionParams)) *MockMovieRepository_UpdateMovieCollection_Call {
+func (_c *MockMovieRepository_UpdateMovieCollection_Call) Run(run func(ctx context.Context, params UpdateMovieCollectionParams)) *MockMovieRepository_UpdateMovieCollection_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.UpdateMovieCollectionParams))
+		run(args[0].(context.Context), args[1].(UpdateMovieCollectionParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovieCollection_Call) Return(_a0 *movie.MovieCollection, _a1 error) *MockMovieRepository_UpdateMovieCollection_Call {
+func (_c *MockMovieRepository_UpdateMovieCollection_Call) Return(_a0 *MovieCollection, _a1 error) *MockMovieRepository_UpdateMovieCollection_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovieCollection_Call) RunAndReturn(run func(context.Context, movie.UpdateMovieCollectionParams) (*movie.MovieCollection, error)) *MockMovieRepository_UpdateMovieCollection_Call {
+func (_c *MockMovieRepository_UpdateMovieCollection_Call) RunAndReturn(run func(context.Context, UpdateMovieCollectionParams) (*MovieCollection, error)) *MockMovieRepository_UpdateMovieCollection_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateMovieFile provides a mock function with given fields: ctx, params
-func (_m *MockMovieRepository) UpdateMovieFile(ctx context.Context, params movie.UpdateMovieFileParams) (*movie.MovieFile, error) {
+func (_m *MockMovieRepository) UpdateMovieFile(ctx context.Context, params UpdateMovieFileParams) (*MovieFile, error) {
 	ret := _m.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateMovieFile")
 	}
 
-	var r0 *movie.MovieFile
+	var r0 *MovieFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieFileParams) (*movie.MovieFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieFileParams) (*MovieFile, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, movie.UpdateMovieFileParams) *movie.MovieFile); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, UpdateMovieFileParams) *MovieFile); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*movie.MovieFile)
+			r0 = ret.Get(0).(*MovieFile)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, movie.UpdateMovieFileParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, UpdateMovieFileParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -2400,24 +2399,24 @@ type MockMovieRepository_UpdateMovieFile_Call struct {
 
 // UpdateMovieFile is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params movie.UpdateMovieFileParams
+//   - params UpdateMovieFileParams
 func (_e *MockMovieRepository_Expecter) UpdateMovieFile(ctx interface{}, params interface{}) *MockMovieRepository_UpdateMovieFile_Call {
 	return &MockMovieRepository_UpdateMovieFile_Call{Call: _e.mock.On("UpdateMovieFile", ctx, params)}
 }
 
-func (_c *MockMovieRepository_UpdateMovieFile_Call) Run(run func(ctx context.Context, params movie.UpdateMovieFileParams)) *MockMovieRepository_UpdateMovieFile_Call {
+func (_c *MockMovieRepository_UpdateMovieFile_Call) Run(run func(ctx context.Context, params UpdateMovieFileParams)) *MockMovieRepository_UpdateMovieFile_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(movie.UpdateMovieFileParams))
+		run(args[0].(context.Context), args[1].(UpdateMovieFileParams))
 	})
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovieFile_Call) Return(_a0 *movie.MovieFile, _a1 error) *MockMovieRepository_UpdateMovieFile_Call {
+func (_c *MockMovieRepository_UpdateMovieFile_Call) Return(_a0 *MovieFile, _a1 error) *MockMovieRepository_UpdateMovieFile_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockMovieRepository_UpdateMovieFile_Call) RunAndReturn(run func(context.Context, movie.UpdateMovieFileParams) (*movie.MovieFile, error)) *MockMovieRepository_UpdateMovieFile_Call {
+func (_c *MockMovieRepository_UpdateMovieFile_Call) RunAndReturn(run func(context.Context, UpdateMovieFileParams) (*MovieFile, error)) *MockMovieRepository_UpdateMovieFile_Call {
 	_c.Call.Return(run)
 	return _c
 }
