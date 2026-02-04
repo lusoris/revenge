@@ -113,7 +113,8 @@
       "Bash(/c/Users/ms/go/bin/mockery:*)",
       "Bash(go doc:*)",
       "Bash(export CGO_ENABLED=1:*)",
-      "Bash(mockery:*)"
+      "Bash(mockery:*)",
+      "Bash(gosec:*)"
     ]
   }
 }

@@ -321,7 +321,8 @@ func (a *EmailAgent) sendEmail(ctx context.Context, recipients []string, msg []b
 	if a.config.UseTLS {
 		// Direct TLS connection (port 465)
 		tlsConfig := &tls.Config{
-			ServerName:         a.config.Host,
+			ServerName: a.config.Host,
+			// #nosec G402 -- InsecureSkipVerify is user-configurable for self-signed certs
 			InsecureSkipVerify: a.config.SkipVerify,
 		}
 		conn, err = tls.DialWithDialer(dialer, "tcp", addr, tlsConfig)
@@ -344,7 +345,8 @@ func (a *EmailAgent) sendEmail(ctx context.Context, recipients []string, msg []b
 	// STARTTLS if configured (and not already using TLS)
 	if a.config.UseStartTLS && !a.config.UseTLS {
 		tlsConfig := &tls.Config{
-			ServerName:         a.config.Host,
+			ServerName: a.config.Host,
+			// #nosec G402 -- InsecureSkipVerify is user-configurable for self-signed certs
 			InsecureSkipVerify: a.config.SkipVerify,
 		}
 		if err := client.StartTLS(tlsConfig); err != nil {
