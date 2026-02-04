@@ -7,9 +7,11 @@ import (
 	"io"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/storage"
 )
 
 // Service implements user business logic
@@ -17,14 +19,18 @@ type Service struct {
 	repo           Repository
 	hasher         *crypto.PasswordHasher
 	activityLogger activity.Logger
+	storage        storage.Storage
+	avatarConfig   config.AvatarConfig
 }
 
 // NewService creates a new user service
-func NewService(repo Repository, activityLogger activity.Logger) *Service {
+func NewService(repo Repository, activityLogger activity.Logger, store storage.Storage, avatarCfg config.AvatarConfig) *Service {
 	return &Service{
 		repo:           repo,
 		hasher:         crypto.NewPasswordHasher(),
 		activityLogger: activityLogger,
+		storage:        store,
+		avatarConfig:   avatarCfg,
 	}
 }
 
@@ -323,19 +329,30 @@ func (s *Service) UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Re
 		return nil, err
 	}
 
-	// TODO: Actually upload file to storage
-	// For now, just create a placeholder path
-	filePath := fmt.Sprintf("/avatars/%s/%s", userID.String(), metadata.FileName)
+	// Generate storage key
+	storageKey := storage.GenerateAvatarKey(userID, metadata.FileName)
+
+	// Store the file
+	storedKey, err := s.storage.Store(ctx, storageKey, file, metadata.MimeType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to store avatar: %w", err)
+	}
+
+	// Get the URL for the stored file
+	filePath := s.storage.GetURL(storedKey)
 
 	// Get next version number
 	latestVersion, err := s.repo.GetLatestAvatarVersion(ctx, userID)
 	if err != nil {
+		// Cleanup stored file on error
+		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to get latest avatar version: %w", err)
 	}
 	nextVersion := latestVersion + 1
 
 	// Unset current avatars
 	if err := s.repo.UnsetCurrentAvatars(ctx, userID); err != nil {
+		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to unset current avatars: %w", err)
 	}
 
@@ -353,6 +370,7 @@ func (s *Service) UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Re
 		UploadedFromUserAgent: metadata.UploadedFromUserAgent,
 	})
 	if err != nil {
+		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to create avatar: %w", err)
 	}
 

@@ -42,6 +42,9 @@ type Config struct {
 
 	// Email configuration
 	Email EmailConfig `koanf:"email"`
+
+	// Avatar configuration
+	Avatar AvatarConfig `koanf:"avatar"`
 }
 
 // ServerConfig holds HTTP server configuration.
@@ -319,6 +322,18 @@ type SendGridConfig struct {
 	APIKey string `koanf:"api_key"`
 }
 
+// AvatarConfig holds avatar upload configuration.
+type AvatarConfig struct {
+	// StoragePath is the local directory for avatar storage.
+	StoragePath string `koanf:"storage_path"`
+
+	// MaxSizeBytes is the maximum allowed avatar file size.
+	MaxSizeBytes int64 `koanf:"max_size_bytes"`
+
+	// AllowedTypes are the allowed MIME types for avatars.
+	AllowedTypes []string `koanf:"allowed_types"`
+}
+
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
@@ -416,5 +431,10 @@ func Defaults() map[string]interface{} {
 		"email.smtp.skip_verify": false,
 		"email.smtp.timeout":     "30s",
 		"email.sendgrid.api_key": "",
+
+		// Avatar defaults
+		"avatar.storage_path":   "/data/avatars",
+		"avatar.max_size_bytes": 2 * 1024 * 1024, // 2MB
+		"avatar.allowed_types":  []string{"image/jpeg", "image/png", "image/webp"},
 	}
 }

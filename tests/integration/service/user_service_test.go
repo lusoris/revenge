@@ -10,8 +10,10 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +31,13 @@ func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
 	// Create queries and repository
 	queries := db.New(pool)
 	repo := user.NewPostgresRepository(queries)
-	svc := user.NewService(repo, activity.NewNoopLogger())
+	mockStorage := storage.NewMockStorage()
+	avatarCfg := config.AvatarConfig{
+		StoragePath:  "/tmp/test-avatars",
+		MaxSizeBytes: 5 * 1024 * 1024,
+		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
+	}
+	svc := user.NewService(repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
 
 	cleanup := func() {
 		pool.Close()

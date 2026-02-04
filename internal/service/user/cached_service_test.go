@@ -10,9 +10,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -22,7 +24,13 @@ func setupCachedService(t *testing.T) (*CachedService, *testutil.TestDB) {
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	activityLogger := activity.NewNoopLogger()
-	baseSvc := NewService(repo, activityLogger)
+	mockStorage := storage.NewMockStorage()
+	avatarCfg := config.AvatarConfig{
+		StoragePath:  "/tmp/test-avatars",
+		MaxSizeBytes: 5 * 1024 * 1024,
+		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
+	}
+	baseSvc := NewService(repo, activityLogger, mockStorage, avatarCfg)
 
 	// Create cache instance (L1-only for tests)
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)

@@ -578,14 +578,80 @@ func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPrefe
 func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (ogen.UploadAvatarRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		return &ogen.UploadAvatarBadRequest{}, errors.Wrap(err, "unauthorized")
+		return &ogen.UploadAvatarUnauthorized{}, errors.Wrap(err, "unauthorized")
 	}
 
-	// TODO: Parse multipart form and get file metadata
-	// For now, return a placeholder response
-	h.logger.Info("Avatar upload requested", zap.String("user_id", userID.String()))
+	// Get file from request
+	file := req.GetFile()
 
-	return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("avatar upload not yet implemented")
+	// Validate file size against config
+	maxSize := h.cfg.Avatar.MaxSizeBytes
+	if maxSize == 0 {
+		maxSize = 5 * 1024 * 1024 // 5MB default
+	}
+	if file.Size > maxSize {
+		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("file size %d exceeds maximum %d bytes", file.Size, maxSize)
+	}
+
+	// Detect content type from file header (more reliable than trusting client)
+	// This also returns a new reader since the original is consumed
+	contentType, width, height, fileReader, err := detectImageInfoWithReader(file.File)
+	if err != nil {
+		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("invalid image: %w", err)
+	}
+
+	// Validate content type against config
+	allowedTypes := h.cfg.Avatar.AllowedTypes
+	if len(allowedTypes) == 0 {
+		allowedTypes = []string{"image/jpeg", "image/png", "image/webp"}
+	}
+	allowed := false
+	for _, t := range allowedTypes {
+		if t == contentType {
+			allowed = true
+			break
+		}
+	}
+	if !allowed {
+		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("file type %s not allowed", contentType)
+	}
+
+	// Build metadata
+	metadata := user.AvatarMetadata{
+		FileName:      file.Name,
+		FileSizeBytes: file.Size,
+		MimeType:      contentType,
+		Width:         int32(width),
+		Height:        int32(height),
+	}
+
+	// Upload avatar via service (using the new reader since original was consumed)
+	avatar, err := h.userService.UploadAvatar(ctx, userID, fileReader, metadata)
+	if err != nil {
+		h.logger.Error("Failed to upload avatar", zap.Error(err), zap.String("user_id", userID.String()))
+		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("failed to upload avatar: %w", err)
+	}
+
+	h.logger.Info("Avatar uploaded successfully",
+		zap.String("user_id", userID.String()),
+		zap.String("avatar_id", avatar.ID.String()))
+
+	// Build response
+	isCurrent := avatar.IsCurrent != nil && *avatar.IsCurrent
+
+	return &ogen.Avatar{
+		ID:            avatar.ID,
+		UserID:        avatar.UserID,
+		FilePath:      avatar.FilePath,
+		FileSizeBytes: ogen.NewOptInt(int(avatar.FileSizeBytes)),
+		MimeType:      ogen.NewOptString(avatar.MimeType),
+		Width:         ogen.NewOptInt(int(avatar.Width)),
+		Height:        ogen.NewOptInt(int(avatar.Height)),
+		IsAnimated:    ogen.NewOptBool(avatar.IsAnimated != nil && *avatar.IsAnimated),
+		Version:       int(avatar.Version),
+		IsCurrent:     isCurrent,
+		UploadedAt:    ogen.NewOptDateTime(avatar.UploadedAt),
+	}, nil
 }
 
 // ============================================================================

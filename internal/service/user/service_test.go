@@ -10,8 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -23,7 +25,13 @@ func setupTestService(t *testing.T) (*Service, *testutil.TestDB) {
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	activityLogger := activity.NewNoopLogger()
-	svc := NewService(repo, activityLogger)
+	mockStorage := storage.NewMockStorage()
+	avatarCfg := config.AvatarConfig{
+		StoragePath:  "/tmp/test-avatars",
+		MaxSizeBytes: 5 * 1024 * 1024,
+		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
+	}
+	svc := NewService(repo, activityLogger, mockStorage, avatarCfg)
 	return svc, testDB
 }
 
