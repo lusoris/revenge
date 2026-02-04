@@ -1,0 +1,139 @@
+# mockery configuration for revenge project
+# See: https://vektra.github.io/mockery/latest/configuration/
+
+# Global settings
+with-expecter: true  # Enable testify/mock expectations
+mockname: "Mock{{.InterfaceName}}"  # Naming convention: MockRepository
+filename: "mock_{{.InterfaceName | snakecase}}_test.go"  # Filename: mock_repository_test.go
+outpkg: "{{.PackageName}}_test"  # Use _test package suffix to avoid import cycles
+dir: "{{.InterfaceDir}}"  # Same directory as interface
+
+# Package-specific configurations
+packages:
+  # Service layer - repositories
+  github.com/lusoris/revenge/internal/service/session:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockSessionRepository"
+
+  github.com/lusoris/revenge/internal/service/auth:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockAuthRepository"
+
+  github.com/lusoris/revenge/internal/service/user:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockUserRepository"
+
+  github.com/lusoris/revenge/internal/service/rbac:
+    interfaces:
+      Enforcer:
+        config:
+          mockname: "MockRBACEnforcer"
+
+  github.com/lusoris/revenge/internal/service/settings:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockSettingsRepository"
+
+  github.com/lusoris/revenge/internal/service/activity:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockActivityRepository"
+      Logger:
+        config:
+          mockname: "MockActivityLogger"
+
+  github.com/lusoris/revenge/internal/service/apikeys:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockAPIKeysRepository"
+
+  github.com/lusoris/revenge/internal/service/library:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockLibraryRepository"
+
+  github.com/lusoris/revenge/internal/service/oidc:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockOIDCRepository"
+
+  github.com/lusoris/revenge/internal/service/notification:
+    interfaces:
+      Agent:
+        config:
+          mockname: "MockNotificationAgent"
+      Dispatcher:
+        config:
+          mockname: "MockNotificationDispatcher"
+
+  github.com/lusoris/revenge/internal/service/search:
+    interfaces:
+      Client:
+        config:
+          mockname: "MockSearchClient"
+
+  # Content layer - movie module
+  github.com/lusoris/revenge/internal/content/movie:
+    interfaces:
+      Repository:
+        config:
+          mockname: "MockMovieRepository"
+      MetadataService:
+        config:
+          mockname: "MockMetadataService"
+      Prober:
+        config:
+          mockname: "MockProber"
+
+  # Integration layer
+  github.com/lusoris/revenge/internal/integration/radarr:
+    interfaces:
+      Client:
+        config:
+          mockname: "MockRadarrClient"
+
+  # Infrastructure layer
+  github.com/lusoris/revenge/internal/infra/cache:
+    interfaces:
+      Cache:
+        config:
+          mockname: "MockCache"
+
+  github.com/lusoris/revenge/internal/infra/jobs:
+    interfaces:
+      Queue:
+        config:
+          mockname: "MockJobQueue"
+
+  github.com/lusoris/revenge/internal/infra/image:
+    interfaces:
+      Service:
+        config:
+          mockname: "MockImageService"
+
+  # MFA services
+  github.com/lusoris/revenge/internal/service/mfa:
+    interfaces:
+      TOTPService:
+        config:
+          mockname: "MockTOTPService"
+      WebAuthnService:
+        config:
+          mockname: "MockWebAuthnService"
+      BackupCodesService:
+        config:
+          mockname: "MockBackupCodesService"
+      Manager:
+        config:
+          mockname: "MockMFAManager"

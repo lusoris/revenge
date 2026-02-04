@@ -9,6 +9,11 @@ import (
 	"github.com/asticode/go-astiav"
 )
 
+// Prober defines the interface for media probing
+type Prober interface {
+	Probe(filePath string) (*MediaInfo, error)
+}
+
 // MediaInfo contains detailed technical information about a media file
 type MediaInfo struct {
 	// File metadata
@@ -70,6 +75,9 @@ type SubtitleStreamInfo struct {
 
 // MediaInfoProber extracts media information from files using FFmpeg
 type MediaInfoProber struct{}
+
+// Ensure MediaInfoProber implements Prober
+var _ Prober = (*MediaInfoProber)(nil)
 
 // NewMediaInfoProber creates a new media info prober
 func NewMediaInfoProber() *MediaInfoProber {

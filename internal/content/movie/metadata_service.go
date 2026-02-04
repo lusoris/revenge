@@ -7,6 +7,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// MetadataProvider defines the interface for metadata operations
+type MetadataProvider interface {
+	SearchMovies(ctx context.Context, query string, year *int) ([]*Movie, error)
+	EnrichMovie(ctx context.Context, mov *Movie) error
+	GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieCredit, error)
+	GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieGenre, error)
+}
+
+// MetadataService implements MetadataProvider using TMDb
 type MetadataService struct {
 	client *TMDbClient
 	mapper *TMDbMapper

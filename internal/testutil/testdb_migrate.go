@@ -3,6 +3,7 @@ package testutil
 import (
 	"database/sql"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -12,6 +13,24 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
+
+// pathToFileURL converts a filesystem path to a proper file:// URL
+// Handles both Windows (C:\path) and Unix (/path) paths correctly
+func pathToFileURL(path string) string {
+	// Get absolute path
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		absPath = path
+	}
+
+	// Convert to URL-safe format
+	u := &url.URL{
+		Scheme: "file",
+		Path:   filepath.ToSlash(absPath),
+	}
+
+	return u.String()
+}
 
 // findProjectRoot finds the project root by looking for go.mod
 func findProjectRoot() (string, error) {
@@ -62,8 +81,10 @@ func runMigrationsWithMigrate(databaseURL string) error {
 	}
 
 	// Use file:// source instead of embedded FS
+	// Convert to proper file:// URL format (handles Windows paths correctly)
+	sourceURL := pathToFileURL(migrationsPath)
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://"+migrationsPath,
+		sourceURL,
 		"postgres",
 		driver,
 	)

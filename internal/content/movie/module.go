@@ -39,5 +39,5 @@ func provideLibraryService(
 	metadataService *MetadataService,
 	cfg *config.Config,
 ) *LibraryService {
-	return NewLibraryService(repo, metadataService, cfg.Movie.Library)
+	return NewLibraryService(repo, metadataService, cfg.Movie.Library, NewMediaInfoProber())
 }

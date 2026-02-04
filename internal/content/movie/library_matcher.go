@@ -12,7 +12,7 @@ import (
 // Matcher handles matching scanned files to movies
 type Matcher struct {
 	repo            Repository
-	metadataService *MetadataService
+	metadataService MetadataProvider
 }
 
 // MatchResult represents the result of matching a file
@@ -37,7 +37,7 @@ const (
 )
 
 // NewMatcher creates a new file matcher
-func NewMatcher(repo Repository, metadataService *MetadataService) *Matcher {
+func NewMatcher(repo Repository, metadataService MetadataProvider) *Matcher {
 	return &Matcher{
 		repo:            repo,
 		metadataService: metadataService,

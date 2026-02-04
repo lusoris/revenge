@@ -94,7 +94,26 @@
       "Bash(go test:*)",
       "Bash(unknown flag: --out-format\"\n\nAlso documented CI/CD findings from previous push:\n- ISSUE-006: golangci-lint --out-format not supported in v2.8.0\n- ISSUE-007: 1,122 broken internal links in documentation\n\nVerified locally:\n- All tests passing \\(10/10\\)\n- golangci-lint runs successfully with --timeout=5m\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git checkout:*)",
-      "WebFetch(domain:mermaid.js.org)"
+      "WebFetch(domain:mermaid.js.org)",
+      "Bash(go version:*)",
+      "Bash(go clean:*)",
+      "Bash(set CGO_ENABLED=0)",
+      "Bash($env:CGO_ENABLED)",
+      "Bash(go env:*)",
+      "Bash(gcc:*)",
+      "Bash(winget search:*)",
+      "Bash(winget install:*)",
+      "Bash(C:/msys64/usr/bin/bash.exe -lc \"pacman -Sy --noconfirm\")",
+      "Bash(C:/msys64/usr/bin/bash.exe -lc \"pacman -S --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-ffmpeg\")",
+      "Bash(export PATH=\"/c/msys64/mingw64/bin:$PATH\":*)",
+      "Bash(pkg-config:*)",
+      "Bash(winget upgrade:*)",
+      "Bash(\"/c/Program Files/Go/bin/go.exe\" test -coverprofile=coverage.out -json ./...)",
+      "Bash(go install:*)",
+      "Bash(/c/Users/ms/go/bin/mockery:*)",
+      "Bash(go doc:*)",
+      "Bash(export CGO_ENABLED=1:*)",
+      "Bash(mockery:*)"
     ]
   }
 }

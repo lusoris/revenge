@@ -316,7 +316,7 @@
 
 #### Tests � IN PROGRESS (46.7% Coverage)
 - [x] Unit tests for service (mock repository)
-- [x] Unit tests for handler
+- [x] Unit tests for handler (mock service)
 - [x] Unit tests for TMDb mapper
 - [x] Lint fixes (handler.go, library_scanner.go, tmdb_client_test.go)
 - [ ] Integration tests with database (target: 80%+ coverage)
@@ -1108,8 +1108,8 @@ if config.Logging.Development {
 - Rate Limiter
 
 **Tasks**:
-1. [ ] Movie Service Tests
-2. [ ] Library Scanner Tests (mit go-astiav Mocks)
+1. [x] Movie Service Tests ✅
+2. [ ] Library Service Tests (with go-astiav Mocks) 🔄
 3. [ ] Notification Agent Tests
 4. [ ] Audit Service Tests
 5. [ ] RBAC Extension Tests

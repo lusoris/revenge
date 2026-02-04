@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"os"
+
 	"github.com/google/uuid"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -12,9 +14,10 @@ import (
 // LibraryService manages movie library operations
 type LibraryService struct {
 	repo            Repository
-	metadataService *MetadataService
+	metadataService MetadataProvider
 	scanner         *Scanner
 	matcher         *Matcher
+	prober          Prober
 }
 
 // ScanSummary contains statistics from a library scan
@@ -30,17 +33,23 @@ type ScanSummary struct {
 // NewLibraryService creates a new library service
 func NewLibraryService(
 	repo Repository,
-	metadataService *MetadataService,
+	metadataService MetadataProvider,
 	libConfig config.LibraryConfig,
+	prober Prober,
 ) *LibraryService {
 	scanner := NewScanner(libConfig.Paths)
 	matcher := NewMatcher(repo, metadataService)
+
+	if prober == nil {
+		prober = NewMediaInfoProber()
+	}
 
 	return &LibraryService{
 		repo:            repo,
 		metadataService: metadataService,
 		scanner:         scanner,
 		matcher:         matcher,
+		prober:          prober,
 	}
 }
 
@@ -76,7 +85,7 @@ func (s *LibraryService) ScanLibrary(ctx context.Context) (*ScanSummary, error) 
 				summary.NewMovies++
 
 				// Create movie file record
-				fileInfo, err := ExtractFileInfo(result.ScanResult.FilePath)
+				fileInfo, err := s.extractFileInfo(result.ScanResult.FilePath)
 				if err != nil {
 					summary.Errors = append(summary.Errors, fmt.Errorf("failed to extract file info: %w", err))
 					continue
@@ -95,6 +104,24 @@ func (s *LibraryService) ScanLibrary(ctx context.Context) (*ScanSummary, error) 
 	}
 
 	return summary, nil
+}
+
+// extractFileInfo extracts file info using the configured prober
+func (s *LibraryService) extractFileInfo(filePath string) (*MovieFileInfo, error) {
+	mediaInfo, err := s.prober.Probe(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to probe file: %w", err)
+	}
+
+	info := mediaInfo.ToMovieFileInfo()
+
+	// Get file size from stat if not in mediainfo (fallback)
+	if info.Size == 0 {
+		if fileInfo, err := os.Stat(filePath); err == nil {
+			info.Size = fileInfo.Size()
+		}
+	}
+	return info, nil
 }
 
 // createMovieFile creates a movie file record
