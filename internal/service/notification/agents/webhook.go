@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"text/template"
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/notification"
@@ -60,10 +61,31 @@ type WebhookPayload struct {
 	Source    string            `json:"source"`
 }
 
+// WebhookTemplateData provides data for custom payload templates
+type WebhookTemplateData struct {
+	// EventID is the unique event identifier
+	EventID string
+	// EventType is the event type string
+	EventType string
+	// Timestamp is when the event occurred
+	Timestamp time.Time
+	// UserID is the user ID if available
+	UserID string
+	// TargetID is the target resource ID if available
+	TargetID string
+	// Data contains the event data
+	Data map[string]any
+	// Metadata contains additional metadata
+	Metadata map[string]string
+	// Source identifies the event source
+	Source string
+}
+
 // WebhookAgent sends notifications to a generic webhook endpoint
 type WebhookAgent struct {
-	config WebhookConfig
-	client *http.Client
+	config   WebhookConfig
+	client   *http.Client
+	template *template.Template
 }
 
 // NewWebhookAgent creates a new webhook notification agent
@@ -91,11 +113,42 @@ func NewWebhookAgent(config WebhookConfig) (*WebhookAgent, error) {
 		Timeout: agent.config.Timeout,
 	}
 
+	// Parse custom payload template if provided
+	if agent.config.PayloadTemplate != "" {
+		tmpl, err := template.New("webhook").Funcs(webhookTemplateFuncs()).Parse(agent.config.PayloadTemplate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid payload template: %w", err)
+		}
+		agent.template = tmpl
+	}
+
 	if err := agent.Validate(); err != nil {
 		return nil, err
 	}
 
 	return agent, nil
+}
+
+// webhookTemplateFuncs returns the template functions available in webhook templates
+func webhookTemplateFuncs() template.FuncMap {
+	return template.FuncMap{
+		// json encodes a value as JSON
+		"json": func(v any) (string, error) {
+			b, err := json.Marshal(v)
+			if err != nil {
+				return "", err
+			}
+			return string(b), nil
+		},
+		// jsonIndent encodes a value as indented JSON
+		"jsonIndent": func(v any) (string, error) {
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				return "", err
+			}
+			return string(b), nil
+		},
+	}
 }
 
 // Type returns the agent type
@@ -187,8 +240,12 @@ func (a *WebhookAgent) Send(ctx context.Context, event *notification.Event) erro
 
 // buildPayload constructs the webhook payload
 func (a *WebhookAgent) buildPayload(event *notification.Event) ([]byte, error) {
-	// TODO: Support custom PayloadTemplate with Go templates
+	// Use custom template if configured
+	if a.template != nil {
+		return a.buildTemplatedPayload(event)
+	}
 
+	// Default JSON payload
 	payload := WebhookPayload{
 		EventID:   event.ID.String(),
 		EventType: event.Type.String(),
@@ -206,6 +263,32 @@ func (a *WebhookAgent) buildPayload(event *notification.Event) ([]byte, error) {
 	}
 
 	return json.Marshal(payload)
+}
+
+// buildTemplatedPayload constructs the payload using a custom Go template
+func (a *WebhookAgent) buildTemplatedPayload(event *notification.Event) ([]byte, error) {
+	data := WebhookTemplateData{
+		EventID:   event.ID.String(),
+		EventType: event.Type.String(),
+		Timestamp: event.Timestamp,
+		Data:      event.Data,
+		Metadata:  event.Metadata,
+		Source:    "revenge",
+	}
+
+	if event.UserID != nil {
+		data.UserID = event.UserID.String()
+	}
+	if event.TargetID != nil {
+		data.TargetID = event.TargetID.String()
+	}
+
+	var buf bytes.Buffer
+	if err := a.template.Execute(&buf, data); err != nil {
+		return nil, fmt.Errorf("template execution failed: %w", err)
+	}
+
+	return buf.Bytes(), nil
 }
 
 // sendRequest sends the HTTP request

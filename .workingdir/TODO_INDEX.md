@@ -28,7 +28,7 @@
 | A1 | [TODO_A1_MOVIE_REPOSITORY.md](TODO_A1_MOVIE_REPOSITORY.md) | P2 | 6-8h | ✅ Complete |
 | A2 | [TODO_A2_MOVIE_JOBS.md](TODO_A2_MOVIE_JOBS.md) | P2 | 4-6h | ✅ Complete |
 | A3 | [TODO_A3_TEST_INFRASTRUCTURE.md](TODO_A3_TEST_INFRASTRUCTURE.md) | P2 | 3-4h | ✅ Complete |
-| A4 | [TODO_A4_WEBHOOKS.md](TODO_A4_WEBHOOKS.md) | P2 | 2-3h | Pending |
+| A4 | [TODO_A4_WEBHOOKS.md](TODO_A4_WEBHOOKS.md) | P2 | 2-3h | ✅ Complete |
 | A5 | [TODO_A5_LIBRARY_MATCHER.md](TODO_A5_LIBRARY_MATCHER.md) | P2 | 4-6h | Pending |
 | A6 | [TODO_A6_PERMISSIONS_SESSION.md](TODO_A6_PERMISSIONS_SESSION.md) | HIGH | 20-30h | Pending |
 | B | [TODO_B_FRONTEND.md](TODO_B_FRONTEND.md) | - | 40-60h | Pending |
