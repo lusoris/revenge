@@ -88,6 +88,8 @@ packages:
 
   # Content layer - movie module
   github.com/lusoris/revenge/internal/content/movie:
+    config:
+      outpkg: "{{.PackageName}}"  # Use same package, not _test suffix
     interfaces:
       Repository:
         config:

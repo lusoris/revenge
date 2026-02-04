@@ -13,19 +13,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// MockProber implements Prober for testing
-type MockProber struct {
-	mock.Mock
-}
-
-func (m *MockProber) Probe(filePath string) (*MediaInfo, error) {
-	args := m.Called(filePath)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*MediaInfo), args.Error(1)
-}
-
 // MockMetadataProvider implements MetadataProvider for testing
 type MockMetadataProvider struct {
 	mock.Mock
@@ -71,7 +58,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("New movie found", func(t *testing.T) {
-		repo := new(MockRepository)
+		repo := new(MockMovieRepository)
 		metadata := new(MockMetadataProvider)
 		prober := new(MockProber)
 
@@ -113,8 +100,6 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		})).Return(&Movie{ID: uuid.New(), Title: "The Matrix", TMDbID: ptr(int32(603))}, nil)
 
 		// 2. Create Movie File
-		repo.On("GetMovie", ctx, mock.Anything).Return(&Movie{ID: uuid.New()}, nil) // Check in CreateMovieFile
-		repo.On("GetMovieFileByPath", ctx, movieFile).Return(nil, nil)              // Check existence
 		repo.On("CreateMovieFile", ctx, mock.MatchedBy(func(p CreateMovieFileParams) bool {
 			return p.FilePath == movieFile && p.Container != nil && *p.Container == "mkv"
 		})).Return(&MovieFile{}, nil)
@@ -133,7 +118,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 	})
 
 	t.Run("Unmatched file", func(t *testing.T) {
-		repo := new(MockRepository)
+		repo := new(MockMovieRepository)
 		metadata := new(MockMetadataProvider)
 		prober := new(MockProber)
 
@@ -158,7 +143,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 }
 
 func TestLibraryService_RefreshMovie(t *testing.T) {
-	repo := new(MockRepository)
+	repo := new(MockMovieRepository)
 	metadata := new(MockMetadataProvider)
 	prober := new(MockProber)
 	svc := NewLibraryService(repo, metadata, config.LibraryConfig{}, prober)
