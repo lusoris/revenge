@@ -39,6 +39,9 @@ type Config struct {
 
 	// Legacy (QAR) module configuration
 	Legacy LegacyConfig `koanf:"legacy"`
+
+	// Email configuration
+	Email EmailConfig `koanf:"email"`
 }
 
 // ServerConfig holds HTTP server configuration.
@@ -259,6 +262,63 @@ type RadarrConfig struct {
 	SyncInterval int `koanf:"sync_interval"`
 }
 
+// EmailConfig holds email/SMTP configuration for transactional emails.
+type EmailConfig struct {
+	// Enabled indicates if email sending is enabled.
+	Enabled bool `koanf:"enabled"`
+
+	// Provider is the email provider: "smtp" or "sendgrid".
+	Provider string `koanf:"provider" validate:"omitempty,oneof=smtp sendgrid"`
+
+	// FromAddress is the sender email address.
+	FromAddress string `koanf:"from_address"`
+
+	// FromName is the sender display name.
+	FromName string `koanf:"from_name"`
+
+	// BaseURL is the application base URL for email links (e.g., https://myserver.com).
+	BaseURL string `koanf:"base_url"`
+
+	// SMTP configuration (when provider=smtp)
+	SMTP SMTPConfig `koanf:"smtp"`
+
+	// SendGrid configuration (when provider=sendgrid)
+	SendGrid SendGridConfig `koanf:"sendgrid"`
+}
+
+// SMTPConfig holds SMTP server configuration.
+type SMTPConfig struct {
+	// Host is the SMTP server hostname.
+	Host string `koanf:"host"`
+
+	// Port is the SMTP server port.
+	Port int `koanf:"port"`
+
+	// Username for SMTP authentication.
+	Username string `koanf:"username"`
+
+	// Password for SMTP authentication.
+	Password string `koanf:"password"`
+
+	// UseTLS enables TLS from the start (port 465).
+	UseTLS bool `koanf:"use_tls"`
+
+	// UseStartTLS enables STARTTLS upgrade (port 587).
+	UseStartTLS bool `koanf:"use_starttls"`
+
+	// SkipVerify skips TLS certificate verification (for self-signed certs).
+	SkipVerify bool `koanf:"skip_verify"`
+
+	// Timeout is the connection timeout.
+	Timeout time.Duration `koanf:"timeout"`
+}
+
+// SendGridConfig holds SendGrid API configuration.
+type SendGridConfig struct {
+	// APIKey is the SendGrid API key.
+	APIKey string `koanf:"api_key"`
+}
+
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
@@ -340,5 +400,21 @@ func Defaults() map[string]interface{} {
 		"integrations.radarr.api_key":       "",
 		"integrations.radarr.auto_sync":     false,
 		"integrations.radarr.sync_interval": 300, // 5 minutes
+
+		// Email defaults
+		"email.enabled":          false,
+		"email.provider":         "smtp",
+		"email.from_address":     "",
+		"email.from_name":        "Revenge Media Server",
+		"email.base_url":         "http://localhost:8080",
+		"email.smtp.host":        "",
+		"email.smtp.port":        587,
+		"email.smtp.username":    "",
+		"email.smtp.password":    "",
+		"email.smtp.use_tls":     false,
+		"email.smtp.use_starttls": true,
+		"email.smtp.skip_verify": false,
+		"email.smtp.timeout":     "30s",
+		"email.sendgrid.api_key": "",
 	}
 }

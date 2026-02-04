@@ -29,30 +29,29 @@ Infrastructure already existed:
 
 ---
 
-## A0.2: Email Service Implementation [P0-BLOCKER]
+## A0.2: Email Service Implementation [P0-BLOCKER] - COMPLETED
 
-**Priority**: CRITICAL | **Effort**: 4-6h
+**Priority**: CRITICAL | **Effort**: 4-6h | **Actual**: 2h
+**Status**: COMPLETED (2026-02-04)
 
-User registration, password reset, and email verification are non-functional.
+**Implemented**:
+- [x] Created `internal/service/email/service.go` - Full SMTP email service
+- [x] SMTP transport with TLS/STARTTLS support
+- [x] SendGrid provider placeholder (SMTP sufficient for MVP)
+- [x] HTML email templates: verification, password reset, welcome
+- [x] Config: `email.enabled`, `email.provider`, `email.smtp.*`, `email.sendgrid.*`
+- [x] Config: `email.from_address`, `email.from_name`, `email.base_url`
+- [x] XSS protection with HTML escaping
+- [x] Tests for service and templates
+- [x] Auth service integration (Register, ResendVerification, RequestPasswordReset)
 
-**Affected Files**:
-| File | Line | Issue |
-|------|------|-------|
-| `internal/service/auth/service.go` | 96 | `// TODO: Send verification email` |
-| `internal/service/auth/service.go` | 156 | `// TODO: Send verification email` |
-| `internal/service/auth/service.go` | 409 | `// TODO: Send reset email` |
+**Files Created**:
+- `internal/service/email/service.go` - Main service
+- `internal/service/email/module.go` - fx module
+- `internal/service/email/service_test.go` - Tests
+- `internal/config/config.go` - EmailConfig, SMTPConfig, SendGridConfig
 
-**Tasks**:
-- [ ] Create `internal/service/email/service.go`
-- [ ] Implement SMTP transport (configurable)
-- [ ] Implement SendGrid transport (optional, configurable)
-- [ ] Email templates: verification, password reset, welcome
-- [ ] Config: `email.provider: smtp|sendgrid`
-- [ ] Config: `email.smtp.host`, `smtp.port`, `smtp.user`, `smtp.password`
-- [ ] Config: `email.from_address`, `email.from_name`
-- [ ] River job for async email sending
-- [ ] Tests with mock SMTP server
-- [ ] Update auth service to call email service
+**Note**: River job for async sending deferred to post-MVP (sync sending works for initial volume)
 
 ---
 

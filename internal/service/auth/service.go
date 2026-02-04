@@ -12,6 +12,7 @@ import (
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/email"
 )
 
 // Service implements auth business logic
@@ -20,17 +21,19 @@ type Service struct {
 	tokenManager   TokenManager
 	hasher         *crypto.PasswordHasher
 	activityLogger activity.Logger
+	emailService   *email.Service
 	jwtExpiry      time.Duration
 	refreshExpiry  time.Duration
 }
 
 // NewService creates a new auth service
-func NewService(repo Repository, tokenManager TokenManager, activityLogger activity.Logger, jwtExpiry, refreshExpiry time.Duration) *Service {
+func NewService(repo Repository, tokenManager TokenManager, activityLogger activity.Logger, emailService *email.Service, jwtExpiry, refreshExpiry time.Duration) *Service {
 	return &Service{
 		repo:           repo,
 		tokenManager:   tokenManager,
 		hasher:         crypto.NewPasswordHasher(),
 		activityLogger: activityLogger,
+		emailService:   emailService,
 		jwtExpiry:      jwtExpiry,
 		refreshExpiry:  refreshExpiry,
 	}
@@ -93,8 +96,14 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to create verification token: %w", err)
 	}
 
-	// TODO: Send verification email (requires email service)
-	// For now, token is generated but not sent
+	// Send verification email
+	if s.emailService != nil {
+		username := user.Username
+		if err := s.emailService.SendVerificationEmail(ctx, user.Email, username, token); err != nil {
+			// Log error but don't fail registration
+			fmt.Printf("failed to send verification email: %v\n", err)
+		}
+	}
 
 	return &user, nil
 }
@@ -153,7 +162,13 @@ func (s *Service) ResendVerification(ctx context.Context, userID uuid.UUID) erro
 		return fmt.Errorf("failed to create verification token: %w", err)
 	}
 
-	// TODO: Send verification email
+	// Send verification email
+	if s.emailService != nil {
+		if err := s.emailService.SendVerificationEmail(ctx, user.Email, user.Username, token); err != nil {
+			return fmt.Errorf("failed to send verification email: %w", err)
+		}
+	}
+
 	return nil
 }
 
@@ -406,7 +421,14 @@ func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddr
 		return "", fmt.Errorf("failed to create reset token: %w", err)
 	}
 
-	// TODO: Send reset email
+	// Send password reset email
+	if s.emailService != nil {
+		if err := s.emailService.SendPasswordResetEmail(ctx, user.Email, user.Username, token); err != nil {
+			// Log error but don't fail (don't reveal if user exists)
+			fmt.Printf("failed to send password reset email: %v\n", err)
+		}
+	}
+
 	return token, nil
 }
 
