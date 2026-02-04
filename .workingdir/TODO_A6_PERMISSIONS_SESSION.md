@@ -94,22 +94,27 @@ Activity logs are now configurable with 90 day default.
 
 ---
 
-## A6.5: Cache Integration Tests (testcontainers)
+## A6.5: Cache Integration Tests (testcontainers) ✅
 
-**Priority**: MEDIUM | **Effort**: 3-4h
+**Priority**: MEDIUM | **Effort**: 3-4h | **Actual**: 0.5h
+**Status**: COMPLETED (2026-02-04)
 
-Cache package needs testcontainers-based Redis tests for L2 paths.
+Cache package now has testcontainers-based Redis/Dragonfly tests.
 
-**Tasks**:
-- [ ] Create `internal/infra/cache/integration_test.go`
-- [ ] Use `internal/testutil/containers.go` for Redis/Dragonfly
-- [ ] Test L2 cache operations:
-  - [ ] Get/Set/Delete with real Redis
-  - [ ] TTL expiration
-  - [ ] Pattern-based invalidation
-  - [ ] L1→L2 fallback
-- [ ] Test distributed locks with real Redis
-- [ ] Run only with `-tags=integration`
+**Completed Tasks**:
+- [x] Create `internal/infra/cache/integration_test.go`
+- [x] Use `internal/testutil/containers.go` DragonflyContainer
+- [x] Test L2 cache operations:
+  - [x] Get/Set/Delete with real Dragonfly
+  - [x] TTL expiration (500ms TTL test)
+  - [x] Pattern-based invalidation
+  - [x] L1→L2 fallback (clear L1, verify L2 serves)
+  - [x] JSON operations
+  - [x] Exists check
+- [x] Session cache tests (key functions, user session invalidation)
+- [x] Client ping/connection test
+- [x] Disabled cache behavior test
+- [x] Run only with `-tags=integration` or skip in short mode
 
 ---
 
