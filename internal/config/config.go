@@ -28,6 +28,9 @@ type Config struct {
 	// Auth configuration
 	Auth AuthConfig `koanf:"auth"`
 
+	// Session configuration
+	Session SessionConfig `koanf:"session"`
+
 	// RBAC configuration
 	RBAC RBACConfig `koanf:"rbac"`
 
@@ -185,6 +188,21 @@ type RBACConfig struct {
 
 	// PolicyReloadInterval is the interval to reload policies from database.
 	PolicyReloadInterval time.Duration `koanf:"policy_reload_interval"`
+}
+
+// SessionConfig holds session management configuration.
+type SessionConfig struct {
+	// CacheEnabled indicates if session caching is enabled (Dragonfly/Redis L1).
+	CacheEnabled bool `koanf:"cache_enabled"`
+
+	// CacheTTL is the TTL for cached sessions.
+	CacheTTL time.Duration `koanf:"cache_ttl"`
+
+	// MaxPerUser is the maximum number of active sessions per user.
+	MaxPerUser int `koanf:"max_per_user"`
+
+	// TokenLength is the length of generated session tokens in bytes.
+	TokenLength int `koanf:"token_length"`
 }
 
 // LegacyConfig holds QAR (adult content) module configuration.
@@ -402,6 +420,12 @@ func Defaults() map[string]interface{} {
 		// RBAC defaults
 		"rbac.model_path":             "config/casbin_model.conf",
 		"rbac.policy_reload_interval": "5m",
+
+		// Session defaults
+		"session.cache_enabled": true,
+		"session.cache_ttl":     "5m",
+		"session.max_per_user":  10,
+		"session.token_length":  32,
 
 		// Legacy defaults
 		"legacy.enabled":                  false,

@@ -13,17 +13,22 @@ import (
 // CachedService wraps the session Service with caching support.
 type CachedService struct {
 	*Service
-	cache  *cache.Cache
-	logger *zap.Logger
+	cache    *cache.Cache
+	logger   *zap.Logger
+	cacheTTL time.Duration
 }
 
 // NewCachedService creates a new cached session service.
 // If cache is nil, it falls back to the underlying service without caching.
-func NewCachedService(svc *Service, cache *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc *Service, c *cache.Cache, logger *zap.Logger, cacheTTL time.Duration) *CachedService {
+	if cacheTTL == 0 {
+		cacheTTL = cache.SessionTTL // Default to 30s if not specified
+	}
 	return &CachedService{
-		Service: svc,
-		cache:   cache,
-		logger:  logger.Named("session-cache"),
+		Service:  svc,
+		cache:    c,
+		logger:   logger.Named("session-cache"),
+		cacheTTL: cacheTTL,
 	}
 }
 
@@ -69,12 +74,46 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.SessionTTL); setErr != nil {
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, s.cacheTTL); setErr != nil {
 			s.logger.Warn("failed to cache session", zap.Error(setErr))
 		}
 	}()
 
 	return result, nil
+}
+
+// CreateSession creates a new session with write-through caching.
+// The session is written to both the database and cache simultaneously.
+func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (string, string, error) {
+	// Create session in database
+	token, refreshToken, err := s.Service.CreateSession(ctx, userID, deviceInfo, scopes)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Write-through: cache the new session immediately
+	if s.cache != nil {
+		tokenHash := s.hashToken(token)
+		cacheKey := cache.SessionKey(tokenHash)
+
+		// Get the session we just created to cache it
+		session, getErr := s.repo.GetSessionByTokenHash(ctx, tokenHash)
+		if getErr == nil && session != nil {
+			go func() {
+				cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+				defer cancel()
+				if setErr := s.cache.SetJSON(cacheCtx, cacheKey, session, s.cacheTTL); setErr != nil {
+					s.logger.Warn("failed to cache new session", zap.Error(setErr))
+				} else {
+					s.logger.Debug("session cached on create",
+						zap.String("user_id", userID.String()),
+						zap.String("key", cacheKey))
+				}
+			}()
+		}
+	}
+
+	return token, refreshToken, nil
 }
 
 // RevokeSession revokes a session and invalidates cache.

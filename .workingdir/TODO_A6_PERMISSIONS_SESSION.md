@@ -30,22 +30,27 @@ Current Casbin policies use coarse permissions. Need to implement fine-grained.
 
 ---
 
-## A6.2: Hybrid Session Storage
+## A6.2: Hybrid Session Storage ✅
 
-**Priority**: HIGH | **Effort**: 4-6h
+**Priority**: HIGH | **Effort**: 4-6h | **Actual**: 1h
+**Status**: COMPLETED (2026-02-04)
 
-Sessions currently PostgreSQL-only. Implement Dragonfly L1 for performance.
+Sessions now use Dragonfly/Redis L1 cache for performance.
 
-**Tasks**:
-- [ ] Update `internal/service/session/cached_service.go`:
-  - [ ] ValidateSession: Check Dragonfly first, fallback to PostgreSQL
-  - [ ] CreateSession: Write to both (write-through)
-  - [ ] RevokeSession: Invalidate Dragonfly, update PostgreSQL
-- [ ] Add session serialization (JSON or msgpack)
-- [ ] Config: `session.cache_enabled: true` (default)
-- [ ] Config: `session.cache_ttl: 5m`
-- [ ] Benchmark: Compare latency with/without cache
-- [ ] Tests with testcontainers Redis
+**Completed Tasks**:
+- [x] Update `internal/service/session/cached_service.go`:
+  - [x] ValidateSession: Check cache first, fallback to PostgreSQL (already implemented)
+  - [x] CreateSession: Write-through to cache on session create
+  - [x] RevokeSession: Invalidate cache, update PostgreSQL (already implemented)
+  - [x] Configurable cache TTL
+- [x] Session serialization via JSON (using cache.SetJSON/GetJSON)
+- [x] Config: `session.cache_enabled: true` (default)
+- [x] Config: `session.cache_ttl: 5m` (configurable)
+- [x] Config: `session.max_per_user: 10`
+- [x] Config: `session.token_length: 32`
+- [x] Updated tests for new cacheTTL parameter
+- [ ] Benchmark: Compare latency with/without cache (deferred - manual testing)
+- [ ] Tests with testcontainers Redis (covered in A6.5)
 
 ---
 

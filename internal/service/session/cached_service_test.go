@@ -2,6 +2,8 @@ package session
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"testing"
 	"time"
 
@@ -13,15 +15,33 @@ import (
 	"go.uber.org/zap"
 )
 
+// testHashToken computes the same hash as Service.hashToken for testing
+func testHashToken(token string) string {
+	hash := sha256.Sum256([]byte(token))
+	return hex.EncodeToString(hash[:])
+}
+
 func TestNewCachedService(t *testing.T) {
 	logger := zap.NewNop()
 	svc := &Service{}
 
-	cached := NewCachedService(svc, nil, logger)
+	cached := NewCachedService(svc, nil, logger, 5*time.Minute)
 
 	require.NotNil(t, cached)
 	assert.Equal(t, svc, cached.Service)
 	assert.Nil(t, cached.cache)
+	assert.Equal(t, 5*time.Minute, cached.cacheTTL)
+}
+
+func TestNewCachedService_DefaultTTL(t *testing.T) {
+	logger := zap.NewNop()
+	svc := &Service{}
+
+	// When TTL is 0, should use default SessionTTL
+	cached := NewCachedService(svc, nil, logger, 0)
+
+	require.NotNil(t, cached)
+	assert.Equal(t, cache.SessionTTL, cached.cacheTTL)
 }
 
 func TestCachedService_ValidateSession_NoCache(t *testing.T) {
@@ -40,7 +60,7 @@ func TestCachedService_ValidateSession_NoCache(t *testing.T) {
 		logger: zap.NewNop(),
 	}
 
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, zap.NewNop(), 5*time.Minute)
 
 	// Without cache, should still work
 	session, err := cached.ValidateSession(context.Background(), "test-token")
@@ -68,7 +88,7 @@ func TestCachedService_ValidateSession_WithCache(t *testing.T) {
 		logger: zap.NewNop(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop())
+	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
 
 	// First call - cache miss
 	session1, err := cached.ValidateSession(context.Background(), "cached-token")
@@ -93,11 +113,13 @@ func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
 	defer l1Cache.Close()
 
 	sessionID := uuid.New()
+	// Use the actual hash of the token so cache invalidation works correctly
+	tokenHash := testHashToken("revoke-token")
 	mockRepo := &mockRepository{
 		session: db.SharedSession{
 			ID:        sessionID,
 			UserID:    uuid.New(),
-			TokenHash: "revoke-token-hash",
+			TokenHash: tokenHash,
 		},
 		callCount: make(map[string]int),
 	}
@@ -107,7 +129,7 @@ func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
 		logger: zap.NewNop(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop())
+	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
 
 	// Populate cache
 	_, err = cached.ValidateSession(context.Background(), "revoke-token")
@@ -133,8 +155,9 @@ func TestCachedService_InvalidateSessionCache(t *testing.T) {
 	defer l1Cache.Close()
 
 	cached := &CachedService{
-		cache:  l1Cache,
-		logger: zap.NewNop(),
+		cache:    l1Cache,
+		logger:   zap.NewNop(),
+		cacheTTL: 5 * time.Minute,
 	}
 
 	// Should not error even with valid token hash

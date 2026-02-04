@@ -22,10 +22,19 @@ func NewService(
 	logger *zap.Logger,
 	cfg *config.Config,
 ) *Service {
-	tokenLength := 32                           // 32 bytes = 64 hex chars
+	// Use session config with fallbacks
+	tokenLength := cfg.Session.TokenLength
+	if tokenLength == 0 {
+		tokenLength = 32 // 32 bytes = 64 hex chars
+	}
+
+	maxPerUser := cfg.Session.MaxPerUser
+	if maxPerUser == 0 {
+		maxPerUser = 10 // Max 10 sessions per user
+	}
+
 	expiry := cfg.Auth.RefreshExpiry            // Reuse auth refresh expiry
 	refreshExpiry := cfg.Auth.RefreshExpiry * 3 // 3x session expiry
-	maxPerUser := 10                            // Max 10 sessions per user
 
 	return &Service{
 		repo:          repo,
