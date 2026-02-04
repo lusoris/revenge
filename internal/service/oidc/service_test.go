@@ -577,3 +577,190 @@ func TestService_BuildOAuth2Config(t *testing.T) {
 	assert.Equal(t, "https://example.com/token", config.Endpoint.TokenURL)
 	assert.Contains(t, config.Scopes, "openid")
 }
+
+// ============================================================================
+// HandleCallback Tests
+// ============================================================================
+
+func TestService_HandleCallback_InvalidState(t *testing.T) {
+	t.Parallel()
+	svc, _, _ := setupTestService(t)
+	ctx := context.Background()
+
+	_, err := svc.HandleCallback(ctx, "invalid-state", "some-code")
+	assert.ErrorIs(t, err, ErrInvalidState)
+}
+
+func TestService_HandleCallback_ExpiredState(t *testing.T) {
+	t.Parallel()
+	svc, repo, _ := setupTestService(t)
+	ctx := context.Background()
+
+	provider, err := repo.CreateProvider(ctx, createTestProvider("callback_expired"))
+	require.NoError(t, err)
+
+	// Create expired state
+	stateReq := CreateStateRequest{
+		State:      "expired-state-123",
+		ProviderID: provider.ID,
+		ExpiresAt:  time.Now().Add(-1 * time.Hour), // Already expired
+	}
+	_, err = repo.CreateState(ctx, stateReq)
+	require.NoError(t, err)
+
+	_, err = svc.HandleCallback(ctx, "expired-state-123", "some-code")
+	assert.ErrorIs(t, err, ErrStateExpired)
+}
+
+func TestService_HandleCallback_DisabledProvider(t *testing.T) {
+	t.Parallel()
+	svc, repo, _ := setupTestService(t)
+	ctx := context.Background()
+
+	provider, err := repo.CreateProvider(ctx, createTestProvider("callback_disabled"))
+	require.NoError(t, err)
+
+	// Disable the provider
+	err = repo.DisableProvider(ctx, provider.ID)
+	require.NoError(t, err)
+
+	// Create valid state
+	stateReq := CreateStateRequest{
+		State:      "valid-state-disabled",
+		ProviderID: provider.ID,
+		ExpiresAt:  time.Now().Add(5 * time.Minute),
+	}
+	_, err = repo.CreateState(ctx, stateReq)
+	require.NoError(t, err)
+
+	_, err = svc.HandleCallback(ctx, "valid-state-disabled", "some-code")
+	assert.ErrorIs(t, err, ErrProviderDisabled)
+}
+
+// ============================================================================
+// ExtractUserInfo Extended Tests
+// ============================================================================
+
+func TestService_ExtractUserInfo_MissingClaims(t *testing.T) {
+	svc, _, _ := setupTestService(t)
+
+	provider := &Provider{
+		ClaimMappings: ClaimMappings{
+			Username: "preferred_username",
+			Email:    "email",
+			Name:     "name",
+		},
+	}
+
+	// Empty claims
+	claims := map[string]any{}
+
+	userInfo := svc.extractUserInfo(provider, claims)
+	assert.Empty(t, userInfo.Username)
+	assert.Empty(t, userInfo.Email)
+	assert.Empty(t, userInfo.Name)
+}
+
+func TestService_ExtractUserInfo_WithRoles(t *testing.T) {
+	svc, _, _ := setupTestService(t)
+
+	provider := &Provider{
+		ClaimMappings: ClaimMappings{
+			Username: "preferred_username",
+			Email:    "email",
+			Roles:    "roles",
+		},
+	}
+
+	claims := map[string]any{
+		"preferred_username": "testuser",
+		"email":              "test@example.com",
+		"roles":              []any{"admin", "user"},
+	}
+
+	userInfo := svc.extractUserInfo(provider, claims)
+	assert.Equal(t, "testuser", userInfo.Username)
+	assert.Equal(t, "test@example.com", userInfo.Email)
+}
+
+// ============================================================================
+// LinkUser Extended Tests
+// ============================================================================
+
+func TestService_LinkUser_LinkingNotAllowed(t *testing.T) {
+	t.Parallel()
+	svc, repo, testDB := setupTestService(t)
+	ctx := context.Background()
+
+	provider, err := repo.CreateProvider(ctx, createTestProvider("nolink_svc"))
+	require.NoError(t, err)
+
+	// Explicitly disable linking
+	updateReq := UpdateProviderRequest{AllowLinking: boolPtr(false)}
+	provider, err = repo.UpdateProvider(ctx, provider.ID, updateReq)
+	require.NoError(t, err)
+	assert.False(t, provider.AllowLinking)
+
+	user := testutil.CreateUser(t, testDB.Pool(), testutil.User{
+		Username: "nolinksvcuser",
+		Email:    "nolinksvc@example.com",
+	})
+
+	userInfo := &UserInfo{
+		Subject: "sub-nolink",
+		Email:   "nolinksvc@example.com",
+		Name:    "No Link User",
+	}
+
+	token := &oauth2.Token{
+		AccessToken:  "access-token",
+		RefreshToken: "refresh-token",
+		Expiry:       time.Now().Add(time.Hour),
+	}
+
+	_, err = svc.LinkUser(ctx, user.ID, provider.ID, "sub-nolink", userInfo, token)
+	assert.ErrorIs(t, err, ErrLinkingDisabled)
+}
+
+func TestService_LinkUser_AlreadyLinked(t *testing.T) {
+	t.Parallel()
+	svc, repo, testDB := setupTestService(t)
+	ctx := context.Background()
+
+	provider, err := repo.CreateProvider(ctx, createTestProvider("already_linked"))
+	require.NoError(t, err)
+	updateReq := UpdateProviderRequest{AllowLinking: boolPtr(true)}
+	provider, err = repo.UpdateProvider(ctx, provider.ID, updateReq)
+	require.NoError(t, err)
+
+	user := testutil.CreateUser(t, testDB.Pool(), testutil.User{
+		Username: "alreadylinked",
+		Email:    "alreadylinked@example.com",
+	})
+
+	// First link
+	linkReq := CreateUserLinkRequest{
+		UserID:     user.ID,
+		ProviderID: provider.ID,
+		Subject:    "sub-already",
+	}
+	_, err = repo.CreateUserLink(ctx, linkReq)
+	require.NoError(t, err)
+
+	// Try to link again
+	userInfo := &UserInfo{
+		Subject: "sub-already",
+		Email:   "alreadylinked@example.com",
+		Name:    "Already Linked User",
+	}
+
+	token := &oauth2.Token{
+		AccessToken:  "access-token",
+		RefreshToken: "refresh-token",
+		Expiry:       time.Now().Add(time.Hour),
+	}
+
+	_, err = svc.LinkUser(ctx, user.ID, provider.ID, "sub-already", userInfo, token)
+	assert.ErrorIs(t, err, ErrUserLinkExists)
+}
+
