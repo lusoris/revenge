@@ -355,6 +355,216 @@ func TestClient_IsHealthy(t *testing.T) {
 	})
 }
 
+func TestClient_GetMovieFiles(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/moviefile", r.URL.Path)
+		assert.Equal(t, "1", r.URL.Query().Get("movieId"))
+
+		files := []MovieFile{
+			{
+				ID:           1,
+				MovieID:      1,
+				RelativePath: "Inception (2010)/Inception.mkv",
+				Path:         "/movies/Inception (2010)/Inception.mkv",
+				Size:         5000000000,
+			},
+		}
+		writeJSON(w, files)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	files, err := client.GetMovieFiles(context.Background(), 1)
+	require.NoError(t, err)
+	require.Len(t, files, 1)
+	assert.Equal(t, "Inception (2010)/Inception.mkv", files[0].RelativePath)
+}
+
+func TestClient_GetTags(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/tag", r.URL.Path)
+
+		tags := []Tag{
+			{ID: 1, Label: "action"},
+			{ID: 2, Label: "favorite"},
+		}
+		writeJSON(w, tags)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	tags, err := client.GetTags(context.Background())
+	require.NoError(t, err)
+	require.Len(t, tags, 2)
+	assert.Equal(t, "action", tags[0].Label)
+}
+
+func TestClient_GetCalendar(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/calendar", r.URL.Path)
+		// Check that start and end params are present
+		assert.NotEmpty(t, r.URL.Query().Get("start"))
+		assert.NotEmpty(t, r.URL.Query().Get("end"))
+
+		entries := []CalendarEntry{
+			{
+				ID:    1,
+				Title: "New Movie",
+			},
+		}
+		writeJSON(w, entries)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	start := time.Now()
+	end := start.Add(7 * 24 * time.Hour)
+	entries, err := client.GetCalendar(context.Background(), start, end)
+	require.NoError(t, err)
+	require.Len(t, entries, 1)
+	assert.Equal(t, "New Movie", entries[0].Title)
+}
+
+func TestClient_GetHistory(t *testing.T) {
+	t.Run("without movie filter", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/api/v3/history", r.URL.Path)
+			assert.Equal(t, "1", r.URL.Query().Get("page"))
+			assert.Equal(t, "20", r.URL.Query().Get("pageSize"))
+			assert.Empty(t, r.URL.Query().Get("movieId"))
+
+			resp := HistoryResponse{
+				Page:         1,
+				PageSize:     20,
+				TotalRecords: 100,
+				Records:      []HistoryRecord{{ID: 1}},
+			}
+			writeJSON(w, resp)
+		}))
+		defer server.Close()
+
+		client := NewClient(Config{
+			BaseURL: server.URL,
+			APIKey:  "test-api-key",
+		})
+
+		history, err := client.GetHistory(context.Background(), 1, 20, nil)
+		require.NoError(t, err)
+		assert.Equal(t, 100, history.TotalRecords)
+		assert.Len(t, history.Records, 1)
+	})
+
+	t.Run("with movie filter", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "42", r.URL.Query().Get("movieId"))
+
+			resp := HistoryResponse{
+				Page:         1,
+				PageSize:     10,
+				TotalRecords: 5,
+				Records:      []HistoryRecord{},
+			}
+			writeJSON(w, resp)
+		}))
+		defer server.Close()
+
+		client := NewClient(Config{
+			BaseURL: server.URL,
+			APIKey:  "test-api-key",
+		})
+
+		movieID := 42
+		history, err := client.GetHistory(context.Background(), 1, 10, &movieID)
+		require.NoError(t, err)
+		assert.Equal(t, 5, history.TotalRecords)
+	})
+}
+
+func TestClient_RescanMovie(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/command", r.URL.Path)
+		assert.Equal(t, http.MethodPost, r.Method)
+
+		command := Command{
+			ID:     2,
+			Name:   "RescanMovie",
+			Status: "started",
+		}
+		writeJSON(w, command)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	command, err := client.RescanMovie(context.Background(), 1)
+	require.NoError(t, err)
+	assert.Equal(t, "RescanMovie", command.Name)
+}
+
+func TestClient_SearchMovie(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/command", r.URL.Path)
+		assert.Equal(t, http.MethodPost, r.Method)
+
+		command := Command{
+			ID:     3,
+			Name:   "MoviesSearch",
+			Status: "queued",
+		}
+		writeJSON(w, command)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	command, err := client.SearchMovie(context.Background(), 1)
+	require.NoError(t, err)
+	assert.Equal(t, "MoviesSearch", command.Name)
+}
+
+func TestClient_GetCommand(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v3/command/123", r.URL.Path)
+		assert.Equal(t, http.MethodGet, r.Method)
+
+		command := Command{
+			ID:     123,
+			Name:   "RefreshMovie",
+			Status: "completed",
+		}
+		writeJSON(w, command)
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{
+		BaseURL: server.URL,
+		APIKey:  "test-api-key",
+	})
+
+	command, err := client.GetCommand(context.Background(), 123)
+	require.NoError(t, err)
+	assert.Equal(t, 123, command.ID)
+	assert.Equal(t, "completed", command.Status)
+}
+
 func TestClient_Caching(t *testing.T) {
 	callCount := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
