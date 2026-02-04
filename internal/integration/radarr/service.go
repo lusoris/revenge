@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // SyncService handles synchronization between Radarr and Revenge.
@@ -200,7 +201,7 @@ func (s *SyncService) SyncMovie(ctx context.Context, radarrID int) error {
 	}
 
 	// Get existing movie by RadarrID
-	existing, err := s.movieRepo.GetMovieByRadarrID(ctx, int32(radarrID))
+	existing, err := s.movieRepo.GetMovieByRadarrID(ctx, util.SafeIntToInt32(radarrID))
 	if err != nil && err != movie.ErrMovieNotFound {
 		return fmt.Errorf("failed to check existing movie: %w", err)
 	}
@@ -310,7 +311,7 @@ func (s *SyncService) updateMovie(ctx context.Context, rm Movie, existingID uuid
 // syncCollection syncs a collection and links the movie to it.
 func (s *SyncService) syncCollection(ctx context.Context, rc *Collection, movieID uuid.UUID) error {
 	// Try to find existing collection by TMDb ID
-	existing, err := s.movieRepo.GetMovieCollectionByTMDbID(ctx, int32(rc.TMDbID))
+	existing, err := s.movieRepo.GetMovieCollectionByTMDbID(ctx, util.SafeIntToInt32(rc.TMDbID))
 	if err != nil && err != movie.ErrCollectionNotFound {
 		return err
 	}
@@ -355,7 +356,7 @@ func (s *SyncService) syncMovieFiles(ctx context.Context, radarrMovieID int, mov
 		mf := s.mapper.ToMovieFile(&rf, movieID)
 
 		// Check if file already exists by RadarrFileID
-		existing, err := s.movieRepo.GetMovieFileByRadarrID(ctx, int32(rf.ID))
+		existing, err := s.movieRepo.GetMovieFileByRadarrID(ctx, util.SafeIntToInt32(rf.ID))
 		if err != nil && err != movie.ErrMovieFileNotFound {
 			return err
 		}

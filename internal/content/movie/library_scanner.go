@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // VideoExtensions are supported video file extensions
@@ -251,7 +252,7 @@ func ExtractFileInfo(filePath string) (*MovieFileInfo, error) {
 		ResolutionLabel: mediaInfo.ResolutionLabel,
 		VideoCodec:      mediaInfo.VideoCodec,
 		VideoProfile:    mediaInfo.VideoProfile,
-		BitrateKbps:     int32(mediaInfo.BitrateKbps),
+		BitrateKbps:     util.SafeInt64ToInt32(mediaInfo.BitrateKbps),
 		DurationSeconds: mediaInfo.DurationSeconds,
 		Framerate:       mediaInfo.Framerate,
 		DynamicRange:    mediaInfo.DynamicRange,

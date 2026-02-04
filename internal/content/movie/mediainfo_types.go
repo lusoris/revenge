@@ -3,6 +3,8 @@ package movie
 import (
 	"fmt"
 	"time"
+
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Prober defines the interface for media probing
@@ -79,7 +81,7 @@ func (m *MediaInfo) ToMovieFileInfo() *MovieFileInfo {
 		ResolutionLabel: m.ResolutionLabel,
 		VideoCodec:      m.VideoCodec,
 		VideoProfile:    m.VideoProfile,
-		BitrateKbps:     int32(m.BitrateKbps),
+		BitrateKbps:     util.SafeInt64ToInt32(m.BitrateKbps),
 		DurationSeconds: m.DurationSeconds,
 		Framerate:       m.Framerate,
 		DynamicRange:    m.DynamicRange,

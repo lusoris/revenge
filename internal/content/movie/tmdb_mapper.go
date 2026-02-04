@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/util"
 	"github.com/shopspring/decimal"
 )
 
@@ -82,7 +83,7 @@ func (m *TMDbMapper) MapCredits(movieID uuid.UUID, credits *TMDbCredits) []Movie
 		result = append(result, MovieCredit{
 			ID:           uuid.New(),
 			MovieID:      movieID,
-			TMDbPersonID: int32(cast.ID),
+			TMDbPersonID: util.SafeIntToInt32(cast.ID),
 			Name:         cast.Name,
 			CreditType:   "cast",
 			Character:    tmdbParseOptionalString(&cast.Character),
@@ -99,7 +100,7 @@ func (m *TMDbMapper) MapCredits(movieID uuid.UUID, credits *TMDbCredits) []Movie
 		result = append(result, MovieCredit{
 			ID:           uuid.New(),
 			MovieID:      movieID,
-			TMDbPersonID: int32(crew.ID),
+			TMDbPersonID: util.SafeIntToInt32(crew.ID),
 			Name:         crew.Name,
 			CreditType:   "crew",
 			Character:    nil,
@@ -122,7 +123,7 @@ func (m *TMDbMapper) MapGenres(movieID uuid.UUID, genres []Genre) []MovieGenre {
 		result = append(result, MovieGenre{
 			ID:          uuid.New(),
 			MovieID:     movieID,
-			TMDbGenreID: int32(genre.ID),
+			TMDbGenreID: util.SafeIntToInt32(genre.ID),
 			Name:        genre.Name,
 			CreatedAt:   time.Now(),
 		})
@@ -181,7 +182,7 @@ func tmdbParseOptionalInt32(i int) *int32 {
 	if i == 0 {
 		return nil
 	}
-	val := int32(i)
+	val := util.SafeIntToInt32(i)
 	return &val
 }
 
@@ -189,7 +190,7 @@ func tmdbParseOptionalInt32Ptr(i *int) *int32 {
 	if i == nil || *i == 0 {
 		return nil
 	}
-	val := int32(*i)
+	val := util.SafeIntToInt32(*i)
 	return &val
 }
 

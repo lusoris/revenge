@@ -5,6 +5,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // GetMovie delegates to the movie handler.
@@ -24,8 +25,8 @@ func (h *Handler) GetMovie(ctx context.Context, params ogen.GetMovieParams) (oge
 func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) (ogen.ListMoviesRes, error) {
 	handlerParams := movie.ListMoviesParams{
 		OrderBy: string(params.OrderBy.Or("created_at")),
-		Limit:   int32(params.Limit.Or(20)),
-		Offset:  int32(params.Offset.Or(0)),
+		Limit:   util.SafeIntToInt32(params.Limit.Or(20)),
+		Offset:  util.SafeIntToInt32(params.Offset.Or(0)),
 	}
 
 	movies, err := h.movieHandler.ListMovies(ctx, handlerParams)
@@ -45,8 +46,8 @@ func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) 
 func (h *Handler) SearchMovies(ctx context.Context, params ogen.SearchMoviesParams) (ogen.SearchMoviesRes, error) {
 	handlerParams := movie.SearchMoviesParams{
 		Query:  params.Query,
-		Limit:  int32(params.Limit.Or(20)),
-		Offset: int32(params.Offset.Or(0)),
+		Limit:  util.SafeIntToInt32(params.Limit.Or(20)),
+		Offset: util.SafeIntToInt32(params.Offset.Or(0)),
 	}
 
 	movies, err := h.movieHandler.SearchMovies(ctx, handlerParams)
@@ -65,7 +66,7 @@ func (h *Handler) SearchMovies(ctx context.Context, params ogen.SearchMoviesPara
 // GetRecentlyAdded delegates to the movie handler.
 func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyAddedParams) (ogen.GetRecentlyAddedRes, error) {
 	handlerParams := movie.PaginationParams{
-		Limit:  int32(params.Limit.Or(20)),
+		Limit:  util.SafeIntToInt32(params.Limit.Or(20)),
 		Offset: 0,
 	}
 
@@ -85,9 +86,9 @@ func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyA
 // GetTopRated delegates to the movie handler.
 func (h *Handler) GetTopRated(ctx context.Context, params ogen.GetTopRatedParams) (ogen.GetTopRatedRes, error) {
 	handlerParams := movie.TopRatedParams{
-		Limit:    int32(params.Limit.Or(20)),
+		Limit:    util.SafeIntToInt32(params.Limit.Or(20)),
 		Offset:   0,
-		MinVotes: func() *int32 { v := int32(params.MinVotes.Or(100)); return &v }(),
+		MinVotes: func() *int32 { v := util.SafeIntToInt32(params.MinVotes.Or(100)); return &v }(),
 	}
 
 	movies, err := h.movieHandler.GetTopRated(ctx, handlerParams)
@@ -109,7 +110,7 @@ func (h *Handler) GetContinueWatching(ctx context.Context, params ogen.GetContin
 	if err != nil {
 		return nil, err
 	}
-	limit := int32(params.Limit.Or(20))
+	limit := util.SafeIntToInt32(params.Limit.Or(20))
 
 	items, err := h.movieHandler.GetContinueWatching(ctx, userID, limit)
 	if err != nil {
@@ -131,8 +132,8 @@ func (h *Handler) GetWatchHistory(ctx context.Context, params ogen.GetWatchHisto
 		return nil, err
 	}
 	handlerParams := movie.PaginationParams{
-		Limit:  int32(params.Limit.Or(20)),
-		Offset: int32(params.Offset.Or(0)),
+		Limit:  util.SafeIntToInt32(params.Limit.Or(20)),
+		Offset: util.SafeIntToInt32(params.Offset.Or(0)),
 	}
 
 	items, err := h.movieHandler.GetWatchHistory(ctx, userID, handlerParams)
@@ -274,8 +275,8 @@ func (h *Handler) UpdateWatchProgress(ctx context.Context, req *ogen.UpdateWatch
 	}
 
 	updateParams := movie.UpdateWatchProgressParams{
-		ProgressSeconds: int32(req.ProgressSeconds),
-		DurationSeconds: int32(req.DurationSeconds),
+		ProgressSeconds: util.SafeIntToInt32(req.ProgressSeconds),
+		DurationSeconds: util.SafeIntToInt32(req.DurationSeconds),
 	}
 
 	progress, err := h.movieHandler.UpdateWatchProgress(ctx, userID, params.ID.String(), updateParams)

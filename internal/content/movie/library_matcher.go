@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/lusoris/revenge/internal/util"
 	"github.com/shopspring/decimal"
 )
 
@@ -234,7 +235,7 @@ func extractYear(t *time.Time) *int32 {
 	if t == nil {
 		return nil
 	}
-	year := int32(t.Year())
+	year := util.SafeIntToInt32(t.Year())
 	return &year
 }
 

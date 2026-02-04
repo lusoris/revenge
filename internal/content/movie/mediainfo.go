@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/asticode/go-astiav"
 )
@@ -362,87 +361,5 @@ func isDolbyVision(codecParams *astiav.CodecParameters) bool {
 	return false
 }
 
-// ToMovieFileInfo converts MediaInfo to the legacy MovieFileInfo format
-func (m *MediaInfo) ToMovieFileInfo() *MovieFileInfo {
-	info := &MovieFileInfo{
-		Path:            m.FilePath,
-		Size:            m.FileSize,
-		Container:       m.Container,
-		Resolution:      m.Resolution,
-		ResolutionLabel: m.ResolutionLabel,
-		VideoCodec:      m.VideoCodec,
-		VideoProfile:    m.VideoProfile,
-		BitrateKbps:     int32(m.BitrateKbps),
-		DurationSeconds: m.DurationSeconds,
-		Framerate:       m.Framerate,
-		DynamicRange:    m.DynamicRange,
-		ColorSpace:      m.ColorSpace,
-	}
-
-	// Get primary audio codec
-	if len(m.AudioStreams) > 0 {
-		info.AudioCodec = m.AudioStreams[0].Codec
-		info.AudioChannels = m.AudioStreams[0].Channels
-		info.AudioLayout = m.AudioStreams[0].Layout
-	}
-
-	// Collect all audio languages
-	for _, audio := range m.AudioStreams {
-		if audio.Language != "" {
-			info.Languages = append(info.Languages, audio.Language)
-		}
-	}
-
-	// Collect all subtitle languages
-	for _, sub := range m.SubtitleStreams {
-		if sub.Language != "" {
-			info.SubtitleLangs = append(info.SubtitleLangs, sub.Language)
-		}
-	}
-
-	return info
-}
-
-// GetAudioLanguages returns all unique audio languages
-func (m *MediaInfo) GetAudioLanguages() []string {
-	seen := make(map[string]bool)
-	var languages []string
-
-	for _, audio := range m.AudioStreams {
-		if audio.Language != "" && !seen[audio.Language] {
-			seen[audio.Language] = true
-			languages = append(languages, audio.Language)
-		}
-	}
-
-	return languages
-}
-
-// GetSubtitleLanguages returns all unique subtitle languages
-func (m *MediaInfo) GetSubtitleLanguages() []string {
-	seen := make(map[string]bool)
-	var languages []string
-
-	for _, sub := range m.SubtitleStreams {
-		if sub.Language != "" && !seen[sub.Language] {
-			seen[sub.Language] = true
-			languages = append(languages, sub.Language)
-		}
-	}
-
-	return languages
-}
-
-// GetDurationFormatted returns a human-readable duration string
-func (m *MediaInfo) GetDurationFormatted() string {
-	d := time.Duration(m.DurationSeconds * float64(time.Second))
-
-	hours := int(d.Hours())
-	minutes := int(d.Minutes()) % 60
-	seconds := int(d.Seconds()) % 60
-
-	if hours > 0 {
-		return fmt.Sprintf("%d:%02d:%02d", hours, minutes, seconds)
-	}
-	return fmt.Sprintf("%d:%02d", minutes, seconds)
-}
+// NOTE: ToMovieFileInfo, GetAudioLanguages, GetSubtitleLanguages, and GetDurationFormatted
+// methods are defined in mediainfo_types.go (platform-independent)
