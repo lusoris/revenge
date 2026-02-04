@@ -227,6 +227,31 @@ func (m *MockService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID) er
 
 // Handler Tests
 
+func TestHTTPError(t *testing.T) {
+	err := NewHTTPError(404, "movie not found")
+	assert.Equal(t, 404, err.Code)
+	assert.Equal(t, "movie not found", err.Message)
+	assert.Equal(t, "movie not found", err.Error())
+}
+
+func TestNotFound(t *testing.T) {
+	err := NotFound("resource not found")
+	assert.Equal(t, 404, err.Code)
+	assert.Equal(t, "resource not found", err.Message)
+}
+
+func TestBadRequest(t *testing.T) {
+	err := BadRequest("invalid input")
+	assert.Equal(t, 400, err.Code)
+	assert.Equal(t, "invalid input", err.Message)
+}
+
+func TestInternalError(t *testing.T) {
+	err := InternalError("something went wrong")
+	assert.Equal(t, 500, err.Code)
+	assert.Equal(t, "something went wrong", err.Message)
+}
+
 func TestNewHandler(t *testing.T) {
 	svc := new(MockService)
 	h := NewHandler(svc)
@@ -435,36 +460,170 @@ func TestHandler_GetMovieCast(t *testing.T) {
 }
 
 func TestHandler_GetMovieCrew(t *testing.T) {
-	svc := new(MockService)
-	h := NewHandler(svc)
-	ctx := context.Background()
-	movieID := uuid.New()
-	crew := []MovieCredit{{ID: uuid.New(), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+		movieID := uuid.New()
+		crew := []MovieCredit{{ID: uuid.New(), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
 
-	svc.On("GetMovieCrew", ctx, movieID).Return(crew, nil)
+		svc.On("GetMovieCrew", ctx, movieID).Return(crew, nil)
 
-	result, err := h.GetMovieCrew(ctx, movieID.String())
-	require.NoError(t, err)
-	assert.Len(t, result, 1)
-	svc.AssertExpectations(t)
+		result, err := h.GetMovieCrew(ctx, movieID.String())
+		require.NoError(t, err)
+		assert.Len(t, result, 1)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Invalid UUID", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+
+		result, err := h.GetMovieCrew(ctx, "not-valid-uuid")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid movie ID")
+		assert.Nil(t, result)
+	})
 }
 
 func TestHandler_GetMovieGenres(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+		movieID := uuid.New()
+		genres := []MovieGenre{
+			{ID: uuid.New(), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
+		}
+
+		svc.On("GetMovieGenres", ctx, movieID).Return(genres, nil)
+
+		result, err := h.GetMovieGenres(ctx, movieID.String())
+		require.NoError(t, err)
+		assert.Len(t, result, 1)
+		assert.Equal(t, "Drama", result[0].Name)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Invalid UUID", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+
+		result, err := h.GetMovieGenres(ctx, "bad-uuid")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid movie ID")
+		assert.Nil(t, result)
+	})
+}
+
+func TestHandler_GetMoviesByGenre(t *testing.T) {
 	svc := new(MockService)
 	h := NewHandler(svc)
 	ctx := context.Background()
-	movieID := uuid.New()
-	genres := []MovieGenre{
-		{ID: uuid.New(), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
+	movies := []Movie{*newTestMovie(), *newTestMovie()}
+	params := PaginationParams{
+		Limit:  20,
+		Offset: 0,
 	}
 
-	svc.On("GetMovieGenres", ctx, movieID).Return(genres, nil)
+	svc.On("GetMoviesByGenre", ctx, int32(28), int32(20), int32(0)).Return(movies, nil)
 
-	result, err := h.GetMovieGenres(ctx, movieID.String())
+	result, err := h.GetMoviesByGenre(ctx, 28, params)
 	require.NoError(t, err)
-	assert.Len(t, result, 1)
-	assert.Equal(t, "Drama", result[0].Name)
+	assert.Len(t, result, 2)
 	svc.AssertExpectations(t)
+}
+
+func TestHandler_GetMovieCollection(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+		movieID := uuid.New()
+		collection := &MovieCollection{
+			ID:   uuid.New(),
+			Name: "The Matrix Collection",
+		}
+
+		svc.On("GetCollectionForMovie", ctx, movieID).Return(collection, nil)
+
+		result, err := h.GetMovieCollection(ctx, movieID.String())
+		require.NoError(t, err)
+		assert.Equal(t, "The Matrix Collection", result.Name)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Invalid UUID", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+
+		result, err := h.GetMovieCollection(ctx, "invalid")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid movie ID")
+		assert.Nil(t, result)
+	})
+}
+
+func TestHandler_GetCollection(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+		collectionID := uuid.New()
+		collection := &MovieCollection{
+			ID:   collectionID,
+			Name: "Star Wars Collection",
+		}
+
+		svc.On("GetMovieCollection", ctx, collectionID).Return(collection, nil)
+
+		result, err := h.GetCollection(ctx, collectionID.String())
+		require.NoError(t, err)
+		assert.Equal(t, "Star Wars Collection", result.Name)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Invalid UUID", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+
+		result, err := h.GetCollection(ctx, "not-uuid")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid collection ID")
+		assert.Nil(t, result)
+	})
+}
+
+func TestHandler_GetCollectionMovies(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+		collectionID := uuid.New()
+		movies := []Movie{*newTestMovie(), *newTestMovie(), *newTestMovie()}
+
+		svc.On("GetMoviesByCollection", ctx, collectionID).Return(movies, nil)
+
+		result, err := h.GetCollectionMovies(ctx, collectionID.String())
+		require.NoError(t, err)
+		assert.Len(t, result, 3)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Invalid UUID", func(t *testing.T) {
+		svc := new(MockService)
+		h := NewHandler(svc)
+		ctx := context.Background()
+
+		result, err := h.GetCollectionMovies(ctx, "bad-id")
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid collection ID")
+		assert.Nil(t, result)
+	})
 }
 
 func TestHandler_UpdateWatchProgress(t *testing.T) {
