@@ -172,6 +172,53 @@ func (s *Service) ResendVerification(ctx context.Context, userID uuid.UUID) erro
 	return nil
 }
 
+// RegisterFromOIDCRequest contains data for OIDC user registration
+type RegisterFromOIDCRequest struct {
+	Username    string
+	Email       string
+	DisplayName *string
+}
+
+// RegisterFromOIDC creates a new user account from OIDC data.
+// The user is created with a random unusable password and email is marked as verified
+// (since OIDC provider already verified it).
+func (s *Service) RegisterFromOIDC(ctx context.Context, req RegisterFromOIDCRequest) (*db.SharedUser, error) {
+	// Generate a random unusable password
+	// This password cannot be used to log in since it's random and not known to anyone
+	randomPassword, err := crypto.GenerateSecureToken(64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate random password: %w", err)
+	}
+
+	// Hash the random password
+	passwordHash, err := s.hasher.HashPassword(randomPassword)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Create user in database with email already verified
+	// OIDC providers verify email, so we don't need another verification step
+	isActive := true
+	user, err := s.repo.CreateUser(ctx, db.CreateUserParams{
+		Username:     req.Username,
+		Email:        req.Email,
+		PasswordHash: passwordHash,
+		DisplayName:  req.DisplayName,
+		IsActive:     &isActive,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	// Mark email as verified since OIDC provider already verified it
+	if err := s.repo.UpdateUserEmailVerified(ctx, user.ID, true); err != nil {
+		// Log but don't fail - user is created, this is a secondary update
+		fmt.Printf("failed to mark email as verified for OIDC user: %v\n", err)
+	}
+
+	return &user, nil
+}
+
 // ============================================================================
 // Login & Logout
 // ============================================================================
@@ -333,6 +380,89 @@ func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (*Login
 		User:         user,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken, // Return same refresh token
+		ExpiresIn:    int64(s.jwtExpiry.Seconds()),
+	}, nil
+}
+
+// CreateSessionForUser creates a new session for an authenticated user.
+// This is used for OIDC login where the user has already been verified by the OIDC provider.
+func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ipAddress *netip.Addr, userAgent, deviceName *string) (*LoginResponse, error) {
+	// Helper to convert netip.Addr to net.IP for activity logging
+	var activityIP net.IP
+	if ipAddress != nil {
+		activityIP = ipAddress.AsSlice()
+	}
+
+	// Get user
+	user, err := s.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("user not found: %w", err)
+	}
+
+	// Check if user is active
+	if user.IsActive != nil && !*user.IsActive {
+		return nil, errors.New("account is disabled")
+	}
+
+	// Generate JWT access token
+	accessToken, err := s.tokenManager.GenerateAccessToken(user.ID, user.Username)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate access token: %w", err)
+	}
+
+	// Generate refresh token (crypto/rand)
+	refreshToken, err := s.tokenManager.GenerateRefreshToken()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
+	}
+
+	// Hash refresh token for storage
+	tokenHash := s.tokenManager.HashRefreshToken(refreshToken)
+
+	// Store refresh token in database
+	var ipForStorage *netip.Addr
+	if ipAddress != nil {
+		ipForStorage = ipAddress
+	}
+
+	_, err = s.repo.CreateAuthToken(ctx, CreateAuthTokenParams{
+		UserID:            user.ID,
+		TokenHash:         tokenHash,
+		ExpiresAt:         time.Now().Add(s.refreshExpiry),
+		UserAgent:         userAgent,
+		DeviceName:        deviceName,
+		DeviceFingerprint: nil,
+		IPAddress:         ipForStorage,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to store refresh token: %w", err)
+	}
+
+	// Update last login time
+	if err := s.repo.UpdateUserLastLogin(ctx, user.ID); err != nil {
+		// Log error but don't fail login
+		fmt.Printf("failed to update last login: %v\n", err)
+	}
+
+	// Log successful login
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		UserID:       user.ID,
+		Username:     user.Username,
+		Action:       activity.ActionUserLogin,
+		ResourceType: activity.ResourceTypeUser,
+		ResourceID:   user.ID,
+		IPAddress:    activityIP,
+		UserAgent:    ptrToString(userAgent),
+		Metadata: map[string]interface{}{
+			"device_name": ptrToString(deviceName),
+			"oidc_login":  true,
+		},
+	})
+
+	return &LoginResponse{
+		User:         user,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 		ExpiresIn:    int64(s.jwtExpiry.Seconds()),
 	}, nil
 }

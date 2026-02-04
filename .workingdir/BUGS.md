@@ -147,3 +147,43 @@ _ = webauthnService.FinishRegistration(ctx, userID, ..., *session, ...)
 webauthnService.DeleteRegistrationSession(ctx, userID)
 ```
 
+
+## A0.7: OIDC New User Creation [P1] - COMPLETED
+
+**Status**: Fixed
+**Date**: 2026-02-04
+
+### Changes Made:
+1. Added to `internal/service/auth/service.go`:
+   - `RegisterFromOIDCRequest` struct for OIDC user registration data
+   - `RegisterFromOIDC(ctx, req)` - creates user with random unusable password, email already verified
+   - `CreateSessionForUser(ctx, userID, ipAddress, userAgent, deviceName)` - creates session for authenticated user (OIDC login flow)
+
+2. Updated `internal/service/oidc/service.go`:
+   - Added `ProviderID` field to `CallbackResult` struct
+   - Set `ProviderID` in `HandleCallback` when returning new user info
+
+3. Updated `internal/api/handler_oidc.go`:
+   - Full implementation of `OidcCallback` handler:
+     - When `IsNewUser=true`: creates user via `authService.RegisterFromOIDC`, links to OIDC provider
+     - Creates session via `authService.CreateSessionForUser`
+     - Returns proper JWT access/refresh tokens (not OIDC provider tokens)
+   - Username generation from OIDC: uses `preferred_username` claim, falls back to email prefix
+
+### Security:
+- OIDC users get random 64-byte unusable passwords (cannot be used for login)
+- Email marked as verified (OIDC provider already verified it)
+- Proper JWT tokens generated (not returning OIDC provider tokens)
+- Activity logging with `oidc_login: true` metadata
+
+### Usage:
+```go
+// OIDC callback flow:
+// 1. User authenticates with OIDC provider
+// 2. Provider redirects to callback with code
+// 3. Handler validates code, gets user info
+// 4. If new user: create account + link to provider
+// 5. Create session with proper JWT tokens
+// 6. Return access_token + refresh_token
+```
+

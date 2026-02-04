@@ -3,9 +3,11 @@ package api
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"go.uber.org/zap"
 )
@@ -117,12 +119,81 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 		}, nil
 	}
 
-	// Return JWT tokens from the callback result
-	// TODO: If IsNewUser, create the user account via user service
+	var userID uuid.UUID
+
+	// Handle new user creation from OIDC
+	if result.IsNewUser {
+		// Generate username from OIDC user info
+		username := result.UserInfo.Username
+		if username == "" {
+			// Fallback to email prefix if no username provided
+			username = result.UserInfo.Email
+			if idx := strings.Index(username, "@"); idx > 0 {
+				username = username[:idx]
+			}
+		}
+
+		// Create user from OIDC data
+		displayName := result.UserInfo.Name
+		user, err := h.authService.RegisterFromOIDC(ctx, auth.RegisterFromOIDCRequest{
+			Username:    username,
+			Email:       result.UserInfo.Email,
+			DisplayName: &displayName,
+		})
+		if err != nil {
+			h.logger.Error("failed to create user from OIDC",
+				zap.String("provider", params.Provider),
+				zap.String("email", result.UserInfo.Email),
+				zap.Error(err),
+			)
+			return &ogen.Error{
+				Code:    500,
+				Message: "Failed to create user account",
+			}, nil
+		}
+
+		userID = user.ID
+
+		// Link user to OIDC provider
+		_, err = h.oidcService.LinkUser(ctx, userID, result.ProviderID, result.UserInfo.Subject, result.UserInfo, nil)
+		if err != nil {
+			h.logger.Error("failed to link OIDC user",
+				zap.String("provider", params.Provider),
+				zap.String("user_id", userID.String()),
+				zap.Error(err),
+			)
+			// User was created but link failed - log but continue
+			// User can still use the account and link later
+		}
+
+		h.logger.Info("new user created from OIDC",
+			zap.String("provider", params.Provider),
+			zap.String("user_id", userID.String()),
+			zap.String("username", username),
+		)
+	} else {
+		userID = result.UserID
+	}
+
+	// Create session for the user
+	loginResp, err := h.authService.CreateSessionForUser(ctx, userID, nil, nil, nil)
+	if err != nil {
+		h.logger.Error("failed to create session for OIDC user",
+			zap.String("provider", params.Provider),
+			zap.String("user_id", userID.String()),
+			zap.Error(err),
+		)
+		return &ogen.Error{
+			Code:    500,
+			Message: "Failed to create session",
+		}, nil
+	}
+
 	return &ogen.OIDCCallbackResponse{
-		AccessToken: result.AccessToken,
-		TokenType:   "Bearer",
-		ExpiresIn:   3600,
+		AccessToken:  loginResp.AccessToken,
+		RefreshToken: ogen.NewOptString(loginResp.RefreshToken),
+		TokenType:    "Bearer",
+		ExpiresIn:    int(loginResp.ExpiresIn),
 	}, nil
 }
 

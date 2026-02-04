@@ -271,6 +271,7 @@ func (s *Service) GetAuthURL(ctx context.Context, providerName string, redirectU
 type CallbackResult struct {
 	UserLink    *UserLink
 	UserID      uuid.UUID
+	ProviderID  uuid.UUID // Provider ID for linking new users
 	IsNewUser   bool
 	AccessToken string
 	IDToken     string
@@ -434,6 +435,7 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 
 	// Return info for user creation (caller must create user and link)
 	result.IsNewUser = true
+	result.ProviderID = provider.ID
 	return result, nil
 }
 
