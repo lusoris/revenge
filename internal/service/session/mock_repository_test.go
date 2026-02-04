@@ -143,21 +143,28 @@ func (_c *MockSessionRepository_CreateSession_Call) RunAndReturn(run func(contex
 }
 
 // DeleteExpiredSessions provides a mock function with given fields: ctx
-func (_m *MockSessionRepository) DeleteExpiredSessions(ctx context.Context) error {
+func (_m *MockSessionRepository) DeleteExpiredSessions(ctx context.Context) (int64, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteExpiredSessions")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(context.Context) int64); ok {
 		r0 = rf(ctx)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int64)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockSessionRepository_DeleteExpiredSessions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteExpiredSessions'
@@ -178,32 +185,39 @@ func (_c *MockSessionRepository_DeleteExpiredSessions_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockSessionRepository_DeleteExpiredSessions_Call) Return(_a0 error) *MockSessionRepository_DeleteExpiredSessions_Call {
-	_c.Call.Return(_a0)
+func (_c *MockSessionRepository_DeleteExpiredSessions_Call) Return(_a0 int64, _a1 error) *MockSessionRepository_DeleteExpiredSessions_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockSessionRepository_DeleteExpiredSessions_Call) RunAndReturn(run func(context.Context) error) *MockSessionRepository_DeleteExpiredSessions_Call {
+func (_c *MockSessionRepository_DeleteExpiredSessions_Call) RunAndReturn(run func(context.Context) (int64, error)) *MockSessionRepository_DeleteExpiredSessions_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteRevokedSessions provides a mock function with given fields: ctx
-func (_m *MockSessionRepository) DeleteRevokedSessions(ctx context.Context) error {
+func (_m *MockSessionRepository) DeleteRevokedSessions(ctx context.Context) (int64, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteRevokedSessions")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(context.Context) int64); ok {
 		r0 = rf(ctx)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int64)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockSessionRepository_DeleteRevokedSessions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteRevokedSessions'
@@ -224,12 +238,12 @@ func (_c *MockSessionRepository_DeleteRevokedSessions_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockSessionRepository_DeleteRevokedSessions_Call) Return(_a0 error) *MockSessionRepository_DeleteRevokedSessions_Call {
-	_c.Call.Return(_a0)
+func (_c *MockSessionRepository_DeleteRevokedSessions_Call) Return(_a0 int64, _a1 error) *MockSessionRepository_DeleteRevokedSessions_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockSessionRepository_DeleteRevokedSessions_Call) RunAndReturn(run func(context.Context) error) *MockSessionRepository_DeleteRevokedSessions_Call {
+func (_c *MockSessionRepository_DeleteRevokedSessions_Call) RunAndReturn(run func(context.Context) (int64, error)) *MockSessionRepository_DeleteRevokedSessions_Call {
 	_c.Call.Return(run)
 	return _c
 }

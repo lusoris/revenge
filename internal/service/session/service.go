@@ -237,18 +237,28 @@ func (s *Service) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.U
 
 // CleanupExpiredSessions removes old expired and revoked sessions
 func (s *Service) CleanupExpiredSessions(ctx context.Context) (int, error) {
+	var totalDeleted int64
+
 	// Delete expired sessions
-	if err := s.repo.DeleteExpiredSessions(ctx); err != nil {
+	expiredCount, err := s.repo.DeleteExpiredSessions(ctx)
+	if err != nil {
 		return 0, fmt.Errorf("failed to delete expired sessions: %w", err)
 	}
+	totalDeleted += expiredCount
 
 	// Delete revoked sessions
-	if err := s.repo.DeleteRevokedSessions(ctx); err != nil {
+	revokedCount, err := s.repo.DeleteRevokedSessions(ctx)
+	if err != nil {
 		return 0, fmt.Errorf("failed to delete revoked sessions: %w", err)
 	}
+	totalDeleted += revokedCount
 
-	s.logger.Info("Session cleanup completed")
-	return 0, nil // TODO: Return actual count
+	s.logger.Info("Session cleanup completed",
+		zap.Int64("expired_deleted", expiredCount),
+		zap.Int64("revoked_deleted", revokedCount),
+		zap.Int64("total_deleted", totalDeleted))
+
+	return int(totalDeleted), nil
 }
 
 // Helper methods

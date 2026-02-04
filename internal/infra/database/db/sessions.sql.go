@@ -89,24 +89,30 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	return i, err
 }
 
-const deleteExpiredSessions = `-- name: DeleteExpiredSessions :exec
+const deleteExpiredSessions = `-- name: DeleteExpiredSessions :execrows
 DELETE FROM shared.sessions
 WHERE expires_at < NOW() - INTERVAL '30 days'
 `
 
-func (q *Queries) DeleteExpiredSessions(ctx context.Context) error {
-	_, err := q.db.Exec(ctx, deleteExpiredSessions)
-	return err
+func (q *Queries) DeleteExpiredSessions(ctx context.Context) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteExpiredSessions)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
-const deleteRevokedSessions = `-- name: DeleteRevokedSessions :exec
+const deleteRevokedSessions = `-- name: DeleteRevokedSessions :execrows
 DELETE FROM shared.sessions
 WHERE revoked_at < NOW() - INTERVAL '30 days'
 `
 
-func (q *Queries) DeleteRevokedSessions(ctx context.Context) error {
-	_, err := q.db.Exec(ctx, deleteRevokedSessions)
-	return err
+func (q *Queries) DeleteRevokedSessions(ctx context.Context) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteRevokedSessions)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const getInactiveSessions = `-- name: GetInactiveSessions :many

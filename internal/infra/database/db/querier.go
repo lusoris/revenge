@@ -117,7 +117,7 @@ type Querier interface {
 	// Cleans up expired OAuth2 states
 	DeleteExpiredOIDCStates(ctx context.Context) (int64, error)
 	DeleteExpiredPasswordResetTokens(ctx context.Context) error
-	DeleteExpiredSessions(ctx context.Context) error
+	DeleteExpiredSessions(ctx context.Context) (int64, error)
 	// Deletes a library by ID
 	DeleteLibrary(ctx context.Context, id uuid.UUID) error
 	// Revokes a permission from a user for a library
@@ -137,7 +137,7 @@ type Querier interface {
 	// Deletes library scans older than a given time
 	DeleteOldLibraryScans(ctx context.Context, olderThan time.Time) (int64, error)
 	DeleteRevokedAuthTokens(ctx context.Context) error
-	DeleteRevokedSessions(ctx context.Context) error
+	DeleteRevokedSessions(ctx context.Context) (int64, error)
 	// Delete a server setting
 	DeleteServerSetting(ctx context.Context, key string) error
 	// Delete TOTP secret for a user

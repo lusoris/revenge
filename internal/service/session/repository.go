@@ -33,8 +33,8 @@ type Repository interface {
 	RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, exceptID uuid.UUID, reason *string) error
 
 	// Cleanup
-	DeleteExpiredSessions(ctx context.Context) error
-	DeleteRevokedSessions(ctx context.Context) error
+	DeleteExpiredSessions(ctx context.Context) (int64, error)
+	DeleteRevokedSessions(ctx context.Context) (int64, error)
 	GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]db.SharedSession, error)
 	RevokeInactiveSessions(ctx context.Context, inactiveSince time.Time) error
 }

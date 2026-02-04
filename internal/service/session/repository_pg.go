@@ -130,13 +130,13 @@ func (r *RepositoryPG) RevokeAllUserSessionsExcept(ctx context.Context, userID u
 	})
 }
 
-// DeleteExpiredSessions deletes old expired sessions
-func (r *RepositoryPG) DeleteExpiredSessions(ctx context.Context) error {
+// DeleteExpiredSessions deletes old expired sessions and returns the count
+func (r *RepositoryPG) DeleteExpiredSessions(ctx context.Context) (int64, error) {
 	return r.queries.DeleteExpiredSessions(ctx)
 }
 
-// DeleteRevokedSessions deletes old revoked sessions
-func (r *RepositoryPG) DeleteRevokedSessions(ctx context.Context) error {
+// DeleteRevokedSessions deletes old revoked sessions and returns the count
+func (r *RepositoryPG) DeleteRevokedSessions(ctx context.Context) (int64, error) {
 	return r.queries.DeleteRevokedSessions(ctx)
 }
 

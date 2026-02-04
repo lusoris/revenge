@@ -218,14 +218,14 @@ func (m *mockRepository) RevokeAllUserSessionsExcept(ctx context.Context, userID
 	return nil
 }
 
-func (m *mockRepository) DeleteExpiredSessions(ctx context.Context) error {
+func (m *mockRepository) DeleteExpiredSessions(ctx context.Context) (int64, error) {
 	m.callCount["DeleteExpiredSessions"]++
-	return nil
+	return 0, nil
 }
 
-func (m *mockRepository) DeleteRevokedSessions(ctx context.Context) error {
+func (m *mockRepository) DeleteRevokedSessions(ctx context.Context) (int64, error) {
 	m.callCount["DeleteRevokedSessions"]++
-	return nil
+	return 0, nil
 }
 
 func (m *mockRepository) GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]db.SharedSession, error) {

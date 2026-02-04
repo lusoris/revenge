@@ -427,8 +427,9 @@ func TestRepositoryPG_DeleteExpiredSessions(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = repo.DeleteExpiredSessions(ctx)
+	deletedCount, err := repo.DeleteExpiredSessions(ctx)
 	require.NoError(t, err)
+	assert.GreaterOrEqual(t, deletedCount, int64(1))
 
 	var count int
 	err = testDB.Pool().QueryRow(ctx, "SELECT COUNT(*) FROM shared.sessions WHERE token_hash = 'delete_expired'").Scan(&count)
@@ -459,8 +460,9 @@ func TestRepositoryPG_DeleteRevokedSessions(t *testing.T) {
 		time.Now().Add(-31*24*time.Hour), session.ID)
 	require.NoError(t, err)
 
-	err = repo.DeleteRevokedSessions(ctx)
+	deletedCount, err := repo.DeleteRevokedSessions(ctx)
 	require.NoError(t, err)
+	assert.GreaterOrEqual(t, deletedCount, int64(1))
 
 	var count int
 	err = testDB.Pool().QueryRow(ctx, "SELECT COUNT(*) FROM shared.sessions WHERE id = $1", session.ID).Scan(&count)

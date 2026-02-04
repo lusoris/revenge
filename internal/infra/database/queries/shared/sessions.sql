@@ -95,11 +95,11 @@ WHERE user_id = $1
   AND id != $2
   AND revoked_at IS NULL;
 
--- name: DeleteExpiredSessions :exec
+-- name: DeleteExpiredSessions :execrows
 DELETE FROM shared.sessions
 WHERE expires_at < NOW() - INTERVAL '30 days';
 
--- name: DeleteRevokedSessions :exec
+-- name: DeleteRevokedSessions :execrows
 DELETE FROM shared.sessions
 WHERE revoked_at < NOW() - INTERVAL '30 days';
 

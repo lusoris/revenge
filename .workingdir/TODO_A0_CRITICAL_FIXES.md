@@ -55,21 +55,24 @@ Infrastructure already existed:
 
 ---
 
-## A0.3: Session Count Implementation [P0-BLOCKER]
+## A0.3: Session Cleanup Count - COMPLETED
 
-**Priority**: HIGH | **Effort**: 1h
+**Priority**: HIGH | **Effort**: 1h | **Actual**: 0.5h
+**Status**: COMPLETED (2026-02-04)
 
-`CountUserSessions` returns hardcoded 0.
+**Fixed**:
+- [x] Changed SQL queries from `:exec` to `:execrows` to return row count
+- [x] Updated repository interface: `DeleteExpiredSessions` and `DeleteRevokedSessions` now return `(int64, error)`
+- [x] Updated service to sum and return total deleted count
+- [x] Added logging with breakdown (expired vs revoked)
+- [x] Updated all mocks and tests
 
-**Affected File**: `internal/service/session/service.go:251`
-```go
-return 0, nil // TODO: Return actual count
-```
-
-**Tasks**:
-- [ ] Add sqlc query: `CountSessionsByUserID`
-- [ ] Update service to call repository
-- [ ] Test
+**Files Changed**:
+- `internal/infra/database/queries/shared/sessions.sql` - SQL annotations
+- `internal/service/session/repository.go` - Interface
+- `internal/service/session/repository_pg.go` - Implementation
+- `internal/service/session/service.go` - Service logic
+- Tests and mocks updated
 
 ---
 

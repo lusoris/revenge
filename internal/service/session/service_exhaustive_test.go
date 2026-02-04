@@ -527,7 +527,7 @@ func TestService_CleanupExpiredSessions_ErrorDeletingExpired(t *testing.T) {
 	expectedErr := fmt.Errorf("database delete error")
 	mockRepo.EXPECT().
 		DeleteExpiredSessions(ctx).
-		Return(expectedErr).
+		Return(int64(0), expectedErr).
 		Once()
 
 	count, err := svc.CleanupExpiredSessions(ctx)
@@ -544,13 +544,13 @@ func TestService_CleanupExpiredSessions_ErrorDeletingRevoked(t *testing.T) {
 
 	mockRepo.EXPECT().
 		DeleteExpiredSessions(ctx).
-		Return(nil).
+		Return(int64(5), nil).
 		Once()
 
 	expectedErr := fmt.Errorf("database delete error")
 	mockRepo.EXPECT().
 		DeleteRevokedSessions(ctx).
-		Return(expectedErr).
+		Return(int64(0), expectedErr).
 		Once()
 
 	count, err := svc.CleanupExpiredSessions(ctx)
@@ -567,16 +567,16 @@ func TestService_CleanupExpiredSessions_Success(t *testing.T) {
 
 	mockRepo.EXPECT().
 		DeleteExpiredSessions(ctx).
-		Return(nil).
+		Return(int64(5), nil).
 		Once()
 
 	mockRepo.EXPECT().
 		DeleteRevokedSessions(ctx).
-		Return(nil).
+		Return(int64(3), nil).
 		Once()
 
 	count, err := svc.CleanupExpiredSessions(ctx)
 
 	require.NoError(t, err)
-	assert.Equal(t, 0, count) // TODO: Count not implemented yet
+	assert.Equal(t, 8, count) // 5 expired + 3 revoked
 }
