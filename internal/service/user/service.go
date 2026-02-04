@@ -9,19 +9,22 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 )
 
 // Service implements user business logic
 type Service struct {
-	repo   Repository
-	hasher *crypto.PasswordHasher
+	repo           Repository
+	hasher         *crypto.PasswordHasher
+	activityLogger activity.Logger
 }
 
 // NewService creates a new user service
-func NewService(repo Repository) *Service {
+func NewService(repo Repository, activityLogger activity.Logger) *Service {
 	return &Service{
-		repo:   repo,
-		hasher: crypto.NewPasswordHasher(),
+		repo:           repo,
+		hasher:         crypto.NewPasswordHasher(),
+		activityLogger: activityLogger,
 	}
 }
 
@@ -92,9 +95,17 @@ func (s *Service) CreateUser(ctx context.Context, params CreateUserParams) (*db.
 	_, err = s.repo.UpsertUserPreferences(ctx, defaultPrefs)
 	if err != nil {
 		// Log error but don't fail user creation
-		// TODO: Add proper logging
 		_ = err
 	}
+
+	// Log user creation
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		UserID:       user.ID,
+		Username:     user.Username,
+		Action:       activity.ActionUserCreate,
+		ResourceType: activity.ResourceTypeUser,
+		ResourceID:   user.ID,
+	})
 
 	return user, nil
 }
@@ -102,13 +113,38 @@ func (s *Service) CreateUser(ctx context.Context, params CreateUserParams) (*db.
 // UpdateUser updates user information
 func (s *Service) UpdateUser(ctx context.Context, userID uuid.UUID, params UpdateUserParams) (*db.SharedUser, error) {
 	// Verify user exists
-	_, err := s.repo.GetUserByID(ctx, userID)
+	oldUser, err := s.repo.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("user not found: %w", err)
 	}
 
 	// Update user
-	return s.repo.UpdateUser(ctx, userID, params)
+	updatedUser, err := s.repo.UpdateUser(ctx, userID, params)
+	if err != nil {
+		return nil, err
+	}
+
+	// Build changes map
+	changes := make(map[string]interface{})
+	if params.DisplayName != nil && (oldUser.DisplayName == nil || *params.DisplayName != *oldUser.DisplayName) {
+		changes["display_name"] = map[string]interface{}{"old": oldUser.DisplayName, "new": *params.DisplayName}
+	}
+	if params.Email != nil && *params.Email != oldUser.Email {
+		changes["email"] = map[string]interface{}{"old": oldUser.Email, "new": *params.Email}
+	}
+
+	if len(changes) > 0 {
+		_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+			UserID:       userID,
+			Username:     updatedUser.Username,
+			Action:       activity.ActionUserUpdate,
+			ResourceType: activity.ResourceTypeUser,
+			ResourceID:   userID,
+			Changes:      changes,
+		})
+	}
+
+	return updatedUser, nil
 }
 
 // UpdatePassword updates a user's password
@@ -136,7 +172,26 @@ func (s *Service) UpdatePassword(ctx context.Context, userID uuid.UUID, oldPassw
 
 // DeleteUser soft deletes a user
 func (s *Service) DeleteUser(ctx context.Context, userID uuid.UUID) error {
-	return s.repo.DeleteUser(ctx, userID)
+	// Get user for logging
+	user, _ := s.repo.GetUserByID(ctx, userID)
+
+	err := s.repo.DeleteUser(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	// Log user deletion
+	if user != nil {
+		_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+			UserID:       userID,
+			Username:     user.Username,
+			Action:       activity.ActionUserDelete,
+			ResourceType: activity.ResourceTypeUser,
+			ResourceID:   userID,
+		})
+	}
+
+	return nil
 }
 
 // HardDeleteUser permanently deletes a user (GDPR compliance)

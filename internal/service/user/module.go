@@ -4,6 +4,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 )
 
 // Module provides the user service and its dependencies
@@ -14,6 +15,8 @@ var Module = fx.Module("user",
 			return NewPostgresRepository(queries)
 		},
 		// Service
-		NewService,
+		func(repo Repository, activityLogger activity.Logger) *Service {
+			return NewService(repo, activityLogger)
+		},
 	),
 )

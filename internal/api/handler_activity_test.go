@@ -37,7 +37,7 @@ func setupActivityTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UU
 	modelPath := "../../config/casbin_model.conf"
 	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
 	require.NoError(t, err)
-	rbacService := rbac.NewService(enforcer, zap.NewNop())
+	rbacService := rbac.NewService(enforcer, zap.NewNop(), activity.NewNoopLogger())
 
 	// Create admin user
 	adminUser := testutil.CreateUser(t, testDB.Pool(), testutil.User{

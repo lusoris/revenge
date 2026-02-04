@@ -6,20 +6,23 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"go.uber.org/zap"
 )
 
 // Service provides RBAC functionality using Casbin.
 type Service struct {
-	enforcer *casbin.Enforcer
-	logger   *zap.Logger
+	enforcer       *casbin.Enforcer
+	logger         *zap.Logger
+	activityLogger activity.Logger
 }
 
 // NewService creates a new RBAC service.
-func NewService(enforcer *casbin.Enforcer, logger *zap.Logger) *Service {
+func NewService(enforcer *casbin.Enforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
 	return &Service{
-		enforcer: enforcer,
-		logger:   logger.Named("rbac"),
+		enforcer:       enforcer,
+		logger:         logger.Named("rbac"),
+		activityLogger: activityLogger,
 	}
 }
 
@@ -148,6 +151,17 @@ func (s *Service) AssignRole(ctx context.Context, userID uuid.UUID, role string)
 		zap.String("role", role),
 	)
 
+	// Log role assignment
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		ResourceType: "role",
+		Action:       activity.ActionAdminRoleAssign,
+		ResourceID:   userID,
+		Metadata: map[string]interface{}{
+			"role":    role,
+			"user_id": userID.String(),
+		},
+	})
+
 	return nil
 }
 
@@ -175,6 +189,17 @@ func (s *Service) RemoveRole(ctx context.Context, userID uuid.UUID, role string)
 		zap.String("user_id", userID.String()),
 		zap.String("role", role),
 	)
+
+	// Log role removal
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		ResourceType: "role",
+		Action:       activity.ActionAdminRoleRevoke,
+		ResourceID:   userID,
+		Metadata: map[string]interface{}{
+			"role":    role,
+			"user_id": userID.String(),
+		},
+	})
 
 	return nil
 }

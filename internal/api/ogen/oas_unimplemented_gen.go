@@ -183,12 +183,30 @@ func (UnimplementedHandler) CreateLibrary(ctx context.Context, req *CreateLibrar
 	return r, ht.ErrNotImplemented
 }
 
+// CreateRole implements createRole operation.
+//
+// Create a new custom role (admin only).
+//
+// POST /api/v1/rbac/roles
+func (UnimplementedHandler) CreateRole(ctx context.Context, req *CreateRoleRequest) (r CreateRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DeleteLibrary implements deleteLibrary operation.
 //
 // Delete a library and all its content. Admin only.
 //
 // DELETE /api/v1/libraries/{libraryId}
 func (UnimplementedHandler) DeleteLibrary(ctx context.Context, params DeleteLibraryParams) (r DeleteLibraryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// DeleteRole implements deleteRole operation.
+//
+// Delete a custom role (admin only, cannot delete built-in roles).
+//
+// DELETE /api/v1/rbac/roles/{roleName}
+func (UnimplementedHandler) DeleteRole(ctx context.Context, params DeleteRoleParams) (r DeleteRoleRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -469,6 +487,15 @@ func (UnimplementedHandler) GetResourceActivityLogs(ctx context.Context, params 
 	return r, ht.ErrNotImplemented
 }
 
+// GetRole implements getRole operation.
+//
+// Get a specific role with its permissions (admin only).
+//
+// GET /api/v1/rbac/roles/{roleName}
+func (UnimplementedHandler) GetRole(ctx context.Context, params GetRoleParams) (r GetRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSearchFacets implements getSearchFacets operation.
 //
 // Returns available facet values for filtering (genres, years, etc.).
@@ -672,12 +699,30 @@ func (UnimplementedHandler) ListOIDCProviders(ctx context.Context) (r *OIDCProvi
 	return r, ht.ErrNotImplemented
 }
 
+// ListPermissions implements listPermissions operation.
+//
+// Get all available resource:action permission combinations (admin only).
+//
+// GET /api/v1/rbac/permissions
+func (UnimplementedHandler) ListPermissions(ctx context.Context) (r ListPermissionsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListPolicies implements listPolicies operation.
 //
 // Get all authorization policies (admin only).
 //
 // GET /api/v1/rbac/policies
 func (UnimplementedHandler) ListPolicies(ctx context.Context) (r ListPoliciesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListRoles implements listRoles operation.
+//
+// Get all available roles with their permissions (admin only).
+//
+// GET /api/v1/rbac/roles
+func (UnimplementedHandler) ListRoles(ctx context.Context) (r ListRolesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -980,6 +1025,15 @@ func (UnimplementedHandler) UpdateCurrentUser(ctx context.Context, req *UserUpda
 //
 // PUT /api/v1/libraries/{libraryId}
 func (UnimplementedHandler) UpdateLibrary(ctx context.Context, req *UpdateLibraryRequest, params UpdateLibraryParams) (r UpdateLibraryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateRolePermissions implements updateRolePermissions operation.
+//
+// Update all permissions for a role (admin only).
+//
+// PUT /api/v1/rbac/roles/{roleName}/permissions
+func (UnimplementedHandler) UpdateRolePermissions(ctx context.Context, req *UpdatePermissionsRequest, params UpdateRolePermissionsParams) (r UpdateRolePermissionsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

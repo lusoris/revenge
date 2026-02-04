@@ -2,7 +2,19 @@
 FROM golang:1.25-alpine AS builder
 
 # Install build dependencies
-RUN apk add --no-cache git make gcc musl-dev
+# FFmpeg development libraries are required for go-astiav (CGO bindings)
+RUN apk add --no-cache \
+    git \
+    make \
+    gcc \
+    musl-dev \
+    pkgconfig \
+    ffmpeg-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libswresample-dev
 
 WORKDIR /build
 
@@ -39,10 +51,12 @@ FROM alpine:latest
 # - Light video processing
 # See: docs/dev/design/technical/AUDIO_STREAMING.md
 # See: docs/dev/design/00_SOURCE_OF_TRUTH.md (go-astiav)
+# FFmpeg libraries (libav*) needed at runtime for go-astiav CGO bindings
 # postgresql-client for pg_isready in entrypoint script
 RUN apk add --no-cache \
     ca-certificates \
     ffmpeg \
+    ffmpeg-libs \
     postgresql-client \
     tzdata \
     && rm -rf /var/cache/apk/*

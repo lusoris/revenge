@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -27,7 +28,7 @@ func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
 
 	queries := db.New(pool)
 	repo := user.NewPostgresRepository(queries)
-	svc := user.NewService(repo)
+	svc := user.NewService(repo, activity.NewNoopLogger())
 
 	cleanup := func() {
 		pool.Close()

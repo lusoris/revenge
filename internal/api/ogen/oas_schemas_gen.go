@@ -2435,6 +2435,61 @@ func (s *CreateOIDCProviderRequestRoleMappings) init() CreateOIDCProviderRequest
 	return m
 }
 
+type CreateRoleBadRequest Error
+
+func (*CreateRoleBadRequest) createRoleRes() {}
+
+type CreateRoleConflict Error
+
+func (*CreateRoleConflict) createRoleRes() {}
+
+type CreateRoleForbidden Error
+
+func (*CreateRoleForbidden) createRoleRes() {}
+
+// Ref: #/components/schemas/CreateRoleRequest
+type CreateRoleRequest struct {
+	// Role name.
+	Name string `json:"name"`
+	// Role description.
+	Description OptString    `json:"description"`
+	Permissions []Permission `json:"permissions"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateRoleRequest) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *CreateRoleRequest) GetDescription() OptString {
+	return s.Description
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *CreateRoleRequest) GetPermissions() []Permission {
+	return s.Permissions
+}
+
+// SetName sets the value of Name.
+func (s *CreateRoleRequest) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CreateRoleRequest) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *CreateRoleRequest) SetPermissions(val []Permission) {
+	s.Permissions = val
+}
+
+type CreateRoleUnauthorized Error
+
+func (*CreateRoleUnauthorized) createRoleRes() {}
+
 type DeleteLibraryForbidden Error
 
 func (*DeleteLibraryForbidden) deleteLibraryRes() {}
@@ -2451,6 +2506,27 @@ func (*DeleteLibraryNotFound) deleteLibraryRes() {}
 type DeleteLibraryUnauthorized Error
 
 func (*DeleteLibraryUnauthorized) deleteLibraryRes() {}
+
+type DeleteRoleBadRequest Error
+
+func (*DeleteRoleBadRequest) deleteRoleRes() {}
+
+type DeleteRoleForbidden Error
+
+func (*DeleteRoleForbidden) deleteRoleRes() {}
+
+// DeleteRoleNoContent is response for DeleteRole operation.
+type DeleteRoleNoContent struct{}
+
+func (*DeleteRoleNoContent) deleteRoleRes() {}
+
+type DeleteRoleNotFound Error
+
+func (*DeleteRoleNotFound) deleteRoleRes() {}
+
+type DeleteRoleUnauthorized Error
+
+func (*DeleteRoleUnauthorized) deleteRoleRes() {}
 
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
@@ -3070,6 +3146,18 @@ func (*GetResourceActivityLogsNotFound) getResourceActivityLogsRes() {}
 type GetResourceActivityLogsUnauthorized Error
 
 func (*GetResourceActivityLogsUnauthorized) getResourceActivityLogsRes() {}
+
+type GetRoleForbidden Error
+
+func (*GetRoleForbidden) getRoleRes() {}
+
+type GetRoleNotFound Error
+
+func (*GetRoleNotFound) getRoleRes() {}
+
+type GetRoleUnauthorized Error
+
+func (*GetRoleUnauthorized) getRoleRes() {}
 
 type GetServerSettingNotFound Error
 
@@ -4156,6 +4244,14 @@ func (s *ListMoviesOrderBy) UnmarshalText(data []byte) error {
 	}
 }
 
+type ListPermissionsForbidden Error
+
+func (*ListPermissionsForbidden) listPermissionsRes() {}
+
+type ListPermissionsUnauthorized Error
+
+func (*ListPermissionsUnauthorized) listPermissionsRes() {}
+
 type ListPoliciesForbidden Error
 
 func (*ListPoliciesForbidden) listPoliciesRes() {}
@@ -4163,6 +4259,14 @@ func (*ListPoliciesForbidden) listPoliciesRes() {}
 type ListPoliciesUnauthorized Error
 
 func (*ListPoliciesUnauthorized) listPoliciesRes() {}
+
+type ListRolesForbidden Error
+
+func (*ListRolesForbidden) listRolesRes() {}
+
+type ListRolesUnauthorized Error
+
+func (*ListRolesUnauthorized) listRolesRes() {}
 
 type ListServerSettingsOKApplicationJSON []ServerSetting
 
@@ -9099,6 +9203,51 @@ func (o OptUserPreferencesUpdateTheme) Or(d UserPreferencesUpdateTheme) UserPref
 	return d
 }
 
+// Ref: #/components/schemas/Permission
+type Permission struct {
+	// Resource name (e.g., users, library, movies).
+	Resource string `json:"resource"`
+	// Action type (e.g., read, write, delete, manage, *).
+	Action string `json:"action"`
+}
+
+// GetResource returns the value of Resource.
+func (s *Permission) GetResource() string {
+	return s.Resource
+}
+
+// GetAction returns the value of Action.
+func (s *Permission) GetAction() string {
+	return s.Action
+}
+
+// SetResource sets the value of Resource.
+func (s *Permission) SetResource(val string) {
+	s.Resource = val
+}
+
+// SetAction sets the value of Action.
+func (s *Permission) SetAction(val string) {
+	s.Action = val
+}
+
+// Ref: #/components/schemas/PermissionsResponse
+type PermissionsResponse struct {
+	Permissions []Permission `json:"permissions"`
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *PermissionsResponse) GetPermissions() []Permission {
+	return s.Permissions
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *PermissionsResponse) SetPermissions(val []Permission) {
+	s.Permissions = val
+}
+
+func (*PermissionsResponse) listPermissionsRes() {}
+
 // Ref: #/components/schemas/Policy
 type Policy struct {
 	// Subject (user, role, or group).
@@ -10429,6 +10578,73 @@ type RevokeSessionUnauthorized Error
 
 func (*RevokeSessionUnauthorized) revokeSessionRes() {}
 
+// Ref: #/components/schemas/RoleDetail
+type RoleDetail struct {
+	// Role name.
+	Name string `json:"name"`
+	// Role description.
+	Description OptString    `json:"description"`
+	Permissions []Permission `json:"permissions"`
+	// Whether this is a built-in role (cannot be deleted).
+	IsBuiltIn bool `json:"is_built_in"`
+	// Number of users with this role.
+	UserCount int `json:"user_count"`
+}
+
+// GetName returns the value of Name.
+func (s *RoleDetail) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *RoleDetail) GetDescription() OptString {
+	return s.Description
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *RoleDetail) GetPermissions() []Permission {
+	return s.Permissions
+}
+
+// GetIsBuiltIn returns the value of IsBuiltIn.
+func (s *RoleDetail) GetIsBuiltIn() bool {
+	return s.IsBuiltIn
+}
+
+// GetUserCount returns the value of UserCount.
+func (s *RoleDetail) GetUserCount() int {
+	return s.UserCount
+}
+
+// SetName sets the value of Name.
+func (s *RoleDetail) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *RoleDetail) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *RoleDetail) SetPermissions(val []Permission) {
+	s.Permissions = val
+}
+
+// SetIsBuiltIn sets the value of IsBuiltIn.
+func (s *RoleDetail) SetIsBuiltIn(val bool) {
+	s.IsBuiltIn = val
+}
+
+// SetUserCount sets the value of UserCount.
+func (s *RoleDetail) SetUserCount(val int) {
+	s.UserCount = val
+}
+
+func (*RoleDetail) createRoleRes()            {}
+func (*RoleDetail) getRoleRes()               {}
+func (*RoleDetail) updateRolePermissionsRes() {}
+
 // Ref: #/components/schemas/RoleListResponse
 type RoleListResponse struct {
 	Roles []string `json:"roles"`
@@ -10445,6 +10661,23 @@ func (s *RoleListResponse) SetRoles(val []string) {
 }
 
 func (*RoleListResponse) getUserRolesRes() {}
+
+// Ref: #/components/schemas/RolesResponse
+type RolesResponse struct {
+	Roles []RoleDetail `json:"roles"`
+}
+
+// GetRoles returns the value of Roles.
+func (s *RolesResponse) GetRoles() []RoleDetail {
+	return s.Roles
+}
+
+// SetRoles sets the value of Roles.
+func (s *RolesResponse) SetRoles(val []RoleDetail) {
+	s.Roles = val
+}
+
+func (*RolesResponse) listRolesRes() {}
 
 type SearchActivityLogsForbidden Error
 
@@ -12302,6 +12535,37 @@ func (s *UpdateOIDCProviderRequestRoleMappings) init() UpdateOIDCProviderRequest
 	}
 	return m
 }
+
+// Ref: #/components/schemas/UpdatePermissionsRequest
+type UpdatePermissionsRequest struct {
+	Permissions []Permission `json:"permissions"`
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *UpdatePermissionsRequest) GetPermissions() []Permission {
+	return s.Permissions
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *UpdatePermissionsRequest) SetPermissions(val []Permission) {
+	s.Permissions = val
+}
+
+type UpdateRolePermissionsBadRequest Error
+
+func (*UpdateRolePermissionsBadRequest) updateRolePermissionsRes() {}
+
+type UpdateRolePermissionsForbidden Error
+
+func (*UpdateRolePermissionsForbidden) updateRolePermissionsRes() {}
+
+type UpdateRolePermissionsNotFound Error
+
+func (*UpdateRolePermissionsNotFound) updateRolePermissionsRes() {}
+
+type UpdateRolePermissionsUnauthorized Error
+
+func (*UpdateRolePermissionsUnauthorized) updateRolePermissionsRes() {}
 
 type UpdateServerSettingBadRequest Error
 

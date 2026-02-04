@@ -4,31 +4,35 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/netip"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 )
 
 // Service implements auth business logic
 type Service struct {
-	repo          Repository
-	tokenManager  TokenManager
-	hasher        *crypto.PasswordHasher
-	jwtExpiry     time.Duration
-	refreshExpiry time.Duration
+	repo           Repository
+	tokenManager   TokenManager
+	hasher         *crypto.PasswordHasher
+	activityLogger activity.Logger
+	jwtExpiry      time.Duration
+	refreshExpiry  time.Duration
 }
 
 // NewService creates a new auth service
-func NewService(repo Repository, tokenManager TokenManager, jwtExpiry, refreshExpiry time.Duration) *Service {
+func NewService(repo Repository, tokenManager TokenManager, activityLogger activity.Logger, jwtExpiry, refreshExpiry time.Duration) *Service {
 	return &Service{
-		repo:          repo,
-		tokenManager:  tokenManager,
-		hasher:        crypto.NewPasswordHasher(),
-		jwtExpiry:     jwtExpiry,
-		refreshExpiry: refreshExpiry,
+		repo:           repo,
+		tokenManager:   tokenManager,
+		hasher:         crypto.NewPasswordHasher(),
+		activityLogger: activityLogger,
+		jwtExpiry:      jwtExpiry,
+		refreshExpiry:  refreshExpiry,
 	}
 }
 
@@ -159,12 +163,26 @@ func (s *Service) ResendVerification(ctx context.Context, userID uuid.UUID) erro
 
 // Login authenticates a user and returns tokens
 func (s *Service) Login(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string) (*LoginResponse, error) {
+	// Helper to convert netip.Addr to net.IP for activity logging
+	var activityIP net.IP
+	if ipAddress != nil {
+		activityIP = ipAddress.AsSlice()
+	}
+
 	// Retrieve user by username or email
 	user, err := s.repo.GetUserByUsername(ctx, username)
 	if err != nil {
 		// Try email if username not found
 		user, err = s.repo.GetUserByEmail(ctx, username)
 		if err != nil {
+			// Log failed login attempt
+			_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
+				Username:     &username,
+				Action:       activity.ActionUserLogin,
+				ErrorMessage: "invalid username or password",
+				IPAddress:    &activityIP,
+				UserAgent:    userAgent,
+			})
 			return nil, errors.New("invalid username or password")
 		}
 	}
@@ -175,11 +193,29 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		return nil, fmt.Errorf("password verification failed: %w", err)
 	}
 	if !match {
+		// Log failed login attempt
+		_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
+			UserID:       &user.ID,
+			Username:     &user.Username,
+			Action:       activity.ActionUserLogin,
+			ErrorMessage: "invalid password",
+			IPAddress:    &activityIP,
+			UserAgent:    userAgent,
+		})
 		return nil, errors.New("invalid username or password")
 	}
 
 	// Check if account is active
 	if user.IsActive != nil && !*user.IsActive {
+		// Log failed login attempt
+		_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
+			UserID:       &user.ID,
+			Username:     &user.Username,
+			Action:       activity.ActionUserLogin,
+			ErrorMessage: "account is disabled",
+			IPAddress:    &activityIP,
+			UserAgent:    userAgent,
+		})
 		return nil, errors.New("account is disabled")
 	}
 
@@ -216,6 +252,20 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		// Log error but don't fail login
 		fmt.Printf("failed to update last login: %v\n", err)
 	}
+
+	// Log successful login
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		UserID:       user.ID,
+		Username:     user.Username,
+		Action:       activity.ActionUserLogin,
+		ResourceType: activity.ResourceTypeUser,
+		ResourceID:   user.ID,
+		IPAddress:    activityIP,
+		UserAgent:    ptrToString(userAgent),
+		Metadata: map[string]interface{}{
+			"device_name": ptrToString(deviceName),
+		},
+	})
 
 	return &LoginResponse{
 		User:         user,
@@ -310,6 +360,15 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 		fmt.Printf("failed to revoke tokens: %v\n", err)
 	}
 
+	// Log password change
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		UserID:       user.ID,
+		Username:     user.Username,
+		Action:       activity.ActionUserPasswordReset,
+		ResourceType: activity.ResourceTypeUser,
+		ResourceID:   user.ID,
+	})
+
 	return nil
 }
 
@@ -383,9 +442,25 @@ func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) 
 		fmt.Printf("failed to revoke tokens: %v\n", err)
 	}
 
+	// Log password reset
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		UserID:       resetToken.UserID,
+		Action:       activity.ActionUserPasswordReset,
+		ResourceType: activity.ResourceTypeUser,
+		ResourceID:   resetToken.UserID,
+	})
+
 	return nil
 }
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
+
+// ptrToString safely dereferences a string pointer
+func ptrToString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}

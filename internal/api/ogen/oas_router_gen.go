@@ -1987,28 +1987,143 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 					switch elem[0] {
-					case 'p': // Prefix: "policies"
+					case 'p': // Prefix: "p"
 
-						if l := len("policies"); len(elem) >= l && elem[0:l] == "policies" {
+						if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							// Leaf node.
+							break
+						}
+						switch elem[0] {
+						case 'e': // Prefix: "ermissions"
+
+							if l := len("ermissions"); len(elem) >= l && elem[0:l] == "ermissions" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleListPermissionsRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+						case 'o': // Prefix: "olicies"
+
+							if l := len("olicies"); len(elem) >= l && elem[0:l] == "olicies" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleRemovePolicyRequest([0]string{}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleListPoliciesRequest([0]string{}, elemIsEscaped, w, r)
+								case "POST":
+									s.handleAddPolicyRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,POST")
+								}
+
+								return
+							}
+
+						}
+
+					case 'r': // Prefix: "roles"
+
+						if l := len("roles"); len(elem) >= l && elem[0:l] == "roles" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
 							switch r.Method {
-							case "DELETE":
-								s.handleRemovePolicyRequest([0]string{}, elemIsEscaped, w, r)
 							case "GET":
-								s.handleListPoliciesRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleListRolesRequest([0]string{}, elemIsEscaped, w, r)
 							case "POST":
-								s.handleAddPolicyRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleCreateRoleRequest([0]string{}, elemIsEscaped, w, r)
 							default:
-								s.notAllowed(w, r, "DELETE,GET,POST")
+								s.notAllowed(w, r, "GET,POST")
 							}
 
 							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "roleName"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteRoleRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetRoleRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/permissions"
+
+								if l := len("/permissions"); len(elem) >= l && elem[0:l] == "/permissions" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "PUT":
+										s.handleUpdateRolePermissionsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "PUT")
+									}
+
+									return
+								}
+
+							}
+
 						}
 
 					case 'u': // Prefix: "users/"
@@ -5074,47 +5189,190 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 					switch elem[0] {
-					case 'p': // Prefix: "policies"
+					case 'p': // Prefix: "p"
 
-						if l := len("policies"); len(elem) >= l && elem[0:l] == "policies" {
+						if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							// Leaf node.
+							break
+						}
+						switch elem[0] {
+						case 'e': // Prefix: "ermissions"
+
+							if l := len("ermissions"); len(elem) >= l && elem[0:l] == "ermissions" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = ListPermissionsOperation
+									r.summary = "List available permissions"
+									r.operationID = "listPermissions"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/permissions"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'o': // Prefix: "olicies"
+
+							if l := len("olicies"); len(elem) >= l && elem[0:l] == "olicies" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = RemovePolicyOperation
+									r.summary = "Remove policy"
+									r.operationID = "removePolicy"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/policies"
+									r.args = args
+									r.count = 0
+									return r, true
+								case "GET":
+									r.name = ListPoliciesOperation
+									r.summary = "List policies"
+									r.operationID = "listPolicies"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/policies"
+									r.args = args
+									r.count = 0
+									return r, true
+								case "POST":
+									r.name = AddPolicyOperation
+									r.summary = "Add policy"
+									r.operationID = "addPolicy"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/policies"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'r': // Prefix: "roles"
+
+						if l := len("roles"); len(elem) >= l && elem[0:l] == "roles" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
 							switch method {
-							case "DELETE":
-								r.name = RemovePolicyOperation
-								r.summary = "Remove policy"
-								r.operationID = "removePolicy"
-								r.operationGroup = ""
-								r.pathPattern = "/api/v1/rbac/policies"
-								r.args = args
-								r.count = 0
-								return r, true
 							case "GET":
-								r.name = ListPoliciesOperation
-								r.summary = "List policies"
-								r.operationID = "listPolicies"
+								r.name = ListRolesOperation
+								r.summary = "List all roles"
+								r.operationID = "listRoles"
 								r.operationGroup = ""
-								r.pathPattern = "/api/v1/rbac/policies"
+								r.pathPattern = "/api/v1/rbac/roles"
 								r.args = args
 								r.count = 0
 								return r, true
 							case "POST":
-								r.name = AddPolicyOperation
-								r.summary = "Add policy"
-								r.operationID = "addPolicy"
+								r.name = CreateRoleOperation
+								r.summary = "Create role"
+								r.operationID = "createRole"
 								r.operationGroup = ""
-								r.pathPattern = "/api/v1/rbac/policies"
+								r.pathPattern = "/api/v1/rbac/roles"
 								r.args = args
 								r.count = 0
 								return r, true
 							default:
 								return
 							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "roleName"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
+								switch method {
+								case "DELETE":
+									r.name = DeleteRoleOperation
+									r.summary = "Delete role"
+									r.operationID = "deleteRole"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/roles/{roleName}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetRoleOperation
+									r.summary = "Get role details"
+									r.operationID = "getRole"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/rbac/roles/{roleName}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/permissions"
+
+								if l := len("/permissions"); len(elem) >= l && elem[0:l] == "/permissions" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "PUT":
+										r.name = UpdateRolePermissionsOperation
+										r.summary = "Update role permissions"
+										r.operationID = "updateRolePermissions"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/rbac/roles/{roleName}/permissions"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
 						}
 
 					case 'u': // Prefix: "users/"

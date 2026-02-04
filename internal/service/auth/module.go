@@ -5,6 +5,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 )
 
 // Module provides the auth service and its dependencies
@@ -22,8 +23,8 @@ var Module = fx.Module("auth",
 			return NewRepositoryPG(queries)
 		},
 		// Service
-		func(repo Repository, tm TokenManager, cfg *config.Config) *Service {
-			return NewService(repo, tm, cfg.Auth.JWTExpiry, cfg.Auth.RefreshExpiry)
+		func(repo Repository, tm TokenManager, activityLogger activity.Logger, cfg *config.Config) *Service {
+			return NewService(repo, tm, activityLogger, cfg.Auth.JWTExpiry, cfg.Auth.RefreshExpiry)
 		},
 	),
 )

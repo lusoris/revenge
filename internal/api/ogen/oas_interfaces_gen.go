@@ -73,8 +73,16 @@ type CreateLibraryRes interface {
 	createLibraryRes()
 }
 
+type CreateRoleRes interface {
+	createRoleRes()
+}
+
 type DeleteLibraryRes interface {
 	deleteLibraryRes()
+}
+
+type DeleteRoleRes interface {
+	deleteRoleRes()
 }
 
 type DeleteUserSettingRes interface {
@@ -193,6 +201,10 @@ type GetResourceActivityLogsRes interface {
 	getResourceActivityLogsRes()
 }
 
+type GetRoleRes interface {
+	getRoleRes()
+}
+
 type GetSearchFacetsRes interface {
 	getSearchFacetsRes()
 }
@@ -277,8 +289,16 @@ type ListMoviesRes interface {
 	listMoviesRes()
 }
 
+type ListPermissionsRes interface {
+	listPermissionsRes()
+}
+
 type ListPoliciesRes interface {
 	listPoliciesRes()
+}
+
+type ListRolesRes interface {
+	listRolesRes()
 }
 
 type ListServerSettingsRes interface {
@@ -411,6 +431,10 @@ type UpdateCurrentUserRes interface {
 
 type UpdateLibraryRes interface {
 	updateLibraryRes()
+}
+
+type UpdateRolePermissionsRes interface {
+	updateRolePermissionsRes()
 }
 
 type UpdateServerSettingRes interface {

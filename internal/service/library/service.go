@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"go.uber.org/zap"
 )
 
@@ -32,15 +33,17 @@ var (
 
 // Service provides library management functionality.
 type Service struct {
-	repo   Repository
-	logger *zap.Logger
+	repo           Repository
+	logger         *zap.Logger
+	activityLogger activity.Logger
 }
 
 // NewService creates a new library service.
-func NewService(repo Repository, logger *zap.Logger) *Service {
+func NewService(repo Repository, logger *zap.Logger, activityLogger activity.Logger) *Service {
 	return &Service{
-		repo:   repo,
-		logger: logger.Named("library"),
+		repo:           repo,
+		logger:         logger.Named("library"),
+		activityLogger: activityLogger,
 	}
 }
 
@@ -107,6 +110,18 @@ func (s *Service) Create(ctx context.Context, req CreateLibraryRequest) (*Librar
 		zap.String("name", lib.Name),
 		zap.String("type", lib.Type),
 	)
+
+	// Log library creation
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		Action:       activity.ActionLibraryCreate,
+		ResourceType: activity.ResourceTypeLibrary,
+		ResourceID:   lib.ID,
+		Metadata: map[string]interface{}{
+			"name":  lib.Name,
+			"type":  lib.Type,
+			"paths": lib.Paths,
+		},
+	})
 
 	return lib, nil
 }
@@ -176,11 +191,24 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, update *LibraryUpdat
 		zap.String("name", lib.Name),
 	)
 
+	// Log library update
+	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+		Action:       activity.ActionLibraryUpdate,
+		ResourceType: activity.ResourceTypeLibrary,
+		ResourceID:   lib.ID,
+		Metadata: map[string]interface{}{
+			"name": lib.Name,
+		},
+	})
+
 	return lib, nil
 }
 
 // Delete deletes a library.
 func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
+	// Get library for logging
+	lib, _ := s.repo.Get(ctx, id)
+
 	// First revoke all permissions
 	if err := s.repo.RevokeAllPermissions(ctx, id); err != nil {
 		s.logger.Error("failed to revoke permissions for library",
@@ -199,6 +227,19 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	}
 
 	s.logger.Info("library deleted", zap.String("id", id.String()))
+
+	// Log library deletion
+	if lib != nil {
+		_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
+			Action:       activity.ActionLibraryDelete,
+			ResourceType: activity.ResourceTypeLibrary,
+			ResourceID:   id,
+			Metadata: map[string]interface{}{
+				"name": lib.Name,
+			},
+		})
+	}
+
 	return nil
 }
 

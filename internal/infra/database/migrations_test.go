@@ -128,16 +128,17 @@ func TestMigrationsUpDown(t *testing.T) {
 		err := m.Steps(-1)
 		require.NoError(t, err, "failed to migrate down one step")
 
-		// Verify movie_watched table is gone (our newest migration 000026)
+		// Verify moderator role permissions are gone (our newest migration 000027)
+		var moderatorExists bool
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM shared.casbin_rule WHERE ptype = 'p' AND v0 = 'moderator')").Scan(&moderatorExists)
+		require.NoError(t, err)
+		assert.False(t, moderatorExists, "moderator role should not exist after down migration")
+
+		// movie_watched should still exist (migration 000026)
 		var tableExists bool
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'movie_watched')").Scan(&tableExists)
 		require.NoError(t, err)
-		assert.False(t, tableExists, "movie_watched table should not exist after down migration")
-
-		// movie_genres should still exist (migration 000025)
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'movie_genres')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "movie_genres table should still exist")
+		assert.True(t, tableExists, "movie_watched table should still exist")
 
 		// Core tables should still exist
 		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&tableExists)

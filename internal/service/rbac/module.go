@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/service/activity"
 )
 
 // Module provides the RBAC service.
@@ -16,10 +17,15 @@ var Module = fx.Module("rbac",
 	fx.Provide(
 		NewAdapter,
 		NewEnforcer,
-		NewService,
+		newService,
 	),
 	fx.Invoke(func(*Service) {}), // Ensure service is created
 )
+
+// newService creates a new RBAC service with activity logger.
+func newService(enforcer *casbin.Enforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
+	return NewService(enforcer, logger, activityLogger)
+}
 
 // NewEnforcer creates a new Casbin enforcer with PostgreSQL adapter.
 func NewEnforcer(pool *pgxpool.Pool, cfg *config.Config, logger *zap.Logger) (*casbin.Enforcer, error) {

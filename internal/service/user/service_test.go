@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -21,7 +22,8 @@ func setupTestService(t *testing.T) (*Service, *testutil.TestDB) {
 	testDB := testutil.NewTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
-	svc := NewService(repo)
+	activityLogger := activity.NewNoopLogger()
+	svc := NewService(repo, activityLogger)
 	return svc, testDB
 }
 

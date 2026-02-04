@@ -70,6 +70,10 @@ type RateLimitConfig struct {
 	// Enabled controls whether rate limiting is active.
 	Enabled bool `koanf:"enabled"`
 
+	// Backend specifies the rate limiting backend: "memory" or "redis".
+	// When "redis" is selected but unavailable, falls back to "memory".
+	Backend string `koanf:"backend"`
+
 	// Global configures global rate limiting for all endpoints.
 	Global RateLimitTier `koanf:"global"`
 
@@ -280,6 +284,16 @@ func Defaults() map[string]interface{} {
 		"database.health_check_period": "30s",
 
 		// Cache defaults
+		"cache.url":     "",
+		"cache.enabled": false,
+
+		// Rate limit defaults
+		"rate_limit.enabled":                  true,
+		"rate_limit.backend":                  "memory", // "memory" or "redis"
+		"rate_limit.global.requests_per_second": 10.0,
+		"rate_limit.global.burst":             20,
+		"rate_limit.auth.requests_per_second": 1.0,
+		"rate_limit.auth.burst":               5,
 
 		// Movie defaults
 		"movie.tmdb.api_key":    "",
@@ -288,8 +302,6 @@ func Defaults() map[string]interface{} {
 		"movie.tmdb.proxy_url":  "",
 		"movie.library.paths":   []string{},
 		"movie.library.scan_interval": "0s", // Disabled by default
-		"cache.url":     "",
-		"cache.enabled": false,
 
 		// Search defaults
 		"search.url":     "",

@@ -704,6 +704,72 @@ func decodeDeleteLibraryParams(args [1]string, argsEscaped bool, r *http.Request
 	return params, nil
 }
 
+// DeleteRoleParams is parameters of deleteRole operation.
+type DeleteRoleParams struct {
+	// Role name.
+	RoleName string
+}
+
+func unpackDeleteRoleParams(packed middleware.Parameters) (params DeleteRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "roleName",
+			In:   "path",
+		}
+		params.RoleName = packed[key].(string)
+	}
+	return params
+}
+
+func decodeDeleteRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteRoleParams, _ error) {
+	// Decode path: roleName.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "roleName",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoleName = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "roleName",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteUserSettingParams is parameters of deleteUserSetting operation.
 type DeleteUserSettingParams struct {
 	// Setting key.
@@ -2461,6 +2527,72 @@ func decodeGetResourceActivityLogsParams(args [2]string, argsEscaped bool, r *ht
 		return params, &ogenerrors.DecodeParamError{
 			Name: "offset",
 			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetRoleParams is parameters of getRole operation.
+type GetRoleParams struct {
+	// Role name.
+	RoleName string
+}
+
+func unpackGetRoleParams(packed middleware.Parameters) (params GetRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "roleName",
+			In:   "path",
+		}
+		params.RoleName = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params GetRoleParams, _ error) {
+	// Decode path: roleName.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "roleName",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoleName = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "roleName",
+			In:   "path",
 			Err:  err,
 		}
 	}
@@ -6675,6 +6807,72 @@ func decodeUpdateLibraryParams(args [1]string, argsEscaped bool, r *http.Request
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "libraryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateRolePermissionsParams is parameters of updateRolePermissions operation.
+type UpdateRolePermissionsParams struct {
+	// Role name.
+	RoleName string
+}
+
+func unpackUpdateRolePermissionsParams(packed middleware.Parameters) (params UpdateRolePermissionsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "roleName",
+			In:   "path",
+		}
+		params.RoleName = packed[key].(string)
+	}
+	return params
+}
+
+func decodeUpdateRolePermissionsParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateRolePermissionsParams, _ error) {
+	// Decode path: roleName.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "roleName",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoleName = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "roleName",
 			In:   "path",
 			Err:  err,
 		}

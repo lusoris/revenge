@@ -34,6 +34,11 @@ server:
     # Enable/disable rate limiting
     enabled: true
 
+    # Backend for rate limiting: "memory" (single instance) or "redis" (distributed)
+    # Redis backend requires cache.enabled=true and a valid cache.url
+    # Falls back to in-memory if Redis is unavailable
+    backend: "memory"
+
     # Global rate limit (applies to all endpoints)
     global:
       requests_per_second: 10
@@ -72,6 +77,10 @@ database:
 # Cache Configuration (Dragonfly/Redis)
 # =============================================================================
 cache:
+  # Enable/disable Redis/Dragonfly caching
+  # Required for rate_limit.backend="redis"
+  enabled: false
+
   # Redis/Dragonfly connection URL
   # Format: redis://[:password@]host:port[/database]
   url: "redis://localhost:6379"

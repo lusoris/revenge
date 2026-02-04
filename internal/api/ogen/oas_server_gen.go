@@ -124,12 +124,24 @@ type Handler interface {
 	//
 	// POST /api/v1/libraries
 	CreateLibrary(ctx context.Context, req *CreateLibraryRequest) (CreateLibraryRes, error)
+	// CreateRole implements createRole operation.
+	//
+	// Create a new custom role (admin only).
+	//
+	// POST /api/v1/rbac/roles
+	CreateRole(ctx context.Context, req *CreateRoleRequest) (CreateRoleRes, error)
 	// DeleteLibrary implements deleteLibrary operation.
 	//
 	// Delete a library and all its content. Admin only.
 	//
 	// DELETE /api/v1/libraries/{libraryId}
 	DeleteLibrary(ctx context.Context, params DeleteLibraryParams) (DeleteLibraryRes, error)
+	// DeleteRole implements deleteRole operation.
+	//
+	// Delete a custom role (admin only, cannot delete built-in roles).
+	//
+	// DELETE /api/v1/rbac/roles/{roleName}
+	DeleteRole(ctx context.Context, params DeleteRoleParams) (DeleteRoleRes, error)
 	// DeleteUserSetting implements deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
@@ -317,6 +329,12 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
 	GetResourceActivityLogs(ctx context.Context, params GetResourceActivityLogsParams) (GetResourceActivityLogsRes, error)
+	// GetRole implements getRole operation.
+	//
+	// Get a specific role with its permissions (admin only).
+	//
+	// GET /api/v1/rbac/roles/{roleName}
+	GetRole(ctx context.Context, params GetRoleParams) (GetRoleRes, error)
 	// GetSearchFacets implements getSearchFacets operation.
 	//
 	// Returns available facet values for filtering (genres, years, etc.).
@@ -454,12 +472,24 @@ type Handler interface {
 	//
 	// GET /api/v1/oidc/providers
 	ListOIDCProviders(ctx context.Context) (*OIDCProviderListResponse, error)
+	// ListPermissions implements listPermissions operation.
+	//
+	// Get all available resource:action permission combinations (admin only).
+	//
+	// GET /api/v1/rbac/permissions
+	ListPermissions(ctx context.Context) (ListPermissionsRes, error)
 	// ListPolicies implements listPolicies operation.
 	//
 	// Get all authorization policies (admin only).
 	//
 	// GET /api/v1/rbac/policies
 	ListPolicies(ctx context.Context) (ListPoliciesRes, error)
+	// ListRoles implements listRoles operation.
+	//
+	// Get all available roles with their permissions (admin only).
+	//
+	// GET /api/v1/rbac/roles
+	ListRoles(ctx context.Context) (ListRolesRes, error)
 	// ListServerSettings implements listServerSettings operation.
 	//
 	// Retrieve all server-wide configuration settings.
@@ -663,6 +693,12 @@ type Handler interface {
 	//
 	// PUT /api/v1/libraries/{libraryId}
 	UpdateLibrary(ctx context.Context, req *UpdateLibraryRequest, params UpdateLibraryParams) (UpdateLibraryRes, error)
+	// UpdateRolePermissions implements updateRolePermissions operation.
+	//
+	// Update all permissions for a role (admin only).
+	//
+	// PUT /api/v1/rbac/roles/{roleName}/permissions
+	UpdateRolePermissions(ctx context.Context, req *UpdatePermissionsRequest, params UpdateRolePermissionsParams) (UpdateRolePermissionsRes, error)
 	// UpdateServerSetting implements updateServerSetting operation.
 	//
 	// Update the value of a server setting.

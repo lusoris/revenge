@@ -11,6 +11,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/stretchr/testify/assert"
@@ -36,9 +37,12 @@ func setupAuthService(t *testing.T) (*auth.Service, *user.Service, *pgxpool.Pool
 	// Create token manager
 	tokenManager := auth.NewTokenManager(jwtSecret, 15*time.Minute)
 
+	// Create activity logger (noop for tests)
+	activityLogger := activity.NewNoopLogger()
+
 	// Create services
-	authSvc := auth.NewService(authRepo, tokenManager, 15*time.Minute, 7*24*time.Hour)
-	userSvc := user.NewService(userRepo)
+	authSvc := auth.NewService(authRepo, tokenManager, activityLogger, 15*time.Minute, 7*24*time.Hour)
+	userSvc := user.NewService(userRepo, activityLogger)
 
 	cleanup := func() {
 		pool.Close()

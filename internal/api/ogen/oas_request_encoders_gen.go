@@ -112,6 +112,20 @@ func encodeCreateLibraryRequest(
 	return nil
 }
 
+func encodeCreateRoleRequest(
+	req *CreateRoleRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeForgotPasswordRequest(
 	req *ForgotPasswordRequest,
 	r *http.Request,
@@ -296,6 +310,20 @@ func encodeUpdateCurrentUserRequest(
 
 func encodeUpdateLibraryRequest(
 	req *UpdateLibraryRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateRolePermissionsRequest(
+	req *UpdatePermissionsRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

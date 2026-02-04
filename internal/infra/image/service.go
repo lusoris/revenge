@@ -2,6 +2,7 @@ package image
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"io"
 	"net/http"
@@ -222,6 +223,17 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate ETag based on path and size
+	etag := s.generateETag(imageType, size, imagePath)
+
+	// Check If-None-Match for conditional request
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		if match == etag {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+
 	data, contentType, err := s.FetchImage(r.Context(), imageType, imagePath, size)
 	if err != nil {
 		s.logger.Error("Failed to fetch image", zap.Error(err))
@@ -229,12 +241,26 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set cache headers
+	// Set cache headers for CDN and browser caching
 	w.Header().Set("Content-Type", contentType)
-	w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", int(s.config.CacheTTL.Seconds())))
+	w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d, immutable", int(s.config.CacheTTL.Seconds())))
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(data)))
+	w.Header().Set("ETag", etag)
+	w.Header().Set("Vary", "Accept-Encoding")
+
+	// CORS headers for frontend clients
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
 
 	w.Write(data)
+}
+
+// generateETag creates a stable ETag for an image based on path and size.
+func (s *Service) generateETag(imageType, size, path string) string {
+	// Use a hash of type+size+path for stable ETag
+	data := imageType + ":" + size + ":" + path
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(data)))
+	return `"` + hash[:16] + `"`
 }
 
 // ClearCache clears the image cache.

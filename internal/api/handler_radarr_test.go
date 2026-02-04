@@ -16,6 +16,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/integration/radarr"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/testutil"
 )
@@ -87,7 +88,7 @@ func setupRadarrTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID
 	modelPath := "../../config/casbin_model.conf"
 	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
 	require.NoError(t, err)
-	rbacService := rbac.NewService(enforcer, zap.NewNop())
+	rbacService := rbac.NewService(enforcer, zap.NewNop(), activity.NewNoopLogger())
 
 	// Create admin user
 	adminUser := testutil.CreateUser(t, testDB.Pool(), testutil.User{

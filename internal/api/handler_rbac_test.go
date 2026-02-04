@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/testutil"
 )
@@ -23,12 +24,25 @@ func setupRBACTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID, 
 	_, err := testDB.Pool().Exec(context.Background(), "DELETE FROM shared.casbin_rule")
 	require.NoError(t, err)
 
+	// Insert default policies for built-in roles
+	_, err = testDB.Pool().Exec(context.Background(), `
+		INSERT INTO shared.casbin_rule (ptype, v0, v1, v2) VALUES
+			('p', 'admin', '*', '*'),
+			('p', 'user', 'profile', 'read'),
+			('p', 'user', 'profile', 'write'),
+			('p', 'user', 'library', 'read'),
+			('p', 'user', 'playback', 'read'),
+			('p', 'user', 'playback', 'write'),
+			('p', 'guest', 'library', 'read')
+	`)
+	require.NoError(t, err)
+
 	// Set up RBAC service with Casbin
 	adapter := rbac.NewAdapter(testDB.Pool())
 	modelPath := "../../config/casbin_model.conf"
 	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
 	require.NoError(t, err)
-	rbacService := rbac.NewService(enforcer, zap.NewNop())
+	rbacService := rbac.NewService(enforcer, zap.NewNop(), activity.NewNoopLogger())
 
 	// Create admin user
 	adminUser := testutil.CreateUser(t, testDB.Pool(), testutil.User{
@@ -432,4 +446,447 @@ func TestHandler_RemoveRole_NotFound(t *testing.T) {
 
 	_, ok := result.(*ogen.RemoveRoleNotFound)
 	require.True(t, ok)
+}
+
+// ListRoles tests
+
+func TestHandler_ListRoles_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+
+	result, err := handler.ListRoles(ctx)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.ListRolesUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_ListRoles_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+
+	result, err := handler.ListRoles(ctx)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.ListRolesForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_ListRoles_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+
+	result, err := handler.ListRoles(ctx)
+	require.NoError(t, err)
+
+	response, ok := result.(*ogen.RolesResponse)
+	require.True(t, ok)
+	assert.NotEmpty(t, response.Roles)
+
+	// Check that admin role exists and is built-in
+	var foundAdmin bool
+	for _, role := range response.Roles {
+		if role.Name == "admin" {
+			foundAdmin = true
+			assert.True(t, role.IsBuiltIn)
+		}
+	}
+	assert.True(t, foundAdmin, "admin role should be present")
+}
+
+// GetRole tests
+
+func TestHandler_GetRole_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+	params := ogen.GetRoleParams{RoleName: "admin"}
+
+	result, err := handler.GetRole(ctx, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.GetRoleUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_GetRole_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+	params := ogen.GetRoleParams{RoleName: "admin"}
+
+	result, err := handler.GetRole(ctx, params)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.GetRoleForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_GetRole_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	params := ogen.GetRoleParams{RoleName: "admin"}
+
+	result, err := handler.GetRole(ctx, params)
+	require.NoError(t, err)
+
+	role, ok := result.(*ogen.RoleDetail)
+	require.True(t, ok)
+	assert.Equal(t, "admin", role.Name)
+	assert.True(t, role.IsBuiltIn)
+}
+
+func TestHandler_GetRole_NotFound(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	params := ogen.GetRoleParams{RoleName: "nonexistent"}
+
+	result, err := handler.GetRole(ctx, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.GetRoleNotFound)
+	require.True(t, ok)
+}
+
+// CreateRole tests
+
+func TestHandler_CreateRole_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+	req := &ogen.CreateRoleRequest{
+		Name: "testrole",
+	}
+
+	result, err := handler.CreateRole(ctx, req)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.CreateRoleUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_CreateRole_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+	req := &ogen.CreateRoleRequest{
+		Name: "testrole",
+	}
+
+	result, err := handler.CreateRole(ctx, req)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.CreateRoleForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_CreateRole_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	req := &ogen.CreateRoleRequest{
+		Name:        "newrole",
+		Description: ogen.NewOptString("A new custom role"),
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+			{Resource: "movies", Action: "read"},
+		},
+	}
+
+	result, err := handler.CreateRole(ctx, req)
+	require.NoError(t, err)
+
+	role, ok := result.(*ogen.RoleDetail)
+	require.True(t, ok)
+	assert.Equal(t, "newrole", role.Name)
+	assert.Equal(t, "A new custom role", role.Description.Value)
+	assert.False(t, role.IsBuiltIn)
+	assert.Len(t, role.Permissions, 2)
+}
+
+func TestHandler_CreateRole_AlreadyExists(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+
+	// Create role first with at least one permission
+	req := &ogen.CreateRoleRequest{
+		Name: "existingrole",
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	_, err := handler.CreateRole(ctx, req)
+	require.NoError(t, err)
+
+	// Try to create again
+	result, err := handler.CreateRole(ctx, req)
+	require.NoError(t, err)
+
+	conflict, ok := result.(*ogen.CreateRoleConflict)
+	require.True(t, ok)
+	assert.Equal(t, 409, conflict.Code)
+}
+
+// DeleteRole tests
+
+func TestHandler_DeleteRole_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+	params := ogen.DeleteRoleParams{RoleName: "testrole"}
+
+	result, err := handler.DeleteRole(ctx, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.DeleteRoleUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_DeleteRole_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+	params := ogen.DeleteRoleParams{RoleName: "testrole"}
+
+	result, err := handler.DeleteRole(ctx, params)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.DeleteRoleForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_DeleteRole_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+
+	// Create role first with at least one permission
+	createReq := &ogen.CreateRoleRequest{
+		Name: "deleterole",
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	_, err := handler.CreateRole(ctx, createReq)
+	require.NoError(t, err)
+
+	// Delete role
+	params := ogen.DeleteRoleParams{RoleName: "deleterole"}
+	result, err := handler.DeleteRole(ctx, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.DeleteRoleNoContent)
+	require.True(t, ok)
+
+	// Verify role no longer exists
+	getParams := ogen.GetRoleParams{RoleName: "deleterole"}
+	getResult, err := handler.GetRole(ctx, getParams)
+	require.NoError(t, err)
+	_, ok = getResult.(*ogen.GetRoleNotFound)
+	assert.True(t, ok)
+}
+
+func TestHandler_DeleteRole_BuiltIn(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	params := ogen.DeleteRoleParams{RoleName: "admin"}
+
+	result, err := handler.DeleteRole(ctx, params)
+	require.NoError(t, err)
+
+	badReq, ok := result.(*ogen.DeleteRoleBadRequest)
+	require.True(t, ok)
+	assert.Equal(t, 400, badReq.Code)
+	assert.Contains(t, badReq.Message, "built-in")
+}
+
+func TestHandler_DeleteRole_NotFound(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	params := ogen.DeleteRoleParams{RoleName: "nonexistent"}
+
+	result, err := handler.DeleteRole(ctx, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.DeleteRoleNotFound)
+	require.True(t, ok)
+}
+
+// UpdateRolePermissions tests
+
+func TestHandler_UpdateRolePermissions_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+	req := &ogen.UpdatePermissionsRequest{
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	params := ogen.UpdateRolePermissionsParams{RoleName: "testrole"}
+
+	result, err := handler.UpdateRolePermissions(ctx, req, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.UpdateRolePermissionsUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_UpdateRolePermissions_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+	req := &ogen.UpdatePermissionsRequest{
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	params := ogen.UpdateRolePermissionsParams{RoleName: "testrole"}
+
+	result, err := handler.UpdateRolePermissions(ctx, req, params)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.UpdateRolePermissionsForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_UpdateRolePermissions_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+
+	// Create role first
+	createReq := &ogen.CreateRoleRequest{
+		Name: "permrole",
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	_, err := handler.CreateRole(ctx, createReq)
+	require.NoError(t, err)
+
+	// Update permissions
+	updateReq := &ogen.UpdatePermissionsRequest{
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+			{Resource: "library", Action: "write"},
+			{Resource: "movies", Action: "read"},
+		},
+	}
+	params := ogen.UpdateRolePermissionsParams{RoleName: "permrole"}
+
+	result, err := handler.UpdateRolePermissions(ctx, updateReq, params)
+	require.NoError(t, err)
+
+	role, ok := result.(*ogen.RoleDetail)
+	require.True(t, ok)
+	assert.Equal(t, "permrole", role.Name)
+	assert.Len(t, role.Permissions, 3)
+}
+
+func TestHandler_UpdateRolePermissions_NotFound(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+	req := &ogen.UpdatePermissionsRequest{
+		Permissions: []ogen.Permission{
+			{Resource: "library", Action: "read"},
+		},
+	}
+	params := ogen.UpdateRolePermissionsParams{RoleName: "nonexistent"}
+
+	result, err := handler.UpdateRolePermissions(ctx, req, params)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.UpdateRolePermissionsNotFound)
+	require.True(t, ok)
+}
+
+// ListPermissions tests
+
+func TestHandler_ListPermissions_NoAuth(t *testing.T) {
+	t.Parallel()
+	handler, _, _, _ := setupRBACTestHandler(t)
+
+	ctx := context.Background()
+
+	result, err := handler.ListPermissions(ctx)
+	require.NoError(t, err)
+
+	_, ok := result.(*ogen.ListPermissionsUnauthorized)
+	require.True(t, ok)
+}
+
+func TestHandler_ListPermissions_NotAdmin(t *testing.T) {
+	t.Parallel()
+	handler, _, _, regularUserID := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), regularUserID)
+
+	result, err := handler.ListPermissions(ctx)
+	require.NoError(t, err)
+
+	forbidden, ok := result.(*ogen.ListPermissionsForbidden)
+	require.True(t, ok)
+	assert.Equal(t, 403, forbidden.Code)
+}
+
+func TestHandler_ListPermissions_Success(t *testing.T) {
+	t.Parallel()
+	handler, _, adminID, _ := setupRBACTestHandler(t)
+
+	ctx := contextWithUserID(context.Background(), adminID)
+
+	result, err := handler.ListPermissions(ctx)
+	require.NoError(t, err)
+
+	response, ok := result.(*ogen.PermissionsResponse)
+	require.True(t, ok)
+	assert.NotEmpty(t, response.Permissions)
+
+	// Verify that known resources are present
+	var foundLibrary, foundUsers bool
+	for _, p := range response.Permissions {
+		if p.Resource == "library" {
+			foundLibrary = true
+		}
+		if p.Resource == "users" {
+			foundUsers = true
+		}
+	}
+	assert.True(t, foundLibrary, "library resource should be present")
+	assert.True(t, foundUsers, "users resource should be present")
 }

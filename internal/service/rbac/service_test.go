@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 
+	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -36,7 +37,7 @@ func setupTestService(t *testing.T) (*Service, *testutil.TestDB) {
 	require.NoError(t, err)
 
 	logger := zaptest.NewLogger(t)
-	svc := NewService(enforcer, logger)
+	svc := NewService(enforcer, logger, activity.NewNoopLogger())
 
 	return svc, testDB
 }
@@ -325,7 +326,7 @@ func TestService_LoadPolicy(t *testing.T) {
 	require.NoError(t, err)
 
 	logger := zaptest.NewLogger(t)
-	newSvc := NewService(enforcer, logger)
+	newSvc := NewService(enforcer, logger, activity.NewNoopLogger())
 
 	// Load policies from the database
 	err = newSvc.LoadPolicy(ctx)

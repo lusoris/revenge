@@ -44,8 +44,8 @@ func DefaultRateLimitConfig() RateLimitConfig {
 func AuthRateLimitConfig() RateLimitConfig {
 	return RateLimitConfig{
 		Enabled:           true,
-		RequestsPerSecond: 1,   // 1 request per second
-		Burst:             5,   // Allow burst of 5
+		RequestsPerSecond: 1, // 1 request per second
+		Burst:             5, // Allow burst of 5
 		Operations: []string{
 			"LoginUser",
 			"VerifyMFA",

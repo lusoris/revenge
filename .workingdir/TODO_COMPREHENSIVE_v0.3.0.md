@@ -1,8 +1,8 @@
 # Comprehensive TODO - v0.3.0 MVP
 
-**Last Updated**: 2026-02-04 03:00
-**Current Focus**: Feature Gap Analysis ✅ → Pre-Frontend Fixes → Tests → Frontend
-**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Radarr Complete ✅ → Rate Limiting Complete ✅ → **Feature Gaps Identified ✅** → Pre-Frontend Fixes 🟡 → Tests 🟡 (46.7%)
+**Last Updated**: 2026-02-04 02:45
+**Current Focus**: Phase 8 (Test Coverage 80%) 🔄
+**Status**: Backend Complete ✅ → TMDb Complete ✅ → Library Provider Complete ✅ → River Jobs Complete ✅ → Typesense Complete ✅ → Radarr Complete ✅ → Rate Limiting Complete ✅ → **Feature Gaps Identified ✅** → Pre-Frontend 🟡 (Phase 7/8 ✅) → Tests 🟡 (5.8% → target 80%)
 
 **Reports erstellt**:
 - [FEATURE_GAP_ANALYSIS.md](./FEATURE_GAP_ANALYSIS.md) - Umfassende Feature-Analyse
@@ -651,23 +651,25 @@ All design work is **COMPLETE**. Reference these during implementation:
 
 ### Critical Gaps for v0.3.0 MVP
 
-#### 1. Library Scanner - Missing FFprobe Integration ❌
-**Current State**: `ExtractFileInfo()` in `library_scanner.go` is a stub - only gets file size and container extension
-**Problem**: Without FFprobe, self-scanned files have NO mediainfo (resolution, codec, bitrate, HDR, audio tracks, subtitles)
-**Workaround**: Radarr sync fills these fields via Radarr API, but direct scanning doesn't work
+#### 1. Library Scanner - MediaInfo Integration ✅ COMPLETE
+**Previous State**: `ExtractFileInfo()` in `library_scanner.go` was a stub - only got file size and container extension
+**Solution**: Implemented go-astiav (FFmpeg bindings) instead of FFprobe CLI for better performance and type safety
+**Completed**: 2026-02-04
 
-**Required**:
-- [ ] FFprobe binary detection and wrapper
-- [ ] Parse FFprobe JSON output → `MovieFile` struct
-- [ ] Extract: resolution, video codec, audio codec, duration, bitrate, framerate, HDR info
-- [ ] Extract: audio tracks with languages
-- [ ] Extract: subtitle tracks with languages
-- [ ] Update `ExtractFileInfo()` to use FFprobe
+**Implemented**:
+- [x] go-astiav wrapper (`mediainfo.go`) with native FFmpeg bindings
+- [x] Video: resolution, codec, profile, framerate, HDR detection, color info
+- [x] Audio: all tracks with codec, channels, layout, language
+- [x] Subtitles: all tracks with codec, language, forced flag
+- [x] Updated `ExtractFileInfo()` to use go-astiav
+- [x] Unit tests (8 passing)
+- [x] Dockerfile updated for CGO/FFmpeg libs
 
-**Files to modify**:
-- `internal/content/movie/library_scanner.go` - Add FFprobe integration
-- `internal/content/movie/ffprobe.go` (NEW) - FFprobe wrapper
-- `config/config.yaml` - Add `ffprobe.path` config
+**Files created/modified**:
+- `internal/content/movie/mediainfo.go` (NEW - 540 lines)
+- `internal/content/movie/mediainfo_test.go` (NEW - 165 lines)
+- `internal/content/movie/library_scanner.go` (MODIFIED)
+- `Dockerfile` (MODIFIED - FFmpeg dev libs)
 
 #### 2. Real-time File Watching - Not Implemented ❌
 **Current State**: fsnotify is in go.mod but NOT used anywhere in code
@@ -750,7 +752,7 @@ All design work is **COMPLETE**. Reference these during implementation:
 > **Entscheidung**: Alle Items müssen vor Frontend-Start abgeschlossen sein.
 > **Geschätzter Gesamtaufwand**: ~45-55 Stunden
 
-#### Phase 1: MediaInfo mit go-astiav (4-6h)
+#### Phase 1: MediaInfo mit go-astiav (4-6h) ✅ COMPLETE
 
 **Warum go-astiav statt FFprobe CLI?**
 - Bereits für Transcoding (v0.6.0) geplant → keine zusätzliche Dependency
@@ -759,38 +761,59 @@ All design work is **COMPLETE**. Reference these during implementation:
 - CGO erforderlich, aber das brauchen wir eh für HW-Acceleration
 
 **Tasks**:
-1. [ ] `internal/content/movie/mediainfo.go` - go-astiav Wrapper
-   - [ ] `ProbeFile(path string) (*MediaInfo, error)` - Hauptfunktion
-   - [ ] Duration, Bitrate, Container Format
-   - [ ] Video Stream: Codec, Resolution, Framerate, HDR Info
-   - [ ] Audio Streams: Codec, Channels, Language, Title
-   - [ ] Subtitle Streams: Codec, Language, Forced
-   - [ ] Color Space, Color Range, Color Primaries
-2. [ ] `internal/content/movie/mediainfo_test.go` - Unit Tests mit Testfiles
-3. [ ] `ExtractFileInfo()` in `library_scanner.go` updaten
-4. [ ] go-astiav zu go.mod hinzufügen
-5. [ ] Dockerfile updaten (FFmpeg libs für CGO)
+1. [x] `internal/content/movie/mediainfo.go` - go-astiav Wrapper ✅
+   - [x] `ProbeFile(path string) (*MediaInfo, error)` - Hauptfunktion
+   - [x] Duration, Bitrate, Container Format
+   - [x] Video Stream: Codec, Resolution, Framerate, HDR Info
+   - [x] Audio Streams: Codec, Channels, Language, Title
+   - [x] Subtitle Streams: Codec, Language, Forced
+   - [x] Color Space, Color Range, Color Primaries
+2. [x] `internal/content/movie/mediainfo_test.go` - Unit Tests ✅ (8 Tests)
+3. [x] `ExtractFileInfo()` in `library_scanner.go` updaten ✅
+4. [x] go-astiav v0.40.0 zu go.mod hinzugefügt ✅
+5. [x] Dockerfile updaten (FFmpeg libs für CGO) ✅
 
-#### Phase 2: Notification Service (6-8h)
+**Completed**: 2026-02-04
+**Files Created/Modified**:
+- `internal/content/movie/mediainfo.go` (NEW - 540 lines)
+- `internal/content/movie/mediainfo_test.go` (NEW - 165 lines)
+- `internal/content/movie/library_scanner.go` (MODIFIED - ExtractFileInfo)
+- `Dockerfile` (MODIFIED - FFmpeg dev libs for build + runtime)
+
+#### Phase 2: Notification Service (6-8h) ✅ COMPLETE
 
 **Agents für v0.3.0**:
-- [x] Webhook (generisch) - Kann alles anbinden
-- [x] Discord - Sehr populär bei Self-Hostern
-- [x] Gotify/ntfy - Self-Hosted Push Notifications
-- [x] Email (SMTP) - Klassisch
+- [x] Webhook (generisch) - Kann alles anbinden ✅
+- [x] Discord - Sehr populär bei Self-Hostern ✅
+- [x] Gotify/ntfy - Self-Hosted Push Notifications ✅
+- [x] Email (SMTP) - Klassisch ✅
 
 **Tasks**:
-1. [ ] `internal/service/notification/` - Service Package
-   - [ ] `notification.go` - Interface + Event Types
-   - [ ] `dispatcher.go` - Event Router + User Preferences
-   - [ ] `agents/webhook.go` - Generic Webhook Agent
-   - [ ] `agents/discord.go` - Discord Webhook Agent
-   - [ ] `agents/email.go` - SMTP Email Agent
-   - [ ] `agents/gotify.go` - Gotify/ntfy Push Agent
-2. [ ] River Job für async Notification Dispatch
-3. [ ] User Notification Preferences API
-4. [ ] Admin Notification Settings API
-5. [ ] Tests für alle Agents
+1. [x] `internal/service/notification/` - Service Package ✅
+   - [x] `notification.go` - Interface + Event Types (230 lines)
+   - [x] `dispatcher.go` - Event Router + User Preferences (230 lines)
+   - [x] `agents/webhook.go` - Generic Webhook Agent (235 lines)
+   - [x] `agents/discord.go` - Discord Webhook Agent (310 lines)
+   - [x] `agents/email.go` - SMTP Email Agent (340 lines)
+   - [x] `agents/gotify.go` - Gotify/ntfy Push Agents (420 lines)
+2. [x] River Job für async Notification Dispatch (`notification_job.go`) ✅
+3. [ ] User Notification Preferences API (deferred to API phase)
+4. [ ] Admin Notification Settings API (deferred to API phase)
+5. [x] Tests für alle Agents ✅ (55+ tests)
+
+**Completed**: 2026-02-04
+**Files Created**:
+- `internal/service/notification/notification.go` - Event types, Agent interface
+- `internal/service/notification/dispatcher.go` - Event dispatcher with async support
+- `internal/service/notification/notification_test.go` - 25+ unit tests
+- `internal/service/notification/dispatcher_test.go` - 15+ unit tests
+- `internal/service/notification/agents/webhook.go` - Generic webhook with retry
+- `internal/service/notification/agents/discord.go` - Discord embeds + colors
+- `internal/service/notification/agents/email.go` - SMTP with TLS/STARTTLS
+- `internal/service/notification/agents/gotify.go` - Gotify + ntfy support
+- `internal/service/notification/agents/agents_test.go` - Agent unit tests
+- `internal/infra/jobs/notification_job.go` - River job worker
+- `internal/infra/jobs/queues.go` (MODIFIED - added notifications queue)
 
 **Event Types**:
 ```go
@@ -809,29 +832,34 @@ const (
 )
 ```
 
-#### Phase 3: Audit Logging (3-4h)
+#### Phase 3: Audit Logging (3-4h) ✅ COMPLETE
 
-**Schema existiert** (`activity_log`), muss aktiviert werden.
+**Schema existiert** (`activity_log`), Activity Service bereits implementiert.
 
-**Alle Events loggen**:
-- Security: Login, Logout, Failed Login, MFA Events
-- User Management: Create, Update, Delete, Role Changes
-- Content: Add, Update, Delete Movies/Libraries
-- Admin: Settings Changes, Integrations
-- System: Library Scans, Sync Events
+**Implementiert**:
+- ✅ `internal/service/activity/logger.go` - Logger Interface
+- ✅ Integration in Auth Service (Login/Logout/Password Change)
+- ✅ Integration in User Service (Create/Update/Delete)
+- ✅ Integration in Library Service (Create/Update/Delete)
+- ✅ Integration in RBAC Service (AssignRole/RemoveRole)
+- ✅ Alle Tests angepasst und passing
 
-**Tasks**:
-1. [ ] `internal/service/audit/` - Audit Service
-   - [ ] `audit.go` - Interface + Logger
-   - [ ] `events.go` - Event Type Definitions
-2. [ ] Integration in Auth Service (Login/Logout/Failed)
-3. [ ] Integration in User Service (CRUD + Roles)
-4. [ ] Integration in Content Services (Movies/Libraries)
-5. [ ] Integration in Admin Services (Settings)
-6. [ ] API Endpoint für Audit Log Abruf (Admin only)
-7. [ ] Tests
+**Dateien erstellt/geändert**:
+- `internal/service/activity/logger.go` (NEW)
+- `internal/service/activity/logger_test.go` (NEW)
+- `internal/service/activity/module.go` (MODIFIED - adds NewLogger)
+- `internal/service/auth/service.go` (MODIFIED - activity logging)
+- `internal/service/auth/module.go` (MODIFIED - injects activity.Logger)
+- `internal/service/user/service.go` (MODIFIED - activity logging)
+- `internal/service/user/module.go` (MODIFIED - injects activity.Logger)
+- `internal/service/library/service.go` (MODIFIED - activity logging)
+- `internal/service/library/module.go` (MODIFIED - injects activity.Logger)
+- `internal/service/rbac/service.go` (MODIFIED - activity logging)
+- `internal/service/rbac/module.go` (MODIFIED - injects activity.Logger)
 
-#### Phase 4: RBAC Erweiterungen (6-8h)
+**Completion Date**: 2026-02-04
+
+#### Phase 4: RBAC Erweiterungen (6-8h) ✅ COMPLETE
 
 **Alle 4 Rollen implementieren**:
 
@@ -842,75 +870,234 @@ const (
 | `user` | `movies:read`, `libraries:read`, `requests:create`, `self:*` |
 | `guest` | `movies:read`, `libraries:read` (kein Write, keine History) |
 
-**Tasks**:
-1. [ ] Migration für Moderator + Guest Rollen
-2. [ ] `CreateRole(name, permissions)` - Admin API
-3. [ ] `DeleteRole(name)` - Admin API
-4. [ ] `UpdateRolePermissions()` - Admin API
-5. [ ] `ListRoles()` - Admin API
-6. [ ] `ListPermissions()` - Verfügbare Permissions auflisten
-7. [ ] Tests für alle neuen Endpoints
-8. [ ] Dokumentation der Permission Strings
+**Implemented**:
+- [x] Migration für Moderator + Guest Rollen (000027_add_moderator_role)
+- [x] `CreateRole(name, permissions)` - Admin API
+- [x] `DeleteRole(name)` - Admin API
+- [x] `UpdateRolePermissions()` - Admin API
+- [x] `ListRoles()` - Admin API
+- [x] `ListPermissions()` - Verfügbare Permissions auflisten
+- [x] Tests für alle neuen Endpoints (23 tests)
+- [x] OpenAPI spec updated with new endpoints
 
-#### Phase 5: Rate Limiter Migration (2-3h)
+**New Files**:
+- `internal/service/rbac/roles.go` (~350 lines) - Role management service
+- `migrations/000027_add_moderator_role.up.sql` - Moderator permissions
+- `migrations/000027_add_moderator_role.down.sql` - Rollback
+
+**New Endpoints**:
+- `GET /api/v1/rbac/roles` - List all roles
+- `POST /api/v1/rbac/roles` - Create custom role
+- `GET /api/v1/rbac/roles/{roleName}` - Get role details
+- `DELETE /api/v1/rbac/roles/{roleName}` - Delete custom role
+- `PUT /api/v1/rbac/roles/{roleName}/permissions` - Update permissions
+- `GET /api/v1/rbac/permissions` - List available permissions
+
+**Completion Date**: 2026-02-04
+
+#### Phase 5: Rate Limiter Migration (2-3h) ✅ COMPLETE
 
 **Von sync.Map zu Dragonfly** für Multi-Instance Support.
 
-**Tasks**:
-1. [ ] `internal/api/middleware/rate_limit_redis.go` - Neuer Limiter
-   - [ ] Sliding Window mit Rueidis
-   - [ ] Atomare Operationen via Lua Script
-2. [ ] Config: `rate_limit.backend: "memory" | "redis"`
-3. [ ] Fallback zu Memory wenn Dragonfly nicht erreichbar
-4. [ ] Tests mit Docker Compose
+**Implemented**:
+1. [x] `internal/api/middleware/ratelimit_redis.go` - Redis Rate Limiter (~250 lines)
+   - [x] Sliding Window mit Rueidis
+   - [x] Atomare Operationen via Lua Script (slidingWindowScript)
+   - [x] Per-IP Rate Limiting mit Endpoint-aware Keys
+   - [x] Rate-Limit Headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)
+2. [x] Config: `rate_limit.backend: "memory" | "redis"` in config.go
+3. [x] Automatic Fallback zu Memory wenn Redis nicht verfügbar
+4. [x] Tests: `ratelimit_redis_test.go` (18 Unit Tests)
+5. [x] Server Integration: `server.go` wählt Backend basierend auf Config
 
-#### Phase 6: Cache für Hot Paths (4-6h)
+**Files Created**:
+- `internal/api/middleware/ratelimit_redis.go` (~250 lines)
+- `internal/api/middleware/ratelimit_redis_test.go` (18 tests)
 
-**Endpoints die gecached werden sollen**:
+**Completion Date**: 2026-02-04
 
-| Endpoint | TTL | Invalidierung |
-|----------|-----|---------------|
-| `GET /api/v1/movies/{id}` | 5 min | Bei Update/Delete |
-| `GET /api/v1/users/me/roles` | 1 min | Bei Role Change |
-| `GET /api/v1/libraries/{id}/stats` | 10 min | Bei Library Scan |
-| `GET /api/v1/search/*` | 30 sec | Bei Index Update |
+#### Phase 6: Cache für Hot Paths (4-6h) ✅ COMPLETE
 
-**Tasks**:
-1. [ ] Cache Layer in Movie Service
-2. [ ] Cache Layer in RBAC Service (User Roles)
-3. [ ] Cache Layer in Library Service (Stats)
-4. [ ] Cache Invalidation Events
-5. [ ] Cache Metrics (Hit/Miss Ratio)
-6. [ ] Tests
+**Gecachte Hot Paths**:
 
-#### Phase 7: Observability (4-5h)
+| Path | TTL | Invalidierung |
+|------|-----|---------------|
+| Session Validation | 30s | Bei Revoke/Logout |
+| RBAC Enforce | 30s | Bei Policy Change |
+| RBAC User Roles | 5min | Bei Role Change |
+| Server Settings | 5min | Bei Setting Update |
+| User Settings | 2min | Bei User Update |
 
-**pprof (nur Dev Mode)**:
+**Implemented**:
+1. [x] Cache Key Infrastructure (`internal/infra/cache/keys.go` ~200 lines)
+   - [x] Key Prefixes: `session:`, `rbac:enforce:`, `rbac:roles:`, `settings:server:`, `settings:user:`
+   - [x] TTL Constants: SessionTTL=30s, RBACPolicyTTL=5min, RBACEnforceTTL=30s
+   - [x] Helper Functions: SessionKey(), RBACEnforceKey(), ServerSettingKey(), UserSettingKey()
+   - [x] Invalidation Helpers: InvalidateSession(), InvalidateRBACForUser(), InvalidateAllRBAC()
+2. [x] Cached Session Service (`internal/service/session/cached_service.go`)
+   - [x] ValidateSession() mit Cache-Aside Pattern
+   - [x] RevokeSession() mit Cache Invalidation
+   - [x] RevokeAllUserSessions() mit Pattern-based Invalidation
+3. [x] Cached RBAC Service (`internal/service/rbac/cached_service.go`)
+   - [x] Enforce() - Cached Permission Checks
+   - [x] GetUserRoles() - Cached Role Lookups
+   - [x] Write-Through Invalidation bei AssignRole/RemoveRole/AddPolicy/RemovePolicy
+4. [x] Cached Settings Service (`internal/service/settings/cached_service.go`)
+   - [x] GetServerSetting()/ListServerSettings() - Cached
+   - [x] GetUserSetting() - Per-User Caching
+   - [x] Write-Through Invalidation bei Updates
+5. [x] **Cached Movie Service** (`internal/content/movie/cached_service.go`)
+   - [x] GetMovie(), GetCast(), GetCrew(), GetGenres(), GetFiles() - 5min TTL
+   - [x] ListMovies(), ListRecentlyAdded(), ListTopRated() - 2-5min TTL
+   - [x] GetContinueWatching() - Per-User 1min TTL
+   - [x] Write-Through Invalidation bei Create/Update/Delete
+6. [x] **Cached Search Service** (`internal/service/search/cached_service.go`)
+   - [x] Search() - 30sec TTL
+   - [x] Autocomplete() - 30sec TTL
+   - [x] GetFacets() - 2min TTL
+7. [x] **Cached Library Service** (`internal/service/library/cached_service.go`)
+   - [x] Get(), List(), Count() - 10min TTL
+   - [x] Write-Through Invalidation bei Create/Update/Delete/CompleteScan
+8. [x] **Cached User Service** (`internal/service/user/cached_service.go`)
+   - [x] GetUser(), GetUserByUsername() - 1min TTL
+   - [x] Write-Through Invalidation bei Update/Delete
+9. [x] **Image Cache Enhancement** (`internal/infra/image/service.go`)
+   - [x] ETags für Conditional Requests (If-None-Match → 304)
+   - [x] Immutable Cache-Control für CDN Caching
+   - [x] CORS Headers für Frontend Clients
+10. [x] Tests: keys_test.go (13 tests), cached_service_test.go (5 tests)
+
+**Files Created/Modified**:
+- `internal/infra/cache/keys.go` (~400 lines) - Extended with all key prefixes and TTLs
+- `internal/infra/cache/keys_test.go` (13 tests)
+- `internal/service/session/cached_service.go`
+- `internal/service/session/cached_service_test.go` (5 tests)
+- `internal/service/rbac/cached_service.go`
+- `internal/service/settings/cached_service.go`
+- `internal/content/movie/cached_service.go` (~450 lines)
+- `internal/service/search/cached_service.go` (~160 lines)
+- `internal/service/library/cached_service.go` (~210 lines) NEW
+- `internal/service/user/cached_service.go` (~140 lines) NEW
+- `internal/infra/image/service.go` (MODIFIED - ETags + cache headers)
+
+**Cache TTL Summary**:
+| Data Type | TTL | Invalidation |
+|-----------|-----|--------------|
+| Session | 30s | On revoke/logout |
+| RBAC Enforce | 30s | On policy change |
+| RBAC Roles | 5min | On role change |
+| Server Settings | 5min | On setting update |
+| User Settings | 2min | On user update |
+| Movie | 5min | On update/delete |
+| Movie Cast/Crew | 5min | On movie update |
+| Recently Added | 2min | On movie create |
+| Top Rated | 5min | On rating change |
+| Continue Watching | 1min | On progress update |
+| Search Results | 30sec | On index update |
+| Autocomplete | 30sec | On index update |
+| Facets | 2min | On index update |
+| Library | 10min | On scan complete |
+| User | 1min | On user update |
+| Images | 7 days (disk) | Never (immutable) |
+
+**Completion Date**: 2026-02-04
+
+#### Phase 7: Observability (4-5h) ✅ DONE
+
+**pprof (nur Dev Mode)** ✅:
 ```go
-if config.Debug {
-    mux.HandleFunc("/debug/pprof/", pprof.Index)
-    // ...
+if config.Logging.Development {
+    RegisterPprofHandlers(mux)
 }
 ```
 
-**Prometheus Metrics**:
-- HTTP Request Latency (Histogram)
-- HTTP Request Count (Counter)
-- Active Sessions (Gauge)
-- Cache Hit/Miss Ratio (Counter)
-- Database Query Latency (Histogram)
-- River Job Queue Size (Gauge)
+**Prometheus Metrics** ✅:
+- HTTP Request Latency (Histogram) - `revenge_http_request_duration_seconds`
+- HTTP Request Count (Counter) - `revenge_http_requests_total`
+- HTTP Requests In Flight (Gauge) - `revenge_http_requests_in_flight`
+- Active Sessions (Gauge) - `revenge_sessions_active_total`
+- Cache Hit/Miss (Counter) - `revenge_cache_hits_total`, `revenge_cache_misses_total`
+- Cache Operation Duration (Histogram) - `revenge_cache_operation_duration_seconds`
+- Database Query Latency (Histogram) - `revenge_db_query_duration_seconds`
+- River Job Queue Size (Gauge) - `revenge_jobs_queue_size`
+- Job Duration (Histogram) - `revenge_jobs_duration_seconds`
+- Auth Attempts (Counter) - `revenge_auth_attempts_total`
+- Rate Limit Hits (Counter) - `revenge_ratelimit_hits_total`
+- Library Scan Metrics - `revenge_library_*`
+- Search Query Metrics - `revenge_search_*`
 
 **Tasks**:
-1. [ ] pprof Endpoint (nur wenn `config.debug: true`)
-2. [ ] `/metrics` Endpoint mit Prometheus Registry
-3. [ ] HTTP Middleware für Request Metrics
-4. [ ] Cache Metrics Integration
-5. [ ] Database Query Metrics
-6. [ ] River Metrics
-7. [ ] Grafana Dashboard Template
+1. [x] pprof Endpoint (nur wenn `config.Logging.Development: true`)
+2. [x] `/metrics` Endpoint mit Prometheus Registry (Port: main+1000)
+3. [x] HTTP Middleware für Request Metrics (ogen-Middleware)
+4. [x] Cache Metrics Integration (L1/L2 Hit/Miss, Operation Duration)
+5. [x] Database Query Metrics (ready for integration)
+6. [x] River/Job Metrics (ready for integration)
+7. [x] Grafana Dashboard Template
 
-#### Phase 8: Test Coverage 80%+ (8-12h)
+**Files Created**:
+- `internal/infra/observability/metrics.go` (~230 lines) - All Prometheus metrics
+- `internal/infra/observability/middleware.go` (~190 lines) - HTTP metrics middleware
+- `internal/infra/observability/pprof.go` (~25 lines) - pprof handler registration
+- `internal/infra/observability/server.go` (~90 lines) - Observability HTTP server
+- `internal/infra/observability/module.go` - fx module
+- `internal/infra/observability/metrics_test.go` - Unit tests
+- `deploy/grafana-dashboard.json` - Grafana dashboard template
+
+**Modified Files**:
+- `internal/app/module.go` - Added observability.Module
+- `internal/api/server.go` - Added HTTPMetricsMiddleware to ogen
+- `internal/infra/cache/cache.go` - Added cache metrics instrumentation
+
+**Observability Endpoints** (Port: main+1000):
+- `/metrics` - Prometheus scrape endpoint
+- `/health/live` - Kubernetes liveness probe
+- `/health/ready` - Kubernetes readiness probe
+- `/debug/pprof/*` - pprof endpoints (development mode only)
+
+**Completion Date**: 2026-02-04
+
+#### Phase 8: Test Coverage 80%+ (8-12h) 🔄 IN PROGRESS
+
+**Current Coverage**: 5.8% → Target: 80%
+
+**Fixes Applied**:
+- [x] Fix TestDefaultQueueConfig (jobs package - 4 queues)
+- [x] Fix TestMigrationsUpDown (migration 000027 moderator role)
+
+**Tests Added**:
+- [x] `internal/infra/logging/logging_test.go` (NEW - 78.7% coverage)
+  - TestNewLogger_DefaultConfig, _DevelopmentMode, _ProductionMode, _LogLevels
+  - TestNewZapLogger_* (multiple configurations)
+  - TestParseLevel (all log levels)
+  - TestNewTestLogger, TestConfig_Defaults
+
+- [x] `internal/infra/observability/metrics_test.go` (EXTENDED - 42.1% coverage)
+  - TestStatusResponseWriter (3 subtests)
+  - TestIsAlphanumericWithHyphens
+  - TestHasDigits
+  - TestStandardHTTPMetricsMiddleware (3 subtests)
+  - TestExtractStatusFromResponse
+
+- [x] `internal/infra/search/module_test.go` (EXTENDED - 56.1% coverage)
+  - TestNewClient_Disabled, _EnabledEmptyURL, _EnabledWithURL
+  - TestClient_DisabledOperations (10 subtests)
+  - TestClient_IsEnabled (2 subtests)
+
+**Coverage Progress**:
+| Package | Before | After |
+|---------|--------|-------|
+| logging | 0% | 78.7% ✅ |
+| observability | 28% | 42.1% |
+| search | 0% | 56.1% |
+| database | FAIL | 76.3% ✅ |
+| health | FAIL | 45.2% ✅ |
+
+**Remaining Tasks**:
+1. [ ] Service layer tests (rbac, session, auth, settings)
+2. [ ] Content module tests (movie, moviejobs)
+3. [ ] Integration tests (radarr)
+4. [ ] Verify 80% total coverage
 
 **Focus Areas**:
 - Movie Service + Library Scanner
@@ -935,63 +1122,62 @@ if config.Debug {
 
 | Phase | Aufwand | Status |
 |-------|---------|--------|
-| 1. MediaInfo (go-astiav) | 4-6h | ⬜ |
-| 2. Notification Service | 6-8h | ⬜ |
-| 3. Audit Logging | 3-4h | ⬜ |
-| 4. RBAC Erweiterungen | 6-8h | ⬜ |
-| 5. Rate Limiter Migration | 2-3h | ⬜ |
-| 6. Cache Hot Paths | 4-6h | ⬜ |
-| 7. Observability | 4-5h | ⬜ |
-| 8. Test Coverage 80% | 8-12h | ⬜ |
+| 1. MediaInfo (go-astiav) | 4-6h | ✅ DONE |
+| 2. Notification Service | 6-8h | ✅ DONE |
+| 3. Audit Logging | 3-4h | ✅ DONE |
+| 4. RBAC Erweiterungen | 6-8h | ✅ DONE |
+| 5. Rate Limiter Migration | 2-3h | ✅ DONE |
+| 6. Cache Hot Paths | 4-6h | ✅ DONE |
+| 7. Observability | 4-5h | ✅ DONE |
+| 8. Test Coverage 80% | 8-12h | 🔄 IN PROGRESS |
 | **Total** | **37-52h** | |
 
-**Realistisch**: ~45-55 Stunden (~1.5 Wochen Vollzeit)
+**Fortschritt**: Phase 1-7 ✅, Phase 8 🔄 (2026-02-04)
 
 ---
 
 ### Zusätzliche Erkenntnisse aus Architektur-Review
 
-#### RBAC/Permissions Gaps
+#### RBAC/Permissions Gaps ✅ RESOLVED (Phase 4)
 
-**Aktueller Stand**:
-- Casbin mit simplem RBAC Model (sub, obj, act)
-- Nur 2 Rollen hardcoded: `admin`, `user`
-- Keine Moderator-Rolle
-- Keine Custom Groups
-- Keine per-Library Permissions
+**Aktueller Stand** (nach Phase 4):
+- Casbin mit RBAC Model (sub, obj, act) ✅
+- 4 Rollen implementiert: `admin`, `moderator`, `user`, `guest` ✅
+- Custom Role CRUD via API ✅
+- Per-Library Permissions → v0.4.0
 
-**Service-Methoden vorhanden**:
+**Service-Methoden vorhanden** ✅:
 - `AssignRole()`, `RemoveRole()`, `GetUserRoles()`, `HasRole()`, `GetUsersForRole()`
-- ABER: Kein `CreateRole()`, `DeleteRole()`, `CreateGroup()`
-
-**OIDC Group Mapping**:
-- Keycloak Design referenziert `revenge-moderator` Gruppe
-- Aber nur via externem IdP - keine interne Gruppenverwaltung
+- `CreateRole()`, `DeleteRole()`, `UpdateRolePermissions()`, `ListRoles()`, `ListPermissions()`
 
 **TODO für RBAC**:
-- [x] Moderator-Rolle in Migrations hinzufügen (Phase 4)
-- [x] API für Custom Role CRUD (Phase 4)
+- [x] Moderator-Rolle in Migrations hinzufügen (Phase 4) ✅
+- [x] API für Custom Role CRUD (Phase 4) ✅
 - [ ] Per-Library Access Control (v0.4.0)
 
-#### Cluster/Multi-Instance Gaps
+#### Cluster/Multi-Instance Gaps ✅ RESOLVED (Phase 5 + 6)
 
-**Rate Limiter Problem**:
-```go
-// internal/api/middleware/rate_limit.go
-var visitors = sync.Map{}  // ❌ In-Memory - funktioniert nicht in Cluster!
-```
+**Rate Limiter** ✅ FIXED:
+- Redis/Dragonfly-basierter Rate Limiter mit Sliding Window
+- Lua Script für atomare Operationen
+- Fallback zu In-Memory wenn Redis nicht verfügbar
 
-**Lösung**: Rate Limiter State in Dragonfly speichern via Rueidis (Phase 5)
+**Caching** ✅ FIXED:
+- L1 (Otter) + L2 (Rueidis) Unified Cache
+- Cache-Aside Pattern für Session/RBAC/Settings
+- Pattern-based Invalidation
 
 **Aktuell Cluster-Ready** ✅:
 - PostgreSQL für State
-- Dragonfly für Cache
+- Dragonfly für Cache + Rate Limiting
 - River für Job Queue
 - Casbin mit PostgreSQL Adapter
+- Rate Limiter mit Redis Backend
+- Session/RBAC/Settings Caching mit L1+L2
 
 **Benötigt Anpassung**:
-- Rate Limiter → Dragonfly (Phase 5)
-- WebSocket für SyncPlay später → Redis PubSub
+- ~~Rate Limiter → Dragonfly~~ ✅ DONE (Phase 5)
+- WebSocket für SyncPlay später → Redis PubSub (v0.6.0)
 
 #### Profiling/Monitoring Gaps
 

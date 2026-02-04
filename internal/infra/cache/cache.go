@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // Cache provides unified L1 (otter) + L2 (rueidis) caching operations.
@@ -12,10 +14,16 @@ type Cache struct {
 	l1     *L1Cache[string, []byte]
 	l1TTL  time.Duration
 	client *Client
+	name   string // cache name for metrics
 }
 
 // NewCache creates a new unified cache with L1 and L2 layers.
 func NewCache(client *Client, l1MaxSize int, l1TTL time.Duration) (*Cache, error) {
+	return NewNamedCache(client, l1MaxSize, l1TTL, "default")
+}
+
+// NewNamedCache creates a new unified cache with a specific name for metrics.
+func NewNamedCache(client *Client, l1MaxSize int, l1TTL time.Duration, name string) (*Cache, error) {
 	l1, err := NewL1Cache[string, []byte](l1MaxSize, l1TTL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create L1 cache: %w", err)
@@ -25,18 +33,27 @@ func NewCache(client *Client, l1MaxSize int, l1TTL time.Duration) (*Cache, error
 		l1:     l1,
 		l1TTL:  l1TTL,
 		client: client,
+		name:   name,
 	}, nil
 }
 
 // Get retrieves a value from cache (L1 first, then L2).
 func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
+	start := time.Now()
+	defer func() {
+		observability.CacheOperationDuration.WithLabelValues(c.name, "get").Observe(time.Since(start).Seconds())
+	}()
+
 	// Try L1 first
 	if val, ok := c.l1.Get(key); ok {
+		observability.RecordCacheHit(c.name, "l1")
 		return val, nil
 	}
+	observability.RecordCacheMiss(c.name, "l1")
 
 	// L1 miss - try L2 (rueidis)
 	if c.client == nil || c.client.rueidisClient == nil {
+		observability.RecordCacheMiss(c.name, "l2")
 		return nil, fmt.Errorf("cache miss: key not found in L1 and L2 unavailable")
 	}
 
@@ -44,13 +61,17 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 	resp := c.client.rueidisClient.Do(ctx, cmd)
 
 	if err := resp.Error(); err != nil {
+		observability.RecordCacheMiss(c.name, "l2")
 		return nil, fmt.Errorf("L2 cache get failed: %w", err)
 	}
 
 	val, err := resp.AsBytes()
 	if err != nil {
+		observability.RecordCacheMiss(c.name, "l2")
 		return nil, fmt.Errorf("L2 cache value decode failed: %w", err)
 	}
+
+	observability.RecordCacheHit(c.name, "l2")
 
 	// Populate L1 on L2 hit
 	c.l1.Set(key, val)
@@ -61,6 +82,11 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 // Set stores a value in both L1 and L2 caches.
 // For TTLs shorter than L1's TTL, skips L1 to ensure accurate expiration.
 func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
+	start := time.Now()
+	defer func() {
+		observability.CacheOperationDuration.WithLabelValues(c.name, "set").Observe(time.Since(start).Seconds())
+	}()
+
 	// Only use L1 if TTL is longer than or equal to L1's TTL
 	// This ensures short-lived items expire accurately in L2
 	if ttl == 0 || ttl >= c.l1TTL {
@@ -99,6 +125,11 @@ func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Dura
 
 // Delete removes a value from both L1 and L2 caches.
 func (c *Cache) Delete(ctx context.Context, key string) error {
+	start := time.Now()
+	defer func() {
+		observability.CacheOperationDuration.WithLabelValues(c.name, "delete").Observe(time.Since(start).Seconds())
+	}()
+
 	// Delete from L1
 	c.l1.Delete(key)
 

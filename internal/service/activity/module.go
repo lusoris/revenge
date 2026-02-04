@@ -10,6 +10,7 @@ var Module = fx.Module("activity",
 	fx.Provide(
 		newRepository,
 		NewService,
+		NewLogger,
 		NewActivityCleanupWorker,
 	),
 )

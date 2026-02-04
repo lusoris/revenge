@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
@@ -55,6 +56,9 @@ var Module = fx.Module("app",
 
 	// Job Workers
 	moviejobs.Module,
+
+	// Observability (metrics, pprof)
+	observability.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,

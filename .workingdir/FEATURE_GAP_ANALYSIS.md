@@ -120,7 +120,7 @@ INSERT INTO shared.casbin_rule (ptype, v0, v1, v2) VALUES
 ('p', 'user', 'movies', 'read'); -- User: Movies lesen
 ```
 
-**Problem**: 
+**Problem**:
 - Admins können KEINE eigenen Gruppen erstellen
 - Keine "Moderator" Rolle vordefiniert
 - Keine granularen Permissions pro Library/Content

@@ -216,33 +216,66 @@ func parseInt(s string) *int {
 
 // MovieFileInfo contains detailed information about a movie file
 type MovieFileInfo struct {
-	Path        string
-	Size        int64
-	Container   string
-	Resolution  string
-	VideoCodec  string
-	AudioCodec  string
-	Languages   []string
-	BitrateKbps int32
+	Path            string
+	Size            int64
+	Container       string
+	Resolution      string
+	ResolutionLabel string
+	VideoCodec      string
+	VideoProfile    string
+	AudioCodec      string
+	Languages       []string
+	BitrateKbps     int32
+	DurationSeconds float64
+	Framerate       float64
+	DynamicRange    string
+	ColorSpace      string
+	AudioChannels   int
+	AudioLayout     string
+	SubtitleLangs   []string
 }
 
-// ExtractFileInfo extracts technical details from a video file
+// ExtractFileInfo extracts technical details from a video file using go-astiav (FFmpeg)
 func ExtractFileInfo(filePath string) (*MovieFileInfo, error) {
-	info, err := os.Stat(filePath)
+	prober := NewMediaInfoProber()
+	mediaInfo, err := prober.Probe(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to stat file: %w", err)
+		return nil, fmt.Errorf("failed to probe file: %w", err)
 	}
 
-	ext := strings.ToLower(filepath.Ext(filePath))
-	container := strings.TrimPrefix(ext, ".")
+	info := &MovieFileInfo{
+		Path:            mediaInfo.FilePath,
+		Size:            mediaInfo.FileSize,
+		Container:       mediaInfo.Container,
+		Resolution:      mediaInfo.Resolution,
+		ResolutionLabel: mediaInfo.ResolutionLabel,
+		VideoCodec:      mediaInfo.VideoCodec,
+		VideoProfile:    mediaInfo.VideoProfile,
+		BitrateKbps:     int32(mediaInfo.BitrateKbps),
+		DurationSeconds: mediaInfo.DurationSeconds,
+		Framerate:       mediaInfo.Framerate,
+		DynamicRange:    mediaInfo.DynamicRange,
+		ColorSpace:      mediaInfo.ColorSpace,
+		Languages:       mediaInfo.GetAudioLanguages(),
+		SubtitleLangs:   mediaInfo.GetSubtitleLanguages(),
+	}
 
-	// Basic info without external tools (ffprobe would be needed for full details)
-	return &MovieFileInfo{
-		Path:      filePath,
-		Size:      info.Size(),
-		Container: container,
-		// Resolution, codecs, etc. would require ffprobe integration
-	}, nil
+	// Get file size from stat if not in mediainfo
+	if info.Size == 0 {
+		if fileInfo, err := os.Stat(filePath); err == nil {
+			info.Size = fileInfo.Size()
+		}
+	}
+
+	// Primary audio info
+	if len(mediaInfo.AudioStreams) > 0 {
+		primary := mediaInfo.AudioStreams[0]
+		info.AudioCodec = primary.Codec
+		info.AudioChannels = primary.Channels
+		info.AudioLayout = primary.Layout
+	}
+
+	return info, nil
 }
 
 // CreateMovieFile creates a domain MovieFile from file info

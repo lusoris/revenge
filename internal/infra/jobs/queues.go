@@ -9,9 +9,10 @@ import (
 
 // Queue names for different priority levels.
 const (
-	QueueCritical = "critical"
-	QueueDefault  = river.QueueDefault
-	QueueLow      = "low"
+	QueueCritical      = "critical"
+	QueueDefault       = river.QueueDefault
+	QueueLow           = "low"
+	QueueNotifications = "notifications"
 )
 
 // QueueConfig holds configuration for all queues.
@@ -23,9 +24,10 @@ type QueueConfig struct {
 func DefaultQueueConfig() *QueueConfig {
 	return &QueueConfig{
 		Queues: map[string]river.QueueConfig{
-			QueueCritical: {MaxWorkers: 20},
-			QueueDefault:  {MaxWorkers: 10},
-			QueueLow:      {MaxWorkers: 5},
+			QueueCritical:      {MaxWorkers: 20},
+			QueueDefault:       {MaxWorkers: 10},
+			QueueLow:           {MaxWorkers: 5},
+			QueueNotifications: {MaxWorkers: 5},
 		},
 	}
 }

@@ -14,7 +14,7 @@ func TestDefaultQueueConfig(t *testing.T) {
 
 	assert.NotNil(t, cfg)
 	assert.NotNil(t, cfg.Queues)
-	assert.Len(t, cfg.Queues, 3)
+	assert.Len(t, cfg.Queues, 4)
 
 	// Critical queue
 	assert.Contains(t, cfg.Queues, QueueCritical)
@@ -27,6 +27,10 @@ func TestDefaultQueueConfig(t *testing.T) {
 	// Low priority queue
 	assert.Contains(t, cfg.Queues, QueueLow)
 	assert.Equal(t, 5, cfg.Queues[QueueLow].MaxWorkers)
+
+	// Notifications queue
+	assert.Contains(t, cfg.Queues, QueueNotifications)
+	assert.Equal(t, 5, cfg.Queues[QueueNotifications].MaxWorkers)
 }
 
 // TestQueueConstants tests queue name constants.
