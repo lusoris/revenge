@@ -37,11 +37,6 @@ func setupMockService(t *testing.T) (*session.Service, *MockSessionRepository) {
 	return service, mockRepo
 }
 
-// Helper to create pointer to any type
-func ptr[T any](v T) *T {
-	return &v
-}
-
 // ========== CreateSession Tests ==========
 
 func TestService_CreateSession_ErrorCountingSessions(t *testing.T) {

@@ -1,9 +1,7 @@
 package mfa
 
 import (
-	"context"
 	"testing"
-	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
@@ -11,8 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
-
-	db "github.com/lusoris/revenge/internal/infra/database/db"
 )
 
 func TestNewWebAuthnService(t *testing.T) {
@@ -185,134 +181,4 @@ func TestWebAuthnService_MultipleCredentials(t *testing.T) {
 	// 4. Authenticate with second credential
 	// 5. Delete first credential
 	// 6. BeginLogin should only return second credential
-}
-
-// Mock structures for testing (used in integration tests)
-
-type mockQueries struct {
-	credentials map[uuid.UUID][]db.WebauthnCredential
-}
-
-func (m *mockQueries) CreateWebAuthnCredential(ctx context.Context, params db.CreateWebAuthnCredentialParams) (db.WebauthnCredential, error) {
-	if m.credentials == nil {
-		m.credentials = make(map[uuid.UUID][]db.WebauthnCredential)
-	}
-
-	cred := db.WebauthnCredential{
-		ID:              uuid.New(),
-		UserID:          params.UserID,
-		CredentialID:    params.CredentialID,
-		PublicKey:       params.PublicKey,
-		SignCount:       0, // Starts at 0
-		Aaguid:          params.Aaguid,
-		AttestationType: params.AttestationType,
-		Transports:      params.Transports,
-		BackupEligible:  params.BackupEligible,
-		BackupState:     params.BackupState,
-		UserPresent:     params.UserPresent,
-		UserVerified:    params.UserVerified,
-		Name:            params.Name,
-		CreatedAt:       time.Now(),
-	}
-
-	m.credentials[params.UserID] = append(m.credentials[params.UserID], cred)
-	return cred, nil
-}
-
-func (m *mockQueries) ListWebAuthnCredentials(ctx context.Context, userID uuid.UUID) ([]db.WebauthnCredential, error) {
-	if m.credentials == nil {
-		return []db.WebauthnCredential{}, nil
-	}
-	return m.credentials[userID], nil
-}
-
-func (m *mockQueries) GetWebAuthnCredentialByCredentialID(ctx context.Context, credentialID []byte) (db.WebauthnCredential, error) {
-	if m.credentials == nil {
-		return db.WebauthnCredential{}, nil
-	}
-
-	for _, creds := range m.credentials {
-		for _, cred := range creds {
-			if string(cred.CredentialID) == string(credentialID) {
-				return cred, nil
-			}
-		}
-	}
-
-	return db.WebauthnCredential{}, nil
-}
-
-func (m *mockQueries) UpdateWebAuthnCounter(ctx context.Context, params db.UpdateWebAuthnCounterParams) error {
-	if m.credentials == nil {
-		return nil
-	}
-
-	for userID, creds := range m.credentials {
-		for i, cred := range creds {
-			if string(cred.CredentialID) == string(params.CredentialID) {
-				m.credentials[userID][i].SignCount = params.SignCount
-				return nil
-			}
-		}
-	}
-
-	return nil
-}
-
-func (m *mockQueries) MarkWebAuthnCloneDetected(ctx context.Context, credentialID []byte) error {
-	if m.credentials == nil {
-		return nil
-	}
-
-	for userID, creds := range m.credentials {
-		for i, cred := range creds {
-			if string(cred.CredentialID) == string(credentialID) {
-				m.credentials[userID][i].CloneDetected = true
-				return nil
-			}
-		}
-	}
-
-	return nil
-}
-
-func (m *mockQueries) DeleteWebAuthnCredential(ctx context.Context, params db.DeleteWebAuthnCredentialParams) error {
-	if m.credentials == nil {
-		return nil
-	}
-
-	for userID, creds := range m.credentials {
-		for i, cred := range creds {
-			if cred.ID == params.ID && cred.UserID == params.UserID {
-				m.credentials[userID] = append(creds[:i], creds[i+1:]...)
-				return nil
-			}
-		}
-	}
-
-	return nil
-}
-
-func (m *mockQueries) UpdateWebAuthnCredentialName(ctx context.Context, params db.UpdateWebAuthnCredentialNameParams) error {
-	if m.credentials == nil {
-		return nil
-	}
-
-	for userID, creds := range m.credentials {
-		for i, cred := range creds {
-			if cred.ID == params.ID {
-				m.credentials[userID][i].Name = params.Name
-				return nil
-			}
-		}
-	}
-
-	return nil
-}
-
-func (m *mockQueries) CountWebAuthnCredentials(ctx context.Context, userID uuid.UUID) (int64, error) {
-	if m.credentials == nil {
-		return 0, nil
-	}
-	return int64(len(m.credentials[userID])), nil
 }

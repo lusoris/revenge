@@ -40,10 +40,6 @@ func setupMockService(t *testing.T) (
 	return service, mockRepo, mockTokenMgr
 }
 
-func ptr[T any](v T) *T {
-	return &v
-}
-
 // ========== Register Tests ==========
 
 // Register password hashing errors require integration tests
