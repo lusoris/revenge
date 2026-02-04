@@ -115,9 +115,109 @@ func (m *Matcher) MatchFile(ctx context.Context, result ScanResult) MatchResult 
 
 // findExistingMovie searches for an existing movie in the database
 func (m *Matcher) findExistingMovie(ctx context.Context, result ScanResult) (*Movie, error) {
-	// Note: We'd need to add SearchMoviesByTitle to the repository
-	// For now, we'll return not found to trigger TMDb search
-	return nil, fmt.Errorf("not implemented")
+	if result.ParsedTitle == "" {
+		return nil, fmt.Errorf("no title to search")
+	}
+
+	// Search for movies with matching title
+	movies, err := m.repo.SearchMoviesByTitle(ctx, result.ParsedTitle, 10, 0)
+	if err != nil {
+		return nil, fmt.Errorf("search failed: %w", err)
+	}
+
+	if len(movies) == 0 {
+		return nil, fmt.Errorf("no existing movies found")
+	}
+
+	// Find best match considering year if available
+	var bestMatch *Movie
+	var bestScore float64
+
+	for i := range movies {
+		movie := &movies[i]
+		score := m.scoreExistingMovie(result, movie)
+
+		if score > bestScore {
+			bestScore = score
+			bestMatch = movie
+		}
+	}
+
+	// Only return if we have a high-confidence match
+	if bestMatch != nil && bestScore >= 0.8 {
+		return bestMatch, nil
+	}
+
+	return nil, fmt.Errorf("no high-confidence match found")
+}
+
+// scoreExistingMovie calculates a match score for an existing movie
+func (m *Matcher) scoreExistingMovie(result ScanResult, movie *Movie) float64 {
+	score := 0.0
+
+	// Title similarity using Levenshtein distance
+	parsedTitle := strings.ToLower(result.ParsedTitle)
+	movieTitle := strings.ToLower(movie.Title)
+
+	if parsedTitle == movieTitle {
+		score += 0.6
+	} else {
+		// Calculate normalized Levenshtein distance
+		distance := levenshteinDistance(parsedTitle, movieTitle)
+		maxLen := max(len(parsedTitle), len(movieTitle))
+		if maxLen > 0 {
+			similarity := 1.0 - float64(distance)/float64(maxLen)
+			score += similarity * 0.6
+		}
+	}
+
+	// Year match
+	if result.ParsedYear != nil && movie.Year != nil {
+		if *result.ParsedYear == int(*movie.Year) {
+			score += 0.4
+		} else if abs(*result.ParsedYear-int(*movie.Year)) <= 1 {
+			score += 0.2
+		}
+	}
+
+	return score
+}
+
+// levenshteinDistance calculates the edit distance between two strings
+func levenshteinDistance(s1, s2 string) int {
+	if len(s1) == 0 {
+		return len(s2)
+	}
+	if len(s2) == 0 {
+		return len(s1)
+	}
+
+	// Create distance matrix
+	matrix := make([][]int, len(s1)+1)
+	for i := range matrix {
+		matrix[i] = make([]int, len(s2)+1)
+		matrix[i][0] = i
+	}
+	for j := range matrix[0] {
+		matrix[0][j] = j
+	}
+
+	// Fill in the matrix
+	for i := 1; i <= len(s1); i++ {
+		for j := 1; j <= len(s2); j++ {
+			cost := 1
+			if s1[i-1] == s2[j-1] {
+				cost = 0
+			}
+			matrix[i][j] = min(
+				matrix[i-1][j]+1,      // deletion
+				matrix[i][j-1]+1,      // insertion
+				matrix[i-1][j-1]+cost, // substitution
+			)
+		}
+	}
+
+	return matrix[len(s1)][len(s2)]
 }
 
 // createMovieFromTMDb creates a new movie record from TMDb data
@@ -158,9 +258,21 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 	if tmdbMovie.TMDbID != nil {
 		credits, err := m.metadataService.GetMovieCredits(ctx, newMovie.ID, int(*tmdbMovie.TMDbID))
 		if err == nil && len(credits) > 0 {
-			// Save credits to DB (would need CreateMovieCredits method)
-			// For now, skip credits
-			_ = credits
+			for _, credit := range credits {
+				creditParams := CreateMovieCreditParams{
+					MovieID:      newMovie.ID,
+					TMDbPersonID: credit.TMDbPersonID,
+					Name:         credit.Name,
+					CreditType:   credit.CreditType,
+					Character:    credit.Character,
+					Job:          credit.Job,
+					Department:   credit.Department,
+					CastOrder:    credit.CastOrder,
+					ProfilePath:  credit.ProfilePath,
+				}
+				// Ignore errors for individual credits
+				_, _ = m.repo.CreateMovieCredit(ctx, creditParams)
+			}
 		}
 	}
 
@@ -168,48 +280,64 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 	if tmdbMovie.TMDbID != nil {
 		genres, err := m.metadataService.GetMovieGenres(ctx, newMovie.ID, int(*tmdbMovie.TMDbID))
 		if err == nil && len(genres) > 0 {
-			// Save genres to DB (would need CreateMovieGenres method)
-			_ = genres
+			for _, genre := range genres {
+				// Ignore errors for individual genres
+				_ = m.repo.AddMovieGenre(ctx, newMovie.ID, genre.TMDbGenreID, genre.Name)
+			}
 		}
 	}
 
 	return newMovie, nil
 }
 
-// calculateConfidence calculates match confidence score
+// calculateConfidence calculates match confidence score using Levenshtein distance
 func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *Movie) float64 {
 	confidence := 0.0
 
-	// Title similarity
+	// Title similarity using Levenshtein distance
 	parsedTitleLower := strings.ToLower(result.ParsedTitle)
 	tmdbTitleLower := strings.ToLower(tmdbMovie.Title)
 
 	if parsedTitleLower == tmdbTitleLower {
-		confidence += 0.6
-	} else if strings.Contains(tmdbTitleLower, parsedTitleLower) || strings.Contains(parsedTitleLower, tmdbTitleLower) {
-		confidence += 0.4
+		confidence += 0.5
 	} else {
-		confidence += 0.2
+		// Calculate normalized Levenshtein distance
+		distance := levenshteinDistance(parsedTitleLower, tmdbTitleLower)
+		maxLen := max(len(parsedTitleLower), len(tmdbTitleLower))
+		if maxLen > 0 {
+			similarity := 1.0 - float64(distance)/float64(maxLen)
+			confidence += similarity * 0.5
+		}
 	}
 
-	// Year match
+	// Also check original title if available
+	if tmdbMovie.OriginalTitle != nil && *tmdbMovie.OriginalTitle != tmdbMovie.Title {
+		origTitleLower := strings.ToLower(*tmdbMovie.OriginalTitle)
+		if parsedTitleLower == origTitleLower {
+			confidence += 0.1 // Bonus for matching original title
+		}
+	}
+
+	// Year match (high weight for exact match)
 	if result.ParsedYear != nil && tmdbMovie.ReleaseDate != nil {
 		tmdbYear := tmdbMovie.ReleaseDate.Year()
 		if *result.ParsedYear == tmdbYear {
 			confidence += 0.3
 		} else if abs(*result.ParsedYear-tmdbYear) <= 1 {
-			confidence += 0.1
+			confidence += 0.15
 		}
 	} else if result.ParsedYear == nil && tmdbMovie.ReleaseDate != nil {
 		// Penalize slightly if year not in filename
 		confidence -= 0.05
 	}
 
-	// Popularity boost (higher popularity = more likely correct)
+	// Popularity boost (higher popularity = more likely correct match)
 	if tmdbMovie.Popularity != nil && !tmdbMovie.Popularity.IsZero() {
 		pop, _ := tmdbMovie.Popularity.Float64()
-		if pop > 50 {
+		if pop > 100 {
 			confidence += 0.1
+		} else if pop > 50 {
+			confidence += 0.05
 		}
 	}
 
