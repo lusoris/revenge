@@ -114,7 +114,10 @@
       "Bash(go doc:*)",
       "Bash(export CGO_ENABLED=1:*)",
       "Bash(mockery:*)",
-      "Bash(gosec:*)"
+      "Bash(gosec:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)"
     ]
   }
 }
