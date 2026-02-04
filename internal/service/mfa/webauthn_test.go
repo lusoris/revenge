@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"math"
 	"testing"
+	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
 )
@@ -47,7 +49,7 @@ func TestNewWebAuthnService(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			service, err := NewWebAuthnService(nil, logger, tt.rpDisplayName, tt.rpID, tt.rpOrigins)
+			service, err := NewWebAuthnService(nil, logger, nil, tt.rpDisplayName, tt.rpID, tt.rpOrigins)
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -285,7 +287,7 @@ func setupWebAuthnService(t *testing.T) (*WebAuthnService, *db.Queries, context.
 	ctx := context.Background()
 	logger := zaptest.NewLogger(t)
 
-	service, err := NewWebAuthnService(queries, logger, "Test App", "localhost", []string{"http://localhost:3000"})
+	service, err := NewWebAuthnService(queries, logger, nil, "Test App", "localhost", []string{"http://localhost:3000"})
 	require.NoError(t, err)
 
 	// Create a test user
@@ -623,6 +625,132 @@ func TestNewTOTPServiceFromConfig(t *testing.T) {
 	assert.Equal(t, "Revenge", service.issuer)
 }
 
+// Session cache tests
+
+func TestWebAuthnService_HasCache(t *testing.T) {
+	t.Parallel()
+
+	logger := zaptest.NewLogger(t)
+
+	t.Run("returns false when no cache configured", func(t *testing.T) {
+		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
+		require.NoError(t, err)
+		assert.False(t, service.HasCache())
+	})
+
+	t.Run("returns true when cache configured", func(t *testing.T) {
+		sessionCache, err := cache.NewNamedCache(nil, 100, 5*time.Minute, "webauthn-test")
+		require.NoError(t, err)
+		defer sessionCache.Close()
+
+		service, err := NewWebAuthnService(nil, logger, sessionCache, "Test", "localhost", []string{"http://localhost"})
+		require.NoError(t, err)
+		assert.True(t, service.HasCache())
+	})
+}
+
+func TestWebAuthnService_SessionCache(t *testing.T) {
+	t.Parallel()
+
+	logger := zaptest.NewLogger(t)
+	ctx := context.Background()
+
+	t.Run("stores and retrieves registration session", func(t *testing.T) {
+		sessionCache, err := cache.NewNamedCache(nil, 100, 5*time.Minute, "webauthn-test")
+		require.NoError(t, err)
+		defer sessionCache.Close()
+
+		testDB := testutil.NewTestDB(t)
+		queries := db.New(testDB.Pool())
+		userID := createTestUserForWebAuthn(t, queries, ctx)
+
+		service, err := NewWebAuthnService(queries, logger, sessionCache, "Test", "localhost", []string{"http://localhost:3000"})
+		require.NoError(t, err)
+
+		// Begin registration (stores session in cache)
+		_, err = service.BeginRegistration(ctx, userID, "testuser", "Test User")
+		require.NoError(t, err)
+
+		// Retrieve session from cache
+		session, err := service.GetRegistrationSession(ctx, userID)
+		require.NoError(t, err)
+		assert.NotNil(t, session)
+		assert.NotEmpty(t, session.Challenge)
+
+		// Delete session
+		service.DeleteRegistrationSession(ctx, userID)
+
+		// Session should be gone
+		_, err = service.GetRegistrationSession(ctx, userID)
+		assert.Error(t, err)
+	})
+
+	t.Run("stores and retrieves login session", func(t *testing.T) {
+		sessionCache, err := cache.NewNamedCache(nil, 100, 5*time.Minute, "webauthn-test")
+		require.NoError(t, err)
+		defer sessionCache.Close()
+
+		testDB := testutil.NewTestDB(t)
+		queries := db.New(testDB.Pool())
+		userID := createTestUserForWebAuthn(t, queries, ctx)
+
+		// Add a credential first
+		name := "Test Key"
+		_, err = queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("session-test-cred-id"),
+			PublicKey:       []byte("pub-key"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		service, err := NewWebAuthnService(queries, logger, sessionCache, "Test", "localhost", []string{"http://localhost:3000"})
+		require.NoError(t, err)
+
+		// Begin login (stores session in cache)
+		_, err = service.BeginLogin(ctx, userID, "testuser", "Test User")
+		require.NoError(t, err)
+
+		// Retrieve session from cache
+		session, err := service.GetLoginSession(ctx, userID)
+		require.NoError(t, err)
+		assert.NotNil(t, session)
+		assert.NotEmpty(t, session.Challenge)
+
+		// Delete session
+		service.DeleteLoginSession(ctx, userID)
+
+		// Session should be gone
+		_, err = service.GetLoginSession(ctx, userID)
+		assert.Error(t, err)
+	})
+
+	t.Run("GetRegistrationSession fails without cache", func(t *testing.T) {
+		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
+		require.NoError(t, err)
+
+		_, err = service.GetRegistrationSession(ctx, uuid.New())
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "cache not configured")
+	})
+
+	t.Run("GetLoginSession fails without cache", func(t *testing.T) {
+		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
+		require.NoError(t, err)
+
+		_, err = service.GetLoginSession(ctx, uuid.New())
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "cache not configured")
+	})
+}
+
 func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 	t.Parallel()
 
@@ -638,7 +766,7 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 			},
 		}
 
-		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg, nil)
 		require.NoError(t, err)
 		assert.NotNil(t, service)
 	})
@@ -651,7 +779,7 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 			},
 		}
 
-		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg, nil)
 		require.NoError(t, err)
 		assert.NotNil(t, service)
 	})
@@ -664,7 +792,7 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 			},
 		}
 
-		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg)
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg, nil)
 		require.NoError(t, err)
 		assert.NotNil(t, service)
 	})

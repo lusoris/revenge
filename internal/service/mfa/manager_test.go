@@ -80,7 +80,7 @@ func setupMFAManager(t *testing.T) (*MFAManager, *db.Queries, context.Context, u
 	backupCodesService := NewBackupCodesService(queries, logger)
 
 	// Create WebAuthn service (can be nil for some tests)
-	webauthnService, _ := NewWebAuthnService(queries, logger, "Test App", "localhost", []string{"http://localhost:3000"})
+	webauthnService, _ := NewWebAuthnService(queries, logger, nil, "Test App", "localhost", []string{"http://localhost:3000"})
 
 	// Create the manager
 	manager := NewMFAManager(queries, totpService, webauthnService, backupCodesService, logger)
@@ -128,7 +128,7 @@ func TestNewMFAManager(t *testing.T) {
 
 	totpService := NewTOTPService(queries, encryptor, logger, "Test")
 	backupCodesService := NewBackupCodesService(queries, logger)
-	webauthnService, _ := NewWebAuthnService(queries, logger, "Test", "localhost", []string{"http://localhost"})
+	webauthnService, _ := NewWebAuthnService(queries, logger, nil, "Test", "localhost", []string{"http://localhost"})
 
 	manager := NewMFAManager(queries, totpService, webauthnService, backupCodesService, logger)
 

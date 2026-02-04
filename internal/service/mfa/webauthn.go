@@ -12,7 +12,16 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 
+	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+)
+
+const (
+	// WebAuthn session TTL (5 minutes)
+	webAuthnSessionTTL = 5 * time.Minute
+	// Cache key prefixes
+	webAuthnRegistrationKeyPrefix = "webauthn:registration:"
+	webAuthnLoginKeyPrefix        = "webauthn:login:"
 )
 
 var (
@@ -47,12 +56,16 @@ type WebAuthnService struct {
 	queries  *db.Queries
 	logger   *zap.Logger
 	webAuthn *webauthn.WebAuthn
+	cache    *cache.Cache // Optional: for storing WebAuthn sessions
 }
 
 // NewWebAuthnService creates a new WebAuthn service.
+// The cache parameter is optional (can be nil) - if provided, WebAuthn sessions
+// will be stored in cache for security. If nil, sessions must be passed by the client.
 func NewWebAuthnService(
 	queries *db.Queries,
 	logger *zap.Logger,
+	sessionCache *cache.Cache,
 	rpDisplayName string,
 	rpID string,
 	rpOrigins []string,
@@ -84,7 +97,64 @@ func NewWebAuthnService(
 		queries:  queries,
 		logger:   logger,
 		webAuthn: wa,
+		cache:    sessionCache,
 	}, nil
+}
+
+// storeSession stores a WebAuthn session in cache.
+func (s *WebAuthnService) storeSession(ctx context.Context, keyPrefix string, userID uuid.UUID, session *webauthn.SessionData) error {
+	if s.cache == nil {
+		s.logger.Debug("cache not configured, skipping session storage")
+		return nil
+	}
+
+	key := keyPrefix + userID.String()
+	data, err := json.Marshal(session)
+	if err != nil {
+		return fmt.Errorf("failed to marshal session: %w", err)
+	}
+
+	if err := s.cache.Set(ctx, key, data, webAuthnSessionTTL); err != nil {
+		return fmt.Errorf("failed to store session in cache: %w", err)
+	}
+
+	s.logger.Debug("stored webauthn session in cache",
+		zap.String("key", key),
+		zap.Duration("ttl", webAuthnSessionTTL))
+	return nil
+}
+
+// getSession retrieves a WebAuthn session from cache.
+func (s *WebAuthnService) getSession(ctx context.Context, keyPrefix string, userID uuid.UUID) (*webauthn.SessionData, error) {
+	if s.cache == nil {
+		return nil, fmt.Errorf("cache not configured")
+	}
+
+	key := keyPrefix + userID.String()
+	data, err := s.cache.Get(ctx, key)
+	if err != nil {
+		return nil, fmt.Errorf("session not found in cache: %w", err)
+	}
+
+	var session webauthn.SessionData
+	if err := json.Unmarshal(data, &session); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal session: %w", err)
+	}
+
+	s.logger.Debug("retrieved webauthn session from cache", zap.String("key", key))
+	return &session, nil
+}
+
+// deleteSession removes a WebAuthn session from cache.
+func (s *WebAuthnService) deleteSession(ctx context.Context, keyPrefix string, userID uuid.UUID) {
+	if s.cache == nil {
+		return
+	}
+
+	key := keyPrefix + userID.String()
+	if err := s.cache.Delete(ctx, key); err != nil {
+		s.logger.Warn("failed to delete session from cache", zap.String("key", key), zap.Error(err))
+	}
 }
 
 // WebAuthnUser implements the webauthn.User interface for our user model.
@@ -171,13 +241,12 @@ func (s *WebAuthnService) BeginRegistration(
 		return nil, fmt.Errorf("failed to begin registration: %w", err)
 	}
 
-	// TODO: Store session in cache (Redis/Dragonfly) with 5min TTL
-	// For now, we'll rely on the client to store the session data
-	// In production, you should:
-	// - Marshal session to JSON
-	// - Store in cache with key: webauthn:registration:{userID}
-	// - Set TTL to 5 minutes
-	_ = session
+	// Store session in cache for later verification
+	if err := s.storeSession(ctx, webAuthnRegistrationKeyPrefix, userID, session); err != nil {
+		s.logger.Warn("failed to cache registration session, client must provide session data",
+			zap.String("user_id", userID.String()),
+			zap.Error(err))
+	}
 
 	s.logger.Info("webauthn registration started",
 		zap.String("user_id", userID.String()),
@@ -337,8 +406,12 @@ func (s *WebAuthnService) BeginLogin(
 		return nil, fmt.Errorf("failed to begin login: %w", err)
 	}
 
-	// TODO: Store session in cache (Redis/Dragonfly) with 5min TTL
-	_ = session
+	// Store session in cache for later verification
+	if err := s.storeSession(ctx, webAuthnLoginKeyPrefix, userID, session); err != nil {
+		s.logger.Warn("failed to cache login session, client must provide session data",
+			zap.String("user_id", userID.String()),
+			zap.Error(err))
+	}
 
 	s.logger.Info("webauthn login started",
 		zap.String("user_id", userID.String()),
@@ -485,6 +558,35 @@ func convertTransportsFromDB(transports []string) []protocol.AuthenticatorTransp
 		result[i] = protocol.AuthenticatorTransport(t)
 	}
 	return result
+}
+
+// GetRegistrationSession retrieves a stored registration session from cache.
+// Returns the session data if found, or an error if not found or cache unavailable.
+func (s *WebAuthnService) GetRegistrationSession(ctx context.Context, userID uuid.UUID) (*webauthn.SessionData, error) {
+	return s.getSession(ctx, webAuthnRegistrationKeyPrefix, userID)
+}
+
+// GetLoginSession retrieves a stored login session from cache.
+// Returns the session data if found, or an error if not found or cache unavailable.
+func (s *WebAuthnService) GetLoginSession(ctx context.Context, userID uuid.UUID) (*webauthn.SessionData, error) {
+	return s.getSession(ctx, webAuthnLoginKeyPrefix, userID)
+}
+
+// DeleteRegistrationSession removes a registration session from cache.
+// Should be called after registration completes or fails.
+func (s *WebAuthnService) DeleteRegistrationSession(ctx context.Context, userID uuid.UUID) {
+	s.deleteSession(ctx, webAuthnRegistrationKeyPrefix, userID)
+}
+
+// DeleteLoginSession removes a login session from cache.
+// Should be called after login completes or fails.
+func (s *WebAuthnService) DeleteLoginSession(ctx context.Context, userID uuid.UUID) {
+	s.deleteSession(ctx, webAuthnLoginKeyPrefix, userID)
+}
+
+// HasCache returns whether session caching is available.
+func (s *WebAuthnService) HasCache() bool {
+	return s.cache != nil
 }
 
 // SessionDataToJSON serializes session data for caching.

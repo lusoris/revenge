@@ -2,12 +2,14 @@ package mfa
 
 import (
 	"fmt"
+	"time"
 
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -39,6 +41,7 @@ func NewWebAuthnServiceFromConfig(
 	queries *db.Queries,
 	logger *zap.Logger,
 	cfg *config.Config,
+	cacheClient *cache.Client,
 ) (*WebAuthnService, error) {
 	// Use server host as RP ID, or localhost
 	rpID := cfg.Server.Host
@@ -48,5 +51,16 @@ func NewWebAuthnServiceFromConfig(
 	rpName := "Revenge"
 	// Build origin from host:port
 	origin := fmt.Sprintf("http://%s:%d", rpID, cfg.Server.Port)
-	return NewWebAuthnService(queries, logger, rpName, rpID, []string{origin})
+
+	// Create dedicated cache for WebAuthn sessions (5 minute TTL)
+	var sessionCache *cache.Cache
+	if cacheClient != nil {
+		var err error
+		sessionCache, err = cache.NewNamedCache(cacheClient, 1000, 5*time.Minute, "webauthn")
+		if err != nil {
+			logger.Warn("failed to create webauthn session cache, sessions will not be cached", zap.Error(err))
+		}
+	}
+
+	return NewWebAuthnService(queries, logger, sessionCache, rpName, rpID, []string{origin})
 }

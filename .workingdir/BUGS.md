@@ -95,3 +95,55 @@ ip := meta.IPAddress
 ua := meta.UserAgent
 ```
 
+
+## A0.6: WebAuthn Session Cache [P1] - COMPLETED
+
+**Status**: Fixed
+**Date**: 2026-02-04
+
+### Changes Made:
+1. Updated `internal/service/mfa/webauthn.go`:
+   - Added `cache *cache.Cache` field to `WebAuthnService`
+   - Added session storage constants: `webAuthnSessionTTL`, key prefixes
+   - Added internal helpers: `storeSession`, `getSession`, `deleteSession`
+   - Updated `BeginRegistration` to store session in cache
+   - Updated `BeginLogin` to store session in cache
+   - Added public methods:
+     - `GetRegistrationSession(ctx, userID)` - retrieve cached registration session
+     - `GetLoginSession(ctx, userID)` - retrieve cached login session
+     - `DeleteRegistrationSession(ctx, userID)` - cleanup after finish
+     - `DeleteLoginSession(ctx, userID)` - cleanup after finish
+     - `HasCache()` - check if cache is configured
+
+2. Updated `internal/service/mfa/module.go`:
+   - `NewWebAuthnServiceFromConfig` now accepts `*cache.Client`
+   - Creates dedicated named cache "webauthn" with 5-minute TTL
+   - Gracefully handles missing cache (logs warning, continues without)
+
+3. Added comprehensive tests in `webauthn_test.go`:
+   - `TestWebAuthnService_HasCache` - cache availability check
+   - `TestWebAuthnService_SessionCache` - store/retrieve/delete sessions
+
+### Architecture:
+- Uses L1 (otter in-memory) + L2 (Dragonfly via rueidis) cache layers
+- Sessions expire after 5 minutes (WebAuthn timeout)
+- Graceful degradation: works without cache (client provides session)
+- Cache key pattern: `webauthn:registration:{userID}`, `webauthn:login:{userID}`
+
+### Usage:
+```go
+// Handler flow:
+options, _ := webauthnService.BeginRegistration(ctx, userID, ...)
+// ... client does WebAuthn ceremony ...
+
+// Retrieve session from cache:
+session, err := webauthnService.GetRegistrationSession(ctx, userID)
+if err != nil {
+    // Fallback: use session from client
+}
+
+// Finish and cleanup:
+_ = webauthnService.FinishRegistration(ctx, userID, ..., *session, ...)
+webauthnService.DeleteRegistrationSession(ctx, userID)
+```
+
