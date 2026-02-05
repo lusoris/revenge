@@ -3,9 +3,9 @@ package movie
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
+	"github.com/lusoris/revenge/internal/content/shared/matcher"
 	"github.com/lusoris/revenge/internal/util"
 	"github.com/shopspring/decimal"
 )
@@ -152,72 +152,27 @@ func (m *Matcher) findExistingMovie(ctx context.Context, result ScanResult) (*Mo
 }
 
 // scoreExistingMovie calculates a match score for an existing movie
+// Uses shared matcher utilities for title similarity and confidence scoring
 func (m *Matcher) scoreExistingMovie(result ScanResult, movie *Movie) float64 {
-	score := 0.0
+	score := matcher.NewConfidenceScore()
 
-	// Title similarity using Levenshtein distance
-	parsedTitle := strings.ToLower(result.ParsedTitle)
-	movieTitle := strings.ToLower(movie.Title)
+	// Title similarity using shared TitleSimilarity (60% weight)
+	titleSim := matcher.TitleSimilarity(result.ParsedTitle, movie.Title)
+	score.Add(titleSim, 0.6)
 
-	if parsedTitle == movieTitle {
-		score += 0.6
-	} else {
-		// Calculate normalized Levenshtein distance
-		distance := levenshteinDistance(parsedTitle, movieTitle)
-		maxLen := max(len(parsedTitle), len(movieTitle))
-		if maxLen > 0 {
-			similarity := 1.0 - float64(distance)/float64(maxLen)
-			score += similarity * 0.6
-		}
-	}
-
-	// Year match
+	// Year match (40% weight)
 	if result.ParsedYear != nil && movie.Year != nil {
-		if *result.ParsedYear == int(*movie.Year) {
-			score += 0.4
-		} else if abs(*result.ParsedYear-int(*movie.Year)) <= 1 {
-			score += 0.2
-		}
+		yearScore := matcher.YearMatchInt(*result.ParsedYear, int(*movie.Year))
+		score.Add(yearScore, 0.4)
 	}
 
-	return score
+	return score.Calculate()
 }
 
-// levenshteinDistance calculates the edit distance between two strings
+// levenshteinDistance calculates the edit distance between two strings.
+// Deprecated: Use matcher.LevenshteinDistance from the shared package.
 func levenshteinDistance(s1, s2 string) int {
-	if len(s1) == 0 {
-		return len(s2)
-	}
-	if len(s2) == 0 {
-		return len(s1)
-	}
-
-	// Create distance matrix
-	matrix := make([][]int, len(s1)+1)
-	for i := range matrix {
-		matrix[i] = make([]int, len(s2)+1)
-		matrix[i][0] = i
-	}
-	for j := range matrix[0] {
-		matrix[0][j] = j
-	}
-
-	// Fill in the matrix
-	for i := 1; i <= len(s1); i++ {
-		for j := 1; j <= len(s2); j++ {
-			cost := 1
-			if s1[i-1] == s2[j-1] {
-				cost = 0
-			}
-			matrix[i][j] = min(
-				matrix[i-1][j]+1,      // deletion
-				matrix[i][j-1]+1,      // insertion
-				matrix[i-1][j-1]+cost, // substitution
-			)
-		}
-	}
-
-	return matrix[len(s1)][len(s2)]
+	return matcher.LevenshteinDistance(s1, s2)
 }
 
 // createMovieFromTMDb creates a new movie record from TMDb data
@@ -290,30 +245,19 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 	return newMovie, nil
 }
 
-// calculateConfidence calculates match confidence score using Levenshtein distance
+// calculateConfidence calculates match confidence score using shared matcher utilities.
+// Uses additive scoring to maintain backward compatibility with existing logic.
 func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *Movie) float64 {
 	confidence := 0.0
 
-	// Title similarity using Levenshtein distance
-	parsedTitleLower := strings.ToLower(result.ParsedTitle)
-	tmdbTitleLower := strings.ToLower(tmdbMovie.Title)
-
-	if parsedTitleLower == tmdbTitleLower {
-		confidence += 0.5
-	} else {
-		// Calculate normalized Levenshtein distance
-		distance := levenshteinDistance(parsedTitleLower, tmdbTitleLower)
-		maxLen := max(len(parsedTitleLower), len(tmdbTitleLower))
-		if maxLen > 0 {
-			similarity := 1.0 - float64(distance)/float64(maxLen)
-			confidence += similarity * 0.5
-		}
-	}
+	// Title similarity using shared utilities (contributes up to 0.5)
+	titleSim := matcher.TitleSimilarity(result.ParsedTitle, tmdbMovie.Title)
+	confidence += titleSim * 0.5
 
 	// Also check original title if available
 	if tmdbMovie.OriginalTitle != nil && *tmdbMovie.OriginalTitle != tmdbMovie.Title {
-		origTitleLower := strings.ToLower(*tmdbMovie.OriginalTitle)
-		if parsedTitleLower == origTitleLower {
+		origSim := matcher.TitleSimilarity(result.ParsedTitle, *tmdbMovie.OriginalTitle)
+		if origSim > titleSim {
 			confidence += 0.1 // Bonus for matching original title
 		}
 	}
@@ -321,11 +265,10 @@ func (m *Matcher) calculateConfidence(result ScanResult, tmdbMovie *Movie) float
 	// Year match (high weight for exact match)
 	if result.ParsedYear != nil && tmdbMovie.ReleaseDate != nil {
 		tmdbYear := tmdbMovie.ReleaseDate.Year()
-		if *result.ParsedYear == tmdbYear {
-			confidence += 0.3
-		} else if abs(*result.ParsedYear-tmdbYear) <= 1 {
-			confidence += 0.15
-		}
+		yearScore := matcher.YearMatchInt(*result.ParsedYear, tmdbYear)
+		// YearMatch returns 1.0 for exact, 0.5 for ±1, 0.0 otherwise
+		// Convert to: 0.3 for exact, 0.15 for ±1
+		confidence += yearScore * 0.3
 	} else if result.ParsedYear == nil && tmdbMovie.ReleaseDate != nil {
 		// Penalize slightly if year not in filename
 		confidence -= 0.05

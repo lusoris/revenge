@@ -61,10 +61,32 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// "matrix" vs "the matrix": Levenshtein distance = 4, maxLen = 10
-		// similarity = 1.0 - 4/10 = 0.6, title_confidence = 0.6 * 0.5 = 0.3
-		// 0.3 (partial title) + 0.3 (exact year) = 0.6
-		assert.InDelta(t, 0.6, confidence, 0.001)
+		// "matrix" vs "the matrix": after normalization (article removal), both become "matrix"
+		// similarity = 1.0, title_confidence = 1.0 * 0.5 = 0.5
+		// 0.5 (exact normalized title) + 0.3 (exact year) = 0.8
+		assert.InDelta(t, 0.8, confidence, 0.001)
+	})
+
+	t.Run("Fuzzy title match - typo in filename", func(t *testing.T) {
+		result := ScanResult{
+			ParsedTitle: "Matrx", // Typo - missing 'i'
+			ParsedYear:  intPtr(1999),
+		}
+		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
+		tmdbMovie := &Movie{
+			Title:       "The Matrix",
+			ReleaseDate: &releaseDate,
+			Popularity:  nil,
+		}
+
+		confidence := matcher.calculateConfidence(result, tmdbMovie)
+
+		// "matrx" vs "matrix": Levenshtein distance = 1, maxLen = 6
+		// similarity = 1.0 - 1/6 ≈ 0.833, title_confidence ≈ 0.417
+		// ≈0.417 (fuzzy title) + 0.3 (exact year) ≈ 0.717
+		assert.InDelta(t, 0.717, confidence, 0.05) // Allow more variance for fuzzy
+		assert.GreaterOrEqual(t, confidence, 0.6)
+		assert.LessOrEqual(t, confidence, 0.8)
 	})
 
 	t.Run("Exact title, year off by one", func(t *testing.T) {
