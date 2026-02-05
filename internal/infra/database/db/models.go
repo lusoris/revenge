@@ -287,7 +287,7 @@ type SharedAuthToken struct {
 	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
-// RBAC policies with moderator role added
+// RBAC policies with fine-grained permissions (v0.3.0)
 type SharedCasbinRule struct {
 	ID int32 `json:"id"`
 	// Policy type: p (policy) or g (role)
@@ -317,6 +317,19 @@ type SharedEmailVerificationToken struct {
 	// Timestamp when token was used (prevents reuse)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+// Tracks failed login attempts for account lockout and rate limiting
+type SharedFailedLoginAttempt struct {
+	ID uuid.UUID `json:"id"`
+	// Username or email used in the failed login attempt
+	Username string `json:"username"`
+	// IP address from which the failed login attempt originated
+	IpAddress string `json:"ipAddress"`
+	// Timestamp when the failed login attempt occurred
+	AttemptedAt time.Time `json:"attemptedAt"`
+	// Timestamp when this record was created (for auditing)
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type SharedOidcProvider struct {

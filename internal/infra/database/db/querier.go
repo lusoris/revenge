@@ -17,6 +17,7 @@ type Querier interface {
 	AddTrustedDevice(ctx context.Context, arg AddTrustedDeviceParams) error
 	// Checks if a user has a specific permission for a library
 	CheckLibraryPermission(ctx context.Context, arg CheckLibraryPermissionParams) (bool, error)
+	ClearFailedLoginAttemptsByUsername(ctx context.Context, username string) error
 	// NOTE: RemoveTrustedDevice removed - implement in application code
 	// Use ClearTrustedDevices to reset all devices
 	// Clear all trusted devices for a user
@@ -25,6 +26,8 @@ type Querier interface {
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	// Count total activity logs
 	CountActivityLogs(ctx context.Context) (int64, error)
+	CountFailedLoginAttemptsByIP(ctx context.Context, arg CountFailedLoginAttemptsByIPParams) (int64, error)
+	CountFailedLoginAttemptsByUsername(ctx context.Context, arg CountFailedLoginAttemptsByUsernameParams) (int64, error)
 	// Counts total libraries
 	CountLibraries(ctx context.Context) (int64, error)
 	// Counts libraries by type
@@ -134,6 +137,7 @@ type Querier interface {
 	DeleteOIDCUserLinkByUserAndProvider(ctx context.Context, arg DeleteOIDCUserLinkByUserAndProviderParams) error
 	// Delete activity logs older than a specific date (for cleanup job)
 	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) (int64, error)
+	DeleteOldFailedLoginAttempts(ctx context.Context) error
 	// Deletes library scans older than a given time
 	DeleteOldLibraryScans(ctx context.Context, olderThan time.Time) (int64, error)
 	DeleteRevokedAuthTokens(ctx context.Context) error
@@ -339,6 +343,8 @@ type Querier interface {
 	MarkSessionMFAVerifiedByTokenHash(ctx context.Context, tokenHash string) error
 	// Mark a credential as potentially cloned
 	MarkWebAuthnCloneDetected(ctx context.Context, credentialID []byte) error
+	// Failed Login Attempts (Account Lockout / Rate Limiting)
+	RecordFailedLoginAttempt(ctx context.Context, arg RecordFailedLoginAttemptParams) error
 	RevokeAPIKey(ctx context.Context, id uuid.UUID) error
 	RevokeAllUserAuthTokens(ctx context.Context, userID uuid.UUID) error
 	RevokeAllUserAuthTokensExcept(ctx context.Context, arg RevokeAllUserAuthTokensExceptParams) error

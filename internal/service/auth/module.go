@@ -26,7 +26,18 @@ var Module = fx.Module("auth",
 		},
 		// Service
 		func(pool *pgxpool.Pool, repo Repository, tm TokenManager, activityLogger activity.Logger, emailService *email.Service, cfg *config.Config) *Service {
-			return NewService(pool, repo, tm, activityLogger, emailService, cfg.Auth.JWTExpiry, cfg.Auth.RefreshExpiry)
+			return NewService(
+				pool,
+				repo,
+				tm,
+				activityLogger,
+				emailService,
+				cfg.Auth.JWTExpiry,
+				cfg.Auth.RefreshExpiry,
+				cfg.Auth.LockoutThreshold,
+				cfg.Auth.LockoutWindow,
+				cfg.Auth.LockoutEnabled,
+			)
 		},
 	),
 )

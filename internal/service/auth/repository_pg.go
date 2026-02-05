@@ -419,3 +419,51 @@ func (r *RepositoryPG) GetSessionByID(ctx context.Context, sessionID uuid.UUID) 
 func (r *RepositoryPG) MarkSessionMFAVerified(ctx context.Context, sessionID uuid.UUID) error {
 	return r.queries.MarkSessionMFAVerified(ctx, sessionID)
 }
+
+// Failed Login Attempts (Account Lockout / Rate Limiting)
+
+func (r *RepositoryPG) RecordFailedLoginAttempt(ctx context.Context, username, ipAddress string) error {
+	if err := r.queries.RecordFailedLoginAttempt(ctx, db.RecordFailedLoginAttemptParams{
+		Username:  username,
+		IpAddress: ipAddress,
+	}); err != nil {
+		return fmt.Errorf("failed to record failed login attempt: %w", err)
+	}
+	return nil
+}
+
+func (r *RepositoryPG) CountFailedLoginAttemptsByUsername(ctx context.Context, username string, since time.Time) (int64, error) {
+	count, err := r.queries.CountFailedLoginAttemptsByUsername(ctx, db.CountFailedLoginAttemptsByUsernameParams{
+		Username:    username,
+		AttemptedAt: since,
+	})
+	if err != nil {
+		return 0, fmt.Errorf("failed to count failed login attempts by username: %w", err)
+	}
+	return count, nil
+}
+
+func (r *RepositoryPG) CountFailedLoginAttemptsByIP(ctx context.Context, ipAddress string, since time.Time) (int64, error) {
+	count, err := r.queries.CountFailedLoginAttemptsByIP(ctx, db.CountFailedLoginAttemptsByIPParams{
+		IpAddress:   ipAddress,
+		AttemptedAt: since,
+	})
+	if err != nil {
+		return 0, fmt.Errorf("failed to count failed login attempts by IP: %w", err)
+	}
+	return count, nil
+}
+
+func (r *RepositoryPG) ClearFailedLoginAttemptsByUsername(ctx context.Context, username string) error {
+	if err := r.queries.ClearFailedLoginAttemptsByUsername(ctx, username); err != nil {
+		return fmt.Errorf("failed to clear failed login attempts by username: %w", err)
+	}
+	return nil
+}
+
+func (r *RepositoryPG) DeleteOldFailedLoginAttempts(ctx context.Context) error {
+	if err := r.queries.DeleteOldFailedLoginAttempts(ctx); err != nil {
+		return fmt.Errorf("failed to delete old failed login attempts: %w", err)
+	}
+	return nil
+}

@@ -190,6 +190,19 @@ type AuthConfig struct {
 
 	// RefreshExpiry is the duration for refresh token validity.
 	RefreshExpiry time.Duration `koanf:"refresh_expiry"`
+
+	// LockoutThreshold is the number of failed login attempts before account lockout.
+	// Default: 5 attempts
+	LockoutThreshold int `koanf:"lockout_threshold"`
+
+	// LockoutWindow is the time window for counting failed login attempts.
+	// Failed attempts older than this are ignored.
+	// Default: 15 minutes
+	LockoutWindow time.Duration `koanf:"lockout_window"`
+
+	// LockoutEnabled controls whether account lockout is enabled.
+	// Default: true
+	LockoutEnabled bool `koanf:"lockout_enabled"`
 }
 
 // RBACConfig holds RBAC configuration.
@@ -424,9 +437,12 @@ func Defaults() map[string]interface{} {
 		"logging.development": false,
 
 		// Auth defaults
-		"auth.jwt_secret":     "",
-		"auth.jwt_expiry":     "24h",
-		"auth.refresh_expiry": "168h", // 7 days
+		"auth.jwt_secret":        "",
+		"auth.jwt_expiry":        "24h",
+		"auth.refresh_expiry":    "168h", // 7 days
+		"auth.lockout_threshold": 5,      // 5 failed attempts
+		"auth.lockout_window":    "15m",  // 15 minutes
+		"auth.lockout_enabled":   true,
 
 		// RBAC defaults
 		"rbac.model_path":             "config/casbin_model.conf",

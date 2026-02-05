@@ -168,3 +168,31 @@ WHERE expires_at < NOW();
 DELETE FROM shared.email_verification_tokens
 WHERE verified_at IS NOT NULL
   AND verified_at < NOW() - INTERVAL '7 days';
+
+-- Failed Login Attempts (Account Lockout / Rate Limiting)
+
+-- name: RecordFailedLoginAttempt :exec
+INSERT INTO shared.failed_login_attempts (
+    username,
+    ip_address
+) VALUES (
+    $1, $2
+);
+
+-- name: CountFailedLoginAttemptsByUsername :one
+SELECT COUNT(*) FROM shared.failed_login_attempts
+WHERE username = $1
+  AND attempted_at > $2;
+
+-- name: CountFailedLoginAttemptsByIP :one
+SELECT COUNT(*) FROM shared.failed_login_attempts
+WHERE ip_address = $1
+  AND attempted_at > $2;
+
+-- name: ClearFailedLoginAttemptsByUsername :exec
+DELETE FROM shared.failed_login_attempts
+WHERE username = $1;
+
+-- name: DeleteOldFailedLoginAttempts :exec
+DELETE FROM shared.failed_login_attempts
+WHERE attempted_at < NOW() - INTERVAL '24 hours';

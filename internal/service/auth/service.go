@@ -24,27 +24,33 @@ const dummyPasswordHash = "$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xX
 
 // Service implements auth business logic
 type Service struct {
-	pool           *pgxpool.Pool
-	repo           Repository
-	tokenManager   TokenManager
-	hasher         *crypto.PasswordHasher
-	activityLogger activity.Logger
-	emailService   *email.Service
-	jwtExpiry      time.Duration
-	refreshExpiry  time.Duration
+	pool             *pgxpool.Pool
+	repo             Repository
+	tokenManager     TokenManager
+	hasher           *crypto.PasswordHasher
+	activityLogger   activity.Logger
+	emailService     *email.Service
+	jwtExpiry        time.Duration
+	refreshExpiry    time.Duration
+	lockoutThreshold int
+	lockoutWindow    time.Duration
+	lockoutEnabled   bool
 }
 
 // NewService creates a new auth service
-func NewService(pool *pgxpool.Pool, repo Repository, tokenManager TokenManager, activityLogger activity.Logger, emailService *email.Service, jwtExpiry, refreshExpiry time.Duration) *Service {
+func NewService(pool *pgxpool.Pool, repo Repository, tokenManager TokenManager, activityLogger activity.Logger, emailService *email.Service, jwtExpiry, refreshExpiry time.Duration, lockoutThreshold int, lockoutWindow time.Duration, lockoutEnabled bool) *Service {
 	return &Service{
-		pool:           pool,
-		repo:           repo,
-		tokenManager:   tokenManager,
-		hasher:         crypto.NewPasswordHasher(),
-		activityLogger: activityLogger,
-		emailService:   emailService,
-		jwtExpiry:      jwtExpiry,
-		refreshExpiry:  refreshExpiry,
+		pool:             pool,
+		repo:             repo,
+		tokenManager:     tokenManager,
+		hasher:           crypto.NewPasswordHasher(),
+		activityLogger:   activityLogger,
+		emailService:     emailService,
+		jwtExpiry:        jwtExpiry,
+		refreshExpiry:    refreshExpiry,
+		lockoutThreshold: lockoutThreshold,
+		lockoutWindow:    lockoutWindow,
+		lockoutEnabled:   lockoutEnabled,
 	}
 }
 
@@ -260,6 +266,27 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		activityIP = ipAddress.AsSlice()
 	}
 
+	// A7.5: Check account lockout (if enabled)
+	if s.lockoutEnabled {
+		since := time.Now().Add(-s.lockoutWindow)
+		attemptCount, err := s.repo.CountFailedLoginAttemptsByUsername(ctx, username, since)
+		if err != nil {
+			// Log error but don't fail - continue with login attempt
+			// This prevents lockout check failures from blocking legitimate logins
+			fmt.Printf("failed to check lockout status: %v\n", err)
+		} else if attemptCount >= int64(s.lockoutThreshold) {
+			// Account is locked - log and return error
+			_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
+				Username:     &username,
+				Action:       activity.ActionUserLogin,
+				ErrorMessage: "account locked due to too many failed attempts",
+				IPAddress:    &activityIP,
+				UserAgent:    userAgent,
+			})
+			return nil, fmt.Errorf("account locked due to too many failed login attempts. Please try again later")
+		}
+	}
+
 	// Retrieve user by username or email
 	// SECURITY: Always perform password hash comparison even if user not found
 	// to prevent username enumeration via timing attacks
@@ -288,6 +315,15 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	// Check if user was found and password matched
 	// Return same error message for both cases to prevent username enumeration
 	if !userFound || !match {
+		// A7.5: Record failed login attempt (if lockout enabled)
+		if s.lockoutEnabled && ipAddress != nil {
+			ipAddrStr := ipAddress.String()
+			if err := s.repo.RecordFailedLoginAttempt(ctx, username, ipAddrStr); err != nil {
+				// Log error but don't fail the login attempt
+				fmt.Printf("failed to record failed login attempt: %v\n", err)
+			}
+		}
+
 		// Log failed login attempt
 		_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
 			Username:     &username,
@@ -339,6 +375,14 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to store refresh token: %w", err)
+	}
+
+	// A7.5: Clear failed login attempts on successful login (if lockout enabled)
+	if s.lockoutEnabled {
+		if err := s.repo.ClearFailedLoginAttemptsByUsername(ctx, username); err != nil {
+			// Log error but don't fail login
+			fmt.Printf("failed to clear failed login attempts: %v\n", err)
+		}
 	}
 
 	// Update last login time

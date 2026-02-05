@@ -54,6 +54,13 @@ type Repository interface {
 	// Session Operations (for MFA tracking)
 	GetSessionByID(ctx context.Context, sessionID uuid.UUID) (*db.SharedSession, error)
 	MarkSessionMFAVerified(ctx context.Context, sessionID uuid.UUID) error
+
+	// Failed Login Attempts (Account Lockout / Rate Limiting)
+	RecordFailedLoginAttempt(ctx context.Context, username, ipAddress string) error
+	CountFailedLoginAttemptsByUsername(ctx context.Context, username string, since time.Time) (int64, error)
+	CountFailedLoginAttemptsByIP(ctx context.Context, ipAddress string, since time.Time) (int64, error)
+	ClearFailedLoginAttemptsByUsername(ctx context.Context, username string) error
+	DeleteOldFailedLoginAttempts(ctx context.Context) error
 }
 
 // CreateAuthTokenParams parameters for creating an auth token

@@ -13,6 +13,16 @@ import (
 	"github.com/google/uuid"
 )
 
+const clearFailedLoginAttemptsByUsername = `-- name: ClearFailedLoginAttemptsByUsername :exec
+DELETE FROM shared.failed_login_attempts
+WHERE username = $1
+`
+
+func (q *Queries) ClearFailedLoginAttemptsByUsername(ctx context.Context, username string) error {
+	_, err := q.db.Exec(ctx, clearFailedLoginAttemptsByUsername, username)
+	return err
+}
+
 const countActiveAuthTokensByUser = `-- name: CountActiveAuthTokensByUser :one
 SELECT COUNT(*) FROM shared.auth_tokens
 WHERE user_id = $1
@@ -22,6 +32,42 @@ WHERE user_id = $1
 
 func (q *Queries) CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error) {
 	row := q.db.QueryRow(ctx, countActiveAuthTokensByUser, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countFailedLoginAttemptsByIP = `-- name: CountFailedLoginAttemptsByIP :one
+SELECT COUNT(*) FROM shared.failed_login_attempts
+WHERE ip_address = $1
+  AND attempted_at > $2
+`
+
+type CountFailedLoginAttemptsByIPParams struct {
+	IpAddress   string    `json:"ipAddress"`
+	AttemptedAt time.Time `json:"attemptedAt"`
+}
+
+func (q *Queries) CountFailedLoginAttemptsByIP(ctx context.Context, arg CountFailedLoginAttemptsByIPParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countFailedLoginAttemptsByIP, arg.IpAddress, arg.AttemptedAt)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countFailedLoginAttemptsByUsername = `-- name: CountFailedLoginAttemptsByUsername :one
+SELECT COUNT(*) FROM shared.failed_login_attempts
+WHERE username = $1
+  AND attempted_at > $2
+`
+
+type CountFailedLoginAttemptsByUsernameParams struct {
+	Username    string    `json:"username"`
+	AttemptedAt time.Time `json:"attemptedAt"`
+}
+
+func (q *Queries) CountFailedLoginAttemptsByUsername(ctx context.Context, arg CountFailedLoginAttemptsByUsernameParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countFailedLoginAttemptsByUsername, arg.Username, arg.AttemptedAt)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -202,6 +248,16 @@ WHERE expires_at < NOW()
 
 func (q *Queries) DeleteExpiredPasswordResetTokens(ctx context.Context) error {
 	_, err := q.db.Exec(ctx, deleteExpiredPasswordResetTokens)
+	return err
+}
+
+const deleteOldFailedLoginAttempts = `-- name: DeleteOldFailedLoginAttempts :exec
+DELETE FROM shared.failed_login_attempts
+WHERE attempted_at < NOW() - INTERVAL '24 hours'
+`
+
+func (q *Queries) DeleteOldFailedLoginAttempts(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, deleteOldFailedLoginAttempts)
 	return err
 }
 
@@ -461,6 +517,27 @@ WHERE id = $1
 
 func (q *Queries) MarkPasswordResetTokenUsed(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, markPasswordResetTokenUsed, id)
+	return err
+}
+
+const recordFailedLoginAttempt = `-- name: RecordFailedLoginAttempt :exec
+
+INSERT INTO shared.failed_login_attempts (
+    username,
+    ip_address
+) VALUES (
+    $1, $2
+)
+`
+
+type RecordFailedLoginAttemptParams struct {
+	Username  string `json:"username"`
+	IpAddress string `json:"ipAddress"`
+}
+
+// Failed Login Attempts (Account Lockout / Rate Limiting)
+func (q *Queries) RecordFailedLoginAttempt(ctx context.Context, arg RecordFailedLoginAttemptParams) error {
+	_, err := q.db.Exec(ctx, recordFailedLoginAttempt, arg.Username, arg.IpAddress)
 	return err
 }
 
