@@ -35,3 +35,16 @@
 - [x] Observability (Prometheus, pprof)
 - [x] RBAC extensions (4 roles, custom role API)
 - [x] Multi-language support (JSONB, TMDb multi-language, Accept-Language, 8 age rating systems)
+
+---
+
+## v0.4.0 Metadata Architecture
+
+- [x] **Phase A12: Shared Metadata Service** (2026-02-05)
+  - Provider interface with TMDb + TVDb implementations
+  - Service aggregation with fallback support
+  - River jobs for async metadata refresh
+  - Movie adapter bridging shared service to movie module
+  - Removed 3200+ lines of duplicate TMDb code from movie module
+  - Job kind alignment (metadata_refresh_movie)
+  - Multi-language enrichment support

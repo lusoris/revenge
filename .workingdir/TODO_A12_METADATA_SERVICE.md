@@ -360,3 +360,20 @@ internal/service/metadata/
 - TVDb requires JWT authentication
 - Consider Fanart.tv for high-quality artwork later
 - OMDb has limited free tier but good movie data
+
+---
+
+## Completion Summary (2026-02-05)
+
+**Phase A12 completed successfully.**
+
+Key achievements:
+- Created shared metadata service with provider abstraction
+- Implemented TMDb and TVDb providers with full API coverage
+- River jobs integration for async metadata refresh
+- Movie adapter bridges shared service to content module
+- Removed 3231 lines of duplicate TMDb code from movie module
+- Fixed critical job kind mismatch bug
+- All API handlers updated to use shared service
+
+Final commit: `ffb359cc19` - refactor(movie): migrate to shared metadata service
