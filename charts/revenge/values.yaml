@@ -62,5 +62,22 @@ revenge:
   cache:
     host: ''
     port: 6379
+media:
+  persistence:
+    enabled: false
+    storageClass: nfs-client
+    accessMode: ReadOnlyMany
+    size: 1Ti
+    existingClaim: ''
+    nfs:
+      server: ''
+      path: ''
+      readOnly: true
+  moviePaths:
+  - /media/movies
+  tvPaths:
+  - /media/tv
+  musicPaths:
+  - /media/music
 postgresql:
   enabled: true

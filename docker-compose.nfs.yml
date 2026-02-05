@@ -1,0 +1,31 @@
+# Docker Compose override for NFS media storage
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.nfs.yml up
+#
+# This override replaces the local media mount with an NFS mount,
+# allowing multiple Revenge instances to share the same media library.
+#
+# Requirements:
+# - NFS server configured and accessible
+# - nfs-common (Debian/Ubuntu) or nfs-utils (RHEL/CentOS) installed on host
+# - Network connectivity to NFS server
+#
+# Configuration:
+# 1. Set NFS_SERVER environment variable (e.g., nas.example.com)
+# 2. Set NFS_PATH environment variable (e.g., /volume1/media)
+# 3. Optionally set NFS_OPTS for mount options
+
+services:
+  revenge:
+    volumes:
+      # Remove local media mount, use NFS instead
+      - revenge-data:/data
+      - revenge-config:/config
+      - media-nfs:/media:ro
+
+volumes:
+  media-nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_SERVER:?NFS_SERVER is required},ro,nfsvers=4.1,hard,timeo=600,retrans=2
+      device: ":${NFS_PATH:?NFS_PATH is required}"

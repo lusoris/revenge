@@ -1,0 +1,17 @@
+{{- if and .Values.media.persistence.enabled (not .Values.media.persistence.existingClaim) (not .Values.media.persistence.nfs.server) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "revenge.fullname" . }}-media
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.media.persistence.accessMode }}
+  {{- if .Values.media.persistence.storageClass }}
+  storageClassName: {{ .Values.media.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.media.persistence.size }}
+{{- end }}

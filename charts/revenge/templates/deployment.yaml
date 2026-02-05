@@ -16,6 +16,22 @@ spec:
       labels:
         {{- include "revenge.labels" . | nindent 8 }}
     spec:
+      {{- if .Values.media.persistence.enabled }}
+      volumes:
+        - name: media
+          {{- if .Values.media.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.media.persistence.existingClaim }}
+          {{- else if .Values.media.persistence.nfs.server }}
+          nfs:
+            server: {{ .Values.media.persistence.nfs.server }}
+            path: {{ .Values.media.persistence.nfs.path }}
+            readOnly: {{ .Values.media.persistence.nfs.readOnly }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ include "revenge.fullname" . }}-media
+          {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -28,6 +44,12 @@ spec:
               value: {{ .Values.revenge.server.port | quote }}
             - name: REVENGE_DATABASE_HOST
               value: {{ include "revenge.databaseHost" . | quote }}
+          {{- if .Values.media.persistence.enabled }}
+          volumeMounts:
+            - name: media
+              mountPath: /media
+              readOnly: true
+          {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

@@ -1,0 +1,29 @@
+# Example PersistentVolume for NFS media storage
+# This is optional - you can either:
+# 1. Use this PV with automatic PVC (set media.persistence.enabled=true)
+# 2. Use existingClaim (set media.persistence.existingClaim=your-pvc)
+# 3. Use direct NFS mount (set media.persistence.nfs.server and path)
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: revenge-media-nfs
+  labels:
+    app: revenge
+    type: media
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-client
+  nfs:
+    server: nas.example.com  # Replace with your NFS server
+    path: /volume1/media     # Replace with your NFS path
+    readOnly: true
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - timeo=600
+    - retrans=2
