@@ -34,6 +34,175 @@ type Movie struct {
 	RadarrID          *int32
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+
+	// Multi-language support (Hybrid JSONB approach)
+	// Default fields above are kept for simple queries and backwards compatibility
+	TitlesI18n    map[string]string            // {"en": "The Shawshank Redemption", "de": "Die Verurteilten", "fr": "Les Évadés"}
+	TaglinesI18n  map[string]string            // {"en": "Fear can hold you prisoner...", "de": "Angst kann dich gefangen halten..."}
+	OverviewsI18n map[string]string            // {"en": "Imprisoned in the 1940s...", "de": "In den 1940er Jahren eingesperrt..."}
+	AgeRatings    map[string]map[string]string // {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
+}
+
+// GetTitle returns the movie title in the preferred language with fallback chain:
+// 1. Requested language from TitlesI18n
+// 2. English from TitlesI18n
+// 3. Original language from TitlesI18n
+// 4. OriginalTitle field
+// 5. Default Title field
+func (m *Movie) GetTitle(lang string) string {
+	// Try requested language
+	if m.TitlesI18n != nil {
+		if title, ok := m.TitlesI18n[lang]; ok && title != "" {
+			return title
+		}
+	}
+
+	// Fallback to English
+	if m.TitlesI18n != nil {
+		if title, ok := m.TitlesI18n["en"]; ok && title != "" {
+			return title
+		}
+	}
+
+	// Fallback to original language
+	if m.OriginalLanguage != nil && *m.OriginalLanguage != "" && m.TitlesI18n != nil {
+		if title, ok := m.TitlesI18n[*m.OriginalLanguage]; ok && title != "" {
+			return title
+		}
+	}
+
+	// Fallback to OriginalTitle
+	if m.OriginalTitle != nil && *m.OriginalTitle != "" {
+		return *m.OriginalTitle
+	}
+
+	// Final fallback to default field
+	return m.Title
+}
+
+// GetTagline returns the movie tagline in the preferred language with fallback chain:
+// 1. Requested language from TaglinesI18n
+// 2. English from TaglinesI18n
+// 3. Original language from TaglinesI18n
+// 4. Default Tagline field
+func (m *Movie) GetTagline(lang string) string {
+	// Try requested language
+	if m.TaglinesI18n != nil {
+		if tagline, ok := m.TaglinesI18n[lang]; ok && tagline != "" {
+			return tagline
+		}
+	}
+
+	// Fallback to English
+	if m.TaglinesI18n != nil {
+		if tagline, ok := m.TaglinesI18n["en"]; ok && tagline != "" {
+			return tagline
+		}
+	}
+
+	// Fallback to original language
+	if m.OriginalLanguage != nil && *m.OriginalLanguage != "" && m.TaglinesI18n != nil {
+		if tagline, ok := m.TaglinesI18n[*m.OriginalLanguage]; ok && tagline != "" {
+			return tagline
+		}
+	}
+
+	// Final fallback to default field
+	if m.Tagline != nil {
+		return *m.Tagline
+	}
+
+	return ""
+}
+
+// GetOverview returns the movie overview in the preferred language with fallback chain:
+// 1. Requested language from OverviewsI18n
+// 2. English from OverviewsI18n
+// 3. Original language from OverviewsI18n
+// 4. Default Overview field
+func (m *Movie) GetOverview(lang string) string {
+	// Try requested language
+	if m.OverviewsI18n != nil {
+		if overview, ok := m.OverviewsI18n[lang]; ok && overview != "" {
+			return overview
+		}
+	}
+
+	// Fallback to English
+	if m.OverviewsI18n != nil {
+		if overview, ok := m.OverviewsI18n["en"]; ok && overview != "" {
+			return overview
+		}
+	}
+
+	// Fallback to original language
+	if m.OriginalLanguage != nil && *m.OriginalLanguage != "" && m.OverviewsI18n != nil {
+		if overview, ok := m.OverviewsI18n[*m.OriginalLanguage]; ok && overview != "" {
+			return overview
+		}
+	}
+
+	// Final fallback to default field
+	if m.Overview != nil {
+		return *m.Overview
+	}
+
+	return ""
+}
+
+// GetAgeRating returns the age rating for a specific country and rating system.
+// Returns empty string if not found.
+//
+// Examples:
+//   - GetAgeRating("US", "MPAA") -> "R"
+//   - GetAgeRating("DE", "FSK") -> "12"
+//   - GetAgeRating("GB", "BBFC") -> "15"
+func (m *Movie) GetAgeRating(country, system string) string {
+	if m.AgeRatings == nil {
+		return ""
+	}
+
+	countryRatings, ok := m.AgeRatings[country]
+	if !ok {
+		return ""
+	}
+
+	rating, ok := countryRatings[system]
+	if !ok {
+		return ""
+	}
+
+	return rating
+}
+
+// GetAvailableLanguages returns a list of all available language codes
+// that have translations for this movie.
+func (m *Movie) GetAvailableLanguages() []string {
+	if m.TitlesI18n == nil {
+		return []string{}
+	}
+
+	langs := make([]string, 0, len(m.TitlesI18n))
+	for lang := range m.TitlesI18n {
+		langs = append(langs, lang)
+	}
+
+	return langs
+}
+
+// GetAvailableAgeRatingCountries returns a list of all countries
+// that have age ratings for this movie.
+func (m *Movie) GetAvailableAgeRatingCountries() []string {
+	if m.AgeRatings == nil {
+		return []string{}
+	}
+
+	countries := make([]string, 0, len(m.AgeRatings))
+	for country := range m.AgeRatings {
+		countries = append(countries, country)
+	}
+
+	return countries
 }
 
 // MovieFile represents a physical media file for a movie
