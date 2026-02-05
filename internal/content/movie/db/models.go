@@ -112,7 +112,8 @@ type Movie struct {
 	Overview      *string     `json:"overview"`
 	Tagline       *string     `json:"tagline"`
 	// Release status (released, post-production, in-production, etc.)
-	Status           *string `json:"status"`
+	Status *string `json:"status"`
+	// ISO 639-1 language code of the original movie language (en, de, fr, es, ja, ko, etc.)
 	OriginalLanguage *string `json:"originalLanguage"`
 	// Relative path to poster image (from TMDb/Radarr)
 	PosterPath *string `json:"posterPath"`
@@ -133,6 +134,14 @@ type Movie struct {
 	RadarrID  *int32    `json:"radarrId"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+	// Movie titles by ISO 639-1 language code: {"en": "The Shawshank Redemption", "de": "Die Verurteilten", "fr": "Les Évadés"}
+	TitlesI18n []byte `json:"titlesI18n"`
+	// Taglines by language code: {"en": "Fear can hold you prisoner. Hope can set you free.", "de": "Angst kann dich gefangen halten. Hoffnung kann dich befreien."}
+	TaglinesI18n []byte `json:"taglinesI18n"`
+	// Plot overviews by language code: {"en": "Imprisoned in the 1940s...", "de": "In den 1940er Jahren eingesperrt..."}
+	OverviewsI18n []byte `json:"overviewsI18n"`
+	// Age ratings by country code and rating system: {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
+	AgeRatings []byte `json:"ageRatings"`
 }
 
 // Movie collections from TMDb (e.g., MCU, Star Wars)
@@ -287,7 +296,7 @@ type SharedAuthToken struct {
 	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
-// RBAC policies with moderator role added
+// RBAC policies with fine-grained permissions (v0.3.0)
 type SharedCasbinRule struct {
 	ID int32 `json:"id"`
 	// Policy type: p (policy) or g (role)
@@ -317,6 +326,19 @@ type SharedEmailVerificationToken struct {
 	// Timestamp when token was used (prevents reuse)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+// Tracks failed login attempts for account lockout and rate limiting
+type SharedFailedLoginAttempt struct {
+	ID uuid.UUID `json:"id"`
+	// Username or email used in the failed login attempt
+	Username string `json:"username"`
+	// IP address from which the failed login attempt originated
+	IpAddress string `json:"ipAddress"`
+	// Timestamp when the failed login attempt occurred
+	AttemptedAt time.Time `json:"attemptedAt"`
+	// Timestamp when this record was created (for auditing)
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type SharedOidcProvider struct {
