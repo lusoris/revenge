@@ -537,6 +537,164 @@ type SharedUserSetting struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+type TvshowEpisode struct {
+	ID             uuid.UUID       `json:"id"`
+	SeriesID       uuid.UUID       `json:"seriesId"`
+	SeasonID       uuid.UUID       `json:"seasonId"`
+	TmdbID         *int32          `json:"tmdbId"`
+	TvdbID         *int32          `json:"tvdbId"`
+	ImdbID         *string         `json:"imdbId"`
+	SeasonNumber   int32           `json:"seasonNumber"`
+	EpisodeNumber  int32           `json:"episodeNumber"`
+	Title          string          `json:"title"`
+	Overview       *string         `json:"overview"`
+	TitlesI18n     json.RawMessage `json:"titlesI18n"`
+	OverviewsI18n  json.RawMessage `json:"overviewsI18n"`
+	AirDate        pgtype.Date     `json:"airDate"`
+	Runtime        *int32          `json:"runtime"`
+	VoteAverage    pgtype.Numeric  `json:"voteAverage"`
+	VoteCount      *int32          `json:"voteCount"`
+	StillPath      *string         `json:"stillPath"`
+	ProductionCode *string         `json:"productionCode"`
+	CreatedAt      time.Time       `json:"createdAt"`
+	UpdatedAt      time.Time       `json:"updatedAt"`
+}
+
+type TvshowEpisodeCredit struct {
+	ID           uuid.UUID `json:"id"`
+	EpisodeID    uuid.UUID `json:"episodeId"`
+	TmdbPersonID int32     `json:"tmdbPersonId"`
+	Name         string    `json:"name"`
+	CreditType   string    `json:"creditType"`
+	Character    *string   `json:"character"`
+	CastOrder    *int32    `json:"castOrder"`
+	Job          *string   `json:"job"`
+	Department   *string   `json:"department"`
+	ProfilePath  *string   `json:"profilePath"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type TvshowEpisodeFile struct {
+	ID                uuid.UUID      `json:"id"`
+	EpisodeID         uuid.UUID      `json:"episodeId"`
+	FilePath          string         `json:"filePath"`
+	FileName          string         `json:"fileName"`
+	FileSize          int64          `json:"fileSize"`
+	Container         *string        `json:"container"`
+	Resolution        *string        `json:"resolution"`
+	QualityProfile    *string        `json:"qualityProfile"`
+	VideoCodec        *string        `json:"videoCodec"`
+	AudioCodec        *string        `json:"audioCodec"`
+	BitrateKbps       *int32         `json:"bitrateKbps"`
+	DurationSeconds   pgtype.Numeric `json:"durationSeconds"`
+	AudioLanguages    []string       `json:"audioLanguages"`
+	SubtitleLanguages []string       `json:"subtitleLanguages"`
+	SonarrFileID      *int32         `json:"sonarrFileId"`
+	CreatedAt         time.Time      `json:"createdAt"`
+	UpdatedAt         time.Time      `json:"updatedAt"`
+}
+
+type TvshowEpisodeWatched struct {
+	ID              uuid.UUID          `json:"id"`
+	UserID          uuid.UUID          `json:"userId"`
+	EpisodeID       uuid.UUID          `json:"episodeId"`
+	ProgressSeconds int32              `json:"progressSeconds"`
+	DurationSeconds int32              `json:"durationSeconds"`
+	IsCompleted     bool               `json:"isCompleted"`
+	WatchCount      int32              `json:"watchCount"`
+	LastWatchedAt   pgtype.Timestamptz `json:"lastWatchedAt"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+}
+
+type TvshowNetwork struct {
+	ID            uuid.UUID `json:"id"`
+	TmdbID        int32     `json:"tmdbId"`
+	Name          string    `json:"name"`
+	LogoPath      *string   `json:"logoPath"`
+	OriginCountry *string   `json:"originCountry"`
+	CreatedAt     time.Time `json:"createdAt"`
+}
+
+type TvshowSeason struct {
+	ID            uuid.UUID       `json:"id"`
+	SeriesID      uuid.UUID       `json:"seriesId"`
+	TmdbID        *int32          `json:"tmdbId"`
+	SeasonNumber  int32           `json:"seasonNumber"`
+	Name          string          `json:"name"`
+	Overview      *string         `json:"overview"`
+	NamesI18n     json.RawMessage `json:"namesI18n"`
+	OverviewsI18n json.RawMessage `json:"overviewsI18n"`
+	PosterPath    *string         `json:"posterPath"`
+	EpisodeCount  int32           `json:"episodeCount"`
+	AirDate       pgtype.Date     `json:"airDate"`
+	VoteAverage   pgtype.Numeric  `json:"voteAverage"`
+	CreatedAt     time.Time       `json:"createdAt"`
+	UpdatedAt     time.Time       `json:"updatedAt"`
+}
+
+type TvshowSeries struct {
+	ID                uuid.UUID          `json:"id"`
+	TmdbID            *int32             `json:"tmdbId"`
+	TvdbID            *int32             `json:"tvdbId"`
+	ImdbID            *string            `json:"imdbId"`
+	SonarrID          *int32             `json:"sonarrId"`
+	Title             string             `json:"title"`
+	Tagline           *string            `json:"tagline"`
+	Overview          *string            `json:"overview"`
+	TitlesI18n        json.RawMessage    `json:"titlesI18n"`
+	TaglinesI18n      json.RawMessage    `json:"taglinesI18n"`
+	OverviewsI18n     json.RawMessage    `json:"overviewsI18n"`
+	AgeRatings        json.RawMessage    `json:"ageRatings"`
+	OriginalLanguage  string             `json:"originalLanguage"`
+	OriginalTitle     *string            `json:"originalTitle"`
+	Status            *string            `json:"status"`
+	Type              *string            `json:"type"`
+	FirstAirDate      pgtype.Date        `json:"firstAirDate"`
+	LastAirDate       pgtype.Date        `json:"lastAirDate"`
+	VoteAverage       pgtype.Numeric     `json:"voteAverage"`
+	VoteCount         *int32             `json:"voteCount"`
+	Popularity        pgtype.Numeric     `json:"popularity"`
+	PosterPath        *string            `json:"posterPath"`
+	BackdropPath      *string            `json:"backdropPath"`
+	TotalSeasons      int32              `json:"totalSeasons"`
+	TotalEpisodes     int32              `json:"totalEpisodes"`
+	TrailerUrl        *string            `json:"trailerUrl"`
+	Homepage          *string            `json:"homepage"`
+	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
+	CreatedAt         time.Time          `json:"createdAt"`
+	UpdatedAt         time.Time          `json:"updatedAt"`
+}
+
+type TvshowSeriesCredit struct {
+	ID           uuid.UUID `json:"id"`
+	SeriesID     uuid.UUID `json:"seriesId"`
+	TmdbPersonID int32     `json:"tmdbPersonId"`
+	Name         string    `json:"name"`
+	CreditType   string    `json:"creditType"`
+	Character    *string   `json:"character"`
+	CastOrder    *int32    `json:"castOrder"`
+	Job          *string   `json:"job"`
+	Department   *string   `json:"department"`
+	ProfilePath  *string   `json:"profilePath"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type TvshowSeriesGenre struct {
+	ID          uuid.UUID `json:"id"`
+	SeriesID    uuid.UUID `json:"seriesId"`
+	TmdbGenreID int32     `json:"tmdbGenreId"`
+	Name        string    `json:"name"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type TvshowSeriesNetwork struct {
+	SeriesID  uuid.UUID `json:"seriesId"`
+	NetworkID uuid.UUID `json:"networkId"`
+}
+
 // Per-user MFA configuration and enforcement settings
 type UserMfaSetting struct {
 	UserID uuid.UUID `json:"userId"`

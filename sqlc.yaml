@@ -92,9 +92,7 @@ sql:
   # TV Show content module
   - engine: postgresql
     queries: internal/infra/database/queries/tvshow/
-    schema:
-      - internal/infra/database/migrations/shared/
-      - internal/infra/database/migrations/tvshow/
+    schema: migrations/
     gen:
       go:
         package: tvshowdb

@@ -6,13 +6,94 @@ package tvshowdb
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	AddSeriesGenre(ctx context.Context, arg AddSeriesGenreParams) error
+	AddSeriesNetwork(ctx context.Context, arg AddSeriesNetworkParams) error
+	CountEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) (int64, error)
+	CountEpisodesBySeries(ctx context.Context, seriesID uuid.UUID) (int64, error)
+	CountSeries(ctx context.Context) (int64, error)
+	CreateEpisode(ctx context.Context, arg CreateEpisodeParams) (TvshowEpisode, error)
+	CreateEpisodeCredit(ctx context.Context, arg CreateEpisodeCreditParams) (TvshowEpisodeCredit, error)
+	CreateEpisodeFile(ctx context.Context, arg CreateEpisodeFileParams) (TvshowEpisodeFile, error)
+	CreateNetwork(ctx context.Context, arg CreateNetworkParams) (TvshowNetwork, error)
+	CreateOrUpdateWatchProgress(ctx context.Context, arg CreateOrUpdateWatchProgressParams) (TvshowEpisodeWatched, error)
+	CreateSeason(ctx context.Context, arg CreateSeasonParams) (TvshowSeason, error)
+	CreateSeries(ctx context.Context, arg CreateSeriesParams) (TvshowSeries, error)
+	CreateSeriesCredit(ctx context.Context, arg CreateSeriesCreditParams) (TvshowSeriesCredit, error)
+	DeleteEpisode(ctx context.Context, id uuid.UUID) error
+	DeleteEpisodeCredits(ctx context.Context, episodeID uuid.UUID) error
+	DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error
+	DeleteEpisodeFilesByEpisode(ctx context.Context, episodeID uuid.UUID) error
+	DeleteEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) error
+	DeleteEpisodesBySeries(ctx context.Context, seriesID uuid.UUID) error
+	DeleteSeason(ctx context.Context, id uuid.UUID) error
+	DeleteSeasonsBySeries(ctx context.Context, seriesID uuid.UUID) error
+	DeleteSeries(ctx context.Context, id uuid.UUID) error
+	DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error
+	DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error
+	DeleteSeriesNetworks(ctx context.Context, seriesID uuid.UUID) error
+	DeleteSeriesWatchProgress(ctx context.Context, arg DeleteSeriesWatchProgressParams) error
+	DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgressParams) error
+	GetEpisode(ctx context.Context, id uuid.UUID) (TvshowEpisode, error)
+	GetEpisodeByNumber(ctx context.Context, arg GetEpisodeByNumberParams) (TvshowEpisode, error)
+	GetEpisodeByTMDbID(ctx context.Context, tmdbID *int32) (TvshowEpisode, error)
+	GetEpisodeFile(ctx context.Context, id uuid.UUID) (TvshowEpisodeFile, error)
+	GetEpisodeFileByPath(ctx context.Context, filePath string) (TvshowEpisodeFile, error)
+	GetEpisodeFileBySonarrID(ctx context.Context, sonarrFileID *int32) (TvshowEpisodeFile, error)
+	GetEpisodeWatchProgress(ctx context.Context, arg GetEpisodeWatchProgressParams) (TvshowEpisodeWatched, error)
+	GetNetwork(ctx context.Context, id uuid.UUID) (TvshowNetwork, error)
+	GetNetworkByTMDbID(ctx context.Context, tmdbID int32) (TvshowNetwork, error)
+	GetNextUnwatchedEpisode(ctx context.Context, arg GetNextUnwatchedEpisodeParams) (TvshowEpisode, error)
+	GetSeason(ctx context.Context, id uuid.UUID) (TvshowSeason, error)
+	GetSeasonByNumber(ctx context.Context, arg GetSeasonByNumberParams) (TvshowSeason, error)
+	GetSeries(ctx context.Context, id uuid.UUID) (TvshowSeries, error)
+	GetSeriesBySonarrID(ctx context.Context, sonarrID *int32) (TvshowSeries, error)
+	GetSeriesByTMDbID(ctx context.Context, tmdbID *int32) (TvshowSeries, error)
+	GetSeriesByTVDbID(ctx context.Context, tvdbID *int32) (TvshowSeries, error)
+	GetSeriesWatchStats(ctx context.Context, arg GetSeriesWatchStatsParams) (GetSeriesWatchStatsRow, error)
+	GetUserTVStats(ctx context.Context, userID uuid.UUID) (GetUserTVStatsRow, error)
+	ListContinueWatchingSeries(ctx context.Context, arg ListContinueWatchingSeriesParams) ([]ListContinueWatchingSeriesRow, error)
+	ListEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]TvshowEpisodeCredit, error)
+	ListEpisodeFilesByEpisode(ctx context.Context, episodeID uuid.UUID) ([]TvshowEpisodeFile, error)
+	// Episode Credits (Guest Stars)
+	ListEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]TvshowEpisodeCredit, error)
+	ListEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) ([]TvshowEpisode, error)
+	ListEpisodesBySeasonNumber(ctx context.Context, arg ListEpisodesBySeasonNumberParams) ([]TvshowEpisode, error)
+	ListEpisodesBySeries(ctx context.Context, seriesID uuid.UUID) ([]TvshowEpisode, error)
+	ListNetworksBySeries(ctx context.Context, seriesID uuid.UUID) ([]TvshowNetwork, error)
+	ListRecentEpisodes(ctx context.Context, arg ListRecentEpisodesParams) ([]ListRecentEpisodesRow, error)
+	ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyAddedSeriesParams) ([]TvshowSeries, error)
+	ListSeasonsBySeries(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeason, error)
+	ListSeasonsBySeriesWithEpisodeCount(ctx context.Context, seriesID uuid.UUID) ([]ListSeasonsBySeriesWithEpisodeCountRow, error)
+	ListSeries(ctx context.Context, arg ListSeriesParams) ([]TvshowSeries, error)
+	ListSeriesByGenre(ctx context.Context, arg ListSeriesByGenreParams) ([]TvshowSeries, error)
+	ListSeriesByNetwork(ctx context.Context, arg ListSeriesByNetworkParams) ([]TvshowSeries, error)
+	ListSeriesByStatus(ctx context.Context, arg ListSeriesByStatusParams) ([]TvshowSeries, error)
+	// Series Credits
+	ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error)
+	ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error)
+	ListSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesGenre, error)
+	ListUpcomingEpisodes(ctx context.Context, arg ListUpcomingEpisodesParams) ([]ListUpcomingEpisodesRow, error)
+	ListWatchedEpisodesBySeries(ctx context.Context, arg ListWatchedEpisodesBySeriesParams) ([]ListWatchedEpisodesBySeriesRow, error)
+	ListWatchedEpisodesByUser(ctx context.Context, arg ListWatchedEpisodesByUserParams) ([]ListWatchedEpisodesByUserRow, error)
+	MarkEpisodeWatched(ctx context.Context, arg MarkEpisodeWatchedParams) (TvshowEpisodeWatched, error)
+	SearchSeriesByTitle(ctx context.Context, arg SearchSeriesByTitleParams) ([]TvshowSeries, error)
+	SearchSeriesByTitleAnyLanguage(ctx context.Context, arg SearchSeriesByTitleAnyLanguageParams) ([]TvshowSeries, error)
 	// Placeholder query for TV show content module (v0.3.0+)
 	// This minimal query is here to satisfy sqlc's requirement for non-empty query directories
 	// Real TV show queries will be implemented in v0.3.0
 	TVShowPlaceholder(ctx context.Context) (int32, error)
+	UpdateEpisode(ctx context.Context, arg UpdateEpisodeParams) (TvshowEpisode, error)
+	UpdateEpisodeFile(ctx context.Context, arg UpdateEpisodeFileParams) (TvshowEpisodeFile, error)
+	UpdateSeason(ctx context.Context, arg UpdateSeasonParams) (TvshowSeason, error)
+	UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (TvshowSeries, error)
+	UpdateSeriesStats(ctx context.Context, seriesID uuid.UUID) error
+	UpsertEpisode(ctx context.Context, arg UpsertEpisodeParams) (TvshowEpisode, error)
+	UpsertSeason(ctx context.Context, arg UpsertSeasonParams) (TvshowSeason, error)
 }
 
 var _ Querier = (*Queries)(nil)

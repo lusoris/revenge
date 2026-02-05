@@ -83,6 +83,178 @@ type LibraryScan struct {
 	CreatedAt       time.Time          `json:"createdAt"`
 }
 
+// One-time backup codes for MFA account recovery
+type MfaBackupCode struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Argon2id hash of the backup code (codes are 16 chars hex-encoded)
+	CodeHash string `json:"codeHash"`
+	// When this code was used (NULL if unused)
+	UsedAt pgtype.Timestamptz `json:"usedAt"`
+	// IP address where code was used (for audit trail)
+	UsedFromIp netip.Addr `json:"usedFromIp"`
+	CreatedAt  time.Time  `json:"createdAt"`
+}
+
+// Movie metadata from TMDb/Radarr with library tracking
+type Movie struct {
+	// UUID v7 primary key (time-ordered)
+	ID uuid.UUID `json:"id"`
+	// The Movie Database (TMDb) ID - primary metadata source
+	TmdbID *int32 `json:"tmdbId"`
+	// Internet Movie Database ID (tt1234567 format)
+	ImdbID        *string     `json:"imdbId"`
+	Title         string      `json:"title"`
+	OriginalTitle *string     `json:"originalTitle"`
+	Year          *int32      `json:"year"`
+	ReleaseDate   pgtype.Date `json:"releaseDate"`
+	Runtime       *int32      `json:"runtime"`
+	Overview      *string     `json:"overview"`
+	Tagline       *string     `json:"tagline"`
+	// Release status (released, post-production, in-production, etc.)
+	Status *string `json:"status"`
+	// ISO 639-1 language code of the original movie language (en, de, fr, es, ja, ko, etc.)
+	OriginalLanguage *string `json:"originalLanguage"`
+	// Relative path to poster image (from TMDb/Radarr)
+	PosterPath *string `json:"posterPath"`
+	// Relative path to backdrop image (from TMDb/Radarr)
+	BackdropPath *string `json:"backdropPath"`
+	TrailerUrl   *string `json:"trailerUrl"`
+	// TMDb average rating (0-10 scale)
+	VoteAverage pgtype.Numeric `json:"voteAverage"`
+	VoteCount   *int32         `json:"voteCount"`
+	Popularity  pgtype.Numeric `json:"popularity"`
+	Budget      *int64         `json:"budget"`
+	Revenue     *int64         `json:"revenue"`
+	// When the movie was added to library
+	LibraryAddedAt time.Time `json:"libraryAddedAt"`
+	// Last metadata refresh from TMDb/Radarr
+	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
+	// Radarr movie ID for PRIMARY metadata sync
+	RadarrID  *int32    `json:"radarrId"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	// Movie titles by ISO 639-1 language code: {"en": "The Shawshank Redemption", "de": "Die Verurteilten", "fr": "Les Évadés"}
+	TitlesI18n []byte `json:"titlesI18n"`
+	// Taglines by language code: {"en": "Fear can hold you prisoner. Hope can set you free.", "de": "Angst kann dich gefangen halten. Hoffnung kann dich befreien."}
+	TaglinesI18n []byte `json:"taglinesI18n"`
+	// Plot overviews by language code: {"en": "Imprisoned in the 1940s...", "de": "In den 1940er Jahren eingesperrt..."}
+	OverviewsI18n []byte `json:"overviewsI18n"`
+	// Age ratings by country code and rating system: {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
+	AgeRatings []byte `json:"ageRatings"`
+}
+
+// Movie collections from TMDb (e.g., MCU, Star Wars)
+type MovieCollection struct {
+	ID uuid.UUID `json:"id"`
+	// TMDb collection ID for metadata sync
+	TmdbCollectionID *int32    `json:"tmdbCollectionId"`
+	Name             string    `json:"name"`
+	Overview         *string   `json:"overview"`
+	PosterPath       *string   `json:"posterPath"`
+	BackdropPath     *string   `json:"backdropPath"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
+}
+
+// Junction table linking movies to collections
+type MovieCollectionMember struct {
+	ID           uuid.UUID `json:"id"`
+	CollectionID uuid.UUID `json:"collectionId"`
+	MovieID      uuid.UUID `json:"movieId"`
+	// Order in collection (1 = first movie, 2 = sequel, etc.)
+	CollectionOrder *int32    `json:"collectionOrder"`
+	CreatedAt       time.Time `json:"createdAt"`
+}
+
+// Cast and crew information from TMDb
+type MovieCredit struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// TMDb person ID for linking to person data
+	TmdbPersonID int32   `json:"tmdbPersonId"`
+	Name         string  `json:"name"`
+	ProfilePath  *string `json:"profilePath"`
+	// Either cast (actor) or crew (director, writer, etc.)
+	CreditType string `json:"creditType"`
+	// Character name for cast members
+	Character *string `json:"character"`
+	// Order in cast list (0 = lead actor)
+	CastOrder *int32 `json:"castOrder"`
+	// Job title for crew members (Director, Writer, etc.)
+	Job *string `json:"job"`
+	// Department for crew members (Directing, Writing, etc.)
+	Department *string   `json:"department"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+// Physical media files associated with movies
+type MovieFile struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// Absolute path to file on disk
+	FilePath   string  `json:"filePath"`
+	FileSize   int64   `json:"fileSize"`
+	FileName   string  `json:"fileName"`
+	Resolution *string `json:"resolution"`
+	// Quality profile from Radarr (e.g., Bluray-1080p)
+	QualityProfile *string `json:"qualityProfile"`
+	VideoCodec     *string `json:"videoCodec"`
+	AudioCodec     *string `json:"audioCodec"`
+	Container      *string `json:"container"`
+	// Actual file duration (may differ from movie runtime)
+	DurationSeconds *int32         `json:"durationSeconds"`
+	BitrateKbps     *int32         `json:"bitrateKbps"`
+	Framerate       pgtype.Numeric `json:"framerate"`
+	DynamicRange    *string        `json:"dynamicRange"`
+	ColorSpace      *string        `json:"colorSpace"`
+	AudioChannels   *string        `json:"audioChannels"`
+	// Array of audio track language codes
+	AudioLanguages []string `json:"audioLanguages"`
+	// Array of subtitle language codes
+	SubtitleLanguages []string `json:"subtitleLanguages"`
+	// Radarr file ID for sync with PRIMARY metadata source
+	RadarrFileID  *int32             `json:"radarrFileId"`
+	LastScannedAt pgtype.Timestamptz `json:"lastScannedAt"`
+	IsMonitored   *bool              `json:"isMonitored"`
+	CreatedAt     time.Time          `json:"createdAt"`
+	UpdatedAt     time.Time          `json:"updatedAt"`
+}
+
+// Junction table linking movies to TMDb genres
+type MovieGenre struct {
+	ID      uuid.UUID `json:"id"`
+	MovieID uuid.UUID `json:"movieId"`
+	// TMDb genre ID (28=Action, 35=Comedy, etc.)
+	TmdbGenreID int32 `json:"tmdbGenreId"`
+	// Genre name for display (Action, Comedy, Drama, etc.)
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// User watch history and progress tracking for movies
+type MovieWatched struct {
+	ID      uuid.UUID `json:"id"`
+	UserID  uuid.UUID `json:"userId"`
+	MovieID uuid.UUID `json:"movieId"`
+	// Current playback position in seconds
+	ProgressSeconds int32  `json:"progressSeconds"`
+	DurationSeconds *int32 `json:"durationSeconds"`
+	// Calculated progress percentage (0-100)
+	ProgressPercent pgtype.Numeric `json:"progressPercent"`
+	// TRUE when user has watched >90% of the movie
+	IsCompleted *bool `json:"isCompleted"`
+	// Most recent watch time (for continue watching)
+	LastWatchedAt time.Time `json:"lastWatchedAt"`
+	// Timestamp when user completed watching
+	CompletedAt pgtype.Timestamptz `json:"completedAt"`
+	// Number of times user has watched this movie
+	WatchCount *int32    `json:"watchCount"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
 // API keys for programmatic access with scope-based permissions
 type SharedApiKey struct {
 	ID          uuid.UUID `json:"id"`
@@ -124,7 +296,7 @@ type SharedAuthToken struct {
 	UpdatedAt  time.Time          `json:"updatedAt"`
 }
 
-// Default policies created. First user should be assigned admin role manually.
+// RBAC policies with fine-grained permissions (v0.3.0)
 type SharedCasbinRule struct {
 	ID int32 `json:"id"`
 	// Policy type: p (policy) or g (role)
@@ -154,6 +326,19 @@ type SharedEmailVerificationToken struct {
 	// Timestamp when token was used (prevents reuse)
 	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+// Tracks failed login attempts for account lockout and rate limiting
+type SharedFailedLoginAttempt struct {
+	ID uuid.UUID `json:"id"`
+	// Username or email used in the failed login attempt
+	Username string `json:"username"`
+	// IP address from which the failed login attempt originated
+	IpAddress string `json:"ipAddress"`
+	// Timestamp when the failed login attempt occurred
+	AttemptedAt time.Time `json:"attemptedAt"`
+	// Timestamp when this record was created (for auditing)
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type SharedOidcProvider struct {
@@ -262,6 +447,10 @@ type SharedSession struct {
 	CreatedAt      time.Time          `json:"createdAt"`
 	RevokedAt      pgtype.Timestamptz `json:"revokedAt"`
 	RevokeReason   *string            `json:"revokeReason"`
+	// Whether this session has passed MFA verification
+	MfaVerified bool `json:"mfaVerified"`
+	// Timestamp when MFA was verified for this session
+	MfaVerifiedAt pgtype.Timestamptz `json:"mfaVerifiedAt"`
 }
 
 // User accounts with authentication and profile information
@@ -346,4 +535,220 @@ type SharedUserSetting struct {
 	DataType  string    `json:"dataType"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type TvshowEpisode struct {
+	ID             uuid.UUID       `json:"id"`
+	SeriesID       uuid.UUID       `json:"seriesId"`
+	SeasonID       uuid.UUID       `json:"seasonId"`
+	TmdbID         *int32          `json:"tmdbId"`
+	TvdbID         *int32          `json:"tvdbId"`
+	ImdbID         *string         `json:"imdbId"`
+	SeasonNumber   int32           `json:"seasonNumber"`
+	EpisodeNumber  int32           `json:"episodeNumber"`
+	Title          string          `json:"title"`
+	Overview       *string         `json:"overview"`
+	TitlesI18n     json.RawMessage `json:"titlesI18n"`
+	OverviewsI18n  json.RawMessage `json:"overviewsI18n"`
+	AirDate        pgtype.Date     `json:"airDate"`
+	Runtime        *int32          `json:"runtime"`
+	VoteAverage    pgtype.Numeric  `json:"voteAverage"`
+	VoteCount      *int32          `json:"voteCount"`
+	StillPath      *string         `json:"stillPath"`
+	ProductionCode *string         `json:"productionCode"`
+	CreatedAt      time.Time       `json:"createdAt"`
+	UpdatedAt      time.Time       `json:"updatedAt"`
+}
+
+type TvshowEpisodeCredit struct {
+	ID           uuid.UUID `json:"id"`
+	EpisodeID    uuid.UUID `json:"episodeId"`
+	TmdbPersonID int32     `json:"tmdbPersonId"`
+	Name         string    `json:"name"`
+	CreditType   string    `json:"creditType"`
+	Character    *string   `json:"character"`
+	CastOrder    *int32    `json:"castOrder"`
+	Job          *string   `json:"job"`
+	Department   *string   `json:"department"`
+	ProfilePath  *string   `json:"profilePath"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type TvshowEpisodeFile struct {
+	ID                uuid.UUID      `json:"id"`
+	EpisodeID         uuid.UUID      `json:"episodeId"`
+	FilePath          string         `json:"filePath"`
+	FileName          string         `json:"fileName"`
+	FileSize          int64          `json:"fileSize"`
+	Container         *string        `json:"container"`
+	Resolution        *string        `json:"resolution"`
+	QualityProfile    *string        `json:"qualityProfile"`
+	VideoCodec        *string        `json:"videoCodec"`
+	AudioCodec        *string        `json:"audioCodec"`
+	BitrateKbps       *int32         `json:"bitrateKbps"`
+	DurationSeconds   pgtype.Numeric `json:"durationSeconds"`
+	AudioLanguages    []string       `json:"audioLanguages"`
+	SubtitleLanguages []string       `json:"subtitleLanguages"`
+	SonarrFileID      *int32         `json:"sonarrFileId"`
+	CreatedAt         time.Time      `json:"createdAt"`
+	UpdatedAt         time.Time      `json:"updatedAt"`
+}
+
+type TvshowEpisodeWatched struct {
+	ID              uuid.UUID          `json:"id"`
+	UserID          uuid.UUID          `json:"userId"`
+	EpisodeID       uuid.UUID          `json:"episodeId"`
+	ProgressSeconds int32              `json:"progressSeconds"`
+	DurationSeconds int32              `json:"durationSeconds"`
+	IsCompleted     bool               `json:"isCompleted"`
+	WatchCount      int32              `json:"watchCount"`
+	LastWatchedAt   pgtype.Timestamptz `json:"lastWatchedAt"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+}
+
+type TvshowNetwork struct {
+	ID            uuid.UUID `json:"id"`
+	TmdbID        int32     `json:"tmdbId"`
+	Name          string    `json:"name"`
+	LogoPath      *string   `json:"logoPath"`
+	OriginCountry *string   `json:"originCountry"`
+	CreatedAt     time.Time `json:"createdAt"`
+}
+
+type TvshowSeason struct {
+	ID            uuid.UUID       `json:"id"`
+	SeriesID      uuid.UUID       `json:"seriesId"`
+	TmdbID        *int32          `json:"tmdbId"`
+	SeasonNumber  int32           `json:"seasonNumber"`
+	Name          string          `json:"name"`
+	Overview      *string         `json:"overview"`
+	NamesI18n     json.RawMessage `json:"namesI18n"`
+	OverviewsI18n json.RawMessage `json:"overviewsI18n"`
+	PosterPath    *string         `json:"posterPath"`
+	EpisodeCount  int32           `json:"episodeCount"`
+	AirDate       pgtype.Date     `json:"airDate"`
+	VoteAverage   pgtype.Numeric  `json:"voteAverage"`
+	CreatedAt     time.Time       `json:"createdAt"`
+	UpdatedAt     time.Time       `json:"updatedAt"`
+}
+
+type TvshowSeries struct {
+	ID                uuid.UUID          `json:"id"`
+	TmdbID            *int32             `json:"tmdbId"`
+	TvdbID            *int32             `json:"tvdbId"`
+	ImdbID            *string            `json:"imdbId"`
+	SonarrID          *int32             `json:"sonarrId"`
+	Title             string             `json:"title"`
+	Tagline           *string            `json:"tagline"`
+	Overview          *string            `json:"overview"`
+	TitlesI18n        json.RawMessage    `json:"titlesI18n"`
+	TaglinesI18n      json.RawMessage    `json:"taglinesI18n"`
+	OverviewsI18n     json.RawMessage    `json:"overviewsI18n"`
+	AgeRatings        json.RawMessage    `json:"ageRatings"`
+	OriginalLanguage  string             `json:"originalLanguage"`
+	OriginalTitle     *string            `json:"originalTitle"`
+	Status            *string            `json:"status"`
+	Type              *string            `json:"type"`
+	FirstAirDate      pgtype.Date        `json:"firstAirDate"`
+	LastAirDate       pgtype.Date        `json:"lastAirDate"`
+	VoteAverage       pgtype.Numeric     `json:"voteAverage"`
+	VoteCount         *int32             `json:"voteCount"`
+	Popularity        pgtype.Numeric     `json:"popularity"`
+	PosterPath        *string            `json:"posterPath"`
+	BackdropPath      *string            `json:"backdropPath"`
+	TotalSeasons      int32              `json:"totalSeasons"`
+	TotalEpisodes     int32              `json:"totalEpisodes"`
+	TrailerUrl        *string            `json:"trailerUrl"`
+	Homepage          *string            `json:"homepage"`
+	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
+	CreatedAt         time.Time          `json:"createdAt"`
+	UpdatedAt         time.Time          `json:"updatedAt"`
+}
+
+type TvshowSeriesCredit struct {
+	ID           uuid.UUID `json:"id"`
+	SeriesID     uuid.UUID `json:"seriesId"`
+	TmdbPersonID int32     `json:"tmdbPersonId"`
+	Name         string    `json:"name"`
+	CreditType   string    `json:"creditType"`
+	Character    *string   `json:"character"`
+	CastOrder    *int32    `json:"castOrder"`
+	Job          *string   `json:"job"`
+	Department   *string   `json:"department"`
+	ProfilePath  *string   `json:"profilePath"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type TvshowSeriesGenre struct {
+	ID          uuid.UUID `json:"id"`
+	SeriesID    uuid.UUID `json:"seriesId"`
+	TmdbGenreID int32     `json:"tmdbGenreId"`
+	Name        string    `json:"name"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type TvshowSeriesNetwork struct {
+	SeriesID  uuid.UUID `json:"seriesId"`
+	NetworkID uuid.UUID `json:"networkId"`
+}
+
+// Per-user MFA configuration and enforcement settings
+type UserMfaSetting struct {
+	UserID uuid.UUID `json:"userId"`
+	// Whether TOTP (authenticator app) is enabled for this user
+	TotpEnabled bool `json:"totpEnabled"`
+	// Whether WebAuthn (passkeys/security keys) is enabled for this user
+	WebauthnEnabled bool `json:"webauthnEnabled"`
+	// Whether backup recovery codes have been generated
+	BackupCodesGenerated bool `json:"backupCodesGenerated"`
+	// Admin override to force MFA for this user
+	RequireMfa                 bool  `json:"requireMfa"`
+	RememberDeviceEnabled      bool  `json:"rememberDeviceEnabled"`
+	RememberDeviceDurationDays int32 `json:"rememberDeviceDurationDays"`
+	// JSON array of device fingerprints that skip MFA challenge
+	TrustedDevices json.RawMessage `json:"trustedDevices"`
+	CreatedAt      time.Time       `json:"createdAt"`
+	UpdatedAt      time.Time       `json:"updatedAt"`
+}
+
+// TOTP (Time-based One-Time Password) secrets for multi-factor authentication
+type UserTotpSecret struct {
+	UserID uuid.UUID `json:"userId"`
+	// AES-256-GCM encrypted base32-encoded TOTP secret (nonce prepended)
+	EncryptedSecret []byte `json:"encryptedSecret"`
+	// When the TOTP was first successfully verified (enrollment completion)
+	VerifiedAt pgtype.Timestamptz `json:"verifiedAt"`
+	Enabled    bool               `json:"enabled"`
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+}
+
+// WebAuthn/FIDO2 credentials for passwordless and multi-factor authentication
+type WebauthnCredential struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Unique credential identifier from the authenticator
+	CredentialID []byte `json:"credentialId"`
+	// COSE-encoded public key for verifying assertions
+	PublicKey []byte `json:"publicKey"`
+	// Signature counter for detecting cloned authenticators (must increment)
+	SignCount int32 `json:"signCount"`
+	// Flag indicating potential authenticator cloning (counter decreased)
+	CloneDetected bool `json:"cloneDetected"`
+	// Authenticator Attestation GUID (identifies authenticator model)
+	Aaguid          []byte `json:"aaguid"`
+	AttestationType string `json:"attestationType"`
+	// Communication methods supported by authenticator
+	Transports     []string           `json:"transports"`
+	BackupEligible bool               `json:"backupEligible"`
+	BackupState    bool               `json:"backupState"`
+	UserPresent    bool               `json:"userPresent"`
+	UserVerified   bool               `json:"userVerified"`
+	Name           *string            `json:"name"`
+	CreatedAt      time.Time          `json:"createdAt"`
+	LastUsedAt     pgtype.Timestamptz `json:"lastUsedAt"`
 }
