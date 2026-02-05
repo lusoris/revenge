@@ -56,6 +56,34 @@ func (s *MetadataService) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Mo
 	return mov, nil
 }
 
+// GetMovieByTMDbIDMultiLanguage fetches movie metadata in multiple languages
+func (s *MetadataService) GetMovieByTMDbIDMultiLanguage(ctx context.Context, tmdbID int, languages []string) (*Movie, error) {
+	if len(languages) == 0 {
+		languages = []string{"en-US", "de-DE", "fr-FR", "es-ES", "ja-JP"}
+	}
+
+	// Fetch movie in multiple languages
+	multiLangResult, err := s.client.GetMovieMultiLanguage(ctx, tmdbID, languages)
+	if err != nil {
+		return nil, fmt.Errorf("get movie multi-language: %w", err)
+	}
+
+	// Fetch release dates for age ratings
+	releaseDates, err := s.client.GetMovieReleaseDates(ctx, tmdbID)
+	if err != nil {
+		// Log warning but continue without age ratings
+		releaseDates = nil
+	}
+
+	// Map to domain model with all languages
+	mov := s.mapper.MapMultiLanguageMovie(multiLangResult, releaseDates)
+	if mov == nil {
+		return nil, fmt.Errorf("failed to map multi-language movie (English missing)")
+	}
+
+	return mov, nil
+}
+
 func (s *MetadataService) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieCredit, error) {
 	credits, err := s.client.GetMovieCredits(ctx, tmdbID)
 	if err != nil {
@@ -129,19 +157,43 @@ func (s *MetadataService) GetCollectionDetails(ctx context.Context, collectionID
 }
 
 func (s *MetadataService) EnrichMovie(ctx context.Context, mov *Movie) error {
+	return s.EnrichMovieWithLanguages(ctx, mov, nil)
+}
+
+// EnrichMovieWithLanguages enriches movie with metadata in multiple languages
+func (s *MetadataService) EnrichMovieWithLanguages(ctx context.Context, mov *Movie, languages []string) error {
 	if mov.TMDbID == nil {
 		return fmt.Errorf("movie has no TMDb ID")
 	}
 
 	tmdbID := int(*mov.TMDbID)
 
-	tmdbMovie, err := s.client.GetMovie(ctx, tmdbID)
-	if err != nil {
-		return fmt.Errorf("fetch movie metadata: %w", err)
+	// Use default languages if not specified
+	if len(languages) == 0 {
+		languages = []string{"en-US", "de-DE", "fr-FR", "es-ES", "ja-JP"}
 	}
 
-	enriched := s.mapper.MapMovie(tmdbMovie)
+	// Fetch movie in multiple languages
+	multiLangResult, err := s.client.GetMovieMultiLanguage(ctx, tmdbID, languages)
+	if err != nil {
+		return fmt.Errorf("fetch multi-language metadata: %w", err)
+	}
 
+	// Fetch release dates for age ratings
+	releaseDates, err := s.client.GetMovieReleaseDates(ctx, tmdbID)
+	if err != nil {
+		// Log warning but continue without age ratings
+		releaseDates = nil
+	}
+
+	// Map to domain model with all languages
+	enriched := s.mapper.MapMultiLanguageMovie(multiLangResult, releaseDates)
+	if enriched == nil {
+		return fmt.Errorf("failed to map multi-language movie (English missing)")
+	}
+
+	// Merge basic fields
+	mov.Title = enriched.Title
 	mov.IMDbID = enriched.IMDbID
 	mov.OriginalTitle = enriched.OriginalTitle
 	mov.OriginalLanguage = enriched.OriginalLanguage
@@ -158,6 +210,12 @@ func (s *MetadataService) EnrichMovie(ctx context.Context, mov *Movie) error {
 	mov.Popularity = enriched.Popularity
 	mov.PosterPath = enriched.PosterPath
 	mov.BackdropPath = enriched.BackdropPath
+
+	// Merge multi-language fields
+	mov.TitlesI18n = enriched.TitlesI18n
+	mov.TaglinesI18n = enriched.TaglinesI18n
+	mov.OverviewsI18n = enriched.OverviewsI18n
+	mov.AgeRatings = enriched.AgeRatings
 
 	return nil
 }

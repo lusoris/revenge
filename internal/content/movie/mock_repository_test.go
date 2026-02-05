@@ -2244,6 +2244,67 @@ func (_c *MockMovieRepository_SearchMoviesByTitle_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// SearchMoviesByTitleAnyLanguage provides a mock function with given fields: ctx, query, limit, offset
+func (_m *MockMovieRepository) SearchMoviesByTitleAnyLanguage(ctx context.Context, query string, limit int32, offset int32) ([]Movie, error) {
+	ret := _m.Called(ctx, query, limit, offset)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SearchMoviesByTitleAnyLanguage")
+	}
+
+	var r0 []Movie
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) ([]Movie, error)); ok {
+		return rf(ctx, query, limit, offset)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) []Movie); ok {
+		r0 = rf(ctx, query, limit, offset)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]Movie)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, int32, int32) error); ok {
+		r1 = rf(ctx, query, limit, offset)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchMoviesByTitleAnyLanguage'
+type MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call struct {
+	*mock.Call
+}
+
+// SearchMoviesByTitleAnyLanguage is a helper method to define mock.On call
+//   - ctx context.Context
+//   - query string
+//   - limit int32
+//   - offset int32
+func (_e *MockMovieRepository_Expecter) SearchMoviesByTitleAnyLanguage(ctx interface{}, query interface{}, limit interface{}, offset interface{}) *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call {
+	return &MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call{Call: _e.mock.On("SearchMoviesByTitleAnyLanguage", ctx, query, limit, offset)}
+}
+
+func (_c *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call) Run(run func(ctx context.Context, query string, limit int32, offset int32)) *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(int32), args[3].(int32))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call) Return(_a0 []Movie, _a1 error) *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call) RunAndReturn(run func(context.Context, string, int32, int32) ([]Movie, error)) *MockMovieRepository_SearchMoviesByTitleAnyLanguage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateMovie provides a mock function with given fields: ctx, params
 func (_m *MockMovieRepository) UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error) {
 	ret := _m.Called(ctx, params)

@@ -151,13 +151,16 @@ func (_m *MockSessionRepository) DeleteExpiredSessions(ctx context.Context) (int
 	}
 
 	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) (int64, error)); ok {
+		return rf(ctx)
+	}
 	if rf, ok := ret.Get(0).(func(context.Context) int64); ok {
 		r0 = rf(ctx)
 	} else {
 		r0 = ret.Get(0).(int64)
 	}
 
-	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
 		r1 = rf(ctx)
 	} else {
@@ -204,13 +207,16 @@ func (_m *MockSessionRepository) DeleteRevokedSessions(ctx context.Context) (int
 	}
 
 	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) (int64, error)); ok {
+		return rf(ctx)
+	}
 	if rf, ok := ret.Get(0).(func(context.Context) int64); ok {
 		r0 = rf(ctx)
 	} else {
 		r0 = ret.Get(0).(int64)
 	}
 
-	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
 		r1 = rf(ctx)
 	} else {

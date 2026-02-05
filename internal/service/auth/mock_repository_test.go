@@ -11,6 +11,8 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 
+	time "time"
+
 	uuid "github.com/google/uuid"
 )
 
@@ -25,6 +27,53 @@ type MockAuthRepository_Expecter struct {
 
 func (_m *MockAuthRepository) EXPECT() *MockAuthRepository_Expecter {
 	return &MockAuthRepository_Expecter{mock: &_m.Mock}
+}
+
+// ClearFailedLoginAttemptsByUsername provides a mock function with given fields: ctx, username
+func (_m *MockAuthRepository) ClearFailedLoginAttemptsByUsername(ctx context.Context, username string) error {
+	ret := _m.Called(ctx, username)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ClearFailedLoginAttemptsByUsername")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, username)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ClearFailedLoginAttemptsByUsername'
+type MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call struct {
+	*mock.Call
+}
+
+// ClearFailedLoginAttemptsByUsername is a helper method to define mock.On call
+//   - ctx context.Context
+//   - username string
+func (_e *MockAuthRepository_Expecter) ClearFailedLoginAttemptsByUsername(ctx interface{}, username interface{}) *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call {
+	return &MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call{Call: _e.mock.On("ClearFailedLoginAttemptsByUsername", ctx, username)}
+}
+
+func (_c *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call) Run(run func(ctx context.Context, username string)) *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call) Return(_a0 error) *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call) RunAndReturn(run func(context.Context, string) error) *MockAuthRepository_ClearFailedLoginAttemptsByUsername_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // CountActiveAuthTokensByUser provides a mock function with given fields: ctx, userID
@@ -80,6 +129,122 @@ func (_c *MockAuthRepository_CountActiveAuthTokensByUser_Call) Return(_a0 int64,
 }
 
 func (_c *MockAuthRepository_CountActiveAuthTokensByUser_Call) RunAndReturn(run func(context.Context, uuid.UUID) (int64, error)) *MockAuthRepository_CountActiveAuthTokensByUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CountFailedLoginAttemptsByIP provides a mock function with given fields: ctx, ipAddress, since
+func (_m *MockAuthRepository) CountFailedLoginAttemptsByIP(ctx context.Context, ipAddress string, since time.Time) (int64, error) {
+	ret := _m.Called(ctx, ipAddress, since)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountFailedLoginAttemptsByIP")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Time) (int64, error)); ok {
+		return rf(ctx, ipAddress, since)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Time) int64); ok {
+		r0 = rf(ctx, ipAddress, since)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, time.Time) error); ok {
+		r1 = rf(ctx, ipAddress, since)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAuthRepository_CountFailedLoginAttemptsByIP_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountFailedLoginAttemptsByIP'
+type MockAuthRepository_CountFailedLoginAttemptsByIP_Call struct {
+	*mock.Call
+}
+
+// CountFailedLoginAttemptsByIP is a helper method to define mock.On call
+//   - ctx context.Context
+//   - ipAddress string
+//   - since time.Time
+func (_e *MockAuthRepository_Expecter) CountFailedLoginAttemptsByIP(ctx interface{}, ipAddress interface{}, since interface{}) *MockAuthRepository_CountFailedLoginAttemptsByIP_Call {
+	return &MockAuthRepository_CountFailedLoginAttemptsByIP_Call{Call: _e.mock.On("CountFailedLoginAttemptsByIP", ctx, ipAddress, since)}
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByIP_Call) Run(run func(ctx context.Context, ipAddress string, since time.Time)) *MockAuthRepository_CountFailedLoginAttemptsByIP_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(time.Time))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByIP_Call) Return(_a0 int64, _a1 error) *MockAuthRepository_CountFailedLoginAttemptsByIP_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByIP_Call) RunAndReturn(run func(context.Context, string, time.Time) (int64, error)) *MockAuthRepository_CountFailedLoginAttemptsByIP_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CountFailedLoginAttemptsByUsername provides a mock function with given fields: ctx, username, since
+func (_m *MockAuthRepository) CountFailedLoginAttemptsByUsername(ctx context.Context, username string, since time.Time) (int64, error) {
+	ret := _m.Called(ctx, username, since)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountFailedLoginAttemptsByUsername")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Time) (int64, error)); ok {
+		return rf(ctx, username, since)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Time) int64); ok {
+		r0 = rf(ctx, username, since)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, time.Time) error); ok {
+		r1 = rf(ctx, username, since)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAuthRepository_CountFailedLoginAttemptsByUsername_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountFailedLoginAttemptsByUsername'
+type MockAuthRepository_CountFailedLoginAttemptsByUsername_Call struct {
+	*mock.Call
+}
+
+// CountFailedLoginAttemptsByUsername is a helper method to define mock.On call
+//   - ctx context.Context
+//   - username string
+//   - since time.Time
+func (_e *MockAuthRepository_Expecter) CountFailedLoginAttemptsByUsername(ctx interface{}, username interface{}, since interface{}) *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call {
+	return &MockAuthRepository_CountFailedLoginAttemptsByUsername_Call{Call: _e.mock.On("CountFailedLoginAttemptsByUsername", ctx, username, since)}
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call) Run(run func(ctx context.Context, username string, since time.Time)) *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(time.Time))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call) Return(_a0 int64, _a1 error) *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call) RunAndReturn(run func(context.Context, string, time.Time) (int64, error)) *MockAuthRepository_CountFailedLoginAttemptsByUsername_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -446,6 +611,52 @@ func (_c *MockAuthRepository_DeleteExpiredPasswordResetTokens_Call) Return(_a0 e
 }
 
 func (_c *MockAuthRepository_DeleteExpiredPasswordResetTokens_Call) RunAndReturn(run func(context.Context) error) *MockAuthRepository_DeleteExpiredPasswordResetTokens_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteOldFailedLoginAttempts provides a mock function with given fields: ctx
+func (_m *MockAuthRepository) DeleteOldFailedLoginAttempts(ctx context.Context) error {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteOldFailedLoginAttempts")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthRepository_DeleteOldFailedLoginAttempts_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteOldFailedLoginAttempts'
+type MockAuthRepository_DeleteOldFailedLoginAttempts_Call struct {
+	*mock.Call
+}
+
+// DeleteOldFailedLoginAttempts is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockAuthRepository_Expecter) DeleteOldFailedLoginAttempts(ctx interface{}) *MockAuthRepository_DeleteOldFailedLoginAttempts_Call {
+	return &MockAuthRepository_DeleteOldFailedLoginAttempts_Call{Call: _e.mock.On("DeleteOldFailedLoginAttempts", ctx)}
+}
+
+func (_c *MockAuthRepository_DeleteOldFailedLoginAttempts_Call) Run(run func(ctx context.Context)) *MockAuthRepository_DeleteOldFailedLoginAttempts_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_DeleteOldFailedLoginAttempts_Call) Return(_a0 error) *MockAuthRepository_DeleteOldFailedLoginAttempts_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthRepository_DeleteOldFailedLoginAttempts_Call) RunAndReturn(run func(context.Context) error) *MockAuthRepository_DeleteOldFailedLoginAttempts_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1392,6 +1603,54 @@ func (_c *MockAuthRepository_MarkSessionMFAVerified_Call) Return(_a0 error) *Moc
 }
 
 func (_c *MockAuthRepository_MarkSessionMFAVerified_Call) RunAndReturn(run func(context.Context, uuid.UUID) error) *MockAuthRepository_MarkSessionMFAVerified_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RecordFailedLoginAttempt provides a mock function with given fields: ctx, username, ipAddress
+func (_m *MockAuthRepository) RecordFailedLoginAttempt(ctx context.Context, username string, ipAddress string) error {
+	ret := _m.Called(ctx, username, ipAddress)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RecordFailedLoginAttempt")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, username, ipAddress)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthRepository_RecordFailedLoginAttempt_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RecordFailedLoginAttempt'
+type MockAuthRepository_RecordFailedLoginAttempt_Call struct {
+	*mock.Call
+}
+
+// RecordFailedLoginAttempt is a helper method to define mock.On call
+//   - ctx context.Context
+//   - username string
+//   - ipAddress string
+func (_e *MockAuthRepository_Expecter) RecordFailedLoginAttempt(ctx interface{}, username interface{}, ipAddress interface{}) *MockAuthRepository_RecordFailedLoginAttempt_Call {
+	return &MockAuthRepository_RecordFailedLoginAttempt_Call{Call: _e.mock.On("RecordFailedLoginAttempt", ctx, username, ipAddress)}
+}
+
+func (_c *MockAuthRepository_RecordFailedLoginAttempt_Call) Run(run func(ctx context.Context, username string, ipAddress string)) *MockAuthRepository_RecordFailedLoginAttempt_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_RecordFailedLoginAttempt_Call) Return(_a0 error) *MockAuthRepository_RecordFailedLoginAttempt_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthRepository_RecordFailedLoginAttempt_Call) RunAndReturn(run func(context.Context, string, string) error) *MockAuthRepository_RecordFailedLoginAttempt_Call {
 	_c.Call.Return(run)
 	return _c
 }
