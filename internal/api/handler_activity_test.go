@@ -19,9 +19,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupActivityTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID) {
+func setupActivityTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 
 	// Clear any existing policies from the table to ensure test isolation

@@ -16,7 +16,7 @@ import (
 
 func setupBackupCodesService(t *testing.T) (*BackupCodesService, *db.Queries) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 	svc := NewBackupCodesService(queries, logger)
@@ -383,7 +383,7 @@ func TestBackupCodesService_DeleteAllCodes(t *testing.T) {
 }
 
 func TestNewBackupCodesService(t *testing.T) {
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 

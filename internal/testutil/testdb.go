@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -18,6 +19,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/validate"
 )
+
+// DB is the interface implemented by both TestDB and FastTestDB.
+// Use this as return type in test setup functions for flexibility.
+type DB interface {
+	Pool() *pgxpool.Pool
+}
 
 // TestDB provides a fast, parallel-safe database for testing using the template database pattern.
 // Instead of starting a new PostgreSQL instance for each test, it:
@@ -284,6 +291,10 @@ func StopSharedPostgres() {
 		_ = sharedPostgres.Stop()
 		sharedPostgres = nil
 	}
+
+	// Clean up runtime path directory
+	runtimePath := fmt.Sprintf("/tmp/embedded-postgres-%d", os.Getpid())
+	_ = os.RemoveAll(runtimePath)
 }
 
 // cleanupOrphanedPostgres kills any postgres processes listening on the test port
@@ -327,4 +338,26 @@ func registerCleanupHandlers() {
 		StopSharedPostgres()
 		os.Exit(1)
 	}()
+}
+
+// CleanupAllEmbeddedPostgres removes all embedded-postgres temp directories.
+// This is useful for cleaning up after test failures or interrupted tests.
+func CleanupAllEmbeddedPostgres() error {
+	// Kill any remaining postgres processes
+	cleanupOrphanedPostgres()
+
+	// Remove all embedded-postgres directories
+	matches, err := filepath.Glob("/tmp/embedded-postgres-*")
+	if err != nil {
+		return err
+	}
+
+	for _, match := range matches {
+		if err := os.RemoveAll(match); err != nil {
+			// Log but continue
+			fmt.Fprintf(os.Stderr, "warning: failed to remove %s: %v\n", match, err)
+		}
+	}
+
+	return nil
 }

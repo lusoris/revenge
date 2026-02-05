@@ -283,7 +283,7 @@ func TestSafeInt32ToUint32(t *testing.T) {
 func setupWebAuthnService(t *testing.T) (*WebAuthnService, *db.Queries, context.Context, uuid.UUID) {
 	t.Helper()
 
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	ctx := context.Background()
 	logger := zaptest.NewLogger(t)
@@ -607,7 +607,7 @@ func TestWebAuthnService_BeginLogin(t *testing.T) {
 func TestNewTOTPServiceFromConfig(t *testing.T) {
 	t.Parallel()
 
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 
@@ -661,7 +661,7 @@ func TestWebAuthnService_SessionCache(t *testing.T) {
 		require.NoError(t, err)
 		defer sessionCache.Close()
 
-		testDB := testutil.NewTestDB(t)
+		testDB := testutil.NewFastTestDB(t)
 		queries := db.New(testDB.Pool())
 		userID := createTestUserForWebAuthn(t, queries, ctx)
 
@@ -691,7 +691,7 @@ func TestWebAuthnService_SessionCache(t *testing.T) {
 		require.NoError(t, err)
 		defer sessionCache.Close()
 
-		testDB := testutil.NewTestDB(t)
+		testDB := testutil.NewFastTestDB(t)
 		queries := db.New(testDB.Pool())
 		userID := createTestUserForWebAuthn(t, queries, ctx)
 
@@ -755,7 +755,7 @@ func TestWebAuthnService_SessionCache(t *testing.T) {
 func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 	t.Parallel()
 
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 

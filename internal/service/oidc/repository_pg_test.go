@@ -20,9 +20,9 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setupTestRepository(t *testing.T) (*RepositoryPg, *testutil.TestDB) {
+func setupTestRepository(t *testing.T) (*RepositoryPg, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
 	return repo, testDB

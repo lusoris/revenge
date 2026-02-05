@@ -21,9 +21,9 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setupTestRepo(t *testing.T) (Repository, *testutil.TestDB) {
+func setupTestRepo(t *testing.T) (Repository, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	return repo, testDB

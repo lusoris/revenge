@@ -448,3 +448,248 @@ func NewMockTypesenseClient() *MockTypesenseClient {
 		Documents:   make(map[string]map[string]interface{}),
 	}
 }
+
+func TestParseMovieDocumentPartialData(t *testing.T) {
+	tests := []struct {
+		name   string
+		data   map[string]interface{}
+		verify func(t *testing.T, doc MovieDocument)
+	}{
+		{
+			name: "only id and title",
+			data: map[string]interface{}{
+				"id":    "test-id",
+				"title": "Test Movie",
+			},
+			verify: func(t *testing.T, doc MovieDocument) {
+				assert.Equal(t, "test-id", doc.ID)
+				assert.Equal(t, "Test Movie", doc.Title)
+				assert.Equal(t, int32(0), doc.Year)
+				assert.Empty(t, doc.Overview)
+			},
+		},
+		{
+			name: "with nil values",
+			data: map[string]interface{}{
+				"id":        "test-id",
+				"title":     "Test Movie",
+				"year":      nil,
+				"genres":    nil,
+				"directors": nil,
+			},
+			verify: func(t *testing.T, doc MovieDocument) {
+				assert.Equal(t, "test-id", doc.ID)
+				assert.Equal(t, "Test Movie", doc.Title)
+				assert.Equal(t, int32(0), doc.Year)
+				assert.Nil(t, doc.Genres)
+			},
+		},
+		{
+			name: "with wrong type for year",
+			data: map[string]interface{}{
+				"id":    "test-id",
+				"title": "Test Movie",
+				"year":  "invalid", // string instead of float64
+			},
+			verify: func(t *testing.T, doc MovieDocument) {
+				assert.Equal(t, "test-id", doc.ID)
+				assert.Equal(t, int32(0), doc.Year) // should default to 0
+			},
+		},
+		{
+			name: "with boolean fields",
+			data: map[string]interface{}{
+				"id":       "test-id",
+				"has_file": true,
+			},
+			verify: func(t *testing.T, doc MovieDocument) {
+				assert.True(t, doc.HasFile)
+			},
+		},
+		{
+			name: "with empty genres array",
+			data: map[string]interface{}{
+				"id":     "test-id",
+				"genres": []interface{}{},
+			},
+			verify: func(t *testing.T, doc MovieDocument) {
+				assert.Empty(t, doc.Genres)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			doc := parseMovieDocument(tt.data)
+			tt.verify(t, doc)
+		})
+	}
+}
+
+func TestMovieToDocumentWithEmptyCredits(t *testing.T) {
+	s := &MovieSearchService{}
+
+	movieID := uuid.New()
+	now := time.Now()
+
+	m := &movie.Movie{
+		ID:             movieID,
+		Title:          "Empty Credits Movie",
+		LibraryAddedAt: now,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	// Empty slices
+	genres := []movie.MovieGenre{}
+	credits := []movie.MovieCredit{}
+
+	doc := s.movieToDocument(m, genres, credits, nil)
+
+	assert.Equal(t, movieID.String(), doc.ID)
+	assert.Empty(t, doc.Genres)
+	assert.Empty(t, doc.GenreIDs)
+	assert.Empty(t, doc.Cast)
+	assert.Empty(t, doc.Directors)
+}
+
+func TestMovieToDocumentWithCrewOnly(t *testing.T) {
+	s := &MovieSearchService{}
+
+	movieID := uuid.New()
+	now := time.Now()
+
+	m := &movie.Movie{
+		ID:             movieID,
+		Title:          "Crew Only Movie",
+		LibraryAddedAt: now,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	// Only crew, no cast
+	directorJob := "Director"
+	writerJob := "Writer"
+	credits := []movie.MovieCredit{
+		{CreditType: "crew", Name: "Christopher Nolan", Job: &directorJob},
+		{CreditType: "crew", Name: "Jonathan Nolan", Job: &writerJob},
+	}
+
+	doc := s.movieToDocument(m, nil, credits, nil)
+
+	assert.Empty(t, doc.Cast)
+	assert.Equal(t, []string{"Christopher Nolan"}, doc.Directors)
+}
+
+func TestMovieToDocumentWithZeroValues(t *testing.T) {
+	s := &MovieSearchService{}
+
+	movieID := uuid.New()
+	now := time.Now()
+	zeroDecimal := decimal.NewFromFloat(0.0)
+	zeroInt := int32(0)
+
+	m := &movie.Movie{
+		ID:             movieID,
+		Title:          "Zero Values Movie",
+		VoteAverage:    &zeroDecimal,
+		VoteCount:      &zeroInt,
+		Popularity:     &zeroDecimal,
+		Runtime:        &zeroInt,
+		LibraryAddedAt: now,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	doc := s.movieToDocument(m, nil, nil, nil)
+
+	assert.Equal(t, float64(0), doc.VoteAverage)
+	assert.Equal(t, int32(0), doc.VoteCount)
+	assert.Equal(t, float64(0), doc.Popularity)
+	assert.Equal(t, int32(0), doc.Runtime)
+}
+
+func TestSchemaSymbolsToIndex(t *testing.T) {
+	schema := MovieCollectionSchema()
+
+	// Check that symbols_to_index is configured
+	assert.NotNil(t, schema.SymbolsToIndex)
+	assert.Contains(t, *schema.SymbolsToIndex, "&")
+}
+
+func TestMovieSearchParamsValidation(t *testing.T) {
+	params := DefaultSearchParams()
+
+	// Verify defaults are sensible
+	assert.Greater(t, params.Page, 0)
+	assert.Greater(t, params.PerPage, 0)
+	assert.LessOrEqual(t, params.PerPage, 100) // reasonable upper bound
+	assert.NotEmpty(t, params.SortBy)
+	assert.NotEmpty(t, params.FacetBy)
+}
+
+func TestMovieToDocumentFileInfo(t *testing.T) {
+	s := &MovieSearchService{}
+
+	movieID := uuid.New()
+	now := time.Now()
+
+	m := &movie.Movie{
+		ID:             movieID,
+		Title:          "Movie With File",
+		LibraryAddedAt: now,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	t.Run("with full file info", func(t *testing.T) {
+		resolution := "1080p"
+		qualityProfile := "HD"
+		file := &movie.MovieFile{
+			ID:             uuid.New(),
+			MovieID:        movieID,
+			Resolution:     &resolution,
+			QualityProfile: &qualityProfile,
+		}
+
+		doc := s.movieToDocument(m, nil, nil, file)
+
+		assert.True(t, doc.HasFile)
+		assert.Equal(t, "1080p", doc.Resolution)
+		assert.Equal(t, "HD", doc.QualityProfile)
+	})
+
+	t.Run("with partial file info", func(t *testing.T) {
+		resolution := "720p"
+		file := &movie.MovieFile{
+			ID:         uuid.New(),
+			MovieID:    movieID,
+			Resolution: &resolution,
+			// No QualityProfile
+		}
+
+		doc := s.movieToDocument(m, nil, nil, file)
+
+		assert.True(t, doc.HasFile)
+		assert.Equal(t, "720p", doc.Resolution)
+		assert.Empty(t, doc.QualityProfile)
+	})
+}
+
+func TestToStringSliceWithNilSlice(t *testing.T) {
+	result := toStringSlice(nil)
+	assert.Empty(t, result) // Returns empty slice, not nil
+}
+
+func TestToInt32SliceWithNilSlice(t *testing.T) {
+	result := toInt32Slice(nil)
+	assert.Empty(t, result) // Returns empty slice, not nil
+}
+
+func TestDerefWithInt(t *testing.T) {
+	v := 42
+	assert.Equal(t, 42, deref(&v))
+
+	var nilPtr *int
+	assert.Equal(t, 0, deref(nilPtr))
+}

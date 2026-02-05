@@ -16,9 +16,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupAPIKeysTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID) {
+func setupAPIKeysTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 
 	// Set up API keys service

@@ -79,7 +79,10 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		}
 		prober.On("Probe", movieFile).Return(mediaInfo, nil)
 
-		// Mock Metadata Search
+		// Mock Repository - first search for existing movies (returns empty)
+		repo.On("SearchMoviesByTitle", ctx, "The Matrix", int32(10), int32(0)).Return([]Movie{}, nil)
+
+		// Mock Metadata Search (TMDb)
 		tmdbMovie := &Movie{
 			Title:      "The Matrix",
 			Year:       ptr(int32(1999)),
@@ -129,7 +132,10 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		svc := NewLibraryService(repo, metadata, libConfig, prober)
 		ctx := context.Background()
 
-		// Mock Metadata Search (return empty)
+		// Mock Repository - first search for existing movies (returns empty)
+		repo.On("SearchMoviesByTitle", ctx, "The Matrix", int32(10), int32(0)).Return([]Movie{}, nil)
+
+		// Mock Metadata Search (return empty - no TMDb results)
 		metadata.On("SearchMovies", ctx, "The Matrix", ptr(1999)).Return([]*Movie{}, nil)
 
 		summary, err := svc.ScanLibrary(ctx)
@@ -138,6 +144,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		assert.Equal(t, 0, summary.MatchedFiles)
 		assert.Equal(t, 1, summary.UnmatchedFiles)
 
+		repo.AssertExpectations(t)
 		metadata.AssertExpectations(t)
 	})
 }
@@ -150,12 +157,13 @@ func TestLibraryService_RefreshMovie(t *testing.T) {
 	ctx := context.Background()
 
 	movieID := uuid.New()
-	movie := &Movie{ID: movieID, TMDbID: ptr(int32(603))}
+	movie := &Movie{ID: movieID, TMDbID: ptr(int32(603)), Title: "The Matrix"}
 
 	repo.On("GetMovie", ctx, movieID).Return(movie, nil)
 	metadata.On("EnrichMovie", ctx, movie).Return(nil)
 	metadata.On("GetMovieCredits", ctx, movieID, 603).Return([]MovieCredit{}, nil)
 	metadata.On("GetMovieGenres", ctx, movieID, 603).Return([]MovieGenre{}, nil)
+	repo.On("UpdateMovie", ctx, mock.AnythingOfType("UpdateMovieParams")).Return(movie, nil)
 
 	err := svc.RefreshMovie(ctx, movieID)
 	require.NoError(t, err)

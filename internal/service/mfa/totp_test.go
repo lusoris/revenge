@@ -21,7 +21,7 @@ import (
 
 func setupTOTPService(t *testing.T) (*TOTPService, *db.Queries) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 
@@ -264,7 +264,7 @@ func TestTOTPAlgorithm_EncryptionIntegration(t *testing.T) {
 // ============================================================================
 
 func TestTOTPService_NewTOTPService(t *testing.T) {
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 

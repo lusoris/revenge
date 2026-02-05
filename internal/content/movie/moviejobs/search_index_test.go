@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func TestMovieSearchIndexArgsKind(t *testing.T) {
@@ -55,4 +56,16 @@ func TestMovieSearchIndexArgs(t *testing.T) {
 			assert.Equal(t, "movie_search_index", args.Kind())
 		})
 	}
+}
+
+func TestNewMovieSearchIndexWorker(t *testing.T) {
+	t.Parallel()
+
+	logger := zap.NewNop()
+	worker := NewMovieSearchIndexWorker(nil, nil, logger)
+
+	assert.NotNil(t, worker)
+	assert.Nil(t, worker.movieRepo)
+	assert.Nil(t, worker.searchService)
+	assert.NotNil(t, worker.logger)
 }

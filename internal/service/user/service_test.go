@@ -19,9 +19,9 @@ import (
 
 // TestMain is in repository_pg_test.go
 
-func setupTestService(t *testing.T) (*Service, *testutil.TestDB) {
+func setupTestService(t *testing.T) (*Service, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	activityLogger := activity.NewNoopLogger()

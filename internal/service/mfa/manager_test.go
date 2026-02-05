@@ -60,7 +60,7 @@ func TestVerificationResult_Structure(t *testing.T) {
 func setupMFAManager(t *testing.T) (*MFAManager, *db.Queries, context.Context, uuid.UUID) {
 	t.Helper()
 
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	ctx := context.Background()
 	logger := zaptest.NewLogger(t)
@@ -115,7 +115,7 @@ func generateTOTPCodeForTest(secret string) (string, error) {
 func TestNewMFAManager(t *testing.T) {
 	t.Parallel()
 
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	logger := zaptest.NewLogger(t)
 

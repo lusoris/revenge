@@ -20,7 +20,7 @@ import (
 
 func TestService_Register_Integration(t *testing.T) {
 	t.Parallel()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
@@ -88,7 +88,7 @@ func TestService_Register_Integration(t *testing.T) {
 
 func TestService_Login_Integration(t *testing.T) {
 	t.Parallel()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
@@ -174,7 +174,7 @@ func TestService_Login_Integration(t *testing.T) {
 
 func TestService_ChangePassword_Integration(t *testing.T) {
 	t.Parallel()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
@@ -259,7 +259,7 @@ func TestService_ChangePassword_Integration(t *testing.T) {
 
 func TestService_ResetPassword_Integration(t *testing.T) {
 	t.Parallel()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
@@ -338,7 +338,7 @@ func TestService_ResetPassword_Integration(t *testing.T) {
 
 func TestService_RefreshToken_Integration(t *testing.T) {
 	t.Parallel()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)

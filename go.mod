@@ -56,6 +56,7 @@ require (
 	github.com/shopspring/decimal v1.4.0
 	github.com/stretchr/testify v1.11.1
 	github.com/testcontainers/testcontainers-go v0.40.0
+	github.com/testcontainers/testcontainers-go/modules/postgres v0.40.0
 	github.com/typesense/typesense-go/v2 v2.0.0
 	go.opentelemetry.io/otel v1.39.0
 	go.opentelemetry.io/otel/metric v1.39.0
@@ -63,6 +64,7 @@ require (
 	go.uber.org/fx v1.24.0
 	go.uber.org/mock v0.6.0
 	go.uber.org/zap v1.27.1
+	golang.org/x/image v0.35.0
 	golang.org/x/oauth2 v0.34.0
 	golang.org/x/time v0.12.0
 )
@@ -107,7 +109,7 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.3 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
@@ -154,8 +156,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 // indirect
-	golang.org/x/image v0.35.0 // indirect
+	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	google.golang.org/grpc v1.78.0 // indirect

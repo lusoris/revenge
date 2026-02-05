@@ -15,9 +15,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupTestService(t *testing.T) (*Service, *RepositoryPg, *testutil.TestDB) {
+func setupTestService(t *testing.T) (*Service, *RepositoryPg, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
 

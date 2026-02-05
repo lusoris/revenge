@@ -18,9 +18,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupSessionTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID, uuid.UUID, string) {
+func setupSessionTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID, uuid.UUID, string) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 
 	// Set up session service

@@ -20,16 +20,16 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setupTestService(t *testing.T) (Service, *testutil.TestDB) {
+func setupTestService(t *testing.T) (Service, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	repo := NewPostgresRepository(testDB.Pool())
 	svc := NewService(repo)
 	return svc, testDB
 }
 
 // createTestUser creates a user for FK constraints
-func createTestUser(t *testing.T, testDB *testutil.TestDB) uuid.UUID {
+func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
 	queries := db.New(testDB.Pool())
 	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{

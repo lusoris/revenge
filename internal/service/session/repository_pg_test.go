@@ -21,15 +21,15 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setupTestRepository(t *testing.T) (*RepositoryPG, *testutil.TestDB) {
+func setupTestRepository(t *testing.T) (*RepositoryPG, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := &RepositoryPG{queries: queries}
 	return repo, testDB
 }
 
-func createTestUser(t *testing.T, testDB *testutil.TestDB) uuid.UUID {
+func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
 	queries := db.New(testDB.Pool())
 	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{

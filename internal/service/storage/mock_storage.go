@@ -26,9 +26,13 @@ func (s *MockStorage) Store(ctx context.Context, key string, reader io.Reader, c
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		return "", fmt.Errorf("failed to read data: %w", err)
+	var data []byte
+	if reader != nil {
+		var err error
+		data, err = io.ReadAll(reader)
+		if err != nil {
+			return "", fmt.Errorf("failed to read data: %w", err)
+		}
 	}
 
 	s.files[key] = data

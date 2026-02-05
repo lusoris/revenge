@@ -16,9 +16,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupRBACTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID, uuid.UUID) {
+func setupRBACTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID, uuid.UUID) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 
 	// Clear any existing policies
 	_, err := testDB.Pool().Exec(context.Background(), "DELETE FROM shared.casbin_rule")

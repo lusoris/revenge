@@ -75,9 +75,9 @@ func (m *mockRiverClient) Insert(ctx context.Context, args river.JobArgs, opts *
 	return &rivertype.JobInsertResult{}, nil
 }
 
-func setupRadarrTestHandler(t *testing.T) (*Handler, *testutil.TestDB, uuid.UUID) {
+func setupRadarrTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 
 	// Clear any existing policies from the table to ensure test isolation
 	_, err := testDB.Pool().Exec(context.Background(), "DELETE FROM shared.casbin_rule")

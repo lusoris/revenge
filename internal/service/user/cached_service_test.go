@@ -18,9 +18,9 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupCachedService(t *testing.T) (*CachedService, *testutil.TestDB) {
+func setupCachedService(t *testing.T) (*CachedService, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	activityLogger := activity.NewNoopLogger()

@@ -148,3 +148,146 @@ func TestEscapeHTML(t *testing.T) {
 		})
 	}
 }
+
+func TestService_SendUnknownProvider(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "unknown_provider",
+		FromAddress: "test@example.com",
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "unknown email provider")
+}
+
+func TestService_SendSendGrid_NoAPIKey(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "sendgrid",
+		FromAddress: "test@example.com",
+		SendGrid: config.SendGridConfig{
+			APIKey: "", // No API key
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "SendGrid API key not configured")
+}
+
+func TestBuildMessage(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "test@example.com",
+		FromName:    "Test Sender",
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	msg := svc.buildMessage("recipient@example.com", "Test Subject", "<p>Test Body</p>")
+
+	// Verify headers are present
+	msgStr := string(msg)
+	assert.Contains(t, msgStr, "From: Test Sender <test@example.com>")
+	assert.Contains(t, msgStr, "To: recipient@example.com")
+	assert.Contains(t, msgStr, "Subject: Test Subject")
+	assert.Contains(t, msgStr, "MIME-Version: 1.0")
+	assert.Contains(t, msgStr, "Content-Type: text/html; charset=UTF-8")
+	assert.Contains(t, msgStr, "X-Mailer: Revenge/1.0")
+	assert.Contains(t, msgStr, "<p>Test Body</p>")
+}
+
+func TestBuildMessage_NoFromName(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "test@example.com",
+		FromName:    "", // No from name
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	msg := svc.buildMessage("recipient@example.com", "Test Subject", "<p>Test Body</p>")
+
+	// Verify From header uses just the address
+	msgStr := string(msg)
+	assert.Contains(t, msgStr, "From: test@example.com\r\n")
+	assert.NotContains(t, msgStr, "From:  <") // No empty name with angle brackets
+}
+
+func TestBuildEmailTemplate_EscapesContent(t *testing.T) {
+	// Test that HTML content is properly escaped
+	body := buildEmailTemplate(
+		"Title with <script>",
+		"<Greeting>",
+		"Message with & special chars",
+		"http://example.com",
+		"Click <here>",
+		"Footer with \"quotes\"",
+	)
+
+	// The content should be escaped
+	assert.Contains(t, body, "&lt;script&gt;")
+	assert.Contains(t, body, "&lt;Greeting&gt;")
+	assert.Contains(t, body, "&amp; special chars")
+	assert.Contains(t, body, "&lt;here&gt;")
+	assert.Contains(t, body, "&quot;quotes&quot;")
+
+	// URL should not be escaped (it's used in href)
+	assert.Contains(t, body, `href="http://example.com"`)
+}
+
+func TestService_SendPasswordResetEmail_Enabled(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "test@example.com",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host: "", // Will fail due to no host
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	// Should fail when trying to send (no SMTP host)
+	err := svc.SendPasswordResetEmail(context.Background(), "user@example.com", "testuser", "token123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "SMTP host not configured")
+}
+
+func TestService_SendWelcomeEmail_Enabled(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "test@example.com",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host: "", // Will fail due to no host
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	// Should fail when trying to send (no SMTP host)
+	err := svc.SendWelcomeEmail(context.Background(), "user@example.com", "testuser")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "SMTP host not configured")
+}
+
+func TestService_EmptyProvider(t *testing.T) {
+	// Empty provider should default to SMTP
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "", // Empty
+		FromAddress: "test@example.com",
+		SMTP: config.SMTPConfig{
+			Host: "", // Will fail due to no host
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "SMTP host not configured") // Uses SMTP as default
+}

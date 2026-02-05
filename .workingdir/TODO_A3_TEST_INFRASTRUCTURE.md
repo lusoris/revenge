@@ -3,7 +3,37 @@
 **Priority**: P2
 **Effort**: 3-4h
 **Dependencies**: A0
-**Status**: ✅ Complete (2026-02-04)
+**Status**: ✅ Complete (2026-02-05)
+
+---
+
+## A3.0: PostgreSQL Test Database (NEW) ✅
+
+**Affected Files**:
+- `internal/testutil/pgtestdb.go` (NEW)
+- `internal/testutil/testdb.go` (updated)
+- All `*_test.go` files using database
+
+**Completed Tasks**:
+- [x] Implement `NewFastTestDB(t) *FastTestDB` using testcontainers
+- [x] Use `postgres:17-alpine` container image
+- [x] Implement template database pattern for fast cloning (~50ms per test)
+- [x] Add `DB` interface for both TestDB and FastTestDB
+- [x] Migrate all service tests from embedded-postgres to testcontainers
+- [x] Fix `replaceDBName()` bug that caused parallel test failures
+- [x] Automatic container cleanup after tests
+
+**Implementation Details**:
+- Shared PostgreSQL container across all tests (started once, ~7s)
+- Template database with all migrations applied
+- Each test gets isolated database via `CREATE DATABASE ... TEMPLATE`
+- Parallel-safe: each test has unique database name (test_1, test_2, ...)
+- Automatic cleanup: test databases dropped, container terminated
+
+**Test Results**:
+- 32/35 packages passing
+- Remaining failures are legacy tests (api, database, health) with embedded-postgres conflicts
+- All service tests now use testcontainers infrastructure
 
 ---
 

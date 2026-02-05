@@ -21,9 +21,9 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setupTestService(t *testing.T) (*Service, *testutil.TestDB) {
+func setupTestService(t *testing.T) (*Service, testutil.DB) {
 	t.Helper()
-	testDB := testutil.NewTestDB(t)
+	testDB := testutil.NewFastTestDB(t)
 
 	// Clear any existing policies from the table to ensure test isolation
 	_, err := testDB.Pool().Exec(context.Background(), "DELETE FROM shared.casbin_rule")

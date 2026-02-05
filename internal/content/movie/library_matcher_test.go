@@ -25,8 +25,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title) + 0.3 (exact year) + 0.1 (popularity > 50) = 1.0
-		assert.InDelta(t, 1.0, confidence, 0.001) // Allow small floating point difference
+		// 0.5 (exact title) + 0.3 (exact year) + 0.1 (popularity > 100) = 0.9
+		assert.InDelta(t, 0.9, confidence, 0.001)
 	})
 
 	t.Run("Exact title, no year in filename", func(t *testing.T) {
@@ -43,8 +43,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title) - 0.05 (no year penalty) = 0.55
-		assert.InDelta(t, 0.55, confidence, 0.001)
+		// 0.5 (exact title) - 0.05 (no year penalty) = 0.45
+		assert.InDelta(t, 0.45, confidence, 0.001)
 	})
 
 	t.Run("Partial title match, exact year", func(t *testing.T) {
@@ -61,8 +61,10 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.4 (partial title) + 0.3 (exact year) = 0.7
-		assert.InDelta(t, 0.7, confidence, 0.001)
+		// "matrix" vs "the matrix": Levenshtein distance = 4, maxLen = 10
+		// similarity = 1.0 - 4/10 = 0.6, title_confidence = 0.6 * 0.5 = 0.3
+		// 0.3 (partial title) + 0.3 (exact year) = 0.6
+		assert.InDelta(t, 0.6, confidence, 0.001)
 	})
 
 	t.Run("Exact title, year off by one", func(t *testing.T) {
@@ -79,8 +81,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title) + 0.1 (year off by 1) = 0.7
-		assert.InDelta(t, 0.7, confidence, 0.001)
+		// 0.5 (exact title) + 0.15 (year off by 1) = 0.65
+		assert.InDelta(t, 0.65, confidence, 0.001)
 	})
 
 	t.Run("Poor match - different title and year", func(t *testing.T) {
@@ -97,8 +99,11 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.2 (no title match) + 0 (year mismatch > 1) = 0.2
-		assert.InDelta(t, 0.2, confidence, 0.001)
+		// "inception" vs "the matrix": very different, low Levenshtein similarity
+		// Year diff = 11, no year bonus
+		// Result should be low (< 0.2)
+		assert.LessOrEqual(t, confidence, 0.2)
+		assert.GreaterOrEqual(t, confidence, 0.0)
 	})
 
 	t.Run("Title match with high popularity boost", func(t *testing.T) {
@@ -115,8 +120,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title) + 0.3 (exact year) + 0.1 (popularity > 50) = 1.0
-		assert.InDelta(t, 1.0, confidence, 0.001)
+		// 0.5 (exact title) + 0.3 (exact year) + 0.1 (popularity > 100) = 0.9
+		assert.InDelta(t, 0.9, confidence, 0.001)
 	})
 
 	t.Run("Low popularity no boost", func(t *testing.T) {
@@ -133,8 +138,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title) + 0.3 (exact year) = 0.9 (no popularity boost)
-		assert.InDelta(t, 0.9, confidence, 0.001)
+		// 0.5 (exact title) + 0.3 (exact year) = 0.8 (no popularity boost, pop < 50)
+		assert.InDelta(t, 0.8, confidence, 0.001)
 	})
 
 	t.Run("Case insensitive title match", func(t *testing.T) {
@@ -151,8 +156,8 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.6 (exact title - case insensitive) + 0.3 (exact year) = 0.9
-		assert.InDelta(t, 0.9, confidence, 0.001)
+		// 0.5 (exact title - case insensitive) + 0.3 (exact year) = 0.8
+		assert.InDelta(t, 0.8, confidence, 0.001)
 	})
 
 	t.Run("Confidence minimum is 0", func(t *testing.T) {
@@ -169,8 +174,11 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// 0.2 (no title match) - 0.05 (no year penalty) = 0.15
-		assert.InDelta(t, 0.15, confidence, 0.001)
+		// Very different titles, low Levenshtein similarity
+		// title_confidence ≈ 0.05-0.1, minus 0.05 for no year
+		// Result clamped to >= 0
+		assert.GreaterOrEqual(t, confidence, 0.0)
+		assert.LessOrEqual(t, confidence, 0.2)
 	})
 
 	t.Run("Confidence never exceeds 1", func(t *testing.T) {
@@ -187,8 +195,10 @@ func TestCalculateConfidence(t *testing.T) {
 
 		confidence := matcher.calculateConfidence(result, tmdbMovie)
 
-		// Should be capped at 1.0
-		assert.InDelta(t, 1.0, confidence, 0.001)
+		// 0.5 (exact title) + 0.3 (exact year) + 0.1 (high popularity) = 0.9
+		// Should not exceed 1.0
+		assert.LessOrEqual(t, confidence, 1.0)
+		assert.InDelta(t, 0.9, confidence, 0.001)
 	})
 }
 

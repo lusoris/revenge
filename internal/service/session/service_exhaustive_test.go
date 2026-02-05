@@ -2,13 +2,13 @@ package session_test
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"net/netip"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -448,7 +448,7 @@ func TestService_RevokeSession_NonExistentSession(t *testing.T) {
 	sessionID := uuid.New()
 
 	// Repo returns error for non-existent session
-	notFoundErr := sql.ErrNoRows
+	notFoundErr := fmt.Errorf("session not found")
 	mockRepo.EXPECT().
 		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
 		Return(notFoundErr).
@@ -579,4 +579,420 @@ func TestService_CleanupExpiredSessions_Success(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, 8, count) // 5 expired + 3 revoked
+}
+
+// ========== Additional Success Path Tests ==========
+
+func TestService_CreateSession_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(0), nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CreateSession(ctx, mock.MatchedBy(func(params session.CreateSessionParams) bool {
+			return params.UserID == userID &&
+				params.TokenHash != "" &&
+				params.RefreshTokenHash != nil &&
+				*params.RefreshTokenHash != ""
+		})).
+		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Once()
+
+	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
+
+	require.NoError(t, err)
+	assert.NotEmpty(t, token)
+	assert.NotEmpty(t, refreshToken)
+	// Token should be hex encoded (64 chars for 32 bytes)
+	assert.Len(t, token, 64)
+	assert.Len(t, refreshToken, 64)
+}
+
+func TestService_CreateSession_WithFullDeviceInfo(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	deviceName := "iPhone 15 Pro"
+	userAgent := "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"
+	ipAddr := netip.MustParseAddr("192.168.1.100")
+
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(0), nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CreateSession(ctx, mock.MatchedBy(func(params session.CreateSessionParams) bool {
+			return params.UserID == userID &&
+				params.DeviceName != nil && *params.DeviceName == deviceName &&
+				params.UserAgent != nil && *params.UserAgent == userAgent &&
+				params.IPAddress != nil && *params.IPAddress == ipAddr
+		})).
+		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Once()
+
+	deviceInfo := session.DeviceInfo{
+		DeviceName: &deviceName,
+		UserAgent:  &userAgent,
+		IPAddress:  &ipAddr,
+	}
+
+	token, refreshToken, err := svc.CreateSession(ctx, userID, deviceInfo, []string{"read", "write"})
+
+	require.NoError(t, err)
+	assert.NotEmpty(t, token)
+	assert.NotEmpty(t, refreshToken)
+}
+
+func TestService_ValidateSession_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+
+	sessionID := uuid.New()
+	userID := uuid.New()
+	validSession := &db.SharedSession{
+		ID:             sessionID,
+		UserID:         userID,
+		TokenHash:      "valid_hash",
+		IpAddress:      netip.MustParseAddr("127.0.0.1"),
+		Scopes:         []string{"read"},
+		CreatedAt:      time.Now(),
+		LastActivityAt: time.Now(),
+		ExpiresAt:      time.Now().Add(24 * time.Hour),
+	}
+
+	mockRepo.EXPECT().
+		GetSessionByTokenHash(ctx, mock.AnythingOfType("string")).
+		Return(validSession, nil).
+		Once()
+
+	mockRepo.EXPECT().
+		UpdateSessionActivity(ctx, sessionID).
+		Return(nil).
+		Once()
+
+	sess, err := svc.ValidateSession(ctx, "valid_token")
+
+	require.NoError(t, err)
+	assert.NotNil(t, sess)
+	assert.Equal(t, userID, sess.UserID)
+	assert.Equal(t, sessionID, sess.ID)
+}
+
+func TestService_RefreshSession_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+
+	sessionID := uuid.New()
+	userID := uuid.New()
+	deviceName := "Test Device"
+	userAgent := "Test Agent"
+	ipAddr := netip.MustParseAddr("192.168.1.1")
+
+	validSession := &db.SharedSession{
+		ID:             sessionID,
+		UserID:         userID,
+		TokenHash:      "old_hash",
+		IpAddress:      ipAddr,
+		DeviceName:     &deviceName,
+		UserAgent:      &userAgent,
+		Scopes:         []string{"read", "write"},
+		CreatedAt:      time.Now(),
+		LastActivityAt: time.Now(),
+		ExpiresAt:      time.Now().Add(24 * time.Hour),
+	}
+
+	mockRepo.EXPECT().
+		GetSessionByRefreshTokenHash(ctx, mock.AnythingOfType("string")).
+		Return(validSession, nil).
+		Once()
+
+	mockRepo.EXPECT().
+		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
+		Return(nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CreateSession(ctx, mock.MatchedBy(func(params session.CreateSessionParams) bool {
+			return params.UserID == userID &&
+				params.TokenHash != "" &&
+				params.RefreshTokenHash != nil &&
+				*params.RefreshTokenHash != "" &&
+				params.DeviceName != nil && *params.DeviceName == deviceName &&
+				params.UserAgent != nil && *params.UserAgent == userAgent
+		})).
+		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Once()
+
+	newToken, newRefresh, err := svc.RefreshSession(ctx, "valid_refresh_token")
+
+	require.NoError(t, err)
+	assert.NotEmpty(t, newToken)
+	assert.NotEmpty(t, newRefresh)
+}
+
+func TestService_RefreshSession_WithUnspecifiedIP(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+
+	sessionID := uuid.New()
+	userID := uuid.New()
+
+	// Session with unspecified IP
+	validSession := &db.SharedSession{
+		ID:             sessionID,
+		UserID:         userID,
+		TokenHash:      "old_hash",
+		IpAddress:      netip.Addr{}, // Unspecified
+		Scopes:         []string{"read"},
+		CreatedAt:      time.Now(),
+		LastActivityAt: time.Now(),
+		ExpiresAt:      time.Now().Add(24 * time.Hour),
+	}
+
+	mockRepo.EXPECT().
+		GetSessionByRefreshTokenHash(ctx, mock.AnythingOfType("string")).
+		Return(validSession, nil).
+		Once()
+
+	mockRepo.EXPECT().
+		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
+		Return(nil).
+		Once()
+
+	mockRepo.EXPECT().
+		CreateSession(ctx, mock.AnythingOfType("session.CreateSessionParams")).
+		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Once()
+
+	newToken, newRefresh, err := svc.RefreshSession(ctx, "valid_refresh_token")
+
+	require.NoError(t, err)
+	assert.NotEmpty(t, newToken)
+	assert.NotEmpty(t, newRefresh)
+}
+
+func TestService_ListUserSessions_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	deviceName := "My Device"
+	userAgent := "Test Agent"
+	ipAddr := netip.MustParseAddr("10.0.0.1")
+
+	sessions := []db.SharedSession{
+		{
+			ID:             uuid.New(),
+			UserID:         userID,
+			TokenHash:      "hash1",
+			IpAddress:      ipAddr,
+			DeviceName:     &deviceName,
+			UserAgent:      &userAgent,
+			CreatedAt:      time.Now().Add(-1 * time.Hour),
+			LastActivityAt: time.Now().Add(-30 * time.Minute),
+			ExpiresAt:      time.Now().Add(23 * time.Hour),
+		},
+		{
+			ID:             uuid.New(),
+			UserID:         userID,
+			TokenHash:      "hash2",
+			IpAddress:      netip.MustParseAddr("10.0.0.2"),
+			CreatedAt:      time.Now().Add(-2 * time.Hour),
+			LastActivityAt: time.Now().Add(-1 * time.Hour),
+			ExpiresAt:      time.Now().Add(22 * time.Hour),
+		},
+	}
+
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return(sessions, nil).
+		Once()
+
+	result, err := svc.ListUserSessions(ctx, userID)
+
+	require.NoError(t, err)
+	assert.Len(t, result, 2)
+	assert.Equal(t, sessions[0].ID, result[0].ID)
+	assert.Equal(t, deviceName, *result[0].DeviceName)
+	assert.NotNil(t, result[0].IPAddress)
+}
+
+func TestService_RevokeSession_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	sessionID := uuid.New()
+
+	mockRepo.EXPECT().
+		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
+		Return(nil).
+		Once()
+
+	err := svc.RevokeSession(ctx, sessionID)
+
+	require.NoError(t, err)
+}
+
+func TestService_RevokeAllUserSessionsExcept_Success(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+	currentSessionID := uuid.New()
+
+	mockRepo.EXPECT().
+		RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, mock.AnythingOfType("*string")).
+		Return(nil).
+		Once()
+
+	err := svc.RevokeAllUserSessionsExcept(ctx, userID, currentSessionID)
+
+	require.NoError(t, err)
+}
+
+// ========== SessionInfo Conversion Tests ==========
+
+func TestService_ListUserSessions_SessionInfoConversion(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	// Session with all fields populated
+	deviceName := "Test Device"
+	userAgent := "Mozilla/5.0"
+	validSession := db.SharedSession{
+		ID:             uuid.New(),
+		UserID:         userID,
+		TokenHash:      "hash",
+		IpAddress:      netip.MustParseAddr("192.168.1.1"),
+		DeviceName:     &deviceName,
+		UserAgent:      &userAgent,
+		CreatedAt:      time.Now().Add(-1 * time.Hour),
+		LastActivityAt: time.Now(),
+		ExpiresAt:      time.Now().Add(23 * time.Hour),
+	}
+
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return([]db.SharedSession{validSession}, nil).
+		Once()
+
+	result, err := svc.ListUserSessions(ctx, userID)
+
+	require.NoError(t, err)
+	require.Len(t, result, 1)
+
+	info := result[0]
+	assert.Equal(t, validSession.ID, info.ID)
+	assert.Equal(t, deviceName, *info.DeviceName)
+	assert.Equal(t, userAgent, *info.UserAgent)
+	assert.Equal(t, "192.168.1.1", *info.IPAddress)
+	assert.Equal(t, validSession.CreatedAt, info.CreatedAt)
+	assert.Equal(t, validSession.LastActivityAt, info.LastActivityAt)
+	assert.Equal(t, validSession.ExpiresAt, info.ExpiresAt)
+	assert.True(t, info.IsActive)
+	assert.False(t, info.IsCurrent)
+}
+
+func TestService_ListUserSessions_RevokedSession(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	// Revoked session
+	revokedAt := pgtype.Timestamptz{Time: time.Now().Add(-1 * time.Hour), Valid: true}
+	revokedSession := db.SharedSession{
+		ID:             uuid.New(),
+		UserID:         userID,
+		TokenHash:      "hash",
+		IpAddress:      netip.MustParseAddr("192.168.1.1"),
+		CreatedAt:      time.Now().Add(-2 * time.Hour),
+		LastActivityAt: time.Now().Add(-1 * time.Hour),
+		ExpiresAt:      time.Now().Add(22 * time.Hour),
+		RevokedAt:      revokedAt,
+	}
+
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return([]db.SharedSession{revokedSession}, nil).
+		Once()
+
+	result, err := svc.ListUserSessions(ctx, userID)
+
+	require.NoError(t, err)
+	require.Len(t, result, 1)
+	assert.False(t, result[0].IsActive) // Revoked session is not active
+}
+
+func TestService_ListUserSessions_ExpiredSession(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	// Expired session
+	expiredSession := db.SharedSession{
+		ID:             uuid.New(),
+		UserID:         userID,
+		TokenHash:      "hash",
+		IpAddress:      netip.MustParseAddr("192.168.1.1"),
+		CreatedAt:      time.Now().Add(-25 * time.Hour),
+		LastActivityAt: time.Now().Add(-24 * time.Hour),
+		ExpiresAt:      time.Now().Add(-1 * time.Hour), // Expired
+	}
+
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return([]db.SharedSession{expiredSession}, nil).
+		Once()
+
+	result, err := svc.ListUserSessions(ctx, userID)
+
+	require.NoError(t, err)
+	require.Len(t, result, 1)
+	assert.False(t, result[0].IsActive) // Expired session is not active
+}
+
+func TestService_ListUserSessions_SessionWithUnspecifiedIP(t *testing.T) {
+	t.Parallel()
+	svc, mockRepo := setupMockService(t)
+	ctx := context.Background()
+	userID := uuid.New()
+
+	// Session with actual unspecified IP (0.0.0.0)
+	sessionWithUnspecifiedIP := db.SharedSession{
+		ID:             uuid.New(),
+		UserID:         userID,
+		TokenHash:      "hash",
+		IpAddress:      netip.MustParseAddr("0.0.0.0"), // Unspecified IPv4
+		CreatedAt:      time.Now().Add(-1 * time.Hour),
+		LastActivityAt: time.Now(),
+		ExpiresAt:      time.Now().Add(23 * time.Hour),
+	}
+
+	mockRepo.EXPECT().
+		ListUserSessions(ctx, userID).
+		Return([]db.SharedSession{sessionWithUnspecifiedIP}, nil).
+		Once()
+
+	result, err := svc.ListUserSessions(ctx, userID)
+
+	require.NoError(t, err)
+	require.Len(t, result, 1)
+	assert.Nil(t, result[0].IPAddress) // Should be nil for unspecified IP (0.0.0.0)
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
-func setupCachedTestService(t *testing.T) (*CachedService, *testutil.TestDB) {
+func setupCachedTestService(t *testing.T) (*CachedService, testutil.DB) {
 	t.Helper()
 	svc, testDB := setupTestService(t)
 
