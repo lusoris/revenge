@@ -1,0 +1,195 @@
+package storage
+
+import (
+	"context"
+	"fmt"
+	"io"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/lusoris/revenge/internal/config"
+	"go.uber.org/zap"
+)
+
+// S3Storage implements Storage using S3-compatible object storage (AWS S3, MinIO, etc).
+// Suitable for production clustering where multiple instances need shared storage.
+type S3Storage struct {
+	client   *s3.Client
+	bucket   string
+	endpoint string
+	logger   *zap.Logger
+}
+
+// NewS3Storage creates a new S3-compatible storage backend.
+// Supports AWS S3, MinIO, and any S3-compatible storage.
+func NewS3Storage(cfg config.S3Config, logger *zap.Logger) (*S3Storage, error) {
+	// Create credentials provider
+	credsProvider := credentials.NewStaticCredentialsProvider(
+		cfg.AccessKeyID,
+		cfg.SecretAccessKey,
+		"", // session token (not needed)
+	)
+
+	// Load AWS config with credentials
+	awsCfg, err := awsconfig.LoadDefaultConfig(context.Background(),
+		awsconfig.WithRegion(cfg.Region),
+		awsconfig.WithCredentialsProvider(credsProvider),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+	}
+
+	// Create S3 client with custom endpoint for MinIO compatibility
+	client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
+		if cfg.Endpoint != "" {
+			o.BaseEndpoint = aws.String(cfg.Endpoint)
+		}
+		if cfg.UsePathStyle {
+			o.UsePathStyle = true // Required for MinIO
+		}
+	})
+
+	storage := &S3Storage{
+		client:   client,
+		bucket:   cfg.Bucket,
+		endpoint: cfg.Endpoint,
+		logger:   logger.Named("s3-storage"),
+	}
+
+	// Verify bucket exists (optional health check)
+	if err := storage.verifyBucket(context.Background()); err != nil {
+		logger.Warn("Failed to verify S3 bucket", zap.Error(err))
+	}
+
+	return storage, nil
+}
+
+// verifyBucket checks if the configured bucket exists and is accessible.
+func (s *S3Storage) verifyBucket(ctx context.Context) error {
+	_, err := s.client.HeadBucket(ctx, &s3.HeadBucketInput{
+		Bucket: aws.String(s.bucket),
+	})
+	if err != nil {
+		return fmt.Errorf("bucket not accessible: %w", err)
+	}
+	return nil
+}
+
+// Store uploads a file to S3 and returns its key.
+func (s *S3Storage) Store(ctx context.Context, key string, reader io.Reader, contentType string) (string, error) {
+	// Sanitize key to prevent path traversal
+	key = sanitizeKey(key)
+
+	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(s.bucket),
+		Key:         aws.String(key),
+		Body:        reader,
+		ContentType: aws.String(contentType),
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to upload to S3: %w", err)
+	}
+
+	s.logger.Info("File stored in S3",
+		zap.String("bucket", s.bucket),
+		zap.String("key", key),
+		zap.String("content_type", contentType))
+
+	return key, nil
+}
+
+// Get retrieves a file from S3.
+func (s *S3Storage) Get(ctx context.Context, key string) (io.ReadCloser, error) {
+	key = sanitizeKey(key)
+
+	output, err := s.client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get from S3: %w", err)
+	}
+
+	return output.Body, nil
+}
+
+// Delete removes a file from S3.
+func (s *S3Storage) Delete(ctx context.Context, key string) error {
+	key = sanitizeKey(key)
+
+	_, err := s.client.DeleteObject(ctx, &s3.DeleteObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to delete from S3: %w", err)
+	}
+
+	s.logger.Info("File deleted from S3",
+		zap.String("bucket", s.bucket),
+		zap.String("key", key))
+
+	return nil
+}
+
+// Exists checks if a file exists in S3.
+func (s *S3Storage) Exists(ctx context.Context, key string) (bool, error) {
+	key = sanitizeKey(key)
+
+	_, err := s.client.HeadObject(ctx, &s3.HeadObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		// Check if error is "not found"
+		// AWS SDK v2 doesn't expose error codes directly, so we check the error string
+		if isNotFoundError(err) {
+			return false, nil
+		}
+		return false, fmt.Errorf("failed to check S3 object: %w", err)
+	}
+
+	return true, nil
+}
+
+// GetURL returns the S3 URL for accessing a file.
+// For public buckets, this will be the direct S3 URL.
+// For private buckets, consider using pre-signed URLs instead.
+func (s *S3Storage) GetURL(key string) string {
+	key = sanitizeKey(key)
+
+	// If custom endpoint (MinIO), use that
+	if s.endpoint != "" {
+		return fmt.Sprintf("%s/%s/%s", s.endpoint, s.bucket, key)
+	}
+
+	// Standard AWS S3 URL
+	return fmt.Sprintf("https://%s.s3.amazonaws.com/%s", s.bucket, key)
+}
+
+// isNotFoundError checks if the error is a "not found" error from S3.
+// This is a simplified check; for production, consider using AWS error types.
+func isNotFoundError(err error) bool {
+	if err == nil {
+		return false
+	}
+	// AWS SDK v2 wraps errors, check error string
+	errStr := err.Error()
+	return contains(errStr, "NotFound") || contains(errStr, "NoSuchKey")
+}
+
+// contains is a simple helper to check if a string contains a substring.
+func contains(s, substr string) bool {
+	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && (s[:len(substr)] == substr || s[len(s)-len(substr):] == substr || containsInner(s, substr)))
+}
+
+func containsInner(s, substr string) bool {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return true
+		}
+	}
+	return false
+}

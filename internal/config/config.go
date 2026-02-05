@@ -49,6 +49,9 @@ type Config struct {
 	// Avatar configuration
 	Avatar AvatarConfig `koanf:"avatar"`
 
+	// Storage configuration (for avatars and user-generated content)
+	Storage StorageConfig `koanf:"storage"`
+
 	// Activity configuration
 	Activity ActivityConfig `koanf:"activity"`
 }
@@ -376,6 +379,46 @@ type AvatarConfig struct {
 	AllowedTypes []string `koanf:"allowed_types"`
 }
 
+// StorageConfig holds configuration for file storage backend.
+type StorageConfig struct {
+	// Backend specifies the storage backend: "local" or "s3"
+	Backend string `koanf:"backend" validate:"oneof=local s3"`
+
+	// Local configuration (used when Backend is "local")
+	Local LocalStorageConfig `koanf:"local"`
+
+	// S3 configuration (used when Backend is "s3")
+	S3 S3Config `koanf:"s3"`
+}
+
+// LocalStorageConfig holds configuration for local filesystem storage.
+type LocalStorageConfig struct {
+	// Path is the base directory for file storage
+	Path string `koanf:"path" validate:"required_if=Backend local"`
+}
+
+// S3Config holds configuration for S3-compatible storage (AWS S3, MinIO, etc).
+type S3Config struct {
+	// Endpoint is the S3 endpoint URL (for MinIO: "http://minio:9000")
+	// Leave empty for AWS S3
+	Endpoint string `koanf:"endpoint"`
+
+	// Region is the S3 region (e.g., "us-east-1")
+	Region string `koanf:"region" validate:"required_if=Backend s3"`
+
+	// Bucket is the S3 bucket name
+	Bucket string `koanf:"bucket" validate:"required_if=Backend s3"`
+
+	// AccessKeyID is the S3 access key ID
+	AccessKeyID string `koanf:"access_key_id" validate:"required_if=Backend s3"`
+
+	// SecretAccessKey is the S3 secret access key
+	SecretAccessKey string `koanf:"secret_access_key" validate:"required_if=Backend s3"`
+
+	// UsePathStyle enables path-style S3 URLs (required for MinIO)
+	UsePathStyle bool `koanf:"use_path_style"`
+}
+
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
@@ -487,6 +530,16 @@ func Defaults() map[string]interface{} {
 		"avatar.storage_path":   "/data/avatars",
 		"avatar.max_size_bytes": 2 * 1024 * 1024, // 2MB
 		"avatar.allowed_types":  []string{"image/jpeg", "image/png", "image/webp"},
+
+		// Storage defaults
+		"storage.backend":            "local", // Use local storage by default
+		"storage.local.path":         "/data/storage",
+		"storage.s3.region":          "us-east-1",
+		"storage.s3.bucket":          "",
+		"storage.s3.endpoint":        "",
+		"storage.s3.access_key_id":   "",
+		"storage.s3.secret_access_key": "",
+		"storage.s3.use_path_style":  false,
 
 		// Activity defaults
 		"activity.retention_days": 90, // 90 days default retention
