@@ -11,48 +11,40 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/content/movie"
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
 )
 
-// MovieMetadataRefreshArgs are the arguments for refreshing movie metadata.
-type MovieMetadataRefreshArgs struct {
-	MovieID uuid.UUID `json:"movie_id"`
-	Force   bool      `json:"force"`
-}
-
-// Kind returns the unique job kind for River
-func (MovieMetadataRefreshArgs) Kind() string {
-	return "movie_metadata_refresh"
-}
-
-// MovieMetadataRefreshWorker refreshes movie metadata from TMDb
+// MovieMetadataRefreshWorker refreshes movie metadata using the shared metadata service.
+// It handles jobs of type metadatajobs.RefreshMovieArgs (kind: "metadata_refresh_movie").
 type MovieMetadataRefreshWorker struct {
-	river.WorkerDefaults[MovieMetadataRefreshArgs]
-	movieRepo       movie.Repository
-	metadataService *movie.MetadataService
-	logger          *zap.Logger
+	river.WorkerDefaults[metadatajobs.RefreshMovieArgs]
+	movieRepo        movie.Repository
+	metadataProvider movie.MetadataProvider
+	logger           *zap.Logger
 }
 
-// NewMovieMetadataRefreshWorker creates a new metadata refresh worker
+// NewMovieMetadataRefreshWorker creates a new metadata refresh worker.
 func NewMovieMetadataRefreshWorker(
 	movieRepo movie.Repository,
-	metadataService *movie.MetadataService,
+	metadataProvider movie.MetadataProvider,
 	logger *zap.Logger,
 ) *MovieMetadataRefreshWorker {
 	return &MovieMetadataRefreshWorker{
-		movieRepo:       movieRepo,
-		metadataService: metadataService,
-		logger:          logger,
+		movieRepo:        movieRepo,
+		metadataProvider: metadataProvider,
+		logger:           logger,
 	}
 }
 
-// Work executes the metadata refresh job
-func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[MovieMetadataRefreshArgs]) error {
+// Work executes the metadata refresh job.
+func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[metadatajobs.RefreshMovieArgs]) error {
 	args := job.Args
 
 	w.logger.Info("starting movie metadata refresh",
 		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
 		zap.String("movie_id", args.MovieID.String()),
 		zap.Bool("force", args.Force),
+		zap.Strings("languages", args.Languages),
 	)
 
 	// Get existing movie
@@ -77,14 +69,14 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Mo
 
 	// Clear cache if force refresh
 	if args.Force {
-		w.metadataService.ClearCache()
+		w.metadataProvider.ClearCache()
 		w.logger.Info("cleared metadata cache for force refresh",
 			zap.String("job_id", fmt.Sprintf("%d", job.ID)),
 		)
 	}
 
 	// Enrich movie with fresh metadata
-	if err := w.metadataService.EnrichMovie(ctx, existingMovie); err != nil {
+	if err := w.metadataProvider.EnrichMovie(ctx, existingMovie); err != nil {
 		w.logger.Error("failed to enrich movie with metadata",
 			zap.Int32("tmdb_id", *existingMovie.TMDbID),
 			zap.Error(err),
@@ -127,7 +119,7 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Mo
 	return nil
 }
 
-// updateMovieMetadata updates the movie record in the database with enriched metadata
+// updateMovieMetadata updates the movie record in the database with enriched metadata.
 func (w *MovieMetadataRefreshWorker) updateMovieMetadata(ctx context.Context, mov *movie.Movie) error {
 	params := movie.UpdateMovieParams{
 		ID:               mov.ID,
@@ -149,16 +141,20 @@ func (w *MovieMetadataRefreshWorker) updateMovieMetadata(ctx context.Context, mo
 		Popularity:       formatDecimalPtr(mov.Popularity),
 		Budget:           mov.Budget,
 		Revenue:          mov.Revenue,
+		TitlesI18n:       mov.TitlesI18n,
+		TaglinesI18n:     mov.TaglinesI18n,
+		OverviewsI18n:    mov.OverviewsI18n,
+		AgeRatings:       mov.AgeRatings,
 	}
 
 	_, err := w.movieRepo.UpdateMovie(ctx, params)
 	return err
 }
 
-// refreshCredits fetches fresh credits from TMDb and updates the database
+// refreshCredits fetches fresh credits and updates the database.
 func (w *MovieMetadataRefreshWorker) refreshCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) error {
-	// Fetch credits from TMDb
-	credits, err := w.metadataService.GetMovieCredits(ctx, movieID, tmdbID)
+	// Fetch credits via metadata provider
+	credits, err := w.metadataProvider.GetMovieCredits(ctx, movieID, tmdbID)
 	if err != nil {
 		return fmt.Errorf("failed to fetch credits: %w", err)
 	}
@@ -200,10 +196,10 @@ func (w *MovieMetadataRefreshWorker) refreshCredits(ctx context.Context, movieID
 	return nil
 }
 
-// refreshGenres fetches fresh genres from TMDb and updates the database
+// refreshGenres fetches fresh genres and updates the database.
 func (w *MovieMetadataRefreshWorker) refreshGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) error {
-	// Fetch genres from TMDb
-	genres, err := w.metadataService.GetMovieGenres(ctx, movieID, tmdbID)
+	// Fetch genres via metadata provider
+	genres, err := w.metadataProvider.GetMovieGenres(ctx, movieID, tmdbID)
 	if err != nil {
 		return fmt.Errorf("failed to fetch genres: %w", err)
 	}
@@ -233,7 +229,7 @@ func (w *MovieMetadataRefreshWorker) refreshGenres(ctx context.Context, movieID 
 	return nil
 }
 
-// formatTimePtr formats a time.Time pointer to a string pointer
+// formatTimePtr formats a time.Time pointer to a string pointer.
 func formatTimePtr(t *time.Time) *string {
 	if t == nil {
 		return nil
@@ -242,7 +238,7 @@ func formatTimePtr(t *time.Time) *string {
 	return &s
 }
 
-// formatDecimalPtr formats a decimal.Decimal pointer to a string pointer
+// formatDecimalPtr formats a decimal.Decimal pointer to a string pointer.
 func formatDecimalPtr(d *decimal.Decimal) *string {
 	if d == nil || d.IsZero() {
 		return nil
