@@ -1,0 +1,547 @@
+package tvshow
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/google/uuid"
+)
+
+// Service defines business logic for TV shows
+type Service interface {
+	// Series operations
+	GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
+	GetSeriesByTMDbID(ctx context.Context, tmdbID int32) (*Series, error)
+	GetSeriesByTVDbID(ctx context.Context, tvdbID int32) (*Series, error)
+	GetSeriesBySonarrID(ctx context.Context, sonarrID int32) (*Series, error)
+	ListSeries(ctx context.Context, filters SeriesListFilters) ([]Series, error)
+	CountSeries(ctx context.Context) (int64, error)
+	SearchSeries(ctx context.Context, query string, limit, offset int32) ([]Series, error)
+	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, error)
+	ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error)
+	ListByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error)
+	ListByStatus(ctx context.Context, status string, limit, offset int32) ([]Series, error)
+	CreateSeries(ctx context.Context, params CreateSeriesParams) (*Series, error)
+	UpdateSeries(ctx context.Context, params UpdateSeriesParams) (*Series, error)
+	DeleteSeries(ctx context.Context, id uuid.UUID) error
+
+	// Season operations
+	GetSeason(ctx context.Context, id uuid.UUID) (*Season, error)
+	GetSeasonByNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber int32) (*Season, error)
+	ListSeasons(ctx context.Context, seriesID uuid.UUID) ([]Season, error)
+	ListSeasonsWithEpisodeCount(ctx context.Context, seriesID uuid.UUID) ([]SeasonWithEpisodeCount, error)
+	CreateSeason(ctx context.Context, params CreateSeasonParams) (*Season, error)
+	UpsertSeason(ctx context.Context, params CreateSeasonParams) (*Season, error)
+	UpdateSeason(ctx context.Context, params UpdateSeasonParams) (*Season, error)
+	DeleteSeason(ctx context.Context, id uuid.UUID) error
+
+	// Episode operations
+	GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
+	GetEpisodeByTMDbID(ctx context.Context, tmdbID int32) (*Episode, error)
+	GetEpisodeByNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber, episodeNumber int32) (*Episode, error)
+	GetEpisodeByFile(ctx context.Context, filePath string) (*Episode, error)
+	ListEpisodesBySeries(ctx context.Context, seriesID uuid.UUID) ([]Episode, error)
+	ListEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) ([]Episode, error)
+	ListEpisodesBySeasonNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber int32) ([]Episode, error)
+	ListRecentEpisodes(ctx context.Context, limit, offset int32) ([]EpisodeWithSeriesInfo, error)
+	ListUpcomingEpisodes(ctx context.Context, limit, offset int32) ([]EpisodeWithSeriesInfo, error)
+	CreateEpisode(ctx context.Context, params CreateEpisodeParams) (*Episode, error)
+	UpsertEpisode(ctx context.Context, params CreateEpisodeParams) (*Episode, error)
+	UpdateEpisode(ctx context.Context, params UpdateEpisodeParams) (*Episode, error)
+	DeleteEpisode(ctx context.Context, id uuid.UUID) error
+
+	// Episode files
+	GetEpisodeFile(ctx context.Context, id uuid.UUID) (*EpisodeFile, error)
+	GetEpisodeFileByPath(ctx context.Context, filePath string) (*EpisodeFile, error)
+	GetEpisodeFileBySonarrID(ctx context.Context, sonarrFileID int32) (*EpisodeFile, error)
+	ListEpisodeFiles(ctx context.Context, episodeID uuid.UUID) ([]EpisodeFile, error)
+	CreateEpisodeFile(ctx context.Context, params CreateEpisodeFileParams) (*EpisodeFile, error)
+	UpdateEpisodeFile(ctx context.Context, params UpdateEpisodeFileParams) (*EpisodeFile, error)
+	DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error
+
+	// Credits
+	GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
+	GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
+	GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error)
+	GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error)
+
+	// Genres & Networks
+	GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
+	GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error)
+
+	// Watch progress
+	UpdateEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID, progressSeconds, durationSeconds int32) (*EpisodeWatched, error)
+	GetEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error)
+	MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error
+	MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error
+	MarkSeriesWatched(ctx context.Context, userID, seriesID uuid.UUID) error
+	RemoveEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) error
+	RemoveSeriesProgress(ctx context.Context, userID, seriesID uuid.UUID) error
+	GetContinueWatching(ctx context.Context, userID uuid.UUID, limit int32) ([]ContinueWatchingItem, error)
+	GetNextEpisode(ctx context.Context, userID, seriesID uuid.UUID) (*Episode, error)
+	GetSeriesWatchStats(ctx context.Context, userID, seriesID uuid.UUID) (*SeriesWatchStats, error)
+	GetUserStats(ctx context.Context, userID uuid.UUID) (*UserTVStats, error)
+
+	// Metadata refresh
+	RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) error
+	RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) error
+	RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) error
+}
+
+// tvService implements the Service interface
+type tvService struct {
+	repo Repository
+}
+
+// NewService creates a new TV show service
+func NewService(repo Repository) Service {
+	return &tvService{
+		repo: repo,
+	}
+}
+
+// =============================================================================
+// Series Operations
+// =============================================================================
+
+func (s *tvService) GetSeries(ctx context.Context, id uuid.UUID) (*Series, error) {
+	return s.repo.GetSeries(ctx, id)
+}
+
+func (s *tvService) GetSeriesByTMDbID(ctx context.Context, tmdbID int32) (*Series, error) {
+	return s.repo.GetSeriesByTMDbID(ctx, tmdbID)
+}
+
+func (s *tvService) GetSeriesByTVDbID(ctx context.Context, tvdbID int32) (*Series, error) {
+	return s.repo.GetSeriesByTVDbID(ctx, tvdbID)
+}
+
+func (s *tvService) GetSeriesBySonarrID(ctx context.Context, sonarrID int32) (*Series, error) {
+	return s.repo.GetSeriesBySonarrID(ctx, sonarrID)
+}
+
+func (s *tvService) ListSeries(ctx context.Context, filters SeriesListFilters) ([]Series, error) {
+	return s.repo.ListSeries(ctx, filters)
+}
+
+func (s *tvService) CountSeries(ctx context.Context) (int64, error) {
+	return s.repo.CountSeries(ctx)
+}
+
+func (s *tvService) SearchSeries(ctx context.Context, query string, limit, offset int32) ([]Series, error) {
+	return s.repo.SearchSeriesByTitle(ctx, query, limit, offset)
+}
+
+func (s *tvService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, error) {
+	return s.repo.ListRecentlyAddedSeries(ctx, limit, offset)
+}
+
+func (s *tvService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error) {
+	return s.repo.ListSeriesByGenre(ctx, tmdbGenreID, limit, offset)
+}
+
+func (s *tvService) ListByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error) {
+	return s.repo.ListSeriesByNetwork(ctx, networkID, limit, offset)
+}
+
+func (s *tvService) ListByStatus(ctx context.Context, status string, limit, offset int32) ([]Series, error) {
+	return s.repo.ListSeriesByStatus(ctx, status, limit, offset)
+}
+
+func (s *tvService) CreateSeries(ctx context.Context, params CreateSeriesParams) (*Series, error) {
+	// Validate required fields
+	if params.Title == "" {
+		return nil, fmt.Errorf("title is required")
+	}
+
+	// Check if series already exists by TMDb ID
+	if params.TMDbID != nil {
+		existing, err := s.repo.GetSeriesByTMDbID(ctx, *params.TMDbID)
+		if err == nil && existing != nil {
+			return nil, fmt.Errorf("series with TMDb ID %d already exists", *params.TMDbID)
+		}
+	}
+
+	return s.repo.CreateSeries(ctx, params)
+}
+
+func (s *tvService) UpdateSeries(ctx context.Context, params UpdateSeriesParams) (*Series, error) {
+	// Verify series exists
+	_, err := s.repo.GetSeries(ctx, params.ID)
+	if err != nil {
+		return nil, fmt.Errorf("series not found: %w", err)
+	}
+
+	// Validate title if provided
+	if params.Title != nil && *params.Title == "" {
+		return nil, fmt.Errorf("title cannot be empty")
+	}
+
+	return s.repo.UpdateSeries(ctx, params)
+}
+
+func (s *tvService) DeleteSeries(ctx context.Context, id uuid.UUID) error {
+	return s.repo.DeleteSeries(ctx, id)
+}
+
+// =============================================================================
+// Season Operations
+// =============================================================================
+
+func (s *tvService) GetSeason(ctx context.Context, id uuid.UUID) (*Season, error) {
+	return s.repo.GetSeason(ctx, id)
+}
+
+func (s *tvService) GetSeasonByNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber int32) (*Season, error) {
+	return s.repo.GetSeasonByNumber(ctx, seriesID, seasonNumber)
+}
+
+func (s *tvService) ListSeasons(ctx context.Context, seriesID uuid.UUID) ([]Season, error) {
+	return s.repo.ListSeasonsBySeries(ctx, seriesID)
+}
+
+func (s *tvService) ListSeasonsWithEpisodeCount(ctx context.Context, seriesID uuid.UUID) ([]SeasonWithEpisodeCount, error) {
+	return s.repo.ListSeasonsBySeriesWithEpisodeCount(ctx, seriesID)
+}
+
+func (s *tvService) CreateSeason(ctx context.Context, params CreateSeasonParams) (*Season, error) {
+	// Verify series exists
+	_, err := s.repo.GetSeries(ctx, params.SeriesID)
+	if err != nil {
+		return nil, fmt.Errorf("series not found: %w", err)
+	}
+
+	// Check if season already exists
+	existing, err := s.repo.GetSeasonByNumber(ctx, params.SeriesID, params.SeasonNumber)
+	if err == nil && existing != nil {
+		return nil, fmt.Errorf("season %d already exists for this series", params.SeasonNumber)
+	}
+
+	return s.repo.CreateSeason(ctx, params)
+}
+
+func (s *tvService) UpsertSeason(ctx context.Context, params CreateSeasonParams) (*Season, error) {
+	// Verify series exists
+	_, err := s.repo.GetSeries(ctx, params.SeriesID)
+	if err != nil {
+		return nil, fmt.Errorf("series not found: %w", err)
+	}
+
+	return s.repo.UpsertSeason(ctx, params)
+}
+
+func (s *tvService) UpdateSeason(ctx context.Context, params UpdateSeasonParams) (*Season, error) {
+	// Verify season exists
+	_, err := s.repo.GetSeason(ctx, params.ID)
+	if err != nil {
+		return nil, fmt.Errorf("season not found: %w", err)
+	}
+
+	return s.repo.UpdateSeason(ctx, params)
+}
+
+func (s *tvService) DeleteSeason(ctx context.Context, id uuid.UUID) error {
+	// Delete episodes first
+	if err := s.repo.DeleteEpisodesBySeason(ctx, id); err != nil {
+		return fmt.Errorf("failed to delete episodes: %w", err)
+	}
+	return s.repo.DeleteSeason(ctx, id)
+}
+
+// =============================================================================
+// Episode Operations
+// =============================================================================
+
+func (s *tvService) GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error) {
+	return s.repo.GetEpisode(ctx, id)
+}
+
+func (s *tvService) GetEpisodeByTMDbID(ctx context.Context, tmdbID int32) (*Episode, error) {
+	return s.repo.GetEpisodeByTMDbID(ctx, tmdbID)
+}
+
+func (s *tvService) GetEpisodeByNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber, episodeNumber int32) (*Episode, error) {
+	return s.repo.GetEpisodeByNumber(ctx, seriesID, seasonNumber, episodeNumber)
+}
+
+func (s *tvService) GetEpisodeByFile(ctx context.Context, filePath string) (*Episode, error) {
+	file, err := s.repo.GetEpisodeFileByPath(ctx, filePath)
+	if err != nil {
+		return nil, fmt.Errorf("file not found: %w", err)
+	}
+	return s.repo.GetEpisode(ctx, file.EpisodeID)
+}
+
+func (s *tvService) ListEpisodesBySeries(ctx context.Context, seriesID uuid.UUID) ([]Episode, error) {
+	return s.repo.ListEpisodesBySeries(ctx, seriesID)
+}
+
+func (s *tvService) ListEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) ([]Episode, error) {
+	return s.repo.ListEpisodesBySeason(ctx, seasonID)
+}
+
+func (s *tvService) ListEpisodesBySeasonNumber(ctx context.Context, seriesID uuid.UUID, seasonNumber int32) ([]Episode, error) {
+	return s.repo.ListEpisodesBySeasonNumber(ctx, seriesID, seasonNumber)
+}
+
+func (s *tvService) ListRecentEpisodes(ctx context.Context, limit, offset int32) ([]EpisodeWithSeriesInfo, error) {
+	return s.repo.ListRecentEpisodes(ctx, limit, offset)
+}
+
+func (s *tvService) ListUpcomingEpisodes(ctx context.Context, limit, offset int32) ([]EpisodeWithSeriesInfo, error) {
+	return s.repo.ListUpcomingEpisodes(ctx, limit, offset)
+}
+
+func (s *tvService) CreateEpisode(ctx context.Context, params CreateEpisodeParams) (*Episode, error) {
+	// Verify season exists
+	_, err := s.repo.GetSeason(ctx, params.SeasonID)
+	if err != nil {
+		return nil, fmt.Errorf("season not found: %w", err)
+	}
+
+	// Check if episode already exists
+	existing, err := s.repo.GetEpisodeByNumber(ctx, params.SeriesID, params.SeasonNumber, params.EpisodeNumber)
+	if err == nil && existing != nil {
+		return nil, fmt.Errorf("episode S%02dE%02d already exists for this series", params.SeasonNumber, params.EpisodeNumber)
+	}
+
+	return s.repo.CreateEpisode(ctx, params)
+}
+
+func (s *tvService) UpsertEpisode(ctx context.Context, params CreateEpisodeParams) (*Episode, error) {
+	// Verify season exists
+	_, err := s.repo.GetSeason(ctx, params.SeasonID)
+	if err != nil {
+		return nil, fmt.Errorf("season not found: %w", err)
+	}
+
+	return s.repo.UpsertEpisode(ctx, params)
+}
+
+func (s *tvService) UpdateEpisode(ctx context.Context, params UpdateEpisodeParams) (*Episode, error) {
+	// Verify episode exists
+	_, err := s.repo.GetEpisode(ctx, params.ID)
+	if err != nil {
+		return nil, fmt.Errorf("episode not found: %w", err)
+	}
+
+	return s.repo.UpdateEpisode(ctx, params)
+}
+
+func (s *tvService) DeleteEpisode(ctx context.Context, id uuid.UUID) error {
+	// Delete associated files first
+	if err := s.repo.DeleteEpisodeFilesByEpisode(ctx, id); err != nil {
+		return fmt.Errorf("failed to delete episode files: %w", err)
+	}
+	return s.repo.DeleteEpisode(ctx, id)
+}
+
+// =============================================================================
+// Episode File Operations
+// =============================================================================
+
+func (s *tvService) GetEpisodeFile(ctx context.Context, id uuid.UUID) (*EpisodeFile, error) {
+	return s.repo.GetEpisodeFile(ctx, id)
+}
+
+func (s *tvService) GetEpisodeFileByPath(ctx context.Context, filePath string) (*EpisodeFile, error) {
+	return s.repo.GetEpisodeFileByPath(ctx, filePath)
+}
+
+func (s *tvService) GetEpisodeFileBySonarrID(ctx context.Context, sonarrFileID int32) (*EpisodeFile, error) {
+	return s.repo.GetEpisodeFileBySonarrID(ctx, sonarrFileID)
+}
+
+func (s *tvService) ListEpisodeFiles(ctx context.Context, episodeID uuid.UUID) ([]EpisodeFile, error) {
+	return s.repo.ListEpisodeFilesByEpisode(ctx, episodeID)
+}
+
+func (s *tvService) CreateEpisodeFile(ctx context.Context, params CreateEpisodeFileParams) (*EpisodeFile, error) {
+	// Verify episode exists
+	_, err := s.repo.GetEpisode(ctx, params.EpisodeID)
+	if err != nil {
+		return nil, fmt.Errorf("episode not found: %w", err)
+	}
+
+	// Check if file already exists
+	existing, err := s.repo.GetEpisodeFileByPath(ctx, params.FilePath)
+	if err == nil && existing != nil {
+		return nil, fmt.Errorf("file already exists at path: %s", params.FilePath)
+	}
+
+	return s.repo.CreateEpisodeFile(ctx, params)
+}
+
+func (s *tvService) UpdateEpisodeFile(ctx context.Context, params UpdateEpisodeFileParams) (*EpisodeFile, error) {
+	// Verify file exists
+	_, err := s.repo.GetEpisodeFile(ctx, params.ID)
+	if err != nil {
+		return nil, fmt.Errorf("episode file not found: %w", err)
+	}
+
+	return s.repo.UpdateEpisodeFile(ctx, params)
+}
+
+func (s *tvService) DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error {
+	return s.repo.DeleteEpisodeFile(ctx, id)
+}
+
+// =============================================================================
+// Credits Operations
+// =============================================================================
+
+func (s *tvService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
+	return s.repo.ListSeriesCast(ctx, seriesID)
+}
+
+func (s *tvService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
+	return s.repo.ListSeriesCrew(ctx, seriesID)
+}
+
+func (s *tvService) GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error) {
+	return s.repo.ListEpisodeGuestStars(ctx, episodeID)
+}
+
+func (s *tvService) GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error) {
+	return s.repo.ListEpisodeCrew(ctx, episodeID)
+}
+
+// =============================================================================
+// Genres & Networks Operations
+// =============================================================================
+
+func (s *tvService) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error) {
+	return s.repo.ListSeriesGenres(ctx, seriesID)
+}
+
+func (s *tvService) GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error) {
+	return s.repo.ListNetworksBySeries(ctx, seriesID)
+}
+
+// =============================================================================
+// Watch Progress Operations
+// =============================================================================
+
+func (s *tvService) UpdateEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID, progressSeconds, durationSeconds int32) (*EpisodeWatched, error) {
+	// Verify episode exists
+	_, err := s.repo.GetEpisode(ctx, episodeID)
+	if err != nil {
+		return nil, fmt.Errorf("episode not found: %w", err)
+	}
+
+	// Calculate if completed (>90% watched)
+	isCompleted := false
+	if durationSeconds > 0 {
+		progress := float64(progressSeconds) / float64(durationSeconds)
+		isCompleted = progress > 0.90
+	}
+
+	params := CreateWatchProgressParams{
+		UserID:          userID,
+		EpisodeID:       episodeID,
+		ProgressSeconds: progressSeconds,
+		DurationSeconds: durationSeconds,
+		IsCompleted:     isCompleted,
+	}
+
+	return s.repo.CreateOrUpdateWatchProgress(ctx, params)
+}
+
+func (s *tvService) GetEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error) {
+	return s.repo.GetWatchProgress(ctx, userID, episodeID)
+}
+
+func (s *tvService) MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error {
+	// Get episode to get duration
+	episode, err := s.repo.GetEpisode(ctx, episodeID)
+	if err != nil {
+		return fmt.Errorf("episode not found: %w", err)
+	}
+
+	// Use runtime if available, otherwise default to 2700 seconds (45 minutes)
+	durationSeconds := int32(2700)
+	if episode.Runtime != nil && *episode.Runtime > 0 {
+		durationSeconds = *episode.Runtime * 60 // Convert minutes to seconds
+	}
+
+	_, err = s.repo.MarkEpisodeWatched(ctx, userID, episodeID, durationSeconds)
+	return err
+}
+
+func (s *tvService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {
+	// Get all episodes in season
+	episodes, err := s.repo.ListEpisodesBySeason(ctx, seasonID)
+	if err != nil {
+		return fmt.Errorf("failed to list episodes: %w", err)
+	}
+
+	// Mark each episode as watched
+	for _, ep := range episodes {
+		if err := s.MarkEpisodeWatched(ctx, userID, ep.ID); err != nil {
+			return fmt.Errorf("failed to mark episode %d watched: %w", ep.EpisodeNumber, err)
+		}
+	}
+
+	return nil
+}
+
+func (s *tvService) MarkSeriesWatched(ctx context.Context, userID, seriesID uuid.UUID) error {
+	// Get all seasons
+	seasons, err := s.repo.ListSeasonsBySeries(ctx, seriesID)
+	if err != nil {
+		return fmt.Errorf("failed to list seasons: %w", err)
+	}
+
+	// Mark each season as watched
+	for _, season := range seasons {
+		if err := s.MarkSeasonWatched(ctx, userID, season.ID); err != nil {
+			return fmt.Errorf("failed to mark season %d watched: %w", season.SeasonNumber, err)
+		}
+	}
+
+	return nil
+}
+
+func (s *tvService) RemoveEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) error {
+	return s.repo.DeleteWatchProgress(ctx, userID, episodeID)
+}
+
+func (s *tvService) RemoveSeriesProgress(ctx context.Context, userID, seriesID uuid.UUID) error {
+	return s.repo.DeleteSeriesWatchProgress(ctx, userID, seriesID)
+}
+
+func (s *tvService) GetContinueWatching(ctx context.Context, userID uuid.UUID, limit int32) ([]ContinueWatchingItem, error) {
+	return s.repo.ListContinueWatchingSeries(ctx, userID, limit)
+}
+
+func (s *tvService) GetNextEpisode(ctx context.Context, userID, seriesID uuid.UUID) (*Episode, error) {
+	return s.repo.GetNextUnwatchedEpisode(ctx, userID, seriesID)
+}
+
+func (s *tvService) GetSeriesWatchStats(ctx context.Context, userID, seriesID uuid.UUID) (*SeriesWatchStats, error) {
+	return s.repo.GetSeriesWatchStats(ctx, userID, seriesID)
+}
+
+func (s *tvService) GetUserStats(ctx context.Context, userID uuid.UUID) (*UserTVStats, error) {
+	return s.repo.GetUserTVStats(ctx, userID)
+}
+
+// =============================================================================
+// Metadata Operations
+// =============================================================================
+
+func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) error {
+	// TODO: Implement metadata refresh via River job
+	// This should enqueue a job to fetch latest metadata from TMDb/Sonarr
+	return fmt.Errorf("series metadata refresh not implemented yet")
+}
+
+func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) error {
+	// TODO: Implement metadata refresh via River job
+	return fmt.Errorf("season metadata refresh not implemented yet")
+}
+
+func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) error {
+	// TODO: Implement metadata refresh via River job
+	return fmt.Errorf("episode metadata refresh not implemented yet")
+}
