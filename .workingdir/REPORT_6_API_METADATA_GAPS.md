@@ -6,7 +6,7 @@
 
 ## Summary
 
-The shared metadata service has full support for both Movie and TV metadata providers (TMDb, TVDb), but the public API only exposes movie metadata endpoints. TV metadata endpoints need to be added.
+The shared metadata service has full support for both Movie and TV metadata providers (TMDb, TVDb). **Core TV metadata endpoints are now complete** (search, show details, season details, episode details). Extended endpoints (credits, images, content ratings, external IDs) remain as low priority future work.
 
 ---
 
@@ -21,16 +21,14 @@ The shared metadata service has full support for both Movie and TV metadata prov
 | `GET /api/v1/metadata/collection/{tmdbId}` | `GetCollectionMetadata` | ✅ |
 | `GET /api/v1/images/proxy/{type}/{size}/{path}` | `GetProxiedImage` | ✅ |
 
-### TV Metadata Endpoints (MISSING)
+### TV Metadata Endpoints (CORE COMPLETE)
 
-The metadata service (`internal/service/metadata/service.go`) provides these methods that have **no API endpoints**:
-
-| Service Method | Suggested Endpoint | Priority |
-|---------------|-------------------|----------|
-| `SearchTVShow` | `GET /api/v1/metadata/search/tv` | HIGH |
-| `GetTVShowMetadata` | `GET /api/v1/metadata/tv/{tmdbId}` | HIGH |
-| `GetSeasonMetadata` | `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}` | MEDIUM |
-| `GetEpisodeMetadata` | `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}` | MEDIUM |
+| Service Method | Endpoint | Status |
+|---------------|----------|--------|
+| `SearchTVShow` | `GET /api/v1/metadata/search/tv` | ✅ |
+| `GetTVShowMetadata` | `GET /api/v1/metadata/tv/{tmdbId}` | ✅ |
+| `GetSeasonMetadata` | `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}` | ✅ |
+| `GetEpisodeMetadata` | `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}` | ✅ |
 | `GetTVShowCredits` | `GET /api/v1/metadata/tv/{tmdbId}/credits` | LOW |
 | `GetTVShowImages` | `GET /api/v1/metadata/tv/{tmdbId}/images` | LOW |
 | `GetTVShowContentRatings` | `GET /api/v1/metadata/tv/{tmdbId}/content-ratings` | LOW |
@@ -110,20 +108,20 @@ The TMDb provider has person lookup, but no API endpoints:
 
 ## Action Items
 
-### Priority 1 - HIGH (TV Metadata Search/Details)
+### ~~Priority 1 - HIGH (TV Metadata Search/Details)~~ COMPLETED
 
-1. [ ] Add `GET /api/v1/metadata/search/tv` to OpenAPI spec
-2. [ ] Add `GET /api/v1/metadata/tv/{tmdbId}` to OpenAPI spec
-3. [ ] Implement `SearchTVShowMetadata` handler
-4. [ ] Implement `GetTVShowMetadata` handler
-5. [ ] Regenerate ogen code
+1. [x] Add `GET /api/v1/metadata/search/tv` to OpenAPI spec
+2. [x] Add `GET /api/v1/metadata/tv/{tmdbId}` to OpenAPI spec
+3. [x] Implement `SearchTVShowsMetadata` handler
+4. [x] Implement `GetTVShowMetadata` handler
+5. [x] Regenerate ogen code
 
-### Priority 2 - MEDIUM (Season/Episode Details)
+### ~~Priority 2 - MEDIUM (Season/Episode Details)~~ COMPLETED
 
-6. [ ] Add `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}` to OpenAPI spec
-7. [ ] Add `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}` to OpenAPI spec
-8. [ ] Implement `GetSeasonMetadata` handler
-9. [ ] Implement `GetEpisodeMetadata` handler
+6. [x] Add `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}` to OpenAPI spec
+7. [x] Add `GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}` to OpenAPI spec
+8. [x] Implement `GetSeasonMetadata` handler
+9. [x] Implement `GetEpisodeMetadata` handler
 
 ### Priority 3 - LOW (Extended TV Metadata)
 
