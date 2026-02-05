@@ -60,6 +60,7 @@ type Querier interface {
 	MoviePlaceholder(ctx context.Context) (int32, error)
 	RemoveMovieFromCollection(ctx context.Context, arg RemoveMovieFromCollectionParams) error
 	SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTitleParams) ([]Movie, error)
+	SearchMoviesByTitleAnyLanguage(ctx context.Context, arg SearchMoviesByTitleAnyLanguageParams) ([]Movie, error)
 	UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie, error)
 	UpdateMovieCollection(ctx context.Context, arg UpdateMovieCollectionParams) (MovieCollection, error)
 	UpdateMovieFile(ctx context.Context, arg UpdateMovieFileParams) (MovieFile, error)

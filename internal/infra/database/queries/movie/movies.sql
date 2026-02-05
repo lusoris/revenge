@@ -12,6 +12,10 @@ INSERT INTO public.movies (
     tagline,
     status,
     original_language,
+    titles_i18n,
+    taglines_i18n,
+    overviews_i18n,
+    age_ratings,
     poster_path,
     backdrop_path,
     trailer_url,
@@ -23,7 +27,7 @@ INSERT INTO public.movies (
     radarr_id,
     metadata_updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
 ) RETURNING *;
 
 -- name: GetMovie :one
@@ -56,6 +60,10 @@ SET
     tagline = COALESCE(sqlc.narg('tagline'), tagline),
     status = COALESCE(sqlc.narg('status'), status),
     original_language = COALESCE(sqlc.narg('original_language'), original_language),
+    titles_i18n = COALESCE(sqlc.narg('titles_i18n'), titles_i18n),
+    taglines_i18n = COALESCE(sqlc.narg('taglines_i18n'), taglines_i18n),
+    overviews_i18n = COALESCE(sqlc.narg('overviews_i18n'), overviews_i18n),
+    age_ratings = COALESCE(sqlc.narg('age_ratings'), age_ratings),
     poster_path = COALESCE(sqlc.narg('poster_path'), poster_path),
     backdrop_path = COALESCE(sqlc.narg('backdrop_path'), backdrop_path),
     trailer_url = COALESCE(sqlc.narg('trailer_url'), trailer_url),
@@ -96,6 +104,28 @@ WHERE deleted_at IS NULL
 ORDER BY
     similarity(title, $1) DESC,
     similarity(original_title, $1) DESC
+LIMIT $2 OFFSET $3;
+
+-- name: SearchMoviesByTitleAnyLanguage :many
+SELECT * FROM public.movies
+WHERE deleted_at IS NULL
+    AND (
+        title ILIKE '%' || $1 || '%'
+        OR original_title ILIKE '%' || $1 || '%'
+        OR EXISTS (
+            SELECT 1
+            FROM jsonb_each_text(titles_i18n)
+            WHERE value ILIKE '%' || $1 || '%'
+        )
+    )
+ORDER BY
+    CASE
+        WHEN title ILIKE $1 THEN 1
+        WHEN original_title ILIKE $1 THEN 2
+        WHEN title ILIKE $1 || '%' THEN 3
+        ELSE 4
+    END,
+    vote_average DESC NULLS LAST
 LIMIT $2 OFFSET $3;
 
 -- name: ListMoviesByYear :many

@@ -3,6 +3,7 @@ package movie
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -91,6 +92,10 @@ func dbMovieToMovie(dbMovie moviedb.Movie) *Movie {
 		Tagline:           dbMovie.Tagline,
 		Status:            dbMovie.Status,
 		OriginalLanguage:  dbMovie.OriginalLanguage,
+		TitlesI18n:        unmarshalStringMap(dbMovie.TitlesI18n),
+		TaglinesI18n:      unmarshalStringMap(dbMovie.TaglinesI18n),
+		OverviewsI18n:     unmarshalStringMap(dbMovie.OverviewsI18n),
+		AgeRatings:        unmarshalNestedStringMap(dbMovie.AgeRatings),
 		PosterPath:        dbMovie.PosterPath,
 		BackdropPath:      dbMovie.BackdropPath,
 		TrailerURL:        dbMovie.TrailerUrl,
@@ -201,6 +206,10 @@ func dbContinueWatchingRowToMovie(row moviedb.ListContinueWatchingRow) *Movie {
 		Tagline:           row.Tagline,
 		Status:            row.Status,
 		OriginalLanguage:  row.OriginalLanguage,
+		TitlesI18n:        unmarshalStringMap(row.TitlesI18n),
+		TaglinesI18n:      unmarshalStringMap(row.TaglinesI18n),
+		OverviewsI18n:     unmarshalStringMap(row.OverviewsI18n),
+		AgeRatings:        unmarshalNestedStringMap(row.AgeRatings),
 		PosterPath:        row.PosterPath,
 		BackdropPath:      row.BackdropPath,
 		TrailerURL:        row.TrailerUrl,
@@ -232,6 +241,10 @@ func dbWatchedMovieRowToMovie(row moviedb.ListWatchedMoviesRow) *Movie {
 		Tagline:           row.Tagline,
 		Status:            row.Status,
 		OriginalLanguage:  row.OriginalLanguage,
+		TitlesI18n:        unmarshalStringMap(row.TitlesI18n),
+		TaglinesI18n:      unmarshalStringMap(row.TaglinesI18n),
+		OverviewsI18n:     unmarshalStringMap(row.OverviewsI18n),
+		AgeRatings:        unmarshalNestedStringMap(row.AgeRatings),
 		PosterPath:        row.PosterPath,
 		BackdropPath:      row.BackdropPath,
 		TrailerURL:        row.TrailerUrl,
@@ -278,6 +291,54 @@ func derefBool(p *bool) bool {
 	return *p
 }
 
+// unmarshalStringMap unmarshals JSONB []byte to map[string]string
+func unmarshalStringMap(data []byte) map[string]string {
+	if len(data) == 0 {
+		return nil
+	}
+	var result map[string]string
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil
+	}
+	return result
+}
+
+// unmarshalNestedStringMap unmarshals JSONB []byte to map[string]map[string]string
+func unmarshalNestedStringMap(data []byte) map[string]map[string]string {
+	if len(data) == 0 {
+		return nil
+	}
+	var result map[string]map[string]string
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil
+	}
+	return result
+}
+
+// marshalStringMap marshals map[string]string to JSONB []byte
+func marshalStringMap(m map[string]string) []byte {
+	if m == nil {
+		return []byte("{}")
+	}
+	data, err := json.Marshal(m)
+	if err != nil {
+		return []byte("{}")
+	}
+	return data
+}
+
+// marshalNestedStringMap marshals map[string]map[string]string to JSONB []byte
+func marshalNestedStringMap(m map[string]map[string]string) []byte {
+	if m == nil {
+		return []byte("{}")
+	}
+	data, err := json.Marshal(m)
+	if err != nil {
+		return []byte("{}")
+	}
+	return data
+}
+
 // Placeholder implementations for remaining methods
 // TODO: Implement all repository methods
 
@@ -309,6 +370,22 @@ func (r *postgresRepository) SearchMoviesByTitle(ctx context.Context, query stri
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to search movies: %w", err)
+	}
+	movies := make([]Movie, len(dbMovies))
+	for i, m := range dbMovies {
+		movies[i] = *dbMovieToMovie(m)
+	}
+	return movies, nil
+}
+
+func (r *postgresRepository) SearchMoviesByTitleAnyLanguage(ctx context.Context, query string, limit, offset int32) ([]Movie, error) {
+	dbMovies, err := r.queries.SearchMoviesByTitleAnyLanguage(ctx, moviedb.SearchMoviesByTitleAnyLanguageParams{
+		Column1: &query,
+		Limit:   limit,
+		Offset:  offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to search movies in any language: %w", err)
 	}
 	movies := make([]Movie, len(dbMovies))
 	for i, m := range dbMovies {
@@ -366,26 +443,30 @@ func (r *postgresRepository) ListTopRated(ctx context.Context, minVotes int32, l
 
 func (r *postgresRepository) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
 	dbParams := moviedb.CreateMovieParams{
-		TmdbID:           params.TMDbID,
-		ImdbID:           params.IMDbID,
-		Title:            params.Title,
-		OriginalTitle:    params.OriginalTitle,
-		Year:             params.Year,
-		ReleaseDate:      stringToPgDate(params.ReleaseDate),
-		Runtime:          params.Runtime,
-		Overview:         params.Overview,
-		Tagline:          params.Tagline,
-		Status:           params.Status,
-		OriginalLanguage: params.OriginalLanguage,
-		PosterPath:       params.PosterPath,
-		BackdropPath:     params.BackdropPath,
-		TrailerUrl:       params.TrailerURL,
-		VoteAverage:      stringToPgNumeric(params.VoteAverage),
-		VoteCount:        params.VoteCount,
-		Popularity:       stringToPgNumeric(params.Popularity),
-		Budget:           params.Budget,
-		Revenue:          params.Revenue,
-		RadarrID:         params.RadarrID,
+		TmdbID:            params.TMDbID,
+		ImdbID:            params.IMDbID,
+		Title:             params.Title,
+		OriginalTitle:     params.OriginalTitle,
+		Year:              params.Year,
+		ReleaseDate:       stringToPgDate(params.ReleaseDate),
+		Runtime:           params.Runtime,
+		Overview:          params.Overview,
+		Tagline:           params.Tagline,
+		Status:            params.Status,
+		OriginalLanguage:  params.OriginalLanguage,
+		TitlesI18n:        marshalStringMap(params.TitlesI18n),
+		TaglinesI18n:      marshalStringMap(params.TaglinesI18n),
+		OverviewsI18n:     marshalStringMap(params.OverviewsI18n),
+		AgeRatings:        marshalNestedStringMap(params.AgeRatings),
+		PosterPath:        params.PosterPath,
+		BackdropPath:      params.BackdropPath,
+		TrailerUrl:        params.TrailerURL,
+		VoteAverage:       stringToPgNumeric(params.VoteAverage),
+		VoteCount:         params.VoteCount,
+		Popularity:        stringToPgNumeric(params.Popularity),
+		Budget:            params.Budget,
+		Revenue:           params.Revenue,
+		RadarrID:          params.RadarrID,
 		MetadataUpdatedAt: stringToPgTimestamptz(params.MetadataUpdatedAt),
 	}
 	movie, err := r.queries.CreateMovie(ctx, dbParams)
@@ -396,6 +477,23 @@ func (r *postgresRepository) CreateMovie(ctx context.Context, params CreateMovie
 }
 
 func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error) {
+	// Convert maps to []byte for JSONB fields (only if not nil)
+	var titlesI18n, taglinesI18n, overviewsI18n []byte
+	var ageRatings []byte
+
+	if params.TitlesI18n != nil {
+		titlesI18n = marshalStringMap(params.TitlesI18n)
+	}
+	if params.TaglinesI18n != nil {
+		taglinesI18n = marshalStringMap(params.TaglinesI18n)
+	}
+	if params.OverviewsI18n != nil {
+		overviewsI18n = marshalStringMap(params.OverviewsI18n)
+	}
+	if params.AgeRatings != nil {
+		ageRatings = marshalNestedStringMap(params.AgeRatings)
+	}
+
 	dbParams := moviedb.UpdateMovieParams{
 		ID:                params.ID,
 		TmdbID:            params.TMDbID,
@@ -409,6 +507,10 @@ func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovie
 		Tagline:           params.Tagline,
 		Status:            params.Status,
 		OriginalLanguage:  params.OriginalLanguage,
+		TitlesI18n:        titlesI18n,
+		TaglinesI18n:      taglinesI18n,
+		OverviewsI18n:     overviewsI18n,
+		AgeRatings:        ageRatings,
 		PosterPath:        params.PosterPath,
 		BackdropPath:      params.BackdropPath,
 		TrailerUrl:        params.TrailerURL,

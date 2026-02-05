@@ -17,6 +17,7 @@ type Repository interface {
 	ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error)
 	CountMovies(ctx context.Context) (int64, error)
 	SearchMoviesByTitle(ctx context.Context, query string, limit, offset int32) ([]Movie, error)
+	SearchMoviesByTitleAnyLanguage(ctx context.Context, query string, limit, offset int32) ([]Movie, error)
 	ListMoviesByYear(ctx context.Context, year int32, limit, offset int32) ([]Movie, error)
 	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error)
 	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error)
@@ -77,6 +78,10 @@ type CreateMovieParams struct {
 	Tagline           *string
 	Status            *string
 	OriginalLanguage  *string
+	TitlesI18n        map[string]string
+	TaglinesI18n      map[string]string
+	OverviewsI18n     map[string]string
+	AgeRatings        map[string]map[string]string
 	PosterPath        *string
 	BackdropPath      *string
 	TrailerURL        *string
@@ -103,6 +108,10 @@ type UpdateMovieParams struct {
 	Tagline           *string
 	Status            *string
 	OriginalLanguage  *string
+	TitlesI18n        map[string]string
+	TaglinesI18n      map[string]string
+	OverviewsI18n     map[string]string
+	AgeRatings        map[string]map[string]string
 	PosterPath        *string
 	BackdropPath      *string
 	TrailerURL        *string
