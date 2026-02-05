@@ -165,6 +165,10 @@ type GetCurrentUserRes interface {
 	getCurrentUserRes()
 }
 
+type GetEpisodeMetadataRes interface {
+	getEpisodeMetadataRes()
+}
+
 type GetLibraryRes interface {
 	getLibraryRes()
 }
@@ -237,6 +241,10 @@ type GetSearchFacetsRes interface {
 	getSearchFacetsRes()
 }
 
+type GetSeasonMetadataRes interface {
+	getSeasonMetadataRes()
+}
+
 type GetServerSettingRes interface {
 	getServerSettingRes()
 }
@@ -287,6 +295,10 @@ type GetTVShowEpisodesRes interface {
 
 type GetTVShowGenresRes interface {
 	getTVShowGenresRes()
+}
+
+type GetTVShowMetadataRes interface {
+	getTVShowMetadataRes()
 }
 
 type GetTVShowNetworksRes interface {
@@ -523,6 +535,10 @@ type SearchMoviesMetadataRes interface {
 
 type SearchMoviesRes interface {
 	searchMoviesRes()
+}
+
+type SearchTVShowsMetadataRes interface {
+	searchTVShowsMetadataRes()
 }
 
 type SearchTVShowsRes interface {

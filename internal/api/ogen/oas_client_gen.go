@@ -290,6 +290,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/users/me
 	GetCurrentUser(ctx context.Context) (GetCurrentUserRes, error)
+	// GetEpisodeMetadata invokes getEpisodeMetadata operation.
+	//
+	// Fetch detailed episode information from TMDb.
+	// Returns episode metadata including guest stars and crew.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+	GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error)
 	// GetLibrary invokes getLibrary operation.
 	//
 	// Get detailed information about a library.
@@ -411,6 +418,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/search/movies/facets
 	GetSearchFacets(ctx context.Context) (GetSearchFacetsRes, error)
+	// GetSeasonMetadata invokes getSeasonMetadata operation.
+	//
+	// Fetch detailed season information from TMDb.
+	// Returns season metadata including episodes overview.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+	GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error)
 	// GetServerSetting invokes getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -497,6 +511,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/tvshows/{id}/genres
 	GetTVShowGenres(ctx context.Context, params GetTVShowGenresParams) (GetTVShowGenresRes, error)
+	// GetTVShowMetadata invokes getTVShowMetadata operation.
+	//
+	// Fetch detailed TV show information from TMDb by TV show ID.
+	// Returns comprehensive metadata including seasons overview.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}
+	GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error)
 	// GetTVShowNetworks invokes getTVShowNetworks operation.
 	//
 	// Get networks for a TV show.
@@ -866,6 +887,13 @@ type Invoker interface {
 	//
 	// GET /api/v1/tvshows/search
 	SearchTVShows(ctx context.Context, params SearchTVShowsParams) (SearchTVShowsRes, error)
+	// SearchTVShowsMetadata invokes searchTVShowsMetadata operation.
+	//
+	// Search for TV shows on TMDb by query string.
+	// Returns matching TV shows with basic metadata.
+	//
+	// GET /api/v1/metadata/search/tv
+	SearchTVShowsMetadata(ctx context.Context, params SearchTVShowsMetadataParams) (SearchTVShowsMetadataRes, error)
 	// SetupTOTP invokes setupTOTP operation.
 	//
 	// Generate TOTP secret and QR code for enrollment.
@@ -5708,6 +5736,169 @@ func (c *Client) sendGetCurrentUser(ctx context.Context) (res GetCurrentUserRes,
 	return result, nil
 }
 
+// GetEpisodeMetadata invokes getEpisodeMetadata operation.
+//
+// Fetch detailed episode information from TMDb.
+// Returns episode metadata including guest stars and crew.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+func (c *Client) GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error) {
+	res, err := c.sendGetEpisodeMetadata(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (res GetEpisodeMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getEpisodeMetadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetEpisodeMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [6]string
+	pathParts[0] = "/api/v1/metadata/tv/"
+	{
+		// Encode "tmdbId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tmdbId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.TmdbId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/season/"
+	{
+		// Encode "seasonNumber" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "seasonNumber",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.SeasonNumber))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	pathParts[4] = "/episode/"
+	{
+		// Encode "episodeNumber" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "episodeNumber",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.EpisodeNumber))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[5] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetEpisodeMetadataOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetEpisodeMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetLibrary invokes getLibrary operation.
 //
 // Get detailed information about a library.
@@ -8046,6 +8237,150 @@ func (c *Client) sendGetSearchFacets(ctx context.Context) (res GetSearchFacetsRe
 	return result, nil
 }
 
+// GetSeasonMetadata invokes getSeasonMetadata operation.
+//
+// Fetch detailed season information from TMDb.
+// Returns season metadata including episodes overview.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+func (c *Client) GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error) {
+	res, err := c.sendGetSeasonMetadata(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (res GetSeasonMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getSeasonMetadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSeasonMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/api/v1/metadata/tv/"
+	{
+		// Encode "tmdbId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tmdbId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.TmdbId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/season/"
+	{
+		// Encode "seasonNumber" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "seasonNumber",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.SeasonNumber))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetSeasonMetadataOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSeasonMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetServerSetting invokes getServerSetting operation.
 //
 // Retrieve a specific server setting by key.
@@ -9737,6 +10072,131 @@ func (c *Client) sendGetTVShowGenres(ctx context.Context, params GetTVShowGenres
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTVShowGenresResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetTVShowMetadata invokes getTVShowMetadata operation.
+//
+// Fetch detailed TV show information from TMDb by TV show ID.
+// Returns comprehensive metadata including seasons overview.
+//
+// GET /api/v1/metadata/tv/{tmdbId}
+func (c *Client) GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error) {
+	res, err := c.sendGetTVShowMetadata(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (res GetTVShowMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getTVShowMetadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetTVShowMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/metadata/tv/"
+	{
+		// Encode "tmdbId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tmdbId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.TmdbId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetTVShowMetadataOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetTVShowMetadataResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -17096,6 +17556,165 @@ func (c *Client) sendSearchTVShows(ctx context.Context, params SearchTVShowsPara
 
 	stage = "DecodeResponse"
 	result, err := decodeSearchTVShowsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SearchTVShowsMetadata invokes searchTVShowsMetadata operation.
+//
+// Search for TV shows on TMDb by query string.
+// Returns matching TV shows with basic metadata.
+//
+// GET /api/v1/metadata/search/tv
+func (c *Client) SearchTVShowsMetadata(ctx context.Context, params SearchTVShowsMetadataParams) (SearchTVShowsMetadataRes, error) {
+	res, err := c.sendSearchTVShowsMetadata(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSearchTVShowsMetadata(ctx context.Context, params SearchTVShowsMetadataParams) (res SearchTVShowsMetadataRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("searchTVShowsMetadata"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/search/tv"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchTVShowsMetadataOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/metadata/search/tv"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Q))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "year" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "year",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Year.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, SearchTVShowsMetadataOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchTVShowsMetadataResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

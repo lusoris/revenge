@@ -9654,6 +9654,82 @@ func (s *GetCurrentSessionUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetEpisodeMetadataNotFound as json.
+func (s *GetEpisodeMetadataNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetEpisodeMetadataNotFound from json.
+func (s *GetEpisodeMetadataNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetEpisodeMetadataNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetEpisodeMetadataNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetEpisodeMetadataNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetEpisodeMetadataNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetEpisodeMetadataUnauthorized as json.
+func (s *GetEpisodeMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetEpisodeMetadataUnauthorized from json.
+func (s *GetEpisodeMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetEpisodeMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetEpisodeMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetEpisodeMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetEpisodeMetadataUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetLibraryForbidden as json.
 func (s *GetLibraryForbidden) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -11106,6 +11182,82 @@ func (s *GetRoleUnauthorized) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes GetSeasonMetadataNotFound as json.
+func (s *GetSeasonMetadataNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetSeasonMetadataNotFound from json.
+func (s *GetSeasonMetadataNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetSeasonMetadataNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetSeasonMetadataNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetSeasonMetadataNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetSeasonMetadataNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetSeasonMetadataUnauthorized as json.
+func (s *GetSeasonMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetSeasonMetadataUnauthorized from json.
+func (s *GetSeasonMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetSeasonMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetSeasonMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetSeasonMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetSeasonMetadataUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes GetServerSettingNotFound as json.
 func (s *GetServerSettingNotFound) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -12364,6 +12516,82 @@ func (s *GetTVShowGenresUnauthorized) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetTVShowGenresUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetTVShowMetadataNotFound as json.
+func (s *GetTVShowMetadataNotFound) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetTVShowMetadataNotFound from json.
+func (s *GetTVShowMetadataNotFound) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetTVShowMetadataNotFound to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetTVShowMetadataNotFound(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetTVShowMetadataNotFound) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetTVShowMetadataNotFound) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetTVShowMetadataUnauthorized as json.
+func (s *GetTVShowMetadataUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetTVShowMetadataUnauthorized from json.
+func (s *GetTVShowMetadataUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetTVShowMetadataUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetTVShowMetadataUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetTVShowMetadataUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetTVShowMetadataUnauthorized) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -17434,6 +17662,494 @@ func (s *MetadataCrewMember) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *MetadataEpisode) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataEpisode) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbShowID.Set {
+			e.FieldStart("tmdb_show_id")
+			s.TmdbShowID.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("season_number")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeNumber.Set {
+			e.FieldStart("episode_number")
+			s.EpisodeNumber.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.StillPath.Set {
+			e.FieldStart("still_path")
+			s.StillPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Crew != nil {
+			e.FieldStart("crew")
+			e.ArrStart()
+			for _, elem := range s.Crew {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.GuestStars != nil {
+			e.FieldStart("guest_stars")
+			e.ArrStart()
+			for _, elem := range s.GuestStars {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataEpisode = [13]string{
+	0:  "id",
+	1:  "tmdb_show_id",
+	2:  "season_number",
+	3:  "episode_number",
+	4:  "name",
+	5:  "overview",
+	6:  "air_date",
+	7:  "runtime",
+	8:  "still_path",
+	9:  "vote_average",
+	10: "vote_count",
+	11: "crew",
+	12: "guest_stars",
+}
+
+// Decode decodes MetadataEpisode from json.
+func (s *MetadataEpisode) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataEpisode to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_show_id":
+			if err := func() error {
+				s.TmdbShowID.Reset()
+				if err := s.TmdbShowID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_show_id\"")
+			}
+		case "season_number":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"season_number\"")
+			}
+		case "episode_number":
+			if err := func() error {
+				s.EpisodeNumber.Reset()
+				if err := s.EpisodeNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_number\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "still_path":
+			if err := func() error {
+				s.StillPath.Reset()
+				if err := s.StillPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"still_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "crew":
+			if err := func() error {
+				s.Crew = make([]MetadataCrewMember, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataCrewMember
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Crew = append(s.Crew, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"crew\"")
+			}
+		case "guest_stars":
+			if err := func() error {
+				s.GuestStars = make([]MetadataCastMember, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataCastMember
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.GuestStars = append(s.GuestStars, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"guest_stars\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataEpisode")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataEpisode) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataEpisode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataEpisodeSummary) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataEpisodeSummary) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeNumber.Set {
+			e.FieldStart("episode_number")
+			s.EpisodeNumber.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.StillPath.Set {
+			e.FieldStart("still_path")
+			s.StillPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataEpisodeSummary = [9]string{
+	0: "id",
+	1: "episode_number",
+	2: "name",
+	3: "overview",
+	4: "air_date",
+	5: "runtime",
+	6: "still_path",
+	7: "vote_average",
+	8: "vote_count",
+}
+
+// Decode decodes MetadataEpisodeSummary from json.
+func (s *MetadataEpisodeSummary) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataEpisodeSummary to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "episode_number":
+			if err := func() error {
+				s.EpisodeNumber.Reset()
+				if err := s.EpisodeNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_number\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "still_path":
+			if err := func() error {
+				s.StillPath.Reset()
+				if err := s.StillPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"still_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataEpisodeSummary")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataEpisodeSummary) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataEpisodeSummary) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *MetadataGenre) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -17933,6 +18649,103 @@ func (s *MetadataMovie) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *MetadataNetwork) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataNetwork) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.LogoPath.Set {
+			e.FieldStart("logo_path")
+			s.LogoPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataNetwork = [3]string{
+	0: "id",
+	1: "name",
+	2: "logo_path",
+}
+
+// Decode decodes MetadataNetwork from json.
+func (s *MetadataNetwork) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataNetwork to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "logo_path":
+			if err := func() error {
+				s.LogoPath.Reset()
+				if err := s.LogoPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"logo_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataNetwork")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataNetwork) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataNetwork) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *MetadataSearchResult) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -18269,6 +19082,1171 @@ func (s *MetadataSearchResults) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *MetadataSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataSeason) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataSeason) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbShowID.Set {
+			e.FieldStart("tmdb_show_id")
+			s.TmdbShowID.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("season_number")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.Episodes != nil {
+			e.FieldStart("episodes")
+			e.ArrStart()
+			for _, elem := range s.Episodes {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataSeason = [8]string{
+	0: "id",
+	1: "tmdb_show_id",
+	2: "season_number",
+	3: "name",
+	4: "overview",
+	5: "air_date",
+	6: "poster_path",
+	7: "episodes",
+}
+
+// Decode decodes MetadataSeason from json.
+func (s *MetadataSeason) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSeason to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_show_id":
+			if err := func() error {
+				s.TmdbShowID.Reset()
+				if err := s.TmdbShowID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_show_id\"")
+			}
+		case "season_number":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"season_number\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "episodes":
+			if err := func() error {
+				s.Episodes = make([]MetadataEpisodeSummary, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataEpisodeSummary
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Episodes = append(s.Episodes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodes\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataSeason")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataSeason) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSeason) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataSeasonSummary) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataSeasonSummary) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("season_number")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.EpisodeCount.Set {
+			e.FieldStart("episode_count")
+			s.EpisodeCount.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataSeasonSummary = [7]string{
+	0: "id",
+	1: "season_number",
+	2: "name",
+	3: "overview",
+	4: "air_date",
+	5: "episode_count",
+	6: "poster_path",
+}
+
+// Decode decodes MetadataSeasonSummary from json.
+func (s *MetadataSeasonSummary) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataSeasonSummary to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "season_number":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"season_number\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "episode_count":
+			if err := func() error {
+				s.EpisodeCount.Reset()
+				if err := s.EpisodeCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_count\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataSeasonSummary")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataSeasonSummary) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataSeasonSummary) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataTVSearchResult) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataTVSearchResult) encodeFields(e *jx.Encoder) {
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.OriginalName.Set {
+			e.FieldStart("original_name")
+			s.OriginalName.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.FirstAirDate.Set {
+			e.FieldStart("first_air_date")
+			s.FirstAirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataTVSearchResult = [10]string{
+	0: "tmdb_id",
+	1: "name",
+	2: "original_name",
+	3: "overview",
+	4: "first_air_date",
+	5: "poster_path",
+	6: "backdrop_path",
+	7: "vote_average",
+	8: "vote_count",
+	9: "popularity",
+}
+
+// Decode decodes MetadataTVSearchResult from json.
+func (s *MetadataTVSearchResult) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataTVSearchResult to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "original_name":
+			if err := func() error {
+				s.OriginalName.Reset()
+				if err := s.OriginalName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "first_air_date":
+			if err := func() error {
+				s.FirstAirDate.Reset()
+				if err := s.FirstAirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"first_air_date\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataTVSearchResult")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataTVSearchResult) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataTVSearchResult) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataTVSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataTVSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Page.Set {
+			e.FieldStart("page")
+			s.Page.Encode(e)
+		}
+	}
+	{
+		if s.TotalResults.Set {
+			e.FieldStart("total_results")
+			s.TotalResults.Encode(e)
+		}
+	}
+	{
+		if s.TotalPages.Set {
+			e.FieldStart("total_pages")
+			s.TotalPages.Encode(e)
+		}
+	}
+	{
+		if s.Results != nil {
+			e.FieldStart("results")
+			e.ArrStart()
+			for _, elem := range s.Results {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataTVSearchResults = [4]string{
+	0: "page",
+	1: "total_results",
+	2: "total_pages",
+	3: "results",
+}
+
+// Decode decodes MetadataTVSearchResults from json.
+func (s *MetadataTVSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataTVSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "page":
+			if err := func() error {
+				s.Page.Reset()
+				if err := s.Page.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"page\"")
+			}
+		case "total_results":
+			if err := func() error {
+				s.TotalResults.Reset()
+				if err := s.TotalResults.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_results\"")
+			}
+		case "total_pages":
+			if err := func() error {
+				s.TotalPages.Reset()
+				if err := s.TotalPages.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_pages\"")
+			}
+		case "results":
+			if err := func() error {
+				s.Results = make([]MetadataTVSearchResult, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataTVSearchResult
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Results = append(s.Results, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"results\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataTVSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataTVSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataTVSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *MetadataTVShow) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MetadataTVShow) encodeFields(e *jx.Encoder) {
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.ImdbID.Set {
+			e.FieldStart("imdb_id")
+			s.ImdbID.Encode(e)
+		}
+	}
+	{
+		if s.TvdbID.Set {
+			e.FieldStart("tvdb_id")
+			s.TvdbID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.OriginalName.Set {
+			e.FieldStart("original_name")
+			s.OriginalName.Encode(e)
+		}
+	}
+	{
+		if s.Tagline.Set {
+			e.FieldStart("tagline")
+			s.Tagline.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.FirstAirDate.Set {
+			e.FieldStart("first_air_date")
+			s.FirstAirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.LastAirDate.Set {
+			e.FieldStart("last_air_date")
+			s.LastAirDate.Encode(e, json.EncodeDate)
+		}
+	}
+	{
+		if s.Status.Set {
+			e.FieldStart("status")
+			s.Status.Encode(e)
+		}
+	}
+	{
+		if s.Type.Set {
+			e.FieldStart("type")
+			s.Type.Encode(e)
+		}
+	}
+	{
+		if s.NumberOfSeasons.Set {
+			e.FieldStart("number_of_seasons")
+			s.NumberOfSeasons.Encode(e)
+		}
+	}
+	{
+		if s.NumberOfEpisodes.Set {
+			e.FieldStart("number_of_episodes")
+			s.NumberOfEpisodes.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeRunTime != nil {
+			e.FieldStart("episode_run_time")
+			e.ArrStart()
+			for _, elem := range s.EpisodeRunTime {
+				e.Int(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.BackdropPath.Set {
+			e.FieldStart("backdrop_path")
+			s.BackdropPath.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.VoteCount.Set {
+			e.FieldStart("vote_count")
+			s.VoteCount.Encode(e)
+		}
+	}
+	{
+		if s.Popularity.Set {
+			e.FieldStart("popularity")
+			s.Popularity.Encode(e)
+		}
+	}
+	{
+		if s.Networks != nil {
+			e.FieldStart("networks")
+			e.ArrStart()
+			for _, elem := range s.Networks {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Genres != nil {
+			e.FieldStart("genres")
+			e.ArrStart()
+			for _, elem := range s.Genres {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Seasons != nil {
+			e.FieldStart("seasons")
+			e.ArrStart()
+			for _, elem := range s.Seasons {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+}
+
+var jsonFieldsNameOfMetadataTVShow = [22]string{
+	0:  "tmdb_id",
+	1:  "imdb_id",
+	2:  "tvdb_id",
+	3:  "name",
+	4:  "original_name",
+	5:  "tagline",
+	6:  "overview",
+	7:  "first_air_date",
+	8:  "last_air_date",
+	9:  "status",
+	10: "type",
+	11: "number_of_seasons",
+	12: "number_of_episodes",
+	13: "episode_run_time",
+	14: "poster_path",
+	15: "backdrop_path",
+	16: "vote_average",
+	17: "vote_count",
+	18: "popularity",
+	19: "networks",
+	20: "genres",
+	21: "seasons",
+}
+
+// Decode decodes MetadataTVShow from json.
+func (s *MetadataTVShow) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MetadataTVShow to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "imdb_id":
+			if err := func() error {
+				s.ImdbID.Reset()
+				if err := s.ImdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"imdb_id\"")
+			}
+		case "tvdb_id":
+			if err := func() error {
+				s.TvdbID.Reset()
+				if err := s.TvdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvdb_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "original_name":
+			if err := func() error {
+				s.OriginalName.Reset()
+				if err := s.OriginalName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"original_name\"")
+			}
+		case "tagline":
+			if err := func() error {
+				s.Tagline.Reset()
+				if err := s.Tagline.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tagline\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "first_air_date":
+			if err := func() error {
+				s.FirstAirDate.Reset()
+				if err := s.FirstAirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"first_air_date\"")
+			}
+		case "last_air_date":
+			if err := func() error {
+				s.LastAirDate.Reset()
+				if err := s.LastAirDate.Decode(d, json.DecodeDate); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"last_air_date\"")
+			}
+		case "status":
+			if err := func() error {
+				s.Status.Reset()
+				if err := s.Status.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "type":
+			if err := func() error {
+				s.Type.Reset()
+				if err := s.Type.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "number_of_seasons":
+			if err := func() error {
+				s.NumberOfSeasons.Reset()
+				if err := s.NumberOfSeasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"number_of_seasons\"")
+			}
+		case "number_of_episodes":
+			if err := func() error {
+				s.NumberOfEpisodes.Reset()
+				if err := s.NumberOfEpisodes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"number_of_episodes\"")
+			}
+		case "episode_run_time":
+			if err := func() error {
+				s.EpisodeRunTime = make([]int, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int
+					v, err := d.Int()
+					elem = int(v)
+					if err != nil {
+						return err
+					}
+					s.EpisodeRunTime = append(s.EpisodeRunTime, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_run_time\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "backdrop_path":
+			if err := func() error {
+				s.BackdropPath.Reset()
+				if err := s.BackdropPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"backdrop_path\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "vote_count":
+			if err := func() error {
+				s.VoteCount.Reset()
+				if err := s.VoteCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_count\"")
+			}
+		case "popularity":
+			if err := func() error {
+				s.Popularity.Reset()
+				if err := s.Popularity.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"popularity\"")
+			}
+		case "networks":
+			if err := func() error {
+				s.Networks = make([]MetadataNetwork, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataNetwork
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Networks = append(s.Networks, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"networks\"")
+			}
+		case "genres":
+			if err := func() error {
+				s.Genres = make([]MetadataGenre, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataGenre
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Genres = append(s.Genres, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"genres\"")
+			}
+		case "seasons":
+			if err := func() error {
+				s.Seasons = make([]MetadataSeasonSummary, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem MetadataSeasonSummary
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Seasons = append(s.Seasons, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasons\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MetadataTVShow")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MetadataTVShow) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MetadataTVShow) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

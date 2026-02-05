@@ -2222,6 +2222,172 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/metadata/search/tv:
+    get:
+      summary: Search TV shows on TMDb
+      description: |
+        Search for TV shows on TMDb by query string.
+        Returns matching TV shows with basic metadata.
+      operationId: searchTVShowsMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+          example: "Breaking Bad"
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by first air year
+          example: 2008
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Maximum results to return
+      responses:
+        '200':
+          description: TV show search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataTVSearchResults'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}:
+    get:
+      summary: Get TV show details from TMDb
+      description: |
+        Fetch detailed TV show information from TMDb by TV show ID.
+        Returns comprehensive metadata including seasons overview.
+      operationId: getTVShowMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+      responses:
+        '200':
+          description: TV show metadata from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataTVShow'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}:
+    get:
+      summary: Get season details from TMDb
+      description: |
+        Fetch detailed season information from TMDb.
+        Returns season metadata including episodes overview.
+      operationId: getSeasonMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+        - name: seasonNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Season number
+          example: 1
+      responses:
+        '200':
+          description: Season metadata from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataSeason'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}:
+    get:
+      summary: Get episode details from TMDb
+      description: |
+        Fetch detailed episode information from TMDb.
+        Returns episode metadata including guest stars and crew.
+      operationId: getEpisodeMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+        - name: seasonNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Season number
+          example: 1
+        - name: episodeNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Episode number
+          example: 1
+      responses:
+        '200':
+          description: Episode metadata from TMDb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataEpisode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
   /api/v1/images/{type}/{size}/{path}:
     get:
       summary: Proxy image from TMDb
@@ -6305,6 +6471,303 @@ components:
         popularity:
           type: number
           format: float
+
+    MetadataTVSearchResults:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        total_results:
+          type: integer
+          description: Total number of results
+          example: 42
+        total_pages:
+          type: integer
+          description: Total number of pages
+          example: 3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataTVSearchResult'
+
+    MetadataTVSearchResult:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+          description: TMDb TV show ID
+          example: 1396
+        name:
+          type: string
+          description: TV show name
+          example: "Breaking Bad"
+        original_name:
+          type: string
+          description: Original name (if different)
+        overview:
+          type: string
+          nullable: true
+          description: Plot summary
+        first_air_date:
+          type: string
+          format: date
+          nullable: true
+          description: First air date
+          example: "2008-01-20"
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+        vote_average:
+          type: number
+          format: float
+          description: Average rating (0-10)
+        vote_count:
+          type: integer
+          description: Number of votes
+        popularity:
+          type: number
+          format: float
+          description: Popularity score
+
+    MetadataTVShow:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+          description: TMDb TV show ID
+          example: 1396
+        imdb_id:
+          type: string
+          nullable: true
+          description: IMDb ID
+          example: "tt0903747"
+        tvdb_id:
+          type: integer
+          nullable: true
+          description: TVDb ID
+        name:
+          type: string
+          description: TV show name
+          example: "Breaking Bad"
+        original_name:
+          type: string
+          description: Original name
+        tagline:
+          type: string
+          nullable: true
+          description: TV show tagline
+        overview:
+          type: string
+          nullable: true
+          description: Plot summary
+        first_air_date:
+          type: string
+          format: date
+          nullable: true
+        last_air_date:
+          type: string
+          format: date
+          nullable: true
+        status:
+          type: string
+          description: Show status (Returning Series, Ended, etc.)
+          example: "Ended"
+        type:
+          type: string
+          description: Show type (Scripted, Reality, etc.)
+        number_of_seasons:
+          type: integer
+          description: Total number of seasons
+          example: 5
+        number_of_episodes:
+          type: integer
+          description: Total number of episodes
+          example: 62
+        episode_run_time:
+          type: array
+          items:
+            type: integer
+          description: Typical episode run times in minutes
+        poster_path:
+          type: string
+          nullable: true
+        backdrop_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        popularity:
+          type: number
+          format: float
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataNetwork'
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataGenre'
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataSeasonSummary'
+
+    MetadataNetwork:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Network ID
+        name:
+          type: string
+          description: Network name
+          example: "AMC"
+        logo_path:
+          type: string
+          nullable: true
+
+    MetadataSeasonSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb season ID
+        season_number:
+          type: integer
+          description: Season number
+        name:
+          type: string
+          description: Season name
+        overview:
+          type: string
+          nullable: true
+        air_date:
+          type: string
+          format: date
+          nullable: true
+        episode_count:
+          type: integer
+          description: Number of episodes in season
+        poster_path:
+          type: string
+          nullable: true
+
+    MetadataSeason:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb season ID
+        tmdb_show_id:
+          type: integer
+          description: TMDb TV show ID
+        season_number:
+          type: integer
+          description: Season number
+          example: 1
+        name:
+          type: string
+          description: Season name
+          example: "Season 1"
+        overview:
+          type: string
+          nullable: true
+        air_date:
+          type: string
+          format: date
+          nullable: true
+        poster_path:
+          type: string
+          nullable: true
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataEpisodeSummary'
+
+    MetadataEpisodeSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb episode ID
+        episode_number:
+          type: integer
+        name:
+          type: string
+        overview:
+          type: string
+          nullable: true
+        air_date:
+          type: string
+          format: date
+          nullable: true
+        runtime:
+          type: integer
+          nullable: true
+          description: Runtime in minutes
+        still_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+
+    MetadataEpisode:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: TMDb episode ID
+        tmdb_show_id:
+          type: integer
+          description: TMDb TV show ID
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+        name:
+          type: string
+          description: Episode title
+          example: "Pilot"
+        overview:
+          type: string
+          nullable: true
+        air_date:
+          type: string
+          format: date
+          nullable: true
+        runtime:
+          type: integer
+          nullable: true
+          description: Runtime in minutes
+        still_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        crew:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCrewMember'
+        guest_stars:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCastMember'
 
     SimilarMoviesResponse:
       type: object

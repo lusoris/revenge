@@ -3035,6 +3035,7 @@ func (*Error) registerRes()                {}
 func (*Error) resendVerificationRes()      {}
 func (*Error) resetPasswordRes()           {}
 func (*Error) searchMoviesRes()            {}
+func (*Error) searchTVShowsMetadataRes()   {}
 func (*Error) searchTVShowsRes()           {}
 func (*Error) setupTOTPRes()               {}
 func (*Error) verifyEmailRes()             {}
@@ -3209,6 +3210,14 @@ func (*GetCurrentSessionNotFound) getCurrentSessionRes() {}
 type GetCurrentSessionUnauthorized Error
 
 func (*GetCurrentSessionUnauthorized) getCurrentSessionRes() {}
+
+type GetEpisodeMetadataNotFound Error
+
+func (*GetEpisodeMetadataNotFound) getEpisodeMetadataRes() {}
+
+type GetEpisodeMetadataUnauthorized Error
+
+func (*GetEpisodeMetadataUnauthorized) getEpisodeMetadataRes() {}
 
 type GetLibraryForbidden Error
 
@@ -3531,6 +3540,14 @@ type GetRoleUnauthorized Error
 
 func (*GetRoleUnauthorized) getRoleRes() {}
 
+type GetSeasonMetadataNotFound Error
+
+func (*GetSeasonMetadataNotFound) getSeasonMetadataRes() {}
+
+type GetSeasonMetadataUnauthorized Error
+
+func (*GetSeasonMetadataUnauthorized) getSeasonMetadataRes() {}
+
 type GetServerSettingNotFound Error
 
 func (*GetServerSettingNotFound) getServerSettingRes() {}
@@ -3654,6 +3671,14 @@ func (*GetTVShowGenresOKApplicationJSON) getTVShowGenresRes() {}
 type GetTVShowGenresUnauthorized Error
 
 func (*GetTVShowGenresUnauthorized) getTVShowGenresRes() {}
+
+type GetTVShowMetadataNotFound Error
+
+func (*GetTVShowMetadataNotFound) getTVShowMetadataRes() {}
+
+type GetTVShowMetadataUnauthorized Error
+
+func (*GetTVShowMetadataUnauthorized) getTVShowMetadataRes() {}
 
 type GetTVShowNetworksNotFound Error
 
@@ -5443,6 +5468,264 @@ func (s *MetadataCrewMember) SetProfilePath(val OptNilString) {
 	s.ProfilePath = val
 }
 
+// Ref: #/components/schemas/MetadataEpisode
+type MetadataEpisode struct {
+	// TMDb episode ID.
+	ID OptInt `json:"id"`
+	// TMDb TV show ID.
+	TmdbShowID    OptInt `json:"tmdb_show_id"`
+	SeasonNumber  OptInt `json:"season_number"`
+	EpisodeNumber OptInt `json:"episode_number"`
+	// Episode title.
+	Name     OptString    `json:"name"`
+	Overview OptNilString `json:"overview"`
+	AirDate  OptNilDate   `json:"air_date"`
+	// Runtime in minutes.
+	Runtime     OptNilInt            `json:"runtime"`
+	StillPath   OptNilString         `json:"still_path"`
+	VoteAverage OptFloat32           `json:"vote_average"`
+	VoteCount   OptInt               `json:"vote_count"`
+	Crew        []MetadataCrewMember `json:"crew"`
+	GuestStars  []MetadataCastMember `json:"guest_stars"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataEpisode) GetID() OptInt {
+	return s.ID
+}
+
+// GetTmdbShowID returns the value of TmdbShowID.
+func (s *MetadataEpisode) GetTmdbShowID() OptInt {
+	return s.TmdbShowID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *MetadataEpisode) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *MetadataEpisode) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetName returns the value of Name.
+func (s *MetadataEpisode) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataEpisode) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *MetadataEpisode) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *MetadataEpisode) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetStillPath returns the value of StillPath.
+func (s *MetadataEpisode) GetStillPath() OptNilString {
+	return s.StillPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataEpisode) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataEpisode) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetCrew returns the value of Crew.
+func (s *MetadataEpisode) GetCrew() []MetadataCrewMember {
+	return s.Crew
+}
+
+// GetGuestStars returns the value of GuestStars.
+func (s *MetadataEpisode) GetGuestStars() []MetadataCastMember {
+	return s.GuestStars
+}
+
+// SetID sets the value of ID.
+func (s *MetadataEpisode) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTmdbShowID sets the value of TmdbShowID.
+func (s *MetadataEpisode) SetTmdbShowID(val OptInt) {
+	s.TmdbShowID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *MetadataEpisode) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *MetadataEpisode) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataEpisode) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataEpisode) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *MetadataEpisode) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *MetadataEpisode) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetStillPath sets the value of StillPath.
+func (s *MetadataEpisode) SetStillPath(val OptNilString) {
+	s.StillPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataEpisode) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataEpisode) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetCrew sets the value of Crew.
+func (s *MetadataEpisode) SetCrew(val []MetadataCrewMember) {
+	s.Crew = val
+}
+
+// SetGuestStars sets the value of GuestStars.
+func (s *MetadataEpisode) SetGuestStars(val []MetadataCastMember) {
+	s.GuestStars = val
+}
+
+func (*MetadataEpisode) getEpisodeMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataEpisodeSummary
+type MetadataEpisodeSummary struct {
+	// TMDb episode ID.
+	ID            OptInt       `json:"id"`
+	EpisodeNumber OptInt       `json:"episode_number"`
+	Name          OptString    `json:"name"`
+	Overview      OptNilString `json:"overview"`
+	AirDate       OptNilDate   `json:"air_date"`
+	// Runtime in minutes.
+	Runtime     OptNilInt    `json:"runtime"`
+	StillPath   OptNilString `json:"still_path"`
+	VoteAverage OptFloat32   `json:"vote_average"`
+	VoteCount   OptInt       `json:"vote_count"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataEpisodeSummary) GetID() OptInt {
+	return s.ID
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *MetadataEpisodeSummary) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetName returns the value of Name.
+func (s *MetadataEpisodeSummary) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataEpisodeSummary) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *MetadataEpisodeSummary) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *MetadataEpisodeSummary) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetStillPath returns the value of StillPath.
+func (s *MetadataEpisodeSummary) GetStillPath() OptNilString {
+	return s.StillPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataEpisodeSummary) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataEpisodeSummary) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// SetID sets the value of ID.
+func (s *MetadataEpisodeSummary) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *MetadataEpisodeSummary) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataEpisodeSummary) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataEpisodeSummary) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *MetadataEpisodeSummary) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *MetadataEpisodeSummary) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetStillPath sets the value of StillPath.
+func (s *MetadataEpisodeSummary) SetStillPath(val OptNilString) {
+	s.StillPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataEpisodeSummary) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataEpisodeSummary) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
 // Ref: #/components/schemas/MetadataGenre
 type MetadataGenre struct {
 	// TMDb genre ID.
@@ -5707,6 +5990,45 @@ func (s *MetadataMovie) SetBelongsToCollection(val OptMetadataCollection) {
 
 func (*MetadataMovie) getMovieMetadataRes() {}
 
+// Ref: #/components/schemas/MetadataNetwork
+type MetadataNetwork struct {
+	// Network ID.
+	ID OptInt `json:"id"`
+	// Network name.
+	Name     OptString    `json:"name"`
+	LogoPath OptNilString `json:"logo_path"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataNetwork) GetID() OptInt {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataNetwork) GetName() OptString {
+	return s.Name
+}
+
+// GetLogoPath returns the value of LogoPath.
+func (s *MetadataNetwork) GetLogoPath() OptNilString {
+	return s.LogoPath
+}
+
+// SetID sets the value of ID.
+func (s *MetadataNetwork) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataNetwork) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetLogoPath sets the value of LogoPath.
+func (s *MetadataNetwork) SetLogoPath(val OptNilString) {
+	s.LogoPath = val
+}
+
 // Ref: #/components/schemas/MetadataSearchResult
 type MetadataSearchResult struct {
 	// TMDb movie ID.
@@ -5883,6 +6205,626 @@ func (s *MetadataSearchResults) SetResults(val []MetadataSearchResult) {
 }
 
 func (*MetadataSearchResults) searchMoviesMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataSeason
+type MetadataSeason struct {
+	// TMDb season ID.
+	ID OptInt `json:"id"`
+	// TMDb TV show ID.
+	TmdbShowID OptInt `json:"tmdb_show_id"`
+	// Season number.
+	SeasonNumber OptInt `json:"season_number"`
+	// Season name.
+	Name       OptString                `json:"name"`
+	Overview   OptNilString             `json:"overview"`
+	AirDate    OptNilDate               `json:"air_date"`
+	PosterPath OptNilString             `json:"poster_path"`
+	Episodes   []MetadataEpisodeSummary `json:"episodes"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataSeason) GetID() OptInt {
+	return s.ID
+}
+
+// GetTmdbShowID returns the value of TmdbShowID.
+func (s *MetadataSeason) GetTmdbShowID() OptInt {
+	return s.TmdbShowID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *MetadataSeason) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetName returns the value of Name.
+func (s *MetadataSeason) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataSeason) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *MetadataSeason) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataSeason) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *MetadataSeason) GetEpisodes() []MetadataEpisodeSummary {
+	return s.Episodes
+}
+
+// SetID sets the value of ID.
+func (s *MetadataSeason) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTmdbShowID sets the value of TmdbShowID.
+func (s *MetadataSeason) SetTmdbShowID(val OptInt) {
+	s.TmdbShowID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *MetadataSeason) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataSeason) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataSeason) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *MetadataSeason) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataSeason) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *MetadataSeason) SetEpisodes(val []MetadataEpisodeSummary) {
+	s.Episodes = val
+}
+
+func (*MetadataSeason) getSeasonMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataSeasonSummary
+type MetadataSeasonSummary struct {
+	// TMDb season ID.
+	ID OptInt `json:"id"`
+	// Season number.
+	SeasonNumber OptInt `json:"season_number"`
+	// Season name.
+	Name     OptString    `json:"name"`
+	Overview OptNilString `json:"overview"`
+	AirDate  OptNilDate   `json:"air_date"`
+	// Number of episodes in season.
+	EpisodeCount OptInt       `json:"episode_count"`
+	PosterPath   OptNilString `json:"poster_path"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataSeasonSummary) GetID() OptInt {
+	return s.ID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *MetadataSeasonSummary) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetName returns the value of Name.
+func (s *MetadataSeasonSummary) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataSeasonSummary) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *MetadataSeasonSummary) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *MetadataSeasonSummary) GetEpisodeCount() OptInt {
+	return s.EpisodeCount
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataSeasonSummary) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// SetID sets the value of ID.
+func (s *MetadataSeasonSummary) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *MetadataSeasonSummary) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataSeasonSummary) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataSeasonSummary) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *MetadataSeasonSummary) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *MetadataSeasonSummary) SetEpisodeCount(val OptInt) {
+	s.EpisodeCount = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataSeasonSummary) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// Ref: #/components/schemas/MetadataTVSearchResult
+type MetadataTVSearchResult struct {
+	// TMDb TV show ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// TV show name.
+	Name OptString `json:"name"`
+	// Original name (if different).
+	OriginalName OptString `json:"original_name"`
+	// Plot summary.
+	Overview OptNilString `json:"overview"`
+	// First air date.
+	FirstAirDate OptNilDate `json:"first_air_date"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	// Average rating (0-10).
+	VoteAverage OptFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptInt `json:"vote_count"`
+	// Popularity score.
+	Popularity OptFloat32 `json:"popularity"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataTVSearchResult) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataTVSearchResult) GetName() OptString {
+	return s.Name
+}
+
+// GetOriginalName returns the value of OriginalName.
+func (s *MetadataTVSearchResult) GetOriginalName() OptString {
+	return s.OriginalName
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataTVSearchResult) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetFirstAirDate returns the value of FirstAirDate.
+func (s *MetadataTVSearchResult) GetFirstAirDate() OptNilDate {
+	return s.FirstAirDate
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataTVSearchResult) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *MetadataTVSearchResult) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataTVSearchResult) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataTVSearchResult) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MetadataTVSearchResult) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataTVSearchResult) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataTVSearchResult) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOriginalName sets the value of OriginalName.
+func (s *MetadataTVSearchResult) SetOriginalName(val OptString) {
+	s.OriginalName = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataTVSearchResult) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetFirstAirDate sets the value of FirstAirDate.
+func (s *MetadataTVSearchResult) SetFirstAirDate(val OptNilDate) {
+	s.FirstAirDate = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataTVSearchResult) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *MetadataTVSearchResult) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataTVSearchResult) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataTVSearchResult) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MetadataTVSearchResult) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// Ref: #/components/schemas/MetadataTVSearchResults
+type MetadataTVSearchResults struct {
+	// Current page number.
+	Page OptInt `json:"page"`
+	// Total number of results.
+	TotalResults OptInt `json:"total_results"`
+	// Total number of pages.
+	TotalPages OptInt                   `json:"total_pages"`
+	Results    []MetadataTVSearchResult `json:"results"`
+}
+
+// GetPage returns the value of Page.
+func (s *MetadataTVSearchResults) GetPage() OptInt {
+	return s.Page
+}
+
+// GetTotalResults returns the value of TotalResults.
+func (s *MetadataTVSearchResults) GetTotalResults() OptInt {
+	return s.TotalResults
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *MetadataTVSearchResults) GetTotalPages() OptInt {
+	return s.TotalPages
+}
+
+// GetResults returns the value of Results.
+func (s *MetadataTVSearchResults) GetResults() []MetadataTVSearchResult {
+	return s.Results
+}
+
+// SetPage sets the value of Page.
+func (s *MetadataTVSearchResults) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetTotalResults sets the value of TotalResults.
+func (s *MetadataTVSearchResults) SetTotalResults(val OptInt) {
+	s.TotalResults = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *MetadataTVSearchResults) SetTotalPages(val OptInt) {
+	s.TotalPages = val
+}
+
+// SetResults sets the value of Results.
+func (s *MetadataTVSearchResults) SetResults(val []MetadataTVSearchResult) {
+	s.Results = val
+}
+
+func (*MetadataTVSearchResults) searchTVShowsMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataTVShow
+type MetadataTVShow struct {
+	// TMDb TV show ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// IMDb ID.
+	ImdbID OptNilString `json:"imdb_id"`
+	// TVDb ID.
+	TvdbID OptNilInt `json:"tvdb_id"`
+	// TV show name.
+	Name OptString `json:"name"`
+	// Original name.
+	OriginalName OptString `json:"original_name"`
+	// TV show tagline.
+	Tagline OptNilString `json:"tagline"`
+	// Plot summary.
+	Overview     OptNilString `json:"overview"`
+	FirstAirDate OptNilDate   `json:"first_air_date"`
+	LastAirDate  OptNilDate   `json:"last_air_date"`
+	// Show status (Returning Series, Ended, etc.).
+	Status OptString `json:"status"`
+	// Show type (Scripted, Reality, etc.).
+	Type OptString `json:"type"`
+	// Total number of seasons.
+	NumberOfSeasons OptInt `json:"number_of_seasons"`
+	// Total number of episodes.
+	NumberOfEpisodes OptInt `json:"number_of_episodes"`
+	// Typical episode run times in minutes.
+	EpisodeRunTime []int                   `json:"episode_run_time"`
+	PosterPath     OptNilString            `json:"poster_path"`
+	BackdropPath   OptNilString            `json:"backdrop_path"`
+	VoteAverage    OptFloat32              `json:"vote_average"`
+	VoteCount      OptInt                  `json:"vote_count"`
+	Popularity     OptFloat32              `json:"popularity"`
+	Networks       []MetadataNetwork       `json:"networks"`
+	Genres         []MetadataGenre         `json:"genres"`
+	Seasons        []MetadataSeasonSummary `json:"seasons"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataTVShow) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *MetadataTVShow) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *MetadataTVShow) GetTvdbID() OptNilInt {
+	return s.TvdbID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataTVShow) GetName() OptString {
+	return s.Name
+}
+
+// GetOriginalName returns the value of OriginalName.
+func (s *MetadataTVShow) GetOriginalName() OptString {
+	return s.OriginalName
+}
+
+// GetTagline returns the value of Tagline.
+func (s *MetadataTVShow) GetTagline() OptNilString {
+	return s.Tagline
+}
+
+// GetOverview returns the value of Overview.
+func (s *MetadataTVShow) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetFirstAirDate returns the value of FirstAirDate.
+func (s *MetadataTVShow) GetFirstAirDate() OptNilDate {
+	return s.FirstAirDate
+}
+
+// GetLastAirDate returns the value of LastAirDate.
+func (s *MetadataTVShow) GetLastAirDate() OptNilDate {
+	return s.LastAirDate
+}
+
+// GetStatus returns the value of Status.
+func (s *MetadataTVShow) GetStatus() OptString {
+	return s.Status
+}
+
+// GetType returns the value of Type.
+func (s *MetadataTVShow) GetType() OptString {
+	return s.Type
+}
+
+// GetNumberOfSeasons returns the value of NumberOfSeasons.
+func (s *MetadataTVShow) GetNumberOfSeasons() OptInt {
+	return s.NumberOfSeasons
+}
+
+// GetNumberOfEpisodes returns the value of NumberOfEpisodes.
+func (s *MetadataTVShow) GetNumberOfEpisodes() OptInt {
+	return s.NumberOfEpisodes
+}
+
+// GetEpisodeRunTime returns the value of EpisodeRunTime.
+func (s *MetadataTVShow) GetEpisodeRunTime() []int {
+	return s.EpisodeRunTime
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataTVShow) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *MetadataTVShow) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataTVShow) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataTVShow) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MetadataTVShow) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetNetworks returns the value of Networks.
+func (s *MetadataTVShow) GetNetworks() []MetadataNetwork {
+	return s.Networks
+}
+
+// GetGenres returns the value of Genres.
+func (s *MetadataTVShow) GetGenres() []MetadataGenre {
+	return s.Genres
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *MetadataTVShow) GetSeasons() []MetadataSeasonSummary {
+	return s.Seasons
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataTVShow) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *MetadataTVShow) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *MetadataTVShow) SetTvdbID(val OptNilInt) {
+	s.TvdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataTVShow) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOriginalName sets the value of OriginalName.
+func (s *MetadataTVShow) SetOriginalName(val OptString) {
+	s.OriginalName = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *MetadataTVShow) SetTagline(val OptNilString) {
+	s.Tagline = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *MetadataTVShow) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetFirstAirDate sets the value of FirstAirDate.
+func (s *MetadataTVShow) SetFirstAirDate(val OptNilDate) {
+	s.FirstAirDate = val
+}
+
+// SetLastAirDate sets the value of LastAirDate.
+func (s *MetadataTVShow) SetLastAirDate(val OptNilDate) {
+	s.LastAirDate = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MetadataTVShow) SetStatus(val OptString) {
+	s.Status = val
+}
+
+// SetType sets the value of Type.
+func (s *MetadataTVShow) SetType(val OptString) {
+	s.Type = val
+}
+
+// SetNumberOfSeasons sets the value of NumberOfSeasons.
+func (s *MetadataTVShow) SetNumberOfSeasons(val OptInt) {
+	s.NumberOfSeasons = val
+}
+
+// SetNumberOfEpisodes sets the value of NumberOfEpisodes.
+func (s *MetadataTVShow) SetNumberOfEpisodes(val OptInt) {
+	s.NumberOfEpisodes = val
+}
+
+// SetEpisodeRunTime sets the value of EpisodeRunTime.
+func (s *MetadataTVShow) SetEpisodeRunTime(val []int) {
+	s.EpisodeRunTime = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataTVShow) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *MetadataTVShow) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataTVShow) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataTVShow) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MetadataTVShow) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetNetworks sets the value of Networks.
+func (s *MetadataTVShow) SetNetworks(val []MetadataNetwork) {
+	s.Networks = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *MetadataTVShow) SetGenres(val []MetadataGenre) {
+	s.Genres = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *MetadataTVShow) SetSeasons(val []MetadataSeasonSummary) {
+	s.Seasons = val
+}
+
+func (*MetadataTVShow) getTVShowMetadataRes() {}
 
 // Ref: #/components/schemas/Movie
 type Movie struct {

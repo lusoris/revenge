@@ -270,6 +270,13 @@ type Handler interface {
 	//
 	// GET /api/v1/users/me
 	GetCurrentUser(ctx context.Context) (GetCurrentUserRes, error)
+	// GetEpisodeMetadata implements getEpisodeMetadata operation.
+	//
+	// Fetch detailed episode information from TMDb.
+	// Returns episode metadata including guest stars and crew.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+	GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error)
 	// GetLibrary implements getLibrary operation.
 	//
 	// Get detailed information about a library.
@@ -391,6 +398,13 @@ type Handler interface {
 	//
 	// GET /api/v1/search/movies/facets
 	GetSearchFacets(ctx context.Context) (GetSearchFacetsRes, error)
+	// GetSeasonMetadata implements getSeasonMetadata operation.
+	//
+	// Fetch detailed season information from TMDb.
+	// Returns season metadata including episodes overview.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+	GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error)
 	// GetServerSetting implements getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -477,6 +491,13 @@ type Handler interface {
 	//
 	// GET /api/v1/tvshows/{id}/genres
 	GetTVShowGenres(ctx context.Context, params GetTVShowGenresParams) (GetTVShowGenresRes, error)
+	// GetTVShowMetadata implements getTVShowMetadata operation.
+	//
+	// Fetch detailed TV show information from TMDb by TV show ID.
+	// Returns comprehensive metadata including seasons overview.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}
+	GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error)
 	// GetTVShowNetworks implements getTVShowNetworks operation.
 	//
 	// Get networks for a TV show.
@@ -846,6 +867,13 @@ type Handler interface {
 	//
 	// GET /api/v1/tvshows/search
 	SearchTVShows(ctx context.Context, params SearchTVShowsParams) (SearchTVShowsRes, error)
+	// SearchTVShowsMetadata implements searchTVShowsMetadata operation.
+	//
+	// Search for TV shows on TMDb by query string.
+	// Returns matching TV shows with basic metadata.
+	//
+	// GET /api/v1/metadata/search/tv
+	SearchTVShowsMetadata(ctx context.Context, params SearchTVShowsMetadataParams) (SearchTVShowsMetadataRes, error)
 	// SetupTOTP implements setupTOTP operation.
 	//
 	// Generate TOTP secret and QR code for enrollment.

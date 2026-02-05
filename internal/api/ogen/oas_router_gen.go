@@ -1343,24 +1343,156 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								return
 							}
 
-						case 's': // Prefix: "search/movie"
+						case 's': // Prefix: "search/"
 
-							if l := len("search/movie"); len(elem) >= l && elem[0:l] == "search/movie" {
+							if l := len("search/"); len(elem) >= l && elem[0:l] == "search/" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								// Leaf node.
+								break
+							}
+							switch elem[0] {
+							case 'm': // Prefix: "movie"
+
+								if l := len("movie"); len(elem) >= l && elem[0:l] == "movie" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleSearchMoviesMetadataRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							case 't': // Prefix: "tv"
+
+								if l := len("tv"); len(elem) >= l && elem[0:l] == "tv" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleSearchTVShowsMetadataRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							}
+
+						case 't': // Prefix: "tv/"
+
+							if l := len("tv/"); len(elem) >= l && elem[0:l] == "tv/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
 								switch r.Method {
 								case "GET":
-									s.handleSearchMoviesMetadataRequest([0]string{}, elemIsEscaped, w, r)
+									s.handleGetTVShowMetadataRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
 								default:
 									s.notAllowed(w, r, "GET")
 								}
 
 								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/season/"
+
+								if l := len("/season/"); len(elem) >= l && elem[0:l] == "/season/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "seasonNumber"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[1] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "GET":
+										s.handleGetSeasonMetadataRequest([2]string{
+											args[0],
+											args[1],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/episode/"
+
+									if l := len("/episode/"); len(elem) >= l && elem[0:l] == "/episode/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "episodeNumber"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[2] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetEpisodeMetadataRequest([3]string{
+												args[0],
+												args[1],
+												args[2],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
 							}
 
 						}
@@ -5221,29 +5353,172 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								}
 							}
 
-						case 's': // Prefix: "search/movie"
+						case 's': // Prefix: "search/"
 
-							if l := len("search/movie"); len(elem) >= l && elem[0:l] == "search/movie" {
+							if l := len("search/"); len(elem) >= l && elem[0:l] == "search/" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								// Leaf node.
+								break
+							}
+							switch elem[0] {
+							case 'm': // Prefix: "movie"
+
+								if l := len("movie"); len(elem) >= l && elem[0:l] == "movie" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = SearchMoviesMetadataOperation
+										r.summary = "Search movies on TMDb"
+										r.operationID = "searchMoviesMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/search/movie"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 't': // Prefix: "tv"
+
+								if l := len("tv"); len(elem) >= l && elem[0:l] == "tv" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = SearchTVShowsMetadataOperation
+										r.summary = "Search TV shows on TMDb"
+										r.operationID = "searchTVShowsMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/search/tv"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						case 't': // Prefix: "tv/"
+
+							if l := len("tv/"); len(elem) >= l && elem[0:l] == "tv/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "tmdbId"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
 								switch method {
 								case "GET":
-									r.name = SearchMoviesMetadataOperation
-									r.summary = "Search movies on TMDb"
-									r.operationID = "searchMoviesMetadata"
+									r.name = GetTVShowMetadataOperation
+									r.summary = "Get TV show details from TMDb"
+									r.operationID = "getTVShowMetadata"
 									r.operationGroup = ""
-									r.pathPattern = "/api/v1/metadata/search/movie"
+									r.pathPattern = "/api/v1/metadata/tv/{tmdbId}"
 									r.args = args
-									r.count = 0
+									r.count = 1
 									return r, true
 								default:
 									return
 								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/season/"
+
+								if l := len("/season/"); len(elem) >= l && elem[0:l] == "/season/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "seasonNumber"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[1] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch method {
+									case "GET":
+										r.name = GetSeasonMetadataOperation
+										r.summary = "Get season details from TMDb"
+										r.operationID = "getSeasonMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"
+										r.args = args
+										r.count = 2
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/episode/"
+
+									if l := len("/episode/"); len(elem) >= l && elem[0:l] == "/episode/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "episodeNumber"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[2] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetEpisodeMetadataOperation
+											r.summary = "Get episode details from TMDb"
+											r.operationID = "getEpisodeMetadata"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"
+											r.args = args
+											r.count = 3
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
 							}
 
 						}

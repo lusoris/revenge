@@ -1326,6 +1326,180 @@ func decodeGetContinueWatchingParams(args [0]string, argsEscaped bool, r *http.R
 	return params, nil
 }
 
+// GetEpisodeMetadataParams is parameters of getEpisodeMetadata operation.
+type GetEpisodeMetadataParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+	// Season number.
+	SeasonNumber int
+	// Episode number.
+	EpisodeNumber int
+}
+
+func unpackGetEpisodeMetadataParams(packed middleware.Parameters) (params GetEpisodeMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "seasonNumber",
+			In:   "path",
+		}
+		params.SeasonNumber = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "episodeNumber",
+			In:   "path",
+		}
+		params.EpisodeNumber = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Request) (params GetEpisodeMetadataParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: seasonNumber.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "seasonNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.SeasonNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "seasonNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: episodeNumber.
+	if err := func() error {
+		param := args[2]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[2])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "episodeNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.EpisodeNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "episodeNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetLibraryParams is parameters of getLibrary operation.
 type GetLibraryParams struct {
 	// Library ID.
@@ -2934,6 +3108,126 @@ func decodeGetRoleParams(args [1]string, argsEscaped bool, r *http.Request) (par
 	return params, nil
 }
 
+// GetSeasonMetadataParams is parameters of getSeasonMetadata operation.
+type GetSeasonMetadataParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+	// Season number.
+	SeasonNumber int
+}
+
+func unpackGetSeasonMetadataParams(packed middleware.Parameters) (params GetSeasonMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "seasonNumber",
+			In:   "path",
+		}
+		params.SeasonNumber = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Request) (params GetSeasonMetadataParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: seasonNumber.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "seasonNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.SeasonNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "seasonNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetServerSettingParams is parameters of getServerSetting operation.
 type GetServerSettingParams struct {
 	// Setting key.
@@ -3813,6 +4107,72 @@ func decodeGetTVShowGenresParams(args [1]string, argsEscaped bool, r *http.Reque
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetTVShowMetadataParams is parameters of getTVShowMetadata operation.
+type GetTVShowMetadataParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+}
+
+func unpackGetTVShowMetadataParams(packed middleware.Parameters) (params GetTVShowMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
 			In:   "path",
 			Err:  err,
 		}
@@ -8756,6 +9116,198 @@ func decodeSearchTVShowsParams(args [0]string, argsEscaped bool, r *http.Request
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "offset",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// SearchTVShowsMetadataParams is parameters of searchTVShowsMetadata operation.
+type SearchTVShowsMetadataParams struct {
+	// Search query.
+	Q string
+	// Filter by first air year.
+	Year OptInt `json:",omitempty,omitzero"`
+	// Maximum results to return.
+	Limit OptInt `json:",omitempty,omitzero"`
+}
+
+func unpackSearchTVShowsMetadataParams(packed middleware.Parameters) (params SearchTVShowsMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		params.Q = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "year",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Year = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeSearchTVShowsMetadataParams(args [0]string, argsEscaped bool, r *http.Request) (params SearchTVShowsMetadataParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Q = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: year.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "year",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotYearVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotYearVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Year.SetTo(paramsDotYearVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "year",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(20)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        false,
+							Min:           0,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
 			In:   "query",
 			Err:  err,
 		}

@@ -398,6 +398,16 @@ func (UnimplementedHandler) GetCurrentUser(ctx context.Context) (r GetCurrentUse
 	return r, ht.ErrNotImplemented
 }
 
+// GetEpisodeMetadata implements getEpisodeMetadata operation.
+//
+// Fetch detailed episode information from TMDb.
+// Returns episode metadata including guest stars and crew.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+func (UnimplementedHandler) GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (r GetEpisodeMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetLibrary implements getLibrary operation.
 //
 // Get detailed information about a library.
@@ -576,6 +586,16 @@ func (UnimplementedHandler) GetSearchFacets(ctx context.Context) (r GetSearchFac
 	return r, ht.ErrNotImplemented
 }
 
+// GetSeasonMetadata implements getSeasonMetadata operation.
+//
+// Fetch detailed season information from TMDb.
+// Returns season metadata including episodes overview.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+func (UnimplementedHandler) GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (r GetSeasonMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetServerSetting implements getServerSetting operation.
 //
 // Retrieve a specific server setting by key.
@@ -701,6 +721,16 @@ func (UnimplementedHandler) GetTVShowEpisodes(ctx context.Context, params GetTVS
 //
 // GET /api/v1/tvshows/{id}/genres
 func (UnimplementedHandler) GetTVShowGenres(ctx context.Context, params GetTVShowGenresParams) (r GetTVShowGenresRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowMetadata implements getTVShowMetadata operation.
+//
+// Fetch detailed TV show information from TMDb by TV show ID.
+// Returns comprehensive metadata including seasons overview.
+//
+// GET /api/v1/metadata/tv/{tmdbId}
+func (UnimplementedHandler) GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (r GetTVShowMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1250,6 +1280,16 @@ func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params Sea
 //
 // GET /api/v1/tvshows/search
 func (UnimplementedHandler) SearchTVShows(ctx context.Context, params SearchTVShowsParams) (r SearchTVShowsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchTVShowsMetadata implements searchTVShowsMetadata operation.
+//
+// Search for TV shows on TMDb by query string.
+// Returns matching TV shows with basic metadata.
+//
+// GET /api/v1/metadata/search/tv
+func (UnimplementedHandler) SearchTVShowsMetadata(ctx context.Context, params SearchTVShowsMetadataParams) (r SearchTVShowsMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
