@@ -183,7 +183,10 @@ func (s *Service) ValidateKey(ctx context.Context, rawKey string) (*APIKey, erro
 
 	// Update last used timestamp (async, don't wait)
 	go func() {
-		if err := s.repo.UpdateAPIKeyLastUsed(context.Background(), dbKey.ID); err != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := s.repo.UpdateAPIKeyLastUsed(ctx, dbKey.ID); err != nil {
 			s.logger.Warn("failed to update API key last used",
 				zap.String("key_id", dbKey.ID.String()),
 				zap.Error(err),

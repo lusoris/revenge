@@ -140,8 +140,10 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 
 	// No River client, start sync directly (blocking)
 	go func() {
-		// Use a new context since the request context will be done
-		syncCtx := context.Background()
+		// Use a new context with timeout since the request context will be done
+		syncCtx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+		defer cancel()
+
 		if _, err := h.radarrService.SyncLibrary(syncCtx); err != nil {
 			h.logger.Error("Radarr sync failed", zap.Error(err))
 		}
