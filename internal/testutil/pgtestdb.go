@@ -40,7 +40,7 @@ const (
 func startSharedContainer(ctx context.Context) error {
 	sharedContainerOnce.Do(func() {
 		container, err := postgres.Run(ctx,
-			"postgres:17-alpine",
+			"postgres:18-alpine",
 			postgres.WithDatabase(containerDB),
 			postgres.WithUsername(containerUser),
 			postgres.WithPassword(containerPassword),

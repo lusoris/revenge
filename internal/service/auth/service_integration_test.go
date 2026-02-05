@@ -288,10 +288,19 @@ func TestService_ResetPassword_Integration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// Request password reset
-	resetToken, err := svc.RequestPasswordReset(ctx, user.Email, nil, nil)
+	// Create password reset token directly in database for testing
+	// (since RequestPasswordReset no longer returns the token for security reasons)
+	plainToken := "test-reset-token-12345"
+	tokenHash := tokenMgr.HashRefreshToken(plainToken)
+	_, err = repo.CreatePasswordResetToken(ctx, auth.CreatePasswordResetTokenParams{
+		UserID:    user.ID,
+		TokenHash: tokenHash,
+		IPAddress: nil,
+		UserAgent: nil,
+		ExpiresAt: time.Now().Add(15 * time.Minute),
+	})
 	require.NoError(t, err)
-	require.NotEmpty(t, resetToken)
+	resetToken := plainToken
 
 	tests := []struct {
 		name        string

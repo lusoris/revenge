@@ -432,11 +432,10 @@ func TestService_RequestPasswordReset_UserNotFound(t *testing.T) {
 		Return(nil, fmt.Errorf("not found")).
 		Once()
 
-	// Should return empty string, not error (security: don't reveal if email exists)
-	token, err := svc.RequestPasswordReset(ctx, email, nil, nil)
+	// Should return no error (security: don't reveal if email exists)
+	err := svc.RequestPasswordReset(ctx, email, nil, nil)
 
 	require.NoError(t, err)
-	assert.Empty(t, token)
 }
 
 func TestService_RequestPasswordReset_ErrorInvalidatingOldTokens(t *testing.T) {
@@ -462,11 +461,10 @@ func TestService_RequestPasswordReset_ErrorInvalidatingOldTokens(t *testing.T) {
 		Return(expectedErr).
 		Once()
 
-	token, err := svc.RequestPasswordReset(ctx, email, nil, nil)
+	err := svc.RequestPasswordReset(ctx, email, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to invalidate old tokens")
-	assert.Empty(t, token)
 }
 
 func TestService_RequestPasswordReset_ErrorCreatingToken(t *testing.T) {
@@ -502,11 +500,10 @@ func TestService_RequestPasswordReset_ErrorCreatingToken(t *testing.T) {
 		Return(auth.PasswordResetToken{}, expectedErr).
 		Once()
 
-	token, err := svc.RequestPasswordReset(ctx, email, nil, nil)
+	err := svc.RequestPasswordReset(ctx, email, nil, nil)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to create reset token")
-	assert.Empty(t, token)
 }
 
 // ========== ResetPassword Tests ==========
@@ -1246,10 +1243,9 @@ func TestService_RequestPasswordReset_Success(t *testing.T) {
 		Return(resetToken, nil).
 		Once()
 
-	token, err := svc.RequestPasswordReset(ctx, email, nil, nil)
+	err := svc.RequestPasswordReset(ctx, email, nil, nil)
 
 	require.NoError(t, err)
-	assert.NotEmpty(t, token)
 }
 
 // ========== ResendVerification Success Path ==========
