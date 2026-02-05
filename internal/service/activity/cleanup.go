@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
 )
@@ -29,15 +30,17 @@ func (ActivityCleanupArgs) Kind() string {
 // ActivityCleanupWorker performs periodic activity log cleanup.
 type ActivityCleanupWorker struct {
 	river.WorkerDefaults[ActivityCleanupArgs]
-	service *Service
-	logger  *zap.Logger
+	leaderElection *raft.LeaderElection
+	service        *Service
+	logger         *zap.Logger
 }
 
 // NewActivityCleanupWorker creates a new activity cleanup worker.
-func NewActivityCleanupWorker(service *Service, logger *zap.Logger) *ActivityCleanupWorker {
+func NewActivityCleanupWorker(leaderElection *raft.LeaderElection, service *Service, logger *zap.Logger) *ActivityCleanupWorker {
 	return &ActivityCleanupWorker{
-		service: service,
-		logger:  logger.Named("activity-cleanup"),
+		leaderElection: leaderElection,
+		service:        service,
+		logger:         logger.Named("activity-cleanup"),
 	}
 }
 
@@ -45,10 +48,20 @@ func NewActivityCleanupWorker(service *Service, logger *zap.Logger) *ActivityCle
 func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[ActivityCleanupArgs]) error {
 	args := job.Args
 
+	// Check if this node is the leader (only leader should run cleanup jobs)
+	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
+		w.logger.Info("skipping activity cleanup job: not the leader node",
+			zap.Int64("job_id", job.ID),
+			zap.String("leader", w.leaderElection.LeaderAddr()),
+		)
+		return nil
+	}
+
 	w.logger.Info("starting activity cleanup job",
 		zap.Int64("job_id", job.ID),
 		zap.Int("retention_days", args.RetentionDays),
 		zap.Bool("dry_run", args.DryRun),
+		zap.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
 	)
 
 	// Validate arguments

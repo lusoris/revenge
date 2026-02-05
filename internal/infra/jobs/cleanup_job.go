@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 )
 
@@ -35,16 +36,18 @@ func (CleanupArgs) Kind() string {
 // CleanupWorker performs periodic cleanup operations.
 type CleanupWorker struct {
 	river.WorkerDefaults[CleanupArgs]
-	logger *slog.Logger
+	leaderElection *raft.LeaderElection
+	logger         *slog.Logger
 }
 
 // NewCleanupWorker creates a new cleanup worker.
-func NewCleanupWorker(logger *slog.Logger) *CleanupWorker {
+func NewCleanupWorker(leaderElection *raft.LeaderElection, logger *slog.Logger) *CleanupWorker {
 	if logger == nil {
 		logger = slog.Default()
 	}
 	return &CleanupWorker{
-		logger: logger,
+		leaderElection: leaderElection,
+		logger:         logger,
 	}
 }
 
@@ -52,12 +55,23 @@ func NewCleanupWorker(logger *slog.Logger) *CleanupWorker {
 func (w *CleanupWorker) Work(ctx context.Context, job *river.Job[CleanupArgs]) error {
 	args := job.Args
 
+	// Check if this node is the leader (only leader should run cleanup jobs)
+	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
+		w.logger.Info("skipping cleanup job: not the leader node",
+			"job_id", job.ID,
+			"target_type", args.TargetType,
+			"leader", w.leaderElection.LeaderAddr(),
+		)
+		return nil
+	}
+
 	w.logger.Info("starting cleanup job",
 		"job_id", job.ID,
 		"target_type", args.TargetType,
 		"older_than", args.OlderThan,
 		"batch_size", args.BatchSize,
 		"dry_run", args.DryRun,
+		"is_leader", w.leaderElection == nil || w.leaderElection.IsLeader(),
 	)
 
 	// Validate arguments

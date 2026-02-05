@@ -12,6 +12,7 @@ var Module = fx.Module("library",
 	fx.Provide(
 		newRepository,
 		newService,
+		NewLibraryScanCleanupWorker,
 	),
 )
 

@@ -28,7 +28,7 @@ func TestCleanupJobKind(t *testing.T) {
 func TestNewCleanupWorker(t *testing.T) {
 	t.Run("with logger", func(t *testing.T) {
 		logger := slog.Default()
-		worker := NewCleanupWorker(logger)
+		worker := NewCleanupWorker(nil, logger)
 
 		assert.NotNil(t, worker)
 		assert.NotNil(t, worker.logger)
@@ -36,7 +36,7 @@ func TestNewCleanupWorker(t *testing.T) {
 	})
 
 	t.Run("with nil logger", func(t *testing.T) {
-		worker := NewCleanupWorker(nil)
+		worker := NewCleanupWorker(nil, nil)
 
 		assert.NotNil(t, worker)
 		assert.NotNil(t, worker.logger)
@@ -45,7 +45,7 @@ func TestNewCleanupWorker(t *testing.T) {
 
 // TestCleanupWorker_ValidateArgs tests argument validation.
 func TestCleanupWorker_ValidateArgs(t *testing.T) {
-	worker := NewCleanupWorker(slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 
 	tests := []struct {
 		name    string
@@ -125,7 +125,7 @@ func TestCleanupWorker_ValidateArgs(t *testing.T) {
 
 // TestCleanupWorker_Work tests job execution.
 func TestCleanupWorker_Work(t *testing.T) {
-	worker := NewCleanupWorker(slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 	ctx := context.Background()
 
 	t.Run("successful cleanup", func(t *testing.T) {
@@ -195,7 +195,7 @@ func TestCleanupArgs_Serialization(t *testing.T) {
 
 // TestCleanupWorker_DifferentTargets tests cleanup with different target types.
 func TestCleanupWorker_DifferentTargets(t *testing.T) {
-	worker := NewCleanupWorker(slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 	ctx := context.Background()
 
 	targets := []string{"sessions", "jobs", "logs", "cache_entries"}
@@ -219,7 +219,7 @@ func TestCleanupWorker_DifferentTargets(t *testing.T) {
 
 // TestCleanupWorker_EdgeCases tests edge case scenarios.
 func TestCleanupWorker_EdgeCases(t *testing.T) {
-	worker := NewCleanupWorker(slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 	ctx := context.Background()
 
 	t.Run("very large batch size", func(t *testing.T) {
