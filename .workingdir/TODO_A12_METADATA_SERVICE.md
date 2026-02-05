@@ -255,9 +255,12 @@ type EnrichContentArgs struct {
 
 #### A12.6.2: TV Module
 
-- TV module doesn't have MetadataProvider interface yet
-- Will add tvshow adapter when needed
-- Shared service ready for TV operations
+**Status**: ✅ Complete
+
+- Added `tvshow.MetadataProvider` interface
+- Added `internal/service/metadata/adapters/tvshow/adapter.go`
+- Updated metadatafx to provide TVShowMetadataAdapter
+- Full Sonarr integration added (matching Radarr)
 
 ---
 
@@ -377,3 +380,18 @@ Key achievements:
 - All API handlers updated to use shared service
 
 Final commit: `ffb359cc19` - refactor(movie): migrate to shared metadata service
+
+---
+
+## Completion Summary (Phase A12b - 2026-02-05)
+
+**TV Show integration completed.**
+
+Additional achievements:
+- Added TVShow MetadataProvider interface + adapter
+- Full Sonarr integration matching Radarr feature parity
+  - SyncService, WebhookHandler, Jobs, Mapper, Module
+- SonarrConfig added to application configuration
+- +1781 lines of new Sonarr integration code
+
+Final commit: `34ad1ada78` - feat(sonarr): add full Sonarr integration matching Radarr

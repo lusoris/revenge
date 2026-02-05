@@ -48,3 +48,13 @@
   - Removed 3200+ lines of duplicate TMDb code from movie module
   - Job kind alignment (metadata_refresh_movie)
   - Multi-language enrichment support
+
+- [x] **Phase A12b: TV Show Integration** (2026-02-05)
+  - TVShow MetadataProvider interface + adapter
+  - Full Sonarr integration (matching Radarr feature parity)
+    - Sync service with library/series sync
+    - Webhook handler for real-time updates
+    - River jobs for async operations
+    - Mapper for Sonarr→tvshow type conversion
+    - fx module for dependency injection
+  - SonarrConfig added to application config
