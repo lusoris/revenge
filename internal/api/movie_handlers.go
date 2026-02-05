@@ -18,7 +18,13 @@ func (h *Handler) GetMovie(ctx context.Context, params ogen.GetMovieParams) (oge
 		return nil, err
 	}
 
-	return movieToOgen(m), nil
+	// Get user's preferred language
+	lang := GetUserLanguage(ctx)
+
+	// Localize movie fields
+	localizedMovie := LocalizeMovie(m, lang)
+
+	return movieToOgen(localizedMovie), nil
 }
 
 // ListMovies delegates to the movie handler.
@@ -34,8 +40,12 @@ func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) 
 		return nil, err
 	}
 
-	result := make([]ogen.Movie, len(movies))
-	for i, m := range movies {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedMovies := LocalizeMovies(movies, lang)
+
+	result := make([]ogen.Movie, len(localizedMovies))
+	for i, m := range localizedMovies {
 		result[i] = *movieToOgen(&m)
 	}
 
@@ -55,8 +65,12 @@ func (h *Handler) SearchMovies(ctx context.Context, params ogen.SearchMoviesPara
 		return nil, err
 	}
 
-	result := make([]ogen.Movie, len(movies))
-	for i, m := range movies {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedMovies := LocalizeMovies(movies, lang)
+
+	result := make([]ogen.Movie, len(localizedMovies))
+	for i, m := range localizedMovies {
 		result[i] = *movieToOgen(&m)
 	}
 
@@ -75,8 +89,12 @@ func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyA
 		return nil, err
 	}
 
-	result := make([]ogen.Movie, len(movies))
-	for i, m := range movies {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedMovies := LocalizeMovies(movies, lang)
+
+	result := make([]ogen.Movie, len(localizedMovies))
+	for i, m := range localizedMovies {
 		result[i] = *movieToOgen(&m)
 	}
 
@@ -96,8 +114,12 @@ func (h *Handler) GetTopRated(ctx context.Context, params ogen.GetTopRatedParams
 		return nil, err
 	}
 
-	result := make([]ogen.Movie, len(movies))
-	for i, m := range movies {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedMovies := LocalizeMovies(movies, lang)
+
+	result := make([]ogen.Movie, len(localizedMovies))
+	for i, m := range localizedMovies {
 		result[i] = *movieToOgen(&m)
 	}
 
@@ -117,8 +139,12 @@ func (h *Handler) GetContinueWatching(ctx context.Context, params ogen.GetContin
 		return nil, err
 	}
 
-	result := make([]ogen.ContinueWatchingItem, len(items))
-	for i, item := range items {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedItems := LocalizeContinueWatchingItems(items, lang)
+
+	result := make([]ogen.ContinueWatchingItem, len(localizedItems))
+	for i, item := range localizedItems {
 		result[i] = continueWatchingItemToOgen(&item)
 	}
 
@@ -141,8 +167,12 @@ func (h *Handler) GetWatchHistory(ctx context.Context, params ogen.GetWatchHisto
 		return nil, err
 	}
 
-	result := make([]ogen.WatchedMovieItem, len(items))
-	for i, item := range items {
+	// Get user's preferred language and localize results
+	lang := GetUserLanguage(ctx)
+	localizedItems := LocalizeWatchedMovieItems(items, lang)
+
+	result := make([]ogen.WatchedMovieItem, len(localizedItems))
+	for i, item := range localizedItems {
 		result[i] = watchedMovieItemToOgen(&item)
 	}
 
