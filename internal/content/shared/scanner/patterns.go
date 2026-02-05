@@ -62,14 +62,16 @@ var ServiceMarkers = []string{
 }
 
 // removeFromTitle removes all occurrences of markers from a title
-// It performs case-insensitive matching but preserves surrounding content
+// It performs case-insensitive matching with word boundaries to avoid false positives
+// (e.g., "TS" should not match inside "DTS")
 func removeFromTitle(title string, markers []string) string {
 	result := title
 	resultLower := strings.ToLower(title)
 
 	for _, marker := range markers {
 		markerLower := strings.ToLower(marker)
-		if idx := strings.Index(resultLower, markerLower); idx != -1 {
+		idx := findWordBoundary(resultLower, markerLower)
+		if idx != -1 {
 			// Truncate at this point (markers typically appear at end of title)
 			result = result[:idx]
 			resultLower = resultLower[:idx]
@@ -77,6 +79,52 @@ func removeFromTitle(title string, markers []string) string {
 	}
 
 	return strings.TrimSpace(result)
+}
+
+// findWordBoundary finds the index of a marker only if it appears as a whole word
+// (i.e., not as a substring of another word)
+func findWordBoundary(text, marker string) int {
+	idx := strings.Index(text, marker)
+	if idx == -1 {
+		return -1
+	}
+
+	// Check if this is a word boundary match
+	// Before: must be start of string or non-alphanumeric
+	if idx > 0 {
+		prevChar := text[idx-1]
+		if isAlphanumeric(prevChar) {
+			// Not a word boundary, search further
+			remaining := text[idx+1:]
+			nextIdx := findWordBoundary(remaining, marker)
+			if nextIdx == -1 {
+				return -1
+			}
+			return idx + 1 + nextIdx
+		}
+	}
+
+	// After: must be end of string or non-alphanumeric
+	endIdx := idx + len(marker)
+	if endIdx < len(text) {
+		nextChar := text[endIdx]
+		if isAlphanumeric(nextChar) {
+			// Not a word boundary, search further
+			remaining := text[idx+1:]
+			nextIdx := findWordBoundary(remaining, marker)
+			if nextIdx == -1 {
+				return -1
+			}
+			return idx + 1 + nextIdx
+		}
+	}
+
+	return idx
+}
+
+// isAlphanumeric checks if a byte is a letter or digit
+func isAlphanumeric(b byte) bool {
+	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z') || (b >= '0' && b <= '9')
 }
 
 // CleanTitle removes quality markers, release groups, and normalizes a title string

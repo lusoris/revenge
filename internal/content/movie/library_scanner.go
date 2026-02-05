@@ -5,42 +5,31 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content/movie/adapters"
+	"github.com/lusoris/revenge/internal/content/shared/scanner"
 	"github.com/lusoris/revenge/internal/util"
 )
 
-// VideoExtensions are supported video file extensions
-var VideoExtensions = map[string]bool{
-	".mp4":  true,
-	".mkv":  true,
-	".avi":  true,
-	".mov":  true,
-	".wmv":  true,
-	".flv":  true,
-	".webm": true,
-	".m4v":  true,
-	".mpg":  true,
-	".mpeg": true,
-	".3gp":  true,
-	".ts":   true,
-	".m2ts": true,
-}
+// VideoExtensions are supported video file extensions.
+// Deprecated: Use scanner.VideoExtensions from the shared package.
+var VideoExtensions = scanner.VideoExtensions
 
 // isVideoFile checks if a filename has a video extension
 func isVideoFile(filename string) bool {
-	ext := strings.ToLower(filepath.Ext(filename))
-	return VideoExtensions[ext]
+	return scanner.IsVideoFile(filename)
 }
 
-// Scanner handles file system scanning for movie files
+// Scanner handles file system scanning for movie files.
+// It uses the shared FilesystemScanner internally with a MovieFileParser.
 type Scanner struct {
-	libraryPaths []string
+	internal *scanner.FilesystemScanner
+	paths    []string
 }
 
-// ScanResult represents a discovered movie file
+// ScanResult represents a discovered movie file.
+// This is a movie-specific type that wraps the shared scanner.ScanResult.
 type ScanResult struct {
 	FilePath    string
 	FileName    string
@@ -51,168 +40,70 @@ type ScanResult struct {
 	Error       error
 }
 
-// NewScanner creates a new library scanner
+// NewScanner creates a new library scanner using the shared scanner framework
 func NewScanner(libraryPaths []string) *Scanner {
+	parser := adapters.NewMovieFileParser()
+	internal := scanner.NewFilesystemScanner(libraryPaths, parser)
+
 	return &Scanner{
-		libraryPaths: libraryPaths,
+		internal: internal,
+		paths:    libraryPaths,
 	}
 }
 
 // Scan scans all library paths for movie files
 func (s *Scanner) Scan(ctx context.Context) ([]ScanResult, error) {
-	var results []ScanResult
-
-	for _, path := range s.libraryPaths {
-		pathResults, err := s.scanPath(ctx, path)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan path %s: %w", path, err)
-		}
-		results = append(results, pathResults...)
-	}
-
-	return results, nil
-}
-
-// scanPath scans a single library path
-func (s *Scanner) scanPath(ctx context.Context, path string) ([]ScanResult, error) {
-	var results []ScanResult
-
-	err := filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
-		// Check context cancellation
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-		}
-
-		if err != nil {
-			return err
-		}
-
-		// Skip directories
-		if info.IsDir() {
-			return nil
-		}
-
-		// Check if it's a video file
-		ext := strings.ToLower(filepath.Ext(filePath))
-		if !VideoExtensions[ext] {
-			return nil
-		}
-
-		// Parse filename
-		fileName := filepath.Base(filePath)
-		title, year := parseMovieFilename(fileName)
-
-		results = append(results, ScanResult{
-			FilePath:    filePath,
-			FileName:    fileName,
-			ParsedTitle: title,
-			ParsedYear:  year,
-			FileSize:    info.Size(),
-			IsVideo:     true,
-		})
-
-		return nil
-	})
-
+	// Use the shared scanner
+	sharedResults, err := s.internal.Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	// Convert shared results to movie-specific results
+	results := make([]ScanResult, 0, len(sharedResults))
+	for _, sr := range sharedResults {
+		results = append(results, convertScanResult(sr))
+	}
+
 	return results, nil
 }
 
-// parseMovieFilename attempts to extract title and year from filename
+// convertScanResult converts a shared ScanResult to a movie ScanResult
+func convertScanResult(sr scanner.ScanResult) ScanResult {
+	return ScanResult{
+		FilePath:    sr.FilePath,
+		FileName:    sr.FileName,
+		ParsedTitle: sr.ParsedTitle,
+		ParsedYear:  sr.GetYear(),
+		FileSize:    sr.FileSize,
+		IsVideo:     sr.IsMedia,
+		Error:       sr.Error,
+	}
+}
+
+// parseMovieFilename attempts to extract title and year from filename.
+// This function delegates to the MovieFileParser for consistent behavior.
 // Examples:
 // - "The Matrix (1999).mkv" -> "The Matrix", 1999
 // - "Inception.2010.1080p.BluRay.mkv" -> "Inception", 2010
 // - "The.Dark.Knight.2008.mkv" -> "The Dark Knight", 2008
 func parseMovieFilename(filename string) (title string, year *int) {
-	// Remove extension
-	nameWithoutExt := strings.TrimSuffix(filename, filepath.Ext(filename))
-
-	// Try pattern: "Title (YEAR)"
-	re1 := regexp.MustCompile(`^(.+?)\s*\((\d{4})\)`)
-	if matches := re1.FindStringSubmatch(nameWithoutExt); len(matches) == 3 {
-		title = cleanTitle(matches[1])
-		if y := parseInt(matches[2]); y != nil && *y >= 1900 && *y <= 2100 {
-			year = y
+	parser := adapters.NewMovieFileParser()
+	title, metadata := parser.Parse(filename)
+	if metadata != nil {
+		if y, ok := metadata["year"]; ok {
+			if yearInt, ok := y.(int); ok {
+				year = &yearInt
+			}
 		}
-		return
 	}
-
-	// Try pattern: "Title.YEAR" or "Title YEAR"
-	re2 := regexp.MustCompile(`^(.+?)[\s\.](\d{4})`)
-	if matches := re2.FindStringSubmatch(nameWithoutExt); len(matches) == 3 {
-		title = cleanTitle(matches[1])
-		if y := parseInt(matches[2]); y != nil && *y >= 1900 && *y <= 2100 {
-			year = y
-		}
-		return
-	}
-
-	// No year found, use whole name as title
-	title = cleanTitle(nameWithoutExt)
-	return
+	return title, year
 }
 
-// cleanTitle cleans up the title string
+// cleanTitle cleans up the title string.
+// Deprecated: Use scanner.CleanTitle from the shared package.
 func cleanTitle(title string) string {
-	// Replace dots/underscores with spaces
-	title = strings.ReplaceAll(title, ".", " ")
-	title = strings.ReplaceAll(title, "_", " ")
-
-	// Remove common quality markers
-	qualityMarkers := []string{
-		"1080p", "720p", "480p", "2160p", "4K",
-		"BluRay", "BRRip", "WEBRip", "WEB-DL", "HDRip",
-		"x264", "x265", "h264", "h265", "HEVC",
-		"AAC", "DTS", "AC3", "DD5.1",
-		"EXTENDED", "UNRATED", "REMASTERED",
-		"REMUX", // REMUX releases
-	}
-
-	// Remove release group tags (usually all caps at the end)
-	// Common groups: SPARKS, RARBG, YTS, YIFY, etc.
-	releaseGroups := []string{
-		"SPARKS", "RARBG", "YTS", "YIFY", "ETRG", "FGT",
-		"STUTTERSHIT", "PSYCHD", "CMRG", "ION10", "AMZN",
-	}
-
-	titleLower := strings.ToLower(title)
-
-	// Remove quality markers
-	for _, marker := range qualityMarkers {
-		markerLower := strings.ToLower(marker)
-		if idx := strings.Index(titleLower, markerLower); idx != -1 {
-			title = title[:idx]
-			titleLower = titleLower[:idx]
-		}
-	}
-
-	// Remove release groups (case-insensitive)
-	for _, group := range releaseGroups {
-		groupLower := strings.ToLower(group)
-		if idx := strings.Index(titleLower, groupLower); idx != -1 {
-			title = title[:idx]
-			titleLower = titleLower[:idx]
-		}
-	}
-
-	// Trim whitespace
-	title = strings.TrimSpace(title)
-
-	return title
-}
-
-// parseInt converts string to int pointer
-func parseInt(s string) *int {
-	var i int
-	if _, err := fmt.Sscanf(s, "%d", &i); err != nil {
-		return nil
-	}
-	return &i
+	return scanner.CleanTitle(title)
 }
 
 // MovieFileInfo contains detailed information about a movie file
