@@ -293,6 +293,9 @@ type LibraryConfig struct {
 type IntegrationsConfig struct {
 	// Radarr integration configuration
 	Radarr RadarrConfig `koanf:"radarr"`
+
+	// Sonarr integration configuration
+	Sonarr SonarrConfig `koanf:"sonarr"`
 }
 
 // RadarrConfig holds Radarr integration configuration.
@@ -304,6 +307,24 @@ type RadarrConfig struct {
 	BaseURL string `koanf:"base_url"`
 
 	// APIKey is the Radarr API key.
+	APIKey string `koanf:"api_key"`
+
+	// AutoSync enables automatic library sync.
+	AutoSync bool `koanf:"auto_sync"`
+
+	// SyncInterval is the interval between automatic syncs (seconds).
+	SyncInterval int `koanf:"sync_interval"`
+}
+
+// SonarrConfig holds Sonarr integration configuration.
+type SonarrConfig struct {
+	// Enabled indicates if Sonarr integration is enabled.
+	Enabled bool `koanf:"enabled"`
+
+	// BaseURL is the Sonarr server URL (e.g., http://localhost:8989).
+	BaseURL string `koanf:"base_url"`
+
+	// APIKey is the Sonarr API key.
 	APIKey string `koanf:"api_key"`
 
 	// AutoSync enables automatic library sync.
@@ -444,6 +465,11 @@ type RaftConfig struct {
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
+}
+
+// GetSonarrConfig returns the Sonarr configuration.
+func (c *Config) GetSonarrConfig() SonarrConfig {
+	return c.Integrations.Sonarr
 }
 
 // Defaults returns a map of default configuration values.
