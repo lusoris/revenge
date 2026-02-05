@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/netip"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -16,6 +18,7 @@ import (
 
 // Service implements user business logic
 type Service struct {
+	pool           *pgxpool.Pool
 	repo           Repository
 	hasher         *crypto.PasswordHasher
 	activityLogger activity.Logger
@@ -24,8 +27,9 @@ type Service struct {
 }
 
 // NewService creates a new user service
-func NewService(repo Repository, activityLogger activity.Logger, store storage.Storage, avatarCfg config.AvatarConfig) *Service {
+func NewService(pool *pgxpool.Pool, repo Repository, activityLogger activity.Logger, store storage.Storage, avatarCfg config.AvatarConfig) *Service {
 	return &Service{
+		pool:           pool,
 		repo:           repo,
 		hasher:         crypto.NewPasswordHasher(),
 		activityLogger: activityLogger,
@@ -332,7 +336,7 @@ func (s *Service) UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Re
 	// Generate storage key
 	storageKey := storage.GenerateAvatarKey(userID, metadata.FileName)
 
-	// Store the file
+	// Store the file first (outside transaction to avoid blocking DB)
 	storedKey, err := s.storage.Store(ctx, storageKey, file, metadata.MimeType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to store avatar: %w", err)
@@ -341,23 +345,35 @@ func (s *Service) UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Re
 	// Get the URL for the stored file
 	filePath := s.storage.GetURL(storedKey)
 
-	// Get next version number
-	latestVersion, err := s.repo.GetLatestAvatarVersion(ctx, userID)
+	// Begin transaction to ensure atomicity of all DB operations
+	tx, err := s.pool.Begin(ctx)
 	if err != nil {
-		// Cleanup stored file on error
+		_ = s.storage.Delete(ctx, storedKey)
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	// Create transaction-scoped queries
+	txQueries := db.New(tx)
+
+	// Get next version number (within transaction)
+	latestVersion, err := txQueries.GetLatestAvatarVersion(ctx, userID)
+	if err != nil {
 		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to get latest avatar version: %w", err)
 	}
 	nextVersion := latestVersion + 1
 
-	// Unset current avatars
-	if err := s.repo.UnsetCurrentAvatars(ctx, userID); err != nil {
+	// Unset current avatars (within transaction)
+	if err := txQueries.UnsetCurrentAvatars(ctx, userID); err != nil {
 		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to unset current avatars: %w", err)
 	}
 
-	// Create new avatar
-	avatar, err := s.repo.CreateAvatar(ctx, CreateAvatarParams{
+	// Prepare CreateAvatar parameters with IP address parsing
+	createParams := db.CreateAvatarParams{
 		UserID:                userID,
 		FilePath:              filePath,
 		FileSizeBytes:         metadata.FileSizeBytes,
@@ -366,25 +382,45 @@ func (s *Service) UploadAvatar(ctx context.Context, userID uuid.UUID, file io.Re
 		Height:                metadata.Height,
 		IsAnimated:            metadata.IsAnimated,
 		Version:               nextVersion,
-		UploadedFromIP:        metadata.UploadedFromIP,
 		UploadedFromUserAgent: metadata.UploadedFromUserAgent,
-	})
+	}
+
+	// Parse IP address if provided
+	if metadata.UploadedFromIP != nil {
+		addr, err := netip.ParseAddr(*metadata.UploadedFromIP)
+		if err != nil {
+			_ = s.storage.Delete(ctx, storedKey)
+			return nil, fmt.Errorf("failed to parse IP address: %w", err)
+		}
+		createParams.UploadedFromIp = addr
+	}
+
+	// Create new avatar record (within transaction)
+	avatar, err := txQueries.CreateAvatar(ctx, createParams)
 	if err != nil {
 		_ = s.storage.Delete(ctx, storedKey)
 		return nil, fmt.Errorf("failed to create avatar: %w", err)
 	}
 
-	// Update user avatar_url
+	// Update user avatar_url (within transaction)
+	// All operations must succeed together or all fail
 	avatarURL := filePath
-	_, err = s.repo.UpdateUser(ctx, userID, UpdateUserParams{
-		AvatarURL: &avatarURL,
+	_, err = txQueries.UpdateUser(ctx, db.UpdateUserParams{
+		UserID:    userID,
+		AvatarUrl: &avatarURL,
 	})
 	if err != nil {
-		// Log error but don't fail
-		_ = err
+		_ = s.storage.Delete(ctx, storedKey)
+		return nil, fmt.Errorf("failed to update user avatar: %w", err)
 	}
 
-	return avatar, nil
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		_ = s.storage.Delete(ctx, storedKey)
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return &avatar, nil
 }
 
 // SetCurrentAvatar sets an existing avatar as current

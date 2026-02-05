@@ -3,6 +3,7 @@ package user
 import (
 	"go.uber.org/fx"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -17,8 +18,8 @@ var Module = fx.Module("user",
 			return NewPostgresRepository(queries)
 		},
 		// Service
-		func(repo Repository, activityLogger activity.Logger, store storage.Storage, cfg *config.Config) *Service {
-			return NewService(repo, activityLogger, store, cfg.Avatar)
+		func(pool *pgxpool.Pool, repo Repository, activityLogger activity.Logger, store storage.Storage, cfg *config.Config) *Service {
+			return NewService(pool, repo, activityLogger, store, cfg.Avatar)
 		},
 	),
 )
