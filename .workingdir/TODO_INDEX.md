@@ -51,7 +51,8 @@
 | A8 | [TODO_A8_CLUSTER_READINESS.md](TODO_A8_CLUSTER_READINESS.md) | P0 | 24-40h | 🔴 Pending |
 | A9 | [TODO_A9_MULTILANGUAGE.md](TODO_A9_MULTILANGUAGE.md) | P0 | 32-48h | ✅ Complete |
 | A10 | [TODO_A10_SHARED_ABSTRACTIONS.md](TODO_A10_SHARED_ABSTRACTIONS.md) | P1 | 40-60h | 🔴 Pending |
-| A11 | [TODO_A11_TV_MODULE.md](TODO_A11_TV_MODULE.md) | P1 | 32-48h | 🔴 Pending |
+| A11 | [TODO_A11_TV_MODULE.md](TODO_A11_TV_MODULE.md) | P1 | 32-48h | ✅ Complete |
+| A12 | [TODO_A12_METADATA_SERVICE.md](TODO_A12_METADATA_SERVICE.md) | P1 | 24-32h | 🔴 Pending |
 | **Phase B & C (Deferred)** |
 | B | [TODO_B_FRONTEND.md](TODO_B_FRONTEND.md) | - | 40-60h | ⏸️ Deferred |
 | C | [TODO_C_INFRASTRUCTURE.md](TODO_C_INFRASTRUCTURE.md) | - | 8-16h | ⏸️ Deferred |
