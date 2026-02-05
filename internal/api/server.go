@@ -160,6 +160,8 @@ func NewServer(p ServerParams) (*Server, error) {
 				handler,
 				handler,
 				ogen.WithMiddleware(
+					middleware.RequestIDMiddleware(),
+					middleware.RequestMetadataMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					redisAuthLimiter.Middleware(),
 					redisGlobalLimiter.Middleware(),
@@ -202,6 +204,8 @@ func NewServer(p ServerParams) (*Server, error) {
 				handler,
 				handler,
 				ogen.WithMiddleware(
+					middleware.RequestIDMiddleware(),
+					middleware.RequestMetadataMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					authLimiter.Middleware(),
 					globalLimiter.Middleware(),
@@ -215,6 +219,8 @@ func NewServer(p ServerParams) (*Server, error) {
 			handler,
 			handler,
 			ogen.WithMiddleware(
+				middleware.RequestIDMiddleware(),
+				middleware.RequestMetadataMiddleware(),
 				observability.HTTPMetricsMiddleware(),
 			),
 			ogen.WithErrorHandler(middleware.ErrorHandler),
@@ -224,10 +230,11 @@ func NewServer(p ServerParams) (*Server, error) {
 		return nil, fmt.Errorf("failed to create ogen server: %w", err)
 	}
 
-	// Create HTTP server
+	// Create HTTP server with RequestID wrapper
+	// The wrapper adds X-Request-ID to response headers
 	httpServer := &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", p.Config.Server.Host, p.Config.Server.Port),
-		Handler:      ogenServer,
+		Handler:      middleware.RequestIDHTTPWrapper(ogenServer),
 		ReadTimeout:  p.Config.Server.ReadTimeout,
 		WriteTimeout: p.Config.Server.WriteTimeout,
 		IdleTimeout:  p.Config.Server.IdleTimeout,
