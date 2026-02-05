@@ -54,13 +54,15 @@ type Service interface {
 
 // movieService implements the Service interface
 type movieService struct {
-	repo Repository
+	repo             Repository
+	metadataProvider MetadataProvider
 }
 
 // NewService creates a new movie service
-func NewService(repo Repository) Service {
+func NewService(repo Repository, metadataProvider MetadataProvider) Service {
 	return &movieService{
-		repo: repo,
+		repo:             repo,
+		metadataProvider: metadataProvider,
 	}
 }
 
@@ -272,7 +274,101 @@ func (s *movieService) GetUserStats(ctx context.Context, userID uuid.UUID) (*Use
 
 // RefreshMovieMetadata triggers a metadata refresh for a movie
 func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID) error {
-	// TODO: Implement metadata refresh via River job
-	// This should enqueue a job to fetch latest metadata from TMDb/Radarr
-	return fmt.Errorf("metadata refresh not implemented yet")
+	// Check if metadata provider is available
+	if s.metadataProvider == nil {
+		return fmt.Errorf("metadata provider not configured")
+	}
+
+	// Get the movie
+	mov, err := s.repo.GetMovie(ctx, id)
+	if err != nil {
+		return fmt.Errorf("get movie: %w", err)
+	}
+
+	// Enrich with latest metadata from TMDb
+	if err := s.metadataProvider.EnrichMovie(ctx, mov); err != nil {
+		return fmt.Errorf("enrich movie: %w", err)
+	}
+
+	// Build update params from enriched movie
+	params := movieToUpdateParams(mov)
+
+	// Update the movie
+	if _, err := s.repo.UpdateMovie(ctx, params); err != nil {
+		return fmt.Errorf("update movie: %w", err)
+	}
+
+	// Update credits if TMDbID is available
+	if mov.TMDbID != nil {
+		credits, err := s.metadataProvider.GetMovieCredits(ctx, mov.ID, int(*mov.TMDbID))
+		if err == nil && len(credits) > 0 {
+			// Delete existing credits and create new ones
+			_ = s.repo.DeleteMovieCredits(ctx, mov.ID)
+			for _, credit := range credits {
+				_, _ = s.repo.CreateMovieCredit(ctx, CreateMovieCreditParams{
+					MovieID:      credit.MovieID,
+					TMDbPersonID: credit.TMDbPersonID,
+					Name:         credit.Name,
+					CreditType:   credit.CreditType,
+					Character:    credit.Character,
+					Job:          credit.Job,
+					Department:   credit.Department,
+					CastOrder:    credit.CastOrder,
+					ProfilePath:  credit.ProfilePath,
+				})
+			}
+		}
+
+		// Update genres
+		genres, err := s.metadataProvider.GetMovieGenres(ctx, mov.ID, int(*mov.TMDbID))
+		if err == nil && len(genres) > 0 {
+			_ = s.repo.DeleteMovieGenres(ctx, mov.ID)
+			for _, genre := range genres {
+				_ = s.repo.AddMovieGenre(ctx, mov.ID, genre.TMDbGenreID, genre.Name)
+			}
+		}
+	}
+
+	return nil
+}
+
+// movieToUpdateParams converts a Movie to UpdateMovieParams
+func movieToUpdateParams(m *Movie) UpdateMovieParams {
+	params := UpdateMovieParams{
+		ID:               m.ID,
+		TMDbID:           m.TMDbID,
+		IMDbID:           m.IMDbID,
+		Title:            &m.Title,
+		OriginalTitle:    m.OriginalTitle,
+		Year:             m.Year,
+		Runtime:          m.Runtime,
+		Overview:         m.Overview,
+		Tagline:          m.Tagline,
+		Status:           m.Status,
+		OriginalLanguage: m.OriginalLanguage,
+		TitlesI18n:       m.TitlesI18n,
+		TaglinesI18n:     m.TaglinesI18n,
+		OverviewsI18n:    m.OverviewsI18n,
+		AgeRatings:       m.AgeRatings,
+		PosterPath:       m.PosterPath,
+		BackdropPath:     m.BackdropPath,
+		TrailerURL:       m.TrailerURL,
+		VoteCount:        m.VoteCount,
+		Budget:           m.Budget,
+		Revenue:          m.Revenue,
+		RadarrID:         m.RadarrID,
+	}
+	if m.ReleaseDate != nil {
+		d := m.ReleaseDate.Format("2006-01-02")
+		params.ReleaseDate = &d
+	}
+	if m.VoteAverage != nil {
+		s := m.VoteAverage.String()
+		params.VoteAverage = &s
+	}
+	if m.Popularity != nil {
+		s := m.Popularity.String()
+		params.Popularity = &s
+	}
+	return params
 }

@@ -90,13 +90,15 @@ type Service interface {
 
 // tvService implements the Service interface
 type tvService struct {
-	repo Repository
+	repo             Repository
+	metadataProvider MetadataProvider
 }
 
 // NewService creates a new TV show service
-func NewService(repo Repository) Service {
+func NewService(repo Repository, metadataProvider MetadataProvider) Service {
 	return &tvService{
-		repo: repo,
+		repo:             repo,
+		metadataProvider: metadataProvider,
 	}
 }
 
@@ -531,17 +533,234 @@ func (s *tvService) GetUserStats(ctx context.Context, userID uuid.UUID) (*UserTV
 // =============================================================================
 
 func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) error {
-	// TODO: Implement metadata refresh via River job
-	// This should enqueue a job to fetch latest metadata from TMDb/Sonarr
-	return fmt.Errorf("series metadata refresh not implemented yet")
+	// Check if metadata provider is available
+	if s.metadataProvider == nil {
+		return fmt.Errorf("metadata provider not configured")
+	}
+
+	// Get the series
+	series, err := s.repo.GetSeries(ctx, id)
+	if err != nil {
+		return fmt.Errorf("get series: %w", err)
+	}
+
+	// Enrich with latest metadata from TMDb
+	if err := s.metadataProvider.EnrichSeries(ctx, series); err != nil {
+		return fmt.Errorf("enrich series: %w", err)
+	}
+
+	// Build update params from enriched series
+	params := seriesToUpdateParams(series)
+
+	// Update the series
+	if _, err := s.repo.UpdateSeries(ctx, params); err != nil {
+		return fmt.Errorf("update series: %w", err)
+	}
+
+	// Update credits if TMDbID is available
+	if series.TMDbID != nil {
+		credits, err := s.metadataProvider.GetSeriesCredits(ctx, series.ID, int(*series.TMDbID))
+		if err == nil && len(credits) > 0 {
+			_ = s.repo.DeleteSeriesCredits(ctx, series.ID)
+			for _, credit := range credits {
+				_, _ = s.repo.CreateSeriesCredit(ctx, CreateSeriesCreditParams{
+					SeriesID:     credit.SeriesID,
+					TMDbPersonID: credit.TMDbPersonID,
+					Name:         credit.Name,
+					CreditType:   credit.CreditType,
+					Character:    credit.Character,
+					Job:          credit.Job,
+					Department:   credit.Department,
+					CastOrder:    credit.CastOrder,
+					ProfilePath:  credit.ProfilePath,
+				})
+			}
+		}
+
+		// Update genres
+		genres, err := s.metadataProvider.GetSeriesGenres(ctx, series.ID, int(*series.TMDbID))
+		if err == nil && len(genres) > 0 {
+			_ = s.repo.DeleteSeriesGenres(ctx, series.ID)
+			for _, genre := range genres {
+				_ = s.repo.AddSeriesGenre(ctx, series.ID, genre.TMDbGenreID, genre.Name)
+			}
+		}
+	}
+
+	return nil
 }
 
 func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) error {
-	// TODO: Implement metadata refresh via River job
-	return fmt.Errorf("season metadata refresh not implemented yet")
+	// Check if metadata provider is available
+	if s.metadataProvider == nil {
+		return fmt.Errorf("metadata provider not configured")
+	}
+
+	// Get the season
+	season, err := s.repo.GetSeason(ctx, id)
+	if err != nil {
+		return fmt.Errorf("get season: %w", err)
+	}
+
+	// Get the series to get TMDbID
+	series, err := s.repo.GetSeries(ctx, season.SeriesID)
+	if err != nil {
+		return fmt.Errorf("get series: %w", err)
+	}
+
+	if series.TMDbID == nil {
+		return fmt.Errorf("series has no TMDb ID for metadata refresh")
+	}
+
+	// Enrich with latest metadata from TMDb
+	if err := s.metadataProvider.EnrichSeason(ctx, season, *series.TMDbID); err != nil {
+		return fmt.Errorf("enrich season: %w", err)
+	}
+
+	// Build update params from enriched season
+	params := seasonToUpdateParams(season)
+
+	// Update the season
+	if _, err := s.repo.UpdateSeason(ctx, params); err != nil {
+		return fmt.Errorf("update season: %w", err)
+	}
+
+	return nil
 }
 
 func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) error {
-	// TODO: Implement metadata refresh via River job
-	return fmt.Errorf("episode metadata refresh not implemented yet")
+	// Check if metadata provider is available
+	if s.metadataProvider == nil {
+		return fmt.Errorf("metadata provider not configured")
+	}
+
+	// Get the episode
+	episode, err := s.repo.GetEpisode(ctx, id)
+	if err != nil {
+		return fmt.Errorf("get episode: %w", err)
+	}
+
+	// Get the series to get TMDbID
+	series, err := s.repo.GetSeries(ctx, episode.SeriesID)
+	if err != nil {
+		return fmt.Errorf("get series: %w", err)
+	}
+
+	if series.TMDbID == nil {
+		return fmt.Errorf("series has no TMDb ID for metadata refresh")
+	}
+
+	// Enrich with latest metadata from TMDb
+	if err := s.metadataProvider.EnrichEpisode(ctx, episode, *series.TMDbID); err != nil {
+		return fmt.Errorf("enrich episode: %w", err)
+	}
+
+	// Build update params from enriched episode
+	params := episodeToUpdateParams(episode)
+
+	// Update the episode
+	if _, err := s.repo.UpdateEpisode(ctx, params); err != nil {
+		return fmt.Errorf("update episode: %w", err)
+	}
+
+	return nil
+}
+
+// seriesToUpdateParams converts a Series to UpdateSeriesParams
+func seriesToUpdateParams(s *Series) UpdateSeriesParams {
+	params := UpdateSeriesParams{
+		ID:               s.ID,
+		TMDbID:           s.TMDbID,
+		TVDbID:           s.TVDbID,
+		IMDbID:           s.IMDbID,
+		SonarrID:         s.SonarrID,
+		Title:            &s.Title,
+		OriginalTitle:    s.OriginalTitle,
+		OriginalLanguage: &s.OriginalLanguage,
+		Tagline:          s.Tagline,
+		Overview:         s.Overview,
+		Status:           s.Status,
+		Type:             s.Type,
+		VoteCount:        s.VoteCount,
+		PosterPath:       s.PosterPath,
+		BackdropPath:     s.BackdropPath,
+		TotalSeasons:     &s.TotalSeasons,
+		TotalEpisodes:    &s.TotalEpisodes,
+		TrailerURL:       s.TrailerURL,
+		Homepage:         s.Homepage,
+		TitlesI18n:       s.TitlesI18n,
+		TaglinesI18n:     s.TaglinesI18n,
+		OverviewsI18n:    s.OverviewsI18n,
+		AgeRatings:       s.AgeRatings,
+	}
+	if s.FirstAirDate != nil {
+		d := s.FirstAirDate.Format("2006-01-02")
+		params.FirstAirDate = &d
+	}
+	if s.LastAirDate != nil {
+		d := s.LastAirDate.Format("2006-01-02")
+		params.LastAirDate = &d
+	}
+	if s.VoteAverage != nil {
+		v := s.VoteAverage.String()
+		params.VoteAverage = &v
+	}
+	if s.Popularity != nil {
+		p := s.Popularity.String()
+		params.Popularity = &p
+	}
+	return params
+}
+
+// seasonToUpdateParams converts a Season to UpdateSeasonParams
+func seasonToUpdateParams(s *Season) UpdateSeasonParams {
+	params := UpdateSeasonParams{
+		ID:            s.ID,
+		TMDbID:        s.TMDbID,
+		SeasonNumber:  &s.SeasonNumber,
+		Name:          &s.Name,
+		Overview:      s.Overview,
+		PosterPath:    s.PosterPath,
+		EpisodeCount:  &s.EpisodeCount,
+		NamesI18n:     s.NamesI18n,
+		OverviewsI18n: s.OverviewsI18n,
+	}
+	if s.AirDate != nil {
+		d := s.AirDate.Format("2006-01-02")
+		params.AirDate = &d
+	}
+	if s.VoteAverage != nil {
+		v := s.VoteAverage.String()
+		params.VoteAverage = &v
+	}
+	return params
+}
+
+// episodeToUpdateParams converts an Episode to UpdateEpisodeParams
+func episodeToUpdateParams(e *Episode) UpdateEpisodeParams {
+	params := UpdateEpisodeParams{
+		ID:             e.ID,
+		TMDbID:         e.TMDbID,
+		TVDbID:         e.TVDbID,
+		IMDbID:         e.IMDbID,
+		SeasonNumber:   &e.SeasonNumber,
+		EpisodeNumber:  &e.EpisodeNumber,
+		Title:          &e.Title,
+		Overview:       e.Overview,
+		Runtime:        e.Runtime,
+		VoteCount:      e.VoteCount,
+		StillPath:      e.StillPath,
+		ProductionCode: e.ProductionCode,
+		TitlesI18n:     e.TitlesI18n,
+		OverviewsI18n:  e.OverviewsI18n,
+	}
+	if e.AirDate != nil {
+		d := e.AirDate.Format("2006-01-02")
+		params.AirDate = &d
+	}
+	if e.VoteAverage != nil {
+		v := e.VoteAverage.String()
+		params.VoteAverage = &v
+	}
+	return params
 }

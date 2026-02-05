@@ -17,6 +17,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/integration/radarr"
+	"github.com/lusoris/revenge/internal/integration/sonarr"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -74,6 +75,7 @@ type ServerParams struct {
 	TVShowService   tvshow.Service         `optional:"true"`
 	// Integration services (optional)
 	RadarrService *radarr.SyncService `optional:"true"`
+	SonarrService *sonarr.SyncService `optional:"true"`
 	RiverClient   *jobs.Client        `optional:"true"`
 	Lifecycle     fx.Lifecycle
 }
@@ -114,6 +116,10 @@ func NewServer(p ServerParams) (*Server, error) {
 	// Wire up optional Radarr integration
 	if p.RadarrService != nil {
 		handler.radarrService = p.RadarrService
+	}
+	// Wire up optional Sonarr integration
+	if p.SonarrService != nil {
+		handler.sonarrService = p.SonarrService
 	}
 	if p.RiverClient != nil {
 		handler.riverClient = p.RiverClient

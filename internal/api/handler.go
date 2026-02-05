@@ -50,6 +50,7 @@ type Handler struct {
 	imageService    *image.Service
 	tvshowService   tvshow.Service // TV show service
 	radarrService   radarrService  // Optional: Radarr sync service
+	sonarrService   sonarrService  // Optional: Sonarr sync service
 	riverClient     riverClient    // Optional: River job queue client
 }
 
