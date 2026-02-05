@@ -3,7 +3,7 @@
 **Phase**: A12
 **Priority**: P1 (High - Enables clean metadata architecture)
 **Effort**: 24-32 hours
-**Status**: 🔶 In Progress (5/7 tasks complete)
+**Status**: 🔶 In Progress (6/7 tasks complete)
 **Dependencies**: A11 (TV Module - for testing)
 **Created**: 2026-02-05
 **Updated**: 2026-02-05
@@ -340,8 +340,8 @@ internal/service/metadata/
 | A12.2: TMDb Provider | ✅ Complete | Full implementation with all endpoints |
 | A12.3: TVDb Provider | ✅ Complete | JWT auth, TV focus |
 | A12.4: Metadata Service | ✅ Complete | Aggregates providers with fallback |
-| A12.5: Jobs Integration | 🔴 Pending | River jobs for async refresh |
-| A12.6: Refactor Content Modules | 🔴 Pending | Remove old TMDb code |
+| A12.5: Jobs Integration | ✅ Complete | River jobs for async refresh |
+| A12.6: Refactor Content Modules | 🔴 Pending | Remove old TMDb code from movie/tvshow |
 | A12.7: fx Module | ✅ Complete | metadatafx package |
 
 ---
