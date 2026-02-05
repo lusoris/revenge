@@ -102,7 +102,12 @@ func (c *TMDbClient) SearchMovies(ctx context.Context, query string, year *int) 
 }
 
 func (c *TMDbClient) GetMovie(ctx context.Context, tmdbID int) (*TMDbMovie, error) {
-	cacheKey := fmt.Sprintf("movie:%d", tmdbID)
+	return c.GetMovieWithLanguage(ctx, tmdbID, "en-US")
+}
+
+// GetMovieWithLanguage fetches movie data in a specific language
+func (c *TMDbClient) GetMovieWithLanguage(ctx context.Context, tmdbID int, language string) (*TMDbMovie, error) {
+	cacheKey := fmt.Sprintf("movie:%d:%s", tmdbID, language)
 	if cached := c.getFromCache(cacheKey); cached != nil {
 		if result, ok := cached.(*TMDbMovie); ok {
 			return result, nil
@@ -118,10 +123,81 @@ func (c *TMDbClient) GetMovie(ctx context.Context, tmdbID int) (*TMDbMovie, erro
 
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetQueryParam("api_key", c.apiKey).
+		SetQueryParams(map[string]string{
+			"api_key":  c.apiKey,
+			"language": language,
+		}).
 		SetResult(&result).
 		SetError(&errResp).
 		Get(fmt.Sprintf("/movie/%d", tmdbID))
+
+	if err != nil {
+		return nil, fmt.Errorf("tmdb api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, c.parseError(resp.StatusCode(), &errResp)
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
+// GetMovieMultiLanguage fetches movie data in multiple languages
+func (c *TMDbClient) GetMovieMultiLanguage(ctx context.Context, tmdbID int, languages []string) (*TMDbMultiLanguageResult, error) {
+	if len(languages) == 0 {
+		languages = []string{"en-US"}
+	}
+
+	result := &TMDbMultiLanguageResult{
+		Movies: make(map[string]*TMDbMovie),
+	}
+
+	for _, lang := range languages {
+		movie, err := c.GetMovieWithLanguage(ctx, tmdbID, lang)
+		if err != nil {
+			// Log error but continue with other languages
+			continue
+		}
+
+		// Map TMDb language format (en-US) to ISO 639-1 (en)
+		langCode := lang
+		if len(lang) > 2 && lang[2] == '-' {
+			langCode = lang[:2]
+		}
+
+		result.Movies[langCode] = movie
+	}
+
+	if len(result.Movies) == 0 {
+		return nil, fmt.Errorf("failed to fetch movie in any language")
+	}
+
+	return result, nil
+}
+
+// GetMovieReleaseDates fetches release dates and age ratings by country
+func (c *TMDbClient) GetMovieReleaseDates(ctx context.Context, tmdbID int) (*TMDbReleaseDatesResponse, error) {
+	cacheKey := fmt.Sprintf("release_dates:%d", tmdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.(*TMDbReleaseDatesResponse); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result TMDbReleaseDatesResponse
+	var errResp TMDbError
+
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("api_key", c.apiKey).
+		SetResult(&result).
+		SetError(&errResp).
+		Get(fmt.Sprintf("/movie/%d/release_dates", tmdbID))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)

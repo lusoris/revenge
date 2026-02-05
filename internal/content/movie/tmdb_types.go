@@ -152,3 +152,29 @@ type CacheEntry struct {
 func (c *CacheEntry) IsExpired() bool {
 	return time.Now().After(c.ExpiresAt)
 }
+
+// TMDbReleaseDatesResponse contains release dates and certifications by country
+type TMDbReleaseDatesResponse struct {
+	ID      int                  `json:"id"`
+	Results []TMDbCountryRelease `json:"results"`
+}
+
+// TMDbCountryRelease contains release dates and certifications for a specific country
+type TMDbCountryRelease struct {
+	ISO3166_1    string              `json:"iso_3166_1"` // Country code (US, DE, GB, etc.)
+	ReleaseDates []TMDbReleaseDate   `json:"release_dates"`
+}
+
+// TMDbReleaseDate contains a single release date entry
+type TMDbReleaseDate struct {
+	Certification string `json:"certification"` // Age rating (R, PG-13, FSK 12, etc.)
+	ISO639_1      string `json:"iso_639_1"`     // Language code
+	ReleaseDate   string `json:"release_date"`  // ISO 8601 date
+	Type          int    `json:"type"`          // Release type (1=Premiere, 2=Limited, 3=Theatrical, etc.)
+	Note          string `json:"note"`          // Optional note
+}
+
+// TMDbMultiLanguageResult contains movie data fetched in multiple languages
+type TMDbMultiLanguageResult struct {
+	Movies map[string]*TMDbMovie // Key is language code (en, de, fr, etc.)
+}
