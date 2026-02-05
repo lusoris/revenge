@@ -18,6 +18,8 @@ import (
 )
 
 // setupMockService creates an auth service with all dependencies mocked
+// NOTE: Methods using transactions (Register, etc.) cannot be properly tested
+// with mocks and should use integration tests instead.
 func setupMockService(t *testing.T) (
 	*auth.Service,
 	*MockAuthRepository,
@@ -29,7 +31,10 @@ func setupMockService(t *testing.T) (
 	mockTokenMgr := NewMockTokenManager(t)
 	activityLogger := activity.NewNoopLogger()
 
+	// NOTE: pool is nil for mock tests. Methods using transactions will panic.
+	// Use integration tests for transaction-based methods.
 	service := auth.NewServiceForTesting(
+		nil, // pool
 		mockRepo,
 		mockTokenMgr,
 		activityLogger,

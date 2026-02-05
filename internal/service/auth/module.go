@@ -3,6 +3,7 @@ package auth
 import (
 	"go.uber.org/fx"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -24,8 +25,8 @@ var Module = fx.Module("auth",
 			return NewRepositoryPG(queries)
 		},
 		// Service
-		func(repo Repository, tm TokenManager, activityLogger activity.Logger, emailService *email.Service, cfg *config.Config) *Service {
-			return NewService(repo, tm, activityLogger, emailService, cfg.Auth.JWTExpiry, cfg.Auth.RefreshExpiry)
+		func(pool *pgxpool.Pool, repo Repository, tm TokenManager, activityLogger activity.Logger, emailService *email.Service, cfg *config.Config) *Service {
+			return NewService(pool, repo, tm, activityLogger, emailService, cfg.Auth.JWTExpiry, cfg.Auth.RefreshExpiry)
 		},
 	),
 )

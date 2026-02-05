@@ -3,6 +3,7 @@ package auth
 import (
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/email"
@@ -11,6 +12,7 @@ import (
 // NewServiceForTesting creates a Service instance for testing purposes.
 // Email service is optional (nil disables email sending in tests).
 func NewServiceForTesting(
+	pool *pgxpool.Pool,
 	repo Repository,
 	tokenManager TokenManager,
 	activityLogger activity.Logger,
@@ -18,6 +20,7 @@ func NewServiceForTesting(
 	refreshExpiry time.Duration,
 ) *Service {
 	return &Service{
+		pool:           pool,
 		repo:           repo,
 		tokenManager:   tokenManager,
 		hasher:         crypto.NewPasswordHasher(),
@@ -30,6 +33,7 @@ func NewServiceForTesting(
 
 // NewServiceForTestingWithEmail creates a Service instance for testing with email support.
 func NewServiceForTestingWithEmail(
+	pool *pgxpool.Pool,
 	repo Repository,
 	tokenManager TokenManager,
 	activityLogger activity.Logger,
@@ -38,6 +42,7 @@ func NewServiceForTestingWithEmail(
 	refreshExpiry time.Duration,
 ) *Service {
 	return &Service{
+		pool:           pool,
 		repo:           repo,
 		tokenManager:   tokenManager,
 		hasher:         crypto.NewPasswordHasher(),
