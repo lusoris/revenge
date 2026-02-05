@@ -550,24 +550,27 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 }
 
 // RequestPasswordReset generates a password reset token
-func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddress *netip.Addr, userAgent *string) (string, error) {
+// RequestPasswordReset initiates a password reset by sending a reset email.
+// SECURITY: Never returns token to prevent information disclosure about email existence.
+// Always returns success (nil error) to prevent email enumeration attacks.
+func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddress *netip.Addr, userAgent *string) error {
 	// Get user by email
 	user, err := s.repo.GetUserByEmail(ctx, email)
 	if err != nil {
-		// Don't reveal if email exists (security)
-		// Return success even if user not found
-		return "", nil
+		// Silently succeed - don't reveal if email doesn't exist
+		// This prevents email enumeration attacks
+		return nil
 	}
 
 	// Invalidate old reset tokens
 	if err := s.repo.InvalidateUserPasswordResetTokens(ctx, user.ID); err != nil {
-		return "", fmt.Errorf("failed to invalidate old tokens: %w", err)
+		return fmt.Errorf("failed to invalidate old tokens: %w", err)
 	}
 
 	// Generate reset token
 	token, err := crypto.GenerateSecureToken(32)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate reset token: %w", err)
+		return fmt.Errorf("failed to generate reset token: %w", err)
 	}
 
 	// Store reset token in database (hashed)
@@ -580,18 +583,25 @@ func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddr
 		ExpiresAt: time.Now().Add(1 * time.Hour), // 1h expiry per AUTH.md
 	})
 	if err != nil {
-		return "", fmt.Errorf("failed to create reset token: %w", err)
+		return fmt.Errorf("failed to create reset token: %w", err)
 	}
 
-	// Send password reset email
+	// Send password reset email asynchronously (don't block request)
+	// Email is only way to receive the token - never returned to API caller
 	if s.emailService != nil {
-		if err := s.emailService.SendPasswordResetEmail(ctx, user.Email, user.Username, token); err != nil {
-			// Log error but don't fail (don't reveal if user exists)
-			fmt.Printf("failed to send password reset email: %v\n", err)
-		}
+		go func() {
+			// Use background context with timeout for async operation
+			emailCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			if err := s.emailService.SendPasswordResetEmail(emailCtx, user.Email, user.Username, token); err != nil {
+				// Log error for monitoring but don't expose to caller
+				fmt.Printf("failed to send password reset email to %s: %v\n", user.Email, err)
+			}
+		}()
 	}
 
-	return token, nil
+	return nil
 }
 
 // ResetPassword resets a password using a reset token

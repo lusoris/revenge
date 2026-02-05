@@ -820,8 +820,9 @@ func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRe
 	h.logger.Info("Password reset requested", zap.String("email", req.Email))
 
 	// Request password reset (always returns success to prevent email enumeration)
+	// Token is never returned - only sent via email to prevent information disclosure
 	// TODO: Extract IP address and user agent from request
-	_, err := h.authService.RequestPasswordReset(ctx, req.Email, nil, nil)
+	err := h.authService.RequestPasswordReset(ctx, req.Email, nil, nil)
 	if err != nil {
 		h.logger.Error("Password reset request failed", zap.Error(err))
 		// Still return success to avoid email enumeration
