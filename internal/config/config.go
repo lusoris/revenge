@@ -54,6 +54,9 @@ type Config struct {
 
 	// Activity configuration
 	Activity ActivityConfig `koanf:"activity"`
+
+	// Raft configuration (leader election for clusters)
+	Raft RaftConfig `koanf:"raft"`
 }
 
 // ActivityConfig holds activity log configuration.
@@ -419,6 +422,25 @@ type S3Config struct {
 	UsePathStyle bool `koanf:"use_path_style"`
 }
 
+// RaftConfig holds configuration for Raft leader election in cluster deployments.
+type RaftConfig struct {
+	// Enabled controls whether Raft leader election is active
+	Enabled bool `koanf:"enabled"`
+
+	// NodeID is the unique identifier for this node (hostname or UUID)
+	// If empty, hostname will be used automatically
+	NodeID string `koanf:"node_id"`
+
+	// BindAddr is the address for Raft communication (e.g., "0.0.0.0:7000")
+	BindAddr string `koanf:"bind_addr" validate:"required_if=Enabled true"`
+
+	// DataDir is the directory for Raft data storage
+	DataDir string `koanf:"data_dir" validate:"required_if=Enabled true"`
+
+	// Bootstrap should be true only for the first node to initialize the cluster
+	Bootstrap bool `koanf:"bootstrap"`
+}
+
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
@@ -543,5 +565,12 @@ func Defaults() map[string]interface{} {
 
 		// Activity defaults
 		"activity.retention_days": 90, // 90 days default retention
+
+		// Raft defaults (disabled by default for single-node deployments)
+		"raft.enabled":   false,
+		"raft.node_id":   "", // Auto-detect from hostname
+		"raft.bind_addr": "0.0.0.0:7000",
+		"raft.data_dir":  "/data/raft",
+		"raft.bootstrap": false,
 	}
 }
