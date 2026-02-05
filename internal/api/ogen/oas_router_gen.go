@@ -258,9 +258,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 							}
 
-						case 'i': // Prefix: "integrations/radarr/"
+						case 'i': // Prefix: "integrations/"
 
-							if l := len("integrations/radarr/"); len(elem) >= l && elem[0:l] == "integrations/radarr/" {
+							if l := len("integrations/"); len(elem) >= l && elem[0:l] == "integrations/" {
 								elem = elem[l:]
 							} else {
 								break
@@ -270,49 +270,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 							switch elem[0] {
-							case 'q': // Prefix: "quality-profiles"
+							case 'r': // Prefix: "radarr/"
 
-								if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch r.Method {
-									case "GET":
-										s.handleAdminGetRadarrQualityProfilesRequest([0]string{}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, "GET")
-									}
-
-									return
-								}
-
-							case 'r': // Prefix: "root-folders"
-
-								if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch r.Method {
-									case "GET":
-										s.handleAdminGetRadarrRootFoldersRequest([0]string{}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, "GET")
-									}
-
-									return
-								}
-
-							case 's': // Prefix: "s"
-
-								if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								if l := len("radarr/"); len(elem) >= l && elem[0:l] == "radarr/" {
 									elem = elem[l:]
 								} else {
 									break
@@ -322,9 +282,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									break
 								}
 								switch elem[0] {
-								case 't': // Prefix: "tatus"
+								case 'q': // Prefix: "quality-profiles"
 
-									if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+									if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
 										elem = elem[l:]
 									} else {
 										break
@@ -334,7 +294,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 										// Leaf node.
 										switch r.Method {
 										case "GET":
-											s.handleAdminGetRadarrStatusRequest([0]string{}, elemIsEscaped, w, r)
+											s.handleAdminGetRadarrQualityProfilesRequest([0]string{}, elemIsEscaped, w, r)
 										default:
 											s.notAllowed(w, r, "GET")
 										}
@@ -342,9 +302,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 										return
 									}
 
-								case 'y': // Prefix: "ync"
+								case 'r': // Prefix: "root-folders"
 
-									if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+									if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
 										elem = elem[l:]
 									} else {
 										break
@@ -353,13 +313,175 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									if len(elem) == 0 {
 										// Leaf node.
 										switch r.Method {
-										case "POST":
-											s.handleAdminTriggerRadarrSyncRequest([0]string{}, elemIsEscaped, w, r)
+										case "GET":
+											s.handleAdminGetRadarrRootFoldersRequest([0]string{}, elemIsEscaped, w, r)
 										default:
-											s.notAllowed(w, r, "POST")
+											s.notAllowed(w, r, "GET")
 										}
 
 										return
+									}
+
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 't': // Prefix: "tatus"
+
+										if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleAdminGetRadarrStatusRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									case 'y': // Prefix: "ync"
+
+										if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleAdminTriggerRadarrSyncRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "POST")
+											}
+
+											return
+										}
+
+									}
+
+								}
+
+							case 's': // Prefix: "sonarr/"
+
+								if l := len("sonarr/"); len(elem) >= l && elem[0:l] == "sonarr/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'q': // Prefix: "quality-profiles"
+
+									if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleAdminGetSonarrQualityProfilesRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'r': // Prefix: "root-folders"
+
+									if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleAdminGetSonarrRootFoldersRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 't': // Prefix: "tatus"
+
+										if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleAdminGetSonarrStatusRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									case 'y': // Prefix: "ync"
+
+										if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleAdminTriggerSonarrSyncRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "POST")
+											}
+
+											return
+										}
+
 									}
 
 								}
@@ -3388,24 +3510,58 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-				case 'w': // Prefix: "webhooks/radarr"
+				case 'w': // Prefix: "webhooks/"
 
-					if l := len("webhooks/radarr"); len(elem) >= l && elem[0:l] == "webhooks/radarr" {
+					if l := len("webhooks/"); len(elem) >= l && elem[0:l] == "webhooks/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "POST":
-							s.handleHandleRadarrWebhookRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
+						break
+					}
+					switch elem[0] {
+					case 'r': // Prefix: "radarr"
+
+						if l := len("radarr"); len(elem) >= l && elem[0:l] == "radarr" {
+							elem = elem[l:]
+						} else {
+							break
 						}
 
-						return
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleHandleRadarrWebhookRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
+					case 's': // Prefix: "sonarr"
+
+						if l := len("sonarr"); len(elem) >= l && elem[0:l] == "sonarr" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "POST":
+								s.handleHandleSonarrWebhookRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+
 					}
 
 				}
@@ -3787,9 +3943,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 							}
 
-						case 'i': // Prefix: "integrations/radarr/"
+						case 'i': // Prefix: "integrations/"
 
-							if l := len("integrations/radarr/"); len(elem) >= l && elem[0:l] == "integrations/radarr/" {
+							if l := len("integrations/"); len(elem) >= l && elem[0:l] == "integrations/" {
 								elem = elem[l:]
 							} else {
 								break
@@ -3799,59 +3955,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 							switch elem[0] {
-							case 'q': // Prefix: "quality-profiles"
+							case 'r': // Prefix: "radarr/"
 
-								if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch method {
-									case "GET":
-										r.name = AdminGetRadarrQualityProfilesOperation
-										r.summary = "Get Radarr quality profiles (admin)"
-										r.operationID = "adminGetRadarrQualityProfiles"
-										r.operationGroup = ""
-										r.pathPattern = "/api/v1/admin/integrations/radarr/quality-profiles"
-										r.args = args
-										r.count = 0
-										return r, true
-									default:
-										return
-									}
-								}
-
-							case 'r': // Prefix: "root-folders"
-
-								if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch method {
-									case "GET":
-										r.name = AdminGetRadarrRootFoldersOperation
-										r.summary = "Get Radarr root folders (admin)"
-										r.operationID = "adminGetRadarrRootFolders"
-										r.operationGroup = ""
-										r.pathPattern = "/api/v1/admin/integrations/radarr/root-folders"
-										r.args = args
-										r.count = 0
-										return r, true
-									default:
-										return
-									}
-								}
-
-							case 's': // Prefix: "s"
-
-								if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								if l := len("radarr/"); len(elem) >= l && elem[0:l] == "radarr/" {
 									elem = elem[l:]
 								} else {
 									break
@@ -3861,9 +3967,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									break
 								}
 								switch elem[0] {
-								case 't': // Prefix: "tatus"
+								case 'q': // Prefix: "quality-profiles"
 
-									if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+									if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
 										elem = elem[l:]
 									} else {
 										break
@@ -3873,11 +3979,11 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										// Leaf node.
 										switch method {
 										case "GET":
-											r.name = AdminGetRadarrStatusOperation
-											r.summary = "Get Radarr integration status (admin)"
-											r.operationID = "adminGetRadarrStatus"
+											r.name = AdminGetRadarrQualityProfilesOperation
+											r.summary = "Get Radarr quality profiles (admin)"
+											r.operationID = "adminGetRadarrQualityProfiles"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/admin/integrations/radarr/status"
+											r.pathPattern = "/api/v1/admin/integrations/radarr/quality-profiles"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -3886,9 +3992,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										}
 									}
 
-								case 'y': // Prefix: "ync"
+								case 'r': // Prefix: "root-folders"
 
-									if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+									if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
 										elem = elem[l:]
 									} else {
 										break
@@ -3897,18 +4003,210 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									if len(elem) == 0 {
 										// Leaf node.
 										switch method {
-										case "POST":
-											r.name = AdminTriggerRadarrSyncOperation
-											r.summary = "Trigger Radarr library sync (admin)"
-											r.operationID = "adminTriggerRadarrSync"
+										case "GET":
+											r.name = AdminGetRadarrRootFoldersOperation
+											r.summary = "Get Radarr root folders (admin)"
+											r.operationID = "adminGetRadarrRootFolders"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/admin/integrations/radarr/sync"
+											r.pathPattern = "/api/v1/admin/integrations/radarr/root-folders"
 											r.args = args
 											r.count = 0
 											return r, true
 										default:
 											return
 										}
+									}
+
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 't': // Prefix: "tatus"
+
+										if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = AdminGetRadarrStatusOperation
+												r.summary = "Get Radarr integration status (admin)"
+												r.operationID = "adminGetRadarrStatus"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/integrations/radarr/status"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 'y': // Prefix: "ync"
+
+										if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = AdminTriggerRadarrSyncOperation
+												r.summary = "Trigger Radarr library sync (admin)"
+												r.operationID = "adminTriggerRadarrSync"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/integrations/radarr/sync"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								}
+
+							case 's': // Prefix: "sonarr/"
+
+								if l := len("sonarr/"); len(elem) >= l && elem[0:l] == "sonarr/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'q': // Prefix: "quality-profiles"
+
+									if l := len("quality-profiles"); len(elem) >= l && elem[0:l] == "quality-profiles" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = AdminGetSonarrQualityProfilesOperation
+											r.summary = "Get Sonarr quality profiles (admin)"
+											r.operationID = "adminGetSonarrQualityProfiles"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/admin/integrations/sonarr/quality-profiles"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "root-folders"
+
+									if l := len("root-folders"); len(elem) >= l && elem[0:l] == "root-folders" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = AdminGetSonarrRootFoldersOperation
+											r.summary = "Get Sonarr root folders (admin)"
+											r.operationID = "adminGetSonarrRootFolders"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/admin/integrations/sonarr/root-folders"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 's': // Prefix: "s"
+
+									if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 't': // Prefix: "tatus"
+
+										if l := len("tatus"); len(elem) >= l && elem[0:l] == "tatus" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = AdminGetSonarrStatusOperation
+												r.summary = "Get Sonarr integration status (admin)"
+												r.operationID = "adminGetSonarrStatus"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/integrations/sonarr/status"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 'y': // Prefix: "ync"
+
+										if l := len("ync"); len(elem) >= l && elem[0:l] == "ync" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = AdminTriggerSonarrSyncOperation
+												r.summary = "Trigger Sonarr library sync (admin)"
+												r.operationID = "adminTriggerSonarrSync"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/admin/integrations/sonarr/sync"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
 									}
 
 								}
@@ -7497,29 +7795,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-				case 'w': // Prefix: "webhooks/radarr"
+				case 'w': // Prefix: "webhooks/"
 
-					if l := len("webhooks/radarr"); len(elem) >= l && elem[0:l] == "webhooks/radarr" {
+					if l := len("webhooks/"); len(elem) >= l && elem[0:l] == "webhooks/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "POST":
-							r.name = HandleRadarrWebhookOperation
-							r.summary = "Handle Radarr webhook"
-							r.operationID = "handleRadarrWebhook"
-							r.operationGroup = ""
-							r.pathPattern = "/api/v1/webhooks/radarr"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
+						break
+					}
+					switch elem[0] {
+					case 'r': // Prefix: "radarr"
+
+						if l := len("radarr"); len(elem) >= l && elem[0:l] == "radarr" {
+							elem = elem[l:]
+						} else {
+							break
 						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = HandleRadarrWebhookOperation
+								r.summary = "Handle Radarr webhook"
+								r.operationID = "handleRadarrWebhook"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/webhooks/radarr"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					case 's': // Prefix: "sonarr"
+
+						if l := len("sonarr"); len(elem) >= l && elem[0:l] == "sonarr" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "POST":
+								r.name = HandleSonarrWebhookOperation
+								r.summary = "Handle Sonarr webhook"
+								r.operationID = "handleSonarrWebhook"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/webhooks/sonarr"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
 					}
 
 				}

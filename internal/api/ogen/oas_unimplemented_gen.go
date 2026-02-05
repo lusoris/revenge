@@ -99,6 +99,38 @@ func (UnimplementedHandler) AdminGetRadarrStatus(ctx context.Context) (r AdminGe
 	return r, ht.ErrNotImplemented
 }
 
+// AdminGetSonarrQualityProfiles implements adminGetSonarrQualityProfiles operation.
+//
+// Returns all quality profiles configured in Sonarr.
+// Useful for mapping quality profiles during sync configuration.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/quality-profiles
+func (UnimplementedHandler) AdminGetSonarrQualityProfiles(ctx context.Context) (r AdminGetSonarrQualityProfilesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminGetSonarrRootFolders implements adminGetSonarrRootFolders operation.
+//
+// Returns all root folders configured in Sonarr.
+// These are the library paths that Sonarr monitors for TV shows.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/root-folders
+func (UnimplementedHandler) AdminGetSonarrRootFolders(ctx context.Context) (r AdminGetSonarrRootFoldersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminGetSonarrStatus implements adminGetSonarrStatus operation.
+//
+// Returns the current Sonarr integration status including connection health,
+// sync status, and last sync information. Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/status
+func (UnimplementedHandler) AdminGetSonarrStatus(ctx context.Context) (r AdminGetSonarrStatusRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminListOIDCProviders implements adminListOIDCProviders operation.
 //
 // Returns all OIDC providers including disabled ones.
@@ -125,6 +157,17 @@ func (UnimplementedHandler) AdminSetDefaultOIDCProvider(ctx context.Context, par
 //
 // POST /api/v1/admin/integrations/radarr/sync
 func (UnimplementedHandler) AdminTriggerRadarrSync(ctx context.Context) (r AdminTriggerRadarrSyncRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminTriggerSonarrSync implements adminTriggerSonarrSync operation.
+//
+// Triggers a full library sync from Sonarr to Revenge.
+// This is an asynchronous operation - check status endpoint for progress.
+// Admin only.
+//
+// POST /api/v1/admin/integrations/sonarr/sync
+func (UnimplementedHandler) AdminTriggerSonarrSync(ctx context.Context) (r AdminTriggerSonarrSyncRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -813,6 +856,17 @@ func (UnimplementedHandler) GrantLibraryPermission(ctx context.Context, req *Gra
 //
 // POST /api/v1/webhooks/radarr
 func (UnimplementedHandler) HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookPayload) (r HandleRadarrWebhookRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// HandleSonarrWebhook implements handleSonarrWebhook operation.
+//
+// Endpoint for receiving webhook notifications from Sonarr.
+// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
+// Configure this URL in Sonarr Settings > Connect > Webhook.
+//
+// POST /api/v1/webhooks/sonarr
+func (UnimplementedHandler) HandleSonarrWebhook(ctx context.Context, req *SonarrWebhookPayload) (r HandleSonarrWebhookRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

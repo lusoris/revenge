@@ -37,6 +37,18 @@ type AdminGetRadarrStatusRes interface {
 	adminGetRadarrStatusRes()
 }
 
+type AdminGetSonarrQualityProfilesRes interface {
+	adminGetSonarrQualityProfilesRes()
+}
+
+type AdminGetSonarrRootFoldersRes interface {
+	adminGetSonarrRootFoldersRes()
+}
+
+type AdminGetSonarrStatusRes interface {
+	adminGetSonarrStatusRes()
+}
+
 type AdminListOIDCProvidersRes interface {
 	adminListOIDCProvidersRes()
 }
@@ -47,6 +59,10 @@ type AdminSetDefaultOIDCProviderRes interface {
 
 type AdminTriggerRadarrSyncRes interface {
 	adminTriggerRadarrSyncRes()
+}
+
+type AdminTriggerSonarrSyncRes interface {
+	adminTriggerSonarrSyncRes()
 }
 
 type AdminUpdateOIDCProviderRes interface {
@@ -343,6 +359,10 @@ type GrantLibraryPermissionRes interface {
 
 type HandleRadarrWebhookRes interface {
 	handleRadarrWebhookRes()
+}
+
+type HandleSonarrWebhookRes interface {
+	handleSonarrWebhookRes()
 }
 
 type InitOIDCLinkRes interface {

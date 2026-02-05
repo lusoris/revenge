@@ -677,6 +677,42 @@ type AdminGetRadarrStatusUnauthorized Error
 
 func (*AdminGetRadarrStatusUnauthorized) adminGetRadarrStatusRes() {}
 
+type AdminGetSonarrQualityProfilesForbidden Error
+
+func (*AdminGetSonarrQualityProfilesForbidden) adminGetSonarrQualityProfilesRes() {}
+
+type AdminGetSonarrQualityProfilesServiceUnavailable Error
+
+func (*AdminGetSonarrQualityProfilesServiceUnavailable) adminGetSonarrQualityProfilesRes() {}
+
+type AdminGetSonarrQualityProfilesUnauthorized Error
+
+func (*AdminGetSonarrQualityProfilesUnauthorized) adminGetSonarrQualityProfilesRes() {}
+
+type AdminGetSonarrRootFoldersForbidden Error
+
+func (*AdminGetSonarrRootFoldersForbidden) adminGetSonarrRootFoldersRes() {}
+
+type AdminGetSonarrRootFoldersServiceUnavailable Error
+
+func (*AdminGetSonarrRootFoldersServiceUnavailable) adminGetSonarrRootFoldersRes() {}
+
+type AdminGetSonarrRootFoldersUnauthorized Error
+
+func (*AdminGetSonarrRootFoldersUnauthorized) adminGetSonarrRootFoldersRes() {}
+
+type AdminGetSonarrStatusForbidden Error
+
+func (*AdminGetSonarrStatusForbidden) adminGetSonarrStatusRes() {}
+
+type AdminGetSonarrStatusServiceUnavailable Error
+
+func (*AdminGetSonarrStatusServiceUnavailable) adminGetSonarrStatusRes() {}
+
+type AdminGetSonarrStatusUnauthorized Error
+
+func (*AdminGetSonarrStatusUnauthorized) adminGetSonarrStatusRes() {}
+
 type AdminListOIDCProvidersForbidden Error
 
 func (*AdminListOIDCProvidersForbidden) adminListOIDCProvidersRes() {}
@@ -1032,6 +1068,22 @@ func (*AdminTriggerRadarrSyncServiceUnavailable) adminTriggerRadarrSyncRes() {}
 type AdminTriggerRadarrSyncUnauthorized Error
 
 func (*AdminTriggerRadarrSyncUnauthorized) adminTriggerRadarrSyncRes() {}
+
+type AdminTriggerSonarrSyncConflict Error
+
+func (*AdminTriggerSonarrSyncConflict) adminTriggerSonarrSyncRes() {}
+
+type AdminTriggerSonarrSyncForbidden Error
+
+func (*AdminTriggerSonarrSyncForbidden) adminTriggerSonarrSyncRes() {}
+
+type AdminTriggerSonarrSyncServiceUnavailable Error
+
+func (*AdminTriggerSonarrSyncServiceUnavailable) adminTriggerSonarrSyncRes() {}
+
+type AdminTriggerSonarrSyncUnauthorized Error
+
+func (*AdminTriggerSonarrSyncUnauthorized) adminTriggerSonarrSyncRes() {}
 
 type AdminUpdateOIDCProviderBadRequest Error
 
@@ -2963,6 +3015,7 @@ func (*Error) getUserRolesRes()            {}
 func (*Error) getUserTVStatsRes()          {}
 func (*Error) getWatchHistoryRes()         {}
 func (*Error) handleRadarrWebhookRes()     {}
+func (*Error) handleSonarrWebhookRes()     {}
 func (*Error) listAPIKeysRes()             {}
 func (*Error) listLibrariesRes()           {}
 func (*Error) listMoviesRes()              {}
@@ -3794,6 +3847,11 @@ func (*GrantLibraryPermissionUnauthorized) grantLibraryPermissionRes() {}
 type HandleRadarrWebhookAccepted struct{}
 
 func (*HandleRadarrWebhookAccepted) handleRadarrWebhookRes() {}
+
+// HandleSonarrWebhookAccepted is response for HandleSonarrWebhook operation.
+type HandleSonarrWebhookAccepted struct{}
+
+func (*HandleSonarrWebhookAccepted) handleSonarrWebhookRes() {}
 
 // Ref: #/components/schemas/HealthCheck
 type HealthCheck struct {
@@ -8894,6 +8952,144 @@ func (o OptSearchResultsFacets) Or(d SearchResultsFacets) SearchResultsFacets {
 	return d
 }
 
+// NewOptSonarrWebhookEpisodeFile returns new OptSonarrWebhookEpisodeFile with value set to v.
+func NewOptSonarrWebhookEpisodeFile(v SonarrWebhookEpisodeFile) OptSonarrWebhookEpisodeFile {
+	return OptSonarrWebhookEpisodeFile{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSonarrWebhookEpisodeFile is optional SonarrWebhookEpisodeFile.
+type OptSonarrWebhookEpisodeFile struct {
+	Value SonarrWebhookEpisodeFile
+	Set   bool
+}
+
+// IsSet returns true if OptSonarrWebhookEpisodeFile was set.
+func (o OptSonarrWebhookEpisodeFile) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSonarrWebhookEpisodeFile) Reset() {
+	var v SonarrWebhookEpisodeFile
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSonarrWebhookEpisodeFile) SetTo(v SonarrWebhookEpisodeFile) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSonarrWebhookEpisodeFile) Get() (v SonarrWebhookEpisodeFile, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSonarrWebhookEpisodeFile) Or(d SonarrWebhookEpisodeFile) SonarrWebhookEpisodeFile {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSonarrWebhookRelease returns new OptSonarrWebhookRelease with value set to v.
+func NewOptSonarrWebhookRelease(v SonarrWebhookRelease) OptSonarrWebhookRelease {
+	return OptSonarrWebhookRelease{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSonarrWebhookRelease is optional SonarrWebhookRelease.
+type OptSonarrWebhookRelease struct {
+	Value SonarrWebhookRelease
+	Set   bool
+}
+
+// IsSet returns true if OptSonarrWebhookRelease was set.
+func (o OptSonarrWebhookRelease) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSonarrWebhookRelease) Reset() {
+	var v SonarrWebhookRelease
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSonarrWebhookRelease) SetTo(v SonarrWebhookRelease) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSonarrWebhookRelease) Get() (v SonarrWebhookRelease, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSonarrWebhookRelease) Or(d SonarrWebhookRelease) SonarrWebhookRelease {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSonarrWebhookSeries returns new OptSonarrWebhookSeries with value set to v.
+func NewOptSonarrWebhookSeries(v SonarrWebhookSeries) OptSonarrWebhookSeries {
+	return OptSonarrWebhookSeries{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSonarrWebhookSeries is optional SonarrWebhookSeries.
+type OptSonarrWebhookSeries struct {
+	Value SonarrWebhookSeries
+	Set   bool
+}
+
+// IsSet returns true if OptSonarrWebhookSeries was set.
+func (o OptSonarrWebhookSeries) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSonarrWebhookSeries) Reset() {
+	var v SonarrWebhookSeries
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSonarrWebhookSeries) SetTo(v SonarrWebhookSeries) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSonarrWebhookSeries) Get() (v SonarrWebhookSeries, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSonarrWebhookSeries) Or(d SonarrWebhookSeries) SonarrWebhookSeries {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -12803,6 +12999,968 @@ func (s *SimilarMoviesResponse) SetTotalResults(val OptInt) {
 }
 
 func (*SimilarMoviesResponse) getSimilarMoviesRes() {}
+
+// Ref: #/components/schemas/SonarrQualityProfile
+type SonarrQualityProfile struct {
+	// Quality profile ID.
+	ID int `json:"id"`
+	// Quality profile name.
+	Name string `json:"name"`
+	// Whether quality upgrades are allowed.
+	UpgradeAllowed OptBool `json:"upgradeAllowed"`
+	// Quality cutoff ID.
+	Cutoff OptInt `json:"cutoff"`
+	// Minimum custom format score.
+	MinFormatScore OptInt `json:"minFormatScore"`
+}
+
+// GetID returns the value of ID.
+func (s *SonarrQualityProfile) GetID() int {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SonarrQualityProfile) GetName() string {
+	return s.Name
+}
+
+// GetUpgradeAllowed returns the value of UpgradeAllowed.
+func (s *SonarrQualityProfile) GetUpgradeAllowed() OptBool {
+	return s.UpgradeAllowed
+}
+
+// GetCutoff returns the value of Cutoff.
+func (s *SonarrQualityProfile) GetCutoff() OptInt {
+	return s.Cutoff
+}
+
+// GetMinFormatScore returns the value of MinFormatScore.
+func (s *SonarrQualityProfile) GetMinFormatScore() OptInt {
+	return s.MinFormatScore
+}
+
+// SetID sets the value of ID.
+func (s *SonarrQualityProfile) SetID(val int) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SonarrQualityProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetUpgradeAllowed sets the value of UpgradeAllowed.
+func (s *SonarrQualityProfile) SetUpgradeAllowed(val OptBool) {
+	s.UpgradeAllowed = val
+}
+
+// SetCutoff sets the value of Cutoff.
+func (s *SonarrQualityProfile) SetCutoff(val OptInt) {
+	s.Cutoff = val
+}
+
+// SetMinFormatScore sets the value of MinFormatScore.
+func (s *SonarrQualityProfile) SetMinFormatScore(val OptInt) {
+	s.MinFormatScore = val
+}
+
+// Ref: #/components/schemas/SonarrQualityProfileList
+type SonarrQualityProfileList struct {
+	Profiles []SonarrQualityProfile `json:"profiles"`
+}
+
+// GetProfiles returns the value of Profiles.
+func (s *SonarrQualityProfileList) GetProfiles() []SonarrQualityProfile {
+	return s.Profiles
+}
+
+// SetProfiles sets the value of Profiles.
+func (s *SonarrQualityProfileList) SetProfiles(val []SonarrQualityProfile) {
+	s.Profiles = val
+}
+
+func (*SonarrQualityProfileList) adminGetSonarrQualityProfilesRes() {}
+
+// Ref: #/components/schemas/SonarrRootFolder
+type SonarrRootFolder struct {
+	// Root folder ID.
+	ID int `json:"id"`
+	// Folder path.
+	Path string `json:"path"`
+	// Whether the folder is accessible.
+	Accessible bool `json:"accessible"`
+	// Free space in bytes.
+	FreeSpace OptInt64 `json:"freeSpace"`
+}
+
+// GetID returns the value of ID.
+func (s *SonarrRootFolder) GetID() int {
+	return s.ID
+}
+
+// GetPath returns the value of Path.
+func (s *SonarrRootFolder) GetPath() string {
+	return s.Path
+}
+
+// GetAccessible returns the value of Accessible.
+func (s *SonarrRootFolder) GetAccessible() bool {
+	return s.Accessible
+}
+
+// GetFreeSpace returns the value of FreeSpace.
+func (s *SonarrRootFolder) GetFreeSpace() OptInt64 {
+	return s.FreeSpace
+}
+
+// SetID sets the value of ID.
+func (s *SonarrRootFolder) SetID(val int) {
+	s.ID = val
+}
+
+// SetPath sets the value of Path.
+func (s *SonarrRootFolder) SetPath(val string) {
+	s.Path = val
+}
+
+// SetAccessible sets the value of Accessible.
+func (s *SonarrRootFolder) SetAccessible(val bool) {
+	s.Accessible = val
+}
+
+// SetFreeSpace sets the value of FreeSpace.
+func (s *SonarrRootFolder) SetFreeSpace(val OptInt64) {
+	s.FreeSpace = val
+}
+
+// Ref: #/components/schemas/SonarrRootFolderList
+type SonarrRootFolderList struct {
+	Folders []SonarrRootFolder `json:"folders"`
+}
+
+// GetFolders returns the value of Folders.
+func (s *SonarrRootFolderList) GetFolders() []SonarrRootFolder {
+	return s.Folders
+}
+
+// SetFolders sets the value of Folders.
+func (s *SonarrRootFolderList) SetFolders(val []SonarrRootFolder) {
+	s.Folders = val
+}
+
+func (*SonarrRootFolderList) adminGetSonarrRootFoldersRes() {}
+
+// Ref: #/components/schemas/SonarrStatus
+type SonarrStatus struct {
+	// Whether Sonarr is reachable.
+	Connected bool `json:"connected"`
+	// Sonarr version.
+	Version OptString `json:"version"`
+	// Sonarr instance name.
+	InstanceName OptString `json:"instanceName"`
+	// When Sonarr was started.
+	StartTime  OptDateTime      `json:"startTime"`
+	SyncStatus SonarrSyncStatus `json:"syncStatus"`
+}
+
+// GetConnected returns the value of Connected.
+func (s *SonarrStatus) GetConnected() bool {
+	return s.Connected
+}
+
+// GetVersion returns the value of Version.
+func (s *SonarrStatus) GetVersion() OptString {
+	return s.Version
+}
+
+// GetInstanceName returns the value of InstanceName.
+func (s *SonarrStatus) GetInstanceName() OptString {
+	return s.InstanceName
+}
+
+// GetStartTime returns the value of StartTime.
+func (s *SonarrStatus) GetStartTime() OptDateTime {
+	return s.StartTime
+}
+
+// GetSyncStatus returns the value of SyncStatus.
+func (s *SonarrStatus) GetSyncStatus() SonarrSyncStatus {
+	return s.SyncStatus
+}
+
+// SetConnected sets the value of Connected.
+func (s *SonarrStatus) SetConnected(val bool) {
+	s.Connected = val
+}
+
+// SetVersion sets the value of Version.
+func (s *SonarrStatus) SetVersion(val OptString) {
+	s.Version = val
+}
+
+// SetInstanceName sets the value of InstanceName.
+func (s *SonarrStatus) SetInstanceName(val OptString) {
+	s.InstanceName = val
+}
+
+// SetStartTime sets the value of StartTime.
+func (s *SonarrStatus) SetStartTime(val OptDateTime) {
+	s.StartTime = val
+}
+
+// SetSyncStatus sets the value of SyncStatus.
+func (s *SonarrStatus) SetSyncStatus(val SonarrSyncStatus) {
+	s.SyncStatus = val
+}
+
+func (*SonarrStatus) adminGetSonarrStatusRes() {}
+
+// Ref: #/components/schemas/SonarrSyncResponse
+type SonarrSyncResponse struct {
+	// Status message.
+	Message string `json:"message"`
+	// Whether sync started immediately or was queued.
+	Status SonarrSyncResponseStatus `json:"status"`
+}
+
+// GetMessage returns the value of Message.
+func (s *SonarrSyncResponse) GetMessage() string {
+	return s.Message
+}
+
+// GetStatus returns the value of Status.
+func (s *SonarrSyncResponse) GetStatus() SonarrSyncResponseStatus {
+	return s.Status
+}
+
+// SetMessage sets the value of Message.
+func (s *SonarrSyncResponse) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SonarrSyncResponse) SetStatus(val SonarrSyncResponseStatus) {
+	s.Status = val
+}
+
+func (*SonarrSyncResponse) adminTriggerSonarrSyncRes() {}
+
+// Whether sync started immediately or was queued.
+type SonarrSyncResponseStatus string
+
+const (
+	SonarrSyncResponseStatusStarted SonarrSyncResponseStatus = "started"
+	SonarrSyncResponseStatusQueued  SonarrSyncResponseStatus = "queued"
+)
+
+// AllValues returns all SonarrSyncResponseStatus values.
+func (SonarrSyncResponseStatus) AllValues() []SonarrSyncResponseStatus {
+	return []SonarrSyncResponseStatus{
+		SonarrSyncResponseStatusStarted,
+		SonarrSyncResponseStatusQueued,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SonarrSyncResponseStatus) MarshalText() ([]byte, error) {
+	switch s {
+	case SonarrSyncResponseStatusStarted:
+		return []byte(s), nil
+	case SonarrSyncResponseStatusQueued:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SonarrSyncResponseStatus) UnmarshalText(data []byte) error {
+	switch SonarrSyncResponseStatus(data) {
+	case SonarrSyncResponseStatusStarted:
+		*s = SonarrSyncResponseStatusStarted
+		return nil
+	case SonarrSyncResponseStatusQueued:
+		*s = SonarrSyncResponseStatusQueued
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SonarrSyncStatus
+type SonarrSyncStatus struct {
+	// Whether a sync is currently in progress.
+	IsRunning bool `json:"isRunning"`
+	// When the last sync completed.
+	LastSync OptDateTime `json:"lastSync"`
+	// Error message from last sync, if any.
+	LastSyncError OptString `json:"lastSyncError"`
+	// Number of series added in last sync.
+	SeriesAdded int `json:"seriesAdded"`
+	// Number of series updated in last sync.
+	SeriesUpdated int `json:"seriesUpdated"`
+	// Number of series removed in last sync.
+	SeriesRemoved int `json:"seriesRemoved"`
+	// Number of episodes added in last sync.
+	EpisodesAdded OptInt `json:"episodesAdded"`
+	// Number of episodes updated in last sync.
+	EpisodesUpdated OptInt `json:"episodesUpdated"`
+	// Total series in Sonarr library.
+	TotalSeries int `json:"totalSeries"`
+	// Total episodes in Sonarr library.
+	TotalEpisodes OptInt `json:"totalEpisodes"`
+}
+
+// GetIsRunning returns the value of IsRunning.
+func (s *SonarrSyncStatus) GetIsRunning() bool {
+	return s.IsRunning
+}
+
+// GetLastSync returns the value of LastSync.
+func (s *SonarrSyncStatus) GetLastSync() OptDateTime {
+	return s.LastSync
+}
+
+// GetLastSyncError returns the value of LastSyncError.
+func (s *SonarrSyncStatus) GetLastSyncError() OptString {
+	return s.LastSyncError
+}
+
+// GetSeriesAdded returns the value of SeriesAdded.
+func (s *SonarrSyncStatus) GetSeriesAdded() int {
+	return s.SeriesAdded
+}
+
+// GetSeriesUpdated returns the value of SeriesUpdated.
+func (s *SonarrSyncStatus) GetSeriesUpdated() int {
+	return s.SeriesUpdated
+}
+
+// GetSeriesRemoved returns the value of SeriesRemoved.
+func (s *SonarrSyncStatus) GetSeriesRemoved() int {
+	return s.SeriesRemoved
+}
+
+// GetEpisodesAdded returns the value of EpisodesAdded.
+func (s *SonarrSyncStatus) GetEpisodesAdded() OptInt {
+	return s.EpisodesAdded
+}
+
+// GetEpisodesUpdated returns the value of EpisodesUpdated.
+func (s *SonarrSyncStatus) GetEpisodesUpdated() OptInt {
+	return s.EpisodesUpdated
+}
+
+// GetTotalSeries returns the value of TotalSeries.
+func (s *SonarrSyncStatus) GetTotalSeries() int {
+	return s.TotalSeries
+}
+
+// GetTotalEpisodes returns the value of TotalEpisodes.
+func (s *SonarrSyncStatus) GetTotalEpisodes() OptInt {
+	return s.TotalEpisodes
+}
+
+// SetIsRunning sets the value of IsRunning.
+func (s *SonarrSyncStatus) SetIsRunning(val bool) {
+	s.IsRunning = val
+}
+
+// SetLastSync sets the value of LastSync.
+func (s *SonarrSyncStatus) SetLastSync(val OptDateTime) {
+	s.LastSync = val
+}
+
+// SetLastSyncError sets the value of LastSyncError.
+func (s *SonarrSyncStatus) SetLastSyncError(val OptString) {
+	s.LastSyncError = val
+}
+
+// SetSeriesAdded sets the value of SeriesAdded.
+func (s *SonarrSyncStatus) SetSeriesAdded(val int) {
+	s.SeriesAdded = val
+}
+
+// SetSeriesUpdated sets the value of SeriesUpdated.
+func (s *SonarrSyncStatus) SetSeriesUpdated(val int) {
+	s.SeriesUpdated = val
+}
+
+// SetSeriesRemoved sets the value of SeriesRemoved.
+func (s *SonarrSyncStatus) SetSeriesRemoved(val int) {
+	s.SeriesRemoved = val
+}
+
+// SetEpisodesAdded sets the value of EpisodesAdded.
+func (s *SonarrSyncStatus) SetEpisodesAdded(val OptInt) {
+	s.EpisodesAdded = val
+}
+
+// SetEpisodesUpdated sets the value of EpisodesUpdated.
+func (s *SonarrSyncStatus) SetEpisodesUpdated(val OptInt) {
+	s.EpisodesUpdated = val
+}
+
+// SetTotalSeries sets the value of TotalSeries.
+func (s *SonarrSyncStatus) SetTotalSeries(val int) {
+	s.TotalSeries = val
+}
+
+// SetTotalEpisodes sets the value of TotalEpisodes.
+func (s *SonarrSyncStatus) SetTotalEpisodes(val OptInt) {
+	s.TotalEpisodes = val
+}
+
+// Ref: #/components/schemas/SonarrWebhookEpisode
+type SonarrWebhookEpisode struct {
+	// Sonarr episode ID.
+	ID            OptInt      `json:"id"`
+	EpisodeNumber OptInt      `json:"episodeNumber"`
+	SeasonNumber  OptInt      `json:"seasonNumber"`
+	Title         OptString   `json:"title"`
+	AirDate       OptDate     `json:"airDate"`
+	AirDateUtc    OptDateTime `json:"airDateUtc"`
+}
+
+// GetID returns the value of ID.
+func (s *SonarrWebhookEpisode) GetID() OptInt {
+	return s.ID
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *SonarrWebhookEpisode) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *SonarrWebhookEpisode) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *SonarrWebhookEpisode) GetTitle() OptString {
+	return s.Title
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *SonarrWebhookEpisode) GetAirDate() OptDate {
+	return s.AirDate
+}
+
+// GetAirDateUtc returns the value of AirDateUtc.
+func (s *SonarrWebhookEpisode) GetAirDateUtc() OptDateTime {
+	return s.AirDateUtc
+}
+
+// SetID sets the value of ID.
+func (s *SonarrWebhookEpisode) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *SonarrWebhookEpisode) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *SonarrWebhookEpisode) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SonarrWebhookEpisode) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *SonarrWebhookEpisode) SetAirDate(val OptDate) {
+	s.AirDate = val
+}
+
+// SetAirDateUtc sets the value of AirDateUtc.
+func (s *SonarrWebhookEpisode) SetAirDateUtc(val OptDateTime) {
+	s.AirDateUtc = val
+}
+
+// Ref: #/components/schemas/SonarrWebhookEpisodeFile
+type SonarrWebhookEpisodeFile struct {
+	// Sonarr file ID.
+	ID             OptInt      `json:"id"`
+	RelativePath   OptString   `json:"relativePath"`
+	Path           OptString   `json:"path"`
+	Quality        OptString   `json:"quality"`
+	QualityVersion OptInt      `json:"qualityVersion"`
+	Size           OptInt64    `json:"size"`
+	DateAdded      OptDateTime `json:"dateAdded"`
+}
+
+// GetID returns the value of ID.
+func (s *SonarrWebhookEpisodeFile) GetID() OptInt {
+	return s.ID
+}
+
+// GetRelativePath returns the value of RelativePath.
+func (s *SonarrWebhookEpisodeFile) GetRelativePath() OptString {
+	return s.RelativePath
+}
+
+// GetPath returns the value of Path.
+func (s *SonarrWebhookEpisodeFile) GetPath() OptString {
+	return s.Path
+}
+
+// GetQuality returns the value of Quality.
+func (s *SonarrWebhookEpisodeFile) GetQuality() OptString {
+	return s.Quality
+}
+
+// GetQualityVersion returns the value of QualityVersion.
+func (s *SonarrWebhookEpisodeFile) GetQualityVersion() OptInt {
+	return s.QualityVersion
+}
+
+// GetSize returns the value of Size.
+func (s *SonarrWebhookEpisodeFile) GetSize() OptInt64 {
+	return s.Size
+}
+
+// GetDateAdded returns the value of DateAdded.
+func (s *SonarrWebhookEpisodeFile) GetDateAdded() OptDateTime {
+	return s.DateAdded
+}
+
+// SetID sets the value of ID.
+func (s *SonarrWebhookEpisodeFile) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetRelativePath sets the value of RelativePath.
+func (s *SonarrWebhookEpisodeFile) SetRelativePath(val OptString) {
+	s.RelativePath = val
+}
+
+// SetPath sets the value of Path.
+func (s *SonarrWebhookEpisodeFile) SetPath(val OptString) {
+	s.Path = val
+}
+
+// SetQuality sets the value of Quality.
+func (s *SonarrWebhookEpisodeFile) SetQuality(val OptString) {
+	s.Quality = val
+}
+
+// SetQualityVersion sets the value of QualityVersion.
+func (s *SonarrWebhookEpisodeFile) SetQualityVersion(val OptInt) {
+	s.QualityVersion = val
+}
+
+// SetSize sets the value of Size.
+func (s *SonarrWebhookEpisodeFile) SetSize(val OptInt64) {
+	s.Size = val
+}
+
+// SetDateAdded sets the value of DateAdded.
+func (s *SonarrWebhookEpisodeFile) SetDateAdded(val OptDateTime) {
+	s.DateAdded = val
+}
+
+// Ref: #/components/schemas/SonarrWebhookPayload
+type SonarrWebhookPayload struct {
+	// Type of webhook event.
+	EventType SonarrWebhookPayloadEventType `json:"eventType"`
+	// Sonarr instance name.
+	InstanceName OptString `json:"instanceName"`
+	// Sonarr application URL.
+	ApplicationUrl OptString                   `json:"applicationUrl"`
+	Series         OptSonarrWebhookSeries      `json:"series"`
+	Episodes       []SonarrWebhookEpisode      `json:"episodes"`
+	EpisodeFile    OptSonarrWebhookEpisodeFile `json:"episodeFile"`
+	DeletedFiles   []SonarrWebhookEpisodeFile  `json:"deletedFiles"`
+	Release        OptSonarrWebhookRelease     `json:"release"`
+	// Download client name.
+	DownloadClient OptString `json:"downloadClient"`
+	// Download client type.
+	DownloadClientType OptString `json:"downloadClientType"`
+	// Download ID.
+	DownloadId OptString `json:"downloadId"`
+	// Whether this is a quality upgrade.
+	IsUpgrade OptBool `json:"isUpgrade"`
+}
+
+// GetEventType returns the value of EventType.
+func (s *SonarrWebhookPayload) GetEventType() SonarrWebhookPayloadEventType {
+	return s.EventType
+}
+
+// GetInstanceName returns the value of InstanceName.
+func (s *SonarrWebhookPayload) GetInstanceName() OptString {
+	return s.InstanceName
+}
+
+// GetApplicationUrl returns the value of ApplicationUrl.
+func (s *SonarrWebhookPayload) GetApplicationUrl() OptString {
+	return s.ApplicationUrl
+}
+
+// GetSeries returns the value of Series.
+func (s *SonarrWebhookPayload) GetSeries() OptSonarrWebhookSeries {
+	return s.Series
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *SonarrWebhookPayload) GetEpisodes() []SonarrWebhookEpisode {
+	return s.Episodes
+}
+
+// GetEpisodeFile returns the value of EpisodeFile.
+func (s *SonarrWebhookPayload) GetEpisodeFile() OptSonarrWebhookEpisodeFile {
+	return s.EpisodeFile
+}
+
+// GetDeletedFiles returns the value of DeletedFiles.
+func (s *SonarrWebhookPayload) GetDeletedFiles() []SonarrWebhookEpisodeFile {
+	return s.DeletedFiles
+}
+
+// GetRelease returns the value of Release.
+func (s *SonarrWebhookPayload) GetRelease() OptSonarrWebhookRelease {
+	return s.Release
+}
+
+// GetDownloadClient returns the value of DownloadClient.
+func (s *SonarrWebhookPayload) GetDownloadClient() OptString {
+	return s.DownloadClient
+}
+
+// GetDownloadClientType returns the value of DownloadClientType.
+func (s *SonarrWebhookPayload) GetDownloadClientType() OptString {
+	return s.DownloadClientType
+}
+
+// GetDownloadId returns the value of DownloadId.
+func (s *SonarrWebhookPayload) GetDownloadId() OptString {
+	return s.DownloadId
+}
+
+// GetIsUpgrade returns the value of IsUpgrade.
+func (s *SonarrWebhookPayload) GetIsUpgrade() OptBool {
+	return s.IsUpgrade
+}
+
+// SetEventType sets the value of EventType.
+func (s *SonarrWebhookPayload) SetEventType(val SonarrWebhookPayloadEventType) {
+	s.EventType = val
+}
+
+// SetInstanceName sets the value of InstanceName.
+func (s *SonarrWebhookPayload) SetInstanceName(val OptString) {
+	s.InstanceName = val
+}
+
+// SetApplicationUrl sets the value of ApplicationUrl.
+func (s *SonarrWebhookPayload) SetApplicationUrl(val OptString) {
+	s.ApplicationUrl = val
+}
+
+// SetSeries sets the value of Series.
+func (s *SonarrWebhookPayload) SetSeries(val OptSonarrWebhookSeries) {
+	s.Series = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *SonarrWebhookPayload) SetEpisodes(val []SonarrWebhookEpisode) {
+	s.Episodes = val
+}
+
+// SetEpisodeFile sets the value of EpisodeFile.
+func (s *SonarrWebhookPayload) SetEpisodeFile(val OptSonarrWebhookEpisodeFile) {
+	s.EpisodeFile = val
+}
+
+// SetDeletedFiles sets the value of DeletedFiles.
+func (s *SonarrWebhookPayload) SetDeletedFiles(val []SonarrWebhookEpisodeFile) {
+	s.DeletedFiles = val
+}
+
+// SetRelease sets the value of Release.
+func (s *SonarrWebhookPayload) SetRelease(val OptSonarrWebhookRelease) {
+	s.Release = val
+}
+
+// SetDownloadClient sets the value of DownloadClient.
+func (s *SonarrWebhookPayload) SetDownloadClient(val OptString) {
+	s.DownloadClient = val
+}
+
+// SetDownloadClientType sets the value of DownloadClientType.
+func (s *SonarrWebhookPayload) SetDownloadClientType(val OptString) {
+	s.DownloadClientType = val
+}
+
+// SetDownloadId sets the value of DownloadId.
+func (s *SonarrWebhookPayload) SetDownloadId(val OptString) {
+	s.DownloadId = val
+}
+
+// SetIsUpgrade sets the value of IsUpgrade.
+func (s *SonarrWebhookPayload) SetIsUpgrade(val OptBool) {
+	s.IsUpgrade = val
+}
+
+// Type of webhook event.
+type SonarrWebhookPayloadEventType string
+
+const (
+	SonarrWebhookPayloadEventTypeGrab              SonarrWebhookPayloadEventType = "Grab"
+	SonarrWebhookPayloadEventTypeDownload          SonarrWebhookPayloadEventType = "Download"
+	SonarrWebhookPayloadEventTypeRename            SonarrWebhookPayloadEventType = "Rename"
+	SonarrWebhookPayloadEventTypeSeriesAdd         SonarrWebhookPayloadEventType = "SeriesAdd"
+	SonarrWebhookPayloadEventTypeSeriesDelete      SonarrWebhookPayloadEventType = "SeriesDelete"
+	SonarrWebhookPayloadEventTypeEpisodeFileDelete SonarrWebhookPayloadEventType = "EpisodeFileDelete"
+	SonarrWebhookPayloadEventTypeHealth            SonarrWebhookPayloadEventType = "Health"
+	SonarrWebhookPayloadEventTypeApplicationUpdate SonarrWebhookPayloadEventType = "ApplicationUpdate"
+	SonarrWebhookPayloadEventTypeTest              SonarrWebhookPayloadEventType = "Test"
+)
+
+// AllValues returns all SonarrWebhookPayloadEventType values.
+func (SonarrWebhookPayloadEventType) AllValues() []SonarrWebhookPayloadEventType {
+	return []SonarrWebhookPayloadEventType{
+		SonarrWebhookPayloadEventTypeGrab,
+		SonarrWebhookPayloadEventTypeDownload,
+		SonarrWebhookPayloadEventTypeRename,
+		SonarrWebhookPayloadEventTypeSeriesAdd,
+		SonarrWebhookPayloadEventTypeSeriesDelete,
+		SonarrWebhookPayloadEventTypeEpisodeFileDelete,
+		SonarrWebhookPayloadEventTypeHealth,
+		SonarrWebhookPayloadEventTypeApplicationUpdate,
+		SonarrWebhookPayloadEventTypeTest,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SonarrWebhookPayloadEventType) MarshalText() ([]byte, error) {
+	switch s {
+	case SonarrWebhookPayloadEventTypeGrab:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeDownload:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeRename:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeSeriesAdd:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeSeriesDelete:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeEpisodeFileDelete:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeHealth:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeApplicationUpdate:
+		return []byte(s), nil
+	case SonarrWebhookPayloadEventTypeTest:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SonarrWebhookPayloadEventType) UnmarshalText(data []byte) error {
+	switch SonarrWebhookPayloadEventType(data) {
+	case SonarrWebhookPayloadEventTypeGrab:
+		*s = SonarrWebhookPayloadEventTypeGrab
+		return nil
+	case SonarrWebhookPayloadEventTypeDownload:
+		*s = SonarrWebhookPayloadEventTypeDownload
+		return nil
+	case SonarrWebhookPayloadEventTypeRename:
+		*s = SonarrWebhookPayloadEventTypeRename
+		return nil
+	case SonarrWebhookPayloadEventTypeSeriesAdd:
+		*s = SonarrWebhookPayloadEventTypeSeriesAdd
+		return nil
+	case SonarrWebhookPayloadEventTypeSeriesDelete:
+		*s = SonarrWebhookPayloadEventTypeSeriesDelete
+		return nil
+	case SonarrWebhookPayloadEventTypeEpisodeFileDelete:
+		*s = SonarrWebhookPayloadEventTypeEpisodeFileDelete
+		return nil
+	case SonarrWebhookPayloadEventTypeHealth:
+		*s = SonarrWebhookPayloadEventTypeHealth
+		return nil
+	case SonarrWebhookPayloadEventTypeApplicationUpdate:
+		*s = SonarrWebhookPayloadEventTypeApplicationUpdate
+		return nil
+	case SonarrWebhookPayloadEventTypeTest:
+		*s = SonarrWebhookPayloadEventTypeTest
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SonarrWebhookRelease
+type SonarrWebhookRelease struct {
+	Quality        OptString `json:"quality"`
+	QualityVersion OptInt    `json:"qualityVersion"`
+	ReleaseGroup   OptString `json:"releaseGroup"`
+	ReleaseTitle   OptString `json:"releaseTitle"`
+	Indexer        OptString `json:"indexer"`
+	Size           OptInt64  `json:"size"`
+}
+
+// GetQuality returns the value of Quality.
+func (s *SonarrWebhookRelease) GetQuality() OptString {
+	return s.Quality
+}
+
+// GetQualityVersion returns the value of QualityVersion.
+func (s *SonarrWebhookRelease) GetQualityVersion() OptInt {
+	return s.QualityVersion
+}
+
+// GetReleaseGroup returns the value of ReleaseGroup.
+func (s *SonarrWebhookRelease) GetReleaseGroup() OptString {
+	return s.ReleaseGroup
+}
+
+// GetReleaseTitle returns the value of ReleaseTitle.
+func (s *SonarrWebhookRelease) GetReleaseTitle() OptString {
+	return s.ReleaseTitle
+}
+
+// GetIndexer returns the value of Indexer.
+func (s *SonarrWebhookRelease) GetIndexer() OptString {
+	return s.Indexer
+}
+
+// GetSize returns the value of Size.
+func (s *SonarrWebhookRelease) GetSize() OptInt64 {
+	return s.Size
+}
+
+// SetQuality sets the value of Quality.
+func (s *SonarrWebhookRelease) SetQuality(val OptString) {
+	s.Quality = val
+}
+
+// SetQualityVersion sets the value of QualityVersion.
+func (s *SonarrWebhookRelease) SetQualityVersion(val OptInt) {
+	s.QualityVersion = val
+}
+
+// SetReleaseGroup sets the value of ReleaseGroup.
+func (s *SonarrWebhookRelease) SetReleaseGroup(val OptString) {
+	s.ReleaseGroup = val
+}
+
+// SetReleaseTitle sets the value of ReleaseTitle.
+func (s *SonarrWebhookRelease) SetReleaseTitle(val OptString) {
+	s.ReleaseTitle = val
+}
+
+// SetIndexer sets the value of Indexer.
+func (s *SonarrWebhookRelease) SetIndexer(val OptString) {
+	s.Indexer = val
+}
+
+// SetSize sets the value of Size.
+func (s *SonarrWebhookRelease) SetSize(val OptInt64) {
+	s.Size = val
+}
+
+// Ref: #/components/schemas/SonarrWebhookSeries
+type SonarrWebhookSeries struct {
+	// Sonarr series ID.
+	ID        OptInt    `json:"id"`
+	Title     OptString `json:"title"`
+	TitleSlug OptString `json:"titleSlug"`
+	Path      OptString `json:"path"`
+	TvdbId    OptInt    `json:"tvdbId"`
+	TvMazeId  OptInt    `json:"tvMazeId"`
+	ImdbId    OptString `json:"imdbId"`
+	// Series type (standard, daily, anime).
+	Type OptString `json:"type"`
+}
+
+// GetID returns the value of ID.
+func (s *SonarrWebhookSeries) GetID() OptInt {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *SonarrWebhookSeries) GetTitle() OptString {
+	return s.Title
+}
+
+// GetTitleSlug returns the value of TitleSlug.
+func (s *SonarrWebhookSeries) GetTitleSlug() OptString {
+	return s.TitleSlug
+}
+
+// GetPath returns the value of Path.
+func (s *SonarrWebhookSeries) GetPath() OptString {
+	return s.Path
+}
+
+// GetTvdbId returns the value of TvdbId.
+func (s *SonarrWebhookSeries) GetTvdbId() OptInt {
+	return s.TvdbId
+}
+
+// GetTvMazeId returns the value of TvMazeId.
+func (s *SonarrWebhookSeries) GetTvMazeId() OptInt {
+	return s.TvMazeId
+}
+
+// GetImdbId returns the value of ImdbId.
+func (s *SonarrWebhookSeries) GetImdbId() OptString {
+	return s.ImdbId
+}
+
+// GetType returns the value of Type.
+func (s *SonarrWebhookSeries) GetType() OptString {
+	return s.Type
+}
+
+// SetID sets the value of ID.
+func (s *SonarrWebhookSeries) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SonarrWebhookSeries) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetTitleSlug sets the value of TitleSlug.
+func (s *SonarrWebhookSeries) SetTitleSlug(val OptString) {
+	s.TitleSlug = val
+}
+
+// SetPath sets the value of Path.
+func (s *SonarrWebhookSeries) SetPath(val OptString) {
+	s.Path = val
+}
+
+// SetTvdbId sets the value of TvdbId.
+func (s *SonarrWebhookSeries) SetTvdbId(val OptInt) {
+	s.TvdbId = val
+}
+
+// SetTvMazeId sets the value of TvMazeId.
+func (s *SonarrWebhookSeries) SetTvMazeId(val OptInt) {
+	s.TvMazeId = val
+}
+
+// SetImdbId sets the value of ImdbId.
+func (s *SonarrWebhookSeries) SetImdbId(val OptString) {
+	s.ImdbId = val
+}
+
+// SetType sets the value of Type.
+func (s *SonarrWebhookSeries) SetType(val OptString) {
+	s.Type = val
+}
 
 // Ref: #/components/schemas/TOTPSetup
 type TOTPSetup struct {

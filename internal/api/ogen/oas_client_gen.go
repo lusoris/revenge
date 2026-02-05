@@ -87,6 +87,29 @@ type Invoker interface {
 	//
 	// GET /api/v1/admin/integrations/radarr/status
 	AdminGetRadarrStatus(ctx context.Context) (AdminGetRadarrStatusRes, error)
+	// AdminGetSonarrQualityProfiles invokes adminGetSonarrQualityProfiles operation.
+	//
+	// Returns all quality profiles configured in Sonarr.
+	// Useful for mapping quality profiles during sync configuration.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/quality-profiles
+	AdminGetSonarrQualityProfiles(ctx context.Context) (AdminGetSonarrQualityProfilesRes, error)
+	// AdminGetSonarrRootFolders invokes adminGetSonarrRootFolders operation.
+	//
+	// Returns all root folders configured in Sonarr.
+	// These are the library paths that Sonarr monitors for TV shows.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/root-folders
+	AdminGetSonarrRootFolders(ctx context.Context) (AdminGetSonarrRootFoldersRes, error)
+	// AdminGetSonarrStatus invokes adminGetSonarrStatus operation.
+	//
+	// Returns the current Sonarr integration status including connection health,
+	// sync status, and last sync information. Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/status
+	AdminGetSonarrStatus(ctx context.Context) (AdminGetSonarrStatusRes, error)
 	// AdminListOIDCProviders invokes adminListOIDCProviders operation.
 	//
 	// Returns all OIDC providers including disabled ones.
@@ -107,6 +130,14 @@ type Invoker interface {
 	//
 	// POST /api/v1/admin/integrations/radarr/sync
 	AdminTriggerRadarrSync(ctx context.Context) (AdminTriggerRadarrSyncRes, error)
+	// AdminTriggerSonarrSync invokes adminTriggerSonarrSync operation.
+	//
+	// Triggers a full library sync from Sonarr to Revenge.
+	// This is an asynchronous operation - check status endpoint for progress.
+	// Admin only.
+	//
+	// POST /api/v1/admin/integrations/sonarr/sync
+	AdminTriggerSonarrSync(ctx context.Context) (AdminTriggerSonarrSyncRes, error)
 	// AdminUpdateOIDCProvider invokes adminUpdateOIDCProvider operation.
 	//
 	// Updates an OIDC provider configuration.
@@ -570,6 +601,14 @@ type Invoker interface {
 	//
 	// POST /api/v1/webhooks/radarr
 	HandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
+	// HandleSonarrWebhook invokes handleSonarrWebhook operation.
+	//
+	// Endpoint for receiving webhook notifications from Sonarr.
+	// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
+	// Configure this URL in Sonarr Settings > Connect > Webhook.
+	//
+	// POST /api/v1/webhooks/sonarr
+	HandleSonarrWebhook(ctx context.Context, request *SonarrWebhookPayload) (HandleSonarrWebhookRes, error)
 	// InitOIDCLink invokes initOIDCLink operation.
 	//
 	// Initiates the flow to link an OIDC provider to the user's account.
@@ -2001,6 +2040,329 @@ func (c *Client) sendAdminGetRadarrStatus(ctx context.Context) (res AdminGetRada
 	return result, nil
 }
 
+// AdminGetSonarrQualityProfiles invokes adminGetSonarrQualityProfiles operation.
+//
+// Returns all quality profiles configured in Sonarr.
+// Useful for mapping quality profiles during sync configuration.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/quality-profiles
+func (c *Client) AdminGetSonarrQualityProfiles(ctx context.Context) (AdminGetSonarrQualityProfilesRes, error) {
+	res, err := c.sendAdminGetSonarrQualityProfiles(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetSonarrQualityProfiles(ctx context.Context) (res AdminGetSonarrQualityProfilesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetSonarrQualityProfiles"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/sonarr/quality-profiles"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetSonarrQualityProfilesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/sonarr/quality-profiles"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetSonarrQualityProfilesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetSonarrQualityProfilesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminGetSonarrRootFolders invokes adminGetSonarrRootFolders operation.
+//
+// Returns all root folders configured in Sonarr.
+// These are the library paths that Sonarr monitors for TV shows.
+// Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/root-folders
+func (c *Client) AdminGetSonarrRootFolders(ctx context.Context) (AdminGetSonarrRootFoldersRes, error) {
+	res, err := c.sendAdminGetSonarrRootFolders(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetSonarrRootFolders(ctx context.Context) (res AdminGetSonarrRootFoldersRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetSonarrRootFolders"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/sonarr/root-folders"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetSonarrRootFoldersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/sonarr/root-folders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetSonarrRootFoldersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetSonarrRootFoldersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminGetSonarrStatus invokes adminGetSonarrStatus operation.
+//
+// Returns the current Sonarr integration status including connection health,
+// sync status, and last sync information. Admin only.
+//
+// GET /api/v1/admin/integrations/sonarr/status
+func (c *Client) AdminGetSonarrStatus(ctx context.Context) (AdminGetSonarrStatusRes, error) {
+	res, err := c.sendAdminGetSonarrStatus(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminGetSonarrStatus(ctx context.Context) (res AdminGetSonarrStatusRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminGetSonarrStatus"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/sonarr/status"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminGetSonarrStatusOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/sonarr/status"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminGetSonarrStatusOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminGetSonarrStatusResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // AdminListOIDCProviders invokes adminListOIDCProviders operation.
 //
 // Returns all OIDC providers including disabled ones.
@@ -2333,6 +2695,114 @@ func (c *Client) sendAdminTriggerRadarrSync(ctx context.Context) (res AdminTrigg
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminTriggerRadarrSyncResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminTriggerSonarrSync invokes adminTriggerSonarrSync operation.
+//
+// Triggers a full library sync from Sonarr to Revenge.
+// This is an asynchronous operation - check status endpoint for progress.
+// Admin only.
+//
+// POST /api/v1/admin/integrations/sonarr/sync
+func (c *Client) AdminTriggerSonarrSync(ctx context.Context) (AdminTriggerSonarrSyncRes, error) {
+	res, err := c.sendAdminTriggerSonarrSync(ctx)
+	return res, err
+}
+
+func (c *Client) sendAdminTriggerSonarrSync(ctx context.Context) (res AdminTriggerSonarrSyncRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminTriggerSonarrSync"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/admin/integrations/sonarr/sync"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminTriggerSonarrSyncOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/admin/integrations/sonarr/sync"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, AdminTriggerSonarrSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminTriggerSonarrSyncResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -11400,6 +11870,84 @@ func (c *Client) sendHandleRadarrWebhook(ctx context.Context, request *RadarrWeb
 
 	stage = "DecodeResponse"
 	result, err := decodeHandleRadarrWebhookResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// HandleSonarrWebhook invokes handleSonarrWebhook operation.
+//
+// Endpoint for receiving webhook notifications from Sonarr.
+// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
+// Configure this URL in Sonarr Settings > Connect > Webhook.
+//
+// POST /api/v1/webhooks/sonarr
+func (c *Client) HandleSonarrWebhook(ctx context.Context, request *SonarrWebhookPayload) (HandleSonarrWebhookRes, error) {
+	res, err := c.sendHandleSonarrWebhook(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendHandleSonarrWebhook(ctx context.Context, request *SonarrWebhookPayload) (res HandleSonarrWebhookRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("handleSonarrWebhook"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/webhooks/sonarr"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, HandleSonarrWebhookOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/webhooks/sonarr"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeHandleSonarrWebhookRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeHandleSonarrWebhookResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

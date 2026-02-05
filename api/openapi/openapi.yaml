@@ -4645,6 +4645,164 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Sonarr Integration Admin Endpoints
+  /api/v1/admin/integrations/sonarr/status:
+    get:
+      operationId: adminGetSonarrStatus
+      summary: Get Sonarr integration status (admin)
+      description: |
+        Returns the current Sonarr integration status including connection health,
+        sync status, and last sync information. Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sonarr status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrStatus'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Sonarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/sonarr/sync:
+    post:
+      operationId: adminTriggerSonarrSync
+      summary: Trigger Sonarr library sync (admin)
+      description: |
+        Triggers a full library sync from Sonarr to Revenge.
+        This is an asynchronous operation - check status endpoint for progress.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '202':
+          description: Sync started or queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrSyncResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Sync already in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Sonarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/sonarr/quality-profiles:
+    get:
+      operationId: adminGetSonarrQualityProfiles
+      summary: Get Sonarr quality profiles (admin)
+      description: |
+        Returns all quality profiles configured in Sonarr.
+        Useful for mapping quality profiles during sync configuration.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Quality profiles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrQualityProfileList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Sonarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/integrations/sonarr/root-folders:
+    get:
+      operationId: adminGetSonarrRootFolders
+      summary: Get Sonarr root folders (admin)
+      description: |
+        Returns all root folders configured in Sonarr.
+        These are the library paths that Sonarr monitors for TV shows.
+        Admin only.
+      tags:
+        - Integrations Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Root folders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SonarrRootFolderList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '503':
+          description: Sonarr integration not configured or unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/webhooks/sonarr:
+    post:
+      operationId: handleSonarrWebhook
+      summary: Handle Sonarr webhook
+      description: |
+        Endpoint for receiving webhook notifications from Sonarr.
+        Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
+        Configure this URL in Sonarr Settings > Connect > Webhook.
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SonarrWebhookPayload'
+      responses:
+        '202':
+          description: Webhook accepted for processing
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas
@@ -7656,6 +7814,273 @@ components:
           format: date-time
 
     RadarrWebhookRelease:
+      type: object
+      properties:
+        quality:
+          type: string
+        qualityVersion:
+          type: integer
+        releaseGroup:
+          type: string
+        releaseTitle:
+          type: string
+        indexer:
+          type: string
+        size:
+          type: integer
+          format: int64
+
+    # Sonarr Integration schemas
+    SonarrStatus:
+      type: object
+      required:
+        - connected
+        - syncStatus
+      properties:
+        connected:
+          type: boolean
+          description: Whether Sonarr is reachable
+        version:
+          type: string
+          description: Sonarr version
+          example: "4.0.2.1183"
+        instanceName:
+          type: string
+          description: Sonarr instance name
+          example: "Sonarr"
+        startTime:
+          type: string
+          format: date-time
+          description: When Sonarr was started
+        syncStatus:
+          $ref: '#/components/schemas/SonarrSyncStatus'
+
+    SonarrSyncStatus:
+      type: object
+      required:
+        - isRunning
+        - seriesAdded
+        - seriesUpdated
+        - seriesRemoved
+        - totalSeries
+      properties:
+        isRunning:
+          type: boolean
+          description: Whether a sync is currently in progress
+        lastSync:
+          type: string
+          format: date-time
+          description: When the last sync completed
+        lastSyncError:
+          type: string
+          description: Error message from last sync, if any
+        seriesAdded:
+          type: integer
+          description: Number of series added in last sync
+        seriesUpdated:
+          type: integer
+          description: Number of series updated in last sync
+        seriesRemoved:
+          type: integer
+          description: Number of series removed in last sync
+        episodesAdded:
+          type: integer
+          description: Number of episodes added in last sync
+        episodesUpdated:
+          type: integer
+          description: Number of episodes updated in last sync
+        totalSeries:
+          type: integer
+          description: Total series in Sonarr library
+        totalEpisodes:
+          type: integer
+          description: Total episodes in Sonarr library
+
+    SonarrSyncResponse:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+          description: Status message
+          example: "Sync started"
+        status:
+          type: string
+          enum: [started, queued]
+          description: Whether sync started immediately or was queued
+
+    SonarrQualityProfile:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Quality profile ID
+        name:
+          type: string
+          description: Quality profile name
+          example: "HD-1080p"
+        upgradeAllowed:
+          type: boolean
+          description: Whether quality upgrades are allowed
+        cutoff:
+          type: integer
+          description: Quality cutoff ID
+        minFormatScore:
+          type: integer
+          description: Minimum custom format score
+
+    SonarrQualityProfileList:
+      type: object
+      required:
+        - profiles
+      properties:
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/SonarrQualityProfile'
+
+    SonarrRootFolder:
+      type: object
+      required:
+        - id
+        - path
+        - accessible
+      properties:
+        id:
+          type: integer
+          description: Root folder ID
+        path:
+          type: string
+          description: Folder path
+          example: "/tv"
+        accessible:
+          type: boolean
+          description: Whether the folder is accessible
+        freeSpace:
+          type: integer
+          format: int64
+          description: Free space in bytes
+
+    SonarrRootFolderList:
+      type: object
+      required:
+        - folders
+      properties:
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/SonarrRootFolder'
+
+    SonarrWebhookPayload:
+      type: object
+      required:
+        - eventType
+      properties:
+        eventType:
+          type: string
+          description: Type of webhook event
+          enum: [Grab, Download, Rename, SeriesAdd, SeriesDelete, EpisodeFileDelete, Health, ApplicationUpdate, Test]
+        instanceName:
+          type: string
+          description: Sonarr instance name
+        applicationUrl:
+          type: string
+          description: Sonarr application URL
+        series:
+          $ref: '#/components/schemas/SonarrWebhookSeries'
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SonarrWebhookEpisode'
+        episodeFile:
+          $ref: '#/components/schemas/SonarrWebhookEpisodeFile'
+        deletedFiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/SonarrWebhookEpisodeFile'
+        release:
+          $ref: '#/components/schemas/SonarrWebhookRelease'
+        downloadClient:
+          type: string
+          description: Download client name
+        downloadClientType:
+          type: string
+          description: Download client type
+        downloadId:
+          type: string
+          description: Download ID
+        isUpgrade:
+          type: boolean
+          description: Whether this is a quality upgrade
+
+    SonarrWebhookSeries:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Sonarr series ID
+        title:
+          type: string
+        titleSlug:
+          type: string
+        path:
+          type: string
+        tvdbId:
+          type: integer
+        tvMazeId:
+          type: integer
+        imdbId:
+          type: string
+        type:
+          type: string
+          description: Series type (standard, daily, anime)
+
+    SonarrWebhookEpisode:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Sonarr episode ID
+        episodeNumber:
+          type: integer
+        seasonNumber:
+          type: integer
+        title:
+          type: string
+        airDate:
+          type: string
+          format: date
+        airDateUtc:
+          type: string
+          format: date-time
+
+    SonarrWebhookEpisodeFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Sonarr file ID
+        relativePath:
+          type: string
+        path:
+          type: string
+        quality:
+          type: string
+        qualityVersion:
+          type: integer
+        size:
+          type: integer
+          format: int64
+        dateAdded:
+          type: string
+          format: date-time
+
+    SonarrWebhookRelease:
       type: object
       properties:
         quality:

@@ -67,6 +67,29 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/integrations/radarr/status
 	AdminGetRadarrStatus(ctx context.Context) (AdminGetRadarrStatusRes, error)
+	// AdminGetSonarrQualityProfiles implements adminGetSonarrQualityProfiles operation.
+	//
+	// Returns all quality profiles configured in Sonarr.
+	// Useful for mapping quality profiles during sync configuration.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/quality-profiles
+	AdminGetSonarrQualityProfiles(ctx context.Context) (AdminGetSonarrQualityProfilesRes, error)
+	// AdminGetSonarrRootFolders implements adminGetSonarrRootFolders operation.
+	//
+	// Returns all root folders configured in Sonarr.
+	// These are the library paths that Sonarr monitors for TV shows.
+	// Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/root-folders
+	AdminGetSonarrRootFolders(ctx context.Context) (AdminGetSonarrRootFoldersRes, error)
+	// AdminGetSonarrStatus implements adminGetSonarrStatus operation.
+	//
+	// Returns the current Sonarr integration status including connection health,
+	// sync status, and last sync information. Admin only.
+	//
+	// GET /api/v1/admin/integrations/sonarr/status
+	AdminGetSonarrStatus(ctx context.Context) (AdminGetSonarrStatusRes, error)
 	// AdminListOIDCProviders implements adminListOIDCProviders operation.
 	//
 	// Returns all OIDC providers including disabled ones.
@@ -87,6 +110,14 @@ type Handler interface {
 	//
 	// POST /api/v1/admin/integrations/radarr/sync
 	AdminTriggerRadarrSync(ctx context.Context) (AdminTriggerRadarrSyncRes, error)
+	// AdminTriggerSonarrSync implements adminTriggerSonarrSync operation.
+	//
+	// Triggers a full library sync from Sonarr to Revenge.
+	// This is an asynchronous operation - check status endpoint for progress.
+	// Admin only.
+	//
+	// POST /api/v1/admin/integrations/sonarr/sync
+	AdminTriggerSonarrSync(ctx context.Context) (AdminTriggerSonarrSyncRes, error)
 	// AdminUpdateOIDCProvider implements adminUpdateOIDCProvider operation.
 	//
 	// Updates an OIDC provider configuration.
@@ -550,6 +581,14 @@ type Handler interface {
 	//
 	// POST /api/v1/webhooks/radarr
 	HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
+	// HandleSonarrWebhook implements handleSonarrWebhook operation.
+	//
+	// Endpoint for receiving webhook notifications from Sonarr.
+	// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
+	// Configure this URL in Sonarr Settings > Connect > Webhook.
+	//
+	// POST /api/v1/webhooks/sonarr
+	HandleSonarrWebhook(ctx context.Context, req *SonarrWebhookPayload) (HandleSonarrWebhookRes, error)
 	// InitOIDCLink implements initOIDCLink operation.
 	//
 	// Initiates the flow to link an OIDC provider to the user's account.
