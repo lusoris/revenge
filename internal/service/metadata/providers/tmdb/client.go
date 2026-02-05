@@ -442,6 +442,94 @@ func (c *Client) GetMovieExternalIDs(ctx context.Context, id int) (*ExternalIDsR
 	return &result, nil
 }
 
+// GetSimilarMovies retrieves movies similar to the given movie.
+func (c *Client) GetSimilarMovies(ctx context.Context, id int, language string, page int) (*SearchResultsResponse, error) {
+	if page < 1 {
+		page = 1
+	}
+	key := cacheKey("movie:similar", id, language, page)
+	if cached := c.getFromCache(key); cached != nil {
+		if result, ok := cached.(*SearchResultsResponse); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.waitRateLimit(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit: %w", err)
+	}
+
+	params := map[string]string{
+		"page": fmt.Sprintf("%d", page),
+	}
+	if language != "" {
+		params["language"] = language
+	}
+
+	var result SearchResultsResponse
+	var errResp ErrorResponse
+
+	resp, err := c.request(ctx).
+		SetQueryParams(params).
+		SetResult(&result).
+		SetError(&errResp).
+		Get(fmt.Sprintf("/movie/%d/similar", id))
+
+	if err != nil {
+		return nil, fmt.Errorf("tmdb api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, c.parseError(resp, &errResp)
+	}
+
+	c.setCache(key, &result, SearchCacheTTL)
+	return &result, nil
+}
+
+// GetMovieRecommendations retrieves recommended movies based on the given movie.
+func (c *Client) GetMovieRecommendations(ctx context.Context, id int, language string, page int) (*SearchResultsResponse, error) {
+	if page < 1 {
+		page = 1
+	}
+	key := cacheKey("movie:recommendations", id, language, page)
+	if cached := c.getFromCache(key); cached != nil {
+		if result, ok := cached.(*SearchResultsResponse); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.waitRateLimit(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit: %w", err)
+	}
+
+	params := map[string]string{
+		"page": fmt.Sprintf("%d", page),
+	}
+	if language != "" {
+		params["language"] = language
+	}
+
+	var result SearchResultsResponse
+	var errResp ErrorResponse
+
+	resp, err := c.request(ctx).
+		SetQueryParams(params).
+		SetResult(&result).
+		SetError(&errResp).
+		Get(fmt.Sprintf("/movie/%d/recommendations", id))
+
+	if err != nil {
+		return nil, fmt.Errorf("tmdb api request: %w", err)
+	}
+
+	if resp.IsError() {
+		return nil, c.parseError(resp, &errResp)
+	}
+
+	c.setCache(key, &result, SearchCacheTTL)
+	return &result, nil
+}
+
 // SearchTV searches for TV shows.
 func (c *Client) SearchTV(ctx context.Context, query string, year *int, language string) (*TVSearchResultsResponse, error) {
 	key := cacheKey("search:tv", query, year, language)

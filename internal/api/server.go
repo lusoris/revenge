@@ -21,6 +21,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/metadata"
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
@@ -68,8 +69,8 @@ type ServerParams struct {
 	MFAManager         *mfa.MFAManager
 	// Content modules
 	MovieHandler    *movie.Handler
-	MetadataService *movie.MetadataService `optional:"true"`
-	ImageService    *image.Service         `optional:"true"`
+	MetadataService metadata.Service `optional:"true"`
+	ImageService    *image.Service   `optional:"true"`
 	TVShowService   tvshow.Service         `optional:"true"`
 	// Integration services (optional)
 	RadarrService *radarr.SyncService `optional:"true"`

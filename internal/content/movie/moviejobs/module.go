@@ -42,9 +42,9 @@ type RegisterWorkersParams struct {
 	MetadataRefreshWorker    *MovieMetadataRefreshWorker
 	LibraryScanWorker        *MovieLibraryScanWorker
 	FileMatchWorker          *MovieFileMatchWorker
-	SearchIndexWorker        *MovieSearchIndexWorker `optional:"true"`
+	SearchIndexWorker        *MovieSearchIndexWorker    `optional:"true"`
 	MovieRepository          movie.Repository
-	MetadataService          *movie.MetadataService
+	MetadataProvider         movie.MetadataProvider
 	LibraryService           *movie.LibraryService
 	SearchService            *search.MovieSearchService `optional:"true"`
 	Logger                   *zap.Logger

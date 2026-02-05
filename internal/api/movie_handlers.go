@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/service/metadata"
 	"github.com/lusoris/revenge/internal/util"
 )
 
@@ -419,8 +421,8 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 		}, nil
 	}
 
-	// Get similar movies from TMDb
-	similar, totalResults, err := h.metadataService.GetSimilarMovies(ctx, int(*m.TMDbID))
+	// Get similar movies from shared metadata service
+	similar, totalResults, err := h.metadataService.GetSimilarMovies(ctx, *m.TMDbID, metadata.SearchOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -441,15 +443,20 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 			Title: ogen.NewOptString(sm.Title),
 		}
 
-		if sm.TMDbID != nil {
-			sim.TmdbID = ogen.NewOptInt(int(*sm.TMDbID))
-			sim.InLibrary = ogen.NewOptBool(libraryTMDbIDs[*sm.TMDbID])
+		// Parse TMDb ID from provider ID
+		if sm.ProviderID != "" {
+			var tmdbID int32
+			fmt.Sscanf(sm.ProviderID, "%d", &tmdbID)
+			if tmdbID > 0 {
+				sim.TmdbID = ogen.NewOptInt(int(tmdbID))
+				sim.InLibrary = ogen.NewOptBool(libraryTMDbIDs[tmdbID])
+			}
 		}
-		if sm.OriginalTitle != nil {
-			sim.OriginalTitle = ogen.NewOptString(*sm.OriginalTitle)
+		if sm.OriginalTitle != "" {
+			sim.OriginalTitle = ogen.NewOptString(sm.OriginalTitle)
 		}
-		if sm.Overview != nil {
-			sim.Overview = ogen.NewOptNilString(*sm.Overview)
+		if sm.Overview != "" {
+			sim.Overview = ogen.NewOptNilString(sm.Overview)
 		}
 		if sm.ReleaseDate != nil {
 			sim.ReleaseDate = ogen.NewOptNilDate(*sm.ReleaseDate)
@@ -460,18 +467,14 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 		if sm.BackdropPath != nil {
 			sim.BackdropPath = ogen.NewOptNilString(*sm.BackdropPath)
 		}
-		if sm.VoteAverage != nil {
-			if f, ok := sm.VoteAverage.Float64(); ok {
-				sim.VoteAverage = ogen.NewOptFloat32(float32(f))
-			}
+		if sm.VoteAverage > 0 {
+			sim.VoteAverage = ogen.NewOptFloat32(float32(sm.VoteAverage))
 		}
-		if sm.VoteCount != nil {
-			sim.VoteCount = ogen.NewOptInt(int(*sm.VoteCount))
+		if sm.VoteCount > 0 {
+			sim.VoteCount = ogen.NewOptInt(sm.VoteCount)
 		}
-		if sm.Popularity != nil {
-			if f, ok := sm.Popularity.Float64(); ok {
-				sim.Popularity = ogen.NewOptFloat32(float32(f))
-			}
+		if sm.Popularity > 0 {
+			sim.Popularity = ogen.NewOptFloat32(float32(sm.Popularity))
 		}
 
 		similarMovies = append(similarMovies, sim)

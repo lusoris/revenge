@@ -181,6 +181,46 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	return mapExternalIDs(resp, int32(tmdbID)), nil
 }
 
+// GetSimilarMovies retrieves movies similar to the given movie.
+func (p *Provider) GetSimilarMovies(ctx context.Context, id string, opts metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
+	tmdbID, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, 0, metadata.NewProviderError(metadata.ProviderTMDb, 400, "invalid id", metadata.ErrInvalidID)
+	}
+
+	page := 1
+	if opts.Page > 0 {
+		page = opts.Page
+	}
+
+	resp, err := p.client.GetSimilarMovies(ctx, tmdbID, normalizeLang(opts.Language), page)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return mapMovieSearchResults(resp), resp.TotalResults, nil
+}
+
+// GetMovieRecommendations retrieves recommended movies based on the given movie.
+func (p *Provider) GetMovieRecommendations(ctx context.Context, id string, opts metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
+	tmdbID, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, 0, metadata.NewProviderError(metadata.ProviderTMDb, 400, "invalid id", metadata.ErrInvalidID)
+	}
+
+	page := 1
+	if opts.Page > 0 {
+		page = opts.Page
+	}
+
+	resp, err := p.client.GetMovieRecommendations(ctx, tmdbID, normalizeLang(opts.Language), page)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return mapMovieSearchResults(resp), resp.TotalResults, nil
+}
+
 // SearchTVShow searches for TV shows.
 func (p *Provider) SearchTVShow(ctx context.Context, query string, opts metadata.SearchOptions) ([]metadata.TVShowSearchResult, error) {
 	lang := normalizeLang(opts.Language)

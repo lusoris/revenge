@@ -2,7 +2,9 @@
 package metadatafx
 
 import (
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/metadata"
+	movieadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/movie"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
 
@@ -42,9 +44,10 @@ type ModuleParams struct {
 type ModuleResult struct {
 	fx.Out
 
-	Service       metadata.Service
-	TMDbProvider  *tmdb.Provider `optional:"true"`
-	TVDbProvider  *tvdb.Provider `optional:"true"`
+	Service              metadata.Service
+	MovieMetadataAdapter movie.MetadataProvider
+	TMDbProvider         *tmdb.Provider `optional:"true"`
+	TVDbProvider         *tvdb.Provider `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -98,6 +101,10 @@ func NewModule(params ModuleParams) ModuleResult {
 	}
 
 	result.Service = svc
+
+	// Create movie adapter using the service
+	result.MovieMetadataAdapter = movieadapter.NewAdapter(svc, serviceConfig.DefaultLanguages)
+
 	return result
 }
 

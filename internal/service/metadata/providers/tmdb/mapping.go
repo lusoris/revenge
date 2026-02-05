@@ -34,6 +34,15 @@ func mapMovieSearchResult(r *MovieSearchResponse) metadata.MovieSearchResult {
 	return result
 }
 
+// mapMovieSearchResults converts a TMDb search results response to metadata type.
+func mapMovieSearchResults(resp *SearchResultsResponse) []metadata.MovieSearchResult {
+	results := make([]metadata.MovieSearchResult, len(resp.Results))
+	for i, r := range resp.Results {
+		results[i] = mapMovieSearchResult(&r)
+	}
+	return results
+}
+
 // mapMovieMetadata converts a TMDb movie response to metadata type.
 func mapMovieMetadata(r *MovieResponse) *metadata.MovieMetadata {
 	tmdbID := int32(r.ID)

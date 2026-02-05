@@ -16,6 +16,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/metadata"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/search"
@@ -45,7 +46,7 @@ type Handler struct {
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
 	movieHandler    *movie.Handler
-	metadataService *movie.MetadataService
+	metadataService metadata.Service
 	imageService    *image.Service
 	tvshowService   tvshow.Service // TV show service
 	radarrService   radarrService  // Optional: Radarr sync service

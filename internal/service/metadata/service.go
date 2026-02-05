@@ -19,6 +19,8 @@ type Service interface {
 	GetMovieImages(ctx context.Context, tmdbID int32) (*Images, error)
 	GetMovieReleaseDates(ctx context.Context, tmdbID int32) ([]ReleaseDate, error)
 	GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
+	GetSimilarMovies(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
+	GetMovieRecommendations(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
 
 	// TV Show operations
 	SearchTVShow(ctx context.Context, query string, opts SearchOptions) ([]TVShowSearchResult, error)
@@ -301,6 +303,42 @@ func (s *service) GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*Exter
 
 	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieExternalIDs(ctx, id)
+}
+
+// GetSimilarMovies retrieves movies similar to the given movie.
+func (s *service) GetSimilarMovies(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error) {
+	s.mu.RLock()
+	providers := s.movieProviders
+	s.mu.RUnlock()
+
+	if len(providers) == 0 {
+		return nil, 0, ErrNoProviders
+	}
+
+	if opts.Language == "" {
+		opts.Language = s.getDefaultLanguage()
+	}
+
+	id := fmt.Sprintf("%d", tmdbID)
+	return providers[0].GetSimilarMovies(ctx, id, opts)
+}
+
+// GetMovieRecommendations retrieves recommended movies based on the given movie.
+func (s *service) GetMovieRecommendations(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error) {
+	s.mu.RLock()
+	providers := s.movieProviders
+	s.mu.RUnlock()
+
+	if len(providers) == 0 {
+		return nil, 0, ErrNoProviders
+	}
+
+	if opts.Language == "" {
+		opts.Language = s.getDefaultLanguage()
+	}
+
+	id := fmt.Sprintf("%d", tmdbID)
+	return providers[0].GetMovieRecommendations(ctx, id, opts)
 }
 
 // SearchTVShow searches for TV shows.

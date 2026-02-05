@@ -2,7 +2,6 @@ package movie
 
 import (
 	"go.uber.org/fx"
-	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/config"
 )
@@ -15,29 +14,17 @@ var Module = fx.Module("movie",
 		NewService,
 		NewHandler,
 
-		// Metadata service
-		provideMetadataService,
-
 		// Library service
 		provideLibraryService,
 	),
 )
 
-// provideMetadataService creates TMDb metadata service from config.
-func provideMetadataService(cfg *config.Config) *MetadataService {
-	return NewMetadataService(TMDbConfig{
-		APIKey:    cfg.Movie.TMDb.APIKey,
-		RateLimit: rate.Limit(cfg.Movie.TMDb.RateLimit),
-		CacheTTL:  cfg.Movie.TMDb.CacheTTL,
-		ProxyURL:  cfg.Movie.TMDb.ProxyURL,
-	})
-}
-
 // provideLibraryService creates library service from config.
+// MetadataProvider is injected from metadatafx module (MovieMetadataAdapter).
 func provideLibraryService(
 	repo Repository,
-	metadataService *MetadataService,
+	metadataProvider MetadataProvider,
 	cfg *config.Config,
 ) *LibraryService {
-	return NewLibraryService(repo, metadataService, cfg.Movie.Library, NewMediaInfoProber())
+	return NewLibraryService(repo, metadataProvider, cfg.Movie.Library, NewMediaInfoProber())
 }

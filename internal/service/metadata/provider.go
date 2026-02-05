@@ -68,6 +68,12 @@ type MovieProvider interface {
 
 	// GetMovieExternalIDs retrieves external IDs (IMDb, etc.).
 	GetMovieExternalIDs(ctx context.Context, id string) (*ExternalIDs, error)
+
+	// GetSimilarMovies retrieves movies similar to the given movie.
+	GetSimilarMovies(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error)
+
+	// GetMovieRecommendations retrieves recommended movies based on the given movie.
+	GetMovieRecommendations(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error)
 }
 
 // TVShowProvider extends Provider with TV show-specific methods.

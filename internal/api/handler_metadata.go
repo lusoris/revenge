@@ -3,20 +3,21 @@ package api
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
-	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/service/metadata"
 	"go.uber.org/zap"
 )
 
 // SearchMoviesMetadata searches TMDb for movies.
 func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMoviesMetadataParams) (ogen.SearchMoviesMetadataRes, error) {
-	// Get year filter if provided
-	var year *int
+	// Build search options
+	opts := metadata.SearchOptions{}
 	if params.Year.Set {
 		y := int(params.Year.Value)
-		year = &y
+		opts.Year = &y
 	}
 
 	// Get limit
@@ -25,8 +26,8 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 		limit = int(params.Limit.Value)
 	}
 
-	// Search TMDb
-	results, err := h.metadataService.SearchMovies(ctx, params.Q, year)
+	// Search via shared metadata service
+	results, err := h.metadataService.SearchMovie(ctx, params.Q, opts)
 	if err != nil {
 		h.logger.Error("TMDb search failed", zap.Error(err))
 		return nil, err
@@ -40,43 +41,47 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 		Results:      make([]ogen.MetadataSearchResult, 0, min(len(results), limit)),
 	}
 
-	for i, m := range results {
+	for i, r := range results {
 		if i >= limit {
 			break
 		}
 
 		result := ogen.MetadataSearchResult{
-			TmdbID: ogen.NewOptInt(getInt(m.TMDbID)),
-			Title:  ogen.NewOptString(m.Title),
+			Title: ogen.NewOptString(r.Title),
 		}
 
-		if m.OriginalTitle != nil {
-			result.OriginalTitle = ogen.NewOptString(*m.OriginalTitle)
-		}
-		if m.Overview != nil {
-			result.Overview = ogen.NewOptNilString(*m.Overview)
-		}
-		if m.ReleaseDate != nil {
-			result.ReleaseDate = ogen.NewOptNilDate(*m.ReleaseDate)
-		}
-		if m.PosterPath != nil {
-			result.PosterPath = ogen.NewOptNilString(*m.PosterPath)
-		}
-		if m.BackdropPath != nil {
-			result.BackdropPath = ogen.NewOptNilString(*m.BackdropPath)
-		}
-		if m.VoteAverage != nil {
-			if f, ok := m.VoteAverage.Float64(); ok {
-				result.VoteAverage = ogen.NewOptFloat32(float32(f))
+		// Parse TMDb ID from provider ID
+		if r.ProviderID != "" {
+			var tmdbID int
+			fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
+			if tmdbID > 0 {
+				result.TmdbID = ogen.NewOptInt(tmdbID)
 			}
 		}
-		if m.VoteCount != nil {
-			result.VoteCount = ogen.NewOptInt(int(*m.VoteCount))
+
+		if r.OriginalTitle != "" {
+			result.OriginalTitle = ogen.NewOptString(r.OriginalTitle)
 		}
-		if m.Popularity != nil {
-			if f, ok := m.Popularity.Float64(); ok {
-				result.Popularity = ogen.NewOptFloat32(float32(f))
-			}
+		if r.Overview != "" {
+			result.Overview = ogen.NewOptNilString(r.Overview)
+		}
+		if r.ReleaseDate != nil {
+			result.ReleaseDate = ogen.NewOptNilDate(*r.ReleaseDate)
+		}
+		if r.PosterPath != nil {
+			result.PosterPath = ogen.NewOptNilString(*r.PosterPath)
+		}
+		if r.BackdropPath != nil {
+			result.BackdropPath = ogen.NewOptNilString(*r.BackdropPath)
+		}
+		if r.VoteAverage > 0 {
+			result.VoteAverage = ogen.NewOptFloat32(float32(r.VoteAverage))
+		}
+		if r.VoteCount > 0 {
+			result.VoteCount = ogen.NewOptInt(r.VoteCount)
+		}
+		if r.Popularity > 0 {
+			result.Popularity = ogen.NewOptFloat32(float32(r.Popularity))
 		}
 
 		response.Results = append(response.Results, result)
@@ -87,61 +92,60 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 
 // GetMovieMetadata gets detailed movie info from TMDb.
 func (h *Handler) GetMovieMetadata(ctx context.Context, params ogen.GetMovieMetadataParams) (ogen.GetMovieMetadataRes, error) {
-	// Get movie details from TMDb
-	tmdbMovie, err := h.metadataService.GetMovieByTMDbID(ctx, params.TmdbId)
+	// Get movie details from shared metadata service
+	movieMeta, err := h.metadataService.GetMovieMetadata(ctx, int32(params.TmdbId), nil)
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
-			return &ogen.GetMovieMetadataNotFound{}, nil
-		}
 		h.logger.Error("TMDb get movie failed", zap.Error(err))
 		return nil, err
 	}
 
-	// Convert to API response
-	response := &ogen.MetadataMovie{
-		TmdbID: ogen.NewOptInt(getInt(tmdbMovie.TMDbID)),
-		Title:  ogen.NewOptString(tmdbMovie.Title),
+	if movieMeta == nil {
+		return &ogen.GetMovieMetadataNotFound{}, nil
 	}
 
-	if tmdbMovie.IMDbID != nil {
-		response.ImdbID = ogen.NewOptNilString(*tmdbMovie.IMDbID)
+	// Convert to API response
+	response := &ogen.MetadataMovie{
+		Title: ogen.NewOptString(movieMeta.Title),
 	}
-	if tmdbMovie.OriginalTitle != nil {
-		response.OriginalTitle = ogen.NewOptString(*tmdbMovie.OriginalTitle)
+
+	if movieMeta.TMDbID != nil {
+		response.TmdbID = ogen.NewOptInt(int(*movieMeta.TMDbID))
 	}
-	if tmdbMovie.Tagline != nil {
-		response.Tagline = ogen.NewOptNilString(*tmdbMovie.Tagline)
+	if movieMeta.IMDbID != nil {
+		response.ImdbID = ogen.NewOptNilString(*movieMeta.IMDbID)
 	}
-	if tmdbMovie.Overview != nil {
-		response.Overview = ogen.NewOptNilString(*tmdbMovie.Overview)
+	if movieMeta.OriginalTitle != "" {
+		response.OriginalTitle = ogen.NewOptString(movieMeta.OriginalTitle)
 	}
-	if tmdbMovie.ReleaseDate != nil {
-		response.ReleaseDate = ogen.NewOptNilDate(*tmdbMovie.ReleaseDate)
+	if movieMeta.Tagline != nil && *movieMeta.Tagline != "" {
+		response.Tagline = ogen.NewOptNilString(*movieMeta.Tagline)
 	}
-	if tmdbMovie.Runtime != nil {
-		response.Runtime = ogen.NewOptNilInt(int(*tmdbMovie.Runtime))
+	if movieMeta.Overview != nil && *movieMeta.Overview != "" {
+		response.Overview = ogen.NewOptNilString(*movieMeta.Overview)
 	}
-	if tmdbMovie.Status != nil {
-		response.Status = ogen.NewOptString(*tmdbMovie.Status)
+	if movieMeta.ReleaseDate != nil {
+		response.ReleaseDate = ogen.NewOptNilDate(*movieMeta.ReleaseDate)
 	}
-	if tmdbMovie.PosterPath != nil {
-		response.PosterPath = ogen.NewOptNilString(*tmdbMovie.PosterPath)
+	if movieMeta.Runtime != nil {
+		response.Runtime = ogen.NewOptNilInt(int(*movieMeta.Runtime))
 	}
-	if tmdbMovie.BackdropPath != nil {
-		response.BackdropPath = ogen.NewOptNilString(*tmdbMovie.BackdropPath)
+	if movieMeta.Status != "" {
+		response.Status = ogen.NewOptString(movieMeta.Status)
 	}
-	if tmdbMovie.VoteAverage != nil {
-		if f, ok := tmdbMovie.VoteAverage.Float64(); ok {
-			response.VoteAverage = ogen.NewOptFloat32(float32(f))
-		}
+	if movieMeta.PosterPath != nil {
+		response.PosterPath = ogen.NewOptNilString(*movieMeta.PosterPath)
 	}
-	if tmdbMovie.VoteCount != nil {
-		response.VoteCount = ogen.NewOptInt(int(*tmdbMovie.VoteCount))
+	if movieMeta.BackdropPath != nil {
+		response.BackdropPath = ogen.NewOptNilString(*movieMeta.BackdropPath)
 	}
-	if tmdbMovie.Popularity != nil {
-		if f, ok := tmdbMovie.Popularity.Float64(); ok {
-			response.Popularity = ogen.NewOptFloat32(float32(f))
-		}
+	if movieMeta.VoteAverage > 0 {
+		response.VoteAverage = ogen.NewOptFloat32(float32(movieMeta.VoteAverage))
+	}
+	if movieMeta.VoteCount > 0 {
+		response.VoteCount = ogen.NewOptInt(movieMeta.VoteCount)
+	}
+	if movieMeta.Popularity > 0 {
+		response.Popularity = ogen.NewOptFloat32(float32(movieMeta.Popularity))
 	}
 
 	return response, nil
@@ -177,24 +181,32 @@ func (h *Handler) GetProxiedImage(ctx context.Context, params ogen.GetProxiedIma
 
 // GetCollectionMetadata gets detailed collection info from TMDb.
 func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetCollectionMetadataParams) (ogen.GetCollectionMetadataRes, error) {
-	// Get collection details from TMDb
-	collection, err := h.metadataService.GetCollectionDetails(ctx, params.TmdbId)
+	// Get collection details from shared metadata service
+	collection, err := h.metadataService.GetCollectionMetadata(ctx, int32(params.TmdbId), nil)
 	if err != nil {
-		if err == movie.ErrCollectionNotFound {
-			return &ogen.GetCollectionMetadataNotFound{}, nil
-		}
 		h.logger.Error("TMDb get collection failed", zap.Error(err))
 		return nil, err
 	}
 
+	if collection == nil {
+		return &ogen.GetCollectionMetadataNotFound{}, nil
+	}
+
 	// Convert to API response
 	response := &ogen.MetadataCollection{
-		ID:   ogen.NewOptInt(collection.ID),
 		Name: ogen.NewOptString(collection.Name),
 	}
 
-	if collection.Overview != "" {
-		response.Overview = ogen.NewOptNilString(collection.Overview)
+	// Parse collection ID from provider ID
+	if collection.ProviderID != "" {
+		var collectionID int
+		fmt.Sscanf(collection.ProviderID, "%d", &collectionID)
+		if collectionID > 0 {
+			response.ID = ogen.NewOptInt(collectionID)
+		}
+	}
+	if collection.Overview != nil && *collection.Overview != "" {
+		response.Overview = ogen.NewOptNilString(*collection.Overview)
 	}
 	if collection.PosterPath != nil {
 		response.PosterPath = ogen.NewOptNilString(*collection.PosterPath)
@@ -207,22 +219,25 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 	parts := make([]ogen.MetadataCollectionPart, 0, len(collection.Parts))
 	for _, part := range collection.Parts {
 		p := ogen.MetadataCollectionPart{
-			ID:    ogen.NewOptInt(part.ID),
 			Title: ogen.NewOptString(part.Title),
 		}
 
+		// Parse movie ID from provider ID
+		if part.ProviderID != "" {
+			var partID int
+			fmt.Sscanf(part.ProviderID, "%d", &partID)
+			if partID > 0 {
+				p.ID = ogen.NewOptInt(partID)
+			}
+		}
 		if part.OriginalTitle != "" {
 			p.OriginalTitle = ogen.NewOptString(part.OriginalTitle)
 		}
 		if part.Overview != "" {
 			p.Overview = ogen.NewOptNilString(part.Overview)
 		}
-		if part.ReleaseDate != "" {
-			// Parse date
-			date, dateErr := parseDate(part.ReleaseDate)
-			if dateErr == nil {
-				p.ReleaseDate = ogen.NewOptNilDate(date)
-			}
+		if part.ReleaseDate != nil {
+			p.ReleaseDate = ogen.NewOptNilDate(*part.ReleaseDate)
 		}
 		if part.PosterPath != nil {
 			p.PosterPath = ogen.NewOptNilString(*part.PosterPath)
@@ -230,9 +245,15 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 		if part.BackdropPath != nil {
 			p.BackdropPath = ogen.NewOptNilString(*part.BackdropPath)
 		}
-		p.VoteAverage = ogen.NewOptFloat32(float32(part.VoteAverage))
-		p.VoteCount = ogen.NewOptInt(part.VoteCount)
-		p.Popularity = ogen.NewOptFloat32(float32(part.Popularity))
+		if part.VoteAverage > 0 {
+			p.VoteAverage = ogen.NewOptFloat32(float32(part.VoteAverage))
+		}
+		if part.VoteCount > 0 {
+			p.VoteCount = ogen.NewOptInt(part.VoteCount)
+		}
+		if part.Popularity > 0 {
+			p.Popularity = ogen.NewOptFloat32(float32(part.Popularity))
+		}
 
 		parts = append(parts, p)
 	}
