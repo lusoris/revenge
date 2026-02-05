@@ -51,6 +51,70 @@ func (m *TMDbMapper) MapMovie(tmdbMovie *TMDbMovie) *Movie {
 	return mov
 }
 
+// MapMultiLanguageMovie maps multiple TMDb language responses and release dates to a Movie domain model
+func (m *TMDbMapper) MapMultiLanguageMovie(multiLangResult *TMDbMultiLanguageResult, releaseDates *TMDbReleaseDatesResponse) *Movie {
+	// English is required as the base
+	enMovie, ok := multiLangResult.Movies["en"]
+	if !ok {
+		return nil
+	}
+
+	// Start with base movie from English
+	mov := m.MapMovie(enMovie)
+
+	// Initialize i18n maps
+	mov.TitlesI18n = make(map[string]string)
+	mov.TaglinesI18n = make(map[string]string)
+	mov.OverviewsI18n = make(map[string]string)
+
+	// Map all languages
+	for lang, tmdbMovie := range multiLangResult.Movies {
+		// Always map title
+		mov.TitlesI18n[lang] = tmdbMovie.Title
+
+		// Map tagline if present
+		if tmdbMovie.Tagline != nil && *tmdbMovie.Tagline != "" {
+			mov.TaglinesI18n[lang] = *tmdbMovie.Tagline
+		}
+
+		// Map overview if present
+		if tmdbMovie.Overview != nil && *tmdbMovie.Overview != "" {
+			mov.OverviewsI18n[lang] = *tmdbMovie.Overview
+		}
+	}
+
+	// Map age ratings from release dates
+	if releaseDates != nil {
+		mov.AgeRatings = m.MapAgeRatings(releaseDates)
+	}
+
+	return mov
+}
+
+// MapAgeRatings maps TMDb release dates to age ratings structure
+// Returns map[country]map[system]certification (e.g., map["US"]map["MPAA"]"R")
+func (m *TMDbMapper) MapAgeRatings(releaseDates *TMDbReleaseDatesResponse) map[string]map[string]string {
+	ratings := make(map[string]map[string]string)
+
+	for _, countryRelease := range releaseDates.Results {
+		country := countryRelease.ISO3166_1
+
+		// Find theatrical release (type 3) with certification
+		for _, release := range countryRelease.ReleaseDates {
+			if release.Type == 3 && release.Certification != "" {
+				system := getAgeRatingSystem(country)
+				if ratings[country] == nil {
+					ratings[country] = make(map[string]string)
+				}
+				ratings[country][system] = release.Certification
+				break // Use first theatrical release with certification
+			}
+		}
+	}
+
+	return ratings
+}
+
 func (m *TMDbMapper) MapSearchResult(result *TMDbSearchResult) *Movie {
 	mov := &Movie{
 		ID:               uuid.New(),
@@ -238,4 +302,28 @@ func ExtractYear(releaseDate string) *int {
 	}
 
 	return &year
+}
+
+// getAgeRatingSystem returns the rating system name for a given country code
+func getAgeRatingSystem(country string) string {
+	switch country {
+	case "US":
+		return "MPAA"
+	case "DE":
+		return "FSK"
+	case "GB":
+		return "BBFC"
+	case "FR":
+		return "CNC"
+	case "JP":
+		return "Eirin"
+	case "KR":
+		return "KMRB"
+	case "BR":
+		return "DJCTQ"
+	case "AU":
+		return "ACB"
+	default:
+		return country // Use country code as fallback
+	}
 }
