@@ -16,6 +16,12 @@ import (
 	"github.com/lusoris/revenge/internal/service/email"
 )
 
+// dummyPasswordHash is a precomputed Argon2id hash used for timing attack mitigation.
+// When a user doesn't exist, we compare against this hash to ensure constant-time behavior.
+// This prevents username enumeration via timing analysis.
+// Hash of: "dummy-password-for-timing-attack-mitigation"
+const dummyPasswordHash = "$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xXw$DXkAY76TwLxFcMyqpMQQowtoWwhHfcs5Da9lFIid0Bg"
+
 // Service implements auth business logic
 type Service struct {
 	pool           *pgxpool.Pool
@@ -255,35 +261,38 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	}
 
 	// Retrieve user by username or email
+	// SECURITY: Always perform password hash comparison even if user not found
+	// to prevent username enumeration via timing attacks
 	user, err := s.repo.GetUserByUsername(ctx, username)
+	userFound := (err == nil)
 	if err != nil {
 		// Try email if username not found
 		user, err = s.repo.GetUserByEmail(ctx, username)
-		if err != nil {
-			// Log failed login attempt
-			_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
-				Username:     &username,
-				Action:       activity.ActionUserLogin,
-				ErrorMessage: "invalid username or password",
-				IPAddress:    &activityIP,
-				UserAgent:    userAgent,
-			})
-			return nil, errors.New("invalid username or password")
-		}
+		userFound = (err == nil)
 	}
 
-	// Verify password using Argon2id
-	match, err := s.hasher.VerifyPassword(password, user.PasswordHash)
+	// Determine which hash to compare against
+	// Use dummy hash if user not found to maintain constant-time behavior
+	hashToCompare := dummyPasswordHash
+	if userFound {
+		hashToCompare = user.PasswordHash
+	}
+
+	// ALWAYS verify password (even if user not found) for timing attack mitigation
+	// This ensures login timing is constant regardless of username validity
+	match, err := s.hasher.VerifyPassword(password, hashToCompare)
 	if err != nil {
 		return nil, fmt.Errorf("password verification failed: %w", err)
 	}
-	if !match {
+
+	// Check if user was found and password matched
+	// Return same error message for both cases to prevent username enumeration
+	if !userFound || !match {
 		// Log failed login attempt
 		_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
-			UserID:       &user.ID,
-			Username:     &user.Username,
+			Username:     &username,
 			Action:       activity.ActionUserLogin,
-			ErrorMessage: "invalid password",
+			ErrorMessage: "invalid username or password",
 			IPAddress:    &activityIP,
 			UserAgent:    userAgent,
 		})

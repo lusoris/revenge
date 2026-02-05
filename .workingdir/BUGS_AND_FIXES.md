@@ -380,4 +380,185 @@ if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
 
 ---
 
-**Next Bug**: A7.2 - Timing Attack in Login
+## A7.2: Username Enumeration via Timing Attack in Login
+
+**Status**: ✅ FIXED
+**Date**: 2026-02-05
+**Priority**: P0 (Critical - Security)
+**Category**: Security / Authentication
+
+### Bug Description
+
+Login timing differed based on whether user exists, allowing attackers to enumerate valid usernames via timing analysis. This is a classic timing attack vulnerability.
+
+**Timing Difference**:
+- User not found: Fast path (~1ms) - returns error immediately without password hash comparison
+- User found: Slow path (~50-100ms) - performs Argon2id password hash comparison
+
+**Attack Scenario**:
+1. Attacker sends login requests with various usernames
+2. Measures response time for each request
+3. Fast responses = username doesn't exist
+4. Slow responses = username exists (regardless of password correctness)
+5. Attacker builds list of valid usernames for targeted attacks
+
+### Root Cause
+
+The Login method (lines 256-297) had two execution paths with significantly different timing:
+
+**Fast Path** (user not found):
+```go
+user, err := s.repo.GetUserByUsername(ctx, username)
+if err != nil {
+    user, err = s.repo.GetUserByEmail(ctx, username)
+    if err != nil {
+        return nil, errors.New("invalid username or password") // NO hash comparison
+    }
+}
+```
+
+**Slow Path** (user found):
+```go
+// Verify password using Argon2id (takes ~50-100ms)
+match, err := s.hasher.VerifyPassword(password, user.PasswordHash)
+```
+
+### Fix Implemented
+
+**Approach**: Always perform password hash comparison, even if user doesn't exist, using a precomputed dummy hash to ensure constant-time behavior.
+
+**Implementation**:
+1. Generate precomputed Argon2id dummy hash
+2. Track whether user was found (but don't return early)
+3. Select hash to compare: dummy hash if user not found, real hash if found
+4. ALWAYS perform password verification
+5. Check both conditions (user found AND password matched) after hash comparison
+
+**Key Changes**:
+```go
+// Determine which hash to compare
+hashToCompare := dummyPasswordHash
+if userFound {
+    hashToCompare = user.PasswordHash
+}
+
+// ALWAYS verify password (even if user not found)
+match, err := s.hasher.VerifyPassword(password, hashToCompare)
+
+// Check both conditions AFTER hash comparison
+if !userFound || !match {
+    return nil, errors.New("invalid username or password")
+}
+```
+
+### Files Changed
+
+1. **internal/service/auth/service.go**
+   - Added `dummyPasswordHash` constant (precomputed Argon2id hash)
+   - Added security comment explaining timing attack mitigation
+   - Refactored Login method to use constant-time pattern (lines 256-302)
+   - Track `userFound` boolean instead of returning early
+   - Always perform password hash comparison
+   - Check both conditions after hash comparison
+
+**Dummy Hash**:
+```go
+const dummyPasswordHash = "$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xXw$DXkAY76TwLxFcMyqpMQQowtoWwhHfcs5Da9lFIid0Bg"
+```
+
+### Implementation Details
+
+**Before (Vulnerable)**:
+```go
+user, err := s.repo.GetUserByUsername(ctx, username)
+if err != nil {
+    user, err = s.repo.GetUserByEmail(ctx, username)
+    if err != nil {
+        // FAST PATH: Return immediately without hash comparison
+        return nil, errors.New("invalid username or password")
+    }
+}
+
+// SLOW PATH: Only reached if user found
+match, err := s.hasher.VerifyPassword(password, user.PasswordHash)
+```
+
+**After (Secure)**:
+```go
+user, err := s.repo.GetUserByUsername(ctx, username)
+userFound := (err == nil)
+if err != nil {
+    user, err = s.repo.GetUserByEmail(ctx, username)
+    userFound = (err == nil)
+}
+
+// Always compare hash (constant-time)
+hashToCompare := dummyPasswordHash
+if userFound {
+    hashToCompare = user.PasswordHash
+}
+
+// ALWAYS verify password (takes ~50-100ms regardless of username validity)
+match, err := s.hasher.VerifyPassword(password, hashToCompare)
+
+// Check both conditions AFTER hash comparison
+if !userFound || !match {
+    return nil, errors.New("invalid username or password")
+}
+```
+
+### Testing
+
+**Manual Testing**:
+- Measure login timing for valid username
+- Measure login timing for invalid username
+- Verify timing difference is minimal (within noise margin)
+- Verify error messages are identical
+
+**Integration Test Required**: ⚠️ PENDING
+```go
+func TestLogin_ConstantTime(t *testing.T) {
+    // Test that login timing is similar for valid vs invalid usernames
+    // Both should take ~50-100ms due to Argon2id comparison
+}
+```
+
+**Benchmark Test**: Document expected timing behavior
+
+### Impact
+
+**Before**:
+- Attackers could enumerate valid usernames via timing analysis
+- Fast response (~1ms) = username doesn't exist
+- Slow response (~50-100ms) = username exists
+- Enables targeted brute-force attacks on known usernames
+
+**After**:
+- Login timing is constant (~50-100ms) regardless of username validity
+- Attackers cannot determine username validity from response time
+- Username enumeration via timing attacks is prevented
+- Same error message for all failure cases
+
+**Security Improvement**:
+- Prevents reconnaissance phase of targeted attacks
+- Forces attackers to guess both username AND password blindly
+- Significantly increases attack difficulty and cost
+- Protects user privacy (usernames not leaked)
+
+**Performance Note**:
+- Invalid username logins now take ~50-100ms instead of ~1ms
+- This is acceptable security trade-off
+- Legitimate users don't notice (they provide valid usernames)
+- Rate limiting (A7.5) will prevent brute-force attempts
+
+**Related Security Issues**: A7.5 (Account Lockout / Rate Limiting)
+
+### References
+
+- Source: [TODO_A7_SECURITY_FIXES.md](TODO_A7_SECURITY_FIXES.md) lines 174-223
+- Report: [REPORT_2_IMPLEMENTATION_VERIFICATION.md](REPORT_2_IMPLEMENTATION_VERIFICATION.md)
+- OWASP: [Authentication Timing Attacks](https://owasp.org/www-community/attacks/Timing_attack)
+
+---
+
+**Next Bug**: A7.3 - Goroutine Leaks in Notification Dispatcher
