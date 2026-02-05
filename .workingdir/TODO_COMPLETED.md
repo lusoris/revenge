@@ -34,3 +34,4 @@
 - [x] Cache hot paths
 - [x] Observability (Prometheus, pprof)
 - [x] RBAC extensions (4 roles, custom role API)
+- [x] Multi-language support (JSONB, TMDb multi-language, Accept-Language, 8 age rating systems)
