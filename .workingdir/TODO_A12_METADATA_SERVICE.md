@@ -335,7 +335,8 @@ internal/service/metadata/
 
 | # | Bug | Severity | Status | Fix |
 |---|-----|----------|--------|-----|
-| - | - | - | - | - |
+| 1 | Job kind mismatch: metadata service enqueued `metadata_refresh_movie` but worker handled `movie_metadata_refresh` | Critical | ✅ Fixed | Updated worker to use `metadatajobs.RefreshMovieArgs` |
+| 2 | MetadataProvider interface missing `ClearCache()` method | Medium | ✅ Fixed | Added method to interface |
 
 ---
 
