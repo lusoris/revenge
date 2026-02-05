@@ -2528,6 +2528,19 @@ type DeleteRoleUnauthorized Error
 
 func (*DeleteRoleUnauthorized) deleteRoleRes() {}
 
+// DeleteTVEpisodeProgressNoContent is response for DeleteTVEpisodeProgress operation.
+type DeleteTVEpisodeProgressNoContent struct{}
+
+func (*DeleteTVEpisodeProgressNoContent) deleteTVEpisodeProgressRes() {}
+
+type DeleteTVEpisodeProgressNotFound Error
+
+func (*DeleteTVEpisodeProgressNotFound) deleteTVEpisodeProgressRes() {}
+
+type DeleteTVEpisodeProgressUnauthorized Error
+
+func (*DeleteTVEpisodeProgressUnauthorized) deleteTVEpisodeProgressRes() {}
+
 // DeleteUserSettingNoContent is response for DeleteUserSetting operation.
 type DeleteUserSettingNoContent struct{}
 
@@ -2599,6 +2612,297 @@ type EnableMFAUnauthorized Error
 
 func (*EnableMFAUnauthorized) enableMFARes() {}
 
+// Ref: #/components/schemas/EpisodeWatchProgress
+type EpisodeWatchProgress struct {
+	ID        OptUUID `json:"id"`
+	UserID    OptUUID `json:"user_id"`
+	EpisodeID OptUUID `json:"episode_id"`
+	// Current progress in seconds.
+	ProgressSeconds OptInt `json:"progress_seconds"`
+	// Total duration in seconds.
+	DurationSeconds OptInt `json:"duration_seconds"`
+	// Whether episode has been watched.
+	IsCompleted OptBool `json:"is_completed"`
+	// When episode was marked as watched.
+	WatchedAt OptNilDateTime `json:"watched_at"`
+	// Last time progress was updated.
+	LastWatchedAt OptDateTime `json:"last_watched_at"`
+	CreatedAt     OptDateTime `json:"created_at"`
+	UpdatedAt     OptDateTime `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *EpisodeWatchProgress) GetID() OptUUID {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *EpisodeWatchProgress) GetUserID() OptUUID {
+	return s.UserID
+}
+
+// GetEpisodeID returns the value of EpisodeID.
+func (s *EpisodeWatchProgress) GetEpisodeID() OptUUID {
+	return s.EpisodeID
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *EpisodeWatchProgress) GetProgressSeconds() OptInt {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *EpisodeWatchProgress) GetDurationSeconds() OptInt {
+	return s.DurationSeconds
+}
+
+// GetIsCompleted returns the value of IsCompleted.
+func (s *EpisodeWatchProgress) GetIsCompleted() OptBool {
+	return s.IsCompleted
+}
+
+// GetWatchedAt returns the value of WatchedAt.
+func (s *EpisodeWatchProgress) GetWatchedAt() OptNilDateTime {
+	return s.WatchedAt
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *EpisodeWatchProgress) GetLastWatchedAt() OptDateTime {
+	return s.LastWatchedAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *EpisodeWatchProgress) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *EpisodeWatchProgress) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *EpisodeWatchProgress) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *EpisodeWatchProgress) SetUserID(val OptUUID) {
+	s.UserID = val
+}
+
+// SetEpisodeID sets the value of EpisodeID.
+func (s *EpisodeWatchProgress) SetEpisodeID(val OptUUID) {
+	s.EpisodeID = val
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *EpisodeWatchProgress) SetProgressSeconds(val OptInt) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *EpisodeWatchProgress) SetDurationSeconds(val OptInt) {
+	s.DurationSeconds = val
+}
+
+// SetIsCompleted sets the value of IsCompleted.
+func (s *EpisodeWatchProgress) SetIsCompleted(val OptBool) {
+	s.IsCompleted = val
+}
+
+// SetWatchedAt sets the value of WatchedAt.
+func (s *EpisodeWatchProgress) SetWatchedAt(val OptNilDateTime) {
+	s.WatchedAt = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *EpisodeWatchProgress) SetLastWatchedAt(val OptDateTime) {
+	s.LastWatchedAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *EpisodeWatchProgress) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *EpisodeWatchProgress) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*EpisodeWatchProgress) getTVEpisodeProgressRes()    {}
+func (*EpisodeWatchProgress) updateTVEpisodeProgressRes() {}
+
+// Ref: #/components/schemas/EpisodeWithSeriesInfo
+type EpisodeWithSeriesInfo struct {
+	ID               OptUUID      `json:"id"`
+	SeriesID         OptUUID      `json:"series_id"`
+	SeriesTitle      OptString    `json:"series_title"`
+	SeriesPosterPath OptNilString `json:"series_poster_path"`
+	SeasonID         OptUUID      `json:"season_id"`
+	TmdbID           OptNilInt    `json:"tmdb_id"`
+	TvdbID           OptNilInt    `json:"tvdb_id"`
+	SeasonNumber     OptInt       `json:"season_number"`
+	EpisodeNumber    OptInt       `json:"episode_number"`
+	Title            OptString    `json:"title"`
+	Overview         OptNilString `json:"overview"`
+	AirDate          OptNilDate   `json:"air_date"`
+	Runtime          OptNilInt    `json:"runtime"`
+	StillPath        OptNilString `json:"still_path"`
+	CreatedAt        OptDateTime  `json:"created_at"`
+}
+
+// GetID returns the value of ID.
+func (s *EpisodeWithSeriesInfo) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *EpisodeWithSeriesInfo) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *EpisodeWithSeriesInfo) GetSeriesTitle() OptString {
+	return s.SeriesTitle
+}
+
+// GetSeriesPosterPath returns the value of SeriesPosterPath.
+func (s *EpisodeWithSeriesInfo) GetSeriesPosterPath() OptNilString {
+	return s.SeriesPosterPath
+}
+
+// GetSeasonID returns the value of SeasonID.
+func (s *EpisodeWithSeriesInfo) GetSeasonID() OptUUID {
+	return s.SeasonID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *EpisodeWithSeriesInfo) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *EpisodeWithSeriesInfo) GetTvdbID() OptNilInt {
+	return s.TvdbID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *EpisodeWithSeriesInfo) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *EpisodeWithSeriesInfo) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *EpisodeWithSeriesInfo) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *EpisodeWithSeriesInfo) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *EpisodeWithSeriesInfo) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *EpisodeWithSeriesInfo) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetStillPath returns the value of StillPath.
+func (s *EpisodeWithSeriesInfo) GetStillPath() OptNilString {
+	return s.StillPath
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *EpisodeWithSeriesInfo) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *EpisodeWithSeriesInfo) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *EpisodeWithSeriesInfo) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *EpisodeWithSeriesInfo) SetSeriesTitle(val OptString) {
+	s.SeriesTitle = val
+}
+
+// SetSeriesPosterPath sets the value of SeriesPosterPath.
+func (s *EpisodeWithSeriesInfo) SetSeriesPosterPath(val OptNilString) {
+	s.SeriesPosterPath = val
+}
+
+// SetSeasonID sets the value of SeasonID.
+func (s *EpisodeWithSeriesInfo) SetSeasonID(val OptUUID) {
+	s.SeasonID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *EpisodeWithSeriesInfo) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *EpisodeWithSeriesInfo) SetTvdbID(val OptNilInt) {
+	s.TvdbID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *EpisodeWithSeriesInfo) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *EpisodeWithSeriesInfo) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *EpisodeWithSeriesInfo) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *EpisodeWithSeriesInfo) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *EpisodeWithSeriesInfo) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *EpisodeWithSeriesInfo) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetStillPath sets the value of StillPath.
+func (s *EpisodeWithSeriesInfo) SetStillPath(val OptNilString) {
+	s.StillPath = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *EpisodeWithSeriesInfo) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
 // Ref: #/components/schemas/Error
 type Error struct {
 	// HTTP status code.
@@ -2639,41 +2943,48 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
 
-func (*Error) disableMFARes()            {}
-func (*Error) disableTOTPRes()           {}
-func (*Error) forgotPasswordRes()        {}
-func (*Error) generateBackupCodesRes()   {}
-func (*Error) getContinueWatchingRes()   {}
-func (*Error) getCurrentUserRes()        {}
-func (*Error) getMFAStatusRes()          {}
-func (*Error) getRecentlyAddedRes()      {}
-func (*Error) getSearchFacetsRes()       {}
-func (*Error) getTopRatedRes()           {}
-func (*Error) getUserMovieStatsRes()     {}
-func (*Error) getUserPreferencesRes()    {}
-func (*Error) getUserRolesRes()          {}
-func (*Error) getWatchHistoryRes()       {}
-func (*Error) handleRadarrWebhookRes()   {}
-func (*Error) listAPIKeysRes()           {}
-func (*Error) listLibrariesRes()         {}
-func (*Error) listMoviesRes()            {}
-func (*Error) listServerSettingsRes()    {}
-func (*Error) listSessionsRes()          {}
-func (*Error) listUserOIDCLinksRes()     {}
-func (*Error) listUserSettingsRes()      {}
-func (*Error) logoutAllRes()             {}
-func (*Error) logoutCurrentRes()         {}
-func (*Error) logoutRes()                {}
-func (*Error) oidcAuthorizeRes()         {}
-func (*Error) oidcCallbackRes()          {}
-func (*Error) refreshSessionRes()        {}
-func (*Error) regenerateBackupCodesRes() {}
-func (*Error) registerRes()              {}
-func (*Error) resendVerificationRes()    {}
-func (*Error) resetPasswordRes()         {}
-func (*Error) searchMoviesRes()          {}
-func (*Error) setupTOTPRes()             {}
-func (*Error) verifyEmailRes()           {}
+func (*Error) disableMFARes()              {}
+func (*Error) disableTOTPRes()             {}
+func (*Error) forgotPasswordRes()          {}
+func (*Error) generateBackupCodesRes()     {}
+func (*Error) getContinueWatchingRes()     {}
+func (*Error) getCurrentUserRes()          {}
+func (*Error) getMFAStatusRes()            {}
+func (*Error) getRecentEpisodesRes()       {}
+func (*Error) getRecentlyAddedRes()        {}
+func (*Error) getRecentlyAddedTVShowsRes() {}
+func (*Error) getSearchFacetsRes()         {}
+func (*Error) getTVContinueWatchingRes()   {}
+func (*Error) getTopRatedRes()             {}
+func (*Error) getUpcomingEpisodesRes()     {}
+func (*Error) getUserMovieStatsRes()       {}
+func (*Error) getUserPreferencesRes()      {}
+func (*Error) getUserRolesRes()            {}
+func (*Error) getUserTVStatsRes()          {}
+func (*Error) getWatchHistoryRes()         {}
+func (*Error) handleRadarrWebhookRes()     {}
+func (*Error) listAPIKeysRes()             {}
+func (*Error) listLibrariesRes()           {}
+func (*Error) listMoviesRes()              {}
+func (*Error) listServerSettingsRes()      {}
+func (*Error) listSessionsRes()            {}
+func (*Error) listTVShowsRes()             {}
+func (*Error) listUserOIDCLinksRes()       {}
+func (*Error) listUserSettingsRes()        {}
+func (*Error) logoutAllRes()               {}
+func (*Error) logoutCurrentRes()           {}
+func (*Error) logoutRes()                  {}
+func (*Error) oidcAuthorizeRes()           {}
+func (*Error) oidcCallbackRes()            {}
+func (*Error) refreshSessionRes()          {}
+func (*Error) regenerateBackupCodesRes()   {}
+func (*Error) registerRes()                {}
+func (*Error) resendVerificationRes()      {}
+func (*Error) resetPasswordRes()           {}
+func (*Error) searchMoviesRes()            {}
+func (*Error) searchTVShowsRes()           {}
+func (*Error) setupTOTPRes()               {}
+func (*Error) verifyEmailRes()             {}
 
 // Additional error details.
 type ErrorDetails map[string]jx.Raw
@@ -3131,9 +3442,17 @@ type GetRecentActionsUnauthorized Error
 
 func (*GetRecentActionsUnauthorized) getRecentActionsRes() {}
 
+type GetRecentEpisodesOKApplicationJSON []EpisodeWithSeriesInfo
+
+func (*GetRecentEpisodesOKApplicationJSON) getRecentEpisodesRes() {}
+
 type GetRecentlyAddedOKApplicationJSON []Movie
 
 func (*GetRecentlyAddedOKApplicationJSON) getRecentlyAddedRes() {}
+
+type GetRecentlyAddedTVShowsOKApplicationJSON []TVSeries
+
+func (*GetRecentlyAddedTVShowsOKApplicationJSON) getRecentlyAddedTVShowsRes() {}
 
 type GetResourceActivityLogsForbidden Error
 
@@ -3183,9 +3502,161 @@ type GetStartupServiceUnavailable HealthCheck
 
 func (*GetStartupServiceUnavailable) getStartupRes() {}
 
+type GetTVContinueWatchingOKApplicationJSON []TVContinueWatchingItem
+
+func (*GetTVContinueWatchingOKApplicationJSON) getTVContinueWatchingRes() {}
+
+type GetTVEpisodeFilesNotFound Error
+
+func (*GetTVEpisodeFilesNotFound) getTVEpisodeFilesRes() {}
+
+type GetTVEpisodeFilesOKApplicationJSON []TVEpisodeFile
+
+func (*GetTVEpisodeFilesOKApplicationJSON) getTVEpisodeFilesRes() {}
+
+type GetTVEpisodeFilesUnauthorized Error
+
+func (*GetTVEpisodeFilesUnauthorized) getTVEpisodeFilesRes() {}
+
+type GetTVEpisodeNotFound Error
+
+func (*GetTVEpisodeNotFound) getTVEpisodeRes() {}
+
+type GetTVEpisodeProgressNotFound Error
+
+func (*GetTVEpisodeProgressNotFound) getTVEpisodeProgressRes() {}
+
+type GetTVEpisodeProgressUnauthorized Error
+
+func (*GetTVEpisodeProgressUnauthorized) getTVEpisodeProgressRes() {}
+
+type GetTVEpisodeUnauthorized Error
+
+func (*GetTVEpisodeUnauthorized) getTVEpisodeRes() {}
+
+type GetTVSeasonEpisodesNotFound Error
+
+func (*GetTVSeasonEpisodesNotFound) getTVSeasonEpisodesRes() {}
+
+type GetTVSeasonEpisodesOKApplicationJSON []TVEpisode
+
+func (*GetTVSeasonEpisodesOKApplicationJSON) getTVSeasonEpisodesRes() {}
+
+type GetTVSeasonEpisodesUnauthorized Error
+
+func (*GetTVSeasonEpisodesUnauthorized) getTVSeasonEpisodesRes() {}
+
+type GetTVSeasonNotFound Error
+
+func (*GetTVSeasonNotFound) getTVSeasonRes() {}
+
+type GetTVSeasonUnauthorized Error
+
+func (*GetTVSeasonUnauthorized) getTVSeasonRes() {}
+
+type GetTVShowCastNotFound Error
+
+func (*GetTVShowCastNotFound) getTVShowCastRes() {}
+
+type GetTVShowCastOKApplicationJSON []TVSeriesCredit
+
+func (*GetTVShowCastOKApplicationJSON) getTVShowCastRes() {}
+
+type GetTVShowCastUnauthorized Error
+
+func (*GetTVShowCastUnauthorized) getTVShowCastRes() {}
+
+type GetTVShowCrewNotFound Error
+
+func (*GetTVShowCrewNotFound) getTVShowCrewRes() {}
+
+type GetTVShowCrewOKApplicationJSON []TVSeriesCredit
+
+func (*GetTVShowCrewOKApplicationJSON) getTVShowCrewRes() {}
+
+type GetTVShowCrewUnauthorized Error
+
+func (*GetTVShowCrewUnauthorized) getTVShowCrewRes() {}
+
+type GetTVShowEpisodesNotFound Error
+
+func (*GetTVShowEpisodesNotFound) getTVShowEpisodesRes() {}
+
+type GetTVShowEpisodesOKApplicationJSON []TVEpisode
+
+func (*GetTVShowEpisodesOKApplicationJSON) getTVShowEpisodesRes() {}
+
+type GetTVShowEpisodesUnauthorized Error
+
+func (*GetTVShowEpisodesUnauthorized) getTVShowEpisodesRes() {}
+
+type GetTVShowGenresNotFound Error
+
+func (*GetTVShowGenresNotFound) getTVShowGenresRes() {}
+
+type GetTVShowGenresOKApplicationJSON []TVGenre
+
+func (*GetTVShowGenresOKApplicationJSON) getTVShowGenresRes() {}
+
+type GetTVShowGenresUnauthorized Error
+
+func (*GetTVShowGenresUnauthorized) getTVShowGenresRes() {}
+
+type GetTVShowNetworksNotFound Error
+
+func (*GetTVShowNetworksNotFound) getTVShowNetworksRes() {}
+
+type GetTVShowNetworksOKApplicationJSON []TVNetwork
+
+func (*GetTVShowNetworksOKApplicationJSON) getTVShowNetworksRes() {}
+
+type GetTVShowNetworksUnauthorized Error
+
+func (*GetTVShowNetworksUnauthorized) getTVShowNetworksRes() {}
+
+type GetTVShowNextEpisodeNotFound Error
+
+func (*GetTVShowNextEpisodeNotFound) getTVShowNextEpisodeRes() {}
+
+type GetTVShowNextEpisodeUnauthorized Error
+
+func (*GetTVShowNextEpisodeUnauthorized) getTVShowNextEpisodeRes() {}
+
+type GetTVShowNotFound Error
+
+func (*GetTVShowNotFound) getTVShowRes() {}
+
+type GetTVShowSeasonsNotFound Error
+
+func (*GetTVShowSeasonsNotFound) getTVShowSeasonsRes() {}
+
+type GetTVShowSeasonsOKApplicationJSON []TVSeason
+
+func (*GetTVShowSeasonsOKApplicationJSON) getTVShowSeasonsRes() {}
+
+type GetTVShowSeasonsUnauthorized Error
+
+func (*GetTVShowSeasonsUnauthorized) getTVShowSeasonsRes() {}
+
+type GetTVShowUnauthorized Error
+
+func (*GetTVShowUnauthorized) getTVShowRes() {}
+
+type GetTVShowWatchStatsNotFound Error
+
+func (*GetTVShowWatchStatsNotFound) getTVShowWatchStatsRes() {}
+
+type GetTVShowWatchStatsUnauthorized Error
+
+func (*GetTVShowWatchStatsUnauthorized) getTVShowWatchStatsRes() {}
+
 type GetTopRatedOKApplicationJSON []Movie
 
 func (*GetTopRatedOKApplicationJSON) getTopRatedRes() {}
+
+type GetUpcomingEpisodesOKApplicationJSON []EpisodeWithSeriesInfo
+
+func (*GetUpcomingEpisodesOKApplicationJSON) getUpcomingEpisodesRes() {}
 
 type GetUserActivityLogsForbidden Error
 
@@ -4272,6 +4743,72 @@ type ListServerSettingsOKApplicationJSON []ServerSetting
 
 func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
 
+type ListTVShowsOKApplicationJSON []TVSeries
+
+func (*ListTVShowsOKApplicationJSON) listTVShowsRes() {}
+
+type ListTVShowsOrderBy string
+
+const (
+	ListTVShowsOrderByCreatedAt    ListTVShowsOrderBy = "created_at"
+	ListTVShowsOrderByTitle        ListTVShowsOrderBy = "title"
+	ListTVShowsOrderByFirstAirDate ListTVShowsOrderBy = "first_air_date"
+	ListTVShowsOrderByVoteAverage  ListTVShowsOrderBy = "vote_average"
+	ListTVShowsOrderByPopularity   ListTVShowsOrderBy = "popularity"
+)
+
+// AllValues returns all ListTVShowsOrderBy values.
+func (ListTVShowsOrderBy) AllValues() []ListTVShowsOrderBy {
+	return []ListTVShowsOrderBy{
+		ListTVShowsOrderByCreatedAt,
+		ListTVShowsOrderByTitle,
+		ListTVShowsOrderByFirstAirDate,
+		ListTVShowsOrderByVoteAverage,
+		ListTVShowsOrderByPopularity,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListTVShowsOrderBy) MarshalText() ([]byte, error) {
+	switch s {
+	case ListTVShowsOrderByCreatedAt:
+		return []byte(s), nil
+	case ListTVShowsOrderByTitle:
+		return []byte(s), nil
+	case ListTVShowsOrderByFirstAirDate:
+		return []byte(s), nil
+	case ListTVShowsOrderByVoteAverage:
+		return []byte(s), nil
+	case ListTVShowsOrderByPopularity:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListTVShowsOrderBy) UnmarshalText(data []byte) error {
+	switch ListTVShowsOrderBy(data) {
+	case ListTVShowsOrderByCreatedAt:
+		*s = ListTVShowsOrderByCreatedAt
+		return nil
+	case ListTVShowsOrderByTitle:
+		*s = ListTVShowsOrderByTitle
+		return nil
+	case ListTVShowsOrderByFirstAirDate:
+		*s = ListTVShowsOrderByFirstAirDate
+		return nil
+	case ListTVShowsOrderByVoteAverage:
+		*s = ListTVShowsOrderByVoteAverage
+		return nil
+	case ListTVShowsOrderByPopularity:
+		*s = ListTVShowsOrderByPopularity
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type ListUserSettingsOKApplicationJSON []UserSetting
 
 func (*ListUserSettingsOKApplicationJSON) listUserSettingsRes() {}
@@ -4498,6 +5035,34 @@ func (*MarkAsWatchedNotFound) markAsWatchedRes() {}
 type MarkAsWatchedUnauthorized Error
 
 func (*MarkAsWatchedUnauthorized) markAsWatchedRes() {}
+
+// MarkTVEpisodeWatchedNoContent is response for MarkTVEpisodeWatched operation.
+type MarkTVEpisodeWatchedNoContent struct{}
+
+func (*MarkTVEpisodeWatchedNoContent) markTVEpisodeWatchedRes() {}
+
+type MarkTVEpisodeWatchedNotFound Error
+
+func (*MarkTVEpisodeWatchedNotFound) markTVEpisodeWatchedRes() {}
+
+type MarkTVEpisodeWatchedReq struct {
+	// Episode duration in seconds (optional).
+	DurationSeconds OptInt `json:"duration_seconds"`
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *MarkTVEpisodeWatchedReq) GetDurationSeconds() OptInt {
+	return s.DurationSeconds
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *MarkTVEpisodeWatchedReq) SetDurationSeconds(val OptInt) {
+	s.DurationSeconds = val
+}
+
+type MarkTVEpisodeWatchedUnauthorized Error
+
+func (*MarkTVEpisodeWatchedUnauthorized) markTVEpisodeWatchedRes() {}
 
 // Ref: #/components/schemas/MetadataCastMember
 type MetadataCastMember struct {
@@ -7382,6 +7947,98 @@ func (o OptListMoviesOrderBy) Or(d ListMoviesOrderBy) ListMoviesOrderBy {
 	return d
 }
 
+// NewOptListTVShowsOrderBy returns new OptListTVShowsOrderBy with value set to v.
+func NewOptListTVShowsOrderBy(v ListTVShowsOrderBy) OptListTVShowsOrderBy {
+	return OptListTVShowsOrderBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListTVShowsOrderBy is optional ListTVShowsOrderBy.
+type OptListTVShowsOrderBy struct {
+	Value ListTVShowsOrderBy
+	Set   bool
+}
+
+// IsSet returns true if OptListTVShowsOrderBy was set.
+func (o OptListTVShowsOrderBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListTVShowsOrderBy) Reset() {
+	var v ListTVShowsOrderBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListTVShowsOrderBy) SetTo(v ListTVShowsOrderBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListTVShowsOrderBy) Get() (v ListTVShowsOrderBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListTVShowsOrderBy) Or(d ListTVShowsOrderBy) ListTVShowsOrderBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMarkTVEpisodeWatchedReq returns new OptMarkTVEpisodeWatchedReq with value set to v.
+func NewOptMarkTVEpisodeWatchedReq(v MarkTVEpisodeWatchedReq) OptMarkTVEpisodeWatchedReq {
+	return OptMarkTVEpisodeWatchedReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMarkTVEpisodeWatchedReq is optional MarkTVEpisodeWatchedReq.
+type OptMarkTVEpisodeWatchedReq struct {
+	Value MarkTVEpisodeWatchedReq
+	Set   bool
+}
+
+// IsSet returns true if OptMarkTVEpisodeWatchedReq was set.
+func (o OptMarkTVEpisodeWatchedReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMarkTVEpisodeWatchedReq) Reset() {
+	var v MarkTVEpisodeWatchedReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMarkTVEpisodeWatchedReq) SetTo(v MarkTVEpisodeWatchedReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMarkTVEpisodeWatchedReq) Get() (v MarkTVEpisodeWatchedReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMarkTVEpisodeWatchedReq) Or(d MarkTVEpisodeWatchedReq) MarkTVEpisodeWatchedReq {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptMetadataCollection returns new OptMetadataCollection with value set to v.
 func NewOptMetadataCollection(v MetadataCollection) OptMetadataCollection {
 	return OptMetadataCollection{
@@ -8277,6 +8934,52 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTVSeriesCreditCreditType returns new OptTVSeriesCreditCreditType with value set to v.
+func NewOptTVSeriesCreditCreditType(v TVSeriesCreditCreditType) OptTVSeriesCreditCreditType {
+	return OptTVSeriesCreditCreditType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTVSeriesCreditCreditType is optional TVSeriesCreditCreditType.
+type OptTVSeriesCreditCreditType struct {
+	Value TVSeriesCreditCreditType
+	Set   bool
+}
+
+// IsSet returns true if OptTVSeriesCreditCreditType was set.
+func (o OptTVSeriesCreditCreditType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTVSeriesCreditCreditType) Reset() {
+	var v TVSeriesCreditCreditType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTVSeriesCreditCreditType) SetTo(v TVSeriesCreditCreditType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTVSeriesCreditCreditType) Get() (v TVSeriesCreditCreditType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTVSeriesCreditCreditType) Or(d TVSeriesCreditCreditType) TVSeriesCreditCreditType {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -10276,6 +10979,19 @@ func (s *RefreshSessionResponse) SetExpiresIn(val int) {
 
 func (*RefreshSessionResponse) refreshSessionRes() {}
 
+// RefreshTVShowMetadataAccepted is response for RefreshTVShowMetadata operation.
+type RefreshTVShowMetadataAccepted struct{}
+
+func (*RefreshTVShowMetadataAccepted) refreshTVShowMetadataRes() {}
+
+type RefreshTVShowMetadataNotFound Error
+
+func (*RefreshTVShowMetadataNotFound) refreshTVShowMetadataRes() {}
+
+type RefreshTVShowMetadataUnauthorized Error
+
+func (*RefreshTVShowMetadataUnauthorized) refreshTVShowMetadataRes() {}
+
 type RefreshTokenBadRequest Error
 
 func (*RefreshTokenBadRequest) refreshTokenRes() {}
@@ -11266,6 +11982,98 @@ func (s *SearchResultsFacets) init() SearchResultsFacets {
 	return m
 }
 
+type SearchTVShowsOKApplicationJSON []TVSeries
+
+func (*SearchTVShowsOKApplicationJSON) searchTVShowsRes() {}
+
+// Ref: #/components/schemas/SeriesWatchStats
+type SeriesWatchStats struct {
+	SeriesID OptUUID `json:"series_id"`
+	// Total episodes in series.
+	TotalEpisodes OptInt `json:"total_episodes"`
+	// Number of episodes watched.
+	WatchedEpisodes OptInt `json:"watched_episodes"`
+	// Total runtime of all episodes in minutes.
+	TotalRuntimeMinutes OptInt `json:"total_runtime_minutes"`
+	// Total watched runtime in minutes.
+	WatchedRuntimeMinutes OptInt `json:"watched_runtime_minutes"`
+	// Completion percentage (0-100).
+	CompletionPercent OptFloat32     `json:"completion_percent"`
+	LastWatchedAt     OptNilDateTime `json:"last_watched_at"`
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *SeriesWatchStats) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetTotalEpisodes returns the value of TotalEpisodes.
+func (s *SeriesWatchStats) GetTotalEpisodes() OptInt {
+	return s.TotalEpisodes
+}
+
+// GetWatchedEpisodes returns the value of WatchedEpisodes.
+func (s *SeriesWatchStats) GetWatchedEpisodes() OptInt {
+	return s.WatchedEpisodes
+}
+
+// GetTotalRuntimeMinutes returns the value of TotalRuntimeMinutes.
+func (s *SeriesWatchStats) GetTotalRuntimeMinutes() OptInt {
+	return s.TotalRuntimeMinutes
+}
+
+// GetWatchedRuntimeMinutes returns the value of WatchedRuntimeMinutes.
+func (s *SeriesWatchStats) GetWatchedRuntimeMinutes() OptInt {
+	return s.WatchedRuntimeMinutes
+}
+
+// GetCompletionPercent returns the value of CompletionPercent.
+func (s *SeriesWatchStats) GetCompletionPercent() OptFloat32 {
+	return s.CompletionPercent
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *SeriesWatchStats) GetLastWatchedAt() OptNilDateTime {
+	return s.LastWatchedAt
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *SeriesWatchStats) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetTotalEpisodes sets the value of TotalEpisodes.
+func (s *SeriesWatchStats) SetTotalEpisodes(val OptInt) {
+	s.TotalEpisodes = val
+}
+
+// SetWatchedEpisodes sets the value of WatchedEpisodes.
+func (s *SeriesWatchStats) SetWatchedEpisodes(val OptInt) {
+	s.WatchedEpisodes = val
+}
+
+// SetTotalRuntimeMinutes sets the value of TotalRuntimeMinutes.
+func (s *SeriesWatchStats) SetTotalRuntimeMinutes(val OptInt) {
+	s.TotalRuntimeMinutes = val
+}
+
+// SetWatchedRuntimeMinutes sets the value of WatchedRuntimeMinutes.
+func (s *SeriesWatchStats) SetWatchedRuntimeMinutes(val OptInt) {
+	s.WatchedRuntimeMinutes = val
+}
+
+// SetCompletionPercent sets the value of CompletionPercent.
+func (s *SeriesWatchStats) SetCompletionPercent(val OptFloat32) {
+	s.CompletionPercent = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *SeriesWatchStats) SetLastWatchedAt(val OptNilDateTime) {
+	s.LastWatchedAt = val
+}
+
+func (*SeriesWatchStats) getTVShowWatchStatsRes() {}
+
 // Ref: #/components/schemas/ServerSetting
 type ServerSetting struct {
 	// Setting key.
@@ -12038,6 +12846,1365 @@ func (s *TOTPSetup) SetURL(val OptURI) {
 
 func (*TOTPSetup) setupTOTPRes() {}
 
+// Ref: #/components/schemas/TVContinueWatchingItem
+type TVContinueWatchingItem struct {
+	SeriesID         OptUUID      `json:"series_id"`
+	SeriesTitle      OptString    `json:"series_title"`
+	SeriesPosterPath OptNilString `json:"series_poster_path"`
+	EpisodeID        OptUUID      `json:"episode_id"`
+	EpisodeTitle     OptString    `json:"episode_title"`
+	SeasonNumber     OptInt       `json:"season_number"`
+	EpisodeNumber    OptInt       `json:"episode_number"`
+	ProgressSeconds  OptInt       `json:"progress_seconds"`
+	DurationSeconds  OptInt       `json:"duration_seconds"`
+	// Progress as percentage (0-100).
+	ProgressPercent OptFloat32  `json:"progress_percent"`
+	LastWatchedAt   OptDateTime `json:"last_watched_at"`
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *TVContinueWatchingItem) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *TVContinueWatchingItem) GetSeriesTitle() OptString {
+	return s.SeriesTitle
+}
+
+// GetSeriesPosterPath returns the value of SeriesPosterPath.
+func (s *TVContinueWatchingItem) GetSeriesPosterPath() OptNilString {
+	return s.SeriesPosterPath
+}
+
+// GetEpisodeID returns the value of EpisodeID.
+func (s *TVContinueWatchingItem) GetEpisodeID() OptUUID {
+	return s.EpisodeID
+}
+
+// GetEpisodeTitle returns the value of EpisodeTitle.
+func (s *TVContinueWatchingItem) GetEpisodeTitle() OptString {
+	return s.EpisodeTitle
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *TVContinueWatchingItem) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *TVContinueWatchingItem) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *TVContinueWatchingItem) GetProgressSeconds() OptInt {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *TVContinueWatchingItem) GetDurationSeconds() OptInt {
+	return s.DurationSeconds
+}
+
+// GetProgressPercent returns the value of ProgressPercent.
+func (s *TVContinueWatchingItem) GetProgressPercent() OptFloat32 {
+	return s.ProgressPercent
+}
+
+// GetLastWatchedAt returns the value of LastWatchedAt.
+func (s *TVContinueWatchingItem) GetLastWatchedAt() OptDateTime {
+	return s.LastWatchedAt
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *TVContinueWatchingItem) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *TVContinueWatchingItem) SetSeriesTitle(val OptString) {
+	s.SeriesTitle = val
+}
+
+// SetSeriesPosterPath sets the value of SeriesPosterPath.
+func (s *TVContinueWatchingItem) SetSeriesPosterPath(val OptNilString) {
+	s.SeriesPosterPath = val
+}
+
+// SetEpisodeID sets the value of EpisodeID.
+func (s *TVContinueWatchingItem) SetEpisodeID(val OptUUID) {
+	s.EpisodeID = val
+}
+
+// SetEpisodeTitle sets the value of EpisodeTitle.
+func (s *TVContinueWatchingItem) SetEpisodeTitle(val OptString) {
+	s.EpisodeTitle = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *TVContinueWatchingItem) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *TVContinueWatchingItem) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *TVContinueWatchingItem) SetProgressSeconds(val OptInt) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *TVContinueWatchingItem) SetDurationSeconds(val OptInt) {
+	s.DurationSeconds = val
+}
+
+// SetProgressPercent sets the value of ProgressPercent.
+func (s *TVContinueWatchingItem) SetProgressPercent(val OptFloat32) {
+	s.ProgressPercent = val
+}
+
+// SetLastWatchedAt sets the value of LastWatchedAt.
+func (s *TVContinueWatchingItem) SetLastWatchedAt(val OptDateTime) {
+	s.LastWatchedAt = val
+}
+
+// Ref: #/components/schemas/TVEpisode
+type TVEpisode struct {
+	// Episode ID.
+	ID OptUUID `json:"id"`
+	// Parent series ID.
+	SeriesID OptUUID `json:"series_id"`
+	// Parent season ID.
+	SeasonID OptUUID `json:"season_id"`
+	// TMDb episode ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// TVDb episode ID.
+	TvdbID OptNilInt `json:"tvdb_id"`
+	// IMDb ID.
+	ImdbID OptNilString `json:"imdb_id"`
+	// Season number.
+	SeasonNumber OptInt `json:"season_number"`
+	// Episode number within season.
+	EpisodeNumber OptInt `json:"episode_number"`
+	// Episode title.
+	Title OptString `json:"title"`
+	// Episode overview.
+	Overview OptNilString `json:"overview"`
+	// Air date.
+	AirDate OptNilDate `json:"air_date"`
+	// Runtime in minutes.
+	Runtime OptNilInt `json:"runtime"`
+	// Average rating.
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptNilInt `json:"vote_count"`
+	// Still image path.
+	StillPath OptNilString `json:"still_path"`
+	// Production code.
+	ProductionCode OptNilString `json:"production_code"`
+	CreatedAt      OptDateTime  `json:"created_at"`
+	UpdatedAt      OptDateTime  `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVEpisode) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *TVEpisode) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetSeasonID returns the value of SeasonID.
+func (s *TVEpisode) GetSeasonID() OptUUID {
+	return s.SeasonID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *TVEpisode) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *TVEpisode) GetTvdbID() OptNilInt {
+	return s.TvdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *TVEpisode) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *TVEpisode) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *TVEpisode) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *TVEpisode) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *TVEpisode) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *TVEpisode) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *TVEpisode) GetRuntime() OptNilInt {
+	return s.Runtime
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *TVEpisode) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *TVEpisode) GetVoteCount() OptNilInt {
+	return s.VoteCount
+}
+
+// GetStillPath returns the value of StillPath.
+func (s *TVEpisode) GetStillPath() OptNilString {
+	return s.StillPath
+}
+
+// GetProductionCode returns the value of ProductionCode.
+func (s *TVEpisode) GetProductionCode() OptNilString {
+	return s.ProductionCode
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVEpisode) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVEpisode) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVEpisode) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *TVEpisode) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetSeasonID sets the value of SeasonID.
+func (s *TVEpisode) SetSeasonID(val OptUUID) {
+	s.SeasonID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *TVEpisode) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *TVEpisode) SetTvdbID(val OptNilInt) {
+	s.TvdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *TVEpisode) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *TVEpisode) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *TVEpisode) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TVEpisode) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *TVEpisode) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *TVEpisode) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *TVEpisode) SetRuntime(val OptNilInt) {
+	s.Runtime = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *TVEpisode) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *TVEpisode) SetVoteCount(val OptNilInt) {
+	s.VoteCount = val
+}
+
+// SetStillPath sets the value of StillPath.
+func (s *TVEpisode) SetStillPath(val OptNilString) {
+	s.StillPath = val
+}
+
+// SetProductionCode sets the value of ProductionCode.
+func (s *TVEpisode) SetProductionCode(val OptNilString) {
+	s.ProductionCode = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVEpisode) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVEpisode) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*TVEpisode) getTVEpisodeRes()         {}
+func (*TVEpisode) getTVShowNextEpisodeRes() {}
+
+// Ref: #/components/schemas/TVEpisodeFile
+type TVEpisodeFile struct {
+	ID        OptUUID `json:"id"`
+	EpisodeID OptUUID `json:"episode_id"`
+	// Full file path.
+	FilePath OptString `json:"file_path"`
+	// File name.
+	FileName OptString `json:"file_name"`
+	// File size in bytes.
+	FileSize OptInt64 `json:"file_size"`
+	// Video resolution (1080p, 2160p, etc.).
+	Resolution OptNilString `json:"resolution"`
+	// Quality profile from Sonarr.
+	QualityProfile OptNilString `json:"quality_profile"`
+	// Video codec (h264, h265, av1).
+	VideoCodec OptNilString `json:"video_codec"`
+	// Audio codec (aac, ac3, dts).
+	AudioCodec OptNilString `json:"audio_codec"`
+	// Container format (mkv, mp4, avi).
+	Container OptNilString `json:"container"`
+	// Duration in seconds.
+	DurationSeconds OptNilInt `json:"duration_seconds"`
+	// Bitrate in kbps.
+	BitrateKbps OptNilInt `json:"bitrate_kbps"`
+	// Audio language codes.
+	AudioLanguages []string `json:"audio_languages"`
+	// Subtitle language codes.
+	SubtitleLanguages []string `json:"subtitle_languages"`
+	// Sonarr file ID.
+	SonarrFileID OptNilInt   `json:"sonarr_file_id"`
+	CreatedAt    OptDateTime `json:"created_at"`
+	UpdatedAt    OptDateTime `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVEpisodeFile) GetID() OptUUID {
+	return s.ID
+}
+
+// GetEpisodeID returns the value of EpisodeID.
+func (s *TVEpisodeFile) GetEpisodeID() OptUUID {
+	return s.EpisodeID
+}
+
+// GetFilePath returns the value of FilePath.
+func (s *TVEpisodeFile) GetFilePath() OptString {
+	return s.FilePath
+}
+
+// GetFileName returns the value of FileName.
+func (s *TVEpisodeFile) GetFileName() OptString {
+	return s.FileName
+}
+
+// GetFileSize returns the value of FileSize.
+func (s *TVEpisodeFile) GetFileSize() OptInt64 {
+	return s.FileSize
+}
+
+// GetResolution returns the value of Resolution.
+func (s *TVEpisodeFile) GetResolution() OptNilString {
+	return s.Resolution
+}
+
+// GetQualityProfile returns the value of QualityProfile.
+func (s *TVEpisodeFile) GetQualityProfile() OptNilString {
+	return s.QualityProfile
+}
+
+// GetVideoCodec returns the value of VideoCodec.
+func (s *TVEpisodeFile) GetVideoCodec() OptNilString {
+	return s.VideoCodec
+}
+
+// GetAudioCodec returns the value of AudioCodec.
+func (s *TVEpisodeFile) GetAudioCodec() OptNilString {
+	return s.AudioCodec
+}
+
+// GetContainer returns the value of Container.
+func (s *TVEpisodeFile) GetContainer() OptNilString {
+	return s.Container
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *TVEpisodeFile) GetDurationSeconds() OptNilInt {
+	return s.DurationSeconds
+}
+
+// GetBitrateKbps returns the value of BitrateKbps.
+func (s *TVEpisodeFile) GetBitrateKbps() OptNilInt {
+	return s.BitrateKbps
+}
+
+// GetAudioLanguages returns the value of AudioLanguages.
+func (s *TVEpisodeFile) GetAudioLanguages() []string {
+	return s.AudioLanguages
+}
+
+// GetSubtitleLanguages returns the value of SubtitleLanguages.
+func (s *TVEpisodeFile) GetSubtitleLanguages() []string {
+	return s.SubtitleLanguages
+}
+
+// GetSonarrFileID returns the value of SonarrFileID.
+func (s *TVEpisodeFile) GetSonarrFileID() OptNilInt {
+	return s.SonarrFileID
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVEpisodeFile) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVEpisodeFile) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVEpisodeFile) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetEpisodeID sets the value of EpisodeID.
+func (s *TVEpisodeFile) SetEpisodeID(val OptUUID) {
+	s.EpisodeID = val
+}
+
+// SetFilePath sets the value of FilePath.
+func (s *TVEpisodeFile) SetFilePath(val OptString) {
+	s.FilePath = val
+}
+
+// SetFileName sets the value of FileName.
+func (s *TVEpisodeFile) SetFileName(val OptString) {
+	s.FileName = val
+}
+
+// SetFileSize sets the value of FileSize.
+func (s *TVEpisodeFile) SetFileSize(val OptInt64) {
+	s.FileSize = val
+}
+
+// SetResolution sets the value of Resolution.
+func (s *TVEpisodeFile) SetResolution(val OptNilString) {
+	s.Resolution = val
+}
+
+// SetQualityProfile sets the value of QualityProfile.
+func (s *TVEpisodeFile) SetQualityProfile(val OptNilString) {
+	s.QualityProfile = val
+}
+
+// SetVideoCodec sets the value of VideoCodec.
+func (s *TVEpisodeFile) SetVideoCodec(val OptNilString) {
+	s.VideoCodec = val
+}
+
+// SetAudioCodec sets the value of AudioCodec.
+func (s *TVEpisodeFile) SetAudioCodec(val OptNilString) {
+	s.AudioCodec = val
+}
+
+// SetContainer sets the value of Container.
+func (s *TVEpisodeFile) SetContainer(val OptNilString) {
+	s.Container = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *TVEpisodeFile) SetDurationSeconds(val OptNilInt) {
+	s.DurationSeconds = val
+}
+
+// SetBitrateKbps sets the value of BitrateKbps.
+func (s *TVEpisodeFile) SetBitrateKbps(val OptNilInt) {
+	s.BitrateKbps = val
+}
+
+// SetAudioLanguages sets the value of AudioLanguages.
+func (s *TVEpisodeFile) SetAudioLanguages(val []string) {
+	s.AudioLanguages = val
+}
+
+// SetSubtitleLanguages sets the value of SubtitleLanguages.
+func (s *TVEpisodeFile) SetSubtitleLanguages(val []string) {
+	s.SubtitleLanguages = val
+}
+
+// SetSonarrFileID sets the value of SonarrFileID.
+func (s *TVEpisodeFile) SetSonarrFileID(val OptNilInt) {
+	s.SonarrFileID = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVEpisodeFile) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVEpisodeFile) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/TVGenre
+type TVGenre struct {
+	ID       OptUUID `json:"id"`
+	SeriesID OptUUID `json:"series_id"`
+	// TMDb genre ID.
+	TmdbGenreID OptInt `json:"tmdb_genre_id"`
+	// Genre name.
+	Name      OptString   `json:"name"`
+	CreatedAt OptDateTime `json:"created_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVGenre) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *TVGenre) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetTmdbGenreID returns the value of TmdbGenreID.
+func (s *TVGenre) GetTmdbGenreID() OptInt {
+	return s.TmdbGenreID
+}
+
+// GetName returns the value of Name.
+func (s *TVGenre) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVGenre) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVGenre) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *TVGenre) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetTmdbGenreID sets the value of TmdbGenreID.
+func (s *TVGenre) SetTmdbGenreID(val OptInt) {
+	s.TmdbGenreID = val
+}
+
+// SetName sets the value of Name.
+func (s *TVGenre) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVGenre) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/TVNetwork
+type TVNetwork struct {
+	ID OptUUID `json:"id"`
+	// TMDb network ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// Network name.
+	Name OptString `json:"name"`
+	// Logo image path.
+	LogoPath OptNilString `json:"logo_path"`
+	// Origin country code.
+	OriginCountry OptNilString `json:"origin_country"`
+	CreatedAt     OptDateTime  `json:"created_at"`
+	UpdatedAt     OptDateTime  `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVNetwork) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *TVNetwork) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetName returns the value of Name.
+func (s *TVNetwork) GetName() OptString {
+	return s.Name
+}
+
+// GetLogoPath returns the value of LogoPath.
+func (s *TVNetwork) GetLogoPath() OptNilString {
+	return s.LogoPath
+}
+
+// GetOriginCountry returns the value of OriginCountry.
+func (s *TVNetwork) GetOriginCountry() OptNilString {
+	return s.OriginCountry
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVNetwork) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVNetwork) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVNetwork) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *TVNetwork) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *TVNetwork) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetLogoPath sets the value of LogoPath.
+func (s *TVNetwork) SetLogoPath(val OptNilString) {
+	s.LogoPath = val
+}
+
+// SetOriginCountry sets the value of OriginCountry.
+func (s *TVNetwork) SetOriginCountry(val OptNilString) {
+	s.OriginCountry = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVNetwork) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVNetwork) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// Ref: #/components/schemas/TVSeason
+type TVSeason struct {
+	// Season ID.
+	ID OptUUID `json:"id"`
+	// Parent series ID.
+	SeriesID OptUUID `json:"series_id"`
+	// TMDb season ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// Season number.
+	SeasonNumber OptInt `json:"season_number"`
+	// Season name.
+	Name OptString `json:"name"`
+	// Season overview.
+	Overview OptNilString `json:"overview"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Number of episodes in season.
+	EpisodeCount OptInt `json:"episode_count"`
+	// Season air date.
+	AirDate OptNilDate `json:"air_date"`
+	// Average rating.
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	CreatedAt   OptDateTime   `json:"created_at"`
+	UpdatedAt   OptDateTime   `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVSeason) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *TVSeason) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *TVSeason) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *TVSeason) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetName returns the value of Name.
+func (s *TVSeason) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *TVSeason) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *TVSeason) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *TVSeason) GetEpisodeCount() OptInt {
+	return s.EpisodeCount
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *TVSeason) GetAirDate() OptNilDate {
+	return s.AirDate
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *TVSeason) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVSeason) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVSeason) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVSeason) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *TVSeason) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *TVSeason) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *TVSeason) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *TVSeason) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *TVSeason) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *TVSeason) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *TVSeason) SetEpisodeCount(val OptInt) {
+	s.EpisodeCount = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *TVSeason) SetAirDate(val OptNilDate) {
+	s.AirDate = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *TVSeason) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVSeason) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVSeason) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*TVSeason) getTVSeasonRes() {}
+
+// Ref: #/components/schemas/TVSeries
+type TVSeries struct {
+	// Series ID.
+	ID OptUUID `json:"id"`
+	// TMDb ID.
+	TmdbID OptNilInt `json:"tmdb_id"`
+	// TVDb ID.
+	TvdbID OptNilInt `json:"tvdb_id"`
+	// IMDb ID.
+	ImdbID OptNilString `json:"imdb_id"`
+	// Sonarr series ID.
+	SonarrID OptNilInt `json:"sonarr_id"`
+	// Series title.
+	Title OptString `json:"title"`
+	// Original title (if different).
+	OriginalTitle OptNilString `json:"original_title"`
+	// ISO 639-1 language code.
+	OriginalLanguage OptNilString `json:"original_language"`
+	// Series tagline.
+	Tagline OptNilString `json:"tagline"`
+	// Plot synopsis.
+	Overview OptNilString `json:"overview"`
+	// Series status (Returning Series, Ended, etc.).
+	Status OptNilString `json:"status"`
+	// Series type (Scripted, Reality, Documentary, etc.).
+	Type OptNilString `json:"type"`
+	// First air date.
+	FirstAirDate OptNilDate `json:"first_air_date"`
+	// Last air date.
+	LastAirDate OptNilDate `json:"last_air_date"`
+	// Average rating (0-10).
+	VoteAverage OptNilFloat32 `json:"vote_average"`
+	// Number of votes.
+	VoteCount OptNilInt `json:"vote_count"`
+	// Popularity score.
+	Popularity OptNilFloat32 `json:"popularity"`
+	// Poster image path.
+	PosterPath OptNilString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptNilString `json:"backdrop_path"`
+	// Total number of seasons.
+	TotalSeasons OptInt `json:"total_seasons"`
+	// Total number of episodes.
+	TotalEpisodes OptInt `json:"total_episodes"`
+	// Trailer URL.
+	TrailerURL OptNilString `json:"trailer_url"`
+	// Official homepage URL.
+	Homepage OptNilString `json:"homepage"`
+	// When added to library.
+	LibraryAddedAt OptDateTime `json:"library_added_at"`
+	// Last metadata update.
+	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
+	CreatedAt         OptDateTime    `json:"created_at"`
+	UpdatedAt         OptDateTime    `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVSeries) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *TVSeries) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *TVSeries) GetTvdbID() OptNilInt {
+	return s.TvdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *TVSeries) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetSonarrID returns the value of SonarrID.
+func (s *TVSeries) GetSonarrID() OptNilInt {
+	return s.SonarrID
+}
+
+// GetTitle returns the value of Title.
+func (s *TVSeries) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *TVSeries) GetOriginalTitle() OptNilString {
+	return s.OriginalTitle
+}
+
+// GetOriginalLanguage returns the value of OriginalLanguage.
+func (s *TVSeries) GetOriginalLanguage() OptNilString {
+	return s.OriginalLanguage
+}
+
+// GetTagline returns the value of Tagline.
+func (s *TVSeries) GetTagline() OptNilString {
+	return s.Tagline
+}
+
+// GetOverview returns the value of Overview.
+func (s *TVSeries) GetOverview() OptNilString {
+	return s.Overview
+}
+
+// GetStatus returns the value of Status.
+func (s *TVSeries) GetStatus() OptNilString {
+	return s.Status
+}
+
+// GetType returns the value of Type.
+func (s *TVSeries) GetType() OptNilString {
+	return s.Type
+}
+
+// GetFirstAirDate returns the value of FirstAirDate.
+func (s *TVSeries) GetFirstAirDate() OptNilDate {
+	return s.FirstAirDate
+}
+
+// GetLastAirDate returns the value of LastAirDate.
+func (s *TVSeries) GetLastAirDate() OptNilDate {
+	return s.LastAirDate
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *TVSeries) GetVoteAverage() OptNilFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *TVSeries) GetVoteCount() OptNilInt {
+	return s.VoteCount
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *TVSeries) GetPopularity() OptNilFloat32 {
+	return s.Popularity
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *TVSeries) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *TVSeries) GetBackdropPath() OptNilString {
+	return s.BackdropPath
+}
+
+// GetTotalSeasons returns the value of TotalSeasons.
+func (s *TVSeries) GetTotalSeasons() OptInt {
+	return s.TotalSeasons
+}
+
+// GetTotalEpisodes returns the value of TotalEpisodes.
+func (s *TVSeries) GetTotalEpisodes() OptInt {
+	return s.TotalEpisodes
+}
+
+// GetTrailerURL returns the value of TrailerURL.
+func (s *TVSeries) GetTrailerURL() OptNilString {
+	return s.TrailerURL
+}
+
+// GetHomepage returns the value of Homepage.
+func (s *TVSeries) GetHomepage() OptNilString {
+	return s.Homepage
+}
+
+// GetLibraryAddedAt returns the value of LibraryAddedAt.
+func (s *TVSeries) GetLibraryAddedAt() OptDateTime {
+	return s.LibraryAddedAt
+}
+
+// GetMetadataUpdatedAt returns the value of MetadataUpdatedAt.
+func (s *TVSeries) GetMetadataUpdatedAt() OptNilDateTime {
+	return s.MetadataUpdatedAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVSeries) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVSeries) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVSeries) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *TVSeries) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *TVSeries) SetTvdbID(val OptNilInt) {
+	s.TvdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *TVSeries) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetSonarrID sets the value of SonarrID.
+func (s *TVSeries) SetSonarrID(val OptNilInt) {
+	s.SonarrID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TVSeries) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *TVSeries) SetOriginalTitle(val OptNilString) {
+	s.OriginalTitle = val
+}
+
+// SetOriginalLanguage sets the value of OriginalLanguage.
+func (s *TVSeries) SetOriginalLanguage(val OptNilString) {
+	s.OriginalLanguage = val
+}
+
+// SetTagline sets the value of Tagline.
+func (s *TVSeries) SetTagline(val OptNilString) {
+	s.Tagline = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *TVSeries) SetOverview(val OptNilString) {
+	s.Overview = val
+}
+
+// SetStatus sets the value of Status.
+func (s *TVSeries) SetStatus(val OptNilString) {
+	s.Status = val
+}
+
+// SetType sets the value of Type.
+func (s *TVSeries) SetType(val OptNilString) {
+	s.Type = val
+}
+
+// SetFirstAirDate sets the value of FirstAirDate.
+func (s *TVSeries) SetFirstAirDate(val OptNilDate) {
+	s.FirstAirDate = val
+}
+
+// SetLastAirDate sets the value of LastAirDate.
+func (s *TVSeries) SetLastAirDate(val OptNilDate) {
+	s.LastAirDate = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *TVSeries) SetVoteAverage(val OptNilFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *TVSeries) SetVoteCount(val OptNilInt) {
+	s.VoteCount = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *TVSeries) SetPopularity(val OptNilFloat32) {
+	s.Popularity = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *TVSeries) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *TVSeries) SetBackdropPath(val OptNilString) {
+	s.BackdropPath = val
+}
+
+// SetTotalSeasons sets the value of TotalSeasons.
+func (s *TVSeries) SetTotalSeasons(val OptInt) {
+	s.TotalSeasons = val
+}
+
+// SetTotalEpisodes sets the value of TotalEpisodes.
+func (s *TVSeries) SetTotalEpisodes(val OptInt) {
+	s.TotalEpisodes = val
+}
+
+// SetTrailerURL sets the value of TrailerURL.
+func (s *TVSeries) SetTrailerURL(val OptNilString) {
+	s.TrailerURL = val
+}
+
+// SetHomepage sets the value of Homepage.
+func (s *TVSeries) SetHomepage(val OptNilString) {
+	s.Homepage = val
+}
+
+// SetLibraryAddedAt sets the value of LibraryAddedAt.
+func (s *TVSeries) SetLibraryAddedAt(val OptDateTime) {
+	s.LibraryAddedAt = val
+}
+
+// SetMetadataUpdatedAt sets the value of MetadataUpdatedAt.
+func (s *TVSeries) SetMetadataUpdatedAt(val OptNilDateTime) {
+	s.MetadataUpdatedAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVSeries) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVSeries) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+func (*TVSeries) getTVShowRes() {}
+
+// Ref: #/components/schemas/TVSeriesCredit
+type TVSeriesCredit struct {
+	ID       OptUUID `json:"id"`
+	SeriesID OptUUID `json:"series_id"`
+	// TMDb person ID.
+	TmdbPersonID OptInt `json:"tmdb_person_id"`
+	// Person name.
+	Name OptString `json:"name"`
+	// Credit type.
+	CreditType OptTVSeriesCreditCreditType `json:"credit_type"`
+	// Character name (for cast).
+	Character OptNilString `json:"character"`
+	// Job title (for crew).
+	Job OptNilString `json:"job"`
+	// Department (for crew).
+	Department OptNilString `json:"department"`
+	// Billing order (for cast).
+	CastOrder OptNilInt `json:"cast_order"`
+	// Profile image path.
+	ProfilePath OptNilString `json:"profile_path"`
+	CreatedAt   OptDateTime  `json:"created_at"`
+	UpdatedAt   OptDateTime  `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *TVSeriesCredit) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *TVSeriesCredit) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetTmdbPersonID returns the value of TmdbPersonID.
+func (s *TVSeriesCredit) GetTmdbPersonID() OptInt {
+	return s.TmdbPersonID
+}
+
+// GetName returns the value of Name.
+func (s *TVSeriesCredit) GetName() OptString {
+	return s.Name
+}
+
+// GetCreditType returns the value of CreditType.
+func (s *TVSeriesCredit) GetCreditType() OptTVSeriesCreditCreditType {
+	return s.CreditType
+}
+
+// GetCharacter returns the value of Character.
+func (s *TVSeriesCredit) GetCharacter() OptNilString {
+	return s.Character
+}
+
+// GetJob returns the value of Job.
+func (s *TVSeriesCredit) GetJob() OptNilString {
+	return s.Job
+}
+
+// GetDepartment returns the value of Department.
+func (s *TVSeriesCredit) GetDepartment() OptNilString {
+	return s.Department
+}
+
+// GetCastOrder returns the value of CastOrder.
+func (s *TVSeriesCredit) GetCastOrder() OptNilInt {
+	return s.CastOrder
+}
+
+// GetProfilePath returns the value of ProfilePath.
+func (s *TVSeriesCredit) GetProfilePath() OptNilString {
+	return s.ProfilePath
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *TVSeriesCredit) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *TVSeriesCredit) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *TVSeriesCredit) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *TVSeriesCredit) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetTmdbPersonID sets the value of TmdbPersonID.
+func (s *TVSeriesCredit) SetTmdbPersonID(val OptInt) {
+	s.TmdbPersonID = val
+}
+
+// SetName sets the value of Name.
+func (s *TVSeriesCredit) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreditType sets the value of CreditType.
+func (s *TVSeriesCredit) SetCreditType(val OptTVSeriesCreditCreditType) {
+	s.CreditType = val
+}
+
+// SetCharacter sets the value of Character.
+func (s *TVSeriesCredit) SetCharacter(val OptNilString) {
+	s.Character = val
+}
+
+// SetJob sets the value of Job.
+func (s *TVSeriesCredit) SetJob(val OptNilString) {
+	s.Job = val
+}
+
+// SetDepartment sets the value of Department.
+func (s *TVSeriesCredit) SetDepartment(val OptNilString) {
+	s.Department = val
+}
+
+// SetCastOrder sets the value of CastOrder.
+func (s *TVSeriesCredit) SetCastOrder(val OptNilInt) {
+	s.CastOrder = val
+}
+
+// SetProfilePath sets the value of ProfilePath.
+func (s *TVSeriesCredit) SetProfilePath(val OptNilString) {
+	s.ProfilePath = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *TVSeriesCredit) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *TVSeriesCredit) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+// Credit type.
+type TVSeriesCreditCreditType string
+
+const (
+	TVSeriesCreditCreditTypeCast TVSeriesCreditCreditType = "cast"
+	TVSeriesCreditCreditTypeCrew TVSeriesCreditCreditType = "crew"
+)
+
+// AllValues returns all TVSeriesCreditCreditType values.
+func (TVSeriesCreditCreditType) AllValues() []TVSeriesCreditCreditType {
+	return []TVSeriesCreditCreditType{
+		TVSeriesCreditCreditTypeCast,
+		TVSeriesCreditCreditTypeCrew,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TVSeriesCreditCreditType) MarshalText() ([]byte, error) {
+	switch s {
+	case TVSeriesCreditCreditTypeCast:
+		return []byte(s), nil
+	case TVSeriesCreditCreditTypeCrew:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TVSeriesCreditCreditType) UnmarshalText(data []byte) error {
+	switch TVSeriesCreditCreditType(data) {
+	case TVSeriesCreditCreditTypeCast:
+		*s = TVSeriesCreditCreditTypeCast
+		return nil
+	case TVSeriesCreditCreditTypeCrew:
+		*s = TVSeriesCreditCreditTypeCrew
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type TriggerLibraryScanBadRequest Error
 
 func (*TriggerLibraryScanBadRequest) triggerLibraryScanRes() {}
@@ -12142,6 +14309,34 @@ func (*UpdateCurrentUserBadRequest) updateCurrentUserRes() {}
 type UpdateCurrentUserUnauthorized Error
 
 func (*UpdateCurrentUserUnauthorized) updateCurrentUserRes() {}
+
+// Ref: #/components/schemas/UpdateEpisodeProgressRequest
+type UpdateEpisodeProgressRequest struct {
+	// Current playback position in seconds.
+	ProgressSeconds int `json:"progress_seconds"`
+	// Total episode duration in seconds.
+	DurationSeconds int `json:"duration_seconds"`
+}
+
+// GetProgressSeconds returns the value of ProgressSeconds.
+func (s *UpdateEpisodeProgressRequest) GetProgressSeconds() int {
+	return s.ProgressSeconds
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *UpdateEpisodeProgressRequest) GetDurationSeconds() int {
+	return s.DurationSeconds
+}
+
+// SetProgressSeconds sets the value of ProgressSeconds.
+func (s *UpdateEpisodeProgressRequest) SetProgressSeconds(val int) {
+	s.ProgressSeconds = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *UpdateEpisodeProgressRequest) SetDurationSeconds(val int) {
+	s.DurationSeconds = val
+}
 
 type UpdateLibraryBadRequest Error
 
@@ -12578,6 +14773,14 @@ func (*UpdateServerSettingNotFound) updateServerSettingRes() {}
 type UpdateServerSettingUnauthorized Error
 
 func (*UpdateServerSettingUnauthorized) updateServerSettingRes() {}
+
+type UpdateTVEpisodeProgressNotFound Error
+
+func (*UpdateTVEpisodeProgressNotFound) updateTVEpisodeProgressRes() {}
+
+type UpdateTVEpisodeProgressUnauthorized Error
+
+func (*UpdateTVEpisodeProgressUnauthorized) updateTVEpisodeProgressRes() {}
 
 type UpdateUserPreferencesBadRequest Error
 
@@ -13938,6 +16141,83 @@ func NewUserSettingValue3UserSettingValue(v UserSettingValue3) UserSettingValue 
 }
 
 type UserSettingValue3 struct{}
+
+// Ref: #/components/schemas/UserTVStats
+type UserTVStats struct {
+	UserID OptUUID `json:"user_id"`
+	// Total series with watch progress.
+	TotalSeries OptInt `json:"total_series"`
+	// Total episodes watched.
+	TotalEpisodesWatched OptInt `json:"total_episodes_watched"`
+	// Total watch time in minutes.
+	TotalWatchTimeMinutes OptInt `json:"total_watch_time_minutes"`
+	// Number of fully completed series.
+	CompletedSeries OptInt `json:"completed_series"`
+	// Number of series in progress.
+	CurrentSeries OptInt `json:"current_series"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *UserTVStats) GetUserID() OptUUID {
+	return s.UserID
+}
+
+// GetTotalSeries returns the value of TotalSeries.
+func (s *UserTVStats) GetTotalSeries() OptInt {
+	return s.TotalSeries
+}
+
+// GetTotalEpisodesWatched returns the value of TotalEpisodesWatched.
+func (s *UserTVStats) GetTotalEpisodesWatched() OptInt {
+	return s.TotalEpisodesWatched
+}
+
+// GetTotalWatchTimeMinutes returns the value of TotalWatchTimeMinutes.
+func (s *UserTVStats) GetTotalWatchTimeMinutes() OptInt {
+	return s.TotalWatchTimeMinutes
+}
+
+// GetCompletedSeries returns the value of CompletedSeries.
+func (s *UserTVStats) GetCompletedSeries() OptInt {
+	return s.CompletedSeries
+}
+
+// GetCurrentSeries returns the value of CurrentSeries.
+func (s *UserTVStats) GetCurrentSeries() OptInt {
+	return s.CurrentSeries
+}
+
+// SetUserID sets the value of UserID.
+func (s *UserTVStats) SetUserID(val OptUUID) {
+	s.UserID = val
+}
+
+// SetTotalSeries sets the value of TotalSeries.
+func (s *UserTVStats) SetTotalSeries(val OptInt) {
+	s.TotalSeries = val
+}
+
+// SetTotalEpisodesWatched sets the value of TotalEpisodesWatched.
+func (s *UserTVStats) SetTotalEpisodesWatched(val OptInt) {
+	s.TotalEpisodesWatched = val
+}
+
+// SetTotalWatchTimeMinutes sets the value of TotalWatchTimeMinutes.
+func (s *UserTVStats) SetTotalWatchTimeMinutes(val OptInt) {
+	s.TotalWatchTimeMinutes = val
+}
+
+// SetCompletedSeries sets the value of CompletedSeries.
+func (s *UserTVStats) SetCompletedSeries(val OptInt) {
+	s.CompletedSeries = val
+}
+
+// SetCurrentSeries sets the value of CurrentSeries.
+func (s *UserTVStats) SetCurrentSeries(val OptInt) {
+	s.CurrentSeries = val
+}
+
+func (*UserTVStats) getUserTVStatsRes() {}
 
 // Ref: #/components/schemas/UserUpdate
 type UserUpdate struct {

@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
@@ -69,6 +70,7 @@ type ServerParams struct {
 	MovieHandler    *movie.Handler
 	MetadataService *movie.MetadataService `optional:"true"`
 	ImageService    *image.Service         `optional:"true"`
+	TVShowService   tvshow.Service         `optional:"true"`
 	// Integration services (optional)
 	RadarrService *radarr.SyncService `optional:"true"`
 	RiverClient   *jobs.Client        `optional:"true"`
@@ -105,6 +107,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		movieHandler:    p.MovieHandler,
 		metadataService: p.MetadataService,
 		imageService:    p.ImageService,
+		tvshowService:   p.TVShowService,
 	}
 
 	// Wire up optional Radarr integration

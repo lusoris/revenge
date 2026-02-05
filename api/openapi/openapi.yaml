@@ -30,6 +30,8 @@ tags:
     description: Movie library management and playback
   - name: collections
     description: Movie collections (e.g., MCU, Star Wars)
+  - name: tvshows
+    description: TV show library management and playback
   - name: search
     description: Full-text search across the library using Typesense
   - name: metadata
@@ -1261,6 +1263,837 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Movie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # TV Show endpoints
+  /api/v1/tvshows:
+    get:
+      summary: List TV shows
+      description: Get a paginated list of TV shows with optional filtering and sorting
+      operationId: listTVShows
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [created_at, title, first_air_date, vote_average, popularity]
+            default: created_at
+          description: Field to sort by
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: List of TV shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeries'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/search:
+    get:
+      summary: Search TV shows
+      description: Search TV shows by title using fuzzy matching
+      operationId: searchTVShows
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: Search query
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Matching TV shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeries'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/recently-added:
+    get:
+      summary: Get recently added TV shows
+      description: Get TV shows ordered by when they were added to the library
+      operationId: getRecentlyAddedTVShows
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Recently added TV shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeries'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/continue-watching:
+    get:
+      summary: Get continue watching list for TV shows
+      description: Get TV shows the user is currently watching
+      operationId: getTVContinueWatching
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Continue watching list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVContinueWatchingItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/stats:
+    get:
+      summary: Get user TV show statistics
+      description: Get statistics about user's TV show watching
+      operationId: getUserTVStats
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User TV statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTVStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/recent:
+    get:
+      summary: Get recent episodes
+      description: Get recently aired episodes across all TV shows
+      operationId: getRecentEpisodes
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Recent episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EpisodeWithSeriesInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/upcoming:
+    get:
+      summary: Get upcoming episodes
+      description: Get upcoming episodes across all TV shows
+      operationId: getUpcomingEpisodes
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Upcoming episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EpisodeWithSeriesInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}:
+    get:
+      summary: Get TV show details
+      description: Get detailed information about a TV show
+      operationId: getTVShow
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVSeries'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/seasons:
+    get:
+      summary: Get TV show seasons
+      description: Get all seasons for a TV show
+      operationId: getTVShowSeasons
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show seasons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeason'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/episodes:
+    get:
+      summary: Get all episodes for a TV show
+      description: Get all episodes across all seasons for a TV show
+      operationId: getTVShowEpisodes
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVEpisode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/cast:
+    get:
+      summary: Get TV show cast
+      description: Get cast members for a TV show
+      operationId: getTVShowCast
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show cast
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeriesCredit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/crew:
+    get:
+      summary: Get TV show crew
+      description: Get crew members for a TV show
+      operationId: getTVShowCrew
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show crew
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVSeriesCredit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/genres:
+    get:
+      summary: Get TV show genres
+      description: Get genres for a TV show
+      operationId: getTVShowGenres
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show genres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVGenre'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/networks:
+    get:
+      summary: Get TV show networks
+      description: Get networks for a TV show
+      operationId: getTVShowNetworks
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show networks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVNetwork'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/watch-stats:
+    get:
+      summary: Get watch stats for a TV show
+      description: Get user's watch statistics for a specific TV show
+      operationId: getTVShowWatchStats
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: TV show watch stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesWatchStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/next-episode:
+    get:
+      summary: Get next unwatched episode
+      description: Get the next episode to watch for a TV show
+      operationId: getTVShowNextEpisode
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Next unwatched episode
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVEpisode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/{id}/refresh:
+    post:
+      summary: Refresh TV show metadata
+      description: Trigger a metadata refresh from TMDb/Sonarr
+      operationId: refreshTVShowMetadata
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV Show ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '202':
+          description: Metadata refresh queued
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/seasons/{id}:
+    get:
+      summary: Get season details
+      description: Get detailed information about a season
+      operationId: getTVSeason
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Season ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Season details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVSeason'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/seasons/{id}/episodes:
+    get:
+      summary: Get season episodes
+      description: Get all episodes for a season
+      operationId: getTVSeasonEpisodes
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Season ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Season episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVEpisode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/{id}:
+    get:
+      summary: Get episode details
+      description: Get detailed information about an episode
+      operationId: getTVEpisode
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Episode details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVEpisode'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/{id}/files:
+    get:
+      summary: Get episode files
+      description: Get physical files for an episode
+      operationId: getTVEpisodeFiles
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Episode files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TVEpisodeFile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/{id}/progress:
+    get:
+      summary: Get episode watch progress
+      description: Get user's watch progress for an episode
+      operationId: getTVEpisodeProgress
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Episode watch progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeWatchProgress'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update episode watch progress
+      description: Update user's watch progress for an episode
+      operationId: updateTVEpisodeProgress
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEpisodeProgressRequest'
+      responses:
+        '200':
+          description: Updated watch progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeWatchProgress'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete episode watch progress
+      description: Delete user's watch progress for an episode
+      operationId: deleteTVEpisodeProgress
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Progress deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/tvshows/episodes/{id}/watched:
+    post:
+      summary: Mark episode as watched
+      description: Mark an episode as fully watched
+      operationId: markTVEpisodeWatched
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Episode ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration_seconds:
+                  type: integer
+                  description: Episode duration in seconds (optional)
+      responses:
+        '204':
+          description: Episode marked as watched
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -4309,6 +5142,580 @@ components:
         created_at:
           type: string
           format: date-time
+
+    # TV Show schemas
+    TVSeries:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Series ID
+        tmdb_id:
+          type: integer
+          nullable: true
+          description: TMDb ID
+        tvdb_id:
+          type: integer
+          nullable: true
+          description: TVDb ID
+        imdb_id:
+          type: string
+          nullable: true
+          description: IMDb ID
+        sonarr_id:
+          type: integer
+          nullable: true
+          description: Sonarr series ID
+        title:
+          type: string
+          description: Series title
+        original_title:
+          type: string
+          nullable: true
+          description: Original title (if different)
+        original_language:
+          type: string
+          nullable: true
+          description: ISO 639-1 language code
+        tagline:
+          type: string
+          nullable: true
+          description: Series tagline
+        overview:
+          type: string
+          nullable: true
+          description: Plot synopsis
+        status:
+          type: string
+          nullable: true
+          description: Series status (Returning Series, Ended, etc.)
+        type:
+          type: string
+          nullable: true
+          description: Series type (Scripted, Reality, Documentary, etc.)
+        first_air_date:
+          type: string
+          format: date
+          nullable: true
+          description: First air date
+        last_air_date:
+          type: string
+          format: date
+          nullable: true
+          description: Last air date
+        vote_average:
+          type: number
+          format: float
+          nullable: true
+          description: Average rating (0-10)
+        vote_count:
+          type: integer
+          nullable: true
+          description: Number of votes
+        popularity:
+          type: number
+          format: float
+          nullable: true
+          description: Popularity score
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+        backdrop_path:
+          type: string
+          nullable: true
+          description: Backdrop image path
+        total_seasons:
+          type: integer
+          description: Total number of seasons
+        total_episodes:
+          type: integer
+          description: Total number of episodes
+        trailer_url:
+          type: string
+          nullable: true
+          description: Trailer URL
+        homepage:
+          type: string
+          nullable: true
+          description: Official homepage URL
+        library_added_at:
+          type: string
+          format: date-time
+          description: When added to library
+        metadata_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last metadata update
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TVSeason:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Season ID
+        series_id:
+          type: string
+          format: uuid
+          description: Parent series ID
+        tmdb_id:
+          type: integer
+          nullable: true
+          description: TMDb season ID
+        season_number:
+          type: integer
+          description: Season number
+        name:
+          type: string
+          description: Season name
+        overview:
+          type: string
+          nullable: true
+          description: Season overview
+        poster_path:
+          type: string
+          nullable: true
+          description: Poster image path
+        episode_count:
+          type: integer
+          description: Number of episodes in season
+        air_date:
+          type: string
+          format: date
+          nullable: true
+          description: Season air date
+        vote_average:
+          type: number
+          format: float
+          nullable: true
+          description: Average rating
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TVEpisode:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Episode ID
+        series_id:
+          type: string
+          format: uuid
+          description: Parent series ID
+        season_id:
+          type: string
+          format: uuid
+          description: Parent season ID
+        tmdb_id:
+          type: integer
+          nullable: true
+          description: TMDb episode ID
+        tvdb_id:
+          type: integer
+          nullable: true
+          description: TVDb episode ID
+        imdb_id:
+          type: string
+          nullable: true
+          description: IMDb ID
+        season_number:
+          type: integer
+          description: Season number
+        episode_number:
+          type: integer
+          description: Episode number within season
+        title:
+          type: string
+          description: Episode title
+        overview:
+          type: string
+          nullable: true
+          description: Episode overview
+        air_date:
+          type: string
+          format: date
+          nullable: true
+          description: Air date
+        runtime:
+          type: integer
+          nullable: true
+          description: Runtime in minutes
+        vote_average:
+          type: number
+          format: float
+          nullable: true
+          description: Average rating
+        vote_count:
+          type: integer
+          nullable: true
+          description: Number of votes
+        still_path:
+          type: string
+          nullable: true
+          description: Still image path
+        production_code:
+          type: string
+          nullable: true
+          description: Production code
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TVEpisodeFile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        episode_id:
+          type: string
+          format: uuid
+        file_path:
+          type: string
+          description: Full file path
+        file_name:
+          type: string
+          description: File name
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        resolution:
+          type: string
+          nullable: true
+          description: Video resolution (1080p, 2160p, etc.)
+        quality_profile:
+          type: string
+          nullable: true
+          description: Quality profile from Sonarr
+        video_codec:
+          type: string
+          nullable: true
+          description: Video codec (h264, h265, av1)
+        audio_codec:
+          type: string
+          nullable: true
+          description: Audio codec (aac, ac3, dts)
+        container:
+          type: string
+          nullable: true
+          description: Container format (mkv, mp4, avi)
+        duration_seconds:
+          type: integer
+          nullable: true
+          description: Duration in seconds
+        bitrate_kbps:
+          type: integer
+          nullable: true
+          description: Bitrate in kbps
+        audio_languages:
+          type: array
+          items:
+            type: string
+          description: Audio language codes
+        subtitle_languages:
+          type: array
+          items:
+            type: string
+          description: Subtitle language codes
+        sonarr_file_id:
+          type: integer
+          nullable: true
+          description: Sonarr file ID
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TVSeriesCredit:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        tmdb_person_id:
+          type: integer
+          description: TMDb person ID
+        name:
+          type: string
+          description: Person name
+        credit_type:
+          type: string
+          enum: [cast, crew]
+          description: Credit type
+        character:
+          type: string
+          nullable: true
+          description: Character name (for cast)
+        job:
+          type: string
+          nullable: true
+          description: Job title (for crew)
+        department:
+          type: string
+          nullable: true
+          description: Department (for crew)
+        cast_order:
+          type: integer
+          nullable: true
+          description: Billing order (for cast)
+        profile_path:
+          type: string
+          nullable: true
+          description: Profile image path
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TVGenre:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        tmdb_genre_id:
+          type: integer
+          description: TMDb genre ID
+        name:
+          type: string
+          description: Genre name
+        created_at:
+          type: string
+          format: date-time
+
+    TVNetwork:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tmdb_id:
+          type: integer
+          description: TMDb network ID
+        name:
+          type: string
+          description: Network name
+        logo_path:
+          type: string
+          nullable: true
+          description: Logo image path
+        origin_country:
+          type: string
+          nullable: true
+          description: Origin country code
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    EpisodeWatchProgress:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        episode_id:
+          type: string
+          format: uuid
+        progress_seconds:
+          type: integer
+          description: Current progress in seconds
+        duration_seconds:
+          type: integer
+          description: Total duration in seconds
+        is_completed:
+          type: boolean
+          description: Whether episode has been watched
+        watched_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When episode was marked as watched
+        last_watched_at:
+          type: string
+          format: date-time
+          description: Last time progress was updated
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UpdateEpisodeProgressRequest:
+      type: object
+      required:
+        - progress_seconds
+        - duration_seconds
+      properties:
+        progress_seconds:
+          type: integer
+          minimum: 0
+          description: Current playback position in seconds
+        duration_seconds:
+          type: integer
+          minimum: 1
+          description: Total episode duration in seconds
+
+    TVContinueWatchingItem:
+      type: object
+      properties:
+        series_id:
+          type: string
+          format: uuid
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+          nullable: true
+        episode_id:
+          type: string
+          format: uuid
+        episode_title:
+          type: string
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+        progress_seconds:
+          type: integer
+        duration_seconds:
+          type: integer
+        progress_percent:
+          type: number
+          format: float
+          description: Progress as percentage (0-100)
+        last_watched_at:
+          type: string
+          format: date-time
+
+    EpisodeWithSeriesInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+          nullable: true
+        season_id:
+          type: string
+          format: uuid
+        tmdb_id:
+          type: integer
+          nullable: true
+        tvdb_id:
+          type: integer
+          nullable: true
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+        title:
+          type: string
+        overview:
+          type: string
+          nullable: true
+        air_date:
+          type: string
+          format: date
+          nullable: true
+        runtime:
+          type: integer
+          nullable: true
+        still_path:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    SeriesWatchStats:
+      type: object
+      properties:
+        series_id:
+          type: string
+          format: uuid
+        total_episodes:
+          type: integer
+          description: Total episodes in series
+        watched_episodes:
+          type: integer
+          description: Number of episodes watched
+        total_runtime_minutes:
+          type: integer
+          description: Total runtime of all episodes in minutes
+        watched_runtime_minutes:
+          type: integer
+          description: Total watched runtime in minutes
+        completion_percent:
+          type: number
+          format: float
+          description: Completion percentage (0-100)
+        last_watched_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    UserTVStats:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        total_series:
+          type: integer
+          description: Total series with watch progress
+        total_episodes_watched:
+          type: integer
+          description: Total episodes watched
+        total_watch_time_minutes:
+          type: integer
+          description: Total watch time in minutes
+        completed_series:
+          type: integer
+          description: Number of fully completed series
+        current_series:
+          type: integer
+          description: Number of series in progress
 
     # Search schemas (Typesense library search)
     SearchResults:

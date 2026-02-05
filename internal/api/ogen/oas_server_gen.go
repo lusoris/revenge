@@ -142,6 +142,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/rbac/roles/{roleName}
 	DeleteRole(ctx context.Context, params DeleteRoleParams) (DeleteRoleRes, error)
+	// DeleteTVEpisodeProgress implements deleteTVEpisodeProgress operation.
+	//
+	// Delete user's watch progress for an episode.
+	//
+	// DELETE /api/v1/tvshows/episodes/{id}/progress
+	DeleteTVEpisodeProgress(ctx context.Context, params DeleteTVEpisodeProgressParams) (DeleteTVEpisodeProgressRes, error)
 	// DeleteUserSetting implements deleteUserSetting operation.
 	//
 	// Delete a user setting (revert to default).
@@ -317,12 +323,24 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/activity/actions
 	GetRecentActions(ctx context.Context, params GetRecentActionsParams) (GetRecentActionsRes, error)
+	// GetRecentEpisodes implements getRecentEpisodes operation.
+	//
+	// Get recently aired episodes across all TV shows.
+	//
+	// GET /api/v1/tvshows/episodes/recent
+	GetRecentEpisodes(ctx context.Context, params GetRecentEpisodesParams) (GetRecentEpisodesRes, error)
 	// GetRecentlyAdded implements getRecentlyAdded operation.
 	//
 	// Get movies ordered by when they were added to the library.
 	//
 	// GET /api/v1/movies/recently-added
 	GetRecentlyAdded(ctx context.Context, params GetRecentlyAddedParams) (GetRecentlyAddedRes, error)
+	// GetRecentlyAddedTVShows implements getRecentlyAddedTVShows operation.
+	//
+	// Get TV shows ordered by when they were added to the library.
+	//
+	// GET /api/v1/tvshows/recently-added
+	GetRecentlyAddedTVShows(ctx context.Context, params GetRecentlyAddedTVShowsParams) (GetRecentlyAddedTVShowsRes, error)
 	// GetResourceActivityLogs implements getResourceActivityLogs operation.
 	//
 	// Get activity logs for a specific resource.
@@ -362,12 +380,108 @@ type Handler interface {
 	//
 	// GET /startupz
 	GetStartup(ctx context.Context) (GetStartupRes, error)
+	// GetTVContinueWatching implements getTVContinueWatching operation.
+	//
+	// Get TV shows the user is currently watching.
+	//
+	// GET /api/v1/tvshows/continue-watching
+	GetTVContinueWatching(ctx context.Context, params GetTVContinueWatchingParams) (GetTVContinueWatchingRes, error)
+	// GetTVEpisode implements getTVEpisode operation.
+	//
+	// Get detailed information about an episode.
+	//
+	// GET /api/v1/tvshows/episodes/{id}
+	GetTVEpisode(ctx context.Context, params GetTVEpisodeParams) (GetTVEpisodeRes, error)
+	// GetTVEpisodeFiles implements getTVEpisodeFiles operation.
+	//
+	// Get physical files for an episode.
+	//
+	// GET /api/v1/tvshows/episodes/{id}/files
+	GetTVEpisodeFiles(ctx context.Context, params GetTVEpisodeFilesParams) (GetTVEpisodeFilesRes, error)
+	// GetTVEpisodeProgress implements getTVEpisodeProgress operation.
+	//
+	// Get user's watch progress for an episode.
+	//
+	// GET /api/v1/tvshows/episodes/{id}/progress
+	GetTVEpisodeProgress(ctx context.Context, params GetTVEpisodeProgressParams) (GetTVEpisodeProgressRes, error)
+	// GetTVSeason implements getTVSeason operation.
+	//
+	// Get detailed information about a season.
+	//
+	// GET /api/v1/tvshows/seasons/{id}
+	GetTVSeason(ctx context.Context, params GetTVSeasonParams) (GetTVSeasonRes, error)
+	// GetTVSeasonEpisodes implements getTVSeasonEpisodes operation.
+	//
+	// Get all episodes for a season.
+	//
+	// GET /api/v1/tvshows/seasons/{id}/episodes
+	GetTVSeasonEpisodes(ctx context.Context, params GetTVSeasonEpisodesParams) (GetTVSeasonEpisodesRes, error)
+	// GetTVShow implements getTVShow operation.
+	//
+	// Get detailed information about a TV show.
+	//
+	// GET /api/v1/tvshows/{id}
+	GetTVShow(ctx context.Context, params GetTVShowParams) (GetTVShowRes, error)
+	// GetTVShowCast implements getTVShowCast operation.
+	//
+	// Get cast members for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/cast
+	GetTVShowCast(ctx context.Context, params GetTVShowCastParams) (GetTVShowCastRes, error)
+	// GetTVShowCrew implements getTVShowCrew operation.
+	//
+	// Get crew members for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/crew
+	GetTVShowCrew(ctx context.Context, params GetTVShowCrewParams) (GetTVShowCrewRes, error)
+	// GetTVShowEpisodes implements getTVShowEpisodes operation.
+	//
+	// Get all episodes across all seasons for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/episodes
+	GetTVShowEpisodes(ctx context.Context, params GetTVShowEpisodesParams) (GetTVShowEpisodesRes, error)
+	// GetTVShowGenres implements getTVShowGenres operation.
+	//
+	// Get genres for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/genres
+	GetTVShowGenres(ctx context.Context, params GetTVShowGenresParams) (GetTVShowGenresRes, error)
+	// GetTVShowNetworks implements getTVShowNetworks operation.
+	//
+	// Get networks for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/networks
+	GetTVShowNetworks(ctx context.Context, params GetTVShowNetworksParams) (GetTVShowNetworksRes, error)
+	// GetTVShowNextEpisode implements getTVShowNextEpisode operation.
+	//
+	// Get the next episode to watch for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/next-episode
+	GetTVShowNextEpisode(ctx context.Context, params GetTVShowNextEpisodeParams) (GetTVShowNextEpisodeRes, error)
+	// GetTVShowSeasons implements getTVShowSeasons operation.
+	//
+	// Get all seasons for a TV show.
+	//
+	// GET /api/v1/tvshows/{id}/seasons
+	GetTVShowSeasons(ctx context.Context, params GetTVShowSeasonsParams) (GetTVShowSeasonsRes, error)
+	// GetTVShowWatchStats implements getTVShowWatchStats operation.
+	//
+	// Get user's watch statistics for a specific TV show.
+	//
+	// GET /api/v1/tvshows/{id}/watch-stats
+	GetTVShowWatchStats(ctx context.Context, params GetTVShowWatchStatsParams) (GetTVShowWatchStatsRes, error)
 	// GetTopRated implements getTopRated operation.
 	//
 	// Get highest-rated movies.
 	//
 	// GET /api/v1/movies/top-rated
 	GetTopRated(ctx context.Context, params GetTopRatedParams) (GetTopRatedRes, error)
+	// GetUpcomingEpisodes implements getUpcomingEpisodes operation.
+	//
+	// Get upcoming episodes across all TV shows.
+	//
+	// GET /api/v1/tvshows/episodes/upcoming
+	GetUpcomingEpisodes(ctx context.Context, params GetUpcomingEpisodesParams) (GetUpcomingEpisodesRes, error)
 	// GetUserActivityLogs implements getUserActivityLogs operation.
 	//
 	// Get activity logs for a specific user.
@@ -404,6 +518,12 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user/{key}
 	GetUserSetting(ctx context.Context, params GetUserSettingParams) (GetUserSettingRes, error)
+	// GetUserTVStats implements getUserTVStats operation.
+	//
+	// Get statistics about user's TV show watching.
+	//
+	// GET /api/v1/tvshows/stats
+	GetUserTVStats(ctx context.Context) (GetUserTVStatsRes, error)
 	// GetWatchHistory implements getWatchHistory operation.
 	//
 	// Get user's watched movies.
@@ -502,6 +622,12 @@ type Handler interface {
 	//
 	// GET /api/v1/sessions
 	ListSessions(ctx context.Context) (ListSessionsRes, error)
+	// ListTVShows implements listTVShows operation.
+	//
+	// Get a paginated list of TV shows with optional filtering and sorting.
+	//
+	// GET /api/v1/tvshows
+	ListTVShows(ctx context.Context, params ListTVShowsParams) (ListTVShowsRes, error)
 	// ListUserOIDCLinks implements listUserOIDCLinks operation.
 	//
 	// Returns all OIDC providers linked to the current user.
@@ -544,6 +670,12 @@ type Handler interface {
 	//
 	// POST /api/v1/movies/{id}/watched
 	MarkAsWatched(ctx context.Context, params MarkAsWatchedParams) (MarkAsWatchedRes, error)
+	// MarkTVEpisodeWatched implements markTVEpisodeWatched operation.
+	//
+	// Mark an episode as fully watched.
+	//
+	// POST /api/v1/tvshows/episodes/{id}/watched
+	MarkTVEpisodeWatched(ctx context.Context, req OptMarkTVEpisodeWatchedReq, params MarkTVEpisodeWatchedParams) (MarkTVEpisodeWatchedRes, error)
 	// OidcAuthorize implements oidcAuthorize operation.
 	//
 	// Redirects to the OIDC provider's authorization endpoint.
@@ -568,6 +700,12 @@ type Handler interface {
 	//
 	// POST /api/v1/sessions/refresh
 	RefreshSession(ctx context.Context, req *RefreshSessionRequest) (RefreshSessionRes, error)
+	// RefreshTVShowMetadata implements refreshTVShowMetadata operation.
+	//
+	// Trigger a metadata refresh from TMDb/Sonarr.
+	//
+	// POST /api/v1/tvshows/{id}/refresh
+	RefreshTVShowMetadata(ctx context.Context, params RefreshTVShowMetadataParams) (RefreshTVShowMetadataRes, error)
 	// RefreshToken implements refreshToken operation.
 	//
 	// Exchange refresh token for a new access token.
@@ -663,6 +801,12 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
+	// SearchTVShows implements searchTVShows operation.
+	//
+	// Search TV shows by title using fuzzy matching.
+	//
+	// GET /api/v1/tvshows/search
+	SearchTVShows(ctx context.Context, params SearchTVShowsParams) (SearchTVShowsRes, error)
 	// SetupTOTP implements setupTOTP operation.
 	//
 	// Generate TOTP secret and QR code for enrollment.
@@ -705,6 +849,12 @@ type Handler interface {
 	//
 	// PUT /api/v1/settings/server/{key}
 	UpdateServerSetting(ctx context.Context, req *SettingValue, params UpdateServerSettingParams) (UpdateServerSettingRes, error)
+	// UpdateTVEpisodeProgress implements updateTVEpisodeProgress operation.
+	//
+	// Update user's watch progress for an episode.
+	//
+	// PUT /api/v1/tvshows/episodes/{id}/progress
+	UpdateTVEpisodeProgress(ctx context.Context, req *UpdateEpisodeProgressRequest, params UpdateTVEpisodeProgressParams) (UpdateTVEpisodeProgressRes, error)
 	// UpdateUserPreferences implements updateUserPreferences operation.
 	//
 	// Update notification and display preferences.

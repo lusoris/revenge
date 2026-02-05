@@ -210,6 +210,15 @@ func (UnimplementedHandler) DeleteRole(ctx context.Context, params DeleteRolePar
 	return r, ht.ErrNotImplemented
 }
 
+// DeleteTVEpisodeProgress implements deleteTVEpisodeProgress operation.
+//
+// Delete user's watch progress for an episode.
+//
+// DELETE /api/v1/tvshows/episodes/{id}/progress
+func (UnimplementedHandler) DeleteTVEpisodeProgress(ctx context.Context, params DeleteTVEpisodeProgressParams) (r DeleteTVEpisodeProgressRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DeleteUserSetting implements deleteUserSetting operation.
 //
 // Delete a user setting (revert to default).
@@ -469,12 +478,30 @@ func (UnimplementedHandler) GetRecentActions(ctx context.Context, params GetRece
 	return r, ht.ErrNotImplemented
 }
 
+// GetRecentEpisodes implements getRecentEpisodes operation.
+//
+// Get recently aired episodes across all TV shows.
+//
+// GET /api/v1/tvshows/episodes/recent
+func (UnimplementedHandler) GetRecentEpisodes(ctx context.Context, params GetRecentEpisodesParams) (r GetRecentEpisodesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetRecentlyAdded implements getRecentlyAdded operation.
 //
 // Get movies ordered by when they were added to the library.
 //
 // GET /api/v1/movies/recently-added
 func (UnimplementedHandler) GetRecentlyAdded(ctx context.Context, params GetRecentlyAddedParams) (r GetRecentlyAddedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetRecentlyAddedTVShows implements getRecentlyAddedTVShows operation.
+//
+// Get TV shows ordered by when they were added to the library.
+//
+// GET /api/v1/tvshows/recently-added
+func (UnimplementedHandler) GetRecentlyAddedTVShows(ctx context.Context, params GetRecentlyAddedTVShowsParams) (r GetRecentlyAddedTVShowsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -535,12 +562,156 @@ func (UnimplementedHandler) GetStartup(ctx context.Context) (r GetStartupRes, _ 
 	return r, ht.ErrNotImplemented
 }
 
+// GetTVContinueWatching implements getTVContinueWatching operation.
+//
+// Get TV shows the user is currently watching.
+//
+// GET /api/v1/tvshows/continue-watching
+func (UnimplementedHandler) GetTVContinueWatching(ctx context.Context, params GetTVContinueWatchingParams) (r GetTVContinueWatchingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVEpisode implements getTVEpisode operation.
+//
+// Get detailed information about an episode.
+//
+// GET /api/v1/tvshows/episodes/{id}
+func (UnimplementedHandler) GetTVEpisode(ctx context.Context, params GetTVEpisodeParams) (r GetTVEpisodeRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVEpisodeFiles implements getTVEpisodeFiles operation.
+//
+// Get physical files for an episode.
+//
+// GET /api/v1/tvshows/episodes/{id}/files
+func (UnimplementedHandler) GetTVEpisodeFiles(ctx context.Context, params GetTVEpisodeFilesParams) (r GetTVEpisodeFilesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVEpisodeProgress implements getTVEpisodeProgress operation.
+//
+// Get user's watch progress for an episode.
+//
+// GET /api/v1/tvshows/episodes/{id}/progress
+func (UnimplementedHandler) GetTVEpisodeProgress(ctx context.Context, params GetTVEpisodeProgressParams) (r GetTVEpisodeProgressRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVSeason implements getTVSeason operation.
+//
+// Get detailed information about a season.
+//
+// GET /api/v1/tvshows/seasons/{id}
+func (UnimplementedHandler) GetTVSeason(ctx context.Context, params GetTVSeasonParams) (r GetTVSeasonRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVSeasonEpisodes implements getTVSeasonEpisodes operation.
+//
+// Get all episodes for a season.
+//
+// GET /api/v1/tvshows/seasons/{id}/episodes
+func (UnimplementedHandler) GetTVSeasonEpisodes(ctx context.Context, params GetTVSeasonEpisodesParams) (r GetTVSeasonEpisodesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShow implements getTVShow operation.
+//
+// Get detailed information about a TV show.
+//
+// GET /api/v1/tvshows/{id}
+func (UnimplementedHandler) GetTVShow(ctx context.Context, params GetTVShowParams) (r GetTVShowRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowCast implements getTVShowCast operation.
+//
+// Get cast members for a TV show.
+//
+// GET /api/v1/tvshows/{id}/cast
+func (UnimplementedHandler) GetTVShowCast(ctx context.Context, params GetTVShowCastParams) (r GetTVShowCastRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowCrew implements getTVShowCrew operation.
+//
+// Get crew members for a TV show.
+//
+// GET /api/v1/tvshows/{id}/crew
+func (UnimplementedHandler) GetTVShowCrew(ctx context.Context, params GetTVShowCrewParams) (r GetTVShowCrewRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowEpisodes implements getTVShowEpisodes operation.
+//
+// Get all episodes across all seasons for a TV show.
+//
+// GET /api/v1/tvshows/{id}/episodes
+func (UnimplementedHandler) GetTVShowEpisodes(ctx context.Context, params GetTVShowEpisodesParams) (r GetTVShowEpisodesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowGenres implements getTVShowGenres operation.
+//
+// Get genres for a TV show.
+//
+// GET /api/v1/tvshows/{id}/genres
+func (UnimplementedHandler) GetTVShowGenres(ctx context.Context, params GetTVShowGenresParams) (r GetTVShowGenresRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowNetworks implements getTVShowNetworks operation.
+//
+// Get networks for a TV show.
+//
+// GET /api/v1/tvshows/{id}/networks
+func (UnimplementedHandler) GetTVShowNetworks(ctx context.Context, params GetTVShowNetworksParams) (r GetTVShowNetworksRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowNextEpisode implements getTVShowNextEpisode operation.
+//
+// Get the next episode to watch for a TV show.
+//
+// GET /api/v1/tvshows/{id}/next-episode
+func (UnimplementedHandler) GetTVShowNextEpisode(ctx context.Context, params GetTVShowNextEpisodeParams) (r GetTVShowNextEpisodeRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowSeasons implements getTVShowSeasons operation.
+//
+// Get all seasons for a TV show.
+//
+// GET /api/v1/tvshows/{id}/seasons
+func (UnimplementedHandler) GetTVShowSeasons(ctx context.Context, params GetTVShowSeasonsParams) (r GetTVShowSeasonsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowWatchStats implements getTVShowWatchStats operation.
+//
+// Get user's watch statistics for a specific TV show.
+//
+// GET /api/v1/tvshows/{id}/watch-stats
+func (UnimplementedHandler) GetTVShowWatchStats(ctx context.Context, params GetTVShowWatchStatsParams) (r GetTVShowWatchStatsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetTopRated implements getTopRated operation.
 //
 // Get highest-rated movies.
 //
 // GET /api/v1/movies/top-rated
 func (UnimplementedHandler) GetTopRated(ctx context.Context, params GetTopRatedParams) (r GetTopRatedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUpcomingEpisodes implements getUpcomingEpisodes operation.
+//
+// Get upcoming episodes across all TV shows.
+//
+// GET /api/v1/tvshows/episodes/upcoming
+func (UnimplementedHandler) GetUpcomingEpisodes(ctx context.Context, params GetUpcomingEpisodesParams) (r GetUpcomingEpisodesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -595,6 +766,15 @@ func (UnimplementedHandler) GetUserRoles(ctx context.Context, params GetUserRole
 //
 // GET /api/v1/settings/user/{key}
 func (UnimplementedHandler) GetUserSetting(ctx context.Context, params GetUserSettingParams) (r GetUserSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetUserTVStats implements getUserTVStats operation.
+//
+// Get statistics about user's TV show watching.
+//
+// GET /api/v1/tvshows/stats
+func (UnimplementedHandler) GetUserTVStats(ctx context.Context) (r GetUserTVStatsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -744,6 +924,15 @@ func (UnimplementedHandler) ListSessions(ctx context.Context) (r ListSessionsRes
 	return r, ht.ErrNotImplemented
 }
 
+// ListTVShows implements listTVShows operation.
+//
+// Get a paginated list of TV shows with optional filtering and sorting.
+//
+// GET /api/v1/tvshows
+func (UnimplementedHandler) ListTVShows(ctx context.Context, params ListTVShowsParams) (r ListTVShowsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListUserOIDCLinks implements listUserOIDCLinks operation.
 //
 // Returns all OIDC providers linked to the current user.
@@ -807,6 +996,15 @@ func (UnimplementedHandler) MarkAsWatched(ctx context.Context, params MarkAsWatc
 	return r, ht.ErrNotImplemented
 }
 
+// MarkTVEpisodeWatched implements markTVEpisodeWatched operation.
+//
+// Mark an episode as fully watched.
+//
+// POST /api/v1/tvshows/episodes/{id}/watched
+func (UnimplementedHandler) MarkTVEpisodeWatched(ctx context.Context, req OptMarkTVEpisodeWatchedReq, params MarkTVEpisodeWatchedParams) (r MarkTVEpisodeWatchedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // OidcAuthorize implements oidcAuthorize operation.
 //
 // Redirects to the OIDC provider's authorization endpoint.
@@ -840,6 +1038,15 @@ func (UnimplementedHandler) RefreshMovieMetadata(ctx context.Context, params Ref
 //
 // POST /api/v1/sessions/refresh
 func (UnimplementedHandler) RefreshSession(ctx context.Context, req *RefreshSessionRequest) (r RefreshSessionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RefreshTVShowMetadata implements refreshTVShowMetadata operation.
+//
+// Trigger a metadata refresh from TMDb/Sonarr.
+//
+// POST /api/v1/tvshows/{id}/refresh
+func (UnimplementedHandler) RefreshTVShowMetadata(ctx context.Context, params RefreshTVShowMetadataParams) (r RefreshTVShowMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -983,6 +1190,15 @@ func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params Sea
 	return r, ht.ErrNotImplemented
 }
 
+// SearchTVShows implements searchTVShows operation.
+//
+// Search TV shows by title using fuzzy matching.
+//
+// GET /api/v1/tvshows/search
+func (UnimplementedHandler) SearchTVShows(ctx context.Context, params SearchTVShowsParams) (r SearchTVShowsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SetupTOTP implements setupTOTP operation.
 //
 // Generate TOTP secret and QR code for enrollment.
@@ -1043,6 +1259,15 @@ func (UnimplementedHandler) UpdateRolePermissions(ctx context.Context, req *Upda
 //
 // PUT /api/v1/settings/server/{key}
 func (UnimplementedHandler) UpdateServerSetting(ctx context.Context, req *SettingValue, params UpdateServerSettingParams) (r UpdateServerSettingRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// UpdateTVEpisodeProgress implements updateTVEpisodeProgress operation.
+//
+// Update user's watch progress for an episode.
+//
+// PUT /api/v1/tvshows/episodes/{id}/progress
+func (UnimplementedHandler) UpdateTVEpisodeProgress(ctx context.Context, req *UpdateEpisodeProgressRequest, params UpdateTVEpisodeProgressParams) (r UpdateTVEpisodeProgressRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

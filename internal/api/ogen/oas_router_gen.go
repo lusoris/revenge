@@ -2566,6 +2566,637 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 't': // Prefix: "tvshows"
+
+					if l := len("tvshows"); len(elem) >= l && elem[0:l] == "tvshows" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleListTVShowsRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'c': // Prefix: "continue-watching"
+							origElem := elem
+							if l := len("continue-watching"); len(elem) >= l && elem[0:l] == "continue-watching" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetTVContinueWatchingRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+							elem = origElem
+						case 'e': // Prefix: "episodes/"
+							origElem := elem
+							if l := len("episodes/"); len(elem) >= l && elem[0:l] == "episodes/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'r': // Prefix: "recent"
+								origElem := elem
+								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetRecentEpisodesRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+								elem = origElem
+							case 'u': // Prefix: "upcoming"
+								origElem := elem
+								if l := len("upcoming"); len(elem) >= l && elem[0:l] == "upcoming" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetUpcomingEpisodesRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+								elem = origElem
+							}
+							// Param: "id"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleGetTVEpisodeRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'f': // Prefix: "files"
+
+									if l := len("files"); len(elem) >= l && elem[0:l] == "files" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVEpisodeFilesRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'p': // Prefix: "progress"
+
+									if l := len("progress"); len(elem) >= l && elem[0:l] == "progress" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "DELETE":
+											s.handleDeleteTVEpisodeProgressRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										case "GET":
+											s.handleGetTVEpisodeProgressRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										case "PUT":
+											s.handleUpdateTVEpisodeProgressRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "DELETE,GET,PUT")
+										}
+
+										return
+									}
+
+								case 'w': // Prefix: "watched"
+
+									if l := len("watched"); len(elem) >= l && elem[0:l] == "watched" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleMarkTVEpisodeWatchedRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
+							elem = origElem
+						case 'r': // Prefix: "recently-added"
+							origElem := elem
+							if l := len("recently-added"); len(elem) >= l && elem[0:l] == "recently-added" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleGetRecentlyAddedTVShowsRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+
+							elem = origElem
+						case 's': // Prefix: "s"
+							origElem := elem
+							if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'e': // Prefix: "ea"
+
+								if l := len("ea"); len(elem) >= l && elem[0:l] == "ea" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'r': // Prefix: "rch"
+
+									if l := len("rch"); len(elem) >= l && elem[0:l] == "rch" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleSearchTVShowsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 's': // Prefix: "sons/"
+
+									if l := len("sons/"); len(elem) >= l && elem[0:l] == "sons/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "id"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch r.Method {
+										case "GET":
+											s.handleGetTVSeasonRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/episodes"
+
+										if l := len("/episodes"); len(elem) >= l && elem[0:l] == "/episodes" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetTVSeasonEpisodesRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									}
+
+								}
+
+							case 't': // Prefix: "tats"
+
+								if l := len("tats"); len(elem) >= l && elem[0:l] == "tats" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetUserTVStatsRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							}
+
+							elem = origElem
+						}
+						// Param: "id"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[0] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "GET":
+								s.handleGetTVShowRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "c"
+
+								if l := len("c"); len(elem) >= l && elem[0:l] == "c" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "ast"
+
+									if l := len("ast"); len(elem) >= l && elem[0:l] == "ast" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowCastRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'r': // Prefix: "rew"
+
+									if l := len("rew"); len(elem) >= l && elem[0:l] == "rew" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowCrewRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							case 'e': // Prefix: "episodes"
+
+								if l := len("episodes"); len(elem) >= l && elem[0:l] == "episodes" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetTVShowEpisodesRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							case 'g': // Prefix: "genres"
+
+								if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetTVShowGenresRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							case 'n': // Prefix: "ne"
+
+								if l := len("ne"); len(elem) >= l && elem[0:l] == "ne" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 't': // Prefix: "tworks"
+
+									if l := len("tworks"); len(elem) >= l && elem[0:l] == "tworks" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowNetworksRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'x': // Prefix: "xt-episode"
+
+									if l := len("xt-episode"); len(elem) >= l && elem[0:l] == "xt-episode" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowNextEpisodeRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							case 'r': // Prefix: "refresh"
+
+								if l := len("refresh"); len(elem) >= l && elem[0:l] == "refresh" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleRefreshTVShowMetadataRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+							case 's': // Prefix: "seasons"
+
+								if l := len("seasons"); len(elem) >= l && elem[0:l] == "seasons" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetTVShowSeasonsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							case 'w': // Prefix: "watch-stats"
+
+								if l := len("watch-stats"); len(elem) >= l && elem[0:l] == "watch-stats" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleGetTVShowWatchStatsRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							}
+
+						}
+
+					}
+
 				case 'u': // Prefix: "users/"
 
 					if l := len("users/"); len(elem) >= l && elem[0:l] == "users/" {
@@ -5894,6 +6525,730 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.operationID = "updateUserSetting"
 										r.operationGroup = ""
 										r.pathPattern = "/api/v1/settings/user/{key}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+						}
+
+					}
+
+				case 't': // Prefix: "tvshows"
+
+					if l := len("tvshows"); len(elem) >= l && elem[0:l] == "tvshows" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = ListTVShowsOperation
+							r.summary = "List TV shows"
+							r.operationID = "listTVShows"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/tvshows"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'c': // Prefix: "continue-watching"
+							origElem := elem
+							if l := len("continue-watching"); len(elem) >= l && elem[0:l] == "continue-watching" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetTVContinueWatchingOperation
+									r.summary = "Get continue watching list for TV shows"
+									r.operationID = "getTVContinueWatching"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/tvshows/continue-watching"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+							elem = origElem
+						case 'e': // Prefix: "episodes/"
+							origElem := elem
+							if l := len("episodes/"); len(elem) >= l && elem[0:l] == "episodes/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'r': // Prefix: "recent"
+								origElem := elem
+								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetRecentEpisodesOperation
+										r.summary = "Get recent episodes"
+										r.operationID = "getRecentEpisodes"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/episodes/recent"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+								elem = origElem
+							case 'u': // Prefix: "upcoming"
+								origElem := elem
+								if l := len("upcoming"); len(elem) >= l && elem[0:l] == "upcoming" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetUpcomingEpisodesOperation
+										r.summary = "Get upcoming episodes"
+										r.operationID = "getUpcomingEpisodes"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/episodes/upcoming"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+								elem = origElem
+							}
+							// Param: "id"
+							// Match until "/"
+							idx := strings.IndexByte(elem, '/')
+							if idx < 0 {
+								idx = len(elem)
+							}
+							args[0] = elem[:idx]
+							elem = elem[idx:]
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = GetTVEpisodeOperation
+									r.summary = "Get episode details"
+									r.operationID = "getTVEpisode"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/tvshows/episodes/{id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'f': // Prefix: "files"
+
+									if l := len("files"); len(elem) >= l && elem[0:l] == "files" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVEpisodeFilesOperation
+											r.summary = "Get episode files"
+											r.operationID = "getTVEpisodeFiles"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/episodes/{id}/files"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'p': // Prefix: "progress"
+
+									if l := len("progress"); len(elem) >= l && elem[0:l] == "progress" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "DELETE":
+											r.name = DeleteTVEpisodeProgressOperation
+											r.summary = "Delete episode watch progress"
+											r.operationID = "deleteTVEpisodeProgress"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/episodes/{id}/progress"
+											r.args = args
+											r.count = 1
+											return r, true
+										case "GET":
+											r.name = GetTVEpisodeProgressOperation
+											r.summary = "Get episode watch progress"
+											r.operationID = "getTVEpisodeProgress"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/episodes/{id}/progress"
+											r.args = args
+											r.count = 1
+											return r, true
+										case "PUT":
+											r.name = UpdateTVEpisodeProgressOperation
+											r.summary = "Update episode watch progress"
+											r.operationID = "updateTVEpisodeProgress"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/episodes/{id}/progress"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'w': // Prefix: "watched"
+
+									if l := len("watched"); len(elem) >= l && elem[0:l] == "watched" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = MarkTVEpisodeWatchedOperation
+											r.summary = "Mark episode as watched"
+											r.operationID = "markTVEpisodeWatched"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/episodes/{id}/watched"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							}
+
+							elem = origElem
+						case 'r': // Prefix: "recently-added"
+							origElem := elem
+							if l := len("recently-added"); len(elem) >= l && elem[0:l] == "recently-added" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = GetRecentlyAddedTVShowsOperation
+									r.summary = "Get recently added TV shows"
+									r.operationID = "getRecentlyAddedTVShows"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/tvshows/recently-added"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+							elem = origElem
+						case 's': // Prefix: "s"
+							origElem := elem
+							if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'e': // Prefix: "ea"
+
+								if l := len("ea"); len(elem) >= l && elem[0:l] == "ea" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'r': // Prefix: "rch"
+
+									if l := len("rch"); len(elem) >= l && elem[0:l] == "rch" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = SearchTVShowsOperation
+											r.summary = "Search TV shows"
+											r.operationID = "searchTVShows"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/search"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 's': // Prefix: "sons/"
+
+									if l := len("sons/"); len(elem) >= l && elem[0:l] == "sons/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "id"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[0] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch method {
+										case "GET":
+											r.name = GetTVSeasonOperation
+											r.summary = "Get season details"
+											r.operationID = "getTVSeason"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/seasons/{id}"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/episodes"
+
+										if l := len("/episodes"); len(elem) >= l && elem[0:l] == "/episodes" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetTVSeasonEpisodesOperation
+												r.summary = "Get season episodes"
+												r.operationID = "getTVSeasonEpisodes"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/tvshows/seasons/{id}/episodes"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								}
+
+							case 't': // Prefix: "tats"
+
+								if l := len("tats"); len(elem) >= l && elem[0:l] == "tats" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetUserTVStatsOperation
+										r.summary = "Get user TV show statistics"
+										r.operationID = "getUserTVStats"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/stats"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
+							elem = origElem
+						}
+						// Param: "id"
+						// Match until "/"
+						idx := strings.IndexByte(elem, '/')
+						if idx < 0 {
+							idx = len(elem)
+						}
+						args[0] = elem[:idx]
+						elem = elem[idx:]
+
+						if len(elem) == 0 {
+							switch method {
+							case "GET":
+								r.name = GetTVShowOperation
+								r.summary = "Get TV show details"
+								r.operationID = "getTVShow"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/tvshows/{id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "c"
+
+								if l := len("c"); len(elem) >= l && elem[0:l] == "c" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "ast"
+
+									if l := len("ast"); len(elem) >= l && elem[0:l] == "ast" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowCastOperation
+											r.summary = "Get TV show cast"
+											r.operationID = "getTVShowCast"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/{id}/cast"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "rew"
+
+									if l := len("rew"); len(elem) >= l && elem[0:l] == "rew" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowCrewOperation
+											r.summary = "Get TV show crew"
+											r.operationID = "getTVShowCrew"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/{id}/crew"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							case 'e': // Prefix: "episodes"
+
+								if l := len("episodes"); len(elem) >= l && elem[0:l] == "episodes" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetTVShowEpisodesOperation
+										r.summary = "Get all episodes for a TV show"
+										r.operationID = "getTVShowEpisodes"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/{id}/episodes"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'g': // Prefix: "genres"
+
+								if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetTVShowGenresOperation
+										r.summary = "Get TV show genres"
+										r.operationID = "getTVShowGenres"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/{id}/genres"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'n': // Prefix: "ne"
+
+								if l := len("ne"); len(elem) >= l && elem[0:l] == "ne" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 't': // Prefix: "tworks"
+
+									if l := len("tworks"); len(elem) >= l && elem[0:l] == "tworks" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowNetworksOperation
+											r.summary = "Get TV show networks"
+											r.operationID = "getTVShowNetworks"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/{id}/networks"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'x': // Prefix: "xt-episode"
+
+									if l := len("xt-episode"); len(elem) >= l && elem[0:l] == "xt-episode" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowNextEpisodeOperation
+											r.summary = "Get next unwatched episode"
+											r.operationID = "getTVShowNextEpisode"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/tvshows/{id}/next-episode"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							case 'r': // Prefix: "refresh"
+
+								if l := len("refresh"); len(elem) >= l && elem[0:l] == "refresh" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = RefreshTVShowMetadataOperation
+										r.summary = "Refresh TV show metadata"
+										r.operationID = "refreshTVShowMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/{id}/refresh"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 's': // Prefix: "seasons"
+
+								if l := len("seasons"); len(elem) >= l && elem[0:l] == "seasons" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetTVShowSeasonsOperation
+										r.summary = "Get TV show seasons"
+										r.operationID = "getTVShowSeasons"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/{id}/seasons"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'w': // Prefix: "watch-stats"
+
+								if l := len("watch-stats"); len(elem) >= l && elem[0:l] == "watch-stats" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = GetTVShowWatchStatsOperation
+										r.summary = "Get watch stats for a TV show"
+										r.operationID = "getTVShowWatchStats"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/{id}/watch-stats"
 										r.args = args
 										r.count = 1
 										return r, true

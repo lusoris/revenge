@@ -85,6 +85,10 @@ type DeleteRoleRes interface {
 	deleteRoleRes()
 }
 
+type DeleteTVEpisodeProgressRes interface {
+	deleteTVEpisodeProgressRes()
+}
+
 type DeleteUserSettingRes interface {
 	deleteUserSettingRes()
 }
@@ -193,8 +197,16 @@ type GetRecentActionsRes interface {
 	getRecentActionsRes()
 }
 
+type GetRecentEpisodesRes interface {
+	getRecentEpisodesRes()
+}
+
 type GetRecentlyAddedRes interface {
 	getRecentlyAddedRes()
+}
+
+type GetRecentlyAddedTVShowsRes interface {
+	getRecentlyAddedTVShowsRes()
 }
 
 type GetResourceActivityLogsRes interface {
@@ -221,8 +233,72 @@ type GetStartupRes interface {
 	getStartupRes()
 }
 
+type GetTVContinueWatchingRes interface {
+	getTVContinueWatchingRes()
+}
+
+type GetTVEpisodeFilesRes interface {
+	getTVEpisodeFilesRes()
+}
+
+type GetTVEpisodeProgressRes interface {
+	getTVEpisodeProgressRes()
+}
+
+type GetTVEpisodeRes interface {
+	getTVEpisodeRes()
+}
+
+type GetTVSeasonEpisodesRes interface {
+	getTVSeasonEpisodesRes()
+}
+
+type GetTVSeasonRes interface {
+	getTVSeasonRes()
+}
+
+type GetTVShowCastRes interface {
+	getTVShowCastRes()
+}
+
+type GetTVShowCrewRes interface {
+	getTVShowCrewRes()
+}
+
+type GetTVShowEpisodesRes interface {
+	getTVShowEpisodesRes()
+}
+
+type GetTVShowGenresRes interface {
+	getTVShowGenresRes()
+}
+
+type GetTVShowNetworksRes interface {
+	getTVShowNetworksRes()
+}
+
+type GetTVShowNextEpisodeRes interface {
+	getTVShowNextEpisodeRes()
+}
+
+type GetTVShowRes interface {
+	getTVShowRes()
+}
+
+type GetTVShowSeasonsRes interface {
+	getTVShowSeasonsRes()
+}
+
+type GetTVShowWatchStatsRes interface {
+	getTVShowWatchStatsRes()
+}
+
 type GetTopRatedRes interface {
 	getTopRatedRes()
+}
+
+type GetUpcomingEpisodesRes interface {
+	getUpcomingEpisodesRes()
 }
 
 type GetUserActivityLogsRes interface {
@@ -247,6 +323,10 @@ type GetUserRolesRes interface {
 
 type GetUserSettingRes interface {
 	getUserSettingRes()
+}
+
+type GetUserTVStatsRes interface {
+	getUserTVStatsRes()
 }
 
 type GetWatchHistoryRes interface {
@@ -309,6 +389,10 @@ type ListSessionsRes interface {
 	listSessionsRes()
 }
 
+type ListTVShowsRes interface {
+	listTVShowsRes()
+}
+
 type ListUserOIDCLinksRes interface {
 	listUserOIDCLinksRes()
 }
@@ -337,6 +421,10 @@ type MarkAsWatchedRes interface {
 	markAsWatchedRes()
 }
 
+type MarkTVEpisodeWatchedRes interface {
+	markTVEpisodeWatchedRes()
+}
+
 type OidcAuthorizeRes interface {
 	oidcAuthorizeRes()
 }
@@ -351,6 +439,10 @@ type RefreshMovieMetadataRes interface {
 
 type RefreshSessionRes interface {
 	refreshSessionRes()
+}
+
+type RefreshTVShowMetadataRes interface {
+	refreshTVShowMetadataRes()
 }
 
 type RefreshTokenRes interface {
@@ -413,6 +505,10 @@ type SearchMoviesRes interface {
 	searchMoviesRes()
 }
 
+type SearchTVShowsRes interface {
+	searchTVShowsRes()
+}
+
 type SetupTOTPRes interface {
 	setupTOTPRes()
 }
@@ -439,6 +535,10 @@ type UpdateRolePermissionsRes interface {
 
 type UpdateServerSettingRes interface {
 	updateServerSettingRes()
+}
+
+type UpdateTVEpisodeProgressRes interface {
+	updateTVEpisodeProgressRes()
 }
 
 type UpdateUserPreferencesRes interface {
