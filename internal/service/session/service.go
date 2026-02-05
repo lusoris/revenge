@@ -143,15 +143,9 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 		return "", "", fmt.Errorf("failed to generate new refresh token: %w", err)
 	}
 
-	// Update session with new token hash
-	// NOTE: This would require an UpdateSessionTokenHash query
-	// For now, we'll create a new session and revoke the old one
-	reason := "Refresh token rotation"
-	if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
-		return "", "", fmt.Errorf("failed to revoke old session: %w", err)
-	}
-
-	// Create new session with same metadata
+	// Create new session first with same metadata
+	// IMPORTANT: Create before revoking old session to avoid leaving user without a session
+	// if creation fails. If revocation fails after creation, user still has valid new session.
 	var deviceName, userAgent *string
 	var ipAddr *netip.Addr
 
@@ -178,6 +172,14 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 	})
 	if err != nil {
 		return "", "", fmt.Errorf("failed to create refreshed session: %w", err)
+	}
+
+	// Revoke old session only after new one is created successfully
+	// If revocation fails, we don't fail the operation since new session is valid
+	reason := "Refresh token rotation"
+	if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
+		// Log error but don't fail - new session is already valid
+		s.logger.Warn("failed to revoke old session during refresh", zap.Error(err), zap.String("session_id", session.ID.String()))
 	}
 
 	s.logger.Info("Session refreshed", zap.String("user_id", session.UserID.String()))

@@ -260,4 +260,124 @@ if err != nil {
 
 ---
 
-**Next Bug**: A7.1.3 - Session Refresh Logic
+## A7.1.3: Incorrect Operation Order in Session Refresh
+
+**Status**: ✅ FIXED
+**Date**: 2026-02-05
+**Priority**: P1 (High - User Experience / Security)
+**Category**: Security / Data Integrity
+
+### Bug Description
+
+Session refresh had operations in wrong order: it revoked the old session BEFORE creating the new one. If CreateSession failed after RevokeSession succeeded, the user would be left without any valid session, forcing them to log in again.
+
+**Operation Flow (Before Fix)**:
+1. Get old session by refresh token
+2. Generate new tokens
+3. **Revoke old session** ← Done first
+4. **Create new session** ← Done second
+5. If step 4 fails, user has no session!
+
+### Root Cause
+
+The RefreshSession method (lines 149-181) performed operations in non-resilient order. The old session was revoked (line 150) before the new session was created (line 169), violating the principle of "create before destroy" for critical resources.
+
+### Fix Implemented
+
+**Approach**: Reorder operations to create new session first, then revoke old session only if new one succeeded.
+
+**New Operation Flow**:
+1. Get old session by refresh token
+2. Generate new tokens
+3. **Create new session first** ← Done first
+4. **Revoke old session only if creation succeeded** ← Done second
+5. If revocation fails, log error but don't fail (new session is valid)
+
+**Changes**:
+1. Moved CreateSession block before RevokeSession block
+2. Changed RevokeSession error handling from fail to warn
+3. Added comments explaining the importance of operation order
+4. Added error logging with zap.Warn for revocation failures
+
+### Implementation Details
+
+**Before (Problematic Order)**:
+```go
+// Revoke old session first
+if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
+    return "", "", fmt.Errorf("failed to revoke old session: %w", err)
+}
+
+// Create new session second
+_, err = s.repo.CreateSession(ctx, CreateSessionParams{...})
+if err != nil {
+    return "", "", fmt.Errorf("failed to create refreshed session: %w", err)
+}
+```
+
+**After (Resilient Order)**:
+```go
+// Create new session first
+_, err = s.repo.CreateSession(ctx, CreateSessionParams{...})
+if err != nil {
+    return "", "", fmt.Errorf("failed to create refreshed session: %w", err)
+}
+
+// Revoke old session only after new one exists
+if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
+    // Log but don't fail - new session is valid
+    s.logger.Warn("failed to revoke old session during refresh",
+        zap.Error(err), zap.String("session_id", session.ID.String()))
+}
+```
+
+### Files Changed
+
+1. **internal/service/session/service.go**
+   - Reordered RefreshSession method operations (lines 146-185)
+   - Moved CreateSession before RevokeSession
+   - Changed RevokeSession error handling from return error to log warning
+   - Added explanatory comments about operation order
+
+### Testing
+
+**Manual Testing**:
+- Verify session refresh succeeds normally
+- Verify user keeps new session even if revocation fails
+- Verify error is logged when revocation fails
+
+**Integration Test Required**: ⚠️ PENDING
+- Test CreateSession failure doesn't leave user without session (no longer possible with fix)
+- Test RevokeSession failure doesn't prevent refresh success
+- Verify old session is revoked in normal case
+
+### Impact
+
+**Before**:
+- CreateSession failure left user without any valid session
+- User forced to log in again after refresh failure
+- Poor user experience during transient errors
+- Unnecessary authentication loops
+
+**After**:
+- User always gets new session or keeps old session (atomic from user perspective)
+- CreateSession failure: old session still valid, user not logged out
+- RevokeSession failure: new session valid, old session eventually expires, logged for cleanup
+- Resilient to transient database errors
+
+**Edge Case Handling**:
+- If RevokeSession fails, old refresh token remains in database
+- Old session will expire naturally based on expiry time
+- Logged warning allows monitoring and manual cleanup if needed
+- User security not compromised (new session is valid and secure)
+
+**Related Security Issues**: A7.1.1 (User Registration), A7.1.2 (Avatar Upload)
+
+### References
+
+- Source: [TODO_A7_SECURITY_FIXES.md](TODO_A7_SECURITY_FIXES.md) lines 136-171
+- Report: [REPORT_2_IMPLEMENTATION_VERIFICATION.md](REPORT_2_IMPLEMENTATION_VERIFICATION.md)
+
+---
+
+**Next Bug**: A7.2 - Timing Attack in Login
