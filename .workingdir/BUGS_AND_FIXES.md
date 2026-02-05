@@ -561,4 +561,205 @@ func TestLogin_ConstantTime(t *testing.T) {
 
 ---
 
-**Next Bug**: A7.3 - Goroutine Leaks in Notification Dispatcher
+## A7.3: Goroutine Leaks in Notification Dispatcher
+
+**Status**: ✅ FIXED
+**Date**: 2026-02-05
+**Priority**: P1 (High - Resource Management)
+**Category**: Resource Management / Memory Leaks
+
+### Bug Description
+
+The Notification Dispatcher spawned goroutines for async notification delivery without tracking them or waiting for completion during shutdown. This caused:
+- Goroutine leaks on application shutdown
+- Potential data loss (notifications in-flight lost)
+- Resource exhaustion (memory, file descriptors) over time
+- Inability to perform graceful shutdown
+
+**Leak Pattern**:
+```go
+// Dispatch asynchronously
+go func() {
+    for _, agent := range agents {
+        // Send notification...
+    }
+}() // Goroutine not tracked or waited for
+```
+
+### Root Cause
+
+The `Dispatch` method (lines 116-137) spawned a goroutine to send notifications asynchronously but had no mechanism to:
+1. Track active goroutines
+2. Signal goroutines to stop during shutdown
+3. Wait for goroutines to complete
+4. Prevent new goroutines from starting during shutdown
+
+This is a classic resource leak pattern where resources are allocated but never properly released.
+
+### Fix Implemented
+
+**Approach**: Add goroutine tracking with `sync.WaitGroup` and graceful shutdown with stop channel.
+
+**Components Added**:
+1. `sync.WaitGroup` - Track active goroutines
+2. `chan struct{}` (stopCh) - Signal shutdown to goroutines
+3. `Close()` method - Graceful shutdown implementation
+4. Shutdown checks in goroutine loop
+
+**Implementation**:
+```go
+type Dispatcher struct {
+    mu     sync.RWMutex
+    agents map[string]Agent
+    logger *slog.Logger
+    wg     sync.WaitGroup   // Track goroutines
+    stopCh chan struct{}    // Signal shutdown
+}
+
+func (d *Dispatcher) Dispatch(ctx context.Context, event *Event) error {
+    // ...
+
+    d.wg.Add(1)  // Increment counter before spawning
+    go func() {
+        defer d.wg.Done()  // Decrement when done
+
+        for _, agent := range agents {
+            // Check for shutdown signal
+            select {
+            case <-d.stopCh:
+                return  // Stop processing
+            default:
+            }
+
+            // Send notification...
+        }
+    }()
+
+    return nil
+}
+
+func (d *Dispatcher) Close() error {
+    close(d.stopCh)  // Signal all goroutines
+    d.wg.Wait()      // Wait for completion
+    return nil
+}
+```
+
+### Files Changed
+
+1. **internal/service/notification/dispatcher.go**
+   - Added `wg sync.WaitGroup` field to Dispatcher struct
+   - Added `stopCh chan struct{}` field to Dispatcher struct
+   - Updated `NewDispatcher` to initialize stopCh
+   - Modified `Dispatch` to track goroutines with WaitGroup
+   - Added shutdown signal check in goroutine loop
+   - Implemented `Close()` method for graceful shutdown
+
+### Implementation Details
+
+**Goroutine Tracking**:
+```go
+d.wg.Add(1)              // Increment before spawn
+go func() {
+    defer d.wg.Done()    // Decrement when complete
+    // ... work ...
+}()
+```
+
+**Shutdown Signal**:
+```go
+for _, agent := range agents {
+    select {
+    case <-d.stopCh:
+        d.logger.Info("dispatcher shutting down, skipping remaining notifications")
+        return  // Stop loop, defer will call wg.Done()
+    default:
+    }
+    // Process agent...
+}
+```
+
+**Graceful Shutdown**:
+```go
+func (d *Dispatcher) Close() error {
+    d.logger.Info("shutting down notification dispatcher")
+    close(d.stopCh)         // Signal all goroutines to stop
+    d.wg.Wait()             // Block until all complete
+    d.logger.Info("notification dispatcher shutdown complete")
+    return nil
+}
+```
+
+### Testing
+
+**Manual Testing**:
+- Start application, trigger notifications
+- Shutdown application
+- Verify all goroutines complete before exit
+- Verify no goroutine leaks with pprof
+
+**Integration Test Required**: ⚠️ PENDING
+```go
+func TestDispatcher_GracefulShutdown(t *testing.T) {
+    // Send notifications
+    // Call Close()
+    // Verify all goroutines completed
+    // Verify no leaks
+}
+```
+
+### Integration Notes
+
+**fx Lifecycle Hook** (when notification service is wired up):
+```go
+fx.Module("notification",
+    fx.Provide(func(logger *slog.Logger) *notification.Dispatcher {
+        return notification.NewDispatcher(logger)
+    }),
+    fx.Invoke(func(lc fx.Lifecycle, dispatcher *notification.Dispatcher) {
+        lc.Append(fx.Hook{
+            OnStop: func(ctx context.Context) error {
+                return dispatcher.Close()  // Called on app shutdown
+            },
+        })
+    }),
+)
+```
+
+### Impact
+
+**Before**:
+- Goroutines spawned but never tracked
+- No way to wait for completion
+- Graceful shutdown impossible
+- Potential notification data loss
+- Resource leaks over time
+
+**After**:
+- All goroutines tracked with WaitGroup
+- Stop signal allows early termination
+- Graceful shutdown via Close() method
+- In-flight notifications complete or cleanly cancelled
+- No resource leaks
+
+**Shutdown Behavior**:
+1. Application calls `dispatcher.Close()`
+2. Close() sends stop signal via `close(stopCh)`
+3. All goroutines check `<-stopCh` before processing next agent
+4. Goroutines exit loop, call `defer wg.Done()`
+5. `wg.Wait()` blocks until all goroutines complete
+6. Close() returns, shutdown continues
+
+**Performance**: No performance impact during normal operation, cleaner shutdown
+
+**Related Issues**: General resource management, graceful shutdown patterns
+
+### References
+
+- Source: [TODO_A7_SECURITY_FIXES.md](TODO_A7_SECURITY_FIXES.md) lines 226-288
+- Report: [REPORT_2_IMPLEMENTATION_VERIFICATION.md](REPORT_2_IMPLEMENTATION_VERIFICATION.md)
+- Pattern: Go sync.WaitGroup for goroutine tracking
+
+---
+
+**Next Bug**: A7.4 - Password Reset Information Disclosure

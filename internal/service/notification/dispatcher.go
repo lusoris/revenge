@@ -13,6 +13,8 @@ type Dispatcher struct {
 	mu     sync.RWMutex
 	agents map[string]Agent
 	logger *slog.Logger
+	wg     sync.WaitGroup   // Track goroutines for graceful shutdown
+	stopCh chan struct{}    // Signal shutdown to goroutines
 }
 
 // NewDispatcher creates a new notification dispatcher
@@ -23,6 +25,7 @@ func NewDispatcher(logger *slog.Logger) *Dispatcher {
 	return &Dispatcher{
 		agents: make(map[string]Agent),
 		logger: logger.With("component", "notification_dispatcher"),
+		stopCh: make(chan struct{}),
 	}
 }
 
@@ -112,9 +115,20 @@ func (d *Dispatcher) Dispatch(ctx context.Context, event *Event) error {
 	}
 	d.mu.RUnlock()
 
-	// Dispatch asynchronously
+	// Dispatch asynchronously with goroutine tracking for graceful shutdown
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
+
 		for _, agent := range agents {
+			// Check for shutdown signal before processing each agent
+			select {
+			case <-d.stopCh:
+				d.logger.Info("dispatcher shutting down, skipping remaining notifications")
+				return
+			default:
+			}
+
 			// Create new context with timeout for each agent
 			agentCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
@@ -245,6 +259,22 @@ func (d *Dispatcher) TestAgent(ctx context.Context, agentName string) (*Notifica
 
 	result.Success = true
 	return result, nil
+}
+
+// Close gracefully shuts down the dispatcher by signaling all goroutines
+// to stop and waiting for them to complete. This prevents goroutine leaks
+// and ensures all in-flight notifications are processed or cancelled cleanly.
+func (d *Dispatcher) Close() error {
+	d.logger.Info("shutting down notification dispatcher")
+
+	// Signal all goroutines to stop
+	close(d.stopCh)
+
+	// Wait for all goroutines to complete
+	d.wg.Wait()
+
+	d.logger.Info("notification dispatcher shutdown complete")
+	return nil
 }
 
 // Ensure Dispatcher implements Service interface
