@@ -47,33 +47,33 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
 	github.com/govalues/decimal v0.1.36
-	github.com/hashicorp/go-hclog v1.6.2
+	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.3
 	github.com/hashicorp/raft-boltdb v0.0.0-20251103221153-05f9dd7a5148
 	github.com/imroc/req/v3 v3.57.0
 	github.com/jackc/pgx/v5 v5.8.0
-	github.com/lmittmann/tint v1.1.2
+	github.com/lmittmann/tint v1.1.3
 	github.com/maypok86/otter/v2 v2.3.0
 	github.com/ogen-go/ogen v1.18.0
 	github.com/pquerna/otp v1.5.0
 	github.com/prometheus/client_golang v1.23.2
 	github.com/redis/rueidis v1.0.71
 	github.com/redis/rueidis/mock v1.0.71
-	github.com/riverqueue/river v0.26.0
-	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.26.0
-	github.com/riverqueue/river/rivertype v0.26.0
+	github.com/riverqueue/river v0.30.2
+	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.30.2
+	github.com/riverqueue/river/rivertype v0.30.2
 	github.com/stretchr/testify v1.11.1
 	github.com/testcontainers/testcontainers-go v0.40.0
 	github.com/testcontainers/testcontainers-go/modules/postgres v0.40.0
 	github.com/typesense/typesense-go/v2 v2.0.0
-	go.opentelemetry.io/otel v1.39.0
-	go.opentelemetry.io/otel/metric v1.39.0
-	go.opentelemetry.io/otel/trace v1.39.0
+	go.opentelemetry.io/otel v1.40.0
+	go.opentelemetry.io/otel/metric v1.40.0
+	go.opentelemetry.io/otel/trace v1.40.0
 	go.uber.org/fx v1.24.0
 	go.uber.org/mock v0.6.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/oauth2 v0.34.0
-	golang.org/x/time v0.12.0
+	golang.org/x/time v0.14.0
 )
 
 require (
@@ -168,8 +168,8 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.57.1 // indirect
 	github.com/refraction-networking/utls v1.8.1 // indirect
-	github.com/riverqueue/river/riverdriver v0.26.0 // indirect
-	github.com/riverqueue/river/rivershared v0.26.0 // indirect
+	github.com/riverqueue/river/riverdriver v0.30.2 // indirect
+	github.com/riverqueue/river/rivershared v0.30.2 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/shirou/gopsutil/v4 v4.25.6 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
@@ -177,7 +177,7 @@ require (
 	github.com/sony/gobreaker v0.5.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
