@@ -118,7 +118,16 @@
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "WebFetch(domain:golangci-lint.run)"
+      "WebFetch(domain:golangci-lint.run)",
+      "Bash(make ogen:*)",
+      "Bash(git status:*)",
+      "WebFetch(domain:req.cool)",
+      "Bash(pacman -Ss:*)",
+      "Bash(sudo pacman:*)",
+      "Bash(xargs sed:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go vet:*)",
+      "Bash(git reset:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go get:*)"
     ]
   }
 }
