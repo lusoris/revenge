@@ -9,12 +9,7 @@ RUN apk add --no-cache \
     gcc \
     musl-dev \
     pkgconfig \
-    ffmpeg-dev \
-    libavcodec-dev \
-    libavformat-dev \
-    libavutil-dev \
-    libswscale-dev \
-    libswresample-dev
+    ffmpeg-dev
 
 WORKDIR /build
 
