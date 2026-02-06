@@ -74,24 +74,58 @@ jobs:
           helm package charts/revenge
           helm push revenge-0.0.0-dev.${SHORT_SHA}.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
 
-  # Prune old dev images to avoid GHCR bloat
+  # Prune old dev images to avoid GHCR bloat (keeps last 5 tagged dev builds)
   cleanup:
     name: Cleanup Old Dev Images
     runs-on: ubuntu-latest
     needs: [docker, helm-dev]
     steps:
+      - name: Prune old dev versions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const isOrg = context.payload.repository?.owner?.type === 'Organization';
+            const ownerKey = isOrg ? 'org' : 'username';
+            const listFn = isOrg
+              ? github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg
+              : github.rest.packages.getAllPackageVersionsForPackageOwnedByUser;
+            const deleteFn = isOrg
+              ? github.rest.packages.deletePackageVersionForOrg
+              : github.rest.packages.deletePackageVersionForUser;
+
+            async function prune(packageName, tagPrefix, keep) {
+              const versions = await github.paginate(listFn, {
+                package_type: 'container',
+                package_name: packageName,
+                [ownerKey]: owner,
+              });
+
+              const devVersions = versions
+                .filter(v => v.metadata?.container?.tags?.some(t => t.startsWith(tagPrefix)))
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+              const toDelete = devVersions.slice(keep);
+              for (const v of toDelete) {
+                console.log(`${packageName}: delete ${v.metadata?.container?.tags?.join(', ')}`);
+                await deleteFn({
+                  package_type: 'container',
+                  package_name: packageName,
+                  [ownerKey]: owner,
+                  package_version_id: v.id,
+                });
+              }
+              console.log(`${packageName}: kept ${Math.min(keep, devVersions.length)}, deleted ${toDelete.length}`);
+            }
+
+            await prune('revenge', 'dev-', 5);
+            await prune('charts/revenge', '0.0.0-dev.', 5);
+
+      # Clean up orphaned untagged manifests (multi-arch platform layers)
       - uses: actions/delete-package-versions@v5
         with:
           package-name: revenge
           package-type: container
           min-versions-to-keep: 10
-          delete-only-untagged-versions: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/delete-package-versions@v5
-        with:
-          package-name: charts/revenge
-          package-type: container
-          min-versions-to-keep: 5
           delete-only-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
