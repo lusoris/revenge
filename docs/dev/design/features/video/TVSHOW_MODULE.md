@@ -1,288 +1,262 @@
-## Table of Contents
+# TV Show Content Module
 
-- [TV Show Module](#tv-show-module)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
+<!-- DESIGN: features/video -->
 
-# TV Show Module
+**Package**: `internal/content/tvshow`
+**fx Module**: `tvshow.Module` + `tvshowjobs.Module`
 
-<!-- DESIGN: features/video, README, test_output_claude, test_output_wiki -->
-
-
-**Created**: 2026-01-31
-**Status**: 🟡 In Progress
-**Category**: feature
-
-
-> Content module for TV Shows, Seasons, Episodes
-
-> TV series, seasons, and episodes management
+> Hierarchical TV show management (Series > Seasons > Episodes > Files) with TMDb metadata, library scanning, file matching, and watch progress tracking
 
 ---
 
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | - |
-| Sources | ✅ | - |
-| Instructions | ✅ | - |
-| Code | 🟡 Partial | - |
-| Linting | 🔴 | - |
-| Unit Testing | 🔴 | - |
-| Integration Testing | 🔴 | - |
-
-**Overall**: 🟡 In Progress
-
-
----
-
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Layer1["Layer 1"]
-        node1(["Client<br/>(Web/App)"])
-        node2[["API Handler<br/>(ogen)"]]
-        node3[["Service<br/>(Logic)"]]
-    end
-
-    subgraph Layer2["Layer 2"]
-        node4["Repository<br/>(sqlc)"]
-        node5[["Metadata<br/>Service"]]
-        node6[("Cache<br/>(otter)")]
-    end
-
-    subgraph Layer3["Layer 3"]
-        node7[("PostgreSQL<br/>(pgx)")]
-        node8["Sonarr<br/>(PRIMARY)"]
-        node9[("TheTVDB<br/>(fallback)")]
-    end
-
-    subgraph Layer4["Layer 4"]
-        node10[("TheTVDB<br/>(external)")]
-    end
-
-    %% Connections
-    node3 --> node4
-    node6 --> node7
-    node9 --> node10
-
-    %% Styling
-    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
-    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
-    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
-    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
-```
-
-### Database Schema
-
-**Schema**: `public`
-
-<!-- Schema diagram -->
-
-### Module Structure
+## Module Structure
 
 ```
-internal/content/tv_show/
-├── module.go              # fx module definition
-├── repository.go          # Database operations
-├── service.go             # Business logic
-├── handler.go             # HTTP handlers (ogen)
-├── types.go               # Domain types
-└── tv_show_test.go
+internal/content/tvshow/
+├── service.go             # Service interface (89 methods) + tvService implementation
+├── repository.go          # Repository interface (106 methods)
+├── repository_postgres.go # PostgreSQL implementation (pgxpool + sqlc tvshowdb.Queries)
+├── types.go               # Domain types: Series, Season, Episode, EpisodeFile, credits, etc.
+├── metadata_provider.go   # MetadataProvider interface (8 methods)
+├── module.go              # fx.Module("tvshow") wiring
+├── adapters/
+│   ├── metadata_adapter.go  # TMDb TV client setup (4 req/sec, burst 10, 17 genre mappings)
+│   └── scanner_adapter.go   # TVShowFileParser (5 regex patterns: SxxExx, daily, legacy)
+├── jobs/
+│   ├── module.go            # fx.Module("tvshowjobs"), RegisterWorkers
+│   └── jobs.go              # 5 workers: library_scan, metadata_refresh, file_match, search_index, series_refresh
+└── db/                      # sqlc-generated (tvshowdb package)
 ```
 
-### Component Interaction
+## Domain Types
 
-<!-- Component interaction diagram -->
-## Implementation
+### Series
 
-### File Structure
+Hierarchical root entity with relations:
 
-```
-internal/content/tv_show/
-├── module.go              # fx.Module with all providers
-├── repository.go          # Database layer (sqlc generated)
-├── repository_test.go     # Repository tests
-├── service.go             # Business logic
-├── service_test.go        # Service tests (mocks)
-├── handler.go             # HTTP handlers (ogen generated)
-├── handler_test.go        # Handler tests (httptest)
-├── types.go               # Domain types
-├── cache.go               # Caching logic
-├── cache_test.go          # Cache tests
-└── metadata/
-    ├── provider.go        # Interface: MetadataProvider
-    ├── thetvdb.go         # TheTVDB implementation
-    ├── thetvdb_test.go    # TheTVDB integration tests
-    ├── tmdb.go            # TMDb fallback
-    └── enricher.go        # Enrichment orchestration
+| Field Group | Fields |
+|-------------|--------|
+| Core | ID, Title, OriginalTitle, OriginalLanguage, Tagline, Overview |
+| External IDs | TMDbID, TVDbID, IMDbID, SonarrID |
+| Show Info | Status (Returning/Ended/Canceled), Type (Scripted/Reality/Documentary), FirstAirDate, LastAirDate |
+| Media | PosterPath, BackdropPath, VoteAverage, VoteCount, Popularity, TrailerURL, Homepage |
+| Stats | TotalSeasons, TotalEpisodes |
+| Timestamps | CreatedAt, UpdatedAt, MetadataUpdatedAt |
+| i18n | TitlesI18n, TaglinesI18n, OverviewsI18n (`map[string]string`), AgeRatings (`map[string]map[string]string`) |
+| Relations | Seasons, Genres, Credits, Networks (populated on demand) |
 
-migrations/
-└── 002_tv_shows.sql       # Database schema migration
+Methods: `GetTitle(lang)`, `GetTagline(lang)`, `GetOverview(lang)`, `GetAgeRating(country, system)`, `GetAvailableLanguages()`, `GetAvailableAgeRatingCountries()`, `IsEnded()`
 
-api/
-└── openapi.yaml           # OpenAPI spec (TV endpoints)
-```
+### Season
 
+| Field Group | Fields |
+|-------------|--------|
+| Core | ID, SeriesID, TMDbID, SeasonNumber, Name, Overview, EpisodeCount |
+| Media | PosterPath, AirDate, VoteAverage |
+| i18n | NamesI18n, OverviewsI18n |
+| Relations | Episodes (populated on demand) |
 
-### Key Interfaces
+Methods: `GetName(lang)`, `GetOverview(lang)`, `IsSpecials()` (season 0)
+
+### Episode
+
+| Field Group | Fields |
+|-------------|--------|
+| Core | ID, SeriesID, SeasonID, SeasonNumber, EpisodeNumber, Title, Overview |
+| External IDs | TMDbID, TVDbID, IMDbID |
+| Media | AirDate, Runtime, VoteAverage, VoteCount, StillPath, ProductionCode |
+| i18n | TitlesI18n, OverviewsI18n |
+| Relations | Files, Credits |
+
+Methods: `GetTitle(lang)`, `GetOverview(lang)`, `EpisodeCode()` (e.g. "S01E05"), `HasAired()`
+
+### Supporting Types
+
+| Type | Key Fields |
+|------|-----------|
+| EpisodeFile | FilePath, Resolution, VideoCodec, AudioCodec, BitrateKbps, DurationSeconds, AudioLanguages, SubtitleLanguages, SonarrFileID |
+| SeriesCredit | TMDbPersonID, Name, CreditType (cast/crew), Character, Job, Department, CastOrder |
+| EpisodeCredit | Same as SeriesCredit but for individual episodes (guest stars) |
+| SeriesGenre | TMDbGenreID, Name |
+| Network | TMDbID, Name, LogoPath, OriginCountry |
+| EpisodeWatched | UserID, EpisodeID, ProgressSeconds, DurationSeconds, IsCompleted, WatchCount |
+| SeriesWatchStats | WatchedCount, InProgressCount, TotalWatches, TotalEpisodes + `CompletionPercent()` |
+| UserTVStats | SeriesCount, EpisodesWatched, EpisodesInProgress, TotalWatches |
+| ContinueWatchingItem | Series + last episode info + progress |
+| EpisodeWithSeriesInfo | Episode + SeriesTitle + SeriesPosterPath |
+| SeasonWithEpisodeCount | Season + ActualEpisodeCount |
+
+## Service Interface
+
+89 exported methods on the `Service` interface, organized by entity:
+
+| Category | Count | Key Methods |
+|----------|-------|-------------|
+| Series CRUD | 14 | Get, GetByTMDbID/TVDbID/SonarrID, List, Count, Search, SearchAnyLanguage, RecentlyAdded, ByGenre, ByNetwork, ByStatus, Create, Update, Delete |
+| Seasons | 9 | Get, GetByNumber, ListBySeries, ListWithEpisodeCount, Create, Upsert, Update, Delete, DeleteBySeries |
+| Episodes | 16 | Get, GetByTMDbID, GetByNumber, ListBySeries/Season/SeasonNumber, Recent, Upcoming, Count, Create, Upsert, Update, Delete, DeleteBySeason/Series |
+| Files | 8 | Get, GetByPath/SonarrID, ListByEpisode, Create, Update, Delete, DeleteByEpisode |
+| Credits | 8 | CreateSeries/EpisodeCredit, ListSeriesCast/Crew, ListEpisodeGuestStars/Crew, DeleteSeries/EpisodeCredits |
+| Genres | 3 | Add, List, Delete |
+| Networks | 6 | Create, Get, GetByTMDbID, ListBySeries, AddToSeries, DeleteFromSeries |
+| Watch Progress | 12 | CreateOrUpdate, MarkWatched, Get, Delete, DeleteBySeries, ContinueWatching, WatchedBySeries/User, SeriesStats, UserStats, NextUnwatched |
+| Metadata | 3 | RefreshSeriesMetadata, RefreshSeasonMetadata, RefreshEpisodeMetadata |
+
+Implementation: `tvService` struct with `repo Repository` + `metadataProvider MetadataProvider`.
+
+## Repository Interface
+
+106 exported methods on the `Repository` interface. Same categories as Service but includes additional database-level operations (UpdateSeriesStats, Upsert variants). Implementation: `postgresRepository` wrapping `pgxpool.Pool` + sqlc `tvshowdb.Queries`.
+
+Conversion helpers: `dbSeriesToSeries()`, `dbSeasonToSeason()`, `dbEpisodeToEpisode()`, `dbEpisodeFileToEpisodeFile()`, etc. Same JSON marshaling patterns as movie module for i18n fields.
+
+## MetadataProvider Interface
 
 ```go
-// Repository defines database operations for TV shows
-type Repository interface {
-    // Series CRUD
-    GetShow(ctx context.Context, id uuid.UUID) (*TVShow, error)
-    ListShows(ctx context.Context, filters ListFilters) ([]TVShow, error)
-    CreateShow(ctx context.Context, show *TVShow) error
-    UpdateShow(ctx context.Context, show *TVShow) error
-    DeleteShow(ctx context.Context, id uuid.UUID) error
-
-    // Seasons
-    GetSeason(ctx context.Context, showID uuid.UUID, seasonNum int) (*Season, error)
-    ListSeasons(ctx context.Context, showID uuid.UUID) ([]Season, error)
-
-    // Episodes
-    GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
-    ListEpisodes(ctx context.Context, showID uuid.UUID, seasonNum int) ([]Episode, error)
-    GetNextUnwatched(ctx context.Context, userID, showID uuid.UUID) (*Episode, error)
-
-    // Watch tracking
-    MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error
-    GetWatchProgress(ctx context.Context, userID, showID uuid.UUID) (*Progress, error)
-}
-
-// Service defines business logic for TV shows
-type Service interface {
-    // Show operations
-    GetShow(ctx context.Context, id uuid.UUID) (*TVShow, error)
-    SearchShows(ctx context.Context, query string, filters SearchFilters) ([]TVShow, error)
-    EnrichShow(ctx context.Context, id uuid.UUID) error
-
-    // Episode operations
-    GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
-    GetContinueWatching(ctx context.Context, userID uuid.UUID) ([]ContinueWatching, error)
-
-    // Watch progress
-    MarkWatched(ctx context.Context, userID, episodeID uuid.UUID) error
-    GetProgress(ctx context.Context, userID, showID uuid.UUID) (*Progress, error)
-}
-
-// MetadataProvider fetches TV show metadata from external sources
 type MetadataProvider interface {
-    GetShowByTVDBID(ctx context.Context, tvdbID int) (*ShowMetadata, error)
-    SearchShows(ctx context.Context, query string) ([]ShowMetadata, error)
-    GetSeasons(ctx context.Context, tvdbID int) ([]SeasonMetadata, error)
-    GetEpisodes(ctx context.Context, tvdbID int, season int) ([]EpisodeMetadata, error)
-    GetShowImages(ctx context.Context, tvdbID int) (*Images, error)
+    SearchSeries(ctx, query, year) ([]*Series, error)
+    EnrichSeries(ctx, series, opts...) error
+    EnrichSeason(ctx, season, seriesTMDbID, opts...) error
+    EnrichEpisode(ctx, episode, seriesTMDbID, opts...) error
+    GetSeriesCredits(ctx, seriesID, tmdbID) ([]SeriesCredit, error)
+    GetSeriesGenres(ctx, seriesID, tmdbID) ([]SeriesGenre, error)
+    GetSeriesNetworks(ctx, tmdbID) ([]Network, error)
+    ClearCache()
 }
 ```
 
+Implementation injected via `metadatafx` module as `TVShowMetadataAdapter`. Uses shared `metadata.BaseClient` with TMDb TV endpoints.
 
-### Dependencies
-**Go Dependencies**:
-- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
-- `github.com/google/uuid` - UUID generation
-- `github.com/maypok86/otter` - In-memory cache
-- `github.com/go-resty/resty/v2` - HTTP client for external APIs
-- `go.uber.org/fx` - Dependency injection
-- `github.com/riverqueue/river` - Background jobs
-- `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
+### TMDb Integration
 
-**External APIs** (priority order):
-- **Sonarr API v3** - PRIMARY metadata source + download automation
-- **TheTVDB API v4** - Supplementary metadata (via optional proxy/VPN)
-- **TMDb API v3** - Additional fallback
+Append-to-response queries for efficient fetching:
+- **Series**: `credits,images,content_ratings,external_ids,translations,alternative_titles`
+- **Season**: `credits,images,translations`
+- **Episode**: `credits,images,translations`
 
-See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
-priority chain (L1 cache → L2 cache → Arr → External APIs).
+17 TV genre mappings (Action & Adventure=10759, Animation=16, Comedy=35, Crime=80, Documentary=99, Drama=18, etc.)
 
-**Database**:
-- PostgreSQL 18+ with trigram extension
+Status mappings: "Returning Series", "Ended", "Canceled", "In Production", "Planned"
+Type mappings: "Scripted", "Reality", "Documentary", "Miniseries", "News", "Talk Show"
 
-## Configuration
+## File Parser
 
-### Environment Variables
+`TVShowFileParser` implements `scanner.FileParser` with 5 regex patterns:
 
-**Environment Variables**:
-- `REVENGE_TV_CACHE_TTL` - Cache TTL duration (default: 10m)
-- `REVENGE_TV_CACHE_SIZE` - Cache size in MB (default: 150)
-- `REVENGE_METADATA_THETVDB_API_KEY` - TheTVDB API key (required)
-- `REVENGE_METADATA_TMDB_API_KEY` - TMDb API key (required)
-- `REVENGE_SONARR_URL` - Sonarr instance URL (optional)
-- `REVENGE_SONARR_API_KEY` - Sonarr API key (optional)
+| Pattern | Example | Extracts |
+|---------|---------|----------|
+| SxxExx | `Breaking.Bad.S01E05.mkv` | season, episode, episode_title, series_year |
+| Season x Episode x | `Season 1 Episode 5` | season, episode |
+| Daily show | `2024.01.15` or `2024-01-15` | air_year, air_month, air_day |
+| Legacy x.xx | `1.05` or `1-05` | season, episode |
+| Multi-episode | `S01E05E06` | season, episode, end_episode |
 
+Also supports `ParseFromPath(filePath)` to extract series title from parent directory structure.
 
-### Config Keys
-**config.yaml keys**:
-```yaml
-tv:
-  cache:
-    ttl: 10m
-    size_mb: 150
+## Background Workers
 
-  metadata:
-    priority:
-      - sonarr     # PRIMARY: Local TheTVDB cache
-      - thetvdb    # Supplementary: Direct API (via proxy/VPN)
-      - tmdb       # Fallback
-    thetvdb:
-      api_key: ${REVENGE_METADATA_THETVDB_API_KEY}
-      proxy: tor   # Route through proxy/VPN (see HTTP_CLIENT service)
-    tmdb:
-      api_key: ${REVENGE_METADATA_TMDB_API_KEY}
-      proxy: tor
+5 River workers registered via `tvshowjobs.RegisterWorkers()`:
 
-  arr:
-    sonarr:
-      enabled: true       # Should be enabled for PRIMARY metadata
-      url: ${REVENGE_SONARR_URL}
-      api_key: ${REVENGE_SONARR_API_KEY}
-      sync_interval: 30m
-```
+| Worker | Kind | Queue | Timeout | Purpose |
+|--------|------|-------|---------|---------|
+| LibraryScanWorker | `tvshow_library_scan` | bulk | 30m | Scan directories, auto-create series/seasons/episodes |
+| MetadataRefreshWorker | `tvshow_metadata_refresh` | default | 15m | Refresh series/season/episode metadata (batch or targeted) |
+| FileMatchWorker | `tvshow_file_match` | default | 5m | Match individual file to episode, auto-create if needed |
+| SearchIndexWorker | `tvshow_search_index` | bulk | 10m | Stub (TV search not yet implemented) |
+| SeriesRefreshWorker | `tvshow_series_refresh` | default | 10m | Cascading refresh: series > seasons > episodes |
+
+### Library Scan Flow
+
+1. TVShowFileParser scans paths for video files
+2. For each file: check if already matched, skip if exists (unless Force)
+3. If AutoCreate enabled: search existing series > search TMDb > create series/season/episode/file
+4. Reports progress via River job client
+
+### Series Refresh Flow
+
+1. Refresh series metadata from TMDb
+2. If RefreshSeasons: iterate all seasons, refresh each
+3. If RefreshEpisodes: for each season, refresh all episodes
+4. Progress reported per season
 
 ## API Endpoints
 
-### Content Management
-<!-- API endpoints placeholder -->
+25 endpoints in `internal/api/tvshow_handlers.go` (ogen-generated types):
+
+**Series** (10):
+
+| Endpoint | Handler |
+|----------|---------|
+| `GET /tv` | ListTVShows |
+| `GET /tv/search` | SearchTVShows |
+| `GET /tv/recently-added` | GetRecentlyAddedTVShows |
+| `GET /tv/continue-watching` | GetTVContinueWatching |
+| `GET /tv/stats` | GetUserTVStats |
+| `GET /tv/recent-episodes` | GetRecentEpisodes |
+| `GET /tv/upcoming-episodes` | GetUpcomingEpisodes |
+| `GET /tv/{id}` | GetTVShow |
+| `GET /tv/{id}/seasons` | GetTVShowSeasons |
+| `GET /tv/{id}/episodes` | GetTVShowEpisodes |
+
+**Series Metadata & Relations** (5):
+
+| Endpoint | Handler |
+|----------|---------|
+| `GET /tv/{id}/cast` | GetTVShowCast |
+| `GET /tv/{id}/crew` | GetTVShowCrew |
+| `GET /tv/{id}/genres` | GetTVShowGenres |
+| `GET /tv/{id}/networks` | GetTVShowNetworks |
+| `POST /tv/{id}/refresh` | RefreshTVShowMetadata |
+
+**Watch Stats** (2):
+
+| Endpoint | Handler |
+|----------|---------|
+| `GET /tv/{id}/watch-stats` | GetTVShowWatchStats |
+| `GET /tv/{id}/next-episode` | GetTVShowNextEpisode |
+
+**Seasons & Episodes** (8):
+
+| Endpoint | Handler |
+|----------|---------|
+| `GET /tv/{id}/seasons/{seasonNumber}` | GetTVSeason |
+| `GET /tv/{id}/seasons/{seasonNumber}/episodes` | GetTVSeasonEpisodes |
+| `GET /tv/{id}/seasons/{sn}/episodes/{en}` | GetTVEpisode |
+| `GET /tv/{id}/seasons/{sn}/episodes/{en}/files` | GetTVEpisodeFiles |
+| `GET /tv/{id}/seasons/{sn}/episodes/{en}/progress` | GetTVEpisodeProgress |
+| `PUT /tv/{id}/seasons/{sn}/episodes/{en}/progress` | UpdateTVEpisodeProgress |
+| `DELETE /tv/{id}/seasons/{sn}/episodes/{en}/progress` | DeleteTVEpisodeProgress |
+| `POST /tv/{id}/seasons/{sn}/episodes/{en}/watched` | MarkTVEpisodeWatched |
+
+Converter functions in `tvshow_converters.go` bridge domain types to ogen API types.
+
+## Dependencies
+
+- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL (via repository)
+- `github.com/imroc/req/v3` - HTTP client for TMDb (via shared metadata.BaseClient)
+- `github.com/riverqueue/river` - Background job processing
+- `github.com/google/uuid` - UUID generation
+- `github.com/shopspring/decimal` - Decimal types for ratings
+- `go.uber.org/zap` - Structured logging
+- `go.uber.org/fx` - Dependency injection
+- Shared packages: `content/shared/scanner`, `content/shared/matcher`, `content/shared/metadata`, `content/shared/library`, `content/shared/jobs`
+
+## fx Wiring
+
+```go
+// tvshow.Module provides:
+fx.Provide(NewPostgresRepository)  // → Repository
+fx.Provide(provideService)         // → Service (repo + metadataProvider)
+
+// tvshowjobs.Module provides:
+fx.Provide(provideLibraryScanWorker, provideMetadataRefreshWorker,
+           provideFileMatchWorker, provideSearchIndexWorker, provideSeriesRefreshWorker)
+```
+
 ## Related Documentation
-### Design Documents
-- [01_ARCHITECTURE](../../architecture/ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/METADATA_SYSTEM.md)
-- [SONARR (PRIMARY metadata + downloads)](../../integrations/servarr/SONARR.md)
-- [THETVDB (supplementary metadata)](../../integrations/metadata/THETVDB.md)
-- [TMDB (fallback metadata)](../../integrations/metadata/TMDB.md)
-- [TRAKT (scrobbling + metadata enrichment)](../../integrations/scrobbling/TRAKT.md)
 
-### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [TheTVDB API](../../sources/apis/thetvdb.md) - Auto-resolved from thetvdb
-
+- [MOVIE_MODULE.md](MOVIE_MODULE.md) - Movie content module (similar architecture)
+- [../../architecture/METADATA_SYSTEM.md](../../architecture/METADATA_SYSTEM.md) - Provider chain and caching
+- [../../infrastructure/JOBS.md](../../infrastructure/JOBS.md) - River job queue setup
+- [../../infrastructure/CACHE.md](../../infrastructure/CACHE.md) - L1/L2 caching infrastructure
+- [../../services/LIBRARY.md](../../services/LIBRARY.md) - Library management service

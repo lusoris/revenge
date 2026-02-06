@@ -1,266 +1,257 @@
-## Table of Contents
+# Movie Content Module
 
-- [Movie Module](#movie-module)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
+<!-- DESIGN: features/video -->
 
-# Movie Module
+**Package**: `internal/content/movie`
+**fx Module**: `movie.Module` + `moviejobs.Module`
 
-<!-- DESIGN: features/video, README, test_output_claude, test_output_wiki -->
-
-
-**Created**: 2026-01-31
-**Status**: ✅ Complete
-**Category**: feature
-
-
-> Content module for Movies, Collections
-
-> Movie content management with metadata enrichment
+> Movie content management with TMDb metadata, library scanning, file matching, search indexing, and watch progress tracking
 
 ---
 
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ Complete | - |
-| Sources | ✅ Complete | - |
-| Instructions | 🟡 Partial | - |
-| Code | � Partial | Backend foundation complete (DB, SQLC, Repository, Service, Handler, API) |
-| Linting | 🔴 Not Started | - |
-| Unit Testing | 🟡 Partial | - |
-| Integration Testing | 🔴 Not Started | - |
-
-**Overall**: 🟡 In Progress
-
-
----
-
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Layer1["Layer 1"]
-        node1(["Client<br/>(Web/App)"])
-        node2[["API Handler<br/>(ogen)"]]
-        node3[["Service<br/>(Logic)"]]
-    end
-
-    subgraph Layer2["Layer 2"]
-        node4["Repository<br/>(sqlc)"]
-        node5[["Metadata<br/>Service"]]
-        node6[("Cache<br/>(otter)")]
-    end
-
-    subgraph Layer3["Layer 3"]
-        node7[("PostgreSQL<br/>(pgx)")]
-        node8["Radarr<br/>(PRIMARY)"]
-        node9[("TMDb<br/>(fallback)")]
-    end
-
-    subgraph Layer4["Layer 4"]
-        node10[("TMDb<br/>(external)")]
-    end
-
-    %% Connections
-    node3 --> node4
-    node6 --> node7
-    node9 --> node10
-
-    %% Styling
-    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
-    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
-    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
-    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
-```
-
-### Database Schema
-
-**Schema**: `public`
-
-<!-- Schema diagram -->
-
-### Module Structure
+## Module Structure
 
 ```
 internal/content/movie/
-├── module.go              # fx module definition
-├── repository.go          # Database operations
-├── service.go             # Business logic
-├── handler.go             # HTTP handlers (ogen)
-├── types.go               # Domain types
-└── movie_test.go
+├── service.go             # Service interface (23 methods) + movieService implementation
+├── repository.go          # Repository interface (40 methods)
+├── repository_postgres.go # PostgreSQL implementation (pgxpool + sqlc moviedb.Queries)
+├── handler.go             # Internal handler (17 methods, called by API layer)
+├── types.go               # Domain types: Movie, MovieFile, MovieCredit, MovieCollection, etc.
+├── cached_service.go      # CachedService decorator (13 cached methods, L1+L2 cache)
+├── library_service.go     # LibraryService: scan, match, refresh, probe
+├── library_scanner.go     # Scanner wrapping shared FilesystemScanner
+├── library_matcher.go     # Matcher with confidence scoring (title 60% + year 40%)
+├── mediainfo.go           # FFmpeg media probing via go-astiav (Unix/Linux/macOS)
+├── mediainfo_types.go     # MediaInfo, AudioStreamInfo, SubtitleStreamInfo types
+├── mediainfo_windows.go   # Windows stub (no FFmpeg)
+├── metadata_provider.go   # MetadataProvider interface (4 methods)
+├── errors.go              # 5 sentinel errors
+├── module.go              # fx.Module("movie") wiring
+├── adapters/
+│   ├── metadata_adapter.go  # TMDb client setup (4 req/sec, burst 10)
+│   └── scanner_adapter.go   # MovieFileParser (regex: "Title (YEAR)", "Title.YEAR")
+├── moviejobs/
+│   ├── module.go            # fx.Module("moviejobs"), RegisterWorkers
+│   ├── library_scan.go      # MovieLibraryScanWorker (30m timeout)
+│   ├── metadata_refresh.go  # MovieMetadataRefreshWorker (5m timeout)
+│   ├── file_match.go        # MovieFileMatchWorker (5m timeout)
+│   └── search_index.go      # MovieSearchIndexWorker (15m timeout)
+└── db/                      # sqlc-generated (moviedb package)
 ```
 
-### Component Interaction
+## Domain Types
 
-<!-- Component interaction diagram -->
-## Implementation
+### Movie
 
-### File Structure
+19 fields + i18n maps:
 
-```
-internal/content/movie/
-├── module.go              # fx.Module with all providers
-├── repository.go          # Database layer
-├── repository_test.go     # Repository tests (testcontainers)
-├── service.go             # Business logic
-├── service_test.go        # Service tests (mocks)
-├── handler.go             # HTTP handlers
-├── handler_test.go        # Handler tests (httptest)
-├── types.go               # Domain types
-├── cache.go               # Caching logic
-├── cache_test.go          # Cache tests
-└── metadata/
-    ├── provider.go        # Interface: MetadataProvider
-    ├── tmdb.go            # TMDb implementation
-    ├── tmdb_test.go       # TMDb integration tests
-    └── enricher.go        # Enrichment orchestration
+| Field Group | Fields |
+|-------------|--------|
+| Core | ID, Title, OriginalTitle, Year, ReleaseDate, Runtime |
+| External IDs | TMDbID, IMDbID, RadarrID |
+| Metadata | Status, OriginalLanguage, Overview, Tagline, TrailerURL |
+| Media | PosterPath, BackdropPath, VoteAverage, VoteCount, Popularity, Budget, Revenue |
+| Timestamps | CreatedAt, UpdatedAt, LibraryAddedAt, MetadataUpdatedAt |
+| i18n | TitlesI18n, TaglinesI18n, OverviewsI18n (`map[string]string`), AgeRatings (`map[string]map[string]string`) |
 
-migrations/
-└── 001_movies.sql         # Database schema migration
+Methods: `GetTitle(lang)`, `GetTagline(lang)`, `GetOverview(lang)`, `GetAgeRating(country, system)`, `GetAvailableLanguages()`, `GetAvailableAgeRatingCountries()`
 
-api/
-└── openapi.yaml           # OpenAPI spec (movies endpoints)
-```
+### Supporting Types
 
+| Type | Key Fields |
+|------|-----------|
+| MovieFile | FilePath, Resolution, VideoCodec, AudioCodec, BitrateKbps, DurationSeconds, AudioLanguages, SubtitleLanguages, RadarrFileID |
+| MovieCredit | TMDbPersonID, Name, CreditType (cast/crew), Character, Job, Department, CastOrder |
+| MovieCollection | TMDbCollectionID, Name, Overview, PosterPath, BackdropPath |
+| MovieGenre | TMDbGenreID, Name |
+| MovieWatched | UserID, MovieID, ProgressSeconds, DurationSeconds, ProgressPercent, IsCompleted, WatchCount |
+| ContinueWatchingItem | Movie + progress fields + LastWatchedAt |
+| WatchedMovieItem | Movie + WatchCount + LastWatchedAt |
+| UserMovieStats | WatchedCount, InProgressCount, TotalWatches |
 
-### Key Interfaces
+### Errors
+
+`ErrMovieNotFound`, `ErrMovieFileNotFound`, `ErrProgressNotFound`, `ErrNotInCollection`, `ErrCollectionNotFound`
+
+## Service Interface
+
+23 exported methods on the `Service` interface:
+
+**Movie CRUD**: GetMovie, GetMovieByTMDbID, GetMovieByIMDbID, ListMovies, SearchMovies, ListRecentlyAdded, ListTopRated, CreateMovie, UpdateMovie, DeleteMovie
+
+**Files**: GetMovieFiles, CreateMovieFile, DeleteMovieFile
+
+**Credits & Genres**: GetMovieCast, GetMovieCrew, GetMovieGenres, GetMoviesByGenre
+
+**Collections**: GetMovieCollection, GetMoviesByCollection, GetCollectionForMovie
+
+**Watch Progress**: UpdateWatchProgress, GetWatchProgress, MarkAsWatched, RemoveWatchProgress, GetContinueWatching, GetWatchHistory, GetUserStats
+
+**Metadata**: RefreshMovieMetadata(ctx, id, opts)
+
+Implementation: `movieService` struct with `repo Repository` + `metadataProvider MetadataProvider` fields.
+
+## Repository Interface
+
+40 exported methods on the `Repository` interface:
+
+| Category | Count | Key Methods |
+|----------|-------|-------------|
+| Movie CRUD | 14 | GetMovie, GetMovieByTMDbID/IMDbID/RadarrID, ListMovies, CountMovies, SearchByTitle, SearchByTitleAnyLanguage, ListByYear, RecentlyAdded, TopRated, Create, Update, Delete |
+| Files | 7 | CreateFile, GetFile, GetByPath, GetByRadarrID, ListByMovieID, UpdateFile, DeleteFile |
+| Credits | 4 | CreateCredit, ListCast, ListCrew, DeleteCredits |
+| Collections | 8 | Create, Get, GetByTMDbID, Update, AddMovie, RemoveMovie, ListMoviesByCollection, GetCollectionForMovie |
+| Genres | 4 | AddGenre, ListGenres, DeleteGenres, ListMoviesByGenre |
+| Watch Progress | 6 | CreateOrUpdateProgress, GetProgress, DeleteProgress, ListContinueWatching, ListWatchedMovies, GetUserStats |
+
+Implementation: `postgresRepository` wrapping `pgxpool.Pool` + sqlc `moviedb.Queries`. Conversion helpers: `dbMovieToMovie()`, `dbMovieFileToMovieFile()`, etc. Custom JSON marshaling for i18n maps.
+
+## CachedService
+
+Decorator wrapping `Service` with `*cache.Cache` (L1 otter + L2 Dragonfly):
+
+| Cached Method | TTL | Strategy |
+|---------------|-----|----------|
+| GetMovie | 5 min | Async cache |
+| ListMovies | 1 min | Key: SHA256 of filters |
+| ListRecentlyAdded | 2 min | Async cache |
+| ListTopRated | 5 min | Async cache |
+| GetMovieCast | 10 min | Async cache |
+| GetMovieCrew | 10 min | Async cache |
+| GetMovieGenres | 10 min | Async cache |
+| GetMovieCollection | 10 min | Async cache |
+| GetContinueWatching | 1 min | Per-user key |
+
+Write operations (`UpdateMovie`, `DeleteMovie`, `UpdateWatchProgress`, `MarkAsWatched`) invalidate related cache patterns.
+
+## LibraryService
+
+Orchestrates scanning, matching, probing, and metadata refresh:
 
 ```go
-// Repository defines database operations for movies
-type Repository interface {
-    // Movie CRUD
-    GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error)
-    ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error)
-    CreateMovie(ctx context.Context, movie *Movie) error
-    UpdateMovie(ctx context.Context, movie *Movie) error
-    DeleteMovie(ctx context.Context, id uuid.UUID) error
-
-    // Collections
-    GetCollection(ctx context.Context, id uuid.UUID) (*Collection, error)
-    ListCollections(ctx context.Context) ([]Collection, error)
-    AddMovieToCollection(ctx context.Context, movieID, collectionID uuid.UUID) error
-
-    // Watch history
-    MarkWatched(ctx context.Context, userID, movieID uuid.UUID) error
-    GetWatchHistory(ctx context.Context, userID uuid.UUID) ([]WatchHistory, error)
+type LibraryService struct {
+    repo            Repository
+    metadataService MetadataProvider
+    scanner         *Scanner
+    matcher         *Matcher
+    prober          Prober  // FFmpeg via go-astiav
 }
+```
 
-// Service defines business logic for movies
-type Service interface {
-    // Movie operations
-    GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error)
-    SearchMovies(ctx context.Context, query string, filters SearchFilters) ([]Movie, error)
-    EnrichMovie(ctx context.Context, id uuid.UUID) error
+| Method | Purpose |
+|--------|---------|
+| ScanLibrary | Full library scan: discover files, match to movies, probe media info |
+| RefreshMovie | Re-fetch metadata from TMDb for a specific movie |
+| GetLibraryStats | Return counts (total movies, files, unmatched) |
+| MatchFile | Match a single file path to a movie entity |
 
-    // Collection operations
-    GetCollection(ctx context.Context, id uuid.UUID) (*Collection, error)
-    CreateCollection(ctx context.Context, name string, movieIDs []uuid.UUID) (*Collection, error)
-}
+### Scanner
 
-// MetadataProvider fetches movie metadata from external sources
+Wraps `shared/scanner.FilesystemScanner` with `MovieFileParser` (from adapters). Regex patterns:
+- `Title (YEAR)` - parenthesized year
+- `Title.YEAR` / `Title YEAR` / `Title_YEAR` - dot/space/underscore separated
+
+### Matcher
+
+Confidence scoring: **60% title similarity** (Levenshtein) + **40% year match** + popularity bonus. Thresholds: exact (1.0), title (>=0.8), fuzzy (>=0.5), unmatched (<0.5).
+
+### MediaInfo Prober
+
+FFmpeg integration via `go-astiav` (Unix/Linux/macOS only, Windows stub):
+- Extracts: video codec, profile, resolution, framerate, HDR detection (SDR/HDR10/Dolby Vision/HLG)
+- Audio: codec, channels, sample rate, language per stream
+- Subtitles: language, codec, forced/default flags
+- Output: `MediaInfo` struct with `ToMovieFileInfo()` converter
+
+## MetadataProvider Interface
+
+```go
 type MetadataProvider interface {
-    GetMovieByTMDbID(ctx context.Context, tmdbID int) (*MovieMetadata, error)
-    SearchMovies(ctx context.Context, query string, year int) ([]MovieMetadata, error)
-    GetMovieCredits(ctx context.Context, tmdbID int) (*Credits, error)
-    GetMovieImages(ctx context.Context, tmdbID int) (*Images, error)
+    SearchMovies(ctx, query, year) ([]*Movie, error)
+    EnrichMovie(ctx, mov, opts) error
+    GetMovieCredits(ctx, movieID, tmdbID) ([]MovieCredit, error)
+    GetMovieGenres(ctx, movieID, tmdbID) ([]MovieGenre, error)
+    ClearCache() error
 }
 ```
 
+Implementation injected via `metadatafx` module as `MovieMetadataAdapter`. Uses shared `metadata.BaseClient` with TMDb API (4 req/sec rate limit, burst 10, sync.Map cache).
 
-### Dependencies
-**Go Dependencies**:
-- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
-- `github.com/google/uuid` - UUID generation
-- `github.com/maypok86/otter` - In-memory cache
-- `github.com/go-resty/resty/v2` - HTTP client for external APIs
-- `go.uber.org/fx` - Dependency injection
-- `github.com/riverqueue/river` - Background job queue
-- `golang.org/x/net/proxy` - SOCKS5 proxy support for external metadata calls
+## Background Workers
 
-**External APIs** (priority order):
-- **Radarr API v3** - PRIMARY metadata source + download automation
-- **TMDb API v3** - Supplementary metadata (via optional proxy/VPN)
-- **TheTVDB API** - Additional fallback
+4 River workers registered via `moviejobs.RegisterWorkers()`:
 
-See data/architecture/03_METADATA_SYSTEM.yaml#metadata_priority_chain for complete
-priority chain (L1 cache → L2 cache → Arr → External APIs).
+| Worker | Kind | Queue | Timeout | Trigger |
+|--------|------|-------|---------|---------|
+| MovieLibraryScanWorker | `movie_library_scan` | bulk | 30m | Library scan request |
+| MovieMetadataRefreshWorker | `metadata_refresh_movie` | default | 5m | Metadata refresh job (from metadata service) |
+| MovieFileMatchWorker | `movie_file_match` | default | 5m | Individual file match request |
+| MovieSearchIndexWorker | `movie_search_index` | default | 15m | Index/remove/reindex operations |
 
-**Database**:
-- PostgreSQL 18+ with trigram extension for fuzzy search
-
-## Configuration
-
-### Environment Variables
-
-**Environment Variables**:
-- `REVENGE_MOVIE_CACHE_TTL` - Cache TTL duration (default: 5m)
-- `REVENGE_MOVIE_CACHE_SIZE` - Cache size in MB (default: 100)
-- `REVENGE_METADATA_TMDB_API_KEY` - TMDb API key (required)
-- `REVENGE_METADATA_TMDB_RATE_LIMIT` - Rate limit per second (default: 40)
-- `REVENGE_RADARR_URL` - Radarr instance URL (optional)
-- `REVENGE_RADARR_API_KEY` - Radarr API key (optional)
-
-
-### Config Keys
-**config.yaml keys**:
-```yaml
-movie:
-  cache:
-    ttl: 5m
-    size_mb: 100
-
-  metadata:
-    priority:
-      - radarr      # PRIMARY: Local TMDb cache
-      - tmdb        # Supplementary: Direct API (via proxy/VPN)
-      - thetvdb     # Fallback
-    tmdb:
-      api_key: ${REVENGE_METADATA_TMDB_API_KEY}
-      rate_limit: 40
-      proxy: tor    # Route through proxy/VPN (see HTTP_CLIENT service)
-
-  arr:
-    radarr:
-      enabled: true       # Should be enabled for PRIMARY metadata
-      url: ${REVENGE_RADARR_URL}
-      api_key: ${REVENGE_RADARR_API_KEY}
-      sync_interval: 15m
-```
+SearchIndexWorker supports 3 operations: `index` (single movie), `remove` (from index), `reindex` (full). Fetches movie + genres + credits + files before indexing to Typesense.
 
 ## API Endpoints
 
-### Content Management
-<!-- API endpoints placeholder -->
+21 endpoints in `internal/api/movie_handlers.go` (ogen-generated types):
+
+| Endpoint | Handler Method |
+|----------|---------------|
+| `GET /movies` | ListMovies |
+| `GET /movies/search` | SearchMovies |
+| `GET /movies/recently-added` | GetRecentlyAdded |
+| `GET /movies/top-rated` | GetTopRated |
+| `GET /movies/continue-watching` | GetContinueWatching |
+| `GET /movies/watch-history` | GetWatchHistory |
+| `GET /movies/stats` | GetUserMovieStats |
+| `GET /movies/{id}` | GetMovie |
+| `GET /movies/{id}/files` | GetMovieFiles |
+| `GET /movies/{id}/cast` | GetMovieCast |
+| `GET /movies/{id}/crew` | GetMovieCrew |
+| `GET /movies/{id}/genres` | GetMovieGenres |
+| `GET /movies/{id}/collection` | GetMovieCollection |
+| `GET /movies/{id}/progress` | GetWatchProgress |
+| `PUT /movies/{id}/progress` | UpdateWatchProgress |
+| `DELETE /movies/{id}/progress` | DeleteWatchProgress |
+| `POST /movies/{id}/watched` | MarkAsWatched |
+| `POST /movies/{id}/refresh` | RefreshMovieMetadata |
+| `GET /movies/{id}/similar` | GetSimilarMovies |
+| `GET /collections/{id}` | GetCollection |
+| `GET /collections/{id}/movies` | GetCollectionMovies |
+
+Converter functions in `movie_converters.go` bridge domain types to ogen API types.
+
+## Dependencies
+
+- `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL (via repository)
+- `github.com/imroc/req/v3` - HTTP client for TMDb (via shared metadata.BaseClient)
+- `github.com/asticode/go-astiav` - FFmpeg bindings for media probing
+- `github.com/riverqueue/river` - Background job processing
+- `github.com/google/uuid` - UUID generation
+- `github.com/shopspring/decimal` - Decimal types for ratings
+- `go.uber.org/zap` - Structured logging
+- `go.uber.org/fx` - Dependency injection
+- Shared packages: `content/shared/scanner`, `content/shared/matcher`, `content/shared/metadata`, `content/shared/library`, `content/shared/jobs`
+
+## fx Wiring
+
+```go
+// movie.Module provides:
+fx.Provide(NewPostgresRepository)    // → Repository
+fx.Provide(provideService)           // → Service (repo + metadataProvider)
+fx.Provide(NewHandler)               // → *Handler
+fx.Provide(provideLibraryService)    // → *LibraryService (repo + metadata + scanner + matcher + prober)
+
+// moviejobs.Module provides:
+fx.Provide(NewMovieLibraryScanWorker, NewMovieMetadataRefreshWorker,
+           NewMovieFileMatchWorker, NewMovieSearchIndexWorker)
+```
+
 ## Related Documentation
-### Design Documents
-- [01_ARCHITECTURE](../../architecture/ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/METADATA_SYSTEM.md)
-- [RADARR (PRIMARY metadata + downloads)](../../integrations/servarr/RADARR.md)
-- [TMDB (supplementary metadata)](../../integrations/metadata/TMDB.md)
-- [OMDB (ratings enrichment)](../../integrations/metadata/OMDB.md)
-- [TRAKT (scrobbling + metadata enrichment)](../../integrations/scrobbling/TRAKT.md)
 
-### External Sources
-<!-- External documentation sources -->
-
+- [TVSHOW_MODULE.md](TVSHOW_MODULE.md) - TV show content module (similar architecture)
+- [../../architecture/METADATA_SYSTEM.md](../../architecture/METADATA_SYSTEM.md) - Provider chain and caching
+- [../../infrastructure/JOBS.md](../../infrastructure/JOBS.md) - River job queue setup
+- [../../infrastructure/CACHE.md](../../infrastructure/CACHE.md) - L1/L2 caching infrastructure
+- [../../infrastructure/SEARCH_INFRA.md](../../infrastructure/SEARCH_INFRA.md) - Typesense search
+- [../../services/LIBRARY.md](../../services/LIBRARY.md) - Library management service
