@@ -6,14 +6,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 )
 
 // Client is a client for the Radarr API v3.
 // Radarr is a PRIMARY metadata provider - local, no proxy needed.
 type Client struct {
-	client      *resty.Client
+	client      *req.Client
 	baseURL     string
 	apiKey      string
 	rateLimiter *rate.Limiter
@@ -42,14 +42,13 @@ func NewClient(config Config) *Client {
 		config.CacheTTL = 5 * time.Minute // Short TTL for local cache
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetBaseURL(config.BaseURL+"/api/v3").
 		SetTimeout(config.Timeout).
-		SetHeader("X-Api-Key", config.APIKey).
-		SetHeader("Content-Type", "application/json").
-		SetRetryCount(3).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetCommonHeader("X-Api-Key", config.APIKey).
+		SetCommonHeader("Content-Type", "application/json").
+		SetCommonRetryCount(3).
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
 	return &Client{
 		client:      client,
@@ -105,15 +104,15 @@ func (c *Client) GetSystemStatus(ctx context.Context) (*SystemStatus, error) {
 	var result SystemStatus
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/system/status")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -136,15 +135,15 @@ func (c *Client) GetAllMovies(ctx context.Context) ([]Movie, error) {
 	var result []Movie
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/movie")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -167,18 +166,18 @@ func (c *Client) GetMovie(ctx context.Context, movieID int) (*Movie, error) {
 	var result Movie
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/movie/%d", movieID))
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return nil, ErrMovieNotFound
 		}
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -202,15 +201,15 @@ func (c *Client) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, erro
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParam("tmdbId", fmt.Sprintf("%d", tmdbID)).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/movie")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	if len(result) == 0 {
@@ -238,15 +237,15 @@ func (c *Client) GetMovieFiles(ctx context.Context, movieID int) ([]MovieFile, e
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParam("movieId", fmt.Sprintf("%d", movieID)).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/moviefile")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -269,15 +268,15 @@ func (c *Client) GetQualityProfiles(ctx context.Context) ([]QualityProfile, erro
 	var result []QualityProfile
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/qualityprofile")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -300,15 +299,15 @@ func (c *Client) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
 	var result []RootFolder
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/rootfolder")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -331,15 +330,15 @@ func (c *Client) GetTags(ctx context.Context) ([]Tag, error) {
 	var result []Tag
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/tag")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -363,15 +362,15 @@ func (c *Client) GetCalendar(ctx context.Context, start, end time.Time) ([]Calen
 			"includeEpisodeFile": "false",
 			"includeEpisodeImages": "false",
 		}).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/calendar")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	return result, nil
@@ -397,15 +396,15 @@ func (c *Client) GetHistory(ctx context.Context, page, pageSize int, movieID *in
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/history")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	return &result, nil
@@ -421,15 +420,15 @@ func (c *Client) AddMovie(ctx context.Context, req AddMovieRequest) (*Movie, err
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetBody(req).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Post("/movie")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status(), resp.String())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status, resp.String())
 	}
 
 	// Invalidate cache
@@ -456,11 +455,11 @@ func (c *Client) DeleteMovie(ctx context.Context, movieID int, deleteFiles, addI
 		return fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return ErrMovieNotFound
 		}
-		return fmt.Errorf("radarr api error: %s", resp.Status())
+		return fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	// Invalidate cache
@@ -502,15 +501,15 @@ func (c *Client) runCommand(ctx context.Context, name string, movieID *int) (*Co
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetBody(body).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Post("/command")
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status(), resp.String())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s - %s", resp.Status, resp.String())
 	}
 
 	return &result, nil
@@ -525,15 +524,15 @@ func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error
 	var result Command
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/command/%d", commandID))
 
 	if err != nil {
 		return nil, fmt.Errorf("radarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("radarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr api error: %s", resp.Status)
 	}
 
 	return &result, nil

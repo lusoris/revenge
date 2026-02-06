@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"go.uber.org/zap"
 )
 
@@ -53,7 +53,7 @@ type Config struct {
 
 // Service handles image downloading, caching, and serving.
 type Service struct {
-	client   *resty.Client
+	client   *req.Client
 	config   Config
 	logger   *zap.Logger
 	cache    sync.Map // path -> cachedImage
@@ -84,14 +84,14 @@ func NewService(cfg Config, logger *zap.Logger) (*Service, error) {
 		}
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetTimeout(30 * time.Second).
-		SetRetryCount(3).
-		SetRetryWaitTime(1 * time.Second).
-		SetHeader("User-Agent", cfg.UserAgent)
+		SetCommonRetryCount(3).
+		SetCommonRetryFixedInterval(1 * time.Second).
+		SetCommonHeader("User-Agent", cfg.UserAgent)
 
 	if cfg.ProxyURL != "" {
-		client.SetProxy(cfg.ProxyURL)
+		client.SetProxyURL(cfg.ProxyURL)
 	}
 
 	return &Service{
@@ -150,12 +150,12 @@ func (s *Service) FetchImage(ctx context.Context, imageType, path, size string) 
 		return nil, "", fmt.Errorf("fetch image: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, "", fmt.Errorf("image fetch failed with status %d", resp.StatusCode())
+	if resp.IsErrorState() {
+		return nil, "", fmt.Errorf("image fetch failed with status %d", resp.StatusCode)
 	}
 
-	data := resp.Body()
-	contentType := resp.Header().Get("Content-Type")
+	data := resp.Bytes()
+	contentType := resp.Header.Get("Content-Type")
 
 	// Validate content type
 	if !isValidImageType(contentType) {

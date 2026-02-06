@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 )
 
@@ -51,7 +51,7 @@ func DefaultClientConfig() ClientConfig {
 // BaseClient provides shared HTTP client functionality for metadata providers.
 // It includes rate limiting, caching, and retry logic.
 type BaseClient struct {
-	client      *resty.Client
+	client      *req.Client
 	apiKey      string
 	rateLimiter *rate.Limiter
 	cache       sync.Map
@@ -78,15 +78,14 @@ func NewBaseClient(config ClientConfig) *BaseClient {
 		config.RetryCount = 3
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetBaseURL(config.BaseURL).
 		SetTimeout(config.Timeout).
-		SetRetryCount(config.RetryCount).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetCommonRetryCount(config.RetryCount).
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
 	if config.ProxyURL != "" {
-		client.SetProxy(config.ProxyURL)
+		client.SetProxyURL(config.ProxyURL)
 	}
 
 	return &BaseClient{
@@ -159,12 +158,12 @@ func (c *BaseClient) ClearCache() {
 
 // Request returns a new request builder configured with the base settings.
 // The caller should set result/error types and make the actual request.
-func (c *BaseClient) Request() *resty.Request {
+func (c *BaseClient) Request() *req.Request {
 	return c.client.R()
 }
 
 // GetClient returns the underlying resty client for advanced use cases.
-func (c *BaseClient) GetClient() *resty.Client {
+func (c *BaseClient) GetClient() *req.Client {
 	return c.client
 }
 

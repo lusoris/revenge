@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 )
 
 // TMDb image URL constants
@@ -169,7 +169,7 @@ func (d *ImageDownloader) Download(ctx context.Context, path string, size string
 	url := d.urlBuilder.GetURL(path, size)
 
 	// Use a separate resty client for image downloads since they go to a different host
-	resp, err := resty.New().R().
+	resp, err := req.C().R().
 		SetContext(ctx).
 		Get(url)
 
@@ -177,11 +177,11 @@ func (d *ImageDownloader) Download(ctx context.Context, path string, size string
 		return nil, fmt.Errorf("download image: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("download image: status %d", resp.StatusCode())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("download image: status %d", resp.StatusCode)
 	}
 
-	return resp.Body(), nil
+	return resp.Bytes(), nil
 }
 
 // DownloadPoster downloads a poster image.

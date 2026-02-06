@@ -6,14 +6,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 )
 
 // Client is a client for the Sonarr API v3.
 // Sonarr is a PRIMARY metadata provider - local, no proxy needed.
 type Client struct {
-	client      *resty.Client
+	client      *req.Client
 	baseURL     string
 	apiKey      string
 	rateLimiter *rate.Limiter
@@ -42,14 +42,13 @@ func NewClient(config Config) *Client {
 		config.CacheTTL = 5 * time.Minute // Short TTL for local cache
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetBaseURL(config.BaseURL+"/api/v3").
 		SetTimeout(config.Timeout).
-		SetHeader("X-Api-Key", config.APIKey).
-		SetHeader("Content-Type", "application/json").
-		SetRetryCount(3).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetCommonHeader("X-Api-Key", config.APIKey).
+		SetCommonHeader("Content-Type", "application/json").
+		SetCommonRetryCount(3).
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
 	return &Client{
 		client:      client,
@@ -105,15 +104,15 @@ func (c *Client) GetSystemStatus(ctx context.Context) (*SystemStatus, error) {
 	var result SystemStatus
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/system/status")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -136,15 +135,15 @@ func (c *Client) GetAllSeries(ctx context.Context) ([]Series, error) {
 	var result []Series
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/series")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -167,18 +166,18 @@ func (c *Client) GetSeries(ctx context.Context, seriesID int) (*Series, error) {
 	var result Series
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/series/%d", seriesID))
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return nil, ErrSeriesNotFound
 		}
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -202,15 +201,15 @@ func (c *Client) GetSeriesByTVDbID(ctx context.Context, tvdbID int) (*Series, er
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParam("tvdbId", fmt.Sprintf("%d", tvdbID)).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/series")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	if len(result) == 0 {
@@ -238,15 +237,15 @@ func (c *Client) GetEpisodes(ctx context.Context, seriesID int) ([]Episode, erro
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParam("seriesId", fmt.Sprintf("%d", seriesID)).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/episode")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -269,18 +268,18 @@ func (c *Client) GetEpisode(ctx context.Context, episodeID int) (*Episode, error
 	var result Episode
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/episode/%d", episodeID))
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return nil, ErrEpisodeNotFound
 		}
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -307,15 +306,15 @@ func (c *Client) GetEpisodesBySeason(ctx context.Context, seriesID, seasonNumber
 			"seriesId":     fmt.Sprintf("%d", seriesID),
 			"seasonNumber": fmt.Sprintf("%d", seasonNumber),
 		}).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/episode")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -339,15 +338,15 @@ func (c *Client) GetEpisodeFiles(ctx context.Context, seriesID int) ([]EpisodeFi
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParam("seriesId", fmt.Sprintf("%d", seriesID)).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/episodefile")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -370,18 +369,18 @@ func (c *Client) GetEpisodeFile(ctx context.Context, episodeFileID int) (*Episod
 	var result EpisodeFile
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/episodefile/%d", episodeFileID))
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return nil, ErrEpisodeFileNotFound
 		}
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, &result)
@@ -404,15 +403,15 @@ func (c *Client) GetQualityProfiles(ctx context.Context) ([]QualityProfile, erro
 	var result []QualityProfile
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/qualityprofile")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -435,15 +434,15 @@ func (c *Client) GetRootFolders(ctx context.Context) ([]RootFolder, error) {
 	var result []RootFolder
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/rootfolder")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -466,15 +465,15 @@ func (c *Client) GetTags(ctx context.Context) ([]Tag, error) {
 	var result []Tag
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/tag")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	c.setCache(cacheKey, result)
@@ -498,15 +497,15 @@ func (c *Client) GetCalendar(ctx context.Context, start, end time.Time) ([]Calen
 			"includeEpisodeFile": "false",
 			"includeEpisodeImages": "false",
 		}).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/calendar")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	return result, nil
@@ -535,15 +534,15 @@ func (c *Client) GetHistory(ctx context.Context, page, pageSize int, seriesID, e
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get("/history")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	return &result, nil
@@ -559,15 +558,15 @@ func (c *Client) AddSeries(ctx context.Context, req AddSeriesRequest) (*Series, 
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetBody(req).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Post("/series")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status(), resp.String())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status, resp.String())
 	}
 
 	// Invalidate cache
@@ -594,11 +593,11 @@ func (c *Client) DeleteSeries(ctx context.Context, seriesID int, deleteFiles, ad
 		return fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		if resp.StatusCode() == 404 {
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
 			return ErrSeriesNotFound
 		}
-		return fmt.Errorf("sonarr api error: %s", resp.Status())
+		return fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	// Invalidate cache
@@ -653,15 +652,15 @@ func (c *Client) runCommand(ctx context.Context, name string, seriesID *int, epi
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetBody(body).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Post("/command")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status(), resp.String())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status, resp.String())
 	}
 
 	return &result, nil
@@ -683,15 +682,15 @@ func (c *Client) runCommandWithSeason(ctx context.Context, name string, seriesID
 	resp, err := c.client.R().
 		SetContext(ctx).
 		SetBody(body).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Post("/command")
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status(), resp.String())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s - %s", resp.Status, resp.String())
 	}
 
 	return &result, nil
@@ -706,15 +705,15 @@ func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error
 	var result Command
 	resp, err := c.client.R().
 		SetContext(ctx).
-		SetResult(&result).
+		SetSuccessResult(&result).
 		Get(fmt.Sprintf("/command/%d", commandID))
 
 	if err != nil {
 		return nil, fmt.Errorf("sonarr api request: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("sonarr api error: %s", resp.Status())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr api error: %s", resp.Status)
 	}
 
 	return &result, nil

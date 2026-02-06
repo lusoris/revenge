@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 )
 
@@ -70,7 +70,7 @@ func DefaultConfig() Config {
 
 // Client is the TVDb API client with JWT authentication.
 type Client struct {
-	httpClient  *resty.Client
+	httpClient  *req.Client
 	apiKey      string
 	pin         string
 	rateLimiter *rate.Limiter
@@ -102,15 +102,14 @@ func NewClient(config Config) *Client {
 		config.RetryCount = 3
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
-		SetRetryCount(config.RetryCount).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetCommonRetryCount(config.RetryCount).
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
 	if config.ProxyURL != "" {
-		client.SetProxy(config.ProxyURL)
+		client.SetProxyURL(config.ProxyURL)
 	}
 
 	return &Client{
@@ -143,16 +142,16 @@ func (c *Client) authenticate(ctx context.Context) error {
 	resp, err := c.httpClient.R().
 		SetContext(ctx).
 		SetBody(loginReq).
-		SetResult(&loginResp).
-		SetError(&errResp).
+		SetSuccessResult(&loginResp).
+		SetErrorResult(&errResp).
 		Post("/login")
 
 	if err != nil {
 		return fmt.Errorf("tvdb login request: %w", err)
 	}
 
-	if resp.IsError() {
-		return fmt.Errorf("tvdb login error %d: %s", resp.StatusCode(), errResp.Message)
+	if resp.IsErrorState() {
+		return fmt.Errorf("tvdb login error %d: %s", resp.StatusCode, errResp.Message)
 	}
 
 	if loginResp.Data.Token == "" {
@@ -167,7 +166,7 @@ func (c *Client) authenticate(ctx context.Context) error {
 }
 
 // request creates an authenticated request.
-func (c *Client) request(ctx context.Context) (*resty.Request, error) {
+func (c *Client) request(ctx context.Context) (*req.Request, error) {
 	// Ensure we have a valid token
 	if err := c.authenticate(ctx); err != nil {
 		return nil, err
@@ -179,7 +178,7 @@ func (c *Client) request(ctx context.Context) (*resty.Request, error) {
 
 	return c.httpClient.R().
 		SetContext(ctx).
-		SetAuthToken(token), nil
+		SetBearerAuthToken(token), nil
 }
 
 // waitRateLimit waits for the rate limiter.
@@ -235,11 +234,11 @@ func cacheKey(parts ...any) string {
 }
 
 // parseError converts API response to error.
-func (c *Client) parseError(resp *resty.Response, errResp *ErrorResponse) error {
+func (c *Client) parseError(resp *req.Response, errResp *ErrorResponse) error {
 	if errResp != nil && errResp.Message != "" {
-		return fmt.Errorf("tvdb api error %d: %s", resp.StatusCode(), errResp.Message)
+		return fmt.Errorf("tvdb api error %d: %s", resp.StatusCode, errResp.Message)
 	}
-	return fmt.Errorf("tvdb api error: status %d", resp.StatusCode())
+	return fmt.Errorf("tvdb api error: status %d", resp.StatusCode)
 }
 
 // Search performs a search query.
@@ -272,15 +271,15 @@ func (c *Client) Search(ctx context.Context, query string, searchType string) (*
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get("/search")
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -310,15 +309,15 @@ func (c *Client) GetSeries(ctx context.Context, id int) (*SeriesResponse, error)
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/series/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -354,15 +353,15 @@ func (c *Client) GetSeriesExtended(ctx context.Context, id int, meta string) (*S
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/series/%d/extended", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -403,15 +402,15 @@ func (c *Client) GetSeriesArtworks(ctx context.Context, id int, artworkType *int
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/series/%d/artworks", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -455,15 +454,15 @@ func (c *Client) GetSeriesEpisodes(ctx context.Context, id int, seasonType strin
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/series/%d/episodes/%s", id, seasonType))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -493,15 +492,15 @@ func (c *Client) GetSeason(ctx context.Context, id int) (*SeasonResponse, error)
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/seasons/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -531,15 +530,15 @@ func (c *Client) GetSeasonExtended(ctx context.Context, id int) (*SeasonResponse
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/seasons/%d/extended", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -569,15 +568,15 @@ func (c *Client) GetEpisode(ctx context.Context, id int) (*EpisodeResponse, erro
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/episodes/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -613,15 +612,15 @@ func (c *Client) GetEpisodeExtended(ctx context.Context, id int, meta string) (*
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/episodes/%d/extended", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -651,15 +650,15 @@ func (c *Client) GetMovie(ctx context.Context, id int) (*MovieResponse, error) {
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movies/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -695,15 +694,15 @@ func (c *Client) GetMovieExtended(ctx context.Context, id int, meta string) (*Mo
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movies/%d/extended", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -733,15 +732,15 @@ func (c *Client) GetPerson(ctx context.Context, id int) (*PersonResponse, error)
 	var errResp ErrorResponse
 
 	resp, err := req.
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/people/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -777,15 +776,15 @@ func (c *Client) GetPersonExtended(ctx context.Context, id int, meta string) (*P
 
 	resp, err := req.
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/people/%d/extended", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tvdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 )
 
@@ -70,7 +70,7 @@ func DefaultConfig() Config {
 
 // Client is the TMDb API client with rate limiting and caching.
 type Client struct {
-	httpClient  *resty.Client
+	httpClient  *req.Client
 	apiKey      string
 	accessToken string
 	rateLimiter *rate.Limiter
@@ -97,15 +97,14 @@ func NewClient(config Config) *Client {
 		config.RetryCount = 3
 	}
 
-	client := resty.New().
+	client := req.C().
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
-		SetRetryCount(config.RetryCount).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetCommonRetryCount(config.RetryCount).
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
 	if config.ProxyURL != "" {
-		client.SetProxy(config.ProxyURL)
+		client.SetProxyURL(config.ProxyURL)
 	}
 
 	return &Client{
@@ -118,17 +117,17 @@ func NewClient(config Config) *Client {
 }
 
 // request creates an authenticated request.
-func (c *Client) request(ctx context.Context) *resty.Request {
-	req := c.httpClient.R().SetContext(ctx)
+func (c *Client) request(ctx context.Context) *req.Request {
+	r := c.httpClient.R().SetContext(ctx)
 
 	// Use access token if available, otherwise API key
 	if c.accessToken != "" {
-		req.SetAuthToken(c.accessToken)
+		r.SetBearerAuthToken(c.accessToken)
 	} else {
-		req.SetQueryParam("api_key", c.apiKey)
+		r.SetQueryParam("api_key", c.apiKey)
 	}
 
-	return req
+	return r
 }
 
 // waitRateLimit waits for the rate limiter.
@@ -184,11 +183,11 @@ func cacheKey(parts ...any) string {
 }
 
 // parseError converts API response to error.
-func (c *Client) parseError(resp *resty.Response, errResp *ErrorResponse) error {
+func (c *Client) parseError(resp *req.Response, errResp *ErrorResponse) error {
 	if errResp != nil && errResp.StatusMessage != "" {
-		return fmt.Errorf("tmdb api error %d: %s", resp.StatusCode(), errResp.StatusMessage)
+		return fmt.Errorf("tmdb api error %d: %s", resp.StatusCode, errResp.StatusMessage)
 	}
-	return fmt.Errorf("tmdb api error: status %d", resp.StatusCode())
+	return fmt.Errorf("tmdb api error: status %d", resp.StatusCode)
 }
 
 // SearchMovie searches for movies.
@@ -219,15 +218,15 @@ func (c *Client) SearchMovie(ctx context.Context, query string, year *int, langu
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get("/search/movie")
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -261,15 +260,15 @@ func (c *Client) GetMovie(ctx context.Context, id int, language string, appendTo
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -294,15 +293,15 @@ func (c *Client) GetMovieCredits(ctx context.Context, id int) (*CreditsResponse,
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/credits", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -327,15 +326,15 @@ func (c *Client) GetMovieImages(ctx context.Context, id int) (*ImagesResponse, e
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/images", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -360,15 +359,15 @@ func (c *Client) GetMovieReleaseDates(ctx context.Context, id int) (*ReleaseDate
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/release_dates", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -393,15 +392,15 @@ func (c *Client) GetMovieTranslations(ctx context.Context, id int) (*Translation
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/translations", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -426,15 +425,15 @@ func (c *Client) GetMovieExternalIDs(ctx context.Context, id int) (*ExternalIDsR
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/external_ids", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -470,15 +469,15 @@ func (c *Client) GetSimilarMovies(ctx context.Context, id int, language string, 
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/similar", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -514,15 +513,15 @@ func (c *Client) GetMovieRecommendations(ctx context.Context, id int, language s
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/movie/%d/recommendations", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -558,15 +557,15 @@ func (c *Client) SearchTV(ctx context.Context, query string, year *int, language
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get("/search/tv")
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -600,15 +599,15 @@ func (c *Client) GetTV(ctx context.Context, id int, language string, appendToRes
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -633,15 +632,15 @@ func (c *Client) GetTVCredits(ctx context.Context, id int) (*CreditsResponse, er
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/credits", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -666,15 +665,15 @@ func (c *Client) GetTVImages(ctx context.Context, id int) (*ImagesResponse, erro
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/images", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -699,15 +698,15 @@ func (c *Client) GetTVContentRatings(ctx context.Context, id int) (*ContentRatin
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/content_ratings", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -732,15 +731,15 @@ func (c *Client) GetTVTranslations(ctx context.Context, id int) (*TranslationsWr
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/translations", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -765,15 +764,15 @@ func (c *Client) GetTVExternalIDs(ctx context.Context, id int) (*ExternalIDsResp
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/external_ids", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -807,15 +806,15 @@ func (c *Client) GetSeason(ctx context.Context, tvID, seasonNum int, language st
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d", tvID, seasonNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -840,15 +839,15 @@ func (c *Client) GetSeasonCredits(ctx context.Context, tvID, seasonNum int) (*Cr
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d/credits", tvID, seasonNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -873,15 +872,15 @@ func (c *Client) GetSeasonImages(ctx context.Context, tvID, seasonNum int) (*Ima
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d/images", tvID, seasonNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -915,15 +914,15 @@ func (c *Client) GetEpisode(ctx context.Context, tvID, seasonNum, episodeNum int
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d/episode/%d", tvID, seasonNum, episodeNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -948,15 +947,15 @@ func (c *Client) GetEpisodeCredits(ctx context.Context, tvID, seasonNum, episode
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d/episode/%d/credits", tvID, seasonNum, episodeNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -981,15 +980,15 @@ func (c *Client) GetEpisodeImages(ctx context.Context, tvID, seasonNum, episodeN
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/tv/%d/season/%d/episode/%d/images", tvID, seasonNum, episodeNum))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1022,15 +1021,15 @@ func (c *Client) SearchPerson(ctx context.Context, query string, language string
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get("/search/person")
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1064,15 +1063,15 @@ func (c *Client) GetPerson(ctx context.Context, id int, language string, appendT
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/person/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1103,15 +1102,15 @@ func (c *Client) GetPersonCredits(ctx context.Context, id int, language string) 
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/person/%d/combined_credits", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1136,15 +1135,15 @@ func (c *Client) GetPersonImages(ctx context.Context, id int) (*PersonImagesResp
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/person/%d/images", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1169,15 +1168,15 @@ func (c *Client) GetPersonExternalIDs(ctx context.Context, id int) (*ExternalIDs
 	var errResp ErrorResponse
 
 	resp, err := c.request(ctx).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/person/%d/external_ids", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1208,15 +1207,15 @@ func (c *Client) GetCollection(ctx context.Context, id int, language string) (*C
 
 	resp, err := c.request(ctx).
 		SetQueryParams(params).
-		SetResult(&result).
-		SetError(&errResp).
+		SetSuccessResult(&result).
+		SetErrorResult(&errResp).
 		Get(fmt.Sprintf("/collection/%d", id))
 
 	if err != nil {
 		return nil, fmt.Errorf("tmdb api request: %w", err)
 	}
 
-	if resp.IsError() {
+	if resp.IsErrorState() {
 		return nil, c.parseError(resp, &errResp)
 	}
 
@@ -1245,7 +1244,7 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 	url := c.GetImageURL(path, size)
 
 	// Use separate client for image CDN
-	resp, err := resty.New().R().
+	resp, err := req.C().R().
 		SetContext(ctx).
 		Get(url)
 
@@ -1253,11 +1252,11 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 		return nil, fmt.Errorf("download image: %w", err)
 	}
 
-	if resp.IsError() {
-		return nil, fmt.Errorf("download image: status %d", resp.StatusCode())
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("download image: status %d", resp.StatusCode)
 	}
 
-	return resp.Body(), nil
+	return resp.Bytes(), nil
 }
 
 // ClearCache clears all cached data.
