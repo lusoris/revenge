@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Pre-commit hook for Jellyfin Go
+# Pre-commit hook for Revenge
 # This hook runs before each commit to ensure code quality
 
 set -e

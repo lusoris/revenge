@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Pre-push hook for Jellyfin Go
+# Pre-push hook for Revenge
 # Runs comprehensive checks before pushing
 
 set -e
@@ -42,7 +42,7 @@ fi
 
 # Build check
 echo "🔨 Checking if code builds..."
-if ! go build ./cmd/jellyfin 2>&1; then
+if ! GOEXPERIMENT=greenteagc,jsonv2 go build ./cmd/revenge 2>&1; then
     echo "❌ Build failed"
     exit 1
 fi

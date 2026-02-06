@@ -8,9 +8,9 @@
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/revenge",
       "env": {
+        "GOEXPERIMENT": "greenteagc,jsonv2",
         "REVENGE_LOG_LEVEL": "debug",
-        "REVENGE_DB_TYPE": "sqlite",
-        "REVENGE_DB_PATH": "./data/revenge.db"
+        "REVENGE_DATABASE_URL": "postgres://revenge:revenge@localhost:5432/revenge?sslmode=disable"
       },
       "args": [],
       "showLog": true

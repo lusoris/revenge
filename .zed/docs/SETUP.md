@@ -349,7 +349,7 @@ npm install --save-dev prettier prettier-plugin-svelte
 
 ```bash
 # Clone the project
-git clone https://github.com/kilianso/revenge.git
+git clone https://github.com/lusoris/revenge.git
 cd revenge
 
 # Open in Zed

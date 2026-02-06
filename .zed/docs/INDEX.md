@@ -134,7 +134,7 @@
 - **Source of Truth**: [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md)
 
 ### Related IDE Docs
-- **VS Code Setup**: [../../.vscode/CLAUDE.md](../../.vscode/CLAUDE.md)
+- **VS Code Settings**: [../../.vscode/settings.json](../../.vscode/settings.json)
 
 ---
 
@@ -144,7 +144,7 @@
 2. **Check TROUBLESHOOTING.md** for common problems
 3. **Check Zed logs** (View → Toggle Log Panel)
 4. **Search Zed issues**: https://github.com/zed-industries/zed/issues
-5. **Search Revenge issues**: https://github.com/kilianso/revenge/issues
+5. **Search Revenge issues**: https://github.com/lusoris/revenge/issues
 
 ---
 

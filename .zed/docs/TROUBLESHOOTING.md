@@ -1029,7 +1029,7 @@ tail -100 ~/.local/share/zed/zed.log > zed_logs.txt
 
 ### Revenge Project
 
-- **GitHub Issues**: https://github.com/kilianso/revenge/issues
+- **GitHub Issues**: https://github.com/lusoris/revenge/issues
 - **Project Docs**: [../../docs/dev/design/INDEX.md](../../docs/dev/design/INDEX.md)
 
 ---

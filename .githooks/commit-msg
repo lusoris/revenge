@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Commit message hook for Jellyfin Go
+# Commit message hook for Revenge
 # Validates commit message format
 
 COMMIT_MSG_FILE=$1

@@ -5,20 +5,18 @@
 
 ---
 
-## Entry Point
+## Architecture
 
-### Source of Truth
+Read the actual code, not just design docs. Many design docs describe planned features, not current state.
 
-**[/docs/dev/design/00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md)** - package versions, API structure, database schemas, design decisions.
+**Accurate docs** (rewritten from code, 2026-02-06):
+- [Architecture](../docs/dev/design/architecture/ARCHITECTURE.md) - system structure, fx modules, layers
+- [Design Principles](../docs/dev/design/architecture/DESIGN_PRINCIPLES.md) - patterns, error handling, testing
+- [Metadata System](../docs/dev/design/architecture/METADATA_SYSTEM.md) - provider chain, adapters, caching
 
-Always reference this before writing code. Do not use outdated versions or deprecated packages.
-
-### Design Documentation
-
-- [DESIGN_INDEX.md](../docs/dev/design/DESIGN_INDEX.md) - navigate to specific design docs
-- [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md) - technology choices and rationale
-- [ARCHITECTURE.md](../docs/dev/design/architecture/ARCHITECTURE.md) - system architecture
-- [.workingdir/](../.workingdir/) - working reports and analysis (migration reports, API overviews, etc.)
+**Reference** (may contain planned/aspirational content):
+- [Design Index](../docs/dev/design/DESIGN_INDEX.md) - all design docs (active vs `planned/`)
+- [Tech Stack](../docs/dev/design/technical/TECH_STACK.md) - technology choices
 
 ---
 
@@ -73,7 +71,7 @@ export GOEXPERIMENT=greenteagc,jsonv2  # Required (set in Makefile)
 cmd/revenge/            # Application entrypoint
 internal/
   api/ogen/             # Generated API (ogen from OpenAPI spec)
-  content/{module}/     # Content modules (movie, tv, music, etc.)
+  content/{module}/     # Content modules (movie, tvshow, qar)
   service/{service}/    # Backend services
   infra/database/
     migrations/shared/  # SQL migrations (embedded via go:embed)
@@ -169,7 +167,8 @@ The user may communicate in German in chat - that's fine. But all artifacts (cod
 - **DI**: fx modules for dependency injection
 - **Repos**: Repository pattern with interfaces
 - **Testing**: Table-driven tests, testify assertions, mockery mocks, testcontainers for integration
-- **Caching**: otter (L1 in-memory), rueidis (L2 distributed), sturdyc (request coalescing)
+- **Infra Cache**: rueidis (Dragonfly/Redis) for distributed cache
+- **Metadata Cache**: sync.Map per provider with TTL-based expiration
 
 ### Conventional Commits
 

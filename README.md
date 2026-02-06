@@ -10,7 +10,7 @@
 
 A ground-up media server built in Go with a fully modular architecture. Each content type is completely isolated with its own tables, services, and handlers.
 
-**WARNING: EARLY DEVELOPMENT** - Core infrastructure and backend services implemented, frontend not yet started. See [TODO.md](TODO.md) for current status.
+**WARNING: EARLY DEVELOPMENT** - Core infrastructure and backend services implemented, frontend not yet started. See the [current status](TODO.md) for details.
 
 ---
 
@@ -160,13 +160,13 @@ Integration tests use [testcontainers-go](https://testcontainers.com/) to spin u
 
 **Current Phase**: Backend services and content modules
 
-See [TODO.md](TODO.md) for detailed implementation status.
+See the [project roadmap](TODO.md) for detailed implementation status.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See the [contributing guide](CONTRIBUTING.md) for guidelines.
 
 ---
 
@@ -179,4 +179,4 @@ GNU Affero General Public License v3.0 - see [LICENSE](LICENSE).
 ## Contact
 
 - **Issues**: [GitHub Issues](https://github.com/lusoris/revenge/issues)
-- **Security**: See [SECURITY.md](SECURITY.md)
+- **Security**: See the [security policy](SECURITY.md)
