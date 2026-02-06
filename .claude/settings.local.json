@@ -127,7 +127,15 @@
       "Bash(xargs sed:*)",
       "Bash(GOEXPERIMENT=greenteagc,jsonv2 go vet:*)",
       "Bash(git reset:*)",
-      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go get:*)"
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go get:*)",
+      "Bash(xargs:*)",
+      "Bash(go run:*)",
+      "Bash(docker version:*)",
+      "Bash(make sqlc:*)",
+      "Bash(docker ps:*)",
+      "Bash(helm lint:*)",
+      "Bash(set:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
