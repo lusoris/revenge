@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
 
 // Module provides the TV show jobs workers.
@@ -25,17 +26,18 @@ type WorkerProviderParams struct {
 
 	Service          tvshow.Service
 	MetadataProvider tvshow.MetadataProvider `optional:"true"`
+	JobClient        *infrajobs.Client
 	Logger           *zap.Logger
 }
 
 // provideLibraryScanWorker creates a library scan worker with optional metadata provider.
 func provideLibraryScanWorker(p WorkerProviderParams) *LibraryScanWorker {
-	return NewLibraryScanWorker(p.Service, p.MetadataProvider, p.Logger)
+	return NewLibraryScanWorker(p.Service, p.MetadataProvider, p.JobClient, p.Logger)
 }
 
 // provideMetadataRefreshWorker creates a metadata refresh worker.
 func provideMetadataRefreshWorker(p WorkerProviderParams) *MetadataRefreshWorker {
-	return NewMetadataRefreshWorker(p.Service, p.Logger)
+	return NewMetadataRefreshWorker(p.Service, p.JobClient, p.Logger)
 }
 
 // provideFileMatchWorker creates a file match worker with optional metadata provider.
@@ -50,7 +52,7 @@ func provideSearchIndexWorker(p WorkerProviderParams) *SearchIndexWorker {
 
 // provideSeriesRefreshWorker creates a series refresh worker.
 func provideSeriesRefreshWorker(p WorkerProviderParams) *SeriesRefreshWorker {
-	return NewSeriesRefreshWorker(p.Service, p.Logger)
+	return NewSeriesRefreshWorker(p.Service, p.JobClient, p.Logger)
 }
 
 // RegisterWorkers registers all TV show job workers with the River workers registry.
@@ -78,7 +80,7 @@ type RegisterWorkersParams struct {
 	LibraryScanWorker     *LibraryScanWorker
 	MetadataRefreshWorker *MetadataRefreshWorker
 	FileMatchWorker       *FileMatchWorker
-	SearchIndexWorker     *SearchIndexWorker    `optional:"true"`
+	SearchIndexWorker     *SearchIndexWorker      `optional:"true"`
 	SeriesRefreshWorker   *SeriesRefreshWorker
 	TVShowService         tvshow.Service
 	MetadataProvider      tvshow.MetadataProvider `optional:"true"`

@@ -55,12 +55,23 @@ func (a *Adapter) SearchSeries(ctx context.Context, query string, year *int) ([]
 }
 
 // EnrichSeries enriches a series with metadata from the shared service.
-func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series) error {
+func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series, opts ...contenttvshow.MetadataRefreshOptions) error {
 	if series.TMDbID == nil {
 		return fmt.Errorf("series has no TMDb ID")
 	}
 
-	meta, err := a.service.GetTVShowMetadata(ctx, *series.TMDbID, a.languages)
+	// Determine languages and force from options
+	languages := a.languages
+	if len(opts) > 0 {
+		if len(opts[0].Languages) > 0 {
+			languages = opts[0].Languages
+		}
+		if opts[0].Force {
+			a.service.ClearCache()
+		}
+	}
+
+	meta, err := a.service.GetTVShowMetadata(ctx, *series.TMDbID, languages)
 	if err != nil {
 		return fmt.Errorf("get series metadata: %w", err)
 	}
@@ -79,8 +90,19 @@ func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series
 }
 
 // EnrichSeason enriches a season with metadata from the shared service.
-func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season, seriesTMDbID int32) error {
-	meta, err := a.service.GetSeasonMetadata(ctx, seriesTMDbID, int(season.SeasonNumber), a.languages)
+func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season, seriesTMDbID int32, opts ...contenttvshow.MetadataRefreshOptions) error {
+	// Determine languages and force from options
+	languages := a.languages
+	if len(opts) > 0 {
+		if len(opts[0].Languages) > 0 {
+			languages = opts[0].Languages
+		}
+		if opts[0].Force {
+			a.service.ClearCache()
+		}
+	}
+
+	meta, err := a.service.GetSeasonMetadata(ctx, seriesTMDbID, int(season.SeasonNumber), languages)
 	if err != nil {
 		return fmt.Errorf("get season metadata: %w", err)
 	}
@@ -90,8 +112,19 @@ func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season
 }
 
 // EnrichEpisode enriches an episode with metadata from the shared service.
-func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Episode, seriesTMDbID int32) error {
-	meta, err := a.service.GetEpisodeMetadata(ctx, seriesTMDbID, int(episode.SeasonNumber), int(episode.EpisodeNumber), a.languages)
+func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Episode, seriesTMDbID int32, opts ...contenttvshow.MetadataRefreshOptions) error {
+	// Determine languages and force from options
+	languages := a.languages
+	if len(opts) > 0 {
+		if len(opts[0].Languages) > 0 {
+			languages = opts[0].Languages
+		}
+		if opts[0].Force {
+			a.service.ClearCache()
+		}
+	}
+
+	meta, err := a.service.GetEpisodeMetadata(ctx, seriesTMDbID, int(episode.SeasonNumber), int(episode.EpisodeNumber), languages)
 	if err != nil {
 		return fmt.Errorf("get episode metadata: %w", err)
 	}
@@ -151,9 +184,9 @@ func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contentt
 	return networks, nil
 }
 
-// ClearCache is a no-op for the adapter (cache is managed by the service).
+// ClearCache clears all cached metadata by delegating to the shared service.
 func (a *Adapter) ClearCache() {
-	// Cache is managed by the shared metadata service
+	a.service.ClearCache()
 }
 
 // mapSearchResultToSeries converts a search result to a series domain type.

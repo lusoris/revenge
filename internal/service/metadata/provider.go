@@ -42,6 +42,9 @@ type Provider interface {
 
 	// SupportsLanguage returns true if this provider supports the given language code.
 	SupportsLanguage(lang string) bool
+
+	// ClearCache clears any cached metadata for this provider.
+	ClearCache()
 }
 
 // MovieProvider extends Provider with movie-specific methods.

@@ -2,32 +2,34 @@ package moviejobs
 
 import (
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
-	"github.com/govalues/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
+
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
 )
 
-func TestMovieMetadataRefreshArgs_Kind(t *testing.T) {
+func TestRefreshMovieArgs_Kind(t *testing.T) {
 	t.Parallel()
 
-	args := MovieMetadataRefreshArgs{}
-	assert.Equal(t, "movie_metadata_refresh", args.Kind())
+	args := metadatajobs.RefreshMovieArgs{}
+	assert.Equal(t, "metadata_refresh_movie", args.Kind())
 }
 
-func TestMovieMetadataRefreshArgs_Fields(t *testing.T) {
+func TestRefreshMovieArgs_Fields(t *testing.T) {
 	t.Parallel()
 
 	movieID := uuid.Must(uuid.NewV7())
-	args := MovieMetadataRefreshArgs{
-		MovieID: movieID,
-		Force:   true,
+	args := metadatajobs.RefreshMovieArgs{
+		MovieID:   movieID,
+		Force:     true,
+		Languages: []string{"en", "de"},
 	}
 
 	assert.Equal(t, movieID, args.MovieID)
 	assert.True(t, args.Force)
+	assert.Equal(t, []string{"en", "de"}, args.Languages)
 }
 
 func TestNewMovieMetadataRefreshWorker(t *testing.T) {
@@ -37,47 +39,7 @@ func TestNewMovieMetadataRefreshWorker(t *testing.T) {
 	worker := NewMovieMetadataRefreshWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
-	assert.Nil(t, worker.movieRepo)
-	assert.Nil(t, worker.metadataService)
+	assert.Nil(t, worker.service)
+	assert.Nil(t, worker.jobClient)
 	assert.NotNil(t, worker.logger)
-}
-
-func TestFormatTimePtr(t *testing.T) {
-	t.Parallel()
-
-	t.Run("nil input", func(t *testing.T) {
-		result := formatTimePtr(nil)
-		assert.Nil(t, result)
-	})
-
-	t.Run("valid time", func(t *testing.T) {
-		tm := time.Date(2024, 5, 15, 0, 0, 0, 0, time.UTC)
-		result := formatTimePtr(&tm)
-
-		assert.NotNil(t, result)
-		assert.Equal(t, "2024-05-15", *result)
-	})
-}
-
-func TestFormatDecimalPtr(t *testing.T) {
-	t.Parallel()
-
-	t.Run("nil input", func(t *testing.T) {
-		result := formatDecimalPtr(nil)
-		assert.Nil(t, result)
-	})
-
-	t.Run("zero decimal", func(t *testing.T) {
-		d := decimal.Decimal{}
-		result := formatDecimalPtr(&d)
-		assert.Nil(t, result)
-	})
-
-	t.Run("valid decimal", func(t *testing.T) {
-		d, _ := decimal.NewFromFloat64(7.5)
-		result := formatDecimalPtr(&d)
-
-		assert.NotNil(t, result)
-		assert.Equal(t, "7.5", *result)
-	})
 }

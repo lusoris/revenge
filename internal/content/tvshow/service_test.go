@@ -516,14 +516,14 @@ var _ Repository = (*MockRepository)(nil)
 
 func TestNewService(t *testing.T) {
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 	assert.NotNil(t, svc)
 }
 
 func TestGetSeries(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	expected := &Series{ID: seriesID, Title: "Breaking Bad"}
@@ -539,7 +539,7 @@ func TestGetSeries(t *testing.T) {
 func TestGetSeries_NotFound(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	repo.On("GetSeries", ctx, seriesID).Return(nil, errors.New("not found"))
@@ -553,7 +553,7 @@ func TestGetSeries_NotFound(t *testing.T) {
 func TestCreateSeries_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	tmdbID := int32(1396)
 	params := CreateSeriesParams{
@@ -574,7 +574,7 @@ func TestCreateSeries_Success(t *testing.T) {
 func TestCreateSeries_EmptyTitle(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	params := CreateSeriesParams{Title: ""}
 
@@ -587,7 +587,7 @@ func TestCreateSeries_EmptyTitle(t *testing.T) {
 func TestCreateSeries_DuplicateTMDbID(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	tmdbID := int32(1396)
 	params := CreateSeriesParams{
@@ -608,7 +608,7 @@ func TestCreateSeries_DuplicateTMDbID(t *testing.T) {
 func TestUpdateSeries_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	newTitle := "Better Call Saul"
@@ -631,7 +631,7 @@ func TestUpdateSeries_Success(t *testing.T) {
 func TestUpdateSeries_EmptyTitle(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	emptyTitle := ""
@@ -653,7 +653,7 @@ func TestUpdateSeries_EmptyTitle(t *testing.T) {
 func TestCreateSeason_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	params := CreateSeasonParams{
@@ -677,7 +677,7 @@ func TestCreateSeason_Success(t *testing.T) {
 func TestCreateSeason_SeriesNotFound(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	params := CreateSeasonParams{
@@ -697,7 +697,7 @@ func TestCreateSeason_SeriesNotFound(t *testing.T) {
 func TestCreateEpisode_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -724,7 +724,7 @@ func TestCreateEpisode_Success(t *testing.T) {
 func TestCreateEpisodeFile_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	episodeID := uuid.Must(uuid.NewV7())
 	params := CreateEpisodeFileParams{
@@ -748,7 +748,7 @@ func TestCreateEpisodeFile_Success(t *testing.T) {
 func TestCreateEpisodeFile_DuplicatePath(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	episodeID := uuid.Must(uuid.NewV7())
 	params := CreateEpisodeFileParams{
@@ -772,7 +772,7 @@ func TestCreateEpisodeFile_DuplicatePath(t *testing.T) {
 func TestUpdateEpisodeProgress_Success(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	episodeID := uuid.Must(uuid.NewV7())
@@ -791,7 +791,7 @@ func TestUpdateEpisodeProgress_Success(t *testing.T) {
 func TestUpdateEpisodeProgress_Completed(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	episodeID := uuid.Must(uuid.NewV7())
@@ -811,7 +811,7 @@ func TestUpdateEpisodeProgress_Completed(t *testing.T) {
 func TestMarkEpisodeWatched(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	episodeID := uuid.Must(uuid.NewV7())
@@ -829,7 +829,7 @@ func TestMarkEpisodeWatched(t *testing.T) {
 func TestMarkSeasonWatched(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -854,7 +854,7 @@ func TestMarkSeasonWatched(t *testing.T) {
 func TestGetContinueWatching(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	expected := []ContinueWatchingItem{
@@ -878,7 +878,7 @@ func TestGetContinueWatching(t *testing.T) {
 func TestGetNextEpisode(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	userID := uuid.Must(uuid.NewV7())
 	seriesID := uuid.Must(uuid.NewV7())
@@ -895,7 +895,7 @@ func TestGetNextEpisode(t *testing.T) {
 func TestDeleteEpisode_DeletesFiles(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	episodeID := uuid.Must(uuid.NewV7())
 
@@ -910,7 +910,7 @@ func TestDeleteEpisode_DeletesFiles(t *testing.T) {
 func TestDeleteSeason_DeletesEpisodes(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	seasonID := uuid.Must(uuid.NewV7())
 
@@ -922,12 +922,12 @@ func TestDeleteSeason_DeletesEpisodes(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
-func TestRefreshSeriesMetadata_NotImplemented(t *testing.T) {
+func TestRefreshSeriesMetadata_NoProvider(t *testing.T) {
 	ctx := context.Background()
 	repo := new(MockRepository)
-	svc := NewService(repo)
+	svc := NewService(repo, nil)
 
 	err := svc.RefreshSeriesMetadata(ctx, uuid.Must(uuid.NewV7()))
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "not implemented")
+	assert.Contains(t, err.Error(), "metadata provider not configured")
 }

@@ -55,12 +55,23 @@ func (a *Adapter) SearchMovies(ctx context.Context, query string, year *int) ([]
 }
 
 // EnrichMovie enriches a movie with metadata from the shared service.
-func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie) error {
+func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie, opts ...contentmovie.MetadataRefreshOptions) error {
 	if mov.TMDbID == nil {
 		return fmt.Errorf("movie has no TMDb ID")
 	}
 
-	meta, err := a.service.GetMovieMetadata(ctx, *mov.TMDbID, a.languages)
+	// Determine languages and force from options
+	languages := a.languages
+	if len(opts) > 0 {
+		if len(opts[0].Languages) > 0 {
+			languages = opts[0].Languages
+		}
+		if opts[0].Force {
+			a.service.ClearCache()
+		}
+	}
+
+	meta, err := a.service.GetMovieMetadata(ctx, *mov.TMDbID, languages)
 	if err != nil {
 		return fmt.Errorf("get movie metadata: %w", err)
 	}
@@ -132,9 +143,9 @@ func (a *Adapter) GetImageURL(path string, size metadata.ImageSize) string {
 	return a.service.GetImageURL(path, size)
 }
 
-// ClearCache is a no-op for the adapter (cache is managed by the service).
+// ClearCache clears all cached metadata by delegating to the shared service.
 func (a *Adapter) ClearCache() {
-	// Cache is managed by the shared metadata service
+	a.service.ClearCache()
 }
 
 // mapSearchResultToMovie converts a search result to a movie domain type.

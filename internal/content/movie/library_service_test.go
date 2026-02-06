@@ -26,7 +26,7 @@ func (m *MockMetadataProvider) SearchMovies(ctx context.Context, query string, y
 	return args.Get(0).([]*Movie), args.Error(1)
 }
 
-func (m *MockMetadataProvider) EnrichMovie(ctx context.Context, mov *Movie) error {
+func (m *MockMetadataProvider) EnrichMovie(ctx context.Context, mov *Movie, opts ...MetadataRefreshOptions) error {
 	args := m.Called(ctx, mov)
 	return args.Error(0)
 }
@@ -45,6 +45,10 @@ func (m *MockMetadataProvider) GetMovieGenres(ctx context.Context, movieID uuid.
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]MovieGenre), args.Error(1)
+}
+
+func (m *MockMetadataProvider) ClearCache() {
+	m.Called()
 }
 
 func TestLibraryService_ScanLibrary(t *testing.T) {

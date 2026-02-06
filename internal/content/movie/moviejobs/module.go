@@ -38,14 +38,13 @@ func RegisterWorkers(
 type RegisterWorkersParams struct {
 	fx.In
 
-	Workers                  *river.Workers
-	MetadataRefreshWorker    *MovieMetadataRefreshWorker
-	LibraryScanWorker        *MovieLibraryScanWorker
-	FileMatchWorker          *MovieFileMatchWorker
-	SearchIndexWorker        *MovieSearchIndexWorker    `optional:"true"`
-	MovieRepository          movie.Repository
-	MetadataProvider         movie.MetadataProvider
-	LibraryService           *movie.LibraryService
-	SearchService            *search.MovieSearchService `optional:"true"`
-	Logger                   *zap.Logger
+	Workers               *river.Workers
+	MetadataRefreshWorker *MovieMetadataRefreshWorker
+	LibraryScanWorker     *MovieLibraryScanWorker
+	FileMatchWorker       *MovieFileMatchWorker
+	SearchIndexWorker     *MovieSearchIndexWorker    `optional:"true"`
+	MovieService          movie.Service
+	LibraryService        *movie.LibraryService
+	SearchService         *search.MovieSearchService `optional:"true"`
+	Logger                *zap.Logger
 }

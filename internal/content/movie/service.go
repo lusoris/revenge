@@ -49,7 +49,7 @@ type Service interface {
 	GetUserStats(ctx context.Context, userID uuid.UUID) (*UserMovieStats, error)
 
 	// Metadata refresh
-	RefreshMovieMetadata(ctx context.Context, id uuid.UUID) error
+	RefreshMovieMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error
 }
 
 // movieService implements the Service interface
@@ -272,8 +272,9 @@ func (s *movieService) GetUserStats(ctx context.Context, userID uuid.UUID) (*Use
 	return s.repo.GetUserMovieStats(ctx, userID)
 }
 
-// RefreshMovieMetadata triggers a metadata refresh for a movie
-func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID) error {
+// RefreshMovieMetadata triggers a metadata refresh for a movie.
+// Options allow specifying force refresh and language overrides.
+func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error {
 	// Check if metadata provider is available
 	if s.metadataProvider == nil {
 		return fmt.Errorf("metadata provider not configured")
@@ -285,8 +286,8 @@ func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID) e
 		return fmt.Errorf("get movie: %w", err)
 	}
 
-	// Enrich with latest metadata from TMDb
-	if err := s.metadataProvider.EnrichMovie(ctx, mov); err != nil {
+	// Enrich with latest metadata from TMDb, passing options through
+	if err := s.metadataProvider.EnrichMovie(ctx, mov, opts...); err != nil {
 		return fmt.Errorf("enrich movie: %w", err)
 	}
 

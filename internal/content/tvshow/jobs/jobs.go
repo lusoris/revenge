@@ -15,6 +15,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/shared/scanner"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/content/tvshow/adapters"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
 )
@@ -59,14 +60,16 @@ type LibraryScanWorker struct {
 	river.WorkerDefaults[LibraryScanArgs]
 	service          tvshow.Service
 	metadataProvider tvshow.MetadataProvider
+	jobClient        *infrajobs.Client
 	logger           *zap.Logger
 }
 
 // NewLibraryScanWorker creates a new library scan worker.
-func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, logger *zap.Logger) *LibraryScanWorker {
+func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, jobClient *infrajobs.Client, logger *zap.Logger) *LibraryScanWorker {
 	return &LibraryScanWorker{
 		service:          service,
 		metadataProvider: metadataProvider,
+		jobClient:        jobClient,
 		logger:           logger.Named("tvshow_library_scan"),
 	}
 }
@@ -112,11 +115,29 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		zap.Int("parsed_files", summary.ParsedFiles),
 	)
 
+	// Count media files for progress tracking
+	mediaFiles := 0
+	for _, sr := range scanResults {
+		if sr.IsMedia {
+			mediaFiles++
+		}
+	}
+	processed := 0
+
 	// Process each discovered file
 	for _, sr := range scanResults {
 		if !sr.IsMedia {
 			continue
 		}
+		processed++
+
+		// Report progress
+		_ = w.jobClient.ReportProgress(ctx, job.ID, &infrajobs.JobProgress{
+			Phase:   "processing",
+			Current: processed,
+			Total:   mediaFiles,
+			Message: sr.ParsedTitle,
+		})
 
 		// Check if file is already matched
 		existingFile, err := w.service.GetEpisodeFileByPath(ctx, sr.FilePath)
@@ -360,15 +381,17 @@ func (MetadataRefreshArgs) Kind() string {
 // MetadataRefreshWorker refreshes TV show metadata from external sources.
 type MetadataRefreshWorker struct {
 	river.WorkerDefaults[MetadataRefreshArgs]
-	service tvshow.Service
-	logger  *zap.Logger
+	service   tvshow.Service
+	jobClient *infrajobs.Client
+	logger    *zap.Logger
 }
 
 // NewMetadataRefreshWorker creates a new metadata refresh worker.
-func NewMetadataRefreshWorker(service tvshow.Service, logger *zap.Logger) *MetadataRefreshWorker {
+func NewMetadataRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *zap.Logger) *MetadataRefreshWorker {
 	return &MetadataRefreshWorker{
-		service: service,
-		logger:  logger.Named("tvshow_metadata_refresh"),
+		service:   service,
+		jobClient: jobClient,
+		logger:    logger.Named("tvshow_metadata_refresh"),
 	}
 }
 
@@ -393,24 +416,29 @@ func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Metadat
 	result := &sharedjobs.JobResult{Success: true}
 	start := time.Now()
 
+	// Build refresh options from job args
+	opts := tvshow.MetadataRefreshOptions{
+		Force: args.Force,
+	}
+
 	// Determine what to refresh
 	switch {
 	case args.EpisodeID != nil:
-		if err := w.service.RefreshEpisodeMetadata(ctx, *args.EpisodeID); err != nil {
+		if err := w.service.RefreshEpisodeMetadata(ctx, *args.EpisodeID, opts); err != nil {
 			result.AddError(fmt.Errorf("refresh episode %s: %w", args.EpisodeID, err))
 		} else {
 			result.ItemsProcessed++
 		}
 
 	case args.SeasonID != nil:
-		if err := w.service.RefreshSeasonMetadata(ctx, *args.SeasonID); err != nil {
+		if err := w.service.RefreshSeasonMetadata(ctx, *args.SeasonID, opts); err != nil {
 			result.AddError(fmt.Errorf("refresh season %s: %w", args.SeasonID, err))
 		} else {
 			result.ItemsProcessed++
 		}
 
 	case args.SeriesID != nil:
-		if err := w.service.RefreshSeriesMetadata(ctx, *args.SeriesID); err != nil {
+		if err := w.service.RefreshSeriesMetadata(ctx, *args.SeriesID, opts); err != nil {
 			result.AddError(fmt.Errorf("refresh series %s: %w", args.SeriesID, err))
 		} else {
 			result.ItemsProcessed++
@@ -441,11 +469,17 @@ func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Metadat
 
 			// Refresh each series in the batch
 			for _, s := range seriesList {
-				if err := w.service.RefreshSeriesMetadata(ctx, s.ID); err != nil {
+				if err := w.service.RefreshSeriesMetadata(ctx, s.ID, opts); err != nil {
 					result.AddError(fmt.Errorf("refresh series %s (%s): %w", s.ID, s.Title, err))
 				} else {
 					result.ItemsProcessed++
 				}
+
+				_ = w.jobClient.ReportProgress(ctx, job.ID, &infrajobs.JobProgress{
+					Phase:   "refreshing",
+					Current: result.ItemsProcessed,
+					Message: s.Title,
+				})
 			}
 
 			w.logger.Info("processed batch",
@@ -860,15 +894,17 @@ func (SeriesRefreshArgs) Kind() string {
 // SeriesRefreshWorker refreshes a single series from TMDb.
 type SeriesRefreshWorker struct {
 	river.WorkerDefaults[SeriesRefreshArgs]
-	service tvshow.Service
-	logger  *zap.Logger
+	service   tvshow.Service
+	jobClient *infrajobs.Client
+	logger    *zap.Logger
 }
 
 // NewSeriesRefreshWorker creates a new series refresh worker.
-func NewSeriesRefreshWorker(service tvshow.Service, logger *zap.Logger) *SeriesRefreshWorker {
+func NewSeriesRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *zap.Logger) *SeriesRefreshWorker {
 	return &SeriesRefreshWorker{
-		service: service,
-		logger:  logger.Named("tvshow_series_refresh"),
+		service:   service,
+		jobClient: jobClient,
+		logger:    logger.Named("tvshow_series_refresh"),
 	}
 }
 
@@ -892,8 +928,13 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 	result := &sharedjobs.JobResult{Success: true}
 	start := time.Now()
 
+	// Build refresh options from job args
+	opts := tvshow.MetadataRefreshOptions{
+		Languages: args.Languages,
+	}
+
 	// Refresh series metadata using the service
-	if err := w.service.RefreshSeriesMetadata(ctx, args.SeriesID); err != nil {
+	if err := w.service.RefreshSeriesMetadata(ctx, args.SeriesID, opts); err != nil {
 		result.AddError(fmt.Errorf("refresh series %s: %w", args.SeriesID, err))
 		w.logger.Error("failed to refresh series",
 			zap.String("series_id", args.SeriesID.String()),
@@ -915,9 +956,16 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 				zap.Error(err),
 			)
 		} else {
-			for _, season := range seasons {
+			for i, season := range seasons {
+				_ = w.jobClient.ReportProgress(ctx, job.ID, &infrajobs.JobProgress{
+					Phase:   "refreshing seasons",
+					Current: i + 1,
+					Total:   len(seasons),
+					Message: season.Name,
+				})
+
 				if args.RefreshSeasons {
-					if err := w.service.RefreshSeasonMetadata(ctx, season.ID); err != nil {
+					if err := w.service.RefreshSeasonMetadata(ctx, season.ID, opts); err != nil {
 						w.logger.Warn("failed to refresh season",
 							zap.String("season_id", season.ID.String()),
 							zap.Error(err),
@@ -939,7 +987,7 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 					}
 
 					for _, ep := range episodes {
-						if err := w.service.RefreshEpisodeMetadata(ctx, ep.ID); err != nil {
+						if err := w.service.RefreshEpisodeMetadata(ctx, ep.ID, opts); err != nil {
 							w.logger.Warn("failed to refresh episode",
 								zap.String("episode_id", ep.ID.String()),
 								zap.Error(err),

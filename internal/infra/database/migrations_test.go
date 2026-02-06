@@ -46,7 +46,7 @@ func TestMigrationsUpDown(t *testing.T) {
 
 	// Create migration instance
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://../../../migrations",
+		"file://migrations/shared",
 		"postgres",
 		driver,
 	)
@@ -188,7 +188,7 @@ func TestServerSettingsTableStructure(t *testing.T) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err)
 
-	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
 	require.NoError(t, err)
 
 	err = m.Up()
@@ -268,7 +268,7 @@ func TestUserSettingsTableStructure(t *testing.T) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err)
 
-	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
 	require.NoError(t, err)
 
 	err = m.Up()
@@ -346,7 +346,7 @@ func TestServerSettingsDefaultValues(t *testing.T) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err)
 
-	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
 	require.NoError(t, err)
 
 	err = m.Up()
@@ -421,7 +421,7 @@ func TestUserPreferencesTableStructure(t *testing.T) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err)
 
-	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
 	require.NoError(t, err)
 
 	err = m.Up()
@@ -507,7 +507,7 @@ func TestUserAvatarsTableStructure(t *testing.T) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	require.NoError(t, err)
 
-	m, err := migrate.NewWithDatabaseInstance("file://../../../migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
 	require.NoError(t, err)
 
 	err = m.Up()

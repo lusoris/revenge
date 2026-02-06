@@ -48,6 +48,9 @@ type Service interface {
 	RefreshMovie(ctx context.Context, movieID uuid.UUID) error
 	RefreshTVShow(ctx context.Context, seriesID uuid.UUID) error
 
+	// Cache management
+	ClearCache()
+
 	// Provider management
 	RegisterProvider(provider Provider)
 	GetProviders() []Provider
@@ -718,6 +721,17 @@ func (s *service) RefreshTVShow(ctx context.Context, seriesID uuid.UUID) error {
 	}
 
 	return queue.EnqueueRefreshTVShow(ctx, seriesID, false, s.config.DefaultLanguages)
+}
+
+// ClearCache clears cached metadata across all registered providers.
+func (s *service) ClearCache() {
+	s.mu.RLock()
+	providers := s.allProviders
+	s.mu.RUnlock()
+
+	for _, p := range providers {
+		p.ClearCache()
+	}
 }
 
 // getDefaultLanguage returns the first default language.

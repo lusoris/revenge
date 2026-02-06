@@ -64,7 +64,7 @@ func runMigrationsWithMigrate(databaseURL string) error {
 		return fmt.Errorf("failed to find project root: %w", err)
 	}
 
-	migrationsPath := filepath.Join(projectRoot, "migrations")
+	migrationsPath := filepath.Join(projectRoot, "internal", "infra", "database", "migrations", "shared")
 	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
 		return fmt.Errorf("migrations directory not found: %s", migrationsPath)
 	}

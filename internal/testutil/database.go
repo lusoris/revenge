@@ -165,12 +165,13 @@ func runMigrations(dbURL string) error {
 
 // findMigrationsPath finds the migrations directory relative to the test file.
 func findMigrationsPath() string {
-	// Try common paths
+	// Try common relative paths to internal/infra/database/migrations/shared/
 	paths := []string{
-		"migrations",
-		"../migrations",
-		"../../migrations",
-		"../../../migrations",
+		"internal/infra/database/migrations/shared",
+		"../internal/infra/database/migrations/shared",
+		"../../internal/infra/database/migrations/shared",
+		"../../../internal/infra/database/migrations/shared",
+		"../../../../internal/infra/database/migrations/shared",
 	}
 
 	for _, path := range paths {
@@ -179,5 +180,5 @@ func findMigrationsPath() string {
 		}
 	}
 
-	return "migrations" // Default fallback
+	return "internal/infra/database/migrations/shared" // Default fallback
 }

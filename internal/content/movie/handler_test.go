@@ -220,7 +220,7 @@ func (m *MockService) GetUserStats(ctx context.Context, userID uuid.UUID) (*User
 	return args.Get(0).(*UserMovieStats), args.Error(1)
 }
 
-func (m *MockService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID) error {
+func (m *MockService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error {
 	args := m.Called(ctx, id)
 	return args.Error(0)
 }

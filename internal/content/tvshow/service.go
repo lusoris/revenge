@@ -83,9 +83,9 @@ type Service interface {
 	GetUserStats(ctx context.Context, userID uuid.UUID) (*UserTVStats, error)
 
 	// Metadata refresh
-	RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) error
-	RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) error
-	RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) error
+	RefreshSeriesMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error
+	RefreshSeasonMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error
+	RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error
 }
 
 // tvService implements the Service interface
@@ -532,7 +532,7 @@ func (s *tvService) GetUserStats(ctx context.Context, userID uuid.UUID) (*UserTV
 // Metadata Operations
 // =============================================================================
 
-func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) error {
+func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error {
 	// Check if metadata provider is available
 	if s.metadataProvider == nil {
 		return fmt.Errorf("metadata provider not configured")
@@ -544,8 +544,8 @@ func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) err
 		return fmt.Errorf("get series: %w", err)
 	}
 
-	// Enrich with latest metadata from TMDb
-	if err := s.metadataProvider.EnrichSeries(ctx, series); err != nil {
+	// Enrich with latest metadata from TMDb, passing options through
+	if err := s.metadataProvider.EnrichSeries(ctx, series, opts...); err != nil {
 		return fmt.Errorf("enrich series: %w", err)
 	}
 
@@ -590,7 +590,7 @@ func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID) err
 	return nil
 }
 
-func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) error {
+func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error {
 	// Check if metadata provider is available
 	if s.metadataProvider == nil {
 		return fmt.Errorf("metadata provider not configured")
@@ -612,8 +612,8 @@ func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) err
 		return fmt.Errorf("series has no TMDb ID for metadata refresh")
 	}
 
-	// Enrich with latest metadata from TMDb
-	if err := s.metadataProvider.EnrichSeason(ctx, season, *series.TMDbID); err != nil {
+	// Enrich with latest metadata from TMDb, passing options through
+	if err := s.metadataProvider.EnrichSeason(ctx, season, *series.TMDbID, opts...); err != nil {
 		return fmt.Errorf("enrich season: %w", err)
 	}
 
@@ -628,7 +628,7 @@ func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID) err
 	return nil
 }
 
-func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) error {
+func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID, opts ...MetadataRefreshOptions) error {
 	// Check if metadata provider is available
 	if s.metadataProvider == nil {
 		return fmt.Errorf("metadata provider not configured")
@@ -650,8 +650,8 @@ func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID) er
 		return fmt.Errorf("series has no TMDb ID for metadata refresh")
 	}
 
-	// Enrich with latest metadata from TMDb
-	if err := s.metadataProvider.EnrichEpisode(ctx, episode, *series.TMDbID); err != nil {
+	// Enrich with latest metadata from TMDb, passing options through
+	if err := s.metadataProvider.EnrichEpisode(ctx, episode, *series.TMDbID, opts...); err != nil {
 		return fmt.Errorf("enrich episode: %w", err)
 	}
 
