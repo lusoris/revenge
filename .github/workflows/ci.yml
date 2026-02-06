@@ -13,6 +13,7 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
+  GOFLAGS: -buildvcs=false
 
 jobs:
   # Fast feedback: lint and vet run first

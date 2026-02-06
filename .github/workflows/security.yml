@@ -17,6 +17,7 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
+  GOFLAGS: -buildvcs=false
 
 jobs:
   codeql:
