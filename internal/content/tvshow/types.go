@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 )
 
 // Series represents a TV show with metadata from TMDb/TVDb/Sonarr.

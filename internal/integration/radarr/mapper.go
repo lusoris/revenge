@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 )
 
 // Mapper converts Radarr types to domain types.
@@ -47,18 +47,18 @@ func (m *Mapper) ToMovie(rm *Movie) *movie.Movie {
 
 	// Set ratings from TMDb (preferred) or IMDb
 	if rm.Ratings.TMDb != nil {
-		d := decimal.NewFromFloat(rm.Ratings.TMDb.Value)
+		d, _ := decimal.NewFromFloat64(rm.Ratings.TMDb.Value)
 		result.VoteAverage = &d
 		result.VoteCount = ptr(util.SafeIntToInt32(rm.Ratings.TMDb.Votes))
 	} else if rm.Ratings.IMDb != nil {
-		d := decimal.NewFromFloat(rm.Ratings.IMDb.Value)
+		d, _ := decimal.NewFromFloat64(rm.Ratings.IMDb.Value)
 		result.VoteAverage = &d
 		result.VoteCount = ptr(util.SafeIntToInt32(rm.Ratings.IMDb.Votes))
 	}
 
 	// Set popularity
 	if rm.Popularity > 0 {
-		d := decimal.NewFromFloat(rm.Popularity)
+		d, _ := decimal.NewFromFloat64(rm.Popularity)
 		result.Popularity = &d
 	}
 
@@ -119,7 +119,7 @@ func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile
 		result.AudioCodec = ptrString(mi.AudioCodec)
 		result.DynamicRange = ptrString(mi.VideoDynamicRange)
 		if mi.VideoFps > 0 {
-			fps := decimal.NewFromFloat(mi.VideoFps)
+			fps, _ := decimal.NewFromFloat64(mi.VideoFps)
 			result.Framerate = &fps
 		}
 		result.BitrateKbps = ptr(util.SafeIntToInt32(mi.VideoBitrate / 1000))

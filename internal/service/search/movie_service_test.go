@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/movie"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
@@ -95,9 +95,9 @@ func TestMovieToDocument(t *testing.T) {
 	originalLanguage := "en"
 	posterPath := "/poster.jpg"
 	backdropPath := "/backdrop.jpg"
-	voteAverage := decimal.NewFromFloat(8.7)
+	voteAverage, _ := decimal.NewFromFloat64(8.7)
 	voteCount := int32(20000)
-	popularity := decimal.NewFromFloat(80.5)
+	popularity, _ := decimal.NewFromFloat64(80.5)
 	releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 	originalTitle := "The Matrix"
 
@@ -586,7 +586,7 @@ func TestMovieToDocumentWithZeroValues(t *testing.T) {
 
 	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
-	zeroDecimal := decimal.NewFromFloat(0.0)
+	zeroDecimal, _ := decimal.NewFromFloat64(0.0)
 	zeroInt := int32(0)
 
 	m := &movie.Movie{

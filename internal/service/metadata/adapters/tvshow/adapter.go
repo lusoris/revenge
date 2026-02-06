@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 
 	contenttvshow "github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/service/metadata"
@@ -169,7 +169,7 @@ func mapSearchResultToSeries(r *metadata.TVShowSearchResult) *contenttvshow.Seri
 	}
 
 	if r.VoteAverage > 0 {
-		va := decimal.NewFromFloat(r.VoteAverage)
+		va, _ := decimal.NewFromFloat64(r.VoteAverage)
 		series.VoteAverage = &va
 	}
 	if r.VoteCount > 0 {
@@ -177,7 +177,7 @@ func mapSearchResultToSeries(r *metadata.TVShowSearchResult) *contenttvshow.Seri
 		series.VoteCount = &vc
 	}
 	if r.Popularity > 0 {
-		pop := decimal.NewFromFloat(r.Popularity)
+		pop, _ := decimal.NewFromFloat64(r.Popularity)
 		series.Popularity = &pop
 	}
 
@@ -214,7 +214,7 @@ func mapMetadataToSeries(series *contenttvshow.Series, meta *metadata.TVShowMeta
 
 	// Map ratings
 	if meta.VoteAverage > 0 {
-		va := decimal.NewFromFloat(meta.VoteAverage)
+		va, _ := decimal.NewFromFloat64(meta.VoteAverage)
 		series.VoteAverage = &va
 	}
 	if meta.VoteCount > 0 {
@@ -222,7 +222,7 @@ func mapMetadataToSeries(series *contenttvshow.Series, meta *metadata.TVShowMeta
 		series.VoteCount = &vc
 	}
 	if meta.Popularity > 0 {
-		pop := decimal.NewFromFloat(meta.Popularity)
+		pop, _ := decimal.NewFromFloat64(meta.Popularity)
 		series.Popularity = &pop
 	}
 
@@ -271,7 +271,7 @@ func mapSeasonMetadataToSeason(season *contenttvshow.Season, meta *metadata.Seas
 	season.TMDbID = meta.TMDbID
 
 	if meta.VoteAverage > 0 {
-		va := decimal.NewFromFloat(meta.VoteAverage)
+		va, _ := decimal.NewFromFloat64(meta.VoteAverage)
 		season.VoteAverage = &va
 	}
 
@@ -303,7 +303,7 @@ func mapEpisodeMetadataToEpisode(episode *contenttvshow.Episode, meta *metadata.
 	episode.IMDbID = meta.IMDbID
 
 	if meta.VoteAverage > 0 {
-		va := decimal.NewFromFloat(meta.VoteAverage)
+		va, _ := decimal.NewFromFloat64(meta.VoteAverage)
 		episode.VoteAverage = &va
 	}
 	if meta.VoteCount > 0 {

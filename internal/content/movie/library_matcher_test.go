@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -275,14 +275,14 @@ func TestFormatDate(t *testing.T) {
 
 func TestFormatDecimal(t *testing.T) {
 	t.Run("Valid decimal", func(t *testing.T) {
-		d := decimal.NewFromFloat(123.456)
+		d, _ := decimal.NewFromFloat64(123.456)
 		formatted := formatDecimal(&d)
 		assert.NotNil(t, formatted)
 		assert.Equal(t, "123.456", *formatted)
 	})
 
 	t.Run("Zero decimal", func(t *testing.T) {
-		d := decimal.Zero
+		d := decimal.Decimal{}
 		formatted := formatDecimal(&d)
 		assert.Nil(t, formatted)
 	})
@@ -295,6 +295,6 @@ func TestFormatDecimal(t *testing.T) {
 
 // Helper functions
 func decimalPtr(s string) *decimal.Decimal {
-	d, _ := decimal.NewFromString(s)
+	d, _ := decimal.Parse(s)
 	return &d
 }

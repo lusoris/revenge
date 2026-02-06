@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -677,7 +677,7 @@ func TestEpisodeFile(t *testing.T) {
 		VideoCodec:     strPtr("h264"),
 		AudioCodec:     strPtr("aac"),
 		BitrateKbps:    int32Ptr(5000),
-		DurationSeconds: decimalPtr(decimal.NewFromInt(2700)),
+		DurationSeconds: decimalPtr(decimal.MustNew(2700, 0)),
 		AudioLanguages:    []string{"en"},
 		SubtitleLanguages: []string{"en", "de", "es"},
 		CreatedAt:      time.Now(),

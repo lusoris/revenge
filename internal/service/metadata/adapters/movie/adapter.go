@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 
 	contentmovie "github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/metadata"
@@ -151,7 +151,7 @@ func mapSearchResultToMovie(r *metadata.MovieSearchResult) *contentmovie.Movie {
 	}
 
 	if r.VoteAverage > 0 {
-		va := decimal.NewFromFloat(r.VoteAverage)
+		va, _ := decimal.NewFromFloat64(r.VoteAverage)
 		mov.VoteAverage = &va
 	}
 	if r.VoteCount > 0 {
@@ -159,7 +159,7 @@ func mapSearchResultToMovie(r *metadata.MovieSearchResult) *contentmovie.Movie {
 		mov.VoteCount = &vc
 	}
 	if r.Popularity > 0 {
-		pop := decimal.NewFromFloat(r.Popularity)
+		pop, _ := decimal.NewFromFloat64(r.Popularity)
 		mov.Popularity = &pop
 	}
 
@@ -198,7 +198,7 @@ func mapMetadataToMovie(mov *contentmovie.Movie, meta *metadata.MovieMetadata, r
 
 	// Map ratings
 	if meta.VoteAverage > 0 {
-		va := decimal.NewFromFloat(meta.VoteAverage)
+		va, _ := decimal.NewFromFloat64(meta.VoteAverage)
 		mov.VoteAverage = &va
 	}
 	if meta.VoteCount > 0 {
@@ -206,7 +206,7 @@ func mapMetadataToMovie(mov *contentmovie.Movie, meta *metadata.MovieMetadata, r
 		mov.VoteCount = &vc
 	}
 	if meta.Popularity > 0 {
-		pop := decimal.NewFromFloat(meta.Popularity)
+		pop, _ := decimal.NewFromFloat64(meta.Popularity)
 		mov.Popularity = &pop
 	}
 

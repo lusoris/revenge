@@ -7,7 +7,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/shared/matcher"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 )
 
 // Matcher handles matching scanned files to movies

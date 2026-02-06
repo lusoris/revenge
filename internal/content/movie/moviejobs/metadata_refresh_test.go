@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -68,13 +68,13 @@ func TestFormatDecimalPtr(t *testing.T) {
 	})
 
 	t.Run("zero decimal", func(t *testing.T) {
-		d := decimal.Zero
+		d := decimal.Decimal{}
 		result := formatDecimalPtr(&d)
 		assert.Nil(t, result)
 	})
 
 	t.Run("valid decimal", func(t *testing.T) {
-		d := decimal.NewFromFloat(7.5)
+		d, _ := decimal.NewFromFloat64(7.5)
 		result := formatDecimalPtr(&d)
 
 		assert.NotNil(t, result)

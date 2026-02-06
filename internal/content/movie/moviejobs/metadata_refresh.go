@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/riverqueue/river"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/content/movie"

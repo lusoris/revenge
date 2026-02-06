@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 
 	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
 )
@@ -134,7 +134,7 @@ func pgNumericToDecimalPtr(n pgtype.Numeric) *decimal.Decimal {
 	// Convert pgtype.Numeric to string then to decimal
 	var s string
 	_ = n.Scan(&s)
-	d, _ := decimal.NewFromString(s)
+	d, _ := decimal.Parse(s)
 	return &d
 }
 

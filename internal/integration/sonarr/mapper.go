@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 )
 
 // Mapper converts Sonarr types to domain types.
@@ -43,7 +43,7 @@ func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 
 	// Set ratings
 	if ss.Ratings.Value > 0 {
-		d := decimal.NewFromFloat(ss.Ratings.Value)
+		d, _ := decimal.NewFromFloat64(ss.Ratings.Value)
 		result.VoteAverage = &d
 		result.VoteCount = ptr(util.SafeIntToInt32(ss.Ratings.Votes))
 	}
@@ -162,7 +162,7 @@ func (m *Mapper) ToEpisodeFile(sef *EpisodeFile, episodeID uuid.UUID) *tvshow.Ep
 		// Parse runtime duration
 		if mi.RunTime != "" {
 			if duration, err := time.ParseDuration(mi.RunTime); err == nil {
-				d := decimal.NewFromFloat(duration.Seconds())
+				d, _ := decimal.NewFromFloat64(duration.Seconds())
 				result.DurationSeconds = &d
 			}
 		}

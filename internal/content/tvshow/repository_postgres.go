@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/shopspring/decimal"
+	"github.com/govalues/decimal"
 
 	tvshowdb "github.com/lusoris/revenge/internal/content/tvshow/db"
 )
@@ -1430,7 +1430,7 @@ func pgNumericToDecimalPtr(n pgtype.Numeric) *decimal.Decimal {
 	// Convert to string first
 	var buf []byte
 	buf, _ = n.MarshalJSON()
-	d, err := decimal.NewFromString(string(buf))
+	d, err := decimal.Parse(string(buf))
 	if err != nil {
 		return nil
 	}
