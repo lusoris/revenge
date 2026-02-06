@@ -71,6 +71,11 @@ func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.Metada
 	}
 }
 
+// Timeout returns the maximum execution time for library scan jobs.
+func (w *LibraryScanWorker) Timeout(job *river.Job[LibraryScanArgs]) time.Duration {
+	return 30 * time.Minute
+}
+
 // Work executes the library scan job.
 func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScanArgs]) error {
 	jctx := sharedjobs.NewJobContext(ctx, w.logger, job.ID, KindLibraryScan)
@@ -367,6 +372,11 @@ func NewMetadataRefreshWorker(service tvshow.Service, logger *zap.Logger) *Metad
 	}
 }
 
+// Timeout returns the maximum execution time for metadata refresh jobs.
+func (w *MetadataRefreshWorker) Timeout(job *river.Job[MetadataRefreshArgs]) time.Duration {
+	return 15 * time.Minute
+}
+
 // Work executes the metadata refresh job.
 func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[MetadataRefreshArgs]) error {
 	jctx := sharedjobs.NewJobContext(ctx, w.logger, job.ID, KindMetadataRefresh)
@@ -502,6 +512,11 @@ func NewFileMatchWorker(service tvshow.Service, metadataProvider tvshow.Metadata
 		metadataProvider: metadataProvider,
 		logger:           logger.Named("tvshow_file_match"),
 	}
+}
+
+// Timeout returns the maximum execution time for file match jobs.
+func (w *FileMatchWorker) Timeout(job *river.Job[FileMatchArgs]) time.Duration {
+	return 5 * time.Minute
 }
 
 // Work executes the file match job.
@@ -724,6 +739,11 @@ func NewSearchIndexWorker(service tvshow.Service, logger *zap.Logger) *SearchInd
 	}
 }
 
+// Timeout returns the maximum execution time for search index jobs.
+func (w *SearchIndexWorker) Timeout(job *river.Job[SearchIndexArgs]) time.Duration {
+	return 10 * time.Minute
+}
+
 // Work executes the search index job.
 func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndexArgs]) error {
 	jctx := sharedjobs.NewJobContext(ctx, w.logger, job.ID, KindSearchIndex)
@@ -850,6 +870,11 @@ func NewSeriesRefreshWorker(service tvshow.Service, logger *zap.Logger) *SeriesR
 		service: service,
 		logger:  logger.Named("tvshow_series_refresh"),
 	}
+}
+
+// Timeout returns the maximum execution time for series refresh jobs.
+func (w *SeriesRefreshWorker) Timeout(job *river.Job[SeriesRefreshArgs]) time.Duration {
+	return 10 * time.Minute
 }
 
 // Work executes the series refresh job.

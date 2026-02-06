@@ -51,6 +51,11 @@ func NewCleanupWorker(leaderElection *raft.LeaderElection, logger *slog.Logger) 
 	}
 }
 
+// Timeout returns the maximum execution time for cleanup jobs.
+func (w *CleanupWorker) Timeout(job *river.Job[CleanupArgs]) time.Duration {
+	return 2 * time.Minute
+}
+
 // Work executes the cleanup job.
 func (w *CleanupWorker) Work(ctx context.Context, job *river.Job[CleanupArgs]) error {
 	args := job.Args

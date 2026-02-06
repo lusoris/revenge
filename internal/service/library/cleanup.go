@@ -44,6 +44,11 @@ func NewLibraryScanCleanupWorker(leaderElection *raft.LeaderElection, repo Repos
 	}
 }
 
+// Timeout returns the maximum execution time for library scan cleanup jobs.
+func (w *LibraryScanCleanupWorker) Timeout(job *river.Job[LibraryScanCleanupArgs]) time.Duration {
+	return 2 * time.Minute
+}
+
 // Work executes the library scan cleanup job.
 func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[LibraryScanCleanupArgs]) error {
 	args := job.Args

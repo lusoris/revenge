@@ -3,6 +3,7 @@ package moviejobs
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -44,6 +45,11 @@ func NewMovieLibraryScanWorker(
 // Kind returns the job kind.
 func (w *MovieLibraryScanWorker) Kind() string {
 	return MovieLibraryScanJobKind
+}
+
+// Timeout returns the maximum execution time for movie library scan jobs.
+func (w *MovieLibraryScanWorker) Timeout(job *river.Job[MovieLibraryScanArgs]) time.Duration {
+	return 30 * time.Minute
 }
 
 // Work performs the movie library scan job.

@@ -3,6 +3,7 @@ package moviejobs
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -44,6 +45,11 @@ func NewMovieFileMatchWorker(
 // Kind returns the job kind.
 func (w *MovieFileMatchWorker) Kind() string {
 	return MovieFileMatchJobKind
+}
+
+// Timeout returns the maximum execution time for movie file match jobs.
+func (w *MovieFileMatchWorker) Timeout(job *river.Job[MovieFileMatchArgs]) time.Duration {
+	return 5 * time.Minute
 }
 
 // Work performs the movie file match job.

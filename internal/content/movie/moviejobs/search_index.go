@@ -3,6 +3,7 @@ package moviejobs
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/riverqueue/river"
@@ -56,6 +57,11 @@ func NewMovieSearchIndexWorker(
 		searchService: searchService,
 		logger:        logger.Named("search_index_worker"),
 	}
+}
+
+// Timeout returns the maximum execution time for movie search index jobs.
+func (w *MovieSearchIndexWorker) Timeout(job *river.Job[MovieSearchIndexArgs]) time.Duration {
+	return 15 * time.Minute
 }
 
 // Work executes the search index job.

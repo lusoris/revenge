@@ -36,6 +36,11 @@ func NewMovieMetadataRefreshWorker(
 	}
 }
 
+// Timeout returns the maximum execution time for movie metadata refresh jobs.
+func (w *MovieMetadataRefreshWorker) Timeout(job *river.Job[metadatajobs.RefreshMovieArgs]) time.Duration {
+	return 5 * time.Minute
+}
+
 // Work executes the metadata refresh job.
 func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[metadatajobs.RefreshMovieArgs]) error {
 	args := job.Args

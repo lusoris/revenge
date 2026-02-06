@@ -3,6 +3,7 @@ package sonarr
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -44,6 +45,11 @@ func NewSonarrSyncWorker(syncService *SyncService, logger *zap.Logger) *SonarrSy
 		syncService: syncService,
 		logger:      logger.Named("sonarr_sync_worker"),
 	}
+}
+
+// Timeout returns the maximum execution time for Sonarr sync jobs.
+func (w *SonarrSyncWorker) Timeout(job *river.Job[SonarrSyncJobArgs]) time.Duration {
+	return 10 * time.Minute
 }
 
 // Work executes the Sonarr sync job.
@@ -134,6 +140,11 @@ func NewSonarrWebhookWorker(webhookHandler *WebhookHandler, logger *zap.Logger) 
 		webhookHandler: webhookHandler,
 		logger:         logger.Named("sonarr_webhook_worker"),
 	}
+}
+
+// Timeout returns the maximum execution time for Sonarr webhook jobs.
+func (w *SonarrWebhookWorker) Timeout(job *river.Job[SonarrWebhookJobArgs]) time.Duration {
+	return 1 * time.Minute
 }
 
 // Work executes the Sonarr webhook processing job.

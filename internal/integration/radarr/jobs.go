@@ -3,6 +3,7 @@ package radarr
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -44,6 +45,11 @@ func NewRadarrSyncWorker(syncService *SyncService, logger *zap.Logger) *RadarrSy
 		syncService: syncService,
 		logger:      logger.Named("radarr_sync_worker"),
 	}
+}
+
+// Timeout returns the maximum execution time for Radarr sync jobs.
+func (w *RadarrSyncWorker) Timeout(job *river.Job[RadarrSyncJobArgs]) time.Duration {
+	return 10 * time.Minute
 }
 
 // Work executes the Radarr sync job.
@@ -132,6 +138,11 @@ func NewRadarrWebhookWorker(webhookHandler *WebhookHandler, logger *zap.Logger) 
 		webhookHandler: webhookHandler,
 		logger:         logger.Named("radarr_webhook_worker"),
 	}
+}
+
+// Timeout returns the maximum execution time for Radarr webhook jobs.
+func (w *RadarrWebhookWorker) Timeout(job *river.Job[RadarrWebhookJobArgs]) time.Duration {
+	return 1 * time.Minute
 }
 
 // Work executes the Radarr webhook processing job.
