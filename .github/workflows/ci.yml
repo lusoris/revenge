@@ -13,42 +13,47 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
-  PKG_CONFIG_PATH: /usr/lib/jellyfin-ffmpeg/lib/pkgconfig
-  LD_LIBRARY_PATH: /usr/lib/jellyfin-ffmpeg/lib
 
 jobs:
   # Fast feedback: lint and vet run first
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    container:
+      image: golang:1.25-alpine
     steps:
+      - name: Install system dependencies
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev curl
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/cache@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
-      - uses: golangci/golangci-lint-action@v6
-        with:
-          version: v2.8.0
-          args: --timeout=5m
+          path: |
+            /go/pkg/mod
+            /root/.cache/go-build
+          key: go-lint-${{ hashFiles('**/go.sum') }}
+          restore-keys: go-lint-
+      - name: Install golangci-lint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.8.0
+      - run: golangci-lint run --timeout=5m
       - run: go vet ./...
 
   # Unit tests (no Docker needed, fast)
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    container:
+      image: golang:1.25-alpine
     steps:
+      - name: Install system dependencies
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/cache@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
-      - name: Install CGO dependencies
-        run: |
-          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
-          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
-          sudo apt-get update
-          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
+          path: |
+            /go/pkg/mod
+            /root/.cache/go-build
+          key: go-test-${{ hashFiles('**/go.sum') }}
+          restore-keys: go-test-
       - name: Run unit tests
         run: go test -race -coverprofile=coverage.out -covermode=atomic -count=1 ./...
       - uses: codecov/codecov-action@v5
@@ -116,17 +121,18 @@ jobs:
   vuln:
     name: Vulnerability Check
     runs-on: ubuntu-latest
+    container:
+      image: golang:1.25-alpine
     steps:
+      - name: Install system dependencies
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/cache@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
-      - name: Install CGO dependencies
-        run: |
-          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
-          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
-          sudo apt-get update
-          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
+          path: |
+            /go/pkg/mod
+            /root/.cache/go-build
+          key: go-vuln-${{ hashFiles('**/go.sum') }}
+          restore-keys: go-vuln-
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - run: govulncheck ./...

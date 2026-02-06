@@ -17,14 +17,12 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
-  PKG_CONFIG_PATH: /usr/lib/jellyfin-ffmpeg/lib/pkgconfig
-  LD_LIBRARY_PATH: /usr/lib/jellyfin-ffmpeg/lib
 
 jobs:
   codeql:
     name: CodeQL
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
@@ -33,10 +31,16 @@ jobs:
           cache: true
       - name: Install CGO dependencies
         run: |
-          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
-          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
           sudo apt-get update
-          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
+          sudo apt-get install -y pkg-config libvips-dev
+      - name: Build FFmpeg 7.1 from source
+        run: |
+          git clone --depth 1 --branch n7.1 https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
+          cd /tmp/ffmpeg
+          ./configure --prefix=/usr/local --enable-shared --disable-static --disable-programs --disable-doc --disable-x86asm --disable-everything
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
       - uses: github/codeql-action/init@v4
         with:
           languages: go
@@ -95,18 +99,19 @@ jobs:
   govulncheck:
     name: govulncheck
     runs-on: ubuntu-latest
+    container:
+      image: golang:1.25-alpine
     steps:
+      - name: Install system dependencies
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - uses: actions/cache@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
-      - name: Install CGO dependencies
-        run: |
-          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
-          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
-          sudo apt-get update
-          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
+          path: |
+            /go/pkg/mod
+            /root/.cache/go-build
+          key: go-vuln-${{ hashFiles('**/go.sum') }}
+          restore-keys: go-vuln-
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - run: govulncheck ./...
 
