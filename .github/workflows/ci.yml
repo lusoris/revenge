@@ -44,7 +44,7 @@ jobs:
       - name: Install CGO dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
       - name: Run unit tests
         run: go test -race -coverprofile=coverage.out -covermode=atomic -count=1 ./...
       - uses: codecov/codecov-action@v5
@@ -121,6 +121,6 @@ jobs:
       - name: Install CGO dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - run: govulncheck ./...

@@ -32,7 +32,7 @@ jobs:
       - name: Install CGO dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
       - uses: github/codeql-action/init@v4
         with:
           languages: go
@@ -100,7 +100,7 @@ jobs:
       - name: Install CGO dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - run: govulncheck ./...
 
