@@ -73,3 +73,25 @@ jobs:
           sed -i "s/^appVersion:.*/appVersion: \"dev-${SHORT_SHA}\"/" charts/revenge/Chart.yaml
           helm package charts/revenge
           helm push revenge-0.0.0-dev.${SHORT_SHA}.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
+
+  # Prune old dev images to avoid GHCR bloat
+  cleanup:
+    name: Cleanup Old Dev Images
+    runs-on: ubuntu-latest
+    needs: [docker, helm-dev]
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: revenge
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: charts/revenge
+          package-type: container
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: true
+          token: ${{ secrets.GITHUB_TOKEN }}
