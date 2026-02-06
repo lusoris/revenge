@@ -88,26 +88,27 @@ flowchart LR
 
 ```
 internal/service/session/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewService, NewRepositoryPG)
+├── service.go             # Service struct + methods (DeviceInfo, SessionInfo types)
+├── repository.go          # Repository interface (18 methods) + CreateSessionParams
+├── repository_pg.go       # PostgreSQL implementation (sqlc)
+├── cached_service.go      # CachedService wrapping Service with cache layer
+└── service_testing.go     # Test helpers (NewServiceForTesting)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/redis/rueidis` - Session cache (L2)
-- `github.com/maypok86/otter` - Session cache (L1)
 - `crypto/rand` - Token generation
 - `crypto/sha256` - Token hashing
-- `github.com/riverqueue/river` - Session cleanup jobs
-- `net` - IP address handling
+- `net/netip` - IP address handling (✅ `netip.Addr`, not `net.IP`)
+- `go.uber.org/zap` - Structured logging
 - `go.uber.org/fx`
+
+**Internal Dependencies**:
+- `internal/infra/database/db` - sqlc generated queries (`db.SharedSession`)
+- `internal/infra/cache` - `cache.Cache` for CachedService layer (✅ wraps rueidis/Dragonfly)
+- `internal/config` - `SessionConfig` (cache_enabled, cache_ttl, max_per_user, token_length)
 
 
 ### Provides
@@ -118,84 +119,96 @@ internal/service/session/
 <!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code)
 
 ```go
-type SessionService interface {
-  // Session management
-  CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo) (*Session, string, error) // Returns session and token
-  GetSession(ctx context.Context, token string) (*Session, error)
-  ValidateSession(ctx context.Context, token string) (*Session, error)
-  RefreshSession(ctx context.Context, refreshToken string) (*Session, string, error)
-
-  // Session operations
-  RevokeSession(ctx context.Context, sessionID uuid.UUID) error
-  RevokeAllSessions(ctx context.Context, userID uuid.UUID) error
-  ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Session, error)
-  UpdateActivity(ctx context.Context, sessionID uuid.UUID) error
-
-  // Cleanup
-  CleanupExpiredSessions(ctx context.Context) (int, error)
+// Service is a concrete struct (not interface).
+// Source: internal/service/session/service.go
+type Service struct {
+  repo          Repository
+  logger        *zap.Logger
+  tokenLength   int
+  expiry        time.Duration
+  refreshExpiry time.Duration
+  maxPerUser    int
 }
 
-type Session struct {
-  ID             uuid.UUID  `db:"id" json:"id"`
-  UserID         uuid.UUID  `db:"user_id" json:"user_id"`
-  DeviceID       *string    `db:"device_id" json:"device_id,omitempty"`
-  DeviceName     *string    `db:"device_name" json:"device_name,omitempty"`
-  UserAgent      *string    `db:"user_agent" json:"user_agent,omitempty"`
-  IPAddress      *net.IP    `db:"ip_address" json:"ip_address,omitempty"`
-  CreatedAt      time.Time  `db:"created_at" json:"created_at"`
-  LastActivityAt time.Time  `db:"last_activity_at" json:"last_activity_at"`
-  ExpiresAt      time.Time  `db:"expires_at" json:"expires_at"`
-  IsActive       bool       `db:"is_active" json:"is_active"`
+// Session management
+func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInfo DeviceInfo, scopes []string) (string, string, error) // Returns (token, refreshToken, error)
+func (s *Service) ValidateSession(ctx context.Context, token string) (*db.SharedSession, error)
+func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (string, string, error) // Returns (newToken, newRefreshToken, error)
+
+// Session operations
+func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error
+func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error
+func (s *Service) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, currentSessionID uuid.UUID) error
+func (s *Service) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]SessionInfo, error)
+
+// Cleanup
+func (s *Service) CleanupExpiredSessions(ctx context.Context) (int, error)
+
+// CachedService wraps Service with Dragonfly cache (internal/service/session/cached_service.go)
+type CachedService struct {
+  *Service
+  cache    *cache.Cache
+  logger   *zap.Logger
+  cacheTTL time.Duration
 }
 
 type DeviceInfo struct {
-  DeviceID   string
-  DeviceName string
-  UserAgent  string
-  IPAddress  net.IP
+  DeviceName *string
+  UserAgent  *string
+  IPAddress  *netip.Addr
+}
+
+type SessionInfo struct {
+  ID             uuid.UUID
+  DeviceName     *string
+  IPAddress      *string
+  UserAgent      *string
+  CreatedAt      time.Time
+  LastActivityAt time.Time
+  ExpiresAt      time.Time
+  IsActive       bool
+  IsCurrent      bool
 }
 ```
 
-
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/redis/rueidis` - Session cache (L2)
-- `github.com/maypok86/otter` - Session cache (L1)
-- `crypto/rand` - Token generation
-- `crypto/sha256` - Token hashing
-- `github.com/riverqueue/river` - Session cleanup jobs
-- `net` - IP address handling
-- `go.uber.org/fx`
+**Note**: Sessions are stored as `db.SharedSession` (sqlc generated from `shared.sessions` table). The doc's `Session` struct with db/json tags was the planned type but code uses sqlc-generated types directly.
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
+
+From `config.go` `SessionConfig` (koanf namespace `session.*`):
+```yaml
+session:
+  cache_enabled: true              # Enable Dragonfly cache for session lookups
+  cache_ttl: 5m                    # TTL for cached sessions
+  max_per_user: 10                 # Max active sessions per user
+  token_length: 32                 # bytes (results in 64-char hex string)
+```
+
+Service also reads expiry/refreshExpiry from constructor params (set in module.go).
+
+### Planned Config (🔴 not yet in config.go)
 
 ```bash
-SESSION_TOKEN_LENGTH=32           # bytes
 SESSION_EXPIRY=720h               # 30 days
 SESSION_REFRESH_TOKEN_EXPIRY=2160h  # 90 days
 SESSION_INACTIVITY_TIMEOUT=168h   # 7 days
 SESSION_CLEANUP_INTERVAL=1h
 ```
 
-
-### Config Keys
 ```yaml
 session:
-  token_length: 32                    # bytes (results in 64-char hex string)
-  token_hash_algorithm: sha256        # SHA-256 for token hashing
-  token_format: hex                   # Hex encoding for tokens
-  expiry: 720h                        # 30 days
-  refresh_token_expiry: 2160h         # 90 days
-  inactivity_timeout: 168h            # 7 days
-  cleanup_interval: 1h
-  max_sessions_per_user: 10
+  # 🔴 Planned - not yet in SessionConfig
+  token_hash_algorithm: sha256        # SHA-256 for token hashing (hardcoded IST)
+  token_format: hex                   # Hex encoding for tokens (hardcoded IST)
+  expiry: 720h                        # 30 days (🔴 not in config.go yet)
+  refresh_token_expiry: 2160h         # 90 days (🔴 not in config.go yet)
+  inactivity_timeout: 168h            # 7 days (🔴 not implemented)
+  cleanup_interval: 1h               # (🔴 not in config.go yet)
 ```
 
 ### Token Security Model

@@ -33,7 +33,7 @@
 > > Full-text search via Typesense with per-module collections
 
 **Package**: `internal/service/search`
-**fx Module**: `search.Module`
+**fx Module**: `search_service.Module` (fx.Module("search_service"))
 
 ---
 
@@ -91,117 +91,82 @@ flowchart LR
 
 ```
 internal/service/search/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewMovieSearchService)
+├── movie_service.go       # MovieSearchService struct (10 methods)
+├── movie_schema.go        # MovieDocument Typesense schema definition
+├── cached_service.go      # CachedMovieSearchService with cache layer
+└── (no tests yet)
 ```
+
+**Note**: Currently movie-specific only. Generic multi-collection search is planned.
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/typesense/typesense-go/typesense` - Typesense client
-- `github.com/riverqueue/river` - Background sync jobs
+- `log/slog` - Structured logging (not zap)
 - `go.uber.org/fx`
+
+**Internal Dependencies**:
+- `internal/infra/search` - `search.Client` (Typesense wrapper)
+- `internal/infra/cache` - `cache.Cache` for CachedMovieSearchService
 
 **External Services**:
 - Typesense server (https://typesense.org/)
-
 
 ### Provides
-<!-- Service provides -->
 
-### Component Diagram
+`search_service.Module` provides: `NewMovieSearchService`
 
-<!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type SearchService interface {
-  // Search
-  Search(ctx context.Context, query SearchQuery) (*SearchResults, error)
-  MultiSearch(ctx context.Context, queries []SearchQuery) ([]SearchResults, error)
-
-  // Indexing
-  IndexDocument(ctx context.Context, collection string, document interface{}) error
-  UpdateDocument(ctx context.Context, collection, id string, document interface{}) error
-  DeleteDocument(ctx context.Context, collection, id string) error
-  BulkIndex(ctx context.Context, collection string, documents []interface{}) error
-
-  // Collections
-  CreateCollection(ctx context.Context, schema CollectionSchema) error
-  DeleteCollection(ctx context.Context, name string) error
-  ListCollections(ctx context.Context) ([]string, error)
-
-  // Sync
-  SyncAll(ctx context.Context) error
-  SyncCollection(ctx context.Context, collectionName string) error
+// MovieSearchService is a concrete struct.
+// Source: internal/service/search/movie_service.go
+type MovieSearchService struct {
+  client *search.Client
+  logger *slog.Logger
 }
 
-type SearchQuery struct {
-  Query          string            `json:"q"`
-  Collections    []string          `json:"collections"`    // ['movies', 'tvshows']
-  QueryBy        []string          `json:"query_by"`       // ['title', 'overview']
-  FilterBy       string            `json:"filter_by"`      // 'release_year:>2020'
-  SortBy         string            `json:"sort_by"`        // 'rating:desc'
-  Page           int               `json:"page"`
-  PerPage        int               `json:"per_page"`
-  UserID         uuid.UUID         `json:"-"`              // For permission filtering
-}
-
-type SearchResults struct {
-  Hits          []SearchHit       `json:"hits"`
-  Found         int               `json:"found"`
-  Page          int               `json:"page"`
-  SearchTimeMS  int               `json:"search_time_ms"`
-}
-
-type SearchHit struct {
-  Document      map[string]interface{} `json:"document"`
-  Highlights    map[string]interface{} `json:"highlights"`
-  TextMatch     int64                  `json:"text_match"`
-}
+// Methods (10)
+func (s *MovieSearchService) IsEnabled() bool
+func (s *MovieSearchService) InitializeCollection(ctx context.Context) error
+func (s *MovieSearchService) IndexMovie(ctx context.Context, movie MovieWithRelations) error
+func (s *MovieSearchService) UpdateMovie(ctx context.Context, movie MovieWithRelations) error
+func (s *MovieSearchService) RemoveMovie(ctx context.Context, movieID uuid.UUID) error
+func (s *MovieSearchService) BulkIndexMovies(ctx context.Context, movies []MovieWithRelations) error
+func (s *MovieSearchService) Search(ctx context.Context, params SearchParams) (*SearchResult, error)
+func (s *MovieSearchService) Autocomplete(ctx context.Context, query string, limit int) (*SearchResult, error)
+func (s *MovieSearchService) GetFacets(ctx context.Context, facetFields []string) ([]FacetValue, error)
+func (s *MovieSearchService) ReindexAll(ctx context.Context, movies []MovieWithRelations) error
 ```
 
-
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/typesense/typesense-go/typesense` - Typesense client
-- `github.com/riverqueue/river` - Background sync jobs
-- `go.uber.org/fx`
-
-**External Services**:
-- Typesense server (https://typesense.org/)
+**Key Types**:
+- `MovieDocument` - Full Typesense document schema (title, overview, genres, year, rating, etc.)
+- `SearchResult` - Search results with `MovieHit` items
+- `MovieHit` - Individual search hit with highlights
+- `SearchParams` - Query, filters, sorting, pagination
+- `FacetValue` - Facet aggregation result
+- `MovieWithRelations` - Movie with all relations for indexing
+- `CachedMovieSearchService` - Cache wrapper
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
 
-```bash
-TYPESENSE_HOST=localhost
-TYPESENSE_PORT=8108
-TYPESENSE_API_KEY=your_api_key
-TYPESENSE_PROTOCOL=http
-SEARCH_SYNC_INTERVAL=5m
-```
-
-
-### Config Keys
+From `config.go` `SearchConfig` (koanf namespace `search.*`):
 ```yaml
 search:
-  typesense:
-    host: localhost
-    port: 8108
-    api_key: your_api_key
-    protocol: http
+  url: http://localhost:8108         # Typesense server URL
+  api_key: ""                        # Typesense API key
+  enabled: false                     # Enable/disable search
+```
+
+### Planned Config (🔴 not yet in config.go)
+
+```yaml
+search:
   sync:
     interval: 5m
     batch_size: 100

@@ -1,7 +1,7 @@
 # Multi-Factor Authentication (MFA) Service
 
 **Created**: 2026-02-03
-**Status**: 🔴 Planned
+**Status**: 🟡 In Progress
 **Category**: service
 
 > Comprehensive Multi-Factor Authentication supporting TOTP, WebAuthn/Passkeys, and backup recovery codes
@@ -52,8 +52,8 @@ The MFA service provides enterprise-grade multi-factor authentication supporting
    - Phishing-resistant authentication
 
 3. **Backup Recovery Codes** - One-time use emergency access
-   - 10 codes generated per user
-   - Bcrypt hashed for secure storage
+   - 10 codes generated per user (8 bytes each, hex encoded to 16 chars)
+   - Argon2id hashed for secure storage (via `crypto.PasswordHasher`)
    - Regeneration on demand
 
 ### Key Features
@@ -71,17 +71,15 @@ The MFA service provides enterprise-grade multi-factor authentication supporting
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 In Progress | This document |
+| Design | ✅ | This document |
 | Sources | ✅ | RFC 6238, W3C WebAuthn Level 3, pquerna/otp, go-webauthn/webauthn |
-| Instructions | 🔴 | - |
-| Code | 🔴 | - |
+| Instructions | ✅ | - |
+| Code | 🟡 Partial | MFAManager, TOTPService, WebAuthnService, BackupCodesService implemented |
 | Linting | 🔴 | - |
-| Unit Testing | 🔴 | - |
+| Unit Testing | 🟡 Partial | manager_test, totp_test, webauthn_test, backup_codes_test exist |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Planned
-
-**Estimated Effort**: 10-20 hours (1-3 days for experienced developer)
+**Overall**: 🟡 In Progress
 
 ---
 
@@ -144,20 +142,113 @@ flowchart TB
 
 ```
 internal/service/mfa/
-├── module.go              # fx module definition
-├── service.go             # Main MFA service orchestrator
-├── totp.go                # TOTP manager (pquerna/otp)
-├── webauthn.go            # WebAuthn manager (go-webauthn/webauthn)
-├── backup.go              # Backup code manager
-├── encryption.go          # Secret encryption (AES-256-GCM)
-├── types.go               # Domain types and interfaces
-├── errors.go              # MFA-specific errors
-├── repository.go          # Data access layer
-├── service_test.go        # Service tests
-├── totp_test.go           # TOTP tests (RFC 6238 vectors)
+├── module.go              # fx module (NewTOTPServiceFromConfig, NewBackupCodesService, NewWebAuthnServiceFromConfig, NewMFAManager)
+├── manager.go             # MFAManager struct (coordinates TOTP, WebAuthn, backup codes)
+├── totp.go                # TOTPService (pquerna/otp + crypto.Encryptor)
+├── webauthn.go            # WebAuthnService (go-webauthn/webauthn + cache.Cache sessions)
+├── backup_codes.go        # BackupCodesService (crypto.PasswordHasher = Argon2id)
+├── manager_test.go        # MFAManager tests
+├── totp_test.go           # TOTP tests
 ├── webauthn_test.go       # WebAuthn tests
-└── backup_test.go         # Backup code tests
+└── backup_codes_test.go   # Backup code tests
 ```
+
+**Note**: No separate `encryption.go`, `types.go`, `errors.go`, or `repository.go` — encryption uses `internal/crypto.Encryptor`, types are defined in their respective files, and data access uses `db.Queries` directly.
+
+### Key Interfaces (from code) ✅
+
+```go
+// MFAManager coordinates all MFA methods (manager.go)
+type MFAManager struct {
+  queries     *db.Queries
+  totp        *TOTPService
+  webauthn    *WebAuthnService
+  backupCodes *BackupCodesService
+  logger      *zap.Logger
+}
+
+// MFAManager methods (11)
+func (m *MFAManager) GetStatus(ctx context.Context, userID uuid.UUID) (*MFAStatus, error)
+func (m *MFAManager) HasAnyMethod(ctx context.Context, userID uuid.UUID) (bool, error)
+func (m *MFAManager) RequiresMFA(ctx context.Context, userID uuid.UUID) (bool, error)
+func (m *MFAManager) EnableMFA(ctx context.Context, userID uuid.UUID) error
+func (m *MFAManager) DisableMFA(ctx context.Context, userID uuid.UUID) error
+func (m *MFAManager) SetRememberDevice(ctx context.Context, userID uuid.UUID, enabled bool, durationDays int32) error
+func (m *MFAManager) GetRememberDeviceSettings(ctx context.Context, userID uuid.UUID) (enabled bool, durationDays int32, err error)
+func (m *MFAManager) VerifyTOTP(ctx context.Context, userID uuid.UUID, code string) (*VerificationResult, error)
+func (m *MFAManager) VerifyBackupCode(ctx context.Context, userID uuid.UUID, code string, clientIP string) (*VerificationResult, error)
+func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) error
+
+// TOTPService (totp.go) - uses crypto.Encryptor for secret encryption
+type TOTPService struct {
+  queries   *db.Queries
+  encryptor *crypto.Encryptor
+  logger    *zap.Logger
+  issuer    string
+}
+
+func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, accountName string) (*TOTPSetup, error)
+func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code string) (bool, error)
+func (s *TOTPService) EnableTOTP(ctx context.Context, userID uuid.UUID) error
+func (s *TOTPService) DisableTOTP(ctx context.Context, userID uuid.UUID) error
+func (s *TOTPService) DeleteTOTP(ctx context.Context, userID uuid.UUID) error
+func (s *TOTPService) HasTOTP(ctx context.Context, userID uuid.UUID) (bool, error)
+
+// WebAuthnService (webauthn.go) - uses cache.Cache for session storage
+type WebAuthnService struct {
+  queries  *db.Queries
+  logger   *zap.Logger
+  webAuthn *webauthn.WebAuthn
+  cache    *cache.Cache
+}
+
+func (s *WebAuthnService) BeginRegistration(ctx context.Context, userID uuid.UUID, username, displayName string) (*protocol.CredentialCreation, error)
+func (s *WebAuthnService) FinishRegistration(ctx context.Context, userID uuid.UUID, username, displayName string, response *protocol.ParsedCredentialCreationData) error
+func (s *WebAuthnService) BeginLogin(ctx context.Context, userID uuid.UUID, username string) (*protocol.CredentialAssertion, error)
+func (s *WebAuthnService) FinishLogin(ctx context.Context, userID uuid.UUID, username string, response *protocol.ParsedCredentialAssertionData) error
+func (s *WebAuthnService) ListCredentials(ctx context.Context, userID uuid.UUID) ([]WebAuthnCredential, error)
+func (s *WebAuthnService) DeleteCredential(ctx context.Context, userID uuid.UUID, credentialID uuid.UUID) error
+func (s *WebAuthnService) RenameCredential(ctx context.Context, userID uuid.UUID, credentialID uuid.UUID, name string) error
+func (s *WebAuthnService) HasWebAuthn(ctx context.Context, userID uuid.UUID) (bool, error)
+
+// BackupCodesService (backup_codes.go) - uses crypto.PasswordHasher (Argon2id)
+type BackupCodesService struct {
+  queries *db.Queries
+  hasher  *crypto.PasswordHasher
+  logger  *zap.Logger
+}
+
+func (s *BackupCodesService) GenerateCodes(ctx context.Context, userID uuid.UUID) ([]string, error)
+func (s *BackupCodesService) RegenerateCodes(ctx context.Context, userID uuid.UUID) ([]string, error)
+func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, code string, clientIP string) (bool, error)
+func (s *BackupCodesService) GetRemainingCount(ctx context.Context, userID uuid.UUID) (int, error)
+func (s *BackupCodesService) HasBackupCodes(ctx context.Context, userID uuid.UUID) (bool, error)
+func (s *BackupCodesService) DeleteAllCodes(ctx context.Context, userID uuid.UUID) error
+
+// Key types
+type MFAStatus struct {
+  UserID, HasTOTP, WebAuthnCount, UnusedBackupCodes, RequireMFA, RememberDeviceEnabled
+}
+type VerificationResult struct { Success bool; Method VerifyMethod; UserID uuid.UUID }
+type TOTPSetup struct { Secret string; QRCode []byte; URL string }
+type VerifyMethod string // "totp", "webauthn", "backup_code"
+```
+
+### Dependencies (from code) ✅
+
+**Go Packages**:
+- `github.com/pquerna/otp` + `github.com/pquerna/otp/totp` - TOTP implementation (RFC 6238)
+- `github.com/go-webauthn/webauthn` - WebAuthn/FIDO2/Passkeys
+- `github.com/google/uuid`
+- `github.com/jackc/pgx/v5`
+- `go.uber.org/fx`, `go.uber.org/zap`
+
+**Internal Dependencies**:
+- `internal/crypto` - `Encryptor` (AES-256-GCM for TOTP secrets), `PasswordHasher` (Argon2id for backup codes)
+- `internal/infra/database/db` - `db.Queries` (sqlc generated)
+- `internal/infra/cache` - `cache.Cache` + `cache.Client` for WebAuthn session storage
+- `internal/config` - Server host/port for WebAuthn RP configuration
+- `internal/util` - Utility functions
 
 ### Data Flow
 
@@ -295,7 +386,7 @@ CREATE TABLE IF NOT EXISTS public.mfa_backup_codes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
 
-    -- Bcrypt hashed code (8 characters, alphanumeric)
+    -- Argon2id hashed code (8 bytes, hex encoded)
     code_hash TEXT NOT NULL,
 
     -- Usage tracking
@@ -506,7 +597,7 @@ SELECT
    - `GenerateCodes(userID uuid.UUID) (codes []string, err error)` - 10 codes, 8 chars each
    - `VerifyCode(userID uuid.UUID, code string) (valid bool, err error)`
    - `RegenerateCodes(userID uuid.UUID) (codes []string, err error)`
-2. Use bcrypt for hashing codes
+2. Use Argon2id for hashing codes (via `crypto.PasswordHasher`)
 3. Constant-time comparison for verification
 4. Integration with `internal/service/auth`:
    - Check MFA status after password validation
@@ -896,7 +987,7 @@ Response 200:
 - Private keys never leave the authenticator (FIDO2 guarantee)
 
 **Backup Codes**:
-- MUST be hashed with bcrypt (cost factor 12+)
+- MUST be hashed with Argon2id (via `crypto.PasswordHasher`)
 - Original codes shown ONCE during generation
 - Constant-time comparison to prevent timing attacks
 
@@ -1102,7 +1193,7 @@ func validateRememberDevice(cookie string) (userID uuid.UUID, valid bool) {
 2. System prompts for MFA code
 3. User clicks "Use backup code"
 4. User enters one of their backup codes
-5. System validates code (bcrypt comparison)
+5. System validates code (Argon2id comparison)
 6. System marks code as used
 7. User is logged in
 8. System shows warning: "You have 9 backup codes remaining"
@@ -1112,6 +1203,18 @@ func validateRememberDevice(cookie string) (userID uuid.UUID, valid bool) {
 ---
 
 ## Configuration
+
+### Current Config (from code) ✅
+
+No dedicated `MFAConfig` struct in `config.go` yet. Current values are hardcoded or derived from other config:
+- **TOTP issuer**: Hardcoded as `"Revenge"` in `module.go`
+- **TOTP algorithm**: SHA1, 6 digits, 30s period (hardcoded in `totp.go`)
+- **WebAuthn RP**: Derived from `server.host` and `server.port` in `module.go`
+- **WebAuthn session TTL**: 5 minutes (hardcoded in `webauthn.go`)
+- **Backup code count**: 10 codes, 8 bytes each (constants in `backup_codes.go`)
+- **Encryption key**: Via `crypto.Encryptor` (configured separately)
+
+### Planned Config (🔴 not yet in config.go)
 
 ### Environment Variables
 
@@ -1327,6 +1430,6 @@ mfa:
 
 ---
 
-**Document Status**: 🟡 In Progress (comprehensive implementation plan completed)
-**Next Steps**: Begin Phase 1 implementation (database migrations + encryption service)
-**Review Date**: Before implementation begins
+**Document Status**: 🟡 In Progress
+**Code Status**: MFAManager, TOTPService, WebAuthnService, BackupCodesService implemented. API handlers and production hardening pending.
+**Next Steps**: API handlers, rate limiting, audit logging integration, RBAC enforcement

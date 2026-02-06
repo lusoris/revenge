@@ -356,8 +356,8 @@ What's implemented vs what's planned.
 | 3 | Create planned/ + move ~150 docs | 1 | Low (file moves) | ✅ Done (0a6f838) |
 | 4 | Delete auto-generated shells + stale artifacts | 1 | Low | ✅ Done (0a6f838) - deleted docs/wiki/ (161), .templates/ (9), tests/automation/ (23), .shared/ (9) |
 | 5 | Rewrite 3 architecture docs | 1 | Medium | ✅ Done (14935fe) - ARCHITECTURE, DESIGN_PRINCIPLES, METADATA_SYSTEM |
-| 6 | Rewrite 15 service docs | 15 | High (biggest step) | Pending |
-| 7 | Write 8 new infra docs | 8 | Medium | Pending |
+| 6 | Align 15 service docs (+ 2 new) | 17 | High (biggest step) | ✅ Done |
+| 7 | Write 8 new infra docs (+ INDEX) | 9 | Medium | ✅ Done |
 | 8 | Rewrite content module docs | ~8 | Medium | Pending |
 | 9 | Rewrite 4 integration docs | 4 | Low-Medium | Pending |
 | 10 | Rewrite 6 operations/technical docs | 6 | Medium | Pending |
@@ -370,6 +370,7 @@ What's implemented vs what's planned.
 - Cleaned up CLAUDE.md: removed stale SOT dependency, added accurate architecture doc links
 - Deleted 4 duplicate CLAUDE.md files, entire .shared/ folder
 - Fixed link aliases in README.md (raw filenames → human-readable)
+- Notification system split: designed 4 independent systems (dispatcher, announcements, helpdesk/wiki, push). Created `planned/services/ANNOUNCEMENTS.md`. Design decisions in `.workingdir3/QUESTIONS_INBOX_HELPDESK.md`
 
 **Total**: ~45 docs to write/rewrite, ~150 to move, ~15 to delete, ~50 commits
 

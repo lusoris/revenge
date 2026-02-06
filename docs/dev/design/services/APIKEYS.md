@@ -88,85 +88,74 @@ flowchart LR
 
 ```
 internal/service/apikeys/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewService, NewPostgresRepository)
+├── service.go             # Service struct + business logic (8 methods) + types + constants
+├── repository.go          # Repository interface (12 methods) + domain types
+├── repository_pg.go       # PostgreSQL implementation (sqlc)
+└── service_test.go        # Tests (🔴 not yet)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/maypok86/otter` - API key cache
 - `crypto/rand` - Key generation
 - `crypto/sha256` - Key hashing
-- `go.uber.org/fx`
+- `go.uber.org/fx`, `go.uber.org/zap`
 
+**Internal Dependencies**:
+- `internal/infra/database/db` - sqlc generated queries
 
 ### Provides
-<!-- Service provides -->
 
-### Component Diagram
+`apikeys.Module` provides: `NewService`, `NewPostgresRepository`
 
-<!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type APIKeysService interface {
-  // Key management
-  CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*APIKey, string, error) // Returns key and raw token
-  GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error)
-  ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error)
-  RevokeKey(ctx context.Context, keyID uuid.UUID) error
-
-  // Validation
-  ValidateKey(ctx context.Context, rawKey string) (*APIKey, error)
-  CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error)
-
-  // Usage tracking
-  RecordUsage(ctx context.Context, keyID uuid.UUID, method, path string, statusCode int) error
-  GetUsageStats(ctx context.Context, keyID uuid.UUID) (*UsageStats, error)
+// Service is a concrete struct (not interface).
+// Source: internal/service/apikeys/service.go
+type Service struct {
+  repo           Repository
+  logger         *zap.Logger
+  maxKeysPerUser int
+  defaultExpiry  time.Duration
 }
 
-type APIKey struct {
-  ID          uuid.UUID  `db:"id" json:"id"`
-  UserID      uuid.UUID  `db:"user_id" json:"user_id"`
-  Name        string     `db:"name" json:"name"`
-  Description *string    `db:"description" json:"description,omitempty"`
-  Scopes      []string   `db:"scopes" json:"scopes"`
-  IsActive    bool       `db:"is_active" json:"is_active"`
-  ExpiresAt   *time.Time `db:"expires_at" json:"expires_at,omitempty"`
-  LastUsedAt  *time.Time `db:"last_used_at" json:"last_used_at,omitempty"`
-  CreatedAt   time.Time  `db:"created_at" json:"created_at"`
-}
+// Key management (8 methods)
+func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*CreateKeyResponse, error)
+func (s *Service) GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error)
+func (s *Service) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error)
+func (s *Service) ValidateKey(ctx context.Context, rawKey string) (*APIKey, error)
+func (s *Service) RevokeKey(ctx context.Context, keyID uuid.UUID) error
+func (s *Service) CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error)
+func (s *Service) UpdateScopes(ctx context.Context, keyID uuid.UUID, scopes []string) error
+func (s *Service) CleanupExpiredKeys(ctx context.Context) (int64, error)
 
-type CreateKeyRequest struct {
-  Name        string     `json:"name"`
-  Description string     `json:"description,omitempty"`
-  Scopes      []string   `json:"scopes"`
-  ExpiresAt   *time.Time `json:"expires_at,omitempty"`
-}
+// Repository interface (12 methods): CreateAPIKey, GetAPIKey, GetAPIKeyByHash, GetAPIKeyByPrefix,
+// ListUserAPIKeys, ListActiveUserAPIKeys, CountUserAPIKeys, RevokeAPIKey,
+// UpdateAPIKeyLastUsed, UpdateAPIKeyScopes, DeleteAPIKey, DeleteExpiredAPIKeys
 ```
 
+**Note**: No `RecordUsage` or `GetUsageStats` methods (planned, not implemented). `CreateKey` returns `*CreateKeyResponse` which includes the `RawKey` (shown once).
 
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/maypok86/otter` - API key cache
-- `crypto/rand` - Key generation
-- `crypto/sha256` - Key hashing
-- `go.uber.org/fx`
+**Key Types & Constants**:
+- `APIKey` - Key metadata (name, scopes, expiry, last_used, etc.)
+- `CreateKeyRequest` - Name, description, scopes, expiry
+- `CreateKeyResponse` - Includes `RawKey` (only shown at creation)
+- `KeyPrefix = "rv_"`, `KeyLength = 32`, `DefaultMaxKeysPerUser = 10`
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
+
+No dedicated `APIKeysConfig` struct in `config.go`. Values are hardcoded as constants:
+- `KeyPrefix`: `"rv_"` (prefix for all API keys)
+- `KeyLength`: `32` bytes (results in 64-char hex string)
+- `DefaultMaxKeysPerUser`: `10`
+
+### Planned Config (🔴 not yet in config.go)
 
 ```bash
 APIKEYS_LENGTH=32               # bytes
@@ -174,8 +163,6 @@ APIKEYS_DEFAULT_EXPIRY=0        # 0 = never expire
 APIKEYS_MAX_PER_USER=10
 ```
 
-
-### Config Keys
 ```yaml
 apikeys:
   length: 32

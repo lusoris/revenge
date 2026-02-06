@@ -35,7 +35,7 @@
 > > Metadata aggregation with PRIMARY (Arr) and SUPPLEMENTARY (external) providers
 
 **Package**: `internal/service/metadata`
-**fx Module**: `metadata.Module`
+**fx Module**: `metadatafx.Module`
 
 ---
 
@@ -127,41 +127,46 @@ flowchart LR
 
 ```
 internal/service/metadata/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── doc.go                 # Package documentation
+├── errors.go              # Sentinel errors (ErrNotFound, ErrRateLimited, etc.)
+├── provider.go            # Provider + specialized interfaces
+├── service.go             # Service interface (31 methods)
+├── types.go               # Domain types (MovieMetadata, Credits, etc.)
+├── adapters/              # Content module adapters
+│   ├── movie/adapter.go   # movie.MetadataProvider implementation
+│   └── tvshow/adapter.go  # tvshow.MetadataProvider implementation
+├── jobs/                  # River job workers for async refresh
+├── metadatafx/module.go   # fx module + provider registration
+└── providers/
+    ├── tmdb/              # TMDb provider (priority 100)
+    └── tvdb/              # TVDb provider (priority 80)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Background metadata fetch jobs
-- `github.com/maypok86/otter` - L1 cache (in-memory)
-- `github.com/redis/rueidis` - L2 cache (Dragonfly)
-- `net/http` - HTTP client base
-- `golang.org/x/net/proxy` - SOCKS5 proxy support
+- `github.com/imroc/req/v3` - HTTP client for provider APIs (✅ implemented)
+- `github.com/riverqueue/river` - Background metadata refresh jobs (✅ implemented)
+- `sync.Map` (Go stdlib) - Per-provider in-memory cache with TTL (✅ current IST)
+- `github.com/maypok86/otter` - L1 cache (🔴 planned, replaces sync.Map)
+- `github.com/redis/rueidis` - L2 cache via Dragonfly (🔴 planned)
 - `go.uber.org/fx`
 
 **PRIMARY APIs** (Arr services - local, no proxy):
-- Radarr API v3 (http://localhost:7878/api/v3) - Movies
-- Sonarr API v3 (http://localhost:8989/api/v3) - TV Shows
-- Lidarr API v1 (http://localhost:8686/api/v1) - Music
-- Chaptarr/Readarr API (http://localhost:8787/api/v1) - Books/Audiobooks
-- Whisparr API v3 (http://localhost:6969/api/v3) - QAR/Adult
+- Radarr API v3 (http://localhost:7878/api/v3) - Movies ✅
+- Sonarr API v3 (http://localhost:8989/api/v3) - TV Shows ✅
+- Lidarr API v1 (http://localhost:8686/api/v1) - Music (🔴 planned)
+- Chaptarr/Readarr API (http://localhost:8787/api/v1) - Books/Audiobooks (🔴 planned)
+- Whisparr API v3 (http://localhost:6969/api/v3) - QAR/Adult (🔴 planned, separate doc)
 
 **SUPPLEMENTARY APIs** (external, via optional proxy/VPN):
-- TMDb API v3 (https://api.themoviedb.org/3/)
-- TheTVDB API v4 (https://api4.thetvdb.com/v4/)
-- MusicBrainz API v2 (https://musicbrainz.org/ws/2/)
-- OpenLibrary API (https://openlibrary.org/api/)
-- StashDB GraphQL API (https://stashdb.org/graphql)
-- Last.fm API (https://ws.audioscrobbler.com/2.0/)
-
+- TMDb API v3 (https://api.themoviedb.org/3/) ✅ (priority 100, req/v3 + rate limiter)
+- TheTVDB API v4 (https://api4.thetvdb.com/v4/) ✅ (priority 80, req/v3 + rate limiter)
+- MusicBrainz API v2 (https://musicbrainz.org/ws/2/) (🔴 planned)
+- OpenLibrary API (https://openlibrary.org/api/) (🔴 planned)
+- StashDB GraphQL API (https://stashdb.org/graphql) (🔴 planned, QAR-specific)
+- Last.fm API (https://ws.audioscrobbler.com/2.0/) (🔴 planned)
 
 ### Provides
 <!-- Service provides -->
@@ -171,78 +176,124 @@ internal/service/metadata/
 <!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code)
 
 ```go
-type MetadataService interface {
-  // Fetch metadata
-  FetchMetadata(ctx context.Context, contentType string, contentID uuid.UUID, providerName string) error
-  SearchMetadata(ctx context.Context, providerName, query string) ([]MetadataSearchResult, error)
-  MatchMetadata(ctx context.Context, contentID uuid.UUID, externalID string, provider string) error
+// Service interface (27 methods across 7 categories)
+// Source: internal/service/metadata/service.go
+type Service interface {
+  // Movie (8 methods)
+  SearchMovie(ctx context.Context, query string, opts SearchOptions) ([]MovieSearchResult, error)
+  GetMovieMetadata(ctx context.Context, tmdbID int32, languages []string) (*MovieMetadata, error)
+  GetMovieCredits(ctx context.Context, tmdbID int32) (*Credits, error)
+  GetMovieImages(ctx context.Context, tmdbID int32) (*Images, error)
+  GetMovieReleaseDates(ctx context.Context, tmdbID int32) ([]ReleaseDate, error)
+  GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
+  GetSimilarMovies(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
+  GetMovieRecommendations(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
 
-  // Providers
-  ListProviders(ctx context.Context, contentType string) ([]MetadataProvider, error)
-  ConfigureProvider(ctx context.Context, providerName string, config ProviderConfig) error
+  // TV Show (8 methods)
+  SearchTVShow(ctx context.Context, query string, opts SearchOptions) ([]TVShowSearchResult, error)
+  GetTVShowMetadata(ctx context.Context, tmdbID int32, languages []string) (*TVShowMetadata, error)
+  GetTVShowCredits(ctx context.Context, tmdbID int32) (*Credits, error)
+  GetTVShowImages(ctx context.Context, tmdbID int32) (*Images, error)
+  GetTVShowContentRatings(ctx context.Context, tmdbID int32) ([]ContentRating, error)
+  GetTVShowExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
+  GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum int, languages []string) (*SeasonMetadata, error)
+  GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error)
 
-  // Refresh
-  ScheduleRefresh(ctx context.Context, contentID uuid.UUID, interval time.Duration) error
-  RefreshMetadata(ctx context.Context, contentID uuid.UUID) error
+  // Person (4 methods)
+  SearchPerson(ctx context.Context, query string, opts SearchOptions) ([]PersonSearchResult, error)
+  GetPersonMetadata(ctx context.Context, tmdbID int32, languages []string) (*PersonMetadata, error)
+  GetPersonCredits(ctx context.Context, tmdbID int32) (*PersonCredits, error)
+  GetPersonImages(ctx context.Context, tmdbID int32) (*Images, error)
+
+  // Collection (1 method)
+  GetCollectionMetadata(ctx context.Context, tmdbID int32, languages []string) (*CollectionMetadata, error)
+
+  // Image (1 method)
+  GetImageURL(path string, size ImageSize) string
+
+  // Refresh (2 methods) - triggers async River jobs
+  RefreshMovie(ctx context.Context, movieID uuid.UUID) error
+  RefreshTVShow(ctx context.Context, seriesID uuid.UUID) error
+
+  // Management (3 methods)
+  ClearCache()
+  RegisterProvider(provider Provider)
+  GetProviders() []Provider
 }
 
-type MetadataProvider interface {
+// Base Provider interface (all providers implement this)
+// Source: internal/service/metadata/provider.go
+type Provider interface {
+  ID() ProviderID              // "tmdb", "tvdb"
   Name() string
-  Type() string
-  Search(ctx context.Context, query string) ([]MetadataSearchResult, error)
-  GetByID(ctx context.Context, externalID string) (*Metadata, error)
-  GetImages(ctx context.Context, externalID string) ([]Image, error)
+  Priority() int               // Higher = preferred (TMDb=100, TVDb=80)
+  SupportsMovies() bool
+  SupportsTVShows() bool
+  SupportsPeople() bool
+  SupportsLanguage(lang string) bool
+  ClearCache()
 }
 
-type Metadata struct {
-  Title       string                 `json:"title"`
-  Overview    string                 `json:"overview"`
-  ReleaseDate *time.Time             `json:"release_date,omitempty"`
-  Runtime     *int                   `json:"runtime,omitempty"`
-  Genres      []string               `json:"genres"`
-  Cast        []CastMember           `json:"cast"`
-  Crew        []CrewMember           `json:"crew"`
-  Rating      *float64               `json:"rating,omitempty"`
-  PosterURL   string                 `json:"poster_url,omitempty"`
-  BackdropURL string                 `json:"backdrop_url,omitempty"`
-  ExternalIDs map[string]interface{} `json:"external_ids"`
-}
+// Specialized interfaces: MovieProvider, TVShowProvider, PersonProvider,
+// ImageProvider, CollectionProvider (see METADATA_SYSTEM.md)
 ```
 
 
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Background metadata fetch jobs
-- `github.com/maypok86/otter` - L1 cache (in-memory)
-- `github.com/redis/rueidis` - L2 cache (Dragonfly)
-- `net/http` - HTTP client base
-- `golang.org/x/net/proxy` - SOCKS5 proxy support
-- `go.uber.org/fx`
-
-**PRIMARY APIs** (Arr services - local, no proxy):
-- Radarr API v3 (http://localhost:7878/api/v3) - Movies
-- Sonarr API v3 (http://localhost:8989/api/v3) - TV Shows
-- Lidarr API v1 (http://localhost:8686/api/v1) - Music
-- Chaptarr/Readarr API (http://localhost:8787/api/v1) - Books/Audiobooks
-- Whisparr API v3 (http://localhost:6969/api/v3) - QAR/Adult
-
-**SUPPLEMENTARY APIs** (external, via optional proxy/VPN):
-- TMDb API v3 (https://api.themoviedb.org/3/)
-- TheTVDB API v4 (https://api4.thetvdb.com/v4/)
-- MusicBrainz API v2 (https://musicbrainz.org/ws/2/)
-- OpenLibrary API (https://openlibrary.org/api/)
-- StashDB GraphQL API (https://stashdb.org/graphql)
-- Last.fm API (https://ws.audioscrobbler.com/2.0/)
-
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
 
+**Application-level** (`config.go` via koanf):
+```yaml
+movie:
+  tmdb:
+    api_key: ""                # TMDb API key (v3)
+    rate_limit: 40             # Requests per 10 seconds
+    cache_ttl: 5m              # TMDb response cache TTL
+    proxy_url: ""              # Optional SOCKS5/HTTP proxy
+
+integrations:
+  radarr:
+    enabled: false
+    base_url: http://localhost:7878
+    api_key: ""
+    auto_sync: false
+    sync_interval: 300         # seconds
+  sonarr:
+    enabled: false
+    base_url: http://localhost:8989
+    api_key: ""
+    auto_sync: false
+    sync_interval: 300
+```
+
+**Provider-level** (in-code Config structs, passed via fx):
+
+`tmdb.Config` (`providers/tmdb/client.go`):
+- `APIKey`, `AccessToken` (v4, optional)
+- `RateLimit` (default: 4.0 req/s = 40/10s), `Burst` (default: 10)
+- `CacheTTL` (default: 24h), `Timeout` (default: 30s)
+- `ProxyURL`, `RetryCount` (default: 3)
+
+`tvdb.Config` (`providers/tvdb/client.go`):
+- `APIKey`, `PIN` (optional subscriber PIN)
+- `RateLimit` (default: 5.0 req/s), `Burst` (default: 10)
+- `CacheTTL` (default: 24h), `Timeout` (default: 30s)
+- `ProxyURL`, `RetryCount` (default: 3)
+
+`metadatafx.Config` (`metadatafx/module.go`):
+- `DefaultLanguages` (default: `["en", "de", "fr", "es", "ja"]`)
+- `EnableProviderFallback` (default: `true`)
+- `EnableEnrichment` (default: `false`)
+- `TMDbAPIKey`, `TMDbProxyURL`
+- `TVDbAPIKey`, `TVDbPIN`
+
+### Planned Config (🔴 not yet in config.go)
+
+**Environment Variables** (🔴 planned - currently env vars are mapped via koanf to `movie.tmdb.*`):
 ```bash
 METADATA_TMDB_API_KEY=your_api_key
 METADATA_TVDB_API_KEY=your_api_key
@@ -251,8 +302,7 @@ METADATA_REFRESH_INTERVAL=168h  # 7 days
 METADATA_CACHE_TTL=24h
 ```
 
-
-### Config Keys
+**Planned unified `metadata:` namespace** (🔴 not yet implemented - TMDb currently under `movie.tmdb`, Arr under `integrations.*`):
 ```yaml
 metadata:
   # Priority chain configuration

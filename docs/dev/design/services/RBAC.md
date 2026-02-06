@@ -82,76 +82,90 @@ flowchart LR
 
 ```
 internal/service/rbac/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewService, custom pgx Casbin adapter)
+├── service.go             # Service struct + business logic (23 methods)
+├── permissions.go         # 40+ permission constants (Resource + Action pairs)
+├── roles.go               # Role definitions and defaults
+├── adapter.go             # Custom Casbin pgx adapter (shared.casbin_rule table)
+├── cached_service.go      # CachedService wrapping Service with cache layer
+└── service_test.go        # Tests (🔴 not yet)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/casbin/casbin/v2`
-- `github.com/casbin/pgx-adapter`
-- `go.uber.org/fx`
+- `github.com/casbin/casbin/v2` - RBAC policy engine
+- `github.com/jackc/pgx/v5` - Custom pgx adapter (not casbin/pgx-adapter)
+- `go.uber.org/fx`, `go.uber.org/zap`
 
+**Internal Dependencies**:
+- `internal/service/activity` - `activity.Logger` for audit logging
+- `internal/infra/cache` - `cache.Cache` for CachedService
 
 ### Provides
-<!-- Service provides -->
 
-### Component Diagram
+`rbac.Module` provides: `NewService`, custom pgx adapter
 
-<!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type RBACService interface {
-  // Policy enforcement
-  Enforce(ctx context.Context, sub, obj, act string) (bool, error)
-  EnforceWithContext(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
-
-  // Policy management
-  AddPolicy(ctx context.Context, sub, obj, act string) error
-  RemovePolicy(ctx context.Context, sub, obj, act string) error
-  GetPolicies(ctx context.Context) ([][]string, error)
-
-  // Role management
-  AssignRole(ctx context.Context, userID uuid.UUID, role string) error
-  RemoveRole(ctx context.Context, userID uuid.UUID, role string) error
-  GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string, error)
+// Service is a concrete struct (not interface).
+// Source: internal/service/rbac/service.go
+type Service struct {
+  enforcer       *casbin.Enforcer
+  logger         *zap.Logger
+  activityLogger activity.Logger
 }
+
+// Enforcement (2 methods)
+func (s *Service) Enforce(sub, obj, act string) (bool, error)
+func (s *Service) EnforceWithContext(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+
+// Policy management (3 methods)
+func (s *Service) AddPolicy(ctx context.Context, sub, obj, act string) error
+func (s *Service) RemovePolicy(ctx context.Context, sub, obj, act string) error
+func (s *Service) GetPolicies(ctx context.Context) ([][]string, error)
+
+// Role management (15 methods)
+func (s *Service) AssignRole(ctx context.Context, userID uuid.UUID, role string) error
+func (s *Service) RemoveRole(ctx context.Context, userID uuid.UUID, role string) error
+func (s *Service) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string, error)
+func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]string, error)
+func (s *Service) HasRole(ctx context.Context, userID uuid.UUID, role string) (bool, error)
+func (s *Service) ListRoles(ctx context.Context) ([]Role, error)
+func (s *Service) GetRole(ctx context.Context, name string) (*Role, error)
+func (s *Service) CreateRole(ctx context.Context, role Role) error
+func (s *Service) DeleteRole(ctx context.Context, name string) error
+func (s *Service) UpdateRolePermissions(ctx context.Context, role string, permissions []Permission) error
+func (s *Service) GetRolePermissions(ctx context.Context, role string) ([]Permission, error)
+func (s *Service) AddPermissionToRole(ctx context.Context, role string, perm Permission) error
+func (s *Service) RemovePermissionFromRole(ctx context.Context, role string, perm Permission) error
+func (s *Service) GetAllRoleNames(ctx context.Context) ([]string, error)
+func (s *Service) CheckUserPermission(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error)
+
+// Lifecycle (3 methods)
+func (s *Service) LoadPolicy() error
+func (s *Service) SavePolicy() error
+func (s *Service) ListPermissions() []Permission
 ```
 
-
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/casbin/casbin/v2`
-- `github.com/casbin/pgx-adapter`
-- `go.uber.org/fx`
+**Key Types**:
+- `Role` - Role name + description + permissions
+- `Permission` - `Resource` + `Action` pair
+- `CachedService` - Cache wrapper using `cache.Cache`
+- 40+ permission constants in `permissions.go` (users, profile, movies, libraries, playback, requests, settings, audit, integrations, notifications, admin)
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
 
-```bash
-RBAC_MODEL_PATH=/config/casbin_model.conf
-RBAC_POLICY_RELOAD_INTERVAL=5m
-```
-
-
-### Config Keys
+From `config.go` `RBACConfig` (koanf namespace `rbac.*`):
 ```yaml
 rbac:
-  model_path: /config/casbin_model.conf
-  policy_reload_interval: 5m
+  model_path: /config/casbin_model.conf    # Casbin model file path
+  policy_reload_interval: 5m               # Auto-reload interval
 ```
 
 ## API Endpoints

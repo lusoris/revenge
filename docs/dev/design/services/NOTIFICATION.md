@@ -34,7 +34,7 @@
 > > Multi-channel notifications for users and admins
 
 **Package**: `internal/service/notification`
-**fx Module**: `notification.Module`
+**fx Module**: None (standalone, no fx module yet)
 
 ---
 
@@ -84,109 +84,102 @@ flowchart LR
 
 ```
 internal/service/notification/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── notification.go        # Event types, Event struct, Agent interface, Service interface, AgentConfig
+├── dispatcher.go          # Dispatcher struct implementing Service interface
+├── notification_test.go   # Core type tests
+├── dispatcher_test.go     # Dispatcher tests
+├── mock_agent_test.go     # Mock agent for tests
+└── agents/
+    ├── discord.go         # Discord webhook agent
+    ├── email.go           # Email (SMTP) agent
+    ├── gotify.go          # Gotify + Ntfy agents
+    ├── webhook.go         # Generic webhook agent
+    └── agents_test.go     # Agent tests
 ```
+
+**Note**: No `module.go` or fx module yet. No database/repository layer — this is a pure event dispatcher with pluggable agents.
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Background notification delivery
-- `net/smtp` - Email delivery
-- `firebase.google.com/go/v4/messaging` - Firebase Cloud Messaging (FCM)
-- `text/template` - Template rendering
-- `net/http` - Webhook delivery
-- `go.uber.org/fx`
+- `log/slog` - Structured logging (not zap)
+- `net/http` - HTTP clients for agent delivery
+- `net/smtp` - Email agent
+- `text/template` / `html/template` - Webhook payload templates
 
-**External Services**:
-- SMTP server for email
-- Firebase Cloud Messaging (FCM) for push notifications
+**No Internal Dependencies** - self-contained package.
 
-
-### Provides
-<!-- Service provides -->
-
-### Component Diagram
-
-<!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type NotificationService interface {
-  // Send notifications
-  Send(ctx context.Context, notification Notification) error
-  SendToUser(ctx context.Context, userID uuid.UUID, notification Notification) error
-  SendBulk(ctx context.Context, userIDs []uuid.UUID, notification Notification) error
-
-  // In-app notifications
-  GetNotifications(ctx context.Context, userID uuid.UUID, filters NotificationFilters) ([]InAppNotification, error)
-  MarkAsRead(ctx context.Context, notificationID uuid.UUID) error
-  MarkAllAsRead(ctx context.Context, userID uuid.UUID) error
-  DeleteNotification(ctx context.Context, notificationID uuid.UUID) error
-
-  // Preferences
-  GetPreferences(ctx context.Context, userID uuid.UUID) (map[string]NotificationPreference, error)
-  UpdatePreference(ctx context.Context, userID uuid.UUID, eventType string, pref NotificationPreference) error
-
-  // Push devices
-  RegisterPushDevice(ctx context.Context, userID uuid.UUID, fcmToken, deviceType string) error
-  UnregisterPushDevice(ctx context.Context, fcmToken string) error
+// Service is an interface.
+// Source: internal/service/notification/notification.go
+type Service interface {
+  Dispatch(ctx context.Context, event *Event) error
+  DispatchSync(ctx context.Context, event *Event) ([]NotificationResult, error)
+  RegisterAgent(agent Agent) error
+  UnregisterAgent(name string) error
+  ListAgents() []Agent
+  TestAgent(ctx context.Context, agentName string) (*NotificationResult, error)
 }
 
-type Notification struct {
-  EventType string                 `json:"event_type"`
-  Title     string                 `json:"title"`
-  Body      string                 `json:"body"`
-  ActionURL *string                `json:"action_url,omitempty"`
-  Data      map[string]interface{} `json:"data,omitempty"`
-  Priority  string                 `json:"priority"`
-}
-
-type NotificationChannel interface {
+// Agent interface - implemented by all notification agents
+type Agent interface {
+  Type() AgentType
   Name() string
-  Send(ctx context.Context, recipient User, notification Notification) error
+  Send(ctx context.Context, event *Event) error
+  Validate() error
+  IsEnabled() bool
 }
+
+// Dispatcher implements Service
+type Dispatcher struct {
+  agents map[string]Agent
+  logger *slog.Logger
+}
+
+// Event is the core notification payload
+type Event struct {
+  ID        uuid.UUID
+  Type      EventType
+  Timestamp time.Time
+  UserID    *uuid.UUID
+  TargetID  *uuid.UUID
+  Data      map[string]any
+  Metadata  map[string]string
+}
+
+func NewEvent(eventType EventType) *Event
+func (e *Event) WithUser(userID uuid.UUID) *Event
+func (e *Event) WithTarget(targetID uuid.UUID) *Event
+func (e *Event) WithData(key string, value any) *Event
 ```
 
+**Agent Types** (5): `webhook`, `discord`, `email`, `gotify`, `ntfy`
 
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Background notification delivery
-- `net/smtp` - Email delivery
-- `firebase.google.com/go/v4/messaging` - Firebase Cloud Messaging (FCM)
-- `text/template` - Template rendering
-- `net/http` - Webhook delivery
-- `go.uber.org/fx`
+**Event Types** (27): `movie.added`, `movie.available`, `request.created`, `request.approved`, `library.scan_started`, `library.scan_done`, `user.created`, `auth.login_success`, `auth.mfa_enabled`, `playback.started`, `system.startup`, `integration.radarr_sync`, etc.
 
-**External Services**:
-- SMTP server for email
-- Firebase Cloud Messaging (FCM) for push notifications
+**Event Categories** (7): `content`, `requests`, `library`, `user`, `auth`, `playback`, `system`
+
+**Key Types**:
+- `AgentConfig` - Base config with event type/category filtering (`ShouldSend()`)
+- `NotificationResult` - Agent name, success/error, timestamp
+- Agent-specific configs: `DiscordConfig`, `GotifyConfig`, `NtfyConfig`, `WebhookConfig`, `EmailConfig` (each with own fields)
+
+**Note**: This is a pure event dispatch system. No in-app notifications, no database storage, no push device management, no user preferences — those are planned features.
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
 
-```bash
-NOTIFICATION_SMTP_HOST=smtp.gmail.com
-NOTIFICATION_SMTP_PORT=587
-NOTIFICATION_SMTP_USER=noreply@example.com
-NOTIFICATION_SMTP_PASSWORD=your_password
-NOTIFICATION_FCM_CREDENTIALS_FILE=/config/fcm-service-account.json
-NOTIFICATION_DELIVERY_WORKERS=5
-```
+No dedicated `NotificationConfig` in `config.go`. Agent configs are passed at construction time:
+- Each agent has its own config struct (e.g., `DiscordConfig{WebhookURL, Username, ...}`)
+- `AgentConfig` base has `Enabled`, `Name`, `EventTypes`, `EventCategories`
 
+### Planned Config (🔴 not yet in config.go)
 
-### Config Keys
 ```yaml
 notification:
   email:
@@ -195,8 +188,6 @@ notification:
     smtp_user: noreply@example.com
     smtp_password: your_password
     from_address: Revenge <noreply@example.com>
-  push:
-    fcm_credentials_file: /config/fcm-service-account.json
   webhook:
     timeout: 10s
   delivery:

@@ -2,13 +2,35 @@
 
 **Last Updated**: 2026-02-06
 
-Multi-provider metadata aggregation with priority-based fallback, per-provider caching, and adapter pattern for content modules.
+Two-tier metadata system: Arr services (Radarr/Sonarr) provide PRIMARY content data, while the metadata service enriches it with supplementary data from external APIs (TMDb, TVDb) via a priority-based provider chain with caching and fallback.
 
 ---
 
 ## Overview
 
+The metadata ecosystem operates in two tiers:
+
+### Tier 1: PRIMARY (Arr Integrations)
+
+Radarr and Sonarr (`internal/integration/{radarr,sonarr}/`) sync content into Revenge's database. They are the source of truth for:
+- Which movies/shows exist in the user's library
+- Base metadata (titles, years, TMDb/TVDb IDs, file info, quality profiles)
+- Library state changes (added, updated, removed)
+
+See [RADARR](../integrations/servarr/RADARR.md), [SONARR](../integrations/servarr/SONARR.md).
+
+### Tier 2: SUPPLEMENTARY (Metadata Service)
+
+The metadata service (`internal/service/metadata/`) enriches Tier 1 data with:
+- Multi-language translations (titles, overviews, taglines)
+- Credits (cast, crew, directors)
+- Images (posters, backdrops, stills, profiles)
+- Age ratings by country (MPAA, FSK, BBFC, etc.)
+- Related content (similar, recommendations)
+
 ```
+Radarr/Sonarr (PRIMARY)
+    ↓ sync content + base metadata into DB
 Content Modules                    Metadata Service                    External APIs
 ┌──────────┐                      ┌──────────────┐                   ┌──────────┐
 │  movie   │──MetadataProvider──→│              │──MovieProvider───→│  TMDb    │
@@ -79,8 +101,8 @@ Providers additionally implement capability-specific interfaces:
 
 | Provider | ID | Priority | Capabilities | API Client |
 |----------|-----|---------|-------------|------------|
-| TMDb | `tmdb` | 100 | Movie, TV, Person, Image, Collection | resty + rate limiter |
-| TVDb | `tvdb` | 80 | TV (series, seasons, episodes) | resty + rate limiter |
+| TMDb | `tmdb` | 100 | Movie, TV, Person, Image, Collection | req/v3 + rate limiter |
+| TVDb | `tvdb` | 80 | TV (series, seasons, episodes) | req/v3 + rate limiter |
 
 Reserved provider IDs (defined but not yet implemented): `fanarttv`, `omdb`.
 
@@ -287,4 +309,7 @@ metadata:
 
 - [Architecture](ARCHITECTURE.md) - System structure and layers
 - [Design Principles](DESIGN_PRINCIPLES.md) - Adapter pattern, error handling
+- [Radarr Integration](../integrations/servarr/RADARR.md) - PRIMARY provider for movies
+- [Sonarr Integration](../integrations/servarr/SONARR.md) - PRIMARY provider for TV shows
+- [Metadata Service](../services/METADATA.md) - SUPPLEMENTARY provider service doc
 - [Dragonfly](../integrations/infrastructure/DRAGONFLY.md) - Infrastructure cache (separate from metadata provider cache)

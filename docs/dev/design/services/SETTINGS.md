@@ -90,78 +90,73 @@ flowchart LR
 
 ```
 internal/service/settings/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewService, NewPostgresRepository)
+├── service.go             # Service INTERFACE (12 methods) + implementation
+├── repository.go          # Repository interface (14 methods) + domain types
+├── repository_pg.go       # PostgreSQL implementation (sqlc)
+├── cached_service.go      # CachedService wrapping Service with cache layer
+└── (no tests yet)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/knadh/koanf/v2` - Configuration management
-- `github.com/maypok86/otter` - Settings cache
-- `go.uber.org/fx`
+- `go.uber.org/fx`, `go.uber.org/zap`
 
+**Internal Dependencies**:
+- `internal/infra/database/db` - sqlc generated queries
+- `internal/infra/cache` - `cache.Cache` for CachedService
 
 ### Provides
-<!-- Service provides -->
 
-### Component Diagram
+`settings.Module` provides: `NewService`, `NewPostgresRepository`
 
-<!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type SettingsService interface {
-  // Get/Set
-  GetSetting(ctx context.Context, key string) (*Setting, error)
-  GetSettings(ctx context.Context, category string) ([]Setting, error)
-  SetSetting(ctx context.Context, key, value string, userID uuid.UUID) error
-  SetBulk(ctx context.Context, settings map[string]string, userID uuid.UUID) error
+// Service is an INTERFACE (unlike most other services).
+// Source: internal/service/settings/service.go
+type Service interface {
+  // Server settings (6 methods)
+  GetServerSetting(ctx context.Context, key string) (*ServerSetting, error)
+  ListServerSettings(ctx context.Context) ([]ServerSetting, error)
+  ListServerSettingsByCategory(ctx context.Context, category string) ([]ServerSetting, error)
+  ListPublicServerSettings(ctx context.Context) ([]ServerSetting, error)
+  SetServerSetting(ctx context.Context, setting ServerSetting) error
+  DeleteServerSetting(ctx context.Context, key string) error
 
-  // Defaults
-  ResetToDefault(ctx context.Context, key string) error
-  LoadDefaults(ctx context.Context) error
-
-  // History
-  GetHistory(ctx context.Context, key string) ([]SettingChange, error)
-}
-
-type Setting struct {
-  Key          string     `db:"key" json:"key"`
-  Value        string     `db:"value" json:"value"`
-  ValueType    string     `db:"value_type" json:"value_type"`
-  Category     *string    `db:"category" json:"category,omitempty"`
-  Description  *string    `db:"description" json:"description,omitempty"`
+  // User settings (6 methods)
+  GetUserSetting(ctx context.Context, userID uuid.UUID, key string) (*UserSetting, error)
+  ListUserSettings(ctx context.Context, userID uuid.UUID) ([]UserSetting, error)
+  ListUserSettingsByCategory(ctx context.Context, userID uuid.UUID, category string) ([]UserSetting, error)
+  SetUserSetting(ctx context.Context, setting UserSetting) error
+  SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, settings []UserSetting) error
+  DeleteUserSetting(ctx context.Context, userID uuid.UUID, key string) error
 }
 ```
 
+**Note**: Unlike most services, this uses an **interface** (not concrete struct). Also handles both server-level AND user-level settings. No `ResetToDefault`, `LoadDefaults`, or `GetHistory` methods yet (planned).
 
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/knadh/koanf/v2` - Configuration management
-- `github.com/maypok86/otter` - Settings cache
-- `go.uber.org/fx`
+**Key Types**:
+- `ServerSetting` - Key, Value, Description, Category, DataType, IsSecret, IsPublic, AllowedValues
+- `UserSetting` - UserID + Key, Value, Category, DataType
+- `CachedService` - Cache wrapper using `cache.Cache`
+- Repository interface has 14 methods: Server settings (7), User settings (7)
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
+
+No dedicated `SettingsConfig` struct in `config.go`. Uses general database/pool configuration.
+
+### Planned Config (🔴 not yet in config.go)
 
 ```bash
 SETTINGS_CACHE_TTL=5m
 ```
 
-
-### Config Keys
 ```yaml
 settings:
   cache_ttl: 5m

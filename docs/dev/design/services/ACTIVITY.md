@@ -88,84 +88,94 @@ flowchart LR
 
 ```
 internal/service/activity/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go              # fx module (NewService, NewPostgresRepository, NewServiceLogger)
+├── service.go             # Service struct + business logic (12 methods) + types
+├── repository.go          # Repository interface (14 methods) + domain types
+├── repository_pg.go       # PostgreSQL implementation (sqlc)
+├── logger.go              # Logger interface + ServiceLogger + NoopLogger implementations
+└── (no tests yet)
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Cleanup jobs
-- `go.uber.org/fx`
+- `go.uber.org/fx`, `go.uber.org/zap`
 
+**Internal Dependencies**:
+- `internal/infra/database/db` - sqlc generated queries
 
 ### Provides
-<!-- Service provides -->
 
-### Component Diagram
+`activity.Module` provides: `NewService`, `NewPostgresRepository`, `NewServiceLogger` (as `activity.Logger`)
 
-<!-- Component diagram -->
+**Note**: The `Logger` interface is injected into other services (auth, user, rbac, library) for audit logging.
+
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code) ✅
 
 ```go
-type ActivityService interface {
-  // Logging
-  Log(ctx context.Context, entry ActivityEntry) error
-  LogWithContext(ctx context.Context, userID uuid.UUID, action, resourceType string, resourceID uuid.UUID, changes map[string]interface{}) error
-
-  // Querying
-  GetUserActivity(ctx context.Context, userID uuid.UUID, filters ActivityFilters) ([]ActivityEntry, error)
-  GetResourceActivity(ctx context.Context, resourceType string, resourceID uuid.UUID) ([]ActivityEntry, error)
-  Search(ctx context.Context, filters ActivityFilters) ([]ActivityEntry, error)
-
-  // Cleanup
-  CleanupOldLogs(ctx context.Context, olderThan time.Time) (int, error)
+// Service is a concrete struct.
+// Source: internal/service/activity/service.go
+type Service struct {
+  repo   Repository
+  logger *zap.Logger
 }
 
-type ActivityEntry struct {
-  ID           uuid.UUID              `db:"id" json:"id"`
-  UserID       *uuid.UUID             `db:"user_id" json:"user_id,omitempty"`
-  Username     *string                `db:"username" json:"username,omitempty"`
-  Action       string                 `db:"action" json:"action"`
-  ResourceType *string                `db:"resource_type" json:"resource_type,omitempty"`
-  ResourceID   *uuid.UUID             `db:"resource_id" json:"resource_id,omitempty"`
-  Changes      map[string]interface{} `db:"changes" json:"changes,omitempty"`
-  IPAddress    *net.IP                `db:"ip_address" json:"ip_address,omitempty"`
-  Success      bool                   `db:"success" json:"success"`
-  CreatedAt    time.Time              `db:"created_at" json:"created_at"`
+// Logging (3 methods)
+func (s *Service) Log(ctx context.Context, req LogRequest) error
+func (s *Service) LogWithContext(ctx context.Context, req LogActionRequest) error
+func (s *Service) LogFailure(ctx context.Context, req LogFailureRequest) error
+
+// Querying (7 methods)
+func (s *Service) Get(ctx context.Context, id uuid.UUID) (*Entry, error)
+func (s *Service) List(ctx context.Context, filters SearchFilters) ([]Entry, int64, error)
+func (s *Service) Search(ctx context.Context, filters SearchFilters) ([]Entry, int64, error)
+func (s *Service) GetUserActivity(ctx context.Context, userID uuid.UUID, filters SearchFilters) ([]Entry, int64, error)
+func (s *Service) GetResourceActivity(ctx context.Context, resourceType string, resourceID uuid.UUID) ([]Entry, error)
+func (s *Service) GetFailedActivity(ctx context.Context, filters SearchFilters) ([]Entry, int64, error)
+func (s *Service) GetStats(ctx context.Context) (*Stats, error)
+func (s *Service) GetRecentActions(ctx context.Context, limit int) ([]Entry, error)
+
+// Cleanup (2 methods)
+func (s *Service) CleanupOldLogs(ctx context.Context, olderThan time.Time) (int64, error)
+func (s *Service) CountOldLogs(ctx context.Context, olderThan time.Time) (int64, error)
+
+// Logger interface (injected into other services)
+type Logger interface {
+  LogAction(ctx context.Context, req LogActionRequest) error
+  LogFailure(ctx context.Context, req LogFailureRequest) error
 }
+// Implementations: ServiceLogger (wraps Service), NoopLogger (for testing)
 ```
 
-
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `github.com/riverqueue/river` - Cleanup jobs
-- `go.uber.org/fx`
+**Key Types**:
+- `Entry` - Activity log entry (UserID, Action, ResourceType, ResourceID, IPAddress, UserAgent, Success, etc.)
+- `SearchFilters` - Filtering and pagination for queries
+- `Stats` - Aggregated activity statistics
+- `ActionCount` - Action frequency count
+- `LogRequest` / `LogActionRequest` / `LogFailureRequest` - Typed log request params
+- 27 predefined action constants (user.login, user.create, session.create, library.scan, etc.)
+- 9 resource types (user, session, apikey, oidc, setting, library, movie, tvshow, episode)
 
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
+
+From `config.go` `ActivityConfig` (koanf namespace `activity.*`):
+```yaml
+activity:
+  retention_days: 90               # Days to keep activity logs
+```
+
+### Planned Config (🔴 not yet in config.go)
 
 ```bash
-ACTIVITY_RETENTION_DAYS=90
 ACTIVITY_CLEANUP_INTERVAL=24h
 ```
 
-
-### Config Keys
 ```yaml
 activity:
-  retention_days: 90
   cleanup_interval: 24h
   log_failed_attempts: true
 ```

@@ -89,27 +89,35 @@ flowchart LR
 
 ```
 internal/service/auth/
-├── module.go              # fx module definition
-├── service.go             # Service implementation
-├── repository.go          # Data access (if needed)
-├── handler.go             # HTTP handlers (if exposed)
-├── middleware.go          # Middleware (if needed)
-├── types.go               # Domain types
-└── service_test.go        # Tests
+├── module.go                      # fx module definition
+├── service.go                     # Service struct + business logic (Register, Login, MFA, etc.)
+├── repository.go                  # Repository interface + token/param types
+├── repository_pg.go               # PostgreSQL implementation (sqlc)
+├── jwt.go                         # TokenManager interface + JWT/refresh token implementation
+├── mfa_integration.go             # MFAAuthenticator + MFA login flow types
+├── service_testing.go             # Test helpers
+├── service_exhaustive_test.go     # Exhaustive unit tests
+├── service_integration_test.go    # Integration tests
+├── jwt_test.go                    # JWT tests
+├── mock_repository_test.go        # Mock repository for tests
+└── mock_token_manager_test.go     # Mock token manager for tests
 ```
 
 ### Dependencies
 **Go Packages**:
 - `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `golang.org/x/crypto/argon2` - Password hashing
-- `github.com/alexedwards/argon2id` - Argon2 helper
-- `crypto/rand` - Token generation
-- `crypto/sha256` - Token hashing
+- `github.com/jackc/pgx/v5` - Database via pgxpool
+- `github.com/alexedwards/argon2id` - Password hashing (via `internal/crypto.PasswordHasher`)
+- `crypto/rand` - Token generation (refresh tokens)
+- `crypto/hmac` + `crypto/sha256` - JWT signing + refresh token hashing
 - `go.uber.org/fx`
 
-**External Services**:
-- Email service (SMTP) for verification and password reset emails
+**Internal Dependencies**:
+- `internal/crypto` - `PasswordHasher` (Argon2id)
+- `internal/service/email` - Verification & password reset emails
+- `internal/service/activity` - Login/security activity logging
+- `internal/service/mfa` - MFA verification during login (optional)
+- `internal/infra/database/db` - sqlc generated queries (`db.SharedUser`, etc.)
 
 
 ### Provides
@@ -120,65 +128,90 @@ internal/service/auth/
 <!-- Component diagram -->
 ## Implementation
 
-### Key Interfaces
+### Key Interfaces (from code)
 
 ```go
-type AuthService interface {
-  // Registration
-  Register(ctx context.Context, req RegisterRequest) (*User, error)
-  VerifyEmail(ctx context.Context, token string) error
-  ResendVerification(ctx context.Context, userID uuid.UUID) error
+// Service is a concrete struct (not interface) with methods.
+// Source: internal/service/auth/service.go
+type Service struct {
+  pool             *pgxpool.Pool
+  repo             Repository
+  tokenManager     TokenManager
+  hasher           *crypto.PasswordHasher
+  activityLogger   activity.Logger
+  emailService     *email.Service
+  jwtExpiry        time.Duration
+  refreshExpiry    time.Duration
+  lockoutThreshold int
+  lockoutWindow    time.Duration
+  lockoutEnabled   bool
+}
 
-  // Login
-  Login(ctx context.Context, username, password string) (*User, error)
-  Logout(ctx context.Context, sessionID uuid.UUID) error
+// Registration
+func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.SharedUser, error)
+func (s *Service) VerifyEmail(ctx context.Context, token string) error
+func (s *Service) ResendVerification(ctx context.Context, userID uuid.UUID) error
+func (s *Service) RegisterFromOIDC(ctx context.Context, req RegisterFromOIDCRequest) (*db.SharedUser, error)
 
-  // Password management
-  ChangePassword(ctx context.Context, userID uuid.UUID, oldPassword, newPassword string) error
-  RequestPasswordReset(ctx context.Context, email string) error
-  ResetPassword(ctx context.Context, token, newPassword string) error
+// Login & Session
+func (s *Service) Login(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string) (*LoginResponse, error)
+func (s *Service) Logout(ctx context.Context, refreshToken string) error
+func (s *Service) LogoutAll(ctx context.Context, userID uuid.UUID) error
+func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (*LoginResponse, error)
+func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ipAddress *netip.Addr, userAgent, deviceName *string) (*LoginResponse, error)
 
-  // Account security
-  CheckRateLimit(ctx context.Context, identifier string) error
-  RecordLoginAttempt(ctx context.Context, userID uuid.UUID, success bool, ip net.IP) error
+// Password Management
+func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassword, newPassword string) error
+func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddress *netip.Addr, userAgent *string) error
+func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) error
+
+// MFA Support
+func (s *Service) LoginWithMFA(ctx context.Context, username, password string, ipAddress *netip.Addr, userAgent, deviceName, deviceFingerprint *string, mfaAuthenticator *MFAAuthenticator) (*LoginResponse, *MFALoginResponse, error)
+func (s *Service) CompleteMFALogin(ctx context.Context, sessionID uuid.UUID, verificationResult *mfa.VerificationResult) error
+func (s *Service) GetSessionMFAInfo(ctx context.Context, sessionID uuid.UUID) (*SessionMFAInfo, error)
+
+// TokenManager interface (jwt.go)
+type TokenManager interface {
+  GenerateAccessToken(userID uuid.UUID, username string) (string, error)
+  GenerateRefreshToken() (string, error)
+  ValidateAccessToken(token string) (*Claims, error)
+  HashRefreshToken(token string) string
+  ExtractClaims(token string) (*Claims, error)
 }
 
 type RegisterRequest struct {
-  Username    string `json:"username"`
-  Email       string `json:"email"`
-  Password    string `json:"password"`
-  DisplayName string `json:"display_name,omitempty"`
+  Username    string
+  Email       string
+  Password    string
+  DisplayName *string  // pointer, optional
 }
 
-type User struct {
-  ID            uuid.UUID  `db:"id" json:"id"`
-  Username      string     `db:"username" json:"username"`
-  Email         string     `db:"email" json:"email"`
-  DisplayName   *string    `db:"display_name" json:"display_name,omitempty"`
-  EmailVerified bool       `db:"email_verified" json:"email_verified"`
-  IsActive      bool       `db:"is_active" json:"is_active"`
-  IsAdmin       bool       `db:"is_admin" json:"is_admin"`
-  CreatedAt     time.Time  `db:"created_at" json:"created_at"`
+type LoginResponse struct {
+  User         *db.SharedUser
+  AccessToken  string
+  RefreshToken string
+  ExpiresIn    int64  // seconds until access token expires
 }
 ```
 
-
-### Dependencies
-**Go Packages**:
-- `github.com/google/uuid`
-- `github.com/jackc/pgx/v5`
-- `golang.org/x/crypto/argon2` - Password hashing
-- `github.com/alexedwards/argon2id` - Argon2 helper
-- `crypto/rand` - Token generation
-- `crypto/sha256` - Token hashing
-- `go.uber.org/fx`
-
-**External Services**:
-- Email service (SMTP) for verification and password reset emails
-
 ## Configuration
 
-### Environment Variables
+### Current Config (from code) ✅
+
+From `config.go` `AuthConfig` (koanf namespace `auth.*`):
+```yaml
+auth:
+  jwt_secret: ""               # JWT signing secret (min 32 chars)
+  jwt_expiry: 24h              # JWT access token validity
+  refresh_expiry: 168h         # Refresh token validity (7 days)
+  lockout_threshold: 5         # Failed attempts before lockout
+  lockout_window: 15m          # Window for counting failed attempts
+  lockout_enabled: true        # Enable/disable account lockout
+```
+
+Argon2id parameters use `argon2id.DefaultParams` (not configurable via koanf yet).
+
+### Planned Config (🔴 not yet in config.go)
 
 ```bash
 AUTH_PASSWORD_MIN_LENGTH=8
@@ -187,30 +220,26 @@ AUTH_ARGON2_MEMORY=64
 AUTH_ARGON2_THREADS=4
 AUTH_RESET_TOKEN_EXPIRY=1h
 AUTH_VERIFICATION_TOKEN_EXPIRY=24h
-AUTH_MAX_LOGIN_ATTEMPTS=5
-AUTH_LOCKOUT_DURATION=15m
 ```
 
-
-### Config Keys
 ```yaml
 auth:
+  # 🔴 Planned - password policy config
   password:
     min_length: 8
     require_uppercase: true
     require_lowercase: true
     require_number: true
     require_special: false
+  # 🔴 Planned - configurable Argon2id params
   argon2:
     time: 1
     memory: 64  # MiB
     threads: 4
+  # 🔴 Planned - token expiry config
   tokens:
     reset_expiry: 1h
     verification_expiry: 24h
-  security:
-    max_login_attempts: 5
-    lockout_duration: 15m
 ```
 
 ## API Endpoints
@@ -256,7 +285,7 @@ POST   /api/v1/auth/change-password   # Change password (authenticated)
 }
 ```
 
-**Example Login Response**:
+**Example Login Response** (matches `LoginResponse` struct):
 ```json
 {
   "user": {
@@ -264,7 +293,9 @@ POST   /api/v1/auth/change-password   # Change password (authenticated)
     "username": "johndoe",
     "email": "john@example.com"
   },
-  "session_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "a1b2c3d4e5f6...",
+  "expires_in": 86400
 }
 ```
 
