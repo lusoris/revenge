@@ -2,7 +2,8 @@
 
 # Variables
 BINARY_NAME=revenge
-DOCKER_IMAGE=revenge/revenge
+DOCKER_IMAGE=ghcr.io/lusoris/revenge
+MIGRATIONS_DIR=internal/infra/database/migrations/shared
 VERSION?=dev
 BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
@@ -41,13 +42,10 @@ build: ## Build the binary
 	@echo "Building ${BINARY_NAME}..."
 	go build ${LDFLAGS} -o bin/${BINARY_NAME} ./cmd/revenge
 
-build-all: ## Build for all platforms
-	@echo "Building for multiple platforms..."
+build-linux: ## Build for Linux (Docker targets)
+	@echo "Building for Linux..."
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-amd64 ./cmd/revenge
 	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-arm64 ./cmd/revenge
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-amd64 ./cmd/revenge
-	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-arm64 ./cmd/revenge
-	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-windows-amd64.exe ./cmd/revenge
 
 run: ## Run the application
 	@echo "Running ${BINARY_NAME}..."
@@ -108,27 +106,27 @@ docker-compose-down: ## Stop services with docker-compose
 
 migrate-up: ## Run database migrations up
 	@echo "Running migrations up..."
-	migrate -path migrations -database "$(DATABASE_URL)" up
+	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" up
 
 migrate-down: ## Run database migrations down (one step)
 	@echo "Running migrations down..."
-	migrate -path migrations -database "$(DATABASE_URL)" down 1
+	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" down 1
 
 migrate-down-all: ## Run all database migrations down
 	@echo "Running all migrations down..."
-	migrate -path migrations -database "$(DATABASE_URL)" down -all
+	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" down -all
 
 migrate-force: ## Force migration version (usage: make migrate-force VERSION=1)
 	@echo "Forcing migration version: ${VERSION}..."
-	migrate -path migrations -database "$(DATABASE_URL)" force ${VERSION}
+	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" force ${VERSION}
 
 migrate-version: ## Show current migration version
 	@echo "Current migration version:"
-	migrate -path migrations -database "$(DATABASE_URL)" version
+	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" version
 
 migrate-create: ## Create a new migration (usage: make migrate-create NAME=create_users_table)
 	@echo "Creating migration: ${NAME}..."
-	migrate create -ext sql -dir migrations -seq ${NAME}
+	migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq ${NAME}
 
 install-tools: ## Install development tools
 	@echo "Installing development tools..."
