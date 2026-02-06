@@ -390,7 +390,7 @@ func TestHandler_RevokeSession_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), userID)
 	params := ogen.RevokeSessionParams{
-		SessionId: uuid.New(),
+		SessionId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.RevokeSession(ctx, params)

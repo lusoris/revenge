@@ -142,7 +142,7 @@ func TestService_GetUser(t *testing.T) {
 	})
 
 	t.Run("non-existent user", func(t *testing.T) {
-		_, err := svc.GetUser(ctx, uuid.New())
+		_, err := svc.GetUser(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 	})
 }
@@ -245,7 +245,7 @@ func TestService_UpdateUser(t *testing.T) {
 
 	t.Run("update non-existent user", func(t *testing.T) {
 		displayName := "Name"
-		_, err := svc.UpdateUser(ctx, uuid.New(), UpdateUserParams{
+		_, err := svc.UpdateUser(ctx, uuid.Must(uuid.NewV7()), UpdateUserParams{
 			DisplayName: &displayName,
 		})
 		require.Error(t, err)
@@ -283,7 +283,7 @@ func TestService_UpdatePassword(t *testing.T) {
 	})
 
 	t.Run("non-existent user", func(t *testing.T) {
-		err := svc.UpdatePassword(ctx, uuid.New(), "old", "new")
+		err := svc.UpdatePassword(ctx, uuid.Must(uuid.NewV7()), "old", "new")
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "user not found")
 	})
@@ -818,7 +818,7 @@ func TestService_DeleteAvatar_NotFound(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = svc.DeleteAvatar(ctx, created.ID, uuid.New())
+	err = svc.DeleteAvatar(ctx, created.ID, uuid.Must(uuid.NewV7()))
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "avatar not found")
 }

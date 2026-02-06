@@ -79,10 +79,10 @@ func TestActivityService_LogWithContext_Short(t *testing.T) {
 
 		mockRepo.On("Create", mock.Anything, mock.AnythingOfType("*activity.Entry")).Return(nil)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		username := "testuser"
 		resourceType := "user"
-		resourceID := uuid.New()
+		resourceID := uuid.Must(uuid.NewV7())
 		ipAddress := net.ParseIP("192.168.1.1")
 		userAgent := "Mozilla/5.0"
 
@@ -113,7 +113,7 @@ func TestActivityService_LogFailure_Short(t *testing.T) {
 
 		mockRepo.On("Create", mock.Anything, mock.AnythingOfType("*activity.Entry")).Return(nil)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		username := "testuser"
 		ipAddress := net.ParseIP("192.168.1.1")
 		userAgent := "Mozilla/5.0"
@@ -141,7 +141,7 @@ func TestActivityService_Get_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		entryID := uuid.New()
+		entryID := uuid.Must(uuid.NewV7())
 		expected := makeTestEntry(entryID, activity.ActionUserLogin, true)
 
 		mockRepo.On("Get", mock.Anything, entryID).Return(expected, nil)
@@ -157,7 +157,7 @@ func TestActivityService_Get_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		entryID := uuid.New()
+		entryID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, entryID).Return(nil, activity.ErrNotFound)
 
@@ -178,8 +178,8 @@ func TestActivityService_List_Short(t *testing.T) {
 		svc := setupActivityService(mockRepo)
 
 		entries := []activity.Entry{
-			*makeTestEntry(uuid.New(), activity.ActionUserLogin, true),
-			*makeTestEntry(uuid.New(), activity.ActionUserLogout, true),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserLogin, true),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserLogout, true),
 		}
 
 		mockRepo.On("List", mock.Anything, int32(50), int32(0)).Return(entries, nil)
@@ -231,7 +231,7 @@ func TestActivityService_Search_Short(t *testing.T) {
 		svc := setupActivityService(mockRepo)
 
 		entries := []activity.Entry{
-			*makeTestEntry(uuid.New(), activity.ActionUserLogin, true),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserLogin, true),
 		}
 
 		filters := activity.SearchFilters{}
@@ -274,9 +274,9 @@ func TestActivityService_GetUserActivity_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		entries := []activity.Entry{
-			*makeTestEntry(uuid.New(), activity.ActionUserLogin, true),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserLogin, true),
 		}
 
 		mockRepo.On("GetByUser", mock.Anything, userID, int32(50), int32(0)).Return(entries, int64(1), nil)
@@ -292,7 +292,7 @@ func TestActivityService_GetUserActivity_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		entries := []activity.Entry{}
 
 		mockRepo.On("GetByUser", mock.Anything, userID, int32(100), int32(0)).Return(entries, int64(0), nil)
@@ -314,10 +314,10 @@ func TestActivityService_GetResourceActivity_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		resourceID := uuid.New()
+		resourceID := uuid.Must(uuid.NewV7())
 		resourceType := "user"
 		entries := []activity.Entry{
-			*makeTestEntry(uuid.New(), activity.ActionUserUpdate, true),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserUpdate, true),
 		}
 
 		mockRepo.On("GetByResource", mock.Anything, resourceType, resourceID, int32(50), int32(0)).
@@ -334,7 +334,7 @@ func TestActivityService_GetResourceActivity_Short(t *testing.T) {
 		mockRepo := NewMockActivityRepository(t)
 		svc := setupActivityService(mockRepo)
 
-		resourceID := uuid.New()
+		resourceID := uuid.Must(uuid.NewV7())
 		resourceType := "user"
 		entries := []activity.Entry{}
 
@@ -359,7 +359,7 @@ func TestActivityService_GetFailedActivity_Short(t *testing.T) {
 		svc := setupActivityService(mockRepo)
 
 		entries := []activity.Entry{
-			*makeTestEntry(uuid.New(), activity.ActionUserLogin, false),
+			*makeTestEntry(uuid.Must(uuid.NewV7()), activity.ActionUserLogin, false),
 		}
 
 		mockRepo.On("GetFailed", mock.Anything, int32(50), int32(0)).Return(entries, nil)
@@ -542,8 +542,8 @@ func TestServiceLogger_LogAction_Short(t *testing.T) {
 
 		mockRepo.On("Create", mock.Anything, mock.AnythingOfType("*activity.Entry")).Return(nil)
 
-		userID := uuid.New()
-		resourceID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		resourceID := uuid.Must(uuid.NewV7())
 		ipAddr := net.ParseIP("192.168.1.1")
 
 		err := logger.LogAction(context.Background(), activity.LogActionRequest{
@@ -613,7 +613,7 @@ func TestServiceLogger_LogAction_Short(t *testing.T) {
 		})).Return(nil)
 
 		err := logger.LogAction(context.Background(), activity.LogActionRequest{
-			UserID:    uuid.New(),
+			UserID:    uuid.Must(uuid.NewV7()),
 			Username:  "testuser",
 			Action:    activity.ActionUserLogin,
 			IPAddress: nil,
@@ -631,7 +631,7 @@ func TestServiceLogger_LogAction_Short(t *testing.T) {
 		mockRepo.On("Create", mock.Anything, mock.AnythingOfType("*activity.Entry")).Return(errors.New("db error"))
 
 		err := logger.LogAction(context.Background(), activity.LogActionRequest{
-			UserID:   uuid.New(),
+			UserID:   uuid.Must(uuid.NewV7()),
 			Username: "testuser",
 			Action:   activity.ActionUserLogin,
 		})
@@ -654,7 +654,7 @@ func TestServiceLogger_LogFailure_Short(t *testing.T) {
 			return e.Success == false && e.ErrorMessage != nil
 		})).Return(nil)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		username := "testuser"
 		ipAddr := net.ParseIP("192.168.1.1")
 		userAgent := "Mozilla/5.0"

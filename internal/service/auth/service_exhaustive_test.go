@@ -79,7 +79,7 @@ func TestService_Register_ErrorCreatingVerificationToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	req := auth.RegisterRequest{
 		Username: "testuser",
 		Email:    "test@example.com",
@@ -143,8 +143,8 @@ func TestService_VerifyEmail_ErrorMarkingTokenUsed(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	tokenID := uuid.New()
-	userID := uuid.New()
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	emailToken := auth.EmailVerificationToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -177,8 +177,8 @@ func TestService_VerifyEmail_ErrorUpdatingUser(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	tokenID := uuid.New()
-	userID := uuid.New()
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	emailToken := auth.EmailVerificationToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -275,7 +275,7 @@ func TestService_LogoutAll_ErrorRevokingTokens(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	expectedErr := fmt.Errorf("database error")
 
 	mockRepo.EXPECT().
@@ -321,8 +321,8 @@ func TestService_RefreshToken_UserNotFound(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	authToken := auth.AuthToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -355,8 +355,8 @@ func TestService_RefreshToken_ErrorGeneratingAccessToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	authToken := auth.AuthToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -402,7 +402,7 @@ func TestService_ChangePassword_UserNotFound(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		GetUserByID(ctx, userID).
@@ -443,7 +443,7 @@ func TestService_RequestPasswordReset_ErrorInvalidatingOldTokens(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	email := "user@example.com"
 	user := &db.SharedUser{
 		ID:    userID,
@@ -472,7 +472,7 @@ func TestService_RequestPasswordReset_ErrorCreatingToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	email := "user@example.com"
 	user := &db.SharedUser{
 		ID:    userID,
@@ -539,7 +539,7 @@ func TestService_ResendVerification_ErrorInvalidatingTokens(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	expectedErr := fmt.Errorf("database error")
 
 	mockRepo.EXPECT().
@@ -558,7 +558,7 @@ func TestService_ResendVerification_UserNotFound(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		InvalidateUserEmailVerificationTokens(ctx, userID).
@@ -581,7 +581,7 @@ func TestService_ResendVerification_ErrorCreatingToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	user := &db.SharedUser{
 		ID:    userID,
 		Email: "user@example.com",
@@ -644,7 +644,7 @@ func TestService_RegisterFromOIDC_Success(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	displayName := "OIDC User"
 	req := auth.RegisterFromOIDCRequest{
 		Username:    "oidcuser",
@@ -681,7 +681,7 @@ func TestService_RegisterFromOIDC_EmailVerificationError(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	req := auth.RegisterFromOIDCRequest{
 		Username: "oidcuser",
 		Email:    "oidc@example.com",
@@ -719,7 +719,7 @@ func TestService_CreateSessionForUser_UserNotFound(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		GetUserByID(ctx, userID).
@@ -738,7 +738,7 @@ func TestService_CreateSessionForUser_AccountDisabled(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	isActive := false
 	user := &db.SharedUser{
 		ID:       userID,
@@ -763,7 +763,7 @@ func TestService_CreateSessionForUser_ErrorGeneratingAccessToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,
@@ -794,7 +794,7 @@ func TestService_CreateSessionForUser_ErrorGeneratingRefreshToken(t *testing.T) 
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,
@@ -830,7 +830,7 @@ func TestService_CreateSessionForUser_ErrorStoringToken(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,
@@ -876,8 +876,8 @@ func TestService_CreateSessionForUser_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,
@@ -933,8 +933,8 @@ func TestService_CreateSessionForUser_SuccessWithIPAndUserAgent(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,
@@ -994,7 +994,7 @@ func TestService_Login_AccountDisabled(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	isActive := false
 	user := &db.SharedUser{
 		ID:           userID,
@@ -1025,8 +1025,8 @@ func TestService_RefreshToken_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	authToken := auth.AuthToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -1076,8 +1076,8 @@ func TestService_RefreshToken_UpdateLastUsedFails(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	authToken := auth.AuthToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -1154,7 +1154,7 @@ func TestService_LogoutAll_Success(t *testing.T) {
 	svc, mockRepo, _ := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		RevokeAllUserAuthTokens(ctx, userID).
@@ -1173,8 +1173,8 @@ func TestService_VerifyEmail_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	tokenID := uuid.New()
-	userID := uuid.New()
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	emailToken := auth.EmailVerificationToken{
 		ID:     tokenID,
 		UserID: userID,
@@ -1212,7 +1212,7 @@ func TestService_RequestPasswordReset_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	email := "user@example.com"
 	user := &db.SharedUser{
 		ID:    userID,
@@ -1235,7 +1235,7 @@ func TestService_RequestPasswordReset_Success(t *testing.T) {
 		Once()
 
 	resetToken := auth.PasswordResetToken{
-		ID:     uuid.New(),
+		ID:     uuid.Must(uuid.NewV7()),
 		UserID: userID,
 	}
 	mockRepo.EXPECT().
@@ -1255,7 +1255,7 @@ func TestService_ResendVerification_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	user := &db.SharedUser{
 		ID:       userID,
 		Email:    "user@example.com",
@@ -1278,7 +1278,7 @@ func TestService_ResendVerification_Success(t *testing.T) {
 		Once()
 
 	verificationToken := auth.EmailVerificationToken{
-		ID:     uuid.New(),
+		ID:     uuid.Must(uuid.NewV7()),
 		UserID: userID,
 	}
 	mockRepo.EXPECT().
@@ -1299,7 +1299,7 @@ func TestService_Login_FoundByEmail(t *testing.T) {
 	ctx := context.Background()
 
 	email := "user@example.com"
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	user := &db.SharedUser{
 		ID:           userID,
 		Username:     "testuser",
@@ -1333,7 +1333,7 @@ func TestService_Register_Success(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	displayName := "Test User"
 	req := auth.RegisterRequest{
 		Username:    "testuser",
@@ -1359,7 +1359,7 @@ func TestService_Register_Success(t *testing.T) {
 		Once()
 
 	verificationToken := auth.EmailVerificationToken{
-		ID:     uuid.New(),
+		ID:     uuid.Must(uuid.NewV7()),
 		UserID: userID,
 	}
 	mockRepo.EXPECT().
@@ -1382,8 +1382,8 @@ func TestService_CreateSessionForUser_LastLoginFails(t *testing.T) {
 	svc, mockRepo, mockTokenMgr := setupMockService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
-	tokenID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	tokenID := uuid.Must(uuid.NewV7())
 	isActive := true
 	user := &db.SharedUser{
 		ID:       userID,

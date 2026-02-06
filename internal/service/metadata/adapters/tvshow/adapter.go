@@ -120,7 +120,7 @@ func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbI
 	genres := make([]contenttvshow.SeriesGenre, len(meta.Genres))
 	for i, g := range meta.Genres {
 		genres[i] = contenttvshow.SeriesGenre{
-			ID:          uuid.New(),
+			ID:          uuid.Must(uuid.NewV7()),
 			SeriesID:    seriesID,
 			TMDbGenreID: int32(g.ID),
 			Name:        g.Name,
@@ -140,7 +140,7 @@ func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contentt
 	networks := make([]contenttvshow.Network, len(meta.Networks))
 	for i, n := range meta.Networks {
 		networks[i] = contenttvshow.Network{
-			ID:            uuid.New(),
+			ID:            uuid.Must(uuid.NewV7()),
 			TMDbID:        int32(n.ID),
 			Name:          n.Name,
 			LogoPath:      n.LogoPath,
@@ -159,7 +159,7 @@ func (a *Adapter) ClearCache() {
 // mapSearchResultToSeries converts a search result to a series domain type.
 func mapSearchResultToSeries(r *metadata.TVShowSearchResult) *contenttvshow.Series {
 	series := &contenttvshow.Series{
-		ID:               uuid.New(),
+		ID:               uuid.Must(uuid.NewV7()),
 		Title:            r.Name,
 		OriginalTitle:    ptrString(r.OriginalName),
 		OriginalLanguage: r.OriginalLanguage,
@@ -363,7 +363,7 @@ func mapCreditsToSeriesCredits(seriesID uuid.UUID, credits *metadata.Credits) []
 		fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contenttvshow.SeriesCredit{
-			ID:           uuid.New(),
+			ID:           uuid.Must(uuid.NewV7()),
 			SeriesID:     seriesID,
 			TMDbPersonID: personID,
 			Name:         c.Name,
@@ -381,7 +381,7 @@ func mapCreditsToSeriesCredits(seriesID uuid.UUID, credits *metadata.Credits) []
 		fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contenttvshow.SeriesCredit{
-			ID:           uuid.New(),
+			ID:           uuid.Must(uuid.NewV7()),
 			SeriesID:     seriesID,
 			TMDbPersonID: personID,
 			Name:         c.Name,

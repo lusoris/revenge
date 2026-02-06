@@ -20,7 +20,7 @@ func TestMovieMetadataRefreshArgs_Kind(t *testing.T) {
 func TestMovieMetadataRefreshArgs_Fields(t *testing.T) {
 	t.Parallel()
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	args := MovieMetadataRefreshArgs{
 		MovieID: movieID,
 		Force:   true,

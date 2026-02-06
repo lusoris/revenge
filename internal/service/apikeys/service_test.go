@@ -154,7 +154,7 @@ func TestService_GetKey_NotFound(t *testing.T) {
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
-	_, err := svc.GetKey(ctx, uuid.New())
+	_, err := svc.GetKey(ctx, uuid.Must(uuid.NewV7()))
 	assert.ErrorIs(t, err, ErrKeyNotFound)
 }
 

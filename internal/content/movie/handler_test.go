@@ -288,7 +288,7 @@ func TestHandler_GetMovie(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		id := uuid.New()
+		id := uuid.Must(uuid.NewV7())
 
 		svc.On("GetMovie", ctx, id).Return(nil, errors.New("not found"))
 
@@ -410,8 +410,8 @@ func TestHandler_GetMovieFiles(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
-		files := []MovieFile{{ID: uuid.New(), MovieID: movieID, FilePath: "/movies/test.mkv"}}
+		movieID := uuid.Must(uuid.NewV7())
+		files := []MovieFile{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, FilePath: "/movies/test.mkv"}}
 
 		svc.On("GetMovieFiles", ctx, movieID).Return(files, nil)
 
@@ -437,8 +437,8 @@ func TestHandler_GetMovieCast(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
-		cast := []MovieCredit{{ID: uuid.New(), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"}}
+		movieID := uuid.Must(uuid.NewV7())
+		cast := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"}}
 
 		svc.On("GetMovieCast", ctx, movieID).Return(cast, nil)
 
@@ -464,8 +464,8 @@ func TestHandler_GetMovieCrew(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
-		crew := []MovieCredit{{ID: uuid.New(), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
+		movieID := uuid.Must(uuid.NewV7())
+		crew := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
 
 		svc.On("GetMovieCrew", ctx, movieID).Return(crew, nil)
 
@@ -492,9 +492,9 @@ func TestHandler_GetMovieGenres(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
+		movieID := uuid.Must(uuid.NewV7())
 		genres := []MovieGenre{
-			{ID: uuid.New(), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
+			{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
 		}
 
 		svc.On("GetMovieGenres", ctx, movieID).Return(genres, nil)
@@ -541,9 +541,9 @@ func TestHandler_GetMovieCollection(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
+		movieID := uuid.Must(uuid.NewV7())
 		collection := &MovieCollection{
-			ID:   uuid.New(),
+			ID:   uuid.Must(uuid.NewV7()),
 			Name: "The Matrix Collection",
 		}
 
@@ -572,7 +572,7 @@ func TestHandler_GetCollection(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		collectionID := uuid.New()
+		collectionID := uuid.Must(uuid.NewV7())
 		collection := &MovieCollection{
 			ID:   collectionID,
 			Name: "Star Wars Collection",
@@ -603,7 +603,7 @@ func TestHandler_GetCollectionMovies(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		collectionID := uuid.New()
+		collectionID := uuid.Must(uuid.NewV7())
 		movies := []Movie{*newTestMovie(), *newTestMovie(), *newTestMovie()}
 
 		svc.On("GetMoviesByCollection", ctx, collectionID).Return(movies, nil)
@@ -631,10 +631,10 @@ func TestHandler_UpdateWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:              uuid.New(),
+			ID:              uuid.Must(uuid.NewV7()),
 			UserID:          userID,
 			MovieID:         movieID,
 			ProgressSeconds: 3600,
@@ -657,7 +657,7 @@ func TestHandler_UpdateWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		params := UpdateWatchProgressParams{}
 
 		result, err := h.UpdateWatchProgress(ctx, userID, "invalid", params)
@@ -671,10 +671,10 @@ func TestHandler_GetWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:              uuid.New(),
+			ID:              uuid.Must(uuid.NewV7()),
 			UserID:          userID,
 			MovieID:         movieID,
 			ProgressSeconds: 1800,
@@ -692,7 +692,7 @@ func TestHandler_GetWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		result, err := h.GetWatchProgress(ctx, userID, "bad-id")
 		assert.Error(t, err)
@@ -705,8 +705,8 @@ func TestHandler_MarkAsWatched(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 
 		svc.On("MarkAsWatched", ctx, userID, movieID).Return(nil)
 
@@ -719,7 +719,7 @@ func TestHandler_MarkAsWatched(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		err := h.MarkAsWatched(ctx, userID, "nope")
 		assert.Error(t, err)
@@ -731,8 +731,8 @@ func TestHandler_DeleteWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 
 		svc.On("RemoveWatchProgress", ctx, userID, movieID).Return(nil)
 
@@ -745,7 +745,7 @@ func TestHandler_DeleteWatchProgress(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		err := h.DeleteWatchProgress(ctx, userID, "xyz")
 		assert.Error(t, err)
@@ -756,7 +756,7 @@ func TestHandler_GetContinueWatching(t *testing.T) {
 	svc := new(MockService)
 	h := NewHandler(svc)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	items := []ContinueWatchingItem{
 		{Movie: *newTestMovie(), ProgressSeconds: 3000},
 	}
@@ -773,7 +773,7 @@ func TestHandler_GetWatchHistory(t *testing.T) {
 	svc := new(MockService)
 	h := NewHandler(svc)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	items := []WatchedMovieItem{
 		{Movie: *newTestMovie(), WatchCount: 2},
 	}
@@ -791,7 +791,7 @@ func TestHandler_GetUserStats(t *testing.T) {
 	svc := new(MockService)
 	h := NewHandler(svc)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	stats := &UserMovieStats{
 		WatchedCount:    50,
 		InProgressCount: 5,
@@ -810,7 +810,7 @@ func TestHandler_RefreshMetadata(t *testing.T) {
 		svc := new(MockService)
 		h := NewHandler(svc)
 		ctx := context.Background()
-		movieID := uuid.New()
+		movieID := uuid.Must(uuid.NewV7())
 
 		svc.On("RefreshMovieMetadata", ctx, movieID).Return(nil)
 

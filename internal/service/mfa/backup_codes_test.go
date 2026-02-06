@@ -26,8 +26,8 @@ func setupBackupCodesService(t *testing.T) (*BackupCodesService, *db.Queries) {
 func createTestUser(t *testing.T, queries *db.Queries, ctx context.Context) uuid.UUID {
 	t.Helper()
 	user, err := queries.CreateUser(ctx, db.CreateUserParams{
-		Username:     "testuser_" + uuid.New().String()[:8],
-		Email:        "test_" + uuid.New().String()[:8] + "@example.com",
+		Username:     "testuser_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:        "test_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=2$test",
 	})
 	require.NoError(t, err)
@@ -255,7 +255,7 @@ func TestBackupCodesService_VerifyCode(t *testing.T) {
 	})
 
 	t.Run("no codes available", func(t *testing.T) {
-		newUserID := uuid.New()
+		newUserID := uuid.Must(uuid.NewV7())
 		valid, err := svc.VerifyCode(ctx, newUserID, testCode, clientIP)
 		require.Error(t, err)
 		assert.False(t, valid)

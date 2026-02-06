@@ -26,7 +26,7 @@ func provideLeaderElection(cfg *config.Config, logger *zap.Logger) (*LeaderElect
 		hostname, err := os.Hostname()
 		if err != nil {
 			// Fallback to UUID
-			nodeID = uuid.New().String()
+			nodeID = uuid.Must(uuid.NewV7()).String()
 			logger.Warn("Failed to get hostname, using UUID as node ID",
 				zap.String("node_id", nodeID),
 				zap.Error(err))

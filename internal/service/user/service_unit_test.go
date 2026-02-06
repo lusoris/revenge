@@ -133,8 +133,8 @@ func TestUnit_ListUsers(t *testing.T) {
 	repo := NewMockUserRepository(t)
 	filters := user.UserFilters{Limit: 10, Offset: 0}
 	users := []db.SharedUser{
-		*makeTestUser(uuid.New(), "user1", "user1@example.com"),
-		*makeTestUser(uuid.New(), "user2", "user2@example.com"),
+		*makeTestUser(uuid.Must(uuid.NewV7()), "user1", "user1@example.com"),
+		*makeTestUser(uuid.Must(uuid.NewV7()), "user2", "user2@example.com"),
 	}
 
 	repo.EXPECT().ListUsers(ctx, filters).Return(users, int64(2), nil)
@@ -158,7 +158,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			Email:        "new@example.com",
 			PasswordHash: "password123",
 		}
-		createdUser := makeTestUser(uuid.New(), "newuser", "new@example.com")
+		createdUser := makeTestUser(uuid.Must(uuid.NewV7()), "newuser", "new@example.com")
 
 		repo.EXPECT().GetUserByUsername(ctx, "newuser").Return(nil, errors.New("not found"))
 		repo.EXPECT().GetUserByEmail(ctx, "new@example.com").Return(nil, errors.New("not found"))
@@ -225,7 +225,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			Email:        "new@example.com",
 			PasswordHash: "password123",
 		}
-		existingUser := makeTestUser(uuid.New(), "existing", "old@example.com")
+		existingUser := makeTestUser(uuid.Must(uuid.NewV7()), "existing", "old@example.com")
 
 		repo.EXPECT().GetUserByUsername(ctx, "existing").Return(existingUser, nil)
 
@@ -244,7 +244,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			Email:        "existing@example.com",
 			PasswordHash: "password123",
 		}
-		existingUser := makeTestUser(uuid.New(), "otheruser", "existing@example.com")
+		existingUser := makeTestUser(uuid.Must(uuid.NewV7()), "otheruser", "existing@example.com")
 
 		repo.EXPECT().GetUserByUsername(ctx, "newuser").Return(nil, errors.New("not found"))
 		repo.EXPECT().GetUserByEmail(ctx, "existing@example.com").Return(existingUser, nil)
@@ -841,7 +841,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid jpeg upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.New()
+		avatarID := uuid.Must(uuid.NewV7())
 
 		// Storage is a mock that returns success
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
@@ -874,7 +874,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid png upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.New()
+		avatarID := uuid.Must(uuid.NewV7())
 
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(2), nil)
 		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
@@ -905,7 +905,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid gif upload with animation", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.New()
+		avatarID := uuid.Must(uuid.NewV7())
 		isAnimated := true
 
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
@@ -939,7 +939,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid webp upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.New()
+		avatarID := uuid.Must(uuid.NewV7())
 
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
 		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)

@@ -129,7 +129,7 @@ func TestService_AssignRole(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	err := svc.AssignRole(ctx, userID, "admin")
 	require.NoError(t, err)
@@ -144,7 +144,7 @@ func TestService_AssignRole_Duplicate(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	err := svc.AssignRole(ctx, userID, "admin")
 	require.NoError(t, err)
@@ -158,7 +158,7 @@ func TestService_RemoveRole(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	err := svc.AssignRole(ctx, userID, "admin")
 	require.NoError(t, err)
@@ -176,7 +176,7 @@ func TestService_RemoveRole_NotFound(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	err := svc.RemoveRole(ctx, userID, "admin")
 	assert.Error(t, err)
@@ -188,7 +188,7 @@ func TestService_GetUserRoles(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 	require.NoError(t, svc.AssignRole(ctx, userID, "editor"))
@@ -203,7 +203,7 @@ func TestService_GetUserRoles_NoRoles(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	roles, err := svc.GetUserRoles(ctx, userID)
 	require.NoError(t, err)
@@ -215,8 +215,8 @@ func TestService_GetUsersForRole(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	user1 := uuid.New()
-	user2 := uuid.New()
+	user1 := uuid.Must(uuid.NewV7())
+	user2 := uuid.Must(uuid.NewV7())
 
 	require.NoError(t, svc.AssignRole(ctx, user1, "admin"))
 	require.NoError(t, svc.AssignRole(ctx, user2, "admin"))
@@ -243,7 +243,7 @@ func TestService_HasRole(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	hasRole, err := svc.HasRole(ctx, userID, "admin")
 	require.NoError(t, err)
@@ -281,7 +281,7 @@ func TestService_EnforceWithContext(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	require.NoError(t, svc.AddPolicy(ctx, userID.String(), "resource1", "read"))
 
@@ -295,7 +295,7 @@ func TestService_RoleBasedAccess(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	require.NoError(t, svc.AddPolicy(ctx, "admin", "data1", "write"))
 

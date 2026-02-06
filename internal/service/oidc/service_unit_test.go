@@ -62,7 +62,7 @@ func TestOIDCService_AddProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		created := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(nil, oidc.ErrProviderNotFound)
@@ -120,7 +120,7 @@ func TestOIDCService_AddProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		existing := makeTestProvider(uuid.New(), "test-provider", true)
+		existing := makeTestProvider(uuid.Must(uuid.NewV7()), "test-provider", true)
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(existing, nil)
 
 		req := oidc.CreateProviderRequest{
@@ -145,7 +145,7 @@ func TestOIDCService_GetProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		expected := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(expected, nil)
@@ -160,7 +160,7 @@ func TestOIDCService_GetProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(nil, oidc.ErrProviderNotFound)
 
@@ -180,7 +180,7 @@ func TestOIDCService_GetProviderByName_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		expected := makeTestProvider(uuid.New(), "test-provider", true)
+		expected := makeTestProvider(uuid.Must(uuid.NewV7()), "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(expected, nil)
 
@@ -200,7 +200,7 @@ func TestOIDCService_GetDefaultProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		expected := makeTestProvider(uuid.New(), "default-provider", true)
+		expected := makeTestProvider(uuid.Must(uuid.NewV7()), "default-provider", true)
 		expected.IsDefault = true
 
 		mockRepo.On("GetDefaultProvider", mock.Anything).Return(expected, nil)
@@ -222,8 +222,8 @@ func TestOIDCService_ListProviders_Short(t *testing.T) {
 		svc := setupOIDCService(mockRepo)
 
 		providers := []oidc.Provider{
-			*makeTestProvider(uuid.New(), "provider1", true),
-			*makeTestProvider(uuid.New(), "provider2", false),
+			*makeTestProvider(uuid.Must(uuid.NewV7()), "provider1", true),
+			*makeTestProvider(uuid.Must(uuid.NewV7()), "provider2", false),
 		}
 
 		mockRepo.On("ListProviders", mock.Anything).Return(providers, nil)
@@ -245,7 +245,7 @@ func TestOIDCService_ListEnabledProviders_Short(t *testing.T) {
 		svc := setupOIDCService(mockRepo)
 
 		providers := []oidc.Provider{
-			*makeTestProvider(uuid.New(), "enabled-provider", true),
+			*makeTestProvider(uuid.Must(uuid.NewV7()), "enabled-provider", true),
 		}
 
 		mockRepo.On("ListEnabledProviders", mock.Anything).Return(providers, nil)
@@ -267,7 +267,7 @@ func TestOIDCService_UpdateProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		updated := makeTestProvider(providerID, "test-provider", true)
 		updated.DisplayName = "Updated Provider"
 
@@ -287,7 +287,7 @@ func TestOIDCService_UpdateProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		invalidType := "invalid_type"
 		req := oidc.UpdateProviderRequest{ProviderType: &invalidType}
 
@@ -301,7 +301,7 @@ func TestOIDCService_UpdateProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		invalidURL := "://invalid"
 		req := oidc.UpdateProviderRequest{IssuerURL: &invalidURL}
 
@@ -321,7 +321,7 @@ func TestOIDCService_DeleteProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(nil)
 		mockRepo.On("DeleteProvider", mock.Anything, providerID).Return(nil)
@@ -335,7 +335,7 @@ func TestOIDCService_DeleteProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(errors.New("cleanup error"))
 		mockRepo.On("DeleteProvider", mock.Anything, providerID).Return(nil)
@@ -355,7 +355,7 @@ func TestOIDCService_EnableProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("EnableProvider", mock.Anything, providerID).Return(nil)
 
@@ -374,7 +374,7 @@ func TestOIDCService_DisableProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(nil)
 		mockRepo.On("DisableProvider", mock.Anything, providerID).Return(nil)
@@ -394,7 +394,7 @@ func TestOIDCService_SetDefaultProvider_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("SetDefaultProvider", mock.Anything, providerID).Return(nil)
 
@@ -413,8 +413,8 @@ func TestOIDCService_UnlinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteUserLinkByUserAndProvider", mock.Anything, userID, providerID).Return(nil)
 
@@ -427,8 +427,8 @@ func TestOIDCService_UnlinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteUserLinkByUserAndProvider", mock.Anything, userID, providerID).
 			Return(oidc.ErrUserLinkNotFound)
@@ -448,10 +448,10 @@ func TestOIDCService_ListUserLinks_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		links := []oidc.UserLinkWithProvider{
 			{
-				UserLink:            *makeTestUserLink(uuid.New(), userID, uuid.New(), "subject1"),
+				UserLink:            *makeTestUserLink(uuid.Must(uuid.NewV7()), userID, uuid.Must(uuid.NewV7()), "subject1"),
 				ProviderName:        "provider1",
 				ProviderDisplayName: "Provider 1",
 			},
@@ -505,8 +505,8 @@ func TestOIDCService_LinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 		provider.AllowLinking = false
 
@@ -522,10 +522,10 @@ func TestOIDCService_LinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
-		existingLink := makeTestUserLink(uuid.New(), userID, providerID, "subject")
+		existingLink := makeTestUserLink(uuid.Must(uuid.NewV7()), userID, providerID, "subject")
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(provider, nil)
 		mockRepo.On("GetUserLinkByUserAndProvider", mock.Anything, userID, providerID).
@@ -541,8 +541,8 @@ func TestOIDCService_LinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(nil, oidc.ErrProviderNotFound)
 
@@ -556,9 +556,9 @@ func TestOIDCService_LinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
-		linkID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
+		linkID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(provider, nil)
@@ -587,8 +587,8 @@ func TestOIDCService_LinkUser_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(provider, nil)
@@ -633,7 +633,7 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		created := makeTestProvider(providerID, "test-provider", true)
 		created.Scopes = []string{"openid", "profile", "email"}
 
@@ -661,7 +661,7 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		created := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(nil, oidc.ErrProviderNotFound)
@@ -695,7 +695,7 @@ func TestOIDCService_AddProvider_Extended_Short(t *testing.T) {
 				mockRepo := NewMockOIDCRepository(t)
 				svc := setupOIDCService(mockRepo)
 
-				providerID := uuid.New()
+				providerID := uuid.Must(uuid.NewV7())
 				created := makeTestProvider(providerID, "test-provider", true)
 				created.ProviderType = pt
 
@@ -729,7 +729,7 @@ func TestOIDCService_UpdateProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		updated := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("UpdateProvider", mock.Anything, providerID, mock.AnythingOfType("oidc.UpdateProviderRequest")).
@@ -749,7 +749,7 @@ func TestOIDCService_UpdateProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("UpdateProvider", mock.Anything, providerID, mock.AnythingOfType("oidc.UpdateProviderRequest")).
 			Return(nil, errors.New("database error"))
@@ -773,7 +773,7 @@ func TestOIDCService_DisableProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(errors.New("cleanup error"))
 		mockRepo.On("DisableProvider", mock.Anything, providerID).Return(nil)
@@ -787,7 +787,7 @@ func TestOIDCService_DisableProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(nil)
 		mockRepo.On("DisableProvider", mock.Anything, providerID).Return(errors.New("disable failed"))
@@ -807,7 +807,7 @@ func TestOIDCService_DeleteProvider_Extended_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("DeleteStatesByProvider", mock.Anything, providerID).Return(nil)
 		mockRepo.On("DeleteProvider", mock.Anything, providerID).Return(oidc.ErrProviderNotFound)
@@ -827,7 +827,7 @@ func TestOIDCService_GetAuthURL_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		provider := makeTestProvider(uuid.New(), "test-provider", false) // Disabled
+		provider := makeTestProvider(uuid.Must(uuid.NewV7()), "test-provider", false) // Disabled
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(provider, nil)
 
@@ -854,7 +854,7 @@ func TestOIDCService_GetAuthURL_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		provider := makeTestProvider(uuid.New(), "test-provider", true)
+		provider := makeTestProvider(uuid.Must(uuid.NewV7()), "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(provider, nil)
 		mockRepo.On("CreateState", mock.Anything, mock.AnythingOfType("oidc.CreateStateRequest")).
@@ -870,13 +870,13 @@ func TestOIDCService_GetAuthURL_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(provider, nil)
 		mockRepo.On("CreateState", mock.Anything, mock.AnythingOfType("oidc.CreateStateRequest")).
 			Return(&oidc.State{
-				ID:         uuid.New(),
+				ID:         uuid.Must(uuid.NewV7()),
 				State:      "random-state",
 				ProviderID: providerID,
 			}, nil)
@@ -893,15 +893,15 @@ func TestOIDCService_GetAuthURL_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
-		userID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(provider, nil)
 		mockRepo.On("CreateState", mock.Anything, mock.MatchedBy(func(req oidc.CreateStateRequest) bool {
 			return req.UserID != nil && *req.UserID == userID
 		})).Return(&oidc.State{
-			ID:         uuid.New(),
+			ID:         uuid.Must(uuid.NewV7()),
 			State:      "random-state",
 			ProviderID: providerID,
 			UserID:     &userID,
@@ -931,7 +931,7 @@ func TestOIDCService_WithEncryption_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupEncryptedService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		created := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(nil, oidc.ErrProviderNotFound)
@@ -959,7 +959,7 @@ func TestOIDCService_WithEncryption_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupEncryptedService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		updated := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("UpdateProvider", mock.Anything, providerID, mock.MatchedBy(func(req oidc.UpdateProviderRequest) bool {
@@ -988,7 +988,7 @@ func TestOIDCService_EnableProvider_Error_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("EnableProvider", mock.Anything, providerID).Return(oidc.ErrProviderNotFound)
 
@@ -1007,7 +1007,7 @@ func TestOIDCService_SetDefaultProvider_Error_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("SetDefaultProvider", mock.Anything, providerID).Return(oidc.ErrProviderNotFound)
 
@@ -1098,7 +1098,7 @@ func TestOIDCService_ListUserLinks_Error_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("ListUserLinks", mock.Anything, userID).Return(nil, errors.New("database error"))
 
@@ -1118,9 +1118,9 @@ func TestOIDCService_LinkUser_WithToken_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		userID := uuid.New()
-		providerID := uuid.New()
-		linkID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		providerID := uuid.Must(uuid.NewV7())
+		linkID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 
 		mockRepo.On("GetProvider", mock.Anything, providerID).Return(provider, nil)
@@ -1238,7 +1238,7 @@ func TestOIDCService_GetAuthURL_CustomEndpoints_Short(t *testing.T) {
 		mockRepo := NewMockOIDCRepository(t)
 		svc := setupOIDCService(mockRepo)
 
-		providerID := uuid.New()
+		providerID := uuid.Must(uuid.NewV7())
 		provider := makeTestProvider(providerID, "test-provider", true)
 		// Set custom endpoints
 		authEndpoint := "https://auth.example.com/custom/authorize"
@@ -1249,7 +1249,7 @@ func TestOIDCService_GetAuthURL_CustomEndpoints_Short(t *testing.T) {
 		mockRepo.On("GetProviderByName", mock.Anything, "test-provider").Return(provider, nil)
 		mockRepo.On("CreateState", mock.Anything, mock.AnythingOfType("oidc.CreateStateRequest")).
 			Return(&oidc.State{
-				ID:         uuid.New(),
+				ID:         uuid.Must(uuid.NewV7()),
 				State:      "random-state",
 				ProviderID: providerID,
 			}, nil)

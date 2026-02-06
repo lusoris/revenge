@@ -98,7 +98,7 @@ func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID 
 	genres := make([]contentmovie.MovieGenre, len(meta.Genres))
 	for i, g := range meta.Genres {
 		genres[i] = contentmovie.MovieGenre{
-			ID:          uuid.New(),
+			ID:          uuid.Must(uuid.NewV7()),
 			MovieID:     movieID,
 			TMDbGenreID: int32(g.ID),
 			Name:        g.Name,
@@ -116,7 +116,7 @@ func (a *Adapter) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*contentmov
 	}
 
 	mov := &contentmovie.Movie{
-		ID: uuid.New(),
+		ID: uuid.Must(uuid.NewV7()),
 	}
 	mapMetadataToMovie(mov, meta, nil)
 	return mov, nil
@@ -140,7 +140,7 @@ func (a *Adapter) ClearCache() {
 // mapSearchResultToMovie converts a search result to a movie domain type.
 func mapSearchResultToMovie(r *metadata.MovieSearchResult) *contentmovie.Movie {
 	mov := &contentmovie.Movie{
-		ID:               uuid.New(),
+		ID:               uuid.Must(uuid.NewV7()),
 		Title:            r.Title,
 		OriginalTitle:    ptrString(r.OriginalTitle),
 		OriginalLanguage: ptrString(r.OriginalLanguage),
@@ -279,7 +279,7 @@ func mapCreditsToMovieCredits(movieID uuid.UUID, credits *metadata.Credits) []co
 		fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contentmovie.MovieCredit{
-			ID:           uuid.New(),
+			ID:           uuid.Must(uuid.NewV7()),
 			MovieID:      movieID,
 			TMDbPersonID: personID,
 			Name:         c.Name,
@@ -297,7 +297,7 @@ func mapCreditsToMovieCredits(movieID uuid.UUID, credits *metadata.Credits) []co
 		fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contentmovie.MovieCredit{
-			ID:           uuid.New(),
+			ID:           uuid.Must(uuid.NewV7()),
 			MovieID:      movieID,
 			TMDbPersonID: personID,
 			Name:         c.Name,

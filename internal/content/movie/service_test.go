@@ -19,7 +19,7 @@ func ptr[T any](v T) *T {
 
 func newTestMovie() *Movie {
 	return &Movie{
-		ID:        uuid.New(),
+		ID:        uuid.Must(uuid.NewV7()),
 		TMDbID:    ptr(int32(550)),
 		IMDbID:    ptr("tt0137523"),
 		Title:     "Fight Club",
@@ -59,7 +59,7 @@ func TestService_GetMovie(t *testing.T) {
 		repo := new(MockMovieRepository)
 		svc := NewService(repo)
 		ctx := context.Background()
-		id := uuid.New()
+		id := uuid.Must(uuid.NewV7())
 
 		repo.On("GetMovie", ctx, id).Return(nil, errors.New("not found"))
 
@@ -216,7 +216,7 @@ func TestService_UpdateMovie(t *testing.T) {
 		repo := new(MockMovieRepository)
 		svc := NewService(repo)
 		ctx := context.Background()
-		id := uuid.New()
+		id := uuid.Must(uuid.NewV7())
 		params := UpdateMovieParams{ID: id}
 
 		repo.On("GetMovie", ctx, id).Return(nil, errors.New("not found"))
@@ -251,7 +251,7 @@ func TestService_DeleteMovie(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	id := uuid.New()
+	id := uuid.Must(uuid.NewV7())
 
 	repo.On("DeleteMovie", ctx, id).Return(nil)
 
@@ -264,9 +264,9 @@ func TestService_GetMovieFiles(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	files := []MovieFile{
-		{ID: uuid.New(), MovieID: movieID, FilePath: "/movies/fight-club.mkv"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, FilePath: "/movies/fight-club.mkv"},
 	}
 
 	repo.On("ListMovieFilesByMovieID", ctx, movieID).Return(files, nil)
@@ -284,7 +284,7 @@ func TestService_CreateMovieFile(t *testing.T) {
 		ctx := context.Background()
 		movie := newTestMovie()
 		file := &MovieFile{
-			ID:       uuid.New(),
+			ID:       uuid.Must(uuid.NewV7()),
 			MovieID:  movie.ID,
 			FilePath: "/movies/fight-club.mkv",
 		}
@@ -307,7 +307,7 @@ func TestService_CreateMovieFile(t *testing.T) {
 		repo := new(MockMovieRepository)
 		svc := NewService(repo)
 		ctx := context.Background()
-		movieID := uuid.New()
+		movieID := uuid.Must(uuid.NewV7())
 		params := CreateMovieFileParams{
 			MovieID:  movieID,
 			FilePath: "/movies/movie.mkv",
@@ -327,7 +327,7 @@ func TestService_CreateMovieFile(t *testing.T) {
 		ctx := context.Background()
 		movie := newTestMovie()
 		existingFile := &MovieFile{
-			ID:       uuid.New(),
+			ID:       uuid.Must(uuid.NewV7()),
 			MovieID:  movie.ID,
 			FilePath: "/movies/fight-club.mkv",
 		}
@@ -350,7 +350,7 @@ func TestService_DeleteMovieFile(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	fileID := uuid.New()
+	fileID := uuid.Must(uuid.NewV7())
 
 	repo.On("DeleteMovieFile", ctx, fileID).Return(nil)
 
@@ -363,9 +363,9 @@ func TestService_GetMovieCast(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	cast := []MovieCredit{
-		{ID: uuid.New(), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"},
 	}
 
 	repo.On("ListMovieCast", ctx, movieID).Return(cast, nil)
@@ -381,9 +381,9 @@ func TestService_GetMovieCrew(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	crew := []MovieCredit{
-		{ID: uuid.New(), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr("Director")},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr("Director")},
 	}
 
 	repo.On("ListMovieCrew", ctx, movieID).Return(crew, nil)
@@ -399,7 +399,7 @@ func TestService_GetMovieCollection(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	collectionID := uuid.New()
+	collectionID := uuid.Must(uuid.NewV7())
 	collection := &MovieCollection{
 		ID:   collectionID,
 		Name: "James Bond Collection",
@@ -417,7 +417,7 @@ func TestService_GetMoviesByCollection(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	collectionID := uuid.New()
+	collectionID := uuid.Must(uuid.NewV7())
 	movies := []Movie{*newTestMovie(), *newTestMovie()}
 
 	repo.On("ListMoviesByCollection", ctx, collectionID).Return(movies, nil)
@@ -432,9 +432,9 @@ func TestService_GetCollectionForMovie(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	collection := &MovieCollection{
-		ID:   uuid.New(),
+		ID:   uuid.Must(uuid.NewV7()),
 		Name: "The Matrix Collection",
 	}
 
@@ -450,10 +450,10 @@ func TestService_GetMovieGenres(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	genres := []MovieGenre{
-		{ID: uuid.New(), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
-		{ID: uuid.New(), MovieID: movieID, TMDbGenreID: 53, Name: "Thriller"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 53, Name: "Thriller"},
 	}
 
 	repo.On("ListMovieGenres", ctx, movieID).Return(genres, nil)
@@ -484,9 +484,9 @@ func TestService_UpdateWatchProgress(t *testing.T) {
 		svc := NewService(repo)
 		ctx := context.Background()
 		movie := newTestMovie()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:              uuid.New(),
+			ID:              uuid.Must(uuid.NewV7()),
 			UserID:          userID,
 			MovieID:         movie.ID,
 			ProgressSeconds: 3000,
@@ -510,9 +510,9 @@ func TestService_UpdateWatchProgress(t *testing.T) {
 		svc := NewService(repo)
 		ctx := context.Background()
 		movie := newTestMovie()
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:              uuid.New(),
+			ID:              uuid.Must(uuid.NewV7()),
 			UserID:          userID,
 			MovieID:         movie.ID,
 			ProgressSeconds: 7600,
@@ -535,8 +535,8 @@ func TestService_UpdateWatchProgress(t *testing.T) {
 		repo := new(MockMovieRepository)
 		svc := NewService(repo)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 
 		repo.On("GetMovie", ctx, movieID).Return(nil, errors.New("not found"))
 
@@ -551,10 +551,10 @@ func TestService_GetWatchProgress(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	userID := uuid.New()
-	movieID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	movieID := uuid.Must(uuid.NewV7())
 	watched := &MovieWatched{
-		ID:              uuid.New(),
+		ID:              uuid.Must(uuid.NewV7()),
 		UserID:          userID,
 		MovieID:         movieID,
 		ProgressSeconds: 1800,
@@ -574,9 +574,9 @@ func TestService_MarkAsWatched(t *testing.T) {
 		svc := NewService(repo)
 		ctx := context.Background()
 		movie := newTestMovie() // Runtime is 139 minutes
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:          uuid.New(),
+			ID:          uuid.Must(uuid.NewV7()),
 			UserID:      userID,
 			MovieID:     movie.ID,
 			IsCompleted: true,
@@ -599,9 +599,9 @@ func TestService_MarkAsWatched(t *testing.T) {
 		ctx := context.Background()
 		movie := newTestMovie()
 		movie.Runtime = nil // No runtime
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		watched := &MovieWatched{
-			ID:          uuid.New(),
+			ID:          uuid.Must(uuid.NewV7()),
 			UserID:      userID,
 			MovieID:     movie.ID,
 			IsCompleted: true,
@@ -621,8 +621,8 @@ func TestService_MarkAsWatched(t *testing.T) {
 		repo := new(MockMovieRepository)
 		svc := NewService(repo)
 		ctx := context.Background()
-		userID := uuid.New()
-		movieID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		movieID := uuid.Must(uuid.NewV7())
 
 		repo.On("GetMovie", ctx, movieID).Return(nil, errors.New("not found"))
 
@@ -636,8 +636,8 @@ func TestService_RemoveWatchProgress(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	userID := uuid.New()
-	movieID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	movieID := uuid.Must(uuid.NewV7())
 
 	repo.On("DeleteWatchProgress", ctx, userID, movieID).Return(nil)
 
@@ -650,10 +650,10 @@ func TestService_GetContinueWatching(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	items := []ContinueWatchingItem{
 		{
-			Movie:           Movie{ID: uuid.New(), Title: "Fight Club"},
+			Movie:           Movie{ID: uuid.Must(uuid.NewV7()), Title: "Fight Club"},
 			ProgressSeconds: 3000,
 			DurationSeconds: 8340,
 			ProgressPercent: ptr(int32(36)),
@@ -673,10 +673,10 @@ func TestService_GetWatchHistory(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	items := []WatchedMovieItem{
 		{
-			Movie:         Movie{ID: uuid.New(), Title: "Fight Club"},
+			Movie:         Movie{ID: uuid.Must(uuid.NewV7()), Title: "Fight Club"},
 			WatchCount:    2,
 			LastWatchedAt: time.Now(),
 		},
@@ -694,7 +694,7 @@ func TestService_GetUserStats(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	stats := &UserMovieStats{
 		WatchedCount:    42,
 		InProgressCount: 5,
@@ -713,7 +713,7 @@ func TestService_RefreshMovieMetadata(t *testing.T) {
 	repo := new(MockMovieRepository)
 	svc := NewService(repo)
 	ctx := context.Background()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 
 	// Currently returns "not implemented" error
 	err := svc.RefreshMovieMetadata(ctx, movieID)

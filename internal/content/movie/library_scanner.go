@@ -173,7 +173,7 @@ func ExtractFileInfo(filePath string) (*MovieFileInfo, error) {
 // CreateMovieFile creates a domain MovieFile from file info
 func CreateMovieFile(movieID uuid.UUID, info *MovieFileInfo) *MovieFile {
 	return &MovieFile{
-		ID:         uuid.New(),
+		ID:         uuid.Must(uuid.NewV7()),
 		MovieID:    movieID,
 		FilePath:   info.Path,
 		FileSize:   info.Size,

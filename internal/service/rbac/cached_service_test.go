@@ -82,7 +82,7 @@ func TestCachedService_EnforceWithContext(t *testing.T) {
 	svc, _ := setupCachedTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create role and assign to user
 	_, err := svc.CreateRole(ctx, "reader", "", []Permission{{Resource: "books", Action: "read"}})
@@ -102,7 +102,7 @@ func TestCachedService_GetUserRoles(t *testing.T) {
 	svc, _ := setupCachedTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create roles and assign
 	_, err := svc.CreateRole(ctx, "admin", "", []Permission{{Resource: "users", Action: "manage"}})
@@ -132,7 +132,7 @@ func TestCachedService_GetUserRoles_NoCache(t *testing.T) {
 	ctx := context.Background()
 
 	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Should work without cache
 	roles, err := cachedSvc.GetUserRoles(ctx, userID)
@@ -145,7 +145,7 @@ func TestCachedService_HasRole(t *testing.T) {
 	svc, _ := setupCachedTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create role and assign
 	_, err := svc.CreateRole(ctx, "moderator", "", []Permission{{Resource: "posts", Action: "moderate"}})
@@ -176,7 +176,7 @@ func TestCachedService_HasRole_NoCache(t *testing.T) {
 	ctx := context.Background()
 
 	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Should work without cache
 	hasRole, err := cachedSvc.HasRole(ctx, userID, "admin")
@@ -189,7 +189,7 @@ func TestCachedService_AssignRole_InvalidatesCache(t *testing.T) {
 	svc, _ := setupCachedTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create role
 	_, err := svc.CreateRole(ctx, "writer", "", []Permission{{Resource: "articles", Action: "write"}})
@@ -216,7 +216,7 @@ func TestCachedService_RemoveRole_InvalidatesCache(t *testing.T) {
 	svc, _ := setupCachedTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create and assign role
 	_, err := svc.CreateRole(ctx, "guest", "", []Permission{{Resource: "public", Action: "read"}})

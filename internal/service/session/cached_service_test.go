@@ -48,8 +48,8 @@ func TestCachedService_ValidateSession_NoCache(t *testing.T) {
 	// Create a mock repository that returns a session
 	mockRepo := &mockRepository{
 		session: db.SharedSession{
-			ID:        uuid.New(),
-			UserID:    uuid.New(),
+			ID:        uuid.Must(uuid.NewV7()),
+			UserID:    uuid.Must(uuid.NewV7()),
 			TokenHash: "test-token-hash",
 		},
 		callCount: make(map[string]int),
@@ -76,8 +76,8 @@ func TestCachedService_ValidateSession_WithCache(t *testing.T) {
 
 	mockRepo := &mockRepository{
 		session: db.SharedSession{
-			ID:        uuid.New(),
-			UserID:    uuid.New(),
+			ID:        uuid.Must(uuid.NewV7()),
+			UserID:    uuid.Must(uuid.NewV7()),
 			TokenHash: "cached-token-hash",
 		},
 		callCount: make(map[string]int),
@@ -112,13 +112,13 @@ func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
 	require.NoError(t, err)
 	defer l1Cache.Close()
 
-	sessionID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
 	// Use the actual hash of the token so cache invalidation works correctly
 	tokenHash := testHashToken("revoke-token")
 	mockRepo := &mockRepository{
 		session: db.SharedSession{
 			ID:        sessionID,
-			UserID:    uuid.New(),
+			UserID:    uuid.Must(uuid.NewV7()),
 			TokenHash: tokenHash,
 		},
 		callCount: make(map[string]int),

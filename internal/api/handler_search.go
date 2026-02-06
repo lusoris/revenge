@@ -193,7 +193,7 @@ func (h *Handler) GetSearchFacets(ctx context.Context) (ogen.GetSearchFacetsRes,
 func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, error) {
 	// TODO: This should be an async job via River
 	// For now, we'll just return a job ID and log that it was requested
-	jobID := uuid.New()
+	jobID := uuid.Must(uuid.NewV7())
 
 	h.logger.Info("reindex requested", zap.String("job_id", jobID.String()))
 

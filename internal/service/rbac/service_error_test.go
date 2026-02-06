@@ -29,7 +29,7 @@ func TestService_HasRole_NoRole(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	hasRole, err := svc.HasRole(ctx, userID, "nonexistent")
 	require.NoError(t, err)
 	assert.False(t, hasRole)
@@ -146,7 +146,7 @@ func TestService_AssignRole_Multiple(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create multiple roles
 	_, err := svc.CreateRole(ctx, "viewer", "", []Permission{{Resource: "content", Action: "read"}})
@@ -171,7 +171,7 @@ func TestService_RemoveRole_Last(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create and assign single role
 	_, err := svc.CreateRole(ctx, "temporary", "", []Permission{{Resource: "temp", Action: "read"}})
@@ -200,7 +200,7 @@ func TestService_GetUserRoles_Empty(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Get roles for user with no roles
 	roles, err := svc.GetUserRoles(ctx, userID)

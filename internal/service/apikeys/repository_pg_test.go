@@ -33,8 +33,8 @@ func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
 	queries := db.New(testDB.Pool())
 	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{
-		Username:     "apikey_user_" + uuid.New().String()[:8],
-		Email:        "apikey_" + uuid.New().String()[:8] + "@example.com",
+		Username:     "apikey_user_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:        "apikey_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 		PasswordHash: "hash",
 	})
 	require.NoError(t, err)
@@ -139,9 +139,9 @@ func TestRepositoryPg_ListUserAPIKeys(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
-			Name:      "Key " + uuid.New().String()[:8],
-			KeyHash:   "hash_" + uuid.New().String()[:8],
-			KeyPrefix: "rv_" + uuid.New().String()[:8],
+			Name:      "Key " + uuid.Must(uuid.NewV7()).String()[:8],
+			KeyHash:   "hash_" + uuid.Must(uuid.NewV7()).String()[:8],
+			KeyPrefix: "rv_" + uuid.Must(uuid.NewV7()).String()[:8],
 			Scopes:    []string{"read"},
 		})
 		require.NoError(t, err)
@@ -217,8 +217,8 @@ func TestRepositoryPg_CountUserAPIKeys(t *testing.T) {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
 			Name:      "Count Key",
-			KeyHash:   "count_hash_" + uuid.New().String()[:8],
-			KeyPrefix: "rv_" + uuid.New().String()[:8],
+			KeyHash:   "count_hash_" + uuid.Must(uuid.NewV7()).String()[:8],
+			KeyPrefix: "rv_" + uuid.Must(uuid.NewV7()).String()[:8],
 			Scopes:    []string{"read"},
 		})
 		require.NoError(t, err)

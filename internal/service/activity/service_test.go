@@ -41,7 +41,7 @@ func TestService_Log(t *testing.T) {
 
 	ip := net.ParseIP("192.168.1.1")
 	userAgent := "Test Agent"
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 
 	req := LogRequest{
 		UserID:       &user.ID,
@@ -84,7 +84,7 @@ func TestService_LogWithContext(t *testing.T) {
 	})
 
 	ip := net.ParseIP("10.0.0.1")
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 
 	err := svc.LogWithContext(
 		ctx,
@@ -173,7 +173,7 @@ func TestService_Get_NotFound(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	_, err := svc.Get(ctx, uuid.New())
+	_, err := svc.Get(ctx, uuid.Must(uuid.NewV7()))
 	assert.ErrorIs(t, err, ErrNotFound)
 }
 
@@ -399,7 +399,7 @@ func TestService_GetResourceActivity(t *testing.T) {
 	ctx := context.Background()
 
 	resourceType := "document"
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 
 	// Create resource activities
 	for i := 0; i < 2; i++ {
@@ -424,7 +424,7 @@ func TestService_GetResourceActivity_LimitValidation(t *testing.T) {
 	ctx := context.Background()
 
 	resourceType := "test"
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 
 	// Test default limit
 	_, _, err := svc.GetResourceActivity(ctx, resourceType, resourceID, 0, 0)

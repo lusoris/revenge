@@ -525,7 +525,7 @@ func TestGetSeries(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	expected := &Series{ID: seriesID, Title: "Breaking Bad"}
 
 	repo.On("GetSeries", ctx, seriesID).Return(expected, nil)
@@ -541,7 +541,7 @@ func TestGetSeries_NotFound(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	repo.On("GetSeries", ctx, seriesID).Return(nil, errors.New("not found"))
 
 	result, err := svc.GetSeries(ctx, seriesID)
@@ -560,7 +560,7 @@ func TestCreateSeries_Success(t *testing.T) {
 		Title:  "Breaking Bad",
 		TMDbID: &tmdbID,
 	}
-	expected := &Series{ID: uuid.New(), Title: "Breaking Bad", TMDbID: &tmdbID}
+	expected := &Series{ID: uuid.Must(uuid.NewV7()), Title: "Breaking Bad", TMDbID: &tmdbID}
 
 	repo.On("GetSeriesByTMDbID", ctx, tmdbID).Return(nil, errors.New("not found"))
 	repo.On("CreateSeries", ctx, params).Return(expected, nil)
@@ -594,7 +594,7 @@ func TestCreateSeries_DuplicateTMDbID(t *testing.T) {
 		Title:  "Breaking Bad",
 		TMDbID: &tmdbID,
 	}
-	existing := &Series{ID: uuid.New(), Title: "Breaking Bad", TMDbID: &tmdbID}
+	existing := &Series{ID: uuid.Must(uuid.NewV7()), Title: "Breaking Bad", TMDbID: &tmdbID}
 
 	repo.On("GetSeriesByTMDbID", ctx, tmdbID).Return(existing, nil)
 
@@ -610,7 +610,7 @@ func TestUpdateSeries_Success(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	newTitle := "Better Call Saul"
 	params := UpdateSeriesParams{
 		ID:    seriesID,
@@ -633,7 +633,7 @@ func TestUpdateSeries_EmptyTitle(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	emptyTitle := ""
 	params := UpdateSeriesParams{
 		ID:    seriesID,
@@ -655,14 +655,14 @@ func TestCreateSeason_Success(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	params := CreateSeasonParams{
 		SeriesID:     seriesID,
 		SeasonNumber: 1,
 		Name:         "Season 1",
 	}
 	series := &Series{ID: seriesID, Title: "Breaking Bad"}
-	expected := &Season{ID: uuid.New(), SeriesID: seriesID, SeasonNumber: 1}
+	expected := &Season{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, SeasonNumber: 1}
 
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
 	repo.On("GetSeasonByNumber", ctx, seriesID, int32(1)).Return(nil, errors.New("not found"))
@@ -679,7 +679,7 @@ func TestCreateSeason_SeriesNotFound(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	params := CreateSeasonParams{
 		SeriesID:     seriesID,
 		SeasonNumber: 1,
@@ -699,8 +699,8 @@ func TestCreateEpisode_Success(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seriesID := uuid.New()
-	seasonID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
+	seasonID := uuid.Must(uuid.NewV7())
 	params := CreateEpisodeParams{
 		SeriesID:      seriesID,
 		SeasonID:      seasonID,
@@ -709,7 +709,7 @@ func TestCreateEpisode_Success(t *testing.T) {
 		Title:         "Pilot",
 	}
 	season := &Season{ID: seasonID, SeasonNumber: 1}
-	expected := &Episode{ID: uuid.New(), SeasonID: seasonID, EpisodeNumber: 1}
+	expected := &Episode{ID: uuid.Must(uuid.NewV7()), SeasonID: seasonID, EpisodeNumber: 1}
 
 	repo.On("GetSeason", ctx, seasonID).Return(season, nil)
 	repo.On("GetEpisodeByNumber", ctx, seriesID, int32(1), int32(1)).Return(nil, errors.New("not found"))
@@ -726,14 +726,14 @@ func TestCreateEpisodeFile_Success(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	episodeID := uuid.New()
+	episodeID := uuid.Must(uuid.NewV7())
 	params := CreateEpisodeFileParams{
 		EpisodeID: episodeID,
 		FilePath:  "/tv/Breaking Bad/Season 1/S01E01.mkv",
 		FileName:  "S01E01.mkv",
 	}
 	episode := &Episode{ID: episodeID, EpisodeNumber: 1}
-	expected := &EpisodeFile{ID: uuid.New(), EpisodeID: episodeID}
+	expected := &EpisodeFile{ID: uuid.Must(uuid.NewV7()), EpisodeID: episodeID}
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
 	repo.On("GetEpisodeFileByPath", ctx, params.FilePath).Return(nil, errors.New("not found"))
@@ -750,14 +750,14 @@ func TestCreateEpisodeFile_DuplicatePath(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	episodeID := uuid.New()
+	episodeID := uuid.Must(uuid.NewV7())
 	params := CreateEpisodeFileParams{
 		EpisodeID: episodeID,
 		FilePath:  "/tv/Breaking Bad/Season 1/S01E01.mkv",
 		FileName:  "S01E01.mkv",
 	}
 	episode := &Episode{ID: episodeID, EpisodeNumber: 1}
-	existing := &EpisodeFile{ID: uuid.New(), EpisodeID: episodeID}
+	existing := &EpisodeFile{ID: uuid.Must(uuid.NewV7()), EpisodeID: episodeID}
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
 	repo.On("GetEpisodeFileByPath", ctx, params.FilePath).Return(existing, nil)
@@ -774,8 +774,8 @@ func TestUpdateEpisodeProgress_Success(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
-	episodeID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	episodeID := uuid.Must(uuid.NewV7())
 	episode := &Episode{ID: episodeID, EpisodeNumber: 1}
 	expected := &EpisodeWatched{UserID: userID, EpisodeID: episodeID, ProgressSeconds: 1200}
 
@@ -793,8 +793,8 @@ func TestUpdateEpisodeProgress_Completed(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
-	episodeID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	episodeID := uuid.Must(uuid.NewV7())
 	episode := &Episode{ID: episodeID, EpisodeNumber: 1}
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
@@ -813,8 +813,8 @@ func TestMarkEpisodeWatched(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
-	episodeID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	episodeID := uuid.Must(uuid.NewV7())
 	runtime := int32(45)
 	episode := &Episode{ID: episodeID, EpisodeNumber: 1, Runtime: &runtime}
 
@@ -831,13 +831,13 @@ func TestMarkSeasonWatched(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
-	seasonID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	seasonID := uuid.Must(uuid.NewV7())
 	runtime := int32(45)
 
 	episodes := []Episode{
-		{ID: uuid.New(), SeasonID: seasonID, EpisodeNumber: 1, Runtime: &runtime},
-		{ID: uuid.New(), SeasonID: seasonID, EpisodeNumber: 2, Runtime: &runtime},
+		{ID: uuid.Must(uuid.NewV7()), SeasonID: seasonID, EpisodeNumber: 1, Runtime: &runtime},
+		{ID: uuid.Must(uuid.NewV7()), SeasonID: seasonID, EpisodeNumber: 2, Runtime: &runtime},
 	}
 
 	repo.On("ListEpisodesBySeason", ctx, seasonID).Return(episodes, nil)
@@ -856,11 +856,11 @@ func TestGetContinueWatching(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	expected := []ContinueWatchingItem{
 		{
-			Series:           &Series{ID: uuid.New(), Title: "Breaking Bad"},
-			LastEpisodeID:    uuid.New(),
+			Series:           &Series{ID: uuid.Must(uuid.NewV7()), Title: "Breaking Bad"},
+			LastEpisodeID:    uuid.Must(uuid.NewV7()),
 			LastEpisodeTitle: "Pilot",
 			ProgressSeconds:  1200,
 			DurationSeconds:  2700,
@@ -880,9 +880,9 @@ func TestGetNextEpisode(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	userID := uuid.New()
-	seriesID := uuid.New()
-	expected := &Episode{ID: uuid.New(), EpisodeNumber: 2, Title: "Next Episode"}
+	userID := uuid.Must(uuid.NewV7())
+	seriesID := uuid.Must(uuid.NewV7())
+	expected := &Episode{ID: uuid.Must(uuid.NewV7()), EpisodeNumber: 2, Title: "Next Episode"}
 
 	repo.On("GetNextUnwatchedEpisode", ctx, userID, seriesID).Return(expected, nil)
 
@@ -897,7 +897,7 @@ func TestDeleteEpisode_DeletesFiles(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	episodeID := uuid.New()
+	episodeID := uuid.Must(uuid.NewV7())
 
 	repo.On("DeleteEpisodeFilesByEpisode", ctx, episodeID).Return(nil)
 	repo.On("DeleteEpisode", ctx, episodeID).Return(nil)
@@ -912,7 +912,7 @@ func TestDeleteSeason_DeletesEpisodes(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	seasonID := uuid.New()
+	seasonID := uuid.Must(uuid.NewV7())
 
 	repo.On("DeleteEpisodesBySeason", ctx, seasonID).Return(nil)
 	repo.On("DeleteSeason", ctx, seasonID).Return(nil)
@@ -927,7 +927,7 @@ func TestRefreshSeriesMetadata_NotImplemented(t *testing.T) {
 	repo := new(MockRepository)
 	svc := NewService(repo)
 
-	err := svc.RefreshSeriesMetadata(ctx, uuid.New())
+	err := svc.RefreshSeriesMetadata(ctx, uuid.Must(uuid.NewV7()))
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "not implemented")
 }

@@ -31,7 +31,7 @@ func setupTestRepository(t *testing.T) (*RepositoryPg, testutil.DB) {
 func createTestEntry(userID *uuid.UUID, action string, success bool) *Entry {
 	username := "testuser"
 	resourceType := "test_resource"
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 	ip := net.ParseIP("192.168.1.1")
 	userAgent := "test-agent"
 
@@ -97,7 +97,7 @@ func TestRepositoryPg_Get_NotFound(t *testing.T) {
 	repo, _ := setupTestRepository(t)
 	ctx := context.Background()
 
-	_, err := repo.Get(ctx, uuid.New())
+	_, err := repo.Get(ctx, uuid.Must(uuid.NewV7()))
 	assert.ErrorIs(t, err, ErrNotFound)
 }
 
@@ -141,12 +141,12 @@ func TestRepositoryPg_Search_ByUserID(t *testing.T) {
 
 	// Create actual users to test user_id filtering
 	user1 := testutil.CreateUser(t, testDB.Pool(), testutil.User{
-		Username: "user1_" + uuid.New().String()[:8],
-		Email:    "user1_" + uuid.New().String()[:8] + "@example.com",
+		Username: "user1_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:    "user1_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 	})
 	user2 := testutil.CreateUser(t, testDB.Pool(), testutil.User{
-		Username: "user2_" + uuid.New().String()[:8],
-		Email:    "user2_" + uuid.New().String()[:8] + "@example.com",
+		Username: "user2_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:    "user2_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 	})
 
 	require.NoError(t, repo.Create(ctx, createTestEntry(&user1.ID, "user.login", true)))
@@ -174,12 +174,12 @@ func TestRepositoryPg_GetByUser(t *testing.T) {
 
 	// Create actual users
 	user1 := testutil.CreateUser(t, testDB.Pool(), testutil.User{
-		Username: "user1_" + uuid.New().String()[:8],
-		Email:    "user1_" + uuid.New().String()[:8] + "@example.com",
+		Username: "user1_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:    "user1_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 	})
 	user2 := testutil.CreateUser(t, testDB.Pool(), testutil.User{
-		Username: "user2_" + uuid.New().String()[:8],
-		Email:    "user2_" + uuid.New().String()[:8] + "@example.com",
+		Username: "user2_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:    "user2_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 	})
 
 	require.NoError(t, repo.Create(ctx, createTestEntry(&user1.ID, "action1", true)))

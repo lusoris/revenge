@@ -232,7 +232,7 @@ func TestService_DeleteRole_Unit(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "inuse"))
 
 		err = svc.DeleteRole(ctx, "inuse")
@@ -452,7 +452,7 @@ func TestService_CheckUserPermission_Unit(t *testing.T) {
 	svc := setupRolesTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Create role with permission
 	_, err := svc.CreateRole(ctx, "checker", "", []rbac.Permission{

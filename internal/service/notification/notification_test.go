@@ -52,7 +52,7 @@ func TestNewEvent(t *testing.T) {
 }
 
 func TestEvent_WithUser(t *testing.T) {
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	event := NewEvent(EventMovieAdded).WithUser(userID)
 
 	assert.NotNil(t, event.UserID)
@@ -60,7 +60,7 @@ func TestEvent_WithUser(t *testing.T) {
 }
 
 func TestEvent_WithTarget(t *testing.T) {
-	targetID := uuid.New()
+	targetID := uuid.Must(uuid.NewV7())
 	event := NewEvent(EventMovieAdded).WithTarget(targetID)
 
 	assert.NotNil(t, event.TargetID)

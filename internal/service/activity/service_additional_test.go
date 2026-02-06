@@ -65,7 +65,7 @@ func TestService_List_WithLargeLimit(t *testing.T) {
 
 	// Log some activities
 	ip := net.ParseIP("192.168.1.100")
-	resourceID := uuid.New()
+	resourceID := uuid.Must(uuid.NewV7())
 	resourceType := "resource"
 	userAgent := "Test Agent"
 

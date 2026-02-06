@@ -161,7 +161,7 @@ func TestHandler_GetUserActivityLogs_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.GetUserActivityLogsParams{
-		UserId: uuid.New(),
+		UserId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetUserActivityLogs(ctx, params)
@@ -212,7 +212,7 @@ func TestHandler_GetResourceActivityLogs_NotAdmin(t *testing.T) {
 	ctx := context.Background()
 	params := ogen.GetResourceActivityLogsParams{
 		ResourceType: "test_type",
-		ResourceId:   uuid.New(),
+		ResourceId:   uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetResourceActivityLogs(ctx, params)

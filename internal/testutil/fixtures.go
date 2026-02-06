@@ -51,7 +51,7 @@ func CreateUser(t *testing.T, pool *pgxpool.Pool, user User) *User {
 
 	// Set defaults
 	if user.ID == uuid.Nil {
-		user.ID = uuid.New()
+		user.ID = uuid.Must(uuid.NewV7())
 	}
 	if user.PasswordHash == "" {
 		user.PasswordHash = "$argon2id$v=19$m=65536,t=3,p=2$c29tZXNhbHQ$hash" // Dummy hash
@@ -102,7 +102,7 @@ func CreateSession(t *testing.T, pool *pgxpool.Pool, session Session) *Session {
 
 	// Set defaults
 	if session.ID == uuid.Nil {
-		session.ID = uuid.New()
+		session.ID = uuid.Must(uuid.NewV7())
 	}
 	if session.ExpiresAt.IsZero() {
 		session.ExpiresAt = time.Now().Add(24 * time.Hour)

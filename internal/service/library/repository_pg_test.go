@@ -95,7 +95,7 @@ func TestRepositoryPg_Get_NotFound(t *testing.T) {
 	repo, _ := setupTestRepository(t)
 	ctx := context.Background()
 
-	_, err := repo.Get(ctx, uuid.New())
+	_, err := repo.Get(ctx, uuid.Must(uuid.NewV7()))
 	assert.Error(t, err)
 }
 

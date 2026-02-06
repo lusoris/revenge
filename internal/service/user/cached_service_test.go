@@ -83,7 +83,7 @@ func TestCachedService_GetUser(t *testing.T) {
 	})
 
 	t.Run("non-existent user", func(t *testing.T) {
-		_, err := svc.GetUser(ctx, uuid.New())
+		_, err := svc.GetUser(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 	})
 }

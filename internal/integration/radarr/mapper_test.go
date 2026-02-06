@@ -146,7 +146,7 @@ func TestMapper_ToMovie_WithDates(t *testing.T) {
 
 func TestMapper_ToMovieFile(t *testing.T) {
 	mapper := NewMapper()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 
 	radarrFile := &MovieFile{
 		ID:           1,
@@ -225,7 +225,7 @@ func TestMapper_ToMovieCollection_Nil(t *testing.T) {
 
 func TestMapper_ToGenres(t *testing.T) {
 	mapper := NewMapper()
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 
 	radarrMovie := &Movie{
 		ID:     1,

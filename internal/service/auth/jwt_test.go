@@ -19,7 +19,7 @@ func TestJWTManager_GenerateAccessToken(t *testing.T) {
 	t.Parallel()
 
 	manager := NewTokenManager("test-secret-key", 15*time.Minute)
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	username := "testuser"
 
 	token, err := manager.GenerateAccessToken(userID, username)
@@ -42,7 +42,7 @@ func TestJWTManager_ValidateAccessToken(t *testing.T) {
 	t.Parallel()
 
 	manager := NewTokenManager("test-secret-key", 15*time.Minute)
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("valid token", func(t *testing.T) {
 		token, err := manager.GenerateAccessToken(userID, "user1")
@@ -173,7 +173,7 @@ func TestJWTManager_ExtractClaims(t *testing.T) {
 	t.Parallel()
 
 	manager := NewTokenManager("test-secret-key", 15*time.Minute)
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("extracts claims from valid token", func(t *testing.T) {
 		token, err := manager.GenerateAccessToken(userID, "testuser")
@@ -205,7 +205,7 @@ func TestJWTManager_ExtractClaims(t *testing.T) {
 func TestJWTManager_TokenExpiry(t *testing.T) {
 	t.Parallel()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("short expiry", func(t *testing.T) {
 		manager := NewTokenManager("test-secret-key", 1*time.Second)
@@ -243,7 +243,7 @@ func TestJWTManager_ClaimsFields(t *testing.T) {
 	t.Parallel()
 
 	manager := NewTokenManager("test-secret-key", 15*time.Minute)
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	username := "testuser"
 
 	token, err := manager.GenerateAccessToken(userID, username)

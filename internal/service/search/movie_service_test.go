@@ -83,7 +83,7 @@ func TestDefaultSearchParams(t *testing.T) {
 func TestMovieToDocument(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 	tmdbID := int32(603)
 	imdbID := "tt0133093"
@@ -140,7 +140,7 @@ func TestMovieToDocument(t *testing.T) {
 	resolution := "2160p"
 	qualityProfile := "Ultra-HD"
 	file := &movie.MovieFile{
-		ID:             uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
 		MovieID:        movieID,
 		Resolution:     &resolution,
 		QualityProfile: &qualityProfile,
@@ -184,7 +184,7 @@ func TestMovieToDocument(t *testing.T) {
 func TestMovieToDocumentMinimal(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 
 	m := &movie.Movie{
@@ -211,7 +211,7 @@ func TestMovieToDocumentMinimal(t *testing.T) {
 func TestMovieToDocumentCastLimit(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 
 	m := &movie.Movie{
@@ -529,7 +529,7 @@ func TestParseMovieDocumentPartialData(t *testing.T) {
 func TestMovieToDocumentWithEmptyCredits(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 
 	m := &movie.Movie{
@@ -556,7 +556,7 @@ func TestMovieToDocumentWithEmptyCredits(t *testing.T) {
 func TestMovieToDocumentWithCrewOnly(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 
 	m := &movie.Movie{
@@ -584,7 +584,7 @@ func TestMovieToDocumentWithCrewOnly(t *testing.T) {
 func TestMovieToDocumentWithZeroValues(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 	zeroDecimal := decimal.NewFromFloat(0.0)
 	zeroInt := int32(0)
@@ -631,7 +631,7 @@ func TestMovieSearchParamsValidation(t *testing.T) {
 func TestMovieToDocumentFileInfo(t *testing.T) {
 	s := &MovieSearchService{}
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	now := time.Now()
 
 	m := &movie.Movie{
@@ -646,7 +646,7 @@ func TestMovieToDocumentFileInfo(t *testing.T) {
 		resolution := "1080p"
 		qualityProfile := "HD"
 		file := &movie.MovieFile{
-			ID:             uuid.New(),
+			ID:             uuid.Must(uuid.NewV7()),
 			MovieID:        movieID,
 			Resolution:     &resolution,
 			QualityProfile: &qualityProfile,
@@ -662,7 +662,7 @@ func TestMovieToDocumentFileInfo(t *testing.T) {
 	t.Run("with partial file info", func(t *testing.T) {
 		resolution := "720p"
 		file := &movie.MovieFile{
-			ID:         uuid.New(),
+			ID:         uuid.Must(uuid.NewV7()),
 			MovieID:    movieID,
 			Resolution: &resolution,
 			// No QualityProfile

@@ -88,7 +88,7 @@ func TestRepositoryPg_GetProvider_NotFound(t *testing.T) {
 	repo, _ := setupTestRepository(t)
 	ctx := context.Background()
 
-	_, err := repo.GetProvider(ctx, uuid.New())
+	_, err := repo.GetProvider(ctx, uuid.Must(uuid.NewV7()))
 	assert.Error(t, err)
 }
 

@@ -20,7 +20,7 @@ func TestSearchIndexOperationConstants(t *testing.T) {
 }
 
 func TestMovieSearchIndexArgs(t *testing.T) {
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 
 	tests := []struct {
 		name      string

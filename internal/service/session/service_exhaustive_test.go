@@ -43,7 +43,7 @@ func TestService_CreateSession_ErrorCountingSessions(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	expectedErr := fmt.Errorf("database connection error")
 	mockRepo.EXPECT().
@@ -63,7 +63,7 @@ func TestService_CreateSession_ErrorCreatingSession(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
@@ -88,7 +88,7 @@ func TestService_CreateSession_NilDeviceInfo(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
@@ -102,7 +102,7 @@ func TestService_CreateSession_NilDeviceInfo(t *testing.T) {
 				params.UserAgent == nil &&
 				params.IPAddress == nil
 		})).
-		Return(db.SharedSession{ID: uuid.New()}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
 	deviceInfo := session.DeviceInfo{
@@ -122,7 +122,7 @@ func TestService_CreateSession_EmptyScopes(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
@@ -133,7 +133,7 @@ func TestService_CreateSession_EmptyScopes(t *testing.T) {
 		CreateSession(ctx, mock.MatchedBy(func(params session.CreateSessionParams) bool {
 			return len(params.Scopes) == 0
 		})).
-		Return(db.SharedSession{ID: uuid.New()}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
 	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{})
@@ -147,7 +147,7 @@ func TestService_CreateSession_NilScopes(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
@@ -158,7 +158,7 @@ func TestService_CreateSession_NilScopes(t *testing.T) {
 		CreateSession(ctx, mock.MatchedBy(func(params session.CreateSessionParams) bool {
 			return params.Scopes == nil
 		})).
-		Return(db.SharedSession{ID: uuid.New()}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
 	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, nil)
@@ -172,7 +172,7 @@ func TestService_CreateSession_MaxSessionsWarning(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Return count equal to max (should still allow creation but log warning)
 	mockRepo.EXPECT().
@@ -182,7 +182,7 @@ func TestService_CreateSession_MaxSessionsWarning(t *testing.T) {
 
 	mockRepo.EXPECT().
 		CreateSession(ctx, mock.AnythingOfType("session.CreateSessionParams")).
-		Return(db.SharedSession{ID: uuid.New()}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7())}, nil).
 		Once()
 
 	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
@@ -234,8 +234,8 @@ func TestService_ValidateSession_UpdateActivityError(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	validSession := &db.SharedSession{
 		ID:             sessionID,
 		UserID:         userID,
@@ -309,8 +309,8 @@ func TestService_RefreshSession_ErrorRevokingOldSession(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	validSession := &db.SharedSession{
 		ID:             sessionID,
 		UserID:         userID,
@@ -346,8 +346,8 @@ func TestService_RefreshSession_ErrorCreatingNewSession(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	validSession := &db.SharedSession{
 		ID:             sessionID,
 		UserID:         userID,
@@ -389,7 +389,7 @@ func TestService_ListUserSessions_ErrorFromRepository(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	expectedErr := fmt.Errorf("database query failed")
 	mockRepo.EXPECT().
@@ -408,7 +408,7 @@ func TestService_ListUserSessions_EmptyList(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		ListUserSessions(ctx, userID).
@@ -427,7 +427,7 @@ func TestService_RevokeSession_ErrorFromRepository(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	sessionID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
 
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
@@ -445,7 +445,7 @@ func TestService_RevokeSession_NonExistentSession(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	sessionID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
 
 	// Repo returns error for non-existent session
 	notFoundErr := fmt.Errorf("session not found")
@@ -465,7 +465,7 @@ func TestService_RevokeAllUserSessions_ErrorFromRepository(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
@@ -483,7 +483,7 @@ func TestService_RevokeAllUserSessions_UserWithNoSessions(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Should succeed even if user has no sessions
 	mockRepo.EXPECT().
@@ -502,8 +502,8 @@ func TestService_RevokeAllUserSessionsExcept_ErrorFromRepository(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
-	currentSessionID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	currentSessionID := uuid.Must(uuid.NewV7())
 
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
@@ -587,7 +587,7 @@ func TestService_CreateSession_Success(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		CountActiveUserSessions(ctx, userID).
@@ -601,7 +601,7 @@ func TestService_CreateSession_Success(t *testing.T) {
 				params.RefreshTokenHash != nil &&
 				*params.RefreshTokenHash != ""
 		})).
-		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7()), UserID: userID}, nil).
 		Once()
 
 	token, refreshToken, err := svc.CreateSession(ctx, userID, session.DeviceInfo{}, []string{"read"})
@@ -618,7 +618,7 @@ func TestService_CreateSession_WithFullDeviceInfo(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	deviceName := "iPhone 15 Pro"
 	userAgent := "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"
@@ -636,7 +636,7 @@ func TestService_CreateSession_WithFullDeviceInfo(t *testing.T) {
 				params.UserAgent != nil && *params.UserAgent == userAgent &&
 				params.IPAddress != nil && *params.IPAddress == ipAddr
 		})).
-		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7()), UserID: userID}, nil).
 		Once()
 
 	deviceInfo := session.DeviceInfo{
@@ -657,8 +657,8 @@ func TestService_ValidateSession_Success(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	validSession := &db.SharedSession{
 		ID:             sessionID,
 		UserID:         userID,
@@ -693,8 +693,8 @@ func TestService_RefreshSession_Success(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	deviceName := "Test Device"
 	userAgent := "Test Agent"
 	ipAddr := netip.MustParseAddr("192.168.1.1")
@@ -731,7 +731,7 @@ func TestService_RefreshSession_Success(t *testing.T) {
 				params.DeviceName != nil && *params.DeviceName == deviceName &&
 				params.UserAgent != nil && *params.UserAgent == userAgent
 		})).
-		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7()), UserID: userID}, nil).
 		Once()
 
 	newToken, newRefresh, err := svc.RefreshSession(ctx, "valid_refresh_token")
@@ -746,8 +746,8 @@ func TestService_RefreshSession_WithUnspecifiedIP(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 
 	// Session with unspecified IP
 	validSession := &db.SharedSession{
@@ -773,7 +773,7 @@ func TestService_RefreshSession_WithUnspecifiedIP(t *testing.T) {
 
 	mockRepo.EXPECT().
 		CreateSession(ctx, mock.AnythingOfType("session.CreateSessionParams")).
-		Return(db.SharedSession{ID: uuid.New(), UserID: userID}, nil).
+		Return(db.SharedSession{ID: uuid.Must(uuid.NewV7()), UserID: userID}, nil).
 		Once()
 
 	newToken, newRefresh, err := svc.RefreshSession(ctx, "valid_refresh_token")
@@ -787,7 +787,7 @@ func TestService_ListUserSessions_Success(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	deviceName := "My Device"
 	userAgent := "Test Agent"
@@ -795,7 +795,7 @@ func TestService_ListUserSessions_Success(t *testing.T) {
 
 	sessions := []db.SharedSession{
 		{
-			ID:             uuid.New(),
+			ID:             uuid.Must(uuid.NewV7()),
 			UserID:         userID,
 			TokenHash:      "hash1",
 			IpAddress:      ipAddr,
@@ -806,7 +806,7 @@ func TestService_ListUserSessions_Success(t *testing.T) {
 			ExpiresAt:      time.Now().Add(23 * time.Hour),
 		},
 		{
-			ID:             uuid.New(),
+			ID:             uuid.Must(uuid.NewV7()),
 			UserID:         userID,
 			TokenHash:      "hash2",
 			IpAddress:      netip.MustParseAddr("10.0.0.2"),
@@ -834,7 +834,7 @@ func TestService_RevokeSession_Success(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	sessionID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
@@ -850,8 +850,8 @@ func TestService_RevokeAllUserSessionsExcept_Success(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
-	currentSessionID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
+	currentSessionID := uuid.Must(uuid.NewV7())
 
 	mockRepo.EXPECT().
 		RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, mock.AnythingOfType("*string")).
@@ -869,13 +869,13 @@ func TestService_ListUserSessions_SessionInfoConversion(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Session with all fields populated
 	deviceName := "Test Device"
 	userAgent := "Mozilla/5.0"
 	validSession := db.SharedSession{
-		ID:             uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
 		UserID:         userID,
 		TokenHash:      "hash",
 		IpAddress:      netip.MustParseAddr("192.168.1.1"),
@@ -912,12 +912,12 @@ func TestService_ListUserSessions_RevokedSession(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Revoked session
 	revokedAt := pgtype.Timestamptz{Time: time.Now().Add(-1 * time.Hour), Valid: true}
 	revokedSession := db.SharedSession{
-		ID:             uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
 		UserID:         userID,
 		TokenHash:      "hash",
 		IpAddress:      netip.MustParseAddr("192.168.1.1"),
@@ -943,11 +943,11 @@ func TestService_ListUserSessions_ExpiredSession(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Expired session
 	expiredSession := db.SharedSession{
-		ID:             uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
 		UserID:         userID,
 		TokenHash:      "hash",
 		IpAddress:      netip.MustParseAddr("192.168.1.1"),
@@ -972,11 +972,11 @@ func TestService_ListUserSessions_SessionWithUnspecifiedIP(t *testing.T) {
 	t.Parallel()
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Session with actual unspecified IP (0.0.0.0)
 	sessionWithUnspecifiedIP := db.SharedSession{
-		ID:             uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
 		UserID:         userID,
 		TokenHash:      "hash",
 		IpAddress:      netip.MustParseAddr("0.0.0.0"), // Unspecified IPv4

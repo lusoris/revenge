@@ -227,7 +227,7 @@ func TestService_ChangePassword_Integration(t *testing.T) {
 		},
 		{
 			name:        "nonexistent user",
-			userID:      uuid.New(),
+			userID:      uuid.Must(uuid.NewV7()),
 			oldPassword: oldPassword,
 			newPassword: "NewPassword999!",
 			wantErr:     true,

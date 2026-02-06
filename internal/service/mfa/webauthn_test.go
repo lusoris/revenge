@@ -65,7 +65,7 @@ func TestNewWebAuthnService(t *testing.T) {
 }
 
 func TestWebAuthnUser_Interface(t *testing.T) {
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	user := &WebAuthnUser{
 		ID:          userID[:],
 		Name:        "testuser",
@@ -126,7 +126,7 @@ func TestConvertTransports(t *testing.T) {
 
 func TestSessionDataSerialization(t *testing.T) {
 	// Create test session data
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	session := webauthn.SessionData{
 		Challenge:        "test-challenge-data-32-bytes-long",
@@ -302,8 +302,8 @@ func createTestUserForWebAuthn(t *testing.T, queries *db.Queries, ctx context.Co
 
 	isActive := true
 	user, err := queries.CreateUser(ctx, db.CreateUserParams{
-		Email:        "webauthn_" + uuid.New().String()[:8] + "@example.com",
-		Username:     "webauthn_" + uuid.New().String()[:8],
+		Email:        "webauthn_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
+		Username:     "webauthn_" + uuid.Must(uuid.NewV7()).String()[:8],
 		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=4$test$test",
 		IsActive:     &isActive,
 	})
@@ -737,7 +737,7 @@ func TestWebAuthnService_SessionCache(t *testing.T) {
 		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
 		require.NoError(t, err)
 
-		_, err = service.GetRegistrationSession(ctx, uuid.New())
+		_, err = service.GetRegistrationSession(ctx, uuid.Must(uuid.NewV7()))
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "cache not configured")
 	})
@@ -746,7 +746,7 @@ func TestWebAuthnService_SessionCache(t *testing.T) {
 		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
 		require.NoError(t, err)
 
-		_, err = service.GetLoginSession(ctx, uuid.New())
+		_, err = service.GetLoginSession(ctx, uuid.Must(uuid.NewV7()))
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "cache not configured")
 	})

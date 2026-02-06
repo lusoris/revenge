@@ -17,7 +17,7 @@ func TestLibraryScanArgs_Kind(t *testing.T) {
 }
 
 func TestMetadataRefreshArgs_Kind(t *testing.T) {
-	seriesID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
 	args := MetadataRefreshArgs{
 		SeriesID: &seriesID,
 		Force:    true,
@@ -43,7 +43,7 @@ func TestSearchIndexArgs_Kind(t *testing.T) {
 
 func TestSeriesRefreshArgs_Kind(t *testing.T) {
 	args := SeriesRefreshArgs{
-		SeriesID:        uuid.New(),
+		SeriesID:        uuid.Must(uuid.NewV7()),
 		TMDbID:          1396,
 		RefreshSeasons:  true,
 		RefreshEpisodes: true,
@@ -96,7 +96,7 @@ func TestPriorityConstants(t *testing.T) {
 }
 
 func TestLibraryScanArgs_Fields(t *testing.T) {
-	libraryID := uuid.New()
+	libraryID := uuid.Must(uuid.NewV7())
 	args := LibraryScanArgs{
 		Paths:     []string{"/tv/shows", "/tv/anime"},
 		Force:     true,
@@ -110,7 +110,7 @@ func TestLibraryScanArgs_Fields(t *testing.T) {
 
 func TestMetadataRefreshArgs_Fields(t *testing.T) {
 	t.Run("series refresh", func(t *testing.T) {
-		seriesID := uuid.New()
+		seriesID := uuid.Must(uuid.NewV7())
 		args := MetadataRefreshArgs{
 			SeriesID:      &seriesID,
 			Force:         true,
@@ -122,7 +122,7 @@ func TestMetadataRefreshArgs_Fields(t *testing.T) {
 	})
 
 	t.Run("season refresh", func(t *testing.T) {
-		seasonID := uuid.New()
+		seasonID := uuid.Must(uuid.NewV7())
 		args := MetadataRefreshArgs{
 			SeasonID: &seasonID,
 		}
@@ -132,7 +132,7 @@ func TestMetadataRefreshArgs_Fields(t *testing.T) {
 	})
 
 	t.Run("episode refresh", func(t *testing.T) {
-		episodeID := uuid.New()
+		episodeID := uuid.Must(uuid.NewV7())
 		args := MetadataRefreshArgs{
 			EpisodeID: &episodeID,
 		}
@@ -143,7 +143,7 @@ func TestMetadataRefreshArgs_Fields(t *testing.T) {
 }
 
 func TestFileMatchArgs_Fields(t *testing.T) {
-	episodeID := uuid.New()
+	episodeID := uuid.Must(uuid.NewV7())
 	args := FileMatchArgs{
 		FilePath:     "/media/tv/Show Name/Season 01/Show.Name.S01E01.mkv",
 		EpisodeID:    &episodeID,
@@ -159,7 +159,7 @@ func TestFileMatchArgs_Fields(t *testing.T) {
 
 func TestSearchIndexArgs_Fields(t *testing.T) {
 	t.Run("specific series", func(t *testing.T) {
-		seriesID := uuid.New()
+		seriesID := uuid.Must(uuid.NewV7())
 		args := SearchIndexArgs{
 			SeriesID:    &seriesID,
 			FullReindex: false,
@@ -179,7 +179,7 @@ func TestSearchIndexArgs_Fields(t *testing.T) {
 
 func TestSeriesRefreshArgs_Fields(t *testing.T) {
 	args := SeriesRefreshArgs{
-		SeriesID:        uuid.New(),
+		SeriesID:        uuid.Must(uuid.NewV7()),
 		TMDbID:          1396,
 		RefreshSeasons:  true,
 		RefreshEpisodes: true,

@@ -103,7 +103,7 @@ func TestSanitizeKey(t *testing.T) {
 }
 
 func TestGenerateAvatarKey(t *testing.T) {
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	t.Run("with extension", func(t *testing.T) {
 		key := GenerateAvatarKey(userID, "profile.jpg")

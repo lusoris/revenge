@@ -145,7 +145,7 @@ func TestPostgresRepository_GetUserByID(t *testing.T) {
 	})
 
 	t.Run("non-existent user", func(t *testing.T) {
-		_, err := repo.GetUserByID(ctx, uuid.New())
+		_, err := repo.GetUserByID(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 		assert.True(t, contains(err.Error(), "not found", "no rows"))
 	})
@@ -241,7 +241,7 @@ func TestPostgresRepository_UpdateUser(t *testing.T) {
 	})
 
 	t.Run("update non-existent user", func(t *testing.T) {
-		_, err := repo.UpdateUser(ctx, uuid.New(), UpdateUserParams{
+		_, err := repo.UpdateUser(ctx, uuid.Must(uuid.NewV7()), UpdateUserParams{
 			DisplayName: ptr("Test"),
 		})
 		require.Error(t, err)
@@ -550,7 +550,7 @@ func TestPostgresRepository_GetUserPreferences(t *testing.T) {
 	})
 
 	t.Run("get non-existent preferences", func(t *testing.T) {
-		_, err := repo.GetUserPreferences(ctx, uuid.New())
+		_, err := repo.GetUserPreferences(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 		assert.True(t, contains(err.Error(), "not found", "no rows"))
 	})
@@ -654,7 +654,7 @@ func TestPostgresRepository_GetCurrentAvatar(t *testing.T) {
 	})
 
 	t.Run("no current avatar", func(t *testing.T) {
-		_, err := repo.GetCurrentAvatar(ctx, uuid.New())
+		_, err := repo.GetCurrentAvatar(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 	})
 }

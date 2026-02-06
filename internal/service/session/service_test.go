@@ -302,8 +302,8 @@ func TestService_SessionToInfo(t *testing.T) {
 	t.Parallel()
 	service, _ := setupTestService(t)
 
-	sessionID := uuid.New()
-	userID := uuid.New()
+	sessionID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
 	ipAddr := netip.MustParseAddr("192.168.1.1")
 
 	session := &db.SharedSession{

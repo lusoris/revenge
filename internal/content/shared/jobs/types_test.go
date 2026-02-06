@@ -112,7 +112,7 @@ func TestFileMatchArgs(t *testing.T) {
 }
 
 func TestMetadataRefreshArgs(t *testing.T) {
-	id := uuid.New()
+	id := uuid.Must(uuid.NewV7())
 	args := MetadataRefreshArgs{
 		ContentID: id,
 		Force:     true,
@@ -134,7 +134,7 @@ func TestSearchIndexArgs(t *testing.T) {
 	})
 
 	t.Run("single item index", func(t *testing.T) {
-		id := uuid.New()
+		id := uuid.Must(uuid.NewV7())
 		args := SearchIndexArgs{
 			ContentID:   &id,
 			FullReindex: false,

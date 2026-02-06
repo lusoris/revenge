@@ -96,7 +96,7 @@ func TestLibraryService_Create_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		existingLib := makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie)
+		existingLib := makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie)
 		mockRepo.On("GetByName", mock.Anything, "Movies").Return(existingLib, nil)
 
 		req := library.CreateLibraryRequest{
@@ -122,7 +122,7 @@ func TestLibraryService_Get_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		expected := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 		mockRepo.On("Get", mock.Anything, libID).Return(expected, nil)
 
@@ -137,7 +137,7 @@ func TestLibraryService_Get_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 
 		lib, err := svc.Get(context.Background(), libID)
@@ -156,7 +156,7 @@ func TestLibraryService_GetByName_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		expected := makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie)
+		expected := makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie)
 		mockRepo.On("GetByName", mock.Anything, "Movies").Return(expected, nil)
 
 		lib, err := svc.GetByName(context.Background(), "Movies")
@@ -176,8 +176,8 @@ func TestLibraryService_List_Short(t *testing.T) {
 		svc := setupLibraryService(mockRepo)
 
 		libs := []library.Library{
-			*makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie),
-			*makeTestLibrary(uuid.New(), "TV Shows", library.LibraryTypeTVShow),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "TV Shows", library.LibraryTypeTVShow),
 		}
 		mockRepo.On("List", mock.Anything).Return(libs, nil)
 
@@ -210,7 +210,7 @@ func TestLibraryService_ListEnabled_Short(t *testing.T) {
 		svc := setupLibraryService(mockRepo)
 
 		libs := []library.Library{
-			*makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
 		}
 		mockRepo.On("ListEnabled", mock.Anything).Return(libs, nil)
 
@@ -231,7 +231,7 @@ func TestLibraryService_ListByType_Short(t *testing.T) {
 		svc := setupLibraryService(mockRepo)
 
 		libs := []library.Library{
-			*makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
 		}
 		mockRepo.On("ListByType", mock.Anything, library.LibraryTypeMovie).Return(libs, nil)
 
@@ -261,9 +261,9 @@ func TestLibraryService_ListAccessible_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		libs := []library.Library{
-			*makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
 		}
 		mockRepo.On("GetUserAccessibleLibraries", mock.Anything, userID).Return(libs, nil)
 
@@ -283,7 +283,7 @@ func TestLibraryService_Update_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		newName := "Updated Movies"
 		updated := makeTestLibrary(libID, newName, library.LibraryTypeMovie)
 
@@ -302,7 +302,7 @@ func TestLibraryService_Update_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		invalidType := "invalid"
 		update := &library.LibraryUpdate{Type: &invalidType}
 
@@ -316,8 +316,8 @@ func TestLibraryService_Update_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		existingID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		existingID := uuid.Must(uuid.NewV7())
 		newName := "Existing Library"
 		existing := makeTestLibrary(existingID, newName, library.LibraryTypeMovie)
 
@@ -340,7 +340,7 @@ func TestLibraryService_Delete_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -356,7 +356,7 @@ func TestLibraryService_Delete_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 		mockRepo.On("RevokeAllPermissions", mock.Anything, libID).Return(errors.New("db error"))
@@ -394,7 +394,7 @@ func TestLibraryService_TriggerScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -413,7 +413,7 @@ func TestLibraryService_TriggerScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		scan, err := svc.TriggerScan(context.Background(), libID, "invalid")
 
@@ -425,11 +425,11 @@ func TestLibraryService_TriggerScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		runningScans := []library.LibraryScan{
-			*makeTestScan(uuid.New(), libID, library.ScanTypeFull, library.ScanStatusRunning),
+			*makeTestScan(uuid.Must(uuid.NewV7()), libID, library.ScanTypeFull, library.ScanStatusRunning),
 		}
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -451,8 +451,8 @@ func TestLibraryService_GetScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 		expected := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCompleted)
 
 		mockRepo.On("GetScan", mock.Anything, scanID).Return(expected, nil)
@@ -473,9 +473,9 @@ func TestLibraryService_ListScans_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		scans := []library.LibraryScan{
-			*makeTestScan(uuid.New(), libID, library.ScanTypeFull, library.ScanStatusCompleted),
+			*makeTestScan(uuid.Must(uuid.NewV7()), libID, library.ScanTypeFull, library.ScanStatusCompleted),
 		}
 
 		mockRepo.On("ListScans", mock.Anything, libID, int32(20), int32(0)).Return(scans, nil)
@@ -492,7 +492,7 @@ func TestLibraryService_ListScans_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		scans := []library.LibraryScan{}
 
 		mockRepo.On("ListScans", mock.Anything, libID, int32(100), int32(0)).Return(scans, nil)
@@ -515,8 +515,8 @@ func TestLibraryService_StartScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 		expected := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 
 		mockRepo.On("UpdateScanStatus", mock.Anything, scanID, mock.AnythingOfType("*library.ScanStatusUpdate")).
@@ -538,8 +538,8 @@ func TestLibraryService_CompleteScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 		startedAt := time.Now().Add(-10 * time.Minute)
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
@@ -567,8 +567,8 @@ func TestLibraryService_CompleteScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 		completed := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCompleted)
@@ -593,8 +593,8 @@ func TestLibraryService_FailScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 		failed := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusFailed)
@@ -619,8 +619,8 @@ func TestLibraryService_CancelScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 
 		cancelled := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCancelled)
 
@@ -643,8 +643,8 @@ func TestLibraryService_GrantPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -659,8 +659,8 @@ func TestLibraryService_GrantPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		err := svc.GrantPermission(context.Background(), libID, userID, "invalid")
 
@@ -671,8 +671,8 @@ func TestLibraryService_GrantPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 
@@ -691,8 +691,8 @@ func TestLibraryService_RevokePermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("RevokePermission", mock.Anything, libID, userID, library.PermissionView).Return(nil)
 
@@ -705,8 +705,8 @@ func TestLibraryService_RevokePermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		err := svc.RevokePermission(context.Background(), libID, userID, "invalid")
 
@@ -723,8 +723,8 @@ func TestLibraryService_CheckPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CheckPermission", mock.Anything, libID, userID, library.PermissionView).Return(true, nil)
 
@@ -738,8 +738,8 @@ func TestLibraryService_CheckPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		has, err := svc.CheckPermission(context.Background(), libID, userID, "invalid")
 
@@ -757,8 +757,8 @@ func TestLibraryService_CanAccess_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		can, err := svc.CanAccess(context.Background(), libID, userID, true)
 
@@ -770,8 +770,8 @@ func TestLibraryService_CanAccess_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CheckPermission", mock.Anything, libID, userID, library.PermissionView).Return(true, nil)
 
@@ -791,8 +791,8 @@ func TestLibraryService_CanDownload_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		can, err := svc.CanDownload(context.Background(), libID, userID, true)
 
@@ -804,8 +804,8 @@ func TestLibraryService_CanDownload_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CheckPermission", mock.Anything, libID, userID, library.PermissionDownload).Return(false, nil)
 
@@ -825,8 +825,8 @@ func TestLibraryService_CanManage_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		can, err := svc.CanManage(context.Background(), libID, userID, true)
 
@@ -844,9 +844,9 @@ func TestLibraryService_ListPermissions_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		perms := []library.Permission{
-			{ID: uuid.New(), LibraryID: libID, UserID: uuid.New(), Permission: library.PermissionView},
+			{ID: uuid.Must(uuid.NewV7()), LibraryID: libID, UserID: uuid.Must(uuid.NewV7()), Permission: library.PermissionView},
 		}
 
 		mockRepo.On("ListPermissions", mock.Anything, libID).Return(perms, nil)
@@ -867,9 +867,9 @@ func TestLibraryService_ListUserPermissions_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		perms := []library.Permission{
-			{ID: uuid.New(), LibraryID: uuid.New(), UserID: userID, Permission: library.PermissionView},
+			{ID: uuid.Must(uuid.NewV7()), LibraryID: uuid.Must(uuid.NewV7()), UserID: userID, Permission: library.PermissionView},
 		}
 
 		mockRepo.On("ListUserPermissions", mock.Anything, userID).Return(perms, nil)
@@ -890,10 +890,10 @@ func TestLibraryService_GetPermission_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		perm := &library.Permission{
-			ID:         uuid.New(),
+			ID:         uuid.Must(uuid.NewV7()),
 			LibraryID:  libID,
 			UserID:     userID,
 			Permission: library.PermissionView,
@@ -921,8 +921,8 @@ func TestLibraryService_GetLatestScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		scanID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		scanID := uuid.Must(uuid.NewV7())
 		expected := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCompleted)
 
 		mockRepo.On("GetLatestScan", mock.Anything, libID).Return(expected, nil)
@@ -937,7 +937,7 @@ func TestLibraryService_GetLatestScan_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetLatestScan", mock.Anything, libID).Return(nil, library.ErrScanNotFound)
 
@@ -957,10 +957,10 @@ func TestLibraryService_GetRunningScans_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		scans := []library.LibraryScan{
-			*makeTestScan(uuid.New(), libID, library.ScanTypeFull, library.ScanStatusRunning),
-			*makeTestScan(uuid.New(), uuid.New(), library.ScanTypeIncremental, library.ScanStatusRunning),
+			*makeTestScan(uuid.Must(uuid.NewV7()), libID, library.ScanTypeFull, library.ScanStatusRunning),
+			*makeTestScan(uuid.Must(uuid.NewV7()), uuid.Must(uuid.NewV7()), library.ScanTypeIncremental, library.ScanStatusRunning),
 		}
 
 		mockRepo.On("GetRunningScans", mock.Anything).Return(scans, nil)
@@ -1005,8 +1005,8 @@ func TestLibraryService_UpdateScanProgress_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 		expected := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 		expected.ItemsScanned = 50
 		expected.ItemsAdded = 25
@@ -1029,7 +1029,7 @@ func TestLibraryService_UpdateScanProgress_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
 		progress := &library.ScanProgress{
 			ItemsScanned: 50,
 		}
@@ -1052,8 +1052,8 @@ func TestLibraryService_CanManage_NonAdmin_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CheckPermission", mock.Anything, libID, userID, library.PermissionManage).Return(true, nil)
 
@@ -1067,8 +1067,8 @@ func TestLibraryService_CanManage_NonAdmin_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CheckPermission", mock.Anything, libID, userID, library.PermissionManage).Return(false, nil)
 
@@ -1135,7 +1135,7 @@ func TestLibraryService_Update_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		newName := "Updated"
 
 		mockRepo.On("GetByName", mock.Anything, newName).Return(nil, errors.New("db error"))
@@ -1152,7 +1152,7 @@ func TestLibraryService_Update_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		newName := "Updated"
 
 		mockRepo.On("GetByName", mock.Anything, newName).Return(nil, library.ErrNotFound)
@@ -1170,7 +1170,7 @@ func TestLibraryService_Update_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		enabled := true
 		updated := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
@@ -1187,7 +1187,7 @@ func TestLibraryService_Update_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		newName := "Movies"
 		existing := makeTestLibrary(libID, newName, library.LibraryTypeMovie)
 		updated := makeTestLibrary(libID, newName, library.LibraryTypeMovie)
@@ -1212,7 +1212,7 @@ func TestLibraryService_Delete_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1229,7 +1229,7 @@ func TestLibraryService_Delete_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 		mockRepo.On("RevokeAllPermissions", mock.Anything, libID).Return(nil)
@@ -1250,7 +1250,7 @@ func TestLibraryService_TriggerScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 
@@ -1264,7 +1264,7 @@ func TestLibraryService_TriggerScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1280,7 +1280,7 @@ func TestLibraryService_TriggerScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1297,12 +1297,12 @@ func TestLibraryService_TriggerScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		otherLibID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		otherLibID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		runningScans := []library.LibraryScan{
-			*makeTestScan(uuid.New(), otherLibID, library.ScanTypeFull, library.ScanStatusRunning),
+			*makeTestScan(uuid.Must(uuid.NewV7()), otherLibID, library.ScanTypeFull, library.ScanStatusRunning),
 		}
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1325,7 +1325,7 @@ func TestLibraryService_ListScans_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("ListScans", mock.Anything, libID, int32(20), int32(0)).Return(nil, errors.New("db error"))
 
@@ -1340,9 +1340,9 @@ func TestLibraryService_ListScans_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		scans := []library.LibraryScan{
-			*makeTestScan(uuid.New(), libID, library.ScanTypeFull, library.ScanStatusCompleted),
+			*makeTestScan(uuid.Must(uuid.NewV7()), libID, library.ScanTypeFull, library.ScanStatusCompleted),
 		}
 
 		mockRepo.On("ListScans", mock.Anything, libID, int32(20), int32(0)).Return(scans, nil)
@@ -1365,7 +1365,7 @@ func TestLibraryService_CompleteScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
 		progress := &library.ScanProgress{ItemsScanned: 100}
 
 		mockRepo.On("UpdateScanProgress", mock.Anything, scanID, progress).Return(nil, errors.New("progress error"))
@@ -1380,7 +1380,7 @@ func TestLibraryService_CompleteScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetScan", mock.Anything, scanID).Return(nil, errors.New("get error"))
 
@@ -1394,8 +1394,8 @@ func TestLibraryService_CompleteScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 		runningScan.StartedAt = nil // No start time
@@ -1421,7 +1421,7 @@ func TestLibraryService_FailScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetScan", mock.Anything, scanID).Return(nil, errors.New("get error"))
 
@@ -1435,8 +1435,8 @@ func TestLibraryService_FailScan_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 		startedAt := time.Now().Add(-5 * time.Minute)
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
@@ -1467,8 +1467,8 @@ func TestLibraryService_GrantPermission_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1490,8 +1490,8 @@ func TestLibraryService_RevokePermission_ErrorPaths_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		svc := setupLibraryService(mockRepo)
 
-		libID := uuid.New()
-		userID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("RevokePermission", mock.Anything, libID, userID, library.PermissionView).Return(errors.New("revoke error"))
 
@@ -1537,7 +1537,7 @@ func TestCachedService_Get_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		expected := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(expected, nil)
@@ -1553,7 +1553,7 @@ func TestCachedService_Get_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 
@@ -1574,8 +1574,8 @@ func TestCachedService_List_NilCache_Short(t *testing.T) {
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
 		libs := []library.Library{
-			*makeTestLibrary(uuid.New(), "Movies", library.LibraryTypeMovie),
-			*makeTestLibrary(uuid.New(), "TV Shows", library.LibraryTypeTVShow),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "TV Shows", library.LibraryTypeTVShow),
 		}
 
 		mockRepo.On("List", mock.Anything).Return(libs, nil)
@@ -1681,7 +1681,7 @@ func TestCachedService_Update_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		newName := "Updated Movies"
 		updated := makeTestLibrary(libID, newName, library.LibraryTypeMovie)
 
@@ -1699,7 +1699,7 @@ func TestCachedService_Update_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		invalidType := "invalid"
 
 		update := &library.LibraryUpdate{Type: &invalidType}
@@ -1719,7 +1719,7 @@ func TestCachedService_Delete_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
 
 		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
@@ -1735,7 +1735,7 @@ func TestCachedService_Delete_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		libID := uuid.New()
+		libID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
 		mockRepo.On("RevokeAllPermissions", mock.Anything, libID).Return(errors.New("db error"))
@@ -1755,8 +1755,8 @@ func TestCachedService_CompleteScan_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		scanID := uuid.New()
-		libID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
 
 		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
 		completed := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCompleted)
@@ -1774,7 +1774,7 @@ func TestCachedService_CompleteScan_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		scanID := uuid.New()
+		scanID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetScan", mock.Anything, scanID).Return(nil, errors.New("get error"))
 
@@ -1794,7 +1794,7 @@ func TestCachedService_InvalidateLibraryCache_NilCache_Short(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
 		cachedSvc := setupCachedServiceWithNilCache(mockRepo)
 
-		err := cachedSvc.InvalidateLibraryCache(context.Background(), uuid.New())
+		err := cachedSvc.InvalidateLibraryCache(context.Background(), uuid.Must(uuid.NewV7()))
 
 		assert.NoError(t, err)
 	})

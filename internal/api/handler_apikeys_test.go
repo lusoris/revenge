@@ -204,7 +204,7 @@ func TestHandler_GetAPIKey_NoAuth(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.GetAPIKeyParams{
-		KeyId: uuid.New(),
+		KeyId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetAPIKey(ctx, params)
@@ -220,7 +220,7 @@ func TestHandler_GetAPIKey_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), userID)
 	params := ogen.GetAPIKeyParams{
-		KeyId: uuid.New(),
+		KeyId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetAPIKey(ctx, params)
@@ -293,7 +293,7 @@ func TestHandler_RevokeAPIKey_NoAuth(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.RevokeAPIKeyParams{
-		KeyId: uuid.New(),
+		KeyId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.RevokeAPIKey(ctx, params)
@@ -309,7 +309,7 @@ func TestHandler_RevokeAPIKey_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), userID)
 	params := ogen.RevokeAPIKeyParams{
-		KeyId: uuid.New(),
+		KeyId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.RevokeAPIKey(ctx, params)

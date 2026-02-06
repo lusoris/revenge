@@ -21,7 +21,7 @@ func NewMapper() *Mapper {
 // ToMovie converts a Radarr movie to a domain movie.
 func (m *Mapper) ToMovie(rm *Movie) *movie.Movie {
 	result := &movie.Movie{
-		ID:               uuid.New(), // Generate new ID for local storage
+		ID:               uuid.Must(uuid.NewV7()), // Generate new ID for local storage
 		TMDbID:           ptr(util.SafeIntToInt32(rm.TMDbID)),
 		IMDbID:           ptrString(rm.IMDbID),
 		Title:            rm.Title,
@@ -94,7 +94,7 @@ func (m *Mapper) ToMovie(rm *Movie) *movie.Movie {
 // ToMovieFile converts a Radarr movie file to a domain movie file.
 func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile {
 	result := &movie.MovieFile{
-		ID:           uuid.New(),
+		ID:           uuid.Must(uuid.NewV7()),
 		MovieID:      movieID,
 		FilePath:     rmf.Path,
 		FileName:     rmf.RelativePath,
@@ -162,7 +162,7 @@ func (m *Mapper) ToMovieCollection(rc *Collection) *movie.MovieCollection {
 	}
 
 	result := &movie.MovieCollection{
-		ID:               uuid.New(),
+		ID:               uuid.Must(uuid.NewV7()),
 		TMDbCollectionID: ptr(util.SafeIntToInt32(rc.TMDbID)),
 		Name:             rc.Name,
 		CreatedAt:        time.Now(),
@@ -191,7 +191,7 @@ func (m *Mapper) ToGenres(rm *Movie, movieID uuid.UUID) []movie.MovieGenre {
 	genres := make([]movie.MovieGenre, len(rm.Genres))
 	for i, g := range rm.Genres {
 		genres[i] = movie.MovieGenre{
-			ID:      uuid.New(),
+			ID:      uuid.Must(uuid.NewV7()),
 			MovieID: movieID,
 			Name:    g,
 			// TMDbGenreID would need to be looked up separately

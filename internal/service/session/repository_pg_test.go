@@ -33,8 +33,8 @@ func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
 	queries := db.New(testDB.Pool())
 	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{
-		Username:     "testuser_" + uuid.New().String()[:8],
-		Email:        "test_" + uuid.New().String()[:8] + "@example.com",
+		Username:     "testuser_" + uuid.Must(uuid.NewV7()).String()[:8],
+		Email:        "test_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
 		PasswordHash: "hash",
 	})
 	require.NoError(t, err)
@@ -143,8 +143,8 @@ func TestRepositoryPG_ListUserSessions(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "list_" + uuid.New().String()[:8],
-			RefreshTokenHash: stringPtr("ref_" + uuid.New().String()[:8]),
+			TokenHash:        "list_" + uuid.Must(uuid.NewV7()).String()[:8],
+			RefreshTokenHash: stringPtr("ref_" + uuid.Must(uuid.NewV7()).String()[:8]),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -193,8 +193,8 @@ func TestRepositoryPG_CountActiveUserSessions(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "count_" + uuid.New().String()[:8],
-			RefreshTokenHash: stringPtr("cref_" + uuid.New().String()[:8]),
+			TokenHash:        "count_" + uuid.Must(uuid.NewV7()).String()[:8],
+			RefreshTokenHash: stringPtr("cref_" + uuid.Must(uuid.NewV7()).String()[:8]),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -319,8 +319,8 @@ func TestRepositoryPG_RevokeAllUserSessions(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "revoke_all_" + uuid.New().String()[:8],
-			RefreshTokenHash: stringPtr("ref_all_" + uuid.New().String()[:8]),
+			TokenHash:        "revoke_all_" + uuid.Must(uuid.NewV7()).String()[:8],
+			RefreshTokenHash: stringPtr("ref_all_" + uuid.Must(uuid.NewV7()).String()[:8]),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -346,8 +346,8 @@ func TestRepositoryPG_RevokeAllUserSessionsExcept(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		s, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "except_" + uuid.New().String()[:8],
-			RefreshTokenHash: stringPtr("ref_except_" + uuid.New().String()[:8]),
+			TokenHash:        "except_" + uuid.Must(uuid.NewV7()).String()[:8],
+			RefreshTokenHash: stringPtr("ref_except_" + uuid.Must(uuid.NewV7()).String()[:8]),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)

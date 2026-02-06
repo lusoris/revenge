@@ -35,9 +35,9 @@ func TestNotificationArgs_InsertOpts(t *testing.T) {
 func TestNotificationArgs_ToEvent(t *testing.T) {
 	t.Parallel()
 
-	eventID := uuid.New()
-	userID := uuid.New()
-	targetID := uuid.New()
+	eventID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
+	targetID := uuid.Must(uuid.NewV7())
 	timestamp := time.Now()
 
 	args := &NotificationArgs{
@@ -68,7 +68,7 @@ func TestNotificationArgs_ToEvent(t *testing.T) {
 func TestNotificationArgs_ToEvent_MinimalArgs(t *testing.T) {
 	t.Parallel()
 
-	eventID := uuid.New()
+	eventID := uuid.Must(uuid.NewV7())
 	timestamp := time.Now()
 
 	args := &NotificationArgs{
@@ -91,8 +91,8 @@ func TestNewNotificationArgs(t *testing.T) {
 	t.Parallel()
 
 	t.Run("with event and no agents", func(t *testing.T) {
-		eventID := uuid.New()
-		userID := uuid.New()
+		eventID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		event := &notification.Event{
 			ID:        eventID,
 			Type:      notification.EventType("user.created"),
@@ -119,7 +119,7 @@ func TestNewNotificationArgs(t *testing.T) {
 
 	t.Run("with specific agents", func(t *testing.T) {
 		event := &notification.Event{
-			ID:        uuid.New(),
+			ID:        uuid.Must(uuid.NewV7()),
 			Type:      notification.EventType("movie.added"),
 			Timestamp: time.Now(),
 		}
@@ -160,7 +160,7 @@ func TestNotificationWorker_Timeout(t *testing.T) {
 	// Create a mock job (we just need to call Timeout)
 	job := &river.Job[NotificationArgs]{
 		Args: NotificationArgs{
-			EventID:   uuid.New(),
+			EventID:   uuid.Must(uuid.NewV7()),
 			EventType: "test.event",
 		},
 	}

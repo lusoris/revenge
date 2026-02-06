@@ -100,7 +100,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		// 1. Create Movie
 		repo.On("CreateMovie", ctx, mock.MatchedBy(func(p CreateMovieParams) bool {
 			return p.Title == "The Matrix" && *p.TMDbID == 603
-		})).Return(&Movie{ID: uuid.New(), Title: "The Matrix", TMDbID: ptr(int32(603))}, nil)
+		})).Return(&Movie{ID: uuid.Must(uuid.NewV7()), Title: "The Matrix", TMDbID: ptr(int32(603))}, nil)
 
 		// 2. Create Movie File
 		repo.On("CreateMovieFile", ctx, mock.MatchedBy(func(p CreateMovieFileParams) bool {
@@ -156,7 +156,7 @@ func TestLibraryService_RefreshMovie(t *testing.T) {
 	svc := NewLibraryService(repo, metadata, config.LibraryConfig{}, prober)
 	ctx := context.Background()
 
-	movieID := uuid.New()
+	movieID := uuid.Must(uuid.NewV7())
 	movie := &Movie{ID: movieID, TMDbID: ptr(int32(603)), Title: "The Matrix"}
 
 	repo.On("GetMovie", ctx, movieID).Return(movie, nil)

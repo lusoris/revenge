@@ -112,7 +112,7 @@ func TestRepositoryPG_GetUserByID(t *testing.T) {
 	})
 
 	t.Run("non-existent user", func(t *testing.T) {
-		_, err := repo.GetUserByID(ctx, uuid.New())
+		_, err := repo.GetUserByID(ctx, uuid.Must(uuid.NewV7()))
 		require.Error(t, err)
 	})
 }

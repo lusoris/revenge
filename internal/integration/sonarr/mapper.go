@@ -21,7 +21,7 @@ func NewMapper() *Mapper {
 // ToSeries converts a Sonarr series to a domain series.
 func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 	result := &tvshow.Series{
-		ID:               uuid.New(),
+		ID:               uuid.Must(uuid.NewV7()),
 		TVDbID:           ptr(util.SafeIntToInt32(ss.TVDbID)),
 		IMDbID:           ptrString(ss.IMDbID),
 		SonarrID:         ptr(util.SafeIntToInt32(ss.ID)),
@@ -77,7 +77,7 @@ func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 // ToSeason converts a Sonarr season to a domain season.
 func (m *Mapper) ToSeason(si *SeasonInfo, seriesID uuid.UUID) *tvshow.Season {
 	season := &tvshow.Season{
-		ID:           uuid.New(),
+		ID:           uuid.Must(uuid.NewV7()),
 		SeriesID:     seriesID,
 		SeasonNumber: int32(si.SeasonNumber),
 		Name:         fmt.Sprintf("Season %d", si.SeasonNumber),
@@ -99,7 +99,7 @@ func (m *Mapper) ToSeason(si *SeasonInfo, seriesID uuid.UUID) *tvshow.Season {
 // ToEpisode converts a Sonarr episode to a domain episode.
 func (m *Mapper) ToEpisode(se *Episode, seriesID, seasonID uuid.UUID) *tvshow.Episode {
 	ep := &tvshow.Episode{
-		ID:            uuid.New(),
+		ID:            uuid.Must(uuid.NewV7()),
 		SeriesID:      seriesID,
 		SeasonID:      seasonID,
 		TVDbID:        ptr(util.SafeIntToInt32(se.TVDbID)),
@@ -131,7 +131,7 @@ func (m *Mapper) ToEpisode(se *Episode, seriesID, seasonID uuid.UUID) *tvshow.Ep
 // ToEpisodeFile converts a Sonarr episode file to a domain episode file.
 func (m *Mapper) ToEpisodeFile(sef *EpisodeFile, episodeID uuid.UUID) *tvshow.EpisodeFile {
 	result := &tvshow.EpisodeFile{
-		ID:           uuid.New(),
+		ID:           uuid.Must(uuid.NewV7()),
 		EpisodeID:    episodeID,
 		FilePath:     sef.Path,
 		FileName:     sef.RelativePath,
@@ -186,7 +186,7 @@ func (m *Mapper) ToGenres(ss *Series, seriesID uuid.UUID) []tvshow.SeriesGenre {
 	genres := make([]tvshow.SeriesGenre, len(ss.Genres))
 	for i, g := range ss.Genres {
 		genres[i] = tvshow.SeriesGenre{
-			ID:        uuid.New(),
+			ID:        uuid.Must(uuid.NewV7()),
 			SeriesID:  seriesID,
 			Name:      g,
 			CreatedAt: time.Now(),

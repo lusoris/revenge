@@ -605,8 +605,8 @@ func TestSeriesListFilters(t *testing.T) {
 }
 
 func TestEpisodeListFilters(t *testing.T) {
-	seriesID := uuid.New()
-	seasonID := uuid.New()
+	seriesID := uuid.Must(uuid.NewV7())
+	seasonID := uuid.Must(uuid.NewV7())
 
 	filters := EpisodeListFilters{
 		SeriesID: &seriesID,
@@ -623,13 +623,13 @@ func TestEpisodeListFilters(t *testing.T) {
 
 func TestContinueWatchingItem(t *testing.T) {
 	series := &Series{
-		ID:    uuid.New(),
+		ID:    uuid.Must(uuid.NewV7()),
 		Title: "Breaking Bad",
 	}
 
 	item := ContinueWatchingItem{
 		Series:            series,
-		LastEpisodeID:     uuid.New(),
+		LastEpisodeID:     uuid.Must(uuid.NewV7()),
 		LastSeasonNumber:  2,
 		LastEpisodeNumber: 5,
 		LastEpisodeTitle:  "Breakage",
@@ -647,7 +647,7 @@ func TestContinueWatchingItem(t *testing.T) {
 
 func TestNextEpisode(t *testing.T) {
 	episode := &Episode{
-		ID:            uuid.New(),
+		ID:            uuid.Must(uuid.NewV7()),
 		SeasonNumber:  3,
 		EpisodeNumber: 1,
 		Title:         "No Más",
@@ -666,8 +666,8 @@ func TestNextEpisode(t *testing.T) {
 
 func TestEpisodeFile(t *testing.T) {
 	file := EpisodeFile{
-		ID:             uuid.New(),
-		EpisodeID:      uuid.New(),
+		ID:             uuid.Must(uuid.NewV7()),
+		EpisodeID:      uuid.Must(uuid.NewV7()),
 		FilePath:       "/media/tv/Breaking Bad/Season 1/Breaking.Bad.S01E01.mkv",
 		FileName:       "Breaking.Bad.S01E01.mkv",
 		FileSize:       1500000000,
@@ -693,7 +693,7 @@ func TestEpisodeFile(t *testing.T) {
 
 func TestNetwork(t *testing.T) {
 	network := Network{
-		ID:            uuid.New(),
+		ID:            uuid.Must(uuid.NewV7()),
 		TMDbID:        174,
 		Name:          "AMC",
 		LogoPath:      strPtr("/path/to/logo.png"),
@@ -708,8 +708,8 @@ func TestNetwork(t *testing.T) {
 
 func TestSeriesGenre(t *testing.T) {
 	genre := SeriesGenre{
-		ID:          uuid.New(),
-		SeriesID:    uuid.New(),
+		ID:          uuid.Must(uuid.NewV7()),
+		SeriesID:    uuid.Must(uuid.NewV7()),
 		TMDbGenreID: 18,
 		Name:        "Drama",
 		CreatedAt:   time.Now(),

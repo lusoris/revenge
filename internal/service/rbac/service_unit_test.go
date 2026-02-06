@@ -113,7 +113,7 @@ func TestService_EnforceWithContext_Unit(t *testing.T) {
 	svc := setupUnitTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	err := svc.AddPolicy(ctx, userID.String(), "resource1", "read")
 	require.NoError(t, err)
@@ -227,7 +227,7 @@ func TestService_AssignRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		err := svc.AssignRole(ctx, userID, "admin")
 		require.NoError(t, err)
@@ -241,7 +241,7 @@ func TestService_AssignRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		err := svc.AssignRole(ctx, userID, "admin")
 		require.NoError(t, err)
@@ -258,7 +258,7 @@ func TestService_AssignRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 		require.NoError(t, svc.AssignRole(ctx, userID, "editor"))
@@ -279,7 +279,7 @@ func TestService_RemoveRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
@@ -295,7 +295,7 @@ func TestService_RemoveRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		err := svc.RemoveRole(ctx, userID, "nonexistent")
 		assert.Error(t, err)
@@ -312,7 +312,7 @@ func TestService_GetUserRoles_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		roles, err := svc.GetUserRoles(ctx, userID)
 		require.NoError(t, err)
@@ -323,7 +323,7 @@ func TestService_GetUserRoles_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 		require.NoError(t, svc.AssignRole(ctx, userID, "editor"))
@@ -354,9 +354,9 @@ func TestService_GetUsersForRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		user1 := uuid.New()
-		user2 := uuid.New()
-		user3 := uuid.New()
+		user1 := uuid.Must(uuid.NewV7())
+		user2 := uuid.Must(uuid.NewV7())
+		user3 := uuid.Must(uuid.NewV7())
 
 		require.NoError(t, svc.AssignRole(ctx, user1, "admin"))
 		require.NoError(t, svc.AssignRole(ctx, user2, "admin"))
@@ -379,7 +379,7 @@ func TestService_GetUsersForRole_Unit(t *testing.T) {
 		ctx := context.Background()
 
 		// Directly add a non-UUID user via Casbin (simulating legacy data)
-		validUser := uuid.New()
+		validUser := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, validUser, "admin"))
 
 		users, err := svc.GetUsersForRole(ctx, "admin")
@@ -398,7 +398,7 @@ func TestService_HasRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
 		hasRole, err := svc.HasRole(ctx, userID, "admin")
@@ -410,7 +410,7 @@ func TestService_HasRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		hasRole, err := svc.HasRole(ctx, userID, "admin")
 		require.NoError(t, err)
@@ -421,7 +421,7 @@ func TestService_HasRole_Unit(t *testing.T) {
 		svc := setupUnitTestService(t)
 		ctx := context.Background()
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "editor"))
 
 		hasRole, err := svc.HasRole(ctx, userID, "admin")
@@ -438,7 +438,7 @@ func TestService_RoleBasedAccess_Unit(t *testing.T) {
 	svc := setupUnitTestService(t)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 
 	// Add policy for admin role
 	require.NoError(t, svc.AddPolicy(ctx, "admin", "users", "manage"))
@@ -477,9 +477,9 @@ func TestService_ComplexPermissions_Unit(t *testing.T) {
 	require.NoError(t, svc.AddPolicy(ctx, "editor", "movies", "write"))
 	require.NoError(t, svc.AddPolicy(ctx, "viewer", "movies", "read"))
 
-	adminUser := uuid.New()
-	editorUser := uuid.New()
-	viewerUser := uuid.New()
+	adminUser := uuid.Must(uuid.NewV7())
+	editorUser := uuid.Must(uuid.NewV7())
+	viewerUser := uuid.Must(uuid.NewV7())
 
 	require.NoError(t, svc.AssignRole(ctx, adminUser, "admin"))
 	require.NoError(t, svc.AssignRole(ctx, editorUser, "editor"))

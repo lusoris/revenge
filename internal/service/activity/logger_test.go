@@ -19,11 +19,11 @@ func TestNoopLogger(t *testing.T) {
 
 	t.Run("LogAction does nothing", func(t *testing.T) {
 		err := logger.LogAction(context.Background(), LogActionRequest{
-			UserID:       uuid.New(),
+			UserID:       uuid.Must(uuid.NewV7()),
 			Username:     "testuser",
 			Action:       ActionUserLogin,
 			ResourceType: ResourceTypeUser,
-			ResourceID:   uuid.New(),
+			ResourceID:   uuid.Must(uuid.NewV7()),
 		})
 		assert.NoError(t, err)
 	})
@@ -55,7 +55,7 @@ func TestServiceLogger(t *testing.T) {
 	t.Run("LogAction creates entry", func(t *testing.T) {
 		ctx := context.Background()
 		// Use uuid.Nil since we don't have actual users in test DB
-		resourceID := uuid.New()
+		resourceID := uuid.Must(uuid.NewV7())
 		ip := net.ParseIP("192.168.1.100")
 
 		err := logger.LogAction(ctx, LogActionRequest{

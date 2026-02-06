@@ -408,7 +408,7 @@ func TestWebhookAgent_Send_Success(t *testing.T) {
 
 	event := notification.NewEvent(notification.EventMovieAdded)
 	event.Data = map[string]any{"movie_title": "Test Movie"}
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	event.UserID = &userID
 
 	err = agent.Send(context.Background(), event)

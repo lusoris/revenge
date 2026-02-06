@@ -165,7 +165,7 @@ func GenerateAvatarKey(userID uuid.UUID, filename string) string {
 	}
 
 	// Generate unique filename with user prefix for organization
-	uniqueID := uuid.New()
+	uniqueID := uuid.Must(uuid.NewV7())
 	return fmt.Sprintf("avatars/%s/%s%s", userID.String(), uniqueID.String(), ext)
 }
 

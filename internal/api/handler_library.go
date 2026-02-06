@@ -478,7 +478,7 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryId, req.UserId, permission)
 	if perm == nil {
 		return &ogen.LibraryPermission{
-			ID:         uuid.New(),
+			ID:         uuid.Must(uuid.NewV7()),
 			LibraryId:  params.LibraryId,
 			UserId:     req.UserId,
 			Permission: ogen.LibraryPermissionPermission(permission),

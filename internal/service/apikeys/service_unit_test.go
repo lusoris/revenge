@@ -45,8 +45,8 @@ func TestService_CreateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
-		keyID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
+		keyID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CountUserAPIKeys", mock.Anything, userID).Return(int64(0), nil)
 		mockRepo.On("CreateAPIKey", mock.Anything, mock.AnythingOfType("db.CreateAPIKeyParams")).
@@ -69,7 +69,7 @@ func TestService_CreateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CountUserAPIKeys", mock.Anything, userID).Return(int64(10), nil)
 
@@ -88,7 +88,7 @@ func TestService_CreateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CountUserAPIKeys", mock.Anything, userID).Return(int64(0), nil)
 
@@ -107,7 +107,7 @@ func TestService_CreateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("CountUserAPIKeys", mock.Anything, userID).Return(int64(0), errors.New("db error"))
 
@@ -132,8 +132,8 @@ func TestService_GetKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).
 			Return(makeTestAPIKey(keyID, userID, "Test Key", []string{"read"}, true), nil)
@@ -149,7 +149,7 @@ func TestService_GetKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).Return(db.SharedApiKey{}, errors.New("not found"))
 
@@ -169,11 +169,11 @@ func TestService_ListUserKeys_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		keys := []db.SharedApiKey{
-			makeTestAPIKey(uuid.New(), userID, "Key 1", []string{"read"}, true),
-			makeTestAPIKey(uuid.New(), userID, "Key 2", []string{"write"}, true),
+			makeTestAPIKey(uuid.Must(uuid.NewV7()), userID, "Key 1", []string{"read"}, true),
+			makeTestAPIKey(uuid.Must(uuid.NewV7()), userID, "Key 2", []string{"write"}, true),
 		}
 
 		mockRepo.On("ListUserAPIKeys", mock.Anything, userID).Return(keys, nil)
@@ -188,7 +188,7 @@ func TestService_ListUserKeys_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		userID := uuid.New()
+		userID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("ListUserAPIKeys", mock.Anything, userID).Return(nil, errors.New("db error"))
 
@@ -244,8 +244,8 @@ func TestService_ValidateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		rawKey := "rv_" + "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 		inactiveKey := makeTestAPIKey(keyID, userID, "Inactive Key", []string{"read"}, false)
@@ -262,8 +262,8 @@ func TestService_ValidateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		rawKey := "rv_" + "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 		expiredKey := makeTestAPIKey(keyID, userID, "Expired Key", []string{"read"}, true)
@@ -283,8 +283,8 @@ func TestService_ValidateKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 		rawKey := "rv_" + "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 		validKey := makeTestAPIKey(keyID, userID, "Valid Key", []string{"read"}, true)
@@ -310,7 +310,7 @@ func TestService_RevokeKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("RevokeAPIKey", mock.Anything, keyID).Return(nil)
 
@@ -323,7 +323,7 @@ func TestService_RevokeKey_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("RevokeAPIKey", mock.Anything, keyID).Return(errors.New("db error"))
 
@@ -342,8 +342,8 @@ func TestService_CheckScope_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		key := makeTestAPIKey(keyID, userID, "Test Key", []string{"read", "write"}, true)
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).Return(key, nil)
@@ -358,8 +358,8 @@ func TestService_CheckScope_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		key := makeTestAPIKey(keyID, userID, "Admin Key", []string{"admin"}, true)
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).Return(key, nil)
@@ -374,8 +374,8 @@ func TestService_CheckScope_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
-		userID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
+		userID := uuid.Must(uuid.NewV7())
 
 		key := makeTestAPIKey(keyID, userID, "Test Key", []string{"read"}, true)
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).Return(key, nil)
@@ -390,7 +390,7 @@ func TestService_CheckScope_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 
 		mockRepo.On("GetAPIKey", mock.Anything, keyID).Return(db.SharedApiKey{}, errors.New("not found"))
 
@@ -410,7 +410,7 @@ func TestService_UpdateScopes_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 		newScopes := []string{"read", "write"}
 
 		mockRepo.On("UpdateAPIKeyScopes", mock.Anything, keyID, newScopes).Return(nil)
@@ -424,7 +424,7 @@ func TestService_UpdateScopes_Short(t *testing.T) {
 		mockRepo := NewMockAPIKeysRepository(t)
 		svc := setupAPIKeysService(mockRepo)
 
-		keyID := uuid.New()
+		keyID := uuid.Must(uuid.NewV7())
 		newScopes := []string{"invalid_scope"}
 
 		err := svc.UpdateScopes(context.Background(), keyID, newScopes)

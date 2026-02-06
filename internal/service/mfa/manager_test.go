@@ -25,7 +25,7 @@ func TestVerifyMethod_Constants(t *testing.T) {
 }
 
 func TestMFAStatus_Structure(t *testing.T) {
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	status := MFAStatus{
 		UserID:                userID,
 		HasTOTP:               true,
@@ -44,7 +44,7 @@ func TestMFAStatus_Structure(t *testing.T) {
 }
 
 func TestVerificationResult_Structure(t *testing.T) {
-	userID := uuid.New()
+	userID := uuid.Must(uuid.NewV7())
 	result := VerificationResult{
 		Success: true,
 		Method:  VerifyMethodTOTP,
@@ -97,8 +97,8 @@ func createTestUserForManager(t *testing.T, queries *db.Queries, ctx context.Con
 
 	isActive := true
 	user, err := queries.CreateUser(ctx, db.CreateUserParams{
-		Email:        "mfatest_" + uuid.New().String()[:8] + "@example.com",
-		Username:     "mfatest_" + uuid.New().String()[:8],
+		Email:        "mfatest_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
+		Username:     "mfatest_" + uuid.Must(uuid.NewV7()).String()[:8],
 		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=4$test$test",
 		IsActive:     &isActive,
 	})

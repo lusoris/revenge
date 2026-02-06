@@ -30,7 +30,7 @@ func RequestIDMiddleware() middleware.Middleware {
 		// Extract or generate request ID
 		requestID := req.Raw.Header.Get("X-Request-ID")
 		if requestID == "" {
-			requestID = uuid.New().String()
+			requestID = uuid.Must(uuid.NewV7()).String()
 		}
 
 		// Store in context
@@ -56,7 +56,7 @@ func RequestIDHTTPWrapper(next http.Handler) http.Handler {
 		requestID := GetRequestID(r.Context())
 		if requestID == "" {
 			// Fallback: generate if not in context (shouldn't happen if middleware is configured correctly)
-			requestID = uuid.New().String()
+			requestID = uuid.Must(uuid.NewV7()).String()
 			r = r.WithContext(WithRequestID(r.Context(), requestID))
 		}
 

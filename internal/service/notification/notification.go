@@ -109,7 +109,7 @@ type Event struct {
 // NewEvent creates a new event with a generated ID and current timestamp
 func NewEvent(eventType EventType) *Event {
 	return &Event{
-		ID:        uuid.New(),
+		ID:        uuid.Must(uuid.NewV7()),
 		Type:      eventType,
 		Timestamp: time.Now().UTC(),
 		Data:      make(map[string]any),
