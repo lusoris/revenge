@@ -23,7 +23,7 @@ jobs:
       image: golang:1.25-alpine
     steps:
       - name: Install system dependencies
-        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev curl
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev curl tar zstd
       - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
@@ -45,7 +45,7 @@ jobs:
       image: golang:1.25-alpine
     steps:
       - name: Install system dependencies
-        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev tar zstd
       - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
@@ -125,7 +125,7 @@ jobs:
       image: golang:1.25-alpine
     steps:
       - name: Install system dependencies
-        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev
+        run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev tar zstd
       - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
