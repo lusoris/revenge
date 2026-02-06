@@ -428,7 +428,7 @@ The MVP is complete when a user can:
 ### Core Module Designs
 - [MOVIE_MODULE.md](../features/video/MOVIE_MODULE.md) - Complete movie module design with schemas, services, and handlers
 - [COLLECTIONS.md](../features/shared/COLLECTIONS.md) - Collection support design
-- [LIBRARY_TYPES.md](../features/shared/LIBRARY_TYPES.md) - Library provider architecture
+- [LIBRARIES.md](../features/shared/LIBRARIES.md) - Library provider architecture
 
 ### Integration Designs
 - [TMDB.md](../integrations/metadata/video/TMDB.md) - TMDb metadata provider design (rate limiting, caching, retry logic)

@@ -24,7 +24,7 @@
 | [Design System](DESIGN_SYSTEM.md) | > Queen Anne's Revenge themed design system for Revenge fron... | 🟡 Partial |
 | [Email System](EMAIL.md) | > SMTP email system with go-mail, TLS/STARTTLS, templates, a... | 🟡 Planned |
 | [Frontend Architecture](FRONTEND.md) | > Frontend architecture with SvelteKit 2, Svelte 5, Tailwind... | 🟡 Planned |
-| [Notifications System](NOTIFICATIONS.md) | > Multi-channel notification system: Email, Push (FCM), Webh... | 🟡 Planned |
+| [Notifications System](NOTIFICATION_CHANNELS.md) | > Multi-channel notification system: Email, Push (FCM), Webh... | 🟡 Planned |
 | [Observability - Metrics, Tracing, and Logging](OBSERVABILITY.md) | > Complete observability stack with metrics, distributed tra... | 🟡 Planned |
 | [Advanced Offloading Architecture](OFFLOADING.md) | > Offload heavy operations to background workers and externa... | 🟡 Planned |
 | [Revenge - Technology Stack](TECH_STACK.md) | > Complete technology stack powering Revenge | 🟡 Planned |

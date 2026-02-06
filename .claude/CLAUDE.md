@@ -17,7 +17,7 @@ Always reference this before writing code. Do not use outdated versions or depre
 
 - [DESIGN_INDEX.md](../docs/dev/design/DESIGN_INDEX.md) - navigate to specific design docs
 - [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md) - technology choices and rationale
-- [ARCHITECTURE.md](../docs/dev/design/architecture/01_ARCHITECTURE.md) - system architecture
+- [ARCHITECTURE.md](../docs/dev/design/architecture/ARCHITECTURE.md) - system architecture
 - [.workingdir/](../.workingdir/) - working reports and analysis (migration reports, API overviews, etc.)
 
 ---
@@ -147,6 +147,19 @@ helm install revenge oci://ghcr.io/lusoris/charts/revenge
 ```
 
 Full stack included: Revenge, PostgreSQL, Dragonfly, Typesense. See [charts/revenge/values.yaml](../charts/revenge/values.yaml).
+
+---
+
+## Language Policy
+
+**All code comments, documentation, commit messages, and design docs MUST be written in English.** This applies to:
+- Inline code comments and docstrings
+- Markdown documentation files (design docs, READMEs, reports)
+- Commit messages and PR descriptions
+- TODO/FIXME annotations
+- API descriptions and error messages
+
+The user may communicate in German in chat - that's fine. But all artifacts (code, docs, commits) are English-only.
 
 ---
 

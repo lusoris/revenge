@@ -47,7 +47,7 @@ Complete guide for setting up Revenge development environment:
 ### Design Documents
 - [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [BEST_PRACTICES](../operations/CODING_STANDARDS.md)
 - [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources

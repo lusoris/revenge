@@ -47,8 +47,8 @@ Standard testing approach for Revenge project:
 ## Related Documentation
 ### Design Documents
 - [patterns](INDEX.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [BEST_PRACTICES](../operations/CODING_STANDARDS.md)
+- [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
 
 ### External Sources
 - [Go Testing](../../sources/go/stdlib/testing.md) - Standard library testing

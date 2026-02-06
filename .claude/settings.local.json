@@ -135,7 +135,33 @@
       "Bash(docker ps:*)",
       "Bash(helm lint:*)",
       "Bash(set:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(code --list-extensions:*)",
+      "Bash(code-insiders:*)",
+      "Bash(code --uninstall-extension:*)",
+      "Bash(code --install-extension:*)",
+      "Bash(cat:*)",
+      "Bash(git tag:*)",
+      "Bash(1 <<'EOF'\n{\n  \"required_status_checks\": {\n    \"strict\": true,\n    \"contexts\": [\"test\", \"lint\", \"build\"]\n  },\n  \"enforce_admins\": false,\n  \"required_pull_request_reviews\": {\n    \"dismiss_stale_reviews\": true,\n    \"required_approving_review_count\": 1\n  },\n  \"restrictions\": null,\n  \"required_linear_history\": true,\n  \"allow_force_pushes\": true,\n  \"allow_deletions\": false\n}\nEOF)",
+      "Bash(1 <<'EOF'\n{\n  \"required_status_checks\": {\n    \"strict\": true,\n    \"contexts\": [\"test\", \"lint\", \"build\"]\n  },\n  \"enforce_admins\": false,\n  \"required_pull_request_reviews\": {\n    \"dismiss_stale_reviews\": true,\n    \"required_approving_review_count\": 1\n  },\n  \"restrictions\": null,\n  \"required_linear_history\": true,\n  \"allow_force_pushes\": false,\n  \"allow_deletions\": false\n}\nEOF)",
+      "WebFetch(domain:tip.golang.org)",
+      "Bash(go mod download:*)",
+      "Bash(cd:*)",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" diff --stat)",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" log --oneline -5)",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" add \".github/workflows/develop.yml\" \".workingdir/REPORT_10_DEPENDENCY_CHANGELOG.md\")",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" commit -m \"$\\(cat <<''EOF''\nfix\\(ci\\): prune old tagged dev images, keep last 5\n\nReplace delete-only-untagged-versions with github-script that filters\nfor dev-* tagged container versions and 0.0.0-dev.* chart versions,\nkeeping the 5 most recent of each. Orphaned untagged manifests still\ncleaned up separately.\n\nAlso adds dependency changelog report for PR #26 analysis.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" add go.mod go.sum internal/content/movie/moviejobs/file_match.go internal/content/movie/moviejobs/library_scan.go internal/content/movie/moviejobs/metadata_refresh.go internal/content/movie/moviejobs/search_index.go internal/content/tvshow/jobs/jobs.go internal/infra/jobs/cleanup_job.go internal/integration/radarr/jobs.go internal/integration/sonarr/jobs.go internal/service/activity/cleanup.go internal/service/library/cleanup.go)",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" commit -m \"$\\(cat <<''EOF''\nfeat\\(jobs\\): upgrade River to v0.30.2, add worker timeouts\n\nUpgrade all 9 dependencies from dependabot PR #26:\n- riverqueue/river 0.26.0 -> 0.30.2\n- go.opentelemetry.io/otel 1.39.0 -> 1.40.0\n- golang.org/x/time 0.12.0 -> 0.14.0\n- hashicorp/go-hclog 1.6.2 -> 1.6.3\n- lmittmann/tint 1.1.2 -> 1.1.3\n\nAdd explicit Timeout\\(\\) methods to all 16 River workers to prevent\nstuck/zombie jobs \\(River v0.27+ feature\\):\n- Library scan workers: 30min\n- Metadata refresh workers: 5-15min\n- Sync workers \\(Sonarr/Radarr\\): 10min\n- File match workers: 5min\n- Search index workers: 10-15min\n- Cleanup workers: 2min\n- Webhook workers: 1min\n- Notification worker: already had 2min\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"c:/Users/ms/dev/revenge\" push origin develop)",
+      "Bash(git clone:*)",
+      "Bash(powershell:*)",
+      "Bash(for f in SUPPORT.md docs/INDEX.md docs/dev/INDEX.md .shared/docs/ONBOARDING.md .githooks/CLAUDE.md .claude/docs/INDEX.md .workingdir3/PLAN.md)",
+      "Bash(do if [ -f \"$f\" ])",
+      "Bash(then sed -i 's/01_ARCHITECTURE\\\\.md/ARCHITECTURE.md/g; s/02_DESIGN_PRINCIPLES\\\\.md/DESIGN_PRINCIPLES.md/g; s/03_METADATA_SYSTEM\\\\.md/METADATA_SYSTEM.md/g; s/04_PLAYER_ARCHITECTURE\\\\.md/PLAYER_ARCHITECTURE.md/g; s/05_PLUGIN_ARCHITECTURE_DECISION\\\\.md/PLUGIN_DECISION.md/g; s/RBAC_CASBIN\\\\.md/RBAC.md/g; s/LIBRARY_TYPES\\\\.md/LIBRARIES.md/g; s/DATABASE_AUTO_HEALING\\\\.md/AUTO_HEALING.md/g; s/BEST_PRACTICES\\\\.md/CODING_STANDARDS.md/g; s/REVERSE_PROXY\\\\.md/PROXY.md/g; s/BRANCH_PROTECTION\\\\.md/BRANCHES.md/g; s/ARR_INTEGRATION\\\\.md/SERVARR.md/g; s/METADATA_ENRICHMENT\\\\.md/METADATA.md/g; s/WEBHOOK_PATTERNS\\\\.md/WEBHOOKS.md/g' \"$f\")"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }

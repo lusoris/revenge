@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   devcontainer:
     build:
@@ -11,17 +9,30 @@ services:
       - go-build-cache:/root/.cache/go-build
     command: sleep infinity
     environment:
+      - GOEXPERIMENT=greenteagc,jsonv2
       - REVENGE_LOG_LEVEL=debug
-      - REVENGE_DB_TYPE=sqlite
-      - REVENGE_DB_PATH=/workspace/data/revenge.db
+      - REVENGE_LOG_FORMAT=console
+      - REVENGE_DATABASE_URL=postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable
+      - REVENGE_CACHE_ENABLED=true
+      - REVENGE_CACHE_URL=redis://dragonfly:6379
+      - REVENGE_SEARCH_ENABLED=true
+      - REVENGE_SEARCH_URL=http://typesense:8108
+      - REVENGE_SEARCH_API_KEY=dev_api_key
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+      typesense:
+        condition: service_healthy
 
-  # Optional: PostgreSQL for development
+  # PostgreSQL 18+ (REQUIRED - matches docker-compose.dev.yml)
   postgres:
     image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: revenge
-      POSTGRES_PASSWORD: revenge
+      POSTGRES_PASSWORD: revenge_dev_pass
       POSTGRES_DB: revenge
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -29,23 +40,43 @@ services:
       - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U revenge"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
 
-  # Optional: Redis for caching
-  redis:
-    image: redis:7-alpine
+  # Dragonfly (REQUIRED - Redis-compatible cache)
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     restart: unless-stopped
+    command: ["--cache_mode"]
     ports:
       - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Typesense (REQUIRED - search engine)
+  typesense:
+    image: typesense/typesense:0.25.2
+    restart: unless-stopped
+    environment:
+      TYPESENSE_DATA_DIR: /data
+      TYPESENSE_API_KEY: dev_api_key
+      TYPESENSE_ENABLE_CORS: "true"
+    volumes:
+      - typesense-data:/data
+    ports:
+      - "8108:8108"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
+      interval: 5s
+      timeout: 3s
       retries: 5
 
 volumes:
   go-modules:
   go-build-cache:
   postgres-data:
+  typesense-data:

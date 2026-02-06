@@ -107,9 +107,9 @@ Unsubscribe from emails (public, no auth)
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [NOTIFICATIONS](../technical/NOTIFICATIONS.md)
+- [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
+- [NOTIFICATIONS](../technical/NOTIFICATION_CHANNELS.md)
 
 ### External Sources
 - [go-mail GitHub README](../../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail-docs

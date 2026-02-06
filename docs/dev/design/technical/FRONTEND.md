@@ -49,7 +49,7 @@ Modern reactive frontend for Revenge:
 ### Design Documents
 - [technical](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
+- [04_PLAYER_ARCHITECTURE](../architecture/PLAYER_ARCHITECTURE.md)
 
 ### External Sources
 - [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Component framework

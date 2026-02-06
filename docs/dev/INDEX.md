@@ -21,11 +21,11 @@ Project design documents - manually maintained, protected from auto-updates.
 ### [Architecture](design/architecture/)
 Core system design and architectural decisions.
 
-- [Overall Architecture](design/architecture/01_ARCHITECTURE.md) - Complete system architecture
-- [Design Principles](design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
-- [Metadata System](design/architecture/03_METADATA_SYSTEM.md) - Metadata management
-- [Player Architecture](design/architecture/04_PLAYER_ARCHITECTURE.md) - Media player design
-- [Plugin Architecture Decision](design/architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+- [Overall Architecture](design/architecture/ARCHITECTURE.md) - Complete system architecture
+- [Design Principles](design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
+- [Metadata System](design/architecture/METADATA_SYSTEM.md) - Metadata management
+- [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
+- [Plugin Architecture Decision](design/architecture/PLUGIN_DECISION.md) - Native vs plugins
 
 ### [Features](design/features/)
 Content modules and feature specifications. See [Features INDEX](design/features/INDEX.md) for full listing.
@@ -68,11 +68,11 @@ Setup, deployment, and operational guides.
 
 - [Setup Guide](design/operations/SETUP.md) - Initial setup instructions
 - [Development Guide](design/operations/DEVELOPMENT.md) - Development workflow
-- [Database Auto-Healing](design/operations/DATABASE_AUTO_HEALING.md) - PostgreSQL corruption detection/repair
-- [Reverse Proxy](design/operations/REVERSE_PROXY.md) - Nginx/Caddy configuration
+- [Database Auto-Healing](design/operations/AUTO_HEALING.md) - PostgreSQL corruption detection/repair
+- [Reverse Proxy](design/operations/PROXY.md) - Nginx/Caddy configuration
 - [Git Workflow](design/operations/GITFLOW.md) - Branch strategy
-- [Branch Protection](design/operations/BRANCH_PROTECTION.md) - Repository protection rules
-- [Best Practices](design/operations/BEST_PRACTICES.md) - Coding standards
+- [Branch Protection](design/operations/BRANCHES.md) - Repository protection rules
+- [Coding Standards](design/operations/CODING_STANDARDS.md) - Coding standards
 - [Upstream Sync](design/operations/UPSTREAM_SYNC.md) - Syncing with upstream
 
 ### [Planning](design/planning/)

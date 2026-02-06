@@ -51,7 +51,7 @@ code.claude.com/docs/             <- Claude Code Entry Point
 | [02_MEMORY.md](02_MEMORY.md) | CLAUDE.md & Memory Management | code.claude.com |
 | [03_MCP.md](03_MCP.md) | Model Context Protocol | code.claude.com |
 | [04_HOOKS.md](04_HOOKS.md) | Hooks Lifecycle & Config | code.claude.com |
-| [05_BEST_PRACTICES.md](05_BEST_PRACTICES.md) | Best Practices Guide | code.claude.com |
+| [05_CODING_STANDARDS.md](05_CODING_STANDARDS.md) | Best Practices Guide | code.claude.com |
 | [06_COMMON_WORKFLOWS.md](06_COMMON_WORKFLOWS.md) | Common Workflows | code.claude.com |
 | [07_SKILLS.md](07_SKILLS.md) | Skills System Reference | code.claude.com |
 | [08_SUBAGENTS.md](08_SUBAGENTS.md) | Subagents Reference | code.claude.com |

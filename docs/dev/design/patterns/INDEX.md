@@ -10,12 +10,12 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Arr Integration Pattern](ARR_INTEGRATION.md) | > Webhook-based integration pattern with Radarr, Sonarr, Lid... | 🟡 Planned |
+| [Arr Integration Pattern](SERVARR.md) | > Webhook-based integration pattern with Radarr, Sonarr, Lid... | 🟡 Planned |
 | [HTTP Client with Proxy/VPN Pattern](HTTP_CLIENT.md) | > Reusable HTTP client factory with optional proxy/VPN routi... | 🟡 Planned |
-| [Metadata Enrichment Pattern](METADATA_ENRICHMENT.md) | > Multi-tier metadata enrichment with caching and background... | 🟡 Planned |
+| [Metadata Enrichment Pattern](METADATA.md) | > Multi-tier metadata enrichment with caching and background... | 🟡 Planned |
 | [Observability Pattern](OBSERVABILITY.md) | > Metrics, tracing, and logging patterns with Prometheus, Op... | 🟡 Planned |
 | [Testing Patterns](TESTING.md) | > Table-driven tests, mocking patterns, and integration test... | 🟡 Planned |
-| [Webhook Patterns](WEBHOOK_PATTERNS.md) | > Secure, reliable webhook handling with HMAC validation, as... | 🟡 Planned |
+| [Webhook Patterns](WEBHOOKS.md) | > Secure, reliable webhook handling with HMAC validation, as... | 🟡 Planned |
 
 ---
 

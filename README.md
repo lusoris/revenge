@@ -1,46 +1,70 @@
 # Revenge
 
-[![Dev Build](https://github.com/lusoris/revenge/actions/workflows/dev.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/dev.yml)
-[![CodeQL](https://github.com/lusoris/revenge/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/codeql.yml)
+[![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
+[![Develop Build](https://github.com/lusoris/revenge/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/develop.yml)
+[![Security](https://github.com/lusoris/revenge/actions/workflows/security.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/security.yml)
 [![Go Version](https://img.shields.io/badge/go-1.25.6-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation
 
-A ground-up media server built in Go with a fully modular architecture. Each content type (movies, shows, music, etc.) is completely isolated with its own tables, services, and handlers.
+A ground-up media server built in Go with a fully modular architecture. Each content type is completely isolated with its own tables, services, and handlers.
 
-**WARNING: EARLY DEVELOPMENT** - Core infrastructure ready, content modules in development. See [TODO.md](TODO.md) for roadmap.
+**WARNING: EARLY DEVELOPMENT** - Core infrastructure and backend services implemented, frontend not yet started. See [TODO.md](TODO.md) for current status.
 
 ---
 
 ## Design Principles
 
 - **Performance First** - UX never blocked by backend tasks
-- **Client Agnostic** - Native mobile/TV apps with Revenge API, DLNA compatibility
-- **Privacy by Default** - Encrypted local storage, opt-in tracking only
+- **Client Agnostic** - REST API designed for native mobile/TV apps
+- **Privacy by Default** - Self-hosted, no telemetry
 - **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
-- **Optional ML** - Ollama integration for recommendations, not required
 
-See [02_DESIGN_PRINCIPLES.md](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.md) for full details.
+See [DESIGN_PRINCIPLES.md](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) for full details.
 
 ---
 
-## Features
+## Implemented
+
+### Backend Services (15)
+Authentication (JWT + refresh tokens), MFA (TOTP + WebAuthn), Sessions, RBAC (Casbin), OIDC/SSO, Users, API Keys, Settings, Activity logging, Library management, Metadata aggregation, Search (Typesense), Email (SMTP), Notifications, Storage (local + S3)
 
 ### Content Modules
-- **12 Content Types**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Comics, Collections, and QAR content (isolated `qar` schema with pirate-themed obfuscation)
-- **Module-Specific Age Restrictions**: Separate rating systems per module (video MPAA/BBFC, music parental advisory, books age ranges, comics publisher ratings)
+- **Movies** - Full CRUD, metadata enrichment (TMDb + TVDb), library scanning, file matching, search indexing
+- **TV Shows** - Series/season/episode hierarchy, metadata enrichment, library scanning
+- **QAR** - Adult content isolation (pirate-themed obfuscation, separate `qar` schema, `/api/v1/legacy/*` namespace)
 
-### Playback
-- **Watch Next / Continue Watching**: Smart progress tracking with 5%-90% thresholds, series navigation, cross-device sync
-- **External Transcoding**: Delegates to "Blackbeard" service - Revenge stays lightweight
-- **Audio Streaming**: Gapless playback, bandwidth adaptation, format negotiation
+### Background Jobs (River)
+9 workers: metadata refresh, library scan, file match, search index, series refresh, library cleanup, activity cleanup
 
 ### Integrations
-- **Servarr Integration**: Radarr, Sonarr, Lidarr, Whisparr v3 (eros), Chaptarr as primary metadata sources
-- **Release Calendar**: Unified calendar from all Servarr instances with upcoming/recent views
-- **Scrobbling**: Trakt, Last.fm, ListenBrainz, Letterboxd sync
-- **OIDC/SSO**: Full SSO support with external providers (Authelia, Authentik, Keycloak)
+- **Metadata**: TMDb, TheTVDB (with caching, language support, force refresh)
+- **Servarr**: Radarr, Sonarr (library sync)
+- **Auth**: Generic OIDC provider
+
+### Infrastructure
+- PostgreSQL 18+ with pgxpool, 30+ migrations, sqlc codegen
+- Dragonfly (Redis-compatible) distributed cache via rueidis
+- otter v2 in-memory cache (W-TinyLFU)
+- Typesense full-text search
+- River PostgreSQL-native job queue
+- K8s health checks (liveness/readiness/startup)
+- OpenTelemetry observability
+- govips image processing
+
+### CI/CD
+8 GitHub Actions workflows: CI, develop auto-build, release-please, security scanning, coverage, PR checks, stale issue cleanup, label sync
+
+## Planned (Not Yet Implemented)
+
+- **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
+- **Content Modules**: Music, Audiobooks, Books, Podcasts, Comics, Photos, Live TV
+- **Playback**: Watch Next, Skip Intro, SyncPlay, Trickplay, Transcoding (Blackbeard)
+- **Integrations**: Lidarr, Whisparr, Chaptarr, Authelia, Authentik, Keycloak, scrobbling (Trakt, Last.fm)
+- **Features**: Collections, Content Ratings, Request System, Release Calendar
+
+See [docs/dev/design/](docs/dev/design/) for comprehensive design documentation covering all planned features.
 
 ---
 
@@ -57,10 +81,10 @@ See [02_DESIGN_PRINCIPLES.md](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.
 | API         | ogen                | OpenAPI spec-first               |
 | DI          | uber-go/fx          | Dependency injection             |
 | Config      | koanf v2            | Multi-source configuration       |
-| Logging     | slog                | Structured logging               |
+| Logging     | slog + zap          | Structured logging               |
 | Resilience  | gobreaker + backoff | Circuit breakers, retries        |
 
-See [01_ARCHITECTURE.md](docs/dev/design/architecture/01_ARCHITECTURE.md) for the complete design.
+See [ARCHITECTURE.md](docs/dev/design/architecture/ARCHITECTURE.md) for the complete design.
 
 ---
 
@@ -72,183 +96,77 @@ See [01_ARCHITECTURE.md](docs/dev/design/architecture/01_ARCHITECTURE.md) for th
 git clone https://github.com/lusoris/revenge.git
 cd revenge
 docker compose up -d
-
-# Opens at http://localhost:8096
 ```
 
 ### Development
 
 ```bash
-# Prerequisites: Go 1.25+, PostgreSQL, Dragonfly
+# Prerequisites: Go 1.25+, Docker (for dependencies)
 git clone https://github.com/lusoris/revenge.git
 cd revenge
 
-# Start dependencies
+# Start dependencies (PostgreSQL, Dragonfly, Typesense)
 docker compose -f docker-compose.dev.yml up -d
 
-# Run with experiments enabled
-GOEXPERIMENT=greenteagc,jsonv2 go run ./cmd/revenge
+# Build and run
+make build && ./bin/revenge
+
+# Or run directly
+make run
 ```
-
----
-
-## Documentation
-
-### Developer Documentation
-All design documentation lives in [docs/dev/design/](docs/dev/design/00_SOURCE_OF_TRUTH.md).
-
-### User Documentation
-User-facing wiki documentation is available in [docs/wiki/](docs/wiki/).
-
----
-
-### Core Design
-- [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference for all versions and modules
-- [Architecture](docs/dev/design/architecture/01_ARCHITECTURE.md) - Complete modular architecture
-- [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices with rationale
-- [Design Principles](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
-- [Configuration Reference](docs/dev/design/technical/CONFIGURATION.md) - koanf configuration options
-
-### Services
-- [Services Index](docs/dev/design/services/INDEX.md) - Service layer overview
-- [Auth Service](docs/dev/design/services/AUTH.md) - Authentication and login flows
-- [User Service](docs/dev/design/services/USER.md) - User management and roles
-- [Session Service](docs/dev/design/services/SESSION.md) - Token and session management
-- [Library Service](docs/dev/design/services/LIBRARY.md) - Library management and scanning
-- [RBAC Service](docs/dev/design/services/RBAC.md) - Casbin role-based access control
-- [OIDC Service](docs/dev/design/services/OIDC.md) - SSO provider integration
-- [Settings Service](docs/dev/design/services/SETTINGS.md) - Server settings persistence
-
-### Content Modules
-- [Movie Module](docs/dev/design/features/video/MOVIE_MODULE.md) - Movie content management
-- [TV Show Module](docs/dev/design/features/video/TVSHOW_MODULE.md) - Series, seasons, episodes
-
-### Features
-- [Metadata System](docs/dev/design/architecture/03_METADATA_SYSTEM.md) - Servarr-first metadata with fallback providers
-- [Watch Next / Continue Watching](docs/dev/design/features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
-- [Release Calendar](docs/dev/design/features/playback/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
-- [Request System](docs/dev/design/features/shared/REQUEST_SYSTEM.md) - Content requests with polls, voting, RBAC rules
-- [Content Rating](docs/dev/design/features/shared/CONTENT_RATING.md) - Module-specific age restriction systems
-- [Audio Streaming](docs/dev/design/technical/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
-- [Scrobbling](docs/dev/design/features/shared/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
-- [RBAC with Casbin](docs/dev/design/features/shared/RBAC_CASBIN.md) - Dynamic role-based access control
-
-### Integrations
-- [Servarr Index](docs/dev/design/integrations/servarr/INDEX.md) - Radarr, Sonarr, Lidarr, Whisparr, Chaptarr
-- [Metadata Providers](docs/dev/design/integrations/metadata/INDEX.md) - TMDb, MusicBrainz, AniList, etc.
-- [Authentication Providers](docs/dev/design/integrations/auth/INDEX.md) - Authelia, Authentik, Keycloak
-
-### Operations
-- [Setup Guide](docs/dev/design/operations/SETUP.md) - Production deployment
-- [Development Guide](docs/dev/design/operations/DEVELOPMENT.md) - Development environment
-- [Best Practices](docs/dev/design/operations/BEST_PRACTICES.md) - Resilience, observability patterns
 
 ---
 
 ## Development
 
-### Building
+All commands are in the [Makefile](Makefile). Run `make help` for the full list.
 
 ```bash
-# Build with experiments
-GOEXPERIMENT=greenteagc,jsonv2 go build -o bin/revenge ./cmd/revenge
+# Build
+make build                  # Build binary
+make build-linux            # Cross-compile for Linux
 
-# Build all platforms
-make build-all
+# Test
+make test                   # Unit tests with race detection
+make test-integration       # Integration tests (requires Docker)
+
+# Code quality
+make lint                   # golangci-lint
+make vet                    # go vet
+make fmt                    # Format code
+
+# Code generation
+make generate               # ogen + sqlc + go generate
+
+# Docker
+make docker-build           # Build Docker image
+make docker-scan            # Build + Trivy scan
 ```
 
-### Testing
+Integration tests use [testcontainers-go](https://testcontainers.com/) to spin up real PostgreSQL, Dragonfly, and Typesense instances in Docker.
 
-```bash
-# Run unit tests
-make test
+---
 
-# Run unit tests with coverage
-make test-coverage
+## Documentation
 
-# Run integration tests (requires Docker)
-make test-integration
-
-# Run specific test
-go test -v ./internal/api -run TestHealthEndpoints
-```
-
-#### Integration Tests
-
-Integration tests use [testcontainers-go](https://testcontainers.com/) to spin up real PostgreSQL instances in Docker containers. This ensures tests run against actual database behavior.
-
-**Requirements**:
-- Docker Desktop or Docker Engine
-- On Windows: Docker Desktop with WSL2 backend enabled
-
-**Test Structure**:
-- `tests/integration/health_test.go` - Health endpoint E2E tests
-- `tests/integration/server_test.go` - Server lifecycle tests
-- `tests/integration/database_test.go` - Database integration tests
-- `tests/integration/api_client_test.go` - ogen client tests
-
-**Running Integration Tests**:
-```bash
-# Run all integration tests
-make test-integration
-
-# Run with verbose output
-go test -v -tags=integration ./tests/integration/...
-
-# Run specific integration test
-go test -v -tags=integration ./tests/integration -run TestHealthLivenessEndpoint
-```
-
-**Troubleshooting**:
-- **Windows**: Ensure Docker Desktop uses WSL2 backend (Settings → General → "Use WSL 2 based engine")
-- **Linux**: Ensure Docker daemon is running and user is in `docker` group
-- **Mac**: Ensure Docker Desktop is running
-
-### Code Generation
-
-```bash
-# Generate all (ogen, sqlc, go generate)
-make generate
-
-# Generate only OpenAPI code
-make ogen
-
-# Generate only sqlc code
-make sqlc
-```
-
-### Linting
-
-```bash
-# Run linters
-make lint
-
-# Auto-fix formatting
-make fmt
-
-# Run go vet
-make vet
-```
+- [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference for versions and modules
+- [Architecture](docs/dev/design/architecture/ARCHITECTURE.md) - System architecture
+- [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices with rationale
+- [Design Index](docs/dev/design/DESIGN_INDEX.md) - Full design documentation index
 
 ---
 
 ## Project Status
 
-See [TODO.md](TODO.md) for current implementation status.
+**Current Phase**: Backend services and content modules
 
-**Current Phase**: Content Modules
+See [TODO.md](TODO.md) for detailed implementation status.
 
 ---
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-1. Fork the repository
-2. Create a feature branch
-3. Write tests
-4. Run `go test ./...` and `golangci-lint run`
-5. Open a Pull Request
 
 ---
 

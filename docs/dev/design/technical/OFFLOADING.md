@@ -46,9 +46,9 @@ Complete offloading strategy:
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [METADATA_ENRICHMENT](../patterns/METADATA_ENRICHMENT.md)
+- [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
+- [METADATA_ENRICHMENT](../patterns/METADATA.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

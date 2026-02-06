@@ -465,8 +465,8 @@ Use this checklist to track your onboarding progress:
 
 ### Day 2: Understand the Codebase
 
-- [ ] Read [ARCHITECTURE.md](../../docs/dev/design/architecture/01_ARCHITECTURE.md)
-- [ ] Read [DESIGN_PRINCIPLES.md](../../docs/dev/design/architecture/02_DESIGN_PRINCIPLES.md)
+- [ ] Read [ARCHITECTURE.md](../../docs/dev/design/architecture/ARCHITECTURE.md)
+- [ ] Read [DESIGN_PRINCIPLES.md](../../docs/dev/design/architecture/DESIGN_PRINCIPLES.md)
 - [ ] Explore project structure
 - [ ] Understand module pattern
 - [ ] Review existing code for your area (backend/frontend)
@@ -658,8 +658,8 @@ After completing onboarding:
    - Share knowledge
 
 3. **Explore Advanced Topics**
-   - [Metadata System](../../docs/dev/design/architecture/03_METADATA_SYSTEM.md)
-   - [RBAC with Casbin](../../docs/dev/design/features/shared/RBAC_CASBIN.md)
+   - [Metadata System](../../docs/dev/design/architecture/METADATA_SYSTEM.md)
+   - [RBAC](../../docs/dev/design/features/shared/RBAC.md)
    - [River Job Queue](../../docs/dev/design/integrations/infrastructure/RIVER.md)
 
 ---

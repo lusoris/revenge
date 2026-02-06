@@ -326,5 +326,5 @@ See [ROADMAP.md](ROADMAP.md#post-10-roadmap-future) for future plans.
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
 - [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
 - [TECH_STACK.md](../technical/TECH_STACK.md) - Technology decisions
-- [01_ARCHITECTURE.md](../architecture/01_ARCHITECTURE.md) - System architecture
+- [ARCHITECTURE.md](../architecture/ARCHITECTURE.md) - System architecture
 - [VERSIONING.md](../operations/VERSIONING.md) - Versioning strategy

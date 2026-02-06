@@ -1,28 +1,37 @@
 {
-  "name": "Revenge Go Development",
+  "name": "Revenge Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.24"
+      "version": "1.25"
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
   },
   "customizations": {
     "vscode": {
       "extensions": [
         "golang.go",
         "ms-azuretools.vscode-docker",
-        "eamodio.gitlens",
         "davidanson.vscode-markdownlint",
         "editorconfig.editorconfig",
         "usernamehw.errorlens",
         "streetsidesoftware.code-spell-checker",
         "redhat.vscode-yaml",
-        "humao.rest-client",
-        "gruntfuggly.todo-tree"
+        "gruntfuggly.todo-tree",
+        "charliermarsh.ruff",
+        "svelte.svelte-vscode",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "42crunch.vscode-openapi",
+        "tamasfe.even-better-toml",
+        "mhutchie.git-graph",
+        "anthropic.claude-code"
       ],
       "settings": {
         "go.useLanguageServer": true,
@@ -30,20 +39,49 @@
         "go.lintFlags": ["--fast"],
         "go.formatTool": "goimports",
         "go.testFlags": ["-v", "-race"],
+        "go.testEnvVars": {
+          "GOEXPERIMENT": "greenteagc,jsonv2"
+        },
+        "go.buildFlags": ["-tags=integration"],
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit"
+        },
+        "terminal.integrated.env.linux": {
+          "GOEXPERIMENT": "greenteagc,jsonv2"
         }
       }
+    },
+    "coder": {
+      "name": "revenge-dev"
     }
   },
-  "postCreateCommand": "go mod download && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && go install github.com/cosmtrek/air@latest",
+  "containerEnv": {
+    "GOEXPERIMENT": "greenteagc,jsonv2"
+  },
+  "postCreateCommand": "go mod download && make install-tools",
   "remoteUser": "vscode",
-  "forwardPorts": [8096],
+  "forwardPorts": [8096, 5173, 5432, 6379, 8108],
   "portsAttributes": {
     "8096": {
-      "label": "Revenge Go",
+      "label": "Revenge API",
       "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "SvelteKit Dev",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Dragonfly",
+      "onAutoForward": "silent"
+    },
+    "8108": {
+      "label": "Typesense",
+      "onAutoForward": "silent"
     }
   }
 }

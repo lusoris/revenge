@@ -39,11 +39,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Architecture v2](architecture/01_ARCHITECTURE.md) | > Modern media server architecture with Go backend, SvelteKit frontend, PostgreS | ✅ |
-| [Revenge - Design Principles](architecture/02_DESIGN_PRINCIPLES.md) | > Core design principles and patterns guiding Revenge development | ✅ |
-| [Revenge - Metadata System](architecture/03_METADATA_SYSTEM.md) | > Multi-source metadata system with caching and priority chain | ✅ |
-| [Revenge - Player Architecture](architecture/04_PLAYER_ARCHITECTURE.md) | > Media playback system with HLS streaming and Vidstack player | ✅ |
-| [Plugin Architecture Decision](architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) | > ADR: Decision to use integrations over plugins | ✅ |
+| [Revenge - Architecture v2](architecture/ARCHITECTURE.md) | > Modern media server architecture with Go backend, SvelteKit frontend, PostgreS | ✅ |
+| [Revenge - Design Principles](architecture/DESIGN_PRINCIPLES.md) | > Core design principles and patterns guiding Revenge development | ✅ |
+| [Revenge - Metadata System](architecture/METADATA_SYSTEM.md) | > Multi-source metadata system with caching and priority chain | ✅ |
+| [Revenge - Player Architecture](architecture/PLAYER_ARCHITECTURE.md) | > Media playback system with HLS streaming and Vidstack player | ✅ |
+| [Plugin Architecture Decision](architecture/PLUGIN_DECISION.md) | > ADR: Decision to use integrations over plugins | ✅ |
 
 ---
 
@@ -66,7 +66,7 @@
 | [Adult Data Reconciliation](features/adult/DATA_RECONCILIATION.md) | Content module for Scenes, Performers, Studios | ✅ |
 | [Adult Gallery Module (QAR: Treasures)](features/adult/GALLERY_MODULE.md) | Content module for Scenes, Performers, Studios | ✅ |
 | [Revenge - Internationalization (i18n)](features/shared/I18N.md) | Content module for  | ✅ |
-| [Library Types](features/shared/LIBRARY_TYPES.md) | Content module for  | ✅ |
+| [Library Types](features/shared/LIBRARIES.md) | Content module for  | ✅ |
 | [Live TV & DVR](features/livetv/LIVE_TV_DVR.md) | Content module for TV Shows, Seasons, Episodes | ✅ |
 | [Revenge - Media Enhancement Features](features/playback/MEDIA_ENHANCEMENTS.md) | Content module for  | ✅ |
 | [Movie Module](features/video/MOVIE_MODULE.md) | Content module for Movies, Collections | ✅ Complete |
@@ -75,7 +75,7 @@
 | [Revenge - NSFW Toggle](features/shared/NSFW_TOGGLE.md) | Content module for  | ✅ |
 | [Photos Library](features/photos/PHOTOS_LIBRARY.md) | Content module for Albums, Photos | ✅ |
 | [Podcasts](features/podcasts/PODCASTS.md) | Content module for Podcasts, Episodes | ✅ |
-| [Dynamic RBAC with Casbin](features/shared/RBAC_CASBIN.md) | Content module for  | ✅ |
+| [Dynamic RBAC with Casbin](features/shared/RBAC.md) | Content module for  | ✅ |
 | [Release Calendar System](features/playback/RELEASE_CALENDAR.md) | Content module for  | ✅ |
 | [Native Request System](features/shared/REQUEST_SYSTEM.md) | Content module for  | ✅ |
 | [Revenge - External Scrobbling & Sync](features/shared/SCROBBLING.md) | Content module for  | ✅ |
@@ -204,7 +204,7 @@
 | [Layout System](technical/design/LAYOUT.md) | > Spacing, breakpoints, and layout primitives | ✅ |
 | [Motion & Animation](technical/design/MOTION.md) | > Expressive micro-interactions and delightful details | ✅ |
 | [Navigation System](technical/design/NAVIGATION.md) | > Multi-platform navigation with keyboard-first design | ✅ |
-| [Notifications System](technical/NOTIFICATIONS.md) | > Multi-channel notification system: Email, Push (FCM), Webhooks | ✅ |
+| [Notifications System](technical/NOTIFICATION_CHANNELS.md) | > Multi-channel notification system: Email, Push (FCM), Webhooks | ✅ |
 | [Observability - Metrics, Tracing, and Logging](technical/OBSERVABILITY.md) | > Complete observability stack with metrics, distributed tracing, and structured | ✅ |
 | [Advanced Offloading Architecture](technical/OFFLOADING.md) | > Offload heavy operations to background workers and external services | ✅ |
 | [Pirate Mode Easter Eggs](technical/design/PIRATE_MODE.md) | > Achievement-unlocked pirate theming easter eggs | ✅ |
@@ -222,12 +222,12 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Development Best Practices](operations/BEST_PRACTICES.md) | > Coding standards, architectural patterns, and development guidelines | ✅ |
-| [Branch Protection Rules](operations/BRANCH_PROTECTION.md) | > GitHub branch protection rules for main and develop | ✅ |
-| [Database Auto-Healing & Recovery](operations/DATABASE_AUTO_HEALING.md) | > Automatic database recovery and self-healing mechanisms | ✅ |
+| [Development Best Practices](operations/CODING_STANDARDS.md) | > Coding standards, architectural patterns, and development guidelines | ✅ |
+| [Branch Protection Rules](operations/BRANCHES.md) | > GitHub branch protection rules for main and develop | ✅ |
+| [Database Auto-Healing & Recovery](operations/AUTO_HEALING.md) | > Automatic database recovery and self-healing mechanisms | ✅ |
 | [Development Environment Setup](operations/DEVELOPMENT.md) | > Local development environment setup with Go, Node.js, PostgreSQL, and hot relo | ✅ |
 | [Git Workflow & Branching Strategy](operations/GITFLOW.md) | > Gitflow branching strategy and release process | ✅ |
-| [Reverse Proxy Configuration](operations/REVERSE_PROXY.md) | > Reverse proxy setup with Traefik, Caddy, or nginx | ✅ |
+| [Reverse Proxy Configuration](operations/PROXY.md) | > Reverse proxy setup with Traefik, Caddy, or nginx | ✅ |
 | [Production Deployment Setup](operations/SETUP.md) | > Production deployment guide for self-hosting Revenge | ✅ |
 | [Semantic Versioning & Releases](operations/VERSIONING.md) | > Semantic versioning (semver) and automated release process | ✅ |
 

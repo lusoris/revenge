@@ -1,0 +1,58 @@
+## Table of Contents
+
+- [Metadata Enrichment Pattern](#metadata-enrichment-pattern)
+  - [Status](#status)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
+# Metadata Enrichment Pattern
+
+<!-- DESIGN: patterns, README, test_output_claude, test_output_wiki -->
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: pattern
+
+
+> > Multi-tier metadata enrichment with caching and background jobs
+
+Standardized metadata enrichment pattern:
+- **Priority Chain**: Cache → Arr → Internal → External → Background
+- **Multi-Tier Cache**: Otter (L1) + Rueidis (L2) + Sturdyc (coalescing)
+- **Background Jobs**: Async enrichment via River queue
+- **Request Coalescing**: De-duplicate concurrent requests
+- **TTL Strategy**: Different TTLs per data type and source
+
+---
+
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Complete metadata enrichment pattern |
+| Sources | ✅ | All enrichment tools documented |
+| Instructions | ✅ | Generated from design |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
+## Related Documentation
+### Design Documents
+- [patterns](INDEX.md)
+- [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../architecture/METADATA_SYSTEM.md)
+
+### External Sources
+- [River Job Queue](../../sources/tooling/river.md) - Background job processing
+- [rueidis](../../sources/tooling/rueidis.md) - Distributed cache (L2)
+- [Otter](https://pkg.go.dev/github.com/maypok86/otter) - In-memory cache (L1)
+- [Sturdyc](../../sources/tooling/sturdyc-guide.md) - Request coalescing cache
+

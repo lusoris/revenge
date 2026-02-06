@@ -223,7 +223,7 @@ Git hooks run locally, but CI also runs the same checks:
 
 - **Git Hooks Docs**: [docs/INDEX.md](docs/INDEX.md)
 - **Development Guide**: [../docs/dev/design/operations/DEVELOPMENT.md](../docs/dev/design/operations/DEVELOPMENT.md)
-- **Best Practices**: [../docs/dev/design/operations/BEST_PRACTICES.md](../docs/dev/design/operations/BEST_PRACTICES.md)
+- **Coding Standards**: [../docs/dev/design/operations/CODING_STANDARDS.md](../docs/dev/design/operations/CODING_STANDARDS.md)
 - **GitHub Actions**: [../.github/docs/INDEX.md](../.github/docs/INDEX.md)
 
 ---

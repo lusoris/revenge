@@ -1,112 +1,108 @@
 # Project TODO
 
-## High Priority
+## Current Priorities
 
-### ✅ BUG #29: Password Hash Migration (bcrypt → argon2id)
-**Status**: FIXED ✅
-**Resolution**: Added hybrid password verifier with bcrypt backward compatibility
-**Completed**: 2026-02-03
+### Documentation Rewrite
+**Status**: Planning complete, execution starting
+**Plan**: [.workingdir3/PLAN.md](.workingdir3/PLAN.md)
 
-**Solution Implemented**:
-- ✅ Added bcrypt support to `VerifyPassword` for hybrid verification
-- ✅ Added `NeedsMigration()` helper to check hash format
-- ✅ Added 4 comprehensive tests (all passing)
-- ✅ Reset test data (simpler for pre-release)
-- ✅ Login working with argon2id passwords
+218 design docs are out of sync with codebase. Incremental 11-step plan to:
+1. Fix root MDs (this file, README, CONTRIBUTING)
+2. Fix status tables in design docs
+3. Move ~150 unimplemented feature docs to `planned/`
+4. Clean up auto-generated templates and wiki duplicates
+5. Rewrite architecture, service, infra, module docs from actual code
 
-**Result**: Authentication working correctly, all 12 crypto tests passing
+### Frontend Development
+**Status**: Not started
+**Impact**: No UI for end users
 
----
-
-### 🟡 River Job Worker Implementation
-**Status**: Currently a stub
-**Impact**: Background jobs not processing
-**Effort**: 8-16 hours
-
-**Current State**: `internal/infra/jobs/` has stub implementation:
-```
-16:14:40 INF job workers started (stub)
-```
-
-**Tasks**:
-- [ ] Design job worker architecture
-- [ ] Implement River job worker integration
-- [ ] Add job queue persistence (PostgreSQL)
-- [ ] Implement job types:
-  - [ ] Email sending
-  - [ ] Media processing
-  - [ ] Library scanning
-  - [ ] Thumbnail generation
-  - [ ] Metadata fetching
-- [ ] Add job monitoring and metrics
-- [ ] Add job retry logic and dead letter queue
-- [ ] Write integration tests
-- [ ] Document job system architecture
-
-**Research Needed**:
-- River library API and best practices
-- Job priority and scheduling
-- Worker pool sizing
-- Error handling strategies
+Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zero frontend code.
 
 ---
 
-## Medium Priority
+## Recently Completed
 
-### 🔵 Security: Fix G602 Slice Bounds Issues
-**Status**: Identified
-**Count**: 10 issues
+### Metadata System - Force + Languages Plumbing (2026-02-06)
+- Added `MetadataRefreshOptions{Force, Languages}` to movie and tvshow modules
+- Plumbed through entire stack: service interfaces -> adapters -> workers
+- Added `ClearCache()` to `metadata.Provider` and `metadata.Service` interfaces
+- Adapters clear cache on `Force=true`, use per-request languages when provided
+- Workers construct opts from job args and pass to service
+
+### River Job Workers (2026-02-06)
+- 9 workers fully implemented (was previously a stub):
+  - Movie: MetadataRefresh, LibraryScan, FileMatch, SearchIndex
+  - TV Show: MetadataRefresh, LibraryScan, FileMatch, SeriesRefresh, SearchIndex
+  - Shared: LibraryScanCleanup, ActivityCleanup
+- Progress reporting via `river.JobProgress`
+- Worker timeouts and retry configuration
+
+### CI Fixes (2026-02-06)
+- Fixed govulncheck job missing CGO dependencies (libvips-dev, libav*-dev)
+- Fixed test migration paths (was `migrations/`, now `internal/infra/database/migrations/shared/`)
+- Fixed service test signatures (`NewService(repo)` -> `NewService(repo, nil)`)
+
+### Password Hash Migration (2026-02-03)
+- Hybrid password verifier with bcrypt backward compatibility
+- `NeedsMigration()` helper, 4 comprehensive tests
+
+### Dependency Upgrades (2026-02-05)
+- Replaced shopspring/decimal with govalues/decimal (performance)
+- Replaced x/image with govips for image processing
+
+---
+
+## Known Issues
+
+### Security: G602 Slice Bounds in Generated Code
 **Location**: `internal/api/ogen/oas_router_gen.go` (generated code)
-**Effort**: 2-4 hours
+**Count**: 10 issues
+**Note**: In ogen-generated code, not hand-written. Will be fixed upstream or via ogen config.
 
-**Tasks**:
-- [ ] Review Ogen router generated code
-- [ ] Add slice bounds checking with `validate.ValidateSliceIndex`
-- [ ] Test with edge cases
-- [ ] Re-run gosec to verify fixes
-
----
-
-### 🔵 Security: Suppress G101 False Positives
-**Status**: Identified
+### Security: G101 False Positives in SQLC Code
+**Location**: `internal/infra/database/db/*.sql.go` (generated code)
 **Count**: 43 issues
-**Location**: `internal/infra/database/db/*.sql.go` (SQLC-generated)
-**Effort**: 1 hour
-
-**Tasks**:
-- [ ] Add `#nosec G101` comments to SQLC-generated code
-- [ ] Add justifications (e.g., "SQL query name, not actual credentials")
-- [ ] Document suppression rationale
-- [ ] Re-run gosec to verify clean scan
+**Note**: SQL query names flagged as potential credentials. All false positives.
 
 ---
 
-### 🔵 Security: Fix G204 Subprocess Issue
-**Status**: Identified
-**Count**: 1 issue
-**Location**: `internal/testutil/testdb.go:292`
-**Effort**: 30 minutes
+## Future Work (by area)
 
-**Tasks**:
-- [ ] Review subprocess call in test utilities
-- [ ] Sanitize input if needed
-- [ ] Add input validation
-- [ ] Test with edge cases
+### Content Modules
+- [ ] Music module (highest priority new module)
+- [ ] Audiobook module
+- [ ] Book module
+- [ ] Podcast module
+- [ ] Comics module
+- [ ] Photos module
+- [ ] Live TV/DVR module
 
----
+### Services
+- [ ] Playback service (progress tracking, watch history)
+- [ ] Transcoding service (Blackbeard integration)
+- [ ] Analytics service
+- [ ] Grants service (fine-grained sharing)
+- [ ] Fingerprint service (media identification)
 
-## Completed ✅
+### Integrations
+- [ ] Lidarr (music)
+- [ ] Whisparr (adult content)
+- [ ] Authelia, Authentik, Keycloak (SSO providers)
+- [ ] Trakt, Last.fm, ListenBrainz (scrobbling)
+- [ ] Additional metadata providers (MusicBrainz, Spotify, etc.)
 
-### ✅ Security: Integer Overflow Fixes (G115)
-**Completed**: 2026-02-03
-**Result**: 14/14 vulnerabilities fixed
+### Features
+- [ ] Collections and playlists
+- [ ] Watch Next / Continue Watching
+- [ ] Skip Intro / Credits detection
+- [ ] SyncPlay (watch together)
+- [ ] Trickplay (timeline thumbnails)
+- [ ] Release calendar
+- [ ] Content request system
 
-- ✅ Created `internal/validate` package with safe conversions
-- ✅ Fixed database pool configuration (3 issues)
-- ✅ Fixed API handler pagination (11 issues)
-- ✅ Added comprehensive tests (100% coverage)
-- ✅ Security scan: 68 → 54 issues (-20.6%)
-- ✅ All tests passing (27 test files)
-- ✅ Live system tested and verified
-
-**See**: `.workingdir/security-fixes-summary.md`
+### Infrastructure
+- [ ] Circuit breaker integration (gobreaker dep exists, unused)
+- [ ] Request coalescing (sturdyc dep exists, unused)
+- [ ] Cache warming on startup
+- [ ] Service self-healing / watchdog

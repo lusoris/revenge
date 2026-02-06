@@ -210,9 +210,9 @@ GET /api/v1/admin/cache/stats
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/METADATA_SYSTEM.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

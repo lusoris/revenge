@@ -46,8 +46,8 @@ Three pillars of observability:
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
 - [OFFLOADING](../technical/OFFLOADING.md)
 
 ### External Sources

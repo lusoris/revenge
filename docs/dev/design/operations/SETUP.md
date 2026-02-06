@@ -47,7 +47,7 @@ Multiple deployment options:
 ### Design Documents
 - [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [REVERSE_PROXY](../operations/REVERSE_PROXY.md)
+- [REVERSE_PROXY](../operations/PROXY.md)
 - [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources

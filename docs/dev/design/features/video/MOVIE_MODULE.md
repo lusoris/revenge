@@ -45,7 +45,7 @@
 | Instructions | 🟡 Partial | - |
 | Code | � Partial | Backend foundation complete (DB, SQLC, Repository, Service, Handler, API) |
 | Linting | 🔴 Not Started | - |
-| Unit Testing | 🔴 Not Started | - |
+| Unit Testing | 🟡 Partial | - |
 | Integration Testing | 🔴 Not Started | - |
 
 **Overall**: 🟡 In Progress
@@ -253,9 +253,9 @@ movie:
 <!-- API endpoints placeholder -->
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](../../architecture/ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](../../architecture/DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](../../architecture/METADATA_SYSTEM.md)
 - [RADARR (PRIMARY metadata + downloads)](../../integrations/servarr/RADARR.md)
 - [TMDB (supplementary metadata)](../../integrations/metadata/TMDB.md)
 - [OMDB (ratings enrichment)](../../integrations/metadata/OMDB.md)

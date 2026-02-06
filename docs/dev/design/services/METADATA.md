@@ -28,7 +28,7 @@
 
 
 **Created**: 2026-01-31
-**Status**: ✅ Complete
+**Status**: 🟡 In Progress
 **Category**: service
 
 
@@ -47,12 +47,12 @@
 | Design | ✅ | - |
 | Sources | ✅ | - |
 | Instructions | ✅ | - |
-| Code | 🔴 | - |
+| Code | 🟡 Partial | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: ✅ Complete
+**Overall**: 🟡 In Progress
 
 
 ---
@@ -351,7 +351,7 @@ PUT    /api/v1/metadata/providers/:name  # Configure provider
 
 ## Related Documentation
 ### Design Documents
-- [03_METADATA_SYSTEM (PRIMARY architecture doc)](../architecture/03_METADATA_SYSTEM.md)
+- [03_METADATA_SYSTEM (PRIMARY architecture doc)](../architecture/METADATA_SYSTEM.md)
 - [DRAGONFLY (cache architecture)](../integrations/infrastructure/DRAGONFLY.md)
 - [HTTP_CLIENT (proxy/VPN support)](./HTTP_CLIENT.md)
 - [RADARR (PRIMARY for movies)](../integrations/servarr/RADARR.md)

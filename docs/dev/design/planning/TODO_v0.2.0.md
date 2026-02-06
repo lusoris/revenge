@@ -491,7 +491,7 @@ This milestone implements all core backend services: authentication, user manage
 
 ### Technical Architecture
 - [EMAIL.md](../technical/EMAIL.md) - Email sending system (verification, password reset)
-- [RBAC_CASBIN.md](../features/shared/RBAC_CASBIN.md) - Dynamic RBAC architecture with Casbin
+- [RBAC.md](../features/shared/RBAC.md) - Dynamic RBAC architecture with Casbin
 
 ---
 

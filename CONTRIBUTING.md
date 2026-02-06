@@ -1,10 +1,10 @@
-# Contributing to revenge
+# Contributing to Revenge
 
-First off, thank you for considering contributing to revenge! 🎉
+Thank you for considering contributing to Revenge!
 
 ## Code of Conduct
 
-Be respectful, inclusive, and professional. We're all here to build something great.
+Be respectful, inclusive, and professional.
 
 ## How Can I Contribute?
 
@@ -22,9 +22,9 @@ Before creating bug reports, please check existing issues. When creating a bug r
 
 Feature suggestions are welcome! Please:
 
-- Check if the feature already exists in Revenge (C#)
+- Check if the feature is already in our [design docs](docs/dev/design/DESIGN_INDEX.md)
 - Explain the use case
-- Consider if it fits the single-server focus (Phase 1-4)
+- Open an issue for discussion
 
 ### Pull Requests
 
@@ -32,54 +32,63 @@ Feature suggestions are welcome! Please:
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Write/update tests
-5. Ensure tests pass (`go test ./...`)
-6. Run linters (`golangci-lint run`)
-7. Commit with clear messages
+5. Ensure tests pass (`make test`)
+6. Run linters (`make lint`)
+7. Commit with conventional commit messages
 8. Push and open a PR
 
 ## Development Setup
 
 ```bash
-# Prerequisites
-- Go 1.25+
-- Docker & Docker Compose
-- Git
+# Prerequisites: Go 1.25+, Docker & Docker Compose
 
 # Clone your fork
 git clone https://github.com/YOUR_USERNAME/revenge.git
 cd revenge
 
-# Install dependencies
-go mod download
+# Start dependencies (PostgreSQL, Dragonfly, Typesense)
+docker compose -f docker-compose.dev.yml up -d
 
-# Start development environment
-docker-compose up -d postgres
+# Build
+make build
 
 # Run tests
-go test ./...
+make test
 
 # Run application
-go run ./cmd/revenge
+make run
 ```
+
+See the [Makefile](Makefile) for all available commands (`make help`).
 
 ## Project Structure
 
 ```
 revenge/
-├── cmd/
-│   └── revenge/          # Main application entry point
-├── internal/              # Private application code
-│   ├── domain/           # Domain entities and business rules
-│   ├── service/          # Business logic
-│   ├── infra/            # Infrastructure (DB, cache, etc.)
-│   └── api/              # HTTP handlers
-├── pkg/                   # Public libraries
-│   ├── middleware/       # HTTP middleware
-│   └── util/             # Utilities
-├── docs/                  # Documentation
-├── migrations/            # Database migrations
-├── configs/               # Configuration files
-└── tests/                 # Integration tests
+├── cmd/revenge/              # Application entrypoint
+├── internal/
+│   ├── api/                  # HTTP handlers + ogen-generated API
+│   │   ├── middleware/       # Rate limiting, request context
+│   │   └── ogen/             # Generated OpenAPI code
+│   ├── app/                  # fx module wiring
+│   ├── config/               # koanf configuration
+│   ├── content/              # Content modules
+│   │   ├── movie/            # Movie module (service, repo, handler, jobs)
+│   │   ├── tvshow/           # TV show module
+│   │   ├── qar/              # Adult content (isolated schema)
+│   │   └── shared/           # Shared library/scanner/matcher
+│   ├── service/              # Backend services (auth, user, rbac, etc.)
+│   ├── infra/                # Infrastructure (database, cache, jobs, health)
+│   ├── integration/          # External integrations (radarr, sonarr)
+│   ├── crypto/               # Encryption, hashing
+│   ├── errors/               # Error types
+│   ├── validate/             # Input validation
+│   └── testutil/             # Test helpers (testcontainers)
+├── tests/integration/         # Integration tests
+├── api/openapi/               # OpenAPI specification
+├── charts/revenge/            # Helm chart
+├── scripts/                   # Docker entrypoint
+└── docs/dev/design/           # Design documentation
 ```
 
 ## Coding Standards
@@ -91,26 +100,22 @@ Follow standard Go conventions:
 - `golangci-lint` for linting
 - Effective Go practices
 
-### Naming
+### Patterns
 
-```go
-// Good
-func GetUserByID(id string) (*User, error)
-type MediaRepository interface{}
+- **Context-first APIs**: All service methods take `context.Context` as first parameter
+- **Error wrapping**: Always wrap errors with `fmt.Errorf("context: %w", err)`
+- **Repository pattern**: Interfaces in domain, implementations in adapters
+- **fx modules**: Each package exports `var Module = fx.Module(...)`
+- **Table-driven tests**: Use testify for assertions
 
-// Bad
-func get_user(id string) (*User, error)
-type mediaRepo interface{}
-```
-
-### Error Handling
+### Example
 
 ```go
 // Always wrap errors with context
-func (s *Service) GetMedia(id string) (*Media, error) {
+func (s *Service) GetMedia(ctx context.Context, id uuid.UUID) (*Media, error) {
     media, err := s.repo.FindByID(ctx, id)
     if err != nil {
-        return nil, fmt.Errorf("failed to get media %s: %w", id, err)
+        return nil, fmt.Errorf("get media %s: %w", id, err)
     }
     return media, nil
 }
@@ -119,26 +124,19 @@ func (s *Service) GetMedia(id string) (*Media, error) {
 ### Testing
 
 ```go
-// Write table-driven tests
-func TestUserService_Create(t *testing.T) {
+// Table-driven tests with testify
+func TestService_Create(t *testing.T) {
     tests := []struct {
         name    string
-        input   CreateUserRequest
-        want    *User
+        input   CreateRequest
         wantErr bool
     }{
-        {
-            name: "valid user",
-            input: CreateUserRequest{Username: "test"},
-            want: &User{Username: "test"},
-            wantErr: false,
-        },
-        // More test cases...
+        {name: "valid", input: CreateRequest{Name: "test"}, wantErr: false},
+        {name: "empty name", input: CreateRequest{}, wantErr: true},
     }
-
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
-            // Test implementation
+            // ...
         })
     }
 }
@@ -146,88 +144,41 @@ func TestUserService_Create(t *testing.T) {
 
 ## Commit Messages
 
-Use conventional commits:
+Use [conventional commits](https://www.conventionalcommits.org/):
 
 ```
 feat: add user authentication
-fix: resolve transcoding memory leak
-docs: update setup guide
+fix: resolve database connection issue
+docs: update API documentation
 test: add integration tests for library scanner
-refactor: simplify FFmpeg command builder
+refactor: simplify metadata adapter
 perf: optimize database queries
 ```
 
-## Testing Guidelines
+## Language Policy
 
-### Unit Tests
+All code comments, documentation, commit messages, and PR descriptions must be in **English**.
 
-- Test business logic in isolation
-- Mock external dependencies
+## Testing
+
+```bash
+make test                # Unit tests with race detection
+make test-integration    # Integration tests (requires Docker)
+```
+
 - Aim for 80%+ coverage
-
-```bash
-go test ./internal/service/...
-```
-
-### Integration Tests
-
-- Test API endpoints
-- Use testcontainers for DB
-- Test real FFmpeg integration
-
-```bash
-go test -tags=integration ./tests/...
-```
-
-### Performance Tests
-
-```bash
-go test -bench=. -benchmem ./internal/...
-```
-
-## Documentation
-
-- Update README.md for user-facing changes
-- Update docs/ for architecture changes
-- Add inline comments for complex logic
-- Update API docs (Swagger)
+- Use table-driven tests
+- Use testcontainers for database integration tests
+- Mock external dependencies with mockery
 
 ## Review Process
 
-1. CI/CD checks must pass (tests, linting)
+1. CI/CD checks must pass
 2. At least one maintainer approval required
 3. No unresolved review comments
-4. Up-to-date with main branch
-
-## Release Process
-
-We follow semantic versioning (SemVer):
-
-- **v0.x.x**: Pre-release, breaking changes OK
-- **v1.x.x**: Stable, backwards compatible
-- **v2.x.x**: Major version, breaking changes
-
-## Phase Priorities
-
-**Current Focus: Phase 1 (Single-Server MVP)**
-
-Priority areas for contributions:
-1. Core API endpoints
-2. Library scanning and metadata
-3. PostgreSQL database layer
-4. Authentication and authorization
-5. Bug fixes and performance
-
-**Later Phases:**
-- Phase 2: Transcoding and streaming
-- Phase 3: Advanced features
-- Phase 4: Security and polish
-- Phase 5: Optional clustering
+4. Up-to-date with develop branch
 
 ## Questions?
 
-- Open a GitHub Discussion
-- Join our Discord
-- Check existing issues
-
-Thank you for contributing! 🚀
+- Open a [GitHub Issue](https://github.com/lusoris/revenge/issues)
+- Check existing [issues](https://github.com/lusoris/revenge/issues) and [discussions](https://github.com/lusoris/revenge/discussions)

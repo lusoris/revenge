@@ -8,7 +8,7 @@
 
 - **New to Revenge?** Start with [Setup Guide](dev/design/operations/SETUP.md)
 - **Development?** See [Development Guide](dev/design/operations/DEVELOPMENT.md)
-- **Architecture?** Read [Architecture](dev/design/architecture/01_ARCHITECTURE.md)
+- **Architecture?** Read [Architecture](dev/design/architecture/ARCHITECTURE.md)
 - **Current Status?** See [TODO.md](../TODO.md)
 
 ---
@@ -39,11 +39,11 @@ docs/
 
 Core system design and architectural decisions.
 
-- [Architecture](dev/design/architecture/01_ARCHITECTURE.md) - Complete system architecture
-- [Design Principles](dev/design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
-- [Player Architecture](dev/design/architecture/04_PLAYER_ARCHITECTURE.md) - Media player design
-- [Metadata System](dev/design/architecture/03_METADATA_SYSTEM.md) - Metadata management
-- [Plugin Architecture Decision](dev/design/architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+- [Architecture](dev/design/architecture/ARCHITECTURE.md) - Complete system architecture
+- [Design Principles](dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
+- [Player Architecture](dev/design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
+- [Metadata System](dev/design/architecture/METADATA_SYSTEM.md) - Metadata management
+- [Plugin Architecture Decision](dev/design/architecture/PLUGIN_DECISION.md) - Native vs plugins
 
 ## Operations
 
@@ -51,11 +51,11 @@ Setup, deployment, and operational guides.
 
 - [Setup Guide](dev/design/operations/SETUP.md) - Initial setup instructions
 - [Development Guide](dev/design/operations/DEVELOPMENT.md) - Development workflow
-- [Best Practices](dev/design/operations/BEST_PRACTICES.md) - Coding standards
-- [Database Auto-Healing](dev/design/operations/DATABASE_AUTO_HEALING.md) - PostgreSQL corruption detection/repair
-- [Reverse Proxy](dev/design/operations/REVERSE_PROXY.md) - Nginx/Caddy configuration
+- [Coding Standards](dev/design/operations/CODING_STANDARDS.md) - Coding standards
+- [Database Auto-Healing](dev/design/operations/AUTO_HEALING.md) - PostgreSQL corruption detection/repair
+- [Reverse Proxy](dev/design/operations/PROXY.md) - Nginx/Caddy configuration
 - [Git Workflow](dev/design/operations/GITFLOW.md) - Branch strategy
-- [Branch Protection](dev/design/operations/BRANCH_PROTECTION.md) - Repository protection rules
+- [Branch Protection](dev/design/operations/BRANCHES.md) - Repository protection rules
 - [Upstream Sync](dev/design/operations/UPSTREAM_SYNC.md) - Syncing with upstream
 
 ## Features
@@ -64,14 +64,14 @@ Content modules and feature designs. See [Features Index](dev/design/features/IN
 
 ### Shared Features
 - [Analytics Service](dev/design/features/shared/ANALYTICS_SERVICE.md) - Usage analytics
-- [RBAC with Casbin](dev/design/features/shared/RBAC_CASBIN.md) - Role-based access control
+- [RBAC](dev/design/features/shared/RBAC.md) - Role-based access control
 - [Access Controls](dev/design/features/shared/ACCESS_CONTROLS.md) - Permission system
 - [Request System](dev/design/features/shared/REQUEST_SYSTEM.md) - Content requests
 - [Content Rating](dev/design/features/shared/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
 - [Scrobbling](dev/design/features/shared/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
 - [Client Support](dev/design/features/shared/CLIENT_SUPPORT.md) - Client compatibility
 - [Internationalization](dev/design/features/shared/I18N.md) - i18n/l10n support
-- [Library Types](dev/design/features/shared/LIBRARY_TYPES.md) - Library management
+- [Library Types](dev/design/features/shared/LIBRARIES.md) - Library management
 - [News System](dev/design/features/shared/NEWS_SYSTEM.md) - News/announcements
 - [Wiki System](dev/design/features/shared/WIKI_SYSTEM.md) - Wiki integration
 - [Ticketing System](dev/design/features/shared/TICKETING_SYSTEM.md) - Support tickets

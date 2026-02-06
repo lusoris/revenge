@@ -48,7 +48,7 @@ All integrated via OpenTelemetry SDK for unified observability.
 ### Design Documents
 - [patterns](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [BEST_PRACTICES](../operations/CODING_STANDARDS.md)
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection

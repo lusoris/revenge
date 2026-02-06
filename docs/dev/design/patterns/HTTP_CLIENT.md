@@ -47,7 +47,7 @@ Provides HTTP clients with configurable proxy/VPN routing:
 
 ## Related Documentation
 ### Design Documents
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [03_METADATA_SYSTEM](../architecture/METADATA_SYSTEM.md)
 - [METADATA](../services/METADATA.md)
 - [TMDB](../integrations/metadata/video/TMDB.md)
 - [THETVDB](../integrations/metadata/video/THETVDB.md)

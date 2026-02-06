@@ -10,7 +10,7 @@ Before asking for help, please check our documentation:
 
 - [README](README.md) - Project overview and quick start
 - [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference document
-- [Architecture](docs/dev/design/architecture/01_ARCHITECTURE.md) - System design and components
+- [Architecture](docs/dev/design/architecture/ARCHITECTURE.md) - System design and components
 - [Setup Guide](docs/dev/design/operations/SETUP.md) - Installation and configuration
 - [Development](docs/dev/design/operations/DEVELOPMENT.md) - Development setup
 - [Contributing](CONTRIBUTING.md) - How to contribute

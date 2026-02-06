@@ -1,0 +1,203 @@
+name: Wiki Sync
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "docs/dev/design/**"
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
+      - "SUPPORT.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync Docs to Wiki
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Clone wiki
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git" wiki-repo 2>/dev/null || {
+            echo "Wiki not initialized - creating fresh repo"
+            mkdir wiki-repo && cd wiki-repo && git init
+            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git"
+          }
+
+      - name: Generate wiki content
+        run: |
+          # Clear old wiki content (keep .git)
+          find wiki-repo -maxdepth 1 -not -name '.git' -not -name 'wiki-repo' -not -path 'wiki-repo' -exec rm -rf {} + 2>/dev/null || true
+
+          DESIGN="docs/dev/design"
+          WIKI="wiki-repo"
+
+          # --- Home page ---
+          cat > "${WIKI}/Home.md" << 'HOMEEOF'
+          # Revenge
+
+          > Modular media server with complete content isolation
+
+          Welcome to the Revenge wiki. This documentation is auto-synced from the repository.
+
+          ## Quick Links
+
+          - [Architecture](architecture/ARCHITECTURE) - System design
+          - [Design Principles](architecture/DESIGN_PRINCIPLES) - Core principles
+          - [Tech Stack](technical/TECH_STACK) - Technology choices
+          - [Coding Standards](operations/CODING_STANDARDS) - Development guidelines
+          - [Contributing](CONTRIBUTING) - How to contribute
+
+          ## Documentation Sections
+
+          | Section | Description |
+          |---------|-------------|
+          | [Architecture](architecture/ARCHITECTURE) | System design, metadata system, principles |
+          | [Features](features/video/MOVIE_MODULE) | Content modules (Movie, TV, QAR) |
+          | [Services](services/AUTH) | Backend services (Auth, Users, RBAC, etc.) |
+          | [Integrations](integrations/metadata/video/TMDB) | External service integrations |
+          | [Technical](technical/API) | API, frontend, email, observability |
+          | [Operations](operations/SETUP) | Deployment, development, git workflow |
+          | [Patterns](patterns/METADATA) | Code patterns and conventions |
+
+          ---
+
+          *Auto-synced from [`docs/dev/design/`](https://github.com/lusoris/revenge/tree/develop/docs/dev/design) on each push to develop.*
+          HOMEEOF
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' "${WIKI}/Home.md"
+
+          # --- Copy active design docs (exclude planned/) ---
+          for dir in architecture features integrations operations patterns research planning services technical; do
+            if [ -d "${DESIGN}/${dir}" ]; then
+              # Copy directory structure, excluding planned/
+              find "${DESIGN}/${dir}" -name '*.md' -not -path '*/planned/*' | while read -r file; do
+                rel="${file#${DESIGN}/}"
+                mkdir -p "${WIKI}/$(dirname "${rel}")"
+                cp "${file}" "${WIKI}/${rel}"
+              done
+            fi
+          done
+
+          # Copy top-level design docs
+          for file in DESIGN_INDEX.md 00_SOURCE_OF_TRUTH.md; do
+            [ -f "${DESIGN}/${file}" ] && cp "${DESIGN}/${file}" "${WIKI}/${file}"
+          done
+
+          # Copy root docs
+          for file in CONTRIBUTING.md SECURITY.md SUPPORT.md; do
+            [ -f "${file}" ] && cp "${file}" "${WIKI}/${file}"
+          done
+
+          # --- Generate sidebar ---
+          cat > "${WIKI}/_Sidebar.md" << 'SIDEBAREOF'
+          **[Home](Home)**
+
+          ---
+
+          **Architecture**
+          - [Architecture](architecture/ARCHITECTURE)
+          - [Design Principles](architecture/DESIGN_PRINCIPLES)
+          - [Metadata System](architecture/METADATA_SYSTEM)
+
+          **Features**
+          - [Movie Module](features/video/MOVIE_MODULE)
+          - [TV Show Module](features/video/TVSHOW_MODULE)
+          - [Libraries](features/shared/LIBRARIES)
+          - [RBAC](features/shared/RBAC)
+          - [Adult Content](features/adult/ADULT_CONTENT_SYSTEM)
+
+          **Services**
+          - [Auth](services/AUTH)
+          - [Users](services/USER)
+          - [Sessions](services/SESSION)
+          - [RBAC](services/RBAC)
+          - [OIDC](services/OIDC)
+          - [API Keys](services/APIKEYS)
+          - [Activity](services/ACTIVITY)
+          - [Settings](services/SETTINGS)
+          - [Library](services/LIBRARY)
+          - [Metadata](services/METADATA)
+          - [Search](services/SEARCH)
+          - [Notification](services/NOTIFICATION)
+          - [HTTP](services/HTTP)
+
+          **Integrations**
+          - [TMDb](integrations/metadata/video/TMDB)
+          - [TheTVDB](integrations/metadata/video/THETVDB)
+          - [Radarr](integrations/servarr/RADARR)
+          - [Sonarr](integrations/servarr/SONARR)
+          - [Generic OIDC](integrations/auth/GENERIC_OIDC)
+          - [PostgreSQL](integrations/infrastructure/POSTGRESQL)
+          - [Dragonfly](integrations/infrastructure/DRAGONFLY)
+          - [Typesense](integrations/infrastructure/TYPESENSE)
+          - [River](integrations/infrastructure/RIVER)
+
+          **Technical**
+          - [API](technical/API)
+          - [Tech Stack](technical/TECH_STACK)
+          - [Email](technical/EMAIL)
+          - [Notifications](technical/NOTIFICATION_CHANNELS)
+          - [Observability](technical/OBSERVABILITY)
+          - [Testing](technical/TESTING)
+          - [Frontend](technical/FRONTEND)
+          - [Offloading](technical/OFFLOADING)
+
+          **Operations**
+          - [Setup](operations/SETUP)
+          - [Development](operations/DEVELOPMENT)
+          - [Coding Standards](operations/CODING_STANDARDS)
+          - [Git Workflow](operations/GITFLOW)
+          - [Branches](operations/BRANCHES)
+          - [Versioning](operations/VERSIONING)
+          - [Proxy](operations/PROXY)
+          - [Auto-Healing](operations/AUTO_HEALING)
+
+          **Patterns**
+          - [Metadata](patterns/METADATA)
+          - [Servarr](patterns/SERVARR)
+          - [HTTP Client](patterns/HTTP_CLIENT)
+          - [Webhooks](patterns/WEBHOOKS)
+          - [Testing](patterns/TESTING)
+          - [Observability](patterns/OBSERVABILITY)
+
+          ---
+
+          - [Design Index](DESIGN_INDEX)
+          - [Source of Truth](00_SOURCE_OF_TRUTH)
+          - [Contributing](CONTRIBUTING)
+          - [Security](SECURITY)
+          - [Support](SUPPORT)
+          SIDEBAREOF
+
+          # --- Fix internal links ---
+          # Convert .md extensions to wiki-style (no extension) in links
+          find "${WIKI}" -name '*.md' -exec sed -i -E 's/\]\(([^)]*?)\.md\)/](\1)/g' {} +
+
+          echo "Wiki content generated:"
+          find "${WIKI}" -name '*.md' | wc -l
+          echo "files synced"
+
+      - name: Push to wiki
+        working-directory: wiki-repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No wiki changes to push"
+          else
+            git commit -m "sync: update wiki from ${GITHUB_SHA::7}"
+            git push origin HEAD:master
+          fi

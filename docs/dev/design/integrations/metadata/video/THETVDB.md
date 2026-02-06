@@ -227,9 +227,9 @@ metadata:
 
 ## Related Documentation
 ### Design Documents
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [03_METADATA_SYSTEM](../../../architecture/METADATA_SYSTEM.md)
 - [SONARR (PRIMARY for TV shows)](../../servarr/SONARR.md)
-- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP_CLIENT.md)
+- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP.md)
 - [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
 
 ### External Sources

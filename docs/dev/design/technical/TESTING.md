@@ -47,8 +47,8 @@ Testing approach:
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
+- [BEST_PRACTICES](../operations/CODING_STANDARDS.md)
 
 ### External Sources
 - [Go Testing Package](../../sources/go/stdlib/testing.md) - Standard library testing

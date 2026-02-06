@@ -1,17 +1,16 @@
 # Revenge Development Environment - Coder Template
 #
-# Supports multiple deployment backends:
-# - Docker (default, for local development)
-# - Kubernetes (for production-like environments)
-# - Docker Swarm (for multi-node clusters)
+# Backends: Docker (default), Kubernetes, K3s, Docker Swarm
+# IDEs:     Zed (SSH, default), VS Code (browser/desktop), JetBrains Gateway, Terminal
+# Host:     https://coder.ancilla.lol
 #
-# Host: https://coder.ancilla.lol
+# Versions sourced from go.mod + docker-compose.yml (NOT design docs)
 
 terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = ">= 2.0.0"
+      version = ">= 2.17.2"
     }
     docker = {
       source  = "kreuzwerker/docker"
@@ -25,59 +24,36 @@ terraform {
 }
 
 # =============================================================================
-# Variables
+# Image versions - Single source of truth for container tags
+# Keep in sync with docker-compose.yml and docker-compose.dev.yml
 # =============================================================================
 
-variable "deployment_backend" {
-  description = "Backend type: docker, kubernetes, or swarm"
-  type        = string
-  default     = "docker"
-  validation {
-    condition     = contains(["docker", "kubernetes", "swarm"], var.deployment_backend)
-    error_message = "deployment_backend must be docker, kubernetes, or swarm."
+locals {
+  # Actual versions from docker-compose files and go.mod
+  go_version      = "1.25.6"
+  postgres_image  = "postgres:18-alpine"
+  dragonfly_image = "docker.dragonflydb.io/dragonflydb/dragonfly:latest"
+  typesense_image = "typesense/typesense:0.25.2"
+  workspace_image = "ghcr.io/lusoris/revenge-dev:latest"
+
+  username     = data.coder_workspace_owner.me.name
+  workspace_id = data.coder_workspace.me.id
+
+  # Shared env vars matching docker-compose.dev.yml
+  app_env = {
+    GOEXPERIMENT           = "greenteagc,jsonv2"
+    REVENGE_LOG_LEVEL      = "debug"
+    REVENGE_LOG_FORMAT     = "console"
+    REVENGE_DATABASE_URL   = "postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable"
+    REVENGE_CACHE_ENABLED  = "true"
+    REVENGE_CACHE_URL      = "redis://dragonfly:6379"
+    REVENGE_SEARCH_ENABLED = "true"
+    REVENGE_SEARCH_URL     = "http://typesense:8108"
+    REVENGE_SEARCH_API_KEY = "dev_api_key"
   }
-}
 
-variable "namespace" {
-  description = "Kubernetes namespace (only used when deployment_backend=kubernetes)"
-  type        = string
-  default     = "coder-workspaces"
-}
-
-variable "storage_class" {
-  description = "Kubernetes storage class for persistent volumes"
-  type        = string
-  default     = "standard"
-}
-
-variable "cpu_limit" {
-  description = "CPU limit for workspace container"
-  type        = string
-  default     = "4"
-}
-
-variable "memory_limit" {
-  description = "Memory limit for workspace container"
-  type        = string
-  default     = "8Gi"
-}
-
-variable "disk_size" {
-  description = "Disk size for workspace volume"
-  type        = string
-  default     = "20Gi"
-}
-
-variable "dotfiles_uri" {
-  description = "Dotfiles repo URI (optional)"
-  default     = ""
-  type        = string
-}
-
-variable "git_clone_url" {
-  description = "Git repository URL to clone"
-  type        = string
-  default     = "https://github.com/lusoris/revenge.git"
+  # K8s/K3s share the same resources
+  use_k8s = contains(["kubernetes", "k3s"], var.deployment_backend)
 }
 
 # =============================================================================
@@ -88,63 +64,117 @@ data "coder_workspace" "me" {}
 data "coder_workspace_owner" "me" {}
 data "coder_provisioner" "me" {}
 
+# =============================================================================
+# Parameters
+# =============================================================================
+
+variable "deployment_backend" {
+  description = "Backend type"
+  type        = string
+  default     = "docker"
+  validation {
+    condition     = contains(["docker", "kubernetes", "k3s", "swarm"], var.deployment_backend)
+    error_message = "Must be: docker, kubernetes, k3s, or swarm."
+  }
+}
+
+variable "namespace" {
+  description = "Kubernetes/K3s namespace"
+  type        = string
+  default     = "coder-workspaces"
+}
+
+variable "storage_class" {
+  description = "Kubernetes storage class for persistent volumes"
+  type        = string
+  default     = "local-path"
+}
+
+variable "disk_size" {
+  description = "Disk size for workspace volume"
+  type        = string
+  default     = "30Gi"
+}
+
+variable "dotfiles_uri" {
+  description = "Dotfiles repo URI (optional)"
+  type        = string
+  default     = ""
+}
+
+variable "git_clone_url" {
+  description = "Git repository URL to clone"
+  type        = string
+  default     = "https://github.com/lusoris/revenge.git"
+}
+
 data "coder_parameter" "cpu" {
   name         = "cpu"
   display_name = "CPU Cores"
-  description  = "Number of CPU cores"
-  default      = "2"
+  description  = "Number of CPU cores for the workspace"
+  default      = "4"
   mutable      = true
-  option {
-    name  = "1 Core"
-    value = "1"
-  }
   option {
     name  = "2 Cores"
     value = "2"
   }
   option {
-    name  = "4 Cores"
+    name  = "4 Cores (recommended)"
     value = "4"
   }
   option {
     name  = "8 Cores"
     value = "8"
   }
+  option {
+    name  = "16 Cores"
+    value = "16"
+  }
 }
 
 data "coder_parameter" "memory" {
   name         = "memory"
-  display_name = "Memory"
-  description  = "Amount of RAM"
-  default      = "4"
+  display_name = "Memory (GB)"
+  description  = "RAM allocation"
+  default      = "8"
   mutable      = true
-  option {
-    name  = "2 GB"
-    value = "2"
-  }
   option {
     name  = "4 GB"
     value = "4"
   }
   option {
-    name  = "8 GB"
+    name  = "8 GB (recommended)"
     value = "8"
   }
   option {
     name  = "16 GB"
     value = "16"
   }
+  option {
+    name  = "32 GB"
+    value = "32"
+  }
 }
 
 data "coder_parameter" "ide" {
   name         = "ide"
   display_name = "IDE"
-  description  = "Preferred development environment"
-  default      = "vscode"
+  description  = "Primary development environment"
+  default      = "zed"
   mutable      = false
   option {
+    name  = "Zed (SSH) - Recommended"
+    value = "zed"
+    icon  = "/icon/terminal.svg"
+  }
+  option {
     name  = "VS Code (Browser)"
-    value = "vscode"
+    value = "vscode-browser"
+    icon  = "/icon/code.svg"
+  }
+  option {
+    name  = "VS Code (Desktop)"
+    value = "vscode-desktop"
     icon  = "/icon/code.svg"
   }
   option {
@@ -159,17 +189,37 @@ data "coder_parameter" "ide" {
   }
 }
 
-locals {
-  username     = data.coder_workspace_owner.me.name
-  workspace_id = data.coder_workspace.me.id
-  home_volume  = "revenge-home-${local.workspace_id}"
+# =============================================================================
+# Workspace presets
+# =============================================================================
 
-  # Common environment variables
-  common_env = {
-    DATABASE_URL      = "postgresql://revenge:revenge@postgres:5432/revenge?sslmode=disable"
-    CACHE_URL         = "redis://:revenge@dragonfly:6379/0"
-    TYPESENSE_URL     = "http://typesense:8108"
-    TYPESENSE_API_KEY = "revenge"
+data "coder_workspace_preset" "lightweight" {
+  name        = "Lightweight"
+  description = "Quick edits, docs, reviews (Zed + 2 CPU, 4 GB)"
+  parameters = {
+    "cpu"    = "2"
+    "memory" = "4"
+    "ide"    = "zed"
+  }
+}
+
+data "coder_workspace_preset" "standard" {
+  name        = "Standard Development"
+  description = "Daily Go/Svelte development (Zed + 4 CPU, 8 GB)"
+  parameters = {
+    "cpu"    = "4"
+    "memory" = "8"
+    "ide"    = "zed"
+  }
+}
+
+data "coder_workspace_preset" "heavy" {
+  name        = "Heavy Build"
+  description = "Full builds, integration tests (8 CPU, 16 GB)"
+  parameters = {
+    "cpu"    = "8"
+    "memory" = "16"
+    "ide"    = "zed"
   }
 }
 
@@ -180,73 +230,95 @@ locals {
 resource "coder_agent" "main" {
   arch                   = data.coder_provisioner.me.arch
   os                     = "linux"
-  startup_script_timeout = 300
-  startup_script         = <<-EOT
-    #!/bin/bash
-    set -e
+  startup_script_timeout = 600
 
-    # Apply dotfiles if configured
+  startup_script = <<-EOT
+    #!/bin/bash
+    set -euo pipefail
+
+    export GOEXPERIMENT=greenteagc,jsonv2
+
+    # ── Dotfiles ───────────────────────────────────────────────────────
     if [ -n "${var.dotfiles_uri}" ]; then
       coder dotfiles -y "${var.dotfiles_uri}"
     fi
 
-    # Clone repository if not exists
+    # ── Clone repo ─────────────────────────────────────────────────────
     if [ ! -d "/workspace/revenge" ]; then
-      git clone ${var.git_clone_url} /workspace/revenge
+      git clone --depth 1 ${var.git_clone_url} /workspace/revenge
     fi
-
     cd /workspace/revenge
 
-    # Install Go dependencies
-    if command -v go &> /dev/null; then
-      go mod download
+    # ── Go dependencies ────────────────────────────────────────────────
+    if command -v go &>/dev/null; then
+      go mod download &
     fi
 
-    # Install Python dependencies for doc pipeline
-    if command -v pip3 &> /dev/null; then
-      pip3 install --user pyyaml requests beautifulsoup4 lxml html2text ruff pytest 2>/dev/null || true
-    elif command -v python3 &> /dev/null; then
-      python3 -m pip install --user pyyaml requests beautifulsoup4 lxml html2text ruff pytest 2>/dev/null || true
+    # ── Dev tools (install in background) ──────────────────────────────
+    (
+      go install golang.org/x/tools/gopls@latest
+      go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      go install github.com/air-verse/air@latest
+      go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+      go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+      go install github.com/vektra/mockery/v3@latest
+      go install github.com/go-delve/delve/cmd/dlv@latest
+      go install golang.org/x/vuln/cmd/govulncheck@latest
+    ) &
+
+    # ── Python deps (for automation scripts) ───────────────────────────
+    if command -v pip3 &>/dev/null; then
+      pip3 install --user --quiet pyyaml requests beautifulsoup4 lxml html2text ruff pytest 2>/dev/null || true
     fi
 
-    # Install Node dependencies for frontend
-    if [ -d "web" ] && command -v npm &> /dev/null; then
-      cd web && npm install && cd ..
+    # ── Node deps (for frontend, when web/ exists) ─────────────────────
+    if [ -d "web" ] && command -v npm &>/dev/null; then
+      (cd web && npm install --prefer-offline) &
     fi
 
-    # Generate code
-    if command -v sqlc &> /dev/null; then
-      sqlc generate || true
-    fi
-    if command -v go &> /dev/null; then
-      go generate ./... || true
+    # ── Wait for background installs ──────────────────────────────────
+    wait
+
+    # ── Code generation ────────────────────────────────────────────────
+    if command -v sqlc &>/dev/null; then
+      sqlc generate 2>/dev/null || true
     fi
 
-    # Run database migrations (wait for postgres)
-    for i in {1..30}; do
+    # ── Database migrations (wait for postgres) ────────────────────────
+    for i in $(seq 1 30); do
       if pg_isready -h postgres -U revenge &>/dev/null; then
-        go run ./cmd/revenge migrate up || true
+        migrate -path migrations -database "$${REVENGE_DATABASE_URL}" up 2>/dev/null || true
         break
       fi
       sleep 2
     done
 
-    # Start code-server if IDE is vscode
-    if [ "${data.coder_parameter.ide.value}" = "vscode" ]; then
+    # ── Start code-server if VS Code browser selected ──────────────────
+    if [ "${data.coder_parameter.ide.value}" = "vscode-browser" ]; then
       code-server --auth none --port 13337 /workspace/revenge &
     fi
 
-    echo "🚀 Revenge development environment ready!"
+    echo "Revenge dev environment ready!"
   EOT
 
   env = {
+    GOEXPERIMENT        = "greenteagc,jsonv2"
     GIT_AUTHOR_NAME     = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_AUTHOR_EMAIL    = data.coder_workspace_owner.me.email
     GIT_COMMITTER_NAME  = coalesce(data.coder_workspace_owner.me.full_name, data.coder_workspace_owner.me.name)
     GIT_COMMITTER_EMAIL = data.coder_workspace_owner.me.email
     CODER_HOST          = "https://coder.ancilla.lol"
+    REVENGE_LOG_LEVEL      = local.app_env.REVENGE_LOG_LEVEL
+    REVENGE_LOG_FORMAT     = local.app_env.REVENGE_LOG_FORMAT
+    REVENGE_DATABASE_URL   = local.app_env.REVENGE_DATABASE_URL
+    REVENGE_CACHE_ENABLED  = local.app_env.REVENGE_CACHE_ENABLED
+    REVENGE_CACHE_URL      = local.app_env.REVENGE_CACHE_URL
+    REVENGE_SEARCH_ENABLED = local.app_env.REVENGE_SEARCH_ENABLED
+    REVENGE_SEARCH_URL     = local.app_env.REVENGE_SEARCH_URL
+    REVENGE_SEARCH_API_KEY = local.app_env.REVENGE_SEARCH_API_KEY
   }
 
+  # ── Metadata probes ───────────────────────────────────────────────
   metadata {
     display_name = "CPU Usage"
     key          = "cpu_usage"
@@ -254,7 +326,6 @@ resource "coder_agent" "main" {
     interval     = 10
     timeout      = 1
   }
-
   metadata {
     display_name = "RAM Usage"
     key          = "ram_usage"
@@ -262,7 +333,6 @@ resource "coder_agent" "main" {
     interval     = 10
     timeout      = 1
   }
-
   metadata {
     display_name = "Disk Usage"
     key          = "disk_usage"
@@ -270,70 +340,119 @@ resource "coder_agent" "main" {
     interval     = 60
     timeout      = 1
   }
-
   metadata {
     display_name = "Go Version"
     key          = "go_version"
-    script       = "go version | awk '{print $3}'"
+    script       = "go version 2>/dev/null | awk '{print $3}' || echo 'N/A'"
     interval     = 86400
     timeout      = 3
   }
-
   metadata {
-    display_name = "Node Version"
-    key          = "node_version"
-    script       = "node --version"
-    interval     = 86400
+    display_name = "PostgreSQL"
+    key          = "pg_status"
+    script       = "pg_isready -h postgres -U revenge &>/dev/null && echo 'healthy' || echo 'down'"
+    interval     = 30
     timeout      = 3
   }
+}
+
+# =============================================================================
+# Coder Apps (IDE launchers & service UIs)
+# =============================================================================
+
+resource "coder_app" "code_server" {
+  count        = data.coder_parameter.ide.value == "vscode-browser" ? 1 : 0
+  agent_id     = coder_agent.main.id
+  slug         = "code-server"
+  display_name = "VS Code"
+  url          = "http://localhost:13337/?folder=/workspace/revenge"
+  icon         = "/icon/code.svg"
+  subdomain    = false
+  share        = "owner"
+
+  healthcheck {
+    url       = "http://localhost:13337/healthz"
+    interval  = 5
+    threshold = 6
+  }
+}
+
+resource "coder_app" "revenge_api" {
+  agent_id     = coder_agent.main.id
+  slug         = "revenge-api"
+  display_name = "Revenge API"
+  url          = "http://localhost:8096"
+  icon         = "/icon/globe.svg"
+  subdomain    = true
+  share        = "owner"
+
+  healthcheck {
+    url       = "http://localhost:8096/health/live"
+    interval  = 10
+    threshold = 3
+  }
+}
+
+resource "coder_app" "frontend" {
+  agent_id     = coder_agent.main.id
+  slug         = "frontend"
+  display_name = "Frontend (SvelteKit)"
+  url          = "http://localhost:5173"
+  icon         = "/icon/widgets.svg"
+  subdomain    = true
+  share        = "owner"
+}
+
+resource "coder_app" "terminal" {
+  agent_id     = coder_agent.main.id
+  slug         = "terminal"
+  display_name = "Terminal"
+  icon         = "/icon/terminal.svg"
+  url          = "http://localhost"
+  subdomain    = false
+  share        = "owner"
 }
 
 # =============================================================================
 # Docker Backend (default)
 # =============================================================================
 
-# Only create Docker resources when backend is docker
 resource "docker_image" "revenge" {
   count        = var.deployment_backend == "docker" ? 1 : 0
-  name         = "ghcr.io/lusoris/revenge-dev:latest"
+  name         = local.workspace_image
   keep_locally = true
 }
 
 resource "docker_image" "postgres" {
   count        = var.deployment_backend == "docker" ? 1 : 0
-  name         = "postgres:16-alpine"
+  name         = local.postgres_image
   keep_locally = true
 }
 
 resource "docker_image" "dragonfly" {
   count        = var.deployment_backend == "docker" ? 1 : 0
-  name         = "docker.dragonflydb.io/dragonflydb/dragonfly:latest"
+  name         = local.dragonfly_image
   keep_locally = true
 }
 
 resource "docker_image" "typesense" {
   count        = var.deployment_backend == "docker" ? 1 : 0
-  name         = "typesense/typesense:27.1"
+  name         = local.typesense_image
   keep_locally = true
 }
 
-# Docker Volumes with lifecycle protection
+# ── Docker Volumes ─────────────────────────────────────────────────
+
 resource "docker_volume" "workspace" {
   count = var.deployment_backend == "docker" ? 1 : 0
   name  = "revenge-workspace-${local.workspace_id}"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  lifecycle { prevent_destroy = true }
 }
 
 resource "docker_volume" "postgres_data" {
   count = var.deployment_backend == "docker" ? 1 : 0
   name  = "revenge-postgres-${local.workspace_id}"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  lifecycle { prevent_destroy = true }
 }
 
 resource "docker_volume" "dragonfly_data" {
@@ -356,13 +475,15 @@ resource "docker_volume" "go_pkg" {
   name  = "revenge-go-pkg-${local.workspace_id}"
 }
 
-# Docker Network
+# ── Docker Network ─────────────────────────────────────────────────
+
 resource "docker_network" "revenge" {
   count = var.deployment_backend == "docker" ? 1 : 0
-  name  = "revenge-network-${local.workspace_id}"
+  name  = "revenge-net-${local.workspace_id}"
 }
 
-# PostgreSQL Container
+# ── PostgreSQL Container ───────────────────────────────────────────
+
 resource "docker_container" "postgres" {
   count = var.deployment_backend == "docker" ? 1 : 0
   image = docker_image.postgres[0].image_id
@@ -375,7 +496,7 @@ resource "docker_container" "postgres" {
 
   env = [
     "POSTGRES_USER=revenge",
-    "POSTGRES_PASSWORD=revenge",
+    "POSTGRES_PASSWORD=revenge_dev_pass",
     "POSTGRES_DB=revenge",
   ]
 
@@ -386,13 +507,14 @@ resource "docker_container" "postgres" {
 
   healthcheck {
     test     = ["CMD-SHELL", "pg_isready -U revenge"]
-    interval = "10s"
+    interval = "5s"
     timeout  = "5s"
     retries  = 5
   }
 }
 
-# Dragonfly Container
+# ── Dragonfly Container ───────────────────────────────────────────
+
 resource "docker_container" "dragonfly" {
   count = var.deployment_backend == "docker" ? 1 : 0
   image = docker_image.dragonfly[0].image_id
@@ -403,19 +525,23 @@ resource "docker_container" "dragonfly" {
     aliases = ["dragonfly"]
   }
 
-  command = [
-    "dragonfly",
-    "--requirepass=revenge",
-    "--maxmemory=512mb",
-  ]
+  command = ["--cache_mode"]
 
   volumes {
     container_path = "/data"
     volume_name    = docker_volume.dragonfly_data[0].name
   }
+
+  healthcheck {
+    test     = ["CMD", "redis-cli", "ping"]
+    interval = "5s"
+    timeout  = "3s"
+    retries  = 5
+  }
 }
 
-# Typesense Container
+# ── Typesense Container ───────────────────────────────────────────
+
 resource "docker_container" "typesense" {
   count = var.deployment_backend == "docker" ? 1 : 0
   image = docker_image.typesense[0].image_id
@@ -428,7 +554,7 @@ resource "docker_container" "typesense" {
 
   env = [
     "TYPESENSE_DATA_DIR=/data",
-    "TYPESENSE_API_KEY=revenge",
+    "TYPESENSE_API_KEY=dev_api_key",
     "TYPESENSE_ENABLE_CORS=true",
   ]
 
@@ -436,9 +562,17 @@ resource "docker_container" "typesense" {
     container_path = "/data"
     volume_name    = docker_volume.typesense_data[0].name
   }
+
+  healthcheck {
+    test     = ["CMD", "curl", "-f", "http://localhost:8108/health"]
+    interval = "5s"
+    timeout  = "3s"
+    retries  = 5
+  }
 }
 
-# Main Workspace Container
+# ── Main Workspace Container ──────────────────────────────────────
+
 resource "docker_container" "workspace" {
   count = var.deployment_backend == "docker" ? data.coder_workspace.me.start_count : 0
   image = docker_image.revenge[0].image_id
@@ -453,10 +587,13 @@ resource "docker_container" "workspace" {
 
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
-    "DATABASE_URL=${local.common_env.DATABASE_URL}",
-    "CACHE_URL=${local.common_env.CACHE_URL}",
-    "TYPESENSE_URL=${local.common_env.TYPESENSE_URL}",
-    "TYPESENSE_API_KEY=${local.common_env.TYPESENSE_API_KEY}",
+    "GOEXPERIMENT=greenteagc,jsonv2",
+    "REVENGE_DATABASE_URL=${local.app_env.REVENGE_DATABASE_URL}",
+    "REVENGE_CACHE_URL=${local.app_env.REVENGE_CACHE_URL}",
+    "REVENGE_SEARCH_URL=${local.app_env.REVENGE_SEARCH_URL}",
+    "REVENGE_SEARCH_API_KEY=${local.app_env.REVENGE_SEARCH_API_KEY}",
+    "REVENGE_LOG_LEVEL=debug",
+    "REVENGE_LOG_FORMAT=console",
   ]
 
   command = ["sh", "-c", coder_agent.main.init_script]
@@ -465,18 +602,15 @@ resource "docker_container" "workspace" {
     container_path = "/workspace"
     volume_name    = docker_volume.workspace[0].name
   }
-
   volumes {
     container_path = "/home/coder/.cache/go-build"
     volume_name    = docker_volume.go_cache[0].name
   }
-
   volumes {
     container_path = "/go/pkg"
     volume_name    = docker_volume.go_pkg[0].name
   }
 
-  # Resource limits
   cpu_shares = data.coder_parameter.cpu.value * 1024
   memory     = data.coder_parameter.memory.value * 1024
 
@@ -488,11 +622,11 @@ resource "docker_container" "workspace" {
 }
 
 # =============================================================================
-# Kubernetes Backend
+# Kubernetes / K3s Backend
 # =============================================================================
 
 resource "kubernetes_namespace" "workspace" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name = "${var.namespace}-${local.username}"
     labels = {
@@ -502,8 +636,10 @@ resource "kubernetes_namespace" "workspace" {
   }
 }
 
+# ── PVCs ──────────────────────────────────────────────────────────
+
 resource "kubernetes_persistent_volume_claim" "workspace" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "workspace-pvc"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -512,15 +648,13 @@ resource "kubernetes_persistent_volume_claim" "workspace" {
     access_modes       = ["ReadWriteOnce"]
     storage_class_name = var.storage_class
     resources {
-      requests = {
-        storage = var.disk_size
-      }
+      requests = { storage = var.disk_size }
     }
   }
 }
 
 resource "kubernetes_persistent_volume_claim" "postgres" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres-pvc"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -529,16 +663,15 @@ resource "kubernetes_persistent_volume_claim" "postgres" {
     access_modes       = ["ReadWriteOnce"]
     storage_class_name = var.storage_class
     resources {
-      requests = {
-        storage = "10Gi"
-      }
+      requests = { storage = "10Gi" }
     }
   }
 }
 
-# PostgreSQL StatefulSet (Kubernetes)
+# ── PostgreSQL (K8s/K3s) ──────────────────────────────────────────
+
 resource "kubernetes_stateful_set" "postgres" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -547,27 +680,23 @@ resource "kubernetes_stateful_set" "postgres" {
     service_name = "postgres"
     replicas     = 1
     selector {
-      match_labels = {
-        app = "postgres"
-      }
+      match_labels = { app = "postgres" }
     }
     template {
       metadata {
-        labels = {
-          app = "postgres"
-        }
+        labels = { app = "postgres" }
       }
       spec {
         container {
           name  = "postgres"
-          image = "postgres:16-alpine"
+          image = local.postgres_image
           env {
             name  = "POSTGRES_USER"
             value = "revenge"
           }
           env {
             name  = "POSTGRES_PASSWORD"
-            value = "revenge"
+            value = "revenge_dev_pass"
           }
           env {
             name  = "POSTGRES_DB"
@@ -581,14 +710,8 @@ resource "kubernetes_stateful_set" "postgres" {
             mount_path = "/var/lib/postgresql/data"
           }
           resources {
-            limits = {
-              cpu    = "1"
-              memory = "1Gi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "256Mi"
-            }
+            limits   = { cpu = "1", memory = "1Gi" }
+            requests = { cpu = "250m", memory = "256Mi" }
           }
         }
         volume {
@@ -602,17 +725,14 @@ resource "kubernetes_stateful_set" "postgres" {
   }
 }
 
-# Kubernetes Service for PostgreSQL
 resource "kubernetes_service" "postgres" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
   }
   spec {
-    selector = {
-      app = "postgres"
-    }
+    selector = { app = "postgres" }
     port {
       port        = 5432
       target_port = 5432
@@ -621,9 +741,10 @@ resource "kubernetes_service" "postgres" {
   }
 }
 
-# Dragonfly Deployment (Kubernetes)
+# ── Dragonfly (K8s/K3s) ──────────────────────────────────────────
+
 resource "kubernetes_deployment" "dragonfly" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "dragonfly"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -631,33 +752,23 @@ resource "kubernetes_deployment" "dragonfly" {
   spec {
     replicas = 1
     selector {
-      match_labels = {
-        app = "dragonfly"
-      }
+      match_labels = { app = "dragonfly" }
     }
     template {
       metadata {
-        labels = {
-          app = "dragonfly"
-        }
+        labels = { app = "dragonfly" }
       }
       spec {
         container {
           name  = "dragonfly"
-          image = "docker.dragonflydb.io/dragonflydb/dragonfly:latest"
-          args  = ["dragonfly", "--requirepass=revenge", "--maxmemory=512mb"]
+          image = local.dragonfly_image
+          args  = ["--cache_mode", "--maxmemory=512mb"]
           port {
             container_port = 6379
           }
           resources {
-            limits = {
-              cpu    = "500m"
-              memory = "512Mi"
-            }
-            requests = {
-              cpu    = "100m"
-              memory = "128Mi"
-            }
+            limits   = { cpu = "500m", memory = "512Mi" }
+            requests = { cpu = "100m", memory = "128Mi" }
           }
         }
       }
@@ -666,15 +777,13 @@ resource "kubernetes_deployment" "dragonfly" {
 }
 
 resource "kubernetes_service" "dragonfly" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "dragonfly"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
   }
   spec {
-    selector = {
-      app = "dragonfly"
-    }
+    selector = { app = "dragonfly" }
     port {
       port        = 6379
       target_port = 6379
@@ -683,9 +792,10 @@ resource "kubernetes_service" "dragonfly" {
   }
 }
 
-# Typesense Deployment (Kubernetes)
+# ── Typesense (K8s/K3s) ──────────────────────────────────────────
+
 resource "kubernetes_deployment" "typesense" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "typesense"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -693,27 +803,23 @@ resource "kubernetes_deployment" "typesense" {
   spec {
     replicas = 1
     selector {
-      match_labels = {
-        app = "typesense"
-      }
+      match_labels = { app = "typesense" }
     }
     template {
       metadata {
-        labels = {
-          app = "typesense"
-        }
+        labels = { app = "typesense" }
       }
       spec {
         container {
           name  = "typesense"
-          image = "typesense/typesense:27.1"
+          image = local.typesense_image
           env {
             name  = "TYPESENSE_DATA_DIR"
             value = "/data"
           }
           env {
             name  = "TYPESENSE_API_KEY"
-            value = "revenge"
+            value = "dev_api_key"
           }
           env {
             name  = "TYPESENSE_ENABLE_CORS"
@@ -723,14 +829,8 @@ resource "kubernetes_deployment" "typesense" {
             container_port = 8108
           }
           resources {
-            limits = {
-              cpu    = "500m"
-              memory = "512Mi"
-            }
-            requests = {
-              cpu    = "100m"
-              memory = "128Mi"
-            }
+            limits   = { cpu = "500m", memory = "512Mi" }
+            requests = { cpu = "100m", memory = "128Mi" }
           }
         }
       }
@@ -739,15 +839,13 @@ resource "kubernetes_deployment" "typesense" {
 }
 
 resource "kubernetes_service" "typesense" {
-  count = var.deployment_backend == "kubernetes" ? 1 : 0
+  count = local.use_k8s ? 1 : 0
   metadata {
     name      = "typesense"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
   }
   spec {
-    selector = {
-      app = "typesense"
-    }
+    selector = { app = "typesense" }
     port {
       port        = 8108
       target_port = 8108
@@ -756,9 +854,10 @@ resource "kubernetes_service" "typesense" {
   }
 }
 
-# Main Workspace Pod (Kubernetes)
+# ── Main Workspace Pod (K8s/K3s) ─────────────────────────────────
+
 resource "kubernetes_pod" "workspace" {
-  count = var.deployment_backend == "kubernetes" ? data.coder_workspace.me.start_count : 0
+  count = local.use_k8s ? data.coder_workspace.me.start_count : 0
   metadata {
     name      = "workspace"
     namespace = kubernetes_namespace.workspace[0].metadata[0].name
@@ -769,32 +868,43 @@ resource "kubernetes_pod" "workspace" {
   spec {
     container {
       name    = "dev"
-      image   = "ghcr.io/lusoris/revenge-dev:latest"
+      image   = local.workspace_image
       command = ["sh", "-c", coder_agent.main.init_script]
+
       env {
         name  = "CODER_AGENT_TOKEN"
         value = coder_agent.main.token
       }
       env {
-        name  = "DATABASE_URL"
-        value = local.common_env.DATABASE_URL
+        name  = "GOEXPERIMENT"
+        value = "greenteagc,jsonv2"
       }
       env {
-        name  = "CACHE_URL"
-        value = local.common_env.CACHE_URL
+        name  = "REVENGE_DATABASE_URL"
+        value = local.app_env.REVENGE_DATABASE_URL
       }
       env {
-        name  = "TYPESENSE_URL"
-        value = local.common_env.TYPESENSE_URL
+        name  = "REVENGE_CACHE_URL"
+        value = local.app_env.REVENGE_CACHE_URL
       }
       env {
-        name  = "TYPESENSE_API_KEY"
-        value = local.common_env.TYPESENSE_API_KEY
+        name  = "REVENGE_SEARCH_URL"
+        value = local.app_env.REVENGE_SEARCH_URL
       }
+      env {
+        name  = "REVENGE_SEARCH_API_KEY"
+        value = local.app_env.REVENGE_SEARCH_API_KEY
+      }
+      env {
+        name  = "REVENGE_LOG_LEVEL"
+        value = "debug"
+      }
+
       volume_mount {
         name       = "workspace"
         mount_path = "/workspace"
       }
+
       resources {
         limits = {
           cpu    = data.coder_parameter.cpu.value
@@ -821,61 +931,17 @@ resource "kubernetes_pod" "workspace" {
 }
 
 # =============================================================================
-# Coder Apps
+# Docker Swarm Backend
 # =============================================================================
-
-resource "coder_app" "code_server" {
-  count        = data.coder_parameter.ide.value == "vscode" ? 1 : 0
-  agent_id     = coder_agent.main.id
-  slug         = "code-server"
-  display_name = "VS Code"
-  url          = "http://localhost:13337/?folder=/workspace/revenge"
-  icon         = "/icon/code.svg"
-  subdomain    = false
-  share        = "owner"
-
-  healthcheck {
-    url       = "http://localhost:13337/healthz"
-    interval  = 5
-    threshold = 6
-  }
-}
-
-resource "coder_app" "revenge_api" {
-  agent_id     = coder_agent.main.id
-  slug         = "revenge"
-  display_name = "Revenge API"
-  url          = "http://localhost:8080"
-  icon         = "/icon/globe.svg"
-  subdomain    = true
-  share        = "owner"
-
-  healthcheck {
-    url       = "http://localhost:8080/health"
-    interval  = 10
-    threshold = 3
-  }
-}
-
-resource "coder_app" "frontend" {
-  agent_id     = coder_agent.main.id
-  slug         = "frontend"
-  display_name = "Frontend (Vite)"
-  url          = "http://localhost:5173"
-  icon         = "/icon/svelte.svg"
-  subdomain    = true
-  share        = "owner"
-}
-
-resource "coder_app" "terminal" {
-  agent_id     = coder_agent.main.id
-  slug         = "terminal"
-  display_name = "Terminal"
-  icon         = "/icon/terminal.svg"
-  url          = "http://localhost"
-  subdomain    = false
-  share        = "owner"
-}
+#
+# For Swarm, infra services (postgres, dragonfly, typesense) run as part of
+# the stack defined in deploy/docker-swarm-stack.yml.
+#
+# Deploy the stack first:
+#   docker stack deploy -c deploy/docker-swarm-stack.yml revenge
+#
+# Then create the Coder workspace:
+#   coder create my-workspace --template revenge --variable deployment_backend=swarm
 
 # =============================================================================
 # Outputs
@@ -889,4 +955,14 @@ output "workspace_url" {
 output "deployment_backend" {
   value       = var.deployment_backend
   description = "Active deployment backend"
-.}
+}
+
+output "ide" {
+  value       = data.coder_parameter.ide.value
+  description = "Selected IDE"
+}
+
+output "zed_ssh" {
+  value       = "zed ssh://${data.coder_workspace.me.name}/workspace/revenge"
+  description = "Zed SSH connection command"
+}
