@@ -57,12 +57,12 @@ Run validation first:
 /validate-tools $ENV
 ```
 
-### Step 3: Get Required Versions from SOURCE_OF_TRUTH
+### Step 3: Get Required Versions from go.mod / Makefile
 
 **CRITICAL**: Read required versions from the authoritative source:
 
 ```bash
-# Parse docs/dev/design/00_SOURCE_OF_TRUTH.md to get:
+# Parse go.mod, Makefile, and .devcontainer/devcontainer.json to get:
 # - Go version
 # - Node.js version
 # - Python version
@@ -74,12 +74,12 @@ Run validation first:
 
 ### Step 4: Install Missing Tools
 
-Based on validation results and versions from SOURCE_OF_TRUTH:
+Based on validation results and versions from go.mod / Makefile:
 
 **Go (if missing)**:
 ```bash
-# Get version from SOURCE_OF_TRUTH (e.g., "1.25.6")
-GO_VERSION="<from SOURCE_OF_TRUTH>"
+# Get version from go.mod / Makefile (e.g., "1.25.6")
+GO_VERSION="<from go.mod / Makefile>"
 
 # Linux
 wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
@@ -87,7 +87,7 @@ sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
 
 # macOS
 brew install go
-# Then verify version matches SOURCE_OF_TRUTH
+# Then verify version matches go.mod / Makefile
 
 # Verify
 go version
@@ -95,8 +95,8 @@ go version
 
 **Node.js (if missing)**:
 ```bash
-# Get major version from SOURCE_OF_TRUTH (e.g., "20")
-NODE_VERSION="<from SOURCE_OF_TRUTH>"
+# Get major version from go.mod / Makefile (e.g., "20")
+NODE_VERSION="<from go.mod / Makefile>"
 
 # Linux (using nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -112,8 +112,8 @@ node --version
 
 **Python (if missing)**:
 ```bash
-# Get version from SOURCE_OF_TRUTH (e.g., "3.12")
-PYTHON_VERSION="<from SOURCE_OF_TRUTH>"
+# Get version from go.mod / Makefile (e.g., "3.12")
+PYTHON_VERSION="<from go.mod / Makefile>"
 
 # Linux
 sudo apt install python${PYTHON_VERSION} python3-pip
@@ -308,7 +308,7 @@ After setup completes, print a summary:
 
 ## Environment: Local Development
 
-## Installed Tools (verified against SOURCE_OF_TRUTH)
+## Installed Tools (verified against go.mod / Makefile)
 ✅ Go <version>
 ✅ Node.js <version>
 ✅ Python <version>

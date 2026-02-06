@@ -717,5 +717,5 @@ If migrating from VS Code:
 - **Zed Settings Reference**: https://zed.dev/docs/configuring-zed
 - **Project Settings**: [../settings.json](../settings.json)
 - **EditorConfig**: [../../.editorconfig](../../.editorconfig)
-- **Source of Truth**: [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md)
+- **Tech Stack**: [../../docs/dev/design/technical/TECH_STACK.md](../../docs/dev/design/technical/TECH_STACK.md)
 

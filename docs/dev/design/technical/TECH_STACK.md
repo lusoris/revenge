@@ -105,7 +105,7 @@ flowchart LR
 - [01_ARCHITECTURE](../architecture/ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../architecture/METADATA_SYSTEM.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [DESIGN_INDEX](../DESIGN_INDEX.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - L2 cache backend

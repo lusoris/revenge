@@ -4,7 +4,7 @@
 
 **Last Updated**: 2026-01-31
 
-> **📋 Version Requirements**: For all tool and package versions, see [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md)
+> **📋 Version Requirements**: For all tool and package versions, see [../../docs/dev/design/technical/TECH_STACK.md](../../docs/dev/design/technical/TECH_STACK.md)
 
 ---
 

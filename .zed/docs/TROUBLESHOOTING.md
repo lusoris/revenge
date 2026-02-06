@@ -1019,7 +1019,7 @@ tail -100 ~/.local/share/zed/zed.log > zed_logs.txt
 - **SETUP.md**: [SETUP.md](SETUP.md) - Installation guide
 - **KEYBINDINGS.md**: [KEYBINDINGS.md](KEYBINDINGS.md) - Keyboard reference
 - **Settings.json**: [../settings.json](../settings.json) - Project config
-- **SOURCE_OF_TRUTH**: [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md)
+- **Tech Stack**: [../../docs/dev/design/technical/TECH_STACK.md](../../docs/dev/design/technical/TECH_STACK.md)
 
 ### Zed Community
 

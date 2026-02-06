@@ -314,12 +314,11 @@ What's implemented vs what's planned.
 
 ## Step 11: Finalize
 
-1. Update `00_SOURCE_OF_TRUTH.md` - verify all dependency versions against go.mod
-2. Regenerate `DESIGN_INDEX.md` from new structure (only list implemented docs + planned section)
-3. Update `CLAUDE.md` doc references to new paths
-4. Update `SUPPORT.md` + `SECURITY.md` with correct paths/versions
-5. Verify all cross-references (no broken links)
-6. Clean up empty directories from moved files
+1. Delete `00_SOURCE_OF_TRUTH.md` (replaced by distributed docs)
+2. Rewrite `DESIGN_INDEX.md` from actual doc structure
+3. Remove SOT references from active INDEX.md files + README + SUPPORT
+4. Update `.zed/`, `.coder/`, `.claude/skills/` SOT references → TECH_STACK.md
+5. Verify no broken cross-references in active docs
 
 ---
 
@@ -361,7 +360,7 @@ What's implemented vs what's planned.
 | 8 | Rewrite content module docs | ~8 | Medium | ✅ Done |
 | 9 | Rewrite 4 integration docs | 4 | Low-Medium | ✅ Done |
 | 10 | Rewrite 6 operations/technical docs | 6 | Medium | ✅ Done |
-| 11 | Finalize (SOURCE_OF_TRUTH, INDEX, links) | 1 | Low | Pending |
+| 11 | Finalize (delete SOT, rewrite INDEX, fix refs) | 1 | Low | ✅ Done |
 
 **Also completed** (not in original plan):
 - Wiki sync workflow (.github/workflows/wiki-sync.yml) - auto-syncs docs to GitHub wiki

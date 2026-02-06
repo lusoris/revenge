@@ -149,7 +149,6 @@ Integration tests use [testcontainers-go](https://testcontainers.com/) to spin u
 
 ## Documentation
 
-- [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference for versions and modules
 - [Architecture](docs/dev/design/architecture/ARCHITECTURE.md) - System architecture
 - [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices with rationale
 - [Design Index](docs/dev/design/DESIGN_INDEX.md) - Full design documentation index

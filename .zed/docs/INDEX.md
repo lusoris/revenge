@@ -42,7 +42,7 @@
 - **Project Settings**: [../settings.json](../settings.json) - Revenge-specific Zed config
 - **Universal Config**: See `~/.config/zed/settings.json` for user settings
 - **EditorConfig**: [../../.editorconfig](../../.editorconfig) - Universal editor rules
-- **Source of Truth**: [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md) - Tech stack versions
+- **Tech Stack**: [../../docs/dev/design/technical/TECH_STACK.md](../../docs/dev/design/technical/TECH_STACK.md) - Tech stack versions
 
 ---
 
@@ -131,7 +131,7 @@
 - **Revenge Design Index**: [../../docs/dev/design/DESIGN_INDEX.md](../../docs/dev/design/DESIGN_INDEX.md)
 - **Tech Stack**: [../../docs/dev/design/technical/TECH_STACK.md](../../docs/dev/design/technical/TECH_STACK.md)
 - **Development Guide**: [../../docs/dev/design/operations/DEVELOPMENT.md](../../docs/dev/design/operations/DEVELOPMENT.md)
-- **Source of Truth**: [../../docs/dev/design/00_SOURCE_OF_TRUTH.md](../../docs/dev/design/00_SOURCE_OF_TRUTH.md)
+- **Design Index**: [../../docs/dev/design/DESIGN_INDEX.md](../../docs/dev/design/DESIGN_INDEX.md)
 
 ### Related IDE Docs
 - **VS Code Settings**: [../../.vscode/settings.json](../../.vscode/settings.json)
