@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// Common quality markers found in release filenames
-// These are shared across movies and TV shows
+// QualityMarkers contains common quality markers found in release filenames.
+// These are shared across movies and TV shows.
 var QualityMarkers = []string{
 	// Resolutions
 	"2160p", "1080p", "720p", "480p", "360p",
@@ -37,7 +37,7 @@ var QualityMarkers = []string{
 	"3D", "SBS", "HSBS", "OU", "HOU",
 }
 
-// Common release group tags found in filenames
+// ReleaseGroups contains common release group tags found in filenames.
 var ReleaseGroups = []string{
 	// Scene groups
 	"SPARKS", "GECKOS", "RARBG", "FGT", "EVO", "FLAME",
@@ -55,7 +55,7 @@ var ReleaseGroups = []string{
 	"DSNP+", "ROKU", "PCOK", "STAN", "PMTP", "iT",
 }
 
-// Common words to strip from titles (typically service/platform markers)
+// ServiceMarkers contains common words to strip from titles (typically service/platform markers).
 var ServiceMarkers = []string{
 	"AMZN", "NF", "NETFLIX", "ATVP", "DSNP", "HMAX", "HULU",
 	"ROKU", "PCOK", "STAN", "iT", "PMTP",

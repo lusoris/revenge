@@ -169,12 +169,6 @@ func (m *Matcher) scoreExistingMovie(result ScanResult, movie *Movie) float64 {
 	return score.Calculate()
 }
 
-// levenshteinDistance calculates the edit distance between two strings.
-// Deprecated: Use matcher.LevenshteinDistance from the shared package.
-func levenshteinDistance(s1, s2 string) int {
-	return matcher.LevenshteinDistance(s1, s2)
-}
-
 // createMovieFromTMDb creates a new movie record from TMDb data
 func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*Movie, error) {
 	// Enrich with full metadata if we only have search result

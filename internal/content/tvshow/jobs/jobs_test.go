@@ -117,6 +117,8 @@ func TestMetadataRefreshArgs_Fields(t *testing.T) {
 			RefreshImages: true,
 		}
 		assert.NotNil(t, args.SeriesID)
+		assert.True(t, args.Force)
+		assert.True(t, args.RefreshImages)
 		assert.Nil(t, args.SeasonID)
 		assert.Nil(t, args.EpisodeID)
 	})

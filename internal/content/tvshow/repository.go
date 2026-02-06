@@ -344,7 +344,7 @@ type WatchedEpisodeItem struct {
 	SeriesPosterPath *string
 }
 
-// Ensure ContinueWatchingItem has all needed fields for display
+// GetProgressPercent returns the watch progress as a percentage.
 func (c *ContinueWatchingItem) GetProgressPercent() float64 {
 	if c.DurationSeconds == 0 {
 		return 0

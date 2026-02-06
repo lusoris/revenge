@@ -118,8 +118,12 @@ func TestSeriesTypes(t *testing.T) {
 	assert.Equal(t, 1, series.ID)
 	assert.Equal(t, "Breaking Bad", series.Title)
 	assert.Equal(t, 81189, series.TVDbID)
+	assert.Equal(t, StatusEnded, series.Status)
 	assert.True(t, series.Ended)
+	assert.Equal(t, 2008, series.Year)
 	assert.Len(t, series.Seasons, 2)
+	assert.Equal(t, 1, series.Seasons[0].SeasonNumber)
+	assert.True(t, series.Seasons[0].Monitored)
 }
 
 func TestEpisodeTypes(t *testing.T) {
@@ -139,6 +143,7 @@ func TestEpisodeTypes(t *testing.T) {
 	assert.Equal(t, 1, episode.EpisodeNumber)
 	assert.Equal(t, "Pilot", episode.Title)
 	assert.True(t, episode.HasFile)
+	assert.True(t, episode.Monitored)
 }
 
 func TestWebhookPayload(t *testing.T) {
@@ -162,9 +167,15 @@ func TestWebhookPayload(t *testing.T) {
 
 	assert.Equal(t, EventDownload, payload.EventType)
 	assert.NotNil(t, payload.Series)
+	assert.Equal(t, 1, payload.Series.ID)
 	assert.Equal(t, "Breaking Bad", payload.Series.Title)
+	assert.Equal(t, 81189, payload.Series.TVDbID)
 	assert.Len(t, payload.Episodes, 1)
+	assert.Equal(t, 1, payload.Episodes[0].ID)
+	assert.Equal(t, 1, payload.Episodes[0].SeasonNumber)
+	assert.Equal(t, 1, payload.Episodes[0].EpisodeNumber)
 	assert.Equal(t, "Pilot", payload.Episodes[0].Title)
+	assert.False(t, payload.IsUpgrade)
 }
 
 func TestEventConstants(t *testing.T) {
@@ -239,8 +250,12 @@ func TestAddSeriesRequest(t *testing.T) {
 	}
 
 	assert.Equal(t, "Breaking Bad", req.Title)
+	assert.Equal(t, 1, req.QualityProfileID)
 	assert.Equal(t, 81189, req.TVDbID)
+	assert.Equal(t, "/tv", req.RootFolderPath)
 	assert.True(t, req.Monitored)
 	assert.True(t, req.SeasonFolder)
+	assert.Equal(t, SeriesTypeStandard, req.SeriesType)
 	assert.Equal(t, MonitorAll, req.AddOptions.Monitor)
+	assert.True(t, req.AddOptions.SearchForMissingEpisodes)
 }

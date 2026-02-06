@@ -217,8 +217,9 @@ func mapSearchResultToSeries(r *metadata.TVShowSearchResult) *contenttvshow.Seri
 	// Set TMDb ID from provider ID
 	if r.ProviderID != "" {
 		var tmdbID int32
-		fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
-		series.TMDbID = &tmdbID
+		if _, err := fmt.Sscanf(r.ProviderID, "%d", &tmdbID); err == nil {
+			series.TMDbID = &tmdbID
+		}
 	}
 
 	return series
@@ -393,7 +394,7 @@ func mapCreditsToSeriesCredits(seriesID uuid.UUID, credits *metadata.Credits) []
 	// Map cast
 	for _, c := range credits.Cast {
 		var personID int32
-		fmt.Sscanf(c.ProviderID, "%d", &personID)
+		_, _ = fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contenttvshow.SeriesCredit{
 			ID:           uuid.Must(uuid.NewV7()),
@@ -411,7 +412,7 @@ func mapCreditsToSeriesCredits(seriesID uuid.UUID, credits *metadata.Credits) []
 	// Map crew
 	for _, c := range credits.Crew {
 		var personID int32
-		fmt.Sscanf(c.ProviderID, "%d", &personID)
+		_, _ = fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contenttvshow.SeriesCredit{
 			ID:           uuid.Must(uuid.NewV7()),

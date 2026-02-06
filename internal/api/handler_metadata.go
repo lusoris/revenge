@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/metadata"
@@ -647,19 +646,6 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 	}
 
 	return response, nil
-}
-
-// parseDate parses a date string in YYYY-MM-DD format.
-func parseDate(dateStr string) (time.Time, error) {
-	return time.Parse("2006-01-02", dateStr)
-}
-
-// Helper functions
-func getInt(i *int32) int {
-	if i == nil {
-		return 0
-	}
-	return int(*i)
 }
 
 func min(a, b int) int {

@@ -23,8 +23,6 @@ var (
 	sharedContainerErr  error
 	sharedContainerURL  string
 
-	// containerTemplateReady tracks if the template database has been created
-	containerTemplateReady     bool
 	containerTemplateReadyOnce sync.Once
 	containerTemplateReadyErr  error
 )
@@ -99,7 +97,6 @@ func createContainerTemplateDB(ctx context.Context) error {
 			return
 		}
 
-		containerTemplateReady = true
 	})
 	return containerTemplateReadyErr
 }

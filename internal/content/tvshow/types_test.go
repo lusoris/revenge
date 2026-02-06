@@ -639,10 +639,13 @@ func TestContinueWatchingItem(t *testing.T) {
 	}
 
 	assert.Equal(t, series, item.Series)
+	assert.NotEqual(t, uuid.Nil, item.LastEpisodeID)
 	assert.Equal(t, int32(2), item.LastSeasonNumber)
 	assert.Equal(t, int32(5), item.LastEpisodeNumber)
 	assert.Equal(t, "Breakage", item.LastEpisodeTitle)
 	assert.Equal(t, int32(1200), item.ProgressSeconds)
+	assert.Equal(t, int32(2700), item.DurationSeconds)
+	assert.False(t, item.LastWatchedAt.IsZero())
 }
 
 func TestNextEpisode(t *testing.T) {
@@ -685,10 +688,21 @@ func TestEpisodeFile(t *testing.T) {
 	}
 
 	assert.NotEqual(t, uuid.Nil, file.ID)
+	assert.NotEqual(t, uuid.Nil, file.EpisodeID)
+	assert.Equal(t, "/media/tv/Breaking Bad/Season 1/Breaking.Bad.S01E01.mkv", file.FilePath)
 	assert.Equal(t, "Breaking.Bad.S01E01.mkv", file.FileName)
 	assert.Equal(t, int64(1500000000), file.FileSize)
 	assert.Equal(t, "mkv", *file.Container)
+	assert.Equal(t, "1920x1080", *file.Resolution)
+	assert.Equal(t, "HDTV-1080p", *file.QualityProfile)
+	assert.Equal(t, "h264", *file.VideoCodec)
+	assert.Equal(t, "aac", *file.AudioCodec)
+	assert.Equal(t, int32(5000), *file.BitrateKbps)
+	assert.NotNil(t, file.DurationSeconds)
+	assert.Len(t, file.AudioLanguages, 1)
 	assert.Len(t, file.SubtitleLanguages, 3)
+	assert.False(t, file.CreatedAt.IsZero())
+	assert.False(t, file.UpdatedAt.IsZero())
 }
 
 func TestNetwork(t *testing.T) {
@@ -701,9 +715,12 @@ func TestNetwork(t *testing.T) {
 		CreatedAt:     time.Now(),
 	}
 
+	assert.NotEqual(t, uuid.Nil, network.ID)
 	assert.Equal(t, int32(174), network.TMDbID)
 	assert.Equal(t, "AMC", network.Name)
+	assert.Equal(t, "/path/to/logo.png", *network.LogoPath)
 	assert.Equal(t, "US", *network.OriginCountry)
+	assert.False(t, network.CreatedAt.IsZero())
 }
 
 func TestSeriesGenre(t *testing.T) {
@@ -715,8 +732,11 @@ func TestSeriesGenre(t *testing.T) {
 		CreatedAt:   time.Now(),
 	}
 
+	assert.NotEqual(t, uuid.Nil, genre.ID)
+	assert.NotEqual(t, uuid.Nil, genre.SeriesID)
 	assert.Equal(t, int32(18), genre.TMDbGenreID)
 	assert.Equal(t, "Drama", genre.Name)
+	assert.False(t, genre.CreatedAt.IsZero())
 }
 
 func TestUserTVStats(t *testing.T) {

@@ -1520,30 +1520,3 @@ func unmarshalNestedStringMap(data json.RawMessage) map[string]map[string]string
 	return m
 }
 
-func derefString(s *string) string {
-	if s == nil {
-		return ""
-	}
-	return *s
-}
-
-func derefInt32(i *int32) int32 {
-	if i == nil {
-		return 0
-	}
-	return *i
-}
-
-func derefInt64(i *int64) int64 {
-	if i == nil {
-		return 0
-	}
-	return *i
-}
-
-func derefInt64Ptr(i *int64) int64 {
-	if i == nil {
-		return 0
-	}
-	return *i
-}

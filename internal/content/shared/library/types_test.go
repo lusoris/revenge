@@ -157,13 +157,22 @@ func TestMediaFileInfo(t *testing.T) {
 		SubtitleLangs:   []string{"en", "de", "fr"},
 	}
 
-	// Just verify the struct can be populated correctly
+	// Verify all struct fields can be populated correctly
 	assert.Equal(t, "/path/to/movie.mkv", info.Path)
+	assert.Equal(t, int64(1024*1024*1000), info.Size)
 	assert.Equal(t, "mkv", info.Container)
+	assert.Equal(t, "1920x1080", info.Resolution)
 	assert.Equal(t, "1080p", info.ResolutionLabel)
 	assert.Equal(t, "hevc", info.VideoCodec)
+	assert.Equal(t, "Main 10", info.VideoProfile)
+	assert.Equal(t, "dts", info.AudioCodec)
+	assert.Equal(t, int64(8000), info.BitrateKbps)
+	assert.Equal(t, float64(7200), info.DurationSeconds)
+	assert.Equal(t, float64(23.976), info.Framerate)
 	assert.Equal(t, "HDR10", info.DynamicRange)
+	assert.Equal(t, "bt2020", info.ColorSpace)
 	assert.Equal(t, 6, info.AudioChannels)
+	assert.Equal(t, "5.1", info.AudioLayout)
 	assert.Len(t, info.Languages, 2)
 	assert.Len(t, info.SubtitleLangs, 3)
 }

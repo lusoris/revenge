@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Common video file extensions used across movies and TV shows
+// VideoExtensions contains common video file extensions used across movies and TV shows.
 var VideoExtensions = map[string]bool{
 	".mp4":  true,
 	".mkv":  true,
@@ -24,7 +24,7 @@ var VideoExtensions = map[string]bool{
 	".ogv":  true, // Ogg Video
 }
 
-// Common audio file extensions used for music libraries
+// AudioExtensions contains common audio file extensions used for music libraries.
 var AudioExtensions = map[string]bool{
 	".mp3":  true,
 	".flac": true,
@@ -41,7 +41,7 @@ var AudioExtensions = map[string]bool{
 	".dff":  true, // DSD
 }
 
-// Common image extensions for artwork and photos
+// ImageExtensions contains common image extensions for artwork and photos.
 var ImageExtensions = map[string]bool{
 	".jpg":  true,
 	".jpeg": true,
@@ -53,7 +53,7 @@ var ImageExtensions = map[string]bool{
 	".svg":  true,
 }
 
-// Subtitle file extensions
+// SubtitleExtensions contains subtitle file extensions.
 var SubtitleExtensions = map[string]bool{
 	".srt":  true,
 	".ass":  true,
