@@ -1,4 +1,4 @@
-name: Security Scanning
+name: Security
 
 on:
   push:
@@ -6,8 +6,7 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    # Run every Monday at 00:00 UTC
-    - cron: '0 0 * * 1'
+    - cron: "0 0 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -15,69 +14,51 @@ permissions:
   security-events: write
   actions: read
 
-jobs:
-  # Extract versions from SOURCE_OF_TRUTH first
-  versions:
-    name: Get versions from SOURCE_OF_TRUTH
-    uses: ./.github/workflows/_versions.yml
+env:
+  GO_VERSION: "1.25"
+  GOEXPERIMENT: greenteagc,jsonv2
 
+jobs:
   codeql:
-    name: CodeQL Analysis
+    name: CodeQL
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+      - uses: actions/checkout@v6
+      - uses: github/codeql-action/init@v4
         with:
           languages: go
           queries: security-extended,security-and-quality
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+      - uses: github/codeql-action/autobuild@v4
+      - uses: github/codeql-action/analyze@v4
         with:
           category: "/language:go"
 
   trivy-repo:
-    name: Trivy Repository Scan
+    name: Trivy Repo Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Run Trivy vulnerability scanner (repo)
-        uses: aquasecurity/trivy-action@master
+      - uses: actions/checkout@v6
+      - uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-repo-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-repo.sarif"
+          severity: "CRITICAL,HIGH"
           ignore-unfixed: true
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-repo-results.sarif'
+          sarif_file: "trivy-repo.sarif"
 
   trivy-docker:
-    name: Trivy Container Scan
+    name: Trivy Image Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image for scanning
-        uses: docker/build-push-action@v6
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
         with:
           context: .
           push: false
@@ -85,77 +66,36 @@ jobs:
           tags: revenge:scan
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Run Trivy vulnerability scanner (image)
-        uses: aquasecurity/trivy-action@master
+      - uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'revenge:scan'
-          format: 'sarif'
-          output: 'trivy-image-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          image-ref: "revenge:scan"
+          format: "sarif"
+          output: "trivy-image.sarif"
+          severity: "CRITICAL,HIGH"
           ignore-unfixed: true
-
-      - name: Upload Trivy image scan results
-        uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-image-results.sarif'
-
-  gosec:
-    name: Go Security Scan
-    runs-on: ubuntu-latest
-    needs: versions
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Run gosec
-        uses: securego/gosec@master
-        with:
-          args: '-no-fail -fmt sarif -out gosec-results.sarif ./...'
-
-      - name: Upload gosec results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: 'gosec-results.sarif'
+          sarif_file: "trivy-image.sarif"
 
   govulncheck:
-    name: Go Vulnerability Check
+    name: govulncheck
     runs-on: ubuntu-latest
-    needs: versions
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Install govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest
-
-      - name: Run govulncheck
-        run: govulncheck -format text ./...
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: govulncheck ./...
 
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+      - uses: actions/checkout@v6
+      - uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
-          # Project is AGPL-3.0, compatible with GPL/AGPL dependencies

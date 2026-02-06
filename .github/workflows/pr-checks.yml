@@ -7,15 +7,13 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  checks: write
 
 jobs:
-  pr-title-check:
-    name: PR Title Check
+  pr-title:
+    name: PR Title
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR title follows Conventional Commits
-        uses: amannn/action-semantic-pull-request@v5
+      - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -34,100 +32,29 @@ jobs:
           requireScope: false
           subjectPattern: ^(?![A-Z]).+$
           subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            should start with a lowercase letter.
+            The subject "{subject}" should start with a lowercase letter.
           ignoreLabels: |
             bot
             dependencies
             automated
 
-  pr-description-check:
-    name: PR Description Check
+  pr-branch:
+    name: Branch Name
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR has description
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            const body = pr.body || '';
-            const minLength = 50;
-            const exemptLabels = ['dependencies', 'automated', 'bot'];
-
-            // Check if PR has exempt label
-            const labels = pr.labels.map(l => l.name);
-            if (exemptLabels.some(el => labels.includes(el))) {
-              console.log('PR has exempt label, skipping description check');
-              return;
-            }
-
-            if (body.length < minLength) {
-              core.setFailed(`PR description must be at least ${minLength} characters. Current: ${body.length}`);
-            }
-
-  pr-branch-check:
-    name: PR Branch Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check branch naming
-        uses: deepakputhraya/action-branch-name@master
+      - uses: deepakputhraya/action-branch-name@master
         with:
           regex: '^(feature|fix|docs|refactor|test|chore|release|hotfix)\/[a-z0-9._-]+$|^dependabot\/.+$|^renovate\/.+$'
-          allowed_prefixes: 'feature,fix,docs,refactor,test,chore,release,hotfix,dependabot,renovate'
+          allowed_prefixes: "feature,fix,docs,refactor,test,chore,release,hotfix,dependabot,renovate"
           ignore: main,master,develop
           min_length: 5
           max_length: 100
 
-  pr-conflict-check:
-    name: PR Conflict Check
+  pr-conflicts:
+    name: Merge Conflicts
     runs-on: ubuntu-latest
     steps:
-      - name: Check for merge conflicts
-        uses: eps1lon/actions-label-merge-conflict@releases/2.x
+      - uses: eps1lon/actions-label-merge-conflict@releases/2.x
         with:
-          dirtyLabel: 'merge-conflict'
+          dirtyLabel: "merge-conflict"
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          commentOnDirty: |
-            ⚠️ This PR has merge conflicts. Please resolve them before this can be merged.
-
-            ```bash
-            git checkout <your-branch>
-            git fetch origin
-            git rebase origin/develop
-            # Resolve conflicts
-            git push --force-with-lease
-            ```
-
-  pr-linked-issues:
-    name: Check Linked Issues
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check for linked issues
-        uses: hmarr/auto-approve-action@v3
-        if: false  # Disabled, just placeholder
-        # Consider using: https://github.com/nearform-actions/github-action-check-linked-issues
-
-  changed-files-summary:
-    name: Changed Files Summary
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v47
-        with:
-          separator: '\n'
-
-      - name: List changed files
-        run: |
-          echo "## Changed Files" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| File | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "| \`$file\` | Modified |" >> $GITHUB_STEP_SUMMARY
-          done

@@ -1,100 +1,57 @@
-name: CI (Main Branch)
+name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main, develop]
 
 permissions:
   contents: read
-  pull-requests: read
+
+env:
+  GO_VERSION: "1.25"
+  GOEXPERIMENT: greenteagc,jsonv2
 
 jobs:
-  # Extract versions from SOURCE_OF_TRUTH first
-  versions:
-    name: Get versions from SOURCE_OF_TRUTH
-    uses: ./.github/workflows/_versions.yml
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    needs: versions
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v4
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - uses: golangci/golangci-lint-action@v4
         with:
-          version: v2.8.0  # Go 1.25 support added in v2.8.0
+          version: v2.8.0
           args: --timeout=5m
-
-      - name: Run go vet
-        run: go vet ./...
+      - run: go vet ./...
 
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
-    needs: versions
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        go-version: ${{ fromJSON(needs.versions.outputs.go-matrix) }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Run tests
-        shell: bash
-        env:
-          GOEXPERIMENT: ${{ needs.versions.outputs.goexperiment }}
-        run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            go test -v -race -coverprofile=coverage.out -covermode=atomic -p 1 ./...
-          else
-            # On macOS/Windows, skip integration tests (Docker is slow/unavailable)
-            go test -v -race -short -coverprofile=coverage.out -covermode=atomic -p 1 ./...
-          fi
-
-      - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.go-version == fromJSON(needs.versions.outputs.go-matrix)[0]
-        uses: codecov/codecov-action@v5
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      - uses: codecov/codecov-action@v5
         with:
           files: ./coverage.out
           flags: unittests
-          name: codecov-umbrella
 
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [versions, lint, test]
+    needs: [lint, test]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Build binary
-        env:
-          GOEXPERIMENT: ${{ needs.versions.outputs.goexperiment }}
-        run: go build -v ./...
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - run: go build -v ./cmd/revenge

@@ -1,20 +1,21 @@
-name: Release Please
+name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: write
   pull-requests: write
+  packages: write
+
+env:
+  GO_VERSION: "1.25"
+  GOEXPERIMENT: greenteagc,jsonv2
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Extract versions from SOURCE_OF_TRUTH first
-  versions:
-    name: Get versions from SOURCE_OF_TRUTH
-    uses: ./.github/workflows/_versions.yml
-
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
@@ -23,79 +24,44 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
       version: ${{ steps.release.outputs.version }}
     steps:
-      - name: Release Please
-        uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: go
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  build-release:
-    name: Build Release Assets
-    needs: [versions, release-please]
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+  docker:
+    name: Docker Image
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v6
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true  # Enabled - go.sum now exists
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  docker-release:
-    name: Docker Release
-    needs: [release-please, build-release]
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ghcr.io/lusoris/revenge
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}},value=${{ needs.release-please.outputs.version }}
             type=semver,pattern={{major}}.{{minor}},value=${{ needs.release-please.outputs.version }}
-            type=semver,pattern={{major}},value=${{ needs.release-please.outputs.version }}
             type=raw,value=latest
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -104,16 +70,29 @@ jobs:
           build-args: |
             VERSION=${{ needs.release-please.outputs.version }}
 
-  notify-release:
-    name: Notify Release
-    needs: [release-please, build-release, docker-release]
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+  helm:
+    name: Helm Chart
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Create Release Summary
+      - uses: actions/checkout@v6
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Update chart version
         run: |
-          echo "## 🎉 Release ${{ needs.release-please.outputs.version }} published!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Downloads" >> $GITHUB_STEP_SUMMARY
-          echo "- [GitHub Release](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release-please.outputs.tag_name }})" >> $GITHUB_STEP_SUMMARY
-          echo "- Docker: \`ghcr.io/lusoris/revenge:${{ needs.release-please.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          sed -i "s/^version:.*/version: ${{ needs.release-please.outputs.version }}/" charts/revenge/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${{ needs.release-please.outputs.version }}\"/" charts/revenge/Chart.yaml
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and push Helm chart
+        run: |
+          helm package charts/revenge
+          helm push revenge-${{ needs.release-please.outputs.version }}.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts

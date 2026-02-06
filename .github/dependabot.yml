@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Go modules
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
@@ -17,7 +16,6 @@ updates:
       prefix: "chore"
       include: "scope"
     groups:
-      # Group minor and patch updates
       go-dependencies:
         patterns:
           - "*"
@@ -25,7 +23,6 @@ updates:
           - "minor"
           - "patch"
 
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -42,7 +39,6 @@ updates:
       prefix: "chore"
       include: "scope"
 
-  # Docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -59,7 +55,6 @@ updates:
       prefix: "chore"
       include: "scope"
 
-  # npm (frontend)
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
@@ -76,27 +71,9 @@ updates:
       prefix: "chore"
       include: "scope"
     groups:
-      # Group minor and patch updates
       npm-dependencies:
         patterns:
           - "*"
         update-types:
           - "minor"
           - "patch"
-
-  # Python (scripts and automation)
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "lusoris"
-    labels:
-      - "dependencies"
-      - "python"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
