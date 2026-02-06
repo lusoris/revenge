@@ -114,7 +114,10 @@ jobs:
           key: go-vuln-${{ hashFiles('**/go.sum') }}
           restore-keys: go-vuln-
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
-      - run: govulncheck ./...
+      - name: Run govulncheck
+        run: govulncheck ./...
+        env:
+          GOEXPERIMENT: greenteagc  # exclude jsonv2: govulncheck panics on it (golang/go#74846)
 
   dependency-review:
     name: Dependency Review
