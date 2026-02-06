@@ -33,6 +33,14 @@ func (CleanupArgs) Kind() string {
 	return CleanupJobKind
 }
 
+// InsertOpts returns the default insert options for cleanup jobs.
+// Cleanup runs on the low-priority queue since it's maintenance work.
+func (CleanupArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: QueueLow,
+	}
+}
+
 // CleanupWorker performs periodic cleanup operations.
 type CleanupWorker struct {
 	river.WorkerDefaults[CleanupArgs]

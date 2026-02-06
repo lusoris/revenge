@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -25,6 +26,14 @@ type LibraryScanCleanupArgs struct {
 // Kind returns the job kind identifier.
 func (LibraryScanCleanupArgs) Kind() string {
 	return LibraryScanCleanupJobKind
+}
+
+// InsertOpts returns the default insert options for library scan cleanup jobs.
+// Cleanup runs on the low-priority queue since it's maintenance work.
+func (LibraryScanCleanupArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueLow,
+	}
 }
 
 // LibraryScanCleanupWorker performs periodic library scan history cleanup.

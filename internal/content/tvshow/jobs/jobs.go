@@ -55,6 +55,14 @@ func (LibraryScanArgs) Kind() string {
 	return KindLibraryScan
 }
 
+// InsertOpts returns the default insert options for TV show library scan jobs.
+// Library scans run on the bulk queue since they're resource-intensive batch operations.
+func (LibraryScanArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueBulk,
+	}
+}
+
 // LibraryScanWorker scans TV show library directories.
 type LibraryScanWorker struct {
 	river.WorkerDefaults[LibraryScanArgs]
@@ -754,6 +762,14 @@ type SearchIndexArgs struct {
 // Kind returns the job kind identifier.
 func (SearchIndexArgs) Kind() string {
 	return KindSearchIndex
+}
+
+// InsertOpts returns the default insert options for TV show search index jobs.
+// Search indexing runs on the bulk queue since it's batch-heavy.
+func (SearchIndexArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueBulk,
+	}
 }
 
 // SearchIndexWorker indexes TV show content for search.

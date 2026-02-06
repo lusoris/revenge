@@ -7,6 +7,8 @@ import (
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
+
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
 
 // SonarrSyncOperation defines the type of sync operation.
@@ -30,6 +32,14 @@ type SonarrSyncJobArgs struct {
 // Kind returns the unique job kind for River.
 func (SonarrSyncJobArgs) Kind() string {
 	return "sonarr_sync"
+}
+
+// InsertOpts returns the default insert options for Sonarr sync jobs.
+// Sonarr sync runs on the high-priority queue for responsive integration.
+func (SonarrSyncJobArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueHigh,
+	}
 }
 
 // SonarrSyncWorker handles Sonarr library sync operations.
@@ -125,6 +135,14 @@ type SonarrWebhookJobArgs struct {
 // Kind returns the unique job kind for River.
 func (SonarrWebhookJobArgs) Kind() string {
 	return "sonarr_webhook"
+}
+
+// InsertOpts returns the default insert options for Sonarr webhook jobs.
+// Webhooks run on the high-priority queue for responsive user experience.
+func (SonarrWebhookJobArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueHigh,
+	}
 }
 
 // SonarrWebhookWorker handles Sonarr webhook processing.

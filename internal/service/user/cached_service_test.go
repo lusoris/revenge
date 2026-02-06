@@ -30,7 +30,7 @@ func setupCachedService(t *testing.T) (*CachedService, testutil.DB) {
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	baseSvc := NewService(repo, activityLogger, mockStorage, avatarCfg)
+	baseSvc := NewService(testDB.Pool(), repo, activityLogger, mockStorage, avatarCfg)
 
 	// Create cache instance (L1-only for tests)
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)

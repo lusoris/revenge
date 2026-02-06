@@ -66,6 +66,12 @@ func Default() *Config {
 			JWTExpiry:     86400000000000,  // 24h
 			RefreshExpiry: 604800000000000, // 7 days
 		},
+		Storage: StorageConfig{
+			Backend: "local",
+			Local: LocalStorageConfig{
+				Path: "/data/storage",
+			},
+		},
 		Legacy: LegacyConfig{
 			Enabled:       false,
 			EncryptionKey: "",

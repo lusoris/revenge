@@ -7,6 +7,8 @@ import (
 
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
+
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
 
 // RadarrSyncOperation defines the type of sync operation.
@@ -30,6 +32,14 @@ type RadarrSyncJobArgs struct {
 // Kind returns the unique job kind for River.
 func (RadarrSyncJobArgs) Kind() string {
 	return "radarr_sync"
+}
+
+// InsertOpts returns the default insert options for Radarr sync jobs.
+// Radarr sync runs on the high-priority queue for responsive integration.
+func (RadarrSyncJobArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueHigh,
+	}
 }
 
 // RadarrSyncWorker handles Radarr library sync operations.
@@ -123,6 +133,14 @@ type RadarrWebhookJobArgs struct {
 // Kind returns the unique job kind for River.
 func (RadarrWebhookJobArgs) Kind() string {
 	return "radarr_webhook"
+}
+
+// InsertOpts returns the default insert options for Radarr webhook jobs.
+// Webhooks run on the high-priority queue for responsive user experience.
+func (RadarrWebhookJobArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueHigh,
+	}
 }
 
 // RadarrWebhookWorker handles Radarr webhook processing.

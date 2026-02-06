@@ -8,10 +8,22 @@ import (
 	embeddedpostgres "github.com/fergusstrange/embedded-postgres"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// newMigrateInstance creates a migrate instance using the embedded migration FS.
+func newMigrateInstance(t *testing.T, sqlDB *sql.DB) *migrate.Migrate {
+	t.Helper()
+	driver, err := postgres.WithInstance(sqlDB, &postgres.Config{})
+	require.NoError(t, err, "failed to create migration driver")
+	sourceDriver, err := iofs.New(migrationsFS, "migrations/shared")
+	require.NoError(t, err, "failed to create iofs source")
+	m, err := migrate.NewWithInstance("iofs", sourceDriver, "postgres", driver)
+	require.NoError(t, err, "failed to create migrate instance")
+	return m
+}
 
 func TestMigrationsUpDown(t *testing.T) {
 	if testing.Short() {
@@ -40,17 +52,8 @@ func TestMigrationsUpDown(t *testing.T) {
 	err = db.Ping()
 	require.NoError(t, err, "failed to ping database")
 
-	// Create migration driver
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err, "failed to create migration driver")
-
-	// Create migration instance
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations/shared",
-		"postgres",
-		driver,
-	)
-	require.NoError(t, err, "failed to create migrate instance")
+	// Create migration instance using embedded FS
+	m := newMigrateInstance(t, db)
 
 	// Test: Migrate UP
 	t.Run("MigrateUp", func(t *testing.T) {
@@ -185,11 +188,7 @@ func TestServerSettingsTableStructure(t *testing.T) {
 	require.NoError(t, db.Ping())
 
 	// Run migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err)
-
-	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
-	require.NoError(t, err)
+	m := newMigrateInstance(t, db)
 
 	err = m.Up()
 	require.NoError(t, err)
@@ -265,11 +264,7 @@ func TestUserSettingsTableStructure(t *testing.T) {
 	require.NoError(t, db.Ping())
 
 	// Run migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err)
-
-	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
-	require.NoError(t, err)
+	m := newMigrateInstance(t, db)
 
 	err = m.Up()
 	require.NoError(t, err)
@@ -343,11 +338,7 @@ func TestServerSettingsDefaultValues(t *testing.T) {
 	require.NoError(t, db.Ping())
 
 	// Run migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err)
-
-	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
-	require.NoError(t, err)
+	m := newMigrateInstance(t, db)
 
 	err = m.Up()
 	require.NoError(t, err)
@@ -418,11 +409,7 @@ func TestUserPreferencesTableStructure(t *testing.T) {
 	require.NoError(t, db.Ping())
 
 	// Run migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err)
-
-	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
-	require.NoError(t, err)
+	m := newMigrateInstance(t, db)
 
 	err = m.Up()
 	require.NoError(t, err)
@@ -504,11 +491,7 @@ func TestUserAvatarsTableStructure(t *testing.T) {
 	require.NoError(t, db.Ping())
 
 	// Run migrations
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	require.NoError(t, err)
-
-	m, err := migrate.NewWithDatabaseInstance("file://migrations/shared", "postgres", driver)
-	require.NoError(t, err)
+	m := newMigrateInstance(t, db)
 
 	err = m.Up()
 	require.NoError(t, err)

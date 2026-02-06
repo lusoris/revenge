@@ -32,10 +32,9 @@ func NewRiverClient(
 	cfg *config.Config,
 	logger *slog.Logger,
 ) (*Client, error) {
+	queueCfg := DefaultQueueConfig()
 	jobsConfig := &Config{
-		Queues: map[string]river.QueueConfig{
-			river.QueueDefault: {MaxWorkers: cfg.Jobs.MaxWorkers},
-		},
+		Queues:        queueCfg.Queues,
 		FetchCooldown: cfg.Jobs.FetchCooldown,
 		MaxAttempts:   25, // TODO: Make configurable
 	}

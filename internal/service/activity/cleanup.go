@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
@@ -25,6 +26,14 @@ type ActivityCleanupArgs struct {
 // Kind returns the job kind identifier.
 func (ActivityCleanupArgs) Kind() string {
 	return ActivityCleanupJobKind
+}
+
+// InsertOpts returns the default insert options for activity cleanup jobs.
+// Cleanup runs on the low-priority queue since it's maintenance work.
+func (ActivityCleanupArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueLow,
+	}
 }
 
 // ActivityCleanupWorker performs periodic activity log cleanup.

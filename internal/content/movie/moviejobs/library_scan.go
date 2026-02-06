@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/content/movie"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
 
 const MovieLibraryScanJobKind = "movie_library_scan"
@@ -22,6 +23,14 @@ type MovieLibraryScanArgs struct {
 // Kind returns the job kind for the movie library scan job.
 func (MovieLibraryScanArgs) Kind() string {
 	return MovieLibraryScanJobKind
+}
+
+// InsertOpts returns the default insert options for movie library scan jobs.
+// Library scans run on the bulk queue since they're resource-intensive batch operations.
+func (MovieLibraryScanArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue: infrajobs.QueueBulk,
+	}
 }
 
 // MovieLibraryScanWorker is a worker that scans movie libraries.

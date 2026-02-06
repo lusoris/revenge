@@ -147,20 +147,35 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 func (s *Service) VerifyEmail(ctx context.Context, token string) error {
 	tokenHash := s.tokenManager.HashRefreshToken(token)
 
-	// Retrieve token from database
+	// Retrieve token from database (outside transaction, read-only)
 	emailToken, err := s.repo.GetEmailVerificationToken(ctx, tokenHash)
 	if err != nil {
 		return fmt.Errorf("invalid or expired verification token: %w", err)
 	}
 
+	// Begin transaction to ensure atomicity of token usage + email verification
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	txQueries := db.New(tx)
+
 	// Mark token as used
-	if err := s.repo.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
+	if err := txQueries.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
 		return fmt.Errorf("failed to mark token as used: %w", err)
 	}
 
 	// Update user's email_verified status
-	if err := s.repo.UpdateUserEmailVerified(ctx, emailToken.UserID, true); err != nil {
+	if err := txQueries.VerifyEmail(ctx, emailToken.UserID); err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
 	return nil
@@ -570,18 +585,35 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
 
+	// Begin transaction to ensure password update + token revocation are atomic
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	txQueries := db.New(tx)
+
 	// Update password in database
-	if err := s.repo.UpdateUserPassword(ctx, userID, newPasswordHash); err != nil {
+	if err := txQueries.UpdatePassword(ctx, db.UpdatePasswordParams{
+		ID:           userID,
+		PasswordHash: newPasswordHash,
+	}); err != nil {
 		return fmt.Errorf("failed to update password: %w", err)
 	}
 
 	// Revoke all refresh tokens (force re-login on all devices for security)
-	if err := s.repo.RevokeAllUserAuthTokens(ctx, userID); err != nil {
-		// Log error but don't fail password change
-		fmt.Printf("failed to revoke tokens: %v\n", err)
+	if err := txQueries.RevokeAllUserAuthTokens(ctx, userID); err != nil {
+		return fmt.Errorf("failed to revoke tokens: %w", err)
 	}
 
-	// Log password change
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	// Log password change (outside transaction to avoid blocking)
 	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
 		UserID:       user.ID,
 		Username:     user.Username,
@@ -664,23 +696,40 @@ func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) 
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
 
+	// Begin transaction to ensure password update + token marking + token revocation are atomic
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	txQueries := db.New(tx)
+
 	// Update password
-	if err := s.repo.UpdateUserPassword(ctx, resetToken.UserID, newPasswordHash); err != nil {
+	if err := txQueries.UpdatePassword(ctx, db.UpdatePasswordParams{
+		ID:           resetToken.UserID,
+		PasswordHash: newPasswordHash,
+	}); err != nil {
 		return fmt.Errorf("failed to update password: %w", err)
 	}
 
 	// Mark token as used
-	if err := s.repo.MarkPasswordResetTokenUsed(ctx, resetToken.ID); err != nil {
+	if err := txQueries.MarkPasswordResetTokenUsed(ctx, resetToken.ID); err != nil {
 		return fmt.Errorf("failed to mark token as used: %w", err)
 	}
 
 	// Revoke all refresh tokens (force re-login)
-	if err := s.repo.RevokeAllUserAuthTokens(ctx, resetToken.UserID); err != nil {
-		// Log error but don't fail reset
-		fmt.Printf("failed to revoke tokens: %v\n", err)
+	if err := txQueries.RevokeAllUserAuthTokens(ctx, resetToken.UserID); err != nil {
+		return fmt.Errorf("failed to revoke tokens: %w", err)
 	}
 
-	// Log password reset
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	// Log password reset (outside transaction to avoid blocking)
 	_ = s.activityLogger.LogAction(ctx, activity.LogActionRequest{
 		UserID:       resetToken.UserID,
 		Action:       activity.ActionUserPasswordReset,

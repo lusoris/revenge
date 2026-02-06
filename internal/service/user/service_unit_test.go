@@ -18,19 +18,22 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/internal/testutil"
 )
 
 // ============================================================================
 // Test Helpers
 // ============================================================================
 
-func setupUnitTestService(repo user.Repository) *user.Service {
+func setupUnitTestService(t *testing.T, repo user.Repository) *user.Service {
+	t.Helper()
+	testDB := testutil.NewFastTestDB(t)
 	avatarCfg := config.AvatarConfig{
 		StoragePath:  "/tmp/test-avatars",
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	return user.NewService(repo, activity.NewNoopLogger(), storage.NewMockStorage(), avatarCfg)
+	return user.NewService(testDB.Pool(), repo, activity.NewNoopLogger(), storage.NewMockStorage(), avatarCfg)
 }
 
 func makeTestUser(id uuid.UUID, username, email string) *db.SharedUser {
@@ -70,7 +73,7 @@ func TestUnit_GetUser(t *testing.T) {
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(expectedUser, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.GetUser(ctx, userID)
 
 		require.NoError(t, err)
@@ -84,7 +87,7 @@ func TestUnit_GetUser(t *testing.T) {
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(nil, errors.New("user not found"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.GetUser(ctx, userID)
 
 		require.Error(t, err)
@@ -102,7 +105,7 @@ func TestUnit_GetUserByUsername(t *testing.T) {
 
 	repo.EXPECT().GetUserByUsername(ctx, "testuser").Return(expectedUser, nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, err := svc.GetUserByUsername(ctx, "testuser")
 
 	require.NoError(t, err)
@@ -119,7 +122,7 @@ func TestUnit_GetUserByEmail(t *testing.T) {
 
 	repo.EXPECT().GetUserByEmail(ctx, "test@example.com").Return(expectedUser, nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, err := svc.GetUserByEmail(ctx, "test@example.com")
 
 	require.NoError(t, err)
@@ -139,7 +142,7 @@ func TestUnit_ListUsers(t *testing.T) {
 
 	repo.EXPECT().ListUsers(ctx, filters).Return(users, int64(2), nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, count, err := svc.ListUsers(ctx, filters)
 
 	require.NoError(t, err)
@@ -165,7 +168,7 @@ func TestUnit_CreateUser(t *testing.T) {
 		repo.EXPECT().CreateUser(ctx, mock.AnythingOfType("user.CreateUserParams")).Return(createdUser, nil)
 		repo.EXPECT().UpsertUserPreferences(ctx, mock.AnythingOfType("user.UpsertPreferencesParams")).Return(&db.SharedUserPreference{}, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.NoError(t, err)
@@ -180,7 +183,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			PasswordHash: "password123",
 		}
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.Error(t, err)
@@ -195,7 +198,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			PasswordHash: "password123",
 		}
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.Error(t, err)
@@ -210,7 +213,7 @@ func TestUnit_CreateUser(t *testing.T) {
 			Email:    "new@example.com",
 		}
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.Error(t, err)
@@ -229,7 +232,7 @@ func TestUnit_CreateUser(t *testing.T) {
 
 		repo.EXPECT().GetUserByUsername(ctx, "existing").Return(existingUser, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.Error(t, err)
@@ -249,7 +252,7 @@ func TestUnit_CreateUser(t *testing.T) {
 		repo.EXPECT().GetUserByUsername(ctx, "newuser").Return(nil, errors.New("not found"))
 		repo.EXPECT().GetUserByEmail(ctx, "existing@example.com").Return(existingUser, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.CreateUser(ctx, params)
 
 		require.Error(t, err)
@@ -275,7 +278,7 @@ func TestUnit_UpdateUser(t *testing.T) {
 		repo.EXPECT().GetUserByID(ctx, userID).Return(oldUser, nil)
 		repo.EXPECT().UpdateUser(ctx, userID, params).Return(updatedUser, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUser(ctx, userID, params)
 
 		require.NoError(t, err)
@@ -290,7 +293,7 @@ func TestUnit_UpdateUser(t *testing.T) {
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(nil, errors.New("not found"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUser(ctx, userID, params)
 
 		require.Error(t, err)
@@ -310,7 +313,7 @@ func TestUnit_DeleteUser(t *testing.T) {
 	repo.EXPECT().GetUserByID(ctx, userID).Return(existingUser, nil)
 	repo.EXPECT().DeleteUser(ctx, userID).Return(nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.DeleteUser(ctx, userID)
 
 	require.NoError(t, err)
@@ -326,7 +329,7 @@ func TestUnit_HardDeleteUser(t *testing.T) {
 	repo.EXPECT().DeleteUserPreferences(ctx, userID).Return(nil)
 	repo.EXPECT().HardDeleteUser(ctx, userID).Return(nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.HardDeleteUser(ctx, userID)
 
 	require.NoError(t, err)
@@ -340,7 +343,7 @@ func TestUnit_VerifyEmail(t *testing.T) {
 	repo := NewMockUserRepository(t)
 	repo.EXPECT().VerifyEmail(ctx, userID).Return(nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.VerifyEmail(ctx, userID)
 
 	require.NoError(t, err)
@@ -354,7 +357,7 @@ func TestUnit_RecordLogin(t *testing.T) {
 	repo := NewMockUserRepository(t)
 	repo.EXPECT().UpdateLastLogin(ctx, userID).Return(nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.RecordLogin(ctx, userID)
 
 	require.NoError(t, err)
@@ -367,7 +370,7 @@ func TestUnit_RecordLogin(t *testing.T) {
 func TestUnit_HashPassword(t *testing.T) {
 	t.Parallel()
 	repo := NewMockUserRepository(t)
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 
 	hash, err := svc.HashPassword("testpassword")
 	require.NoError(t, err)
@@ -378,7 +381,7 @@ func TestUnit_HashPassword(t *testing.T) {
 func TestUnit_VerifyPassword(t *testing.T) {
 	t.Parallel()
 	repo := NewMockUserRepository(t)
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 
 	hash, err := svc.HashPassword("testpassword")
 	require.NoError(t, err)
@@ -401,7 +404,7 @@ func TestUnit_UpdatePassword(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		// Hash the old password
 		oldHash, _ := svc.HashPassword("oldpassword")
@@ -417,7 +420,7 @@ func TestUnit_UpdatePassword(t *testing.T) {
 
 	t.Run("wrong old password", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		oldHash, _ := svc.HashPassword("oldpassword")
 		existingUser := makeTestUser(userID, "testuser", "test@example.com")
@@ -435,7 +438,7 @@ func TestUnit_UpdatePassword(t *testing.T) {
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(nil, errors.New("not found"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.UpdatePassword(ctx, userID, "old", "new")
 
 		require.Error(t, err)
@@ -458,7 +461,7 @@ func TestUnit_GetUserPreferences(t *testing.T) {
 
 		repo.EXPECT().GetUserPreferences(ctx, userID).Return(prefs, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.GetUserPreferences(ctx, userID)
 
 		require.NoError(t, err)
@@ -472,7 +475,7 @@ func TestUnit_GetUserPreferences(t *testing.T) {
 		repo.EXPECT().GetUserPreferences(ctx, userID).Return(nil, errors.New("not found"))
 		repo.EXPECT().UpsertUserPreferences(ctx, mock.AnythingOfType("user.UpsertPreferencesParams")).Return(prefs, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.GetUserPreferences(ctx, userID)
 
 		require.NoError(t, err)
@@ -492,7 +495,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 
 		repo.EXPECT().UpsertUserPreferences(ctx, mock.AnythingOfType("user.UpsertPreferencesParams")).Return(prefs, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID: userID,
 			Theme:  ptr("dark"),
@@ -505,7 +508,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 	t.Run("invalid theme", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID: userID,
 			Theme:  ptr("invalid"),
@@ -519,7 +522,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 	t.Run("invalid visibility", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID:            userID,
 			ProfileVisibility: ptr("invalid"),
@@ -545,7 +548,7 @@ func TestUnit_UpdateNotificationPreferences(t *testing.T) {
 		}).
 		Return(&db.SharedUserPreference{UserID: userID}, nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 
 	// All three parameters are *NotificationSettings
 	emailSettings := &user.NotificationSettings{Enabled: true, Frequency: "daily"}
@@ -586,7 +589,7 @@ func TestUnit_GetCurrentAvatar(t *testing.T) {
 
 	repo.EXPECT().GetCurrentAvatar(ctx, userID).Return(avatar, nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, err := svc.GetCurrentAvatar(ctx, userID)
 
 	require.NoError(t, err)
@@ -604,7 +607,7 @@ func TestUnit_ListUserAvatars(t *testing.T) {
 
 		repo.EXPECT().ListUserAvatars(ctx, userID, int32(10), int32(0)).Return(avatars, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.ListUserAvatars(ctx, userID, 0, 0)
 
 		require.NoError(t, err)
@@ -617,7 +620,7 @@ func TestUnit_ListUserAvatars(t *testing.T) {
 
 		repo.EXPECT().ListUserAvatars(ctx, userID, int32(100), int32(0)).Return(avatars, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		result, err := svc.ListUserAvatars(ctx, userID, 200, 0)
 
 		require.NoError(t, err)
@@ -642,7 +645,7 @@ func TestUnit_SetCurrentAvatar(t *testing.T) {
 		repo.EXPECT().SetCurrentAvatar(ctx, avatarID).Return(nil)
 		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).Return(updatedUser, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.SetCurrentAvatar(ctx, userID, avatarID)
 
 		require.NoError(t, err)
@@ -653,7 +656,7 @@ func TestUnit_SetCurrentAvatar(t *testing.T) {
 
 		repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(nil, errors.New("not found"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.SetCurrentAvatar(ctx, userID, avatarID)
 
 		require.Error(t, err)
@@ -666,7 +669,7 @@ func TestUnit_SetCurrentAvatar(t *testing.T) {
 
 		repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(avatar, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.SetCurrentAvatar(ctx, userID, avatarID)
 
 		require.Error(t, err)
@@ -688,7 +691,7 @@ func TestUnit_DeleteAvatar(t *testing.T) {
 		repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(avatar, nil)
 		repo.EXPECT().DeleteAvatar(ctx, avatarID).Return(nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.DeleteAvatar(ctx, userID, avatarID)
 
 		require.NoError(t, err)
@@ -699,7 +702,7 @@ func TestUnit_DeleteAvatar(t *testing.T) {
 
 		repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(nil, errors.New("not found"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.DeleteAvatar(ctx, userID, avatarID)
 
 		require.Error(t, err)
@@ -712,7 +715,7 @@ func TestUnit_DeleteAvatar(t *testing.T) {
 
 		repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(avatar, nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 		err := svc.DeleteAvatar(ctx, userID, avatarID)
 
 		require.Error(t, err)
@@ -727,7 +730,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid file size", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -746,7 +749,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid mime type", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.bmp",
@@ -765,7 +768,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid width too small", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -784,7 +787,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid width too large", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -803,7 +806,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid height too small", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -822,7 +825,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("invalid height too large", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -855,7 +858,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
 			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.jpg",
@@ -887,7 +890,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
 			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -920,7 +923,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
 			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.gif",
@@ -952,7 +955,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
 			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.webp",
@@ -973,7 +976,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), errors.New("db error"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -996,7 +999,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
 		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(errors.New("db error"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -1021,7 +1024,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
 			Return(nil, errors.New("db error"))
 
-		svc := setupUnitTestService(repo)
+		svc := setupUnitTestService(t, repo)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -1051,7 +1054,7 @@ func TestUnit_SetCurrentAvatar_UnsetError(t *testing.T) {
 	repo.EXPECT().GetAvatarByID(ctx, avatarID).Return(avatar, nil)
 	repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(errors.New("db error"))
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.SetCurrentAvatar(ctx, userID, avatarID)
 
 	require.Error(t, err)
@@ -1071,7 +1074,7 @@ func TestUnit_SetCurrentAvatar_SetError(t *testing.T) {
 	repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
 	repo.EXPECT().SetCurrentAvatar(ctx, avatarID).Return(errors.New("db error"))
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.SetCurrentAvatar(ctx, userID, avatarID)
 
 	require.Error(t, err)
@@ -1088,7 +1091,7 @@ func TestUnit_DeleteUser_NotFound(t *testing.T) {
 	repo.EXPECT().GetUserByID(ctx, userID).Return(nil, errors.New("not found"))
 	repo.EXPECT().DeleteUser(ctx, userID).Return(nil)
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	err := svc.DeleteUser(ctx, userID)
 
 	// Should succeed even if user not found for logging
@@ -1110,7 +1113,7 @@ func TestUnit_CreateUser_RepoError(t *testing.T) {
 	repo.EXPECT().GetUserByEmail(ctx, "new@example.com").Return(nil, errors.New("not found"))
 	repo.EXPECT().CreateUser(ctx, mock.AnythingOfType("user.CreateUserParams")).Return(nil, errors.New("db error"))
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, err := svc.CreateUser(ctx, params)
 
 	require.Error(t, err)
@@ -1132,7 +1135,7 @@ func TestUnit_UpdateUser_RepoError(t *testing.T) {
 	repo.EXPECT().GetUserByID(ctx, userID).Return(oldUser, nil)
 	repo.EXPECT().UpdateUser(ctx, userID, params).Return(nil, errors.New("db error"))
 
-	svc := setupUnitTestService(repo)
+	svc := setupUnitTestService(t, repo)
 	result, err := svc.UpdateUser(ctx, userID, params)
 
 	require.Error(t, err)

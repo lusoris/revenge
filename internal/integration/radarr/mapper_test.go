@@ -51,7 +51,9 @@ func TestMapper_ToMovie(t *testing.T) {
 
 	// Check ratings
 	assert.NotNil(t, movie.VoteAverage)
-	assert.Equal(t, 8.4, movie.VoteAverage.InexactFloat64())
+	f, ok := movie.VoteAverage.Float64()
+	assert.True(t, ok)
+	assert.Equal(t, 8.4, f)
 	assert.Equal(t, int32(35000), *movie.VoteCount)
 
 	// Check images
@@ -81,7 +83,9 @@ func TestMapper_ToMovie_WithIMDbRating(t *testing.T) {
 	movie := mapper.ToMovie(radarrMovie)
 
 	assert.NotNil(t, movie.VoteAverage)
-	assert.Equal(t, 7.5, movie.VoteAverage.InexactFloat64())
+	f, ok := movie.VoteAverage.Float64()
+	assert.True(t, ok)
+	assert.Equal(t, 7.5, f)
 	assert.Equal(t, int32(10000), *movie.VoteCount)
 }
 

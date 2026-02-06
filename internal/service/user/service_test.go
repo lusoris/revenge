@@ -31,7 +31,7 @@ func setupTestService(t *testing.T) (*Service, testutil.DB) {
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	svc := NewService(repo, activityLogger, mockStorage, avatarCfg)
+	svc := NewService(testDB.Pool(), repo, activityLogger, mockStorage, avatarCfg)
 	return svc, testDB
 }
 
