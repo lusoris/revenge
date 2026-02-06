@@ -1,347 +1,190 @@
-# Claude Code Instructions - Claude Code Agent
+# Claude Code Instructions
 
-**Tool**: Claude Code
-**Purpose**: AI-powered development assistant for Revenge project
-**Documentation**: [docs/INDEX.md](docs/INDEX.md)
-
----
-
-## Entry Point for Claude Code
-
-When working on the Revenge project, **ALWAYS START HERE**:
-
-### 1. Source of Truth (REQUIRED READING)
-
-**[/docs/dev/design/00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md)**
-
-This document contains:
-- Technology stack versions (Go, PostgreSQL, etc.)
-- All Go dependencies with exact versions
-- Frontend stack (SvelteKit, Svelte, Tailwind)
-- Infrastructure components (Dragonfly, Typesense, River)
-- API namespaces and structure
-- Database schemas
-- Configuration keys
-- QAR (adult content) obfuscation terminology
-- Cross-reference to external sources
-
-**⚠️ CRITICAL**: Always reference this document for package versions, API structure, and design decisions. DO NOT use outdated versions or deprecated packages.
+**Project**: Revenge - self-hosted media server
+**Stack**: Go 1.25 backend, SvelteKit frontend, PostgreSQL 18, Dragonfly, Typesense
 
 ---
 
-### 2. Tech Stack Details
+## Entry Point
 
-**[/docs/dev/design/technical/TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md)**
+### Source of Truth
 
-Provides detailed rationale for technology choices:
-- Modern Go (check SOURCE_OF_TRUTH) features used
-- Dependency philosophy
-- Frontend stack details
-- Deployment platforms
-- Development tools
+**[/docs/dev/design/00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md)** - package versions, API structure, database schemas, design decisions.
 
----
+Always reference this before writing code. Do not use outdated versions or deprecated packages.
 
-### 3. Design Documentation
+### Design Documentation
 
-**[/docs/dev/design/DESIGN_INDEX.md](../docs/dev/design/DESIGN_INDEX.md)**
-
-Navigate to specific design docs:
-- Architecture
-- Features (movies, TV, music, QAR, etc.)
-- Integrations (metadata providers, Arr stack, auth)
-- Services (backend services)
-- Operations (setup, deployment, best practices)
-- Technical (API, frontend, configuration)
+- [DESIGN_INDEX.md](../docs/dev/design/DESIGN_INDEX.md) - navigate to specific design docs
+- [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md) - technology choices and rationale
+- [ARCHITECTURE.md](../docs/dev/design/architecture/01_ARCHITECTURE.md) - system architecture
+- [.workingdir/](../.workingdir/) - working reports and analysis (migration reports, API overviews, etc.)
 
 ---
 
-## Project Overview
+## Build & Test
 
-**Revenge** is a modern, self-hosted media server with Go backend, SvelteKit frontend, PostgreSQL database, and distributed caching.
+All commands are in the [Makefile](../Makefile). Run `make help` for the full list.
 
-**For complete tech stack and architecture details, see**:
-- [00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md) - All versions and dependencies
-- [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md) - Technology choices and rationale
-- [ARCHITECTURE.md](../docs/dev/design/architecture/01_ARCHITECTURE.md) - System architecture
+```bash
+# Build
+make build                  # Build binary
+make build-linux            # Cross-compile for Linux (amd64 + arm64)
+
+# Test (local = same as CI)
+make test                   # Unit tests with race detection + coverage
+make test-short             # Fast unit tests (skip slow)
+make test-integration       # Integration tests (requires Docker)
+make test-all               # Unit + integration
+
+# Code quality
+make lint                   # golangci-lint
+make vet                    # go vet
+make vuln                   # govulncheck
+make fmt                    # Format code
+
+# Docker
+make docker-build           # Build Docker image
+make docker-scan            # Build + Trivy scan
+make docker-test            # Full stack smoke test
+
+# CI pipeline (same as GitHub Actions)
+make ci                     # lint + test + docker-build + docker-scan
+
+# Database
+make migrate-up             # Run migrations
+make migrate-create NAME=x  # Create new migration
+
+# Code generation
+make generate               # ogen + sqlc + go generate
+```
+
+### Go Environment
+
+```bash
+export GOEXPERIMENT=greenteagc,jsonv2  # Required (set in Makefile)
+```
 
 ---
 
-## Claude Code Configuration
+## Project Structure
 
-### Skills Available
+```
+cmd/revenge/            # Application entrypoint
+internal/
+  api/ogen/             # Generated API (ogen from OpenAPI spec)
+  content/{module}/     # Content modules (movie, tv, music, etc.)
+  service/{service}/    # Backend services
+  infra/database/
+    migrations/shared/  # SQL migrations (embedded via go:embed)
+    migrate.go          # Migration runner (iofs + pgx)
+tests/integration/      # Integration tests (testcontainers)
+api/openapi/            # OpenAPI spec
+charts/revenge/         # Helm chart (full stack)
+scripts/                # docker-entrypoint.sh
+docs/dev/design/        # Design documentation
+```
+
+### Migrations
+
+Migrations live in `internal/infra/database/migrations/shared/` and are embedded into the binary via `//go:embed`. The Docker entrypoint runs `revenge migrate up` automatically on startup. No separate init SQL needed.
+
+```bash
+make migrate-create NAME=add_users_table  # Creates new migration pair
+make migrate-up                           # Apply migrations
+```
+
+---
+
+## Skills
 
 Located in [skills/](skills/):
 
-1. **add-design-doc** - Create new design documents following conventions
-2. **check-sources** - Check external documentation sources and cross-references
-3. **run-pipeline** - Run doc/source pipelines for automation
-4. **update-status** - Update design document status tables
-5. **coder-template** - Manage Coder workspace templates
-6. **coder-workspace** - Manage Coder workspace operations
-
-### Permissions
-
-Configured in `settings.local.json`:
-
-- Git operations (status, diff, add, commit, push)
-- Build commands (go build, test)
-- Source fetching (scripts/fetch-sources.py)
-- Web access to documentation sites
+1. **coder-template** - Manage Coder workspace templates (`.coder/template.tf`)
+2. **coder-workspace** - Manage Coder workspace operations
+3. **setup-workspace** - Set up development environment
 
 ---
 
-## Common Tasks
+## CI/CD
 
-### Working on Design Documentation
+### GitHub Actions Workflows
 
-1. **Always start** with [00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md)
-2. Use `add-design-doc` skill to create new design docs
-3. Use `update-status` skill to update status tables
-4. Use `check-sources` skill to verify external references
-5. Follow existing document structure and conventions
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | push/PR to main, develop | Lint, unit tests, Docker build + Trivy, govulncheck, integration tests |
+| `develop.yml` | push to develop | Auto-build `:develop` Docker image + dev Helm chart to GHCR |
+| `release-please.yml` | push to main | Automated releases, multi-arch Docker + Helm chart to GHCR |
+| `security.yml` | schedule + PR | CodeQL, Trivy, govulncheck, dependency review |
+| `coverage.yml` | PR | Coverage report as PR comment |
+| `pr-checks.yml` | PR | Title format, branch name, merge conflicts |
+| `stale.yml` | schedule | Close stale issues/PRs |
+| `labels.yml` | push to main | Sync GitHub labels |
 
-### Fetching External Sources
+### Branch Strategy
 
-1. Use `check-sources` skill
-2. Or manually run: `python scripts/fetch-sources.py`
-3. Sources are defined in `docs/dev/sources/SOURCES.yaml`
-4. Fetched sources go to `docs/dev/sources/`
+- **develop** - working branch, auto-builds on push
+- **main** - stable/release, Release Please creates release PRs
 
-### Running Automation Pipelines
+### Container Registry
 
-1. Use `run-pipeline` skill for:
-   - Documentation generation
-   - Index updates
-   - Cross-reference generation
-   - Source fetching
-
-### Managing Coder Workspaces
-
-1. Use `coder-template` skill to modify `.coder/template.tf`
-2. Use `coder-workspace` skill to manage workspaces
+Images pushed to `ghcr.io/lusoris/revenge`. Helm charts to `ghcr.io/lusoris/charts/revenge`.
 
 ---
 
-## Development Workflow
+## Deployment
 
-### 1. Understanding a Feature
-
-Before implementing, read:
-1. SOURCE_OF_TRUTH for versions and architecture
-2. Relevant design doc (see DESIGN_INDEX.md)
-3. Integration docs (if working with external services)
-4. Existing code patterns
-
-### 2. Writing Code
-
-Follow patterns in:
-- **Go**: [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md)
-- **Module Structure**: [00_SOURCE_OF_TRUTH.md#project-structure](../docs/dev/design/00_SOURCE_OF_TRUTH.md#project-structure)
-- **Testing**: [operations/BEST_PRACTICES.md](../docs/dev/design/operations/BEST_PRACTICES.md)
-
-### 3. Testing
+### Docker Compose (simple)
 
 ```bash
-# Run all tests
-go test ./...
-
-# Run with coverage
-go test -coverprofile=coverage.out ./...
-
-# Run specific package tests
-go test ./internal/content/movie/...
+docker compose -f docker-compose.prod.yml up -d
 ```
 
-### 4. Committing
+### Helm (Kubernetes)
 
-Use conventional commits:
+```bash
+helm install revenge oci://ghcr.io/lusoris/charts/revenge
+```
+
+Full stack included: Revenge, PostgreSQL, Dragonfly, Typesense. See [charts/revenge/values.yaml](../charts/revenge/values.yaml).
+
+---
+
+## Code Patterns
+
+- **Go 1.25**: Context-first APIs, error wrapping with `%w`, structured logging with slog
+- **DI**: fx modules for dependency injection
+- **Repos**: Repository pattern with interfaces
+- **Testing**: Table-driven tests, testify assertions, mockery mocks, testcontainers for integration
+- **Caching**: otter (L1 in-memory), rueidis (L2 distributed), sturdyc (request coalescing)
+
+### Conventional Commits
+
 ```
 feat: add user authentication
 fix: resolve database connection issue
 docs: update API documentation
 ```
 
-Git hooks will enforce this format.
-
----
-
-## Technology-Specific Guidance
-
-### Go Development
-
-**Version**: [version from SOURCE_OF_TRUTH]
-
-**Build Command**:
-```bash
-GOEXPERIMENT=greenteagc,jsonv2 go build ./...
-```
-
-**For complete dependency list with versions**, see [00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md#go-dependencies)
-
-**Patterns**:
-- Context-first APIs
-- Error wrapping with `%w`
-- Structured logging with slog
-- Table-driven tests
-
-### Frontend Development
-
-**Framework**: SvelteKit 2 with Svelte 5
-
-**Styling**: Tailwind CSS 4
-
-**Components**: shadcn-svelte
-
-**State Management**:
-- Svelte stores for local state
-- TanStack Query for server state
-
-### Database
-
-**PostgreSQL 18+ only** (no SQLite support)
-
-**For schema details, migrations, and query patterns, see**:
-- [00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md#database-schemas)
-- [ARCHITECTURE.md](../docs/dev/design/architecture/01_ARCHITECTURE.md)
-
 ---
 
 ## QAR (Adult Content) Module
 
-**Pirate-themed obfuscation** for adult content isolation.
+Pirate-themed obfuscation for adult content isolation.
 
-**URL Pattern**: `/api/v1/legacy/*`
-**Database Schema**: `qar.*`
-**Access Control**: Requires `legacy:read` scope
-
-**For full terminology mapping and details, see**:
-- [00_SOURCE_OF_TRUTH.md](../docs/dev/design/00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology)
-- [ADULT_CONTENT_SYSTEM.md](../docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md)
-
----
-
-## Best Practices
-
-### 1. Always Reference SOURCE_OF_TRUTH
-
-- For package versions
-- For API structure
-- For configuration keys
-- For design decisions
-
-### 2. Follow Existing Patterns
-
-- Module structure: `internal/content/{module}/`
-- Service structure: `internal/service/{service}/`
-- Repository pattern with interfaces
-- fx modules for dependency injection
-
-### 3. Test Coverage
-
-- **Minimum 80%** required
-- Use table-driven tests
-- Use testify for assertions
-- Use mockery for mocks
-- Integration tests with testcontainers
-
-### 4. Documentation
-
-- Update design docs when architecture changes
-- Add inline comments for complex logic
-- Update SOURCES.yaml when adding external dependencies
-- Run pipelines to update indexes
-
-### 5. Performance
-
-- Use otter for L1 cache (in-memory)
-- Use rueidis for L2 cache (distributed)
-- Use sturdyc for request coalescing
-- Follow [TECH_STACK.md](../docs/dev/design/technical/TECH_STACK.md) performance patterns
+- **URL Pattern**: `/api/v1/legacy/*`
+- **Database Schema**: `qar.*`
+- **Access Control**: Requires `legacy:read` scope
+- See [ADULT_CONTENT_SYSTEM.md](../docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md)
 
 ---
 
 ## Troubleshooting
 
-### Build Fails
-
-1. Check Go version: `go version` (must be 1.25+)
-2. Verify GOEXPERIMENT flags: `greenteagc,jsonv2`
-3. Check go.mod for version mismatches
-4. Run `go mod tidy`
-
-### Tests Fail
-
-1. Check PostgreSQL is running (for integration tests)
-2. Verify test database exists
-3. Check for race conditions: `go test -race ./...`
-4. Review test logs
-
-### LSP Not Working
-
-1. Check gopls is installed: `gopls version`
-2. Verify IDE configuration (see `.vscode/CLAUDE.md` or `.zed/CLAUDE.md`)
-3. Restart LSP server
+- **Build fails**: Check `go version` (1.25+), verify GOEXPERIMENT, run `go mod tidy`
+- **Tests fail**: Check Docker running (integration), run with `-race`, check logs
+- **LSP**: Check `gopls version`, restart LSP server
 
 ---
 
-## Related Documentation
-
-### Tool-Specific
-- **VS Code**: [.vscode/CLAUDE.md](../.vscode/CLAUDE.md)
-- **Zed**: [.zed/CLAUDE.md](../.zed/CLAUDE.md)
-- **Coder**: [.coder/docs/INDEX.md](../.coder/docs/INDEX.md)
-- **Git Hooks**: [.githooks/docs/INDEX.md](../.githooks/docs/INDEX.md)
-- **GitHub Actions**: [.github/docs/INDEX.md](../.github/docs/INDEX.md)
-
-### Design Documentation
-- **Design Index**: [../docs/dev/design/DESIGN_INDEX.md](../docs/dev/design/DESIGN_INDEX.md)
-- **Architecture**: [../docs/dev/design/architecture/INDEX.md](../docs/dev/design/architecture/INDEX.md)
-- **Features**: [../docs/dev/design/features/INDEX.md](../docs/dev/design/features/INDEX.md)
-- **Operations**: [../docs/dev/design/operations/INDEX.md](../docs/dev/design/operations/INDEX.md)
-
-### External Sources
-- **Sources Index**: [../docs/dev/sources/SOURCES_INDEX.md](../docs/dev/sources/SOURCES_INDEX.md)
-- **Design ↔ Sources**: [../docs/dev/sources/DESIGN_CROSSREF.md](../docs/dev/sources/DESIGN_CROSSREF.md)
-
----
-
-## Quick Commands
-
-```bash
-# Build project
-GOEXPERIMENT=greenteagc,jsonv2 go build ./...
-
-# Run tests
-go test ./...
-
-# Run with coverage
-go test -coverprofile=coverage.out ./...
-
-# Lint code
-golangci-lint run
-
-# Format code
-go fmt ./...
-
-# Run migrations
-make migrate-up
-
-# Start dev server (with hot reload)
-air
-
-# Fetch external sources
-python scripts/fetch-sources.py
-
-# Generate documentation indexes
-python scripts/generate-design-indexes.py
-```
-
----
-
-**⚠️ REMEMBER**: Always start with SOURCE_OF_TRUTH, follow existing patterns, and maintain test coverage above 80%.
-
----
-
-**Last Updated**: 2026-01-31
-**Maintained By**: Development Team
+**Last Updated**: 2026-02-06
