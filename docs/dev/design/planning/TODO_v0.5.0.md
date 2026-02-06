@@ -17,7 +17,7 @@
   - [Search Integration](#search-integration)
   - [Frontend Updates](#frontend-updates)
 - [Verification Checklist](#verification-checklist)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
 - [Related Documentation](#related-documentation)
 
 <!-- TOC-END -->
@@ -386,7 +386,7 @@ This milestone adds music library support with artist/album/track hierarchy, Mus
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
@@ -420,4 +420,4 @@ This milestone adds music library support with artist/album/track hierarchy, Mus
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index

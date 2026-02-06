@@ -17,7 +17,7 @@
   - [Search Integration](#search-integration)
   - [Frontend Updates](#frontend-updates)
 - [Verification Checklist](#verification-checklist)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
 - [Related Documentation](#related-documentation)
 
 <!-- TOC-END -->
@@ -25,7 +25,7 @@
 
 > TV Shows Module
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~60% Complete
 **Tag**: `v0.4.0`
 **Focus**: TV Shows Module (Series, Seasons, Episodes)
 
@@ -337,7 +337,7 @@ This milestone adds TV show support with full series/season/episode hierarchy, T
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
@@ -367,4 +367,4 @@ This milestone adds TV show support with full series/season/episode hierarchy, T
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index

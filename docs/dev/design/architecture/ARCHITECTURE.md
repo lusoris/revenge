@@ -118,6 +118,9 @@ fx.New(app.Module)
   ├─ notification.Module   → notification.Service
   ├─ email.Module          → email.Service
   ├─ storage.Module        → storage.Service
+  ├─ health.Module         → health check handlers
+  ├─ observability.Module  → metrics, tracing (Prometheus, OTLP)
+  ├─ raft.Module           → leader election (scaffold, not operational)
   └─ api.Module            → *http.Server (ogen, middleware, lifecycle hooks)
 ```
 
@@ -232,21 +235,21 @@ HTTP Response
 
 ## Background Jobs
 
-9 River workers handle async processing:
+17 River workers across 5 priority queues handle async processing:
 
-| Worker | Queue | Purpose |
-|--------|-------|---------|
-| MetadataRefreshMovie | `metadata` | Refresh movie metadata from providers |
-| MetadataRefreshTVShow | `metadata` | Refresh TV show metadata |
-| MetadataRefreshSeason | `metadata` | Refresh season metadata |
-| MetadataRefreshEpisode | `metadata` | Refresh episode metadata |
-| LibraryScan | `library` | Scan library paths for new content |
-| FileMatch | `library` | Match discovered files to content entries |
-| SearchIndex | `search` | Index/reindex content in Typesense |
-| SeriesRefresh | `metadata` | Full series refresh (seasons + episodes) |
-| LibraryCleanup | `library` | Remove stale entries |
+| Queue | Workers | Purpose |
+|-------|---------|---------|
+| `critical` | 20 | Security events, auth failures, urgent tasks |
+| `high` | 15 | Notifications, webhooks, Radarr/Sonarr sync |
+| `default` | 10 | Metadata refresh, file matching, general tasks |
+| `low` | 5 | Cleanup, maintenance (leader-aware) |
+| `bulk` | 3 | Library scans, search reindexing |
 
-Workers are registered via fx and managed by River's lifecycle. Each worker has a configurable timeout (default 5 minutes).
+Key workers: MovieLibraryScan, TVShowLibraryScan (bulk), MetadataRefresh (default), RadarrSync/SonarrSync (high), NotificationWorker (high), CleanupWorker (low).
+
+See [JOBS.md](../infrastructure/JOBS.md) for the full worker list and queue assignments.
+
+Workers are registered via fx and managed by River's lifecycle. Each worker has a configurable timeout.
 
 ---
 

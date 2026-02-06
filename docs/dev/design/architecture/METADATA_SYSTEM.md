@@ -38,7 +38,7 @@ Content Modules                    Metadata Service                    External 
 └──────────┘                      │   .Service   │                   └──────────┘
                                    │              │                   ┌──────────┐
 ┌──────────┐                      │  (interface, │──TVShowProvider──→│  TVDb    │
-│  tvshow  │──MetadataProvider──→│   31 methods)│                   │ (pri 80) │
+│  tvshow  │──MetadataProvider──→│   27 methods)│                   │ (pri 80) │
 │  Service  │                      │              │                   └──────────┘
 └──────────┘                      └──────────────┘
        ↑                                 ↑
@@ -52,7 +52,7 @@ Content modules never call external APIs directly. They receive a `MetadataProvi
 
 ## Service Interface
 
-The `metadata.Service` interface (`internal/service/metadata/service.go`) exposes 31 methods in 7 categories:
+The `metadata.Service` interface (`internal/service/metadata/service.go`) exposes 27 methods in 7 categories:
 
 | Category | Methods | Notes |
 |----------|---------|-------|

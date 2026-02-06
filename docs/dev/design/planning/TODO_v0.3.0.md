@@ -19,7 +19,7 @@
   - [Documentation](#documentation)
 - [Verification Checklist](#verification-checklist)
 - [MVP Definition of Done](#mvp-definition-of-done)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [Related Documentation](#related-documentation)
@@ -29,7 +29,7 @@
 
 > Movie Module + Basic Frontend
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~70% Complete
 **Tag**: `v0.3.0`
 **Focus**: Movie Module + Full Backend + Basic UI
 
@@ -400,7 +400,7 @@ The MVP is complete when a user can:
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 ### Backend
 
@@ -457,4 +457,4 @@ The MVP is complete when a user can:
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index

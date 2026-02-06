@@ -17,7 +17,7 @@
   - [Chromecast Support](#chromecast-support)
   - [DLNA Support](#dlna-support)
 - [Verification Checklist](#verification-checklist)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
 - [Related Documentation](#related-documentation)
 
 <!-- TOC-END -->
@@ -325,7 +325,7 @@ This milestone adds advanced playback features: trickplay (preview thumbnails), 
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
@@ -338,7 +338,7 @@ This milestone adds advanced playback features: trickplay (preview thumbnails), 
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index
 - [TRICKPLAY.md](../features/playback/TRICKPLAY.md) - Trickplay design
 - [SKIP_INTRO.md](../features/playback/SKIP_INTRO.md) - Skip intro design
 - [WATCH_NEXT_CONTINUE_WATCHING.md](../features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Watch next design

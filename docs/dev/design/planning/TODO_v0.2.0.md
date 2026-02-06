@@ -23,7 +23,7 @@
   - [Dragonfly/Redis Integration](#dragonflyredis-integration)
   - [River Job Queue Setup](#river-job-queue-setup)
 - [Verification Checklist](#verification-checklist)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
 - [Related Documentation](#related-documentation)
 
 <!-- TOC-END -->
@@ -31,7 +31,7 @@
 
 > Backend Services
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~95% Complete
 **Tag**: `v0.2.0`
 **Focus**: Core Backend Services
 
@@ -449,7 +449,7 @@ This milestone implements all core backend services: authentication, user manage
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
@@ -498,4 +498,4 @@ This milestone implements all core backend services: authentication, user manage
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index

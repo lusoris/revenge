@@ -201,7 +201,7 @@ This milestone establishes the complete CI/CD infrastructure for the Revenge pro
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index
 - [.github/docs/INDEX.md](../../../../.github/docs/INDEX.md) - GitHub configuration
 
 ---

@@ -47,7 +47,7 @@ This is the **Release Candidate** milestone. It adds the QAR (adult content) mod
 
 ### QAR Module (Adult Content)
 
-> **Pirate-themed obfuscation** - See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology)
+> **Pirate-themed obfuscation** - See [Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md)
 
 - [ ] **Database Schema** (`migrations/`)
   - [ ] `qar.crew` table (performers)
@@ -380,7 +380,7 @@ This is the **Release Candidate** milestone. It adds the QAR (adult content) mod
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index
 - [ADULT_CONTENT_SYSTEM.md](../features/adult/ADULT_CONTENT_SYSTEM.md) - QAR design
 - [STASHDB.md](../integrations/metadata/adult/STASHDB.md) - StashDB integration
 - [WHISPARR.md](../integrations/servarr/WHISPARR.md) - Whisparr integration

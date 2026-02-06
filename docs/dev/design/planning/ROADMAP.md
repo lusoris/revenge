@@ -64,9 +64,9 @@
 
 > Version progression from v0.0.0 to v1.0.0
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-02-06
 **Current Phase**: Implementation Phase (Design Phase ✅ Complete)
-**Current Version**: v0.1.3 (Skeleton Complete + CI Fixes)
+**Current Version**: v0.2.0-dev (Core Services in progress)
 **MVP Milestone**: v0.3.0
 **Release Candidate**: v0.9.0
 **First Stable**: v1.0.0
@@ -75,7 +75,7 @@
 
 ## Project Phases
 
-### Phase 1: Design Phase ✅ COMPLETE (2026-02-02)
+### Phase 1: Design Phase ✅ COMPLETE (2026-02-06)
 
 **Deliverables**: 159 design documents covering all features, integrations, services, and architecture
 
@@ -227,7 +227,7 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 
 ## v0.2.0 - Core
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~95% Complete
 **Focus**: Backend Services
 
 ### Deliverables
@@ -260,7 +260,7 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 
 ## v0.3.0 - MVP (Movies)
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~70% Complete
 **Focus**: Movie Module + Basic Frontend
 
 ### Deliverables
@@ -298,7 +298,7 @@ v0.3.0 MVP (Movies)    v0.4.0 Shows (TV)                │
 
 ## v0.4.0 - Shows
 
-**Status**: 🔴 Not Started
+**Status**: 🟡 ~60% Complete
 **Focus**: TV Shows Module
 
 ### Deliverables
@@ -525,10 +525,8 @@ All features and integrations mentioned in this roadmap have **complete design d
 
 ## Related Documentation
 
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Versions and dependencies
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index
 - [VERSIONING.md](../operations/VERSIONING.md) - Semantic versioning strategy
-- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation
-- [.workingdir/PLANNING_ANALYSIS.md](../../../.workingdir/PLANNING_ANALYSIS.md) - Design vs. Planning analysis
 
 ---
 
@@ -536,5 +534,6 @@ All features and integrations mentioned in this roadmap have **complete design d
 
 | Date | Version | Change |
 |------|---------|--------|
+| 2026-02-06 | Update | Fixed version statuses (v0.2.0 ~95%, v0.3.0 ~70%, v0.4.0 ~60%), removed broken SOT references |
 | 2026-02-02 | Update | Added Phase 1 (Design) completion, Design Status column, Design Documentation section |
 | 2026-02-01 | Initial | Created roadmap from v0.0.0 to v1.0.0 |

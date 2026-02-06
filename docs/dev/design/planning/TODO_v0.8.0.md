@@ -17,7 +17,7 @@
   - [Grants Service (Sharing)](#grants-service-sharing)
   - [i18n Support](#i18n-support)
 - [Verification Checklist](#verification-checklist)
-- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Dependencies](#dependencies)
 - [Related Documentation](#related-documentation)
 
 <!-- TOC-END -->
@@ -313,7 +313,7 @@ This milestone adds cross-cutting intelligence features: scrobbling to external 
 
 ---
 
-## Dependencies from SOURCE_OF_TRUTH
+## Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
@@ -326,7 +326,7 @@ This milestone adds cross-cutting intelligence features: scrobbling to external 
 ## Related Documentation
 
 - [ROADMAP.md](ROADMAP.md) - Full roadmap overview
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Authoritative versions
+- [DESIGN_INDEX.md](../DESIGN_INDEX.md) - Full design documentation index
 - [SCROBBLING.md](../features/shared/SCROBBLING.md) - Scrobbling design
 - [ANALYTICS_SERVICE.md](../features/shared/ANALYTICS_SERVICE.md) - Analytics design
 - [NOTIFICATION.md](../services/NOTIFICATION.md) - Notification service design
