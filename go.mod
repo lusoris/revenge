@@ -39,7 +39,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.96.0
 	github.com/casbin/casbin/v2 v2.135.0
 	github.com/coreos/go-oidc/v3 v3.17.0
-	github.com/davidbyttow/govips/v2 v2.16.0
+	github.com/davidbyttow/govips/v2 v2.16.1-0.20250707035900-51ebed754616
 	github.com/fergusstrange/embedded-postgres v1.33.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0

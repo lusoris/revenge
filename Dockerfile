@@ -2,14 +2,16 @@
 FROM golang:1.25-alpine AS builder
 
 # Install build dependencies
-# FFmpeg development libraries are required for go-astiav (CGO bindings)
+# FFmpeg dev: go-astiav CGO bindings
+# vips-dev: govips image processing
 RUN apk add --no-cache \
     git \
     make \
     gcc \
     musl-dev \
     pkgconfig \
-    ffmpeg-dev
+    ffmpeg-dev \
+    vips-dev
 
 WORKDIR /build
 
