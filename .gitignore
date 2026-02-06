@@ -59,6 +59,7 @@ Thumbs.db
 /revenge
 /logs/
 /config/
+!/config/casbin_model.conf
 /cache/
 *.db
 *.db-shm
