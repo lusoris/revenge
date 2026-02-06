@@ -9,9 +9,7 @@ BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT}"
 
-# Go 1.25 experimental features:
-# - greenteagc: New garbage collector with 10-40% memory reduction
-# - jsonv2: Faster JSON encoding/decoding
+# Go 1.25 experimental features
 export GOEXPERIMENT=greenteagc,jsonv2
 
 # Database configuration (override with environment variables)
@@ -23,129 +21,175 @@ DB_NAME?=revenge
 DB_SSLMODE?=disable
 DATABASE_URL?=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
 
+# =============================================================================
+# Help
+# =============================================================================
+
 help: ## Show this help message
 	@echo 'Usage: make [target]'
 	@echo ''
 	@echo 'Available targets:'
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-deps: ## Download dependencies
-	@echo "Downloading dependencies..."
-	go mod download
-	go mod verify
-
-tidy: ## Tidy go.mod
-	@echo "Tidying go.mod..."
-	go mod tidy
+# =============================================================================
+# Build
+# =============================================================================
 
 build: ## Build the binary
 	@echo "Building ${BINARY_NAME}..."
 	go build ${LDFLAGS} -o bin/${BINARY_NAME} ./cmd/revenge
 
-build-linux: ## Build for Linux (Docker targets)
+build-linux: ## Build for Linux (Docker targets: amd64 + arm64)
 	@echo "Building for Linux..."
 	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-amd64 ./cmd/revenge
 	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-arm64 ./cmd/revenge
 
 run: ## Run the application
-	@echo "Running ${BINARY_NAME}..."
 	go run ./cmd/revenge
 
 dev: ## Run with hot reload (requires air)
-	@echo "Starting development server with hot reload..."
 	air
 
-test: ## Run tests
-	@echo "Running tests..."
-	go test -v -race -coverprofile=coverage.out ./...
+# =============================================================================
+# Testing - Local and CI use the same targets
+# =============================================================================
 
-test-coverage: test ## Run tests with coverage report
-	@echo "Generating coverage report..."
-	go tool cover -html=coverage.out -o coverage.html
-	@echo "Coverage report generated: coverage.html"
+test: ## Run unit tests (fast, no Docker needed)
+	@echo "Running unit tests..."
+	go test -race -coverprofile=coverage.out -covermode=atomic -count=1 ./...
 
-test-integration: ## Run integration tests
+test-short: ## Run unit tests in short mode (skip slow tests)
+	@echo "Running short tests..."
+	go test -short -count=1 ./...
+
+test-integration: ## Run integration tests (requires Docker)
 	@echo "Running integration tests..."
-	go test -v -tags=integration ./tests/integration/...
+	go test -v -race -tags=integration -count=1 ./tests/integration/...
+
+test-all: test test-integration ## Run all tests (unit + integration)
+
+test-coverage: test ## Run tests and open coverage report
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report: coverage.html"
+
+# =============================================================================
+# Docker - Build, scan, test the real image
+# =============================================================================
+
+docker-build: ## Build Docker image locally
+	@echo "Building Docker image..."
+	docker build -t ${DOCKER_IMAGE}:${VERSION} -t ${DOCKER_IMAGE}:dev .
+
+docker-scan: docker-build ## Build and scan Docker image with Trivy
+	@echo "Scanning Docker image with Trivy..."
+	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+		aquasec/trivy:latest image --severity CRITICAL,HIGH ${DOCKER_IMAGE}:dev
+
+docker-test: docker-build ## Build image and run smoke test with full stack
+	@echo "Starting full stack for smoke test..."
+	docker compose -f docker-compose.dev.yml up -d --wait
+	@echo "Running smoke tests against real image..."
+	@sleep 5
+	@curl -sf http://localhost:8096/health/live && echo "Health check: OK" || echo "Health check: FAILED"
+	docker compose -f docker-compose.dev.yml down
+
+docker-up: ## Start dev services (postgres, dragonfly, typesense)
+	docker compose -f docker-compose.dev.yml up -d --wait
+
+docker-down: ## Stop dev services
+	docker compose -f docker-compose.dev.yml down
+
+# =============================================================================
+# CI Pipeline - Runs the same as local but in order
+# =============================================================================
+
+ci: lint test docker-build docker-scan ## Full CI pipeline (lint + test + build + scan)
+
+# =============================================================================
+# Code Quality
+# =============================================================================
 
 lint: ## Run linters
-	@echo "Running linters..."
 	golangci-lint run --timeout=5m
 
 fmt: ## Format code
-	@echo "Formatting code..."
 	go fmt ./...
 	gofmt -s -w .
 
 vet: ## Run go vet
-	@echo "Running go vet..."
 	go vet ./...
 
-clean: ## Clean build artifacts
-	@echo "Cleaning..."
-	rm -rf bin/
-	rm -rf dist/
-	rm -f coverage.out coverage.html
-	go clean
+vuln: ## Run govulncheck
+	govulncheck ./...
 
-docker-build: ## Build Docker image
-	@echo "Building Docker image..."
-	docker build -t ${DOCKER_IMAGE}:${VERSION} -t ${DOCKER_IMAGE}:latest .
-
-docker-run: ## Run Docker container
-	@echo "Running Docker container..."
-	docker run -p 8096:8096 -v revenge-data:/data ${DOCKER_IMAGE}:latest
-
-docker-compose-up: ## Start services with docker-compose
-	@echo "Starting services..."
-	docker-compose up -d
-
-docker-compose-down: ## Stop services with docker-compose
-	@echo "Stopping services..."
-	docker-compose down
+# =============================================================================
+# Database Migrations
+# =============================================================================
 
 migrate-up: ## Run database migrations up
-	@echo "Running migrations up..."
 	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" up
 
 migrate-down: ## Run database migrations down (one step)
-	@echo "Running migrations down..."
 	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" down 1
 
 migrate-down-all: ## Run all database migrations down
-	@echo "Running all migrations down..."
 	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" down -all
 
 migrate-force: ## Force migration version (usage: make migrate-force VERSION=1)
-	@echo "Forcing migration version: ${VERSION}..."
 	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" force ${VERSION}
 
 migrate-version: ## Show current migration version
-	@echo "Current migration version:"
 	migrate -path $(MIGRATIONS_DIR) -database "$(DATABASE_URL)" version
 
 migrate-create: ## Create a new migration (usage: make migrate-create NAME=create_users_table)
-	@echo "Creating migration: ${NAME}..."
 	migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq ${NAME}
+
+# =============================================================================
+# Code Generation
+# =============================================================================
+
+generate: ogen sqlc ## Run all code generation (ogen, sqlc, go generate)
+	go generate ./...
+
+ogen: ## Generate ogen code from OpenAPI spec
+	go run github.com/ogen-go/ogen/cmd/ogen@v1.18.0 --target internal/api/ogen --package ogen --clean api/openapi/openapi.yaml
+
+sqlc: ## Generate sqlc code
+	sqlc generate
+
+# =============================================================================
+# Tools
+# =============================================================================
 
 install-tools: ## Install development tools
 	@echo "Installing development tools..."
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-	go install github.com/cosmtrek/air@latest
+	go install github.com/air-verse/air@latest
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+	go install github.com/vektra/mockery/v3@latest
+	go install github.com/go-delve/delve/cmd/dlv@latest
+	go install golang.org/x/vuln/cmd/govulncheck@latest
 
-generate: ogen sqlc ## Run all code generation (ogen, sqlc, go generate)
-	@echo "Running go generate..."
-	go generate ./...
+# =============================================================================
+# Cleanup
+# =============================================================================
 
-ogen: ## Generate ogen code from OpenAPI spec
-	@echo "Generating ogen code..."
-	go run github.com/ogen-go/ogen/cmd/ogen@v1.18.0 --target internal/api/ogen --package ogen --clean api/openapi/openapi.yaml
+clean: ## Clean build artifacts
+	rm -rf bin/ dist/
+	rm -f coverage.out coverage.html
+	go clean
 
-sqlc: ## Generate sqlc code
-	@echo "Generating sqlc code..."
-	sqlc generate
+deps: ## Download and verify dependencies
+	go mod download
+	go mod verify
+
+tidy: ## Tidy go.mod
+	go mod tidy
+
+# =============================================================================
+# Full Pipeline
+# =============================================================================
 
 all: clean deps lint test build ## Run all checks and build
 
