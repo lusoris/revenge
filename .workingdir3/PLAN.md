@@ -360,7 +360,7 @@ What's implemented vs what's planned.
 | 7 | Write 8 new infra docs (+ INDEX) | 9 | Medium | ✅ Done |
 | 8 | Rewrite content module docs | ~8 | Medium | ✅ Done |
 | 9 | Rewrite 4 integration docs | 4 | Low-Medium | ✅ Done |
-| 10 | Rewrite 6 operations/technical docs | 6 | Medium | Pending |
+| 10 | Rewrite 6 operations/technical docs | 6 | Medium | ✅ Done |
 | 11 | Finalize (SOURCE_OF_TRUTH, INDEX, links) | 1 | Low | Pending |
 
 **Also completed** (not in original plan):

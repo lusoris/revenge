@@ -21,6 +21,13 @@ The proper cache infrastructure already exists: `internal/infra/cache/` provides
 
 **Fix**: Replace `sync.Map` + `CacheEntry` with the existing `cache.Cache` (otter + Dragonfly), or at minimum use a bounded in-memory cache like otter directly.
 
+### 2. CI/CD workflows need fixing
+
+**Location**: `.github/workflows/`
+**Severity**: Medium (broken or misconfigured pipelines)
+
+CI/CD workflows need review and fixing. Specifics TBD after deeper audit.
+
 ---
 
 ## TODO: Audit for more architecture deviations
