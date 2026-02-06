@@ -1,22 +1,15 @@
-# Auto-generated from SOURCE_OF_TRUTH.md
-# Do not edit directly. Run: python scripts/deploy-pipeline/01-generate.py
-# Generated: 2026-02-01
-
 apiVersion: v2
 name: revenge
-description: A modern, self-hosted media server with Go backend, SvelteKit frontend,
-  and PostgreSQL database
+description: A modern, self-hosted media server
 type: application
 version: 0.1.0
-appVersion: 0.1.0
+appVersion: "0.1.0"
 home: https://github.com/lusoris/revenge
 sources:
-- https://github.com/lusoris/revenge
+  - https://github.com/lusoris/revenge
 maintainers:
-- name: Revenge Team
-  url: https://github.com/lusoris/revenge
+  - name: lusoris
 keywords:
-- media-server
-- self-hosted
-- go
-- svelte
+  - media-server
+  - self-hosted
+  - streaming

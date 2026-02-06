@@ -5,16 +5,14 @@ metadata:
   labels:
     {{- include "revenge.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "revenge.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "revenge.labels" . | nindent 8 }}
+        {{- include "revenge.selectorLabels" . | nindent 8 }}
     spec:
       {{- if .Values.media.persistence.enabled }}
       volumes:
@@ -42,8 +40,30 @@ spec:
           env:
             - name: REVENGE_SERVER_PORT
               value: {{ .Values.revenge.server.port | quote }}
-            - name: REVENGE_DATABASE_HOST
-              value: {{ include "revenge.databaseHost" . | quote }}
+            - name: REVENGE_DATABASE_URL
+              value: {{ include "revenge.databaseURL" . | quote }}
+            {{- if .Values.revenge.database.existingSecret }}
+            - name: REVENGE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.revenge.database.existingSecret }}
+                  key: {{ .Values.revenge.database.secretKey }}
+            {{- end }}
+            - name: REVENGE_CACHE_URL
+              value: "redis://{{ include "revenge.cacheHost" . }}:{{ .Values.revenge.cache.port }}"
+            - name: REVENGE_SEARCH_URL
+              value: "http://{{ include "revenge.searchHost" . }}:{{ .Values.revenge.search.port }}"
+            {{- if .Values.revenge.search.existingSecret }}
+            - name: REVENGE_SEARCH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.revenge.search.existingSecret }}
+                  key: {{ .Values.revenge.search.secretKey }}
+            {{- end }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           {{- if .Values.media.persistence.enabled }}
           volumeMounts:
             - name: media
@@ -56,3 +76,172 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- if .Values.postgresql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "revenge.fullname" . }}-postgresql
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "revenge.name" . }}-postgresql
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "revenge.name" . }}-postgresql
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: postgresql
+          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.revenge.database.name }}
+            - name: POSTGRES_USER
+              value: {{ .Values.revenge.database.user }}
+            {{- if .Values.revenge.database.existingSecret }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.revenge.database.existingSecret }}
+                  key: {{ .Values.revenge.database.secretKey }}
+            {{- else }}
+            - name: POSTGRES_PASSWORD
+              value: revenge
+            {{- end }}
+          {{- if .Values.postgresql.persistence.enabled }}
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+          {{- end }}
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "{{ .Values.revenge.database.user }}"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      {{- if .Values.postgresql.persistence.enabled }}
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: {{ include "revenge.fullname" . }}-pgdata
+      {{- end }}
+{{- end }}
+---
+{{- if .Values.dragonfly.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "revenge.fullname" . }}-dragonfly
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "revenge.name" . }}-dragonfly
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "revenge.name" . }}-dragonfly
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: dragonfly
+          image: "{{ .Values.dragonfly.image.repository }}:{{ .Values.dragonfly.image.tag }}"
+          args:
+            {{- toYaml .Values.dragonfly.args | nindent 12 }}
+          ports:
+            - containerPort: 6379
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.dragonfly.resources | nindent 12 }}
+{{- end }}
+---
+{{- if .Values.typesense.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "revenge.fullname" . }}-typesense
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: search
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "revenge.name" . }}-typesense
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "revenge.name" . }}-typesense
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: typesense
+          image: "{{ .Values.typesense.image.repository }}:{{ .Values.typesense.image.tag }}"
+          ports:
+            - containerPort: 8108
+          env:
+            - name: TYPESENSE_DATA_DIR
+              value: /data
+            {{- if .Values.revenge.search.existingSecret }}
+            - name: TYPESENSE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.revenge.search.existingSecret }}
+                  key: {{ .Values.revenge.search.secretKey }}
+            {{- else }}
+            - name: TYPESENSE_API_KEY
+              value: changeme
+            {{- end }}
+          {{- if .Values.typesense.persistence.enabled }}
+          volumeMounts:
+            - name: tsdata
+              mountPath: /data
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8108
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.typesense.resources | nindent 12 }}
+      {{- if .Values.typesense.persistence.enabled }}
+      volumes:
+        - name: tsdata
+          persistentVolumeClaim:
+            claimName: {{ include "revenge.fullname" . }}-tsdata
+      {{- end }}
+{{- end }}

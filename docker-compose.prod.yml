@@ -1,0 +1,63 @@
+services:
+  revenge:
+    image: ghcr.io/lusoris/revenge:${REVENGE_VERSION:-latest}
+    restart: unless-stopped
+    ports:
+      - "${REVENGE_PORT:-8096}:8096"
+    environment:
+      REVENGE_DATABASE_URL: postgres://revenge:${DB_PASSWORD:-revenge}@postgres:5432/revenge?sslmode=disable
+      REVENGE_CACHE_URL: redis://dragonfly:6379
+      REVENGE_SEARCH_URL: http://typesense:8108
+      REVENGE_SEARCH_API_KEY: ${TYPESENSE_API_KEY:-changeme}
+    volumes:
+      - ${MEDIA_PATH:-/media}:/media:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+      typesense:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: revenge
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-revenge}
+      POSTGRES_DB: revenge
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revenge"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    restart: unless-stopped
+    command: ["--cache_mode"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  typesense:
+    image: typesense/typesense:0.25.2
+    restart: unless-stopped
+    environment:
+      TYPESENSE_DATA_DIR: /data
+      TYPESENSE_API_KEY: ${TYPESENSE_API_KEY:-changeme}
+    volumes:
+      - tsdata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:
+  tsdata:

@@ -12,3 +12,57 @@ spec:
       name: http
   selector:
     {{- include "revenge.selectorLabels" . | nindent 4 }}
+---
+{{- if .Values.postgresql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "revenge.fullname" . }}-postgresql
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app.kubernetes.io/name: {{ include "revenge.name" . }}-postgresql
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+---
+{{- if .Values.dragonfly.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "revenge.fullname" . }}-dragonfly
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cache
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: {{ include "revenge.name" . }}-dragonfly
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+---
+{{- if .Values.typesense.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "revenge.fullname" . }}-typesense
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+    app.kubernetes.io/component: search
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8108
+      targetPort: 8108
+  selector:
+    app.kubernetes.io/name: {{ include "revenge.name" . }}-typesense
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

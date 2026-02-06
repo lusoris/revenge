@@ -1,83 +1,117 @@
-# Auto-generated from SOURCE_OF_TRUTH.md
-# Do not edit directly. Run: python scripts/deploy-pipeline/01-generate.py
-# Generated: 2026-02-01
+replicaCount: 1
 
-replicaCount: 2
 image:
   repository: ghcr.io/lusoris/revenge
   pullPolicy: IfNotPresent
-  tag: ''
-serviceAccount:
-  create: true
-  automount: true
-  annotations: {}
-  name: ''
+  tag: ""
+
 service:
   type: ClusterIP
-  port: 8080
+  port: 8096
+
 ingress:
   enabled: false
-  className: ''
+  className: ""
   annotations: {}
   hosts:
-  - host: revenge.local
-    paths:
-    - path: /
-      pathType: Prefix
+    - host: revenge.local
+      paths:
+        - path: /
+          pathType: Prefix
   tls: []
+
 resources:
   limits:
     memory: 1Gi
   requests:
     cpu: 100m
     memory: 256Mi
+
 livenessProbe:
   httpGet:
     path: /health/live
     port: http
-  initialDelaySeconds: 10
+  initialDelaySeconds: 15
   periodSeconds: 30
-  timeoutSeconds: 10
+
 readinessProbe:
   httpGet:
     path: /health/ready
     port: http
   initialDelaySeconds: 5
   periodSeconds: 10
-  timeoutSeconds: 5
-autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+
 revenge:
   server:
-    port: 8080
-    host: 0.0.0.0
+    port: 8096
   database:
-    host: ''
+    host: ""
     port: 5432
     name: revenge
     user: revenge
+    existingSecret: ""
+    secretKey: password
   cache:
-    host: ''
+    host: ""
     port: 6379
+  search:
+    host: ""
+    port: 8108
+    existingSecret: ""
+    secretKey: api-key
+
+postgresql:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "18-alpine"
+  persistence:
+    enabled: true
+    size: 10Gi
+
+dragonfly:
+  enabled: true
+  image:
+    repository: docker.dragonflydb.io/dragonflydb/dragonfly
+    tag: latest
+  args:
+    - "--cache_mode"
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+typesense:
+  enabled: true
+  image:
+    repository: typesense/typesense
+    tag: "0.25.2"
+  persistence:
+    enabled: true
+    size: 5Gi
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
 media:
   persistence:
     enabled: false
-    storageClass: nfs-client
-    accessMode: ReadOnlyMany
-    size: 1Ti
-    existingClaim: ''
+    existingClaim: ""
+    storageClass: ""
+    accessMode: ReadWriteMany
+    size: 100Gi
     nfs:
-      server: ''
-      path: ''
+      server: ""
+      path: ""
       readOnly: true
-  moviePaths:
-  - /media/movies
-  tvPaths:
-  - /media/tv
-  musicPaths:
-  - /media/music
-postgresql:
-  enabled: true
+
+env: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
