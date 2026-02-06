@@ -1,0 +1,137 @@
+[
+  {
+    "label": "Go: Build",
+    "command": "go",
+    "args": ["build", "-ldflags", "-X main.Version=dev", "-o", "bin/revenge", "./cmd/revenge"],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "tags": ["go-build"]
+  },
+  {
+    "label": "Go: Test All",
+    "command": "go",
+    "args": ["test", "-v", "-race", "-coverprofile=coverage.out", "./..."],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["go-test"]
+  },
+  {
+    "label": "Go: Test Current Package",
+    "command": "go",
+    "args": ["test", "-v", "-race", "./$ZED_DIRNAME/..."],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["go-test"]
+  },
+  {
+    "label": "Go: Vet",
+    "command": "go",
+    "args": ["vet", "./..."],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "tags": ["go-lint"]
+  },
+  {
+    "label": "Lint: golangci-lint",
+    "command": "golangci-lint",
+    "args": ["run", "--timeout=5m"],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["go-lint"]
+  },
+  {
+    "label": "Generate: ogen (OpenAPI)",
+    "command": "make",
+    "args": ["ogen"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["codegen"]
+  },
+  {
+    "label": "Generate: sqlc",
+    "command": "make",
+    "args": ["sqlc"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["codegen"]
+  },
+  {
+    "label": "Generate: All (ogen + sqlc + go generate)",
+    "command": "make",
+    "args": ["generate"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["codegen"]
+  },
+  {
+    "label": "Dev: Hot Reload (air)",
+    "command": "air",
+    "args": [],
+    "env": { "GOEXPERIMENT": "greenteagc,jsonv2" },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["dev-server"]
+  },
+  {
+    "label": "DB: Migrate Up",
+    "command": "make",
+    "args": ["migrate-up"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["database"]
+  },
+  {
+    "label": "DB: Migrate Down (1 step)",
+    "command": "make",
+    "args": ["migrate-down"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["database"]
+  },
+  {
+    "label": "Docker: Compose Up",
+    "command": "docker-compose",
+    "args": ["up", "-d"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["docker"]
+  },
+  {
+    "label": "Docker: Compose Down",
+    "command": "docker-compose",
+    "args": ["down"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "tags": ["docker"]
+  },
+  {
+    "label": "Tidy: go mod tidy",
+    "command": "go",
+    "args": ["mod", "tidy"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "tags": ["go-build"]
+  }
+]
