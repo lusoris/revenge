@@ -359,7 +359,7 @@ What's implemented vs what's planned.
 | 6 | Align 15 service docs (+ 2 new) | 17 | High (biggest step) | ✅ Done |
 | 7 | Write 8 new infra docs (+ INDEX) | 9 | Medium | ✅ Done |
 | 8 | Rewrite content module docs | ~8 | Medium | ✅ Done |
-| 9 | Rewrite 4 integration docs | 4 | Low-Medium | Pending |
+| 9 | Rewrite 4 integration docs | 4 | Low-Medium | ✅ Done |
 | 10 | Rewrite 6 operations/technical docs | 6 | Medium | Pending |
 | 11 | Finalize (SOURCE_OF_TRUTH, INDEX, links) | 1 | Low | Pending |
 

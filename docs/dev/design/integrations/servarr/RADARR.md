@@ -1,190 +1,158 @@
-## Table of Contents
+# Radarr Integration
 
-- [Radarr](#radarr)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Integration Structure](#integration-structure)
-    - [Data Flow](#data-flow)
-    - [Provides](#provides)
-  - [Implementation](#implementation)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-- [Radarr instance](#radarr-instance)
-- [Sync settings](#sync-settings)
-    - [Config Keys](#config-keys)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
+<!-- DESIGN: integrations/servarr -->
 
-# Radarr
+**Package**: `internal/integration/radarr`
+**fx Module**: `radarr.Module`
 
-<!-- DESIGN: integrations/servarr, README, test_output_claude, test_output_wiki -->
-
-
-**Created**: 2026-01-31
-**Status**: ✅ Complete
-**Category**: integration
-
-
-> Integration with Radarr
-
-> Movie management automation and metadata synchronization
-**API Base URL**: `http://localhost:7878/api/v3`
-**Authentication**: api_key
+> Movie library synchronization, webhook processing, and Radarr API v3 client
 
 ---
 
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | - |
-| Sources | ✅ | - |
-| Instructions | 🟡 | - |
-| Code | 🔴 | - |
-| Linting | 🔴 | - |
-| Unit Testing | 🔴 | - |
-| Integration Testing | 🔴 | - |
-
-**Overall**: ✅ Complete
-
-
----
-
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Layer1["Layer 1"]
-        node1["Revenge<br/>Request<br/>System"]
-        node2["Radarr<br/>Integration"]
-        node3["Radarr<br/>Server"]
-    end
-
-    subgraph Layer2["Layer 2"]
-        node4(["Webhook<br/>Handler"])
-    end
-
-    %% Connections
-    node3 --> node4
-
-    %% Styling
-    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
-    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
-```
-
-### Integration Structure
+## Module Structure
 
 ```
 internal/integration/radarr/
-├── client.go              # API client
-├── types.go               # Response types
-├── mapper.go              # Map external → internal types
-├── cache.go               # Response caching
-└── client_test.go         # Tests
+├── client.go           # HTTP client (req, rate limiter, sync.Map cache)
+├── types.go            # Radarr API v3 response types
+├── mapper.go           # Radarr types → movie domain types
+├── service.go          # SyncService (full + single movie sync)
+├── jobs.go             # RadarrSyncWorker + RadarrWebhookWorker
+├── webhook_handler.go  # Webhook event routing (10 event types)
+├── errors.go           # Sentinel errors
+├── module.go           # fx.Module("radarr") wiring
+└── doc.go              # Package documentation
 ```
 
-### Data Flow
+## Client
 
-<!-- Data flow diagram -->
-
-### Provides
-<!-- Data provided by integration -->
-## Implementation
-
-### Key Interfaces
+HTTP client wrapping `imroc/req` with rate limiting and caching:
 
 ```go
-// Radarr integration service
-type RadarrService interface {
-  // Movie management
-  AddMovie(ctx context.Context, tmdbID int, qualityProfileID int, rootFolder string) (*RadarrMovie, error)
-  DeleteMovie(ctx context.Context, radarrID int, deleteFiles bool) error
-  SearchMovie(ctx context.Context, radarrID int) error  // Trigger download
-
-  // Sync
-  SyncLibrary(ctx context.Context, instanceID uuid.UUID) error
-  GetMovieStatus(ctx context.Context, movieID uuid.UUID) (*MovieStatus, error)
-
-  // Calendar
-  GetUpcoming(ctx context.Context, start, end time.Time) ([]CalendarEntry, error)
-}
-
-// Radarr movie structure
-type RadarrMovie struct {
-  ID              int      `json:"id"`
-  Title           string   `json:"title"`
-  Year            int      `json:"year"`
-  TMDbID          int      `json:"tmdbId"`
-  IMDbID          string   `json:"imdbId"`
-  Monitored       bool     `json:"monitored"`
-  QualityProfile  int      `json:"qualityProfileId"`
-  RootFolderPath  string   `json:"rootFolderPath"`
-  Path            string   `json:"path"`
-  HasFile         bool     `json:"hasFile"`
-  SizeOnDisk      int64    `json:"sizeOnDisk"`
+type Client struct {
+    client      *req.Client
+    baseURL     string
+    apiKey      string
+    rateLimiter *rate.Limiter
+    cache       sync.Map
+    cacheTTL    time.Duration
 }
 ```
 
+### API Methods
 
-### Dependencies
-**Go Packages**:
-- `net/http` - HTTP client
-- `github.com/google/uuid` - UUID support
-- `github.com/jackc/pgx/v5` - PostgreSQL driver
-- `github.com/riverqueue/river` - Background sync jobs
+| Method | Radarr Endpoint | Description |
+|--------|----------------|-------------|
+| GetSystemStatus | `GET /api/v3/system/status` | Health check |
+| GetAllMovies | `GET /api/v3/movie` | List all movies |
+| GetMovie | `GET /api/v3/movie/{id}` | Get specific movie |
+| GetMovieByTMDbID | `GET /api/v3/movie` (filter) | Lookup by TMDb ID |
+| GetMovieFiles | `GET /api/v3/moviefile` | List movie files |
+| GetQualityProfiles | `GET /api/v3/qualityprofile` | Quality profiles |
+| GetRootFolders | `GET /api/v3/rootfolder` | Root folders |
+| GetTags | `GET /api/v3/tag` | Tags |
+| GetCalendar | `GET /api/v3/calendar` | Upcoming releases |
+| GetHistory | `GET /api/v3/history` | Download history |
+| AddMovie | `POST /api/v3/movie` | Add movie to Radarr |
+| DeleteMovie | `DELETE /api/v3/movie/{id}` | Delete movie |
+| RefreshMovie | `POST /api/v3/command` | Trigger metadata refresh |
+| RescanMovie | `POST /api/v3/command` | Trigger file rescan |
+| SearchMovie | `POST /api/v3/command` | Trigger download search |
+| ClearCache | - | Flush client cache |
+| IsHealthy | `GET /api/v3/system/status` | Quick health check |
+
+## Mapper
+
+Converts Radarr API types to movie domain types:
+
+| Method | Converts |
+|--------|----------|
+| ToMovie | Radarr `Movie` → `movie.Movie` |
+| ToMovieFile | Radarr `MovieFile` → `movie.MovieFile` |
+| ToMovieCollection | Radarr `Collection` → `movie.MovieCollection` |
+| ToGenres | Radarr `Movie.Genres` → `[]movie.MovieGenre` |
+
+## SyncService
+
+Orchestrates library synchronization between Radarr and Revenge:
+
+```go
+type SyncService struct {
+    client     *Client
+    mapper     *Mapper
+    movieRepo  movie.Repository
+    logger     *slog.Logger
+    syncMu     sync.Mutex
+    syncStatus SyncStatus
+}
+```
+
+| Method | Purpose |
+|--------|---------|
+| SyncLibrary | Full library sync (add/update/remove movies) |
+| SyncMovie | Sync single movie by Radarr ID |
+| RefreshMovie | Trigger Radarr metadata refresh by TMDb ID |
+| GetStatus | Return current sync status |
+| IsHealthy | Check Radarr connectivity |
+
+`SyncResult`: MoviesAdded, MoviesUpdated, MoviesRemoved, MoviesSkipped, Errors, Duration.
+
+## Background Workers
+
+2 River workers:
+
+| Worker | Kind | Queue | Timeout | Purpose |
+|--------|------|-------|---------|---------|
+| RadarrSyncWorker | `radarr_sync` | high | 10m | Full or single-movie sync |
+| RadarrWebhookWorker | `radarr_webhook` | high | 1m | Process webhook events |
+
+## Webhook Handler
+
+Routes Radarr webhook events to handlers:
+
+| Event | Handler | Action |
+|-------|---------|--------|
+| `Grab` | handleGrab | Movie grabbed for download |
+| `Download` | handleDownload | Movie downloaded, trigger sync |
+| `Rename` | handleRename | File renamed |
+| `MovieDelete` | handleMovieDelete | Movie deleted from Radarr |
+| `MovieFileDelete` | handleMovieFileDelete | Movie file deleted |
+| `Health` | handleHealthIssue | Radarr health warning |
+| `HealthRestored` | - | Health restored |
+| `ApplicationUpdate` | handleApplicationUpdate | Radarr updated |
+| `ManualInteractionRequired` | handleManualInteraction | Manual action needed |
+| `Test` | handleTest | Webhook test event |
+
+## Errors
+
+`ErrMovieNotFound`, `ErrNotConfigured`, `ErrUnauthorized`
+
+## Dependencies
+
+- `github.com/imroc/req/v3` - HTTP client
+- `golang.org/x/time/rate` - Rate limiting
+- `github.com/riverqueue/river` - Background jobs
+- `github.com/google/uuid` - UUID generation
+- `go.uber.org/zap` + `log/slog` - Logging
 - `go.uber.org/fx` - Dependency injection
-
-**External Services**:
-- Radarr v3+ (self-hosted)
+- `internal/content/movie` - Movie domain types and repository
 
 ## Configuration
 
-### Environment Variables
+From `config.go` (koanf namespace `radarr.*`):
 
-```bash
-# Radarr instance
-RADARR_URL=http://localhost:7878
-RADARR_API_KEY=your_api_key_here
-
-# Sync settings
-RADARR_AUTO_SYNC=true
-RADARR_SYNC_INTERVAL=300  # 5 minutes
-```
-
-
-### Config Keys
-```yaml
-integrations:
-  radarr:
-    instances:
-      - name: Main Radarr
-        base_url: http://localhost:7878
-        api_key: ${RADARR_API_KEY}
-        enabled: true
-        auto_sync: true
-        sync_interval: 300
+```go
+type Config struct {
+    BaseURL   string        // Radarr base URL (e.g., http://localhost:7878)
+    APIKey    string        // Radarr API key
+    RateLimit rate.Limit    // Requests per second
+    CacheTTL  time.Duration // Client cache TTL
+    Timeout   time.Duration // HTTP timeout
+}
 ```
 
 ## Related Documentation
-### Design Documents
-- [01_ARCHITECTURE](../../architecture/ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/METADATA_SYSTEM.md)
 
-### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [Go context](../../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
-- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-
+- [SONARR.md](SONARR.md) - Sonarr integration (identical architecture for TV shows)
+- [../../features/video/MOVIE_MODULE.md](../../features/video/MOVIE_MODULE.md) - Movie domain types
+- [../../infrastructure/JOBS.md](../../infrastructure/JOBS.md) - River job queue

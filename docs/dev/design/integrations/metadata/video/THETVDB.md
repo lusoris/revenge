@@ -1,244 +1,204 @@
-## Table of Contents
+# TheTVDB Integration
 
-- [TheTVDB](#thetvdb)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Integration Structure](#integration-structure)
-    - [Data Flow](#data-flow)
-    - [Provides](#provides)
-  - [Implementation](#implementation)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-- [TheTVDB API](#thetvdb-api)
-- [Episode ordering preference](#episode-ordering-preference)
-- [Caching](#caching)
-    - [Config Keys](#config-keys)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
+<!-- DESIGN: integrations/metadata/video -->
 
-# TheTVDB
+**Package**: `internal/service/metadata/providers/tvdb`
+**API**: TVDb API v4 (`https://api4.thetvdb.com/v4`)
 
-<!-- DESIGN: integrations/metadata/video, README, test_output_claude, test_output_wiki -->
-
-
-**Created**: 2026-01-31
-**Status**: ✅ Complete
-**Category**: integration
-
-
-> Integration with TheTVDB
-
-> SUPPLEMENTARY metadata provider (fallback + enrichment) for TV shows
-**Authentication**: api_key
+> Secondary metadata provider for TV shows and people, with JWT authentication
 
 ---
 
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | - |
-| Sources | ✅ | - |
-| Instructions | ✅ | - |
-| Code | 🔴 | - |
-| Linting | 🔴 | - |
-| Unit Testing | 🔴 | - |
-| Integration Testing | 🔴 | - |
-
-**Overall**: ✅ Complete
-
-
----
-
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Layer1["Layer 1"]
-        node1[["Revenge<br/>Metadata<br/>Service"]]
-    end
-
-    subgraph Layer2["Layer 2"]
-        node2[("Sonarr<br/>(LOCAL cache)")]
-        node3[("TheTVDB API<br/>(fallback +<br/>enrichment)")]
-    end
-
-    subgraph Layer3["Layer 3"]
-        node4[("TheTVDB API<br/>(external)")]
-    end
-
-    subgraph Layer4["Layer 4"]
-        node5[["JWT Token<br/>Manager"]]
-    end
-
-    %% Connections
-    node1 --> node2
-    node3 --> node4
-    node4 --> node5
-
-    %% Styling
-    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
-    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
-    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
-    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
-```
-
-### Integration Structure
+## Module Structure
 
 ```
-internal/integration/thetvdb/
-├── client.go              # API client
-├── types.go               # Response types
-├── mapper.go              # Map external → internal types
-├── cache.go               # Response caching
-└── client_test.go         # Tests
+internal/service/metadata/providers/tvdb/
+├── client.go    # HTTP client (req, rate limiter, sync.Map cache, JWT auth)
+├── types.go     # TVDb API v4 response types
+├── provider.go  # Provider interface implementation
+└── mapping.go   # TVDb responses → metadata domain types
 ```
 
-### Data Flow
+## Provider
 
-<!-- Data flow diagram -->
-
-### Provides
-<!-- Data provided by integration -->
-## Implementation
-
-### Key Interfaces
+Implements 3 metadata interfaces:
 
 ```go
-// TheTVDB provider implementation
-type TVDBProvider struct {
-  client      *TVDBClient
-  tokenMgr    *TokenManager
-  cache       Cache
-}
+var (
+    _ metadata.Provider       = (*Provider)(nil)
+    _ metadata.TVShowProvider = (*Provider)(nil)
+    _ metadata.PersonProvider = (*Provider)(nil)
+)
 
-// Token manager (auto-refresh JWT)
-type TokenManager struct {
-  apiKey      string
-  token       string
-  expiresAt   time.Time
-  mu          sync.RWMutex
-}
-
-// Metadata provider interface
-type MetadataProvider interface {
-  // Search
-  SearchSeries(ctx context.Context, query string, year *int) ([]SeriesSearchResult, error)
-
-  // Fetch details
-  GetSeriesDetails(ctx context.Context, tvdbID int) (*SeriesMetadata, error)
-  GetSeriesExtended(ctx context.Context, tvdbID int) (*SeriesExtendedMetadata, error)
-  GetSeasonDetails(ctx context.Context, seasonID int) (*SeasonMetadata, error)
-  GetEpisodeDetails(ctx context.Context, episodeID int) (*EpisodeMetadata, error)
-
-  // Episodes (paginated)
-  GetAllEpisodes(ctx context.Context, tvdbID int, ordering string) ([]EpisodeMetadata, error)
-
-  // Images
-  GetSeriesArtwork(ctx context.Context, tvdbID int) (*ArtworkSet, error)
-}
-
-// Series metadata structure
-type SeriesMetadata struct {
-  TVDBID        int       `json:"id"`
-  Name          string    `json:"name"`
-  Overview      string    `json:"overview"`
-  FirstAired    string    `json:"firstAired"`
-  Status        string    `json:"status"`
-  Genres        []Genre   `json:"genres"`
-  Networks      []Network `json:"networks"`
-  Image         string    `json:"image"`
-  Banner        string    `json:"banner"`
-  Rating        float64   `json:"rating"`
-}
-
-// Episode metadata
-type EpisodeMetadata struct {
-  TVDBID         int     `json:"id"`
-  SeriesID       int     `json:"seriesId"`
-  Name           string  `json:"name"`
-  Overview       string  `json:"overview"`
-  Aired          string  `json:"aired"`
-  Runtime        int     `json:"runtime"`
-  AiredSeason    int     `json:"airedSeason"`
-  AiredEpisode   int     `json:"airedEpisodeNumber"`
-  DVDSeason      int     `json:"dvdSeason"`
-  DVDEpisode     int     `json:"dvdEpisodeNumber"`
-  AbsoluteNumber int     `json:"absoluteNumber"`
-  Image          string  `json:"image"`
+type Provider struct {
+    client   *Client
+    priority int  // 80 (secondary to TMDb)
 }
 ```
 
+- `ID()` → `metadata.ProviderTVDb`
+- `Name()` → `"TheTVDB"`
+- `Priority()` → `80`
+- `SupportsMovies()` → `false` (TMDb used for movies)
+- `SupportsTVShows()` → `true`
+- `SupportsPeople()` → `true`
+- `SupportsLanguage(lang)` → `true` (all non-empty languages)
 
-### Dependencies
-**Go Packages**:
-- `net/http` - HTTP client
-- `github.com/google/uuid` - UUID support
-- `github.com/jackc/pgx/v5` - PostgreSQL driver
-- `github.com/riverqueue/river` - Background jobs
-- `go.uber.org/fx` - Dependency injection
+### TV Show Methods
 
-**External APIs**:
-- TheTVDB API v4 (free tier with API key)
+| Method | Returns | Notes |
+|--------|---------|-------|
+| SearchTVShow | `[]TVShowSearchResult` | Filters by `type=="series"` |
+| GetTVShow | `*TVShowMetadata` | Uses extended endpoint, includes translations |
+| GetTVShowCredits | `*Credits` | From characters array |
+| GetTVShowImages | `*Images` | From artworks endpoint |
+| GetTVShowContentRatings | `[]ContentRating` | From extended response |
+| GetTVShowTranslations | `[]Translation` | From overviews + name translations |
+| GetTVShowExternalIDs | `*ExternalIDs` | Maps remote IDs (IMDb, TMDb) |
+| GetSeason | `*SeasonMetadata` | Finds season ID from series, then extended |
+| GetSeasonCredits | `*Credits` | Falls back to show credits |
+| GetSeasonImages | `*Images` | Returns empty (no dedicated endpoint) |
+| GetEpisode | `*EpisodeMetadata` | Fetches via series episodes endpoint |
+| GetEpisodeCredits | `*Credits` | From episode characters array |
+| GetEpisodeImages | `*Images` | Single image from episode |
+
+### Person Methods
+
+| Method | Returns |
+|--------|---------|
+| SearchPerson | `[]PersonSearchResult` |
+| GetPerson | `*PersonMetadata` |
+| GetPersonCredits | `*PersonCredits` |
+| GetPersonImages | `*Images` |
+| GetPersonExternalIDs | `*ExternalIDs` |
+
+## Client
+
+HTTP client with JWT authentication, rate limiting, and sync.Map caching:
+
+```go
+type Client struct {
+    httpClient  *req.Client
+    apiKey      string
+    pin         string
+    rateLimiter *rate.Limiter
+    cache       sync.Map
+    cacheTTL    time.Duration
+
+    // JWT token management
+    token       string
+    tokenExpiry time.Time
+    tokenMutex  sync.RWMutex
+}
+```
+
+### JWT Authentication
+
+TVDb API v4 requires JWT tokens obtained via `/login`. The client handles this transparently:
+
+1. `authenticate()` called before each request
+2. Token cached with 24h expiry (actual validity: 30 days)
+3. Refreshed when within `TokenRefreshBuffer` (1h) of expiry
+4. Thread-safe via `sync.RWMutex`
+5. `Logout()` invalidates current token
+
+### Constants
+
+```go
+BaseURL            = "https://api4.thetvdb.com/v4"
+DefaultRateLimit   = rate.Limit(5.0)
+DefaultBurst       = 10
+DefaultCacheTTL    = 24 * time.Hour
+SearchCacheTTL     = 15 * time.Minute
+TokenRefreshBuffer = 1 * time.Hour
+```
+
+### Client Methods
+
+| Method | TVDb Endpoint | Description |
+|--------|--------------|-------------|
+| Search | `GET /search` | Search by query + type filter |
+| GetSeries | `GET /series/{id}` | Basic series info |
+| GetSeriesExtended | `GET /series/{id}/extended` | Full series with seasons, artworks, characters |
+| GetSeriesArtworks | `GET /series/{id}/artworks` | Series artwork by type/language |
+| GetSeriesEpisodes | `GET /series/{id}/episodes/{type}` | Episodes by season type + season filter |
+| GetSeason | `GET /seasons/{id}` | Basic season info |
+| GetSeasonExtended | `GET /seasons/{id}/extended` | Full season with episodes |
+| GetEpisode | `GET /episodes/{id}` | Basic episode info |
+| GetEpisodeExtended | `GET /episodes/{id}/extended` | Full episode with characters |
+| GetMovie | `GET /movies/{id}` | Basic movie info |
+| GetMovieExtended | `GET /movies/{id}/extended` | Full movie info |
+| GetPerson | `GET /people/{id}` | Basic person info |
+| GetPersonExtended | `GET /people/{id}/extended` | Full person with characters, remote IDs |
+| ClearCache | - | Flush sync.Map cache |
+| Logout | - | Invalidate JWT token |
+
+Generic response wrappers: `BaseResponse[T]` for single items, `ListResponse[T]` for lists.
+
+## Mapper
+
+15 mapping functions converting TVDb response types to `metadata.*` domain types:
+
+| Function | Converts |
+|----------|----------|
+| mapTVSearchResult | `SearchResult` → `TVShowSearchResult` |
+| mapTVShowMetadata | `SeriesResponse` → `*TVShowMetadata` |
+| mapSeasonMetadata | `SeasonResponse` → `*SeasonMetadata` |
+| mapEpisodeMetadata | `EpisodeResponse` → `*EpisodeMetadata` |
+| mapPersonSearchResult | `SearchResult` → `PersonSearchResult` |
+| mapPersonMetadata | `PersonResponse` → `*PersonMetadata` |
+| mapPersonCredits | `PersonResponse` → `*PersonCredits` |
+| mapCharactersToCredits | `[]CharacterResponse` → `*Credits` |
+| mapArtworksToImages | `[]ArtworkResponse` → `*Images` |
+| mapContentRatings | `[]ContentRatingResponse` → `[]ContentRating` |
+| mapOverviewsToTranslations | `map[string]string` → `[]Translation` |
+| mapRemoteIDsToExternalIDs | `[]RemoteIDResponse` → `*ExternalIDs` |
+
+### Artwork Type Mapping
+
+| TVDb Artwork Type | Maps To |
+|-------------------|---------|
+| Poster | `Images.Posters` |
+| Background | `Images.Backdrops` |
+| Banner | `Images.Logos` |
+| ClearLogo, ClearArt | `Images.Logos` |
+
+### Character Type Mapping
+
+| TVDb Character Type | Maps To |
+|--------------------|---------|
+| Actor | `CastMember` |
+| Director | `CrewMember` (Directing) |
+| Writer | `CrewMember` (Writing) |
+| Producer | `CrewMember` (Production) |
+
+### Remote ID Mapping
+
+TVDb remote IDs are cross-referenced to populate `ExternalIDs` with IMDb and TMDb identifiers.
 
 ## Configuration
 
-### Environment Variables
-
-```bash
-# TheTVDB API
-TVDB_API_KEY=your_api_key_here
-TVDB_PIN=optional_pin_for_premium
-
-# Episode ordering preference
-TVDB_DEFAULT_ORDERING=default  # 'default', 'dvd', 'absolute'
-
-# Caching
-TVDB_CACHE_TTL=24h
+```go
+type Config struct {
+    APIKey     string        // TVDb API key
+    PIN        string        // Optional subscriber PIN
+    RateLimit  rate.Limit    // Requests per second (default: 5.0)
+    Burst      int           // Burst capacity (default: 10)
+    CacheTTL   time.Duration // Cache duration (default: 24h)
+    Timeout    time.Duration // HTTP timeout (default: 30s)
+    ProxyURL   string        // Optional HTTP proxy
+    RetryCount int           // Retry count (default: 3)
+}
 ```
 
+## Dependencies
 
-### Config Keys
-```yaml
-metadata:
-  providers:
-    tvdb:
-      enabled: true
-      api_key: ${TVDB_API_KEY}
-      pin: ${TVDB_PIN}
-      default_ordering: default
-      cache_ttl: 24h
-
-      # SUPPLEMENTARY role configuration
-      role: supplementary  # fallback + enrichment
-
-      # Proxy/VPN support (OPTIONAL - must be setup and enabled)
-      proxy:
-        enabled: false           # Must explicitly enable
-        type: tor                # 'http', 'socks5', 'tor', 'vpn'
-        url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
-        interface: tun0          # VPN interface (if type=vpn)
-```
+- `github.com/imroc/req/v3` - HTTP client
+- `golang.org/x/time/rate` - Rate limiting
+- `internal/service/metadata` - Domain types and interfaces
 
 ## Related Documentation
-### Design Documents
-- [03_METADATA_SYSTEM](../../../architecture/METADATA_SYSTEM.md)
-- [SONARR (PRIMARY for TV shows)](../../servarr/SONARR.md)
-- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP.md)
-- [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
 
-### External Sources
-- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [TheTVDB API](../../sources/apis/thetvdb.md) - Auto-resolved from thetvdb
-- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-
+- [TMDB.md](TMDB.md) - TMDb provider (primary, movies + TV shows + collections)
+- [../../../architecture/METADATA_SYSTEM.md](../../../architecture/METADATA_SYSTEM.md) - Metadata system architecture
+- [../../../features/video/TVSHOW_MODULE.md](../../../features/video/TVSHOW_MODULE.md) - TV show content module

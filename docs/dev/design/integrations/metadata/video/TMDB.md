@@ -1,231 +1,199 @@
-## Table of Contents
+# TMDb Integration
 
-- [TMDb (The Movie Database)](#tmdb-the-movie-database)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Integration Structure](#integration-structure)
-    - [Data Flow](#data-flow)
-    - [Provides](#provides)
-  - [Implementation](#implementation)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-- [TMDb API](#tmdb-api)
-- [Rate limiting](#rate-limiting)
-- [Caching](#caching)
-    - [Config Keys](#config-keys)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
+<!-- DESIGN: integrations/metadata/video -->
 
-# TMDb (The Movie Database)
+**Package**: `internal/service/metadata/providers/tmdb`
+**API**: TMDb API v3 (`https://api.themoviedb.org/3`)
 
-<!-- DESIGN: integrations/metadata/video, README, test_output_claude, test_output_wiki -->
-
-
-**Created**: 2026-01-31
-**Status**: ✅ Complete
-**Category**: integration
-
-
-> Integration with TMDb (The Movie Database)
-
-> SUPPLEMENTARY metadata provider (fallback + enrichment) for movies and TV shows
-**API Base URL**: `https://api.themoviedb.org/3`
-**Authentication**: api_key
+> Primary external metadata provider for movies and TV shows, with person, image, and collection support
 
 ---
 
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | - |
-| Sources | ✅ | - |
-| Instructions | ✅ | - |
-| Code | 🔴 | - |
-| Linting | 🔴 | - |
-| Unit Testing | 🔴 | - |
-| Integration Testing | 🔴 | - |
-
-**Overall**: ✅ Complete
-
-
----
-
-
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Layer1["Layer 1"]
-        node1[["Revenge<br/>Metadata<br/>Service"]]
-    end
-
-    subgraph Layer2["Layer 2"]
-        node2[("Radarr/Sonarr<br/>(LOCAL cache)")]
-        node3[("TMDb API<br/>(fallback +<br/>enrichment)")]
-    end
-
-    subgraph Layer3["Layer 3"]
-        node4[("TMDb API<br/>(external)")]
-    end
-
-    subgraph Layer4["Layer 4"]
-        node5["Rate Limiter<br/>(40 req/10s)"]
-    end
-
-    %% Connections
-    node1 --> node2
-    node3 --> node4
-    node4 --> node5
-
-    %% Styling
-    style Layer1 fill:#1976D2,stroke:#1976D2,color:#fff
-    style Layer2 fill:#388E3C,stroke:#388E3C,color:#fff
-    style Layer3 fill:#7B1FA2,stroke:#7B1FA2,color:#fff
-    style Layer4 fill:#F57C00,stroke:#F57C00,color:#fff
-```
-
-### Integration Structure
+## Module Structure
 
 ```
-internal/integration/tmdb_the_movie_database/
-├── client.go              # API client
-├── types.go               # Response types
-├── mapper.go              # Map external → internal types
-├── cache.go               # Response caching
-└── client_test.go         # Tests
+internal/service/metadata/providers/tmdb/
+├── client.go    # HTTP client (req, rate limiter, sync.Map cache)
+├── types.go     # TMDb API v3 response types (500+ lines)
+├── provider.go  # Provider interface implementation
+└── mapping.go   # TMDb responses → metadata domain types
 ```
 
-### Data Flow
+## Provider
 
-<!-- Data flow diagram -->
-
-### Provides
-<!-- Data provided by integration -->
-## Implementation
-
-### Key Interfaces
+Implements 6 metadata interfaces:
 
 ```go
-// TMDb provider implementation
-type TMDbProvider struct {
-  client      *TMDbClient
-  rateLimiter *rate.Limiter
-  cache       Cache
-}
+var (
+    _ metadata.Provider           = (*Provider)(nil)
+    _ metadata.MovieProvider      = (*Provider)(nil)
+    _ metadata.TVShowProvider     = (*Provider)(nil)
+    _ metadata.PersonProvider     = (*Provider)(nil)
+    _ metadata.ImageProvider      = (*Provider)(nil)
+    _ metadata.CollectionProvider = (*Provider)(nil)
+)
 
-// Metadata provider interface
-type MetadataProvider interface {
-  // Search
-  SearchMovie(ctx context.Context, query string, year *int) ([]MovieSearchResult, error)
-  SearchTV(ctx context.Context, query string, year *int) ([]TVSearchResult, error)
-
-  // Fetch details
-  GetMovieDetails(ctx context.Context, tmdbID int) (*MovieMetadata, error)
-  GetTVDetails(ctx context.Context, tmdbID int) (*TVMetadata, error)
-  GetSeasonDetails(ctx context.Context, tmdbID, seasonNumber int) (*SeasonMetadata, error)
-  GetEpisodeDetails(ctx context.Context, tmdbID, seasonNumber, episodeNumber int) (*EpisodeMetadata, error)
-
-  // Images
-  GetMovieImages(ctx context.Context, tmdbID int) (*ImageSet, error)
-  DownloadImage(ctx context.Context, path string) ([]byte, error)
-}
-
-// Movie metadata structure
-type MovieMetadata struct {
-  TMDbID         int       `json:"id"`
-  IMDbID         string    `json:"imdb_id"`
-  Title          string    `json:"title"`
-  OriginalTitle  string    `json:"original_title"`
-  Overview       string    `json:"overview"`
-  ReleaseDate    string    `json:"release_date"`
-  Runtime        int       `json:"runtime"`
-  Genres         []Genre   `json:"genres"`
-  PosterPath     string    `json:"poster_path"`
-  BackdropPath   string    `json:"backdrop_path"`
-  VoteAverage    float64   `json:"vote_average"`
-  Cast           []Cast    `json:"credits.cast"`
-  Crew           []Crew    `json:"credits.crew"`
+type Provider struct {
+    client   *Client
+    priority int  // 100 (primary)
 }
 ```
 
+- `ID()` → `metadata.ProviderTMDb`
+- `Name()` → `"The Movie Database"`
+- `Priority()` → `100`
+- `SupportsMovies()` → `true`
+- `SupportsTVShows()` → `true`
+- `SupportsPeople()` → `true`
+- `SupportsLanguage(lang)` → `true` (all languages)
 
-### Dependencies
-**Go Packages**:
-- `net/http` - HTTP client
-- `golang.org/x/time/rate` - Rate limiting
-- `github.com/google/uuid` - UUID support
-- `github.com/jackc/pgx/v5` - PostgreSQL driver
-- `github.com/riverqueue/river` - Background jobs
-- `github.com/bbrks/go-blurhash` - Blurhash generation
-- `go.uber.org/fx` - Dependency injection
+### Movie Methods
 
-**External APIs**:
-- TMDb API v3 (free tier: 40 requests per 10 seconds)
+| Method | Returns |
+|--------|---------|
+| SearchMovie | `[]MovieSearchResult` |
+| GetMovie | `*MovieMetadata` |
+| GetMovieCredits | `*Credits` |
+| GetMovieImages | `*Images` |
+| GetMovieReleaseDates | `[]ReleaseDate` |
+| GetMovieTranslations | `[]Translation` |
+| GetMovieExternalIDs | `*ExternalIDs` |
+| GetSimilarMovies | `[]MovieSearchResult, int` |
+| GetMovieRecommendations | `[]MovieSearchResult, int` |
+
+### TV Show Methods
+
+| Method | Returns |
+|--------|---------|
+| SearchTVShow | `[]TVShowSearchResult` |
+| GetTVShow | `*TVShowMetadata` |
+| GetTVShowCredits | `*Credits` |
+| GetTVShowImages | `*Images` |
+| GetTVShowContentRatings | `[]ContentRating` |
+| GetTVShowTranslations | `[]Translation` |
+| GetTVShowExternalIDs | `*ExternalIDs` |
+| GetSeason | `*SeasonMetadata` |
+| GetSeasonCredits | `*Credits` |
+| GetSeasonImages | `*Images` |
+| GetEpisode | `*EpisodeMetadata` |
+| GetEpisodeCredits | `*Credits` |
+| GetEpisodeImages | `*Images` |
+
+### Person Methods
+
+| Method | Returns |
+|--------|---------|
+| SearchPerson | `[]PersonSearchResult` |
+| GetPerson | `*PersonMetadata` |
+| GetPersonCredits | `*PersonCredits` |
+| GetPersonImages | `*Images` |
+| GetPersonExternalIDs | `*ExternalIDs` |
+
+### Image Methods
+
+| Method | Purpose |
+|--------|---------|
+| GetImageURL | Build full URL from path + size |
+| GetImageBaseURL | Returns `https://image.tmdb.org/t/p` |
+| DownloadImage | Download image bytes |
+
+### Collection Methods
+
+| Method | Returns |
+|--------|---------|
+| GetCollection | `*CollectionMetadata` |
+| GetCollectionImages | `*Images` |
+
+## Client
+
+HTTP client wrapping `imroc/req` with rate limiting and sync.Map caching:
+
+```go
+type Client struct {
+    httpClient  *req.Client
+    apiKey      string
+    accessToken string
+    rateLimiter *rate.Limiter
+    cache       sync.Map
+    cacheTTL    time.Duration
+}
+```
+
+### Constants
+
+```go
+BaseURL         = "https://api.themoviedb.org/3"
+ImageBaseURL    = "https://image.tmdb.org/t/p"
+DefaultRateLimit = rate.Limit(4.0)  // 40 requests per 10 seconds
+DefaultBurst     = 10
+DefaultCacheTTL  = 24 * time.Hour
+SearchCacheTTL   = 15 * time.Minute
+```
+
+### Client Methods (~28)
+
+Maps 1:1 to TMDb API v3 endpoints. Each method checks cache first, waits on rate limiter, then makes the HTTP request. Key methods:
+
+- `SearchMovie`, `SearchTV`, `SearchPerson`
+- `GetMovie`, `GetTV`, `GetSeason`, `GetEpisode`, `GetPerson`
+- `GetMovieCredits`, `GetMovieImages`, `GetMovieReleaseDates`, `GetMovieTranslations`, `GetMovieExternalIDs`
+- `GetSimilarMovies`, `GetMovieRecommendations`
+- `GetTVCredits`, `GetTVImages`, `GetTVContentRatings`, `GetTVTranslations`, `GetTVExternalIDs`
+- `GetSeasonCredits`, `GetSeasonImages`
+- `GetEpisodeCredits`, `GetEpisodeImages`
+- `GetPersonCredits`, `GetPersonImages`, `GetPersonExternalIDs`
+- `GetCollection`, `GetImageURL`, `DownloadImage`, `ClearCache`
+
+Uses TMDb's `append_to_response` parameter to batch sub-requests.
+
+## Mapper
+
+20 mapping functions converting TMDb response types to `metadata.*` domain types:
+
+| Function | Converts |
+|----------|----------|
+| mapMovieSearchResults | `SearchResultsResponse` → `[]MovieSearchResult` |
+| mapMovieMetadata | `MovieResponse` → `*MovieMetadata` |
+| mapTVSearchResult | `TVSearchResponse` → `TVShowSearchResult` |
+| mapTVShowMetadata | `TVResponse` → `*TVShowMetadata` |
+| mapSeasonMetadata | `SeasonResponse` → `*SeasonMetadata` |
+| mapEpisodeMetadata | `EpisodeResponse` → `*EpisodeMetadata` |
+| mapPersonSearchResult | `PersonSearchResponse` → `PersonSearchResult` |
+| mapPersonMetadata | `PersonResponse` → `*PersonMetadata` |
+| mapPersonCredits | `PersonCreditsResponse` → `*PersonCredits` |
+| mapCredits | `CreditsResponse` → `*Credits` |
+| mapImages | `ImagesResponse` → `*Images` |
+| mapReleaseDates | `ReleaseDatesWrapper` → `[]ReleaseDate` |
+| mapContentRatings | `ContentRatingsWrapper` → `[]ContentRating` |
+| mapTranslations | `TranslationsWrapper` → `[]Translation` |
+| mapExternalIDs | `ExternalIDsResponse` → `*ExternalIDs` |
+| mapCollectionMetadata | `CollectionResponse` → `*CollectionMetadata` |
+| normalizeLang | ISO 639-1 → TMDb format (en → en-US) |
 
 ## Configuration
 
-### Environment Variables
-
-```bash
-# TMDb API
-TMDB_API_KEY=your_api_key_here
-TMDB_LANGUAGE=en-US
-TMDB_INCLUDE_ADULT=false
-
-# Rate limiting
-TMDB_RATE_LIMIT=40
-TMDB_RATE_WINDOW=10s
-
-# Caching
-TMDB_CACHE_TTL=24h
+```go
+type Config struct {
+    APIKey      string        // TMDb API key (v3)
+    AccessToken string        // TMDb access token (v4, alternative auth)
+    RateLimit   rate.Limit    // Requests per second (default: 4.0)
+    Burst       int           // Burst capacity (default: 10)
+    CacheTTL    time.Duration // Cache duration (default: 24h)
+    Timeout     time.Duration // HTTP timeout (default: 30s)
+    ProxyURL    string        // Optional HTTP proxy
+    RetryCount  int           // Retry count (default: 3)
+}
 ```
 
+## Dependencies
 
-### Config Keys
-```yaml
-metadata:
-  providers:
-    tmdb:
-      enabled: true
-      api_key: ${TMDB_API_KEY}
-      language: en-US
-      include_adult: false
-      rate_limit: 40
-      rate_window: 10s
-      cache_ttl: 24h
-
-      # SUPPLEMENTARY role configuration
-      role: supplementary  # fallback + enrichment
-
-      # Proxy/VPN support (OPTIONAL - must be setup and enabled)
-      proxy:
-        enabled: false           # Must explicitly enable
-        type: tor                # 'http', 'socks5', 'tor', 'vpn'
-        url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
-        interface: tun0          # VPN interface (if type=vpn)
-```
+- `github.com/imroc/req/v3` - HTTP client
+- `golang.org/x/time/rate` - Rate limiting
+- `internal/service/metadata` - Domain types and interfaces
 
 ## Related Documentation
-### Design Documents
-- [03_METADATA_SYSTEM](../../../architecture/METADATA_SYSTEM.md)
-- [RADARR (PRIMARY for movies)](../../servarr/RADARR.md)
-- [SONARR (PRIMARY for TV shows)](../../servarr/SONARR.md)
-- [HTTP_CLIENT (proxy/VPN support)](../../../services/HTTP.md)
-- [MOVIE_MODULE](../../../features/video/MOVIE_MODULE.md)
-- [TVSHOW_MODULE](../../../features/video/TVSHOW_MODULE.md)
 
-### External Sources
-- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [golang.org/x/time](../../sources/go/x/time.md) - Auto-resolved from golang-x-time
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-
+- [THETVDB.md](THETVDB.md) - TVDb provider (secondary, TV shows + people)
+- [../../../architecture/METADATA_SYSTEM.md](../../../architecture/METADATA_SYSTEM.md) - Metadata system architecture
+- [../../../features/video/MOVIE_MODULE.md](../../../features/video/MOVIE_MODULE.md) - Movie content module
+- [../../../features/video/TVSHOW_MODULE.md](../../../features/video/TVSHOW_MODULE.md) - TV show content module
