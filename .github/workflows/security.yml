@@ -17,6 +17,8 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
+  PKG_CONFIG_PATH: /usr/lib/jellyfin-ffmpeg/lib/pkgconfig
+  LD_LIBRARY_PATH: /usr/lib/jellyfin-ffmpeg/lib
 
 jobs:
   codeql:
@@ -31,9 +33,10 @@ jobs:
           cache: true
       - name: Install CGO dependencies
         run: |
-          sudo add-apt-repository -y ppa:ubuntuhandbook1/ffmpeg7
+          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
+          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
       - uses: github/codeql-action/init@v4
         with:
           languages: go
@@ -100,9 +103,10 @@ jobs:
           cache: true
       - name: Install CGO dependencies
         run: |
-          sudo add-apt-repository -y ppa:ubuntuhandbook1/ffmpeg7
+          curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
+          echo "deb [signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/jellyfin.list
           sudo apt-get update
-          sudo apt-get install -y libvips-dev libavcodec-dev libavformat-dev libavutil-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev pkg-config
+          sudo apt-get install -y jellyfin-ffmpeg7 libvips-dev pkg-config
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - run: govulncheck ./...
 
