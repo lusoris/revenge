@@ -138,18 +138,77 @@ func TestService_VerifyEmail_InvalidToken(t *testing.T) {
 	assert.Contains(t, err.Error(), "invalid or expired verification token")
 }
 
-// TestService_VerifyEmail_ErrorMarkingTokenUsed is skipped because VerifyEmail
-// uses pool.Begin() for transactions, which cannot be mocked with a nil pool.
-// This scenario should be covered by integration tests.
 func TestService_VerifyEmail_ErrorMarkingTokenUsed(t *testing.T) {
-	t.Skip("VerifyEmail uses transactions (pool.Begin) - requires integration test")
+	t.Parallel()
+	svc, mockRepo, mockTokenMgr := setupMockService(t)
+	ctx := context.Background()
+
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
+	emailToken := auth.EmailVerificationToken{
+		ID:     tokenID,
+		UserID: userID,
+	}
+
+	mockTokenMgr.EXPECT().
+		HashRefreshToken("valid_token").
+		Return("valid_hash").
+		Once()
+
+	mockRepo.EXPECT().
+		GetEmailVerificationToken(ctx, "valid_hash").
+		Return(emailToken, nil).
+		Once()
+
+	expectedErr := fmt.Errorf("database error")
+	mockRepo.EXPECT().
+		MarkEmailVerificationTokenUsed(ctx, tokenID).
+		Return(expectedErr).
+		Once()
+
+	err := svc.VerifyEmail(ctx, "valid_token")
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to mark token as used")
 }
 
-// TestService_VerifyEmail_ErrorUpdatingUser is skipped because VerifyEmail
-// uses pool.Begin() for transactions, which cannot be mocked with a nil pool.
-// This scenario should be covered by integration tests.
 func TestService_VerifyEmail_ErrorUpdatingUser(t *testing.T) {
-	t.Skip("VerifyEmail uses transactions (pool.Begin) - requires integration test")
+	t.Parallel()
+	svc, mockRepo, mockTokenMgr := setupMockService(t)
+	ctx := context.Background()
+
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
+	emailToken := auth.EmailVerificationToken{
+		ID:     tokenID,
+		UserID: userID,
+	}
+
+	mockTokenMgr.EXPECT().
+		HashRefreshToken("valid_token").
+		Return("valid_hash").
+		Once()
+
+	mockRepo.EXPECT().
+		GetEmailVerificationToken(ctx, "valid_hash").
+		Return(emailToken, nil).
+		Once()
+
+	mockRepo.EXPECT().
+		MarkEmailVerificationTokenUsed(ctx, tokenID).
+		Return(nil).
+		Once()
+
+	expectedErr := fmt.Errorf("user not found")
+	mockRepo.EXPECT().
+		UpdateUserEmailVerified(ctx, userID, true).
+		Return(expectedErr).
+		Once()
+
+	err := svc.VerifyEmail(ctx, "valid_token")
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to update user")
 }
 
 // ========== Login Tests ==========
@@ -1109,11 +1168,41 @@ func TestService_LogoutAll_Success(t *testing.T) {
 
 // ========== VerifyEmail Success Path ==========
 
-// TestService_VerifyEmail_Success is skipped because VerifyEmail uses
-// pool.Begin() for transactions, which cannot be mocked with a nil pool.
-// This scenario should be covered by integration tests.
 func TestService_VerifyEmail_Success(t *testing.T) {
-	t.Skip("VerifyEmail uses transactions (pool.Begin) - requires integration test")
+	t.Parallel()
+	svc, mockRepo, mockTokenMgr := setupMockService(t)
+	ctx := context.Background()
+
+	tokenID := uuid.Must(uuid.NewV7())
+	userID := uuid.Must(uuid.NewV7())
+	emailToken := auth.EmailVerificationToken{
+		ID:     tokenID,
+		UserID: userID,
+	}
+
+	mockTokenMgr.EXPECT().
+		HashRefreshToken("valid_token").
+		Return("valid_hash").
+		Once()
+
+	mockRepo.EXPECT().
+		GetEmailVerificationToken(ctx, "valid_hash").
+		Return(emailToken, nil).
+		Once()
+
+	mockRepo.EXPECT().
+		MarkEmailVerificationTokenUsed(ctx, tokenID).
+		Return(nil).
+		Once()
+
+	mockRepo.EXPECT().
+		UpdateUserEmailVerified(ctx, userID, true).
+		Return(nil).
+		Once()
+
+	err := svc.VerifyEmail(ctx, "valid_token")
+
+	require.NoError(t, err)
 }
 
 // ========== RequestPasswordReset Success Path ==========

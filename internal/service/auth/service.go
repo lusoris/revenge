@@ -147,35 +147,19 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 func (s *Service) VerifyEmail(ctx context.Context, token string) error {
 	tokenHash := s.tokenManager.HashRefreshToken(token)
 
-	// Retrieve token from database (outside transaction, read-only)
 	emailToken, err := s.repo.GetEmailVerificationToken(ctx, tokenHash)
 	if err != nil {
 		return fmt.Errorf("invalid or expired verification token: %w", err)
 	}
 
-	// Begin transaction to ensure atomicity of token usage + email verification
-	tx, err := s.pool.Begin(ctx)
-	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
-	}
-	defer func() {
-		_ = tx.Rollback(ctx)
-	}()
-
-	txQueries := db.New(tx)
-
 	// Mark token as used
-	if err := txQueries.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
+	if err := s.repo.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
 		return fmt.Errorf("failed to mark token as used: %w", err)
 	}
 
 	// Update user's email_verified status
-	if err := txQueries.VerifyEmail(ctx, emailToken.UserID); err != nil {
+	if err := s.repo.UpdateUserEmailVerified(ctx, emailToken.UserID, true); err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
-	}
-
-	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
 	return nil
