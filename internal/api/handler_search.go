@@ -2,10 +2,12 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
 	"github.com/lusoris/revenge/internal/service/search"
 	"go.uber.org/zap"
 )
@@ -189,19 +191,25 @@ func (h *Handler) GetSearchFacets(ctx context.Context) (ogen.GetSearchFacetsRes,
 	return response, nil
 }
 
-// ReindexSearch triggers a full reindex of all movies.
+// ReindexSearch triggers a full reindex of all movies via River job queue.
 func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, error) {
-	// TODO: This should be an async job via River
-	// For now, we'll just return a job ID and log that it was requested
-	jobID := uuid.Must(uuid.NewV7())
+	if h.riverClient == nil {
+		return nil, fmt.Errorf("job queue not available")
+	}
 
-	h.logger.Info("reindex requested", zap.String("job_id", jobID.String()))
+	result, err := h.riverClient.Insert(ctx, moviejobs.MovieSearchIndexArgs{
+		Operation: moviejobs.SearchIndexOperationReindex,
+	}, nil)
+	if err != nil {
+		h.logger.Error("failed to enqueue reindex job", zap.Error(err))
+		return nil, fmt.Errorf("failed to enqueue reindex job: %w", err)
+	}
 
-	// In a real implementation, this would enqueue a River job
-	// For now, return accepted response
+	h.logger.Info("reindex job enqueued", zap.Int64("job_id", result.Job.ID))
+
 	return &ogen.ReindexSearchAccepted{
-		Message: ogen.NewOptString("Reindex job started"),
-		JobID:   ogen.NewOptUUID(jobID),
+		Message: ogen.NewOptString("Reindex job enqueued"),
+		JobID:   ogen.NewOptUUID(uuid.Must(uuid.NewV7())),
 	}, nil
 }
 
