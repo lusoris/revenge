@@ -36,7 +36,7 @@ func NewRiverClient(
 	jobsConfig := &Config{
 		Queues:        queueCfg.Queues,
 		FetchCooldown: cfg.Jobs.FetchCooldown,
-		MaxAttempts:   25, // TODO: Make configurable
+		MaxAttempts:   cfg.Jobs.MaxAttempts,
 	}
 
 	return NewClient(pool, workers, jobsConfig, logger)

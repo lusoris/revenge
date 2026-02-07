@@ -171,6 +171,9 @@ type JobsConfig struct {
 
 	// RescueStuckJobsAfter is the duration after which stuck jobs are rescued.
 	RescueStuckJobsAfter time.Duration `koanf:"rescue_stuck_jobs_after"`
+
+	// MaxAttempts is the maximum number of retry attempts for failed jobs.
+	MaxAttempts int `koanf:"max_attempts"`
 }
 
 // LoggingConfig holds logging configuration.
@@ -521,6 +524,7 @@ func Defaults() map[string]interface{} {
 		"jobs.fetch_cooldown":          "200ms",
 		"jobs.fetch_poll_interval":     "2s",
 		"jobs.rescue_stuck_jobs_after": "30m",
+		"jobs.max_attempts":            25,
 
 		// Logging defaults
 		"logging.level":       "info",
