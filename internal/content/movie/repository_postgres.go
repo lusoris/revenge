@@ -339,9 +339,6 @@ func marshalNestedStringMap(m map[string]map[string]string) []byte {
 	return data
 }
 
-// Placeholder implementations for remaining methods
-// TODO: Implement all repository methods
-
 func (r *postgresRepository) ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error) {
 	dbMovies, err := r.queries.ListMovies(ctx, moviedb.ListMoviesParams{
 		Limit:   filters.Limit,
