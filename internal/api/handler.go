@@ -507,26 +507,44 @@ func (h *Handler) UpdateCurrentUser(ctx context.Context, req *ogen.UserUpdate) (
 
 // GetUserById returns a user's public profile
 func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams) (ogen.GetUserByIdRes, error) {
-	user, err := h.userService.GetUser(ctx, params.UserId)
+	u, err := h.userService.GetUser(ctx, params.UserId)
 	if err != nil {
 		return &ogen.GetUserByIdNotFound{}, fmt.Errorf("user not found: %w", err)
 	}
 
-	return &ogen.User{
-		ID:            user.ID,
-		Username:      user.Username,
-		Email:         user.Email,
-		DisplayName:   ogen.NewOptString(stringPtrToString(user.DisplayName)),
-		AvatarURL:     ogen.NewOptString(stringPtrToString(user.AvatarUrl)),
-		Locale:        ogen.NewOptString(stringPtrToString(user.Locale)),
-		Timezone:      ogen.NewOptString(stringPtrToString(user.Timezone)),
-		QarEnabled:    ogen.NewOptBool(boolPtrToBool(user.QarEnabled)),
-		IsActive:      boolPtrToBool(user.IsActive),
-		IsAdmin:       ogen.NewOptBool(boolPtrToBool(user.IsAdmin)),
-		EmailVerified: ogen.NewOptBool(boolPtrToBool(user.EmailVerified)),
-		CreatedAt:     user.CreatedAt,
-		LastLoginAt:   ogen.NewOptDateTime(user.LastLoginAt.Time),
-	}, nil
+	// Check profile visibility (own profile always visible)
+	currentUserID, _ := GetUserID(ctx)
+	isOwnProfile := currentUserID == params.UserId
+
+	if !isOwnProfile {
+		prefs, err := h.userService.GetUserPreferences(ctx, params.UserId)
+		if err == nil {
+			if prefs.ProfileVisibility != nil {
+				switch *prefs.ProfileVisibility {
+				case "private", "friends":
+					return &ogen.GetUserByIdNotFound{}, nil
+				}
+			}
+		}
+	}
+
+	result := &ogen.User{
+		ID:            u.ID,
+		Username:      u.Username,
+		Email:         u.Email,
+		DisplayName:   ogen.NewOptString(stringPtrToString(u.DisplayName)),
+		AvatarURL:     ogen.NewOptString(stringPtrToString(u.AvatarUrl)),
+		Locale:        ogen.NewOptString(stringPtrToString(u.Locale)),
+		Timezone:      ogen.NewOptString(stringPtrToString(u.Timezone)),
+		QarEnabled:    ogen.NewOptBool(boolPtrToBool(u.QarEnabled)),
+		IsActive:      boolPtrToBool(u.IsActive),
+		IsAdmin:       ogen.NewOptBool(boolPtrToBool(u.IsAdmin)),
+		EmailVerified: ogen.NewOptBool(boolPtrToBool(u.EmailVerified)),
+		CreatedAt:     u.CreatedAt,
+		LastLoginAt:   ogen.NewOptDateTime(u.LastLoginAt.Time),
+	}
+
+	return result, nil
 }
 
 // GetUserPreferences returns user preferences
