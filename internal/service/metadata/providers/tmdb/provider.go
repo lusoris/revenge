@@ -25,11 +25,15 @@ type Provider struct {
 }
 
 // NewProvider creates a new TMDb provider.
-func NewProvider(config Config) *Provider {
-	return &Provider{
-		client:   NewClient(config),
-		priority: 100, // TMDb is the primary provider
+func NewProvider(config Config) (*Provider, error) {
+	client, err := NewClient(config)
+	if err != nil {
+		return nil, fmt.Errorf("create tmdb provider: %w", err)
 	}
+	return &Provider{
+		client:   client,
+		priority: 100, // TMDb is the primary provider
+	}, nil
 }
 
 // NewProviderWithClient creates a provider with an existing client.

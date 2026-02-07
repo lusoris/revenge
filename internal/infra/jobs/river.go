@@ -16,9 +16,11 @@ import (
 
 // Config holds River client configuration.
 type Config struct {
-	Queues        map[string]river.QueueConfig
-	FetchCooldown time.Duration
-	MaxAttempts   int
+	Queues               map[string]river.QueueConfig
+	FetchCooldown        time.Duration
+	FetchPollInterval    time.Duration
+	RescueStuckJobsAfter time.Duration
+	MaxAttempts          int
 }
 
 // DefaultConfig returns default River client configuration.
@@ -27,8 +29,10 @@ func DefaultConfig() *Config {
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: 100},
 		},
-		FetchCooldown: 100 * time.Millisecond,
-		MaxAttempts:   25,
+		FetchCooldown:        100 * time.Millisecond,
+		FetchPollInterval:    500 * time.Millisecond,
+		RescueStuckJobsAfter: 1 * time.Hour,
+		MaxAttempts:          25,
 	}
 }
 
@@ -55,11 +59,13 @@ func NewClient(pool *pgxpool.Pool, workers *river.Workers, config *Config, logge
 	}
 
 	riverConfig := &river.Config{
-		Queues:        config.Queues,
-		FetchCooldown: config.FetchCooldown,
-		MaxAttempts:   config.MaxAttempts,
-		Workers:       workers,
-		Logger:        logger,
+		Queues:               config.Queues,
+		FetchCooldown:        config.FetchCooldown,
+		FetchPollInterval:    config.FetchPollInterval,
+		RescueStuckJobsAfter: config.RescueStuckJobsAfter,
+		MaxAttempts:          config.MaxAttempts,
+		Workers:              workers,
+		Logger:               logger,
 	}
 
 	riverClient, err := river.NewClient(riverpgxv5.New(pool), riverConfig)

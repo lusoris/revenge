@@ -3,12 +3,13 @@ package middleware
 
 import (
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/ogen-go/ogen/middleware"
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
+
+	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
 // RateLimitConfig contains rate limiting configuration.
@@ -67,10 +68,8 @@ type ipLimiter struct {
 // RateLimiter provides per-IP rate limiting for API endpoints.
 type RateLimiter struct {
 	config   RateLimitConfig
-	limiters sync.Map
+	limiters *cache.L1Cache[string, *ipLimiter]
 	logger   *zap.Logger
-	stopCh   chan struct{}
-	stopOnce sync.Once
 }
 
 // NewRateLimiter creates a new rate limiter with the given configuration.
@@ -83,90 +82,38 @@ func NewRateLimiter(config RateLimitConfig, logger *zap.Logger) *RateLimiter {
 		config.TTL = 10 * time.Minute
 	}
 
-	rl := &RateLimiter{
-		config: config,
-		logger: logger.Named("ratelimit"),
-		stopCh: make(chan struct{}),
+	l1, err := cache.NewL1Cache[string, *ipLimiter](10000, config.TTL)
+	if err != nil {
+		l1, _ = cache.NewL1Cache[string, *ipLimiter](10000, 10*time.Minute)
 	}
 
-	// Start cleanup goroutine
-	go rl.cleanup()
+	rl := &RateLimiter{
+		config:   config,
+		limiters: l1,
+		logger:   logger.Named("ratelimit"),
+	}
 
 	return rl
 }
 
-// Stop stops the rate limiter's cleanup goroutine.
+// Stop stops the rate limiter and closes the cache.
 func (rl *RateLimiter) Stop() {
-	rl.stopOnce.Do(func() {
-		close(rl.stopCh)
-	})
-}
-
-// cleanup periodically removes stale IP limiters.
-func (rl *RateLimiter) cleanup() {
-	ticker := time.NewTicker(rl.config.CleanupInterval)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			rl.cleanupStale()
-		case <-rl.stopCh:
-			return
-		}
-	}
-}
-
-// cleanupStale removes limiters that haven't been used recently.
-func (rl *RateLimiter) cleanupStale() {
-	now := time.Now()
-	cleaned := 0
-
-	rl.limiters.Range(func(key, value any) bool {
-		limiter, ok := value.(*ipLimiter)
-		if !ok {
-			return true
-		}
-		if now.Sub(limiter.lastSeen) > rl.config.TTL {
-			rl.limiters.Delete(key)
-			cleaned++
-		}
-		return true
-	})
-
-	if cleaned > 0 {
-		rl.logger.Debug("Cleaned up stale rate limiters",
-			zap.Int("count", cleaned),
-		)
-	}
+	rl.limiters.Close()
 }
 
 // getLimiter retrieves or creates a rate limiter for the given IP.
 func (rl *RateLimiter) getLimiter(ip string) *rate.Limiter {
-	now := time.Now()
-
-	if v, ok := rl.limiters.Load(ip); ok {
-		il, ok := v.(*ipLimiter)
-		if !ok {
-			// Type assertion failed, create new limiter below
-		} else {
-			il.lastSeen = now
-			return il.limiter
-		}
+	if il, ok := rl.limiters.Get(ip); ok {
+		return il.limiter
 	}
 
 	limiter := rate.NewLimiter(rate.Limit(rl.config.RequestsPerSecond), rl.config.Burst)
 	il := &ipLimiter{
 		limiter:  limiter,
-		lastSeen: now,
+		lastSeen: time.Now(),
 	}
+	rl.limiters.Set(ip, il)
 
-	// Use LoadOrStore to handle race conditions
-	actual, _ := rl.limiters.LoadOrStore(ip, il)
-	if actualLimiter, ok := actual.(*ipLimiter); ok {
-		return actualLimiter.limiter
-	}
-	// Fallback to the limiter we just created if type assertion fails
 	return limiter
 }
 

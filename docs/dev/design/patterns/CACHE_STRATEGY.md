@@ -30,15 +30,14 @@ CachedService
 Response
 ```
 
-**Three cache tiers:**
+**Two cache tiers:**
 
 | Tier | Technology | Location | Eviction | TTL |
 |------|-----------|----------|----------|-----|
-| L0 | `sync.Map` | Per-client (TMDb, TVDb, Radarr, Sonarr, image) | Manual clear | Application-managed |
-| L1 | otter (W-TinyLFU) | In-process | Size-based + TTL | 5 min default |
+| L1 | otter (W-TinyLFU) | In-process | Size-based + TTL | Varies (5 min service, 24h client) |
 | L2 | rueidis → Dragonfly | Network (shared) | Per-key TTL | Varies (30s–24h) |
 
-L0 is used in integration clients for HTTP response caching. L1+L2 is the formal cache infrastructure used by CachedService wrappers.
+L1 is used both in HTTP client caching (per-client L1Cache instances) and CachedService wrappers. L2 provides shared distributed caching via Dragonfly.
 
 ---
 
@@ -208,22 +207,22 @@ Pattern: invalidation cascades to related keys (e.g., movie invalidation also cl
 
 ---
 
-## L0: sync.Map Caching (Integration Clients)
+## Client-Level L1 Caching
 
-Used for HTTP response caching in external API clients. Not part of the formal L1/L2 infrastructure.
+All HTTP clients (TMDb, TVDb, Radarr, Sonarr, shared metadata BaseClient) use `cache.L1Cache[string, any]` (otter W-TinyLFU) for in-process HTTP response caching:
 
 ```go
 // internal/service/metadata/providers/tmdb/client.go
 type Client struct {
-    httpClient  *http.Client
-    cache       sync.Map  // key: URL, value: cached response
+    httpClient  *req.Client
+    cache       *cache.L1Cache[string, any]  // bounded, TTL-based eviction
     // ...
 }
 ```
 
-Present in: TMDb client, TVDb client, Radarr client, Sonarr client, shared metadata client, image service, rate limiter.
+These are separate L1Cache instances from the CachedService L1 — each client has its own bounded cache with its own TTL (e.g., 24h for metadata, 5m for Servarr). Caches are cleared via `c.cache.Clear()`.
 
-These caches are cleared via `c.cache = sync.Map{}` (full reset) or per-key deletion.
+The rate limiter middleware also uses `cache.L1Cache[string, *ipLimiter]` for per-IP rate limiter storage with automatic eviction.
 
 ---
 

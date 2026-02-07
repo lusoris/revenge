@@ -167,8 +167,9 @@ The user may communicate in German in chat - that's fine. But all artifacts (cod
 - **DI**: fx modules for dependency injection
 - **Repos**: Repository pattern with interfaces
 - **Testing**: Table-driven tests, testify assertions, mockery mocks, testcontainers for integration
-- **Infra Cache**: rueidis (Dragonfly/Redis) for distributed cache
-- **Metadata Cache**: sync.Map per provider with TTL-based expiration
+- **Caching (2-tier)**:
+  - **L1**: otter (W-TinyLFU) via `cache.L1Cache` — bounded in-process cache with TTL-based eviction. Used everywhere: HTTP client caching (per-client instances), CachedService wrappers, rate limiter. Never use `sync.Map` for caching.
+  - **L2**: rueidis → Dragonfly/Redis — distributed cache shared across instances. Per-key TTL.
 
 ### Conventional Commits
 

@@ -3,11 +3,12 @@ package metadata
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
+
+	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
 // ClientConfig configures a metadata API client.
@@ -27,6 +28,9 @@ type ClientConfig struct {
 	// CacheTTL is the cache duration (default: 24h).
 	CacheTTL time.Duration
 
+	// CacheMaxSize is the maximum number of cache entries (default: 10000).
+	CacheMaxSize int
+
 	// Timeout is the request timeout (default: 30s).
 	Timeout time.Duration
 
@@ -40,11 +44,12 @@ type ClientConfig struct {
 // DefaultClientConfig returns a ClientConfig with sensible defaults.
 func DefaultClientConfig() ClientConfig {
 	return ClientConfig{
-		RateLimit:  rate.Limit(4.0),
-		RateBurst:  10,
-		CacheTTL:   24 * time.Hour,
-		Timeout:    30 * time.Second,
-		RetryCount: 3,
+		RateLimit:    rate.Limit(4.0),
+		RateBurst:    10,
+		CacheTTL:     24 * time.Hour,
+		CacheMaxSize: 10000,
+		Timeout:      30 * time.Second,
+		RetryCount:   3,
 	}
 }
 
@@ -54,7 +59,7 @@ type BaseClient struct {
 	client      *req.Client
 	apiKey      string
 	rateLimiter *rate.Limiter
-	cache       sync.Map
+	cache       *cache.L1Cache[string, any]
 	cacheTTL    time.Duration
 	baseURL     string
 }
@@ -70,6 +75,9 @@ func NewBaseClient(config ClientConfig) *BaseClient {
 	}
 	if config.CacheTTL == 0 {
 		config.CacheTTL = 24 * time.Hour
+	}
+	if config.CacheMaxSize == 0 {
+		config.CacheMaxSize = 10000
 	}
 	if config.Timeout == 0 {
 		config.Timeout = 30 * time.Second
@@ -88,10 +96,17 @@ func NewBaseClient(config ClientConfig) *BaseClient {
 		client.SetProxyURL(config.ProxyURL)
 	}
 
+	l1, err := cache.NewL1Cache[string, any](config.CacheMaxSize, config.CacheTTL)
+	if err != nil {
+		// Fallback: create with defaults if custom config fails
+		l1, _ = cache.NewL1Cache[string, any](cache.DefaultL1MaxSize, cache.DefaultL1TTL)
+	}
+
 	return &BaseClient{
 		client:      client,
 		apiKey:      config.APIKey,
 		rateLimiter: rate.NewLimiter(config.RateLimit, config.RateBurst),
+		cache:       l1,
 		cacheTTL:    config.CacheTTL,
 		baseURL:     config.BaseURL,
 	}
@@ -115,45 +130,36 @@ func (c *BaseClient) WaitForRateLimit(ctx context.Context) error {
 	return nil
 }
 
-// GetFromCache retrieves a value from the cache if it exists and hasn't expired.
+// GetFromCache retrieves a value from the cache if it exists.
 func (c *BaseClient) GetFromCache(key string) any {
-	if val, ok := c.cache.Load(key); ok {
-		entry, ok := val.(*CacheEntry)
-		if !ok {
-			return nil
-		}
-		if !entry.IsExpired() {
-			return entry.Data
-		}
-		c.cache.Delete(key)
+	if val, ok := c.cache.Get(key); ok {
+		return val
 	}
 	return nil
 }
 
 // SetCache stores a value in the cache with the configured TTL.
 func (c *BaseClient) SetCache(key string, data any) {
-	entry := &CacheEntry{
-		Data:      data,
-		ExpiresAt: time.Now().Add(c.cacheTTL),
-	}
-	c.cache.Store(key, entry)
+	c.cache.Set(key, data)
 }
 
-// SetCacheWithTTL stores a value in the cache with a custom TTL.
-func (c *BaseClient) SetCacheWithTTL(key string, data any, ttl time.Duration) {
-	entry := &CacheEntry{
-		Data:      data,
-		ExpiresAt: time.Now().Add(ttl),
-	}
-	c.cache.Store(key, entry)
+// SetCacheWithTTL stores a value in the cache.
+// Note: L1Cache uses a fixed TTL set at creation. For different TTLs,
+// use separate cache instances. This method exists for API compatibility.
+func (c *BaseClient) SetCacheWithTTL(key string, data any, _ time.Duration) {
+	c.cache.Set(key, data)
 }
 
 // ClearCache removes all entries from the cache.
 func (c *BaseClient) ClearCache() {
-	c.cache.Range(func(key, value any) bool {
-		c.cache.Delete(key)
-		return true
-	})
+	c.cache.Clear()
+}
+
+// Close closes the cache and stops background goroutines.
+func (c *BaseClient) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }
 
 // Request returns a new request builder configured with the base settings.

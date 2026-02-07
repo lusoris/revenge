@@ -149,25 +149,20 @@ Default languages when none specified: `["en"]` (from `ServiceConfig.DefaultLang
 
 ## Caching
 
-Each provider maintains its own in-memory cache using `sync.Map`:
+Each provider maintains its own in-memory cache using `L1Cache` (otter W-TinyLFU):
 
 ```go
 type Client struct {
-    cache    sync.Map      // key → *CacheEntry
-    cacheTTL time.Duration // default: 24h for metadata, 15m for search
-}
-
-type CacheEntry struct {
-    Data      any
-    ExpiresAt time.Time
+    cache    *cache.L1Cache[string, any] // key → cached value
+    cacheTTL time.Duration               // default: 24h for metadata, 15m for search
 }
 ```
 
 ### Cache Behavior
 
-- **Per-provider**: TMDb and TVDb each have independent caches
-- **TTL-based**: Entries expire after a configurable duration
-- **Lazy expiration**: Expired entries are checked on read, not proactively evicted
+- **Per-provider**: TMDb and TVDb each have independent L1Cache instances
+- **TTL-based**: Entries expire via otter's `ExpiryWriting` policy
+- **W-TinyLFU eviction**: Otter proactively evicts entries based on frequency + recency, bounded by `MaximumSize`
 - **Key format**: Provider-specific (e.g., `movie:{id}:{lang}`, `search:{query}`)
 
 ### Cache Clearing
@@ -179,7 +174,7 @@ metadata.Service.ClearCache()
   → for each provider:
       provider.ClearCache()
         → client.ClearCache()
-          → sync.Map range + delete
+          → L1Cache.Clear()
 ```
 
 The movie adapter also delegates `ClearCache()` to the shared service, and triggers it on force-refresh operations.

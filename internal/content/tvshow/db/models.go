@@ -520,6 +520,8 @@ type SharedUserPreference struct {
 	AutoPlayVideos    *bool     `json:"autoPlayVideos"`
 	CreatedAt         time.Time `json:"createdAt"`
 	UpdatedAt         time.Time `json:"updatedAt"`
+	// Language for metadata display (titles, overviews, taglines). ISO 639-1 code.
+	MetadataLanguage *string `json:"metadataLanguage"`
 }
 
 // User-specific configuration settings

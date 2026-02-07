@@ -1,11 +1,15 @@
 package auth
 
 import (
+	"log/slog"
+
 	"go.uber.org/fx"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/email"
 )
@@ -39,5 +43,13 @@ var Module = fx.Module("auth",
 				cfg.Auth.LockoutEnabled,
 			)
 		},
+		// Cleanup worker for expired/revoked auth tokens
+		provideAuthCleanupWorker,
 	),
 )
+
+// provideAuthCleanupWorker creates the auth token cleanup worker.
+// The auth.Repository satisfies the jobs.AuthCleanupRepository interface.
+func provideAuthCleanupWorker(leaderElection *raft.LeaderElection, repo Repository, logger *slog.Logger) *infrajobs.CleanupWorker {
+	return infrajobs.NewCleanupWorker(leaderElection, repo, logger)
+}

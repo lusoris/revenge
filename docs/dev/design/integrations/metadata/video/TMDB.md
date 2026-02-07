@@ -13,7 +13,7 @@
 
 ```
 internal/service/metadata/providers/tmdb/
-├── client.go    # HTTP client (req, rate limiter, sync.Map cache)
+├── client.go    # HTTP client (req, rate limiter, L1Cache/otter)
 ├── types.go     # TMDb API v3 response types (500+ lines)
 ├── provider.go  # Provider interface implementation
 └── mapping.go   # TMDb responses → metadata domain types
@@ -106,7 +106,7 @@ type Provider struct {
 
 ## Client
 
-HTTP client wrapping `imroc/req` with rate limiting and sync.Map caching:
+HTTP client wrapping `imroc/req` with rate limiting and L1Cache (otter) caching:
 
 ```go
 type Client struct {
@@ -114,7 +114,7 @@ type Client struct {
     apiKey      string
     accessToken string
     rateLimiter *rate.Limiter
-    cache       sync.Map
+    cache       *cache.L1Cache[string, any]
     cacheTTL    time.Duration
 }
 ```

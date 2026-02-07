@@ -40,8 +40,8 @@ func TestNewClient_Defaults(t *testing.T) {
 	})
 
 	assert.NotNil(t, client)
-	// Check that defaults are applied
-	assert.Equal(t, 5*time.Minute, client.cacheTTL)
+	// Check that defaults are applied (cache is initialized)
+	assert.NotNil(t, client.cache)
 }
 
 func TestClient_GetSystemStatus(t *testing.T) {

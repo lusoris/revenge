@@ -13,7 +13,7 @@
 
 ```
 internal/integration/radarr/
-├── client.go           # HTTP client (req, rate limiter, sync.Map cache)
+├── client.go           # HTTP client (req, rate limiter, L1Cache/otter)
 ├── types.go            # Radarr API v3 response types
 ├── mapper.go           # Radarr types → movie domain types
 ├── service.go          # SyncService (full + single movie sync)
@@ -34,7 +34,7 @@ type Client struct {
     baseURL     string
     apiKey      string
     rateLimiter *rate.Limiter
-    cache       sync.Map
+    cache       *cache.L1Cache[string, any]
     cacheTTL    time.Duration
 }
 ```

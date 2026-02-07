@@ -54,7 +54,7 @@ type ModuleResult struct {
 }
 
 // NewModule creates a new metadata service with providers.
-func NewModule(params ModuleParams) ModuleResult {
+func NewModule(params ModuleParams) (ModuleResult, error) {
 	result := ModuleResult{}
 
 	// Create service config
@@ -83,7 +83,10 @@ func NewModule(params ModuleParams) ModuleResult {
 	}
 
 	if tmdbConfig.APIKey != "" {
-		tmdbProvider := tmdb.NewProvider(tmdbConfig)
+		tmdbProvider, err := tmdb.NewProvider(tmdbConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
 		svc.RegisterProvider(tmdbProvider)
 		result.TMDbProvider = tmdbProvider
 	}
@@ -98,7 +101,10 @@ func NewModule(params ModuleParams) ModuleResult {
 	}
 
 	if tvdbConfig.APIKey != "" {
-		tvdbProvider := tvdb.NewProvider(tvdbConfig)
+		tvdbProvider, err := tvdb.NewProvider(tvdbConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
 		svc.RegisterProvider(tvdbProvider)
 		result.TVDbProvider = tvdbProvider
 	}
@@ -109,7 +115,7 @@ func NewModule(params ModuleParams) ModuleResult {
 	result.MovieMetadataAdapter = movieadapter.NewAdapter(svc, serviceConfig.DefaultLanguages)
 	result.TVShowMetadataAdapter = tvshowadapter.NewAdapter(svc, serviceConfig.DefaultLanguages)
 
-	return result
+	return result, nil
 }
 
 // Module provides the metadata service and providers via fx.

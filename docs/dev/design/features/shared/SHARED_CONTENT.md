@@ -20,7 +20,7 @@ internal/content/shared/
 │   ├── matcher.go         # Matcher[T] + MatchStrategy[T] interface
 │   └── fuzzy.go           # Levenshtein distance, title similarity, ConfidenceScore
 ├── metadata/              # Metadata provider utilities
-│   ├── client.go          # BaseClient (rate limiter + sync.Map cache + req HTTP)
+│   ├── client.go          # BaseClient (rate limiter + L1Cache/otter + req HTTP)
 │   ├── types.go           # SearchResult, SearchOptions, ClientConfig, shared types
 │   ├── images.go          # ImageURLBuilder, ImageDownloader, TMDb image sizes
 │   └── maputil.go         # Date parsing, optional values, age ratings, language conversion
@@ -149,7 +149,7 @@ type BaseClient struct {
     client      *req.Client     // imroc/req with retries
     apiKey      string
     rateLimiter *rate.Limiter   // golang.org/x/time/rate
-    cache       sync.Map        // Thread-safe in-memory cache
+    cache       *cache.L1Cache[string, any]  // otter W-TinyLFU, bounded, TTL-based
     cacheTTL    time.Duration   // Default 24h
     baseURL     string
 }

@@ -148,8 +148,7 @@ internal/service/metadata/
 - `github.com/jackc/pgx/v5`
 - `github.com/imroc/req/v3` - HTTP client for provider APIs (✅ implemented)
 - `github.com/riverqueue/river` - Background metadata refresh jobs (✅ implemented)
-- `sync.Map` (Go stdlib) - Per-provider in-memory cache with TTL (✅ current IST)
-- `github.com/maypok86/otter` - L1 cache (🔴 planned, replaces sync.Map)
+- `github.com/maypok86/otter` - L1 in-process cache per client (W-TinyLFU, bounded, TTL-based eviction) (✅ implemented)
 - `github.com/redis/rueidis` - L2 cache via Dragonfly (🔴 planned)
 - `go.uber.org/fx`
 

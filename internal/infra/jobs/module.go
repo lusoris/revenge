@@ -17,8 +17,13 @@ var Module = fx.Module("jobs",
 		NewRiverWorkers,
 		NewRiverClient,
 	),
-	fx.Invoke(registerHooks),
+	fx.Invoke(registerHooks, registerCleanupWorker),
 )
+
+// registerCleanupWorker registers the auth cleanup worker with the River workers registry.
+func registerCleanupWorker(workers *river.Workers, cleanupWorker *CleanupWorker) {
+	river.AddWorker(workers, cleanupWorker)
+}
 
 // NewRiverWorkers creates a new River workers registry.
 func NewRiverWorkers() *river.Workers {
@@ -33,13 +38,45 @@ func NewRiverClient(
 	logger *slog.Logger,
 ) (*Client, error) {
 	queueCfg := DefaultQueueConfig()
+
+	// Apply configured MaxWorkers as a total cap across all queues.
+	// Scale per-queue workers proportionally if MaxWorkers is set.
+	if cfg.Jobs.MaxWorkers > 0 {
+		scaleQueueWorkers(queueCfg.Queues, cfg.Jobs.MaxWorkers)
+	}
+
 	jobsConfig := &Config{
-		Queues:        queueCfg.Queues,
-		FetchCooldown: cfg.Jobs.FetchCooldown,
-		MaxAttempts:   cfg.Jobs.MaxAttempts,
+		Queues:               queueCfg.Queues,
+		FetchCooldown:        cfg.Jobs.FetchCooldown,
+		FetchPollInterval:    cfg.Jobs.FetchPollInterval,
+		RescueStuckJobsAfter: cfg.Jobs.RescueStuckJobsAfter,
+		MaxAttempts:          cfg.Jobs.MaxAttempts,
 	}
 
 	return NewClient(pool, workers, jobsConfig, logger)
+}
+
+// scaleQueueWorkers distributes maxWorkers across queues proportionally
+// based on their default worker allocation.
+func scaleQueueWorkers(queues map[string]river.QueueConfig, maxWorkers int) {
+	// Calculate total default workers
+	var totalDefault int
+	for _, qc := range queues {
+		totalDefault += qc.MaxWorkers
+	}
+	if totalDefault == 0 {
+		return
+	}
+
+	// Scale each queue proportionally, ensuring at least 1 worker per queue
+	for name, qc := range queues {
+		scaled := (qc.MaxWorkers * maxWorkers) / totalDefault
+		if scaled < 1 {
+			scaled = 1
+		}
+		qc.MaxWorkers = scaled
+		queues[name] = qc
+	}
 }
 
 // registerHooks registers lifecycle hooks for the job client.

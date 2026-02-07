@@ -71,7 +71,7 @@ client := req.C().
 
 **Rate limiting**: `golang.org/x/time/rate` — 10 req/s default, burst 20 (local service, higher than external APIs).
 
-**Caching**: `sync.Map` with 5-minute TTL. Cache keys:
+**Caching**: L1Cache (otter, W-TinyLFU) with 5-minute TTL. Cache keys:
 - `movies:all` / `series:all` — bulk lists
 - `movie:{id}` / `series:{id}` — single items
 - `movie:tmdb:{id}` / `series:tvdb:{id}` — external ID lookups

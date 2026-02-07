@@ -10,10 +10,10 @@ All HTTP clients in the codebase use `imroc/req/v3`. There are 5 clients, each w
 
 | Client | Package | Auth | Rate Limit | Cache | Proxy |
 |--------|---------|------|------------|-------|-------|
-| **TMDb** | `service/metadata/providers/tmdb` | Bearer token or API key | 4 req/s, burst 10 | sync.Map (15m search, 24h detail) | Yes |
-| **TVDb** | `service/metadata/providers/tvdb` | JWT token (auto-refresh) | 5 req/s, burst 10 | sync.Map (configurable TTL) | Yes |
-| **Radarr** | `integration/radarr` | `X-Api-Key` header | 10 req/s, burst 20 | sync.Map (5m TTL) | No |
-| **Sonarr** | `integration/sonarr` | `X-Api-Key` header | 10 req/s, burst 20 | sync.Map (5m TTL) | No |
+| **TMDb** | `service/metadata/providers/tmdb` | Bearer token or API key | 4 req/s, burst 10 | L1Cache/otter (15m search, 24h detail) | Yes |
+| **TVDb** | `service/metadata/providers/tvdb` | JWT token (auto-refresh) | 5 req/s, burst 10 | L1Cache/otter (configurable TTL) | Yes |
+| **Radarr** | `integration/radarr` | `X-Api-Key` header | 10 req/s, burst 20 | L1Cache/otter (5m TTL) | No |
+| **Sonarr** | `integration/sonarr` | `X-Api-Key` header | 10 req/s, burst 20 | L1Cache/otter (5m TTL) | No |
 | **Image** | `infra/image` | None | None | Disk (file-based) | Yes |
 
 ---
@@ -107,30 +107,25 @@ Token refresh buffer: 1 hour before expiry. Mutex protects concurrent access.
 
 ## Caching Patterns
 
-### In-Memory (sync.Map)
+### In-Memory (L1Cache / otter)
 
-Used by TMDb, TVDb, Radarr, Sonarr clients:
+All HTTP clients use `cache.L1Cache[string, any]` (otter W-TinyLFU) for in-process caching. This provides bounded memory, automatic TTL-based eviction, and high concurrency:
 
 ```go
-type CacheEntry struct {
-    Data      interface{}
-    ExpiresAt time.Time
+func (c *Client) getFromCache(key string) any {
+    val, ok := c.cache.Get(key)
+    if !ok {
+        return nil
+    }
+    return val
 }
 
-func (c *Client) getFromCache(key string) (interface{}, bool) {
-    entry, ok := c.cache.Load(key)
-    if !ok { return nil, false }
-    if time.Now().After(entry.ExpiresAt) {
-        c.cache.Delete(key)
-        return nil, false
-    }
-    return entry.Data, true
+func (c *Client) setCache(key string, data any) {
+    c.cache.Set(key, data)
 }
 ```
 
-Cache key format: `"{type}:{query}:{params}"` with colons.
-
-**Known issue**: `sync.Map` has unbounded memory growth. Should migrate to otter (same W-TinyLFU cache used in L1 service caching). Tracked in `.workingdir3/CODEBASE_TODOS.md` item #17.
+Cache key format: `"{type}:{query}:{params}"` with colons. TTL is set at cache creation time (fixed per client).
 
 ### Disk Cache (Image Proxy)
 
@@ -194,7 +189,7 @@ if resp.IsErrorState() {
 1. Create client struct with `req.Client`, rate limiter, and cache
 2. Use `req.C()` builder pattern for construction
 3. Add rate limiting with `golang.org/x/time/rate`
-4. Add caching with `sync.Map` (or otter when migrated)
+4. Add caching with `cache.L1Cache` (otter W-TinyLFU)
 5. Add proxy support if the service is external
 6. Wrap errors with context using `%w`
 7. Add config section to `internal/config/config.go`

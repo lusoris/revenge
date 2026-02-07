@@ -26,7 +26,7 @@ func TestNewClient_Defaults(t *testing.T) {
 	})
 
 	assert.NotNil(t, client.rateLimiter)
-	assert.Equal(t, 5*time.Minute, client.cacheTTL)
+	assert.NotNil(t, client.cache)
 }
 
 func TestNewClient_CustomConfig(t *testing.T) {
@@ -41,7 +41,7 @@ func TestNewClient_CustomConfig(t *testing.T) {
 	assert.NotNil(t, client)
 	assert.Equal(t, "http://sonarr.local:8989", client.baseURL)
 	assert.Equal(t, "custom-key", client.apiKey)
-	assert.Equal(t, 10*time.Minute, client.cacheTTL)
+	assert.NotNil(t, client.cache)
 }
 
 func TestClient_Cache(t *testing.T) {

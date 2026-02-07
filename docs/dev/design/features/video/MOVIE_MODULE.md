@@ -176,7 +176,7 @@ type MetadataProvider interface {
 }
 ```
 
-Implementation injected via `metadatafx` module as `MovieMetadataAdapter`. Uses shared `metadata.BaseClient` with TMDb API (4 req/sec rate limit, burst 10, sync.Map cache).
+Implementation injected via `metadatafx` module as `MovieMetadataAdapter`. Uses shared `metadata.BaseClient` with TMDb API (4 req/sec rate limit, burst 10, L1Cache/otter).
 
 ## Background Workers
 

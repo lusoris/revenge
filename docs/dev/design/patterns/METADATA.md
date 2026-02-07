@@ -85,11 +85,9 @@ Refresh operations (`RefreshMovie`, `RefreshTVShow`) enqueue River jobs rather t
 
 | Layer | Technology | Scope | TTL |
 |-------|-----------|-------|-----|
-| L0 | `sync.Map` per provider | HTTP response caching in TMDb/TVDb clients | 24h metadata, 15m search |
-| L1 | otter (W-TinyLFU) | In-process, bounded | 5–10 min |
+| L1 (client) | otter (W-TinyLFU) per client | HTTP response caching in TMDb/TVDb clients | 24h metadata, 15m search |
+| L1 (service) | otter (W-TinyLFU) | In-process, bounded | 5–10 min |
 | L2 | rueidis → Dragonfly | Shared across instances | Per-key (see [Cache Strategy](CACHE_STRATEGY.md)) |
-
-**Known issue**: L0 `sync.Map` caching has unbounded memory growth and should migrate to otter. Tracked in `.workingdir3/CODEBASE_TODOS.md` item #17.
 
 ---
 

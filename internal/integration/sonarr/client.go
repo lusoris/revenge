@@ -3,11 +3,12 @@ package sonarr
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
+
+	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
 // Client is a client for the Sonarr API v3.
@@ -17,8 +18,7 @@ type Client struct {
 	baseURL     string
 	apiKey      string
 	rateLimiter *rate.Limiter
-	cache       sync.Map
-	cacheTTL    time.Duration
+	cache       *cache.L1Cache[string, any]
 }
 
 // Config contains configuration for the Sonarr client.
@@ -50,42 +50,33 @@ func NewClient(config Config) *Client {
 		SetCommonRetryCount(3).
 		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
 
+	l1, err := cache.NewL1Cache[string, any](1000, config.CacheTTL)
+	if err != nil {
+		// Fallback: create with defaults if custom config fails.
+		l1, _ = cache.NewL1Cache[string, any](0, 0)
+	}
+
 	return &Client{
 		client:      client,
 		baseURL:     config.BaseURL,
 		apiKey:      config.APIKey,
 		rateLimiter: rate.NewLimiter(config.RateLimit, 20), // burst of 20
-		cacheTTL:    config.CacheTTL,
+		cache:       l1,
 	}
 }
 
-// cacheEntry represents a cached item with expiration.
-type cacheEntry struct {
-	data      any
-	expiresAt time.Time
-}
-
-// getFromCache retrieves a value from cache if not expired.
+// getFromCache retrieves a value from cache.
 func (c *Client) getFromCache(key string) any {
-	if entry, ok := c.cache.Load(key); ok {
-		e, ok := entry.(cacheEntry)
-		if !ok {
-			return nil
-		}
-		if time.Now().Before(e.expiresAt) {
-			return e.data
-		}
-		c.cache.Delete(key)
+	val, ok := c.cache.Get(key)
+	if ok {
+		return val
 	}
 	return nil
 }
 
 // setCache stores a value in cache.
 func (c *Client) setCache(key string, data any) {
-	c.cache.Store(key, cacheEntry{
-		data:      data,
-		expiresAt: time.Now().Add(c.cacheTTL),
-	})
+	c.cache.Set(key, data)
 }
 
 // GetSystemStatus returns Sonarr system status.
@@ -721,7 +712,7 @@ func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error
 
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
-	c.cache = sync.Map{}
+	c.cache.Clear()
 }
 
 // IsHealthy checks if Sonarr is reachable and healthy.

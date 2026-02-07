@@ -2,6 +2,7 @@ package tvdb
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
@@ -21,11 +22,15 @@ type Provider struct {
 }
 
 // NewProvider creates a new TVDb provider.
-func NewProvider(config Config) *Provider {
-	return &Provider{
-		client:   NewClient(config),
-		priority: 80, // TVDb is secondary to TMDb
+func NewProvider(config Config) (*Provider, error) {
+	client, err := NewClient(config)
+	if err != nil {
+		return nil, fmt.Errorf("tvdb provider: %w", err)
 	}
+	return &Provider{
+		client:   client,
+		priority: 80, // TVDb is secondary to TMDb
+	}, nil
 }
 
 // NewProviderWithClient creates a provider with an existing client.

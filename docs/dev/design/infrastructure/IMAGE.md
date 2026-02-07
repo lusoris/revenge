@@ -25,7 +25,6 @@ type Service struct {
     cacheDir   string           // Filesystem cache directory
     cacheTTL   time.Duration    // Default 7 days
     maxSize    int64            // Default 10MB
-    memCache   sync.Map         // In-memory cache layer
     logger     *zap.Logger
 }
 
@@ -48,9 +47,8 @@ TMDb standard sizes:
 
 ## Caching
 
-**Dual-layer**:
-1. **Memory** (`sync.Map`): Fast in-process cache, no TTL eviction
-2. **Filesystem**: Persistent cache with configurable TTL (default 7 days) and size limits
+**Filesystem only**:
+- Persistent cache with configurable TTL (default 7 days) and size limits
 
 **Cache key**: `{type}/{size}/{path}` mapped to filesystem path under `cacheDir`.
 

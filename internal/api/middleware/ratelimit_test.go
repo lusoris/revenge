@@ -353,17 +353,17 @@ func TestRateLimiter_Cleanup(t *testing.T) {
 	rl.getLimiter("192.168.1.2")
 
 	// Verify they exist
-	_, ok1 := rl.limiters.Load("192.168.1.1")
-	_, ok2 := rl.limiters.Load("192.168.1.2")
+	_, ok1 := rl.limiters.Get("192.168.1.1")
+	_, ok2 := rl.limiters.Get("192.168.1.2")
 	assert.True(t, ok1)
 	assert.True(t, ok2)
 
-	// Wait for cleanup to run
+	// Wait for TTL-based eviction
 	time.Sleep(200 * time.Millisecond)
 
-	// Limiters should be cleaned up
-	_, ok1 = rl.limiters.Load("192.168.1.1")
-	_, ok2 = rl.limiters.Load("192.168.1.2")
+	// Limiters should be evicted by TTL
+	_, ok1 = rl.limiters.Get("192.168.1.1")
+	_, ok2 = rl.limiters.Get("192.168.1.2")
 	assert.False(t, ok1)
 	assert.False(t, ok2)
 }

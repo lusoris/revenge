@@ -13,7 +13,7 @@
 
 ```
 internal/service/metadata/providers/tvdb/
-├── client.go    # HTTP client (req, rate limiter, sync.Map cache, JWT auth)
+├── client.go    # HTTP client (req, rate limiter, L1Cache/otter, JWT auth)
 ├── types.go     # TVDb API v4 response types
 ├── provider.go  # Provider interface implementation
 └── mapping.go   # TVDb responses → metadata domain types
@@ -74,7 +74,7 @@ type Provider struct {
 
 ## Client
 
-HTTP client with JWT authentication, rate limiting, and sync.Map caching:
+HTTP client with JWT authentication, rate limiting, and L1Cache (otter) caching:
 
 ```go
 type Client struct {
@@ -82,7 +82,7 @@ type Client struct {
     apiKey      string
     pin         string
     rateLimiter *rate.Limiter
-    cache       sync.Map
+    cache       *cache.L1Cache[string, any]
     cacheTTL    time.Duration
 
     // JWT token management
@@ -130,7 +130,7 @@ TokenRefreshBuffer = 1 * time.Hour
 | GetMovieExtended | `GET /movies/{id}/extended` | Full movie info |
 | GetPerson | `GET /people/{id}` | Basic person info |
 | GetPersonExtended | `GET /people/{id}/extended` | Full person with characters, remote IDs |
-| ClearCache | - | Flush sync.Map cache |
+| ClearCache | - | Flush L1Cache |
 | Logout | - | Invalidate JWT token |
 
 Generic response wrappers: `BaseResponse[T]` for single items, `ListResponse[T]` for lists.

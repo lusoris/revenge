@@ -3,11 +3,12 @@ package tmdb
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
+
+	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
 const (
@@ -74,12 +75,12 @@ type Client struct {
 	apiKey      string
 	accessToken string
 	rateLimiter *rate.Limiter
-	cache       sync.Map
-	cacheTTL    time.Duration
+	cache    *cache.L1Cache[string, any]
+	cacheTTL time.Duration
 }
 
 // NewClient creates a new TMDb client.
-func NewClient(config Config) *Client {
+func NewClient(config Config) (*Client, error) {
 	// Apply defaults
 	if config.RateLimit == 0 {
 		config.RateLimit = DefaultRateLimit
@@ -97,6 +98,11 @@ func NewClient(config Config) *Client {
 		config.RetryCount = 3
 	}
 
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	if err != nil {
+		return nil, fmt.Errorf("create tmdb cache: %w", err)
+	}
+
 	client := req.C().
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
@@ -112,8 +118,9 @@ func NewClient(config Config) *Client {
 		apiKey:      config.APIKey,
 		accessToken: config.AccessToken,
 		rateLimiter: rate.NewLimiter(config.RateLimit, config.Burst),
+		cache:       l1,
 		cacheTTL:    config.CacheTTL,
-	}
+	}, nil
 }
 
 // request creates an authenticated request.
@@ -137,37 +144,21 @@ func (c *Client) waitRateLimit(ctx context.Context) error {
 
 // getFromCache retrieves a value from cache.
 func (c *Client) getFromCache(key string) any {
-	if val, ok := c.cache.Load(key); ok {
-		entry, ok := val.(*CacheEntry)
-		if !ok {
-			return nil
-		}
-		if !entry.IsExpired() {
-			return entry.Data
-		}
-		c.cache.Delete(key)
+	val, ok := c.cache.Get(key)
+	if !ok {
+		return nil
 	}
-	return nil
+	return val
 }
 
 // setCache stores a value in cache.
-func (c *Client) setCache(key string, data any, ttl time.Duration) {
-	if ttl == 0 {
-		ttl = c.cacheTTL
-	}
-	entry := &CacheEntry{
-		Data:      data,
-		ExpiresAt: time.Now().Add(ttl),
-	}
-	c.cache.Store(key, entry)
+func (c *Client) setCache(key string, data any, _ time.Duration) {
+	c.cache.Set(key, data)
 }
 
 // clearCache removes all cached entries.
 func (c *Client) clearCache() {
-	c.cache.Range(func(key, _ any) bool {
-		c.cache.Delete(key)
-		return true
-	})
+	c.cache.Clear()
 }
 
 // cacheKey generates a cache key from components.

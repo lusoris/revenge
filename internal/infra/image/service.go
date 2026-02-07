@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -53,10 +52,9 @@ type Config struct {
 
 // Service handles image downloading, caching, and serving.
 type Service struct {
-	client   *req.Client
-	config   Config
-	logger   *zap.Logger
-	cache    sync.Map // path -> cachedImage
+	client *req.Client
+	config Config
+	logger *zap.Logger
 }
 
 // NewService creates a new image service.
@@ -261,11 +259,6 @@ func (s *Service) generateETag(imageType, size, path string) string {
 
 // ClearCache clears the image cache.
 func (s *Service) ClearCache() error {
-	s.cache.Range(func(key, value interface{}) bool {
-		s.cache.Delete(key)
-		return true
-	})
-
 	if s.config.CacheDir != "" {
 		return os.RemoveAll(s.config.CacheDir)
 	}
