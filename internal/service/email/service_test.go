@@ -1,11 +1,16 @@
 package email
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
+	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/stretchr/testify/assert"
@@ -350,4 +355,204 @@ func TestService_EmptyProvider(t *testing.T) {
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "SMTP host not configured") // Uses SMTP as default
+}
+
+// ============================================================================
+// Mock SMTP Server + sendSMTP Tests
+// ============================================================================
+
+// startMockSMTPServer creates a minimal mock SMTP server for testing.
+// It returns the listener address and a channel that receives the message body.
+func startMockSMTPServer(t *testing.T) (string, <-chan string) {
+	t.Helper()
+
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+
+	msgCh := make(chan string, 1)
+
+	go func() {
+		defer ln.Close()
+		conn, err := ln.Accept()
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+
+		_ = conn.SetDeadline(time.Now().Add(5 * time.Second))
+		reader := bufio.NewReader(conn)
+
+		// Send greeting
+		fmt.Fprintf(conn, "220 localhost SMTP Mock\r\n")
+
+		var messageData strings.Builder
+
+		for {
+			line, err := reader.ReadString('\n')
+			if err != nil {
+				return
+			}
+			line = strings.TrimSpace(line)
+
+			switch {
+			case strings.HasPrefix(strings.ToUpper(line), "EHLO"), strings.HasPrefix(strings.ToUpper(line), "HELO"):
+				fmt.Fprintf(conn, "250 localhost\r\n")
+			case strings.HasPrefix(strings.ToUpper(line), "MAIL FROM"):
+				fmt.Fprintf(conn, "250 OK\r\n")
+			case strings.HasPrefix(strings.ToUpper(line), "RCPT TO"):
+				fmt.Fprintf(conn, "250 OK\r\n")
+			case strings.HasPrefix(strings.ToUpper(line), "DATA"):
+				fmt.Fprintf(conn, "354 Start mail input\r\n")
+				// Read until lone dot
+				for {
+					dataLine, err := reader.ReadString('\n')
+					if err != nil {
+						return
+					}
+					if strings.TrimSpace(dataLine) == "." {
+						break
+					}
+					messageData.WriteString(dataLine)
+				}
+				fmt.Fprintf(conn, "250 OK\r\n")
+				msgCh <- messageData.String()
+			case strings.HasPrefix(strings.ToUpper(line), "QUIT"):
+				fmt.Fprintf(conn, "221 Bye\r\n")
+				return
+			default:
+				fmt.Fprintf(conn, "500 Unknown command\r\n")
+			}
+		}
+	}()
+
+	return ln.Addr().String(), msgCh
+}
+
+func TestService_SendSMTP_Success(t *testing.T) {
+	addr, msgCh := startMockSMTPServer(t)
+	host, portStr, err := net.SplitHostPort(addr)
+	require.NoError(t, err)
+
+	var port int
+	_, err = fmt.Sscanf(portStr, "%d", &port)
+	require.NoError(t, err)
+
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "sender@example.com",
+		FromName:    "Revenge",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host:    host,
+			Port:    port,
+			Timeout: 5 * time.Second,
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err = svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	require.NoError(t, err)
+
+	// Verify message was received
+	select {
+	case msg := <-msgCh:
+		assert.Contains(t, msg, "Verify your email address")
+		assert.Contains(t, msg, "Revenge")
+	case <-time.After(3 * time.Second):
+		t.Fatal("timeout waiting for SMTP message")
+	}
+}
+
+func TestService_SendSMTP_DefaultTimeout(t *testing.T) {
+	addr, _ := startMockSMTPServer(t)
+	host, portStr, err := net.SplitHostPort(addr)
+	require.NoError(t, err)
+
+	var port int
+	_, err = fmt.Sscanf(portStr, "%d", &port)
+	require.NoError(t, err)
+
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "sender@example.com",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host:    host,
+			Port:    port,
+			Timeout: 0, // Should default to 30s
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err = svc.SendPasswordResetEmail(context.Background(), "user@example.com", "testuser", "token123")
+	require.NoError(t, err)
+}
+
+func TestService_SendSMTP_ConnectionRefused(t *testing.T) {
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "test@example.com",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host:    "127.0.0.1",
+			Port:    19999, // Nothing listening
+			Timeout: 1 * time.Second,
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to connect to SMTP server")
+}
+
+func TestService_SendSMTP_WelcomeEmail(t *testing.T) {
+	addr, msgCh := startMockSMTPServer(t)
+	host, portStr, err := net.SplitHostPort(addr)
+	require.NoError(t, err)
+
+	var port int
+	_, err = fmt.Sscanf(portStr, "%d", &port)
+	require.NoError(t, err)
+
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "smtp",
+		FromAddress: "sender@example.com",
+		BaseURL:     "http://localhost:8080",
+		SMTP: config.SMTPConfig{
+			Host:    host,
+			Port:    port,
+			Timeout: 5 * time.Second,
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err = svc.SendWelcomeEmail(context.Background(), "user@example.com", "testuser")
+	require.NoError(t, err)
+
+	select {
+	case msg := <-msgCh:
+		assert.Contains(t, msg, "Welcome to Revenge!")
+	case <-time.After(3 * time.Second):
+		t.Fatal("timeout waiting for SMTP message")
+	}
+}
+
+func TestService_ProvideService(t *testing.T) {
+	cfg := &config.Config{
+		Email: config.EmailConfig{
+			Enabled:     true,
+			Provider:    "smtp",
+			FromAddress: "test@example.com",
+		},
+	}
+	logger := zap.NewNop()
+
+	svc := provideService(cfg, logger)
+	require.NotNil(t, svc)
+	assert.True(t, svc.IsEnabled())
 }

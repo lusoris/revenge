@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/stretchr/testify/assert"
@@ -1796,6 +1797,266 @@ func TestCachedService_InvalidateLibraryCache_NilCache_Short(t *testing.T) {
 
 		err := cachedSvc.InvalidateLibraryCache(context.Background(), uuid.Must(uuid.NewV7()))
 
+		assert.NoError(t, err)
+	})
+}
+
+// ============================================================================
+// CachedService Tests with L1-only Cache
+// ============================================================================
+
+func setupCachedServiceWithL1Cache(t *testing.T, repo library.Repository) *library.CachedService {
+	t.Helper()
+	c, err := cache.NewNamedCache(nil, 1000, 5*time.Minute, "library-test")
+	require.NoError(t, err)
+	t.Cleanup(func() { c.Close() })
+	logger := zap.NewNop()
+	activityLogger := activity.NewNoopLogger()
+	svc := library.NewService(repo, logger, activityLogger)
+	return library.NewCachedService(svc, c, logger)
+}
+
+func TestCachedService_Get_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("cache miss then cache hit", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		libID := uuid.Must(uuid.NewV7())
+		expected := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
+		mockRepo.On("Get", mock.Anything, libID).Return(expected, nil)
+
+		// First call - cache miss, fetches from service
+		lib, err := cachedSvc.Get(context.Background(), libID)
+		require.NoError(t, err)
+		assert.Equal(t, "Movies", lib.Name)
+
+		// Wait for async cache set goroutine
+		time.Sleep(100 * time.Millisecond)
+
+		// Second call - cache hit (should not call repo again)
+		lib2, err := cachedSvc.Get(context.Background(), libID)
+		require.NoError(t, err)
+		assert.Equal(t, "Movies", lib2.Name)
+
+		// Verify repo was only called once
+		mockRepo.AssertNumberOfCalls(t, "Get", 1)
+	})
+
+	t.Run("cache miss with service error", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		libID := uuid.Must(uuid.NewV7())
+		mockRepo.On("Get", mock.Anything, libID).Return(nil, library.ErrNotFound)
+
+		lib, err := cachedSvc.Get(context.Background(), libID)
+		assert.Nil(t, lib)
+		assert.ErrorIs(t, err, library.ErrNotFound)
+	})
+}
+
+func TestCachedService_List_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("cache miss then cache hit", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		libs := []library.Library{
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "Movies", library.LibraryTypeMovie),
+			*makeTestLibrary(uuid.Must(uuid.NewV7()), "TV", library.LibraryTypeTVShow),
+		}
+		mockRepo.On("List", mock.Anything).Return(libs, nil)
+
+		// First call - cache miss
+		result, err := cachedSvc.List(context.Background())
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+
+		// Wait for async cache set
+		time.Sleep(100 * time.Millisecond)
+
+		// Second call - cache hit
+		result2, err := cachedSvc.List(context.Background())
+		require.NoError(t, err)
+		assert.Len(t, result2, 2)
+
+		mockRepo.AssertNumberOfCalls(t, "List", 1)
+	})
+
+	t.Run("cache miss with service error", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		mockRepo.On("List", mock.Anything).Return(nil, errors.New("db error"))
+
+		result, err := cachedSvc.List(context.Background())
+		assert.Nil(t, result)
+		assert.Error(t, err)
+	})
+}
+
+func TestCachedService_Count_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("cache miss then cache hit", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		mockRepo.On("Count", mock.Anything).Return(int64(42), nil)
+
+		// First call - cache miss
+		count, err := cachedSvc.Count(context.Background())
+		require.NoError(t, err)
+		assert.Equal(t, int64(42), count)
+
+		// Wait for async cache set
+		time.Sleep(100 * time.Millisecond)
+
+		// Second call - cache hit
+		count2, err := cachedSvc.Count(context.Background())
+		require.NoError(t, err)
+		assert.Equal(t, int64(42), count2)
+
+		mockRepo.AssertNumberOfCalls(t, "Count", 1)
+	})
+
+	t.Run("cache miss with service error", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		mockRepo.On("Count", mock.Anything).Return(int64(0), errors.New("db error"))
+
+		count, err := cachedSvc.Count(context.Background())
+		assert.Equal(t, int64(0), count)
+		assert.Error(t, err)
+	})
+}
+
+func TestCachedService_Create_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("success invalidates cache", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		mockRepo.On("GetByName", mock.Anything, "Movies").Return(nil, library.ErrNotFound)
+		mockRepo.On("Create", mock.Anything, mock.AnythingOfType("*library.Library")).Return(nil)
+
+		lib, err := cachedSvc.Create(context.Background(), library.CreateLibraryRequest{
+			Name:    "Movies",
+			Type:    library.LibraryTypeMovie,
+			Paths:   []string{"/media/movies"},
+			Enabled: true,
+		})
+
+		require.NoError(t, err)
+		assert.Equal(t, "Movies", lib.Name)
+
+		// Wait for async cache invalidation goroutine
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func TestCachedService_Update_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("success invalidates cache", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		libID := uuid.Must(uuid.NewV7())
+		newName := "Updated"
+		updated := makeTestLibrary(libID, newName, library.LibraryTypeMovie)
+
+		mockRepo.On("GetByName", mock.Anything, newName).Return(nil, library.ErrNotFound)
+		mockRepo.On("Update", mock.Anything, libID, mock.AnythingOfType("*library.LibraryUpdate")).Return(updated, nil)
+
+		lib, err := cachedSvc.Update(context.Background(), libID, &library.LibraryUpdate{Name: &newName})
+
+		require.NoError(t, err)
+		assert.Equal(t, newName, lib.Name)
+
+		// Wait for async cache invalidation goroutine
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func TestCachedService_Delete_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("success invalidates cache", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		libID := uuid.Must(uuid.NewV7())
+		lib := makeTestLibrary(libID, "Movies", library.LibraryTypeMovie)
+
+		mockRepo.On("Get", mock.Anything, libID).Return(lib, nil)
+		mockRepo.On("RevokeAllPermissions", mock.Anything, libID).Return(nil)
+		mockRepo.On("Delete", mock.Anything, libID).Return(nil)
+
+		err := cachedSvc.Delete(context.Background(), libID)
+
+		assert.NoError(t, err)
+
+		// Wait for async cache invalidation goroutine
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func TestCachedService_CompleteScan_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("success invalidates cache", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		scanID := uuid.Must(uuid.NewV7())
+		libID := uuid.Must(uuid.NewV7())
+
+		runningScan := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusRunning)
+		completed := makeTestScan(scanID, libID, library.ScanTypeFull, library.ScanStatusCompleted)
+
+		mockRepo.On("GetScan", mock.Anything, scanID).Return(runningScan, nil)
+		mockRepo.On("UpdateScanStatus", mock.Anything, scanID, mock.AnythingOfType("*library.ScanStatusUpdate")).Return(completed, nil)
+
+		scan, err := cachedSvc.CompleteScan(context.Background(), scanID, nil)
+
+		require.NoError(t, err)
+		assert.Equal(t, library.ScanStatusCompleted, scan.Status)
+
+		// Wait for async cache invalidation goroutine
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func TestCachedService_InvalidateLibraryCache_WithCache_Short(t *testing.T) {
+	if testing.Short() {
+		t.Log("Running short test")
+	}
+
+	t.Run("invalidates with cache", func(t *testing.T) {
+		mockRepo := NewMockLibraryRepository(t)
+		cachedSvc := setupCachedServiceWithL1Cache(t, mockRepo)
+
+		err := cachedSvc.InvalidateLibraryCache(context.Background(), uuid.Must(uuid.NewV7()))
 		assert.NoError(t, err)
 	})
 }
