@@ -3,6 +3,7 @@ package mfa
 import (
 	"context"
 	"crypto/rand"
+	"log/slog"
 	"math"
 	"testing"
 	"time"
@@ -602,6 +603,173 @@ func TestWebAuthnService_BeginLogin(t *testing.T) {
 	})
 }
 
+func TestWebAuthnService_FinishRegistration_InvalidResponse(t *testing.T) {
+	t.Parallel()
+
+	t.Run("fails with invalid attestation data", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		// Create a minimal but invalid parsed response
+		response := &protocol.ParsedCredentialCreationData{
+			ParsedPublicKeyCredential: protocol.ParsedPublicKeyCredential{
+				ParsedCredential: protocol.ParsedCredential{
+					ID:   "fake-credential-id",
+					Type: "public-key",
+				},
+				RawID: []byte("fake-credential-id"),
+			},
+			Response: protocol.ParsedAttestationResponse{
+				CollectedClientData: protocol.CollectedClientData{
+					Type:      protocol.CreateCeremony,
+					Challenge: "wrong-challenge",
+					Origin:    "http://localhost:3000",
+				},
+			},
+		}
+
+		sessionData := webauthn.SessionData{
+			Challenge: "test-challenge-that-doesnt-match",
+			UserID:    userID[:],
+		}
+
+		err := service.FinishRegistration(ctx, userID, "testuser", "Test User", response, sessionData, "Test Key")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to create credential")
+	})
+
+	t.Run("fails with invalid attestation data and existing credentials", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add an existing credential so the loop body executes
+		name := "Existing Key"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("existing-cred-for-finish-reg"),
+			PublicKey:       []byte("pub-key"),
+			AttestationType: "none",
+			Transports:      []string{"usb", "nfc"},
+			BackupEligible:  true,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		response := &protocol.ParsedCredentialCreationData{
+			ParsedPublicKeyCredential: protocol.ParsedPublicKeyCredential{
+				ParsedCredential: protocol.ParsedCredential{
+					ID:   "fake-credential-id",
+					Type: "public-key",
+				},
+				RawID: []byte("fake-credential-id"),
+			},
+			Response: protocol.ParsedAttestationResponse{
+				CollectedClientData: protocol.CollectedClientData{
+					Type:      protocol.CreateCeremony,
+					Challenge: "wrong-challenge",
+					Origin:    "http://localhost:3000",
+				},
+			},
+		}
+
+		sessionData := webauthn.SessionData{
+			Challenge: "test-challenge-that-doesnt-match",
+			UserID:    userID[:],
+		}
+
+		err = service.FinishRegistration(ctx, userID, "testuser", "Test User", response, sessionData, "My Key")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to create credential")
+	})
+}
+
+func TestWebAuthnService_FinishLogin_InvalidResponse(t *testing.T) {
+	t.Parallel()
+
+	t.Run("fails with no credentials", func(t *testing.T) {
+		t.Parallel()
+		service, _, ctx, userID := setupWebAuthnService(t)
+
+		response := &protocol.ParsedCredentialAssertionData{
+			ParsedPublicKeyCredential: protocol.ParsedPublicKeyCredential{
+				ParsedCredential: protocol.ParsedCredential{
+					ID:   "fake-credential-id",
+					Type: "public-key",
+				},
+				RawID: []byte("fake-credential-id"),
+			},
+			Response: protocol.ParsedAssertionResponse{
+				CollectedClientData: protocol.CollectedClientData{
+					Type:      protocol.AssertCeremony,
+					Challenge: "wrong-challenge",
+					Origin:    "http://localhost:3000",
+				},
+			},
+		}
+
+		sessionData := webauthn.SessionData{
+			Challenge: "test-challenge",
+			UserID:    userID[:],
+		}
+
+		err := service.FinishLogin(ctx, userID, "testuser", "Test User", response, sessionData)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to validate login")
+	})
+
+	t.Run("fails with invalid assertion data", func(t *testing.T) {
+		t.Parallel()
+		service, queries, ctx, userID := setupWebAuthnService(t)
+
+		// Add a credential
+		name := "Test Key"
+		_, err := queries.CreateWebAuthnCredential(ctx, db.CreateWebAuthnCredentialParams{
+			UserID:          userID,
+			CredentialID:    []byte("login-finish-test-cred"),
+			PublicKey:       []byte("pub-key-data"),
+			AttestationType: "none",
+			Transports:      []string{"usb"},
+			BackupEligible:  false,
+			BackupState:     false,
+			UserPresent:     true,
+			UserVerified:    true,
+			Aaguid:          []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Name:            &name,
+		})
+		require.NoError(t, err)
+
+		response := &protocol.ParsedCredentialAssertionData{
+			ParsedPublicKeyCredential: protocol.ParsedPublicKeyCredential{
+				ParsedCredential: protocol.ParsedCredential{
+					ID:   "fake-credential-id",
+					Type: "public-key",
+				},
+				RawID: []byte("fake-credential-id"),
+			},
+			Response: protocol.ParsedAssertionResponse{
+				CollectedClientData: protocol.CollectedClientData{
+					Type:      protocol.AssertCeremony,
+					Challenge: "wrong-challenge",
+					Origin:    "http://localhost:3000",
+				},
+			},
+		}
+
+		sessionData := webauthn.SessionData{
+			Challenge: "test-challenge-that-doesnt-match",
+			UserID:    userID[:],
+		}
+
+		err = service.FinishLogin(ctx, userID, "testuser", "Test User", response, sessionData)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "failed to validate login")
+	})
+}
+
 // Module tests
 
 func TestNewTOTPServiceFromConfig(t *testing.T) {
@@ -796,6 +964,26 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg, nil)
 		require.NoError(t, err)
 		assert.NotNil(t, service)
+	})
+
+	t.Run("with cache client creates session cache", func(t *testing.T) {
+		cfg := &config.Config{
+			Server: config.ServerConfig{
+				Host: "localhost",
+				Port: 3000,
+			},
+		}
+
+		// Create a disabled cache client (no Redis needed)
+		cacheClient, err := cache.NewClient(&config.Config{
+			Cache: config.CacheConfig{Enabled: false},
+		}, slog.Default())
+		require.NoError(t, err)
+
+		service, err := NewWebAuthnServiceFromConfig(queries, logger, cfg, cacheClient)
+		require.NoError(t, err)
+		assert.NotNil(t, service)
+		assert.True(t, service.HasCache(), "should have session cache when cacheClient is provided")
 	})
 }
 

@@ -25,9 +25,10 @@ func setupBackupCodesService(t *testing.T) (*BackupCodesService, *db.Queries) {
 
 func createTestUser(t *testing.T, queries *db.Queries, ctx context.Context) uuid.UUID {
 	t.Helper()
+	unique := uuid.Must(uuid.NewV7()).String()
 	user, err := queries.CreateUser(ctx, db.CreateUserParams{
-		Username:     "testuser_" + uuid.Must(uuid.NewV7()).String()[:8],
-		Email:        "test_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
+		Username:     "testuser_" + unique,
+		Email:        "test_" + unique + "@example.com",
 		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=2$test",
 	})
 	require.NoError(t, err)
