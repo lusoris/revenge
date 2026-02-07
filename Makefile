@@ -68,6 +68,10 @@ test-integration: ## Run integration tests (requires Docker)
 
 test-all: test test-integration ## Run all tests (unit + integration)
 
+test-live: ## Run live smoke tests against running stack (requires make docker-local)
+	@echo "Running live smoke tests against $(or $(REVENGE_TEST_URL),http://localhost:8096)..."
+	go test -tags=live -v -count=1 ./tests/live/...
+
 test-coverage: test ## Run tests and open coverage report
 	go tool cover -html=coverage.out -o coverage.html
 	@echo "Coverage report: coverage.html"
@@ -92,6 +96,12 @@ docker-test: docker-build ## Build image and run smoke test with full stack
 	@sleep 5
 	@curl -sf http://localhost:8096/health/live && echo "Health check: OK" || echo "Health check: FAILED"
 	docker compose -f docker-compose.dev.yml down
+
+docker-local: docker-build ## Build and run full local stack
+	docker compose -f docker-compose.dev.yml up -d --wait
+	@echo "Waiting for services to initialize..."
+	@sleep 5
+	@curl -sf http://localhost:8096/health/live && echo "Revenge is healthy!" || echo "Startup failed - check logs with: docker compose -f docker-compose.dev.yml logs revenge"
 
 docker-up: ## Start dev services (postgres, dragonfly, typesense)
 	docker compose -f docker-compose.dev.yml up -d --wait
