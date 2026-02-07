@@ -69,12 +69,9 @@ services:
       timeout: 3s
       retries: 5
 
-  # Typesense 0.25+ (REQUIRED)
+  # Typesense 27.1 (REQUIRED)
   typesense:
-    build:
-      context: .
-      dockerfile: deploy/typesense.Dockerfile
-    image: revenge/typesense:dev
+    image: typesense/typesense:27.1
     container_name: revenge-typesense-dev
     ports:
       - "8108:8108"
@@ -85,7 +82,7 @@ services:
     volumes:
       - typesense-data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8108'"]
       interval: 5s
       timeout: 3s
       retries: 5

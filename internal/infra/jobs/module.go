@@ -6,6 +6,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/rivermigrate"
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -16,13 +18,19 @@ var Module = fx.Module("jobs",
 	fx.Provide(
 		NewRiverWorkers,
 		NewRiverClient,
+		NewNotificationWorker,
 	),
-	fx.Invoke(registerHooks, registerCleanupWorker),
+	fx.Invoke(registerHooks, registerCleanupWorker, registerNotificationWorker),
 )
 
-// registerCleanupWorker registers the auth cleanup worker with the River workers registry.
+// registerCleanupWorker registers the cleanup worker with the River workers registry.
 func registerCleanupWorker(workers *river.Workers, cleanupWorker *CleanupWorker) {
 	river.AddWorker(workers, cleanupWorker)
+}
+
+// registerNotificationWorker registers the notification worker with the River workers registry.
+func registerNotificationWorker(workers *river.Workers, notificationWorker *NotificationWorker) {
+	river.AddWorker(workers, notificationWorker)
 }
 
 // NewRiverWorkers creates a new River workers registry.
@@ -31,12 +39,23 @@ func NewRiverWorkers() *river.Workers {
 }
 
 // NewRiverClient creates a new River client.
+// It runs River's schema migrations before creating the client.
 func NewRiverClient(
 	pool *pgxpool.Pool,
 	workers *river.Workers,
 	cfg *config.Config,
 	logger *slog.Logger,
 ) (*Client, error) {
+	// Run River schema migrations (creates river_job, river_queue, river_leader tables)
+	migrator, err := rivermigrate.New(riverpgxv5.New(pool), nil)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := migrator.Migrate(context.Background(), rivermigrate.DirectionUp, nil); err != nil {
+		return nil, err
+	}
+	logger.Info("River schema migrations applied")
+
 	queueCfg := DefaultQueueConfig()
 
 	// Apply configured MaxWorkers as a total cap across all queues.

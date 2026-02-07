@@ -29,13 +29,14 @@ var Module = fx.Module("auth",
 			return NewRepositoryPG(queries)
 		},
 		// Service
-		func(pool *pgxpool.Pool, repo Repository, tm TokenManager, activityLogger activity.Logger, emailService *email.Service, cfg *config.Config) *Service {
+		func(pool *pgxpool.Pool, repo Repository, tm TokenManager, activityLogger activity.Logger, emailService *email.Service, logger *slog.Logger, cfg *config.Config) *Service {
 			return NewService(
 				pool,
 				repo,
 				tm,
 				activityLogger,
 				emailService,
+				logger,
 				cfg.Auth.JWTExpiry,
 				cfg.Auth.RefreshExpiry,
 				cfg.Auth.LockoutThreshold,

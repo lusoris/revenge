@@ -29,7 +29,7 @@ func TestDefaultServerConfig(t *testing.T) {
 		t.Errorf("Server.Host = %q, want %q", cfg.Server.Host, "0.0.0.0")
 	}
 
-	if cfg.Server.Port != 8080 {
-		t.Errorf("Server.Port = %d, want %d", cfg.Server.Port, 8080)
+	if cfg.Server.Port != 8096 {
+		t.Errorf("Server.Port = %d, want %d", cfg.Server.Port, 8096)
 	}
 }

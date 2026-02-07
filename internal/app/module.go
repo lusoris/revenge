@@ -5,9 +5,11 @@ import (
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
+	appcrypto "github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
+	"github.com/lusoris/revenge/internal/playback/playbackfx"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
@@ -21,13 +23,16 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	"github.com/lusoris/revenge/internal/service/mfa"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
 )
@@ -45,22 +50,29 @@ var Module = fx.Module("app",
 	jobs.Module,
 	raft.Module,
 	health.Module,
+	appcrypto.Module,
 
 	// Services
 	settings.Module,
 	user.Module,
 	auth.Module,
+	email.Module,
 	session.Module,
 	rbac.Module,
 	apikeys.Module,
 	mfa.Module,
 	oidc.Module,
 	activity.Module,
+	notification.Module,
+	storage.Module,
 	library.Module,
 
 	// Content Modules
 	movie.Module,
 	tvshow.Module,
+
+	// Playback / HLS Streaming
+	playbackfx.Module,
 
 	// Job Workers
 	moviejobs.Module,

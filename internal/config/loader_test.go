@@ -17,7 +17,7 @@ func TestLoad_WithDefaults(t *testing.T) {
 
 	// Verify defaults are applied
 	assert.Equal(t, "0.0.0.0", cfg.Server.Host)
-	assert.Equal(t, 8080, cfg.Server.Port)
+	assert.Equal(t, 8096, cfg.Server.Port)
 	assert.Contains(t, cfg.Database.URL, "postgres://")
 	assert.Equal(t, "info", cfg.Logging.Level)
 	assert.Equal(t, "text", cfg.Logging.Format)
@@ -97,7 +97,7 @@ func TestLoad_WithEmptyPath(t *testing.T) {
 
 	// Should have default values
 	assert.Equal(t, "0.0.0.0", cfg.Server.Host)
-	assert.Equal(t, 8080, cfg.Server.Port)
+	assert.Equal(t, 8096, cfg.Server.Port)
 }
 
 func TestLoadWithKoanf(t *testing.T) {
@@ -108,7 +108,7 @@ func TestLoadWithKoanf(t *testing.T) {
 
 	// Verify we can access raw values through koanf
 	assert.Equal(t, "0.0.0.0", k.String("server.host"))
-	assert.Equal(t, 8080, k.Int("server.port"))
+	assert.Equal(t, 8096, k.Int("server.port"))
 	assert.Equal(t, "info", k.String("logging.level"))
 }
 
@@ -326,7 +326,7 @@ func TestDefault_ReturnsFullConfig(t *testing.T) {
 
 	// Server
 	assert.Equal(t, "0.0.0.0", cfg.Server.Host)
-	assert.Equal(t, 8080, cfg.Server.Port)
+	assert.Equal(t, 8096, cfg.Server.Port)
 	assert.NotZero(t, cfg.Server.ReadTimeout)
 	assert.NotZero(t, cfg.Server.WriteTimeout)
 	assert.NotZero(t, cfg.Server.IdleTimeout)

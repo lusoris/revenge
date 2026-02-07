@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -27,6 +28,7 @@ func NewServiceForTesting(
 		hasher:           crypto.NewPasswordHasher(),
 		activityLogger:   activityLogger,
 		emailService:     nil, // Email disabled in tests by default
+		logger:           slog.Default().With("service", "auth"),
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
 		lockoutThreshold: 5,     // Default threshold
@@ -53,10 +55,39 @@ func NewServiceForTestingWithEmail(
 		hasher:           crypto.NewPasswordHasher(),
 		activityLogger:   activityLogger,
 		emailService:     emailService,
+		logger:           slog.Default().With("service", "auth"),
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
 		lockoutThreshold: 5, // Default threshold
 		lockoutWindow:    15 * time.Minute,
 		lockoutEnabled:   false, // Disabled in tests by default
+	}
+}
+
+// NewServiceForTestingWithLockout creates a Service instance for testing with account lockout enabled.
+// This is used for integration tests that exercise the failed login tracking and lockout flow.
+func NewServiceForTestingWithLockout(
+	pool *pgxpool.Pool,
+	repo Repository,
+	tokenManager TokenManager,
+	activityLogger activity.Logger,
+	jwtExpiry time.Duration,
+	refreshExpiry time.Duration,
+	lockoutThreshold int,
+	lockoutWindow time.Duration,
+) *Service {
+	return &Service{
+		pool:             pool,
+		repo:             repo,
+		tokenManager:     tokenManager,
+		hasher:           crypto.NewPasswordHasher(),
+		activityLogger:   activityLogger,
+		emailService:     nil,
+		logger:           slog.Default().With("service", "auth"),
+		jwtExpiry:        jwtExpiry,
+		refreshExpiry:    refreshExpiry,
+		lockoutThreshold: lockoutThreshold,
+		lockoutWindow:    lockoutWindow,
+		lockoutEnabled:   true,
 	}
 }

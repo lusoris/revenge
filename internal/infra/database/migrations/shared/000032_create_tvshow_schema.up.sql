@@ -168,7 +168,7 @@ CREATE TABLE tvshow.episode_files (
 -- Watch progress for episodes
 CREATE TABLE tvshow.episode_watched (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES shared.users(id) ON DELETE CASCADE,
     episode_id UUID NOT NULL REFERENCES tvshow.episodes(id) ON DELETE CASCADE,
 
     -- Progress tracking

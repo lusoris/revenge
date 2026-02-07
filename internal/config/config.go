@@ -57,6 +57,9 @@ type Config struct {
 
 	// Raft configuration (leader election for clusters)
 	Raft RaftConfig `koanf:"raft"`
+
+	// Playback configuration (HLS streaming)
+	Playback PlaybackConfig `koanf:"playback"`
 }
 
 // ActivityConfig holds activity log configuration.
@@ -211,6 +214,11 @@ type AuthConfig struct {
 	// LockoutEnabled controls whether account lockout is enabled.
 	// Default: true
 	LockoutEnabled bool `koanf:"lockout_enabled"`
+
+	// EncryptionKey is a 32-byte hex-encoded key for AES-256 encryption of secrets
+	// (MFA TOTP keys, OIDC client secrets, etc.).
+	// If empty, a key is derived from JWTSecret (not recommended for production).
+	EncryptionKey string `koanf:"encryption_key" validate:"omitempty,len=64"`
 }
 
 // RBACConfig holds RBAC configuration.
@@ -464,6 +472,46 @@ type RaftConfig struct {
 	Bootstrap bool `koanf:"bootstrap"`
 }
 
+// PlaybackConfig holds playback/streaming configuration.
+type PlaybackConfig struct {
+	// Enabled controls whether HLS streaming is available.
+	Enabled bool `koanf:"enabled"`
+
+	// SegmentDir is the directory for temporary HLS segments.
+	SegmentDir string `koanf:"segment_dir"`
+
+	// SegmentDuration is the target HLS segment length in seconds.
+	SegmentDuration int `koanf:"segment_duration"`
+
+	// MaxConcurrentSessions is the maximum number of simultaneous streams.
+	MaxConcurrentSessions int `koanf:"max_concurrent_sessions"`
+
+	// SessionTimeout is the duration after which an idle session is cleaned up.
+	SessionTimeout time.Duration `koanf:"session_timeout"`
+
+	// FFmpegPath is the path to the FFmpeg binary.
+	FFmpegPath string `koanf:"ffmpeg_path"`
+
+	// Transcode holds transcoding settings.
+	Transcode TranscodeConfig `koanf:"transcode"`
+}
+
+// TranscodeConfig holds transcoding settings for playback.
+type TranscodeConfig struct {
+	// Enabled controls whether transcoding is allowed.
+	// When false, only remux (codec-compatible) streaming is available.
+	Enabled bool `koanf:"enabled"`
+
+	// HWAccel is the hardware acceleration method: "none", "vaapi", "nvenc", "qsv".
+	HWAccel string `koanf:"hw_accel"`
+
+	// HWAccelDevice is the hardware device path (e.g., "/dev/dri/renderD128" for VAAPI).
+	HWAccelDevice string `koanf:"hw_accel_device"`
+
+	// Profiles lists the enabled quality profile names.
+	Profiles []string `koanf:"profiles"`
+}
+
 // GetRadarrConfig returns the Radarr configuration.
 func (c *Config) GetRadarrConfig() RadarrConfig {
 	return c.Integrations.Radarr
@@ -479,7 +527,7 @@ func Defaults() map[string]interface{} {
 	return map[string]interface{}{
 		// Server defaults
 		"server.host":             "0.0.0.0",
-		"server.port":             8080,
+		"server.port":             8096,
 		"server.read_timeout":     "30s",
 		"server.write_timeout":    "30s",
 		"server.idle_timeout":     "120s",
@@ -537,6 +585,7 @@ func Defaults() map[string]interface{} {
 		"auth.lockout_threshold": 5,      // 5 failed attempts
 		"auth.lockout_window":    "15m",  // 15 minutes
 		"auth.lockout_enabled":   true,
+		"auth.encryption_key":    "",
 
 		// RBAC defaults
 		"rbac.model_path":             "config/casbin_model.conf",
@@ -566,7 +615,7 @@ func Defaults() map[string]interface{} {
 		"email.provider":         "smtp",
 		"email.from_address":     "",
 		"email.from_name":        "Revenge Media Server",
-		"email.base_url":         "http://localhost:8080",
+		"email.base_url":         "http://localhost:8096",
 		"email.smtp.host":        "",
 		"email.smtp.port":        587,
 		"email.smtp.username":    "",
@@ -594,6 +643,18 @@ func Defaults() map[string]interface{} {
 
 		// Activity defaults
 		"activity.retention_days": 90, // 90 days default retention
+
+		// Playback defaults
+		"playback.enabled":                      true,
+		"playback.segment_dir":                  "/tmp/revenge-segments",
+		"playback.segment_duration":             6,
+		"playback.max_concurrent_sessions":      10,
+		"playback.session_timeout":              "30m",
+		"playback.ffmpeg_path":                  "ffmpeg",
+		"playback.transcode.enabled":            true,
+		"playback.transcode.hw_accel":           "none",
+		"playback.transcode.hw_accel_device":    "",
+		"playback.transcode.profiles":           []string{"original", "1080p", "720p", "480p"},
 
 		// Raft defaults (disabled by default for single-node deployments)
 		"raft.enabled":   false,

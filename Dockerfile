@@ -54,6 +54,7 @@ RUN apk add --no-cache \
     ca-certificates \
     ffmpeg \
     ffmpeg-libs \
+    vips \
     postgresql-client \
     tzdata \
     && rm -rf /var/cache/apk/*

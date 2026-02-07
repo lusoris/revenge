@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/netip"
 	"time"
@@ -30,6 +31,7 @@ type Service struct {
 	hasher           *crypto.PasswordHasher
 	activityLogger   activity.Logger
 	emailService     *email.Service
+	logger           *slog.Logger
 	jwtExpiry        time.Duration
 	refreshExpiry    time.Duration
 	lockoutThreshold int
@@ -38,7 +40,10 @@ type Service struct {
 }
 
 // NewService creates a new auth service
-func NewService(pool *pgxpool.Pool, repo Repository, tokenManager TokenManager, activityLogger activity.Logger, emailService *email.Service, jwtExpiry, refreshExpiry time.Duration, lockoutThreshold int, lockoutWindow time.Duration, lockoutEnabled bool) *Service {
+func NewService(pool *pgxpool.Pool, repo Repository, tokenManager TokenManager, activityLogger activity.Logger, emailService *email.Service, logger *slog.Logger, jwtExpiry, refreshExpiry time.Duration, lockoutThreshold int, lockoutWindow time.Duration, lockoutEnabled bool) *Service {
+	if logger == nil {
+		logger = slog.Default()
+	}
 	return &Service{
 		pool:             pool,
 		repo:             repo,
@@ -46,6 +51,7 @@ func NewService(pool *pgxpool.Pool, repo Repository, tokenManager TokenManager, 
 		hasher:           crypto.NewPasswordHasher(),
 		activityLogger:   activityLogger,
 		emailService:     emailService,
+		logger:           logger.With("service", "auth"),
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
 		lockoutThreshold: lockoutThreshold,
@@ -132,7 +138,7 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		username := user.Username
 		if err := s.emailService.SendVerificationEmail(ctx, user.Email, username, token); err != nil {
 			// Log error but don't fail registration
-			fmt.Printf("failed to send verification email: %v\n", err)
+			s.logger.Error("failed to send verification email", "email", user.Email, "error", err)
 		}
 	}
 
@@ -259,7 +265,7 @@ func (s *Service) RegisterFromOIDC(ctx context.Context, req RegisterFromOIDCRequ
 	// Mark email as verified since OIDC provider already verified it
 	if err := s.repo.UpdateUserEmailVerified(ctx, user.ID, true); err != nil {
 		// Log but don't fail - user is created, this is a secondary update
-		fmt.Printf("failed to mark email as verified for OIDC user: %v\n", err)
+		s.logger.Error("failed to mark email as verified for OIDC user", "user_id", user.ID, "error", err)
 	}
 
 	return &user, nil
@@ -284,7 +290,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		if err != nil {
 			// Log error but don't fail - continue with login attempt
 			// This prevents lockout check failures from blocking legitimate logins
-			fmt.Printf("failed to check lockout status: %v\n", err)
+			s.logger.Error("failed to check lockout status", "username", username, "error", err)
 		} else if attemptCount >= int64(s.lockoutThreshold) {
 			// Account is locked - log and return error
 			_ = s.activityLogger.LogFailure(ctx, activity.LogFailureRequest{
@@ -331,7 +337,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 			ipAddrStr := ipAddress.String()
 			if err := s.repo.RecordFailedLoginAttempt(ctx, username, ipAddrStr); err != nil {
 				// Log error but don't fail the login attempt
-				fmt.Printf("failed to record failed login attempt: %v\n", err)
+				s.logger.Error("failed to record failed login attempt", "username", username, "error", err)
 			}
 		}
 
@@ -392,14 +398,14 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 	if s.lockoutEnabled {
 		if err := s.repo.ClearFailedLoginAttemptsByUsername(ctx, username); err != nil {
 			// Log error but don't fail login
-			fmt.Printf("failed to clear failed login attempts: %v\n", err)
+			s.logger.Error("failed to clear failed login attempts", "username", username, "error", err)
 		}
 	}
 
 	// Update last login time
 	if err := s.repo.UpdateUserLastLogin(ctx, user.ID); err != nil {
 		// Log error but don't fail login
-		fmt.Printf("failed to update last login: %v\n", err)
+		s.logger.Error("failed to update last login", "user_id", user.ID, "error", err)
 	}
 
 	// Log successful login
@@ -460,7 +466,7 @@ func (s *Service) RefreshToken(ctx context.Context, refreshToken string) (*Login
 	// Update token last_used_at
 	if err := s.repo.UpdateAuthTokenLastUsed(ctx, authToken.ID); err != nil {
 		// Log error but don't fail refresh
-		fmt.Printf("failed to update token last used: %v\n", err)
+		s.logger.Error("failed to update token last used", "token_id", authToken.ID, "error", err)
 	}
 
 	return &LoginResponse{
@@ -528,7 +534,7 @@ func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ip
 	// Update last login time
 	if err := s.repo.UpdateUserLastLogin(ctx, user.ID); err != nil {
 		// Log error but don't fail login
-		fmt.Printf("failed to update last login: %v\n", err)
+		s.logger.Error("failed to update last login", "user_id", user.ID, "error", err)
 	}
 
 	// Log successful login
@@ -668,7 +674,7 @@ func (s *Service) RequestPasswordReset(ctx context.Context, email string, ipAddr
 
 			if err := s.emailService.SendPasswordResetEmail(emailCtx, user.Email, user.Username, token); err != nil {
 				// Log error for monitoring but don't expose to caller
-				fmt.Printf("failed to send password reset email to %s: %v\n", user.Email, err)
+				s.logger.Error("failed to send password reset email", "email", user.Email, "error", err)
 			}
 		}()
 	}
