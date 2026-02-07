@@ -161,6 +161,20 @@ The user may communicate in German in chat - that's fine. But all artifacts (cod
 
 ---
 
+## Quality Policy
+
+**No shortcuts. No half measures. Do it right.**
+
+- Never simplify implementations just to save time. If a feature needs proper architecture, build proper architecture.
+- Never use placeholders, stubs, or "we'll fix it later" code. Implement fully or don't implement.
+- Fix ALL test failures, including pre-existing ones encountered during work. Don't ignore failures just because they existed before.
+- Every component must use fx dependency injection. No manual wiring outside of fx modules.
+- Always use proper separate packages to avoid import cycles (e.g., `playbackfx` pattern for cross-package fx modules).
+- Caching, error handling, and observability are mandatory, not optional.
+- Audio/video streaming must use separate renditions (not muxed). Bandwidth efficiency matters.
+
+---
+
 ## Code Patterns
 
 - **Go 1.25**: Context-first APIs, error wrapping with `%w`, structured logging with slog
