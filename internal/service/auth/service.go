@@ -82,27 +82,8 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
-	// Generate email verification token
-	token, err := crypto.GenerateSecureToken(32)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate verification token: %w", err)
-	}
-	tokenHash := s.tokenManager.HashRefreshToken(token)
-
-	// Begin transaction to ensure atomicity of user creation and token generation
-	tx, err := s.pool.Begin(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to begin transaction: %w", err)
-	}
-	defer func() {
-		_ = tx.Rollback(ctx)
-	}()
-
-	// Create queries with transaction context
-	txQueries := db.New(tx)
-
-	// Create user in database (within transaction)
-	user, err := txQueries.CreateUser(ctx, db.CreateUserParams{
+	// Create user in database
+	user, err := s.repo.CreateUser(ctx, db.CreateUserParams{
 		Username:     req.Username,
 		Email:        req.Email,
 		PasswordHash: passwordHash,
@@ -112,26 +93,25 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	// Store verification token in database (within transaction)
-	// Both operations succeed or both fail, preventing orphaned user accounts
-	_, err = txQueries.CreateEmailVerificationToken(ctx, db.CreateEmailVerificationTokenParams{
+	// Generate email verification token
+	token, err := crypto.GenerateSecureToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate verification token: %w", err)
+	}
+	tokenHash := s.tokenManager.HashRefreshToken(token)
+
+	// Store verification token in database
+	_, err = s.repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
 		UserID:    user.ID,
 		TokenHash: tokenHash,
 		Email:     user.Email,
-		IpAddress: netip.Addr{}, // Empty value as IP not available in this context
-		UserAgent: nil,           // Not available in service layer
 		ExpiresAt: time.Now().Add(24 * time.Hour), // 24h expiry per AUTH.md
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create verification token: %w", err)
 	}
 
-	// Commit transaction
-	if err := tx.Commit(ctx); err != nil {
-		return nil, fmt.Errorf("failed to commit transaction: %w", err)
-	}
-
-	// Send verification email (outside transaction to avoid blocking)
+	// Send verification email asynchronously
 	if s.emailService != nil {
 		username := user.Username
 		if err := s.emailService.SendVerificationEmail(ctx, user.Email, username, token); err != nil {
