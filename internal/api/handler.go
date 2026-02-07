@@ -3,9 +3,11 @@ package api
 import (
 	"context"
 	"fmt"
+	"net/netip"
 
 	"github.com/go-faster/errors"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -710,8 +712,20 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 		deviceName = &req.DeviceName.Value
 	}
 
-	// Authenticate user (TODO: extract IP, user agent, fingerprint from request)
-	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, nil, nil, deviceName, nil)
+	// Extract client metadata from request context
+	meta := middleware.GetRequestMetadata(ctx)
+	var ipAddr *netip.Addr
+	if meta.IPAddress != "" {
+		if parsed, err := netip.ParseAddr(meta.IPAddress); err == nil {
+			ipAddr = &parsed
+		}
+	}
+	var userAgent *string
+	if meta.UserAgent != "" {
+		userAgent = &meta.UserAgent
+	}
+
+	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, ipAddr, userAgent, deviceName, nil)
 	if err != nil {
 		h.logger.Warn("Login failed", zap.Error(err), zap.String("username", req.Username))
 		return &ogen.LoginUnauthorized{
@@ -823,10 +837,22 @@ func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificati
 func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRequest) (ogen.ForgotPasswordRes, error) {
 	h.logger.Info("Password reset requested", zap.String("email", req.Email))
 
+	// Extract client metadata for security logging
+	meta := middleware.GetRequestMetadata(ctx)
+	var ipAddr *netip.Addr
+	if meta.IPAddress != "" {
+		if parsed, err := netip.ParseAddr(meta.IPAddress); err == nil {
+			ipAddr = &parsed
+		}
+	}
+	var userAgent *string
+	if meta.UserAgent != "" {
+		userAgent = &meta.UserAgent
+	}
+
 	// Request password reset (always returns success to prevent email enumeration)
 	// Token is never returned - only sent via email to prevent information disclosure
-	// TODO: Extract IP address and user agent from request
-	err := h.authService.RequestPasswordReset(ctx, req.Email, nil, nil)
+	err := h.authService.RequestPasswordReset(ctx, req.Email, ipAddr, userAgent)
 	if err != nil {
 		h.logger.Error("Password reset request failed", zap.Error(err))
 		// Still return success to avoid email enumeration
