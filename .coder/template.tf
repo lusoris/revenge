@@ -228,9 +228,8 @@ data "coder_workspace_preset" "heavy" {
 # =============================================================================
 
 resource "coder_agent" "main" {
-  arch                   = data.coder_provisioner.me.arch
-  os                     = "linux"
-  startup_script_timeout = 600
+  arch = data.coder_provisioner.me.arch
+  os   = "linux"
 
   startup_script = <<-EOT
     #!/bin/sh
@@ -252,7 +251,7 @@ resource "coder_agent" "main" {
 
     # ── Clone repo ─────────────────────────────────────────────────────
     if [ ! -d "/workspace/revenge" ]; then
-      git clone --depth 1 ${var.git_clone_url} /workspace/revenge
+      git clone --branch develop ${var.git_clone_url} /workspace/revenge
     fi
     cd /workspace/revenge
 
@@ -351,7 +350,7 @@ resource "coder_agent" "main" {
   metadata {
     display_name = "PostgreSQL"
     key          = "pg_status"
-    script       = "pg_isready -h postgres -U revenge &>/dev/null && echo 'healthy' || echo 'down'"
+    script       = "pg_isready -h postgres -U revenge >/dev/null 2>&1 && echo 'healthy' || echo 'down'"
     interval     = 30
     timeout      = 3
   }
@@ -384,7 +383,7 @@ resource "coder_app" "revenge_api" {
   display_name = "Revenge API"
   url          = "http://localhost:8096"
   icon         = "/icon/globe.svg"
-  subdomain    = true
+  subdomain    = false
   share        = "owner"
 
   healthcheck {
@@ -400,7 +399,7 @@ resource "coder_app" "frontend" {
   display_name = "Frontend (SvelteKit)"
   url          = "http://localhost:5173"
   icon         = "/icon/widgets.svg"
-  subdomain    = true
+  subdomain    = false
   share        = "owner"
 }
 
@@ -626,7 +625,7 @@ resource "docker_container" "workspace" {
 # Kubernetes / K3s Backend
 # =============================================================================
 
-resource "kubernetes_namespace" "workspace" {
+resource "kubernetes_namespace_v1" "workspace" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name = "${var.namespace}-${local.username}"
@@ -639,11 +638,11 @@ resource "kubernetes_namespace" "workspace" {
 
 # ── PVCs ──────────────────────────────────────────────────────────
 
-resource "kubernetes_persistent_volume_claim" "workspace" {
+resource "kubernetes_persistent_volume_claim_v1" "workspace" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "workspace-pvc"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     access_modes       = ["ReadWriteOnce"]
@@ -654,11 +653,11 @@ resource "kubernetes_persistent_volume_claim" "workspace" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "postgres" {
+resource "kubernetes_persistent_volume_claim_v1" "postgres" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres-pvc"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     access_modes       = ["ReadWriteOnce"]
@@ -671,11 +670,11 @@ resource "kubernetes_persistent_volume_claim" "postgres" {
 
 # ── PostgreSQL (K8s/K3s) ──────────────────────────────────────────
 
-resource "kubernetes_stateful_set" "postgres" {
+resource "kubernetes_stateful_set_v1" "postgres" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     service_name = "postgres"
@@ -718,7 +717,7 @@ resource "kubernetes_stateful_set" "postgres" {
         volume {
           name = "postgres-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.postgres[0].metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.postgres[0].metadata[0].name
           }
         }
       }
@@ -726,11 +725,11 @@ resource "kubernetes_stateful_set" "postgres" {
   }
 }
 
-resource "kubernetes_service" "postgres" {
+resource "kubernetes_service_v1" "postgres" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "postgres"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     selector = { app = "postgres" }
@@ -744,11 +743,11 @@ resource "kubernetes_service" "postgres" {
 
 # ── Dragonfly (K8s/K3s) ──────────────────────────────────────────
 
-resource "kubernetes_deployment" "dragonfly" {
+resource "kubernetes_deployment_v1" "dragonfly" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "dragonfly"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     replicas = 1
@@ -777,11 +776,11 @@ resource "kubernetes_deployment" "dragonfly" {
   }
 }
 
-resource "kubernetes_service" "dragonfly" {
+resource "kubernetes_service_v1" "dragonfly" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "dragonfly"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     selector = { app = "dragonfly" }
@@ -795,11 +794,11 @@ resource "kubernetes_service" "dragonfly" {
 
 # ── Typesense (K8s/K3s) ──────────────────────────────────────────
 
-resource "kubernetes_deployment" "typesense" {
+resource "kubernetes_deployment_v1" "typesense" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "typesense"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     replicas = 1
@@ -839,11 +838,11 @@ resource "kubernetes_deployment" "typesense" {
   }
 }
 
-resource "kubernetes_service" "typesense" {
+resource "kubernetes_service_v1" "typesense" {
   count = local.use_k8s ? 1 : 0
   metadata {
     name      = "typesense"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
   }
   spec {
     selector = { app = "typesense" }
@@ -857,11 +856,11 @@ resource "kubernetes_service" "typesense" {
 
 # ── Main Workspace Pod (K8s/K3s) ─────────────────────────────────
 
-resource "kubernetes_pod" "workspace" {
+resource "kubernetes_pod_v1" "workspace" {
   count = local.use_k8s ? data.coder_workspace.me.start_count : 0
   metadata {
     name      = "workspace"
-    namespace = kubernetes_namespace.workspace[0].metadata[0].name
+    namespace = kubernetes_namespace_v1.workspace[0].metadata[0].name
     labels = {
       "coder.workspace" = local.workspace_id
     }
@@ -920,14 +919,14 @@ resource "kubernetes_pod" "workspace" {
     volume {
       name = "workspace"
       persistent_volume_claim {
-        claim_name = kubernetes_persistent_volume_claim.workspace[0].metadata[0].name
+        claim_name = kubernetes_persistent_volume_claim_v1.workspace[0].metadata[0].name
       }
     }
   }
   depends_on = [
-    kubernetes_stateful_set.postgres[0],
-    kubernetes_deployment.dragonfly[0],
-    kubernetes_deployment.typesense[0],
+    kubernetes_stateful_set_v1.postgres[0],
+    kubernetes_deployment_v1.dragonfly[0],
+    kubernetes_deployment_v1.typesense[0],
   ]
 }
 
