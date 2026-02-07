@@ -237,12 +237,17 @@ func (s *LibraryService) RefreshMovie(ctx context.Context, movieID uuid.UUID) er
 
 // GetLibraryStats returns statistics about the library
 func (s *LibraryService) GetLibraryStats(ctx context.Context) (map[string]int, error) {
-	// This would query the repository for counts
-	// For now, return placeholder
-	return map[string]int{
+	stats := map[string]int{
 		"total_movies": 0,
-		"total_files":  0,
-	}, nil
+	}
+
+	count, err := s.repo.CountMovies(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("count movies: %w", err)
+	}
+	stats["total_movies"] = int(count)
+
+	return stats, nil
 }
 
 // MatchFile attempts to match a single file to a movie

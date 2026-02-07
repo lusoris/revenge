@@ -153,6 +153,32 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 	})
 }
 
+func TestLibraryService_GetLibraryStats(t *testing.T) {
+	t.Run("returns movie count from repo", func(t *testing.T) {
+		repo := new(MockMovieRepository)
+		svc := NewLibraryService(repo, nil, config.LibraryConfig{}, nil)
+
+		repo.On("CountMovies", mock.Anything).Return(int64(42), nil)
+
+		stats, err := svc.GetLibraryStats(context.Background())
+		require.NoError(t, err)
+		assert.Equal(t, 42, stats["total_movies"])
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("returns error on repo failure", func(t *testing.T) {
+		repo := new(MockMovieRepository)
+		svc := NewLibraryService(repo, nil, config.LibraryConfig{}, nil)
+
+		repo.On("CountMovies", mock.Anything).Return(int64(0), assert.AnError)
+
+		stats, err := svc.GetLibraryStats(context.Background())
+		assert.Error(t, err)
+		assert.Nil(t, stats)
+		repo.AssertExpectations(t)
+	})
+}
+
 func TestLibraryService_RefreshMovie(t *testing.T) {
 	repo := new(MockMovieRepository)
 	metadata := new(MockMetadataProvider)
