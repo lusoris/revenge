@@ -7,6 +7,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/service/search"
 )
 
 // Module provides the TV show jobs workers.
@@ -25,7 +26,8 @@ type WorkerProviderParams struct {
 	fx.In
 
 	Service          tvshow.Service
-	MetadataProvider tvshow.MetadataProvider `optional:"true"`
+	MetadataProvider tvshow.MetadataProvider      `optional:"true"`
+	SearchService    *search.TVShowSearchService  `optional:"true"`
 	JobClient        *infrajobs.Client
 	Logger           *zap.Logger
 }
@@ -47,7 +49,7 @@ func provideFileMatchWorker(p WorkerProviderParams) *FileMatchWorker {
 
 // provideSearchIndexWorker creates a search index worker.
 func provideSearchIndexWorker(p WorkerProviderParams) *SearchIndexWorker {
-	return NewSearchIndexWorker(p.Service, p.Logger)
+	return NewSearchIndexWorker(p.Service, p.SearchService, p.Logger)
 }
 
 // provideSeriesRefreshWorker creates a series refresh worker.

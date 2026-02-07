@@ -8,4 +8,5 @@ import (
 // Module provides search service dependencies.
 var Module = fx.Module("search_service",
 	fx.Provide(NewMovieSearchService),
+	fx.Provide(NewTVShowSearchService),
 )

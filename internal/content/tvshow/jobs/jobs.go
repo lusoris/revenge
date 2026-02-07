@@ -16,6 +16,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/content/tvshow/adapters"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
 	"go.uber.org/zap"
 )
@@ -773,19 +774,19 @@ func (SearchIndexArgs) InsertOpts() river.InsertOpts {
 }
 
 // SearchIndexWorker indexes TV show content for search.
-// Note: TV show search service is not yet implemented.
-// This worker logs operations but does not perform actual indexing.
 type SearchIndexWorker struct {
 	river.WorkerDefaults[SearchIndexArgs]
-	service tvshow.Service
-	logger  *zap.Logger
+	service       tvshow.Service
+	searchService *search.TVShowSearchService
+	logger        *zap.Logger
 }
 
 // NewSearchIndexWorker creates a new search index worker.
-func NewSearchIndexWorker(service tvshow.Service, logger *zap.Logger) *SearchIndexWorker {
+func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, logger *zap.Logger) *SearchIndexWorker {
 	return &SearchIndexWorker{
-		service: service,
-		logger:  logger.Named("tvshow_search_index"),
+		service:       service,
+		searchService: searchService,
+		logger:        logger.Named("tvshow_search_index"),
 	}
 }
 
@@ -804,67 +805,29 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 		zap.Bool("full_reindex", args.FullReindex),
 	)
 
+	// Check if search is enabled
+	if !w.searchService.IsEnabled() {
+		w.logger.Debug("search is disabled, skipping index operation")
+		return nil
+	}
+
 	result := &sharedjobs.JobResult{Success: true}
 	start := time.Now()
 
-	// Note: TV show search service is not yet implemented.
-	// For now, we just fetch the series data to validate it exists
-	// and log that indexing would occur.
-
 	if args.SeriesID != nil {
 		// Index specific series
-		series, err := w.service.GetSeries(ctx, *args.SeriesID)
-		if err != nil {
-			result.AddError(fmt.Errorf("get series %s: %w", args.SeriesID, err))
+		if err := w.indexSeries(ctx, *args.SeriesID); err != nil {
+			result.AddError(fmt.Errorf("index series %s: %w", args.SeriesID, err))
 		} else {
-			// Would index to search engine here
-			w.logger.Info("would index series (search service not implemented)",
-				zap.Int64("job_id", job.ID),
-				zap.String("series_id", series.ID.String()),
-				zap.String("title", series.Title),
-			)
 			result.ItemsProcessed++
 		}
 	} else if args.FullReindex {
-		// Full reindex - iterate through all series
-		batchSize := args.BatchSize
-		if batchSize <= 0 {
-			batchSize = 100
+		// Full reindex via search service
+		if err := w.searchService.ReindexAll(ctx, w.service); err != nil {
+			result.AddError(fmt.Errorf("full reindex: %w", err))
+		} else {
+			w.logger.Info("full reindex completed")
 		}
-
-		var offset int32 = 0
-		for {
-			seriesList, err := w.service.ListSeries(ctx, tvshow.SeriesListFilters{
-				Limit:  batchSize,
-				Offset: offset,
-			})
-			if err != nil {
-				result.AddError(fmt.Errorf("list series at offset %d: %w", offset, err))
-				break
-			}
-
-			if len(seriesList) == 0 {
-				break
-			}
-
-			for _, s := range seriesList {
-				// Would index to search engine here
-				w.logger.Debug("would index series",
-					zap.String("series_id", s.ID.String()),
-					zap.String("title", s.Title),
-				)
-				result.ItemsProcessed++
-			}
-
-			offset += batchSize
-			if len(seriesList) < int(batchSize) {
-				break
-			}
-		}
-
-		w.logger.Info("full reindex completed (search service not implemented)",
-			zap.Int("total_series", result.ItemsProcessed),
-		)
 	}
 
 	result.Duration = time.Since(start)
@@ -877,6 +840,67 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 	}
 
 	jctx.LogComplete(zap.Int("items_indexed", result.ItemsProcessed))
+	return nil
+}
+
+// indexSeries indexes a single series with all its related data.
+func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID) error {
+	series, err := w.service.GetSeries(ctx, seriesID)
+	if err != nil {
+		w.logger.Warn("series not found, skipping index",
+			zap.String("series_id", seriesID.String()),
+		)
+		return nil
+	}
+
+	genres, err := w.service.GetSeriesGenres(ctx, seriesID)
+	if err != nil {
+		w.logger.Warn("failed to get genres", zap.Error(err))
+		genres = nil
+	}
+
+	cast, err := w.service.GetSeriesCast(ctx, seriesID)
+	if err != nil {
+		w.logger.Warn("failed to get cast", zap.Error(err))
+		cast = nil
+	}
+
+	crew, err := w.service.GetSeriesCrew(ctx, seriesID)
+	if err != nil {
+		w.logger.Warn("failed to get crew", zap.Error(err))
+		crew = nil
+	}
+
+	credits := append(cast, crew...)
+
+	networks, err := w.service.GetSeriesNetworks(ctx, seriesID)
+	if err != nil {
+		w.logger.Warn("failed to get networks", zap.Error(err))
+		networks = nil
+	}
+
+	// Check if series has any episode files
+	hasFile := false
+	episodes, err := w.service.ListEpisodesBySeries(ctx, seriesID)
+	if err == nil {
+		for _, ep := range episodes {
+			files, err := w.service.ListEpisodeFiles(ctx, ep.ID)
+			if err == nil && len(files) > 0 {
+				hasFile = true
+				break
+			}
+		}
+	}
+
+	if err := w.searchService.UpdateSeries(ctx, series, genres, credits, networks, hasFile); err != nil {
+		return fmt.Errorf("failed to index series: %w", err)
+	}
+
+	w.logger.Info("series indexed successfully",
+		zap.String("series_id", seriesID.String()),
+		zap.String("title", series.Title),
+	)
+
 	return nil
 }
 
