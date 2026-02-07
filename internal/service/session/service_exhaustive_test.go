@@ -327,18 +327,24 @@ func TestService_RefreshSession_ErrorRevokingOldSession(t *testing.T) {
 		Return(validSession, nil).
 		Once()
 
+	// CreateSession runs BEFORE RevokeSession in current code
+	mockRepo.EXPECT().
+		CreateSession(ctx, mock.AnythingOfType("session.CreateSessionParams")).
+		Return(db.SharedSession{}, nil).
+		Once()
+
 	revokeErr := fmt.Errorf("database constraint error")
 	mockRepo.EXPECT().
 		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
 		Return(revokeErr).
 		Once()
 
+	// Revoke errors are best-effort (logged, not returned) - new session is still valid
 	newToken, newRefresh, err := svc.RefreshSession(ctx, "valid_refresh_token")
 
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to revoke old session")
-	assert.Empty(t, newToken)
-	assert.Empty(t, newRefresh)
+	require.NoError(t, err)
+	assert.NotEmpty(t, newToken)
+	assert.NotEmpty(t, newRefresh)
 }
 
 func TestService_RefreshSession_ErrorCreatingNewSession(t *testing.T) {
@@ -364,11 +370,7 @@ func TestService_RefreshSession_ErrorCreatingNewSession(t *testing.T) {
 		Return(validSession, nil).
 		Once()
 
-	mockRepo.EXPECT().
-		RevokeSession(ctx, sessionID, mock.AnythingOfType("*string")).
-		Return(nil).
-		Once()
-
+	// CreateSession runs BEFORE RevokeSession - if it fails, RevokeSession is never called
 	createErr := fmt.Errorf("database insertion error")
 	mockRepo.EXPECT().
 		CreateSession(ctx, mock.AnythingOfType("session.CreateSessionParams")).

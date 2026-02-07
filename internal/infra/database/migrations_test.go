@@ -246,6 +246,10 @@ func TestServerSettingsTableStructure(t *testing.T) {
 
 // TestUserSettingsTableStructure verifies the user_settings table structure.
 func TestUserSettingsTableStructure(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping table structure test in short mode")
+	}
+
 	// Start embedded PostgreSQL
 	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
 		Port(15434).
