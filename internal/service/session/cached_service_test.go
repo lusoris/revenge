@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"sync"
 	"testing"
 	"time"
 
@@ -103,8 +104,11 @@ func TestCachedService_ValidateSession_WithCache(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, session2)
 
+	// Wait for background goroutine (UpdateSessionActivity) to finish
+	time.Sleep(50 * time.Millisecond)
+
 	// Repository should only be called once for GetSessionByTokenHash
-	assert.Equal(t, 1, mockRepo.callCount["GetSessionByTokenHash"])
+	assert.Equal(t, 1, mockRepo.getCallCount("GetSessionByTokenHash"))
 }
 
 func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
@@ -141,12 +145,15 @@ func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
 	require.NoError(t, err)
 
 	// Next call should miss cache (invalidated)
-	mockRepo.callCount["GetSessionByTokenHash"] = 0
+	mockRepo.resetCallCount("GetSessionByTokenHash")
 	_, err = cached.ValidateSession(context.Background(), "revoke-token")
 	require.NoError(t, err)
 
+	// Wait for background goroutine to finish
+	time.Sleep(50 * time.Millisecond)
+
 	// Should have called repository again
-	assert.Equal(t, 1, mockRepo.callCount["GetSessionByTokenHash"])
+	assert.Equal(t, 1, mockRepo.getCallCount("GetSessionByTokenHash"))
 }
 
 func TestCachedService_InvalidateSessionCache(t *testing.T) {
@@ -172,91 +179,110 @@ func TestCachedService_InvalidateSessionCache(t *testing.T) {
 
 // mockRepository is a test mock for the session repository
 type mockRepository struct {
+	mu        sync.Mutex
 	session   db.SharedSession
 	callCount map[string]int
 }
 
+func (m *mockRepository) incCall(name string) {
+	m.mu.Lock()
+	m.callCount[name]++
+	m.mu.Unlock()
+}
+
+func (m *mockRepository) getCallCount(name string) int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.callCount[name]
+}
+
+func (m *mockRepository) resetCallCount(name string) {
+	m.mu.Lock()
+	m.callCount[name] = 0
+	m.mu.Unlock()
+}
+
 func (m *mockRepository) CreateSession(ctx context.Context, params CreateSessionParams) (db.SharedSession, error) {
-	m.callCount["CreateSession"]++
+	m.incCall("CreateSession")
 	return m.session, nil
 }
 
 func (m *mockRepository) GetSessionByTokenHash(ctx context.Context, tokenHash string) (*db.SharedSession, error) {
-	m.callCount["GetSessionByTokenHash"]++
+	m.incCall("GetSessionByTokenHash")
 	return &m.session, nil
 }
 
 func (m *mockRepository) GetSessionByID(ctx context.Context, sessionID uuid.UUID) (*db.SharedSession, error) {
-	m.callCount["GetSessionByID"]++
+	m.incCall("GetSessionByID")
 	return &m.session, nil
 }
 
 func (m *mockRepository) GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash string) (*db.SharedSession, error) {
-	m.callCount["GetSessionByRefreshTokenHash"]++
+	m.incCall("GetSessionByRefreshTokenHash")
 	return &m.session, nil
 }
 
 func (m *mockRepository) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]db.SharedSession, error) {
-	m.callCount["ListUserSessions"]++
+	m.incCall("ListUserSessions")
 	return nil, nil
 }
 
 func (m *mockRepository) ListAllUserSessions(ctx context.Context, userID uuid.UUID) ([]db.SharedSession, error) {
-	m.callCount["ListAllUserSessions"]++
+	m.incCall("ListAllUserSessions")
 	return nil, nil
 }
 
 func (m *mockRepository) CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error) {
-	m.callCount["CountActiveUserSessions"]++
+	m.incCall("CountActiveUserSessions")
 	return 0, nil
 }
 
 func (m *mockRepository) UpdateSessionActivity(ctx context.Context, sessionID uuid.UUID) error {
-	m.callCount["UpdateSessionActivity"]++
+	m.incCall("UpdateSessionActivity")
 	return nil
 }
 
 func (m *mockRepository) UpdateSessionActivityByTokenHash(ctx context.Context, tokenHash string) error {
-	m.callCount["UpdateSessionActivityByTokenHash"]++
+	m.incCall("UpdateSessionActivityByTokenHash")
 	return nil
 }
 
 func (m *mockRepository) RevokeSession(ctx context.Context, sessionID uuid.UUID, reason *string) error {
-	m.callCount["RevokeSession"]++
+	m.incCall("RevokeSession")
 	return nil
 }
 
 func (m *mockRepository) RevokeSessionByTokenHash(ctx context.Context, tokenHash string, reason *string) error {
-	m.callCount["RevokeSessionByTokenHash"]++
+	m.incCall("RevokeSessionByTokenHash")
 	return nil
 }
 
 func (m *mockRepository) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID, reason *string) error {
-	m.callCount["RevokeAllUserSessions"]++
+	m.incCall("RevokeAllUserSessions")
 	return nil
 }
 
 func (m *mockRepository) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, exceptID uuid.UUID, reason *string) error {
-	m.callCount["RevokeAllUserSessionsExcept"]++
+	m.incCall("RevokeAllUserSessionsExcept")
 	return nil
 }
 
 func (m *mockRepository) DeleteExpiredSessions(ctx context.Context) (int64, error) {
-	m.callCount["DeleteExpiredSessions"]++
+	m.incCall("DeleteExpiredSessions")
 	return 0, nil
 }
 
 func (m *mockRepository) DeleteRevokedSessions(ctx context.Context) (int64, error) {
-	m.callCount["DeleteRevokedSessions"]++
+	m.incCall("DeleteRevokedSessions")
 	return 0, nil
 }
 
 func (m *mockRepository) GetInactiveSessions(ctx context.Context, inactiveSince time.Time) ([]db.SharedSession, error) {
-	m.callCount["GetInactiveSessions"]++
+	m.incCall("GetInactiveSessions")
 	return nil, nil
 }
 
 func (m *mockRepository) RevokeInactiveSessions(ctx context.Context, inactiveSince time.Time) error {
-	m.callCount["RevokeInactiveSessions"]++
+	m.incCall("RevokeInactiveSessions")
 	return nil
 }
