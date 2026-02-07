@@ -2,10 +2,12 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/netip"
 
 	"github.com/go-faster/errors"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
@@ -386,6 +388,45 @@ func boolPtrToBool(b *bool) bool {
 	return *b
 }
 
+// prefsToOgenResponse converts DB preferences to ogen UserPreferences response.
+func prefsToOgenResponse(prefs *db.SharedUserPreference) *ogen.UserPreferences {
+	out := &ogen.UserPreferences{
+		UserID: prefs.UserID,
+		ProfileVisibility: ogen.NewOptUserPreferencesProfileVisibility(
+			ogen.UserPreferencesProfileVisibility(stringPtrToString(prefs.ProfileVisibility)),
+		),
+		ShowEmail:        ogen.NewOptBool(boolPtrToBool(prefs.ShowEmail)),
+		ShowActivity:     ogen.NewOptBool(boolPtrToBool(prefs.ShowActivity)),
+		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
+		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
+		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
+		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
+		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
+		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
+	}
+
+	if len(prefs.EmailNotifications) > 0 {
+		var email ogen.UserPreferencesEmailNotifications
+		if json.Unmarshal(prefs.EmailNotifications, &email) == nil {
+			out.EmailNotifications.SetTo(email)
+		}
+	}
+	if len(prefs.PushNotifications) > 0 {
+		var push ogen.UserPreferencesPushNotifications
+		if json.Unmarshal(prefs.PushNotifications, &push) == nil {
+			out.PushNotifications.SetTo(push)
+		}
+	}
+	if len(prefs.DigestNotifications) > 0 {
+		var digest ogen.UserPreferencesDigestNotifications
+		if json.Unmarshal(prefs.DigestNotifications, &digest) == nil {
+			out.DigestNotifications.SetTo(digest)
+		}
+	}
+
+	return out
+}
+
 // ============================================================================
 // User Endpoints
 // ============================================================================
@@ -500,20 +541,8 @@ func (h *Handler) GetUserPreferences(ctx context.Context) (ogen.GetUserPreferenc
 		return &ogen.Error{}, fmt.Errorf("failed to get preferences: %w", err)
 	}
 
-	return &ogen.UserPreferences{
-		UserID: prefs.UserID,
-		ProfileVisibility: ogen.NewOptUserPreferencesProfileVisibility(
-			ogen.UserPreferencesProfileVisibility(stringPtrToString(prefs.ProfileVisibility)),
-		),
-		ShowEmail:        ogen.NewOptBool(boolPtrToBool(prefs.ShowEmail)),
-		ShowActivity:     ogen.NewOptBool(boolPtrToBool(prefs.ShowActivity)),
-		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
-		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
-		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
-		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
-		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
-		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
-	}, nil
+	result := prefsToOgenResponse(prefs)
+	return result, nil
 }
 
 // UpdateUserPreferences updates user preferences
@@ -527,7 +556,30 @@ func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPrefe
 		UserID: userID,
 	}
 
-	// TODO: Handle notification settings (JSONB fields)
+	if emailNotif, ok := req.EmailNotifications.Get(); ok {
+		raw, err := json.Marshal(emailNotif)
+		if err != nil {
+			return &ogen.UpdateUserPreferencesBadRequest{}, fmt.Errorf("invalid email notification settings: %w", err)
+		}
+		rawMsg := json.RawMessage(raw)
+		params.EmailNotifications = &rawMsg
+	}
+	if pushNotif, ok := req.PushNotifications.Get(); ok {
+		raw, err := json.Marshal(pushNotif)
+		if err != nil {
+			return &ogen.UpdateUserPreferencesBadRequest{}, fmt.Errorf("invalid push notification settings: %w", err)
+		}
+		rawMsg := json.RawMessage(raw)
+		params.PushNotifications = &rawMsg
+	}
+	if digestNotif, ok := req.DigestNotifications.Get(); ok {
+		raw, err := json.Marshal(digestNotif)
+		if err != nil {
+			return &ogen.UpdateUserPreferencesBadRequest{}, fmt.Errorf("invalid digest notification settings: %w", err)
+		}
+		rawMsg := json.RawMessage(raw)
+		params.DigestNotifications = &rawMsg
+	}
 
 	if vis, ok := req.ProfileVisibility.Get(); ok {
 		v := string(vis)
@@ -564,20 +616,7 @@ func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPrefe
 		return &ogen.UpdateUserPreferencesBadRequest{}, fmt.Errorf("failed to update preferences: %w", err)
 	}
 
-	return &ogen.UserPreferences{
-		UserID: prefs.UserID,
-		ProfileVisibility: ogen.NewOptUserPreferencesProfileVisibility(
-			ogen.UserPreferencesProfileVisibility(stringPtrToString(prefs.ProfileVisibility)),
-		),
-		ShowEmail:        ogen.NewOptBool(boolPtrToBool(prefs.ShowEmail)),
-		ShowActivity:     ogen.NewOptBool(boolPtrToBool(prefs.ShowActivity)),
-		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
-		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
-		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
-		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
-		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
-		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
-	}, nil
+	return prefsToOgenResponse(prefs), nil
 }
 
 // UploadAvatar handles avatar upload
