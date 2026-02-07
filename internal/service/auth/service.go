@@ -82,8 +82,27 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
+	// Generate email verification token
+	token, err := crypto.GenerateSecureToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate verification token: %w", err)
+	}
+	tokenHash := s.tokenManager.HashRefreshToken(token)
+
+	// A7.1: Wrap user creation + token creation in a transaction
+	// to prevent orphaned users without verification tokens
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	txQueries := db.New(tx)
+
 	// Create user in database
-	user, err := s.repo.CreateUser(ctx, db.CreateUserParams{
+	user, err := txQueries.CreateUser(ctx, db.CreateUserParams{
 		Username:     req.Username,
 		Email:        req.Email,
 		PasswordHash: passwordHash,
@@ -93,15 +112,8 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	// Generate email verification token
-	token, err := crypto.GenerateSecureToken(32)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate verification token: %w", err)
-	}
-	tokenHash := s.tokenManager.HashRefreshToken(token)
-
 	// Store verification token in database
-	_, err = s.repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
+	_, err = txQueries.CreateEmailVerificationToken(ctx, db.CreateEmailVerificationTokenParams{
 		UserID:    user.ID,
 		TokenHash: tokenHash,
 		Email:     user.Email,
@@ -111,7 +123,11 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		return nil, fmt.Errorf("failed to create verification token: %w", err)
 	}
 
-	// Send verification email asynchronously
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	// Send verification email asynchronously (outside transaction)
 	if s.emailService != nil {
 		username := user.Username
 		if err := s.emailService.SendVerificationEmail(ctx, user.Email, username, token); err != nil {
@@ -132,14 +148,30 @@ func (s *Service) VerifyEmail(ctx context.Context, token string) error {
 		return fmt.Errorf("invalid or expired verification token: %w", err)
 	}
 
+	// A7.1: Wrap token marking + email verification in a transaction
+	// to prevent desync between token state and user verified status
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
+
+	txQueries := db.New(tx)
+
 	// Mark token as used
-	if err := s.repo.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
+	if err := txQueries.MarkEmailVerificationTokenUsed(ctx, emailToken.ID); err != nil {
 		return fmt.Errorf("failed to mark token as used: %w", err)
 	}
 
 	// Update user's email_verified status
-	if err := s.repo.UpdateUserEmailVerified(ctx, emailToken.UserID, true); err != nil {
+	if err := txQueries.VerifyEmail(ctx, emailToken.UserID); err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
 	return nil

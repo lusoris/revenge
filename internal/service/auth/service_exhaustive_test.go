@@ -50,70 +50,8 @@ func setupMockService(t *testing.T) (
 // Register password hashing errors require integration tests
 // These are covered by the integration test suite
 
-func TestService_Register_ErrorCreatingUser(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, _ := setupMockService(t)
-	ctx := context.Background()
-
-	req := auth.RegisterRequest{
-		Username: "testuser",
-		Email:    "test@example.com",
-		Password: "SecurePass123!",
-	}
-
-	expectedErr := fmt.Errorf("unique constraint violation")
-	mockRepo.EXPECT().
-		CreateUser(ctx, mock.AnythingOfType("db.CreateUserParams")).
-		Return(db.SharedUser{}, expectedErr).
-		Once()
-
-	user, err := svc.Register(ctx, req)
-
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to create user")
-	assert.Nil(t, user)
-}
-
-func TestService_Register_ErrorCreatingVerificationToken(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, mockTokenMgr := setupMockService(t)
-	ctx := context.Background()
-
-	userID := uuid.Must(uuid.NewV7())
-	req := auth.RegisterRequest{
-		Username: "testuser",
-		Email:    "test@example.com",
-		Password: "SecurePass123!",
-	}
-
-	createdUser := db.SharedUser{
-		ID:       userID,
-		Username: req.Username,
-		Email:    req.Email,
-	}
-
-	mockRepo.EXPECT().
-		CreateUser(ctx, mock.AnythingOfType("db.CreateUserParams")).
-		Return(createdUser, nil).
-		Once()
-
-	mockTokenMgr.EXPECT().
-		HashRefreshToken(mock.AnythingOfType("string")).
-		Return("token_hash").
-		Once()
-
-	expectedErr := fmt.Errorf("database error")
-	mockRepo.EXPECT().
-		CreateEmailVerificationToken(ctx, mock.AnythingOfType("auth.CreateEmailVerificationTokenParams")).
-		Return(auth.EmailVerificationToken{}, expectedErr).
-		Once()
-
-	user, err := svc.Register(ctx, req)
-
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to create verification token")
-	assert.Nil(t, user)
-}
+// Register uses transactions (A7.1), so error paths within the transaction
+// require integration tests. See service_integration_test.go.
 
 // ========== VerifyEmail Tests ==========
 
@@ -138,78 +76,8 @@ func TestService_VerifyEmail_InvalidToken(t *testing.T) {
 	assert.Contains(t, err.Error(), "invalid or expired verification token")
 }
 
-func TestService_VerifyEmail_ErrorMarkingTokenUsed(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, mockTokenMgr := setupMockService(t)
-	ctx := context.Background()
-
-	tokenID := uuid.Must(uuid.NewV7())
-	userID := uuid.Must(uuid.NewV7())
-	emailToken := auth.EmailVerificationToken{
-		ID:     tokenID,
-		UserID: userID,
-	}
-
-	mockTokenMgr.EXPECT().
-		HashRefreshToken("valid_token").
-		Return("valid_hash").
-		Once()
-
-	mockRepo.EXPECT().
-		GetEmailVerificationToken(ctx, "valid_hash").
-		Return(emailToken, nil).
-		Once()
-
-	expectedErr := fmt.Errorf("database error")
-	mockRepo.EXPECT().
-		MarkEmailVerificationTokenUsed(ctx, tokenID).
-		Return(expectedErr).
-		Once()
-
-	err := svc.VerifyEmail(ctx, "valid_token")
-
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to mark token as used")
-}
-
-func TestService_VerifyEmail_ErrorUpdatingUser(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, mockTokenMgr := setupMockService(t)
-	ctx := context.Background()
-
-	tokenID := uuid.Must(uuid.NewV7())
-	userID := uuid.Must(uuid.NewV7())
-	emailToken := auth.EmailVerificationToken{
-		ID:     tokenID,
-		UserID: userID,
-	}
-
-	mockTokenMgr.EXPECT().
-		HashRefreshToken("valid_token").
-		Return("valid_hash").
-		Once()
-
-	mockRepo.EXPECT().
-		GetEmailVerificationToken(ctx, "valid_hash").
-		Return(emailToken, nil).
-		Once()
-
-	mockRepo.EXPECT().
-		MarkEmailVerificationTokenUsed(ctx, tokenID).
-		Return(nil).
-		Once()
-
-	expectedErr := fmt.Errorf("user not found")
-	mockRepo.EXPECT().
-		UpdateUserEmailVerified(ctx, userID, true).
-		Return(expectedErr).
-		Once()
-
-	err := svc.VerifyEmail(ctx, "valid_token")
-
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to update user")
-}
+// VerifyEmail uses transactions (A7.1), so error paths within the transaction
+// require integration tests. See service_integration_test.go.
 
 // ========== Login Tests ==========
 
@@ -1168,42 +1036,7 @@ func TestService_LogoutAll_Success(t *testing.T) {
 
 // ========== VerifyEmail Success Path ==========
 
-func TestService_VerifyEmail_Success(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, mockTokenMgr := setupMockService(t)
-	ctx := context.Background()
-
-	tokenID := uuid.Must(uuid.NewV7())
-	userID := uuid.Must(uuid.NewV7())
-	emailToken := auth.EmailVerificationToken{
-		ID:     tokenID,
-		UserID: userID,
-	}
-
-	mockTokenMgr.EXPECT().
-		HashRefreshToken("valid_token").
-		Return("valid_hash").
-		Once()
-
-	mockRepo.EXPECT().
-		GetEmailVerificationToken(ctx, "valid_hash").
-		Return(emailToken, nil).
-		Once()
-
-	mockRepo.EXPECT().
-		MarkEmailVerificationTokenUsed(ctx, tokenID).
-		Return(nil).
-		Once()
-
-	mockRepo.EXPECT().
-		UpdateUserEmailVerified(ctx, userID, true).
-		Return(nil).
-		Once()
-
-	err := svc.VerifyEmail(ctx, "valid_token")
-
-	require.NoError(t, err)
-}
+// VerifyEmail success path uses transactions (A7.1) and requires integration tests.
 
 // ========== RequestPasswordReset Success Path ==========
 
@@ -1328,52 +1161,7 @@ func TestService_Login_FoundByEmail(t *testing.T) {
 
 // ========== Register Success Path ==========
 
-func TestService_Register_Success(t *testing.T) {
-	t.Parallel()
-	svc, mockRepo, mockTokenMgr := setupMockService(t)
-	ctx := context.Background()
-
-	userID := uuid.Must(uuid.NewV7())
-	displayName := "Test User"
-	req := auth.RegisterRequest{
-		Username:    "testuser",
-		Email:       "test@example.com",
-		Password:    "SecurePass123!",
-		DisplayName: &displayName,
-	}
-
-	createdUser := db.SharedUser{
-		ID:       userID,
-		Username: req.Username,
-		Email:    req.Email,
-	}
-
-	mockRepo.EXPECT().
-		CreateUser(ctx, mock.AnythingOfType("db.CreateUserParams")).
-		Return(createdUser, nil).
-		Once()
-
-	mockTokenMgr.EXPECT().
-		HashRefreshToken(mock.AnythingOfType("string")).
-		Return("token_hash").
-		Once()
-
-	verificationToken := auth.EmailVerificationToken{
-		ID:     uuid.Must(uuid.NewV7()),
-		UserID: userID,
-	}
-	mockRepo.EXPECT().
-		CreateEmailVerificationToken(ctx, mock.AnythingOfType("auth.CreateEmailVerificationTokenParams")).
-		Return(verificationToken, nil).
-		Once()
-
-	user, err := svc.Register(ctx, req)
-
-	require.NoError(t, err)
-	assert.NotNil(t, user)
-	assert.Equal(t, req.Username, user.Username)
-	assert.Equal(t, req.Email, user.Email)
-}
+// Register success path uses transactions (A7.1) and requires integration tests.
 
 // ========== CreateSessionForUser with LastLogin Failure ==========
 
