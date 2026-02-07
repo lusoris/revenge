@@ -2,6 +2,7 @@ package apikeys
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -136,12 +137,13 @@ func TestRepositoryPg_ListUserAPIKeys(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create multiple keys
+	listBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
-			Name:      "Key " + uuid.Must(uuid.NewV7()).String()[:8],
-			KeyHash:   "hash_" + uuid.Must(uuid.NewV7()).String()[:8],
-			KeyPrefix: "rv_" + uuid.Must(uuid.NewV7()).String()[:8],
+			Name:      fmt.Sprintf("Key %s_%d", listBase[:8], i),
+			KeyHash:   fmt.Sprintf("hash_%s_%d", listBase, i),
+			KeyPrefix: fmt.Sprintf("rv_%s_%d", listBase[:6], i),
 			Scopes:    []string{"read"},
 		})
 		require.NoError(t, err)
@@ -213,12 +215,13 @@ func TestRepositoryPg_CountUserAPIKeys(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create 3 keys (key_prefix max 16 chars)
+	countBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
 			Name:      "Count Key",
-			KeyHash:   "count_hash_" + uuid.Must(uuid.NewV7()).String()[:8],
-			KeyPrefix: "rv_" + uuid.Must(uuid.NewV7()).String()[:8],
+			KeyHash:   fmt.Sprintf("count_hash_%s_%d", countBase, i),
+			KeyPrefix: fmt.Sprintf("rv_%s_%d", countBase[:6], i),
 			Scopes:    []string{"read"},
 		})
 		require.NoError(t, err)

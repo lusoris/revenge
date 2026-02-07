@@ -2,6 +2,7 @@ package auth_test
 
 import (
 	"context"
+	"net/netip"
 	"testing"
 	"time"
 
@@ -486,4 +487,660 @@ func TestService_Register_TransactionAtomicity(t *testing.T) {
 		// CreateEmailVerificationToken is never executed, and if it were
 		// executed and failed, the entire transaction would rollback.
 	})
+}
+
+// ============================================================================
+// VerifyEmail Integration Tests
+// ============================================================================
+
+func TestService_VerifyEmail_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	t.Run("successful email verification", func(t *testing.T) {
+		// Register a user (creates user + email verification token in one transaction)
+		user, err := svc.Register(ctx, auth.RegisterRequest{
+			Username: "verifyuser",
+			Email:    "verifyuser@example.com",
+			Password: "SecurePassword123!",
+		})
+		require.NoError(t, err)
+		require.NotNil(t, user)
+
+		// Verify user email is not yet verified
+		dbUser, err := queries.GetUserByID(ctx, user.ID)
+		require.NoError(t, err)
+		if dbUser.EmailVerified != nil {
+			assert.False(t, *dbUser.EmailVerified)
+		}
+
+		// Create a verification token we know the plain value of
+		plainToken := "known-verification-token-123"
+		tokenHash := tokenMgr.HashRefreshToken(plainToken)
+		_, err = repo.CreateEmailVerificationToken(ctx, auth.CreateEmailVerificationTokenParams{
+			UserID:    user.ID,
+			TokenHash: tokenHash,
+			Email:     user.Email,
+			ExpiresAt: time.Now().Add(24 * time.Hour),
+		})
+		require.NoError(t, err)
+
+		// Verify email
+		err = svc.VerifyEmail(ctx, plainToken)
+		require.NoError(t, err)
+
+		// Verify user's email is now verified
+		dbUser, err = queries.GetUserByID(ctx, user.ID)
+		require.NoError(t, err)
+		require.NotNil(t, dbUser.EmailVerified)
+		assert.True(t, *dbUser.EmailVerified)
+	})
+
+	t.Run("invalid token fails", func(t *testing.T) {
+		err := svc.VerifyEmail(ctx, "totally-invalid-token")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid or expired verification token")
+	})
+
+	t.Run("token cannot be reused", func(t *testing.T) {
+		// Register another user
+		user, err := svc.Register(ctx, auth.RegisterRequest{
+			Username: "verifyreuse",
+			Email:    "verifyreuse@example.com",
+			Password: "SecurePassword123!",
+		})
+		require.NoError(t, err)
+
+		// Create a verification token
+		plainToken := "reuse-verification-token-456"
+		tokenHash := tokenMgr.HashRefreshToken(plainToken)
+		_, err = repo.CreateEmailVerificationToken(ctx, auth.CreateEmailVerificationTokenParams{
+			UserID:    user.ID,
+			TokenHash: tokenHash,
+			Email:     user.Email,
+			ExpiresAt: time.Now().Add(24 * time.Hour),
+		})
+		require.NoError(t, err)
+
+		// First verification succeeds
+		err = svc.VerifyEmail(ctx, plainToken)
+		require.NoError(t, err)
+
+		// Second verification with same token fails (token was marked used)
+		err = svc.VerifyEmail(ctx, plainToken)
+		require.Error(t, err)
+	})
+}
+
+// TestService_VerifyEmail_TransactionAtomicity verifies that VerifyEmail is atomic:
+// both token marking and user verification happen together or not at all.
+func TestService_VerifyEmail_TransactionAtomicity(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	// Register user
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "atomicverify",
+		Email:    "atomicverify@example.com",
+		Password: "SecurePassword123!",
+	})
+	require.NoError(t, err)
+
+	// Create a verification token
+	plainToken := "atomic-verify-token-789"
+	tokenHash := tokenMgr.HashRefreshToken(plainToken)
+	verifyToken, err := repo.CreateEmailVerificationToken(ctx, auth.CreateEmailVerificationTokenParams{
+		UserID:    user.ID,
+		TokenHash: tokenHash,
+		Email:     user.Email,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	})
+	require.NoError(t, err)
+
+	// Verify email
+	err = svc.VerifyEmail(ctx, plainToken)
+	require.NoError(t, err)
+
+	// Both should have been updated atomically:
+	// 1. Token should be marked as verified
+	var verifiedAtCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE id = $1 AND verified_at IS NOT NULL",
+		verifyToken.ID,
+	).Scan(&verifiedAtCount)
+	require.NoError(t, err)
+	assert.Equal(t, 1, verifiedAtCount)
+
+	// 2. User should have email_verified = true
+	dbUser, err := queries.GetUserByID(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, dbUser.EmailVerified)
+	assert.True(t, *dbUser.EmailVerified)
+}
+
+// ============================================================================
+// Register → VerifyEmail → Login Full Flow
+// ============================================================================
+
+func TestService_RegisterVerifyLogin_FullFlow(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+	password := "FullFlowPassword123!"
+
+	// Step 1: Register
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "fullflow",
+		Email:    "fullflow@example.com",
+		Password: password,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, user)
+
+	// Step 2: Verify email (create a known token for test)
+	plainToken := "fullflow-verify-token"
+	tokenHash := tokenMgr.HashRefreshToken(plainToken)
+	_, err = repo.CreateEmailVerificationToken(ctx, auth.CreateEmailVerificationTokenParams{
+		UserID:    user.ID,
+		TokenHash: tokenHash,
+		Email:     user.Email,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	})
+	require.NoError(t, err)
+
+	err = svc.VerifyEmail(ctx, plainToken)
+	require.NoError(t, err)
+
+	// Confirm email is verified
+	dbUser, err := queries.GetUserByID(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, dbUser.EmailVerified)
+	assert.True(t, *dbUser.EmailVerified)
+
+	// Step 3: Login with verified account
+	loginResp, err := svc.Login(ctx, user.Username, password, nil, nil, nil, nil)
+	require.NoError(t, err)
+	require.NotNil(t, loginResp)
+	assert.NotEmpty(t, loginResp.AccessToken)
+	assert.NotEmpty(t, loginResp.RefreshToken)
+	assert.Equal(t, user.ID, loginResp.User.ID)
+
+	// Step 4: Verify last login was updated
+	dbUser, err = queries.GetUserByID(ctx, user.ID)
+	require.NoError(t, err)
+	assert.True(t, dbUser.LastLoginAt.Valid)
+}
+
+// ============================================================================
+// Account Lockout Integration Tests
+// ============================================================================
+
+func TestService_Login_AccountLockout_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	logger := zap.NewNop()
+	activitySvc := activity.NewService(activity.NewRepositoryPg(queries), logger)
+	activityLogger := activity.NewLogger(activitySvc)
+
+	// Use lockout threshold of 3 with a 15-minute window
+	svc := auth.NewServiceForTestingWithLockout(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+		3,              // lockout after 3 failed attempts
+		15*time.Minute, // lockout window
+	)
+
+	ctx := context.Background()
+	password := "LockoutTestPassword123!"
+	ipAddr := netip.MustParseAddr("192.168.1.50")
+
+	// Register a user
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "lockoutuser",
+		Email:    "lockout@example.com",
+		Password: password,
+	})
+	require.NoError(t, err)
+
+	t.Run("failed attempts are recorded", func(t *testing.T) {
+		// Try to login with wrong password 2 times
+		for i := 0; i < 2; i++ {
+			_, err := svc.Login(ctx, user.Username, "WrongPassword!", &ipAddr, nil, nil, nil)
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "invalid username or password")
+		}
+
+		// Verify attempts were recorded
+		count, err := repo.CountFailedLoginAttemptsByUsername(ctx, user.Username, time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(2), count)
+
+		// Login should still work (below threshold)
+		resp, err := svc.Login(ctx, user.Username, password, &ipAddr, nil, nil, nil)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+	})
+
+	t.Run("account locks after threshold", func(t *testing.T) {
+		// Clear previous attempts first (successful login above cleared them)
+		// Record 3 failed attempts to reach lockout threshold
+		for i := 0; i < 3; i++ {
+			_, err := svc.Login(ctx, user.Username, "WrongPassword!", &ipAddr, nil, nil, nil)
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), "invalid username or password")
+		}
+
+		// Now even a correct password should fail due to lockout
+		_, err := svc.Login(ctx, user.Username, password, &ipAddr, nil, nil, nil)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "account locked")
+	})
+
+	t.Run("successful login clears failed attempts", func(t *testing.T) {
+		// Clear the lockout by directly clearing failed attempts
+		err := repo.ClearFailedLoginAttemptsByUsername(ctx, user.Username)
+		require.NoError(t, err)
+
+		// Login should succeed now
+		resp, err := svc.Login(ctx, user.Username, password, &ipAddr, nil, nil, nil)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+
+		// After successful login, failed attempts should be cleared
+		count, err := repo.CountFailedLoginAttemptsByUsername(ctx, user.Username, time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(0), count)
+	})
+}
+
+func TestService_Login_LockoutWithNonexistentUser(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTestingWithLockout(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+		3,
+		15*time.Minute,
+	)
+
+	ctx := context.Background()
+	ipAddr := netip.MustParseAddr("10.0.0.1")
+
+	// Try to login with a nonexistent user multiple times with lockout enabled
+	// This should record failed attempts and eventually lock out
+	for i := 0; i < 3; i++ {
+		_, err := svc.Login(ctx, "nonexistent", "password", &ipAddr, nil, nil, nil)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid username or password")
+	}
+
+	// After threshold, should get lockout error
+	_, err := svc.Login(ctx, "nonexistent", "password", &ipAddr, nil, nil, nil)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "account locked")
+}
+
+func TestService_Login_LockoutIPTracking(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTestingWithLockout(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+		3,
+		15*time.Minute,
+	)
+
+	ctx := context.Background()
+	ipAddr := netip.MustParseAddr("172.16.0.50")
+
+	// Register a user
+	_, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "iptrackuser",
+		Email:    "iptrack@example.com",
+		Password: "SecurePassword123!",
+	})
+	require.NoError(t, err)
+
+	// Failed login attempts should be tracked by IP
+	for i := 0; i < 2; i++ {
+		_, err := svc.Login(ctx, "iptrackuser", "WrongPassword!", &ipAddr, nil, nil, nil)
+		require.Error(t, err)
+	}
+
+	// Verify IP-based tracking
+	ipCount, err := repo.CountFailedLoginAttemptsByIP(ctx, ipAddr.String(), time.Now().Add(-1*time.Hour))
+	require.NoError(t, err)
+	assert.Equal(t, int64(2), ipCount)
+}
+
+// ============================================================================
+// ResendVerification Integration Test
+// ============================================================================
+
+func TestService_ResendVerification_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	// Register a user
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "resenduser",
+		Email:    "resenduser@example.com",
+		Password: "SecurePassword123!",
+	})
+	require.NoError(t, err)
+
+	// Resend verification
+	err = svc.ResendVerification(ctx, user.ID)
+	require.NoError(t, err)
+
+	// Verify new token was created (at least 2 tokens exist: one from register, one from resend)
+	// The old ones should be invalidated
+	var activeCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE user_id = $1 AND verified_at IS NULL",
+		user.ID,
+	).Scan(&activeCount)
+	require.NoError(t, err)
+	// After resend: old tokens invalidated, new token created
+	assert.Equal(t, 1, activeCount)
+}
+
+// ============================================================================
+// RequestPasswordReset Integration Test
+// ============================================================================
+
+func TestService_RequestPasswordReset_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	// Register a user
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "resetreqtest",
+		Email:    "resetreq@example.com",
+		Password: "SecurePassword123!",
+	})
+	require.NoError(t, err)
+
+	t.Run("creates reset token for existing email", func(t *testing.T) {
+		err := svc.RequestPasswordReset(ctx, user.Email, nil, nil)
+		require.NoError(t, err)
+
+		// Verify a reset token was created
+		var tokenCount int
+		err = testDB.Pool().QueryRow(ctx,
+			"SELECT COUNT(*) FROM shared.password_reset_tokens WHERE user_id = $1 AND used_at IS NULL",
+			user.ID,
+		).Scan(&tokenCount)
+		require.NoError(t, err)
+		assert.GreaterOrEqual(t, tokenCount, 1)
+	})
+
+	t.Run("silently succeeds for nonexistent email", func(t *testing.T) {
+		// This should NOT error (prevents email enumeration)
+		err := svc.RequestPasswordReset(ctx, "nonexistent@example.com", nil, nil)
+		require.NoError(t, err)
+	})
+
+	t.Run("invalidates old reset tokens on new request", func(t *testing.T) {
+		// First request
+		err := svc.RequestPasswordReset(ctx, user.Email, nil, nil)
+		require.NoError(t, err)
+
+		// Second request should invalidate old tokens
+		err = svc.RequestPasswordReset(ctx, user.Email, nil, nil)
+		require.NoError(t, err)
+
+		// Verify only 1 active (unused) token exists
+		var activeTokens int
+		err = testDB.Pool().QueryRow(ctx,
+			"SELECT COUNT(*) FROM shared.password_reset_tokens WHERE user_id = $1 AND used_at IS NULL",
+			user.ID,
+		).Scan(&activeTokens)
+		require.NoError(t, err)
+		assert.Equal(t, 1, activeTokens)
+	})
+}
+
+// ============================================================================
+// Logout Integration Tests
+// ============================================================================
+
+func TestService_LogoutAll_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+	password := "LogoutAllPassword123!"
+
+	// Register and login multiple times to create multiple refresh tokens
+	user, err := svc.Register(ctx, auth.RegisterRequest{
+		Username: "logoutalluser",
+		Email:    "logoutall@example.com",
+		Password: password,
+	})
+	require.NoError(t, err)
+
+	var refreshTokens []string
+	for i := 0; i < 3; i++ {
+		resp, err := svc.Login(ctx, user.Username, password, nil, nil, nil, nil)
+		require.NoError(t, err)
+		refreshTokens = append(refreshTokens, resp.RefreshToken)
+	}
+
+	// LogoutAll should revoke all tokens
+	err = svc.LogoutAll(ctx, user.ID)
+	require.NoError(t, err)
+
+	// All refresh tokens should now be invalid
+	for _, rt := range refreshTokens {
+		_, err := svc.RefreshToken(ctx, rt)
+		require.Error(t, err)
+	}
+
+	// Verify no active auth tokens remain
+	count, err := repo.CountActiveAuthTokensByUser(ctx, user.ID)
+	require.NoError(t, err)
+	assert.Equal(t, int64(0), count)
+}
+
+// ============================================================================
+// RegisterFromOIDC Integration Test
+// ============================================================================
+
+func TestService_RegisterFromOIDC_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	displayName := "OIDC Test User"
+	user, err := svc.RegisterFromOIDC(ctx, auth.RegisterFromOIDCRequest{
+		Username:    "oidcintegration",
+		Email:       "oidcintegration@example.com",
+		DisplayName: &displayName,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, user)
+
+	assert.Equal(t, "oidcintegration", user.Username)
+	assert.Equal(t, "oidcintegration@example.com", user.Email)
+
+	// OIDC users should have email verified
+	dbUser, err := queries.GetUserByID(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, dbUser.EmailVerified)
+	assert.True(t, *dbUser.EmailVerified)
+}
+
+// ============================================================================
+// CreateSessionForUser Integration Test
+// ============================================================================
+
+func TestService_CreateSessionForUser_Integration(t *testing.T) {
+	t.Parallel()
+	testDB := testutil.NewFastTestDB(t)
+	queries := db.New(testDB.Pool())
+	repo := auth.NewRepositoryPG(queries)
+	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
+	activityLogger := activity.NewNoopLogger()
+
+	svc := auth.NewServiceForTesting(
+		testDB.Pool(),
+		repo,
+		tokenMgr,
+		activityLogger,
+		15*time.Minute,
+		7*24*time.Hour,
+	)
+
+	ctx := context.Background()
+
+	// Create a user via OIDC (so they have verified email + active account)
+	user, err := svc.RegisterFromOIDC(ctx, auth.RegisterFromOIDCRequest{
+		Username: "sessionuser",
+		Email:    "sessionuser@example.com",
+	})
+	require.NoError(t, err)
+
+	ipAddr := netip.MustParseAddr("10.0.0.1")
+	userAgent := "TestAgent/1.0"
+	deviceName := "Test Device"
+
+	resp, err := svc.CreateSessionForUser(ctx, user.ID, &ipAddr, &userAgent, &deviceName)
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+
+	assert.NotEmpty(t, resp.AccessToken)
+	assert.NotEmpty(t, resp.RefreshToken)
+	assert.Equal(t, user.ID, resp.User.ID)
+
+	// Verify refresh token works
+	refreshResp, err := svc.RefreshToken(ctx, resp.RefreshToken)
+	require.NoError(t, err)
+	assert.NotEmpty(t, refreshResp.AccessToken)
 }

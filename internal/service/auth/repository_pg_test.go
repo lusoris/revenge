@@ -846,6 +846,406 @@ func TestRepositoryPG_DeleteExpiredEmailVerificationTokens(t *testing.T) {
 	assert.Equal(t, 0, count)
 }
 
+// ============================================================================
+// Email Verification Token Tests (additional)
+// ============================================================================
+
+func TestRepositoryPG_InvalidateEmailVerificationTokensByEmail(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Create two users with different emails
+	user1 := createTestUser(t, testDB, "invbyemail1", "invbyemail1@example.com")
+	user2 := createTestUser(t, testDB, "invbyemail2", "invbyemail2@example.com")
+
+	// Create tokens for user1's email
+	for i := 0; i < 3; i++ {
+		_, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
+			UserID:    user1.ID,
+			TokenHash: "verify_byemail_u1_" + string(rune('a'+i)),
+			Email:     user1.Email,
+			ExpiresAt: time.Now().Add(24 * time.Hour),
+		})
+		require.NoError(t, err)
+	}
+
+	// Create tokens for user2's email
+	for i := 0; i < 2; i++ {
+		_, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
+			UserID:    user2.ID,
+			TokenHash: "verify_byemail_u2_" + string(rune('a'+i)),
+			Email:     user2.Email,
+			ExpiresAt: time.Now().Add(24 * time.Hour),
+		})
+		require.NoError(t, err)
+	}
+
+	// Invalidate only user1's email tokens
+	err := repo.InvalidateEmailVerificationTokensByEmail(ctx, user1.Email)
+	require.NoError(t, err)
+
+	// Verify all user1's tokens are invalidated
+	var count1 int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE email = $1 AND verified_at IS NOT NULL",
+		user1.Email,
+	).Scan(&count1)
+	require.NoError(t, err)
+	assert.Equal(t, 3, count1)
+
+	// Verify user2's tokens are NOT invalidated
+	var count2 int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE email = $1 AND verified_at IS NULL",
+		user2.Email,
+	).Scan(&count2)
+	require.NoError(t, err)
+	assert.Equal(t, 2, count2)
+}
+
+func TestRepositoryPG_InvalidateEmailVerificationTokensByEmail_NoTokens(t *testing.T) {
+	t.Parallel()
+	repo, _ := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Invalidating tokens for an email with no tokens should not error
+	err := repo.InvalidateEmailVerificationTokensByEmail(ctx, "nobody@example.com")
+	require.NoError(t, err)
+}
+
+func TestRepositoryPG_DeleteVerifiedEmailTokens(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	user := createTestUser(t, testDB, "delverified", "delverified@example.com")
+
+	// Create a token and mark it as verified with an old timestamp (7+ days ago)
+	token, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
+		UserID:    user.ID,
+		TokenHash: "verify_delverified",
+		Email:     user.Email,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	})
+	require.NoError(t, err)
+
+	oldTime := time.Now().Add(-8 * 24 * time.Hour)
+	_, err = testDB.Pool().Exec(ctx,
+		"UPDATE shared.email_verification_tokens SET verified_at = $1 WHERE id = $2",
+		oldTime, token.ID,
+	)
+	require.NoError(t, err)
+
+	// Create another token that is NOT verified (should survive deletion)
+	_, err = repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
+		UserID:    user.ID,
+		TokenHash: "verify_delverified_keep",
+		Email:     user.Email,
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	})
+	require.NoError(t, err)
+
+	// Delete verified tokens
+	err = repo.DeleteVerifiedEmailTokens(ctx)
+	require.NoError(t, err)
+
+	// Verify the verified token was deleted
+	var countDeleted int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE token_hash = $1",
+		"verify_delverified",
+	).Scan(&countDeleted)
+	require.NoError(t, err)
+	assert.Equal(t, 0, countDeleted)
+
+	// Verify the unverified token still exists
+	var countKept int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.email_verification_tokens WHERE token_hash = $1",
+		"verify_delverified_keep",
+	).Scan(&countKept)
+	require.NoError(t, err)
+	assert.Equal(t, 1, countKept)
+}
+
+// ============================================================================
+// Failed Login Attempts Tests
+// ============================================================================
+
+func TestRepositoryPG_RecordFailedLoginAttempt(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	err := repo.RecordFailedLoginAttempt(ctx, "testuser", "192.168.1.100")
+	require.NoError(t, err)
+
+	// Verify the record was created
+	var count int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1 AND ip_address = $2",
+		"testuser", "192.168.1.100",
+	).Scan(&count)
+	require.NoError(t, err)
+	assert.Equal(t, 1, count)
+}
+
+func TestRepositoryPG_RecordFailedLoginAttempt_Multiple(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Record multiple failed attempts
+	for i := 0; i < 5; i++ {
+		err := repo.RecordFailedLoginAttempt(ctx, "bruteforce", "10.0.0.1")
+		require.NoError(t, err)
+	}
+
+	// Verify all records were created
+	var count int
+	err := testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1",
+		"bruteforce",
+	).Scan(&count)
+	require.NoError(t, err)
+	assert.Equal(t, 5, count)
+}
+
+func TestRepositoryPG_CountFailedLoginAttemptsByUsername(t *testing.T) {
+	t.Parallel()
+	repo, _ := setupTestRepository(t)
+	ctx := context.Background()
+
+	t.Run("no attempts", func(t *testing.T) {
+		count, err := repo.CountFailedLoginAttemptsByUsername(ctx, "noattempts", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(0), count)
+	})
+
+	t.Run("counts only recent attempts", func(t *testing.T) {
+		// Record some attempts now
+		for i := 0; i < 3; i++ {
+			err := repo.RecordFailedLoginAttempt(ctx, "countuser", "192.168.1.50")
+			require.NoError(t, err)
+		}
+
+		// Count attempts in the last hour (should find all 3)
+		count, err := repo.CountFailedLoginAttemptsByUsername(ctx, "countuser", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(3), count)
+
+		// Count attempts since the future (should find 0)
+		count, err = repo.CountFailedLoginAttemptsByUsername(ctx, "countuser", time.Now().Add(1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(0), count)
+	})
+
+	t.Run("different usernames are isolated", func(t *testing.T) {
+		err := repo.RecordFailedLoginAttempt(ctx, "userA", "10.0.0.1")
+		require.NoError(t, err)
+		err = repo.RecordFailedLoginAttempt(ctx, "userA", "10.0.0.1")
+		require.NoError(t, err)
+		err = repo.RecordFailedLoginAttempt(ctx, "userB", "10.0.0.1")
+		require.NoError(t, err)
+
+		countA, err := repo.CountFailedLoginAttemptsByUsername(ctx, "userA", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(2), countA)
+
+		countB, err := repo.CountFailedLoginAttemptsByUsername(ctx, "userB", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(1), countB)
+	})
+}
+
+func TestRepositoryPG_CountFailedLoginAttemptsByIP(t *testing.T) {
+	t.Parallel()
+	repo, _ := setupTestRepository(t)
+	ctx := context.Background()
+
+	t.Run("no attempts", func(t *testing.T) {
+		count, err := repo.CountFailedLoginAttemptsByIP(ctx, "172.16.0.1", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(0), count)
+	})
+
+	t.Run("counts by IP across usernames", func(t *testing.T) {
+		// Record attempts from same IP for different usernames
+		err := repo.RecordFailedLoginAttempt(ctx, "ipuser1", "172.16.0.100")
+		require.NoError(t, err)
+		err = repo.RecordFailedLoginAttempt(ctx, "ipuser2", "172.16.0.100")
+		require.NoError(t, err)
+		err = repo.RecordFailedLoginAttempt(ctx, "ipuser3", "172.16.0.100")
+		require.NoError(t, err)
+
+		// Record attempt from a different IP
+		err = repo.RecordFailedLoginAttempt(ctx, "ipuser1", "172.16.0.200")
+		require.NoError(t, err)
+
+		// Count for 172.16.0.100 should be 3
+		count, err := repo.CountFailedLoginAttemptsByIP(ctx, "172.16.0.100", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(3), count)
+
+		// Count for 172.16.0.200 should be 1
+		count, err = repo.CountFailedLoginAttemptsByIP(ctx, "172.16.0.200", time.Now().Add(-1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(1), count)
+	})
+
+	t.Run("time window filtering", func(t *testing.T) {
+		err := repo.RecordFailedLoginAttempt(ctx, "timeipuser", "172.16.0.50")
+		require.NoError(t, err)
+
+		// Count since the future should find 0
+		count, err := repo.CountFailedLoginAttemptsByIP(ctx, "172.16.0.50", time.Now().Add(1*time.Hour))
+		require.NoError(t, err)
+		assert.Equal(t, int64(0), count)
+	})
+}
+
+func TestRepositoryPG_ClearFailedLoginAttemptsByUsername(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Record multiple failed attempts for the user
+	for i := 0; i < 5; i++ {
+		err := repo.RecordFailedLoginAttempt(ctx, "clearuser", "10.0.0."+string(rune('1'+i)))
+		require.NoError(t, err)
+	}
+
+	// Record attempt for a different user
+	err := repo.RecordFailedLoginAttempt(ctx, "otheruser", "10.0.0.1")
+	require.NoError(t, err)
+
+	// Clear attempts for "clearuser"
+	err = repo.ClearFailedLoginAttemptsByUsername(ctx, "clearuser")
+	require.NoError(t, err)
+
+	// Verify clearuser's attempts are gone
+	var clearCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1",
+		"clearuser",
+	).Scan(&clearCount)
+	require.NoError(t, err)
+	assert.Equal(t, 0, clearCount)
+
+	// Verify otheruser's attempts are preserved
+	var otherCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1",
+		"otheruser",
+	).Scan(&otherCount)
+	require.NoError(t, err)
+	assert.Equal(t, 1, otherCount)
+}
+
+func TestRepositoryPG_ClearFailedLoginAttemptsByUsername_NoAttempts(t *testing.T) {
+	t.Parallel()
+	repo, _ := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Clearing when no attempts exist should not error
+	err := repo.ClearFailedLoginAttemptsByUsername(ctx, "nonexistentuser")
+	require.NoError(t, err)
+}
+
+func TestRepositoryPG_DeleteOldFailedLoginAttempts(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Insert an old attempt (> 24 hours ago) directly via SQL
+	oldTime := time.Now().Add(-48 * time.Hour)
+	_, err := testDB.Pool().Exec(ctx,
+		"INSERT INTO shared.failed_login_attempts (username, ip_address, attempted_at) VALUES ($1, $2, $3)",
+		"olduser", "10.0.0.1", oldTime,
+	)
+	require.NoError(t, err)
+
+	// Insert a recent attempt
+	err = repo.RecordFailedLoginAttempt(ctx, "recentuser", "10.0.0.2")
+	require.NoError(t, err)
+
+	// Delete old attempts
+	err = repo.DeleteOldFailedLoginAttempts(ctx)
+	require.NoError(t, err)
+
+	// Verify old attempt was deleted
+	var oldCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1",
+		"olduser",
+	).Scan(&oldCount)
+	require.NoError(t, err)
+	assert.Equal(t, 0, oldCount)
+
+	// Verify recent attempt still exists
+	var recentCount int
+	err = testDB.Pool().QueryRow(ctx,
+		"SELECT COUNT(*) FROM shared.failed_login_attempts WHERE username = $1",
+		"recentuser",
+	).Scan(&recentCount)
+	require.NoError(t, err)
+	assert.Equal(t, 1, recentCount)
+}
+
+func TestRepositoryPG_DeleteOldFailedLoginAttempts_NoOldAttempts(t *testing.T) {
+	t.Parallel()
+	repo, _ := setupTestRepository(t)
+	ctx := context.Background()
+
+	// Delete old attempts when none exist should not error
+	err := repo.DeleteOldFailedLoginAttempts(ctx)
+	require.NoError(t, err)
+}
+
+// ============================================================================
+// Auth Token Tests (additional: GetAuthTokensByDeviceFingerprint)
+// ============================================================================
+
+func TestRepositoryPG_GetAuthTokensByDeviceFingerprint(t *testing.T) {
+	t.Parallel()
+	repo, testDB := setupTestRepository(t)
+	ctx := context.Background()
+
+	user := createTestUser(t, testDB, "devicefp", "devicefp@example.com")
+
+	fingerprint := "fp-abc-123"
+	// Create tokens with matching fingerprint
+	for i := 0; i < 2; i++ {
+		_, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
+			UserID:            user.ID,
+			TokenHash:         "hash_fp_match_" + string(rune('a'+i)),
+			TokenType:         "refresh",
+			DeviceFingerprint: &fingerprint,
+			ExpiresAt:         time.Now().Add(24 * time.Hour),
+		})
+		require.NoError(t, err)
+	}
+
+	// Create token with different fingerprint
+	otherFP := "fp-other"
+	_, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
+		UserID:            user.ID,
+		TokenHash:         "hash_fp_other",
+		TokenType:         "refresh",
+		DeviceFingerprint: &otherFP,
+		ExpiresAt:         time.Now().Add(24 * time.Hour),
+	})
+	require.NoError(t, err)
+
+	tokens, err := repo.GetAuthTokensByDeviceFingerprint(ctx, user.ID, fingerprint)
+	require.NoError(t, err)
+	assert.Len(t, tokens, 2)
+	for _, tok := range tokens {
+		assert.Equal(t, fingerprint, *tok.DeviceFingerprint)
+	}
+}
+
 // Helper function
 func stringPtr(s string) *string {
 	return &s

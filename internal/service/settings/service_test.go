@@ -32,9 +32,10 @@ func setupTestService(t *testing.T) (Service, testutil.DB) {
 func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
 	queries := db.New(testDB.Pool())
+	unique := uuid.Must(uuid.NewV7()).String()
 	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{
-		Username:     "testuser_" + uuid.Must(uuid.NewV7()).String()[:8],
-		Email:        "test_" + uuid.Must(uuid.NewV7()).String()[:8] + "@example.com",
+		Username:     "testuser_" + unique,
+		Email:        "test_" + unique + "@example.com",
 		PasswordHash: "hash",
 	})
 	require.NoError(t, err)

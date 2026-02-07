@@ -878,15 +878,15 @@ func TestHandler_ListPermissions_Success(t *testing.T) {
 	assert.NotEmpty(t, response.Permissions)
 
 	// Verify that known resources are present
-	var foundLibrary, foundUsers bool
+	var foundLibraries, foundUsers bool
 	for _, p := range response.Permissions {
-		if p.Resource == "library" {
-			foundLibrary = true
+		if p.Resource == "libraries" {
+			foundLibraries = true
 		}
 		if p.Resource == "users" {
 			foundUsers = true
 		}
 	}
-	assert.True(t, foundLibrary, "library resource should be present")
+	assert.True(t, foundLibraries, "libraries resource should be present")
 	assert.True(t, foundUsers, "users resource should be present")
 }

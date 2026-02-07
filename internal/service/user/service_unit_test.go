@@ -27,13 +27,34 @@ import (
 
 func setupUnitTestService(t *testing.T, repo user.Repository) *user.Service {
 	t.Helper()
+	svc, _ := setupUnitTestServiceWithDB(t, repo)
+	return svc
+}
+
+func setupUnitTestServiceWithDB(t *testing.T, repo user.Repository) (*user.Service, testutil.DB) {
+	t.Helper()
 	testDB := testutil.NewFastTestDB(t)
 	avatarCfg := config.AvatarConfig{
 		StoragePath:  "/tmp/test-avatars",
 		MaxSizeBytes: 5 * 1024 * 1024,
-		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
+		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp", "image/gif"},
 	}
-	return user.NewService(testDB.Pool(), repo, activity.NewNoopLogger(), storage.NewMockStorage(), avatarCfg)
+	return user.NewService(testDB.Pool(), repo, activity.NewNoopLogger(), storage.NewMockStorage(), avatarCfg), testDB
+}
+
+// createDBUser creates a user directly in the test database for tests that need FK references.
+// Returns the generated user ID.
+func createDBUser(t *testing.T, testDB testutil.DB) uuid.UUID {
+	t.Helper()
+	queries := db.New(testDB.Pool())
+	unique := uuid.Must(uuid.NewV7()).String()
+	u, err := queries.CreateUser(context.Background(), db.CreateUserParams{
+		Username:     "testuser_" + unique,
+		Email:        "test_" + unique + "@example.com",
+		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=2$test$test",
+	})
+	require.NoError(t, err)
+	return u.ID
 }
 
 func makeTestUser(id uuid.UUID, username, email string) *db.SharedUser {
@@ -842,23 +863,13 @@ func TestUnit_UploadAvatar(t *testing.T) {
 		assert.Contains(t, err.Error(), "invalid height")
 	})
 
+	// NOTE: UploadAvatar uses s.pool directly (not the repository mock) for transaction
+	// support. Valid upload tests need a real user in the database for FK constraints.
+
 	t.Run("valid jpeg upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.Must(uuid.NewV7())
-
-		// Storage is a mock that returns success
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
-		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
-			Return(&db.SharedUserAvatar{
-				ID:       avatarID,
-				UserID:   userID,
-				FilePath: "/path/to/avatar.jpg",
-			}, nil)
-		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
-			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
-
-		svc := setupUnitTestService(t, repo)
+		svc, testDB := setupUnitTestServiceWithDB(t, repo)
+		dbUserID := createDBUser(t, testDB)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.jpg",
@@ -868,29 +879,17 @@ func TestUnit_UploadAvatar(t *testing.T) {
 			Height:        256,
 		}
 
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test"), metadata)
+		result, err := svc.UploadAvatar(ctx, dbUserID, strings.NewReader("test"), metadata)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
-		assert.Equal(t, avatarID, result.ID)
+		assert.Equal(t, dbUserID, result.UserID)
 	})
 
 	t.Run("valid png upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.Must(uuid.NewV7())
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(2), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
-		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
-			Return(&db.SharedUserAvatar{
-				ID:       avatarID,
-				UserID:   userID,
-				FilePath: "/path/to/avatar.png",
-			}, nil)
-		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
-			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
-
-		svc := setupUnitTestService(t, repo)
+		svc, testDB := setupUnitTestServiceWithDB(t, repo)
+		dbUserID := createDBUser(t, testDB)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -900,7 +899,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 			Height:        512,
 		}
 
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test image data"), metadata)
+		result, err := svc.UploadAvatar(ctx, dbUserID, strings.NewReader("test image data"), metadata)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -908,22 +907,9 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid gif upload with animation", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.Must(uuid.NewV7())
 		isAnimated := true
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
-		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
-			Return(&db.SharedUserAvatar{
-				ID:         avatarID,
-				UserID:     userID,
-				FilePath:   "/path/to/avatar.gif",
-				IsAnimated: &isAnimated,
-			}, nil)
-		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
-			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
-
-		svc := setupUnitTestService(t, repo)
+		svc, testDB := setupUnitTestServiceWithDB(t, repo)
+		dbUserID := createDBUser(t, testDB)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.gif",
@@ -934,7 +920,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 			IsAnimated:    &isAnimated,
 		}
 
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test gif data"), metadata)
+		result, err := svc.UploadAvatar(ctx, dbUserID, strings.NewReader("test gif data"), metadata)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -942,20 +928,8 @@ func TestUnit_UploadAvatar(t *testing.T) {
 
 	t.Run("valid webp upload", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-		avatarID := uuid.Must(uuid.NewV7())
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
-		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
-			Return(&db.SharedUserAvatar{
-				ID:       avatarID,
-				UserID:   userID,
-				FilePath: "/path/to/avatar.webp",
-			}, nil)
-		repo.EXPECT().UpdateUser(ctx, userID, mock.AnythingOfType("user.UpdateUserParams")).
-			Return(makeTestUser(userID, "testuser", "test@example.com"), nil)
-
-		svc := setupUnitTestService(t, repo)
+		svc, testDB := setupUnitTestServiceWithDB(t, repo)
+		dbUserID := createDBUser(t, testDB)
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.webp",
@@ -965,18 +939,19 @@ func TestUnit_UploadAvatar(t *testing.T) {
 			Height:        400,
 		}
 
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test webp data"), metadata)
+		result, err := svc.UploadAvatar(ctx, dbUserID, strings.NewReader("test webp data"), metadata)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
 	})
 
-	t.Run("error getting latest version", func(t *testing.T) {
+	// NOTE: Error injection subtests for UploadAvatar can't use mock expectations
+	// because the method uses s.pool directly (not the repository) for transaction
+	// support. Test FK constraint violation as proxy for DB error handling.
+	t.Run("error on non-existent user", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), errors.New("db error"))
-
 		svc := setupUnitTestService(t, repo)
+		nonExistentUserID := uuid.Must(uuid.NewV7())
 
 		metadata := user.AvatarMetadata{
 			FileName:      "avatar.png",
@@ -986,55 +961,7 @@ func TestUnit_UploadAvatar(t *testing.T) {
 			Height:        256,
 		}
 
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test"), metadata)
-
-		require.Error(t, err)
-		require.Nil(t, result)
-		assert.Contains(t, err.Error(), "failed to get latest avatar version")
-	})
-
-	t.Run("error unsetting current avatars", func(t *testing.T) {
-		repo := NewMockUserRepository(t)
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(errors.New("db error"))
-
-		svc := setupUnitTestService(t, repo)
-
-		metadata := user.AvatarMetadata{
-			FileName:      "avatar.png",
-			FileSizeBytes: 1024,
-			MimeType:      "image/png",
-			Width:         256,
-			Height:        256,
-		}
-
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test"), metadata)
-
-		require.Error(t, err)
-		require.Nil(t, result)
-		assert.Contains(t, err.Error(), "failed to unset current avatars")
-	})
-
-	t.Run("error creating avatar record", func(t *testing.T) {
-		repo := NewMockUserRepository(t)
-
-		repo.EXPECT().GetLatestAvatarVersion(ctx, userID).Return(int32(0), nil)
-		repo.EXPECT().UnsetCurrentAvatars(ctx, userID).Return(nil)
-		repo.EXPECT().CreateAvatar(ctx, mock.AnythingOfType("user.CreateAvatarParams")).
-			Return(nil, errors.New("db error"))
-
-		svc := setupUnitTestService(t, repo)
-
-		metadata := user.AvatarMetadata{
-			FileName:      "avatar.png",
-			FileSizeBytes: 1024,
-			MimeType:      "image/png",
-			Width:         256,
-			Height:        256,
-		}
-
-		result, err := svc.UploadAvatar(ctx, userID, strings.NewReader("test"), metadata)
+		result, err := svc.UploadAvatar(ctx, nonExistentUserID, strings.NewReader("test"), metadata)
 
 		require.Error(t, err)
 		require.Nil(t, result)

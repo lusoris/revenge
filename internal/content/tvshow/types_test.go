@@ -384,6 +384,17 @@ func TestSeason_GetOverview(t *testing.T) {
 			expected: "Staffelübersicht",
 		},
 		{
+			name: "Falls back to English",
+			season: &Season{
+				Overview: strPtr("Season overview"),
+				OverviewsI18n: map[string]string{
+					"en": "English season overview",
+				},
+			},
+			lang:     "fr",
+			expected: "English season overview",
+		},
+		{
 			name: "Falls back to default Overview",
 			season: &Season{
 				Overview: strPtr("Default overview"),
@@ -751,6 +762,267 @@ func TestUserTVStats(t *testing.T) {
 	assert.Equal(t, int64(250), stats.EpisodesWatched)
 	assert.Equal(t, int64(5), stats.EpisodesInProgress)
 	assert.Equal(t, int64(280), stats.TotalWatches)
+}
+
+// =============================================================================
+// Additional GetTagline / GetOverview edge cases
+// =============================================================================
+
+func TestSeries_GetTagline_OriginalLanguageFallback(t *testing.T) {
+	t.Parallel()
+
+	series := &Series{
+		Tagline:          strPtr("Default"),
+		OriginalLanguage: "de",
+		TaglinesI18n: map[string]string{
+			"de": "Heil dem König",
+		},
+	}
+
+	// Request French; no English in i18n, falls back to original language "de"
+	result := series.GetTagline("fr")
+	assert.Equal(t, "Heil dem König", result)
+}
+
+func TestSeries_GetTagline_EmptyI18nValues(t *testing.T) {
+	t.Parallel()
+
+	series := &Series{
+		Tagline:          strPtr("Fallback"),
+		OriginalLanguage: "en",
+		TaglinesI18n: map[string]string{
+			"de": "", // empty value should be skipped
+			"en": "", // empty value should be skipped
+		},
+	}
+
+	result := series.GetTagline("de")
+	assert.Equal(t, "Fallback", result)
+}
+
+func TestSeries_GetOverview_OriginalLanguageFallback(t *testing.T) {
+	t.Parallel()
+
+	series := &Series{
+		Overview:         strPtr("Default"),
+		OriginalLanguage: "ja",
+		OverviewsI18n: map[string]string{
+			"ja": "Japanese overview",
+		},
+	}
+
+	// Request Korean; no English in i18n, falls back to original language "ja"
+	result := series.GetOverview("ko")
+	assert.Equal(t, "Japanese overview", result)
+}
+
+func TestSeries_GetOverview_EmptyString(t *testing.T) {
+	t.Parallel()
+
+	series := &Series{
+		OriginalLanguage: "en",
+	}
+
+	result := series.GetOverview("de")
+	assert.Equal(t, "", result)
+}
+
+func TestSeason_GetOverview_OriginalLanguageFallback(t *testing.T) {
+	t.Parallel()
+
+	season := &Season{
+		Overview: strPtr("Default Season Overview"),
+		OverviewsI18n: map[string]string{
+			"ja": "Japanese season overview",
+		},
+	}
+
+	// No English and no exact match, but no OriginalLanguage field on Season,
+	// so should fall to Overview field
+	result := season.GetOverview("ko")
+	assert.Equal(t, "Default Season Overview", result)
+}
+
+func TestSeason_GetOverview_EmptyString(t *testing.T) {
+	t.Parallel()
+
+	season := &Season{}
+
+	result := season.GetOverview("de")
+	assert.Equal(t, "", result)
+}
+
+// =============================================================================
+// Episode.GetOverview Tests
+// =============================================================================
+
+func TestEpisode_GetOverview(t *testing.T) {
+	tests := []struct {
+		name     string
+		episode  *Episode
+		lang     string
+		expected string
+	}{
+		{
+			name: "Returns requested language",
+			episode: &Episode{
+				Overview: strPtr("English overview"),
+				OverviewsI18n: map[string]string{
+					"en": "English overview",
+					"de": "German overview",
+				},
+			},
+			lang:     "de",
+			expected: "German overview",
+		},
+		{
+			name: "Falls back to English",
+			episode: &Episode{
+				Overview: strPtr("English overview"),
+				OverviewsI18n: map[string]string{
+					"en": "English overview",
+				},
+			},
+			lang:     "fr",
+			expected: "English overview",
+		},
+		{
+			name: "Falls back to default Overview",
+			episode: &Episode{
+				Overview: strPtr("Default episode overview"),
+			},
+			lang:     "de",
+			expected: "Default episode overview",
+		},
+		{
+			name:     "Returns empty for nil overview and nil i18n",
+			episode:  &Episode{},
+			lang:     "de",
+			expected: "",
+		},
+		{
+			name: "Skips empty i18n values",
+			episode: &Episode{
+				Overview: strPtr("Fallback"),
+				OverviewsI18n: map[string]string{
+					"de": "",
+					"en": "",
+				},
+			},
+			lang:     "de",
+			expected: "Fallback",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.episode.GetOverview(tt.lang)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+// =============================================================================
+// ContinueWatchingItem method tests
+// =============================================================================
+
+func TestContinueWatchingItem_GetProgressPercent(t *testing.T) {
+	tests := []struct {
+		name     string
+		progress int32
+		duration int32
+		expected float64
+	}{
+		{
+			name:     "Normal progress",
+			progress: 1200,
+			duration: 2700,
+			expected: float64(1200) / float64(2700) * 100,
+		},
+		{
+			name:     "Zero duration returns 0",
+			progress: 500,
+			duration: 0,
+			expected: 0,
+		},
+		{
+			name:     "Full watch",
+			progress: 2700,
+			duration: 2700,
+			expected: 100,
+		},
+		{
+			name:     "Zero progress",
+			progress: 0,
+			duration: 2700,
+			expected: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			item := &ContinueWatchingItem{
+				ProgressSeconds: tt.progress,
+				DurationSeconds: tt.duration,
+			}
+			result := item.GetProgressPercent()
+			assert.InDelta(t, tt.expected, result, 0.01)
+		})
+	}
+}
+
+func TestContinueWatchingItem_GetLastWatchedFormatted(t *testing.T) {
+	tests := []struct {
+		name          string
+		lastWatchedAt time.Time
+		expected      string
+	}{
+		{
+			name:          "Just now (seconds ago)",
+			lastWatchedAt: time.Now().Add(-10 * time.Second),
+			expected:      "Just now",
+		},
+		{
+			name:          "Less than an hour ago",
+			lastWatchedAt: time.Now().Add(-30 * time.Minute),
+			expected:      "Less than an hour ago",
+		},
+		{
+			name:          "1 hour ago",
+			lastWatchedAt: time.Now().Add(-1*time.Hour - 10*time.Minute),
+			expected:      "1 hour ago",
+		},
+		{
+			name:          "Multiple hours ago",
+			lastWatchedAt: time.Now().Add(-5 * time.Hour),
+			expected:      "05 hours ago",
+		},
+		{
+			name:          "Yesterday",
+			lastWatchedAt: time.Now().Add(-30 * time.Hour),
+			expected:      "Yesterday",
+		},
+		{
+			name:          "Days ago",
+			lastWatchedAt: time.Now().Add(-3 * 24 * time.Hour),
+			expected:      "3 days ago",
+		},
+		{
+			name:          "More than a week ago",
+			lastWatchedAt: time.Now().Add(-14 * 24 * time.Hour),
+			expected:      time.Now().Add(-14 * 24 * time.Hour).Format("Jan 2, 2006"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			item := &ContinueWatchingItem{
+				LastWatchedAt: tt.lastWatchedAt,
+			}
+			result := item.GetLastWatchedFormatted()
+			assert.Equal(t, tt.expected, result)
+		})
+	}
 }
 
 // Helper functions for creating pointers in tests

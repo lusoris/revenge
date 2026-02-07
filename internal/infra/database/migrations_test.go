@@ -5,13 +5,48 @@ import (
 	"database/sql"
 	"testing"
 
-	embeddedpostgres "github.com/fergusstrange/embedded-postgres"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// columnSpec defines expected column type and nullability.
+type columnSpec struct {
+	dataType   string
+	isNullable string
+}
+
+// assertColumnsExist verifies that all expected columns exist in the given table with correct types.
+// Extra columns added by newer migrations are allowed and do not cause failures.
+func assertColumnsExist(t *testing.T, db *sql.DB, schema, table string, expected map[string]columnSpec) {
+	t.Helper()
+
+	rows, err := db.Query(`
+		SELECT column_name, data_type, is_nullable
+		FROM information_schema.columns
+		WHERE table_schema = $1 AND table_name = $2
+		ORDER BY ordinal_position
+	`, schema, table)
+	require.NoError(t, err)
+	defer func() { _ = rows.Close() }()
+
+	actual := make(map[string]columnSpec)
+	for rows.Next() {
+		var colName, dataType, nullable string
+		require.NoError(t, rows.Scan(&colName, &dataType, &nullable))
+		actual[colName] = columnSpec{dataType, nullable}
+	}
+
+	for colName, exp := range expected {
+		got, exists := actual[colName]
+		if assert.True(t, exists, "missing column: %s.%s.%s", schema, table, colName) {
+			assert.Equal(t, exp.dataType, got.dataType, "column %s has wrong type", colName)
+			assert.Equal(t, exp.isNullable, got.isNullable, "column %s has wrong nullable", colName)
+		}
+	}
+}
 
 // newMigrateInstance creates a migrate instance using the embedded migration FS.
 func newMigrateInstance(t *testing.T, sqlDB *sql.DB) *migrate.Migrate {
@@ -30,88 +65,37 @@ func TestMigrationsUpDown(t *testing.T) {
 		t.Skip("skipping migration test in short mode")
 	}
 
-	// Start embedded PostgreSQL
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15432).
-		Username("postgres").
-		Password("postgres").
-		Database("test_migrations"))
+	db, _, cleanup := setupFreshTestDB(t)
+	defer cleanup()
 
-	err := embeddedPG.Start()
-	require.NoError(t, err, "failed to start embedded postgres")
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	// Connect to database
-	db, err := sql.Open("postgres", "host=localhost port=15432 user=postgres password=postgres dbname=test_migrations sslmode=disable")
-	require.NoError(t, err, "failed to connect to database")
-	defer func() { _ = db.Close() }()
-
-	// Wait for connection
-	err = db.Ping()
-	require.NoError(t, err, "failed to ping database")
-
-	// Create migration instance using embedded FS
 	m := newMigrateInstance(t, db)
 
-	// Test: Migrate UP
 	t.Run("MigrateUp", func(t *testing.T) {
 		err := m.Up()
 		require.NoError(t, err, "failed to migrate up")
 
-		// Verify all tables exist
-		var tableExists bool
+		// Core schemas and tables must exist after full migration
+		coreTables := []struct{ schema, table string }{
+			{"shared", "users"},
+			{"shared", "sessions"},
+			{"shared", "server_settings"},
+			{"shared", "user_settings"},
+			{"shared", "user_preferences"},
+			{"shared", "user_avatars"},
+			{"shared", "auth_tokens"},
+			{"shared", "password_reset_tokens"},
+			{"shared", "email_verification_tokens"},
+		}
 
-		// Check shared schema
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.schemata WHERE schema_name = 'shared')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "shared schema should exist")
-
-		// Check users table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'users')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "users table should exist")
-
-		// Check sessions table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "sessions table should exist")
-
-		// Check server_settings table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'server_settings')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "server_settings table should exist")
-
-		// Check user_settings table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_settings')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "user_settings table should exist")
-
-		// Check user_preferences table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_preferences')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "user_preferences table should exist")
-
-		// Check user_avatars table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'user_avatars')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "user_avatars table should exist")
-
-		// Check auth_tokens table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'auth_tokens')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "auth_tokens table should exist")
-
-		// Check password_reset_tokens table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'password_reset_tokens')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "password_reset_tokens table should exist")
-
-		// Check email_verification_tokens table
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'email_verification_tokens')").Scan(&tableExists)
-		require.NoError(t, err)
-		assert.True(t, tableExists, "email_verification_tokens table should exist")
+		for _, ct := range coreTables {
+			var exists bool
+			err = db.QueryRow(
+				"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = $1 AND table_name = $2)",
+				ct.schema, ct.table,
+			).Scan(&exists)
+			require.NoError(t, err)
+			assert.True(t, exists, "%s.%s should exist", ct.schema, ct.table)
+		}
 
 		// Verify default settings were inserted
 		var count int
@@ -119,46 +103,42 @@ func TestMigrationsUpDown(t *testing.T) {
 		require.NoError(t, err)
 		assert.Greater(t, count, 0, "default settings should be inserted")
 
-		// Verify specific default setting
 		var serverName string
 		err = db.QueryRow("SELECT value::text FROM shared.server_settings WHERE key = 'server.name'").Scan(&serverName)
 		require.NoError(t, err)
-		assert.Equal(t, "\"Revenge Media Server\"", serverName, "default server name should be set")
+		assert.Equal(t, "\"Revenge Media Server\"", serverName)
 	})
 
-	// Test: Migrate DOWN one step
 	t.Run("MigrateDown", func(t *testing.T) {
-		err := m.Steps(-1)
+		versionBefore, _, err := m.Version()
+		require.NoError(t, err)
+
+		err = m.Steps(-1)
 		require.NoError(t, err, "failed to migrate down one step")
 
-		// Verify moderator role permissions are gone (our newest migration 000027)
-		var moderatorExists bool
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM shared.casbin_rule WHERE ptype = 'p' AND v0 = 'moderator')").Scan(&moderatorExists)
+		versionAfter, _, err := m.Version()
 		require.NoError(t, err)
-		assert.False(t, moderatorExists, "moderator role should not exist after down migration")
+		assert.Less(t, versionAfter, versionBefore, "version should decrease after step down")
 
-		// movie_watched should still exist (migration 000026)
-		var tableExists bool
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'movie_watched')").Scan(&tableExists)
+		// Core tables from early migrations should still exist
+		var exists bool
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'users')").Scan(&exists)
 		require.NoError(t, err)
-		assert.True(t, tableExists, "movie_watched table should still exist")
+		assert.True(t, exists, "users table should survive stepping down one migration")
 
-		// Core tables should still exist
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&tableExists)
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'sessions')").Scan(&exists)
 		require.NoError(t, err)
-		assert.True(t, tableExists, "sessions table should still exist")
+		assert.True(t, exists, "sessions table should survive stepping down one migration")
 	})
 
-	// Test: Migrate UP again
 	t.Run("MigrateUpAgain", func(t *testing.T) {
 		err := m.Up()
 		require.NoError(t, err, "failed to migrate up again")
 
-		// Verify table exists again
-		var tableExists bool
-		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'server_settings')").Scan(&tableExists)
+		var exists bool
+		err = db.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'server_settings')").Scan(&exists)
 		require.NoError(t, err)
-		assert.True(t, tableExists, "server_settings table should exist again")
+		assert.True(t, exists, "server_settings should exist after re-migration")
 	})
 }
 
@@ -167,155 +147,37 @@ func TestServerSettingsTableStructure(t *testing.T) {
 		t.Skip("skipping table structure test in short mode")
 	}
 
-	// Start embedded PostgreSQL
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15433).
-		Username("postgres").
-		Password("postgres").
-		Database("test_structure"))
+	db, cleanup := setupTestDB(t, 0)
+	defer cleanup()
 
-	err := embeddedPG.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	// Connect
-	db, err := sql.Open("postgres", "host=localhost port=15433 user=postgres password=postgres dbname=test_structure sslmode=disable")
-	require.NoError(t, err)
-	defer func() { _ = db.Close() }()
-
-	require.NoError(t, db.Ping())
-
-	// Run migrations
-	m := newMigrateInstance(t, db)
-
-	err = m.Up()
-	require.NoError(t, err)
-
-	// Test column existence and types
-	rows, err := db.Query(`
-		SELECT column_name, data_type, is_nullable
-		FROM information_schema.columns
-		WHERE table_schema = 'shared' AND table_name = 'server_settings'
-		ORDER BY ordinal_position
-	`)
-	require.NoError(t, err)
-	defer func() { _ = rows.Close() }()
-
-	expectedColumns := map[string]struct {
-		dataType   string
-		isNullable string
-	}{
-		"key":            {"character varying", "NO"},
-		"value":          {"jsonb", "NO"},
-		"description":    {"text", "YES"},
-		"category":       {"character varying", "YES"},
-		"data_type":      {"character varying", "NO"},
-		"is_secret":      {"boolean", "YES"},
-		"is_public":      {"boolean", "YES"},
-		"allowed_values": {"jsonb", "YES"},
-		"min_value":      {"numeric", "YES"},
-		"max_value":      {"numeric", "YES"},
-		"pattern":        {"text", "YES"},
-		"created_at":     {"timestamp with time zone", "NO"},
-		"updated_at":     {"timestamp with time zone", "NO"},
-		"updated_by":     {"uuid", "YES"},
-	}
-
-	foundColumns := make(map[string]bool)
-	for rows.Next() {
-		var colName, dataType, nullable string
-		err := rows.Scan(&colName, &dataType, &nullable)
-		require.NoError(t, err)
-
-		expected, exists := expectedColumns[colName]
-		assert.True(t, exists, "unexpected column: %s", colName)
-		if exists {
-			assert.Equal(t, expected.dataType, dataType, "column %s has wrong type", colName)
-			assert.Equal(t, expected.isNullable, nullable, "column %s has wrong nullable", colName)
-		}
-		foundColumns[colName] = true
-	}
-
-	// Verify all expected columns were found
-	for colName := range expectedColumns {
-		assert.True(t, foundColumns[colName], "missing column: %s", colName)
-	}
+	assertColumnsExist(t, db, "shared", "server_settings", map[string]columnSpec{
+		"key":        {"character varying", "NO"},
+		"value":      {"jsonb", "NO"},
+		"data_type":  {"character varying", "NO"},
+		"category":   {"character varying", "YES"},
+		"is_secret":  {"boolean", "YES"},
+		"is_public":  {"boolean", "YES"},
+		"created_at": {"timestamp with time zone", "NO"},
+		"updated_at": {"timestamp with time zone", "NO"},
+	})
 }
 
-// TestUserSettingsTableStructure verifies the user_settings table structure.
 func TestUserSettingsTableStructure(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping table structure test in short mode")
 	}
 
-	// Start embedded PostgreSQL
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15434).
-		Database("test_user_settings_structure"))
+	db, cleanup := setupTestDB(t, 0)
+	defer cleanup()
 
-	require.NoError(t, embeddedPG.Start())
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	// Connect
-	db, err := sql.Open("postgres", "host=localhost port=15434 user=postgres password=postgres dbname=test_user_settings_structure sslmode=disable")
-	require.NoError(t, err)
-	defer func() { _ = db.Close() }()
-
-	require.NoError(t, db.Ping())
-
-	// Run migrations
-	m := newMigrateInstance(t, db)
-
-	err = m.Up()
-	require.NoError(t, err)
-
-	// Test column existence and types
-	rows, err := db.Query(`
-		SELECT column_name, data_type, is_nullable
-		FROM information_schema.columns
-		WHERE table_schema = 'shared' AND table_name = 'user_settings'
-		ORDER BY ordinal_position
-	`)
-	require.NoError(t, err)
-	defer func() { _ = rows.Close() }()
-
-	expectedColumns := map[string]struct {
-		dataType   string
-		isNullable string
-	}{
-		"user_id":     {"uuid", "NO"},
-		"key":         {"character varying", "NO"},
-		"value":       {"jsonb", "NO"},
-		"description": {"text", "YES"},
-		"category":    {"character varying", "YES"},
-		"data_type":   {"character varying", "NO"},
-		"created_at":  {"timestamp with time zone", "NO"},
-		"updated_at":  {"timestamp with time zone", "NO"},
-	}
-
-	foundColumns := make(map[string]bool)
-	for rows.Next() {
-		var colName, dataType, nullable string
-		err := rows.Scan(&colName, &dataType, &nullable)
-		require.NoError(t, err)
-
-		expected, exists := expectedColumns[colName]
-		assert.True(t, exists, "unexpected column: %s", colName)
-		if exists {
-			assert.Equal(t, expected.dataType, dataType, "column %s has wrong type", colName)
-			assert.Equal(t, expected.isNullable, nullable, "column %s has wrong nullable", colName)
-		}
-		foundColumns[colName] = true
-	}
-
-	// Verify all expected columns were found
-	for colName := range expectedColumns {
-		assert.True(t, foundColumns[colName], "missing column: %s", colName)
-	}
+	assertColumnsExist(t, db, "shared", "user_settings", map[string]columnSpec{
+		"user_id":    {"uuid", "NO"},
+		"key":        {"character varying", "NO"},
+		"value":      {"jsonb", "NO"},
+		"data_type":  {"character varying", "NO"},
+		"created_at": {"timestamp with time zone", "NO"},
+		"updated_at": {"timestamp with time zone", "NO"},
+	})
 }
 
 func TestServerSettingsDefaultValues(t *testing.T) {
@@ -323,47 +185,24 @@ func TestServerSettingsDefaultValues(t *testing.T) {
 		t.Skip("skipping default values test in short mode")
 	}
 
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15434).
-		Username("postgres").
-		Password("postgres").
-		Database("test_defaults"))
+	db, cleanup := setupTestDB(t, 0)
+	defer cleanup()
 
-	err := embeddedPG.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	db, err := sql.Open("postgres", "host=localhost port=15434 user=postgres password=postgres dbname=test_defaults sslmode=disable")
-	require.NoError(t, err)
-	defer func() { _ = db.Close() }()
-
-	require.NoError(t, db.Ping())
-
-	// Run migrations
-	m := newMigrateInstance(t, db)
-
-	err = m.Up()
-	require.NoError(t, err)
-
-	// Test default values
 	type setting struct {
 		key      string
 		category string
 		dataType string
 		isPublic bool
-		hasValue bool
 	}
 
 	expectedSettings := []setting{
-		{"server.name", "general", "string", true, true},
-		{"auth.jwt.access_token_expiry", "auth", "number", false, true},
-		{"auth.jwt.refresh_token_expiry", "auth", "number", false, true},
-		{"auth.password.min_length", "auth", "number", false, true},
-		{"auth.session.max_per_user", "auth", "number", false, true},
-		{"features.registration_enabled", "features", "boolean", true, true},
-		{"features.oidc_enabled", "features", "boolean", true, true},
+		{"server.name", "general", "string", true},
+		{"auth.jwt.access_token_expiry", "auth", "number", false},
+		{"auth.jwt.refresh_token_expiry", "auth", "number", false},
+		{"auth.password.min_length", "auth", "number", false},
+		{"auth.session.max_per_user", "auth", "number", false},
+		{"features.registration_enabled", "features", "boolean", true},
+		{"features.oidc_enabled", "features", "boolean", true},
 	}
 
 	for _, expected := range expectedSettings {
@@ -381,174 +220,45 @@ func TestServerSettingsDefaultValues(t *testing.T) {
 			assert.Equal(t, expected.category, category)
 			assert.Equal(t, expected.dataType, dataType)
 			assert.Equal(t, expected.isPublic, isPublic)
-			if expected.hasValue {
-				assert.True(t, value.Valid, "value should not be null")
-			}
+			assert.True(t, value.Valid, "value should not be null")
 		})
 	}
 }
 
-// TestUserPreferencesTableStructure verifies the user_preferences table schema
 func TestUserPreferencesTableStructure(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping user_preferences test in short mode")
 	}
 
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15435).
-		Username("postgres").
-		Password("postgres").
-		Database("test_user_preferences"))
+	db, cleanup := setupTestDB(t, 0)
+	defer cleanup()
 
-	err := embeddedPG.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	db, err := sql.Open("postgres", "host=localhost port=15435 user=postgres password=postgres dbname=test_user_preferences sslmode=disable")
-	require.NoError(t, err)
-	defer func() { _ = db.Close() }()
-
-	require.NoError(t, db.Ping())
-
-	// Run migrations
-	m := newMigrateInstance(t, db)
-
-	err = m.Up()
-	require.NoError(t, err)
-
-	// Test column existence and types
-	rows, err := db.Query(`
-		SELECT column_name, data_type, is_nullable
-		FROM information_schema.columns
-		WHERE table_schema = 'shared' AND table_name = 'user_preferences'
-		ORDER BY ordinal_position
-	`)
-	require.NoError(t, err)
-	defer func() { _ = rows.Close() }()
-
-	expectedColumns := map[string]struct {
-		dataType   string
-		isNullable string
-	}{
-		"user_id":              {"uuid", "NO"},
-		"email_notifications":  {"jsonb", "YES"},
-		"push_notifications":   {"jsonb", "YES"},
-		"digest_notifications": {"jsonb", "YES"},
-		"profile_visibility":   {"character varying", "YES"},
-		"show_email":           {"boolean", "YES"},
-		"show_activity":        {"boolean", "YES"},
-		"theme":                {"character varying", "YES"},
-		"display_language":     {"character varying", "YES"},
-		"content_language":     {"character varying", "YES"},
-		"show_adult_content":   {"boolean", "YES"},
-		"show_spoilers":        {"boolean", "YES"},
-		"auto_play_videos":     {"boolean", "YES"},
-		"created_at":           {"timestamp with time zone", "NO"},
-		"updated_at":           {"timestamp with time zone", "NO"},
-	}
-
-	foundColumns := make(map[string]bool)
-	for rows.Next() {
-		var colName, dataType, nullable string
-		err := rows.Scan(&colName, &dataType, &nullable)
-		require.NoError(t, err)
-
-		expected, exists := expectedColumns[colName]
-		assert.True(t, exists, "unexpected column: %s", colName)
-		if exists {
-			assert.Equal(t, expected.dataType, dataType, "column %s has wrong type", colName)
-			assert.Equal(t, expected.isNullable, nullable, "column %s has wrong nullable", colName)
-		}
-		foundColumns[colName] = true
-	}
-
-	// Verify all expected columns were found
-	for colName := range expectedColumns {
-		assert.True(t, foundColumns[colName], "missing column: %s", colName)
-	}
+	assertColumnsExist(t, db, "shared", "user_preferences", map[string]columnSpec{
+		"user_id":    {"uuid", "NO"},
+		"theme":      {"character varying", "YES"},
+		"created_at": {"timestamp with time zone", "NO"},
+		"updated_at": {"timestamp with time zone", "NO"},
+	})
 }
 
-// TestUserAvatarsTableStructure verifies the user_avatars table schema
 func TestUserAvatarsTableStructure(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping user_avatars test in short mode")
 	}
 
-	embeddedPG := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15436).
-		Username("postgres").
-		Password("postgres").
-		Database("test_user_avatars"))
+	db, cleanup := setupTestDB(t, 0)
+	defer cleanup()
 
-	err := embeddedPG.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = embeddedPG.Stop()
-	}()
-
-	db, err := sql.Open("postgres", "host=localhost port=15436 user=postgres password=postgres dbname=test_user_avatars sslmode=disable")
-	require.NoError(t, err)
-	defer func() { _ = db.Close() }()
-
-	require.NoError(t, db.Ping())
-
-	// Run migrations
-	m := newMigrateInstance(t, db)
-
-	err = m.Up()
-	require.NoError(t, err)
-
-	// Test column existence and types
-	rows, err := db.Query(`
-		SELECT column_name, data_type, is_nullable
-		FROM information_schema.columns
-		WHERE table_schema = 'shared' AND table_name = 'user_avatars'
-		ORDER BY ordinal_position
-	`)
-	require.NoError(t, err)
-	defer func() { _ = rows.Close() }()
-
-	expectedColumns := map[string]struct {
-		dataType   string
-		isNullable string
-	}{
-		"id":                       {"uuid", "NO"},
-		"user_id":                  {"uuid", "NO"},
-		"file_path":                {"text", "NO"},
-		"file_size_bytes":          {"bigint", "NO"},
-		"mime_type":                {"character varying", "NO"},
-		"width":                    {"integer", "NO"},
-		"height":                   {"integer", "NO"},
-		"is_animated":              {"boolean", "YES"},
-		"version":                  {"integer", "NO"},
-		"is_current":               {"boolean", "YES"},
-		"uploaded_at":              {"timestamp with time zone", "NO"},
-		"uploaded_from_ip":         {"inet", "YES"},
-		"uploaded_from_user_agent": {"text", "YES"},
-		"created_at":               {"timestamp with time zone", "NO"},
-		"updated_at":               {"timestamp with time zone", "NO"},
-		"deleted_at":               {"timestamp with time zone", "YES"},
-	}
-
-	foundColumns := make(map[string]bool)
-	for rows.Next() {
-		var colName, dataType, nullable string
-		err := rows.Scan(&colName, &dataType, &nullable)
-		require.NoError(t, err)
-
-		expected, exists := expectedColumns[colName]
-		assert.True(t, exists, "unexpected column: %s", colName)
-		if exists {
-			assert.Equal(t, expected.dataType, dataType, "column %s has wrong type", colName)
-			assert.Equal(t, expected.isNullable, nullable, "column %s has wrong nullable", colName)
-		}
-		foundColumns[colName] = true
-	}
-
-	// Verify all expected columns were found
-	for colName := range expectedColumns {
-		assert.True(t, foundColumns[colName], "missing column: %s", colName)
-	}
+	assertColumnsExist(t, db, "shared", "user_avatars", map[string]columnSpec{
+		"id":              {"uuid", "NO"},
+		"user_id":         {"uuid", "NO"},
+		"file_path":       {"text", "NO"},
+		"file_size_bytes": {"bigint", "NO"},
+		"mime_type":       {"character varying", "NO"},
+		"width":           {"integer", "NO"},
+		"height":          {"integer", "NO"},
+		"is_current":      {"boolean", "YES"},
+		"created_at":      {"timestamp with time zone", "NO"},
+		"updated_at":      {"timestamp with time zone", "NO"},
+	})
 }

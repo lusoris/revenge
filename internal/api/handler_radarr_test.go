@@ -72,7 +72,7 @@ func (m *mockRiverClient) Insert(ctx context.Context, args river.JobArgs, opts *
 		return nil, m.insertError
 	}
 	m.insertedArgs = append(m.insertedArgs, args)
-	return &rivertype.JobInsertResult{}, nil
+	return &rivertype.JobInsertResult{Job: &rivertype.JobRow{ID: 1}}, nil
 }
 
 func setupRadarrTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {

@@ -2,6 +2,7 @@ package session
 
 import (
 	"context"
+	"fmt"
 	"net/netip"
 	"os"
 	"testing"
@@ -140,11 +141,12 @@ func TestRepositoryPG_ListUserSessions(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
+	listBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "list_" + uuid.Must(uuid.NewV7()).String()[:8],
-			RefreshTokenHash: stringPtr("ref_" + uuid.Must(uuid.NewV7()).String()[:8]),
+			TokenHash:        fmt.Sprintf("list_%s_%d", listBase, i),
+			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_list_%s_%d", listBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -190,11 +192,12 @@ func TestRepositoryPG_CountActiveUserSessions(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
+	countBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "count_" + uuid.Must(uuid.NewV7()).String()[:8],
-			RefreshTokenHash: stringPtr("cref_" + uuid.Must(uuid.NewV7()).String()[:8]),
+			TokenHash:        fmt.Sprintf("count_%s_%d", countBase, i),
+			RefreshTokenHash: stringPtr(fmt.Sprintf("cref_%s_%d", countBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -316,11 +319,12 @@ func TestRepositoryPG_RevokeAllUserSessions(t *testing.T) {
 
 	userID := createTestUser(t, testDB)
 
+	revokeBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "revoke_all_" + uuid.Must(uuid.NewV7()).String()[:8],
-			RefreshTokenHash: stringPtr("ref_all_" + uuid.Must(uuid.NewV7()).String()[:8]),
+			TokenHash:        fmt.Sprintf("revoke_all_%s_%d", revokeBase, i),
+			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_all_%s_%d", revokeBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -343,11 +347,12 @@ func TestRepositoryPG_RevokeAllUserSessionsExcept(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	var keepSession db.SharedSession
+	exceptBase := uuid.Must(uuid.NewV7()).String()
 	for i := 0; i < 3; i++ {
 		s, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
-			TokenHash:        "except_" + uuid.Must(uuid.NewV7()).String()[:8],
-			RefreshTokenHash: stringPtr("ref_except_" + uuid.Must(uuid.NewV7()).String()[:8]),
+			TokenHash:        fmt.Sprintf("except_%s_%d", exceptBase, i),
+			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_except_%s_%d", exceptBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)

@@ -8,8 +8,6 @@ import (
 	"testing"
 	"time"
 
-	embeddedpostgres "github.com/fergusstrange/embedded-postgres"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,31 +24,11 @@ func TestStatsReturnsAllFields(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	// Start embedded postgres
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15540).
-		Username("test").
-		Password("test").
-		Database("statstest"))
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err, "Failed to start embedded postgres")
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	// Create pool
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15540/statstest?sslmode=disable")
-	require.NoError(t, err, "Failed to create pool")
-	defer pool.Close()
-
-	// Get stats
 	stats := Stats(pool)
 
-	// Verify all expected fields are present
 	expectedFields := []string{
 		"acquire_count",
 		"acquire_duration_ms",
@@ -71,7 +49,6 @@ func TestStatsReturnsAllFields(t *testing.T) {
 		assert.True(t, exists, "Stats should contain field: %s", field)
 	}
 
-	// max_conns should be > 0
 	maxConns, ok := stats["max_conns"].(int32)
 	assert.True(t, ok, "max_conns should be int32")
 	assert.Greater(t, maxConns, int32(0), "max_conns should be > 0")
@@ -83,26 +60,11 @@ func TestStatsAfterQueries(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15541).
-		Username("test").
-		Password("test").
-		Database("statstest2"))
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
+	ctx := context.Background()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15541/statstest2?sslmode=disable")
-	require.NoError(t, err)
-	defer pool.Close()
-
-	// Execute a few queries
 	for i := 0; i < 5; i++ {
 		var result int
 		err := pool.QueryRow(ctx, "SELECT 1").Scan(&result)
@@ -111,7 +73,6 @@ func TestStatsAfterQueries(t *testing.T) {
 
 	stats := Stats(pool)
 
-	// acquire_count should be >= 5 (we acquired at least 5 times)
 	acquireCount, ok := stats["acquire_count"].(int64)
 	assert.True(t, ok)
 	assert.GreaterOrEqual(t, acquireCount, int64(5))
@@ -123,27 +84,10 @@ func TestHealthSuccess(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15542).
-		Username("test").
-		Password("test").
-		Database("healthtest"))
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15542/healthtest?sslmode=disable")
-	require.NoError(t, err)
-	defer pool.Close()
-
-	// Health check should pass
-	err = Health(ctx, pool)
+	err := Health(context.Background(), pool)
 	assert.NoError(t, err, "Health check should pass on healthy database")
 }
 
@@ -153,30 +97,13 @@ func TestHealthWithCanceledContext(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15543).
-		Username("test").
-		Password("test").
-		Database("healthtest2"))
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15543/healthtest2?sslmode=disable")
-	require.NoError(t, err)
-	defer pool.Close()
-
-	// Create already canceled context
 	canceledCtx, cancelFn := context.WithCancel(context.Background())
-	cancelFn() // Cancel immediately
+	cancelFn()
 
-	err = Health(canceledCtx, pool)
+	err := Health(canceledCtx, pool)
 	assert.Error(t, err, "Health should fail with canceled context")
 }
 
@@ -186,27 +113,15 @@ func TestMigrateUpAndVersion(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15544).
-		Username("test").
-		Password("test").
-		Database("migratetest"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15544/migratetest?sslmode=disable"
 	logger := testLogger()
 
-	// Run migrations up
-	err = MigrateUp(dbURL, logger)
+	err := MigrateUp(testURL, logger)
 	require.NoError(t, err, "MigrateUp should succeed")
 
-	// Check version
-	version, dirty, err := MigrateVersion(dbURL)
+	version, dirty, err := MigrateVersion(testURL)
 	require.NoError(t, err, "MigrateVersion should succeed")
 	assert.False(t, dirty, "Migration should not be dirty")
 	assert.Greater(t, version, uint(0), "Version should be > 0 after migrations")
@@ -218,27 +133,15 @@ func TestMigrateUpIdempotent(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15545).
-		Username("test").
-		Password("test").
-		Database("migratetest2"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15545/migratetest2?sslmode=disable"
 	logger := testLogger()
 
-	// Run migrations twice
-	err = MigrateUp(dbURL, logger)
+	err := MigrateUp(testURL, logger)
 	require.NoError(t, err)
 
-	// Second run should also succeed (ErrNoChange is handled)
-	err = MigrateUp(dbURL, logger)
+	err = MigrateUp(testURL, logger)
 	require.NoError(t, err, "Running MigrateUp twice should succeed")
 }
 
@@ -248,36 +151,23 @@ func TestMigrateDown(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15546).
-		Username("test").
-		Password("test").
-		Database("migratetest3"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15546/migratetest3?sslmode=disable"
 	logger := testLogger()
 
-	// First migrate up
-	err = MigrateUp(dbURL, logger)
+	err := MigrateUp(testURL, logger)
 	require.NoError(t, err)
 
-	versionBefore, _, err := MigrateVersion(dbURL)
+	versionBefore, _, err := MigrateVersion(testURL)
 	require.NoError(t, err)
 
-	// Roll back one
-	err = MigrateDown(dbURL, logger)
+	err = MigrateDown(testURL, logger)
 	require.NoError(t, err, "MigrateDown should succeed")
 
-	versionAfter, _, err := MigrateVersion(dbURL)
+	versionAfter, _, err := MigrateVersion(testURL)
 	require.NoError(t, err)
 
-	// Version should have decreased
 	assert.Less(t, versionAfter, versionBefore, "Version should decrease after MigrateDown")
 }
 
@@ -287,26 +177,15 @@ func TestMigrateTo(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15547).
-		Username("test").
-		Password("test").
-		Database("migratetest4"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15547/migratetest4?sslmode=disable"
 	logger := testLogger()
 
-	// Migrate to version 1
-	err = MigrateTo(dbURL, 1, logger)
+	err := MigrateTo(testURL, 1, logger)
 	require.NoError(t, err, "MigrateTo should succeed")
 
-	version, dirty, err := MigrateVersion(dbURL)
+	version, dirty, err := MigrateVersion(testURL)
 	require.NoError(t, err)
 	assert.Equal(t, uint(1), version, "Version should be 1")
 	assert.False(t, dirty)
@@ -318,22 +197,10 @@ func TestMigrateVersionOnFreshDatabase(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15548).
-		Username("test").
-		Password("test").
-		Database("migratetest5"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15548/migratetest5?sslmode=disable"
-
-	// On fresh database, version should be 0
-	version, dirty, err := MigrateVersion(dbURL)
+	version, dirty, err := MigrateVersion(testURL)
 	require.NoError(t, err)
 	assert.Equal(t, uint(0), version, "Fresh database should have version 0")
 	assert.False(t, dirty)
@@ -383,21 +250,12 @@ func TestNewPoolIntegration(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15549).
-		Username("test").
-		Password("test").
-		Database("pooltest"))
-
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
 	cfg := &config.Config{
 		Database: config.DatabaseConfig{
-			URL:               "postgres://test:test@localhost:15549/pooltest?sslmode=disable",
+			URL:               testURL,
 			MaxConns:          10,
 			MinConns:          2,
 			MaxConnLifetime:   time.Hour,
@@ -412,7 +270,6 @@ func TestNewPoolIntegration(t *testing.T) {
 	require.NotNil(t, pool)
 	defer pool.Close()
 
-	// Verify pool is working
 	ctx := context.Background()
 	var result int
 	err = pool.QueryRow(ctx, "SELECT 1").Scan(&result)
@@ -426,21 +283,12 @@ func TestNewPoolAndHealthCheck(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15550).
-		Username("test").
-		Password("test").
-		Database("poolhealthtest"))
-
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
 	cfg := &config.Config{
 		Database: config.DatabaseConfig{
-			URL:      "postgres://test:test@localhost:15550/poolhealthtest?sslmode=disable",
+			URL:      testURL,
 			MaxConns: 5,
 			MinConns: 1,
 		},
@@ -452,46 +300,27 @@ func TestNewPoolAndHealthCheck(t *testing.T) {
 	require.NotNil(t, pool)
 	defer pool.Close()
 
-	// Health check should pass
-	ctx := context.Background()
-	err = Health(ctx, pool)
+	err = Health(context.Background(), pool)
 	assert.NoError(t, err, "Health check should pass on newly created pool")
 
-	// Stats should show data
 	stats := Stats(pool)
 	assert.NotEmpty(t, stats)
 }
 
-// TestHealthQueryResult tests that Health properly verifies query result.
+// TestHealthQueryResultVerification tests that Health properly verifies query result.
 func TestHealthQueryResultVerification(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15551).
-		Username("test").
-		Password("test").
-		Database("healthquerytest"))
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
+	ctx := context.Background()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15551/healthquerytest?sslmode=disable")
-	require.NoError(t, err)
-	defer pool.Close()
-
-	// Create a function that returns something other than 1
-	_, err = pool.Exec(ctx, `CREATE OR REPLACE FUNCTION evil_select_one() RETURNS int AS $$ BEGIN RETURN 2; END; $$ LANGUAGE plpgsql;`)
+	_, err := pool.Exec(ctx, `CREATE OR REPLACE FUNCTION evil_select_one() RETURNS int AS $$ BEGIN RETURN 2; END; $$ LANGUAGE plpgsql;`)
 	require.NoError(t, err)
 
-	// Normal health check should still pass (uses SELECT 1, not our function)
 	err = Health(ctx, pool)
 	assert.NoError(t, err)
 }
@@ -502,26 +331,12 @@ func TestConcurrentHealthChecks(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15552).
-		Username("test").
-		Password("test").
-		Database("concurrenthealthtest"))
-
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
+	pool, cleanup := setupTestPool(t)
+	defer cleanup()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15552/concurrenthealthtest?sslmode=disable")
-	require.NoError(t, err)
-	defer pool.Close()
-
-	// Run 20 concurrent health checks
 	const numChecks = 20
 	errChan := make(chan error, numChecks)
 
@@ -531,7 +346,6 @@ func TestConcurrentHealthChecks(t *testing.T) {
 		}()
 	}
 
-	// Collect results
 	for i := 0; i < numChecks; i++ {
 		err := <-errChan
 		assert.NoError(t, err, "Concurrent health check should succeed")
@@ -544,37 +358,23 @@ func TestMigrateUpVerifiesTables(t *testing.T) {
 		t.Skip("skipping embedded-postgres test in short mode")
 	}
 
-	postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
-		Port(15553).
-		Username("test").
-		Password("test").
-		Database("tableverifytest"))
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
 
-	err := postgres.Start()
-	require.NoError(t, err)
-	defer func() {
-		_ = postgres.Stop()
-	}()
-
-	dbURL := "postgres://test:test@localhost:15553/tableverifytest?sslmode=disable"
 	logger := testLogger()
 
-	// Run migrations
-	err = MigrateUp(dbURL, logger)
+	err := MigrateUp(testURL, logger)
 	require.NoError(t, err)
 
-	// Connect and verify tables exist
-	db, err := sql.Open("pgx", dbURL)
+	db, err := sql.Open("pgx", testURL)
 	require.NoError(t, err)
 	defer func() { _ = db.Close() }()
 
-	// Check if shared schema exists (from 000001_create_schemas.up.sql)
 	var schemaExists bool
 	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'shared')`).Scan(&schemaExists)
 	require.NoError(t, err)
 	assert.True(t, schemaExists, "shared schema should exist after migrations")
 
-	// Check if users table exists (from 000002_create_users_table.up.sql)
 	var usersTableExists bool
 	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'shared' AND table_name = 'users')`).Scan(&usersTableExists)
 	require.NoError(t, err)
