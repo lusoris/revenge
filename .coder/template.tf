@@ -10,7 +10,7 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = ">= 2.17.2"
+      version = ">= 2.4.0"
     }
     docker = {
       source  = "kreuzwerker/docker"
@@ -34,7 +34,7 @@ locals {
   postgres_image  = "postgres:18-alpine"
   dragonfly_image = "docker.dragonflydb.io/dragonflydb/dragonfly:latest"
   typesense_image = "typesense/typesense:0.25.2"
-  workspace_image = "ghcr.io/lusoris/revenge-dev:latest"
+  workspace_image = "golang:1.25-alpine"
 
   username     = data.coder_workspace_owner.me.name
   workspace_id = data.coder_workspace.me.id
@@ -233,10 +233,17 @@ resource "coder_agent" "main" {
   startup_script_timeout = 600
 
   startup_script = <<-EOT
-    #!/bin/bash
-    set -euo pipefail
+    #!/bin/sh
+    set -eu
 
     export GOEXPERIMENT=greenteagc,jsonv2
+
+    # ── System dependencies (CGO: vips + ffmpeg) ───────────────────────
+    apk add --no-cache \
+      bash curl git gcc musl-dev pkgconfig \
+      ffmpeg-dev vips-dev \
+      postgresql-client \
+      make tar zstd openssh-client
 
     # ── Dotfiles ───────────────────────────────────────────────────────
     if [ -n "${var.dotfiles_uri}" ]; then
@@ -250,29 +257,23 @@ resource "coder_agent" "main" {
     cd /workspace/revenge
 
     # ── Go dependencies ────────────────────────────────────────────────
-    if command -v go &>/dev/null; then
-      go mod download &
-    fi
+    go mod download &
 
     # ── Dev tools (install in background) ──────────────────────────────
     (
       go install golang.org/x/tools/gopls@latest
-      go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
       go install github.com/air-verse/air@latest
       go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
       go install github.com/vektra/mockery/v3@latest
       go install github.com/go-delve/delve/cmd/dlv@latest
       go install golang.org/x/vuln/cmd/govulncheck@latest
+      # golangci-lint v2 requires curl install (go install only works for v1)
+      curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b "$(go env GOPATH)/bin" v2.8.0
     ) &
 
-    # ── Python deps (for automation scripts) ───────────────────────────
-    if command -v pip3 &>/dev/null; then
-      pip3 install --user --quiet pyyaml requests beautifulsoup4 lxml html2text ruff pytest 2>/dev/null || true
-    fi
-
     # ── Node deps (for frontend, when web/ exists) ─────────────────────
-    if [ -d "web" ] && command -v npm &>/dev/null; then
+    if [ -d "web" ] && command -v npm >/dev/null 2>&1; then
       (cd web && npm install --prefer-offline) &
     fi
 
@@ -280,14 +281,14 @@ resource "coder_agent" "main" {
     wait
 
     # ── Code generation ────────────────────────────────────────────────
-    if command -v sqlc &>/dev/null; then
+    if command -v sqlc >/dev/null 2>&1; then
       sqlc generate 2>/dev/null || true
     fi
 
     # ── Database migrations (wait for postgres) ────────────────────────
     for i in $(seq 1 30); do
-      if pg_isready -h postgres -U revenge &>/dev/null; then
-        migrate -path migrations -database "$${REVENGE_DATABASE_URL}" up 2>/dev/null || true
+      if pg_isready -h postgres -U revenge >/dev/null 2>&1; then
+        migrate -path internal/infra/database/migrations/shared -database "$${REVENGE_DATABASE_URL}" up 2>/dev/null || true
         break
       fi
       sleep 2
