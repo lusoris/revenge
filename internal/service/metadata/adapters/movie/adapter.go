@@ -177,7 +177,7 @@ func mapSearchResultToMovie(r *metadata.MovieSearchResult) *contentmovie.Movie {
 	// Set TMDb ID from provider ID
 	if r.ProviderID != "" {
 		var tmdbID int32
-		fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
+		_, _ = fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
 		mov.TMDbID = &tmdbID
 	}
 
@@ -287,7 +287,7 @@ func mapCreditsToMovieCredits(movieID uuid.UUID, credits *metadata.Credits) []co
 	// Map cast
 	for _, c := range credits.Cast {
 		var personID int32
-		fmt.Sscanf(c.ProviderID, "%d", &personID)
+		_, _ = fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contentmovie.MovieCredit{
 			ID:           uuid.Must(uuid.NewV7()),
@@ -305,7 +305,7 @@ func mapCreditsToMovieCredits(movieID uuid.UUID, credits *metadata.Credits) []co
 	// Map crew
 	for _, c := range credits.Crew {
 		var personID int32
-		fmt.Sscanf(c.ProviderID, "%d", &personID)
+		_, _ = fmt.Sscanf(c.ProviderID, "%d", &personID)
 
 		credit := contentmovie.MovieCredit{
 			ID:           uuid.Must(uuid.NewV7()),
