@@ -199,6 +199,24 @@ func (UnimplementedHandler) AutocompleteMovies(ctx context.Context, params Autoc
 	return r, ht.ErrNotImplemented
 }
 
+// BeginWebAuthnLogin implements beginWebAuthnLogin operation.
+//
+// Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
+//
+// POST /api/v1/mfa/webauthn/login/begin
+func (UnimplementedHandler) BeginWebAuthnLogin(ctx context.Context) (r BeginWebAuthnLoginRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// BeginWebAuthnRegistration implements beginWebAuthnRegistration operation.
+//
+// Start the WebAuthn credential registration ceremony. Returns PublicKeyCredentialCreationOptions.
+//
+// POST /api/v1/mfa/webauthn/register/begin
+func (UnimplementedHandler) BeginWebAuthnRegistration(ctx context.Context, req OptBeginWebAuthnRegistrationReq) (r BeginWebAuthnRegistrationRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ChangePassword implements changePassword operation.
 //
 // Change password for authenticated user (requires old password).
@@ -280,6 +298,15 @@ func (UnimplementedHandler) DeleteWatchProgress(ctx context.Context, params Dele
 	return r, ht.ErrNotImplemented
 }
 
+// DeleteWebAuthnCredential implements deleteWebAuthnCredential operation.
+//
+// Remove a WebAuthn credential.
+//
+// DELETE /api/v1/mfa/webauthn/credentials/{credentialId}
+func (UnimplementedHandler) DeleteWebAuthnCredential(ctx context.Context, params DeleteWebAuthnCredentialParams) (r DeleteWebAuthnCredentialRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // DisableMFA implements disableMFA operation.
 //
 // Turn off MFA requirement for login.
@@ -304,6 +331,24 @@ func (UnimplementedHandler) DisableTOTP(ctx context.Context) (r DisableTOTPRes, 
 //
 // POST /api/v1/mfa/enable
 func (UnimplementedHandler) EnableMFA(ctx context.Context) (r EnableMFARes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// FinishWebAuthnLogin implements finishWebAuthnLogin operation.
+//
+// Complete the WebAuthn authentication ceremony with the authenticator assertion.
+//
+// POST /api/v1/mfa/webauthn/login/finish
+func (UnimplementedHandler) FinishWebAuthnLogin(ctx context.Context, req *WebAuthnFinishLoginRequest) (r FinishWebAuthnLoginRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// FinishWebAuthnRegistration implements finishWebAuthnRegistration operation.
+//
+// Complete the WebAuthn registration ceremony with the authenticator response.
+//
+// POST /api/v1/mfa/webauthn/register/finish
+func (UnimplementedHandler) FinishWebAuthnRegistration(ctx context.Context, req *WebAuthnFinishRegistrationRequest) (r FinishWebAuthnRegistrationRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1035,6 +1080,15 @@ func (UnimplementedHandler) ListUserSettings(ctx context.Context) (r ListUserSet
 	return r, ht.ErrNotImplemented
 }
 
+// ListWebAuthnCredentials implements listWebAuthnCredentials operation.
+//
+// List all WebAuthn credentials for the authenticated user.
+//
+// GET /api/v1/mfa/webauthn/credentials
+func (UnimplementedHandler) ListWebAuthnCredentials(ctx context.Context) (r ListWebAuthnCredentialsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Login implements login operation.
 //
 // Authenticate user and return access token and refresh token.
@@ -1186,6 +1240,15 @@ func (UnimplementedHandler) RemovePolicy(ctx context.Context, req *PolicyRequest
 //
 // DELETE /api/v1/rbac/users/{userId}/roles/{role}
 func (UnimplementedHandler) RemoveRole(ctx context.Context, params RemoveRoleParams) (r RemoveRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// RenameWebAuthnCredential implements renameWebAuthnCredential operation.
+//
+// Update the user-facing name of a WebAuthn credential.
+//
+// PATCH /api/v1/mfa/webauthn/credentials/{credentialId}
+func (UnimplementedHandler) RenameWebAuthnCredential(ctx context.Context, req *RenameWebAuthnCredentialReq, params RenameWebAuthnCredentialParams) (r RenameWebAuthnCredentialRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

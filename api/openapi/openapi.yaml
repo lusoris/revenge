@@ -562,6 +562,226 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # WebAuthn endpoints
+  /api/v1/mfa/webauthn/register/begin:
+    post:
+      summary: Begin WebAuthn registration
+      description: Start the WebAuthn credential registration ceremony. Returns PublicKeyCredentialCreationOptions.
+      operationId: beginWebAuthnRegistration
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credential_name:
+                  type: string
+                  description: User-facing name for the credential
+                  example: "My YubiKey"
+      responses:
+        '200':
+          description: Registration options
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnBeginRegistrationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/webauthn/register/finish:
+    post:
+      summary: Finish WebAuthn registration
+      description: Complete the WebAuthn registration ceremony with the authenticator response.
+      operationId: finishWebAuthnRegistration
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnFinishRegistrationRequest'
+      responses:
+        '200':
+          description: Registration complete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: WebAuthn credential registered successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/webauthn/login/begin:
+    post:
+      summary: Begin WebAuthn login
+      description: Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
+      operationId: beginWebAuthnLogin
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Login options
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnBeginLoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/webauthn/login/finish:
+    post:
+      summary: Finish WebAuthn login
+      description: Complete the WebAuthn authentication ceremony with the authenticator assertion.
+      operationId: finishWebAuthnLogin
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnFinishLoginRequest'
+      responses:
+        '200':
+          description: Login verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: WebAuthn verification successful
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/webauthn/credentials:
+    get:
+      summary: List WebAuthn credentials
+      description: List all WebAuthn credentials for the authenticated user
+      operationId: listWebAuthnCredentials
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Credentials list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnCredentialsList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/mfa/webauthn/credentials/{credentialId}:
+    delete:
+      summary: Delete WebAuthn credential
+      description: Remove a WebAuthn credential
+      operationId: deleteWebAuthnCredential
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Credential deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    patch:
+      summary: Rename WebAuthn credential
+      description: Update the user-facing name of a WebAuthn credential
+      operationId: renameWebAuthnCredential
+      tags:
+        - mfa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: New name for the credential
+                  example: "My YubiKey 5"
+      responses:
+        '200':
+          description: Credential renamed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Movie endpoints
   /api/v1/movies:
     get:
@@ -5174,6 +5394,94 @@ components:
           format: uri
           description: otpauth:// URL for the QR code
           example: "otpauth://totp/Revenge:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Revenge"
+
+    # WebAuthn schemas
+    WebAuthnBeginRegistrationResponse:
+      type: object
+      description: WebAuthn registration options (PublicKeyCredentialCreationOptions wrapper)
+      properties:
+        options:
+          type: object
+          description: PublicKeyCredentialCreationOptions JSON from the WebAuthn library
+          additionalProperties: {}
+        credential_name:
+          type: string
+          description: The credential name to associate upon completion
+
+    WebAuthnFinishRegistrationRequest:
+      type: object
+      description: WebAuthn registration response from the authenticator
+      required:
+        - credential
+      properties:
+        credential:
+          type: object
+          description: The PublicKeyCredential response from navigator.credentials.create()
+          additionalProperties: {}
+        credential_name:
+          type: string
+          description: User-facing name for the credential
+          example: "My YubiKey"
+
+    WebAuthnBeginLoginResponse:
+      type: object
+      description: WebAuthn login options (PublicKeyCredentialRequestOptions wrapper)
+      properties:
+        options:
+          type: object
+          description: PublicKeyCredentialRequestOptions JSON from the WebAuthn library
+          additionalProperties: {}
+
+    WebAuthnFinishLoginRequest:
+      type: object
+      description: WebAuthn login assertion from the authenticator
+      required:
+        - credential
+      properties:
+        credential:
+          type: object
+          description: The PublicKeyCredential response from navigator.credentials.get()
+          additionalProperties: {}
+
+    WebAuthnCredentialInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Internal credential ID
+        name:
+          type: string
+          description: User-facing credential name
+          example: "My YubiKey"
+        created_at:
+          type: string
+          format: date-time
+          description: When the credential was registered
+        last_used_at:
+          type: string
+          format: date-time
+          description: When the credential was last used
+        backup_eligible:
+          type: boolean
+          description: Whether the credential supports backup
+        backup_state:
+          type: boolean
+          description: Whether the credential is currently backed up
+        clone_detected:
+          type: boolean
+          description: Whether a clone has been detected for this credential
+
+    WebAuthnCredentialsList:
+      type: object
+      properties:
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnCredentialInfo'
+        count:
+          type: integer
+          description: Total number of credentials
 
     # Movie schemas
     Movie:

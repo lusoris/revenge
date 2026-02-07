@@ -137,6 +137,18 @@ type Handler interface {
 	//
 	// GET /api/v1/search/movies/autocomplete
 	AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error)
+	// BeginWebAuthnLogin implements beginWebAuthnLogin operation.
+	//
+	// Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
+	//
+	// POST /api/v1/mfa/webauthn/login/begin
+	BeginWebAuthnLogin(ctx context.Context) (BeginWebAuthnLoginRes, error)
+	// BeginWebAuthnRegistration implements beginWebAuthnRegistration operation.
+	//
+	// Start the WebAuthn credential registration ceremony. Returns PublicKeyCredentialCreationOptions.
+	//
+	// POST /api/v1/mfa/webauthn/register/begin
+	BeginWebAuthnRegistration(ctx context.Context, req OptBeginWebAuthnRegistrationReq) (BeginWebAuthnRegistrationRes, error)
 	// ChangePassword implements changePassword operation.
 	//
 	// Change password for authenticated user (requires old password).
@@ -191,6 +203,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/movies/{id}/progress
 	DeleteWatchProgress(ctx context.Context, params DeleteWatchProgressParams) (DeleteWatchProgressRes, error)
+	// DeleteWebAuthnCredential implements deleteWebAuthnCredential operation.
+	//
+	// Remove a WebAuthn credential.
+	//
+	// DELETE /api/v1/mfa/webauthn/credentials/{credentialId}
+	DeleteWebAuthnCredential(ctx context.Context, params DeleteWebAuthnCredentialParams) (DeleteWebAuthnCredentialRes, error)
 	// DisableMFA implements disableMFA operation.
 	//
 	// Turn off MFA requirement for login.
@@ -209,6 +227,18 @@ type Handler interface {
 	//
 	// POST /api/v1/mfa/enable
 	EnableMFA(ctx context.Context) (EnableMFARes, error)
+	// FinishWebAuthnLogin implements finishWebAuthnLogin operation.
+	//
+	// Complete the WebAuthn authentication ceremony with the authenticator assertion.
+	//
+	// POST /api/v1/mfa/webauthn/login/finish
+	FinishWebAuthnLogin(ctx context.Context, req *WebAuthnFinishLoginRequest) (FinishWebAuthnLoginRes, error)
+	// FinishWebAuthnRegistration implements finishWebAuthnRegistration operation.
+	//
+	// Complete the WebAuthn registration ceremony with the authenticator response.
+	//
+	// POST /api/v1/mfa/webauthn/register/finish
+	FinishWebAuthnRegistration(ctx context.Context, req *WebAuthnFinishRegistrationRequest) (FinishWebAuthnRegistrationRes, error)
 	// ForgotPassword implements forgotPassword operation.
 	//
 	// Send password reset token to user's email address.
@@ -700,6 +730,12 @@ type Handler interface {
 	//
 	// GET /api/v1/settings/user
 	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// ListWebAuthnCredentials implements listWebAuthnCredentials operation.
+	//
+	// List all WebAuthn credentials for the authenticated user.
+	//
+	// GET /api/v1/mfa/webauthn/credentials
+	ListWebAuthnCredentials(ctx context.Context) (ListWebAuthnCredentialsRes, error)
 	// Login implements login operation.
 	//
 	// Authenticate user and return access token and refresh token.
@@ -803,6 +839,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/rbac/users/{userId}/roles/{role}
 	RemoveRole(ctx context.Context, params RemoveRoleParams) (RemoveRoleRes, error)
+	// RenameWebAuthnCredential implements renameWebAuthnCredential operation.
+	//
+	// Update the user-facing name of a WebAuthn credential.
+	//
+	// PATCH /api/v1/mfa/webauthn/credentials/{credentialId}
+	RenameWebAuthnCredential(ctx context.Context, req *RenameWebAuthnCredentialReq, params RenameWebAuthnCredentialParams) (RenameWebAuthnCredentialRes, error)
 	// ResendVerification implements resendVerification operation.
 	//
 	// Resend email verification token to user's email address.

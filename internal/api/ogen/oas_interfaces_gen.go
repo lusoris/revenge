@@ -77,6 +77,14 @@ type AutocompleteMoviesRes interface {
 	autocompleteMoviesRes()
 }
 
+type BeginWebAuthnLoginRes interface {
+	beginWebAuthnLoginRes()
+}
+
+type BeginWebAuthnRegistrationRes interface {
+	beginWebAuthnRegistrationRes()
+}
+
 type ChangePasswordRes interface {
 	changePasswordRes()
 }
@@ -113,6 +121,10 @@ type DeleteWatchProgressRes interface {
 	deleteWatchProgressRes()
 }
 
+type DeleteWebAuthnCredentialRes interface {
+	deleteWebAuthnCredentialRes()
+}
+
 type DisableMFARes interface {
 	disableMFARes()
 }
@@ -123,6 +135,14 @@ type DisableTOTPRes interface {
 
 type EnableMFARes interface {
 	enableMFARes()
+}
+
+type FinishWebAuthnLoginRes interface {
+	finishWebAuthnLoginRes()
+}
+
+type FinishWebAuthnRegistrationRes interface {
+	finishWebAuthnRegistrationRes()
 }
 
 type ForgotPasswordRes interface {
@@ -433,6 +453,10 @@ type ListUserSettingsRes interface {
 	listUserSettingsRes()
 }
 
+type ListWebAuthnCredentialsRes interface {
+	listWebAuthnCredentialsRes()
+}
+
 type LoginRes interface {
 	loginRes()
 }
@@ -499,6 +523,10 @@ type RemovePolicyRes interface {
 
 type RemoveRoleRes interface {
 	removeRoleRes()
+}
+
+type RenameWebAuthnCredentialRes interface {
+	renameWebAuthnCredentialRes()
 }
 
 type ResendVerificationRes interface {

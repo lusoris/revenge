@@ -1327,6 +1327,29 @@ func (s *BearerAuth) SetRoles(val []string) {
 	s.Roles = val
 }
 
+type BeginWebAuthnLoginBadRequest Error
+
+func (*BeginWebAuthnLoginBadRequest) beginWebAuthnLoginRes() {}
+
+type BeginWebAuthnLoginUnauthorized Error
+
+func (*BeginWebAuthnLoginUnauthorized) beginWebAuthnLoginRes() {}
+
+type BeginWebAuthnRegistrationReq struct {
+	// User-facing name for the credential.
+	CredentialName OptString `json:"credential_name"`
+}
+
+// GetCredentialName returns the value of CredentialName.
+func (s *BeginWebAuthnRegistrationReq) GetCredentialName() OptString {
+	return s.CredentialName
+}
+
+// SetCredentialName sets the value of CredentialName.
+func (s *BeginWebAuthnRegistrationReq) SetCredentialName(val OptString) {
+	s.CredentialName = val
+}
+
 type ChangePasswordBadRequest Error
 
 func (*ChangePasswordBadRequest) changePasswordRes() {}
@@ -2619,6 +2642,19 @@ type DeleteWatchProgressUnauthorized Error
 
 func (*DeleteWatchProgressUnauthorized) deleteWatchProgressRes() {}
 
+// DeleteWebAuthnCredentialNoContent is response for DeleteWebAuthnCredential operation.
+type DeleteWebAuthnCredentialNoContent struct{}
+
+func (*DeleteWebAuthnCredentialNoContent) deleteWebAuthnCredentialRes() {}
+
+type DeleteWebAuthnCredentialNotFound Error
+
+func (*DeleteWebAuthnCredentialNotFound) deleteWebAuthnCredentialRes() {}
+
+type DeleteWebAuthnCredentialUnauthorized Error
+
+func (*DeleteWebAuthnCredentialUnauthorized) deleteWebAuthnCredentialRes() {}
+
 type DisableMFAOK struct {
 	Success OptBool `json:"success"`
 }
@@ -2995,50 +3031,52 @@ func (s *Error) SetDetails(val OptErrorDetails) {
 	s.Details = val
 }
 
-func (*Error) disableMFARes()              {}
-func (*Error) disableTOTPRes()             {}
-func (*Error) forgotPasswordRes()          {}
-func (*Error) generateBackupCodesRes()     {}
-func (*Error) getContinueWatchingRes()     {}
-func (*Error) getCurrentUserRes()          {}
-func (*Error) getMFAStatusRes()            {}
-func (*Error) getRecentEpisodesRes()       {}
-func (*Error) getRecentlyAddedRes()        {}
-func (*Error) getRecentlyAddedTVShowsRes() {}
-func (*Error) getSearchFacetsRes()         {}
-func (*Error) getTVContinueWatchingRes()   {}
-func (*Error) getTopRatedRes()             {}
-func (*Error) getUpcomingEpisodesRes()     {}
-func (*Error) getUserMovieStatsRes()       {}
-func (*Error) getUserPreferencesRes()      {}
-func (*Error) getUserRolesRes()            {}
-func (*Error) getUserTVStatsRes()          {}
-func (*Error) getWatchHistoryRes()         {}
-func (*Error) handleRadarrWebhookRes()     {}
-func (*Error) handleSonarrWebhookRes()     {}
-func (*Error) listAPIKeysRes()             {}
-func (*Error) listLibrariesRes()           {}
-func (*Error) listMoviesRes()              {}
-func (*Error) listServerSettingsRes()      {}
-func (*Error) listSessionsRes()            {}
-func (*Error) listTVShowsRes()             {}
-func (*Error) listUserOIDCLinksRes()       {}
-func (*Error) listUserSettingsRes()        {}
-func (*Error) logoutAllRes()               {}
-func (*Error) logoutCurrentRes()           {}
-func (*Error) logoutRes()                  {}
-func (*Error) oidcAuthorizeRes()           {}
-func (*Error) oidcCallbackRes()            {}
-func (*Error) refreshSessionRes()          {}
-func (*Error) regenerateBackupCodesRes()   {}
-func (*Error) registerRes()                {}
-func (*Error) resendVerificationRes()      {}
-func (*Error) resetPasswordRes()           {}
-func (*Error) searchMoviesRes()            {}
-func (*Error) searchTVShowsMetadataRes()   {}
-func (*Error) searchTVShowsRes()           {}
-func (*Error) setupTOTPRes()               {}
-func (*Error) verifyEmailRes()             {}
+func (*Error) beginWebAuthnRegistrationRes() {}
+func (*Error) disableMFARes()                {}
+func (*Error) disableTOTPRes()               {}
+func (*Error) forgotPasswordRes()            {}
+func (*Error) generateBackupCodesRes()       {}
+func (*Error) getContinueWatchingRes()       {}
+func (*Error) getCurrentUserRes()            {}
+func (*Error) getMFAStatusRes()              {}
+func (*Error) getRecentEpisodesRes()         {}
+func (*Error) getRecentlyAddedRes()          {}
+func (*Error) getRecentlyAddedTVShowsRes()   {}
+func (*Error) getSearchFacetsRes()           {}
+func (*Error) getTVContinueWatchingRes()     {}
+func (*Error) getTopRatedRes()               {}
+func (*Error) getUpcomingEpisodesRes()       {}
+func (*Error) getUserMovieStatsRes()         {}
+func (*Error) getUserPreferencesRes()        {}
+func (*Error) getUserRolesRes()              {}
+func (*Error) getUserTVStatsRes()            {}
+func (*Error) getWatchHistoryRes()           {}
+func (*Error) handleRadarrWebhookRes()       {}
+func (*Error) handleSonarrWebhookRes()       {}
+func (*Error) listAPIKeysRes()               {}
+func (*Error) listLibrariesRes()             {}
+func (*Error) listMoviesRes()                {}
+func (*Error) listServerSettingsRes()        {}
+func (*Error) listSessionsRes()              {}
+func (*Error) listTVShowsRes()               {}
+func (*Error) listUserOIDCLinksRes()         {}
+func (*Error) listUserSettingsRes()          {}
+func (*Error) listWebAuthnCredentialsRes()   {}
+func (*Error) logoutAllRes()                 {}
+func (*Error) logoutCurrentRes()             {}
+func (*Error) logoutRes()                    {}
+func (*Error) oidcAuthorizeRes()             {}
+func (*Error) oidcCallbackRes()              {}
+func (*Error) refreshSessionRes()            {}
+func (*Error) regenerateBackupCodesRes()     {}
+func (*Error) registerRes()                  {}
+func (*Error) resendVerificationRes()        {}
+func (*Error) resetPasswordRes()             {}
+func (*Error) searchMoviesRes()              {}
+func (*Error) searchTVShowsMetadataRes()     {}
+func (*Error) searchTVShowsRes()             {}
+func (*Error) setupTOTPRes()                 {}
+func (*Error) verifyEmailRes()               {}
 
 // Additional error details.
 type ErrorDetails map[string]jx.Raw
@@ -3105,6 +3143,76 @@ func (s *FacetValue) SetValue(val OptString) {
 func (s *FacetValue) SetCount(val OptInt) {
 	s.Count = val
 }
+
+type FinishWebAuthnLoginBadRequest Error
+
+func (*FinishWebAuthnLoginBadRequest) finishWebAuthnLoginRes() {}
+
+type FinishWebAuthnLoginOK struct {
+	Success OptBool   `json:"success"`
+	Message OptString `json:"message"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *FinishWebAuthnLoginOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// GetMessage returns the value of Message.
+func (s *FinishWebAuthnLoginOK) GetMessage() OptString {
+	return s.Message
+}
+
+// SetSuccess sets the value of Success.
+func (s *FinishWebAuthnLoginOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+// SetMessage sets the value of Message.
+func (s *FinishWebAuthnLoginOK) SetMessage(val OptString) {
+	s.Message = val
+}
+
+func (*FinishWebAuthnLoginOK) finishWebAuthnLoginRes() {}
+
+type FinishWebAuthnLoginUnauthorized Error
+
+func (*FinishWebAuthnLoginUnauthorized) finishWebAuthnLoginRes() {}
+
+type FinishWebAuthnRegistrationBadRequest Error
+
+func (*FinishWebAuthnRegistrationBadRequest) finishWebAuthnRegistrationRes() {}
+
+type FinishWebAuthnRegistrationOK struct {
+	Success OptBool   `json:"success"`
+	Message OptString `json:"message"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *FinishWebAuthnRegistrationOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// GetMessage returns the value of Message.
+func (s *FinishWebAuthnRegistrationOK) GetMessage() OptString {
+	return s.Message
+}
+
+// SetSuccess sets the value of Success.
+func (s *FinishWebAuthnRegistrationOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+// SetMessage sets the value of Message.
+func (s *FinishWebAuthnRegistrationOK) SetMessage(val OptString) {
+	s.Message = val
+}
+
+func (*FinishWebAuthnRegistrationOK) finishWebAuthnRegistrationRes() {}
+
+type FinishWebAuthnRegistrationUnauthorized Error
+
+func (*FinishWebAuthnRegistrationUnauthorized) finishWebAuthnRegistrationRes() {}
 
 // ForgotPasswordNoContent is response for ForgotPassword operation.
 type ForgotPasswordNoContent struct{}
@@ -8253,6 +8361,52 @@ func (o OptAdminOIDCProviderRoleMappings) Or(d AdminOIDCProviderRoleMappings) Ad
 	return d
 }
 
+// NewOptBeginWebAuthnRegistrationReq returns new OptBeginWebAuthnRegistrationReq with value set to v.
+func NewOptBeginWebAuthnRegistrationReq(v BeginWebAuthnRegistrationReq) OptBeginWebAuthnRegistrationReq {
+	return OptBeginWebAuthnRegistrationReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBeginWebAuthnRegistrationReq is optional BeginWebAuthnRegistrationReq.
+type OptBeginWebAuthnRegistrationReq struct {
+	Value BeginWebAuthnRegistrationReq
+	Set   bool
+}
+
+// IsSet returns true if OptBeginWebAuthnRegistrationReq was set.
+func (o OptBeginWebAuthnRegistrationReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBeginWebAuthnRegistrationReq) Reset() {
+	var v BeginWebAuthnRegistrationReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBeginWebAuthnRegistrationReq) SetTo(v BeginWebAuthnRegistrationReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBeginWebAuthnRegistrationReq) Get() (v BeginWebAuthnRegistrationReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBeginWebAuthnRegistrationReq) Or(d BeginWebAuthnRegistrationReq) BeginWebAuthnRegistrationReq {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptBool returns new OptBool with value set to v.
 func NewOptBool(v bool) OptBool {
 	return OptBool{
@@ -11040,6 +11194,98 @@ func (o OptUserPreferencesUpdateTheme) Or(d UserPreferencesUpdateTheme) UserPref
 	return d
 }
 
+// NewOptWebAuthnBeginLoginResponseOptions returns new OptWebAuthnBeginLoginResponseOptions with value set to v.
+func NewOptWebAuthnBeginLoginResponseOptions(v WebAuthnBeginLoginResponseOptions) OptWebAuthnBeginLoginResponseOptions {
+	return OptWebAuthnBeginLoginResponseOptions{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptWebAuthnBeginLoginResponseOptions is optional WebAuthnBeginLoginResponseOptions.
+type OptWebAuthnBeginLoginResponseOptions struct {
+	Value WebAuthnBeginLoginResponseOptions
+	Set   bool
+}
+
+// IsSet returns true if OptWebAuthnBeginLoginResponseOptions was set.
+func (o OptWebAuthnBeginLoginResponseOptions) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptWebAuthnBeginLoginResponseOptions) Reset() {
+	var v WebAuthnBeginLoginResponseOptions
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptWebAuthnBeginLoginResponseOptions) SetTo(v WebAuthnBeginLoginResponseOptions) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptWebAuthnBeginLoginResponseOptions) Get() (v WebAuthnBeginLoginResponseOptions, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptWebAuthnBeginLoginResponseOptions) Or(d WebAuthnBeginLoginResponseOptions) WebAuthnBeginLoginResponseOptions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptWebAuthnBeginRegistrationResponseOptions returns new OptWebAuthnBeginRegistrationResponseOptions with value set to v.
+func NewOptWebAuthnBeginRegistrationResponseOptions(v WebAuthnBeginRegistrationResponseOptions) OptWebAuthnBeginRegistrationResponseOptions {
+	return OptWebAuthnBeginRegistrationResponseOptions{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptWebAuthnBeginRegistrationResponseOptions is optional WebAuthnBeginRegistrationResponseOptions.
+type OptWebAuthnBeginRegistrationResponseOptions struct {
+	Value WebAuthnBeginRegistrationResponseOptions
+	Set   bool
+}
+
+// IsSet returns true if OptWebAuthnBeginRegistrationResponseOptions was set.
+func (o OptWebAuthnBeginRegistrationResponseOptions) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptWebAuthnBeginRegistrationResponseOptions) Reset() {
+	var v WebAuthnBeginRegistrationResponseOptions
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptWebAuthnBeginRegistrationResponseOptions) SetTo(v WebAuthnBeginRegistrationResponseOptions) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptWebAuthnBeginRegistrationResponseOptions) Get() (v WebAuthnBeginRegistrationResponseOptions, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptWebAuthnBeginRegistrationResponseOptions) Or(d WebAuthnBeginRegistrationResponseOptions) WebAuthnBeginRegistrationResponseOptions {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // Ref: #/components/schemas/Permission
 type Permission struct {
 	// Resource name (e.g., users, library, movies).
@@ -12290,6 +12536,45 @@ func (*RemoveRoleNotFound) removeRoleRes() {}
 type RemoveRoleUnauthorized Error
 
 func (*RemoveRoleUnauthorized) removeRoleRes() {}
+
+type RenameWebAuthnCredentialNotFound Error
+
+func (*RenameWebAuthnCredentialNotFound) renameWebAuthnCredentialRes() {}
+
+type RenameWebAuthnCredentialOK struct {
+	Success OptBool `json:"success"`
+}
+
+// GetSuccess returns the value of Success.
+func (s *RenameWebAuthnCredentialOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// SetSuccess sets the value of Success.
+func (s *RenameWebAuthnCredentialOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+func (*RenameWebAuthnCredentialOK) renameWebAuthnCredentialRes() {}
+
+type RenameWebAuthnCredentialReq struct {
+	// New name for the credential.
+	Name string `json:"name"`
+}
+
+// GetName returns the value of Name.
+func (s *RenameWebAuthnCredentialReq) GetName() string {
+	return s.Name
+}
+
+// SetName sets the value of Name.
+func (s *RenameWebAuthnCredentialReq) SetName(val string) {
+	s.Name = val
+}
+
+type RenameWebAuthnCredentialUnauthorized Error
+
+func (*RenameWebAuthnCredentialUnauthorized) renameWebAuthnCredentialRes() {}
 
 // ResendVerificationNoContent is response for ResendVerification operation.
 type ResendVerificationNoContent struct{}
@@ -18749,4 +19034,265 @@ func (s *WatchedMovieItem) SetWatchCount(val OptInt) {
 // SetLastWatchedAt sets the value of LastWatchedAt.
 func (s *WatchedMovieItem) SetLastWatchedAt(val OptDateTime) {
 	s.LastWatchedAt = val
+}
+
+// WebAuthn login options (PublicKeyCredentialRequestOptions wrapper).
+// Ref: #/components/schemas/WebAuthnBeginLoginResponse
+type WebAuthnBeginLoginResponse struct {
+	// PublicKeyCredentialRequestOptions JSON from the WebAuthn library.
+	Options OptWebAuthnBeginLoginResponseOptions `json:"options"`
+}
+
+// GetOptions returns the value of Options.
+func (s *WebAuthnBeginLoginResponse) GetOptions() OptWebAuthnBeginLoginResponseOptions {
+	return s.Options
+}
+
+// SetOptions sets the value of Options.
+func (s *WebAuthnBeginLoginResponse) SetOptions(val OptWebAuthnBeginLoginResponseOptions) {
+	s.Options = val
+}
+
+func (*WebAuthnBeginLoginResponse) beginWebAuthnLoginRes() {}
+
+// PublicKeyCredentialRequestOptions JSON from the WebAuthn library.
+type WebAuthnBeginLoginResponseOptions map[string]jx.Raw
+
+func (s *WebAuthnBeginLoginResponseOptions) init() WebAuthnBeginLoginResponseOptions {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// WebAuthn registration options (PublicKeyCredentialCreationOptions wrapper).
+// Ref: #/components/schemas/WebAuthnBeginRegistrationResponse
+type WebAuthnBeginRegistrationResponse struct {
+	// PublicKeyCredentialCreationOptions JSON from the WebAuthn library.
+	Options OptWebAuthnBeginRegistrationResponseOptions `json:"options"`
+	// The credential name to associate upon completion.
+	CredentialName OptString `json:"credential_name"`
+}
+
+// GetOptions returns the value of Options.
+func (s *WebAuthnBeginRegistrationResponse) GetOptions() OptWebAuthnBeginRegistrationResponseOptions {
+	return s.Options
+}
+
+// GetCredentialName returns the value of CredentialName.
+func (s *WebAuthnBeginRegistrationResponse) GetCredentialName() OptString {
+	return s.CredentialName
+}
+
+// SetOptions sets the value of Options.
+func (s *WebAuthnBeginRegistrationResponse) SetOptions(val OptWebAuthnBeginRegistrationResponseOptions) {
+	s.Options = val
+}
+
+// SetCredentialName sets the value of CredentialName.
+func (s *WebAuthnBeginRegistrationResponse) SetCredentialName(val OptString) {
+	s.CredentialName = val
+}
+
+func (*WebAuthnBeginRegistrationResponse) beginWebAuthnRegistrationRes() {}
+
+// PublicKeyCredentialCreationOptions JSON from the WebAuthn library.
+type WebAuthnBeginRegistrationResponseOptions map[string]jx.Raw
+
+func (s *WebAuthnBeginRegistrationResponseOptions) init() WebAuthnBeginRegistrationResponseOptions {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/WebAuthnCredentialInfo
+type WebAuthnCredentialInfo struct {
+	// Internal credential ID.
+	ID OptUUID `json:"id"`
+	// User-facing credential name.
+	Name OptString `json:"name"`
+	// When the credential was registered.
+	CreatedAt OptDateTime `json:"created_at"`
+	// When the credential was last used.
+	LastUsedAt OptDateTime `json:"last_used_at"`
+	// Whether the credential supports backup.
+	BackupEligible OptBool `json:"backup_eligible"`
+	// Whether the credential is currently backed up.
+	BackupState OptBool `json:"backup_state"`
+	// Whether a clone has been detected for this credential.
+	CloneDetected OptBool `json:"clone_detected"`
+}
+
+// GetID returns the value of ID.
+func (s *WebAuthnCredentialInfo) GetID() OptUUID {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *WebAuthnCredentialInfo) GetName() OptString {
+	return s.Name
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *WebAuthnCredentialInfo) GetCreatedAt() OptDateTime {
+	return s.CreatedAt
+}
+
+// GetLastUsedAt returns the value of LastUsedAt.
+func (s *WebAuthnCredentialInfo) GetLastUsedAt() OptDateTime {
+	return s.LastUsedAt
+}
+
+// GetBackupEligible returns the value of BackupEligible.
+func (s *WebAuthnCredentialInfo) GetBackupEligible() OptBool {
+	return s.BackupEligible
+}
+
+// GetBackupState returns the value of BackupState.
+func (s *WebAuthnCredentialInfo) GetBackupState() OptBool {
+	return s.BackupState
+}
+
+// GetCloneDetected returns the value of CloneDetected.
+func (s *WebAuthnCredentialInfo) GetCloneDetected() OptBool {
+	return s.CloneDetected
+}
+
+// SetID sets the value of ID.
+func (s *WebAuthnCredentialInfo) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *WebAuthnCredentialInfo) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *WebAuthnCredentialInfo) SetCreatedAt(val OptDateTime) {
+	s.CreatedAt = val
+}
+
+// SetLastUsedAt sets the value of LastUsedAt.
+func (s *WebAuthnCredentialInfo) SetLastUsedAt(val OptDateTime) {
+	s.LastUsedAt = val
+}
+
+// SetBackupEligible sets the value of BackupEligible.
+func (s *WebAuthnCredentialInfo) SetBackupEligible(val OptBool) {
+	s.BackupEligible = val
+}
+
+// SetBackupState sets the value of BackupState.
+func (s *WebAuthnCredentialInfo) SetBackupState(val OptBool) {
+	s.BackupState = val
+}
+
+// SetCloneDetected sets the value of CloneDetected.
+func (s *WebAuthnCredentialInfo) SetCloneDetected(val OptBool) {
+	s.CloneDetected = val
+}
+
+// Ref: #/components/schemas/WebAuthnCredentialsList
+type WebAuthnCredentialsList struct {
+	Credentials []WebAuthnCredentialInfo `json:"credentials"`
+	// Total number of credentials.
+	Count OptInt `json:"count"`
+}
+
+// GetCredentials returns the value of Credentials.
+func (s *WebAuthnCredentialsList) GetCredentials() []WebAuthnCredentialInfo {
+	return s.Credentials
+}
+
+// GetCount returns the value of Count.
+func (s *WebAuthnCredentialsList) GetCount() OptInt {
+	return s.Count
+}
+
+// SetCredentials sets the value of Credentials.
+func (s *WebAuthnCredentialsList) SetCredentials(val []WebAuthnCredentialInfo) {
+	s.Credentials = val
+}
+
+// SetCount sets the value of Count.
+func (s *WebAuthnCredentialsList) SetCount(val OptInt) {
+	s.Count = val
+}
+
+func (*WebAuthnCredentialsList) listWebAuthnCredentialsRes() {}
+
+// WebAuthn login assertion from the authenticator.
+// Ref: #/components/schemas/WebAuthnFinishLoginRequest
+type WebAuthnFinishLoginRequest struct {
+	// The PublicKeyCredential response from navigator.credentials.get().
+	Credential WebAuthnFinishLoginRequestCredential `json:"credential"`
+}
+
+// GetCredential returns the value of Credential.
+func (s *WebAuthnFinishLoginRequest) GetCredential() WebAuthnFinishLoginRequestCredential {
+	return s.Credential
+}
+
+// SetCredential sets the value of Credential.
+func (s *WebAuthnFinishLoginRequest) SetCredential(val WebAuthnFinishLoginRequestCredential) {
+	s.Credential = val
+}
+
+// The PublicKeyCredential response from navigator.credentials.get().
+type WebAuthnFinishLoginRequestCredential map[string]jx.Raw
+
+func (s *WebAuthnFinishLoginRequestCredential) init() WebAuthnFinishLoginRequestCredential {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
+}
+
+// WebAuthn registration response from the authenticator.
+// Ref: #/components/schemas/WebAuthnFinishRegistrationRequest
+type WebAuthnFinishRegistrationRequest struct {
+	// The PublicKeyCredential response from navigator.credentials.create().
+	Credential WebAuthnFinishRegistrationRequestCredential `json:"credential"`
+	// User-facing name for the credential.
+	CredentialName OptString `json:"credential_name"`
+}
+
+// GetCredential returns the value of Credential.
+func (s *WebAuthnFinishRegistrationRequest) GetCredential() WebAuthnFinishRegistrationRequestCredential {
+	return s.Credential
+}
+
+// GetCredentialName returns the value of CredentialName.
+func (s *WebAuthnFinishRegistrationRequest) GetCredentialName() OptString {
+	return s.CredentialName
+}
+
+// SetCredential sets the value of Credential.
+func (s *WebAuthnFinishRegistrationRequest) SetCredential(val WebAuthnFinishRegistrationRequestCredential) {
+	s.Credential = val
+}
+
+// SetCredentialName sets the value of CredentialName.
+func (s *WebAuthnFinishRegistrationRequest) SetCredentialName(val OptString) {
+	s.CredentialName = val
+}
+
+// The PublicKeyCredential response from navigator.credentials.create().
+type WebAuthnFinishRegistrationRequestCredential map[string]jx.Raw
+
+func (s *WebAuthnFinishRegistrationRequestCredential) init() WebAuthnFinishRegistrationRequestCredential {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
 }

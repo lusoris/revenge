@@ -68,6 +68,7 @@ type ServerParams struct {
 	TOTPService        *mfa.TOTPService
 	BackupCodesService *mfa.BackupCodesService
 	MFAManager         *mfa.MFAManager
+	WebAuthnService    *mfa.WebAuthnService `optional:"true"`
 	// Content modules
 	MovieHandler    *movie.Handler
 	MetadataService metadata.Service `optional:"true"`
@@ -87,6 +88,7 @@ func NewServer(p ServerParams) (*Server, error) {
 		p.TOTPService,
 		p.BackupCodesService,
 		p.MFAManager,
+		p.WebAuthnService,
 		p.Logger.Named("mfa"),
 	)
 

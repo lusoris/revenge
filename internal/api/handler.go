@@ -991,3 +991,33 @@ func (h *Handler) EnableMFA(ctx context.Context) (ogen.EnableMFARes, error) {
 func (h *Handler) DisableMFA(ctx context.Context) (ogen.DisableMFARes, error) {
 	return h.mfaHandler.DisableMFA(ctx)
 }
+
+// WebAuthn-related methods - delegate to MFAHandler
+
+func (h *Handler) BeginWebAuthnRegistration(ctx context.Context, req ogen.OptBeginWebAuthnRegistrationReq) (ogen.BeginWebAuthnRegistrationRes, error) {
+	return h.mfaHandler.BeginWebAuthnRegistration(ctx, req)
+}
+
+func (h *Handler) FinishWebAuthnRegistration(ctx context.Context, req *ogen.WebAuthnFinishRegistrationRequest) (ogen.FinishWebAuthnRegistrationRes, error) {
+	return h.mfaHandler.FinishWebAuthnRegistration(ctx, req)
+}
+
+func (h *Handler) BeginWebAuthnLogin(ctx context.Context) (ogen.BeginWebAuthnLoginRes, error) {
+	return h.mfaHandler.BeginWebAuthnLogin(ctx)
+}
+
+func (h *Handler) FinishWebAuthnLogin(ctx context.Context, req *ogen.WebAuthnFinishLoginRequest) (ogen.FinishWebAuthnLoginRes, error) {
+	return h.mfaHandler.FinishWebAuthnLogin(ctx, req)
+}
+
+func (h *Handler) ListWebAuthnCredentials(ctx context.Context) (ogen.ListWebAuthnCredentialsRes, error) {
+	return h.mfaHandler.ListWebAuthnCredentials(ctx)
+}
+
+func (h *Handler) DeleteWebAuthnCredential(ctx context.Context, params ogen.DeleteWebAuthnCredentialParams) (ogen.DeleteWebAuthnCredentialRes, error) {
+	return h.mfaHandler.DeleteWebAuthnCredential(ctx, params)
+}
+
+func (h *Handler) RenameWebAuthnCredential(ctx context.Context, req *ogen.RenameWebAuthnCredentialReq, params ogen.RenameWebAuthnCredentialParams) (ogen.RenameWebAuthnCredentialRes, error) {
+	return h.mfaHandler.RenameWebAuthnCredential(ctx, req, params)
+}

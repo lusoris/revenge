@@ -157,6 +157,18 @@ type Invoker interface {
 	//
 	// GET /api/v1/search/movies/autocomplete
 	AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error)
+	// BeginWebAuthnLogin invokes beginWebAuthnLogin operation.
+	//
+	// Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
+	//
+	// POST /api/v1/mfa/webauthn/login/begin
+	BeginWebAuthnLogin(ctx context.Context) (BeginWebAuthnLoginRes, error)
+	// BeginWebAuthnRegistration invokes beginWebAuthnRegistration operation.
+	//
+	// Start the WebAuthn credential registration ceremony. Returns PublicKeyCredentialCreationOptions.
+	//
+	// POST /api/v1/mfa/webauthn/register/begin
+	BeginWebAuthnRegistration(ctx context.Context, request OptBeginWebAuthnRegistrationReq) (BeginWebAuthnRegistrationRes, error)
 	// ChangePassword invokes changePassword operation.
 	//
 	// Change password for authenticated user (requires old password).
@@ -211,6 +223,12 @@ type Invoker interface {
 	//
 	// DELETE /api/v1/movies/{id}/progress
 	DeleteWatchProgress(ctx context.Context, params DeleteWatchProgressParams) (DeleteWatchProgressRes, error)
+	// DeleteWebAuthnCredential invokes deleteWebAuthnCredential operation.
+	//
+	// Remove a WebAuthn credential.
+	//
+	// DELETE /api/v1/mfa/webauthn/credentials/{credentialId}
+	DeleteWebAuthnCredential(ctx context.Context, params DeleteWebAuthnCredentialParams) (DeleteWebAuthnCredentialRes, error)
 	// DisableMFA invokes disableMFA operation.
 	//
 	// Turn off MFA requirement for login.
@@ -229,6 +247,18 @@ type Invoker interface {
 	//
 	// POST /api/v1/mfa/enable
 	EnableMFA(ctx context.Context) (EnableMFARes, error)
+	// FinishWebAuthnLogin invokes finishWebAuthnLogin operation.
+	//
+	// Complete the WebAuthn authentication ceremony with the authenticator assertion.
+	//
+	// POST /api/v1/mfa/webauthn/login/finish
+	FinishWebAuthnLogin(ctx context.Context, request *WebAuthnFinishLoginRequest) (FinishWebAuthnLoginRes, error)
+	// FinishWebAuthnRegistration invokes finishWebAuthnRegistration operation.
+	//
+	// Complete the WebAuthn registration ceremony with the authenticator response.
+	//
+	// POST /api/v1/mfa/webauthn/register/finish
+	FinishWebAuthnRegistration(ctx context.Context, request *WebAuthnFinishRegistrationRequest) (FinishWebAuthnRegistrationRes, error)
 	// ForgotPassword invokes forgotPassword operation.
 	//
 	// Send password reset token to user's email address.
@@ -720,6 +750,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/settings/user
 	ListUserSettings(ctx context.Context) (ListUserSettingsRes, error)
+	// ListWebAuthnCredentials invokes listWebAuthnCredentials operation.
+	//
+	// List all WebAuthn credentials for the authenticated user.
+	//
+	// GET /api/v1/mfa/webauthn/credentials
+	ListWebAuthnCredentials(ctx context.Context) (ListWebAuthnCredentialsRes, error)
 	// Login invokes login operation.
 	//
 	// Authenticate user and return access token and refresh token.
@@ -823,6 +859,12 @@ type Invoker interface {
 	//
 	// DELETE /api/v1/rbac/users/{userId}/roles/{role}
 	RemoveRole(ctx context.Context, params RemoveRoleParams) (RemoveRoleRes, error)
+	// RenameWebAuthnCredential invokes renameWebAuthnCredential operation.
+	//
+	// Update the user-facing name of a WebAuthn credential.
+	//
+	// PATCH /api/v1/mfa/webauthn/credentials/{credentialId}
+	RenameWebAuthnCredential(ctx context.Context, request *RenameWebAuthnCredentialReq, params RenameWebAuthnCredentialParams) (RenameWebAuthnCredentialRes, error)
 	// ResendVerification invokes resendVerification operation.
 	//
 	// Resend email verification token to user's email address.
@@ -3235,6 +3277,221 @@ func (c *Client) sendAutocompleteMovies(ctx context.Context, params Autocomplete
 	return result, nil
 }
 
+// BeginWebAuthnLogin invokes beginWebAuthnLogin operation.
+//
+// Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
+//
+// POST /api/v1/mfa/webauthn/login/begin
+func (c *Client) BeginWebAuthnLogin(ctx context.Context) (BeginWebAuthnLoginRes, error) {
+	res, err := c.sendBeginWebAuthnLogin(ctx)
+	return res, err
+}
+
+func (c *Client) sendBeginWebAuthnLogin(ctx context.Context) (res BeginWebAuthnLoginRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("beginWebAuthnLogin"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/login/begin"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, BeginWebAuthnLoginOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mfa/webauthn/login/begin"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, BeginWebAuthnLoginOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeBeginWebAuthnLoginResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// BeginWebAuthnRegistration invokes beginWebAuthnRegistration operation.
+//
+// Start the WebAuthn credential registration ceremony. Returns PublicKeyCredentialCreationOptions.
+//
+// POST /api/v1/mfa/webauthn/register/begin
+func (c *Client) BeginWebAuthnRegistration(ctx context.Context, request OptBeginWebAuthnRegistrationReq) (BeginWebAuthnRegistrationRes, error) {
+	res, err := c.sendBeginWebAuthnRegistration(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendBeginWebAuthnRegistration(ctx context.Context, request OptBeginWebAuthnRegistrationReq) (res BeginWebAuthnRegistrationRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("beginWebAuthnRegistration"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/register/begin"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, BeginWebAuthnRegistrationOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mfa/webauthn/register/begin"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeBeginWebAuthnRegistrationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, BeginWebAuthnRegistrationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeBeginWebAuthnRegistrationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // ChangePassword invokes changePassword operation.
 //
 // Change password for authenticated user (requires old password).
@@ -4293,6 +4550,130 @@ func (c *Client) sendDeleteWatchProgress(ctx context.Context, params DeleteWatch
 	return result, nil
 }
 
+// DeleteWebAuthnCredential invokes deleteWebAuthnCredential operation.
+//
+// Remove a WebAuthn credential.
+//
+// DELETE /api/v1/mfa/webauthn/credentials/{credentialId}
+func (c *Client) DeleteWebAuthnCredential(ctx context.Context, params DeleteWebAuthnCredentialParams) (DeleteWebAuthnCredentialRes, error) {
+	res, err := c.sendDeleteWebAuthnCredential(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteWebAuthnCredential(ctx context.Context, params DeleteWebAuthnCredentialParams) (res DeleteWebAuthnCredentialRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("deleteWebAuthnCredential"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/credentials/{credentialId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteWebAuthnCredentialOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/mfa/webauthn/credentials/"
+	{
+		// Encode "credentialId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "credentialId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.CredentialId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, DeleteWebAuthnCredentialOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteWebAuthnCredentialResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DisableMFA invokes disableMFA operation.
 //
 // Turn off MFA requirement for login.
@@ -4604,6 +4985,224 @@ func (c *Client) sendEnableMFA(ctx context.Context) (res EnableMFARes, err error
 
 	stage = "DecodeResponse"
 	result, err := decodeEnableMFAResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// FinishWebAuthnLogin invokes finishWebAuthnLogin operation.
+//
+// Complete the WebAuthn authentication ceremony with the authenticator assertion.
+//
+// POST /api/v1/mfa/webauthn/login/finish
+func (c *Client) FinishWebAuthnLogin(ctx context.Context, request *WebAuthnFinishLoginRequest) (FinishWebAuthnLoginRes, error) {
+	res, err := c.sendFinishWebAuthnLogin(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendFinishWebAuthnLogin(ctx context.Context, request *WebAuthnFinishLoginRequest) (res FinishWebAuthnLoginRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("finishWebAuthnLogin"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/login/finish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, FinishWebAuthnLoginOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mfa/webauthn/login/finish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeFinishWebAuthnLoginRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, FinishWebAuthnLoginOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeFinishWebAuthnLoginResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// FinishWebAuthnRegistration invokes finishWebAuthnRegistration operation.
+//
+// Complete the WebAuthn registration ceremony with the authenticator response.
+//
+// POST /api/v1/mfa/webauthn/register/finish
+func (c *Client) FinishWebAuthnRegistration(ctx context.Context, request *WebAuthnFinishRegistrationRequest) (FinishWebAuthnRegistrationRes, error) {
+	res, err := c.sendFinishWebAuthnRegistration(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendFinishWebAuthnRegistration(ctx context.Context, request *WebAuthnFinishRegistrationRequest) (res FinishWebAuthnRegistrationRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("finishWebAuthnRegistration"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/register/finish"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, FinishWebAuthnRegistrationOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mfa/webauthn/register/finish"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeFinishWebAuthnRegistrationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, FinishWebAuthnRegistrationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeFinishWebAuthnRegistrationResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -14177,6 +14776,112 @@ func (c *Client) sendListUserSettings(ctx context.Context) (res ListUserSettings
 	return result, nil
 }
 
+// ListWebAuthnCredentials invokes listWebAuthnCredentials operation.
+//
+// List all WebAuthn credentials for the authenticated user.
+//
+// GET /api/v1/mfa/webauthn/credentials
+func (c *Client) ListWebAuthnCredentials(ctx context.Context) (ListWebAuthnCredentialsRes, error) {
+	res, err := c.sendListWebAuthnCredentials(ctx)
+	return res, err
+}
+
+func (c *Client) sendListWebAuthnCredentials(ctx context.Context) (res ListWebAuthnCredentialsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("listWebAuthnCredentials"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/credentials"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListWebAuthnCredentialsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/mfa/webauthn/credentials"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, ListWebAuthnCredentialsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListWebAuthnCredentialsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // Login invokes login operation.
 //
 // Authenticate user and return access token and refresh token.
@@ -16032,6 +16737,133 @@ func (c *Client) sendRemoveRole(ctx context.Context, params RemoveRoleParams) (r
 
 	stage = "DecodeResponse"
 	result, err := decodeRemoveRoleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RenameWebAuthnCredential invokes renameWebAuthnCredential operation.
+//
+// Update the user-facing name of a WebAuthn credential.
+//
+// PATCH /api/v1/mfa/webauthn/credentials/{credentialId}
+func (c *Client) RenameWebAuthnCredential(ctx context.Context, request *RenameWebAuthnCredentialReq, params RenameWebAuthnCredentialParams) (RenameWebAuthnCredentialRes, error) {
+	res, err := c.sendRenameWebAuthnCredential(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendRenameWebAuthnCredential(ctx context.Context, request *RenameWebAuthnCredentialReq, params RenameWebAuthnCredentialParams) (res RenameWebAuthnCredentialRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("renameWebAuthnCredential"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/api/v1/mfa/webauthn/credentials/{credentialId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RenameWebAuthnCredentialOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/mfa/webauthn/credentials/"
+	{
+		// Encode "credentialId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "credentialId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.CredentialId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRenameWebAuthnCredentialRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, RenameWebAuthnCredentialOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRenameWebAuthnCredentialResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

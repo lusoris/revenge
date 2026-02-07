@@ -1698,6 +1698,184 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 							}
 
+						case 'w': // Prefix: "webauthn/"
+
+							if l := len("webauthn/"); len(elem) >= l && elem[0:l] == "webauthn/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "credentials"
+
+								if l := len("credentials"); len(elem) >= l && elem[0:l] == "credentials" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "GET":
+										s.handleListWebAuthnCredentialsRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "credentialId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[0] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "DELETE":
+											s.handleDeleteWebAuthnCredentialRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										case "PATCH":
+											s.handleRenameWebAuthnCredentialRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "DELETE,PATCH")
+										}
+
+										return
+									}
+
+								}
+
+							case 'l': // Prefix: "login/"
+
+								if l := len("login/"); len(elem) >= l && elem[0:l] == "login/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'b': // Prefix: "begin"
+
+									if l := len("begin"); len(elem) >= l && elem[0:l] == "begin" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleBeginWebAuthnLoginRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								case 'f': // Prefix: "finish"
+
+									if l := len("finish"); len(elem) >= l && elem[0:l] == "finish" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleFinishWebAuthnLoginRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								}
+
+							case 'r': // Prefix: "register/"
+
+								if l := len("register/"); len(elem) >= l && elem[0:l] == "register/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'b': // Prefix: "begin"
+
+									if l := len("begin"); len(elem) >= l && elem[0:l] == "begin" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleBeginWebAuthnRegistrationRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								case 'f': // Prefix: "finish"
+
+									if l := len("finish"); len(elem) >= l && elem[0:l] == "finish" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleFinishWebAuthnRegistrationRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
 						}
 
 					case 'o': // Prefix: "ovies"
@@ -5752,6 +5930,217 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.operationID = "verifyTOTP"
 											r.operationGroup = ""
 											r.pathPattern = "/api/v1/mfa/totp/verify"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							}
+
+						case 'w': // Prefix: "webauthn/"
+
+							if l := len("webauthn/"); len(elem) >= l && elem[0:l] == "webauthn/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "credentials"
+
+								if l := len("credentials"); len(elem) >= l && elem[0:l] == "credentials" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									switch method {
+									case "GET":
+										r.name = ListWebAuthnCredentialsOperation
+										r.summary = "List WebAuthn credentials"
+										r.operationID = "listWebAuthnCredentials"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/mfa/webauthn/credentials"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "credentialId"
+									// Leaf parameter, slashes are prohibited
+									idx := strings.IndexByte(elem, '/')
+									if idx >= 0 {
+										break
+									}
+									args[0] = elem
+									elem = ""
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "DELETE":
+											r.name = DeleteWebAuthnCredentialOperation
+											r.summary = "Delete WebAuthn credential"
+											r.operationID = "deleteWebAuthnCredential"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/credentials/{credentialId}"
+											r.args = args
+											r.count = 1
+											return r, true
+										case "PATCH":
+											r.name = RenameWebAuthnCredentialOperation
+											r.summary = "Rename WebAuthn credential"
+											r.operationID = "renameWebAuthnCredential"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/credentials/{credentialId}"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							case 'l': // Prefix: "login/"
+
+								if l := len("login/"); len(elem) >= l && elem[0:l] == "login/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'b': // Prefix: "begin"
+
+									if l := len("begin"); len(elem) >= l && elem[0:l] == "begin" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = BeginWebAuthnLoginOperation
+											r.summary = "Begin WebAuthn login"
+											r.operationID = "beginWebAuthnLogin"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/login/begin"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'f': // Prefix: "finish"
+
+									if l := len("finish"); len(elem) >= l && elem[0:l] == "finish" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = FinishWebAuthnLoginOperation
+											r.summary = "Finish WebAuthn login"
+											r.operationID = "finishWebAuthnLogin"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/login/finish"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							case 'r': // Prefix: "register/"
+
+								if l := len("register/"); len(elem) >= l && elem[0:l] == "register/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'b': // Prefix: "begin"
+
+									if l := len("begin"); len(elem) >= l && elem[0:l] == "begin" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = BeginWebAuthnRegistrationOperation
+											r.summary = "Begin WebAuthn registration"
+											r.operationID = "beginWebAuthnRegistration"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/register/begin"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'f': // Prefix: "finish"
+
+									if l := len("finish"); len(elem) >= l && elem[0:l] == "finish" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = FinishWebAuthnRegistrationOperation
+											r.summary = "Finish WebAuthn registration"
+											r.operationID = "finishWebAuthnRegistration"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/mfa/webauthn/register/finish"
 											r.args = args
 											r.count = 0
 											return r, true

@@ -968,6 +968,71 @@ func decodeDeleteWatchProgressParams(args [1]string, argsEscaped bool, r *http.R
 	return params, nil
 }
 
+// DeleteWebAuthnCredentialParams is parameters of deleteWebAuthnCredential operation.
+type DeleteWebAuthnCredentialParams struct {
+	CredentialId uuid.UUID
+}
+
+func unpackDeleteWebAuthnCredentialParams(packed middleware.Parameters) (params DeleteWebAuthnCredentialParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "credentialId",
+			In:   "path",
+		}
+		params.CredentialId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeDeleteWebAuthnCredentialParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteWebAuthnCredentialParams, _ error) {
+	// Decode path: credentialId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "credentialId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.CredentialId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "credentialId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetAPIKeyParams is parameters of getAPIKey operation.
 type GetAPIKeyParams struct {
 	// API Key ID.
@@ -7203,6 +7268,71 @@ func decodeRemoveRoleParams(args [2]string, argsEscaped bool, r *http.Request) (
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "role",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RenameWebAuthnCredentialParams is parameters of renameWebAuthnCredential operation.
+type RenameWebAuthnCredentialParams struct {
+	CredentialId uuid.UUID
+}
+
+func unpackRenameWebAuthnCredentialParams(packed middleware.Parameters) (params RenameWebAuthnCredentialParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "credentialId",
+			In:   "path",
+		}
+		params.CredentialId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeRenameWebAuthnCredentialParams(args [1]string, argsEscaped bool, r *http.Request) (params RenameWebAuthnCredentialParams, _ error) {
+	// Decode path: credentialId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "credentialId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.CredentialId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "credentialId",
 			In:   "path",
 			Err:  err,
 		}

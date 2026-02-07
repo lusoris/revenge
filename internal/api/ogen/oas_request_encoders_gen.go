@@ -70,6 +70,26 @@ func encodeAssignRoleRequest(
 	return nil
 }
 
+func encodeBeginWebAuthnRegistrationRequest(
+	req OptBeginWebAuthnRegistrationReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeChangePasswordRequest(
 	req *ChangePasswordRequest,
 	r *http.Request,
@@ -114,6 +134,34 @@ func encodeCreateLibraryRequest(
 
 func encodeCreateRoleRequest(
 	req *CreateRoleRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeFinishWebAuthnLoginRequest(
+	req *WebAuthnFinishLoginRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeFinishWebAuthnRegistrationRequest(
+	req *WebAuthnFinishRegistrationRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -274,6 +322,20 @@ func encodeRegisterRequest(
 
 func encodeRemovePolicyRequest(
 	req *PolicyRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeRenameWebAuthnCredentialRequest(
+	req *RenameWebAuthnCredentialReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
