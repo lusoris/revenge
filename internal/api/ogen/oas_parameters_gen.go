@@ -2093,6 +2093,71 @@ func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
+// GetPlaybackSessionParams is parameters of getPlaybackSession operation.
+type GetPlaybackSessionParams struct {
+	SessionId uuid.UUID
+}
+
+func unpackGetPlaybackSessionParams(packed middleware.Parameters) (params GetPlaybackSessionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "sessionId",
+			In:   "path",
+		}
+		params.SessionId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeGetPlaybackSessionParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPlaybackSessionParams, _ error) {
+	// Decode path: sessionId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "sessionId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.SessionId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sessionId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetProxiedImageParams is parameters of getProxiedImage operation.
 type GetProxiedImageParams struct {
 	// Image type.
@@ -9439,6 +9504,71 @@ func decodeSearchTVShowsMetadataParams(args [0]string, argsEscaped bool, r *http
 		return params, &ogenerrors.DecodeParamError{
 			Name: "limit",
 			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// StopPlaybackSessionParams is parameters of stopPlaybackSession operation.
+type StopPlaybackSessionParams struct {
+	SessionId uuid.UUID
+}
+
+func unpackStopPlaybackSessionParams(packed middleware.Parameters) (params StopPlaybackSessionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "sessionId",
+			In:   "path",
+		}
+		params.SessionId = packed[key].(uuid.UUID)
+	}
+	return params
+}
+
+func decodeStopPlaybackSessionParams(args [1]string, argsEscaped bool, r *http.Request) (params StopPlaybackSessionParams, _ error) {
+	// Decode path: sessionId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "sessionId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToUUID(val)
+				if err != nil {
+					return err
+				}
+
+				params.SessionId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sessionId",
+			In:   "path",
 			Err:  err,
 		}
 	}

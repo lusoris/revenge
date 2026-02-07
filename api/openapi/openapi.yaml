@@ -46,6 +46,8 @@ tags:
     description: Admin endpoints for managing integrations (Radarr, Sonarr, etc.)
   - name: Webhooks
     description: Webhook endpoints for external service notifications
+  - name: playback
+    description: HLS streaming and playback session management
 
 paths:
   /healthz:
@@ -5193,6 +5195,103 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # ============================================================================
+  # Playback / HLS Streaming
+  # ============================================================================
+
+  /api/v1/playback/sessions:
+    post:
+      operationId: startPlaybackSession
+      summary: Start a playback session
+      description: |
+        Creates a new HLS playback session for a movie or episode.
+        Returns a master playlist URL and session metadata.
+        Video and audio are segmented separately — audio tracks are individual
+        HLS renditions so the player can switch tracks instantly without
+        restarting the stream.
+      tags:
+        - playback
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartPlaybackRequest'
+      responses:
+        '201':
+          description: Playback session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybackSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/playback/sessions/{sessionId}:
+    get:
+      operationId: getPlaybackSession
+      summary: Get playback session info
+      description: Returns metadata for an active playback session.
+      tags:
+        - playback
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Playback session info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybackSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      operationId: stopPlaybackSession
+      summary: Stop a playback session
+      description: |
+        Stops the playback session, terminates FFmpeg processes,
+        and cleans up segment files.
+      tags:
+        - playback
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Session stopped
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas
@@ -9142,6 +9241,179 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LibraryPermission'
+
+    # Playback / HLS schemas
+    StartPlaybackRequest:
+      type: object
+      required:
+        - mediaType
+        - mediaId
+      properties:
+        mediaType:
+          type: string
+          enum: [movie, episode]
+          description: Type of media to play
+        mediaId:
+          type: string
+          format: uuid
+          description: Movie or episode ID
+        fileId:
+          type: string
+          format: uuid
+          description: Specific file ID (optional, uses default if omitted)
+        audioTrack:
+          type: integer
+          default: 0
+          description: Audio track index to select initially
+        subtitleTrack:
+          type: integer
+          description: Subtitle track index (omit to disable subtitles)
+        startPosition:
+          type: integer
+          default: 0
+          description: Start position in seconds (for resume)
+
+    PlaybackSession:
+      type: object
+      required:
+        - sessionId
+        - masterPlaylistUrl
+        - durationSeconds
+        - profiles
+        - audioTracks
+        - subtitleTracks
+        - createdAt
+        - expiresAt
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        masterPlaylistUrl:
+          type: string
+          description: URL to the HLS master playlist
+          example: /api/v1/playback/stream/01234567-89ab-cdef-0123-456789abcdef/master.m3u8
+        durationSeconds:
+          type: number
+          format: double
+          description: Total media duration in seconds
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaybackProfile'
+          description: Available quality profiles
+        audioTracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaybackAudioTrack'
+          description: |
+            Available audio tracks. Each track is a separate HLS rendition —
+            the player downloads only the active track's segments, so switching
+            is instant without restarting the stream.
+        subtitleTracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaybackSubtitleTrack'
+          description: |
+            Available subtitle tracks. Each is a pre-extracted WebVTT file
+            served in full, so switching is instant client-side.
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+
+    PlaybackProfile:
+      type: object
+      required:
+        - name
+        - width
+        - height
+        - bitrate
+        - isOriginal
+      properties:
+        name:
+          type: string
+          description: Profile name
+          example: 1080p
+        width:
+          type: integer
+          description: Video width in pixels
+        height:
+          type: integer
+          description: Video height in pixels
+        bitrate:
+          type: integer
+          description: Video bitrate in kbps (0 for direct copy)
+        isOriginal:
+          type: boolean
+          description: Whether this profile copies the original streams without transcoding
+
+    PlaybackAudioTrack:
+      type: object
+      required:
+        - index
+        - channels
+        - codec
+        - isDefault
+      properties:
+        index:
+          type: integer
+          description: Audio stream index in the source file
+        language:
+          type: string
+          description: ISO 639 language code
+          example: eng
+        title:
+          type: string
+          description: Track title from file metadata
+          example: English 5.1 Surround
+        channels:
+          type: integer
+          description: Number of audio channels
+          example: 6
+        layout:
+          type: string
+          description: Channel layout
+          example: "5.1"
+        codec:
+          type: string
+          description: Source audio codec
+          example: eac3
+        isDefault:
+          type: boolean
+          description: Whether this is the default audio track
+
+    PlaybackSubtitleTrack:
+      type: object
+      required:
+        - index
+        - codec
+        - url
+        - isForced
+      properties:
+        index:
+          type: integer
+          description: Subtitle stream index in the source file
+        language:
+          type: string
+          description: ISO 639 language code
+          example: eng
+        title:
+          type: string
+          description: Track title from file metadata
+          example: English (SDH)
+        codec:
+          type: string
+          description: Source subtitle codec
+          example: subrip
+        url:
+          type: string
+          description: URL to the WebVTT subtitle file
+          example: /api/v1/playback/stream/01234567-89ab-cdef-0123-456789abcdef/subs/0.vtt
+        isForced:
+          type: boolean
+          description: Whether this is a forced subtitle track (e.g., foreign language signs)
 
     Error:
       type: object

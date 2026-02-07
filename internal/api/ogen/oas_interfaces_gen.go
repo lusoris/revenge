@@ -225,6 +225,10 @@ type GetMovieRes interface {
 	getMovieRes()
 }
 
+type GetPlaybackSessionRes interface {
+	getPlaybackSessionRes()
+}
+
 type GetProxiedImageRes interface {
 	getProxiedImageRes()
 }
@@ -575,6 +579,14 @@ type SearchTVShowsRes interface {
 
 type SetupTOTPRes interface {
 	setupTOTPRes()
+}
+
+type StartPlaybackSessionRes interface {
+	startPlaybackSessionRes()
+}
+
+type StopPlaybackSessionRes interface {
+	stopPlaybackSessionRes()
 }
 
 type TriggerLibraryScanRes interface {

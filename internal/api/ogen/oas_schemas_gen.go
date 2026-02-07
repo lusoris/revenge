@@ -3411,6 +3411,14 @@ type GetMovieUnauthorized Error
 
 func (*GetMovieUnauthorized) getMovieRes() {}
 
+type GetPlaybackSessionNotFound Error
+
+func (*GetPlaybackSessionNotFound) getPlaybackSessionRes() {}
+
+type GetPlaybackSessionUnauthorized Error
+
+func (*GetPlaybackSessionUnauthorized) getPlaybackSessionRes() {}
+
 type GetProxiedImageBadRequest Error
 
 func (*GetProxiedImageBadRequest) getProxiedImageRes() {}
@@ -11331,6 +11339,337 @@ func (s *PermissionsResponse) SetPermissions(val []Permission) {
 
 func (*PermissionsResponse) listPermissionsRes() {}
 
+// Ref: #/components/schemas/PlaybackAudioTrack
+type PlaybackAudioTrack struct {
+	// Audio stream index in the source file.
+	Index int `json:"index"`
+	// ISO 639 language code.
+	Language OptString `json:"language"`
+	// Track title from file metadata.
+	Title OptString `json:"title"`
+	// Number of audio channels.
+	Channels int `json:"channels"`
+	// Channel layout.
+	Layout OptString `json:"layout"`
+	// Source audio codec.
+	Codec string `json:"codec"`
+	// Whether this is the default audio track.
+	IsDefault bool `json:"isDefault"`
+}
+
+// GetIndex returns the value of Index.
+func (s *PlaybackAudioTrack) GetIndex() int {
+	return s.Index
+}
+
+// GetLanguage returns the value of Language.
+func (s *PlaybackAudioTrack) GetLanguage() OptString {
+	return s.Language
+}
+
+// GetTitle returns the value of Title.
+func (s *PlaybackAudioTrack) GetTitle() OptString {
+	return s.Title
+}
+
+// GetChannels returns the value of Channels.
+func (s *PlaybackAudioTrack) GetChannels() int {
+	return s.Channels
+}
+
+// GetLayout returns the value of Layout.
+func (s *PlaybackAudioTrack) GetLayout() OptString {
+	return s.Layout
+}
+
+// GetCodec returns the value of Codec.
+func (s *PlaybackAudioTrack) GetCodec() string {
+	return s.Codec
+}
+
+// GetIsDefault returns the value of IsDefault.
+func (s *PlaybackAudioTrack) GetIsDefault() bool {
+	return s.IsDefault
+}
+
+// SetIndex sets the value of Index.
+func (s *PlaybackAudioTrack) SetIndex(val int) {
+	s.Index = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *PlaybackAudioTrack) SetLanguage(val OptString) {
+	s.Language = val
+}
+
+// SetTitle sets the value of Title.
+func (s *PlaybackAudioTrack) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetChannels sets the value of Channels.
+func (s *PlaybackAudioTrack) SetChannels(val int) {
+	s.Channels = val
+}
+
+// SetLayout sets the value of Layout.
+func (s *PlaybackAudioTrack) SetLayout(val OptString) {
+	s.Layout = val
+}
+
+// SetCodec sets the value of Codec.
+func (s *PlaybackAudioTrack) SetCodec(val string) {
+	s.Codec = val
+}
+
+// SetIsDefault sets the value of IsDefault.
+func (s *PlaybackAudioTrack) SetIsDefault(val bool) {
+	s.IsDefault = val
+}
+
+// Ref: #/components/schemas/PlaybackProfile
+type PlaybackProfile struct {
+	// Profile name.
+	Name string `json:"name"`
+	// Video width in pixels.
+	Width int `json:"width"`
+	// Video height in pixels.
+	Height int `json:"height"`
+	// Video bitrate in kbps (0 for direct copy).
+	Bitrate int `json:"bitrate"`
+	// Whether this profile copies the original streams without transcoding.
+	IsOriginal bool `json:"isOriginal"`
+}
+
+// GetName returns the value of Name.
+func (s *PlaybackProfile) GetName() string {
+	return s.Name
+}
+
+// GetWidth returns the value of Width.
+func (s *PlaybackProfile) GetWidth() int {
+	return s.Width
+}
+
+// GetHeight returns the value of Height.
+func (s *PlaybackProfile) GetHeight() int {
+	return s.Height
+}
+
+// GetBitrate returns the value of Bitrate.
+func (s *PlaybackProfile) GetBitrate() int {
+	return s.Bitrate
+}
+
+// GetIsOriginal returns the value of IsOriginal.
+func (s *PlaybackProfile) GetIsOriginal() bool {
+	return s.IsOriginal
+}
+
+// SetName sets the value of Name.
+func (s *PlaybackProfile) SetName(val string) {
+	s.Name = val
+}
+
+// SetWidth sets the value of Width.
+func (s *PlaybackProfile) SetWidth(val int) {
+	s.Width = val
+}
+
+// SetHeight sets the value of Height.
+func (s *PlaybackProfile) SetHeight(val int) {
+	s.Height = val
+}
+
+// SetBitrate sets the value of Bitrate.
+func (s *PlaybackProfile) SetBitrate(val int) {
+	s.Bitrate = val
+}
+
+// SetIsOriginal sets the value of IsOriginal.
+func (s *PlaybackProfile) SetIsOriginal(val bool) {
+	s.IsOriginal = val
+}
+
+// Ref: #/components/schemas/PlaybackSession
+type PlaybackSession struct {
+	SessionId uuid.UUID `json:"sessionId"`
+	// URL to the HLS master playlist.
+	MasterPlaylistUrl string `json:"masterPlaylistUrl"`
+	// Total media duration in seconds.
+	DurationSeconds float64 `json:"durationSeconds"`
+	// Available quality profiles.
+	Profiles []PlaybackProfile `json:"profiles"`
+	// Available audio tracks. Each track is a separate HLS rendition —
+	// the player downloads only the active track's segments, so switching
+	// is instant without restarting the stream.
+	AudioTracks []PlaybackAudioTrack `json:"audioTracks"`
+	// Available subtitle tracks. Each is a pre-extracted WebVTT file
+	// served in full, so switching is instant client-side.
+	SubtitleTracks []PlaybackSubtitleTrack `json:"subtitleTracks"`
+	CreatedAt      time.Time               `json:"createdAt"`
+	ExpiresAt      time.Time               `json:"expiresAt"`
+}
+
+// GetSessionId returns the value of SessionId.
+func (s *PlaybackSession) GetSessionId() uuid.UUID {
+	return s.SessionId
+}
+
+// GetMasterPlaylistUrl returns the value of MasterPlaylistUrl.
+func (s *PlaybackSession) GetMasterPlaylistUrl() string {
+	return s.MasterPlaylistUrl
+}
+
+// GetDurationSeconds returns the value of DurationSeconds.
+func (s *PlaybackSession) GetDurationSeconds() float64 {
+	return s.DurationSeconds
+}
+
+// GetProfiles returns the value of Profiles.
+func (s *PlaybackSession) GetProfiles() []PlaybackProfile {
+	return s.Profiles
+}
+
+// GetAudioTracks returns the value of AudioTracks.
+func (s *PlaybackSession) GetAudioTracks() []PlaybackAudioTrack {
+	return s.AudioTracks
+}
+
+// GetSubtitleTracks returns the value of SubtitleTracks.
+func (s *PlaybackSession) GetSubtitleTracks() []PlaybackSubtitleTrack {
+	return s.SubtitleTracks
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *PlaybackSession) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetExpiresAt returns the value of ExpiresAt.
+func (s *PlaybackSession) GetExpiresAt() time.Time {
+	return s.ExpiresAt
+}
+
+// SetSessionId sets the value of SessionId.
+func (s *PlaybackSession) SetSessionId(val uuid.UUID) {
+	s.SessionId = val
+}
+
+// SetMasterPlaylistUrl sets the value of MasterPlaylistUrl.
+func (s *PlaybackSession) SetMasterPlaylistUrl(val string) {
+	s.MasterPlaylistUrl = val
+}
+
+// SetDurationSeconds sets the value of DurationSeconds.
+func (s *PlaybackSession) SetDurationSeconds(val float64) {
+	s.DurationSeconds = val
+}
+
+// SetProfiles sets the value of Profiles.
+func (s *PlaybackSession) SetProfiles(val []PlaybackProfile) {
+	s.Profiles = val
+}
+
+// SetAudioTracks sets the value of AudioTracks.
+func (s *PlaybackSession) SetAudioTracks(val []PlaybackAudioTrack) {
+	s.AudioTracks = val
+}
+
+// SetSubtitleTracks sets the value of SubtitleTracks.
+func (s *PlaybackSession) SetSubtitleTracks(val []PlaybackSubtitleTrack) {
+	s.SubtitleTracks = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *PlaybackSession) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetExpiresAt sets the value of ExpiresAt.
+func (s *PlaybackSession) SetExpiresAt(val time.Time) {
+	s.ExpiresAt = val
+}
+
+func (*PlaybackSession) getPlaybackSessionRes()   {}
+func (*PlaybackSession) startPlaybackSessionRes() {}
+
+// Ref: #/components/schemas/PlaybackSubtitleTrack
+type PlaybackSubtitleTrack struct {
+	// Subtitle stream index in the source file.
+	Index int `json:"index"`
+	// ISO 639 language code.
+	Language OptString `json:"language"`
+	// Track title from file metadata.
+	Title OptString `json:"title"`
+	// Source subtitle codec.
+	Codec string `json:"codec"`
+	// URL to the WebVTT subtitle file.
+	URL string `json:"url"`
+	// Whether this is a forced subtitle track (e.g., foreign language signs).
+	IsForced bool `json:"isForced"`
+}
+
+// GetIndex returns the value of Index.
+func (s *PlaybackSubtitleTrack) GetIndex() int {
+	return s.Index
+}
+
+// GetLanguage returns the value of Language.
+func (s *PlaybackSubtitleTrack) GetLanguage() OptString {
+	return s.Language
+}
+
+// GetTitle returns the value of Title.
+func (s *PlaybackSubtitleTrack) GetTitle() OptString {
+	return s.Title
+}
+
+// GetCodec returns the value of Codec.
+func (s *PlaybackSubtitleTrack) GetCodec() string {
+	return s.Codec
+}
+
+// GetURL returns the value of URL.
+func (s *PlaybackSubtitleTrack) GetURL() string {
+	return s.URL
+}
+
+// GetIsForced returns the value of IsForced.
+func (s *PlaybackSubtitleTrack) GetIsForced() bool {
+	return s.IsForced
+}
+
+// SetIndex sets the value of Index.
+func (s *PlaybackSubtitleTrack) SetIndex(val int) {
+	s.Index = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *PlaybackSubtitleTrack) SetLanguage(val OptString) {
+	s.Language = val
+}
+
+// SetTitle sets the value of Title.
+func (s *PlaybackSubtitleTrack) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetCodec sets the value of Codec.
+func (s *PlaybackSubtitleTrack) SetCodec(val string) {
+	s.Codec = val
+}
+
+// SetURL sets the value of URL.
+func (s *PlaybackSubtitleTrack) SetURL(val string) {
+	s.URL = val
+}
+
+// SetIsForced sets the value of IsForced.
+func (s *PlaybackSubtitleTrack) SetIsForced(val bool) {
+	s.IsForced = val
+}
+
 // Ref: #/components/schemas/Policy
 type Policy struct {
 	// Subject (user, role, or group).
@@ -15184,6 +15523,149 @@ func (s *SonarrWebhookSeries) SetImdbId(val OptString) {
 func (s *SonarrWebhookSeries) SetType(val OptString) {
 	s.Type = val
 }
+
+// Ref: #/components/schemas/StartPlaybackRequest
+type StartPlaybackRequest struct {
+	// Type of media to play.
+	MediaType StartPlaybackRequestMediaType `json:"mediaType"`
+	// Movie or episode ID.
+	MediaId uuid.UUID `json:"mediaId"`
+	// Specific file ID (optional, uses default if omitted).
+	FileId OptUUID `json:"fileId"`
+	// Audio track index to select initially.
+	AudioTrack OptInt `json:"audioTrack"`
+	// Subtitle track index (omit to disable subtitles).
+	SubtitleTrack OptInt `json:"subtitleTrack"`
+	// Start position in seconds (for resume).
+	StartPosition OptInt `json:"startPosition"`
+}
+
+// GetMediaType returns the value of MediaType.
+func (s *StartPlaybackRequest) GetMediaType() StartPlaybackRequestMediaType {
+	return s.MediaType
+}
+
+// GetMediaId returns the value of MediaId.
+func (s *StartPlaybackRequest) GetMediaId() uuid.UUID {
+	return s.MediaId
+}
+
+// GetFileId returns the value of FileId.
+func (s *StartPlaybackRequest) GetFileId() OptUUID {
+	return s.FileId
+}
+
+// GetAudioTrack returns the value of AudioTrack.
+func (s *StartPlaybackRequest) GetAudioTrack() OptInt {
+	return s.AudioTrack
+}
+
+// GetSubtitleTrack returns the value of SubtitleTrack.
+func (s *StartPlaybackRequest) GetSubtitleTrack() OptInt {
+	return s.SubtitleTrack
+}
+
+// GetStartPosition returns the value of StartPosition.
+func (s *StartPlaybackRequest) GetStartPosition() OptInt {
+	return s.StartPosition
+}
+
+// SetMediaType sets the value of MediaType.
+func (s *StartPlaybackRequest) SetMediaType(val StartPlaybackRequestMediaType) {
+	s.MediaType = val
+}
+
+// SetMediaId sets the value of MediaId.
+func (s *StartPlaybackRequest) SetMediaId(val uuid.UUID) {
+	s.MediaId = val
+}
+
+// SetFileId sets the value of FileId.
+func (s *StartPlaybackRequest) SetFileId(val OptUUID) {
+	s.FileId = val
+}
+
+// SetAudioTrack sets the value of AudioTrack.
+func (s *StartPlaybackRequest) SetAudioTrack(val OptInt) {
+	s.AudioTrack = val
+}
+
+// SetSubtitleTrack sets the value of SubtitleTrack.
+func (s *StartPlaybackRequest) SetSubtitleTrack(val OptInt) {
+	s.SubtitleTrack = val
+}
+
+// SetStartPosition sets the value of StartPosition.
+func (s *StartPlaybackRequest) SetStartPosition(val OptInt) {
+	s.StartPosition = val
+}
+
+// Type of media to play.
+type StartPlaybackRequestMediaType string
+
+const (
+	StartPlaybackRequestMediaTypeMovie   StartPlaybackRequestMediaType = "movie"
+	StartPlaybackRequestMediaTypeEpisode StartPlaybackRequestMediaType = "episode"
+)
+
+// AllValues returns all StartPlaybackRequestMediaType values.
+func (StartPlaybackRequestMediaType) AllValues() []StartPlaybackRequestMediaType {
+	return []StartPlaybackRequestMediaType{
+		StartPlaybackRequestMediaTypeMovie,
+		StartPlaybackRequestMediaTypeEpisode,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s StartPlaybackRequestMediaType) MarshalText() ([]byte, error) {
+	switch s {
+	case StartPlaybackRequestMediaTypeMovie:
+		return []byte(s), nil
+	case StartPlaybackRequestMediaTypeEpisode:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *StartPlaybackRequestMediaType) UnmarshalText(data []byte) error {
+	switch StartPlaybackRequestMediaType(data) {
+	case StartPlaybackRequestMediaTypeMovie:
+		*s = StartPlaybackRequestMediaTypeMovie
+		return nil
+	case StartPlaybackRequestMediaTypeEpisode:
+		*s = StartPlaybackRequestMediaTypeEpisode
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type StartPlaybackSessionBadRequest Error
+
+func (*StartPlaybackSessionBadRequest) startPlaybackSessionRes() {}
+
+type StartPlaybackSessionNotFound Error
+
+func (*StartPlaybackSessionNotFound) startPlaybackSessionRes() {}
+
+type StartPlaybackSessionUnauthorized Error
+
+func (*StartPlaybackSessionUnauthorized) startPlaybackSessionRes() {}
+
+// StopPlaybackSessionNoContent is response for StopPlaybackSession operation.
+type StopPlaybackSessionNoContent struct{}
+
+func (*StopPlaybackSessionNoContent) stopPlaybackSessionRes() {}
+
+type StopPlaybackSessionNotFound Error
+
+func (*StopPlaybackSessionNotFound) stopPlaybackSessionRes() {}
+
+type StopPlaybackSessionUnauthorized Error
+
+func (*StopPlaybackSessionUnauthorized) stopPlaybackSessionRes() {}
 
 // Ref: #/components/schemas/TOTPSetup
 type TOTPSetup struct {

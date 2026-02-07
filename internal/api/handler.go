@@ -14,6 +14,7 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
+	"github.com/lusoris/revenge/internal/playback"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -53,9 +54,10 @@ type Handler struct {
 	metadataService metadata.Service
 	imageService    *image.Service
 	tvshowService   tvshow.Service // TV show service
-	radarrService   radarrService  // Optional: Radarr sync service
-	sonarrService   sonarrService  // Optional: Sonarr sync service
-	riverClient     riverClient    // Optional: River job queue client
+	radarrService   radarrService        // Optional: Radarr sync service
+	sonarrService   sonarrService        // Optional: Sonarr sync service
+	riverClient     riverClient          // Optional: River job queue client
+	playbackService *playback.Service    // Optional: HLS streaming service
 }
 
 // riverClient is an interface for the River job queue client.

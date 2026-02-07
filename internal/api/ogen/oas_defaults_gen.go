@@ -69,3 +69,15 @@ func (s *CreateOIDCProviderRequest) setDefaults() {
 		s.IsDefault.SetTo(val)
 	}
 }
+
+// setDefaults set default value of fields.
+func (s *StartPlaybackRequest) setDefaults() {
+	{
+		val := int(0)
+		s.AudioTrack.SetTo(val)
+	}
+	{
+		val := int(0)
+		s.StartPosition.SetTo(val)
+	}
+}

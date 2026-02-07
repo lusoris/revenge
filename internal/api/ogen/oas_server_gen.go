@@ -370,6 +370,12 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/movie/{tmdbId}
 	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
+	// GetPlaybackSession implements getPlaybackSession operation.
+	//
+	// Returns metadata for an active playback session.
+	//
+	// GET /api/v1/playback/sessions/{sessionId}
+	GetPlaybackSession(ctx context.Context, params GetPlaybackSessionParams) (GetPlaybackSessionRes, error)
 	// GetProxiedImage implements getProxiedImage operation.
 	//
 	// Proxy images from TMDb image server. This caches images locally
@@ -922,6 +928,23 @@ type Handler interface {
 	//
 	// POST /api/v1/mfa/totp/setup
 	SetupTOTP(ctx context.Context, req *SetupTOTPReq) (SetupTOTPRes, error)
+	// StartPlaybackSession implements startPlaybackSession operation.
+	//
+	// Creates a new HLS playback session for a movie or episode.
+	// Returns a master playlist URL and session metadata.
+	// Video and audio are segmented separately — audio tracks are individual
+	// HLS renditions so the player can switch tracks instantly without
+	// restarting the stream.
+	//
+	// POST /api/v1/playback/sessions
+	StartPlaybackSession(ctx context.Context, req *StartPlaybackRequest) (StartPlaybackSessionRes, error)
+	// StopPlaybackSession implements stopPlaybackSession operation.
+	//
+	// Stops the playback session, terminates FFmpeg processes,
+	// and cleans up segment files.
+	//
+	// DELETE /api/v1/playback/sessions/{sessionId}
+	StopPlaybackSession(ctx context.Context, params StopPlaybackSessionParams) (StopPlaybackSessionRes, error)
 	// TriggerLibraryScan implements triggerLibraryScan operation.
 	//
 	// Start a library scan job. Admin only.

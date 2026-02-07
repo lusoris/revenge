@@ -2528,6 +2528,62 @@ func (s *PermissionsResponse) Validate() error {
 	return nil
 }
 
+func (s *PlaybackSession) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := (validate.Float{}).Validate(float64(s.DurationSeconds)); err != nil {
+			return errors.Wrap(err, "float")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "durationSeconds",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if s.Profiles == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "profiles",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if s.AudioTracks == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "audioTracks",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if s.SubtitleTracks == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "subtitleTracks",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *PolicyListResponse) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -3582,6 +3638,40 @@ func (s SonarrWebhookPayloadEventType) Validate() error {
 	case "ApplicationUpdate":
 		return nil
 	case "Test":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
+func (s *StartPlaybackRequest) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := s.MediaType.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "mediaType",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s StartPlaybackRequestMediaType) Validate() error {
+	switch s {
+	case "movie":
+		return nil
+	case "episode":
 		return nil
 	default:
 		return errors.Errorf("invalid value: %v", s)

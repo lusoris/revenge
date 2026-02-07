@@ -18,6 +18,8 @@ import (
 	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/integration/radarr"
 	"github.com/lusoris/revenge/internal/integration/sonarr"
+	"github.com/lusoris/revenge/internal/playback"
+	"github.com/lusoris/revenge/internal/playback/hls"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -74,6 +76,9 @@ type ServerParams struct {
 	MetadataService metadata.Service `optional:"true"`
 	ImageService    *image.Service   `optional:"true"`
 	TVShowService   tvshow.Service         `optional:"true"`
+	// Playback / HLS streaming (optional)
+	PlaybackService *playback.Service      `optional:"true"`
+	StreamHandler   *hls.StreamHandler     `optional:"true"`
 	// Integration services (optional)
 	RadarrService *radarr.SyncService `optional:"true"`
 	SonarrService *sonarr.SyncService `optional:"true"`
@@ -115,6 +120,10 @@ func NewServer(p ServerParams) (*Server, error) {
 		tvshowService:   p.TVShowService,
 	}
 
+	// Wire up optional playback service
+	if p.PlaybackService != nil {
+		handler.playbackService = p.PlaybackService
+	}
 	// Wire up optional Radarr integration
 	if p.RadarrService != nil {
 		handler.radarrService = p.RadarrService
@@ -244,9 +253,20 @@ func NewServer(p ServerParams) (*Server, error) {
 
 	// Create HTTP server with RequestID wrapper
 	// The wrapper adds X-Request-ID to response headers
+	rootHandler := http.Handler(middleware.RequestIDHTTPWrapper(ogenServer))
+
+	// If HLS streaming is enabled, intercept /api/v1/playback/stream/ paths
+	// before they reach ogen (raw binary content served directly).
+	if p.StreamHandler != nil {
+		mux := http.NewServeMux()
+		mux.Handle("/api/v1/playback/stream/", p.StreamHandler)
+		mux.Handle("/", rootHandler)
+		rootHandler = mux
+	}
+
 	httpServer := &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", p.Config.Server.Host, p.Config.Server.Port),
-		Handler:      middleware.RequestIDHTTPWrapper(ogenServer),
+		Handler:      rootHandler,
 		ReadTimeout:  p.Config.Server.ReadTimeout,
 		WriteTimeout: p.Config.Server.WriteTimeout,
 		IdleTimeout:  p.Config.Server.IdleTimeout,

@@ -2407,6 +2407,62 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'p': // Prefix: "playback/sessions"
+
+					if l := len("playback/sessions"); len(elem) >= l && elem[0:l] == "playback/sessions" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "POST":
+							s.handleStartPlaybackSessionRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "sessionId"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleStopPlaybackSessionRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							case "GET":
+								s.handleGetPlaybackSessionRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,GET")
+							}
+
+							return
+						}
+
+					}
+
 				case 'r': // Prefix: "rbac/"
 
 					if l := len("rbac/"); len(elem) >= l && elem[0:l] == "rbac/" {
@@ -6762,6 +6818,75 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.pathPattern = "/api/v1/oidc/providers"
 								r.args = args
 								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+
+					}
+
+				case 'p': // Prefix: "playback/sessions"
+
+					if l := len("playback/sessions"); len(elem) >= l && elem[0:l] == "playback/sessions" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "POST":
+							r.name = StartPlaybackSessionOperation
+							r.summary = "Start a playback session"
+							r.operationID = "startPlaybackSession"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/playback/sessions"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "sessionId"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "DELETE":
+								r.name = StopPlaybackSessionOperation
+								r.summary = "Stop a playback session"
+								r.operationID = "stopPlaybackSession"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/playback/sessions/{sessionId}"
+								r.args = args
+								r.count = 1
+								return r, true
+							case "GET":
+								r.name = GetPlaybackSessionOperation
+								r.summary = "Get playback session info"
+								r.operationID = "getPlaybackSession"
+								r.operationGroup = ""
+								r.pathPattern = "/api/v1/playback/sessions/{sessionId}"
+								r.args = args
+								r.count = 1
 								return r, true
 							default:
 								return

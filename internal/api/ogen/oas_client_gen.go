@@ -390,6 +390,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/metadata/movie/{tmdbId}
 	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
+	// GetPlaybackSession invokes getPlaybackSession operation.
+	//
+	// Returns metadata for an active playback session.
+	//
+	// GET /api/v1/playback/sessions/{sessionId}
+	GetPlaybackSession(ctx context.Context, params GetPlaybackSessionParams) (GetPlaybackSessionRes, error)
 	// GetProxiedImage invokes getProxiedImage operation.
 	//
 	// Proxy images from TMDb image server. This caches images locally
@@ -942,6 +948,23 @@ type Invoker interface {
 	//
 	// POST /api/v1/mfa/totp/setup
 	SetupTOTP(ctx context.Context, request *SetupTOTPReq) (SetupTOTPRes, error)
+	// StartPlaybackSession invokes startPlaybackSession operation.
+	//
+	// Creates a new HLS playback session for a movie or episode.
+	// Returns a master playlist URL and session metadata.
+	// Video and audio are segmented separately — audio tracks are individual
+	// HLS renditions so the player can switch tracks instantly without
+	// restarting the stream.
+	//
+	// POST /api/v1/playback/sessions
+	StartPlaybackSession(ctx context.Context, request *StartPlaybackRequest) (StartPlaybackSessionRes, error)
+	// StopPlaybackSession invokes stopPlaybackSession operation.
+	//
+	// Stops the playback session, terminates FFmpeg processes,
+	// and cleans up segment files.
+	//
+	// DELETE /api/v1/playback/sessions/{sessionId}
+	StopPlaybackSession(ctx context.Context, params StopPlaybackSessionParams) (StopPlaybackSessionRes, error)
 	// TriggerLibraryScan invokes triggerLibraryScan operation.
 	//
 	// Start a library scan job. Admin only.
@@ -7670,6 +7693,130 @@ func (c *Client) sendGetMovieMetadata(ctx context.Context, params GetMovieMetada
 
 	stage = "DecodeResponse"
 	result, err := decodeGetMovieMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetPlaybackSession invokes getPlaybackSession operation.
+//
+// Returns metadata for an active playback session.
+//
+// GET /api/v1/playback/sessions/{sessionId}
+func (c *Client) GetPlaybackSession(ctx context.Context, params GetPlaybackSessionParams) (GetPlaybackSessionRes, error) {
+	res, err := c.sendGetPlaybackSession(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetPlaybackSession(ctx context.Context, params GetPlaybackSessionParams) (res GetPlaybackSessionRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getPlaybackSession"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/v1/playback/sessions/{sessionId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetPlaybackSessionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/playback/sessions/"
+	{
+		// Encode "sessionId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "sessionId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.SessionId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, GetPlaybackSessionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetPlaybackSessionResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -18656,6 +18803,244 @@ func (c *Client) sendSetupTOTP(ctx context.Context, request *SetupTOTPReq) (res 
 
 	stage = "DecodeResponse"
 	result, err := decodeSetupTOTPResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// StartPlaybackSession invokes startPlaybackSession operation.
+//
+// Creates a new HLS playback session for a movie or episode.
+// Returns a master playlist URL and session metadata.
+// Video and audio are segmented separately — audio tracks are individual
+// HLS renditions so the player can switch tracks instantly without
+// restarting the stream.
+//
+// POST /api/v1/playback/sessions
+func (c *Client) StartPlaybackSession(ctx context.Context, request *StartPlaybackRequest) (StartPlaybackSessionRes, error) {
+	res, err := c.sendStartPlaybackSession(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendStartPlaybackSession(ctx context.Context, request *StartPlaybackRequest) (res StartPlaybackSessionRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("startPlaybackSession"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/playback/sessions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, StartPlaybackSessionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/playback/sessions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeStartPlaybackSessionRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, StartPlaybackSessionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeStartPlaybackSessionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// StopPlaybackSession invokes stopPlaybackSession operation.
+//
+// Stops the playback session, terminates FFmpeg processes,
+// and cleans up segment files.
+//
+// DELETE /api/v1/playback/sessions/{sessionId}
+func (c *Client) StopPlaybackSession(ctx context.Context, params StopPlaybackSessionParams) (StopPlaybackSessionRes, error) {
+	res, err := c.sendStopPlaybackSession(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendStopPlaybackSession(ctx context.Context, params StopPlaybackSessionParams) (res StopPlaybackSessionRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("stopPlaybackSession"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/api/v1/playback/sessions/{sessionId}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, StopPlaybackSessionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/playback/sessions/"
+	{
+		// Encode "sessionId" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "sessionId",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.UUIDToString(params.SessionId))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, StopPlaybackSessionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeStopPlaybackSessionResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

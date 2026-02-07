@@ -546,6 +546,15 @@ func (UnimplementedHandler) GetMovieMetadata(ctx context.Context, params GetMovi
 	return r, ht.ErrNotImplemented
 }
 
+// GetPlaybackSession implements getPlaybackSession operation.
+//
+// Returns metadata for an active playback session.
+//
+// GET /api/v1/playback/sessions/{sessionId}
+func (UnimplementedHandler) GetPlaybackSession(ctx context.Context, params GetPlaybackSessionParams) (r GetPlaybackSessionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetProxiedImage implements getProxiedImage operation.
 //
 // Proxy images from TMDb image server. This caches images locally
@@ -1362,6 +1371,29 @@ func (UnimplementedHandler) SearchTVShowsMetadata(ctx context.Context, params Se
 //
 // POST /api/v1/mfa/totp/setup
 func (UnimplementedHandler) SetupTOTP(ctx context.Context, req *SetupTOTPReq) (r SetupTOTPRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// StartPlaybackSession implements startPlaybackSession operation.
+//
+// Creates a new HLS playback session for a movie or episode.
+// Returns a master playlist URL and session metadata.
+// Video and audio are segmented separately — audio tracks are individual
+// HLS renditions so the player can switch tracks instantly without
+// restarting the stream.
+//
+// POST /api/v1/playback/sessions
+func (UnimplementedHandler) StartPlaybackSession(ctx context.Context, req *StartPlaybackRequest) (r StartPlaybackSessionRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// StopPlaybackSession implements stopPlaybackSession operation.
+//
+// Stops the playback session, terminates FFmpeg processes,
+// and cleans up segment files.
+//
+// DELETE /api/v1/playback/sessions/{sessionId}
+func (UnimplementedHandler) StopPlaybackSession(ctx context.Context, params StopPlaybackSessionParams) (r StopPlaybackSessionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
