@@ -37,7 +37,7 @@ func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	svc := user.NewService(repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
+	svc := user.NewService(pool, repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
 
 	cleanup := func() {
 		pool.Close()

@@ -36,7 +36,7 @@ func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	svc := user.NewService(repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
+	svc := user.NewService(pool, repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
 
 	cleanup := func() {
 		pool.Close()
@@ -56,10 +56,10 @@ func TestUserService_CreateAndGetUser(t *testing.T) {
 	email := fmt.Sprintf("%s@example.com", username)
 
 	// Create user
-	createParams := user.CreateUserRequest{
+	createParams := user.CreateUserParams{
 		Username: username,
 		Email:    email,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	}
 
 	createdUser, err := svc.CreateUser(ctx, createParams)
@@ -105,10 +105,10 @@ func TestUserService_UpdateUser(t *testing.T) {
 	email := fmt.Sprintf("%s@example.com", username)
 
 	// Create user
-	createdUser, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	createdUser, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username,
 		Email:    email,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -119,7 +119,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 	newDisplayName := "Updated Display Name"
 	newEmail := fmt.Sprintf("updated_%s", email)
 
-	updatedUser, err := svc.UpdateUser(ctx, createdUser.ID, user.UpdateUserRequest{
+	updatedUser, err := svc.UpdateUser(ctx, createdUser.ID, user.UpdateUserParams{
 		DisplayName: &newDisplayName,
 		Email:       &newEmail,
 	})
@@ -141,10 +141,10 @@ func TestUserService_DeleteUser(t *testing.T) {
 	email := fmt.Sprintf("%s@example.com", username)
 
 	// Create user
-	createdUser, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	createdUser, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username,
 		Email:    email,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	require.NoError(t, err)
 
@@ -172,10 +172,10 @@ func TestUserService_ListUsers(t *testing.T) {
 		username := fmt.Sprintf("testuser_%d_%d", timestamp, i)
 		email := fmt.Sprintf("%s@example.com", username)
 
-		createdUser, err := svc.CreateUser(ctx, user.CreateUserRequest{
+		createdUser, err := svc.CreateUser(ctx, user.CreateUserParams{
 			Username: username,
 			Email:    email,
-			Password: "TestPassword123!",
+			PasswordHash:"TestPassword123!",
 		})
 		require.NoError(t, err)
 		userIDs = append(userIDs, createdUser.ID)
@@ -209,10 +209,10 @@ func TestUserService_PasswordValidation(t *testing.T) {
 	email := fmt.Sprintf("%s@example.com", username)
 
 	// Create user
-	createdUser, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	createdUser, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username,
 		Email:    email,
-		Password: "CorrectPassword123!",
+		PasswordHash:"CorrectPassword123!",
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -220,14 +220,12 @@ func TestUserService_PasswordValidation(t *testing.T) {
 	}()
 
 	// Validate correct password
-	valid, err := svc.ValidatePassword(ctx, createdUser.ID, "CorrectPassword123!")
+	err = svc.VerifyPassword(createdUser.PasswordHash, "CorrectPassword123!")
 	require.NoError(t, err)
-	assert.True(t, valid)
 
 	// Validate incorrect password
-	valid, err = svc.ValidatePassword(ctx, createdUser.ID, "WrongPassword")
-	require.NoError(t, err)
-	assert.False(t, valid)
+	err = svc.VerifyPassword(createdUser.PasswordHash, "WrongPassword")
+	assert.Error(t, err)
 }
 
 func TestUserService_UpdatePassword(t *testing.T) {
@@ -241,10 +239,10 @@ func TestUserService_UpdatePassword(t *testing.T) {
 	email := fmt.Sprintf("%s@example.com", username)
 
 	// Create user
-	createdUser, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	createdUser, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username,
 		Email:    email,
-		Password: "OldPassword123!",
+		PasswordHash:"OldPassword123!",
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -252,18 +250,18 @@ func TestUserService_UpdatePassword(t *testing.T) {
 	}()
 
 	// Update password
-	err = svc.UpdatePassword(ctx, createdUser.ID, "NewPassword456!")
+	err = svc.UpdatePassword(ctx, createdUser.ID, "OldPassword123!", "NewPassword456!")
 	require.NoError(t, err)
 
 	// Validate old password no longer works
-	valid, err := svc.ValidatePassword(ctx, createdUser.ID, "OldPassword123!")
+	updatedUser, err := svc.GetUser(ctx, createdUser.ID)
 	require.NoError(t, err)
-	assert.False(t, valid)
+	err = svc.VerifyPassword(updatedUser.PasswordHash, "OldPassword123!")
+	assert.Error(t, err)
 
 	// Validate new password works
-	valid, err = svc.ValidatePassword(ctx, createdUser.ID, "NewPassword456!")
+	err = svc.VerifyPassword(updatedUser.PasswordHash, "NewPassword456!")
 	require.NoError(t, err)
-	assert.True(t, valid)
 }
 
 func TestUserService_DuplicateUsername(t *testing.T) {
@@ -278,10 +276,10 @@ func TestUserService_DuplicateUsername(t *testing.T) {
 	email2 := fmt.Sprintf("%s_2@example.com", username)
 
 	// Create first user
-	user1, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	user1, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username,
 		Email:    email1,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -289,10 +287,10 @@ func TestUserService_DuplicateUsername(t *testing.T) {
 	}()
 
 	// Try to create second user with same username
-	_, err = svc.CreateUser(ctx, user.CreateUserRequest{
+	_, err = svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username, // Duplicate username
 		Email:    email2,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	assert.Error(t, err) // Should fail due to unique constraint
 }
@@ -310,10 +308,10 @@ func TestUserService_DuplicateEmail(t *testing.T) {
 	email := fmt.Sprintf("shared_%d@example.com", timestamp)
 
 	// Create first user
-	user1, err := svc.CreateUser(ctx, user.CreateUserRequest{
+	user1, err := svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username1,
 		Email:    email,
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	require.NoError(t, err)
 	defer func() {
@@ -321,10 +319,10 @@ func TestUserService_DuplicateEmail(t *testing.T) {
 	}()
 
 	// Try to create second user with same email
-	_, err = svc.CreateUser(ctx, user.CreateUserRequest{
+	_, err = svc.CreateUser(ctx, user.CreateUserParams{
 		Username: username2,
 		Email:    email, // Duplicate email
-		Password: "TestPassword123!",
+		PasswordHash:"TestPassword123!",
 	})
 	assert.Error(t, err) // Should fail due to unique constraint
 }

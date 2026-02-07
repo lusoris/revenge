@@ -43,14 +43,14 @@ func setupAuthService(t *testing.T) (*auth.Service, *user.Service, *pgxpool.Pool
 	activityLogger := activity.NewNoopLogger()
 
 	// Create services (using test helpers that don't require email)
-	authSvc := auth.NewServiceForTesting(authRepo, tokenManager, activityLogger, 15*time.Minute, 7*24*time.Hour)
+	authSvc := auth.NewServiceForTesting(pool, authRepo, tokenManager, activityLogger, 15*time.Minute, 7*24*time.Hour)
 	mockStorage := storage.NewMockStorage()
 	avatarCfg := config.AvatarConfig{
 		StoragePath:  "/tmp/test-avatars",
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	userSvc := user.NewService(userRepo, activityLogger, mockStorage, avatarCfg)
+	userSvc := user.NewService(pool, userRepo, activityLogger, mockStorage, avatarCfg)
 
 	cleanup := func() {
 		pool.Close()
