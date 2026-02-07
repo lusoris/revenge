@@ -13,9 +13,30 @@ import (
 // CleanupJobKind is the unique identifier for cleanup jobs.
 const CleanupJobKind = "cleanup"
 
+// Supported cleanup target types.
+const (
+	CleanupTargetExpiredTokens      = "expired_tokens"
+	CleanupTargetRevokedTokens      = "revoked_tokens"
+	CleanupTargetPasswordResets     = "password_resets"
+	CleanupTargetEmailVerifications = "email_verifications"
+	CleanupTargetFailedLogins       = "failed_logins"
+	CleanupTargetAll                = "all"
+)
+
+// AuthCleanupRepository defines the cleanup methods needed from the auth repository.
+type AuthCleanupRepository interface {
+	DeleteExpiredAuthTokens(ctx context.Context) error
+	DeleteRevokedAuthTokens(ctx context.Context) error
+	DeleteExpiredPasswordResetTokens(ctx context.Context) error
+	DeleteUsedPasswordResetTokens(ctx context.Context) error
+	DeleteExpiredEmailVerificationTokens(ctx context.Context) error
+	DeleteVerifiedEmailTokens(ctx context.Context) error
+	DeleteOldFailedLoginAttempts(ctx context.Context) error
+}
+
 // CleanupArgs defines the arguments for cleanup jobs.
 type CleanupArgs struct {
-	// TargetType specifies what to clean up (e.g., "sessions", "jobs", "logs")
+	// TargetType specifies what to clean up (e.g., "expired_tokens", "all")
 	TargetType string `json:"target_type"`
 
 	// OlderThan specifies the age threshold for cleanup
@@ -45,16 +66,18 @@ func (CleanupArgs) InsertOpts() river.InsertOpts {
 type CleanupWorker struct {
 	river.WorkerDefaults[CleanupArgs]
 	leaderElection *raft.LeaderElection
+	authRepo       AuthCleanupRepository
 	logger         *slog.Logger
 }
 
 // NewCleanupWorker creates a new cleanup worker.
-func NewCleanupWorker(leaderElection *raft.LeaderElection, logger *slog.Logger) *CleanupWorker {
+func NewCleanupWorker(leaderElection *raft.LeaderElection, authRepo AuthCleanupRepository, logger *slog.Logger) *CleanupWorker {
 	if logger == nil {
 		logger = slog.Default()
 	}
 	return &CleanupWorker{
 		leaderElection: leaderElection,
+		authRepo:       authRepo,
 		logger:         logger,
 	}
 }
@@ -82,7 +105,6 @@ func (w *CleanupWorker) Work(ctx context.Context, job *river.Job[CleanupArgs]) e
 		"job_id", job.ID,
 		"target_type", args.TargetType,
 		"older_than", args.OlderThan,
-		"batch_size", args.BatchSize,
 		"dry_run", args.DryRun,
 		"is_leader", w.leaderElection == nil || w.leaderElection.IsLeader(),
 	)
@@ -96,27 +118,97 @@ func (w *CleanupWorker) Work(ctx context.Context, job *river.Job[CleanupArgs]) e
 		return fmt.Errorf("invalid arguments: %w", err)
 	}
 
-	// Simulate cleanup work
 	if args.DryRun {
-		w.logger.Info("dry run mode: would delete records",
+		w.logger.Info("dry run mode: would perform cleanup",
 			"job_id", job.ID,
 			"target_type", args.TargetType,
 		)
-	} else {
-		w.logger.Info("performing cleanup",
-			"job_id", job.ID,
-			"target_type", args.TargetType,
-		)
-		// Actual cleanup logic would go here (database operations)
-		// For now, this is a stub that simulates work
+		return nil
 	}
 
-	w.logger.Info("cleanup job completed",
-		"job_id", job.ID,
-		"target_type", args.TargetType,
-	)
+	var errs []error
+	switch args.TargetType {
+	case CleanupTargetExpiredTokens:
+		errs = w.cleanupExpiredTokens(ctx)
+	case CleanupTargetRevokedTokens:
+		errs = w.cleanupRevokedTokens(ctx)
+	case CleanupTargetPasswordResets:
+		errs = w.cleanupPasswordResets(ctx)
+	case CleanupTargetEmailVerifications:
+		errs = w.cleanupEmailVerifications(ctx)
+	case CleanupTargetFailedLogins:
+		errs = w.cleanupFailedLogins(ctx)
+	case CleanupTargetAll:
+		errs = w.cleanupAll(ctx)
+	default:
+		return fmt.Errorf("unknown target_type: %s", args.TargetType)
+	}
 
+	if len(errs) > 0 {
+		for _, err := range errs {
+			w.logger.Error("cleanup error", "job_id", job.ID, "error", err)
+		}
+		return fmt.Errorf("cleanup completed with %d errors", len(errs))
+	}
+
+	w.logger.Info("cleanup job completed", "job_id", job.ID, "target_type", args.TargetType)
 	return nil
+}
+
+func (w *CleanupWorker) cleanupExpiredTokens(ctx context.Context) []error {
+	var errs []error
+	if err := w.authRepo.DeleteExpiredAuthTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("expired auth tokens: %w", err))
+	}
+	return errs
+}
+
+func (w *CleanupWorker) cleanupRevokedTokens(ctx context.Context) []error {
+	var errs []error
+	if err := w.authRepo.DeleteRevokedAuthTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("revoked auth tokens: %w", err))
+	}
+	return errs
+}
+
+func (w *CleanupWorker) cleanupPasswordResets(ctx context.Context) []error {
+	var errs []error
+	if err := w.authRepo.DeleteExpiredPasswordResetTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("expired password reset tokens: %w", err))
+	}
+	if err := w.authRepo.DeleteUsedPasswordResetTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("used password reset tokens: %w", err))
+	}
+	return errs
+}
+
+func (w *CleanupWorker) cleanupEmailVerifications(ctx context.Context) []error {
+	var errs []error
+	if err := w.authRepo.DeleteExpiredEmailVerificationTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("expired email verification tokens: %w", err))
+	}
+	if err := w.authRepo.DeleteVerifiedEmailTokens(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("verified email tokens: %w", err))
+	}
+	return errs
+}
+
+func (w *CleanupWorker) cleanupFailedLogins(ctx context.Context) []error {
+	var errs []error
+	if err := w.authRepo.DeleteOldFailedLoginAttempts(ctx); err != nil {
+		errs = append(errs, fmt.Errorf("old failed login attempts: %w", err))
+	}
+	return errs
+}
+
+func (w *CleanupWorker) cleanupAll(ctx context.Context) []error {
+	var errs []error
+	errs = append(errs, w.cleanupExpiredTokens(ctx)...)
+	errs = append(errs, w.cleanupRevokedTokens(ctx)...)
+	errs = append(errs, w.cleanupPasswordResets(ctx)...)
+	errs = append(errs, w.cleanupEmailVerifications(ctx)...)
+	errs = append(errs, w.cleanupFailedLogins(ctx)...)
+	return errs
 }
 
 // validateArgs validates cleanup job arguments.
@@ -134,4 +226,18 @@ func (w *CleanupWorker) validateArgs(args CleanupArgs) error {
 	}
 
 	return nil
+}
+
+// ScheduleCleanup creates a periodic cleanup job that runs all cleanup targets.
+func ScheduleCleanup(client *river.Client[any]) error {
+	_, err := client.Insert(context.Background(), CleanupArgs{
+		TargetType: CleanupTargetAll,
+		OlderThan:  24 * time.Hour,
+	}, &river.InsertOpts{
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 24 * time.Hour,
+		},
+	})
+	return err
 }
