@@ -7900,7 +7900,8 @@ func (s *OIDCAuthURLResponse) SetAuthUrl(val string) {
 	s.AuthUrl = val
 }
 
-func (*OIDCAuthURLResponse) initOIDCLinkRes() {}
+func (*OIDCAuthURLResponse) initOIDCLinkRes()  {}
+func (*OIDCAuthURLResponse) oidcAuthorizeRes() {}
 
 // Ref: #/components/schemas/OIDCCallbackResponse
 type OIDCCallbackResponse struct {
@@ -8108,11 +8109,6 @@ func (s *OIDCUserLinkListResponse) SetLinks(val []OIDCUserLink) {
 }
 
 func (*OIDCUserLinkListResponse) listUserOIDCLinksRes() {}
-
-// OidcAuthorizeFound is response for OidcAuthorize operation.
-type OidcAuthorizeFound struct{}
-
-func (*OidcAuthorizeFound) oidcAuthorizeRes() {}
 
 // OidcCallbackFound is response for OidcCallback operation.
 type OidcCallbackFound struct{}

@@ -3632,8 +3632,12 @@ paths:
           schema:
             type: string
       responses:
-        '302':
-          description: Redirect to OIDC provider
+        '200':
+          description: OIDC auth URL for client-side redirect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OIDCAuthURLResponse'
         '404':
           $ref: '#/components/responses/NotFound'
         default:

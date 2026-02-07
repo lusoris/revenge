@@ -40,10 +40,8 @@ func (h *Handler) ListOIDCProviders(ctx context.Context) (*ogen.OIDCProviderList
 	}, nil
 }
 
-// OidcAuthorize initiates the OIDC login flow
-// Note: ogen generates empty struct for 302 redirect without Location header support.
-// The redirect URL is logged for debugging; actual redirect handling requires
-// custom middleware or returning JSON response for SPA clients.
+// OidcAuthorize initiates the OIDC login flow.
+// Returns the OIDC auth URL as JSON for client-side redirect (SPA pattern).
 func (h *Handler) OidcAuthorize(ctx context.Context, params ogen.OidcAuthorizeParams) (ogen.OidcAuthorizeRes, error) {
 	redirectURL := ""
 	if params.RedirectURL.IsSet() {
@@ -65,17 +63,9 @@ func (h *Handler) OidcAuthorize(ctx context.Context, params ogen.OidcAuthorizePa
 		}, nil
 	}
 
-	// Log the redirect URL for debugging
-	// The actual redirect is handled by the response encoder returning 302
-	// In practice, use custom middleware to set Location header or return JSON for SPA
-	h.logger.Debug("OIDC auth URL generated",
-		zap.String("provider", params.Provider),
-		zap.String("auth_url", result.URL),
-	)
-
-	// ogen generates empty struct for 302, no Location header support
-	// TODO: Implement custom redirect middleware or switch to JSON response
-	return &ogen.OidcAuthorizeFound{}, nil
+	return &ogen.OIDCAuthURLResponse{
+		AuthUrl: result.URL,
+	}, nil
 }
 
 // OidcCallback handles the OAuth2 callback
