@@ -44,8 +44,6 @@ func newTestClient(t *testing.T) *search.Client {
 }
 
 func TestSearchClientConnection(t *testing.T) {
-	t.Skip("Health check endpoint has issues with typesense-go v2 client - skipping for now")
-
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 

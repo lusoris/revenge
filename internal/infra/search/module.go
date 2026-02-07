@@ -195,8 +195,14 @@ func (c *Client) HealthCheck(ctx context.Context) error {
 		return nil // Not an error if disabled
 	}
 
-	_, err := c.client.Health(ctx, 10) // 10 second timeout
-	return err
+	healthy, err := c.client.Health(ctx, 10*time.Second)
+	if err != nil {
+		return err
+	}
+	if !healthy {
+		return fmt.Errorf("typesense server reports unhealthy")
+	}
+	return nil
 }
 
 // registerHooks registers lifecycle hooks for the search client.

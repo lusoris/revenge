@@ -79,11 +79,6 @@ func TestHealthReadinessEndpointWithDB(t *testing.T) {
 }
 
 func TestHealthReadinessEndpointWithoutDB(t *testing.T) {
-	// TODO: This test currently documents the actual behavior, not the ideal behavior.
-	// The health service should return 503 when the database is unreachable,
-	// but the current implementation doesn't actively check the database connection.
-	// This should be fixed in a future iteration.
-	t.Skip("Health service doesn't currently detect DB failures - needs implementation")
 
 	// Setup test server
 	ts := setupServer(t)
