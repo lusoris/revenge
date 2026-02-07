@@ -17466,6 +17466,8 @@ type UserPreferences struct {
 	DisplayLanguage OptString `json:"display_language"`
 	// Preferred content languages (comma-separated).
 	ContentLanguage OptString `json:"content_language"`
+	// Language for metadata display (titles, overviews, taglines). ISO 639-1 code.
+	MetadataLanguage OptString `json:"metadata_language"`
 	// Show adult content.
 	ShowAdultContent OptBool `json:"show_adult_content"`
 	// Show spoilers.
@@ -17522,6 +17524,11 @@ func (s *UserPreferences) GetDisplayLanguage() OptString {
 // GetContentLanguage returns the value of ContentLanguage.
 func (s *UserPreferences) GetContentLanguage() OptString {
 	return s.ContentLanguage
+}
+
+// GetMetadataLanguage returns the value of MetadataLanguage.
+func (s *UserPreferences) GetMetadataLanguage() OptString {
+	return s.MetadataLanguage
 }
 
 // GetShowAdultContent returns the value of ShowAdultContent.
@@ -17587,6 +17594,11 @@ func (s *UserPreferences) SetDisplayLanguage(val OptString) {
 // SetContentLanguage sets the value of ContentLanguage.
 func (s *UserPreferences) SetContentLanguage(val OptString) {
 	s.ContentLanguage = val
+}
+
+// SetMetadataLanguage sets the value of MetadataLanguage.
+func (s *UserPreferences) SetMetadataLanguage(val OptString) {
+	s.MetadataLanguage = val
 }
 
 // SetShowAdultContent sets the value of ShowAdultContent.
@@ -17879,9 +17891,11 @@ type UserPreferencesUpdate struct {
 	Theme               OptUserPreferencesUpdateTheme               `json:"theme"`
 	DisplayLanguage     OptString                                   `json:"display_language"`
 	ContentLanguage     OptString                                   `json:"content_language"`
-	ShowAdultContent    OptBool                                     `json:"show_adult_content"`
-	ShowSpoilers        OptBool                                     `json:"show_spoilers"`
-	AutoPlayVideos      OptBool                                     `json:"auto_play_videos"`
+	// Language for metadata display (titles, overviews, taglines). ISO 639-1 code.
+	MetadataLanguage OptString `json:"metadata_language"`
+	ShowAdultContent OptBool   `json:"show_adult_content"`
+	ShowSpoilers     OptBool   `json:"show_spoilers"`
+	AutoPlayVideos   OptBool   `json:"auto_play_videos"`
 }
 
 // GetEmailNotifications returns the value of EmailNotifications.
@@ -17927,6 +17941,11 @@ func (s *UserPreferencesUpdate) GetDisplayLanguage() OptString {
 // GetContentLanguage returns the value of ContentLanguage.
 func (s *UserPreferencesUpdate) GetContentLanguage() OptString {
 	return s.ContentLanguage
+}
+
+// GetMetadataLanguage returns the value of MetadataLanguage.
+func (s *UserPreferencesUpdate) GetMetadataLanguage() OptString {
+	return s.MetadataLanguage
 }
 
 // GetShowAdultContent returns the value of ShowAdultContent.
@@ -17987,6 +18006,11 @@ func (s *UserPreferencesUpdate) SetDisplayLanguage(val OptString) {
 // SetContentLanguage sets the value of ContentLanguage.
 func (s *UserPreferencesUpdate) SetContentLanguage(val OptString) {
 	s.ContentLanguage = val
+}
+
+// SetMetadataLanguage sets the value of MetadataLanguage.
+func (s *UserPreferencesUpdate) SetMetadataLanguage(val OptString) {
+	s.MetadataLanguage = val
 }
 
 // SetShowAdultContent sets the value of ShowAdultContent.

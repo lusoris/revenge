@@ -188,6 +188,7 @@ func (r *postgresRepository) UpsertUserPreferences(ctx context.Context, params U
 		Theme:             params.Theme,
 		DisplayLanguage:   params.DisplayLanguage,
 		ContentLanguage:   params.ContentLanguage,
+		MetadataLanguage:  params.MetadataLanguage,
 		ShowAdultContent:  params.ShowAdultContent,
 		ShowSpoilers:      params.ShowSpoilers,
 		AutoPlayVideos:    params.AutoPlayVideos,

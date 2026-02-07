@@ -400,6 +400,7 @@ func prefsToOgenResponse(prefs *db.SharedUserPreference) *ogen.UserPreferences {
 		Theme:            ogen.NewOptUserPreferencesTheme(ogen.UserPreferencesTheme(stringPtrToString(prefs.Theme))),
 		DisplayLanguage:  ogen.NewOptString(stringPtrToString(prefs.DisplayLanguage)),
 		ContentLanguage:  ogen.NewOptString(stringPtrToString(prefs.ContentLanguage)),
+		MetadataLanguage: ogen.NewOptString(stringPtrToString(prefs.MetadataLanguage)),
 		ShowAdultContent: ogen.NewOptBool(boolPtrToBool(prefs.ShowAdultContent)),
 		ShowSpoilers:     ogen.NewOptBool(boolPtrToBool(prefs.ShowSpoilers)),
 		AutoPlayVideos:   ogen.NewOptBool(boolPtrToBool(prefs.AutoPlayVideos)),
@@ -618,6 +619,9 @@ func (h *Handler) UpdateUserPreferences(ctx context.Context, req *ogen.UserPrefe
 	}
 	if contentLang, ok := req.ContentLanguage.Get(); ok {
 		params.ContentLanguage = &contentLang
+	}
+	if metaLang, ok := req.MetadataLanguage.Get(); ok {
+		params.MetadataLanguage = &metaLang
 	}
 	if showAdult, ok := req.ShowAdultContent.Get(); ok {
 		params.ShowAdultContent = &showAdult

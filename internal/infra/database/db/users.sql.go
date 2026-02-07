@@ -368,7 +368,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Share
 
 const getUserPreferences = `-- name: GetUserPreferences :one
 
-SELECT user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at FROM shared.user_preferences
+SELECT user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language FROM shared.user_preferences
 WHERE user_id = $1
 `
 
@@ -395,6 +395,7 @@ func (q *Queries) GetUserPreferences(ctx context.Context, userID uuid.UUID) (Sha
 		&i.AutoPlayVideos,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.MetadataLanguage,
 	)
 	return i, err
 }
@@ -659,11 +660,12 @@ INSERT INTO shared.user_preferences (
     theme,
     display_language,
     content_language,
+    metadata_language,
     show_adult_content,
     show_spoilers,
     auto_play_videos
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 )
 ON CONFLICT (user_id) DO UPDATE SET
     email_notifications = COALESCE(EXCLUDED.email_notifications, user_preferences.email_notifications),
@@ -675,11 +677,12 @@ ON CONFLICT (user_id) DO UPDATE SET
     theme = COALESCE(EXCLUDED.theme, user_preferences.theme),
     display_language = COALESCE(EXCLUDED.display_language, user_preferences.display_language),
     content_language = COALESCE(EXCLUDED.content_language, user_preferences.content_language),
+    metadata_language = COALESCE(EXCLUDED.metadata_language, user_preferences.metadata_language),
     show_adult_content = COALESCE(EXCLUDED.show_adult_content, user_preferences.show_adult_content),
     show_spoilers = COALESCE(EXCLUDED.show_spoilers, user_preferences.show_spoilers),
     auto_play_videos = COALESCE(EXCLUDED.auto_play_videos, user_preferences.auto_play_videos),
     updated_at = NOW()
-RETURNING user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at
+RETURNING user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language
 `
 
 type UpsertUserPreferencesParams struct {
@@ -693,6 +696,7 @@ type UpsertUserPreferencesParams struct {
 	Theme               *string   `json:"theme"`
 	DisplayLanguage     *string   `json:"displayLanguage"`
 	ContentLanguage     *string   `json:"contentLanguage"`
+	MetadataLanguage    *string   `json:"metadataLanguage"`
 	ShowAdultContent    *bool     `json:"showAdultContent"`
 	ShowSpoilers        *bool     `json:"showSpoilers"`
 	AutoPlayVideos      *bool     `json:"autoPlayVideos"`
@@ -711,6 +715,7 @@ func (q *Queries) UpsertUserPreferences(ctx context.Context, arg UpsertUserPrefe
 		arg.Theme,
 		arg.DisplayLanguage,
 		arg.ContentLanguage,
+		arg.MetadataLanguage,
 		arg.ShowAdultContent,
 		arg.ShowSpoilers,
 		arg.AutoPlayVideos,
@@ -732,6 +737,7 @@ func (q *Queries) UpsertUserPreferences(ctx context.Context, arg UpsertUserPrefe
 		&i.AutoPlayVideos,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.MetadataLanguage,
 	)
 	return i, err
 }

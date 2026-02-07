@@ -21,7 +21,7 @@ func (h *Handler) GetMovie(ctx context.Context, params ogen.GetMovieParams) (oge
 	}
 
 	// Get user's preferred language
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 
 	// Localize movie fields
 	localizedMovie := LocalizeMovie(m, lang)
@@ -43,7 +43,7 @@ func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) 
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
 	result := make([]ogen.Movie, len(localizedMovies))
@@ -68,7 +68,7 @@ func (h *Handler) SearchMovies(ctx context.Context, params ogen.SearchMoviesPara
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
 	result := make([]ogen.Movie, len(localizedMovies))
@@ -92,7 +92,7 @@ func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyA
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
 	result := make([]ogen.Movie, len(localizedMovies))
@@ -117,7 +117,7 @@ func (h *Handler) GetTopRated(ctx context.Context, params ogen.GetTopRatedParams
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
 	result := make([]ogen.Movie, len(localizedMovies))
@@ -142,7 +142,7 @@ func (h *Handler) GetContinueWatching(ctx context.Context, params ogen.GetContin
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedItems := LocalizeContinueWatchingItems(items, lang)
 
 	result := make([]ogen.ContinueWatchingItem, len(localizedItems))
@@ -170,7 +170,7 @@ func (h *Handler) GetWatchHistory(ctx context.Context, params ogen.GetWatchHisto
 	}
 
 	// Get user's preferred language and localize results
-	lang := GetUserLanguage(ctx)
+	lang := h.GetMetadataLanguage(ctx)
 	localizedItems := LocalizeWatchedMovieItems(items, lang)
 
 	result := make([]ogen.WatchedMovieItem, len(localizedItems))

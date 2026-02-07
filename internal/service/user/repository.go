@@ -102,6 +102,7 @@ type UpsertPreferencesParams struct {
 	Theme               *string
 	DisplayLanguage     *string
 	ContentLanguage     *string
+	MetadataLanguage    *string
 	ShowAdultContent    *bool
 	ShowSpoilers        *bool
 	AutoPlayVideos      *bool

@@ -2,26 +2,29 @@ package api
 
 import (
 	"context"
-	"net/http"
 	"strings"
 
+	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 )
 
-// GetUserLanguage extracts preferred language from context.
-// Priority: User settings > Accept-Language header > Default (en)
-func GetUserLanguage(ctx context.Context) string {
-	// 1. Try to get from user settings (from auth context)
-	// TODO: Implement when user settings are available
-	// if user := GetUserFromContext(ctx); user != nil && user.PreferredLanguage != "" {
-	//     return user.PreferredLanguage
-	// }
-
-	// 2. Try Accept-Language header
-	if req := getRequestFromContext(ctx); req != nil {
-		if lang := parseAcceptLanguage(req.Header.Get("Accept-Language")); lang != "" {
-			return lang
+// GetMetadataLanguage returns the user's preferred metadata language.
+// Priority: User preference (metadata_language) > Accept-Language header > Default (en)
+func (h *Handler) GetMetadataLanguage(ctx context.Context) string {
+	// 1. Try user's metadata_language preference
+	userID, err := GetUserID(ctx)
+	if err == nil {
+		prefs, err := h.userService.GetUserPreferences(ctx, userID)
+		if err == nil && prefs.MetadataLanguage != nil && *prefs.MetadataLanguage != "" {
+			return *prefs.MetadataLanguage
 		}
+	}
+
+	// 2. Try Accept-Language header from request metadata
+	meta := middleware.GetRequestMetadata(ctx)
+	if lang := parseAcceptLanguage(meta.AcceptLanguage); lang != "" {
+		return lang
 	}
 
 	// 3. Default to English
@@ -57,27 +60,13 @@ func parseAcceptLanguage(header string) string {
 	return firstLang
 }
 
-// getRequestFromContext extracts *http.Request from context.
-// This depends on the framework being used (fiber, chi, stdlib, etc.)
-func getRequestFromContext(ctx context.Context) *http.Request {
-	// Try to get request from context
-	// Note: This is framework-specific. Adjust based on actual framework used.
-	if req, ok := ctx.Value(http.Request{}).(*http.Request); ok {
-		return req
-	}
-	return nil
-}
-
 // LocalizeMovie returns a localized copy of the movie with fields in the preferred language.
 func LocalizeMovie(m *movie.Movie, lang string) *movie.Movie {
 	if m == nil {
 		return nil
 	}
 
-	// Create a copy to avoid modifying the original
 	localized := *m
-
-	// Override default fields with localized versions using fallback logic
 	localized.Title = m.GetTitle(lang)
 
 	if overview := m.GetOverview(lang); overview != "" {
@@ -100,16 +89,43 @@ func LocalizeMovies(movies []movie.Movie, lang string) []movie.Movie {
 	return localized
 }
 
+// LocalizeSeries returns a localized copy of the series with fields in the preferred language.
+func LocalizeSeries(s *tvshow.Series, lang string) *tvshow.Series {
+	if s == nil {
+		return nil
+	}
+
+	localized := *s
+	localized.Title = s.GetTitle(lang)
+
+	if overview := s.GetOverview(lang); overview != "" {
+		localized.Overview = &overview
+	}
+
+	if tagline := s.GetTagline(lang); tagline != "" {
+		localized.Tagline = &tagline
+	}
+
+	return &localized
+}
+
+// LocalizeSeriesList localizes a slice of series.
+func LocalizeSeriesList(series []tvshow.Series, lang string) []tvshow.Series {
+	localized := make([]tvshow.Series, len(series))
+	for i := range series {
+		localized[i] = *LocalizeSeries(&series[i], lang)
+	}
+	return localized
+}
+
 // LocalizeContinueWatchingItem localizes a continue watching item.
 func LocalizeContinueWatchingItem(item *movie.ContinueWatchingItem, lang string) *movie.ContinueWatchingItem {
 	if item == nil {
 		return nil
 	}
 
-	// Create a copy to avoid modifying the original
 	localized := *item
 
-	// Create a temporary Movie to use GetTitle/GetOverview/GetTagline methods
 	tempMovie := movie.Movie{
 		Title:         item.Title,
 		Overview:      item.Overview,
@@ -120,7 +136,6 @@ func LocalizeContinueWatchingItem(item *movie.ContinueWatchingItem, lang string)
 		OverviewsI18n: item.OverviewsI18n,
 	}
 
-	// Override default fields with localized versions
 	localized.Title = tempMovie.GetTitle(lang)
 
 	if overview := tempMovie.GetOverview(lang); overview != "" {
@@ -149,10 +164,8 @@ func LocalizeWatchedMovieItem(item *movie.WatchedMovieItem, lang string) *movie.
 		return nil
 	}
 
-	// Create a copy to avoid modifying the original
 	localized := *item
 
-	// Create a temporary Movie to use GetTitle/GetOverview/GetTagline methods
 	tempMovie := movie.Movie{
 		Title:         item.Title,
 		Overview:      item.Overview,
@@ -163,7 +176,6 @@ func LocalizeWatchedMovieItem(item *movie.WatchedMovieItem, lang string) *movie.
 		OverviewsI18n: item.OverviewsI18n,
 	}
 
-	// Override default fields with localized versions
 	localized.Title = tempMovie.GetTitle(lang)
 
 	if overview := tempMovie.GetOverview(lang); overview != "" {

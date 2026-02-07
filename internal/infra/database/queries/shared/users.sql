@@ -111,11 +111,12 @@ INSERT INTO shared.user_preferences (
     theme,
     display_language,
     content_language,
+    metadata_language,
     show_adult_content,
     show_spoilers,
     auto_play_videos
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 )
 ON CONFLICT (user_id) DO UPDATE SET
     email_notifications = COALESCE(EXCLUDED.email_notifications, user_preferences.email_notifications),
@@ -127,6 +128,7 @@ ON CONFLICT (user_id) DO UPDATE SET
     theme = COALESCE(EXCLUDED.theme, user_preferences.theme),
     display_language = COALESCE(EXCLUDED.display_language, user_preferences.display_language),
     content_language = COALESCE(EXCLUDED.content_language, user_preferences.content_language),
+    metadata_language = COALESCE(EXCLUDED.metadata_language, user_preferences.metadata_language),
     show_adult_content = COALESCE(EXCLUDED.show_adult_content, user_preferences.show_adult_content),
     show_spoilers = COALESCE(EXCLUDED.show_spoilers, user_preferences.show_spoilers),
     auto_play_videos = COALESCE(EXCLUDED.auto_play_videos, user_preferences.auto_play_videos),

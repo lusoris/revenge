@@ -7448,6 +7448,10 @@ components:
           type: string
           description: Preferred content languages (comma-separated)
           example: en,de,fr
+        metadata_language:
+          type: string
+          description: Language for metadata display (titles, overviews, taglines). ISO 639-1 code.
+          example: en
         show_adult_content:
           type: boolean
           description: Show adult content
@@ -7496,6 +7500,9 @@ components:
           type: string
         content_language:
           type: string
+        metadata_language:
+          type: string
+          description: Language for metadata display (titles, overviews, taglines). ISO 639-1 code.
         show_adult_content:
           type: boolean
         show_spoilers:

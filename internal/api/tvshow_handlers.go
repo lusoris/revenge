@@ -30,8 +30,11 @@ func (h *Handler) ListTVShows(ctx context.Context, params ogen.ListTVShowsParams
 		return nil, err
 	}
 
-	result := make([]ogen.TVSeries, len(series))
-	for i, s := range series {
+	lang := h.GetMetadataLanguage(ctx)
+	localized := LocalizeSeriesList(series, lang)
+
+	result := make([]ogen.TVSeries, len(localized))
+	for i, s := range localized {
 		result[i] = *seriesToOgen(&s)
 	}
 
@@ -45,8 +48,11 @@ func (h *Handler) SearchTVShows(ctx context.Context, params ogen.SearchTVShowsPa
 		return nil, err
 	}
 
-	result := make([]ogen.TVSeries, len(series))
-	for i, s := range series {
+	lang := h.GetMetadataLanguage(ctx)
+	localized := LocalizeSeriesList(series, lang)
+
+	result := make([]ogen.TVSeries, len(localized))
+	for i, s := range localized {
 		result[i] = *seriesToOgen(&s)
 	}
 
@@ -60,8 +66,11 @@ func (h *Handler) GetRecentlyAddedTVShows(ctx context.Context, params ogen.GetRe
 		return nil, err
 	}
 
-	result := make([]ogen.TVSeries, len(series))
-	for i, s := range series {
+	lang := h.GetMetadataLanguage(ctx)
+	localized := LocalizeSeriesList(series, lang)
+
+	result := make([]ogen.TVSeries, len(localized))
+	for i, s := range localized {
 		result[i] = *seriesToOgen(&s)
 	}
 
@@ -78,6 +87,13 @@ func (h *Handler) GetTVContinueWatching(ctx context.Context, params ogen.GetTVCo
 	items, err := h.tvshowService.GetContinueWatching(ctx, userID, util.SafeIntToInt32(params.Limit.Or(20)))
 	if err != nil {
 		return nil, err
+	}
+
+	lang := h.GetMetadataLanguage(ctx)
+	for i := range items {
+		if items[i].Series != nil {
+			items[i].Series = LocalizeSeries(items[i].Series, lang)
+		}
 	}
 
 	result := make([]ogen.TVContinueWatchingItem, len(items))
@@ -145,7 +161,10 @@ func (h *Handler) GetTVShow(ctx context.Context, params ogen.GetTVShowParams) (o
 		return &ogen.GetTVShowNotFound{}, nil
 	}
 
-	return seriesToOgen(series), nil
+	lang := h.GetMetadataLanguage(ctx)
+	localized := LocalizeSeries(series, lang)
+
+	return seriesToOgen(localized), nil
 }
 
 // GetTVShowSeasons returns all seasons for a TV show.

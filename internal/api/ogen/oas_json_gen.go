@@ -40501,6 +40501,12 @@ func (s *UserPreferences) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.MetadataLanguage.Set {
+			e.FieldStart("metadata_language")
+			s.MetadataLanguage.Encode(e)
+		}
+	}
+	{
 		if s.ShowAdultContent.Set {
 			e.FieldStart("show_adult_content")
 			s.ShowAdultContent.Encode(e)
@@ -40520,7 +40526,7 @@ func (s *UserPreferences) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfUserPreferences = [13]string{
+var jsonFieldsNameOfUserPreferences = [14]string{
 	0:  "user_id",
 	1:  "email_notifications",
 	2:  "push_notifications",
@@ -40531,9 +40537,10 @@ var jsonFieldsNameOfUserPreferences = [13]string{
 	7:  "theme",
 	8:  "display_language",
 	9:  "content_language",
-	10: "show_adult_content",
-	11: "show_spoilers",
-	12: "auto_play_videos",
+	10: "metadata_language",
+	11: "show_adult_content",
+	12: "show_spoilers",
+	13: "auto_play_videos",
 }
 
 // Decode decodes UserPreferences from json.
@@ -40646,6 +40653,16 @@ func (s *UserPreferences) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"content_language\"")
+			}
+		case "metadata_language":
+			if err := func() error {
+				s.MetadataLanguage.Reset()
+				if err := s.MetadataLanguage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata_language\"")
 			}
 		case "show_adult_content":
 			if err := func() error {
@@ -41189,6 +41206,12 @@ func (s *UserPreferencesUpdate) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.MetadataLanguage.Set {
+			e.FieldStart("metadata_language")
+			s.MetadataLanguage.Encode(e)
+		}
+	}
+	{
 		if s.ShowAdultContent.Set {
 			e.FieldStart("show_adult_content")
 			s.ShowAdultContent.Encode(e)
@@ -41208,7 +41231,7 @@ func (s *UserPreferencesUpdate) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfUserPreferencesUpdate = [12]string{
+var jsonFieldsNameOfUserPreferencesUpdate = [13]string{
 	0:  "email_notifications",
 	1:  "push_notifications",
 	2:  "digest_notifications",
@@ -41218,9 +41241,10 @@ var jsonFieldsNameOfUserPreferencesUpdate = [12]string{
 	6:  "theme",
 	7:  "display_language",
 	8:  "content_language",
-	9:  "show_adult_content",
-	10: "show_spoilers",
-	11: "auto_play_videos",
+	9:  "metadata_language",
+	10: "show_adult_content",
+	11: "show_spoilers",
+	12: "auto_play_videos",
 }
 
 // Decode decodes UserPreferencesUpdate from json.
@@ -41320,6 +41344,16 @@ func (s *UserPreferencesUpdate) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"content_language\"")
+			}
+		case "metadata_language":
+			if err := func() error {
+				s.MetadataLanguage.Reset()
+				if err := s.MetadataLanguage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"metadata_language\"")
 			}
 		case "show_adult_content":
 			if err := func() error {
