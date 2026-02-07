@@ -2,6 +2,9 @@ package email
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -88,20 +91,77 @@ func TestService_SendSMTP_NoHost(t *testing.T) {
 	assert.Contains(t, err.Error(), "SMTP host not configured")
 }
 
-func TestService_SendSendGrid_NotImplemented(t *testing.T) {
+func TestService_SendSendGrid_Success(t *testing.T) {
+	var receivedReq sendGridRequest
+	var receivedAuth string
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedAuth = r.Header.Get("Authorization")
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+		err := json.NewDecoder(r.Body).Decode(&receivedReq)
+		require.NoError(t, err)
+		w.WriteHeader(http.StatusAccepted)
+	}))
+	defer server.Close()
+
+	// Override the endpoint for testing
+	origEndpoint := sendGridEndpoint
+	sendGridEndpoint = server.URL
+	defer func() { sendGridEndpoint = origEndpoint }()
+
 	cfg := config.EmailConfig{
 		Enabled:     true,
 		Provider:    "sendgrid",
-		FromAddress: "test@example.com",
+		FromAddress: "sender@example.com",
+		FromName:    "Test Sender",
+		BaseURL:     "http://localhost:8080",
 		SendGrid: config.SendGridConfig{
-			APIKey: "test-key",
+			APIKey: "SG.test-api-key",
 		},
 	}
 	svc := NewService(cfg, zap.NewNop())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "SendGrid provider not yet implemented")
+	require.NoError(t, err)
+
+	assert.Equal(t, "Bearer SG.test-api-key", receivedAuth)
+	require.Len(t, receivedReq.Personalizations, 1)
+	require.Len(t, receivedReq.Personalizations[0].To, 1)
+	assert.Equal(t, "user@example.com", receivedReq.Personalizations[0].To[0].Email)
+	assert.Equal(t, "sender@example.com", receivedReq.From.Email)
+	assert.Equal(t, "Test Sender", receivedReq.From.Name)
+	assert.Equal(t, "Verify your email address - Revenge", receivedReq.Subject)
+	require.Len(t, receivedReq.Content, 1)
+	assert.Equal(t, "text/html", receivedReq.Content[0].Type)
+	assert.Contains(t, receivedReq.Content[0].Value, "Verify Email")
+}
+
+func TestService_SendSendGrid_APIError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"errors":[{"message":"The provided authorization grant is invalid"}]}`))
+	}))
+	defer server.Close()
+
+	origEndpoint := sendGridEndpoint
+	sendGridEndpoint = server.URL
+	defer func() { sendGridEndpoint = origEndpoint }()
+
+	cfg := config.EmailConfig{
+		Enabled:     true,
+		Provider:    "sendgrid",
+		FromAddress: "test@example.com",
+		BaseURL:     "http://localhost:8080",
+		SendGrid: config.SendGridConfig{
+			APIKey: "bad-key",
+		},
+	}
+	svc := NewService(cfg, zap.NewNop())
+
+	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "SendGrid API error (status 401)")
+	assert.Contains(t, err.Error(), "invalid")
 }
 
 func TestBuildVerificationEmail(t *testing.T) {

@@ -6,8 +6,11 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net"
+	"net/http"
 	"net/smtp"
 	"strings"
 	"time"
@@ -187,24 +190,82 @@ func (s *Service) sendSMTP(ctx context.Context, toAddress, subject, htmlBody str
 	return client.Quit()
 }
 
-// sendSendGrid sends an email via SendGrid API.
+// sendGridEndpoint is the SendGrid v3 mail send API endpoint.
+// This is a var (not const) to allow override in tests.
+var sendGridEndpoint = "https://api.sendgrid.com/v3/mail/send"
+
+// sendGridRequest is the JSON payload for the SendGrid v3 mail send API.
+type sendGridRequest struct {
+	Personalizations []sendGridPersonalization `json:"personalizations"`
+	From             sendGridEmail             `json:"from"`
+	Subject          string                    `json:"subject"`
+	Content          []sendGridContent         `json:"content"`
+}
+
+type sendGridPersonalization struct {
+	To []sendGridEmail `json:"to"`
+}
+
+type sendGridEmail struct {
+	Email string `json:"email"`
+	Name  string `json:"name,omitempty"`
+}
+
+type sendGridContent struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+// sendSendGrid sends an email via SendGrid v3 mail send API.
 func (s *Service) sendSendGrid(ctx context.Context, toAddress, subject, htmlBody string) error {
 	if s.cfg.SendGrid.APIKey == "" {
 		return fmt.Errorf("SendGrid API key not configured")
 	}
 
-	// SendGrid API implementation
-	// Using their v3 mail send endpoint
-	// For now, we'll use a simple HTTP POST approach
-	// In production, consider using the official sendgrid-go SDK
+	payload := sendGridRequest{
+		Personalizations: []sendGridPersonalization{
+			{To: []sendGridEmail{{Email: toAddress}}},
+		},
+		From: sendGridEmail{
+			Email: s.cfg.FromAddress,
+			Name:  s.cfg.FromName,
+		},
+		Subject: subject,
+		Content: []sendGridContent{
+			{Type: "text/html", Value: htmlBody},
+		},
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("failed to marshal SendGrid request: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, sendGridEndpoint, bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("failed to create SendGrid request: %w", err)
+	}
+
+	req.Header.Set("Authorization", "Bearer "+s.cfg.SendGrid.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("SendGrid API request failed: %w", err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	// SendGrid returns 202 Accepted on success
+	if resp.StatusCode != http.StatusAccepted {
+		respBody, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return fmt.Errorf("SendGrid API error (status %d): %s", resp.StatusCode, string(respBody))
+	}
 
 	s.logger.Info("Email sent via SendGrid",
 		zap.String("to", toAddress),
 		zap.String("subject", subject))
 
-	// TODO: Implement SendGrid API call
-	// For MVP, SMTP is sufficient. SendGrid can be added later.
-	return fmt.Errorf("SendGrid provider not yet implemented, use SMTP")
+	return nil
 }
 
 // buildMessage creates the full email message with headers.
