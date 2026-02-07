@@ -446,7 +446,7 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 		// Parse TMDb ID from provider ID
 		if sm.ProviderID != "" {
 			var tmdbID int32
-			fmt.Sscanf(sm.ProviderID, "%d", &tmdbID)
+			_, _ = fmt.Sscanf(sm.ProviderID, "%d", &tmdbID)
 			if tmdbID > 0 {
 				sim.TmdbID = ogen.NewOptInt(int(tmdbID))
 				sim.InLibrary = ogen.NewOptBool(libraryTMDbIDs[tmdbID])

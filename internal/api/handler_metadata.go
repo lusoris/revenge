@@ -52,7 +52,7 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 		// Parse TMDb ID from provider ID
 		if r.ProviderID != "" {
 			var tmdbID int
-			fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
+			_, _ = fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
 			if tmdbID > 0 {
 				result.TmdbID = ogen.NewOptInt(tmdbID)
 			}
@@ -199,7 +199,7 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 	// Parse collection ID from provider ID
 	if collection.ProviderID != "" {
 		var collectionID int
-		fmt.Sscanf(collection.ProviderID, "%d", &collectionID)
+		_, _ = fmt.Sscanf(collection.ProviderID, "%d", &collectionID)
 		if collectionID > 0 {
 			response.ID = ogen.NewOptInt(collectionID)
 		}
@@ -224,7 +224,7 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 		// Parse movie ID from provider ID
 		if part.ProviderID != "" {
 			var partID int
-			fmt.Sscanf(part.ProviderID, "%d", &partID)
+			_, _ = fmt.Sscanf(part.ProviderID, "%d", &partID)
 			if partID > 0 {
 				p.ID = ogen.NewOptInt(partID)
 			}
@@ -303,7 +303,7 @@ func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchT
 		// Parse TMDb ID from provider ID
 		if r.ProviderID != "" {
 			var tmdbID int
-			fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
+			_, _ = fmt.Sscanf(r.ProviderID, "%d", &tmdbID)
 			if tmdbID > 0 {
 				result.TmdbID = ogen.NewOptInt(tmdbID)
 			}
@@ -453,7 +453,7 @@ func (h *Handler) GetTVShowMetadata(ctx context.Context, params ogen.GetTVShowMe
 			// Parse season ID from ProviderID
 			if s.ProviderID != "" {
 				var seasonID int
-				fmt.Sscanf(s.ProviderID, "%d", &seasonID)
+				_, _ = fmt.Sscanf(s.ProviderID, "%d", &seasonID)
 				if seasonID > 0 {
 					season.ID = ogen.NewOptInt(seasonID)
 				}
@@ -520,7 +520,7 @@ func (h *Handler) GetSeasonMetadata(ctx context.Context, params ogen.GetSeasonMe
 			// Parse episode ID from ProviderID
 			if e.ProviderID != "" {
 				var episodeID int
-				fmt.Sscanf(e.ProviderID, "%d", &episodeID)
+				_, _ = fmt.Sscanf(e.ProviderID, "%d", &episodeID)
 				if episodeID > 0 {
 					episode.ID = ogen.NewOptInt(episodeID)
 				}
@@ -607,7 +607,7 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 			// Parse crew member ID from ProviderID
 			if c.ProviderID != "" {
 				var crewID int
-				fmt.Sscanf(c.ProviderID, "%d", &crewID)
+				_, _ = fmt.Sscanf(c.ProviderID, "%d", &crewID)
 				if crewID > 0 {
 					member.ID = ogen.NewOptInt(crewID)
 				}
@@ -632,7 +632,7 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 			// Parse cast member ID from ProviderID
 			if g.ProviderID != "" {
 				var castID int
-				fmt.Sscanf(g.ProviderID, "%d", &castID)
+				_, _ = fmt.Sscanf(g.ProviderID, "%d", &castID)
 				if castID > 0 {
 					member.ID = ogen.NewOptInt(castID)
 				}
