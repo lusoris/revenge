@@ -30,7 +30,9 @@ type Service interface {
 	GetTVShowContentRatings(ctx context.Context, tmdbID int32) ([]ContentRating, error)
 	GetTVShowExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
 	GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum int, languages []string) (*SeasonMetadata, error)
+	GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum int) (*Images, error)
 	GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error)
+	GetEpisodeImages(ctx context.Context, tmdbID int32, seasonNum, episodeNum int) (*Images, error)
 
 	// Person operations
 	SearchPerson(ctx context.Context, query string, opts SearchOptions) ([]PersonSearchResult, error)
@@ -520,6 +522,28 @@ func (s *service) GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum
 	return result, nil
 }
 
+// GetSeasonImages retrieves images for a season.
+func (s *service) GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum int) (*Images, error) {
+	s.mu.RLock()
+	providers := s.tvProviders
+	s.mu.RUnlock()
+
+	if len(providers) == 0 {
+		return nil, ErrNoProviders
+	}
+
+	id := fmt.Sprintf("%d", tmdbID)
+	for _, p := range providers {
+		images, err := p.GetSeasonImages(ctx, id, seasonNum)
+		if err != nil {
+			continue
+		}
+		return images, nil
+	}
+
+	return nil, ErrNotFound
+}
+
 // GetEpisodeMetadata retrieves episode metadata.
 func (s *service) GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error) {
 	s.mu.RLock()
@@ -564,6 +588,28 @@ func (s *service) GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNu
 	}
 
 	return result, nil
+}
+
+// GetEpisodeImages retrieves images for an episode.
+func (s *service) GetEpisodeImages(ctx context.Context, tmdbID int32, seasonNum, episodeNum int) (*Images, error) {
+	s.mu.RLock()
+	providers := s.tvProviders
+	s.mu.RUnlock()
+
+	if len(providers) == 0 {
+		return nil, ErrNoProviders
+	}
+
+	id := fmt.Sprintf("%d", tmdbID)
+	for _, p := range providers {
+		images, err := p.GetEpisodeImages(ctx, id, seasonNum, episodeNum)
+		if err != nil {
+			continue
+		}
+		return images, nil
+	}
+
+	return nil, ErrNotFound
 }
 
 // SearchPerson searches for people.

@@ -93,8 +93,16 @@ func (m *mockMetadataService) GetSeasonMetadata(_ context.Context, _ int32, _ in
 	return m.seasonMetadata, m.seasonMetadataErr
 }
 
+func (m *mockMetadataService) GetSeasonImages(_ context.Context, _ int32, _ int) (*metadata.Images, error) {
+	return nil, nil
+}
+
 func (m *mockMetadataService) GetEpisodeMetadata(_ context.Context, _ int32, _, _ int, _ []string) (*metadata.EpisodeMetadata, error) {
 	return m.episodeMetadata, m.episodeMetadataErr
+}
+
+func (m *mockMetadataService) GetEpisodeImages(_ context.Context, _ int32, _, _ int) (*metadata.Images, error) {
+	return nil, nil
 }
 
 func (m *mockMetadataService) SearchPerson(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.PersonSearchResult, error) {
