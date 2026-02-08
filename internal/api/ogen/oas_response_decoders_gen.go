@@ -17021,7 +17021,7 @@ func decodeListMoviesResponse(resp *http.Response) (res ListMoviesRes, _ error) 
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response ListMoviesOKApplicationJSON
+			var response MovieListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -18015,7 +18015,7 @@ func decodeListTVShowsResponse(resp *http.Response) (res ListTVShowsRes, _ error
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response ListTVShowsOKApplicationJSON
+			var response TVShowListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

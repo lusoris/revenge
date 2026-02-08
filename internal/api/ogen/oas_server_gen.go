@@ -649,6 +649,7 @@ type Handler interface {
 	// Endpoint for receiving webhook notifications from Radarr.
 	// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
 	// Configure this URL in Radarr Settings > Connect > Webhook.
+	// Authenticate with the X-Webhook-Secret header matching integrations.radarr.webhook_secret.
 	//
 	// POST /api/v1/webhooks/radarr
 	HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
@@ -657,6 +658,7 @@ type Handler interface {
 	// Endpoint for receiving webhook notifications from Sonarr.
 	// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
 	// Configure this URL in Sonarr Settings > Connect > Webhook.
+	// Authenticate with the X-Webhook-Secret header matching integrations.sonarr.webhook_secret.
 	//
 	// POST /api/v1/webhooks/sonarr
 	HandleSonarrWebhook(ctx context.Context, req *SonarrWebhookPayload) (HandleSonarrWebhookRes, error)

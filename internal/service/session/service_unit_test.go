@@ -575,15 +575,8 @@ func TestNewService_ConfigDefaults(t *testing.T) {
 				maxPerUser = 10
 			}
 
-			svc := &Service{
-				repo:        nil,
-				logger:      logging.NewTestLogger(),
-				tokenLength: tokenLength,
-				maxPerUser:  maxPerUser,
-			}
-
-			assert.Equal(t, tt.expectedToken, svc.tokenLength)
-			assert.Equal(t, tt.expectedMaxPer, svc.maxPerUser)
+			assert.Equal(t, tt.expectedToken, tokenLength)
+			assert.Equal(t, tt.expectedMaxPer, maxPerUser)
 		})
 	}
 }
@@ -673,6 +666,9 @@ func TestSessionInfo_Fields(t *testing.T) {
 	assert.Equal(t, "Test", *info.DeviceName)
 	assert.Equal(t, "192.168.1.1", *info.IPAddress)
 	assert.Equal(t, "Test Agent", *info.UserAgent)
+	assert.Equal(t, now, info.CreatedAt)
+	assert.Equal(t, now, info.LastActivityAt)
+	assert.True(t, info.ExpiresAt.After(now))
 }
 
 // =====================================================
@@ -706,6 +702,7 @@ func TestCreateSessionParams_Fields(t *testing.T) {
 	assert.Equal(t, "Chrome", *params.UserAgent)
 	assert.Equal(t, "Desktop", *params.DeviceName)
 	assert.Len(t, params.Scopes, 2)
+	assert.True(t, params.ExpiresAt.After(time.Now()))
 }
 
 // errRepository is a mock that returns errors

@@ -110,6 +110,37 @@ func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.Opera
 	return ctx, nil
 }
 
+// HandleWebhookAuth implements the SecurityHandler interface.
+// Validates webhook secrets from the X-Webhook-Secret header for Radarr/Sonarr integrations.
+func (h *Handler) HandleWebhookAuth(ctx context.Context, operationName ogen.OperationName, t ogen.WebhookAuth) (context.Context, error) {
+	h.logger.Debug("Webhook auth requested", slog.String("operation", string(operationName)))
+
+	var expectedSecret string
+	switch operationName {
+	case ogen.HandleRadarrWebhookOperation:
+		expectedSecret = h.cfg.Integrations.Radarr.WebhookSecret
+	case ogen.HandleSonarrWebhookOperation:
+		expectedSecret = h.cfg.Integrations.Sonarr.WebhookSecret
+	default:
+		return nil, fmt.Errorf("webhook auth not supported for operation %s", operationName)
+	}
+
+	// If no secret is configured, allow all requests (backwards-compatible)
+	if expectedSecret == "" {
+		h.logger.Warn("Webhook secret not configured, allowing unauthenticated webhook",
+			slog.String("operation", string(operationName)))
+		return ctx, nil
+	}
+
+	if t.APIKey != expectedSecret {
+		h.logger.Warn("Invalid webhook secret",
+			slog.String("operation", string(operationName)))
+		return nil, fmt.Errorf("invalid webhook secret")
+	}
+
+	return ctx, nil
+}
+
 // GetLiveness implements the liveness probe endpoint.
 // This always returns healthy unless the process is deadlocked.
 func (h *Handler) GetLiveness(ctx context.Context) (*ogen.HealthCheck, error) {

@@ -669,6 +669,7 @@ type Invoker interface {
 	// Endpoint for receiving webhook notifications from Radarr.
 	// Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
 	// Configure this URL in Radarr Settings > Connect > Webhook.
+	// Authenticate with the X-Webhook-Secret header matching integrations.radarr.webhook_secret.
 	//
 	// POST /api/v1/webhooks/radarr
 	HandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (HandleRadarrWebhookRes, error)
@@ -677,6 +678,7 @@ type Invoker interface {
 	// Endpoint for receiving webhook notifications from Sonarr.
 	// Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
 	// Configure this URL in Sonarr Settings > Connect > Webhook.
+	// Authenticate with the X-Webhook-Secret header matching integrations.sonarr.webhook_secret.
 	//
 	// POST /api/v1/webhooks/sonarr
 	HandleSonarrWebhook(ctx context.Context, request *SonarrWebhookPayload) (HandleSonarrWebhookRes, error)
@@ -14433,6 +14435,7 @@ func (c *Client) sendGrantLibraryPermission(ctx context.Context, request *GrantL
 // Endpoint for receiving webhook notifications from Radarr.
 // Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
 // Configure this URL in Radarr Settings > Connect > Webhook.
+// Authenticate with the X-Webhook-Secret header matching integrations.radarr.webhook_secret.
 //
 // POST /api/v1/webhooks/radarr
 func (c *Client) HandleRadarrWebhook(ctx context.Context, request *RadarrWebhookPayload) (HandleRadarrWebhookRes, error) {
@@ -14490,6 +14493,39 @@ func (c *Client) sendHandleRadarrWebhook(ctx context.Context, request *RadarrWeb
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:WebhookAuth"
+			switch err := c.securityWebhookAuth(ctx, HandleRadarrWebhookOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WebhookAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -14511,6 +14547,7 @@ func (c *Client) sendHandleRadarrWebhook(ctx context.Context, request *RadarrWeb
 // Endpoint for receiving webhook notifications from Sonarr.
 // Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
 // Configure this URL in Sonarr Settings > Connect > Webhook.
+// Authenticate with the X-Webhook-Secret header matching integrations.sonarr.webhook_secret.
 //
 // POST /api/v1/webhooks/sonarr
 func (c *Client) HandleSonarrWebhook(ctx context.Context, request *SonarrWebhookPayload) (HandleSonarrWebhookRes, error) {
@@ -14566,6 +14603,39 @@ func (c *Client) sendHandleSonarrWebhook(ctx context.Context, request *SonarrWeb
 	}
 	if err := encodeHandleSonarrWebhookRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:WebhookAuth"
+			switch err := c.securityWebhookAuth(ctx, HandleSonarrWebhookOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WebhookAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"

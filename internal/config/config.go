@@ -341,6 +341,9 @@ type RadarrConfig struct {
 
 	// SyncInterval is the interval between automatic syncs (seconds).
 	SyncInterval int `koanf:"sync_interval"`
+
+	// WebhookSecret is the shared secret for authenticating incoming Radarr webhooks.
+	WebhookSecret string `koanf:"webhook_secret"`
 }
 
 // SonarrConfig holds Sonarr integration configuration.
@@ -359,6 +362,9 @@ type SonarrConfig struct {
 
 	// SyncInterval is the interval between automatic syncs (seconds).
 	SyncInterval int `koanf:"sync_interval"`
+
+	// WebhookSecret is the shared secret for authenticating incoming Sonarr webhooks.
+	WebhookSecret string `koanf:"webhook_secret"`
 }
 
 // EmailConfig holds email/SMTP configuration for transactional emails.

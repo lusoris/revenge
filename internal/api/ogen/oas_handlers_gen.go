@@ -21375,6 +21375,7 @@ func (s *Server) handleGrantLibraryPermissionRequest(args [1]string, argsEscaped
 // Endpoint for receiving webhook notifications from Radarr.
 // Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
 // Configure this URL in Radarr Settings > Connect > Webhook.
+// Authenticate with the X-Webhook-Secret header matching integrations.radarr.webhook_secret.
 //
 // POST /api/v1/webhooks/radarr
 func (s *Server) handleHandleRadarrWebhookRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -21446,6 +21447,52 @@ func (s *Server) handleHandleRadarrWebhookRequest(args [0]string, argsEscaped bo
 			ID:   "handleRadarrWebhook",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityWebhookAuth(ctx, HandleRadarrWebhookOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "WebhookAuth",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:WebhookAuth", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeHandleRadarrWebhookRequest(r)
@@ -21529,6 +21576,7 @@ func (s *Server) handleHandleRadarrWebhookRequest(args [0]string, argsEscaped bo
 // Endpoint for receiving webhook notifications from Sonarr.
 // Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
 // Configure this URL in Sonarr Settings > Connect > Webhook.
+// Authenticate with the X-Webhook-Secret header matching integrations.sonarr.webhook_secret.
 //
 // POST /api/v1/webhooks/sonarr
 func (s *Server) handleHandleSonarrWebhookRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -21600,6 +21648,52 @@ func (s *Server) handleHandleSonarrWebhookRequest(args [0]string, argsEscaped bo
 			ID:   "handleSonarrWebhook",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityWebhookAuth(ctx, HandleSonarrWebhookOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "WebhookAuth",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:WebhookAuth", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeHandleSonarrWebhookRequest(r)

@@ -157,13 +157,15 @@ func TestNoDB_VerificationResult(t *testing.T) {
 
 	t.Run("failed verification", func(t *testing.T) {
 		t.Parallel()
+		userID := uuid.Must(uuid.NewV7())
 		result := VerificationResult{
 			Success: false,
 			Method:  VerifyMethodBackupCode,
-			UserID:  uuid.Must(uuid.NewV7()),
+			UserID:  userID,
 		}
 		assert.False(t, result.Success)
 		assert.Equal(t, VerifyMethodBackupCode, result.Method)
+		assert.Equal(t, userID, result.UserID)
 	})
 
 	t.Run("json marshalling", func(t *testing.T) {

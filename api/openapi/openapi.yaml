@@ -842,9 +842,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/MovieListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -1572,9 +1570,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeries'
+                $ref: '#/components/schemas/TVShowListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -5316,8 +5312,11 @@ paths:
         Endpoint for receiving webhook notifications from Radarr.
         Supports events: Grab, Download, Rename, MovieDelete, MovieFileDelete, Health.
         Configure this URL in Radarr Settings > Connect > Webhook.
+        Authenticate with the X-Webhook-Secret header matching integrations.radarr.webhook_secret.
       tags:
         - Webhooks
+      security:
+        - webhookAuth: []
       requestBody:
         required: true
         content:
@@ -5478,8 +5477,11 @@ paths:
         Endpoint for receiving webhook notifications from Sonarr.
         Supports events: Grab, Download, Rename, SeriesDelete, EpisodeFileDelete, Health.
         Configure this URL in Sonarr Settings > Connect > Webhook.
+        Authenticate with the X-Webhook-Secret header matching integrations.sonarr.webhook_secret.
       tags:
         - Webhooks
+      security:
+        - webhookAuth: []
       requestBody:
         required: true
         content:
@@ -5885,6 +5887,21 @@ components:
           description: Total number of credentials
 
     # Movie schemas
+    MovieListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+        total:
+          type: integer
+          format: int64
+          description: Total number of movies matching the filters
+
     Movie:
       type: object
       properties:
@@ -6181,6 +6198,21 @@ components:
           format: date-time
 
     # TV Show schemas
+    TVShowListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVSeries'
+        total:
+          type: integer
+          format: int64
+          description: Total number of TV shows matching the filters
+
     TVSeries:
       type: object
       properties:
@@ -9989,5 +10021,13 @@ components:
       in: header
       name: X-API-Key
       description: API key from /api/v1/apikeys
+    webhookAuth:
+      type: apiKey
+      in: header
+      name: X-Webhook-Secret
+      description: |
+        Shared secret for authenticating webhook calls from Radarr/Sonarr.
+        Configure the same secret in both Revenge and your *arr application.
+        Set via REVENGE_INTEGRATIONS_RADARR_WEBHOOK_SECRET / REVENGE_INTEGRATIONS_SONARR_WEBHOOK_SECRET.
 
 security: []

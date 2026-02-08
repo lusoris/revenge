@@ -43,6 +43,12 @@ func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) 
 		return nil, err
 	}
 
+	// Get total count for pagination
+	total, err := h.movieHandler.CountMovies(ctx)
+	if err != nil {
+		total = int64(len(movies))
+	}
+
 	// Get user's preferred language and localize results
 	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
@@ -52,7 +58,10 @@ func (h *Handler) ListMovies(ctx context.Context, params ogen.ListMoviesParams) 
 		result[i] = *movieToOgen(&m)
 	}
 
-	return (*ogen.ListMoviesOKApplicationJSON)(&result), nil
+	return &ogen.MovieListResponse{
+		Items: result,
+		Total: total,
+	}, nil
 }
 
 // SearchMovies delegates to the movie handler.

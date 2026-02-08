@@ -14,6 +14,7 @@ type Service interface {
 	GetMovieByTMDbID(ctx context.Context, tmdbID int32) (*Movie, error)
 	GetMovieByIMDbID(ctx context.Context, imdbID string) (*Movie, error)
 	ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error)
+	CountMovies(ctx context.Context) (int64, error)
 	SearchMovies(ctx context.Context, query string, filters SearchFilters) ([]Movie, error)
 	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error)
 	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error)
@@ -84,6 +85,11 @@ func (s *movieService) GetMovieByIMDbID(ctx context.Context, imdbID string) (*Mo
 // ListMovies returns a paginated list of movies
 func (s *movieService) ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error) {
 	return s.repo.ListMovies(ctx, filters)
+}
+
+// CountMovies returns the total number of movies
+func (s *movieService) CountMovies(ctx context.Context) (int64, error) {
+	return s.repo.CountMovies(ctx)
 }
 
 // SearchMovies searches for movies by title

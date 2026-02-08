@@ -30,6 +30,12 @@ func (h *Handler) ListTVShows(ctx context.Context, params ogen.ListTVShowsParams
 		return nil, err
 	}
 
+	// Get total count for pagination
+	total, err := h.tvshowService.CountSeries(ctx)
+	if err != nil {
+		total = int64(len(series))
+	}
+
 	lang := h.GetMetadataLanguage(ctx)
 	localized := LocalizeSeriesList(series, lang)
 
@@ -38,7 +44,10 @@ func (h *Handler) ListTVShows(ctx context.Context, params ogen.ListTVShowsParams
 		result[i] = *seriesToOgen(&s)
 	}
 
-	return (*ogen.ListTVShowsOKApplicationJSON)(&result), nil
+	return &ogen.TVShowListResponse{
+		Items: result,
+		Total: total,
+	}, nil
 }
 
 // SearchTVShows searches TV shows by title.

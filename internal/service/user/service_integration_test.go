@@ -492,7 +492,7 @@ func TestService_ListUsers_WithFilters(t *testing.T) {
 	}
 
 	// Filter for inactive users
-	users, count, err = svc.ListUsers(ctx, UserFilters{
+	_, count, err = svc.ListUsers(ctx, UserFilters{
 		IsActive: ptr(false),
 		Limit:    10,
 		Offset:   0,

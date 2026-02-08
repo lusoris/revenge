@@ -48,6 +48,11 @@ func (m *MockService) ListMovies(ctx context.Context, filters ListFilters) ([]Mo
 	return args.Get(0).([]Movie), args.Error(1)
 }
 
+func (m *MockService) CountMovies(ctx context.Context) (int64, error) {
+	args := m.Called(ctx)
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func (m *MockService) SearchMovies(ctx context.Context, query string, filters SearchFilters) ([]Movie, error) {
 	args := m.Called(ctx, query, filters)
 	if args.Get(0) == nil {

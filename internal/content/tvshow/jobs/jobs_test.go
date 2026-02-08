@@ -194,11 +194,11 @@ func TestLibraryScanArgs_NilLibraryID(t *testing.T) {
 	t.Parallel()
 
 	args := LibraryScanArgs{
-		Paths: []string{"/tv"},
 		Force: false,
 	}
 
 	assert.Nil(t, args.LibraryID)
+	assert.Empty(t, args.Paths)
 	assert.False(t, args.Force)
 	assert.False(t, args.AutoCreate)
 }
@@ -283,11 +283,11 @@ func TestFileMatchArgs_NilEpisodeID(t *testing.T) {
 	t.Parallel()
 
 	args := FileMatchArgs{
-		FilePath:   "/media/tv/show.mkv",
 		AutoCreate: false,
 	}
 
 	assert.Nil(t, args.EpisodeID)
+	assert.Empty(t, args.FilePath)
 	assert.False(t, args.ForceRematch)
 	assert.False(t, args.AutoCreate)
 }

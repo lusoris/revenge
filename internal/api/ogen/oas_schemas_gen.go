@@ -4919,10 +4919,6 @@ type ListLibraryScansUnauthorized Error
 
 func (*ListLibraryScansUnauthorized) listLibraryScansRes() {}
 
-type ListMoviesOKApplicationJSON []Movie
-
-func (*ListMoviesOKApplicationJSON) listMoviesRes() {}
-
 type ListMoviesOrderBy string
 
 const (
@@ -5013,10 +5009,6 @@ func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
 type ListServerSettingsUnauthorized Error
 
 func (*ListServerSettingsUnauthorized) listServerSettingsRes() {}
-
-type ListTVShowsOKApplicationJSON []TVSeries
-
-func (*ListTVShowsOKApplicationJSON) listTVShowsRes() {}
 
 type ListTVShowsOrderBy string
 
@@ -7937,6 +7929,35 @@ func (s *MovieGenre) SetName(val OptString) {
 func (s *MovieGenre) SetCreatedAt(val OptDateTime) {
 	s.CreatedAt = val
 }
+
+// Ref: #/components/schemas/MovieListResponse
+type MovieListResponse struct {
+	Items []Movie `json:"items"`
+	// Total number of movies matching the filters.
+	Total int64 `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *MovieListResponse) GetItems() []Movie {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *MovieListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *MovieListResponse) SetItems(val []Movie) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *MovieListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*MovieListResponse) listMoviesRes() {}
 
 // Ref: #/components/schemas/MovieWatched
 type MovieWatched struct {
@@ -17502,6 +17523,35 @@ func (s *TVSeriesCreditCreditType) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/TVShowListResponse
+type TVShowListResponse struct {
+	Items []TVSeries `json:"items"`
+	// Total number of TV shows matching the filters.
+	Total int64 `json:"total"`
+}
+
+// GetItems returns the value of Items.
+func (s *TVShowListResponse) GetItems() []TVSeries {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *TVShowListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// SetItems sets the value of Items.
+func (s *TVShowListResponse) SetItems(val []TVSeries) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *TVShowListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*TVShowListResponse) listTVShowsRes() {}
+
 // Ref: #/components/schemas/TVShowSearchDocument
 type TVShowSearchDocument struct {
 	// Series ID.
@@ -20713,4 +20763,29 @@ func (s *WebAuthnFinishRegistrationRequestCredential) init() WebAuthnFinishRegis
 		*s = m
 	}
 	return m
+}
+
+type WebhookAuth struct {
+	APIKey string
+	Roles  []string
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *WebhookAuth) GetAPIKey() string {
+	return s.APIKey
+}
+
+// GetRoles returns the value of Roles.
+func (s *WebhookAuth) GetRoles() []string {
+	return s.Roles
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *WebhookAuth) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// SetRoles sets the value of Roles.
+func (s *WebhookAuth) SetRoles(val []string) {
+	s.Roles = val
 }

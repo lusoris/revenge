@@ -19,6 +19,11 @@ type SecurityHandler interface {
 	// HandleBearerAuth handles bearerAuth security.
 	// JWT access token from /api/v1/auth/login.
 	HandleBearerAuth(ctx context.Context, operationName OperationName, t BearerAuth) (context.Context, error)
+	// HandleWebhookAuth handles webhookAuth security.
+	// Shared secret for authenticating webhook calls from Radarr/Sonarr.
+	// Configure the same secret in both Revenge and your *arr application.
+	// Set via REVENGE_INTEGRATIONS_RADARR_WEBHOOK_SECRET / REVENGE_INTEGRATIONS_SONARR_WEBHOOK_SECRET.
+	HandleWebhookAuth(ctx context.Context, operationName OperationName, t WebhookAuth) (context.Context, error)
 }
 
 func findAuthorization(h http.Header, prefix string) (string, bool) {
@@ -375,6 +380,29 @@ func (s *Server) securityBearerAuth(ctx context.Context, operationName Operation
 	return rctx, true, err
 }
 
+var operationRolesWebhookAuth = map[string][]string{
+	HandleRadarrWebhookOperation: []string{},
+	HandleSonarrWebhookOperation: []string{},
+}
+
+func (s *Server) securityWebhookAuth(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
+	var t WebhookAuth
+	const parameterName = "X-Webhook-Secret"
+	value := req.Header.Get(parameterName)
+	if value == "" {
+		return ctx, false, nil
+	}
+	t.APIKey = value
+	t.Roles = operationRolesWebhookAuth[operationName]
+	rctx, err := s.sec.HandleWebhookAuth(ctx, operationName, t)
+	if errors.Is(err, ogenerrors.ErrSkipServerSecurity) {
+		return nil, false, nil
+	} else if err != nil {
+		return nil, false, err
+	}
+	return rctx, true, err
+}
+
 // SecuritySource is provider of security values (tokens, passwords, etc.).
 type SecuritySource interface {
 	// ApiKeyAuth provides apiKeyAuth security value.
@@ -383,6 +411,11 @@ type SecuritySource interface {
 	// BearerAuth provides bearerAuth security value.
 	// JWT access token from /api/v1/auth/login.
 	BearerAuth(ctx context.Context, operationName OperationName) (BearerAuth, error)
+	// WebhookAuth provides webhookAuth security value.
+	// Shared secret for authenticating webhook calls from Radarr/Sonarr.
+	// Configure the same secret in both Revenge and your *arr application.
+	// Set via REVENGE_INTEGRATIONS_RADARR_WEBHOOK_SECRET / REVENGE_INTEGRATIONS_SONARR_WEBHOOK_SECRET.
+	WebhookAuth(ctx context.Context, operationName OperationName) (WebhookAuth, error)
 }
 
 func (s *Client) securityApiKeyAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
@@ -399,5 +432,13 @@ func (s *Client) securityBearerAuth(ctx context.Context, operationName Operation
 		return errors.Wrap(err, "security source \"BearerAuth\"")
 	}
 	req.Header.Set("Authorization", "Bearer "+t.Token)
+	return nil
+}
+func (s *Client) securityWebhookAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
+	t, err := s.sec.WebhookAuth(ctx, operationName)
+	if err != nil {
+		return errors.Wrap(err, "security source \"WebhookAuth\"")
+	}
+	req.Header.Set("X-Webhook-Secret", t.APIKey)
 	return nil
 }

@@ -37,6 +37,11 @@ func (h *Handler) ListMovies(ctx context.Context, params ListMoviesParams) ([]Mo
 	return h.service.ListMovies(ctx, filters)
 }
 
+// CountMovies returns the total number of movies
+func (h *Handler) CountMovies(ctx context.Context) (int64, error) {
+	return h.service.CountMovies(ctx)
+}
+
 // SearchMovies handles GET /api/v1/movies/search
 func (h *Handler) SearchMovies(ctx context.Context, params SearchMoviesParams) ([]Movie, error) {
 	filters := SearchFilters{
