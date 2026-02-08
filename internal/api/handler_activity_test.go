@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
@@ -30,14 +30,14 @@ func setupActivityTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 
 	// Set up activity service
 	activityRepo := activity.NewRepositoryPg(queries)
-	activityService := activity.NewService(activityRepo, zap.NewNop())
+	activityService := activity.NewService(activityRepo, logging.NewTestLogger())
 
 	// Set up RBAC service with Casbin
 	adapter := rbac.NewAdapter(testDB.Pool())
 	modelPath := "../../config/casbin_model.conf"
-	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
+	enforcer, err := casbin.NewSyncedEnforcer(modelPath, adapter)
 	require.NoError(t, err)
-	rbacService := rbac.NewService(enforcer, zap.NewNop(), activity.NewNoopLogger())
+	rbacService := rbac.NewService(enforcer, logging.NewTestLogger(), activity.NewNoopLogger())
 
 	// Create admin user
 	adminUser := testutil.CreateUser(t, testDB.Pool(), testutil.User{
@@ -56,7 +56,7 @@ func setupActivityTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	}
 
 	handler := &Handler{
-		logger:          zap.NewNop(),
+		logger:          logging.NewTestLogger(),
 		activityService: activityService,
 		rbacService:     rbacService,
 		cfg:             cfg,

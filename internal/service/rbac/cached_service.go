@@ -2,27 +2,27 @@ package rbac
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/cache"
-	"go.uber.org/zap"
 )
 
 // CachedService wraps the RBAC Service with caching support.
 type CachedService struct {
 	*Service
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedService creates a new cached RBAC service.
 // If cache is nil, it falls back to the underlying service without caching.
-func NewCachedService(svc *Service, cache *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc *Service, cache *cache.Cache, logger *slog.Logger) *CachedService {
 	return &CachedService{
 		Service: svc,
 		cache:   cache,
-		logger:  logger.Named("rbac-cache"),
+		logger:  logger.With("component", "rbac-cache"),
 	}
 }
 
@@ -49,12 +49,12 @@ func (s *CachedService) Enforce(ctx context.Context, sub, obj, act string) (bool
 	var result cachedBool
 	if err := s.cache.GetJSON(ctx, cacheKey, &result); err == nil {
 		s.logger.Debug("RBAC enforce cache hit",
-			zap.String("key", cacheKey),
-			zap.Bool("allowed", result.Value))
+			slog.String("key", cacheKey),
+			slog.Bool("allowed", result.Value))
 		return result.Value, nil
 	}
 
-	s.logger.Debug("RBAC enforce cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("RBAC enforce cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - check policy
 	allowed, err := s.Service.Enforce(ctx, sub, obj, act)
@@ -67,7 +67,7 @@ func (s *CachedService) Enforce(ctx context.Context, sub, obj, act string) (bool
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedBool{Value: allowed}, cache.RBACEnforceTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC enforce result", zap.Error(setErr))
+			s.logger.Warn("failed to cache RBAC enforce result", slog.Any("error",setErr))
 		}
 	}()
 
@@ -92,12 +92,12 @@ func (s *CachedService) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]s
 	var result cachedStringSlice
 	if err := s.cache.GetJSON(ctx, cacheKey, &result); err == nil {
 		s.logger.Debug("RBAC roles cache hit",
-			zap.String("key", cacheKey),
-			zap.Strings("roles", result.Values))
+			slog.String("key", cacheKey),
+			slog.Any("roles", result.Values))
 		return result.Values, nil
 	}
 
-	s.logger.Debug("RBAC roles cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("RBAC roles cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - get from Casbin
 	roles, err := s.Service.GetUserRoles(ctx, userID)
@@ -110,7 +110,7 @@ func (s *CachedService) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]s
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedStringSlice{Values: roles}, cache.RBACPolicyTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC roles", zap.Error(setErr))
+			s.logger.Warn("failed to cache RBAC roles", slog.Any("error",setErr))
 		}
 	}()
 
@@ -130,12 +130,12 @@ func (s *CachedService) HasRole(ctx context.Context, userID uuid.UUID, role stri
 	var result cachedBool
 	if err := s.cache.GetJSON(ctx, cacheKey, &result); err == nil {
 		s.logger.Debug("RBAC has role cache hit",
-			zap.String("key", cacheKey),
-			zap.Bool("hasRole", result.Value))
+			slog.String("key", cacheKey),
+			slog.Bool("hasRole", result.Value))
 		return result.Value, nil
 	}
 
-	s.logger.Debug("RBAC has role cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("RBAC has role cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - check from Casbin
 	hasRole, err := s.Service.HasRole(ctx, userID, role)
@@ -148,7 +148,7 @@ func (s *CachedService) HasRole(ctx context.Context, userID uuid.UUID, role stri
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, cachedBool{Value: hasRole}, cache.RBACPolicyTTL); setErr != nil {
-			s.logger.Warn("failed to cache RBAC has role result", zap.Error(setErr))
+			s.logger.Warn("failed to cache RBAC has role result", slog.Any("error",setErr))
 		}
 	}()
 
@@ -218,8 +218,8 @@ func (s *CachedService) invalidateUserCache(ctx context.Context, userID uuid.UUI
 
 	if err := s.cache.InvalidateRBACForUser(ctx, userID.String()); err != nil {
 		s.logger.Warn("failed to invalidate RBAC cache for user",
-			zap.String("user_id", userID.String()),
-			zap.Error(err))
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err))
 	}
 }
 
@@ -230,6 +230,6 @@ func (s *CachedService) invalidateAllRBAC(ctx context.Context) {
 	}
 
 	if err := s.cache.InvalidateAllRBAC(ctx); err != nil {
-		s.logger.Warn("failed to invalidate all RBAC cache", zap.Error(err))
+		s.logger.Warn("failed to invalidate all RBAC cache", slog.Any("error",err))
 	}
 }

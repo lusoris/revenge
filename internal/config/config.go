@@ -545,13 +545,13 @@ func Defaults() map[string]interface{} {
 		"cache.url":     "",
 		"cache.enabled": false,
 
-		// Rate limit defaults
-		"rate_limit.enabled":                  true,
-		"rate_limit.backend":                  "memory", // "memory" or "redis"
-		"rate_limit.global.requests_per_second": 10.0,
-		"rate_limit.global.burst":             20,
-		"rate_limit.auth.requests_per_second": 1.0,
-		"rate_limit.auth.burst":               5,
+		// Rate limit defaults (nested under server)
+		"server.rate_limit.enabled":                    true,
+		"server.rate_limit.backend":                    "redis", // "memory" or "redis"; redis uses Dragonfly
+		"server.rate_limit.global.requests_per_second": 50.0,
+		"server.rate_limit.global.burst":               100,
+		"server.rate_limit.auth.requests_per_second":   5.0,
+		"server.rate_limit.auth.burst":                 10,
 
 		// Movie defaults
 		"movie.tmdb.api_key":    "",

@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
@@ -39,7 +39,7 @@ func TestSonarrSyncJobArgs_Operations(t *testing.T) {
 func TestNewSonarrSyncWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrSyncWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -50,7 +50,7 @@ func TestNewSonarrSyncWorker(t *testing.T) {
 func TestSonarrSyncWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrSyncWorker(nil, logger)
 
 	job := &river.Job[SonarrSyncJobArgs]{
@@ -64,7 +64,7 @@ func TestSonarrSyncWorker_Timeout(t *testing.T) {
 func TestSonarrSyncWorker_Work_NilService(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrSyncWorker(nil, logger)
 
 	job := &river.Job[SonarrSyncJobArgs]{
@@ -97,7 +97,7 @@ func TestSonarrWebhookJobArgs_InsertOpts(t *testing.T) {
 func TestNewSonarrWebhookWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrWebhookWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -108,7 +108,7 @@ func TestNewSonarrWebhookWorker(t *testing.T) {
 func TestSonarrWebhookWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrWebhookWorker(nil, logger)
 
 	job := &river.Job[SonarrWebhookJobArgs]{
@@ -124,7 +124,7 @@ func TestSonarrWebhookWorker_Timeout(t *testing.T) {
 func TestSonarrWebhookWorker_Work_NilHandler(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSonarrWebhookWorker(nil, logger)
 
 	job := &river.Job[SonarrWebhookJobArgs]{

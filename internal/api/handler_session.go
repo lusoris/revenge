@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
@@ -21,8 +21,8 @@ func (h *Handler) ListSessions(ctx context.Context) (ogen.ListSessionsRes, error
 	sessions, err := h.sessionService.ListUserSessions(ctx, userID)
 	if err != nil {
 		h.logger.Error("failed to list sessions",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -60,15 +60,15 @@ func (h *Handler) GetCurrentSession(ctx context.Context) (ogen.GetCurrentSession
 	// Get session ID from context (set by auth middleware)
 	sessionID, ok := h.getSessionID(ctx)
 	if !ok {
-		h.logger.Warn("session ID not found in context", zap.String("user_id", userID.String()))
+		h.logger.Warn("session ID not found in context", slog.String("user_id", userID.String()))
 		return &ogen.GetCurrentSessionUnauthorized{}, nil
 	}
 
 	sessions, err := h.sessionService.ListUserSessions(ctx, userID)
 	if err != nil {
 		h.logger.Error("failed to list sessions",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.GetCurrentSessionNotFound{
 			Code:    500,
@@ -116,9 +116,9 @@ func (h *Handler) LogoutCurrent(ctx context.Context) (ogen.LogoutCurrentRes, err
 
 	if err := h.sessionService.RevokeSession(ctx, sessionID); err != nil {
 		h.logger.Error("failed to revoke session",
-			zap.String("user_id", userID.String()),
-			zap.String("session_id", sessionID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("session_id", sessionID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -141,8 +141,8 @@ func (h *Handler) LogoutAll(ctx context.Context) (ogen.LogoutAllRes, error) {
 
 	if err := h.sessionService.RevokeAllUserSessions(ctx, userID); err != nil {
 		h.logger.Error("failed to revoke all sessions",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -158,7 +158,7 @@ func (h *Handler) RefreshSession(ctx context.Context, req *ogen.RefreshSessionRe
 	accessToken, refreshToken, err := h.sessionService.RefreshSession(ctx, req.RefreshToken)
 	if err != nil {
 		h.logger.Warn("failed to refresh session",
-			zap.Error(err),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    401,
@@ -189,8 +189,8 @@ func (h *Handler) RevokeSession(ctx context.Context, params ogen.RevokeSessionPa
 	sessions, err := h.sessionService.ListUserSessions(ctx, userID)
 	if err != nil {
 		h.logger.Error("failed to list sessions",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RevokeSessionBadRequest{
 			Code:    500,
@@ -212,9 +212,9 @@ func (h *Handler) RevokeSession(ctx context.Context, params ogen.RevokeSessionPa
 
 	if err := h.sessionService.RevokeSession(ctx, sessionID); err != nil {
 		h.logger.Error("failed to revoke session",
-			zap.String("user_id", userID.String()),
-			zap.String("session_id", sessionID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("session_id", sessionID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RevokeSessionBadRequest{
 			Code:    500,

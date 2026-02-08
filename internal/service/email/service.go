@@ -15,21 +15,22 @@ import (
 	"strings"
 	"time"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/config"
-	"go.uber.org/zap"
 )
 
 // Service handles sending transactional emails.
 type Service struct {
 	cfg    config.EmailConfig
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewService creates a new email service.
-func NewService(cfg config.EmailConfig, logger *zap.Logger) *Service {
+func NewService(cfg config.EmailConfig, logger *slog.Logger) *Service {
 	return &Service{
 		cfg:    cfg,
-		logger: logger.Named("email"),
+		logger: logger.With("component", "email"),
 	}
 }
 
@@ -37,8 +38,8 @@ func NewService(cfg config.EmailConfig, logger *zap.Logger) *Service {
 func (s *Service) SendVerificationEmail(ctx context.Context, toAddress, username, token string) error {
 	if !s.cfg.Enabled {
 		s.logger.Warn("Email disabled, skipping verification email",
-			zap.String("to", toAddress),
-			zap.String("username", username))
+			slog.String("to", toAddress),
+			slog.String("username", username))
 		return nil
 	}
 
@@ -54,8 +55,8 @@ func (s *Service) SendVerificationEmail(ctx context.Context, toAddress, username
 func (s *Service) SendPasswordResetEmail(ctx context.Context, toAddress, username, token string) error {
 	if !s.cfg.Enabled {
 		s.logger.Warn("Email disabled, skipping password reset email",
-			zap.String("to", toAddress),
-			zap.String("username", username))
+			slog.String("to", toAddress),
+			slog.String("username", username))
 		return nil
 	}
 
@@ -71,8 +72,8 @@ func (s *Service) SendPasswordResetEmail(ctx context.Context, toAddress, usernam
 func (s *Service) SendWelcomeEmail(ctx context.Context, toAddress, username string) error {
 	if !s.cfg.Enabled {
 		s.logger.Warn("Email disabled, skipping welcome email",
-			zap.String("to", toAddress),
-			zap.String("username", username))
+			slog.String("to", toAddress),
+			slog.String("username", username))
 		return nil
 	}
 
@@ -184,8 +185,8 @@ func (s *Service) sendSMTP(ctx context.Context, toAddress, subject, htmlBody str
 	}
 
 	s.logger.Info("Email sent via SMTP",
-		zap.String("to", toAddress),
-		zap.String("subject", subject))
+		slog.String("to", toAddress),
+		slog.String("subject", subject))
 
 	return client.Quit()
 }
@@ -262,8 +263,8 @@ func (s *Service) sendSendGrid(ctx context.Context, toAddress, subject, htmlBody
 	}
 
 	s.logger.Info("Email sent via SendGrid",
-		zap.String("to", toAddress),
-		zap.String("subject", subject))
+		slog.String("to", toAddress),
+		slog.String("subject", subject))
 
 	return nil
 }

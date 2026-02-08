@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
@@ -46,14 +46,14 @@ func (RadarrSyncJobArgs) InsertOpts() river.InsertOpts {
 type RadarrSyncWorker struct {
 	river.WorkerDefaults[RadarrSyncJobArgs]
 	syncService *SyncService
-	logger      *zap.Logger
+	logger      *slog.Logger
 }
 
 // NewRadarrSyncWorker creates a new Radarr sync worker.
-func NewRadarrSyncWorker(syncService *SyncService, logger *zap.Logger) *RadarrSyncWorker {
+func NewRadarrSyncWorker(syncService *SyncService, logger *slog.Logger) *RadarrSyncWorker {
 	return &RadarrSyncWorker{
 		syncService: syncService,
-		logger:      logger.Named("radarr_sync_worker"),
+		logger:      logger.With("component", "radarr_sync_worker"),
 	}
 }
 
@@ -67,9 +67,9 @@ func (w *RadarrSyncWorker) Work(ctx context.Context, job *river.Job[RadarrSyncJo
 	args := job.Args
 
 	w.logger.Info("starting radarr sync operation",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("operation", string(args.Operation)),
-		zap.Int("radarr_movie_id", args.RadarrMovieID),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("operation", string(args.Operation)),
+		slog.Int("radarr_movie_id", args.RadarrMovieID),
 	)
 
 	// Check if sync service is available
@@ -92,16 +92,16 @@ func (w *RadarrSyncWorker) Work(ctx context.Context, job *river.Job[RadarrSyncJo
 func (w *RadarrSyncWorker) fullSync(ctx context.Context) error {
 	result, err := w.syncService.SyncLibrary(ctx)
 	if err != nil {
-		w.logger.Error("full sync failed", zap.Error(err))
+		w.logger.Error("full sync failed", slog.Any("error",err))
 		return err
 	}
 
 	w.logger.Info("full sync completed",
-		zap.Int("added", result.MoviesAdded),
-		zap.Int("updated", result.MoviesUpdated),
-		zap.Int("skipped", result.MoviesSkipped),
-		zap.Int("errors", len(result.Errors)),
-		zap.Duration("duration", result.Duration),
+		slog.Int("added", result.MoviesAdded),
+		slog.Int("updated", result.MoviesUpdated),
+		slog.Int("skipped", result.MoviesSkipped),
+		slog.Int("errors", len(result.Errors)),
+		slog.Duration("duration", result.Duration),
 	)
 
 	return nil
@@ -111,14 +111,14 @@ func (w *RadarrSyncWorker) fullSync(ctx context.Context) error {
 func (w *RadarrSyncWorker) singleSync(ctx context.Context, radarrMovieID int) error {
 	if err := w.syncService.SyncMovie(ctx, radarrMovieID); err != nil {
 		w.logger.Error("single movie sync failed",
-			zap.Int("radarr_movie_id", radarrMovieID),
-			zap.Error(err),
+			slog.Int("radarr_movie_id", radarrMovieID),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	w.logger.Info("single movie sync completed",
-		zap.Int("radarr_movie_id", radarrMovieID),
+		slog.Int("radarr_movie_id", radarrMovieID),
 	)
 
 	return nil
@@ -147,14 +147,14 @@ func (RadarrWebhookJobArgs) InsertOpts() river.InsertOpts {
 type RadarrWebhookWorker struct {
 	river.WorkerDefaults[RadarrWebhookJobArgs]
 	webhookHandler *WebhookHandler
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewRadarrWebhookWorker creates a new Radarr webhook worker.
-func NewRadarrWebhookWorker(webhookHandler *WebhookHandler, logger *zap.Logger) *RadarrWebhookWorker {
+func NewRadarrWebhookWorker(webhookHandler *WebhookHandler, logger *slog.Logger) *RadarrWebhookWorker {
 	return &RadarrWebhookWorker{
 		webhookHandler: webhookHandler,
-		logger:         logger.Named("radarr_webhook_worker"),
+		logger:         logger.With("component", "radarr_webhook_worker"),
 	}
 }
 
@@ -168,9 +168,9 @@ func (w *RadarrWebhookWorker) Work(ctx context.Context, job *river.Job[RadarrWeb
 	args := job.Args
 
 	w.logger.Info("processing radarr webhook",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("event_type", args.Payload.EventType),
-		zap.Int("movie_id", args.Payload.Movie.ID),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("event_type", args.Payload.EventType),
+		slog.Int("movie_id", args.Payload.Movie.ID),
 	)
 
 	// Check if webhook handler is available
@@ -181,14 +181,14 @@ func (w *RadarrWebhookWorker) Work(ctx context.Context, job *river.Job[RadarrWeb
 
 	if err := w.webhookHandler.HandleWebhook(ctx, &args.Payload); err != nil {
 		w.logger.Error("webhook processing failed",
-			zap.String("event_type", args.Payload.EventType),
-			zap.Error(err),
+			slog.String("event_type", args.Payload.EventType),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	w.logger.Info("webhook processed successfully",
-		zap.String("event_type", args.Payload.EventType),
+		slog.String("event_type", args.Payload.EventType),
 	)
 
 	return nil

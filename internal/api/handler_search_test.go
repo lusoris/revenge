@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
@@ -21,7 +21,7 @@ func TestHandler_ReindexSearch_NilRiverClient(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		riverClient: nil,
 	}
 
@@ -36,7 +36,7 @@ func TestHandler_ReindexSearch_Success(t *testing.T) {
 
 	mockRiver := &mockRiverClient{}
 	handler := &Handler{
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		riverClient: mockRiver,
 	}
 
@@ -63,7 +63,7 @@ func TestHandler_ReindexSearch_InsertError(t *testing.T) {
 		insertError: errors.New("queue connection failed"),
 	}
 	handler := &Handler{
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		riverClient: mockRiver,
 	}
 

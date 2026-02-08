@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
 
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -18,7 +18,7 @@ func setupBackupCodesService(t *testing.T) (*BackupCodesService, *db.Queries) {
 	t.Helper()
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewBackupCodesService(queries, logger)
 	return svc, queries
 }
@@ -386,7 +386,7 @@ func TestBackupCodesService_DeleteAllCodes(t *testing.T) {
 func TestNewBackupCodesService(t *testing.T) {
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	svc := NewBackupCodesService(queries, logger)
 

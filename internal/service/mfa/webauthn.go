@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
@@ -36,7 +36,7 @@ var (
 // WebAuthnService handles WebAuthn credential management and authentication.
 type WebAuthnService struct {
 	queries  *db.Queries
-	logger   *zap.Logger
+	logger   *slog.Logger
 	webAuthn *webauthn.WebAuthn
 	cache    *cache.Cache // Optional: for storing WebAuthn sessions
 }
@@ -46,7 +46,7 @@ type WebAuthnService struct {
 // will be stored in cache for security. If nil, sessions must be passed by the client.
 func NewWebAuthnService(
 	queries *db.Queries,
-	logger *zap.Logger,
+	logger *slog.Logger,
 	sessionCache *cache.Cache,
 	rpDisplayName string,
 	rpID string,
@@ -101,8 +101,8 @@ func (s *WebAuthnService) storeSession(ctx context.Context, keyPrefix string, us
 	}
 
 	s.logger.Debug("stored webauthn session in cache",
-		zap.String("key", key),
-		zap.Duration("ttl", webAuthnSessionTTL))
+		slog.String("key", key),
+		slog.Duration("ttl", webAuthnSessionTTL))
 	return nil
 }
 
@@ -123,7 +123,7 @@ func (s *WebAuthnService) getSession(ctx context.Context, keyPrefix string, user
 		return nil, fmt.Errorf("failed to unmarshal session: %w", err)
 	}
 
-	s.logger.Debug("retrieved webauthn session from cache", zap.String("key", key))
+	s.logger.Debug("retrieved webauthn session from cache", slog.String("key", key))
 	return &session, nil
 }
 
@@ -135,7 +135,7 @@ func (s *WebAuthnService) deleteSession(ctx context.Context, keyPrefix string, u
 
 	key := keyPrefix + userID.String()
 	if err := s.cache.Delete(ctx, key); err != nil {
-		s.logger.Warn("failed to delete session from cache", zap.String("key", key), zap.Error(err))
+		s.logger.Warn("failed to delete session from cache", slog.String("key", key), slog.Any("error",err))
 	}
 }
 
@@ -184,8 +184,8 @@ func (s *WebAuthnService) BeginRegistration(
 	existingCreds, err := s.queries.ListWebAuthnCredentials(ctx, userID)
 	if err != nil {
 		s.logger.Error("failed to list existing credentials",
-			zap.String("user_id", userID.String()),
-			zap.Error(err))
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err))
 		// Continue without exclusions
 		existingCreds = []db.WebauthnCredential{}
 	}
@@ -226,13 +226,13 @@ func (s *WebAuthnService) BeginRegistration(
 	// Store session in cache for later verification
 	if err := s.storeSession(ctx, webAuthnRegistrationKeyPrefix, userID, session); err != nil {
 		s.logger.Warn("failed to cache registration session, client must provide session data",
-			zap.String("user_id", userID.String()),
-			zap.Error(err))
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err))
 	}
 
 	s.logger.Info("webauthn registration started",
-		zap.String("user_id", userID.String()),
-		zap.String("challenge", fmt.Sprintf("%x", options.Response.Challenge)))
+		slog.String("user_id", userID.String()),
+		slog.String("challenge", fmt.Sprintf("%x", options.Response.Challenge)))
 
 	return options, nil
 }
@@ -318,9 +318,9 @@ func (s *WebAuthnService) FinishRegistration(
 	}
 
 	s.logger.Info("webauthn credential registered",
-		zap.String("user_id", userID.String()),
-		zap.String("credential_id", fmt.Sprintf("%x", credential.ID)),
-		zap.String("attestation_type", credential.AttestationType))
+		slog.String("user_id", userID.String()),
+		slog.String("credential_id", fmt.Sprintf("%x", credential.ID)),
+		slog.String("attestation_type", credential.AttestationType))
 
 	return nil
 }
@@ -391,13 +391,13 @@ func (s *WebAuthnService) BeginLogin(
 	// Store session in cache for later verification
 	if err := s.storeSession(ctx, webAuthnLoginKeyPrefix, userID, session); err != nil {
 		s.logger.Warn("failed to cache login session, client must provide session data",
-			zap.String("user_id", userID.String()),
-			zap.Error(err))
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err))
 	}
 
 	s.logger.Info("webauthn login started",
-		zap.String("user_id", userID.String()),
-		zap.Int("credentials_count", len(credentials)))
+		slog.String("user_id", userID.String()),
+		slog.Int("credentials_count", len(credentials)))
 
 	return options, nil
 }
@@ -463,15 +463,15 @@ func (s *WebAuthnService) FinishLogin(
 	if newCounter <= oldCounter {
 		// Sign counter did not increment - possible clone!
 		s.logger.Warn("webauthn clone detected",
-			zap.String("user_id", userID.String()),
-			zap.String("credential_id", fmt.Sprintf("%x", credential.ID)),
-			zap.Uint32("old_counter", oldCounter),
-			zap.Uint32("new_counter", newCounter))
+			slog.String("user_id", userID.String()),
+			slog.String("credential_id", fmt.Sprintf("%x", credential.ID)),
+			slog.Any("old_counter", oldCounter),
+			slog.Any("new_counter", newCounter))
 
 		// Mark credential as cloned
 		err = s.queries.MarkWebAuthnCloneDetected(ctx, credential.ID)
 		if err != nil {
-			s.logger.Error("failed to mark credential as cloned", zap.Error(err))
+			s.logger.Error("failed to mark credential as cloned", slog.Any("error",err))
 		}
 
 		return ErrCloneDetected
@@ -487,9 +487,9 @@ func (s *WebAuthnService) FinishLogin(
 	}
 
 	s.logger.Info("webauthn login successful",
-		zap.String("user_id", userID.String()),
-		zap.String("credential_id", fmt.Sprintf("%x", credential.ID)),
-		zap.Uint32("new_counter", newCounter))
+		slog.String("user_id", userID.String()),
+		slog.String("credential_id", fmt.Sprintf("%x", credential.ID)),
+		slog.Any("new_counter", newCounter))
 
 	return nil
 }

@@ -2,32 +2,32 @@ package session
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
-	"go.uber.org/zap"
 )
 
 // CachedService wraps the session Service with caching support.
 type CachedService struct {
 	*Service
 	cache    *cache.Cache
-	logger   *zap.Logger
+	logger   *slog.Logger
 	cacheTTL time.Duration
 }
 
 // NewCachedService creates a new cached session service.
 // If cache is nil, it falls back to the underlying service without caching.
-func NewCachedService(svc *Service, c *cache.Cache, logger *zap.Logger, cacheTTL time.Duration) *CachedService {
+func NewCachedService(svc *Service, c *cache.Cache, logger *slog.Logger, cacheTTL time.Duration) *CachedService {
 	if cacheTTL == 0 {
 		cacheTTL = cache.SessionTTL // Default to 30s if not specified
 	}
 	return &CachedService{
 		Service:  svc,
 		cache:    c,
-		logger:   logger.Named("session-cache"),
+		logger:   logger.With("component", "session-cache"),
 		cacheTTL: cacheTTL,
 	}
 }
@@ -46,7 +46,7 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 	// Try cache first
 	var session db.SharedSession
 	if err := s.cache.GetJSON(ctx, cacheKey, &session); err == nil {
-		s.logger.Debug("session cache hit", zap.String("key", cacheKey))
+		s.logger.Debug("session cache hit", slog.String("key", cacheKey))
 
 		// Still update activity in background (fire and forget)
 		go func() {
@@ -54,15 +54,15 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 			defer cancel()
 			if err := s.repo.UpdateSessionActivity(actCtx, session.ID); err != nil {
 				s.logger.Warn("failed to update session activity",
-					zap.String("session_id", session.ID.String()),
-					zap.Error(err))
+					slog.String("session_id", session.ID.String()),
+					slog.Any("error",err))
 			}
 		}()
 
 		return &session, nil
 	}
 
-	s.logger.Debug("session cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("session cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - validate from database
 	result, err := s.Service.ValidateSession(ctx, token)
@@ -75,7 +75,7 @@ func (s *CachedService) ValidateSession(ctx context.Context, token string) (*db.
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, s.cacheTTL); setErr != nil {
-			s.logger.Warn("failed to cache session", zap.Error(setErr))
+			s.logger.Warn("failed to cache session", slog.Any("error",setErr))
 		}
 	}()
 
@@ -103,11 +103,11 @@ func (s *CachedService) CreateSession(ctx context.Context, userID uuid.UUID, dev
 				cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 				defer cancel()
 				if setErr := s.cache.SetJSON(cacheCtx, cacheKey, session, s.cacheTTL); setErr != nil {
-					s.logger.Warn("failed to cache new session", zap.Error(setErr))
+					s.logger.Warn("failed to cache new session", slog.Any("error",setErr))
 				} else {
 					s.logger.Debug("session cached on create",
-						zap.String("user_id", userID.String()),
-						zap.String("key", cacheKey))
+						slog.String("user_id", userID.String()),
+						slog.String("key", cacheKey))
 				}
 			}()
 		}
@@ -134,8 +134,8 @@ func (s *CachedService) RevokeSession(ctx context.Context, sessionID uuid.UUID) 
 		cacheKey := cache.SessionKey(session.TokenHash)
 		if err := s.cache.Delete(ctx, cacheKey); err != nil {
 			s.logger.Warn("failed to invalidate session cache",
-				zap.String("session_id", sessionID.String()),
-				zap.Error(err))
+				slog.String("session_id", sessionID.String()),
+				slog.Any("error",err))
 		}
 	}
 
@@ -153,8 +153,8 @@ func (s *CachedService) RevokeAllUserSessions(ctx context.Context, userID uuid.U
 	if s.cache != nil {
 		if err := s.cache.InvalidateUserSessions(ctx, userID.String()); err != nil {
 			s.logger.Warn("failed to invalidate user sessions cache",
-				zap.String("user_id", userID.String()),
-				zap.Error(err))
+				slog.String("user_id", userID.String()),
+				slog.Any("error",err))
 		}
 	}
 

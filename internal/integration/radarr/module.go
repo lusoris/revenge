@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -21,7 +20,7 @@ var Module = fx.Module("radarr",
 )
 
 // NewClientFromConfig creates a new Radarr client from configuration.
-func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
+func NewClientFromConfig(cfg *config.Config, logger *slog.Logger) *Client {
 	radarrCfg := cfg.GetRadarrConfig()
 	if !radarrCfg.Enabled {
 		logger.Info("radarr integration disabled")
@@ -30,8 +29,8 @@ func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
 
 	if radarrCfg.BaseURL == "" || radarrCfg.APIKey == "" {
 		logger.Warn("radarr integration enabled but not configured",
-			zap.String("base_url", radarrCfg.BaseURL),
-			zap.Bool("has_api_key", radarrCfg.APIKey != ""),
+			slog.String("base_url", radarrCfg.BaseURL),
+			slog.Bool("has_api_key", radarrCfg.APIKey != ""),
 		)
 		return nil
 	}
@@ -45,7 +44,7 @@ func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
 	})
 
 	logger.Info("radarr integration initialized",
-		zap.String("base_url", radarrCfg.BaseURL),
+		slog.String("base_url", radarrCfg.BaseURL),
 	)
 
 	return client

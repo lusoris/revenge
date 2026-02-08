@@ -9,7 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // ServerParams defines dependencies for the observability server.
@@ -17,14 +17,14 @@ type ServerParams struct {
 	fx.In
 
 	Config    *config.Config
-	Logger    *zap.Logger
+	Logger    *slog.Logger
 	Lifecycle fx.Lifecycle
 }
 
 // Server provides observability endpoints (metrics, pprof).
 type Server struct {
 	httpServer *http.Server
-	logger     *zap.Logger
+	logger     *slog.Logger
 }
 
 // NewServer creates a new observability server.
@@ -66,7 +66,7 @@ func NewServer(p ServerParams) *Server {
 
 	server := &Server{
 		httpServer: httpServer,
-		logger:     p.Logger.Named("observability"),
+		logger:     p.Logger.With("component", "observability"),
 	}
 
 	// Register lifecycle hooks
@@ -74,11 +74,11 @@ func NewServer(p ServerParams) *Server {
 		OnStart: func(ctx context.Context) error {
 			go func() {
 				server.logger.Info("Starting observability server",
-					zap.String("address", addr),
-					zap.Bool("pprof_enabled", p.Config.Logging.Development),
+					slog.String("address", addr),
+					slog.Bool("pprof_enabled", p.Config.Logging.Development),
 				)
 				if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					server.logger.Error("Observability server error", zap.Error(err))
+					server.logger.Error("Observability server error", slog.Any("error",err))
 				}
 			}()
 			return nil

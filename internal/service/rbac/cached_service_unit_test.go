@@ -9,10 +9,10 @@ import (
 	casbinmodel "github.com/casbin/casbin/v2/model"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // casbinModelConfInternal is the same model used by existing tests.
@@ -43,7 +43,7 @@ func setupInternalTestService(t *testing.T) *Service {
 	enforcer, err := casbin.NewSyncedEnforcer(m)
 	require.NoError(t, err)
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	return NewService(enforcer, logger, activity.NewNoopLogger())
 }
 
@@ -280,7 +280,7 @@ func TestLoadPolicyLine(t *testing.T) {
 
 func TestNewCachedService_Unit(t *testing.T) {
 	svc := setupInternalTestService(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("with cache", func(t *testing.T) {
 		c := newTestRBACCache(t)
@@ -301,7 +301,7 @@ func TestCachedService_Enforce(t *testing.T) {
 
 		require.NoError(t, svc.AddPolicy(ctx, "alice", "data1", "read"))
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 		allowed, err := cached.Enforce(ctx, "alice", "data1", "read")
 		require.NoError(t, err)
@@ -319,7 +319,7 @@ func TestCachedService_Enforce(t *testing.T) {
 
 		require.NoError(t, svc.AddPolicy(ctx, "alice", "data1", "read"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - cache miss
 		allowed, err := cached.Enforce(ctx, "alice", "data1", "read")
@@ -340,7 +340,7 @@ func TestCachedService_Enforce(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - denied, cache miss
 		allowed, err := cached.Enforce(ctx, "bob", "data1", "read")
@@ -365,7 +365,7 @@ func TestCachedService_EnforceWithContext_Unit(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 	require.NoError(t, svc.AddPolicy(ctx, userID.String(), "movies", "read"))
 
-	cached := NewCachedService(svc, c, zap.NewNop())
+	cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 	allowed, err := cached.EnforceWithContext(ctx, userID, "movies", "read")
 	require.NoError(t, err)
@@ -384,7 +384,7 @@ func TestCachedService_GetUserRoles_Unit(t *testing.T) {
 		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 		roles, err := cached.GetUserRoles(ctx, userID)
 		require.NoError(t, err)
@@ -400,7 +400,7 @@ func TestCachedService_GetUserRoles_Unit(t *testing.T) {
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 		require.NoError(t, svc.AssignRole(ctx, userID, "editor"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - cache miss
 		roles, err := cached.GetUserRoles(ctx, userID)
@@ -425,7 +425,7 @@ func TestCachedService_GetUserRoles_Unit(t *testing.T) {
 
 		userID := uuid.Must(uuid.NewV7())
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		roles, err := cached.GetUserRoles(ctx, userID)
 		require.NoError(t, err)
@@ -441,7 +441,7 @@ func TestCachedService_HasRole_Unit(t *testing.T) {
 		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 		hasRole, err := cached.HasRole(ctx, userID, "admin")
 		require.NoError(t, err)
@@ -460,7 +460,7 @@ func TestCachedService_HasRole_Unit(t *testing.T) {
 		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - cache miss
 		hasRole, err := cached.HasRole(ctx, userID, "admin")
@@ -483,7 +483,7 @@ func TestCachedService_AssignRole(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 		userID := uuid.Must(uuid.NewV7())
 
 		err := cached.AssignRole(ctx, userID, "admin")
@@ -499,7 +499,7 @@ func TestCachedService_AssignRole(t *testing.T) {
 		svc := setupInternalTestService(t)
 		ctx := context.Background()
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 		userID := uuid.Must(uuid.NewV7())
 
 		err := cached.AssignRole(ctx, userID, "admin")
@@ -516,7 +516,7 @@ func TestCachedService_RemoveRole(t *testing.T) {
 		userID := uuid.Must(uuid.NewV7())
 		require.NoError(t, svc.AssignRole(ctx, userID, "admin"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.RemoveRole(ctx, userID, "admin")
 		require.NoError(t, err)
@@ -531,7 +531,7 @@ func TestCachedService_RemoveRole(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 		userID := uuid.Must(uuid.NewV7())
 
 		err := cached.RemoveRole(ctx, userID, "nonexistent")
@@ -545,7 +545,7 @@ func TestCachedService_AddPolicy(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.AddPolicy(ctx, "alice", "data1", "read")
 		require.NoError(t, err)
@@ -560,7 +560,7 @@ func TestCachedService_AddPolicy(t *testing.T) {
 		svc := setupInternalTestService(t)
 		ctx := context.Background()
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 		err := cached.AddPolicy(ctx, "alice", "data1", "read")
 		require.NoError(t, err)
@@ -575,7 +575,7 @@ func TestCachedService_RemovePolicy(t *testing.T) {
 
 		require.NoError(t, svc.AddPolicy(ctx, "alice", "data1", "read"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.RemovePolicy(ctx, "alice", "data1", "read")
 		require.NoError(t, err)
@@ -591,7 +591,7 @@ func TestCachedService_RemovePolicy(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.RemovePolicy(ctx, "nonexistent", "data1", "read")
 		assert.Error(t, err)
@@ -606,7 +606,7 @@ func TestCachedService_LoadPolicy(t *testing.T) {
 
 		require.NoError(t, svc.AddPolicy(ctx, "alice", "data1", "read"))
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// In-memory enforcer with nil adapter panics in casbin
 		assert.Panics(t, func() {
@@ -621,7 +621,7 @@ func TestCachedService_invalidateUserCache(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 		userID := uuid.Must(uuid.NewV7())
 
 		// Should not panic or error
@@ -632,7 +632,7 @@ func TestCachedService_invalidateUserCache(t *testing.T) {
 		svc := setupInternalTestService(t)
 		ctx := context.Background()
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 		userID := uuid.Must(uuid.NewV7())
 
 		// Should return immediately without error
@@ -646,7 +646,7 @@ func TestCachedService_invalidateAllRBAC(t *testing.T) {
 		ctx := context.Background()
 		c := newTestRBACCache(t)
 
-		cached := NewCachedService(svc, c, zap.NewNop())
+		cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 		// Should not panic or error
 		cached.invalidateAllRBAC(ctx)
@@ -656,7 +656,7 @@ func TestCachedService_invalidateAllRBAC(t *testing.T) {
 		svc := setupInternalTestService(t)
 		ctx := context.Background()
 
-		cached := NewCachedService(svc, nil, zap.NewNop())
+		cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 		// Should return immediately without error
 		cached.invalidateAllRBAC(ctx)
@@ -784,7 +784,7 @@ func TestCachedService_EnforceInvalidationFlow(t *testing.T) {
 	ctx := context.Background()
 	c := newTestRBACCache(t)
 
-	cached := NewCachedService(svc, c, zap.NewNop())
+	cached := NewCachedService(svc, c, logging.NewTestLogger())
 
 	// Enforce - denied (no policy), gets cached
 	allowed, err := cached.Enforce(ctx, "alice", "data1", "read")
@@ -810,7 +810,7 @@ func TestCachedService_RoleInvalidationFlow(t *testing.T) {
 	ctx := context.Background()
 	c := newTestRBACCache(t)
 
-	cached := NewCachedService(svc, c, zap.NewNop())
+	cached := NewCachedService(svc, c, logging.NewTestLogger())
 	userID := uuid.Must(uuid.NewV7())
 
 	// Get roles - empty, gets cached

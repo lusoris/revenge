@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -36,7 +36,7 @@ func setupCachedService(t *testing.T) (*CachedService, testutil.DB) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cachedSvc := NewCachedService(baseSvc, testCache, zap.NewNop())
+	cachedSvc := NewCachedService(baseSvc, testCache, logging.NewTestLogger())
 	return cachedSvc, testDB
 }
 
@@ -48,7 +48,7 @@ func TestNewCachedService(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cached := NewCachedService(baseSvc, testCache, zap.NewNop())
+	cached := NewCachedService(baseSvc, testCache, logging.NewTestLogger())
 	require.NotNil(t, cached)
 	assert.NotNil(t, cached.Service)
 	assert.NotNil(t, cached.cache)

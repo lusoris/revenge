@@ -8,16 +8,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/testutil"
-	"go.uber.org/zap"
 )
 
 // setupTestService creates a Service backed by a real PostgreSQL database.
 func setupTestService(t *testing.T) (*Service, testutil.DB) {
 	t.Helper()
 	repo, testDB := setupTestRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activityLogger := activity.NewNoopLogger()
 	svc := NewService(repo, logger, activityLogger)
 	return svc, testDB
@@ -887,7 +887,7 @@ func TestServiceIntegration_RevokePermission_InvalidPermission(t *testing.T) {
 func TestServiceIntegration_NewService(t *testing.T) {
 	t.Parallel()
 	repo, _ := setupTestRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	// With noop activity logger
 	svc := NewService(repo, logger, activity.NewNoopLogger())

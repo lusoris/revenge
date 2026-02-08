@@ -9,13 +9,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestNewService(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("With default config", func(t *testing.T) {
 		svc, err := NewService(Config{}, logger)
@@ -55,7 +55,7 @@ func TestNewService(t *testing.T) {
 }
 
 func TestService_GetImageURL(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc, _ := NewService(Config{}, logger)
 
 	tests := []struct {
@@ -99,7 +99,7 @@ func TestService_GetImageURL(t *testing.T) {
 }
 
 func TestService_FetchImage(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("Successful fetch", func(t *testing.T) {
 		// Create test server
@@ -178,7 +178,7 @@ func TestService_FetchImage(t *testing.T) {
 }
 
 func TestService_Cache(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("Caches image on fetch", func(t *testing.T) {
 		tmpDir := t.TempDir()
@@ -212,7 +212,7 @@ func TestService_Cache(t *testing.T) {
 }
 
 func TestService_ServeHTTP(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("Valid image request", func(t *testing.T) {
 		imageData := []byte{0xFF, 0xD8, 0xFF, 0xE0}
@@ -315,7 +315,7 @@ func TestHelperFunctions(t *testing.T) {
 }
 
 func TestService_getDefaultSize(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc, _ := NewService(Config{}, logger)
 
 	assert.Equal(t, SizePosterMedium, svc.getDefaultSize(TypePoster))

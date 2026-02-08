@@ -2,7 +2,7 @@ package image
 
 import (
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // Module provides image service dependencies.
@@ -17,7 +17,7 @@ type ImageServiceParams struct {
 	fx.In
 
 	Config Config `name:"imageConfig"`
-	Logger *zap.Logger
+	Logger *slog.Logger
 }
 
 // NewImageService creates a new image service with FX dependencies.

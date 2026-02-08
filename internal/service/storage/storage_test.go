@@ -11,7 +11,8 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 func TestLocalStorage_Store(t *testing.T) {
@@ -24,7 +25,7 @@ func TestLocalStorage_Store(t *testing.T) {
 		StoragePath: tmpDir,
 	}
 
-	storage, err := NewLocalStorage(cfg, zap.NewNop())
+	storage, err := NewLocalStorage(cfg, logging.NewTestLogger())
 	require.NoError(t, err)
 
 	ctx := context.Background()

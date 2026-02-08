@@ -3,12 +3,12 @@ package activity
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
 )
 
 // ActivityCleanupJobKind is the unique identifier for activity cleanup jobs.
@@ -41,15 +41,15 @@ type ActivityCleanupWorker struct {
 	river.WorkerDefaults[ActivityCleanupArgs]
 	leaderElection *raft.LeaderElection
 	service        *Service
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewActivityCleanupWorker creates a new activity cleanup worker.
-func NewActivityCleanupWorker(leaderElection *raft.LeaderElection, service *Service, logger *zap.Logger) *ActivityCleanupWorker {
+func NewActivityCleanupWorker(leaderElection *raft.LeaderElection, service *Service, logger *slog.Logger) *ActivityCleanupWorker {
 	return &ActivityCleanupWorker{
 		leaderElection: leaderElection,
 		service:        service,
-		logger:         logger.Named("activity-cleanup"),
+		logger:         logger.With("component", "activity-cleanup"),
 	}
 }
 
@@ -65,17 +65,17 @@ func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[Activit
 	// Check if this node is the leader (only leader should run cleanup jobs)
 	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
 		w.logger.Info("skipping activity cleanup job: not the leader node",
-			zap.Int64("job_id", job.ID),
-			zap.String("leader", w.leaderElection.LeaderAddr()),
+			slog.Int64("job_id", job.ID),
+			slog.String("leader", w.leaderElection.LeaderAddr()),
 		)
 		return nil
 	}
 
 	w.logger.Info("starting activity cleanup job",
-		zap.Int64("job_id", job.ID),
-		zap.Int("retention_days", args.RetentionDays),
-		zap.Bool("dry_run", args.DryRun),
-		zap.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
+		slog.Int64("job_id", job.ID),
+		slog.Int("retention_days", args.RetentionDays),
+		slog.Bool("dry_run", args.DryRun),
+		slog.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
 	)
 
 	// Validate arguments
@@ -90,16 +90,16 @@ func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[Activit
 		count, err := w.service.CountOldLogs(ctx, olderThan)
 		if err != nil {
 			w.logger.Error("failed to count old activity logs",
-				zap.Int64("job_id", job.ID),
-				zap.Error(err),
+				slog.Int64("job_id", job.ID),
+				slog.Any("error", err),
 			)
 			return fmt.Errorf("failed to count old logs: %w", err)
 		}
 
 		w.logger.Info("dry run: would delete activity logs",
-			zap.Int64("job_id", job.ID),
-			zap.Int64("count", count),
-			zap.Time("older_than", olderThan),
+			slog.Int64("job_id", job.ID),
+			slog.Int64("count", count),
+			slog.Time("older_than", olderThan),
 		)
 
 		return nil
@@ -109,16 +109,16 @@ func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[Activit
 	deleted, err := w.service.CleanupOldLogs(ctx, olderThan)
 	if err != nil {
 		w.logger.Error("failed to cleanup activity logs",
-			zap.Int64("job_id", job.ID),
-			zap.Error(err),
+			slog.Int64("job_id", job.ID),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to cleanup logs: %w", err)
 	}
 
 	w.logger.Info("activity cleanup job completed",
-		zap.Int64("job_id", job.ID),
-		zap.Int64("deleted_count", deleted),
-		zap.Time("older_than", olderThan),
+		slog.Int64("job_id", job.ID),
+		slog.Int64("deleted_count", deleted),
+		slog.Time("older_than", olderThan),
 	)
 
 	return nil

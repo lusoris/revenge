@@ -1,10 +1,11 @@
 package session
 
 import (
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides session service dependencies
@@ -19,7 +20,7 @@ var Module = fx.Module("session",
 // NewService creates a new session service with configuration
 func NewService(
 	repo Repository,
-	logger *zap.Logger,
+	logger *slog.Logger,
 	cfg *config.Config,
 ) *Service {
 	// Use session config with fallbacks
@@ -38,7 +39,7 @@ func NewService(
 
 	return &Service{
 		repo:          repo,
-		logger:        logger.Named("session"),
+		logger:        logger.With("component", "session"),
 		tokenLength:   tokenLength,
 		expiry:        expiry,
 		refreshExpiry: refreshExpiry,

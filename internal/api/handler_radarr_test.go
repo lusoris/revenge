@@ -11,7 +11,7 @@ import (
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
@@ -86,9 +86,9 @@ func setupRadarrTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	// Set up RBAC service with Casbin
 	adapter := rbac.NewAdapter(testDB.Pool())
 	modelPath := "../../config/casbin_model.conf"
-	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
+	enforcer, err := casbin.NewSyncedEnforcer(modelPath, adapter)
 	require.NoError(t, err)
-	rbacService := rbac.NewService(enforcer, zap.NewNop(), activity.NewNoopLogger())
+	rbacService := rbac.NewService(enforcer, logging.NewTestLogger(), activity.NewNoopLogger())
 
 	// Create admin user
 	adminUser := testutil.CreateUser(t, testDB.Pool(), testutil.User{
@@ -107,7 +107,7 @@ func setupRadarrTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	}
 
 	handler := &Handler{
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		rbacService: rbacService,
 		cfg:         cfg,
 	}

@@ -9,15 +9,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
 )
 
 func TestService_CreateKey(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -46,7 +46,7 @@ func TestService_CreateKey(t *testing.T) {
 func TestService_CreateKey_MaxKeysExceeded(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 2, 0) // Max 2 keys
 	ctx := context.Background()
 
@@ -72,7 +72,7 @@ func TestService_CreateKey_MaxKeysExceeded(t *testing.T) {
 func TestService_CreateKey_InvalidScope(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -88,7 +88,7 @@ func TestService_CreateKey_InvalidScope(t *testing.T) {
 func TestService_CreateKey_WithExpiry(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -108,7 +108,7 @@ func TestService_CreateKey_WithExpiry(t *testing.T) {
 func TestService_CreateKey_DefaultExpiry(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	defaultExpiry := 90 * 24 * time.Hour
 	svc := NewService(repo, logger, 10, defaultExpiry)
 	ctx := context.Background()
@@ -127,7 +127,7 @@ func TestService_CreateKey_DefaultExpiry(t *testing.T) {
 func TestService_GetKey(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -150,7 +150,7 @@ func TestService_GetKey(t *testing.T) {
 func TestService_GetKey_NotFound(t *testing.T) {
 	t.Parallel()
 	repo, _ := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -161,7 +161,7 @@ func TestService_GetKey_NotFound(t *testing.T) {
 func TestService_ListUserKeys(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -185,7 +185,7 @@ func TestService_ListUserKeys(t *testing.T) {
 func TestService_ValidateKey(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -217,7 +217,7 @@ func TestService_ValidateKey(t *testing.T) {
 func TestService_ValidateKey_InvalidFormat(t *testing.T) {
 	t.Parallel()
 	repo, _ := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -228,7 +228,7 @@ func TestService_ValidateKey_InvalidFormat(t *testing.T) {
 func TestService_ValidateKey_NotFound(t *testing.T) {
 	t.Parallel()
 	repo, _ := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -241,7 +241,7 @@ func TestService_ValidateKey_NotFound(t *testing.T) {
 func TestService_ValidateKey_Inactive(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -265,7 +265,7 @@ func TestService_ValidateKey_Inactive(t *testing.T) {
 func TestService_ValidateKey_Expired(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -313,7 +313,7 @@ func TestService_ValidateKey_Expired(t *testing.T) {
 func TestService_RevokeKey(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -337,7 +337,7 @@ func TestService_RevokeKey(t *testing.T) {
 func TestService_CheckScope(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -364,7 +364,7 @@ func TestService_CheckScope(t *testing.T) {
 func TestService_CheckScope_Admin(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -390,7 +390,7 @@ func TestService_CheckScope_Admin(t *testing.T) {
 func TestService_UpdateScopes(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -416,7 +416,7 @@ func TestService_UpdateScopes(t *testing.T) {
 func TestService_UpdateScopes_InvalidScope(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 
@@ -435,7 +435,7 @@ func TestService_UpdateScopes_InvalidScope(t *testing.T) {
 func TestService_CleanupExpiredKeys(t *testing.T) {
 	t.Parallel()
 	repo, testDB := setupTestRepository(t)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger, 10, 0)
 	ctx := context.Background()
 

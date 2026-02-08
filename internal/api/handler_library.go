@@ -11,7 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/validate"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // ============================================================================
@@ -42,7 +42,7 @@ func (h *Handler) ListLibraries(ctx context.Context) (ogen.ListLibrariesRes, err
 	}
 
 	if err != nil {
-		h.logger.Error("failed to list libraries", zap.Error(err))
+		h.logger.Error("failed to list libraries", slog.Any("error",err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to list libraries",
@@ -115,7 +115,7 @@ func (h *Handler) CreateLibrary(ctx context.Context, req *ogen.CreateLibraryRequ
 				Message: "Invalid library type",
 			}, nil
 		}
-		h.logger.Error("failed to create library", zap.Error(err))
+		h.logger.Error("failed to create library", slog.Any("error",err))
 		return &ogen.CreateLibraryBadRequest{
 			Code:    500,
 			Message: "Failed to create library",
@@ -144,7 +144,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 				Message: "Library not found",
 			}, nil
 		}
-		h.logger.Error("failed to get library", zap.Error(err))
+		h.logger.Error("failed to get library", slog.Any("error",err))
 		return &ogen.GetLibraryNotFound{
 			Code:    500,
 			Message: "Failed to get library",
@@ -156,7 +156,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 	if !isAdmin {
 		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
 		if err != nil {
-			h.logger.Error("failed to check library access", zap.Error(err))
+			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.GetLibraryNotFound{
 				Code:    500,
 				Message: "Failed to check library access",
@@ -225,7 +225,7 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *ogen.UpdateLibraryRequ
 				Message: "Library with this name already exists",
 			}, nil
 		}
-		h.logger.Error("failed to update library", zap.Error(err))
+		h.logger.Error("failed to update library", slog.Any("error",err))
 		return &ogen.UpdateLibraryNotFound{
 			Code:    500,
 			Message: "Failed to update library",
@@ -253,7 +253,7 @@ func (h *Handler) DeleteLibrary(ctx context.Context, params ogen.DeleteLibraryPa
 				Message: "Library not found",
 			}, nil
 		}
-		h.logger.Error("failed to delete library", zap.Error(err))
+		h.logger.Error("failed to delete library", slog.Any("error",err))
 		return &ogen.DeleteLibraryNotFound{
 			Code:    500,
 			Message: "Failed to delete library",
@@ -305,7 +305,7 @@ func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibra
 				Message: "Invalid scan type",
 			}, nil
 		}
-		h.logger.Error("failed to trigger library scan", zap.Error(err))
+		h.logger.Error("failed to trigger library scan", slog.Any("error",err))
 		return &ogen.TriggerLibraryScanBadRequest{
 			Code:    500,
 			Message: "Failed to trigger library scan",
@@ -331,7 +331,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	if !isAdmin {
 		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
 		if err != nil {
-			h.logger.Error("failed to check library access", zap.Error(err))
+			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.ListLibraryScansNotFound{
 				Code:    500,
 				Message: "Failed to check library access",
@@ -350,7 +350,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	if params.Limit.IsSet() {
 		l, err := validate.SafeInt32(params.Limit.Value)
 		if err != nil {
-			h.logger.Error("invalid limit value", zap.Error(err))
+			h.logger.Error("invalid limit value", slog.Any("error",err))
 			return &ogen.ListLibraryScansForbidden{
 				Code:    400,
 				Message: "Invalid limit parameter",
@@ -361,7 +361,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	if params.Offset.IsSet() {
 		o, err := validate.SafeInt32(params.Offset.Value)
 		if err != nil {
-			h.logger.Error("invalid offset value", zap.Error(err))
+			h.logger.Error("invalid offset value", slog.Any("error",err))
 			return &ogen.ListLibraryScansForbidden{
 				Code:    400,
 				Message: "Invalid offset parameter",
@@ -378,7 +378,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 				Message: "Library not found",
 			}, nil
 		}
-		h.logger.Error("failed to list library scans", zap.Error(err))
+		h.logger.Error("failed to list library scans", slog.Any("error",err))
 		return &ogen.ListLibraryScansNotFound{
 			Code:    500,
 			Message: "Failed to list library scans",
@@ -414,7 +414,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 				Message: "Library not found",
 			}, nil
 		}
-		h.logger.Error("failed to get library", zap.Error(err))
+		h.logger.Error("failed to get library", slog.Any("error",err))
 		return &ogen.ListLibraryPermissionsNotFound{
 			Code:    500,
 			Message: "Failed to get library",
@@ -423,7 +423,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 
 	perms, err := h.libraryService.ListPermissions(ctx, params.LibraryId)
 	if err != nil {
-		h.logger.Error("failed to list library permissions", zap.Error(err))
+		h.logger.Error("failed to list library permissions", slog.Any("error",err))
 		return &ogen.ListLibraryPermissionsNotFound{
 			Code:    500,
 			Message: "Failed to list library permissions",
@@ -467,7 +467,7 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 				Message: "Invalid permission type",
 			}, nil
 		}
-		h.logger.Error("failed to grant library permission", zap.Error(err))
+		h.logger.Error("failed to grant library permission", slog.Any("error",err))
 		return &ogen.GrantLibraryPermissionBadRequest{
 			Code:    500,
 			Message: "Failed to grant library permission",
@@ -520,7 +520,7 @@ func (h *Handler) RevokeLibraryPermission(ctx context.Context, params ogen.Revok
 				Message: "Permission not found",
 			}, nil
 		}
-		h.logger.Error("failed to revoke library permission", zap.Error(err))
+		h.logger.Error("failed to revoke library permission", slog.Any("error",err))
 		return &ogen.RevokeLibraryPermissionNotFound{
 			Code:    500,
 			Message: "Failed to revoke library permission",

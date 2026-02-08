@@ -12,7 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/errors"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -23,7 +24,7 @@ import (
 func setupMockService(t *testing.T) (*session.Service, *MockSessionRepository) {
 	t.Helper()
 	mockRepo := NewMockSessionRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	service := session.NewServiceForTesting(
 		mockRepo,

@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func makeTestEntry(id uuid.UUID, action string, success bool) *activity.Entry {
@@ -26,7 +26,7 @@ func makeTestEntry(id uuid.UUID, action string, success bool) *activity.Entry {
 }
 
 func setupActivityService(repo activity.Repository) *activity.Service {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	return activity.NewService(repo, logger)
 }
 

@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/infra/health"
@@ -19,7 +19,7 @@ import (
 
 func newTestHandler(healthService *health.Service) *Handler {
 	return &Handler{
-		logger:        zap.NewNop(),
+		logger:        logging.NewTestLogger(),
 		healthService: healthService,
 	}
 }

@@ -2,11 +2,11 @@ package oidc
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides OIDC service dependencies
@@ -40,7 +40,7 @@ func newRepositoryPg(q *db.Queries) Repository {
 }
 
 // newService creates a new OIDC service with fx dependencies
-func newService(repo Repository, logger *zap.Logger, cfg Config) *Service {
+func newService(repo Repository, logger *slog.Logger, cfg Config) *Service {
 	return &Service{
 		repo:        repo,
 		logger:      logger,

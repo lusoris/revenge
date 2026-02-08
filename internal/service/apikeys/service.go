@@ -9,10 +9,11 @@ import (
 	"fmt"
 	"time"
 
+	"log/slog"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lusoris/revenge/internal/infra/database/db"
-	"go.uber.org/zap"
 )
 
 const (
@@ -36,13 +37,13 @@ var (
 // Service implements API keys business logic
 type Service struct {
 	repo           Repository
-	logger         *zap.Logger
+	logger         *slog.Logger
 	maxKeysPerUser int
 	defaultExpiry  time.Duration // 0 = never expire
 }
 
 // NewService creates a new API keys service
-func NewService(repo Repository, logger *zap.Logger, maxKeysPerUser int, defaultExpiry time.Duration) *Service {
+func NewService(repo Repository, logger *slog.Logger, maxKeysPerUser int, defaultExpiry time.Duration) *Service {
 	if maxKeysPerUser <= 0 {
 		maxKeysPerUser = DefaultMaxKeysPerUser
 	}
@@ -60,8 +61,8 @@ func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKey
 	count, err := s.repo.CountUserAPIKeys(ctx, userID)
 	if err != nil {
 		s.logger.Error("failed to count user API keys",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to count API keys: %w", err)
 	}
@@ -79,8 +80,8 @@ func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKey
 	rawKey, keyHash, keyPrefix, err := s.generateKey()
 	if err != nil {
 		s.logger.Error("failed to generate API key",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to generate key: %w", err)
 	}
@@ -113,8 +114,8 @@ func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKey
 	})
 	if err != nil {
 		s.logger.Error("failed to create API key",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to create key: %w", err)
 	}
@@ -141,8 +142,8 @@ func (s *Service) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey,
 	dbKeys, err := s.repo.ListActiveUserAPIKeys(ctx, userID)
 	if err != nil {
 		s.logger.Error("failed to list user API keys",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to list keys: %w", err)
 	}
@@ -188,8 +189,8 @@ func (s *Service) ValidateKey(ctx context.Context, rawKey string) (*APIKey, erro
 
 		if err := s.repo.UpdateAPIKeyLastUsed(ctx, dbKey.ID); err != nil {
 			s.logger.Warn("failed to update API key last used",
-				zap.String("key_id", dbKey.ID.String()),
-				zap.Error(err),
+				slog.String("key_id", dbKey.ID.String()),
+				slog.Any("error", err),
 			)
 		}
 	}()

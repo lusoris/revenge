@@ -12,10 +12,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -30,7 +30,7 @@ func setupIntegrationService(t *testing.T) (*Service, *RepositoryPg, testutil.DB
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
-	svc := NewService(repo, zap.NewNop(), "http://localhost:8080/callback", integrationEncryptKey)
+	svc := NewService(repo, logging.NewTestLogger(), "http://localhost:8080/callback", integrationEncryptKey)
 	return svc, repo, testDB
 }
 
@@ -39,7 +39,7 @@ func setupIntegrationServiceNoEncryption(t *testing.T) (*Service, *RepositoryPg,
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
-	svc := NewService(repo, zap.NewNop(), "http://localhost:8080/callback", nil)
+	svc := NewService(repo, logging.NewTestLogger(), "http://localhost:8080/callback", nil)
 	return svc, repo, testDB
 }
 

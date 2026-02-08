@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/search"
@@ -43,19 +43,19 @@ type MovieSearchIndexWorker struct {
 	river.WorkerDefaults[MovieSearchIndexArgs]
 	movieRepo     movie.Repository
 	searchService *search.MovieSearchService
-	logger        *zap.Logger
+	logger        *slog.Logger
 }
 
 // NewMovieSearchIndexWorker creates a new search index worker.
 func NewMovieSearchIndexWorker(
 	movieRepo movie.Repository,
 	searchService *search.MovieSearchService,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) *MovieSearchIndexWorker {
 	return &MovieSearchIndexWorker{
 		movieRepo:     movieRepo,
 		searchService: searchService,
-		logger:        logger.Named("search_index_worker"),
+		logger:        logger.With("component", "search_index_worker"),
 	}
 }
 
@@ -69,9 +69,9 @@ func (w *MovieSearchIndexWorker) Work(ctx context.Context, job *river.Job[MovieS
 	args := job.Args
 
 	w.logger.Info("starting search index operation",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("operation", string(args.Operation)),
-		zap.String("movie_id", args.MovieID.String()),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("operation", string(args.Operation)),
+		slog.String("movie_id", args.MovieID.String()),
 	)
 
 	// Check if search is enabled
@@ -99,7 +99,7 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	if err != nil {
 		if err == movie.ErrMovieNotFound {
 			w.logger.Warn("movie not found, skipping index",
-				zap.String("movie_id", movieID.String()),
+				slog.String("movie_id", movieID.String()),
 			)
 			return nil // Don't fail the job, movie might have been deleted
 		}
@@ -109,19 +109,19 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	// Get related data
 	genres, err := w.movieRepo.ListMovieGenres(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get genres", zap.Error(err))
+		w.logger.Warn("failed to get genres", slog.Any("error",err))
 		genres = nil
 	}
 
 	cast, err := w.movieRepo.ListMovieCast(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get cast", zap.Error(err))
+		w.logger.Warn("failed to get cast", slog.Any("error",err))
 		cast = nil
 	}
 
 	crew, err := w.movieRepo.ListMovieCrew(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get crew", zap.Error(err))
+		w.logger.Warn("failed to get crew", slog.Any("error",err))
 		crew = nil
 	}
 
@@ -132,7 +132,7 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	var file *movie.MovieFile
 	files, err := w.movieRepo.ListMovieFilesByMovieID(ctx, movieID)
 	if err != nil {
-		w.logger.Warn("failed to get files", zap.Error(err))
+		w.logger.Warn("failed to get files", slog.Any("error",err))
 	} else if len(files) > 0 {
 		file = &files[0]
 	}
@@ -143,8 +143,8 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 	}
 
 	w.logger.Info("movie indexed successfully",
-		zap.String("movie_id", movieID.String()),
-		zap.String("title", m.Title),
+		slog.String("movie_id", movieID.String()),
+		slog.String("title", m.Title),
 	)
 
 	return nil
@@ -157,7 +157,7 @@ func (w *MovieSearchIndexWorker) removeMovie(ctx context.Context, movieID uuid.U
 	}
 
 	w.logger.Info("movie removed from index",
-		zap.String("movie_id", movieID.String()),
+		slog.String("movie_id", movieID.String()),
 	)
 
 	return nil

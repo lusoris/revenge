@@ -6,10 +6,10 @@ package jobs
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 // JobResult represents the outcome of a job execution.
@@ -44,46 +44,46 @@ func (r *JobResult) HasErrors() bool {
 	return len(r.Errors) > 0
 }
 
-// LogSummary logs the job result with zap.
-func (r *JobResult) LogSummary(logger *zap.Logger, jobKind string) {
+// LogSummary logs the job result.
+func (r *JobResult) LogSummary(logger *slog.Logger, jobKind string) {
 	if r.Success && !r.HasErrors() {
 		logger.Info("job completed successfully",
-			zap.String("job_kind", jobKind),
-			zap.Int("items_processed", r.ItemsProcessed),
-			zap.Duration("duration", r.Duration),
+			slog.String("job_kind", jobKind),
+			slog.Int("items_processed", r.ItemsProcessed),
+			slog.Duration("duration", r.Duration),
 		)
 	} else if r.Success && r.HasErrors() {
 		logger.Warn("job completed with errors",
-			zap.String("job_kind", jobKind),
-			zap.Int("items_processed", r.ItemsProcessed),
-			zap.Int("items_failed", r.ItemsFailed),
-			zap.Duration("duration", r.Duration),
-			zap.Int("error_count", len(r.Errors)),
+			slog.String("job_kind", jobKind),
+			slog.Int("items_processed", r.ItemsProcessed),
+			slog.Int("items_failed", r.ItemsFailed),
+			slog.Duration("duration", r.Duration),
+			slog.Int("error_count", len(r.Errors)),
 		)
 	} else {
 		logger.Error("job failed",
-			zap.String("job_kind", jobKind),
-			zap.Int("items_processed", r.ItemsProcessed),
-			zap.Int("items_failed", r.ItemsFailed),
-			zap.Duration("duration", r.Duration),
-			zap.Int("error_count", len(r.Errors)),
+			slog.String("job_kind", jobKind),
+			slog.Int("items_processed", r.ItemsProcessed),
+			slog.Int("items_failed", r.ItemsFailed),
+			slog.Duration("duration", r.Duration),
+			slog.Int("error_count", len(r.Errors)),
 		)
 	}
 }
 
 // LogErrors logs individual errors (up to maxErrors).
-func (r *JobResult) LogErrors(logger *zap.Logger, maxErrors int) {
+func (r *JobResult) LogErrors(logger *slog.Logger, maxErrors int) {
 	for i, err := range r.Errors {
 		if i >= maxErrors {
 			logger.Warn("additional errors truncated",
-				zap.Int("total_errors", len(r.Errors)),
-				zap.Int("shown_errors", maxErrors),
+				slog.Int("total_errors", len(r.Errors)),
+				slog.Int("shown_errors", maxErrors),
 			)
 			break
 		}
 		logger.Warn("job error",
-			zap.Int("error_index", i),
-			zap.Error(err),
+			slog.Int("error_index", i),
+			slog.Any("error", err),
 		)
 	}
 }
@@ -128,17 +128,17 @@ type SearchIndexArgs struct {
 // JobContext wraps context.Context with additional job-specific utilities.
 type JobContext struct {
 	context.Context
-	Logger   *zap.Logger
-	JobID    int64
-	JobKind  string
+	Logger    *slog.Logger
+	JobID     int64
+	JobKind   string
 	StartTime time.Time
 }
 
 // NewJobContext creates a new JobContext.
-func NewJobContext(ctx context.Context, logger *zap.Logger, jobID int64, jobKind string) *JobContext {
+func NewJobContext(ctx context.Context, logger *slog.Logger, jobID int64, jobKind string) *JobContext {
 	return &JobContext{
 		Context:   ctx,
-		Logger:    logger.With(zap.Int64("job_id", jobID), zap.String("job_kind", jobKind)),
+		Logger:    logger.With(slog.Int64("job_id", jobID), slog.String("job_kind", jobKind)),
 		JobID:     jobID,
 		JobKind:   jobKind,
 		StartTime: time.Now(),
@@ -151,20 +151,19 @@ func (jc *JobContext) Elapsed() time.Duration {
 }
 
 // LogStart logs the job start.
-func (jc *JobContext) LogStart(fields ...zap.Field) {
-	allFields := append([]zap.Field{}, fields...)
-	jc.Logger.Info("starting job", allFields...)
+func (jc *JobContext) LogStart(fields ...any) {
+	jc.Logger.Info("starting job", fields...)
 }
 
 // LogComplete logs job completion with duration.
-func (jc *JobContext) LogComplete(fields ...zap.Field) {
-	allFields := append([]zap.Field{zap.Duration("duration", jc.Elapsed())}, fields...)
+func (jc *JobContext) LogComplete(fields ...any) {
+	allFields := append([]any{slog.Duration("duration", jc.Elapsed())}, fields...)
 	jc.Logger.Info("job completed", allFields...)
 }
 
 // LogError logs an error that occurred during job execution.
-func (jc *JobContext) LogError(msg string, err error, fields ...zap.Field) {
-	allFields := append([]zap.Field{zap.Error(err), zap.Duration("elapsed", jc.Elapsed())}, fields...)
+func (jc *JobContext) LogError(msg string, err error, fields ...any) {
+	allFields := append([]any{slog.Any("error", err), slog.Duration("elapsed", jc.Elapsed())}, fields...)
 	jc.Logger.Error(msg, allFields...)
 }
 

@@ -33,14 +33,14 @@ import (
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // Server wraps the ogen-generated HTTP server with lifecycle management.
 type Server struct {
 	httpServer         *http.Server
 	ogenServer         *ogen.Server
-	logger             *zap.Logger
+	logger             *slog.Logger
 	authLimiter        *middleware.RateLimiter
 	globalLimiter      *middleware.RateLimiter
 	redisAuthLimiter   *middleware.RedisRateLimiter
@@ -51,7 +51,7 @@ type ServerParams struct {
 	fx.In
 
 	Config          *config.Config
-	Logger          *zap.Logger
+	Logger          *slog.Logger
 	HealthService   *health.Service
 	SettingsService settings.Service
 	UserService     *user.Service
@@ -94,12 +94,12 @@ func NewServer(p ServerParams) (*Server, error) {
 		p.BackupCodesService,
 		p.MFAManager,
 		p.WebAuthnService,
-		p.Logger.Named("mfa"),
+		p.Logger.With("component", "mfa"),
 	)
 
 	// Create the handler implementation
 	handler := &Handler{
-		logger:          p.Logger.Named("api"),
+		logger:          p.Logger.With("component", "api"),
 		cfg:             p.Config,
 		healthService:   p.HealthService,
 		userService:     p.UserService,
@@ -170,10 +170,10 @@ func NewServer(p ServerParams) (*Server, error) {
 			redisGlobalLimiter = middleware.NewRedisRateLimiter(redisGlobalConfig, rueidisClient, p.Logger)
 
 			p.Logger.Info("Using Redis-based rate limiting",
-				zap.Float64("auth.rps", redisAuthConfig.RequestsPerSecond),
-				zap.Int("auth.burst", redisAuthConfig.Burst),
-				zap.Float64("global.rps", redisGlobalConfig.RequestsPerSecond),
-				zap.Int("global.burst", redisGlobalConfig.Burst),
+				slog.Float64("auth.rps", redisAuthConfig.RequestsPerSecond),
+				slog.Int("auth.burst", redisAuthConfig.Burst),
+				slog.Float64("global.rps", redisGlobalConfig.RequestsPerSecond),
+				slog.Int("global.burst", redisGlobalConfig.Burst),
 			)
 
 			// Create ogen server with Redis rate limiting middleware
@@ -214,10 +214,10 @@ func NewServer(p ServerParams) (*Server, error) {
 			globalLimiter = middleware.NewRateLimiter(globalConfig, p.Logger)
 
 			p.Logger.Info("Using in-memory rate limiting",
-				zap.Float64("auth.rps", authConfig.RequestsPerSecond),
-				zap.Int("auth.burst", authConfig.Burst),
-				zap.Float64("global.rps", globalConfig.RequestsPerSecond),
-				zap.Int("global.burst", globalConfig.Burst),
+				slog.Float64("auth.rps", authConfig.RequestsPerSecond),
+				slog.Int("auth.burst", authConfig.Burst),
+				slog.Float64("global.rps", globalConfig.RequestsPerSecond),
+				slog.Int("global.burst", globalConfig.Burst),
 			)
 
 			// Create ogen server with in-memory rate limiting middleware
@@ -275,7 +275,7 @@ func NewServer(p ServerParams) (*Server, error) {
 	server := &Server{
 		httpServer:         httpServer,
 		ogenServer:         ogenServer,
-		logger:             p.Logger.Named("server"),
+		logger:             p.Logger.With("component", "server"),
 		authLimiter:        authLimiter,
 		globalLimiter:      globalLimiter,
 		redisAuthLimiter:   redisAuthLimiter,
@@ -289,12 +289,12 @@ func NewServer(p ServerParams) (*Server, error) {
 			go func() {
 				addr := fmt.Sprintf("%s:%d", p.Config.Server.Host, p.Config.Server.Port)
 				server.logger.Info("Starting HTTP server",
-					zap.String("address", addr),
-					zap.Bool("ratelimit.enabled", p.Config.Server.RateLimit.Enabled),
-					zap.String("ratelimit.backend", p.Config.Server.RateLimit.Backend),
+					slog.String("address", addr),
+					slog.Bool("ratelimit.enabled", p.Config.Server.RateLimit.Enabled),
+					slog.String("ratelimit.backend", p.Config.Server.RateLimit.Backend),
 				)
 				if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					server.logger.Error("HTTP server error", zap.Error(err))
+					server.logger.Error("HTTP server error", slog.Any("error", err))
 				}
 			}()
 			return nil

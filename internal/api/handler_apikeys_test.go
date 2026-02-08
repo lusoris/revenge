@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -23,7 +23,7 @@ func setupAPIKeysTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 
 	// Set up API keys service
 	repo := apikeys.NewRepositoryPg(queries)
-	apikeyService := apikeys.NewService(repo, zap.NewNop(), 10, 0)
+	apikeyService := apikeys.NewService(repo, logging.NewTestLogger(), 10, 0)
 
 	// Create test user
 	user := testutil.CreateUser(t, testDB.Pool(), testutil.User{
@@ -32,7 +32,7 @@ func setupAPIKeysTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	})
 
 	handler := &Handler{
-		logger:        zap.NewNop(),
+		logger:        logging.NewTestLogger(),
 		apikeyService: apikeyService,
 	}
 

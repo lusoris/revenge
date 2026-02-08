@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
@@ -37,13 +37,13 @@ func (MovieLibraryScanArgs) InsertOpts() river.InsertOpts {
 type MovieLibraryScanWorker struct {
 	river.WorkerDefaults[MovieLibraryScanArgs]
 	libraryService *movie.LibraryService
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewMovieLibraryScanWorker creates a new movie library scan worker.
 func NewMovieLibraryScanWorker(
 	libraryService *movie.LibraryService,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) *MovieLibraryScanWorker {
 	return &MovieLibraryScanWorker{
 		libraryService: libraryService,
@@ -66,39 +66,39 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 	args := job.Args
 
 	w.logger.Info("starting movie library scan",
-		zap.Strings("paths", args.Paths),
-		zap.Bool("force", args.Force),
+		slog.Any("paths", args.Paths),
+		slog.Bool("force", args.Force),
 	)
 
 	// Call library service to scan the library
 	summary, err := w.libraryService.ScanLibrary(ctx)
 	if err != nil {
 		w.logger.Error("library scan failed",
-			zap.Error(err),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("library scan failed: %w", err)
 	}
 
 	// Log summary
 	w.logger.Info("library scan completed",
-		zap.Int("total_files", summary.TotalFiles),
-		zap.Int("matched_files", summary.MatchedFiles),
-		zap.Int("unmatched_files", summary.UnmatchedFiles),
-		zap.Int("new_movies", summary.NewMovies),
-		zap.Int("existing_movies", summary.ExistingMovies),
-		zap.Int("errors", len(summary.Errors)),
+		slog.Int("total_files", summary.TotalFiles),
+		slog.Int("matched_files", summary.MatchedFiles),
+		slog.Int("unmatched_files", summary.UnmatchedFiles),
+		slog.Int("new_movies", summary.NewMovies),
+		slog.Int("existing_movies", summary.ExistingMovies),
+		slog.Int("errors", len(summary.Errors)),
 	)
 
 	// Log first 10 errors if any (avoid spam)
 	for i, scanErr := range summary.Errors {
 		if i >= 10 {
 			w.logger.Warn("additional errors truncated",
-				zap.Int("total_errors", len(summary.Errors)),
+				slog.Int("total_errors", len(summary.Errors)),
 			)
 			break
 		}
 		w.logger.Warn("scan error",
-			zap.Error(scanErr),
+			slog.Any("error",scanErr),
 		)
 	}
 

@@ -3,12 +3,12 @@ package rbac
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -25,7 +25,7 @@ var Module = fx.Module("rbac",
 )
 
 // newService creates a new RBAC service with activity logger.
-func newService(enforcer *casbin.SyncedEnforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
+func newService(enforcer *casbin.SyncedEnforcer, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return NewService(enforcer, logger, activityLogger)
 }
 
@@ -34,13 +34,13 @@ func newService(enforcer *casbin.SyncedEnforcer, logger *zap.Logger, activityLog
 // other instances or direct DB modifications (e.g., admin menu, migrations).
 // Changes made through the RBAC Service API (AssignRole, AddPolicy, etc.)
 // are visible immediately on the current instance via Casbin's in-memory update.
-func startAutoReload(lc fx.Lifecycle, enforcer *casbin.SyncedEnforcer, logger *zap.Logger) {
+func startAutoReload(lc fx.Lifecycle, enforcer *casbin.SyncedEnforcer, logger *slog.Logger) {
 	const reloadInterval = 10 * time.Second
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			enforcer.StartAutoLoadPolicy(reloadInterval)
-			logger.Info("casbin auto-reload started", zap.Duration("interval", reloadInterval))
+			logger.Info("casbin auto-reload started", slog.Duration("interval", reloadInterval))
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
@@ -55,7 +55,7 @@ func startAutoReload(lc fx.Lifecycle, enforcer *casbin.SyncedEnforcer, logger *z
 // SyncedEnforcer is used instead of Enforcer for:
 //   - Thread-safe concurrent access (RWMutex around all operations)
 //   - Built-in StartAutoLoadPolicy for periodic DB sync across instances
-func NewEnforcer(pool *pgxpool.Pool, cfg *config.Config, logger *zap.Logger) (*casbin.SyncedEnforcer, error) {
+func NewEnforcer(pool *pgxpool.Pool, cfg *config.Config, logger *slog.Logger) (*casbin.SyncedEnforcer, error) {
 	adapter := NewAdapter(pool)
 
 	// Load model from config path
@@ -67,20 +67,20 @@ func NewEnforcer(pool *pgxpool.Pool, cfg *config.Config, logger *zap.Logger) (*c
 	enforcer, err := casbin.NewSyncedEnforcer(modelPath, adapter)
 	if err != nil {
 		logger.Error("failed to create Casbin enforcer",
-			zap.String("model_path", modelPath),
-			zap.Error(err),
+			slog.String("model_path", modelPath),
+			slog.Any("error",err),
 		)
 		return nil, fmt.Errorf("failed to create Casbin enforcer: %w", err)
 	}
 
 	// Load policy from database
 	if err := enforcer.LoadPolicy(); err != nil {
-		logger.Error("failed to load policy", zap.Error(err))
+		logger.Error("failed to load policy", slog.Any("error",err))
 		return nil, fmt.Errorf("failed to load policy: %w", err)
 	}
 
 	logger.Info("Casbin enforcer initialized",
-		zap.String("model_path", modelPath),
+		slog.String("model_path", modelPath),
 	)
 
 	return enforcer, nil

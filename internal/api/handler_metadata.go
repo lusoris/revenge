@@ -7,7 +7,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/metadata"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // SearchMoviesMetadata searches TMDb for movies.
@@ -28,7 +28,7 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 	// Search via shared metadata service
 	results, err := h.metadataService.SearchMovie(ctx, params.Q, opts)
 	if err != nil {
-		h.logger.Error("TMDb search failed", zap.Error(err))
+		h.logger.Error("TMDb search failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -94,7 +94,7 @@ func (h *Handler) GetMovieMetadata(ctx context.Context, params ogen.GetMovieMeta
 	// Get movie details from shared metadata service
 	movieMeta, err := h.metadataService.GetMovieMetadata(ctx, int32(params.TmdbId), nil)
 	if err != nil {
-		h.logger.Error("TMDb get movie failed", zap.Error(err))
+		h.logger.Error("TMDb get movie failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -160,7 +160,7 @@ func (h *Handler) GetProxiedImage(ctx context.Context, params ogen.GetProxiedIma
 	// Fetch image
 	data, contentType, err := h.imageService.FetchImage(ctx, imageType, path, size)
 	if err != nil {
-		h.logger.Error("Image fetch failed", zap.Error(err))
+		h.logger.Error("Image fetch failed", slog.Any("error",err))
 		return &ogen.GetProxiedImageNotFound{}, nil
 	}
 
@@ -183,7 +183,7 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 	// Get collection details from shared metadata service
 	collection, err := h.metadataService.GetCollectionMetadata(ctx, int32(params.TmdbId), nil)
 	if err != nil {
-		h.logger.Error("TMDb get collection failed", zap.Error(err))
+		h.logger.Error("TMDb get collection failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -279,7 +279,7 @@ func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchT
 	// Search via shared metadata service
 	results, err := h.metadataService.SearchTVShow(ctx, params.Q, opts)
 	if err != nil {
-		h.logger.Error("TMDb TV search failed", zap.Error(err))
+		h.logger.Error("TMDb TV search failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -345,7 +345,7 @@ func (h *Handler) GetTVShowMetadata(ctx context.Context, params ogen.GetTVShowMe
 	// Get TV show details from shared metadata service
 	tvMeta, err := h.metadataService.GetTVShowMetadata(ctx, int32(params.TmdbId), nil)
 	if err != nil {
-		h.logger.Error("TMDb get TV show failed", zap.Error(err))
+		h.logger.Error("TMDb get TV show failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -480,7 +480,7 @@ func (h *Handler) GetSeasonMetadata(ctx context.Context, params ogen.GetSeasonMe
 	// Get season details from shared metadata service
 	seasonMeta, err := h.metadataService.GetSeasonMetadata(ctx, int32(params.TmdbId), int(params.SeasonNumber), nil)
 	if err != nil {
-		h.logger.Error("TMDb get season failed", zap.Error(err))
+		h.logger.Error("TMDb get season failed", slog.Any("error",err))
 		return nil, err
 	}
 
@@ -556,7 +556,7 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 	// Get episode details from shared metadata service
 	episodeMeta, err := h.metadataService.GetEpisodeMetadata(ctx, int32(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber), nil)
 	if err != nil {
-		h.logger.Error("TMDb get episode failed", zap.Error(err))
+		h.logger.Error("TMDb get episode failed", slog.Any("error",err))
 		return nil, err
 	}
 

@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/lusoris/revenge/internal/config"
-	"go.uber.org/zap"
 )
 
 // S3Storage implements Storage using S3-compatible object storage (AWS S3, MinIO, etc).
@@ -19,12 +19,12 @@ type S3Storage struct {
 	client   *s3.Client
 	bucket   string
 	endpoint string
-	logger   *zap.Logger
+	logger   *slog.Logger
 }
 
 // NewS3Storage creates a new S3-compatible storage backend.
 // Supports AWS S3, MinIO, and any S3-compatible storage.
-func NewS3Storage(cfg config.S3Config, logger *zap.Logger) (*S3Storage, error) {
+func NewS3Storage(cfg config.S3Config, logger *slog.Logger) (*S3Storage, error) {
 	// Create credentials provider
 	credsProvider := credentials.NewStaticCredentialsProvider(
 		cfg.AccessKeyID,
@@ -55,12 +55,12 @@ func NewS3Storage(cfg config.S3Config, logger *zap.Logger) (*S3Storage, error) {
 		client:   client,
 		bucket:   cfg.Bucket,
 		endpoint: cfg.Endpoint,
-		logger:   logger.Named("s3-storage"),
+		logger:   logger.With("component", "s3-storage"),
 	}
 
 	// Verify bucket exists (optional health check)
 	if err := storage.verifyBucket(context.Background()); err != nil {
-		logger.Warn("Failed to verify S3 bucket", zap.Error(err))
+		logger.Warn("Failed to verify S3 bucket", slog.Any("error",err))
 	}
 
 	return storage, nil
@@ -93,9 +93,9 @@ func (s *S3Storage) Store(ctx context.Context, key string, reader io.Reader, con
 	}
 
 	s.logger.Info("File stored in S3",
-		zap.String("bucket", s.bucket),
-		zap.String("key", key),
-		zap.String("content_type", contentType))
+		slog.String("bucket", s.bucket),
+		slog.String("key", key),
+		slog.String("content_type", contentType))
 
 	return key, nil
 }
@@ -128,8 +128,8 @@ func (s *S3Storage) Delete(ctx context.Context, key string) error {
 	}
 
 	s.logger.Info("File deleted from S3",
-		zap.String("bucket", s.bucket),
-		zap.String("key", key))
+		slog.String("bucket", s.bucket),
+		slog.String("key", key))
 
 	return nil
 }

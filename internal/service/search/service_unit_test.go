@@ -10,7 +10,8 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // --- MovieSearchService (disabled state) ---
@@ -429,7 +430,7 @@ func TestNewCachedMovieSearchService(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 	require.NotNil(t, cached)
@@ -442,7 +443,7 @@ func TestCachedMovieSearchService_Search_NilCache(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 	ctx := context.Background()
 
@@ -457,7 +458,7 @@ func TestCachedMovieSearchService_Autocomplete_NilCache(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 	ctx := context.Background()
 
@@ -471,7 +472,7 @@ func TestCachedMovieSearchService_GetFacets_NilCache(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 	ctx := context.Background()
 
@@ -485,7 +486,7 @@ func TestCachedMovieSearchService_InvalidateSearchCache_NilCache(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 	ctx := context.Background()
 
@@ -498,7 +499,7 @@ func TestCachedMovieSearchService_searchCacheKey(t *testing.T) {
 		client: nil,
 		logger: slog.Default(),
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	cached := NewCachedMovieSearchService(innerSvc, nil, logger)
 
 	t.Run("deterministic", func(t *testing.T) {

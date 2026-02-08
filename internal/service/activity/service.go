@@ -3,11 +3,11 @@ package activity
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net"
 	"time"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 var (
@@ -18,14 +18,14 @@ var (
 // Service provides activity logging functionality.
 type Service struct {
 	repo   Repository
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewService creates a new activity service.
-func NewService(repo Repository, logger *zap.Logger) *Service {
+func NewService(repo Repository, logger *slog.Logger) *Service {
 	return &Service{
 		repo:   repo,
-		logger: logger.Named("activity"),
+		logger: logger.With("component", "activity"),
 	}
 }
 
@@ -47,15 +47,15 @@ func (s *Service) Log(ctx context.Context, req LogRequest) error {
 
 	if err := s.repo.Create(ctx, entry); err != nil {
 		s.logger.Error("failed to log activity",
-			zap.String("action", req.Action),
-			zap.Error(err),
+			slog.String("action", req.Action),
+			slog.Any("error", err),
 		)
 		return err
 	}
 
 	s.logger.Debug("activity logged",
-		zap.String("id", entry.ID.String()),
-		zap.String("action", req.Action),
+		slog.String("id", entry.ID.String()),
+		slog.String("action", req.Action),
 	)
 
 	return nil
@@ -203,15 +203,15 @@ func (s *Service) CleanupOldLogs(ctx context.Context, olderThan time.Time) (int6
 	count, err := s.repo.DeleteOld(ctx, olderThan)
 	if err != nil {
 		s.logger.Error("failed to cleanup old activity logs",
-			zap.Time("older_than", olderThan),
-			zap.Error(err),
+			slog.Time("older_than", olderThan),
+			slog.Any("error", err),
 		)
 		return 0, err
 	}
 
 	s.logger.Info("cleaned up old activity logs",
-		zap.Int64("deleted_count", count),
-		zap.Time("older_than", olderThan),
+		slog.Int64("deleted_count", count),
+		slog.Time("older_than", olderThan),
 	)
 
 	return count, nil

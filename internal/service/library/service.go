@@ -5,9 +5,10 @@ import (
 	"errors"
 	"time"
 
+	"log/slog"
+
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/service/activity"
-	"go.uber.org/zap"
 )
 
 var (
@@ -34,15 +35,15 @@ var (
 // Service provides library management functionality.
 type Service struct {
 	repo           Repository
-	logger         *zap.Logger
+	logger         *slog.Logger
 	activityLogger activity.Logger
 }
 
 // NewService creates a new library service.
-func NewService(repo Repository, logger *zap.Logger, activityLogger activity.Logger) *Service {
+func NewService(repo Repository, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return &Service{
 		repo:           repo,
-		logger:         logger.Named("library"),
+		logger:         logger.With("component", "library"),
 		activityLogger: activityLogger,
 	}
 }
@@ -99,16 +100,16 @@ func (s *Service) Create(ctx context.Context, req CreateLibraryRequest) (*Librar
 
 	if err := s.repo.Create(ctx, lib); err != nil {
 		s.logger.Error("failed to create library",
-			zap.String("name", req.Name),
-			zap.Error(err),
+			slog.String("name", req.Name),
+			slog.Any("error",err),
 		)
 		return nil, err
 	}
 
 	s.logger.Info("library created",
-		zap.String("id", lib.ID.String()),
-		zap.String("name", lib.Name),
-		zap.String("type", lib.Type),
+		slog.String("id", lib.ID.String()),
+		slog.String("name", lib.Name),
+		slog.String("type", lib.Type),
 	)
 
 	// Log library creation
@@ -180,15 +181,15 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, update *LibraryUpdat
 	lib, err := s.repo.Update(ctx, id, update)
 	if err != nil {
 		s.logger.Error("failed to update library",
-			zap.String("id", id.String()),
-			zap.Error(err),
+			slog.String("id", id.String()),
+			slog.Any("error",err),
 		)
 		return nil, err
 	}
 
 	s.logger.Info("library updated",
-		zap.String("id", lib.ID.String()),
-		zap.String("name", lib.Name),
+		slog.String("id", lib.ID.String()),
+		slog.String("name", lib.Name),
 	)
 
 	// Log library update
@@ -212,21 +213,21 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	// First revoke all permissions
 	if err := s.repo.RevokeAllPermissions(ctx, id); err != nil {
 		s.logger.Error("failed to revoke permissions for library",
-			zap.String("id", id.String()),
-			zap.Error(err),
+			slog.String("id", id.String()),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	if err := s.repo.Delete(ctx, id); err != nil {
 		s.logger.Error("failed to delete library",
-			zap.String("id", id.String()),
-			zap.Error(err),
+			slog.String("id", id.String()),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
-	s.logger.Info("library deleted", zap.String("id", id.String()))
+	s.logger.Info("library deleted", slog.String("id", id.String()))
 
 	// Log library deletion
 	if lib != nil {
@@ -285,18 +286,18 @@ func (s *Service) TriggerScan(ctx context.Context, libraryID uuid.UUID, scanType
 
 	if err := s.repo.CreateScan(ctx, scan); err != nil {
 		s.logger.Error("failed to create scan",
-			zap.String("library_id", libraryID.String()),
-			zap.String("scan_type", scanType),
-			zap.Error(err),
+			slog.String("library_id", libraryID.String()),
+			slog.String("scan_type", scanType),
+			slog.Any("error",err),
 		)
 		return nil, err
 	}
 
 	s.logger.Info("scan triggered",
-		zap.String("scan_id", scan.ID.String()),
-		zap.String("library_id", libraryID.String()),
-		zap.String("library_name", lib.Name),
-		zap.String("scan_type", scanType),
+		slog.String("scan_id", scan.ID.String()),
+		slog.String("library_id", libraryID.String()),
+		slog.String("library_name", lib.Name),
+		slog.String("scan_type", scanType),
 	)
 
 	return scan, nil
@@ -436,18 +437,18 @@ func (s *Service) GrantPermission(ctx context.Context, libraryID, userID uuid.UU
 
 	if err := s.repo.GrantPermission(ctx, perm); err != nil {
 		s.logger.Error("failed to grant permission",
-			zap.String("library_id", libraryID.String()),
-			zap.String("user_id", userID.String()),
-			zap.String("permission", permission),
-			zap.Error(err),
+			slog.String("library_id", libraryID.String()),
+			slog.String("user_id", userID.String()),
+			slog.String("permission", permission),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	s.logger.Info("permission granted",
-		zap.String("library_id", libraryID.String()),
-		zap.String("user_id", userID.String()),
-		zap.String("permission", permission),
+		slog.String("library_id", libraryID.String()),
+		slog.String("user_id", userID.String()),
+		slog.String("permission", permission),
 	)
 
 	return nil
@@ -461,18 +462,18 @@ func (s *Service) RevokePermission(ctx context.Context, libraryID, userID uuid.U
 
 	if err := s.repo.RevokePermission(ctx, libraryID, userID, permission); err != nil {
 		s.logger.Error("failed to revoke permission",
-			zap.String("library_id", libraryID.String()),
-			zap.String("user_id", userID.String()),
-			zap.String("permission", permission),
-			zap.Error(err),
+			slog.String("library_id", libraryID.String()),
+			slog.String("user_id", userID.String()),
+			slog.String("permission", permission),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	s.logger.Info("permission revoked",
-		zap.String("library_id", libraryID.String()),
-		zap.String("user_id", userID.String()),
-		zap.String("permission", permission),
+		slog.String("library_id", libraryID.String()),
+		slog.String("user_id", userID.String()),
+		slog.String("permission", permission),
 	)
 
 	return nil

@@ -10,7 +10,7 @@ import (
 
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/redis/rueidis"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // RedisRateLimiterConfig contains Redis-based rate limiting configuration.
@@ -65,7 +65,7 @@ func AuthRedisRateLimiterConfig() RedisRateLimiterConfig {
 type RedisRateLimiter struct {
 	config   RedisRateLimiterConfig
 	client   rueidis.Client
-	logger   *zap.Logger
+	logger   *slog.Logger
 	fallback *RateLimiter // Fallback to in-memory limiter
 	mu       sync.RWMutex
 	healthy  bool
@@ -73,11 +73,11 @@ type RedisRateLimiter struct {
 
 // NewRedisRateLimiter creates a new Redis-based rate limiter.
 // If client is nil, uses in-memory fallback.
-func NewRedisRateLimiter(config RedisRateLimiterConfig, client rueidis.Client, logger *zap.Logger) *RedisRateLimiter {
+func NewRedisRateLimiter(config RedisRateLimiterConfig, client rueidis.Client, logger *slog.Logger) *RedisRateLimiter {
 	rl := &RedisRateLimiter{
 		config:  config,
 		client:  client,
-		logger:  logger.Named("ratelimit-redis"),
+		logger:  logger.With("component", "ratelimit-redis"),
 		healthy: client != nil,
 	}
 
@@ -123,7 +123,7 @@ func (rl *RedisRateLimiter) healthCheck() {
 		if !wasHealthy && rl.healthy {
 			rl.logger.Info("Redis connection restored, using distributed rate limiting")
 		} else if wasHealthy && !rl.healthy {
-			rl.logger.Warn("Redis connection lost, falling back to in-memory rate limiting", zap.Error(err))
+			rl.logger.Warn("Redis connection lost, falling back to in-memory rate limiting", slog.Any("error",err))
 		}
 		rl.mu.Unlock()
 	}
@@ -248,17 +248,17 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 		if err != nil {
 			// On Redis error, log and use fallback
 			rl.logger.Warn("Redis rate limit check failed, using fallback",
-				zap.String("ip", clientIP),
-				zap.Error(err),
+				slog.String("ip", clientIP),
+				slog.Any("error",err),
 			)
 			return rl.fallback.Middleware()(req, next)
 		}
 
 		if !allowed {
 			rl.logger.Warn("Rate limit exceeded",
-				zap.String("ip", clientIP),
-				zap.String("operation", req.OperationName),
-				zap.String("backend", "redis"),
+				slog.String("ip", clientIP),
+				slog.String("operation", req.OperationName),
+				slog.String("backend", "redis"),
 			)
 
 			return middleware.Response{}, &RateLimitError{

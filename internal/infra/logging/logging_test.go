@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"log/slog"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -92,73 +91,6 @@ func TestNewLogger_LogLevels(t *testing.T) {
 			} else {
 				assert.NotContains(t, output, tt.logMessage)
 			}
-		})
-	}
-}
-
-func TestNewZapLogger_DefaultConfig(t *testing.T) {
-	cfg := Config{}
-	logger, err := NewZapLogger(cfg)
-
-	require.NoError(t, err)
-	assert.NotNil(t, logger)
-}
-
-func TestNewZapLogger_DevelopmentMode(t *testing.T) {
-	var buf bytes.Buffer
-	cfg := Config{
-		Level:       "debug",
-		Format:      "text",
-		Development: true,
-		Output:      &buf,
-	}
-
-	logger, err := NewZapLogger(cfg)
-	require.NoError(t, err)
-	require.NotNil(t, logger)
-
-	logger.Info("test message")
-	_ = logger.Sync()
-
-	output := buf.String()
-	assert.Contains(t, output, "test message")
-}
-
-func TestNewZapLogger_ProductionMode(t *testing.T) {
-	var buf bytes.Buffer
-	cfg := Config{
-		Level:       "info",
-		Format:      "json",
-		Development: false,
-		Output:      &buf,
-	}
-
-	logger, err := NewZapLogger(cfg)
-	require.NoError(t, err)
-	require.NotNil(t, logger)
-
-	logger.Info("test message")
-	_ = logger.Sync()
-
-	output := buf.String()
-	assert.Contains(t, output, "test message")
-	assert.True(t, strings.HasPrefix(output, "{")) // JSON starts with {
-}
-
-func TestNewZapLogger_LogLevels(t *testing.T) {
-	levels := []string{"debug", "info", "warn", "warning", "error", "invalid"}
-
-	for _, level := range levels {
-		t.Run(level, func(t *testing.T) {
-			var buf bytes.Buffer
-			cfg := Config{
-				Level:  level,
-				Output: &buf,
-			}
-
-			logger, err := NewZapLogger(cfg)
-			require.NoError(t, err)
-			assert.NotNil(t, logger)
 		})
 	}
 }

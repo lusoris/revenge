@@ -3,10 +3,11 @@ package apikeys
 import (
 	"time"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides the API keys service
@@ -32,7 +33,7 @@ type Params struct {
 	fx.In
 
 	Queries        *db.Queries
-	Logger         *zap.Logger
+	Logger         *slog.Logger
 	MaxKeysPerUser int           `name:"apikeys_max_per_user"`
 	DefaultExpiry  time.Duration `name:"apikeys_default_expiry"`
 }

@@ -9,9 +9,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/testutil"
@@ -94,7 +94,7 @@ func TestService_Login_Integration(t *testing.T) {
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activitySvc := activity.NewService(activity.NewRepositoryPg(queries), logger)
 	activityLogger := activity.NewLogger(activitySvc)
 
@@ -725,7 +725,7 @@ func TestService_Login_AccountLockout_Integration(t *testing.T) {
 	queries := db.New(testDB.Pool())
 	repo := auth.NewRepositoryPG(queries)
 	tokenMgr := auth.NewTokenManager("test-secret-key-at-least-32-characters-long", 15*time.Minute)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activitySvc := activity.NewService(activity.NewRepositoryPg(queries), logger)
 	activityLogger := activity.NewLogger(activitySvc)
 

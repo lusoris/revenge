@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"time"
 
+	"log/slog"
+
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
 )
 
 // LibraryScanCleanupJobKind is the unique identifier for library scan cleanup jobs.
@@ -41,15 +42,15 @@ type LibraryScanCleanupWorker struct {
 	river.WorkerDefaults[LibraryScanCleanupArgs]
 	leaderElection *raft.LeaderElection
 	repo           Repository
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewLibraryScanCleanupWorker creates a new library scan cleanup worker.
-func NewLibraryScanCleanupWorker(leaderElection *raft.LeaderElection, repo Repository, logger *zap.Logger) *LibraryScanCleanupWorker {
+func NewLibraryScanCleanupWorker(leaderElection *raft.LeaderElection, repo Repository, logger *slog.Logger) *LibraryScanCleanupWorker {
 	return &LibraryScanCleanupWorker{
 		leaderElection: leaderElection,
 		repo:           repo,
-		logger:         logger.Named("library-scan-cleanup"),
+		logger:         logger.With("component", "library-scan-cleanup"),
 	}
 }
 
@@ -65,17 +66,17 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 	// Check if this node is the leader (only leader should run cleanup jobs)
 	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
 		w.logger.Info("skipping library scan cleanup job: not the leader node",
-			zap.Int64("job_id", job.ID),
-			zap.String("leader", w.leaderElection.LeaderAddr()),
+			slog.Int64("job_id", job.ID),
+			slog.String("leader", w.leaderElection.LeaderAddr()),
 		)
 		return nil
 	}
 
 	w.logger.Info("starting library scan cleanup job",
-		zap.Int64("job_id", job.ID),
-		zap.Int("retention_days", args.RetentionDays),
-		zap.Bool("dry_run", args.DryRun),
-		zap.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
+		slog.Int64("job_id", job.ID),
+		slog.Int("retention_days", args.RetentionDays),
+		slog.Bool("dry_run", args.DryRun),
+		slog.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
 	)
 
 	// Validate arguments
@@ -87,8 +88,8 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 
 	if args.DryRun {
 		w.logger.Info("dry run mode: would delete library scan records",
-			zap.Int64("job_id", job.ID),
-			zap.Time("older_than", olderThan),
+			slog.Int64("job_id", job.ID),
+			slog.Time("older_than", olderThan),
 		)
 		return nil
 	}
@@ -97,16 +98,16 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 	deleted, err := w.repo.DeleteOldScans(ctx, olderThan)
 	if err != nil {
 		w.logger.Error("failed to cleanup library scans",
-			zap.Int64("job_id", job.ID),
-			zap.Error(err),
+			slog.Int64("job_id", job.ID),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("failed to cleanup scans: %w", err)
 	}
 
 	w.logger.Info("library scan cleanup job completed",
-		zap.Int64("job_id", job.ID),
-		zap.Int64("deleted_count", deleted),
-		zap.Time("older_than", olderThan),
+		slog.Int64("job_id", job.ID),
+		slog.Int64("deleted_count", deleted),
+		slog.Time("older_than", olderThan),
 	)
 
 	return nil

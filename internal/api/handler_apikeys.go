@@ -6,7 +6,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/apikeys"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // ListAPIKeys lists all API keys for the authenticated user
@@ -22,8 +22,8 @@ func (h *Handler) ListAPIKeys(ctx context.Context) (ogen.ListAPIKeysRes, error) 
 	keys, err := h.apikeyService.ListUserKeys(ctx, userID)
 	if err != nil {
 		h.logger.Error("failed to list API keys",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -82,9 +82,9 @@ func (h *Handler) CreateAPIKey(ctx context.Context, req *ogen.CreateAPIKeyReques
 	resp, err := h.apikeyService.CreateKey(ctx, userID, createReq)
 	if err != nil {
 		h.logger.Error("failed to create API key",
-			zap.String("user_id", userID.String()),
-			zap.String("name", req.Name),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("name", req.Name),
+			slog.Any("error",err),
 		)
 
 		// Check for specific errors
@@ -133,9 +133,9 @@ func (h *Handler) GetAPIKey(ctx context.Context, params ogen.GetAPIKeyParams) (o
 		}
 
 		h.logger.Error("failed to get API key",
-			zap.String("user_id", userID.String()),
-			zap.String("key_id", params.KeyId.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("key_id", params.KeyId.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.GetAPIKeyNotFound{
 			Code:    500,
@@ -166,9 +166,9 @@ func (h *Handler) RevokeAPIKey(ctx context.Context, params ogen.RevokeAPIKeyPara
 		}
 
 		h.logger.Error("failed to get API key for revocation",
-			zap.String("user_id", userID.String()),
-			zap.String("key_id", params.KeyId.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("key_id", params.KeyId.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RevokeAPIKeyNotFound{
 			Code:    500,
@@ -184,9 +184,9 @@ func (h *Handler) RevokeAPIKey(ctx context.Context, params ogen.RevokeAPIKeyPara
 	// Revoke key
 	if err := h.apikeyService.RevokeKey(ctx, params.KeyId); err != nil {
 		h.logger.Error("failed to revoke API key",
-			zap.String("user_id", userID.String()),
-			zap.String("key_id", params.KeyId.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("key_id", params.KeyId.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RevokeAPIKeyNotFound{
 			Code:    500,

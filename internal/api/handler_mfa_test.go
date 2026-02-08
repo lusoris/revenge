@@ -9,13 +9,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
 
 func newTestMFAHandler() *MFAHandler {
-	return NewMFAHandler(nil, nil, nil, nil, zap.NewNop())
+	return NewMFAHandler(nil, nil, nil, nil, logging.NewTestLogger())
 }
 
 func contextWithUser(t *testing.T) context.Context {
@@ -29,7 +29,7 @@ func contextWithUser(t *testing.T) context.Context {
 
 // Test that NewMFAHandler stores the webauthnService field
 func TestNewMFAHandler_WithWebAuthnService(t *testing.T) {
-	handler := NewMFAHandler(nil, nil, nil, nil, zap.NewNop())
+	handler := NewMFAHandler(nil, nil, nil, nil, logging.NewTestLogger())
 	assert.Nil(t, handler.webauthnService)
 
 	// Non-nil is tested implicitly by all "not configured" tests returning 501
@@ -246,7 +246,7 @@ func TestJxRawMapToJSON(t *testing.T) {
 func TestHandler_WebAuthn_Delegation(t *testing.T) {
 	mfaHandler := newTestMFAHandler()
 	handler := &Handler{
-		logger:     zap.NewNop(),
+		logger:     logging.NewTestLogger(),
 		mfaHandler: mfaHandler,
 	}
 	ctx := contextWithUser(t)

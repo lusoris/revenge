@@ -2,27 +2,27 @@ package settings
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/cache"
-	"go.uber.org/zap"
 )
 
 // CachedService wraps the settings Service with caching support.
 type CachedService struct {
 	Service
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedService creates a new cached settings service.
 // If cache is nil, it falls back to the underlying service without caching.
-func NewCachedService(svc Service, c *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc Service, c *cache.Cache, logger *slog.Logger) *CachedService {
 	return &CachedService{
 		Service: svc,
 		cache:   c,
-		logger:  logger.Named("settings-cache"),
+		logger:  logger.With("component", "settings-cache"),
 	}
 }
 
@@ -38,11 +38,11 @@ func (s *CachedService) GetServerSetting(ctx context.Context, key string) (*Serv
 	// Try cache first
 	var setting ServerSetting
 	if err := s.cache.GetJSON(ctx, cacheKey, &setting); err == nil {
-		s.logger.Debug("server setting cache hit", zap.String("key", cacheKey))
+		s.logger.Debug("server setting cache hit", slog.String("key", cacheKey))
 		return &setting, nil
 	}
 
-	s.logger.Debug("server setting cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("server setting cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - get from database
 	result, err := s.Service.GetServerSetting(ctx, key)
@@ -55,7 +55,7 @@ func (s *CachedService) GetServerSetting(ctx context.Context, key string) (*Serv
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.ServerSettingsTTL); setErr != nil {
-			s.logger.Warn("failed to cache server setting", zap.Error(setErr))
+			s.logger.Warn("failed to cache server setting", slog.Any("error",setErr))
 		}
 	}()
 
@@ -74,7 +74,7 @@ func (s *CachedService) ListServerSettings(ctx context.Context) ([]ServerSetting
 	// Try cache first
 	var settings []ServerSetting
 	if err := s.cache.GetJSON(ctx, cacheKey, &settings); err == nil {
-		s.logger.Debug("server settings list cache hit", zap.Int("count", len(settings)))
+		s.logger.Debug("server settings list cache hit", slog.Int("count", len(settings)))
 		return settings, nil
 	}
 
@@ -91,7 +91,7 @@ func (s *CachedService) ListServerSettings(ctx context.Context) ([]ServerSetting
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.ServerSettingsTTL); setErr != nil {
-			s.logger.Warn("failed to cache server settings list", zap.Error(setErr))
+			s.logger.Warn("failed to cache server settings list", slog.Any("error",setErr))
 		}
 	}()
 
@@ -110,7 +110,7 @@ func (s *CachedService) ListPublicServerSettings(ctx context.Context) ([]ServerS
 	// Try cache first
 	var settings []ServerSetting
 	if err := s.cache.GetJSON(ctx, cacheKey, &settings); err == nil {
-		s.logger.Debug("public server settings cache hit", zap.Int("count", len(settings)))
+		s.logger.Debug("public server settings cache hit", slog.Int("count", len(settings)))
 		return settings, nil
 	}
 
@@ -127,7 +127,7 @@ func (s *CachedService) ListPublicServerSettings(ctx context.Context) ([]ServerS
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.ServerSettingsTTL); setErr != nil {
-			s.logger.Warn("failed to cache public server settings", zap.Error(setErr))
+			s.logger.Warn("failed to cache public server settings", slog.Any("error",setErr))
 		}
 	}()
 
@@ -144,7 +144,7 @@ func (s *CachedService) SetServerSetting(ctx context.Context, key string, value 
 	// Invalidate cache
 	if s.cache != nil {
 		if err := s.cache.InvalidateServerSettings(ctx); err != nil {
-			s.logger.Warn("failed to invalidate server settings cache", zap.Error(err))
+			s.logger.Warn("failed to invalidate server settings cache", slog.Any("error",err))
 		}
 	}
 
@@ -160,7 +160,7 @@ func (s *CachedService) DeleteServerSetting(ctx context.Context, key string) err
 	// Invalidate cache
 	if s.cache != nil {
 		if err := s.cache.InvalidateServerSettings(ctx); err != nil {
-			s.logger.Warn("failed to invalidate server settings cache", zap.Error(err))
+			s.logger.Warn("failed to invalidate server settings cache", slog.Any("error",err))
 		}
 	}
 
@@ -179,11 +179,11 @@ func (s *CachedService) GetUserSetting(ctx context.Context, userID uuid.UUID, ke
 	// Try cache first
 	var setting UserSetting
 	if err := s.cache.GetJSON(ctx, cacheKey, &setting); err == nil {
-		s.logger.Debug("user setting cache hit", zap.String("key", cacheKey))
+		s.logger.Debug("user setting cache hit", slog.String("key", cacheKey))
 		return &setting, nil
 	}
 
-	s.logger.Debug("user setting cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("user setting cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - get from database
 	result, err := s.Service.GetUserSetting(ctx, userID, key)
@@ -196,7 +196,7 @@ func (s *CachedService) GetUserSetting(ctx context.Context, userID uuid.UUID, ke
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.UserSettingsTTL); setErr != nil {
-			s.logger.Warn("failed to cache user setting", zap.Error(setErr))
+			s.logger.Warn("failed to cache user setting", slog.Any("error",setErr))
 		}
 	}()
 
@@ -214,7 +214,7 @@ func (s *CachedService) SetUserSetting(ctx context.Context, userID uuid.UUID, ke
 	if s.cache != nil {
 		cacheKey := cache.UserSettingKey(userID.String(), key)
 		if err := s.cache.Delete(ctx, cacheKey); err != nil {
-			s.logger.Warn("failed to invalidate user setting cache", zap.Error(err))
+			s.logger.Warn("failed to invalidate user setting cache", slog.Any("error",err))
 		}
 	}
 
@@ -230,7 +230,7 @@ func (s *CachedService) SetUserSettingsBulk(ctx context.Context, userID uuid.UUI
 	// Invalidate cache for all user settings
 	if s.cache != nil {
 		if err := s.cache.InvalidateUserSettings(ctx, userID.String()); err != nil {
-			s.logger.Warn("failed to invalidate user settings cache", zap.Error(err))
+			s.logger.Warn("failed to invalidate user settings cache", slog.Any("error",err))
 		}
 	}
 
@@ -247,7 +247,7 @@ func (s *CachedService) DeleteUserSetting(ctx context.Context, userID uuid.UUID,
 	if s.cache != nil {
 		cacheKey := cache.UserSettingKey(userID.String(), key)
 		if err := s.cache.Delete(ctx, cacheKey); err != nil {
-			s.logger.Warn("failed to invalidate user setting cache", zap.Error(err))
+			s.logger.Warn("failed to invalidate user setting cache", slog.Any("error",err))
 		}
 	}
 

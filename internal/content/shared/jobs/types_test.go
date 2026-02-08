@@ -6,9 +6,11 @@ import (
 	"testing"
 	"time"
 
+	"log/slog"
+
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
 func TestJobResult(t *testing.T) {
@@ -39,7 +41,7 @@ func TestJobResult(t *testing.T) {
 	})
 
 	t.Run("LogSummary success", func(t *testing.T) {
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		result := &JobResult{
 			Success:        true,
 			ItemsProcessed: 10,
@@ -51,7 +53,7 @@ func TestJobResult(t *testing.T) {
 	})
 
 	t.Run("LogSummary with errors", func(t *testing.T) {
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		result := &JobResult{
 			Success:        true,
 			ItemsProcessed: 10,
@@ -65,7 +67,7 @@ func TestJobResult(t *testing.T) {
 	})
 
 	t.Run("LogSummary failure", func(t *testing.T) {
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		result := &JobResult{
 			Success:     false,
 			ItemsFailed: 10,
@@ -78,7 +80,7 @@ func TestJobResult(t *testing.T) {
 	})
 
 	t.Run("LogErrors", func(t *testing.T) {
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		result := &JobResult{
 			Errors: make([]error, 20),
 		}
@@ -147,7 +149,7 @@ func TestSearchIndexArgs(t *testing.T) {
 }
 
 func TestJobContext(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("NewJobContext", func(t *testing.T) {
@@ -173,21 +175,21 @@ func TestJobContext(t *testing.T) {
 		jc := NewJobContext(ctx, logger, 123, "test_job")
 
 		// Should not panic
-		jc.LogStart(zap.String("test", "value"))
+		jc.LogStart(slog.String("test", "value"))
 	})
 
 	t.Run("LogComplete", func(t *testing.T) {
 		jc := NewJobContext(ctx, logger, 123, "test_job")
 
 		// Should not panic
-		jc.LogComplete(zap.Int("items", 10))
+		jc.LogComplete(slog.Int("items", 10))
 	})
 
 	t.Run("LogError", func(t *testing.T) {
 		jc := NewJobContext(ctx, logger, 123, "test_job")
 
 		// Should not panic
-		jc.LogError("test error", errors.New("something failed"), zap.String("context", "test"))
+		jc.LogError("test error", errors.New("something failed"), slog.String("context", "test"))
 	})
 }
 

@@ -5,9 +5,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"time"
-
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
@@ -16,15 +15,15 @@ import (
 type CachedMovieSearchService struct {
 	*MovieSearchService
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedMovieSearchService creates a new cached search service.
-func NewCachedMovieSearchService(svc *MovieSearchService, cache *cache.Cache, logger *zap.Logger) *CachedMovieSearchService {
+func NewCachedMovieSearchService(svc *MovieSearchService, cache *cache.Cache, logger *slog.Logger) *CachedMovieSearchService {
 	return &CachedMovieSearchService{
 		MovieSearchService: svc,
 		cache:              cache,
-		logger:             logger.Named("search-cache"),
+		logger:             logger.With("component", "search-cache"),
 	}
 }
 
@@ -40,11 +39,11 @@ func (s *CachedMovieSearchService) Search(ctx context.Context, params SearchPara
 	// Try cache first
 	var result SearchResult
 	if err := s.cache.GetJSON(ctx, cacheKey, &result); err == nil {
-		s.logger.Debug("search cache hit", zap.String("query", params.Query))
+		s.logger.Debug("search cache hit", slog.String("query", params.Query))
 		return &result, nil
 	}
 
-	s.logger.Debug("search cache miss", zap.String("query", params.Query))
+	s.logger.Debug("search cache miss", slog.String("query", params.Query))
 
 	// Cache miss - execute search
 	searchResult, err := s.MovieSearchService.Search(ctx, params)
@@ -57,7 +56,7 @@ func (s *CachedMovieSearchService) Search(ctx context.Context, params SearchPara
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, searchResult, cache.SearchResultsTTL); setErr != nil {
-			s.logger.Warn("failed to cache search result", zap.Error(setErr))
+			s.logger.Warn("failed to cache search result", slog.Any("error",setErr))
 		}
 	}()
 
@@ -75,7 +74,7 @@ func (s *CachedMovieSearchService) Autocomplete(ctx context.Context, query strin
 	// Try cache first
 	var results []string
 	if err := s.cache.GetJSON(ctx, cacheKey, &results); err == nil {
-		s.logger.Debug("autocomplete cache hit", zap.String("query", query))
+		s.logger.Debug("autocomplete cache hit", slog.String("query", query))
 		return results, nil
 	}
 
@@ -90,7 +89,7 @@ func (s *CachedMovieSearchService) Autocomplete(ctx context.Context, query strin
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, autocompleteResults, cache.SearchResultsTTL); setErr != nil {
-			s.logger.Warn("failed to cache autocomplete result", zap.Error(setErr))
+			s.logger.Warn("failed to cache autocomplete result", slog.Any("error",setErr))
 		}
 	}()
 
@@ -123,7 +122,7 @@ func (s *CachedMovieSearchService) GetFacets(ctx context.Context, facetFields []
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, facetResults, 2*time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache facets", zap.Error(setErr))
+			s.logger.Warn("failed to cache facets", slog.Any("error",setErr))
 		}
 	}()
 

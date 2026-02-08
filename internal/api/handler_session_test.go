@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
@@ -31,7 +31,7 @@ func setupSessionTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID, uu
 			RefreshExpiry: 7 * 24 * time.Hour,
 		},
 	}
-	sessionService := session.NewService(repo, zap.NewNop(), cfg)
+	sessionService := session.NewService(repo, logging.NewTestLogger(), cfg)
 
 	// Create test user
 	user := testutil.CreateUser(t, testDB.Pool(), testutil.User{
@@ -54,7 +54,7 @@ func setupSessionTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID, uu
 	require.NoError(t, err)
 
 	handler := &Handler{
-		logger:         zap.NewNop(),
+		logger:         logging.NewTestLogger(),
 		sessionService: sessionService,
 		cfg:            cfg,
 	}

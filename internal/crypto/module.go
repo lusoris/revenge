@@ -6,8 +6,9 @@ import (
 	"fmt"
 
 	"github.com/lusoris/revenge/internal/config"
+	"log/slog"
+
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides the crypto Encryptor for fx dependency injection.
@@ -21,7 +22,7 @@ var Module = fx.Options(
 //  1. auth.encryption_key (hex-encoded 32-byte key) — recommended for production
 //  2. Derived from auth.jwt_secret via SHA-256 — acceptable for development
 //  3. Deterministic dev key — only when no secrets are configured at all
-func provideEncryptor(cfg *config.Config, logger *zap.Logger) (*Encryptor, error) {
+func provideEncryptor(cfg *config.Config, logger *slog.Logger) (*Encryptor, error) {
 	// Option 1: Dedicated encryption key (recommended)
 	if cfg.Auth.EncryptionKey != "" {
 		key, err := hex.DecodeString(cfg.Auth.EncryptionKey)

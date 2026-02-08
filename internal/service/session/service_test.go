@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/errors"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
@@ -24,7 +24,7 @@ func setupTestService(t *testing.T) (*Service, testutil.DB) {
 	queries := db.New(testDB.Pool())
 	repo := &RepositoryPG{queries: queries}
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	service := &Service{
 		repo:          repo,
@@ -540,7 +540,7 @@ func TestService_CreateSession_MaxPerUserBoundary(t *testing.T) {
 	queries := db.New(testDB.Pool())
 	repo := &RepositoryPG{queries: queries}
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	// Create service with very low max of 3 sessions per user
 	service := &Service{
@@ -646,7 +646,7 @@ func TestService_CachedService_Integration_RevokeInvalidatesCache(t *testing.T) 
 	require.NoError(t, err)
 	defer testCache.Close()
 
-	cachedSvc := NewCachedService(service, testCache, zap.NewNop(), 5*time.Minute)
+	cachedSvc := NewCachedService(service, testCache, logging.NewTestLogger(), 5*time.Minute)
 
 	userID := createTestUser(t, testDB)
 
@@ -681,7 +681,7 @@ func TestService_CachedService_Integration_RevokeAllInvalidatesCache(t *testing.
 	require.NoError(t, err)
 	defer testCache.Close()
 
-	cachedSvc := NewCachedService(service, testCache, zap.NewNop(), 5*time.Minute)
+	cachedSvc := NewCachedService(service, testCache, logging.NewTestLogger(), 5*time.Minute)
 
 	userID := createTestUser(t, testDB)
 

@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestRadarrSyncJobArgs_Kind(t *testing.T) {
@@ -28,7 +28,7 @@ func TestRadarrSyncJobArgs_Operations(t *testing.T) {
 func TestNewRadarrSyncWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewRadarrSyncWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -39,7 +39,7 @@ func TestNewRadarrSyncWorker(t *testing.T) {
 func TestRadarrSyncWorker_Work_NilService(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewRadarrSyncWorker(nil, logger)
 
 	job := &river.Job[RadarrSyncJobArgs]{
@@ -72,7 +72,7 @@ func TestRadarrWebhookJobArgs_Kind(t *testing.T) {
 func TestNewRadarrWebhookWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewRadarrWebhookWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -83,7 +83,7 @@ func TestNewRadarrWebhookWorker(t *testing.T) {
 func TestRadarrWebhookWorker_Work_NilHandler(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewRadarrWebhookWorker(nil, logger)
 
 	job := &river.Job[RadarrWebhookJobArgs]{

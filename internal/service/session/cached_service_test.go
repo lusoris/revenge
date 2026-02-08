@@ -13,7 +13,8 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // testHashToken computes the same hash as Service.hashToken for testing
@@ -23,7 +24,7 @@ func testHashToken(token string) string {
 }
 
 func TestNewCachedService(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := &Service{}
 
 	cached := NewCachedService(svc, nil, logger, 5*time.Minute)
@@ -35,7 +36,7 @@ func TestNewCachedService(t *testing.T) {
 }
 
 func TestNewCachedService_DefaultTTL(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := &Service{}
 
 	// When TTL is 0, should use default SessionTTL
@@ -58,10 +59,10 @@ func TestCachedService_ValidateSession_NoCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   mockRepo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, nil, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, nil, logging.NewTestLogger(), 5*time.Minute)
 
 	// Without cache, should still work
 	session, err := cached.ValidateSession(context.Background(), "test-token")
@@ -86,10 +87,10 @@ func TestCachedService_ValidateSession_WithCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   mockRepo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	// First call - cache miss
 	session1, err := cached.ValidateSession(context.Background(), "cached-token")
@@ -130,10 +131,10 @@ func TestCachedService_RevokeSession_InvalidatesCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   mockRepo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	// Populate cache
 	_, err = cached.ValidateSession(context.Background(), "revoke-token")
@@ -163,7 +164,7 @@ func TestCachedService_InvalidateSessionCache(t *testing.T) {
 
 	cached := &CachedService{
 		cache:    l1Cache,
-		logger:   zap.NewNop(),
+		logger:   logging.NewTestLogger(),
 		cacheTTL: 5 * time.Minute,
 	}
 

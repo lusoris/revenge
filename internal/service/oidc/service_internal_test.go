@@ -9,8 +9,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // mockRepo implements Repository for same-package unit tests.
@@ -228,11 +229,11 @@ func (m *mockRepo) DeleteStatesByProvider(ctx context.Context, providerID uuid.U
 
 // newTestService creates a service for unit tests using the manual mock.
 func newTestService(repo *mockRepo) *Service {
-	return NewService(repo, zap.NewNop(), "http://localhost:8080/callback", nil)
+	return NewService(repo, logging.NewTestLogger(), "http://localhost:8080/callback", nil)
 }
 
 func newTestServiceWithKey(repo *mockRepo, key []byte) *Service {
-	return NewService(repo, zap.NewNop(), "http://localhost:8080/callback", key)
+	return NewService(repo, logging.NewTestLogger(), "http://localhost:8080/callback", key)
 }
 
 // ============================================================================
@@ -719,7 +720,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 	})
 
 	t.Run("callback URL with existing /callback/ path", func(t *testing.T) {
-		svc := NewService(&mockRepo{}, zap.NewNop(), "http://localhost:8080/callback/existing", nil)
+		svc := NewService(&mockRepo{}, logging.NewTestLogger(), "http://localhost:8080/callback/existing", nil)
 
 		provider := &Provider{
 			Name:                  "test",
@@ -735,7 +736,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 	})
 
 	t.Run("callback URL without /callback/ appends provider name", func(t *testing.T) {
-		svc := NewService(&mockRepo{}, zap.NewNop(), "http://localhost:8080/auth", nil)
+		svc := NewService(&mockRepo{}, logging.NewTestLogger(), "http://localhost:8080/auth", nil)
 
 		provider := &Provider{
 			Name:                  "keycloak",
@@ -750,7 +751,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 	})
 
 	t.Run("callback URL with trailing slash", func(t *testing.T) {
-		svc := NewService(&mockRepo{}, zap.NewNop(), "http://localhost:8080/auth/", nil)
+		svc := NewService(&mockRepo{}, logging.NewTestLogger(), "http://localhost:8080/auth/", nil)
 
 		provider := &Provider{
 			Name:                  "authentik",

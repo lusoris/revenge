@@ -12,11 +12,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zaptest"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // ============================================================================
@@ -688,7 +687,7 @@ func TestNoDB_SessionDataRoundTrip(t *testing.T) {
 
 func TestNoDB_NewWebAuthnService(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	tests := []struct {
 		name          string
@@ -743,7 +742,7 @@ func TestNoDB_NewWebAuthnService(t *testing.T) {
 
 func TestNoDB_WebAuthnService_HasCache(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	t.Run("no cache", func(t *testing.T) {
 		t.Parallel()
@@ -770,7 +769,7 @@ func TestNoDB_WebAuthnService_HasCache(t *testing.T) {
 
 func TestNoDB_WebAuthnService_storeSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache does not error", func(t *testing.T) {
@@ -806,7 +805,7 @@ func TestNoDB_WebAuthnService_storeSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_getSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache returns error", func(t *testing.T) {
@@ -836,7 +835,7 @@ func TestNoDB_WebAuthnService_getSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_deleteSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache does not panic", func(t *testing.T) {
@@ -872,7 +871,7 @@ func TestNoDB_WebAuthnService_deleteSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_GetRegistrationSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache returns error", func(t *testing.T) {
@@ -887,7 +886,7 @@ func TestNoDB_WebAuthnService_GetRegistrationSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_GetLoginSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache returns error", func(t *testing.T) {
@@ -902,7 +901,7 @@ func TestNoDB_WebAuthnService_GetLoginSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_DeleteRegistrationSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache does not panic", func(t *testing.T) {
@@ -915,7 +914,7 @@ func TestNoDB_WebAuthnService_DeleteRegistrationSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_DeleteLoginSession(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("nil cache does not panic", func(t *testing.T) {
@@ -932,7 +931,7 @@ func TestNoDB_WebAuthnService_DeleteLoginSession(t *testing.T) {
 
 func TestNoDB_WebAuthnService_SessionLifecycle(t *testing.T) {
 	t.Parallel()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	sessionCache, err := cache.NewNamedCache(nil, 100, 5*time.Minute, "webauthn-lifecycle")
@@ -997,7 +996,7 @@ func TestNoDB_WebAuthnService_SessionLifecycle(t *testing.T) {
 
 func TestNoDB_NewMFAManager(t *testing.T) {
 	t.Parallel()
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	manager := NewMFAManager(nil, nil, nil, nil, logger)
 	require.NotNil(t, manager)
@@ -1014,7 +1013,7 @@ func TestNoDB_NewMFAManager(t *testing.T) {
 
 func TestNoDB_NewTOTPService(t *testing.T) {
 	t.Parallel()
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	svc := NewTOTPService(nil, nil, logger, "TestIssuer")
 	require.NotNil(t, svc)
@@ -1030,7 +1029,7 @@ func TestNoDB_NewTOTPService(t *testing.T) {
 
 func TestNoDB_NewBackupCodesService(t *testing.T) {
 	t.Parallel()
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	svc := NewBackupCodesService(nil, logger)
 	require.NotNil(t, svc)
@@ -1045,7 +1044,7 @@ func TestNoDB_NewBackupCodesService(t *testing.T) {
 
 func TestNoDB_NewTOTPServiceFromConfig(t *testing.T) {
 	t.Parallel()
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	cfg := &config.Config{
 		Server: config.ServerConfig{
@@ -1064,7 +1063,7 @@ func TestNoDB_NewTOTPServiceFromConfig(t *testing.T) {
 
 func TestNoDB_NewWebAuthnServiceFromConfig(t *testing.T) {
 	t.Parallel()
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("localhost config", func(t *testing.T) {
 		t.Parallel()

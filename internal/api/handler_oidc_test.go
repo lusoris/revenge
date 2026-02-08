@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
@@ -20,7 +20,7 @@ func TestHandler_OIDC_ListUserOIDCLinks_Unauthorized(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -37,7 +37,7 @@ func TestHandler_OIDC_InitOIDCLink_Unauthorized(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -53,7 +53,7 @@ func TestHandler_OIDC_UnlinkOIDCProvider_Unauthorized(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -73,7 +73,7 @@ func TestHandler_OIDC_AdminListOIDCProviders_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -88,7 +88,7 @@ func TestHandler_OIDC_AdminCreateOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -110,7 +110,7 @@ func TestHandler_OIDC_AdminGetOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -126,7 +126,7 @@ func TestHandler_OIDC_AdminUpdateOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -143,7 +143,7 @@ func TestHandler_OIDC_AdminDeleteOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -159,7 +159,7 @@ func TestHandler_OIDC_AdminEnableOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -175,7 +175,7 @@ func TestHandler_OIDC_AdminDisableOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -191,7 +191,7 @@ func TestHandler_OIDC_AdminSetDefaultOIDCProvider_Forbidden(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()

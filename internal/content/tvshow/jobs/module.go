@@ -3,7 +3,7 @@ package jobs
 import (
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
@@ -30,7 +30,7 @@ type WorkerProviderParams struct {
 	MetadataProvider tvshow.MetadataProvider      `optional:"true"`
 	SearchService    *search.TVShowSearchService  `optional:"true"`
 	JobClient        *infrajobs.Client
-	Logger           *zap.Logger
+	Logger           *slog.Logger
 }
 
 // provideLibraryScanWorker creates a library scan worker with optional metadata provider.
@@ -87,5 +87,5 @@ type RegisterWorkersParams struct {
 	SeriesRefreshWorker   *SeriesRefreshWorker
 	TVShowService         tvshow.Service
 	MetadataProvider      tvshow.MetadataProvider `optional:"true"`
-	Logger                *zap.Logger
+	Logger                *slog.Logger
 }

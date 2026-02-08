@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
@@ -18,7 +18,7 @@ func TestHandler_ListLibraries_NoAuth(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -38,7 +38,7 @@ func TestHandler_CreateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -59,7 +59,7 @@ func TestHandler_GetLibrary_NoAuth(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -80,7 +80,7 @@ func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -102,7 +102,7 @@ func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -123,7 +123,7 @@ func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -145,7 +145,7 @@ func TestHandler_ListLibraryScans_NoAuth(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -166,7 +166,7 @@ func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -187,7 +187,7 @@ func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()
@@ -212,7 +212,7 @@ func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
 	ctx := context.Background()

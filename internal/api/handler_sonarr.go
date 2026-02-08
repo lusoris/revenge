@@ -6,7 +6,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/integration/sonarr"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // sonarrService is an optional dependency for Sonarr integration.
@@ -90,8 +90,8 @@ func (h *Handler) AdminGetSonarrStatus(ctx context.Context) (ogen.AdminGetSonarr
 	}
 
 	h.logger.Info("Sonarr status retrieved",
-		zap.Bool("connected", connected),
-		zap.Bool("sync_running", syncStatus.IsRunning))
+		slog.Bool("connected", connected),
+		slog.Bool("sync_running", syncStatus.IsRunning))
 
 	return response, nil
 }
@@ -132,7 +132,7 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 			Operation: sonarr.SonarrSyncOperationFull,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Sonarr sync job", zap.Error(err))
+			h.logger.Error("Failed to queue Sonarr sync job", slog.Any("error",err))
 			return &ogen.AdminTriggerSonarrSyncServiceUnavailable{
 				Code:    503,
 				Message: "Failed to queue sync job",
@@ -153,7 +153,7 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 		defer cancel()
 
 		if _, err := h.sonarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Sonarr sync failed", zap.Error(err))
+			h.logger.Error("Sonarr sync failed", slog.Any("error",err))
 		}
 	}()
 
@@ -187,7 +187,7 @@ func (h *Handler) AdminGetSonarrQualityProfiles(ctx context.Context) (ogen.Admin
 
 	profiles, err := h.sonarrService.GetQualityProfiles(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get quality profiles from Sonarr", zap.Error(err))
+		h.logger.Error("Failed to get quality profiles from Sonarr", slog.Any("error",err))
 		return &ogen.AdminGetSonarrQualityProfilesServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Sonarr",
@@ -205,7 +205,7 @@ func (h *Handler) AdminGetSonarrQualityProfiles(ctx context.Context) (ogen.Admin
 		})
 	}
 
-	h.logger.Info("Retrieved quality profiles from Sonarr", zap.Int("count", len(ogenProfiles)))
+	h.logger.Info("Retrieved quality profiles from Sonarr", slog.Int("count", len(ogenProfiles)))
 	return &ogen.SonarrQualityProfileList{
 		Profiles: ogenProfiles,
 	}, nil
@@ -234,7 +234,7 @@ func (h *Handler) AdminGetSonarrRootFolders(ctx context.Context) (ogen.AdminGetS
 
 	folders, err := h.sonarrService.GetRootFolders(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get root folders from Sonarr", zap.Error(err))
+		h.logger.Error("Failed to get root folders from Sonarr", slog.Any("error",err))
 		return &ogen.AdminGetSonarrRootFoldersServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Sonarr",
@@ -251,7 +251,7 @@ func (h *Handler) AdminGetSonarrRootFolders(ctx context.Context) (ogen.AdminGetS
 		})
 	}
 
-	h.logger.Info("Retrieved root folders from Sonarr", zap.Int("count", len(ogenFolders)))
+	h.logger.Info("Retrieved root folders from Sonarr", slog.Int("count", len(ogenFolders)))
 	return &ogen.SonarrRootFolderList{
 		Folders: ogenFolders,
 	}, nil
@@ -260,7 +260,7 @@ func (h *Handler) AdminGetSonarrRootFolders(ctx context.Context) (ogen.AdminGetS
 // HandleSonarrWebhook handles incoming webhook events from Sonarr.
 // POST /api/v1/webhooks/sonarr
 func (h *Handler) HandleSonarrWebhook(ctx context.Context, req *ogen.SonarrWebhookPayload) (ogen.HandleSonarrWebhookRes, error) {
-	h.logger.Debug("HandleSonarrWebhook called", zap.String("event_type", string(req.EventType)))
+	h.logger.Debug("HandleSonarrWebhook called", slog.String("event_type", string(req.EventType)))
 
 	// Convert ogen types to internal types
 	payload := convertSonarrWebhookPayload(req)
@@ -271,14 +271,14 @@ func (h *Handler) HandleSonarrWebhook(ctx context.Context, req *ogen.SonarrWebho
 			Payload: *payload,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Sonarr webhook job", zap.Error(err))
+			h.logger.Error("Failed to queue Sonarr webhook job", slog.Any("error",err))
 			return &ogen.Error{
 				Code:    400,
 				Message: "Failed to process webhook",
 			}, nil
 		}
 
-		h.logger.Info("Sonarr webhook queued", zap.String("event", string(req.EventType)))
+		h.logger.Info("Sonarr webhook queued", slog.String("event", string(req.EventType)))
 		return &ogen.HandleSonarrWebhookAccepted{}, nil
 	}
 

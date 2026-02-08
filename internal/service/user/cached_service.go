@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -14,15 +14,15 @@ import (
 type CachedService struct {
 	*Service
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedService creates a new cached user service.
-func NewCachedService(svc *Service, c *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc *Service, c *cache.Cache, logger *slog.Logger) *CachedService {
 	return &CachedService{
 		Service: svc,
 		cache:   c,
-		logger:  logger.Named("user-cache"),
+		logger:  logger.With("component", "user-cache"),
 	}
 }
 
@@ -36,11 +36,11 @@ func (s *CachedService) GetUser(ctx context.Context, userID uuid.UUID) (*db.Shar
 
 	var user db.SharedUser
 	if err := s.cache.GetJSON(ctx, cacheKey, &user); err == nil {
-		s.logger.Debug("user cache hit", zap.String("id", userID.String()))
+		s.logger.Debug("user cache hit", slog.String("id", userID.String()))
 		return &user, nil
 	}
 
-	s.logger.Debug("user cache miss", zap.String("id", userID.String()))
+	s.logger.Debug("user cache miss", slog.String("id", userID.String()))
 
 	result, err := s.Service.GetUser(ctx, userID)
 	if err != nil {
@@ -52,7 +52,7 @@ func (s *CachedService) GetUser(ctx context.Context, userID uuid.UUID) (*db.Shar
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.UserTTL); setErr != nil {
-			s.logger.Warn("failed to cache user", zap.Error(setErr))
+			s.logger.Warn("failed to cache user", slog.Any("error",setErr))
 		}
 	}()
 
@@ -69,7 +69,7 @@ func (s *CachedService) GetUserByUsername(ctx context.Context, username string) 
 
 	var user db.SharedUser
 	if err := s.cache.GetJSON(ctx, cacheKey, &user); err == nil {
-		s.logger.Debug("user by name cache hit", zap.String("username", username))
+		s.logger.Debug("user by name cache hit", slog.String("username", username))
 		return &user, nil
 	}
 
@@ -83,7 +83,7 @@ func (s *CachedService) GetUserByUsername(ctx context.Context, username string) 
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.UserTTL); setErr != nil {
-			s.logger.Warn("failed to cache user by name", zap.Error(setErr))
+			s.logger.Warn("failed to cache user by name", slog.Any("error",setErr))
 		}
 	}()
 
@@ -105,7 +105,7 @@ func (s *CachedService) UpdateUser(ctx context.Context, userID uuid.UUID, params
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateUser(cacheCtx, userID.String()); err != nil {
-				s.logger.Warn("failed to invalidate user cache", zap.Error(err))
+				s.logger.Warn("failed to invalidate user cache", slog.Any("error",err))
 			}
 		}()
 	}
@@ -129,11 +129,11 @@ func (s *CachedService) DeleteUser(ctx context.Context, userID uuid.UUID) error 
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateUser(cacheCtx, userID.String()); err != nil {
-				s.logger.Warn("failed to invalidate user cache", zap.Error(err))
+				s.logger.Warn("failed to invalidate user cache", slog.Any("error",err))
 			}
 			if user != nil {
 				if err := s.cache.Delete(cacheCtx, cache.UserByNameKey(user.Username)); err != nil {
-					s.logger.Warn("failed to invalidate user by name cache", zap.Error(err))
+					s.logger.Warn("failed to invalidate user by name cache", slog.Any("error",err))
 				}
 			}
 		}()

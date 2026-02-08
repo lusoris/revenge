@@ -30,12 +30,12 @@ import (
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // Handler implements the ogen.Handler interface for health check endpoints.
 type Handler struct {
-	logger          *zap.Logger
+	logger          *slog.Logger
 	cfg             *config.Config
 	healthService   *health.Service
 	settingsService settings.Service
@@ -68,19 +68,19 @@ type riverClient interface {
 // HandleApiKeyAuth implements the SecurityHandler interface.
 // Validates API keys from the X-API-Key header and injects user context.
 func (h *Handler) HandleApiKeyAuth(ctx context.Context, operationName ogen.OperationName, t ogen.ApiKeyAuth) (context.Context, error) {
-	h.logger.Debug("API key auth requested", zap.String("operation", string(operationName)))
+	h.logger.Debug("API key auth requested", slog.String("operation", string(operationName)))
 
 	key, err := h.apikeyService.ValidateKey(ctx, t.APIKey)
 	if err != nil {
-		h.logger.Warn("Invalid API key", zap.Error(err))
+		h.logger.Warn("Invalid API key", slog.Any("error",err))
 		return nil, errors.Wrap(err, "invalid API key")
 	}
 
 	ctx = WithUserID(ctx, key.UserID)
 
 	h.logger.Debug("API key validated successfully",
-		zap.String("user_id", key.UserID.String()),
-		zap.String("key_name", key.Name))
+		slog.String("user_id", key.UserID.String()),
+		slog.String("key_name", key.Name))
 
 	return ctx, nil
 }
@@ -88,12 +88,12 @@ func (h *Handler) HandleApiKeyAuth(ctx context.Context, operationName ogen.Opera
 // HandleBearerAuth implements the SecurityHandler interface.
 // Validates JWT access tokens and injects user context.
 func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.OperationName, t ogen.BearerAuth) (context.Context, error) {
-	h.logger.Debug("Bearer auth requested", zap.String("operation", string(operationName)))
+	h.logger.Debug("Bearer auth requested", slog.String("operation", string(operationName)))
 
 	// Validate JWT token
 	claims, err := h.tokenManager.ValidateAccessToken(t.Token)
 	if err != nil {
-		h.logger.Warn("Invalid JWT token", zap.Error(err))
+		h.logger.Warn("Invalid JWT token", slog.Any("error",err))
 		return nil, errors.Wrap(err, "invalid token")
 	}
 
@@ -102,8 +102,8 @@ func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.Opera
 	ctx = WithUsername(ctx, claims.Username)
 
 	h.logger.Debug("JWT validated successfully",
-		zap.String("user_id", claims.UserID.String()),
-		zap.String("username", claims.Username))
+		slog.String("user_id", claims.UserID.String()),
+		slog.String("username", claims.Username))
 
 	return ctx, nil
 }
@@ -166,9 +166,28 @@ func (h *Handler) GetStartup(ctx context.Context) (ogen.GetStartupRes, error) {
 	return (*ogen.GetStartupServiceUnavailable)(healthCheck), nil
 }
 
+// statusCoder is implemented by errors that carry an HTTP status code.
+type statusCoder interface {
+	StatusCode() int
+}
+
 // NewError creates an error response for failed requests.
 func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode {
-	h.logger.Error("Request error", zap.Error(err))
+	// Check if error carries its own status code (e.g. rate limit 429)
+	var sc statusCoder
+	if errors.As(err, &sc) {
+		code := sc.StatusCode()
+		h.logger.Warn("Request error", slog.Int("status", code), slog.Any("error", err))
+		return &ogen.ErrorStatusCode{
+			StatusCode: code,
+			Response: ogen.Error{
+				Code:    code,
+				Message: err.Error(),
+			},
+		}
+	}
+
+	h.logger.Error("Request error", slog.Any("error", err))
 
 	return &ogen.ErrorStatusCode{
 		StatusCode: 500,
@@ -197,7 +216,7 @@ func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettin
 
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
-		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
 		return &ogen.ListServerSettingsForbidden{
 			Code:    500,
 			Message: "Failed to check permissions",
@@ -225,7 +244,7 @@ func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettin
 
 // GetServerSetting retrieves a specific server setting (admin only).
 func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSettingParams) (ogen.GetServerSettingRes, error) {
-	h.logger.Debug("Get server setting requested", zap.String("key", params.Key))
+	h.logger.Debug("Get server setting requested", slog.String("key", params.Key))
 
 	userID, ok := h.getUserID(ctx)
 	if !ok {
@@ -237,7 +256,7 @@ func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSet
 
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
-		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
 		return &ogen.GetServerSettingForbidden{
 			Code:    500,
 			Message: "Failed to check permissions",
@@ -261,7 +280,7 @@ func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSet
 
 // UpdateServerSetting updates a server setting value (admin only).
 func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateServerSettingParams) (ogen.UpdateServerSettingRes, error) {
-	h.logger.Debug("Update server setting requested", zap.String("key", params.Key))
+	h.logger.Debug("Update server setting requested", slog.String("key", params.Key))
 
 	userID, ok := h.getUserID(ctx)
 	if !ok {
@@ -273,7 +292,7 @@ func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValu
 
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
-		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
 		return &ogen.UpdateServerSettingForbidden{
 			Code:    500,
 			Message: "Failed to check permissions",
@@ -323,7 +342,7 @@ func (h *Handler) ListUserSettings(ctx context.Context) (ogen.ListUserSettingsRe
 
 // GetUserSetting retrieves a specific user setting.
 func (h *Handler) GetUserSetting(ctx context.Context, params ogen.GetUserSettingParams) (ogen.GetUserSettingRes, error) {
-	h.logger.Debug("Get user setting requested", zap.String("key", params.Key))
+	h.logger.Debug("Get user setting requested", slog.String("key", params.Key))
 
 	userID, err := GetUserID(ctx)
 	if err != nil {
@@ -341,7 +360,7 @@ func (h *Handler) GetUserSetting(ctx context.Context, params ogen.GetUserSetting
 
 // UpdateUserSetting updates a user setting value.
 func (h *Handler) UpdateUserSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateUserSettingParams) (ogen.UpdateUserSettingRes, error) {
-	h.logger.Debug("Update user setting requested", zap.String("key", params.Key))
+	h.logger.Debug("Update user setting requested", slog.String("key", params.Key))
 
 	userID, err := GetUserID(ctx)
 	if err != nil {
@@ -359,7 +378,7 @@ func (h *Handler) UpdateUserSetting(ctx context.Context, req *ogen.SettingValue,
 
 // DeleteUserSetting deletes a user setting.
 func (h *Handler) DeleteUserSetting(ctx context.Context, params ogen.DeleteUserSettingParams) (ogen.DeleteUserSettingRes, error) {
-	h.logger.Debug("Delete user setting requested", zap.String("key", params.Key))
+	h.logger.Debug("Delete user setting requested", slog.String("key", params.Key))
 
 	userID, err := GetUserID(ctx)
 	if err != nil {
@@ -523,7 +542,7 @@ func (h *Handler) GetCurrentUser(ctx context.Context) (ogen.GetCurrentUserRes, e
 	// Get user ID from JWT token in context
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("No user ID in context", zap.Error(err))
+		h.logger.Warn("No user ID in context", slog.Any("error",err))
 		return &ogen.Error{
 			Code:    401,
 			Message: "Unauthorized",
@@ -781,13 +800,13 @@ func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (
 	// Upload avatar via service (using the new reader since original was consumed)
 	avatar, err := h.userService.UploadAvatar(ctx, userID, fileReader, metadata)
 	if err != nil {
-		h.logger.Error("Failed to upload avatar", zap.Error(err), zap.String("user_id", userID.String()))
+		h.logger.Error("Failed to upload avatar", slog.Any("error",err), slog.String("user_id", userID.String()))
 		return &ogen.UploadAvatarBadRequest{}, fmt.Errorf("failed to upload avatar: %w", err)
 	}
 
 	h.logger.Info("Avatar uploaded successfully",
-		zap.String("user_id", userID.String()),
-		zap.String("avatar_id", avatar.ID.String()))
+		slog.String("user_id", userID.String()),
+		slog.String("avatar_id", avatar.ID.String()))
 
 	// Build response
 	isCurrent := avatar.IsCurrent != nil && *avatar.IsCurrent
@@ -813,7 +832,7 @@ func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (
 
 // Register handles user registration
 func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen.RegisterRes, error) {
-	h.logger.Info("User registration requested", zap.String("username", req.Username))
+	h.logger.Info("User registration requested", slog.String("username", req.Username))
 
 	// Extract display name if set
 	var displayName *string
@@ -829,14 +848,14 @@ func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen
 		DisplayName: displayName,
 	})
 	if err != nil {
-		h.logger.Warn("Registration failed", zap.Error(err))
+		h.logger.Warn("Registration failed", slog.Any("error",err))
 		return &ogen.Error{
 			Code:    400,
 			Message: fmt.Sprintf("Registration failed: %v", err),
 		}, nil
 	}
 
-	h.logger.Info("User registered successfully", zap.String("user_id", user.ID.String()))
+	h.logger.Info("User registered successfully", slog.String("user_id", user.ID.String()))
 
 	return &ogen.User{
 		ID:            user.ID,
@@ -851,7 +870,7 @@ func (h *Handler) Register(ctx context.Context, req *ogen.RegisterRequest) (ogen
 
 // Login handles user authentication
 func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.LoginRes, error) {
-	h.logger.Info("Login requested", zap.String("username", req.Username))
+	h.logger.Info("Login requested", slog.String("username", req.Username))
 
 	// Extract device name if set
 	var deviceName *string
@@ -874,14 +893,14 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 
 	loginResp, err := h.authService.Login(ctx, req.Username, req.Password, ipAddr, userAgent, deviceName, nil)
 	if err != nil {
-		h.logger.Warn("Login failed", zap.Error(err), zap.String("username", req.Username))
+		h.logger.Warn("Login failed", slog.Any("error",err), slog.String("username", req.Username))
 		return &ogen.LoginUnauthorized{
 			Code:    401,
 			Message: "Invalid username or password",
 		}, nil
 	}
 
-	h.logger.Info("Login successful", zap.String("user_id", loginResp.User.ID.String()))
+	h.logger.Info("Login successful", slog.String("user_id", loginResp.User.ID.String()))
 
 	return &ogen.LoginResponse{
 		User: ogen.User{
@@ -903,23 +922,23 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 func (h *Handler) Logout(ctx context.Context, req *ogen.LogoutRequest) (ogen.LogoutRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Logout: no user in context", zap.Error(err))
+		h.logger.Warn("Logout: no user in context", slog.Any("error",err))
 		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
 	}
 
-	h.logger.Info("Logout requested", zap.String("user_id", userID.String()))
+	h.logger.Info("Logout requested", slog.String("user_id", userID.String()))
 
 	// Logout logic
 	if req.LogoutAll.Value {
 		// Logout from all devices
 		if err := h.authService.LogoutAll(ctx, userID); err != nil {
-			h.logger.Error("Logout all failed", zap.Error(err))
+			h.logger.Error("Logout all failed", slog.Any("error",err))
 			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
 		}
 	} else {
 		// Logout from current device only
 		if err := h.authService.Logout(ctx, req.RefreshToken); err != nil {
-			h.logger.Error("Logout failed", zap.Error(err))
+			h.logger.Error("Logout failed", slog.Any("error",err))
 			return &ogen.Error{}, fmt.Errorf("logout failed: %w", err)
 		}
 	}
@@ -934,7 +953,7 @@ func (h *Handler) RefreshToken(ctx context.Context, req *ogen.RefreshRequest) (o
 	// Refresh access token
 	loginResp, err := h.authService.RefreshToken(ctx, req.RefreshToken)
 	if err != nil {
-		h.logger.Warn("Token refresh failed", zap.Error(err))
+		h.logger.Warn("Token refresh failed", slog.Any("error",err))
 		return &ogen.RefreshTokenUnauthorized{
 			Code:    401,
 			Message: "Invalid or expired refresh token",
@@ -953,7 +972,7 @@ func (h *Handler) VerifyEmail(ctx context.Context, req *ogen.VerifyEmailRequest)
 
 	// Verify email token
 	if err := h.authService.VerifyEmail(ctx, req.Token); err != nil {
-		h.logger.Warn("Email verification failed", zap.Error(err))
+		h.logger.Warn("Email verification failed", slog.Any("error",err))
 		return &ogen.Error{}, fmt.Errorf("verification failed: %w", err)
 	}
 
@@ -965,15 +984,15 @@ func (h *Handler) VerifyEmail(ctx context.Context, req *ogen.VerifyEmailRequest)
 func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificationRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Resend verification: no user in context", zap.Error(err))
+		h.logger.Warn("Resend verification: no user in context", slog.Any("error",err))
 		return &ogen.Error{Code: 401, Message: "Unauthorized"}, nil
 	}
 
-	h.logger.Info("Resend verification requested", zap.String("user_id", userID.String()))
+	h.logger.Info("Resend verification requested", slog.String("user_id", userID.String()))
 
 	// Resend verification email
 	if err := h.authService.ResendVerification(ctx, userID); err != nil {
-		h.logger.Error("Resend verification failed", zap.Error(err))
+		h.logger.Error("Resend verification failed", slog.Any("error",err))
 		return &ogen.Error{}, fmt.Errorf("resend failed: %w", err)
 	}
 
@@ -982,7 +1001,7 @@ func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificati
 
 // ForgotPassword handles password reset request
 func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRequest) (ogen.ForgotPasswordRes, error) {
-	h.logger.Info("Password reset requested", zap.String("email", req.Email))
+	h.logger.Info("Password reset requested", slog.String("email", req.Email))
 
 	// Extract client metadata for security logging
 	meta := middleware.GetRequestMetadata(ctx)
@@ -1001,7 +1020,7 @@ func (h *Handler) ForgotPassword(ctx context.Context, req *ogen.ForgotPasswordRe
 	// Token is never returned - only sent via email to prevent information disclosure
 	err := h.authService.RequestPasswordReset(ctx, req.Email, ipAddr, userAgent)
 	if err != nil {
-		h.logger.Error("Password reset request failed", zap.Error(err))
+		h.logger.Error("Password reset request failed", slog.Any("error",err))
 		// Still return success to avoid email enumeration
 	}
 
@@ -1014,7 +1033,7 @@ func (h *Handler) ResetPassword(ctx context.Context, req *ogen.ResetPasswordRequ
 
 	// Reset password using token
 	if err := h.authService.ResetPassword(ctx, req.Token, req.NewPassword); err != nil {
-		h.logger.Warn("Password reset failed", zap.Error(err))
+		h.logger.Warn("Password reset failed", slog.Any("error",err))
 		return &ogen.Error{}, fmt.Errorf("reset failed: %w", err)
 	}
 
@@ -1026,18 +1045,18 @@ func (h *Handler) ResetPassword(ctx context.Context, req *ogen.ResetPasswordRequ
 func (h *Handler) ChangePassword(ctx context.Context, req *ogen.ChangePasswordRequest) (ogen.ChangePasswordRes, error) {
 	userID, err := GetUserID(ctx)
 	if err != nil {
-		h.logger.Warn("Change password: no user in context", zap.Error(err))
+		h.logger.Warn("Change password: no user in context", slog.Any("error",err))
 		return &ogen.ChangePasswordUnauthorized{
 			Code:    401,
 			Message: "Unauthorized",
 		}, nil
 	}
 
-	h.logger.Info("Password change requested", zap.String("user_id", userID.String()))
+	h.logger.Info("Password change requested", slog.String("user_id", userID.String()))
 
 	// Change password
 	if err := h.authService.ChangePassword(ctx, userID, req.OldPassword, req.NewPassword); err != nil {
-		h.logger.Warn("Password change failed", zap.Error(err))
+		h.logger.Warn("Password change failed", slog.Any("error",err))
 		return &ogen.ChangePasswordBadRequest{
 			Code:    400,
 			Message: fmt.Sprintf("Password change failed: %v", err),

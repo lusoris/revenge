@@ -9,12 +9,12 @@ import (
 	"errors"
 	"fmt"
 	"image/png"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -24,7 +24,7 @@ import (
 type TOTPService struct {
 	queries   *db.Queries
 	encryptor *crypto.Encryptor
-	logger    *zap.Logger
+	logger    *slog.Logger
 	issuer    string // Application name shown in authenticator apps
 }
 
@@ -32,7 +32,7 @@ type TOTPService struct {
 func NewTOTPService(
 	queries *db.Queries,
 	encryptor *crypto.Encryptor,
-	logger *zap.Logger,
+	logger *slog.Logger,
 	issuer string,
 ) *TOTPService {
 	return &TOTPService{
@@ -117,8 +117,8 @@ func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, acco
 	}
 
 	s.logger.Info("generated TOTP secret",
-		zap.String("user_id", userID.String()),
-		zap.String("issuer", s.issuer),
+		slog.String("user_id", userID.String()),
+		slog.String("issuer", s.issuer),
 	)
 
 	return &TOTPSetup{
@@ -146,7 +146,7 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 	valid := totp.Validate(code, secretBase32)
 	if !valid {
 		s.logger.Debug("invalid TOTP code",
-			zap.String("user_id", userID.String()),
+			slog.String("user_id", userID.String()),
 		)
 		return false, nil
 	}
@@ -154,8 +154,8 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 	// Update last used timestamp
 	if err := s.queries.UpdateTOTPLastUsed(ctx, userID); err != nil {
 		s.logger.Error("failed to update TOTP last used",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		// Don't fail verification if we can't update timestamp
 	}
@@ -167,7 +167,7 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 		}
 
 		s.logger.Info("TOTP verified and enabled",
-			zap.String("user_id", userID.String()),
+			slog.String("user_id", userID.String()),
 		)
 	}
 
@@ -181,7 +181,7 @@ func (s *TOTPService) EnableTOTP(ctx context.Context, userID uuid.UUID) error {
 	}
 
 	s.logger.Info("TOTP enabled",
-		zap.String("user_id", userID.String()),
+		slog.String("user_id", userID.String()),
 	)
 
 	return nil
@@ -194,7 +194,7 @@ func (s *TOTPService) DisableTOTP(ctx context.Context, userID uuid.UUID) error {
 	}
 
 	s.logger.Info("TOTP disabled",
-		zap.String("user_id", userID.String()),
+		slog.String("user_id", userID.String()),
 	)
 
 	return nil
@@ -207,7 +207,7 @@ func (s *TOTPService) DeleteTOTP(ctx context.Context, userID uuid.UUID) error {
 	}
 
 	s.logger.Info("TOTP deleted",
-		zap.String("user_id", userID.String()),
+		slog.String("user_id", userID.String()),
 	)
 
 	return nil

@@ -2,10 +2,10 @@ package mfa
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
@@ -28,7 +28,7 @@ var Module = fx.Module(
 func NewTOTPServiceFromConfig(
 	queries *db.Queries,
 	encryptor *crypto.Encryptor,
-	logger *zap.Logger,
+	logger *slog.Logger,
 	cfg *config.Config,
 ) *TOTPService {
 	// Use application name as issuer
@@ -39,7 +39,7 @@ func NewTOTPServiceFromConfig(
 // NewWebAuthnServiceFromConfig creates a WebAuthn service with config.
 func NewWebAuthnServiceFromConfig(
 	queries *db.Queries,
-	logger *zap.Logger,
+	logger *slog.Logger,
 	cfg *config.Config,
 	cacheClient *cache.Client,
 ) (*WebAuthnService, error) {
@@ -58,7 +58,7 @@ func NewWebAuthnServiceFromConfig(
 		var err error
 		sessionCache, err = cache.NewNamedCache(cacheClient, 1000, 5*time.Minute, "webauthn")
 		if err != nil {
-			logger.Warn("failed to create webauthn session cache, sessions will not be cached", zap.Error(err))
+			logger.Warn("failed to create webauthn session cache, sessions will not be cached", slog.Any("error",err))
 		}
 	}
 

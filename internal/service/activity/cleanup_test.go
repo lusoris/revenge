@@ -9,13 +9,12 @@ import (
 
 	"github.com/google/uuid"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zaptest"
 )
 
 // mockRepository implements the Repository interface for same-package unit testing.
@@ -151,7 +150,7 @@ func newTestJob(id int64, args ActivityCleanupArgs) *river.Job[ActivityCleanupAr
 
 func newTestServiceWithMock(t *testing.T, repo *mockRepository) *Service {
 	t.Helper()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	return NewService(repo, logger)
 }
 
@@ -181,7 +180,7 @@ func TestNewActivityCleanupWorker(t *testing.T) {
 	t.Parallel()
 	repo := &mockRepository{}
 	svc := newTestServiceWithMock(t, repo)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	worker := NewActivityCleanupWorker(nil, svc, logger)
 
@@ -197,7 +196,7 @@ func TestNewActivityCleanupWorker_WithLeaderElection(t *testing.T) {
 	// LeaderElection with nil raft still works (single-node mode)
 	repo := &mockRepository{}
 	svc := newTestServiceWithMock(t, repo)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	// nil leader election means single-node mode
 	worker := NewActivityCleanupWorker(nil, svc, logger)
@@ -213,7 +212,7 @@ func TestActivityCleanupWorker_Timeout(t *testing.T) {
 	t.Parallel()
 	repo := &mockRepository{}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zap.NewNop())
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(1, ActivityCleanupArgs{RetentionDays: 90})
 	timeout := worker.Timeout(job)
@@ -236,7 +235,7 @@ func TestActivityCleanupWorker_Work_NilLeaderElection(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(1, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
@@ -256,7 +255,7 @@ func TestActivityCleanupWorker_Work_DefaultRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	// RetentionDays <= 0 should default to 90
 	job := newTestJob(2, ActivityCleanupArgs{RetentionDays: 0})
@@ -280,7 +279,7 @@ func TestActivityCleanupWorker_Work_NegativeRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	// Negative retention days should also default to 90
 	job := newTestJob(3, ActivityCleanupArgs{RetentionDays: -5})
@@ -303,7 +302,7 @@ func TestActivityCleanupWorker_Work_CustomRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(4, ActivityCleanupArgs{RetentionDays: 60})
 	before := time.Now()
@@ -330,7 +329,7 @@ func TestActivityCleanupWorker_Work_DryRun(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(5, ActivityCleanupArgs{
 		RetentionDays: 30,
@@ -352,7 +351,7 @@ func TestActivityCleanupWorker_Work_DryRunError(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(6, ActivityCleanupArgs{
 		RetentionDays: 30,
@@ -373,7 +372,7 @@ func TestActivityCleanupWorker_Work_DeleteError(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	job := newTestJob(7, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
@@ -402,7 +401,7 @@ func TestActivityCleanupWorker_Work_NotLeader(t *testing.T) {
 	svc := newTestServiceWithMock(t, repo)
 
 	// When leaderElection is nil, the worker should proceed (single-node mode)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 	job := newTestJob(8, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
 
@@ -425,7 +424,7 @@ func TestActivityCleanupWorker_Work_LeaderElectionNilRaft(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(le, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(le, svc, logging.NewTestLogger())
 
 	job := newTestJob(9, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
@@ -445,7 +444,7 @@ func TestActivityCleanupWorker_Work_DryRunDefaultRetention(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, zaptest.NewLogger(t))
+	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
 
 	// DryRun with 0 retention days should default to 90
 	job := newTestJob(10, ActivityCleanupArgs{
@@ -1272,7 +1271,7 @@ func TestNoopLogger_WithMockRepo(t *testing.T) {
 func TestNewService_WithMockRepo(t *testing.T) {
 	t.Parallel()
 	repo := &mockRepository{}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	svc := NewService(repo, logger)
 

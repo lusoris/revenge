@@ -7,12 +7,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/netip"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/crypto"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
@@ -35,11 +35,11 @@ var (
 type BackupCodesService struct {
 	queries *db.Queries
 	hasher  *crypto.PasswordHasher
-	logger  *zap.Logger
+	logger  *slog.Logger
 }
 
 // NewBackupCodesService creates a new backup codes service.
-func NewBackupCodesService(queries *db.Queries, logger *zap.Logger) *BackupCodesService {
+func NewBackupCodesService(queries *db.Queries, logger *slog.Logger) *BackupCodesService {
 	return &BackupCodesService{
 		queries: queries,
 		hasher:  crypto.NewPasswordHasher(),
@@ -88,8 +88,8 @@ func (s *BackupCodesService) GenerateCodes(ctx context.Context, userID uuid.UUID
 	}
 
 	s.logger.Info("backup codes generated",
-		zap.String("user_id", userID.String()),
-		zap.Int64("count", count))
+		slog.String("user_id", userID.String()),
+		slog.Int64("count", count))
 
 	return codes, nil
 }
@@ -103,7 +103,7 @@ func (s *BackupCodesService) RegenerateCodes(ctx context.Context, userID uuid.UU
 	}
 
 	s.logger.Info("deleted existing backup codes",
-		zap.String("user_id", userID.String()))
+		slog.String("user_id", userID.String()))
 
 	// Generate new codes
 	return s.GenerateCodes(ctx, userID)
@@ -140,8 +140,8 @@ func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, c
 
 	if matchedCodeID == nil {
 		s.logger.Warn("invalid backup code attempt",
-			zap.String("user_id", userID.String()),
-			zap.String("client_ip", clientIP))
+			slog.String("user_id", userID.String()),
+			slog.String("client_ip", clientIP))
 		return false, nil
 	}
 
@@ -151,8 +151,8 @@ func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, c
 		// If IP parsing fails, use unspecified address
 		ipAddr = netip.Addr{}
 		s.logger.Warn("failed to parse client IP",
-			zap.String("client_ip", clientIP),
-			zap.Error(err))
+			slog.String("client_ip", clientIP),
+			slog.Any("error",err))
 	}
 
 	err = s.queries.UseBackupCode(ctx, db.UseBackupCodeParams{
@@ -165,9 +165,9 @@ func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, c
 	}
 
 	s.logger.Info("backup code verified and used",
-		zap.String("user_id", userID.String()),
-		zap.String("code_id", matchedCodeID.String()),
-		zap.String("client_ip", clientIP))
+		slog.String("user_id", userID.String()),
+		slog.String("code_id", matchedCodeID.String()),
+		slog.String("client_ip", clientIP))
 
 	return true, nil
 }
@@ -194,7 +194,7 @@ func (s *BackupCodesService) DeleteAllCodes(ctx context.Context, userID uuid.UUI
 	}
 
 	s.logger.Info("deleted all backup codes",
-		zap.String("user_id", userID.String()))
+		slog.String("user_id", userID.String()))
 
 	return nil
 }

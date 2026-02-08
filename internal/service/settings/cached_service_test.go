@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -21,7 +21,7 @@ func setupCachedTestService(t *testing.T) (*CachedService, testutil.DB) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cachedSvc := NewCachedService(svc, testCache, zap.NewNop())
+	cachedSvc := NewCachedService(svc, testCache, logging.NewTestLogger())
 	return cachedSvc, testDB
 }
 
@@ -32,7 +32,7 @@ func TestNewCachedService(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 	require.NotNil(t, cached)
 	assert.NotNil(t, cached.Service)
 	assert.NotNil(t, cached.cache)
@@ -71,7 +71,7 @@ func TestCachedService_GetServerSetting_NoCache(t *testing.T) {
 	ctx := context.Background()
 
 	// Create cached service without cache (nil cache)
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	userID := createTestUser(t, testDB)
 
@@ -114,7 +114,7 @@ func TestCachedService_ListServerSettings_NoCache(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	// Should work without cache
 	settings, err := cachedSvc.ListServerSettings(ctx)
@@ -149,7 +149,7 @@ func TestCachedService_ListPublicServerSettings_NoCache(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	// Should work without cache
 	settings, err := cachedSvc.ListPublicServerSettings(ctx)
@@ -239,7 +239,7 @@ func TestCachedService_GetUserSetting_NoCache(t *testing.T) {
 	svc, testDB := setupTestService(t)
 	ctx := context.Background()
 
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	userID := createTestUser(t, testDB)
 

@@ -3,16 +3,16 @@ package moviejobs
 import (
 	"testing"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestRegisterWorkers(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	workers := river.NewWorkers()
 
 	metadataRefreshWorker := NewMovieMetadataRefreshWorker(nil, nil, logger)
@@ -27,7 +27,7 @@ func TestRegisterWorkers(t *testing.T) {
 func TestRegisterWorkers_ReturnsNil(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	workers := river.NewWorkers()
 
 	metadataRefreshWorker := NewMovieMetadataRefreshWorker(nil, nil, logger)

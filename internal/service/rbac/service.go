@@ -3,25 +3,25 @@ package rbac
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/service/activity"
-	"go.uber.org/zap"
 )
 
 // Service provides RBAC functionality using Casbin.
 type Service struct {
 	enforcer       *casbin.SyncedEnforcer
-	logger         *zap.Logger
+	logger         *slog.Logger
 	activityLogger activity.Logger
 }
 
 // NewService creates a new RBAC service.
-func NewService(enforcer *casbin.SyncedEnforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
+func NewService(enforcer *casbin.SyncedEnforcer, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return &Service{
 		enforcer:       enforcer,
-		logger:         logger.Named("rbac"),
+		logger:         logger.With("component", "rbac"),
 		activityLogger: activityLogger,
 	}
 }
@@ -31,19 +31,19 @@ func (s *Service) Enforce(ctx context.Context, sub, obj, act string) (bool, erro
 	allowed, err := s.enforcer.Enforce(sub, obj, act)
 	if err != nil {
 		s.logger.Error("failed to enforce policy",
-			zap.String("subject", sub),
-			zap.String("object", obj),
-			zap.String("action", act),
-			zap.Error(err),
+			slog.String("subject", sub),
+			slog.String("object", obj),
+			slog.String("action", act),
+			slog.Any("error",err),
 		)
 		return false, fmt.Errorf("failed to enforce policy: %w", err)
 	}
 
 	s.logger.Debug("policy enforcement",
-		zap.String("subject", sub),
-		zap.String("object", obj),
-		zap.String("action", act),
-		zap.Bool("allowed", allowed),
+		slog.String("subject", sub),
+		slog.String("object", obj),
+		slog.String("action", act),
+		slog.Bool("allowed", allowed),
 	)
 
 	return allowed, nil
@@ -60,26 +60,26 @@ func (s *Service) AddPolicy(ctx context.Context, sub, obj, act string) error {
 	added, err := s.enforcer.AddPolicy(sub, obj, act)
 	if err != nil {
 		s.logger.Error("failed to add policy",
-			zap.String("subject", sub),
-			zap.String("object", obj),
-			zap.String("action", act),
-			zap.Error(err),
+			slog.String("subject", sub),
+			slog.String("object", obj),
+			slog.String("action", act),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("failed to add policy: %w", err)
 	}
 
 	if !added {
 		s.logger.Warn("policy already exists",
-			zap.String("subject", sub),
-			zap.String("object", obj),
-			zap.String("action", act),
+			slog.String("subject", sub),
+			slog.String("object", obj),
+			slog.String("action", act),
 		)
 	}
 
 	s.logger.Info("policy added",
-		zap.String("subject", sub),
-		zap.String("object", obj),
-		zap.String("action", act),
+		slog.String("subject", sub),
+		slog.String("object", obj),
+		slog.String("action", act),
 	)
 
 	return nil
@@ -90,27 +90,27 @@ func (s *Service) RemovePolicy(ctx context.Context, sub, obj, act string) error 
 	removed, err := s.enforcer.RemovePolicy(sub, obj, act)
 	if err != nil {
 		s.logger.Error("failed to remove policy",
-			zap.String("subject", sub),
-			zap.String("object", obj),
-			zap.String("action", act),
-			zap.Error(err),
+			slog.String("subject", sub),
+			slog.String("object", obj),
+			slog.String("action", act),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("failed to remove policy: %w", err)
 	}
 
 	if !removed {
 		s.logger.Warn("policy not found",
-			zap.String("subject", sub),
-			zap.String("object", obj),
-			zap.String("action", act),
+			slog.String("subject", sub),
+			slog.String("object", obj),
+			slog.String("action", act),
 		)
 		return fmt.Errorf("policy not found")
 	}
 
 	s.logger.Info("policy removed",
-		zap.String("subject", sub),
-		zap.String("object", obj),
-		zap.String("action", act),
+		slog.String("subject", sub),
+		slog.String("object", obj),
+		slog.String("action", act),
 	)
 
 	return nil
@@ -120,10 +120,10 @@ func (s *Service) RemovePolicy(ctx context.Context, sub, obj, act string) error 
 func (s *Service) GetPolicies(ctx context.Context) ([][]string, error) {
 	policies, err := s.enforcer.GetPolicy()
 	if err != nil {
-		s.logger.Error("failed to get policies", zap.Error(err))
+		s.logger.Error("failed to get policies", slog.Any("error",err))
 		return nil, fmt.Errorf("failed to get policies: %w", err)
 	}
-	s.logger.Debug("retrieved policies", zap.Int("count", len(policies)))
+	s.logger.Debug("retrieved policies", slog.Int("count", len(policies)))
 	return policies, nil
 }
 
@@ -132,23 +132,23 @@ func (s *Service) AssignRole(ctx context.Context, userID uuid.UUID, role string)
 	added, err := s.enforcer.AddRoleForUser(userID.String(), role)
 	if err != nil {
 		s.logger.Error("failed to assign role",
-			zap.String("user_id", userID.String()),
-			zap.String("role", role),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("role", role),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("failed to assign role: %w", err)
 	}
 
 	if !added {
 		s.logger.Warn("role already assigned",
-			zap.String("user_id", userID.String()),
-			zap.String("role", role),
+			slog.String("user_id", userID.String()),
+			slog.String("role", role),
 		)
 	}
 
 	s.logger.Info("role assigned",
-		zap.String("user_id", userID.String()),
-		zap.String("role", role),
+		slog.String("user_id", userID.String()),
+		slog.String("role", role),
 	)
 
 	// Log role assignment
@@ -170,24 +170,24 @@ func (s *Service) RemoveRole(ctx context.Context, userID uuid.UUID, role string)
 	removed, err := s.enforcer.DeleteRoleForUser(userID.String(), role)
 	if err != nil {
 		s.logger.Error("failed to remove role",
-			zap.String("user_id", userID.String()),
-			zap.String("role", role),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("role", role),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("failed to remove role: %w", err)
 	}
 
 	if !removed {
 		s.logger.Warn("role not found",
-			zap.String("user_id", userID.String()),
-			zap.String("role", role),
+			slog.String("user_id", userID.String()),
+			slog.String("role", role),
 		)
 		return fmt.Errorf("role not found")
 	}
 
 	s.logger.Info("role removed",
-		zap.String("user_id", userID.String()),
-		zap.String("role", role),
+		slog.String("user_id", userID.String()),
+		slog.String("role", role),
 	)
 
 	// Log role removal
@@ -209,15 +209,15 @@ func (s *Service) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string,
 	roles, err := s.enforcer.GetRolesForUser(userID.String())
 	if err != nil {
 		s.logger.Error("failed to get user roles",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return nil, fmt.Errorf("failed to get user roles: %w", err)
 	}
 
 	s.logger.Debug("retrieved user roles",
-		zap.String("user_id", userID.String()),
-		zap.Int("count", len(roles)),
+		slog.String("user_id", userID.String()),
+		slog.Int("count", len(roles)),
 	)
 
 	return roles, nil
@@ -228,8 +228,8 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]uuid.UUID
 	users, err := s.enforcer.GetUsersForRole(role)
 	if err != nil {
 		s.logger.Error("failed to get users for role",
-			zap.String("role", role),
-			zap.Error(err),
+			slog.String("role", role),
+			slog.Any("error",err),
 		)
 		return nil, fmt.Errorf("failed to get users for role: %w", err)
 	}
@@ -239,9 +239,9 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]uuid.UUID
 		userID, err := uuid.Parse(userStr)
 		if err != nil {
 			s.logger.Warn("invalid user ID in role mapping",
-				zap.String("user_str", userStr),
-				zap.String("role", role),
-				zap.Error(err),
+				slog.String("user_str", userStr),
+				slog.String("role", role),
+				slog.Any("error",err),
 			)
 			continue
 		}
@@ -249,8 +249,8 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]uuid.UUID
 	}
 
 	s.logger.Debug("retrieved users for role",
-		zap.String("role", role),
-		zap.Int("count", len(userIDs)),
+		slog.String("role", role),
+		slog.Int("count", len(userIDs)),
 	)
 
 	return userIDs, nil
@@ -261,9 +261,9 @@ func (s *Service) HasRole(ctx context.Context, userID uuid.UUID, role string) (b
 	hasRole, err := s.enforcer.HasRoleForUser(userID.String(), role)
 	if err != nil {
 		s.logger.Error("failed to check user role",
-			zap.String("user_id", userID.String()),
-			zap.String("role", role),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("role", role),
+			slog.Any("error",err),
 		)
 		return false, fmt.Errorf("failed to check user role: %w", err)
 	}
@@ -274,7 +274,7 @@ func (s *Service) HasRole(ctx context.Context, userID uuid.UUID, role string) (b
 // LoadPolicy reloads the policy from the database.
 func (s *Service) LoadPolicy(ctx context.Context) error {
 	if err := s.enforcer.LoadPolicy(); err != nil {
-		s.logger.Error("failed to load policy", zap.Error(err))
+		s.logger.Error("failed to load policy", slog.Any("error",err))
 		return fmt.Errorf("failed to load policy: %w", err)
 	}
 
@@ -285,7 +285,7 @@ func (s *Service) LoadPolicy(ctx context.Context) error {
 // SavePolicy saves the current policy to the database.
 func (s *Service) SavePolicy(ctx context.Context) error {
 	if err := s.enforcer.SavePolicy(); err != nil {
-		s.logger.Error("failed to save policy", zap.Error(err))
+		s.logger.Error("failed to save policy", slog.Any("error",err))
 		return fmt.Errorf("failed to save policy: %w", err)
 	}
 

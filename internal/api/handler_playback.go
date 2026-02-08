@@ -5,7 +5,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // ============================================================================
@@ -53,8 +53,8 @@ func (h *Handler) StartPlaybackSession(ctx context.Context, req *ogen.StartPlayb
 	sess, err := h.playbackService.StartSession(ctx, userID, pbReq)
 	if err != nil {
 		h.logger.Error("failed to start playback session",
-			zap.Error(err),
-			zap.String("user_id", userID.String()),
+			slog.Any("error",err),
+			slog.String("user_id", userID.String()),
 		)
 		return &ogen.StartPlaybackSessionNotFound{
 			Code:    404,

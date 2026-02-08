@@ -12,9 +12,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxtest"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // --- extractStatusFromResponse ---
@@ -153,7 +154,7 @@ func TestModule(t *testing.T) {
 // --- NewServer ---
 
 func TestNewServer_Development(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	lc := fxtest.NewLifecycle(t)
 
@@ -183,7 +184,7 @@ func TestNewServer_Development(t *testing.T) {
 }
 
 func TestNewServer_Production(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	lc := fxtest.NewLifecycle(t)
 
@@ -748,7 +749,7 @@ func TestHTTPMetricsMiddleware_VariousStatuses(t *testing.T) {
 // --- NewServer lifecycle ---
 
 func TestNewServer_HealthEndpoints(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	lc := fxtest.NewLifecycle(t)
 
 	cfg := &config.Config{
@@ -789,7 +790,7 @@ func TestNewServer_HealthEndpoints(t *testing.T) {
 }
 
 func TestNewServer_WithPprof(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	lc := fxtest.NewLifecycle(t)
 
 	cfg := &config.Config{
@@ -819,7 +820,7 @@ func TestServerParams_FxIn(t *testing.T) {
 	// Verify ServerParams has fx.In embedded (compilation check)
 	_ = ServerParams{
 		Config:    &config.Config{},
-		Logger:    zap.NewNop(),
+		Logger:    logging.NewTestLogger(),
 		Lifecycle: fxtest.NewLifecycle(t),
 	}
 }
@@ -827,7 +828,7 @@ func TestServerParams_FxIn(t *testing.T) {
 // --- Server struct ---
 
 func TestServer_Fields(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	lc := fxtest.NewLifecycle(t)
 
 	cfg := &config.Config{
@@ -872,8 +873,8 @@ func TestModule_FxOptions(t *testing.T) {
 					},
 				}
 			}),
-			fx.Provide(func() *zap.Logger {
-				return zap.NewNop()
+			fx.Provide(func() *slog.Logger {
+				return logging.NewTestLogger()
 			}),
 			fx.NopLogger,
 		)

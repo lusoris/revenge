@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/tvshow"
@@ -21,7 +20,7 @@ var Module = fx.Module("sonarr",
 )
 
 // NewClientFromConfig creates a new Sonarr client from configuration.
-func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
+func NewClientFromConfig(cfg *config.Config, logger *slog.Logger) *Client {
 	sonarrCfg := cfg.GetSonarrConfig()
 	if !sonarrCfg.Enabled {
 		logger.Info("sonarr integration disabled")
@@ -30,8 +29,8 @@ func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
 
 	if sonarrCfg.BaseURL == "" || sonarrCfg.APIKey == "" {
 		logger.Warn("sonarr integration enabled but not configured",
-			zap.String("base_url", sonarrCfg.BaseURL),
-			zap.Bool("has_api_key", sonarrCfg.APIKey != ""),
+			slog.String("base_url", sonarrCfg.BaseURL),
+			slog.Bool("has_api_key", sonarrCfg.APIKey != ""),
 		)
 		return nil
 	}
@@ -45,7 +44,7 @@ func NewClientFromConfig(cfg *config.Config, logger *zap.Logger) *Client {
 	})
 
 	logger.Info("sonarr integration initialized",
-		zap.String("base_url", sonarrCfg.BaseURL),
+		slog.String("base_url", sonarrCfg.BaseURL),
 	)
 
 	return client

@@ -6,12 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
+	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
-
-	"github.com/lusoris/revenge/internal/infra/database/db"
-	"github.com/lusoris/revenge/internal/testutil"
 )
 
 func TestNoopLogger(t *testing.T) {
@@ -42,7 +41,7 @@ func setupLoggerTestService(t *testing.T) (*Service, testutil.DB) {
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	svc := NewService(repo, logger)
 	return svc, testDB
 }

@@ -9,11 +9,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func makeTestAPIKey(id, userID uuid.UUID, name string, scopes []string, isActive bool) db.SharedApiKey {
@@ -32,7 +32,7 @@ func makeTestAPIKey(id, userID uuid.UUID, name string, scopes []string, isActive
 }
 
 func setupAPIKeysService(repo apikeys.Repository) *apikeys.Service {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	return apikeys.NewService(repo, logger, 10, 0)
 }
 
@@ -176,7 +176,7 @@ func TestService_ListUserKeys_Short(t *testing.T) {
 			makeTestAPIKey(uuid.Must(uuid.NewV7()), userID, "Key 2", []string{"write"}, true),
 		}
 
-		mockRepo.On("ListUserAPIKeys", mock.Anything, userID).Return(keys, nil)
+		mockRepo.On("ListActiveUserAPIKeys", mock.Anything, userID).Return(keys, nil)
 
 		result, err := svc.ListUserKeys(context.Background(), userID)
 
@@ -190,7 +190,7 @@ func TestService_ListUserKeys_Short(t *testing.T) {
 
 		userID := uuid.Must(uuid.NewV7())
 
-		mockRepo.On("ListUserAPIKeys", mock.Anything, userID).Return(nil, errors.New("db error"))
+		mockRepo.On("ListActiveUserAPIKeys", mock.Anything, userID).Return(nil, errors.New("db error"))
 
 		result, err := svc.ListUserKeys(context.Background(), userID)
 

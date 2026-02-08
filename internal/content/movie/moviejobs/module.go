@@ -3,7 +3,7 @@ package moviejobs
 import (
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/search"
@@ -47,5 +47,5 @@ type RegisterWorkersParams struct {
 	MovieService          movie.Service
 	LibraryService        *movie.LibraryService
 	SearchService         *search.MovieSearchService `optional:"true"`
-	Logger                *zap.Logger
+	Logger                *slog.Logger
 }

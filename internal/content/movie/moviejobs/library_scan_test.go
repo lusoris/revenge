@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -103,7 +103,7 @@ func TestMovieLibraryScanJobKind_Constant(t *testing.T) {
 func TestNewMovieLibraryScanWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieLibraryScanWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -128,7 +128,7 @@ func TestNewMovieLibraryScanWorker_WithNilLogger(t *testing.T) {
 func TestMovieLibraryScanWorker_Kind(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieLibraryScanWorker(nil, logger)
 
 	assert.Equal(t, MovieLibraryScanJobKind, worker.Kind())
@@ -138,7 +138,7 @@ func TestMovieLibraryScanWorker_Kind(t *testing.T) {
 func TestMovieLibraryScanWorker_Kind_MatchesArgs(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, zap.NewNop())
+	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
 	args := MovieLibraryScanArgs{}
 
 	// Worker kind and args kind must match for River to route jobs correctly.
@@ -152,7 +152,7 @@ func TestMovieLibraryScanWorker_Kind_MatchesArgs(t *testing.T) {
 func TestMovieLibraryScanWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, zap.NewNop())
+	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -168,7 +168,7 @@ func TestMovieLibraryScanWorker_Timeout(t *testing.T) {
 func TestMovieLibraryScanWorker_Timeout_ConsistentAcrossCalls(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, zap.NewNop())
+	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
 
 	job1 := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -190,7 +190,7 @@ func TestMovieLibraryScanWorker_Timeout_ConsistentAcrossCalls(t *testing.T) {
 func TestMovieLibraryScanWorker_Work_NilLibraryService(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, zap.NewNop())
+	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -220,7 +220,7 @@ func TestMovieLibraryScanWorker_Work_EmptyLibrary(t *testing.T) {
 		Paths: []string{tempDir},
 	}
 	libSvc := movie.NewLibraryService(nil, nil, libConfig, nil)
-	worker := NewMovieLibraryScanWorker(libSvc, zap.NewNop())
+	worker := NewMovieLibraryScanWorker(libSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},

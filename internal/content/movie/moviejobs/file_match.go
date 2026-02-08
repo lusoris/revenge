@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 )
@@ -28,13 +28,13 @@ func (MovieFileMatchArgs) Kind() string {
 type MovieFileMatchWorker struct {
 	river.WorkerDefaults[MovieFileMatchArgs]
 	libraryService *movie.LibraryService
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewMovieFileMatchWorker creates a new movie file match worker.
 func NewMovieFileMatchWorker(
 	libraryService *movie.LibraryService,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) *MovieFileMatchWorker {
 	return &MovieFileMatchWorker{
 		libraryService: libraryService,
@@ -57,16 +57,16 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 	args := job.Args
 
 	w.logger.Info("starting movie file match",
-		zap.String("file_path", args.FilePath),
-		zap.Bool("force_rematch", args.ForceRematch),
+		slog.String("file_path", args.FilePath),
+		slog.Bool("force_rematch", args.ForceRematch),
 	)
 
 	// Match the file using the library service
 	result, err := w.libraryService.MatchFile(ctx, args.FilePath, args.ForceRematch)
 	if err != nil {
 		w.logger.Error("file match failed",
-			zap.String("file_path", args.FilePath),
-			zap.Error(err),
+			slog.String("file_path", args.FilePath),
+			slog.Any("error",err),
 		)
 		return err
 	}
@@ -74,25 +74,25 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 	// Check for match errors
 	if result.Error != nil {
 		w.logger.Warn("file matched with warnings",
-			zap.String("file_path", args.FilePath),
-			zap.Error(result.Error),
+			slog.String("file_path", args.FilePath),
+			slog.Any("error",result.Error),
 		)
 	}
 
 	// Log match result
 	if result.Movie != nil {
 		w.logger.Info("movie file matched successfully",
-			zap.String("file_path", args.FilePath),
-			zap.String("movie_id", result.Movie.ID.String()),
-			zap.String("movie_title", result.Movie.Title),
-			zap.String("match_type", string(result.MatchType)),
-			zap.Float64("confidence", result.Confidence),
-			zap.Bool("created_new_movie", result.CreatedNewMovie),
+			slog.String("file_path", args.FilePath),
+			slog.String("movie_id", result.Movie.ID.String()),
+			slog.String("movie_title", result.Movie.Title),
+			slog.String("match_type", string(result.MatchType)),
+			slog.Float64("confidence", result.Confidence),
+			slog.Bool("created_new_movie", result.CreatedNewMovie),
 		)
 	} else {
 		w.logger.Warn("file could not be matched",
-			zap.String("file_path", args.FilePath),
-			zap.String("match_type", string(result.MatchType)),
+			slog.String("file_path", args.FilePath),
+			slog.String("match_type", string(result.MatchType)),
 		)
 		return errors.New("file could not be matched to any movie")
 	}

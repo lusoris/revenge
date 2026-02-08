@@ -3,8 +3,9 @@ package library
 import (
 	"context"
 
+	"log/slog"
+
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
@@ -13,15 +14,15 @@ import (
 type CachedService struct {
 	*Service
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedService creates a new cached library service.
-func NewCachedService(svc *Service, c *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc *Service, c *cache.Cache, logger *slog.Logger) *CachedService {
 	return &CachedService{
 		Service: svc,
 		cache:   c,
-		logger:  logger.Named("library-cache"),
+		logger:  logger.With("component", "library-cache"),
 	}
 }
 
@@ -35,7 +36,7 @@ func (s *CachedService) Get(ctx context.Context, id uuid.UUID) (*Library, error)
 
 	var lib Library
 	if err := s.cache.GetJSON(ctx, cacheKey, &lib); err == nil {
-		s.logger.Debug("library cache hit", zap.String("id", id.String()))
+		s.logger.Debug("library cache hit", slog.String("id", id.String()))
 		return &lib, nil
 	}
 
@@ -49,7 +50,7 @@ func (s *CachedService) Get(ctx context.Context, id uuid.UUID) (*Library, error)
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library", zap.Error(setErr))
+			s.logger.Warn("failed to cache library", slog.Any("error",setErr))
 		}
 	}()
 
@@ -79,7 +80,7 @@ func (s *CachedService) List(ctx context.Context) ([]Library, error) {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library list", zap.Error(setErr))
+			s.logger.Warn("failed to cache library list", slog.Any("error",setErr))
 		}
 	}()
 
@@ -109,7 +110,7 @@ func (s *CachedService) Count(ctx context.Context) (int64, error) {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.LibraryStatsTTL); setErr != nil {
-			s.logger.Warn("failed to cache library count", zap.Error(setErr))
+			s.logger.Warn("failed to cache library count", slog.Any("error",setErr))
 		}
 	}()
 
@@ -148,7 +149,7 @@ func (s *CachedService) Update(ctx context.Context, id uuid.UUID, update *Librar
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, id.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache", zap.Error(err))
+				s.logger.Warn("failed to invalidate library cache", slog.Any("error",err))
 			}
 			s.invalidateLibraryLists(cacheCtx)
 		}()
@@ -169,7 +170,7 @@ func (s *CachedService) Delete(ctx context.Context, id uuid.UUID) error {
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, id.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache", zap.Error(err))
+				s.logger.Warn("failed to invalidate library cache", slog.Any("error",err))
 			}
 			s.invalidateLibraryLists(cacheCtx)
 		}()
@@ -191,7 +192,7 @@ func (s *CachedService) CompleteScan(ctx context.Context, scanID uuid.UUID, prog
 			cacheCtx, cancel := context.WithTimeout(context.Background(), cache.SessionTTL)
 			defer cancel()
 			if err := s.cache.InvalidateLibrary(cacheCtx, result.LibraryID.String()); err != nil {
-				s.logger.Warn("failed to invalidate library cache after scan", zap.Error(err))
+				s.logger.Warn("failed to invalidate library cache after scan", slog.Any("error",err))
 			}
 		}()
 	}
@@ -207,7 +208,7 @@ func (s *CachedService) invalidateLibraryLists(ctx context.Context) {
 	}
 	for _, key := range patterns {
 		if err := s.cache.Delete(ctx, key); err != nil {
-			s.logger.Warn("failed to invalidate library list cache", zap.String("key", key), zap.Error(err))
+			s.logger.Warn("failed to invalidate library list cache", slog.String("key", key), slog.Any("error",err))
 		}
 	}
 }

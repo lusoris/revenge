@@ -10,11 +10,11 @@ import (
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 func TestNewRateLimiter(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	config := DefaultRateLimitConfig()
 
 	rl := NewRateLimiter(config, logger)
@@ -94,7 +94,7 @@ func TestRateLimiter_ShouldLimit(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			logger := zap.NewNop()
+			logger := logging.NewTestLogger()
 			rl := NewRateLimiter(tc.config, logger)
 			defer rl.Stop()
 
@@ -105,7 +105,7 @@ func TestRateLimiter_ShouldLimit(t *testing.T) {
 }
 
 func TestRateLimiter_GetLimiter(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	config := DefaultRateLimitConfig()
 	rl := NewRateLimiter(config, logger)
 	defer rl.Stop()
@@ -183,7 +183,7 @@ func TestGetClientIP(t *testing.T) {
 }
 
 func TestRateLimiter_Middleware(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	t.Run("allows requests within limit", func(t *testing.T) {
 		config := RateLimitConfig{
@@ -337,7 +337,7 @@ func TestRateLimitError(t *testing.T) {
 }
 
 func TestRateLimiter_Cleanup(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	config := RateLimitConfig{
 		Enabled:           true,
 		RequestsPerSecond: 10,

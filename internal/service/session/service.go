@@ -6,19 +6,19 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"net/netip"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/errors"
 	"github.com/lusoris/revenge/internal/infra/database/db"
-	"go.uber.org/zap"
 )
 
 // Service handles session management operations
 type Service struct {
 	repo          Repository
-	logger        *zap.Logger
+	logger        *slog.Logger
 	tokenLength   int
 	expiry        time.Duration
 	refreshExpiry time.Duration
@@ -55,9 +55,9 @@ func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInf
 
 	if int(count) >= s.maxPerUser {
 		s.logger.Warn("User has too many active sessions",
-			zap.String("user_id", userID.String()),
-			zap.Int64("count", count),
-			zap.Int("max", s.maxPerUser))
+			slog.String("user_id", userID.String()),
+			slog.Int64("count", count),
+			slog.Int("max", s.maxPerUser))
 		// Optionally revoke oldest session here
 	}
 
@@ -89,8 +89,8 @@ func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInf
 	}
 
 	s.logger.Info("Session created",
-		zap.String("user_id", userID.String()),
-		zap.Int("active_sessions", int(count)+1))
+		slog.String("user_id", userID.String()),
+		slog.Int("active_sessions", int(count)+1))
 
 	return token, refreshToken, nil
 }
@@ -111,8 +111,8 @@ func (s *Service) ValidateSession(ctx context.Context, token string) (*db.Shared
 	// Update activity
 	if err := s.repo.UpdateSessionActivity(ctx, session.ID); err != nil {
 		s.logger.Warn("Failed to update session activity",
-			zap.String("session_id", session.ID.String()),
-			zap.Error(err))
+			slog.String("session_id", session.ID.String()),
+			slog.Any("error",err))
 	}
 
 	return session, nil
@@ -179,10 +179,10 @@ func (s *Service) RefreshSession(ctx context.Context, refreshToken string) (stri
 	reason := "Refresh token rotation"
 	if err := s.repo.RevokeSession(ctx, session.ID, &reason); err != nil {
 		// Log error but don't fail - new session is already valid
-		s.logger.Warn("failed to revoke old session during refresh", zap.Error(err), zap.String("session_id", session.ID.String()))
+		s.logger.Warn("failed to revoke old session during refresh", slog.Any("error",err), slog.String("session_id", session.ID.String()))
 	}
 
-	s.logger.Info("Session refreshed", zap.String("user_id", session.UserID.String()))
+	s.logger.Info("Session refreshed", slog.String("user_id", session.UserID.String()))
 
 	return newToken, newRefreshToken, nil
 }
@@ -209,7 +209,7 @@ func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error 
 		return fmt.Errorf("failed to revoke session: %w", err)
 	}
 
-	s.logger.Info("Session revoked", zap.String("session_id", sessionID.String()))
+	s.logger.Info("Session revoked", slog.String("session_id", sessionID.String()))
 	return nil
 }
 
@@ -220,7 +220,7 @@ func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) e
 		return fmt.Errorf("failed to revoke all user sessions: %w", err)
 	}
 
-	s.logger.Info("All user sessions revoked", zap.String("user_id", userID.String()))
+	s.logger.Info("All user sessions revoked", slog.String("user_id", userID.String()))
 	return nil
 }
 
@@ -232,8 +232,8 @@ func (s *Service) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.U
 	}
 
 	s.logger.Info("Other user sessions revoked",
-		zap.String("user_id", userID.String()),
-		zap.String("kept_session_id", currentSessionID.String()))
+		slog.String("user_id", userID.String()),
+		slog.String("kept_session_id", currentSessionID.String()))
 	return nil
 }
 
@@ -256,9 +256,9 @@ func (s *Service) CleanupExpiredSessions(ctx context.Context) (int, error) {
 	totalDeleted += revokedCount
 
 	s.logger.Info("Session cleanup completed",
-		zap.Int64("expired_deleted", expiredCount),
-		zap.Int64("revoked_deleted", revokedCount),
-		zap.Int64("total_deleted", totalDeleted))
+		slog.Int64("expired_deleted", expiredCount),
+		slog.Int64("revoked_deleted", revokedCount),
+		slog.Int64("total_deleted", totalDeleted))
 
 	return int(totalDeleted), nil
 }

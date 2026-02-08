@@ -15,10 +15,10 @@ import (
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // =============================================================================
@@ -363,7 +363,7 @@ func TestSeriesRefreshArgs_MinimalFields(t *testing.T) {
 func TestNewLibraryScanWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewLibraryScanWorker(nil, nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -376,7 +376,7 @@ func TestNewLibraryScanWorker(t *testing.T) {
 func TestNewMetadataRefreshWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMetadataRefreshWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -388,7 +388,7 @@ func TestNewMetadataRefreshWorker(t *testing.T) {
 func TestNewFileMatchWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewFileMatchWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -400,7 +400,7 @@ func TestNewFileMatchWorker(t *testing.T) {
 func TestNewSearchIndexWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSearchIndexWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -412,7 +412,7 @@ func TestNewSearchIndexWorker(t *testing.T) {
 func TestNewSeriesRefreshWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSeriesRefreshWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -428,7 +428,7 @@ func TestNewSeriesRefreshWorker(t *testing.T) {
 func TestLibraryScanWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewLibraryScanWorker(nil, nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[LibraryScanArgs]{})
@@ -438,7 +438,7 @@ func TestLibraryScanWorker_Timeout(t *testing.T) {
 func TestMetadataRefreshWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMetadataRefreshWorker(nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[MetadataRefreshArgs]{})
@@ -448,7 +448,7 @@ func TestMetadataRefreshWorker_Timeout(t *testing.T) {
 func TestFileMatchWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewFileMatchWorker(nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[FileMatchArgs]{})
@@ -458,7 +458,7 @@ func TestFileMatchWorker_Timeout(t *testing.T) {
 func TestSearchIndexWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSearchIndexWorker(nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[SearchIndexArgs]{})
@@ -468,7 +468,7 @@ func TestSearchIndexWorker_Timeout(t *testing.T) {
 func TestSeriesRefreshWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewSeriesRefreshWorker(nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[SeriesRefreshArgs]{})
@@ -482,7 +482,7 @@ func TestSeriesRefreshWorker_Timeout(t *testing.T) {
 func TestLibraryScanWorker_Work_EmptyPaths(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewLibraryScanWorker(nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
@@ -501,7 +501,7 @@ func TestLibraryScanWorker_Work_EmptyPaths(t *testing.T) {
 func TestLibraryScanWorker_Work_NilPaths(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewLibraryScanWorker(nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
@@ -520,7 +520,7 @@ func TestLibraryScanWorker_Work_NilPaths(t *testing.T) {
 func TestLibraryScanWorker_Work_NonexistentPaths(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewLibraryScanWorker(nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
@@ -545,7 +545,7 @@ func TestLibraryScanWorker_Work_NonexistentPaths(t *testing.T) {
 func TestSearchIndexWorker_Work_SearchDisabled(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	// A nil-client TVShowSearchService will have IsEnabled() return false.
 	searchSvc := &search.TVShowSearchService{}
 	worker := NewSearchIndexWorker(nil, searchSvc, logger)
@@ -569,7 +569,7 @@ func TestSearchIndexWorker_Work_SearchDisabled(t *testing.T) {
 func TestFileMatchWorker_Work_NonexistentFile(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewFileMatchWorker(nil, nil, logger)
 
 	job := &river.Job[FileMatchArgs]{
@@ -1291,7 +1291,7 @@ var _ tvshow.MetadataProvider = (*mockMetadataProvider)(nil)
 func TestMetadataRefreshWorker_Work_RefreshEpisode(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1316,7 +1316,7 @@ func TestMetadataRefreshWorker_Work_RefreshEpisode(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshEpisode_Error(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1341,7 +1341,7 @@ func TestMetadataRefreshWorker_Work_RefreshEpisode_Error(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshSeason(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1366,7 +1366,7 @@ func TestMetadataRefreshWorker_Work_RefreshSeason(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshSeason_Error(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1391,7 +1391,7 @@ func TestMetadataRefreshWorker_Work_RefreshSeason_Error(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshSeries(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1416,7 +1416,7 @@ func TestMetadataRefreshWorker_Work_RefreshSeries(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshSeries_Error(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1441,7 +1441,7 @@ func TestMetadataRefreshWorker_Work_RefreshSeries_Error(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshAll_EmptyList(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1468,7 +1468,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_EmptyList(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshAll_DefaultBatchSize(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1492,7 +1492,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_DefaultBatchSize(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshAll_WithSeries(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1531,7 +1531,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_WithSeries(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshAll_ListError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1556,7 +1556,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_ListError(t *testing.T) {
 func TestMetadataRefreshWorker_Work_RefreshAll_PartialErrors(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewMetadataRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1599,7 +1599,7 @@ func TestMetadataRefreshWorker_Work_RefreshAll_PartialErrors(t *testing.T) {
 func TestSeriesRefreshWorker_Work_Success(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1624,7 +1624,7 @@ func TestSeriesRefreshWorker_Work_Success(t *testing.T) {
 func TestSeriesRefreshWorker_Work_RefreshError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1649,7 +1649,7 @@ func TestSeriesRefreshWorker_Work_RefreshError(t *testing.T) {
 func TestSeriesRefreshWorker_Work_WithSeasons(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1682,7 +1682,7 @@ func TestSeriesRefreshWorker_Work_WithSeasons(t *testing.T) {
 func TestSeriesRefreshWorker_Work_WithEpisodes(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1719,7 +1719,7 @@ func TestSeriesRefreshWorker_Work_WithEpisodes(t *testing.T) {
 func TestSeriesRefreshWorker_Work_WithSeasonsAndEpisodes(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1755,7 +1755,7 @@ func TestSeriesRefreshWorker_Work_WithSeasonsAndEpisodes(t *testing.T) {
 func TestSeriesRefreshWorker_Work_ListSeasonsError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1781,7 +1781,7 @@ func TestSeriesRefreshWorker_Work_ListSeasonsError(t *testing.T) {
 func TestSeriesRefreshWorker_Work_ListEpisodesError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewSeriesRefreshWorker(svc, &infrajobs.Client{}, logger)
 
@@ -1814,7 +1814,7 @@ func TestSeriesRefreshWorker_Work_ListEpisodesError(t *testing.T) {
 func TestSearchIndexWorker_Work_SearchDisabled_FullReindex(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
 	worker := NewSearchIndexWorker(nil, searchSvc, logger)
 
@@ -1833,7 +1833,7 @@ func TestSearchIndexWorker_Work_SearchDisabled_FullReindex(t *testing.T) {
 func TestSearchIndexWorker_Work_SpecificSeries_SearchDisabled(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
 	worker := NewSearchIndexWorker(nil, searchSvc, logger)
 
@@ -1853,7 +1853,7 @@ func TestSearchIndexWorker_Work_SpecificSeries_SearchDisabled(t *testing.T) {
 func TestSearchIndexWorker_Work_NoArgs_SearchDisabled(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
 	worker := NewSearchIndexWorker(nil, searchSvc, logger)
 
@@ -1875,7 +1875,7 @@ func TestSearchIndexWorker_Work_NoArgs_SearchDisabled(t *testing.T) {
 func TestFileMatchWorker_Work_AlreadyMatched_NoForce(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -1905,7 +1905,7 @@ func TestFileMatchWorker_Work_AlreadyMatched_NoForce(t *testing.T) {
 func TestFileMatchWorker_Work_ForceRematch(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -1958,7 +1958,7 @@ func TestFileMatchWorker_Work_ForceRematch(t *testing.T) {
 func TestFileMatchWorker_Work_DirectMatch(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -1995,7 +1995,7 @@ func TestFileMatchWorker_Work_DirectMatch(t *testing.T) {
 func TestFileMatchWorker_Work_DirectMatch_EpisodeNotFound(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2022,7 +2022,7 @@ func TestFileMatchWorker_Work_DirectMatch_EpisodeNotFound(t *testing.T) {
 func TestFileMatchWorker_Work_DirectMatch_CreateFileFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2052,7 +2052,7 @@ func TestFileMatchWorker_Work_DirectMatch_CreateFileFails(t *testing.T) {
 func TestFileMatchWorker_Work_NoAutoCreate_SeriesNotFound(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2079,7 +2079,7 @@ func TestFileMatchWorker_Work_NoAutoCreate_SeriesNotFound(t *testing.T) {
 func TestFileMatchWorker_Work_MatchExistingSeriesAndEpisode(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2124,7 +2124,7 @@ func TestFileMatchWorker_Work_MatchExistingSeriesAndEpisode(t *testing.T) {
 func TestFileMatchWorker_Work_SearchSeriesError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2149,7 +2149,7 @@ func TestFileMatchWorker_Work_SearchSeriesError(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_SeasonNotFound_NoAutoCreate(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2179,7 +2179,7 @@ func TestFileMatchWorker_Work_AutoCreate_SeasonNotFound_NoAutoCreate(t *testing.
 func TestFileMatchWorker_Work_AutoCreate_EpisodeNotFound_NoAutoCreate(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2214,7 +2214,7 @@ func TestFileMatchWorker_Work_AutoCreate_EpisodeNotFound_NoAutoCreate(t *testing
 func TestFileMatchWorker_Work_AutoCreate_CreateSeason(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2268,7 +2268,7 @@ func TestFileMatchWorker_Work_AutoCreate_CreateSeason(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_CreateSeasonFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2299,7 +2299,7 @@ func TestFileMatchWorker_Work_AutoCreate_CreateSeasonFails(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_CreateEpisodeFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2335,7 +2335,7 @@ func TestFileMatchWorker_Work_AutoCreate_CreateEpisodeFails(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_CreateEpisodeFileFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewFileMatchWorker(svc, nil, logger)
 
@@ -2375,7 +2375,7 @@ func TestFileMatchWorker_Work_AutoCreate_CreateEpisodeFileFails(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_WithMetadataProvider(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewFileMatchWorker(svc, mdp, logger)
@@ -2433,7 +2433,7 @@ func TestFileMatchWorker_Work_AutoCreate_WithMetadataProvider(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_TMDbNotFound(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewFileMatchWorker(svc, mdp, logger)
@@ -2463,7 +2463,7 @@ func TestFileMatchWorker_Work_AutoCreate_TMDbNotFound(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_TMDbSearchError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewFileMatchWorker(svc, mdp, logger)
@@ -2492,7 +2492,7 @@ func TestFileMatchWorker_Work_AutoCreate_TMDbSearchError(t *testing.T) {
 func TestFileMatchWorker_Work_AutoCreate_CreateSeriesFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewFileMatchWorker(svc, mdp, logger)
@@ -2530,7 +2530,7 @@ func TestFileMatchWorker_Work_AutoCreate_CreateSeriesFails(t *testing.T) {
 func TestProcessFile_EmptyTitle(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2552,7 +2552,7 @@ func TestProcessFile_EmptyTitle(t *testing.T) {
 func TestProcessFile_NoSeasonEpisode(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2571,7 +2571,7 @@ func TestProcessFile_NoSeasonEpisode(t *testing.T) {
 func TestProcessFile_SearchSeriesError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2596,7 +2596,7 @@ func TestProcessFile_SearchSeriesError(t *testing.T) {
 func TestProcessFile_ExactMatch_ExistingEpisode(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -2644,7 +2644,7 @@ func TestProcessFile_ExactMatch_ExistingEpisode(t *testing.T) {
 func TestProcessFile_NoMatch_CreateFromTMDb(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -2703,7 +2703,7 @@ func TestProcessFile_NoMatch_CreateFromTMDb(t *testing.T) {
 func TestProcessFile_TMDbNotFound(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -2731,7 +2731,7 @@ func TestProcessFile_TMDbNotFound(t *testing.T) {
 func TestProcessFile_CreateSeriesFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -2765,7 +2765,7 @@ func TestProcessFile_CreateSeriesFails(t *testing.T) {
 func TestProcessFile_CreateSeasonFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -2798,7 +2798,7 @@ func TestProcessFile_CreateSeasonFails(t *testing.T) {
 func TestProcessFile_CreateEpisodeFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2834,7 +2834,7 @@ func TestProcessFile_CreateEpisodeFails(t *testing.T) {
 func TestProcessFile_CreateEpisodeFileFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2876,7 +2876,7 @@ func TestProcessFile_CreateEpisodeFileFails(t *testing.T) {
 func TestProcessFile_WithEpisodeTitle(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2929,7 +2929,7 @@ func TestProcessFile_WithEpisodeTitle(t *testing.T) {
 func TestLibraryScanWorker_Work_ScanError(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2950,7 +2950,7 @@ func TestLibraryScanWorker_Work_ScanError(t *testing.T) {
 func TestLibraryScanWorker_Work_WithMediaFiles_NoAutoCreate(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -2982,7 +2982,7 @@ func TestLibraryScanWorker_Work_WithMediaFiles_NoAutoCreate(t *testing.T) {
 func TestLibraryScanWorker_Work_WithAutoCreate_AlreadyMatched(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -3018,7 +3018,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_AlreadyMatched(t *testing.T) {
 func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFile(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -3071,7 +3071,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFile(t *testing.T) {
 func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFileFails(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
@@ -3106,7 +3106,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFileFails(t *testing.T) {
 func TestLibraryScanWorker_Work_ForceRescan(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
 
@@ -3147,7 +3147,7 @@ func TestLibraryScanWorker_Work_ForceRescan(t *testing.T) {
 func TestRegisterWorkers(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	workers := river.NewWorkers()
 
 	libraryScan := NewLibraryScanWorker(nil, nil, nil, logger)
@@ -3163,7 +3163,7 @@ func TestRegisterWorkers(t *testing.T) {
 func TestProviderFunctions(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
 	jobClient := &infrajobs.Client{}
@@ -3194,7 +3194,7 @@ func TestProviderFunctions(t *testing.T) {
 func TestProviderFunctions_NilOptionalDeps(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	jobClient := &infrajobs.Client{}
 

@@ -314,19 +314,19 @@ func TestDefaults_RateLimitKeys(t *testing.T) {
 
 	defaults := Defaults()
 
-	assert.Contains(t, defaults, "rate_limit.enabled")
-	assert.Contains(t, defaults, "rate_limit.backend")
-	assert.Contains(t, defaults, "rate_limit.global.requests_per_second")
-	assert.Contains(t, defaults, "rate_limit.global.burst")
-	assert.Contains(t, defaults, "rate_limit.auth.requests_per_second")
-	assert.Contains(t, defaults, "rate_limit.auth.burst")
+	assert.Contains(t, defaults, "server.rate_limit.enabled")
+	assert.Contains(t, defaults, "server.rate_limit.backend")
+	assert.Contains(t, defaults, "server.rate_limit.global.requests_per_second")
+	assert.Contains(t, defaults, "server.rate_limit.global.burst")
+	assert.Contains(t, defaults, "server.rate_limit.auth.requests_per_second")
+	assert.Contains(t, defaults, "server.rate_limit.auth.burst")
 
-	assert.Equal(t, true, defaults["rate_limit.enabled"])
-	assert.Equal(t, "memory", defaults["rate_limit.backend"])
-	assert.Equal(t, 10.0, defaults["rate_limit.global.requests_per_second"])
-	assert.Equal(t, 20, defaults["rate_limit.global.burst"])
-	assert.Equal(t, 1.0, defaults["rate_limit.auth.requests_per_second"])
-	assert.Equal(t, 5, defaults["rate_limit.auth.burst"])
+	assert.Equal(t, true, defaults["server.rate_limit.enabled"])
+	assert.Equal(t, "redis", defaults["server.rate_limit.backend"])
+	assert.Equal(t, 50.0, defaults["server.rate_limit.global.requests_per_second"])
+	assert.Equal(t, 100, defaults["server.rate_limit.global.burst"])
+	assert.Equal(t, 5.0, defaults["server.rate_limit.auth.requests_per_second"])
+	assert.Equal(t, 10, defaults["server.rate_limit.auth.burst"])
 }
 
 func TestDefaults_MovieKeys(t *testing.T) {

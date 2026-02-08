@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ogen-go/ogen/middleware"
-	"go.uber.org/zap"
+	"log/slog"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
@@ -69,11 +69,11 @@ type ipLimiter struct {
 type RateLimiter struct {
 	config   RateLimitConfig
 	limiters *cache.L1Cache[string, *ipLimiter]
-	logger   *zap.Logger
+	logger   *slog.Logger
 }
 
 // NewRateLimiter creates a new rate limiter with the given configuration.
-func NewRateLimiter(config RateLimitConfig, logger *zap.Logger) *RateLimiter {
+func NewRateLimiter(config RateLimitConfig, logger *slog.Logger) *RateLimiter {
 	// Apply defaults for zero values
 	if config.CleanupInterval == 0 {
 		config.CleanupInterval = 5 * time.Minute
@@ -90,7 +90,7 @@ func NewRateLimiter(config RateLimitConfig, logger *zap.Logger) *RateLimiter {
 	rl := &RateLimiter{
 		config:   config,
 		limiters: l1,
-		logger:   logger.Named("ratelimit"),
+		logger:   logger.With("component", "ratelimit"),
 	}
 
 	return rl
@@ -185,8 +185,8 @@ func (rl *RateLimiter) Middleware() middleware.Middleware {
 		// Check if request is allowed
 		if !limiter.Allow() {
 			rl.logger.Warn("Rate limit exceeded",
-				zap.String("ip", clientIP),
-				zap.String("operation", req.OperationName),
+				slog.String("ip", clientIP),
+				slog.String("operation", req.OperationName),
 			)
 
 			// Return rate limit error

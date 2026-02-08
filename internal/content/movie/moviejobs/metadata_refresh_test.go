@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
@@ -115,7 +115,7 @@ func TestRefreshMovieArgs_InsertOpts_UsesDefaults(t *testing.T) {
 func TestNewMovieMetadataRefreshWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieMetadataRefreshWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -141,7 +141,7 @@ func TestNewMovieMetadataRefreshWorker_NilLogger(t *testing.T) {
 func TestMovieMetadataRefreshWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieMetadataRefreshWorker(nil, nil, zap.NewNop())
+	worker := NewMovieMetadataRefreshWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[metadatajobs.RefreshMovieArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "metadata_refresh_movie"},
@@ -163,7 +163,7 @@ func TestMovieMetadataRefreshWorker_Work_NilService(t *testing.T) {
 
 	// Create worker with nil service and nil jobClient.
 	// The nil jobClient will panic on w.jobClient.ReportProgress().
-	worker := NewMovieMetadataRefreshWorker(nil, nil, zap.NewNop())
+	worker := NewMovieMetadataRefreshWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[metadatajobs.RefreshMovieArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "metadata_refresh_movie"},
@@ -199,7 +199,7 @@ func TestMovieMetadataRefreshWorker_Work_Success(t *testing.T) {
 
 	// Use a zero-value infrajobs.Client where ReportProgress returns nil (c.client == nil).
 	jobClient := &infrajobs.Client{}
-	worker := NewMovieMetadataRefreshWorker(svc, jobClient, zap.NewNop())
+	worker := NewMovieMetadataRefreshWorker(svc, jobClient, logging.NewTestLogger())
 
 	job := &river.Job[metadatajobs.RefreshMovieArgs]{
 		JobRow: &rivertype.JobRow{ID: 42, Kind: "metadata_refresh_movie"},
@@ -229,7 +229,7 @@ func TestMovieMetadataRefreshWorker_Work_ServiceError(t *testing.T) {
 	}
 
 	jobClient := &infrajobs.Client{}
-	worker := NewMovieMetadataRefreshWorker(svc, jobClient, zap.NewNop())
+	worker := NewMovieMetadataRefreshWorker(svc, jobClient, logging.NewTestLogger())
 
 	job := &river.Job[metadatajobs.RefreshMovieArgs]{
 		JobRow: &rivertype.JobRow{ID: 42, Kind: "metadata_refresh_movie"},
@@ -261,7 +261,7 @@ func TestMovieMetadataRefreshWorker_Work_NoLanguages(t *testing.T) {
 	}
 
 	jobClient := &infrajobs.Client{}
-	worker := NewMovieMetadataRefreshWorker(svc, jobClient, zap.NewNop())
+	worker := NewMovieMetadataRefreshWorker(svc, jobClient, logging.NewTestLogger())
 
 	job := &river.Job[metadatajobs.RefreshMovieArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "metadata_refresh_movie"},

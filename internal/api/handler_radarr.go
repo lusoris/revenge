@@ -6,7 +6,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/integration/radarr"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // radarrService is an optional dependency for Radarr integration.
@@ -82,8 +82,8 @@ func (h *Handler) AdminGetRadarrStatus(ctx context.Context) (ogen.AdminGetRadarr
 	}
 
 	h.logger.Info("Radarr status retrieved",
-		zap.Bool("connected", connected),
-		zap.Bool("sync_running", syncStatus.IsRunning))
+		slog.Bool("connected", connected),
+		slog.Bool("sync_running", syncStatus.IsRunning))
 
 	return response, nil
 }
@@ -124,7 +124,7 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 			Operation: radarr.RadarrSyncOperationFull,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue Radarr sync job", zap.Error(err))
+			h.logger.Error("Failed to queue Radarr sync job", slog.Any("error",err))
 			return &ogen.AdminTriggerRadarrSyncServiceUnavailable{
 				Code:    503,
 				Message: "Failed to queue sync job",
@@ -145,7 +145,7 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 		defer cancel()
 
 		if _, err := h.radarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Radarr sync failed", zap.Error(err))
+			h.logger.Error("Radarr sync failed", slog.Any("error",err))
 		}
 	}()
 
@@ -179,7 +179,7 @@ func (h *Handler) AdminGetRadarrQualityProfiles(ctx context.Context) (ogen.Admin
 
 	profiles, err := h.radarrService.GetQualityProfiles(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get quality profiles from Radarr", zap.Error(err))
+		h.logger.Error("Failed to get quality profiles from Radarr", slog.Any("error",err))
 		return &ogen.AdminGetRadarrQualityProfilesServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Radarr",
@@ -197,7 +197,7 @@ func (h *Handler) AdminGetRadarrQualityProfiles(ctx context.Context) (ogen.Admin
 		})
 	}
 
-	h.logger.Info("Retrieved quality profiles from Radarr", zap.Int("count", len(ogenProfiles)))
+	h.logger.Info("Retrieved quality profiles from Radarr", slog.Int("count", len(ogenProfiles)))
 	return &ogen.RadarrQualityProfileList{
 		Profiles: ogenProfiles,
 	}, nil
@@ -226,7 +226,7 @@ func (h *Handler) AdminGetRadarrRootFolders(ctx context.Context) (ogen.AdminGetR
 
 	folders, err := h.radarrService.GetRootFolders(ctx)
 	if err != nil {
-		h.logger.Error("Failed to get root folders from Radarr", zap.Error(err))
+		h.logger.Error("Failed to get root folders from Radarr", slog.Any("error",err))
 		return &ogen.AdminGetRadarrRootFoldersServiceUnavailable{
 			Code:    503,
 			Message: "Failed to connect to Radarr",
@@ -243,7 +243,7 @@ func (h *Handler) AdminGetRadarrRootFolders(ctx context.Context) (ogen.AdminGetR
 		})
 	}
 
-	h.logger.Info("Retrieved root folders from Radarr", zap.Int("count", len(ogenFolders)))
+	h.logger.Info("Retrieved root folders from Radarr", slog.Int("count", len(ogenFolders)))
 	return &ogen.RadarrRootFolderList{
 		Folders: ogenFolders,
 	}, nil
@@ -252,7 +252,7 @@ func (h *Handler) AdminGetRadarrRootFolders(ctx context.Context) (ogen.AdminGetR
 // HandleRadarrWebhook handles incoming webhook events from Radarr.
 // POST /api/v1/webhooks/radarr
 func (h *Handler) HandleRadarrWebhook(ctx context.Context, req *ogen.RadarrWebhookPayload) (ogen.HandleRadarrWebhookRes, error) {
-	h.logger.Debug("HandleRadarrWebhook called", zap.String("event_type", string(req.EventType)))
+	h.logger.Debug("HandleRadarrWebhook called", slog.String("event_type", string(req.EventType)))
 
 	// Convert ogen types to internal types
 	payload := convertWebhookPayload(req)
@@ -263,14 +263,14 @@ func (h *Handler) HandleRadarrWebhook(ctx context.Context, req *ogen.RadarrWebho
 			Payload: *payload,
 		}, nil)
 		if err != nil {
-			h.logger.Error("Failed to queue webhook job", zap.Error(err))
+			h.logger.Error("Failed to queue webhook job", slog.Any("error",err))
 			return &ogen.Error{
 				Code:    400,
 				Message: "Failed to process webhook",
 			}, nil
 		}
 
-		h.logger.Info("Radarr webhook queued", zap.String("event", string(req.EventType)))
+		h.logger.Info("Radarr webhook queued", slog.String("event", string(req.EventType)))
 		return &ogen.HandleRadarrWebhookAccepted{}, nil
 	}
 

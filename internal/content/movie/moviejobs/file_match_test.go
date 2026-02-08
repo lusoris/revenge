@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // =============================================================================
@@ -91,7 +91,7 @@ func TestMovieFileMatchArgs_Fields(t *testing.T) {
 func TestNewMovieFileMatchWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieFileMatchWorker(nil, logger)
 
 	assert.NotNil(t, worker)
@@ -115,7 +115,7 @@ func TestNewMovieFileMatchWorker_NilLogger(t *testing.T) {
 func TestMovieFileMatchWorker_Kind(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieFileMatchWorker(nil, logger)
 
 	assert.Equal(t, MovieFileMatchJobKind, worker.Kind())
@@ -125,7 +125,7 @@ func TestMovieFileMatchWorker_Kind(t *testing.T) {
 func TestMovieFileMatchWorker_Kind_MatchesArgs(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieFileMatchWorker(nil, zap.NewNop())
+	worker := NewMovieFileMatchWorker(nil, logging.NewTestLogger())
 	args := MovieFileMatchArgs{}
 
 	// Worker kind and args kind must match for River to route jobs correctly.
@@ -139,7 +139,7 @@ func TestMovieFileMatchWorker_Kind_MatchesArgs(t *testing.T) {
 func TestMovieFileMatchWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieFileMatchWorker(nil, zap.NewNop())
+	worker := NewMovieFileMatchWorker(nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieFileMatchArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieFileMatchJobKind},
@@ -159,7 +159,7 @@ func TestMovieFileMatchWorker_Timeout(t *testing.T) {
 func TestMovieFileMatchWorker_Work_NilLibraryService_NonexistentFile(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieFileMatchWorker(nil, zap.NewNop())
+	worker := NewMovieFileMatchWorker(nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieFileMatchArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieFileMatchJobKind},

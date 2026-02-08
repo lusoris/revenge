@@ -9,7 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/oidc"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // ============================================================================
@@ -20,7 +20,7 @@ import (
 func (h *Handler) ListOIDCProviders(ctx context.Context) (*ogen.OIDCProviderListResponse, error) {
 	providers, err := h.oidcService.ListEnabledProviders(ctx)
 	if err != nil {
-		h.logger.Error("failed to list OIDC providers", zap.Error(err))
+		h.logger.Error("failed to list OIDC providers", slog.Any("error",err))
 		return &ogen.OIDCProviderListResponse{
 			Providers: []ogen.OIDCProviderInfo{},
 		}, nil
@@ -56,7 +56,7 @@ func (h *Handler) OidcAuthorize(ctx context.Context, params ogen.OidcAuthorizePa
 				Message: "Provider not found",
 			}, nil
 		}
-		h.logger.Error("failed to get auth URL", zap.String("provider", params.Provider), zap.Error(err))
+		h.logger.Error("failed to get auth URL", slog.String("provider", params.Provider), slog.Any("error",err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to generate auth URL",
@@ -73,9 +73,9 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 	// Check for error from provider
 	if params.Error.IsSet() {
 		h.logger.Warn("OIDC provider returned error",
-			zap.String("provider", params.Provider),
-			zap.String("error", params.Error.Value),
-			zap.String("description", params.ErrorDescription.Or("")),
+			slog.String("provider", params.Provider),
+			slog.String("error", params.Error.Value),
+			slog.String("description", params.ErrorDescription.Or("")),
 		)
 		return &ogen.Error{
 			Code:    400,
@@ -86,8 +86,8 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 	result, err := h.oidcService.HandleCallback(ctx, params.State, params.Code)
 	if err != nil {
 		h.logger.Error("OIDC callback failed",
-			zap.String("provider", params.Provider),
-			zap.Error(err),
+			slog.String("provider", params.Provider),
+			slog.Any("error",err),
 		)
 
 		if errors.Is(err, oidc.ErrInvalidState) || errors.Is(err, oidc.ErrStateExpired) {
@@ -132,9 +132,9 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 		})
 		if err != nil {
 			h.logger.Error("failed to create user from OIDC",
-				zap.String("provider", params.Provider),
-				zap.String("email", result.UserInfo.Email),
-				zap.Error(err),
+				slog.String("provider", params.Provider),
+				slog.String("email", result.UserInfo.Email),
+				slog.Any("error",err),
 			)
 			return &ogen.Error{
 				Code:    500,
@@ -148,18 +148,18 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 		_, err = h.oidcService.LinkUser(ctx, userID, result.ProviderID, result.UserInfo.Subject, result.UserInfo, nil)
 		if err != nil {
 			h.logger.Error("failed to link OIDC user",
-				zap.String("provider", params.Provider),
-				zap.String("user_id", userID.String()),
-				zap.Error(err),
+				slog.String("provider", params.Provider),
+				slog.String("user_id", userID.String()),
+				slog.Any("error",err),
 			)
 			// User was created but link failed - log but continue
 			// User can still use the account and link later
 		}
 
 		h.logger.Info("new user created from OIDC",
-			zap.String("provider", params.Provider),
-			zap.String("user_id", userID.String()),
-			zap.String("username", username),
+			slog.String("provider", params.Provider),
+			slog.String("user_id", userID.String()),
+			slog.String("username", username),
 		)
 	} else {
 		userID = result.UserID
@@ -169,9 +169,9 @@ func (h *Handler) OidcCallback(ctx context.Context, params ogen.OidcCallbackPara
 	loginResp, err := h.authService.CreateSessionForUser(ctx, userID, nil, nil, nil)
 	if err != nil {
 		h.logger.Error("failed to create session for OIDC user",
-			zap.String("provider", params.Provider),
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("provider", params.Provider),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -203,7 +203,7 @@ func (h *Handler) ListUserOIDCLinks(ctx context.Context) (ogen.ListUserOIDCLinks
 
 	links, err := h.oidcService.ListUserLinks(ctx, userID)
 	if err != nil {
-		h.logger.Error("failed to list user OIDC links", zap.String("user_id", userID.String()), zap.Error(err))
+		h.logger.Error("failed to list user OIDC links", slog.String("user_id", userID.String()), slog.Any("error",err))
 		return &ogen.Error{
 			Code:    500,
 			Message: "Failed to list OIDC links",
@@ -248,9 +248,9 @@ func (h *Handler) InitOIDCLink(ctx context.Context, params ogen.InitOIDCLinkPara
 			return &ogen.InitOIDCLinkNotFound{}, nil
 		}
 		h.logger.Error("failed to init OIDC link",
-			zap.String("user_id", userID.String()),
-			zap.String("provider", params.Provider),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("provider", params.Provider),
+			slog.Any("error",err),
 		)
 		return &ogen.InitOIDCLinkNotFound{}, nil
 	}
@@ -273,17 +273,17 @@ func (h *Handler) UnlinkOIDCProvider(ctx context.Context, params ogen.UnlinkOIDC
 			return &ogen.UnlinkOIDCProviderNotFound{}, nil
 		}
 		h.logger.Error("failed to get provider",
-			zap.String("provider", params.Provider),
-			zap.Error(err),
+			slog.String("provider", params.Provider),
+			slog.Any("error",err),
 		)
 		return &ogen.UnlinkOIDCProviderNotFound{}, nil
 	}
 
 	if err := h.oidcService.UnlinkUser(ctx, userID, provider.ID); err != nil {
 		h.logger.Error("failed to unlink OIDC provider",
-			zap.String("user_id", userID.String()),
-			zap.String("provider", params.Provider),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.String("provider", params.Provider),
+			slog.Any("error",err),
 		)
 		return &ogen.UnlinkOIDCProviderNotFound{}, nil
 	}
@@ -303,7 +303,7 @@ func (h *Handler) AdminListOIDCProviders(ctx context.Context) (ogen.AdminListOID
 
 	providers, err := h.oidcService.ListProviders(ctx)
 	if err != nil {
-		h.logger.Error("failed to list OIDC providers", zap.Error(err))
+		h.logger.Error("failed to list OIDC providers", slog.Any("error",err))
 		return &ogen.AdminListOIDCProvidersForbidden{}, nil
 	}
 
@@ -372,7 +372,7 @@ func (h *Handler) AdminCreateOIDCProvider(ctx context.Context, req *ogen.CreateO
 
 	provider, err := h.oidcService.AddProvider(ctx, createReq)
 	if err != nil {
-		h.logger.Error("failed to create OIDC provider", zap.String("name", req.Name), zap.Error(err))
+		h.logger.Error("failed to create OIDC provider", slog.String("name", req.Name), slog.Any("error",err))
 
 		if errors.Is(err, oidc.ErrProviderNameExists) {
 			return &ogen.AdminCreateOIDCProviderConflict{
@@ -414,7 +414,7 @@ func (h *Handler) AdminGetOIDCProvider(ctx context.Context, params ogen.AdminGet
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminGetOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to get OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to get OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminGetOIDCProviderNotFound{}, nil
 	}
 
@@ -505,7 +505,7 @@ func (h *Handler) AdminUpdateOIDCProvider(ctx context.Context, req *ogen.UpdateO
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminUpdateOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to update OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to update OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminUpdateOIDCProviderBadRequest{
 			Code:    500,
 			Message: "Failed to update provider",
@@ -526,7 +526,7 @@ func (h *Handler) AdminDeleteOIDCProvider(ctx context.Context, params ogen.Admin
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminDeleteOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to delete OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to delete OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminDeleteOIDCProviderNotFound{}, nil
 	}
 
@@ -543,7 +543,7 @@ func (h *Handler) AdminEnableOIDCProvider(ctx context.Context, params ogen.Admin
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminEnableOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to enable OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to enable OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminEnableOIDCProviderNotFound{}, nil
 	}
 
@@ -560,7 +560,7 @@ func (h *Handler) AdminDisableOIDCProvider(ctx context.Context, params ogen.Admi
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminDisableOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to disable OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to disable OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminDisableOIDCProviderNotFound{}, nil
 	}
 
@@ -577,7 +577,7 @@ func (h *Handler) AdminSetDefaultOIDCProvider(ctx context.Context, params ogen.A
 		if errors.Is(err, oidc.ErrProviderNotFound) {
 			return &ogen.AdminSetDefaultOIDCProviderNotFound{}, nil
 		}
-		h.logger.Error("failed to set default OIDC provider", zap.String("id", params.ProviderId.String()), zap.Error(err))
+		h.logger.Error("failed to set default OIDC provider", slog.String("id", params.ProviderId.String()), slog.Any("error",err))
 		return &ogen.AdminSetDefaultOIDCProviderNotFound{}, nil
 	}
 

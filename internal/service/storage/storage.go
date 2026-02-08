@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/config"
-	"go.uber.org/zap"
 )
 
 // Storage defines the interface for file storage operations.
@@ -36,12 +36,12 @@ type Storage interface {
 type LocalStorage struct {
 	basePath string
 	baseURL  string
-	logger   *zap.Logger
+	logger   *slog.Logger
 	mu       sync.RWMutex
 }
 
 // NewLocalStorage creates a new local filesystem storage.
-func NewLocalStorage(cfg config.AvatarConfig, logger *zap.Logger) (*LocalStorage, error) {
+func NewLocalStorage(cfg config.AvatarConfig, logger *slog.Logger) (*LocalStorage, error) {
 	// Ensure storage directory exists
 	if err := os.MkdirAll(cfg.StoragePath, 0750); err != nil {
 		return nil, fmt.Errorf("failed to create storage directory: %w", err)
@@ -50,7 +50,7 @@ func NewLocalStorage(cfg config.AvatarConfig, logger *zap.Logger) (*LocalStorage
 	return &LocalStorage{
 		basePath: cfg.StoragePath,
 		baseURL:  "/api/v1/files", // Served via API endpoint
-		logger:   logger.Named("storage"),
+		logger:   logger.With("component", "storage"),
 	}, nil
 }
 
@@ -86,9 +86,9 @@ func (s *LocalStorage) Store(ctx context.Context, key string, reader io.Reader, 
 	}
 
 	s.logger.Info("File stored",
-		zap.String("key", key),
-		zap.Int64("size", written),
-		zap.String("content_type", contentType))
+		slog.String("key", key),
+		slog.Int64("size", written),
+		slog.String("content_type", contentType))
 
 	return key, nil
 }
@@ -127,7 +127,7 @@ func (s *LocalStorage) Delete(ctx context.Context, key string) error {
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
 
-	s.logger.Info("File deleted", zap.String("key", key))
+	s.logger.Info("File deleted", slog.String("key", key))
 	return nil
 }
 

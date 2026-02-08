@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/imroc/req/v3"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 const (
@@ -54,11 +54,11 @@ type Config struct {
 type Service struct {
 	client *req.Client
 	config Config
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewService creates a new image service.
-func NewService(cfg Config, logger *zap.Logger) (*Service, error) {
+func NewService(cfg Config, logger *slog.Logger) (*Service, error) {
 	if cfg.BaseURL == "" {
 		cfg.BaseURL = "https://image.tmdb.org/t/p"
 	}
@@ -134,10 +134,10 @@ func (s *Service) FetchImage(ctx context.Context, imageType, path, size string) 
 	url := s.GetImageURL(path, size)
 
 	s.logger.Debug("Fetching image",
-		zap.String("type", imageType),
-		zap.String("path", path),
-		zap.String("size", size),
-		zap.String("url", url))
+		slog.String("type", imageType),
+		slog.String("path", path),
+		slog.String("size", size),
+		slog.String("url", url))
 
 	// Download
 	resp, err := s.client.R().
@@ -168,7 +168,7 @@ func (s *Service) FetchImage(ctx context.Context, imageType, path, size string) 
 	// Cache the image
 	if s.config.CacheDir != "" {
 		if err := s.saveToCache(imageType, path, size, data, contentType); err != nil {
-			s.logger.Warn("Failed to cache image", zap.Error(err))
+			s.logger.Warn("Failed to cache image", slog.Any("error",err))
 		}
 	}
 
@@ -228,7 +228,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	data, contentType, err := s.FetchImage(r.Context(), imageType, imagePath, size)
 	if err != nil {
-		s.logger.Error("Failed to fetch image", zap.Error(err))
+		s.logger.Error("Failed to fetch image", slog.Any("error",err))
 		http.Error(w, "Image not found", http.StatusNotFound)
 		return
 	}
@@ -245,7 +245,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
 
 	if _, err := w.Write(data); err != nil {
-		s.logger.Error("failed to write image response", zap.Error(err))
+		s.logger.Error("failed to write image response", slog.Any("error",err))
 	}
 }
 

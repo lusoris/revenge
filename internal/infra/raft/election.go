@@ -14,14 +14,14 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/raft"
 	raftboltdb "github.com/hashicorp/raft-boltdb"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // LeaderElection manages Raft-based leader election for a cluster.
 // Only the leader should execute periodic cleanup jobs to prevent duplicates.
 type LeaderElection struct {
 	raft   *raft.Raft
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // Config holds configuration for Raft leader election.
@@ -44,16 +44,16 @@ type Config struct {
 
 // NewLeaderElection creates a new Raft-based leader election system.
 // Returns nil if Raft is disabled in config.
-func NewLeaderElection(cfg Config, logger *zap.Logger) (*LeaderElection, error) {
+func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error) {
 	if !cfg.Enabled {
 		logger.Info("Raft leader election disabled")
 		return nil, nil
 	}
 
 	logger.Info("Initializing Raft leader election",
-		zap.String("node_id", cfg.NodeID),
-		zap.String("bind_addr", cfg.BindAddr),
-		zap.Bool("bootstrap", cfg.Bootstrap))
+		slog.String("node_id", cfg.NodeID),
+		slog.String("bind_addr", cfg.BindAddr),
+		slog.Bool("bootstrap", cfg.Bootstrap))
 
 	// Setup Raft configuration
 	config := raft.DefaultConfig()
@@ -115,13 +115,13 @@ func NewLeaderElection(cfg Config, logger *zap.Logger) (*LeaderElection, error) 
 		}
 		future := ra.BootstrapCluster(configuration)
 		if err := future.Error(); err != nil {
-			logger.Warn("Failed to bootstrap cluster (may already be bootstrapped)", zap.Error(err))
+			logger.Warn("Failed to bootstrap cluster (may already be bootstrapped)", slog.Any("error",err))
 		}
 	}
 
 	return &LeaderElection{
 		raft:   ra,
-		logger: logger.Named("raft"),
+		logger: logger.With("component", "raft"),
 	}, nil
 }
 
@@ -204,15 +204,15 @@ func (s *simpleSnapshot) Release() {
 	// Nothing to release
 }
 
-// hcLogAdapter adapts zap.Logger to hashicorp/go-hclog interface.
+// hcLogAdapter adapts slog.Logger to hashicorp/go-hclog interface.
 type hcLogAdapter struct {
-	logger *zap.Logger
+	logger *slog.Logger
 	level  hclog.Level
 }
 
-func newHCLogAdapter(logger *zap.Logger) hclog.Logger {
+func newHCLogAdapter(logger *slog.Logger) hclog.Logger {
 	return &hcLogAdapter{
-		logger: logger.Named("raft"),
+		logger: logger.With("component", "raft"),
 		level:  hclog.Info,
 	}
 }

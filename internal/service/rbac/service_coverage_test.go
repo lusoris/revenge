@@ -7,10 +7,10 @@ import (
 	"github.com/casbin/casbin/v2"
 	casbinmodel "github.com/casbin/casbin/v2/model"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // Tests to fill coverage gaps in service.go, roles.go, and permissions.go.
@@ -25,7 +25,7 @@ func TestNewService_FieldsSet(t *testing.T) {
 	enforcer, err := casbin.NewSyncedEnforcer(m)
 	require.NoError(t, err)
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	actLogger := activity.NewNoopLogger()
 
 	svc := NewService(enforcer, logger, actLogger)

@@ -1,10 +1,11 @@
 package library
 
 import (
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides library service dependencies.
@@ -22,6 +23,6 @@ func newRepository(queries *db.Queries) Repository {
 }
 
 // newService creates a new library service with activity logger.
-func newService(repo Repository, logger *zap.Logger, activityLogger activity.Logger) *Service {
+func newService(repo Repository, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return NewService(repo, logger, activityLogger)
 }

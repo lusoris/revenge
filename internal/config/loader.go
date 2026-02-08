@@ -143,6 +143,12 @@ var compoundEnvVars = map[string]string{
 	"REVENGE_EMAIL_SENDGRID_API_KEY":       "email.sendgrid.api_key",
 	"REVENGE_EMAIL_SMTP_SKIP_VERIFY":       "email.smtp.skip_verify",
 	"REVENGE_LEGACY_ENCRYPTION_KEY":        "legacy.encryption_key",
+	"REVENGE_SERVER_RATE_LIMIT_ENABLED":                    "server.rate_limit.enabled",
+	"REVENGE_SERVER_RATE_LIMIT_BACKEND":                    "server.rate_limit.backend",
+	"REVENGE_SERVER_RATE_LIMIT_GLOBAL_REQUESTS_PER_SECOND": "server.rate_limit.global.requests_per_second",
+	"REVENGE_SERVER_RATE_LIMIT_GLOBAL_BURST":               "server.rate_limit.global.burst",
+	"REVENGE_SERVER_RATE_LIMIT_AUTH_REQUESTS_PER_SECOND":   "server.rate_limit.auth.requests_per_second",
+	"REVENGE_SERVER_RATE_LIMIT_AUTH_BURST":                  "server.rate_limit.auth.burst",
 }
 
 // applyCompoundEnvOverrides fixes env vars that the simple _→. transform

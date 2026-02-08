@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 func TestNewRedisRateLimiter(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	config := DefaultRedisRateLimiterConfig()
 
 	// Test creation without Redis client (fallback mode)
@@ -53,7 +53,7 @@ func TestRedisRateLimiter_AuthConfig(t *testing.T) {
 }
 
 func TestRedisRateLimiter_ShouldLimit(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	tests := []struct {
 		name          string
@@ -114,7 +114,7 @@ func TestRedisRateLimiter_Allow_WithMock(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	mockClient := mock.NewClient(ctrl)
 
 	config := RedisRateLimiterConfig{
@@ -128,7 +128,7 @@ func TestRedisRateLimiter_Allow_WithMock(t *testing.T) {
 	rl := &RedisRateLimiter{
 		config:  config,
 		client:  mockClient,
-		logger:  logger.Named("ratelimit-redis"),
+		logger:  logger.With("component", "ratelimit-redis"),
 		healthy: true,
 	}
 
@@ -156,7 +156,7 @@ func TestRedisRateLimiter_Allow_WithMock(t *testing.T) {
 }
 
 func TestRedisRateLimiter_Middleware_UseFallback(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	config := RedisRateLimiterConfig{
 		Enabled:           true,
@@ -194,7 +194,7 @@ func TestRedisRateLimiter_Middleware_UseFallback(t *testing.T) {
 }
 
 func TestRedisRateLimiter_Middleware_SkipsNonMatchingOperations(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	config := RedisRateLimiterConfig{
 		Enabled:           true,
@@ -234,7 +234,7 @@ func TestRedisRateLimiter_Middleware_WithMock(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	mockClient := mock.NewClient(ctrl)
 
 	config := RedisRateLimiterConfig{
@@ -248,7 +248,7 @@ func TestRedisRateLimiter_Middleware_WithMock(t *testing.T) {
 	rl := &RedisRateLimiter{
 		config:  config,
 		client:  mockClient,
-		logger:  logger.Named("ratelimit-redis"),
+		logger:  logger.With("component", "ratelimit-redis"),
 		healthy: true,
 	}
 
@@ -325,7 +325,7 @@ func TestRedisRateLimiter_Middleware_WithMock(t *testing.T) {
 }
 
 func TestRedisRateLimiter_Stats(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	config := RedisRateLimiterConfig{
 		Enabled:           true,
@@ -349,7 +349,7 @@ func TestRedisRateLimiter_Stats(t *testing.T) {
 }
 
 func TestRedisRateLimiter_HealthyStateManagement(t *testing.T) {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	config := DefaultRedisRateLimiterConfig()
 
 	t.Run("starts unhealthy without client", func(t *testing.T) {
@@ -369,7 +369,7 @@ func TestRedisRateLimiter_HealthyStateManagement(t *testing.T) {
 		rl := &RedisRateLimiter{
 			config:  config,
 			client:  mockClient,
-			logger:  logger.Named("ratelimit-redis"),
+			logger:  logger.With("component", "ratelimit-redis"),
 			healthy: true,
 		}
 
@@ -381,7 +381,7 @@ func TestRedisRateLimiter_FallbackOnError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	mockClient := mock.NewClient(ctrl)
 
 	config := RedisRateLimiterConfig{
@@ -395,7 +395,7 @@ func TestRedisRateLimiter_FallbackOnError(t *testing.T) {
 	rl := &RedisRateLimiter{
 		config:  config,
 		client:  mockClient,
-		logger:  logger.Named("ratelimit-redis"),
+		logger:  logger.With("component", "ratelimit-redis"),
 		healthy: true,
 	}
 
@@ -442,7 +442,7 @@ func TestRedisRateLimiter_DifferentIPsHaveSeparateLimits(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	mockClient := mock.NewClient(ctrl)
 
 	config := RedisRateLimiterConfig{
@@ -456,7 +456,7 @@ func TestRedisRateLimiter_DifferentIPsHaveSeparateLimits(t *testing.T) {
 	rl := &RedisRateLimiter{
 		config:  config,
 		client:  mockClient,
-		logger:  logger.Named("ratelimit-redis"),
+		logger:  logger.With("component", "ratelimit-redis"),
 		healthy: true,
 	}
 

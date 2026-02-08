@@ -9,9 +9,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/settings"
 )
 
@@ -135,14 +135,14 @@ func TestCachedService_NewCachedService_Unit(t *testing.T) {
 		t.Parallel()
 		svc := &mockService{}
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 		require.NotNil(t, cached)
 	})
 
 	t.Run("with nil cache", func(t *testing.T) {
 		t.Parallel()
 		svc := &mockService{}
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 		require.NotNil(t, cached)
 	})
 }
@@ -163,7 +163,7 @@ func TestCachedService_GetServerSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.GetServerSetting(context.Background(), "test.key")
 		require.NoError(t, err)
@@ -183,7 +183,7 @@ func TestCachedService_GetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		result, err := cached.GetServerSetting(context.Background(), "cache.miss.key")
 		require.NoError(t, err)
@@ -203,7 +203,7 @@ func TestCachedService_GetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - cache miss
 		_, err := cached.GetServerSetting(context.Background(), "cache.hit.key")
@@ -230,7 +230,7 @@ func TestCachedService_GetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.GetServerSetting(context.Background(), "error.key")
 		require.Error(t, err)
@@ -257,7 +257,7 @@ func TestCachedService_ListServerSettings_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.ListServerSettings(context.Background())
 		require.NoError(t, err)
@@ -278,7 +278,7 @@ func TestCachedService_ListServerSettings_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call
 		result, err := cached.ListServerSettings(context.Background())
@@ -305,7 +305,7 @@ func TestCachedService_ListServerSettings_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.ListServerSettings(context.Background())
 		require.Error(t, err)
@@ -331,7 +331,7 @@ func TestCachedService_ListPublicServerSettings_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.ListPublicServerSettings(context.Background())
 		require.NoError(t, err)
@@ -353,7 +353,7 @@ func TestCachedService_ListPublicServerSettings_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call
 		_, err := cached.ListPublicServerSettings(context.Background())
@@ -379,7 +379,7 @@ func TestCachedService_ListPublicServerSettings_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.ListPublicServerSettings(context.Background())
 		require.Error(t, err)
@@ -405,7 +405,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		result, err := cached.SetServerSetting(context.Background(), "new.key", "value", adminID)
 		require.NoError(t, err)
@@ -421,7 +421,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.SetServerSetting(context.Background(), "new.key", "value", adminID)
 		require.NoError(t, err)
@@ -438,7 +438,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.SetServerSetting(context.Background(), "fail.key", "value", adminID)
 		require.Error(t, err)
@@ -459,7 +459,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// Load into cache
 		_, err := cached.GetServerSetting(context.Background(), "inv.key")
@@ -495,7 +495,7 @@ func TestCachedService_DeleteServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.DeleteServerSetting(context.Background(), "del.key")
 		require.NoError(t, err)
@@ -510,7 +510,7 @@ func TestCachedService_DeleteServerSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		err := cached.DeleteServerSetting(context.Background(), "del.key")
 		require.NoError(t, err)
@@ -526,7 +526,7 @@ func TestCachedService_DeleteServerSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.DeleteServerSetting(context.Background(), "fail.key")
 		require.Error(t, err)
@@ -551,7 +551,7 @@ func TestCachedService_GetUserSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.GetUserSetting(context.Background(), userID, "user.key")
 		require.NoError(t, err)
@@ -571,7 +571,7 @@ func TestCachedService_GetUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// First call - miss
 		_, err := cached.GetUserSetting(context.Background(), userID, "cache.user.key")
@@ -596,7 +596,7 @@ func TestCachedService_GetUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.GetUserSetting(context.Background(), userID, "missing.key")
 		require.Error(t, err)
@@ -622,7 +622,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		result, err := cached.SetUserSetting(context.Background(), userID, "user.set.key", "new_val")
 		require.NoError(t, err)
@@ -638,7 +638,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		result, err := cached.SetUserSetting(context.Background(), userID, "user.set.key", "new_val")
 		require.NoError(t, err)
@@ -655,7 +655,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		_, err := cached.SetUserSetting(context.Background(), userID, "fail.key", "value")
 		require.Error(t, err)
@@ -681,7 +681,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
 			"bulk.key1": "val1",
@@ -699,7 +699,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
 			"bulk.key1": "val1",
@@ -717,7 +717,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
 			"fail.key": "val",
@@ -745,7 +745,7 @@ func TestCachedService_DeleteUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.DeleteUserSetting(context.Background(), userID, "del.user.key")
 		require.NoError(t, err)
@@ -760,7 +760,7 @@ func TestCachedService_DeleteUserSetting_Unit(t *testing.T) {
 			},
 		}
 
-		cached := settings.NewCachedService(svc, nil, zap.NewNop())
+		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
 		err := cached.DeleteUserSetting(context.Background(), userID, "del.user.key")
 		require.NoError(t, err)
@@ -776,7 +776,7 @@ func TestCachedService_DeleteUserSetting_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		err := cached.DeleteUserSetting(context.Background(), userID, "fail.key")
 		require.Error(t, err)
@@ -807,7 +807,7 @@ func TestCachedService_CacheInvalidation_Flows_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 		ctx := context.Background()
 
 		// First get - populates cache
@@ -842,7 +842,7 @@ func TestCachedService_CacheInvalidation_Flows_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 		ctx := context.Background()
 
 		// Get - populates cache
@@ -877,7 +877,7 @@ func TestCachedService_CacheInvalidation_Flows_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 		ctx := context.Background()
 
 		// Get - populates cache
@@ -918,7 +918,7 @@ func TestCachedService_ListServerSettingsByCategory_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		// CachedService does not override ListServerSettingsByCategory, so it delegates
 		result, err := cached.ListServerSettingsByCategory(context.Background(), "general")
@@ -948,7 +948,7 @@ func TestCachedService_ListUserSettings_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		result, err := cached.ListUserSettings(context.Background(), userID)
 		require.NoError(t, err)
@@ -978,7 +978,7 @@ func TestCachedService_ListUserSettingsByCategory_Unit(t *testing.T) {
 		}
 
 		c := newTestCache(t)
-		cached := settings.NewCachedService(svc, c, zap.NewNop())
+		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
 		result, err := cached.ListUserSettingsByCategory(context.Background(), userID, "display")
 		require.NoError(t, err)

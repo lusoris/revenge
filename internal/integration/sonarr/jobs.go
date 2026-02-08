@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
@@ -46,14 +46,14 @@ func (SonarrSyncJobArgs) InsertOpts() river.InsertOpts {
 type SonarrSyncWorker struct {
 	river.WorkerDefaults[SonarrSyncJobArgs]
 	syncService *SyncService
-	logger      *zap.Logger
+	logger      *slog.Logger
 }
 
 // NewSonarrSyncWorker creates a new Sonarr sync worker.
-func NewSonarrSyncWorker(syncService *SyncService, logger *zap.Logger) *SonarrSyncWorker {
+func NewSonarrSyncWorker(syncService *SyncService, logger *slog.Logger) *SonarrSyncWorker {
 	return &SonarrSyncWorker{
 		syncService: syncService,
-		logger:      logger.Named("sonarr_sync_worker"),
+		logger:      logger.With("component", "sonarr_sync_worker"),
 	}
 }
 
@@ -67,9 +67,9 @@ func (w *SonarrSyncWorker) Work(ctx context.Context, job *river.Job[SonarrSyncJo
 	args := job.Args
 
 	w.logger.Info("starting sonarr sync operation",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("operation", string(args.Operation)),
-		zap.Int("sonarr_series_id", args.SonarrSeriesID),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("operation", string(args.Operation)),
+		slog.Int("sonarr_series_id", args.SonarrSeriesID),
 	)
 
 	// Check if sync service is available
@@ -92,18 +92,18 @@ func (w *SonarrSyncWorker) Work(ctx context.Context, job *river.Job[SonarrSyncJo
 func (w *SonarrSyncWorker) fullSync(ctx context.Context) error {
 	result, err := w.syncService.SyncLibrary(ctx)
 	if err != nil {
-		w.logger.Error("full sync failed", zap.Error(err))
+		w.logger.Error("full sync failed", slog.Any("error",err))
 		return err
 	}
 
 	w.logger.Info("full sync completed",
-		zap.Int("series_added", result.SeriesAdded),
-		zap.Int("series_updated", result.SeriesUpdated),
-		zap.Int("series_skipped", result.SeriesSkipped),
-		zap.Int("episodes_added", result.EpisodesAdded),
-		zap.Int("episodes_updated", result.EpisodesUpdated),
-		zap.Int("errors", len(result.Errors)),
-		zap.Duration("duration", result.Duration),
+		slog.Int("series_added", result.SeriesAdded),
+		slog.Int("series_updated", result.SeriesUpdated),
+		slog.Int("series_skipped", result.SeriesSkipped),
+		slog.Int("episodes_added", result.EpisodesAdded),
+		slog.Int("episodes_updated", result.EpisodesUpdated),
+		slog.Int("errors", len(result.Errors)),
+		slog.Duration("duration", result.Duration),
 	)
 
 	return nil
@@ -113,14 +113,14 @@ func (w *SonarrSyncWorker) fullSync(ctx context.Context) error {
 func (w *SonarrSyncWorker) singleSync(ctx context.Context, sonarrSeriesID int) error {
 	if err := w.syncService.SyncSeries(ctx, sonarrSeriesID); err != nil {
 		w.logger.Error("single series sync failed",
-			zap.Int("sonarr_series_id", sonarrSeriesID),
-			zap.Error(err),
+			slog.Int("sonarr_series_id", sonarrSeriesID),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	w.logger.Info("single series sync completed",
-		zap.Int("sonarr_series_id", sonarrSeriesID),
+		slog.Int("sonarr_series_id", sonarrSeriesID),
 	)
 
 	return nil
@@ -149,14 +149,14 @@ func (SonarrWebhookJobArgs) InsertOpts() river.InsertOpts {
 type SonarrWebhookWorker struct {
 	river.WorkerDefaults[SonarrWebhookJobArgs]
 	webhookHandler *WebhookHandler
-	logger         *zap.Logger
+	logger         *slog.Logger
 }
 
 // NewSonarrWebhookWorker creates a new Sonarr webhook worker.
-func NewSonarrWebhookWorker(webhookHandler *WebhookHandler, logger *zap.Logger) *SonarrWebhookWorker {
+func NewSonarrWebhookWorker(webhookHandler *WebhookHandler, logger *slog.Logger) *SonarrWebhookWorker {
 	return &SonarrWebhookWorker{
 		webhookHandler: webhookHandler,
-		logger:         logger.Named("sonarr_webhook_worker"),
+		logger:         logger.With("component", "sonarr_webhook_worker"),
 	}
 }
 
@@ -175,9 +175,9 @@ func (w *SonarrWebhookWorker) Work(ctx context.Context, job *river.Job[SonarrWeb
 	}
 
 	w.logger.Info("processing sonarr webhook",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("event_type", args.Payload.EventType),
-		zap.Int("series_id", seriesID),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("event_type", args.Payload.EventType),
+		slog.Int("series_id", seriesID),
 	)
 
 	// Check if webhook handler is available
@@ -188,14 +188,14 @@ func (w *SonarrWebhookWorker) Work(ctx context.Context, job *river.Job[SonarrWeb
 
 	if err := w.webhookHandler.HandleWebhook(ctx, &args.Payload); err != nil {
 		w.logger.Error("webhook processing failed",
-			zap.String("event_type", args.Payload.EventType),
-			zap.Error(err),
+			slog.String("event_type", args.Payload.EventType),
+			slog.Any("error",err),
 		)
 		return err
 	}
 
 	w.logger.Info("webhook processed successfully",
-		zap.String("event_type", args.Payload.EventType),
+		slog.String("event_type", args.Payload.EventType),
 	)
 
 	return nil

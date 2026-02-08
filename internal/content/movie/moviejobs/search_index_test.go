@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -205,7 +205,7 @@ func TestMovieSearchIndexArgs_ZeroValue(t *testing.T) {
 func TestNewMovieSearchIndexWorker(t *testing.T) {
 	t.Parallel()
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieSearchIndexWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
@@ -218,7 +218,7 @@ func TestNewMovieSearchIndexWorker_LoggerNamed(t *testing.T) {
 	t.Parallel()
 
 	// The constructor calls logger.Named("search_index_worker"), verify it doesn't panic.
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := NewMovieSearchIndexWorker(nil, nil, logger)
 	assert.NotNil(t, worker.logger)
 }
@@ -230,7 +230,7 @@ func TestNewMovieSearchIndexWorker_LoggerNamed(t *testing.T) {
 func TestMovieSearchIndexWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieSearchIndexWorker(nil, nil, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -246,7 +246,7 @@ func TestMovieSearchIndexWorker_Timeout(t *testing.T) {
 func TestMovieSearchIndexWorker_Timeout_ConsistentForAllOperations(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieSearchIndexWorker(nil, nil, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, nil, logging.NewTestLogger())
 
 	operations := []SearchIndexOperation{
 		SearchIndexOperationIndex,
@@ -275,7 +275,7 @@ func TestMovieSearchIndexWorker_Work_SearchDisabled(t *testing.T) {
 
 	// A zero-value MovieSearchService with nil client returns IsEnabled() == false.
 	searchSvc := &search.MovieSearchService{}
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -294,7 +294,7 @@ func TestMovieSearchIndexWorker_Work_SearchDisabled_Reindex(t *testing.T) {
 	t.Parallel()
 
 	searchSvc := &search.MovieSearchService{}
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -312,7 +312,7 @@ func TestMovieSearchIndexWorker_Work_SearchDisabled_Remove(t *testing.T) {
 	t.Parallel()
 
 	searchSvc := &search.MovieSearchService{}
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -330,7 +330,7 @@ func TestMovieSearchIndexWorker_Work_NilSearchService(t *testing.T) {
 	t.Parallel()
 
 	// Nil searchService should panic when accessing IsEnabled().
-	worker := NewMovieSearchIndexWorker(nil, nil, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -353,7 +353,7 @@ func TestMovieSearchIndexWorker_Work_UnknownOperation(t *testing.T) {
 	t.Parallel()
 
 	searchSvc := newEnabledSearchService(t)
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -378,7 +378,7 @@ func TestMovieSearchIndexWorker_Work_IndexMovieNotFound(t *testing.T) {
 			return nil, movie.ErrMovieNotFound
 		},
 	}
-	worker := NewMovieSearchIndexWorker(repo, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(repo, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -402,7 +402,7 @@ func TestMovieSearchIndexWorker_Work_IndexMovieRepoError(t *testing.T) {
 			return nil, assert.AnError
 		},
 	}
-	worker := NewMovieSearchIndexWorker(repo, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(repo, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -440,7 +440,7 @@ func TestMovieSearchIndexWorker_Work_IndexMovieSuccess_SearchFails(t *testing.T)
 			return []movie.MovieFile{{FilePath: "/movies/test.mkv"}}, nil
 		},
 	}
-	worker := NewMovieSearchIndexWorker(repo, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(repo, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -479,7 +479,7 @@ func TestMovieSearchIndexWorker_Work_IndexMovie_GenreError(t *testing.T) {
 			return nil, assert.AnError
 		},
 	}
-	worker := NewMovieSearchIndexWorker(repo, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(repo, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -507,7 +507,7 @@ func TestMovieSearchIndexWorker_Work_IndexMovie_NoFiles(t *testing.T) {
 		},
 		// All other funcs return nil/empty by default.
 	}
-	worker := NewMovieSearchIndexWorker(repo, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(repo, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},
@@ -527,7 +527,7 @@ func TestMovieSearchIndexWorker_Work_RemoveMovie(t *testing.T) {
 	t.Parallel()
 
 	searchSvc := newEnabledSearchService(t)
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	movieID := uuid.Must(uuid.NewV7())
 	job := &river.Job[MovieSearchIndexArgs]{
@@ -549,7 +549,7 @@ func TestMovieSearchIndexWorker_Work_Reindex(t *testing.T) {
 	t.Parallel()
 
 	searchSvc := newEnabledSearchService(t)
-	worker := NewMovieSearchIndexWorker(nil, searchSvc, zap.NewNop())
+	worker := NewMovieSearchIndexWorker(nil, searchSvc, logging.NewTestLogger())
 
 	job := &river.Job[MovieSearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: "movie_search_index"},

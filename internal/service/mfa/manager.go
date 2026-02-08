@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 )
@@ -23,7 +23,7 @@ type MFAManager struct {
 	totp        *TOTPService
 	webauthn    *WebAuthnService
 	backupCodes *BackupCodesService
-	logger      *zap.Logger
+	logger      *slog.Logger
 }
 
 // NewMFAManager creates a new MFA manager.
@@ -32,7 +32,7 @@ func NewMFAManager(
 	totp *TOTPService,
 	webauthn *WebAuthnService,
 	backupCodes *BackupCodesService,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) *MFAManager {
 	return &MFAManager{
 		queries:     queries,
@@ -147,9 +147,9 @@ func (m *MFAManager) EnableMFA(ctx context.Context, userID uuid.UUID) error {
 	}
 
 	m.logger.Info("mfa enabled",
-		zap.String("user_id", userID.String()),
-		zap.Bool("has_totp", settings.TotpEnabled),
-		zap.Bool("has_webauthn", settings.WebauthnEnabled))
+		slog.String("user_id", userID.String()),
+		slog.Bool("has_totp", settings.TotpEnabled),
+		slog.Bool("has_webauthn", settings.WebauthnEnabled))
 
 	return nil
 }
@@ -164,7 +164,7 @@ func (m *MFAManager) DisableMFA(ctx context.Context, userID uuid.UUID) error {
 		return fmt.Errorf("failed to disable mfa: %w", err)
 	}
 
-	m.logger.Info("mfa disabled", zap.String("user_id", userID.String()))
+	m.logger.Info("mfa disabled", slog.String("user_id", userID.String()))
 	return nil
 }
 
@@ -189,9 +189,9 @@ func (m *MFAManager) SetRememberDevice(ctx context.Context, userID uuid.UUID, en
 			return fmt.Errorf("failed to create mfa settings: %w", err)
 		}
 		m.logger.Info("mfa settings created with remember device",
-			zap.String("user_id", userID.String()),
-			zap.Bool("enabled", enabled),
-			zap.Int32("duration_days", durationDays))
+			slog.String("user_id", userID.String()),
+			slog.Bool("enabled", enabled),
+			slog.Any("duration_days", durationDays))
 		return nil
 	}
 
@@ -206,9 +206,9 @@ func (m *MFAManager) SetRememberDevice(ctx context.Context, userID uuid.UUID, en
 	}
 
 	m.logger.Info("remember device setting updated",
-		zap.String("user_id", userID.String()),
-		zap.Bool("enabled", enabled),
-		zap.Int32("duration_days", durationDays))
+		slog.String("user_id", userID.String()),
+		slog.Bool("enabled", enabled),
+		slog.Any("duration_days", durationDays))
 	return nil
 }
 
@@ -271,7 +271,7 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 	// Delete TOTP
 	err := m.totp.DeleteTOTP(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete totp", zap.Error(err))
+		m.logger.Warn("failed to delete totp", slog.Any("error",err))
 	}
 
 	// Delete all WebAuthn credentials
@@ -281,8 +281,8 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 			err = m.webauthn.DeleteCredential(ctx, userID, cred.ID)
 			if err != nil {
 				m.logger.Warn("failed to delete webauthn credential",
-					zap.String("credential_id", cred.ID.String()),
-					zap.Error(err))
+					slog.String("credential_id", cred.ID.String()),
+					slog.Any("error",err))
 			}
 		}
 	}
@@ -290,15 +290,15 @@ func (m *MFAManager) RemoveAllMethods(ctx context.Context, userID uuid.UUID) err
 	// Delete all backup codes
 	err = m.backupCodes.DeleteAllCodes(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete backup codes", zap.Error(err))
+		m.logger.Warn("failed to delete backup codes", slog.Any("error",err))
 	}
 
 	// Delete MFA settings
 	err = m.queries.DeleteUserMFASettings(ctx, userID)
 	if err != nil {
-		m.logger.Warn("failed to delete mfa settings", zap.Error(err))
+		m.logger.Warn("failed to delete mfa settings", slog.Any("error",err))
 	}
 
-	m.logger.Info("removed all mfa methods", zap.String("user_id", userID.String()))
+	m.logger.Info("removed all mfa methods", slog.String("user_id", userID.String()))
 	return nil
 }

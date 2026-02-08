@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
@@ -19,14 +19,14 @@ type MovieMetadataRefreshWorker struct {
 	river.WorkerDefaults[metadatajobs.RefreshMovieArgs]
 	service   movie.Service
 	jobClient *infrajobs.Client
-	logger    *zap.Logger
+	logger    *slog.Logger
 }
 
 // NewMovieMetadataRefreshWorker creates a new metadata refresh worker.
 func NewMovieMetadataRefreshWorker(
 	service movie.Service,
 	jobClient *infrajobs.Client,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) *MovieMetadataRefreshWorker {
 	return &MovieMetadataRefreshWorker{
 		service:   service,
@@ -45,10 +45,10 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[me
 	args := job.Args
 
 	w.logger.Info("starting movie metadata refresh",
-		zap.String("job_id", fmt.Sprintf("%d", job.ID)),
-		zap.String("movie_id", args.MovieID.String()),
-		zap.Bool("force", args.Force),
-		zap.Strings("languages", args.Languages),
+		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
+		slog.String("movie_id", args.MovieID.String()),
+		slog.Bool("force", args.Force),
+		slog.Any("languages", args.Languages),
 	)
 
 	_ = w.jobClient.ReportProgress(ctx, job.ID, &infrajobs.JobProgress{
@@ -65,8 +65,8 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[me
 
 	if err := w.service.RefreshMovieMetadata(ctx, args.MovieID, opts); err != nil {
 		w.logger.Error("movie metadata refresh failed",
-			zap.String("movie_id", args.MovieID.String()),
-			zap.Error(err),
+			slog.String("movie_id", args.MovieID.String()),
+			slog.Any("error",err),
 		)
 		return fmt.Errorf("movie metadata refresh failed: %w", err)
 	}
@@ -80,7 +80,7 @@ func (w *MovieMetadataRefreshWorker) Work(ctx context.Context, job *river.Job[me
 	})
 
 	w.logger.Info("movie metadata refresh completed",
-		zap.String("movie_id", args.MovieID.String()),
+		slog.String("movie_id", args.MovieID.String()),
 	)
 
 	return nil

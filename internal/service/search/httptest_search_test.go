@@ -19,7 +19,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/typesense/typesense-go/v2/typesense/api"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // newTestSearchClient creates a search client backed by the given httptest server.
@@ -628,7 +629,7 @@ func TestCachedMovieSearchService_Search_WithCache(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	// First call - cache miss
@@ -653,7 +654,7 @@ func TestCachedMovieSearchService_Autocomplete_WithCache(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	result1, err := cached.Autocomplete(ctx, "test", 5)
@@ -675,7 +676,7 @@ func TestCachedMovieSearchService_GetFacets_WithCache(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	result1, err := cached.GetFacets(ctx, []string{"genres"})
@@ -697,7 +698,7 @@ func TestCachedMovieSearchService_InvalidateSearchCache_WithCache(t *testing.T) 
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	err := cached.InvalidateSearchCache(ctx)
@@ -805,7 +806,7 @@ func TestCachedMovieSearchService_Search_ErrorPassthrough(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	_, err := cached.Search(ctx, SearchParams{Query: "test", Page: 1, PerPage: 20})
@@ -826,7 +827,7 @@ func TestCachedMovieSearchService_Autocomplete_ErrorPassthrough(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	_, err := cached.Autocomplete(ctx, "test", 5)
@@ -847,7 +848,7 @@ func TestCachedMovieSearchService_GetFacets_ErrorPassthrough(t *testing.T) {
 	innerSvc := NewMovieSearchService(client, slog.Default())
 	testCacheInst := newTestCache(t)
 
-	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, zap.NewNop())
+	cached := NewCachedMovieSearchService(innerSvc, testCacheInst, logging.NewTestLogger())
 	ctx := context.Background()
 
 	_, err := cached.GetFacets(ctx, []string{"genres"})

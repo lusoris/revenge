@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/config"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // Module provides Raft leader election for fx dependency injection.
@@ -18,7 +18,7 @@ var Module = fx.Module("raft",
 
 // provideLeaderElection creates a Raft leader election instance.
 // Returns nil if Raft is disabled (single-node mode).
-func provideLeaderElection(cfg *config.Config, logger *zap.Logger) (*LeaderElection, error) {
+func provideLeaderElection(cfg *config.Config, logger *slog.Logger) (*LeaderElection, error) {
 	// Generate node ID if not provided
 	nodeID := cfg.Raft.NodeID
 	if nodeID == "" {
@@ -28,8 +28,8 @@ func provideLeaderElection(cfg *config.Config, logger *zap.Logger) (*LeaderElect
 			// Fallback to UUID
 			nodeID = uuid.Must(uuid.NewV7()).String()
 			logger.Warn("Failed to get hostname, using UUID as node ID",
-				zap.String("node_id", nodeID),
-				zap.Error(err))
+				slog.String("node_id", nodeID),
+				slog.Any("error",err))
 		} else {
 			nodeID = hostname
 		}
@@ -47,7 +47,7 @@ func provideLeaderElection(cfg *config.Config, logger *zap.Logger) (*LeaderElect
 }
 
 // registerLifecycle registers Raft lifecycle hooks with fx.
-func registerLifecycle(lc fx.Lifecycle, le *LeaderElection, logger *zap.Logger) {
+func registerLifecycle(lc fx.Lifecycle, le *LeaderElection, logger *slog.Logger) {
 	if le == nil {
 		// Raft disabled
 		return
@@ -56,8 +56,8 @@ func registerLifecycle(lc fx.Lifecycle, le *LeaderElection, logger *zap.Logger) 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			logger.Info("Raft leader election started",
-				zap.String("state", le.State()),
-				zap.String("leader", le.LeaderAddr()))
+				slog.String("state", le.State()),
+				slog.String("leader", le.LeaderAddr()))
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {

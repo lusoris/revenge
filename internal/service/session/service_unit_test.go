@@ -15,7 +15,8 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+
+	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 // =====================================================
@@ -26,7 +27,7 @@ func newTestService(t *testing.T, repo Repository) *Service {
 	t.Helper()
 	return &Service{
 		repo:          repo,
-		logger:        zap.NewNop(),
+		logger:        logging.NewTestLogger(),
 		tokenLength:   32,
 		expiry:        24 * time.Hour,
 		refreshExpiry: 7 * 24 * time.Hour,
@@ -100,7 +101,7 @@ func TestGenerateToken_DifferentLengths(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			svc := &Service{
-				logger:      zap.NewNop(),
+				logger:      logging.NewTestLogger(),
 				tokenLength: tt.tokenLength,
 			}
 
@@ -331,13 +332,13 @@ func TestCachedService_CreateSession_WithCache(t *testing.T) {
 
 	svc := &Service{
 		repo:        repo,
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		tokenLength: 32,
 		expiry:      24 * time.Hour,
 		maxPerUser:  10,
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	token, refreshToken, err := cached.CreateSession(
 		context.Background(),
@@ -376,13 +377,13 @@ func TestCachedService_CreateSession_WithoutCache(t *testing.T) {
 
 	svc := &Service{
 		repo:        repo,
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		tokenLength: 32,
 		expiry:      24 * time.Hour,
 		maxPerUser:  10,
 	}
 
-	cached := NewCachedService(svc, nil, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, nil, logging.NewTestLogger(), 5*time.Minute)
 
 	token, refreshToken, err := cached.CreateSession(
 		context.Background(),
@@ -410,10 +411,10 @@ func TestCachedService_RevokeAllUserSessions_WithCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   repo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	userID := uuid.Must(uuid.NewV7())
 	err = cached.RevokeAllUserSessions(context.Background(), userID)
@@ -432,10 +433,10 @@ func TestCachedService_RevokeAllUserSessions_WithoutCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   repo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, nil, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, nil, logging.NewTestLogger(), 5*time.Minute)
 
 	userID := uuid.Must(uuid.NewV7())
 	err := cached.RevokeAllUserSessions(context.Background(), userID)
@@ -458,10 +459,10 @@ func TestCachedService_RevokeSession_WithoutCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   repo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, nil, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, nil, logging.NewTestLogger(), 5*time.Minute)
 
 	err := cached.RevokeSession(context.Background(), sessionID)
 	require.NoError(t, err)
@@ -488,10 +489,10 @@ func TestCachedService_RevokeSession_WithCache(t *testing.T) {
 
 	svc := &Service{
 		repo:   repo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	err = cached.RevokeSession(context.Background(), sessionID)
 	require.NoError(t, err)
@@ -518,10 +519,10 @@ func TestCachedService_ValidateSession_CacheMissThenHit(t *testing.T) {
 
 	svc := &Service{
 		repo:   repo,
-		logger: zap.NewNop(),
+		logger: logging.NewTestLogger(),
 	}
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	// First call - cache miss
 	session1, err := cached.ValidateSession(context.Background(), "validate-token")
@@ -576,7 +577,7 @@ func TestNewService_ConfigDefaults(t *testing.T) {
 
 			svc := &Service{
 				repo:        nil,
-				logger:      zap.NewNop(),
+				logger:      logging.NewTestLogger(),
 				tokenLength: tokenLength,
 				maxPerUser:  maxPerUser,
 			}
@@ -595,7 +596,7 @@ func TestNewServiceForTesting_AllFieldsSet(t *testing.T) {
 	t.Parallel()
 
 	repo := &mockRepository{callCount: make(map[string]int)}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	svc := NewServiceForTesting(
 		repo,
@@ -742,7 +743,7 @@ func TestCachedService_CreateSession_ServiceError(t *testing.T) {
 
 	svc := &Service{
 		repo:        repo,
-		logger:      zap.NewNop(),
+		logger:      logging.NewTestLogger(),
 		tokenLength: 32,
 		expiry:      24 * time.Hour,
 		maxPerUser:  10,
@@ -752,7 +753,7 @@ func TestCachedService_CreateSession_ServiceError(t *testing.T) {
 	require.NoError(t, err)
 	defer l1Cache.Close()
 
-	cached := NewCachedService(svc, l1Cache, zap.NewNop(), 5*time.Minute)
+	cached := NewCachedService(svc, l1Cache, logging.NewTestLogger(), 5*time.Minute)
 
 	token, refreshToken, err := cached.CreateSession(
 		context.Background(),

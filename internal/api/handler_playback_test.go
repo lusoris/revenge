@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
@@ -20,7 +20,7 @@ import (
 func TestHandler_StartPlaybackSession_Disabled(t *testing.T) {
 	t.Parallel()
 
-	handler := &Handler{logger: zap.NewNop()}
+	handler := &Handler{logger: logging.NewTestLogger()}
 
 	req := &ogen.StartPlaybackRequest{
 		MediaType: "movie",
@@ -43,7 +43,7 @@ func TestHandler_StartPlaybackSession_Unauthorized(t *testing.T) {
 	// The handler calls getUserID(ctx) next, which returns false for a bare
 	// context.Background(), so no Service methods are ever invoked.
 	handler := &Handler{
-		logger:          zap.NewNop(),
+		logger:          logging.NewTestLogger(),
 		playbackService: new(playback.Service),
 	}
 
@@ -68,7 +68,7 @@ func TestHandler_StartPlaybackSession_Unauthorized(t *testing.T) {
 func TestHandler_GetPlaybackSession_Disabled(t *testing.T) {
 	t.Parallel()
 
-	handler := &Handler{logger: zap.NewNop()}
+	handler := &Handler{logger: logging.NewTestLogger()}
 
 	params := ogen.GetPlaybackSessionParams{SessionId: uuid.New()}
 
@@ -85,7 +85,7 @@ func TestHandler_GetPlaybackSession_Unauthorized(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger:          zap.NewNop(),
+		logger:          logging.NewTestLogger(),
 		playbackService: new(playback.Service),
 	}
 
@@ -107,7 +107,7 @@ func TestHandler_GetPlaybackSession_Unauthorized(t *testing.T) {
 func TestHandler_StopPlaybackSession_Disabled(t *testing.T) {
 	t.Parallel()
 
-	handler := &Handler{logger: zap.NewNop()}
+	handler := &Handler{logger: logging.NewTestLogger()}
 
 	params := ogen.StopPlaybackSessionParams{SessionId: uuid.New()}
 
@@ -124,7 +124,7 @@ func TestHandler_StopPlaybackSession_Unauthorized(t *testing.T) {
 	t.Parallel()
 
 	handler := &Handler{
-		logger:          zap.NewNop(),
+		logger:          logging.NewTestLogger(),
 		playbackService: new(playback.Service),
 	}
 

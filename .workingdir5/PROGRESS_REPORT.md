@@ -234,3 +234,99 @@ All tests pass. Container logs show only expected errors from deliberate negativ
 | `config/loader.go` | Compound env var overrides |
 | `config/loader_test.go` | Tests for compound env mapping |
 | `database/queries/movie/movies.sql` | COALESCE for NULL stats |
+
+---
+
+## Phase 5: Unify Logging to slog (COMPLETE)
+
+**Problem**: Codebase used two separate structured logging libraries simultaneously:
+- **slog** (Go stdlib): Used by infrastructure (database, cache, jobs, health, playback) — 62 files
+- **zap** (Uber): Used by API handlers, services, middleware, raft — 132 files
+
+This produced two different log formats in container output (tint/JSON vs zap's encoder).
+
+**Solution**: Migrated all `*zap.Logger` usage to `*slog.Logger`. Removed zap entirely from authored code.
+
+### Conversion Patterns Applied
+
+| zap | slog |
+|-----|------|
+| `*zap.Logger` | `*slog.Logger` |
+| `zap.String("k", v)` | `slog.String("k", v)` |
+| `zap.Int("k", v)` | `slog.Int("k", v)` |
+| `zap.Bool("k", v)` | `slog.Bool("k", v)` |
+| `zap.Float64("k", v)` | `slog.Float64("k", v)` |
+| `zap.Error(err)` | `slog.Any("error", err)` |
+| `logger.Named("api")` | `logger.With("component", "api")` |
+| `zap.NewNop()` | `logging.NewTestLogger()` |
+| `"go.uber.org/zap"` | `"log/slog"` |
+
+### Files Modified (~130 files)
+
+**Logging module** (removed zap provider):
+- `infra/logging/logging.go` — Removed `NewZapLogger()`
+- `infra/logging/module.go` — Removed `ProvideZapLogger`
+- `infra/logging/logging_test.go` — Removed zap tests
+
+**API layer** (~26 files):
+- `api/handler.go` — Handler struct logger field
+- `api/server.go` — ServerParams, Server struct, NewServer()
+- `api/handler_*.go` (19 handler files) — All log calls
+- `api/middleware/ratelimit.go`, `ratelimit_redis.go` — Rate limiter logging
+- All API test files — `zap.NewNop()` → `logging.NewTestLogger()`
+
+**Service layer** (~40 files):
+- `service/activity/` — service.go, cleanup.go
+- `service/apikeys/` — service.go, module.go
+- `service/auth/` — service.go, module.go
+- `service/email/` — service.go, module.go
+- `service/library/` — service.go, module.go, cached_service.go, cleanup.go
+- `service/mfa/` — manager.go, totp.go, backup_codes.go, webauthn.go, module.go
+- `service/oidc/` — service.go, module.go
+- `service/rbac/` — service.go, module.go, cached_service.go, roles.go
+- `service/search/` — cached_service.go
+- `service/session/` — service.go, module.go, cached_service.go
+- `service/settings/` — cached_service.go
+- `service/storage/` — s3.go, module.go, storage.go
+- `service/user/` — cached_service.go
+- All service test files updated
+
+**Content modules** (~15 files):
+- `content/movie/moviejobs/` — all workers + module.go
+- `content/movie/cached_service.go`
+- `content/tvshow/jobs/` — all workers + module.go
+- `content/shared/jobs/types.go`
+
+**Infrastructure** (~6 files):
+- `infra/raft/election.go` — hclog adapter rewired from zap→slog
+- `infra/raft/module.go`
+- `infra/image/` — service.go, module.go
+- `infra/observability/server.go`
+- `crypto/module.go`
+
+**Integrations** (~6 files):
+- `integration/radarr/` — jobs.go, module.go
+- `integration/sonarr/` — jobs.go, module.go
+
+### Additional Fixes During Migration
+
+1. **`handler_session_test.go`**: Still had `zap.NewNop()` passed to `session.NewService` — fixed
+2. **`handler_activity_test.go`, `handler_radarr_test.go`, `handler_rbac_test.go`**: Used `casbin.NewEnforcer()` but `rbac.NewService` expects `*casbin.SyncedEnforcer` (from Phase 4 migration) — changed to `casbin.NewSyncedEnforcer()`
+3. **`service/apikeys/service_unit_test.go`**: Mocked `ListUserAPIKeys` but service now calls `ListActiveUserAPIKeys` (from Bug 4 fix) — updated mock expectations
+
+### Verification
+
+```
+$ grep -r "go.uber.org/zap" internal/
+(zero results)
+
+$ make build
+(clean compilation)
+
+$ make test-short
+ok  github.com/lusoris/revenge/internal/api          0.258s
+ok  github.com/lusoris/revenge/internal/service/...   (all pass)
+(48 packages, zero failures)
+```
+
+Note: `go.uber.org/zap` remains in `go.mod` as an `// indirect` dependency (transitive dep from another library). All direct zap imports from authored code are removed.

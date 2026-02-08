@@ -18,7 +18,7 @@ import (
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // Job kind constants for TV show jobs
@@ -70,16 +70,16 @@ type LibraryScanWorker struct {
 	service          tvshow.Service
 	metadataProvider tvshow.MetadataProvider
 	jobClient        *infrajobs.Client
-	logger           *zap.Logger
+	logger           *slog.Logger
 }
 
 // NewLibraryScanWorker creates a new library scan worker.
-func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, jobClient *infrajobs.Client, logger *zap.Logger) *LibraryScanWorker {
+func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, jobClient *infrajobs.Client, logger *slog.Logger) *LibraryScanWorker {
 	return &LibraryScanWorker{
 		service:          service,
 		metadataProvider: metadataProvider,
 		jobClient:        jobClient,
-		logger:           logger.Named("tvshow_library_scan"),
+		logger:           logger.With("component", "tvshow_library_scan"),
 	}
 }
 
@@ -92,9 +92,9 @@ func (w *LibraryScanWorker) Timeout(job *river.Job[LibraryScanArgs]) time.Durati
 func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScanArgs]) error {
 	jctx := sharedjobs.NewJobContext(ctx, w.logger, job.ID, KindLibraryScan)
 	jctx.LogStart(
-		zap.Strings("paths", job.Args.Paths),
-		zap.Bool("force", job.Args.Force),
-		zap.Bool("auto_create", job.Args.AutoCreate),
+		slog.Any("paths", job.Args.Paths),
+		slog.Bool("force", job.Args.Force),
+		slog.Bool("auto_create", job.Args.AutoCreate),
 	)
 
 	result := &sharedjobs.JobResult{Success: true}
@@ -114,14 +114,14 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 	scanResults, summary, err := fsScanner.ScanWithSummary(ctx)
 	if err != nil {
 		result.AddError(fmt.Errorf("scan failed: %w", err))
-		w.logger.Error("library scan failed", zap.Error(err))
+		w.logger.Error("library scan failed", slog.Any("error", err))
 		return err
 	}
 
 	w.logger.Info("scan completed",
-		zap.Int("total_files", summary.TotalFiles),
-		zap.Int("media_files", summary.MediaFiles),
-		zap.Int("parsed_files", summary.ParsedFiles),
+		slog.Int("total_files", summary.TotalFiles),
+		slog.Int("media_files", summary.MediaFiles),
+		slog.Int("parsed_files", summary.ParsedFiles),
 	)
 
 	// Count media files for progress tracking
@@ -152,7 +152,7 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		existingFile, err := w.service.GetEpisodeFileByPath(ctx, sr.FilePath)
 		if err == nil && existingFile != nil && !job.Args.Force {
 			w.logger.Debug("file already matched, skipping",
-				zap.String("file_path", sr.FilePath),
+				slog.String("file_path", sr.FilePath),
 			)
 			itemsSkipped++
 			continue
@@ -162,8 +162,8 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		if job.Args.AutoCreate && w.metadataProvider != nil {
 			if err := w.processFile(ctx, sr); err != nil {
 				w.logger.Warn("failed to process file",
-					zap.String("file_path", sr.FilePath),
-					zap.Error(err),
+					slog.String("file_path", sr.FilePath),
+					slog.Any("error", err),
 				)
 				result.AddError(fmt.Errorf("process %s: %w", sr.FilePath, err))
 				continue
@@ -172,10 +172,10 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		} else {
 			// Just log discovered files when auto-create is disabled
 			w.logger.Info("discovered tv show file",
-				zap.String("file_path", sr.FilePath),
-				zap.String("parsed_title", sr.ParsedTitle),
-				zap.Any("season", sr.GetSeason()),
-				zap.Any("episode", sr.GetEpisode()),
+				slog.String("file_path", sr.FilePath),
+				slog.String("parsed_title", sr.ParsedTitle),
+				slog.Any("season", sr.GetSeason()),
+				slog.Any("episode", sr.GetEpisode()),
 			)
 			result.ItemsProcessed++
 		}
@@ -190,9 +190,9 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 	}
 
 	jctx.LogComplete(
-		zap.Int("paths_scanned", len(job.Args.Paths)),
-		zap.Int("items_processed", result.ItemsProcessed),
-		zap.Int("items_skipped", itemsSkipped),
+		slog.Int("paths_scanned", len(job.Args.Paths)),
+		slog.Int("items_processed", result.ItemsProcessed),
+		slog.Int("items_skipped", itemsSkipped),
 	)
 
 	return nil
@@ -238,7 +238,7 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 		// Use first result and enrich it
 		newSeries := searchResults[0]
 		if err := w.metadataProvider.EnrichSeries(ctx, newSeries); err != nil {
-			w.logger.Warn("failed to enrich series", zap.Error(err))
+			w.logger.Warn("failed to enrich series", slog.Any("error", err))
 		}
 
 		// Create series
@@ -348,10 +348,10 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 	}
 
 	w.logger.Info("processed tv show file",
-		zap.String("file_path", sr.FilePath),
-		zap.String("series", series.Title),
-		zap.Int32("season", int32(*seasonNum)),
-		zap.Int32("episode", int32(*episodeNum)),
+		slog.String("file_path", sr.FilePath),
+		slog.String("series", series.Title),
+		slog.Any("season", int32(*seasonNum)),
+		slog.Any("episode", int32(*episodeNum)),
 	)
 
 	return nil
@@ -392,15 +392,15 @@ type MetadataRefreshWorker struct {
 	river.WorkerDefaults[MetadataRefreshArgs]
 	service   tvshow.Service
 	jobClient *infrajobs.Client
-	logger    *zap.Logger
+	logger    *slog.Logger
 }
 
 // NewMetadataRefreshWorker creates a new metadata refresh worker.
-func NewMetadataRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *zap.Logger) *MetadataRefreshWorker {
+func NewMetadataRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *slog.Logger) *MetadataRefreshWorker {
 	return &MetadataRefreshWorker{
 		service:   service,
 		jobClient: jobClient,
-		logger:    logger.Named("tvshow_metadata_refresh"),
+		logger:    logger.With("component", "tvshow_metadata_refresh"),
 	}
 }
 
@@ -415,11 +415,11 @@ func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Metadat
 	args := job.Args
 
 	jctx.LogStart(
-		zap.Any("series_id", args.SeriesID),
-		zap.Any("season_id", args.SeasonID),
-		zap.Any("episode_id", args.EpisodeID),
-		zap.Bool("force", args.Force),
-		zap.Bool("refresh_images", args.RefreshImages),
+		slog.Any("series_id", args.SeriesID),
+		slog.Any("season_id", args.SeasonID),
+		slog.Any("episode_id", args.EpisodeID),
+		slog.Bool("force", args.Force),
+		slog.Bool("refresh_images", args.RefreshImages),
 	)
 
 	result := &sharedjobs.JobResult{Success: true}
@@ -492,8 +492,8 @@ func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Metadat
 			}
 
 			w.logger.Info("processed batch",
-				zap.Int("batch_size", len(seriesList)),
-				zap.Int("total_processed", result.ItemsProcessed),
+				slog.Int("batch_size", len(seriesList)),
+				slog.Int("total_processed", result.ItemsProcessed),
 			)
 
 			offset += batchSize
@@ -512,7 +512,7 @@ func (w *MetadataRefreshWorker) Work(ctx context.Context, job *river.Job[Metadat
 		return fmt.Errorf("metadata refresh completed with errors: %d failed", result.ItemsFailed)
 	}
 
-	jctx.LogComplete(zap.Int("items_refreshed", result.ItemsProcessed))
+	jctx.LogComplete(slog.Int("items_refreshed", result.ItemsProcessed))
 	return nil
 }
 
@@ -545,15 +545,15 @@ type FileMatchWorker struct {
 	river.WorkerDefaults[FileMatchArgs]
 	service          tvshow.Service
 	metadataProvider tvshow.MetadataProvider
-	logger           *zap.Logger
+	logger           *slog.Logger
 }
 
 // NewFileMatchWorker creates a new file match worker.
-func NewFileMatchWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, logger *zap.Logger) *FileMatchWorker {
+func NewFileMatchWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, logger *slog.Logger) *FileMatchWorker {
 	return &FileMatchWorker{
 		service:          service,
 		metadataProvider: metadataProvider,
-		logger:           logger.Named("tvshow_file_match"),
+		logger:           logger.With("component", "tvshow_file_match"),
 	}
 }
 
@@ -568,10 +568,10 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 	args := job.Args
 
 	jctx.LogStart(
-		zap.String("file_path", args.FilePath),
-		zap.Any("episode_id", args.EpisodeID),
-		zap.Bool("force_rematch", args.ForceRematch),
-		zap.Bool("auto_create", args.AutoCreate),
+		slog.String("file_path", args.FilePath),
+		slog.Any("episode_id", args.EpisodeID),
+		slog.Bool("force_rematch", args.ForceRematch),
+		slog.Bool("auto_create", args.AutoCreate),
 	)
 
 	// Check if file exists
@@ -584,9 +584,9 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 	existingFile, err := w.service.GetEpisodeFileByPath(ctx, args.FilePath)
 	if err == nil && existingFile != nil && !args.ForceRematch {
 		w.logger.Info("file already matched, skipping",
-			zap.Int64("job_id", job.ID),
-			zap.String("file_path", args.FilePath),
-			zap.String("episode_id", existingFile.EpisodeID.String()),
+			slog.Int64("job_id", job.ID),
+			slog.String("file_path", args.FilePath),
+			slog.String("episode_id", existingFile.EpisodeID.String()),
 		)
 		return nil
 	}
@@ -610,8 +610,8 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 		}
 
 		w.logger.Info("file matched to episode",
-			zap.String("file_path", args.FilePath),
-			zap.String("episode_id", episode.ID.String()),
+			slog.String("file_path", args.FilePath),
+			slog.String("episode_id", episode.ID.String()),
 		)
 		jctx.LogComplete()
 		return nil
@@ -664,7 +664,7 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 
 		newSeries := searchResults[0]
 		if err := w.metadataProvider.EnrichSeries(ctx, newSeries); err != nil {
-			w.logger.Warn("failed to enrich series", zap.Error(err))
+			w.logger.Warn("failed to enrich series", slog.Any("error", err))
 		}
 
 		params := seriesToCreateParams(newSeries)
@@ -734,10 +734,10 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 	}
 
 	w.logger.Info("file matched successfully",
-		zap.String("file_path", args.FilePath),
-		zap.String("series", series.Title),
-		zap.Int("season", seasonNum),
-		zap.Int("episode", episodeNum),
+		slog.String("file_path", args.FilePath),
+		slog.String("series", series.Title),
+		slog.Int("season", seasonNum),
+		slog.Int("episode", episodeNum),
 	)
 
 	jctx.LogComplete()
@@ -778,15 +778,15 @@ type SearchIndexWorker struct {
 	river.WorkerDefaults[SearchIndexArgs]
 	service       tvshow.Service
 	searchService *search.TVShowSearchService
-	logger        *zap.Logger
+	logger        *slog.Logger
 }
 
 // NewSearchIndexWorker creates a new search index worker.
-func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, logger *zap.Logger) *SearchIndexWorker {
+func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, logger *slog.Logger) *SearchIndexWorker {
 	return &SearchIndexWorker{
 		service:       service,
 		searchService: searchService,
-		logger:        logger.Named("tvshow_search_index"),
+		logger:        logger.With("component", "tvshow_search_index"),
 	}
 }
 
@@ -801,8 +801,8 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 	args := job.Args
 
 	jctx.LogStart(
-		zap.Any("series_id", args.SeriesID),
-		zap.Bool("full_reindex", args.FullReindex),
+		slog.Any("series_id", args.SeriesID),
+		slog.Bool("full_reindex", args.FullReindex),
 	)
 
 	// Check if search is enabled
@@ -839,7 +839,7 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 		return fmt.Errorf("search indexing completed with errors: %d failed", result.ItemsFailed)
 	}
 
-	jctx.LogComplete(zap.Int("items_indexed", result.ItemsProcessed))
+	jctx.LogComplete(slog.Int("items_indexed", result.ItemsProcessed))
 	return nil
 }
 
@@ -848,26 +848,26 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 	series, err := w.service.GetSeries(ctx, seriesID)
 	if err != nil {
 		w.logger.Warn("series not found, skipping index",
-			zap.String("series_id", seriesID.String()),
+			slog.String("series_id", seriesID.String()),
 		)
 		return nil
 	}
 
 	genres, err := w.service.GetSeriesGenres(ctx, seriesID)
 	if err != nil {
-		w.logger.Warn("failed to get genres", zap.Error(err))
+		w.logger.Warn("failed to get genres", slog.Any("error", err))
 		genres = nil
 	}
 
 	cast, err := w.service.GetSeriesCast(ctx, seriesID)
 	if err != nil {
-		w.logger.Warn("failed to get cast", zap.Error(err))
+		w.logger.Warn("failed to get cast", slog.Any("error", err))
 		cast = nil
 	}
 
 	crew, err := w.service.GetSeriesCrew(ctx, seriesID)
 	if err != nil {
-		w.logger.Warn("failed to get crew", zap.Error(err))
+		w.logger.Warn("failed to get crew", slog.Any("error", err))
 		crew = nil
 	}
 
@@ -875,7 +875,7 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 
 	networks, err := w.service.GetSeriesNetworks(ctx, seriesID)
 	if err != nil {
-		w.logger.Warn("failed to get networks", zap.Error(err))
+		w.logger.Warn("failed to get networks", slog.Any("error", err))
 		networks = nil
 	}
 
@@ -897,8 +897,8 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 	}
 
 	w.logger.Info("series indexed successfully",
-		zap.String("series_id", seriesID.String()),
-		zap.String("title", series.Title),
+		slog.String("series_id", seriesID.String()),
+		slog.String("title", series.Title),
 	)
 
 	return nil
@@ -936,15 +936,15 @@ type SeriesRefreshWorker struct {
 	river.WorkerDefaults[SeriesRefreshArgs]
 	service   tvshow.Service
 	jobClient *infrajobs.Client
-	logger    *zap.Logger
+	logger    *slog.Logger
 }
 
 // NewSeriesRefreshWorker creates a new series refresh worker.
-func NewSeriesRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *zap.Logger) *SeriesRefreshWorker {
+func NewSeriesRefreshWorker(service tvshow.Service, jobClient *infrajobs.Client, logger *slog.Logger) *SeriesRefreshWorker {
 	return &SeriesRefreshWorker{
 		service:   service,
 		jobClient: jobClient,
-		logger:    logger.Named("tvshow_series_refresh"),
+		logger:    logger.With("component", "tvshow_series_refresh"),
 	}
 }
 
@@ -959,10 +959,10 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 	args := job.Args
 
 	jctx.LogStart(
-		zap.String("series_id", args.SeriesID.String()),
-		zap.Int32("tmdb_id", args.TMDbID),
-		zap.Bool("refresh_seasons", args.RefreshSeasons),
-		zap.Bool("refresh_episodes", args.RefreshEpisodes),
+		slog.String("series_id", args.SeriesID.String()),
+		slog.Any("tmdb_id", args.TMDbID),
+		slog.Bool("refresh_seasons", args.RefreshSeasons),
+		slog.Bool("refresh_episodes", args.RefreshEpisodes),
 	)
 
 	result := &sharedjobs.JobResult{Success: true}
@@ -977,13 +977,13 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 	if err := w.service.RefreshSeriesMetadata(ctx, args.SeriesID, opts); err != nil {
 		result.AddError(fmt.Errorf("refresh series %s: %w", args.SeriesID, err))
 		w.logger.Error("failed to refresh series",
-			zap.String("series_id", args.SeriesID.String()),
-			zap.Error(err),
+			slog.String("series_id", args.SeriesID.String()),
+			slog.Any("error", err),
 		)
 	} else {
 		result.ItemsProcessed++
 		w.logger.Info("refreshed series metadata",
-			zap.String("series_id", args.SeriesID.String()),
+			slog.String("series_id", args.SeriesID.String()),
 		)
 	}
 
@@ -992,8 +992,8 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 		seasons, err := w.service.ListSeasons(ctx, args.SeriesID)
 		if err != nil {
 			w.logger.Warn("failed to list seasons for refresh",
-				zap.String("series_id", args.SeriesID.String()),
-				zap.Error(err),
+				slog.String("series_id", args.SeriesID.String()),
+				slog.Any("error", err),
 			)
 		} else {
 			for i, season := range seasons {
@@ -1007,8 +1007,8 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 				if args.RefreshSeasons {
 					if err := w.service.RefreshSeasonMetadata(ctx, season.ID, opts); err != nil {
 						w.logger.Warn("failed to refresh season",
-							zap.String("season_id", season.ID.String()),
-							zap.Error(err),
+							slog.String("season_id", season.ID.String()),
+							slog.Any("error", err),
 						)
 					} else {
 						result.ItemsProcessed++
@@ -1020,8 +1020,8 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 					episodes, err := w.service.ListEpisodesBySeason(ctx, season.ID)
 					if err != nil {
 						w.logger.Warn("failed to list episodes for refresh",
-							zap.String("season_id", season.ID.String()),
-							zap.Error(err),
+							slog.String("season_id", season.ID.String()),
+							slog.Any("error", err),
 						)
 						continue
 					}
@@ -1029,8 +1029,8 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 					for _, ep := range episodes {
 						if err := w.service.RefreshEpisodeMetadata(ctx, ep.ID, opts); err != nil {
 							w.logger.Warn("failed to refresh episode",
-								zap.String("episode_id", ep.ID.String()),
-								zap.Error(err),
+								slog.String("episode_id", ep.ID.String()),
+								slog.Any("error", err),
 							)
 						} else {
 							result.ItemsProcessed++
@@ -1050,9 +1050,9 @@ func (w *SeriesRefreshWorker) Work(ctx context.Context, job *river.Job[SeriesRef
 	}
 
 	jctx.LogComplete(
-		zap.Int("items_refreshed", result.ItemsProcessed),
-		zap.Bool("refresh_seasons", args.RefreshSeasons),
-		zap.Bool("refresh_episodes", args.RefreshEpisodes),
+		slog.Int("items_refreshed", result.ItemsProcessed),
+		slog.Bool("refresh_seasons", args.RefreshSeasons),
+		slog.Bool("refresh_episodes", args.RefreshEpisodes),
 	)
 	return nil
 }

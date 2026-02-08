@@ -11,9 +11,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -1651,7 +1651,7 @@ func TestNoDB_CachedService_NewCachedService(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 	require.NotNil(t, cached)
 	assert.NotNil(t, cached.Service)
 	assert.NotNil(t, cached.cache)
@@ -1669,7 +1669,7 @@ func TestNoDB_CachedService_GetUser_NilCache(t *testing.T) {
 		},
 	}
 	svc := newTestService(repo)
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	result, err := cached.GetUser(ctx, userID)
 	require.NoError(t, err)
@@ -1693,7 +1693,7 @@ func TestNoDB_CachedService_GetUser_CacheMissAndPopulate(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	// First call: cache miss, hits repo
 	result, err := cached.GetUser(ctx, userID)
@@ -1725,7 +1725,7 @@ func TestNoDB_CachedService_GetUser_RepoError(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	_, err = cached.GetUser(ctx, userID)
 	require.Error(t, err)
@@ -1742,7 +1742,7 @@ func TestNoDB_CachedService_GetUserByUsername_NilCache(t *testing.T) {
 		},
 	}
 	svc := newTestService(repo)
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	result, err := cached.GetUserByUsername(ctx, "testuser")
 	require.NoError(t, err)
@@ -1765,7 +1765,7 @@ func TestNoDB_CachedService_GetUserByUsername_CacheMissAndPopulate(t *testing.T)
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	// First call: cache miss
 	result, err := cached.GetUserByUsername(ctx, "testuser")
@@ -1796,7 +1796,7 @@ func TestNoDB_CachedService_GetUserByUsername_RepoError(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	_, err = cached.GetUserByUsername(ctx, "testuser")
 	require.Error(t, err)
@@ -1820,7 +1820,7 @@ func TestNoDB_CachedService_UpdateUser_NilCache(t *testing.T) {
 		},
 	}
 	svc := newTestService(repo)
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	newName := "Updated"
 	result, err := cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: &newName})
@@ -1850,7 +1850,7 @@ func TestNoDB_CachedService_UpdateUser_WithCache(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	// Populate cache via GetUser
 	_, err = cached.GetUser(ctx, userID)
@@ -1887,7 +1887,7 @@ func TestNoDB_CachedService_UpdateUser_RepoError(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	_, err = cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr("name")})
 	require.Error(t, err)
@@ -1907,7 +1907,7 @@ func TestNoDB_CachedService_DeleteUser_NilCache(t *testing.T) {
 		},
 	}
 	svc := newTestService(repo)
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	err := cached.DeleteUser(ctx, userID)
 	require.NoError(t, err)
@@ -1930,7 +1930,7 @@ func TestNoDB_CachedService_DeleteUser_WithCache(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	// Populate cache first
 	_, err = cached.GetUser(ctx, userID)
@@ -1962,7 +1962,7 @@ func TestNoDB_CachedService_DeleteUser_RepoError(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	err = cached.DeleteUser(ctx, userID)
 	require.Error(t, err)
@@ -1985,7 +1985,7 @@ func TestNoDB_CachedService_DeleteUser_UserNotFoundForLogging(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	// Should succeed even if user lookup fails
 	err = cached.DeleteUser(ctx, userID)
@@ -2001,7 +2001,7 @@ func TestNoDB_CachedService_InvalidateUserCache_NilCache(t *testing.T) {
 	userID := uuid.Must(uuid.NewV7())
 
 	svc := newTestService(&mockRepo{})
-	cached := NewCachedService(svc, nil, zap.NewNop())
+	cached := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	err := cached.InvalidateUserCache(ctx, userID)
 	require.NoError(t, err)
@@ -2016,7 +2016,7 @@ func TestNoDB_CachedService_InvalidateUserCache_WithCache(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 30*time.Second)
 	require.NoError(t, err)
 	defer testCache.Close()
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
 	err = cached.InvalidateUserCache(ctx, userID)
 	require.NoError(t, err)

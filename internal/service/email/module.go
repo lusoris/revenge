@@ -1,9 +1,10 @@
 package email
 
 import (
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/config"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
 )
 
 // Module provides the email service for fx dependency injection.
@@ -12,6 +13,6 @@ var Module = fx.Options(
 )
 
 // provideService creates the email service.
-func provideService(cfg *config.Config, logger *zap.Logger) *Service {
+func provideService(cfg *config.Config, logger *slog.Logger) *Service {
 	return NewService(cfg.Email, logger)
 }

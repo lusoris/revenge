@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/rbac"
@@ -21,8 +21,8 @@ func (h *Handler) ListPolicies(ctx context.Context) (ogen.ListPoliciesRes, error
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.ListPoliciesForbidden{
 			Code:    500,
@@ -40,7 +40,7 @@ func (h *Handler) ListPolicies(ctx context.Context) (ogen.ListPoliciesRes, error
 	policies, err := h.rbacService.GetPolicies(ctx)
 	if err != nil {
 		h.logger.Error("failed to get policies",
-			zap.Error(err),
+			slog.Any("error",err),
 		)
 		return &ogen.ListPoliciesForbidden{
 			Code:    500,
@@ -75,8 +75,8 @@ func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.AddPolicyForbidden{
 			Code:    500,
@@ -93,10 +93,10 @@ func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.
 
 	if err := h.rbacService.AddPolicy(ctx, req.Subject, req.Object, req.Action); err != nil {
 		h.logger.Error("failed to add policy",
-			zap.String("subject", req.Subject),
-			zap.String("object", req.Object),
-			zap.String("action", req.Action),
-			zap.Error(err),
+			slog.String("subject", req.Subject),
+			slog.String("object", req.Object),
+			slog.String("action", req.Action),
+			slog.Any("error",err),
 		)
 		return &ogen.AddPolicyForbidden{
 			Code:    500,
@@ -118,8 +118,8 @@ func (h *Handler) RemovePolicy(ctx context.Context, req *ogen.PolicyRequest) (og
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RemovePolicyForbidden{
 			Code:    500,
@@ -136,10 +136,10 @@ func (h *Handler) RemovePolicy(ctx context.Context, req *ogen.PolicyRequest) (og
 
 	if err := h.rbacService.RemovePolicy(ctx, req.Subject, req.Object, req.Action); err != nil {
 		h.logger.Warn("failed to remove policy",
-			zap.String("subject", req.Subject),
-			zap.String("object", req.Object),
-			zap.String("action", req.Action),
-			zap.Error(err),
+			slog.String("subject", req.Subject),
+			slog.String("object", req.Object),
+			slog.String("action", req.Action),
+			slog.Any("error",err),
 		)
 		return &ogen.RemovePolicyNotFound{}, nil
 	}
@@ -162,8 +162,8 @@ func (h *Handler) GetUserRoles(ctx context.Context, params ogen.GetUserRolesPara
 	roles, err := h.rbacService.GetUserRoles(ctx, targetUserID)
 	if err != nil {
 		h.logger.Error("failed to get user roles",
-			zap.String("user_id", targetUserID.String()),
-			zap.Error(err),
+			slog.String("user_id", targetUserID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.Error{
 			Code:    500,
@@ -187,8 +187,8 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.AssignRoleForbidden{
 			Code:    500,
@@ -207,9 +207,9 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 
 	if err := h.rbacService.AssignRole(ctx, targetUserID, req.Role); err != nil {
 		h.logger.Error("failed to assign role",
-			zap.String("user_id", targetUserID.String()),
-			zap.String("role", req.Role),
-			zap.Error(err),
+			slog.String("user_id", targetUserID.String()),
+			slog.String("role", req.Role),
+			slog.Any("error",err),
 		)
 		return &ogen.AssignRoleForbidden{
 			Code:    500,
@@ -231,8 +231,8 @@ func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) 
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.RemoveRoleForbidden{
 			Code:    500,
@@ -251,9 +251,9 @@ func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) 
 
 	if err := h.rbacService.RemoveRole(ctx, targetUserID, params.Role); err != nil {
 		h.logger.Warn("failed to remove role",
-			zap.String("user_id", targetUserID.String()),
-			zap.String("role", params.Role),
-			zap.Error(err),
+			slog.String("user_id", targetUserID.String()),
+			slog.String("role", params.Role),
+			slog.Any("error",err),
 		)
 		return &ogen.RemoveRoleNotFound{}, nil
 	}
@@ -272,8 +272,8 @@ func (h *Handler) ListRoles(ctx context.Context) (ogen.ListRolesRes, error) {
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.ListRolesForbidden{
 			Code:    500,
@@ -290,7 +290,7 @@ func (h *Handler) ListRoles(ctx context.Context) (ogen.ListRolesRes, error) {
 
 	roles, err := h.rbacService.ListRoles(ctx)
 	if err != nil {
-		h.logger.Error("failed to list roles", zap.Error(err))
+		h.logger.Error("failed to list roles", slog.Any("error",err))
 		return &ogen.ListRolesForbidden{
 			Code:    500,
 			Message: "Failed to list roles",
@@ -335,8 +335,8 @@ func (h *Handler) GetRole(ctx context.Context, params ogen.GetRoleParams) (ogen.
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.GetRoleForbidden{
 			Code:    500,
@@ -357,8 +357,8 @@ func (h *Handler) GetRole(ctx context.Context, params ogen.GetRoleParams) (ogen.
 			return &ogen.GetRoleNotFound{}, nil
 		}
 		h.logger.Error("failed to get role",
-			zap.String("role", params.RoleName),
-			zap.Error(err),
+			slog.String("role", params.RoleName),
+			slog.Any("error",err),
 		)
 		return &ogen.GetRoleForbidden{
 			Code:    500,
@@ -398,8 +398,8 @@ func (h *Handler) CreateRole(ctx context.Context, req *ogen.CreateRoleRequest) (
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.CreateRoleForbidden{
 			Code:    500,
@@ -437,8 +437,8 @@ func (h *Handler) CreateRole(ctx context.Context, req *ogen.CreateRoleRequest) (
 			}, nil
 		}
 		h.logger.Error("failed to create role",
-			zap.String("role", req.Name),
-			zap.Error(err),
+			slog.String("role", req.Name),
+			slog.Any("error",err),
 		)
 		return &ogen.CreateRoleBadRequest{
 			Code:    400,
@@ -478,8 +478,8 @@ func (h *Handler) DeleteRole(ctx context.Context, params ogen.DeleteRoleParams) 
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.DeleteRoleForbidden{
 			Code:    500,
@@ -512,8 +512,8 @@ func (h *Handler) DeleteRole(ctx context.Context, params ogen.DeleteRoleParams) 
 			}, nil
 		}
 		h.logger.Error("failed to delete role",
-			zap.String("role", params.RoleName),
-			zap.Error(err),
+			slog.String("role", params.RoleName),
+			slog.Any("error",err),
 		)
 		return &ogen.DeleteRoleForbidden{
 			Code:    500,
@@ -535,8 +535,8 @@ func (h *Handler) UpdateRolePermissions(ctx context.Context, req *ogen.UpdatePer
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.UpdateRolePermissionsForbidden{
 			Code:    500,
@@ -566,8 +566,8 @@ func (h *Handler) UpdateRolePermissions(ctx context.Context, req *ogen.UpdatePer
 			return &ogen.UpdateRolePermissionsNotFound{}, nil
 		}
 		h.logger.Error("failed to update role permissions",
-			zap.String("role", params.RoleName),
-			zap.Error(err),
+			slog.String("role", params.RoleName),
+			slog.Any("error",err),
 		)
 		return &ogen.UpdateRolePermissionsBadRequest{
 			Code:    400,
@@ -607,8 +607,8 @@ func (h *Handler) ListPermissions(ctx context.Context) (ogen.ListPermissionsRes,
 	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
 		h.logger.Error("failed to check admin role",
-			zap.String("user_id", userID.String()),
-			zap.Error(err),
+			slog.String("user_id", userID.String()),
+			slog.Any("error",err),
 		)
 		return &ogen.ListPermissionsForbidden{
 			Code:    500,

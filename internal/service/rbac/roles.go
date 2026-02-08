@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"sort"
 	"strings"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 // Errors for role management
@@ -161,16 +161,16 @@ func (s *Service) CreateRole(ctx context.Context, name, description string, perm
 			// Rollback on failure
 			if _, rollbackErr := s.enforcer.RemoveFilteredPolicy(0, name); rollbackErr != nil {
 				s.logger.Error("failed to rollback policies during role creation failure",
-					zap.String("role", name),
-					zap.Error(rollbackErr))
+					slog.String("role", name),
+					slog.Any("error",rollbackErr))
 			}
 			return nil, fmt.Errorf("failed to add permission %s: %w", perm.String(), err)
 		}
 	}
 
 	s.logger.Info("role created",
-		zap.String("name", name),
-		zap.Int("permissions", len(permissions)),
+		slog.String("name", name),
+		slog.Int("permissions", len(permissions)),
 	)
 
 	return &Role{
@@ -212,7 +212,7 @@ func (s *Service) DeleteRole(ctx context.Context, name string) error {
 		return fmt.Errorf("failed to remove role policies: %w", err)
 	}
 
-	s.logger.Info("role deleted", zap.String("name", name))
+	s.logger.Info("role deleted", slog.String("name", name))
 	return nil
 }
 
@@ -245,8 +245,8 @@ func (s *Service) UpdateRolePermissions(ctx context.Context, name string, permis
 	users, _ := s.enforcer.GetUsersForRole(name)
 
 	s.logger.Info("role permissions updated",
-		zap.String("name", name),
-		zap.Int("permissions", len(permissions)),
+		slog.String("name", name),
+		slog.Int("permissions", len(permissions)),
 	)
 
 	return &Role{
@@ -305,8 +305,8 @@ func (s *Service) AddPermissionToRole(ctx context.Context, role string, perm Per
 	}
 
 	s.logger.Info("permission added to role",
-		zap.String("role", role),
-		zap.String("permission", perm.String()),
+		slog.String("role", role),
+		slog.String("permission", perm.String()),
 	)
 
 	return nil
@@ -323,8 +323,8 @@ func (s *Service) RemovePermissionFromRole(ctx context.Context, role string, per
 	}
 
 	s.logger.Info("permission removed from role",
-		zap.String("role", role),
-		zap.String("permission", perm.String()),
+		slog.String("role", role),
+		slog.String("permission", perm.String()),
 	)
 
 	return nil

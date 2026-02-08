@@ -6,7 +6,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
@@ -16,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxtest"
-	"go.uber.org/zap"
+	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/health"
@@ -56,9 +55,8 @@ func TestNewServer_WithFxLifecycle(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 
 	// Use fxtest for proper lifecycle testing
 	var server *Server
@@ -67,10 +65,10 @@ func TestNewServer_WithFxLifecycle(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15451) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -124,9 +122,8 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 	healthService.MarkStartupComplete()
 
 	var server *Server
@@ -135,10 +132,10 @@ func TestNewServer_StartsAndStops(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15453) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -202,9 +199,8 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	pool, err := pgxpool.New(ctx, "postgres://test:test@localhost:15454/test?sslmode=disable")
 	require.NoError(t, err)
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 	healthService.MarkStartupComplete()
 
 	var server *Server
@@ -213,10 +209,10 @@ func TestNewServer_ReadinessUnhealthyWhenDBDown(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15455) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -280,9 +276,8 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 	// Note: NOT calling MarkStartupComplete()
 
 	var server *Server
@@ -291,10 +286,10 @@ func TestNewServer_StartupUnhealthyBeforeMarkComplete(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15457) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -348,9 +343,8 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 	healthService.MarkStartupComplete()
 
 	var server *Server
@@ -359,10 +353,10 @@ func TestNewServer_ResponseBodyContent(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15459) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -440,9 +434,8 @@ func TestNewServer_ConcurrentRequests(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 	healthService.MarkStartupComplete()
 
 	var server *Server
@@ -451,10 +444,10 @@ func TestNewServer_ConcurrentRequests(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15461) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -522,9 +515,8 @@ func TestNewServer_ServerConfigApplied(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 
 	// Create config with specific timeouts
 	cfg := &config.Config{
@@ -543,10 +535,10 @@ func TestNewServer_ServerConfigApplied(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return cfg },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -592,9 +584,8 @@ func TestNewServer_GracefulShutdown(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	healthService := health.NewService(slogLogger, pool)
+	logger := logging.NewTestLogger()
+	healthService := health.NewService(logger, pool)
 
 	var server *Server
 	_ = server
@@ -602,10 +593,10 @@ func TestNewServer_GracefulShutdown(t *testing.T) {
 	app := fxtest.New(t,
 		fx.Provide(
 			func() *config.Config { return testConfig(15465) },
-			func() *zap.Logger { return logger },
+			func() *slog.Logger { return logger },
 			func() *health.Service { return healthService },
 		),
-		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+		fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 			var err error
 			server, err = NewServer(ServerParams{
 				Config:        cfg,
@@ -665,14 +656,13 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 	require.NoError(t, err)
 	defer pool.Close()
 
-	logger := zap.NewNop()
-	slogLogger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	logger := logging.NewTestLogger()
 
 	ports := []int{15467, 15468, 15469}
 
 	for _, port := range ports {
 		t.Run(fmt.Sprintf("port_%d", port), func(t *testing.T) {
-			healthService := health.NewService(slogLogger, pool)
+			healthService := health.NewService(logger, pool)
 
 			var server *Server
 			_ = server
@@ -680,10 +670,10 @@ func TestNewServer_MultiplePortsInSequence(t *testing.T) {
 			app := fxtest.New(t,
 				fx.Provide(
 					func() *config.Config { return testConfig(port) },
-					func() *zap.Logger { return logger },
+					func() *slog.Logger { return logger },
 					func() *health.Service { return healthService },
 				),
-				fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *zap.Logger, hs *health.Service) error {
+				fx.Invoke(func(lc fx.Lifecycle, cfg *config.Config, log *slog.Logger, hs *health.Service) error {
 					var err error
 					server, err = NewServer(ServerParams{
 						Config:        cfg,

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
+	"log/slog"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
@@ -18,15 +18,15 @@ import (
 type CachedService struct {
 	Service
 	cache  *cache.Cache
-	logger *zap.Logger
+	logger *slog.Logger
 }
 
 // NewCachedService creates a new cached movie service.
-func NewCachedService(svc Service, cache *cache.Cache, logger *zap.Logger) *CachedService {
+func NewCachedService(svc Service, cache *cache.Cache, logger *slog.Logger) *CachedService {
 	return &CachedService{
 		Service: svc,
 		cache:   cache,
-		logger:  logger.Named("movie-cache"),
+		logger:  logger.With("component", "movie-cache"),
 	}
 }
 
@@ -41,11 +41,11 @@ func (s *CachedService) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, err
 	// Try cache first
 	var movie Movie
 	if err := s.cache.GetJSON(ctx, cacheKey, &movie); err == nil {
-		s.logger.Debug("movie cache hit", zap.String("id", id.String()))
+		s.logger.Debug("movie cache hit", slog.String("id", id.String()))
 		return &movie, nil
 	}
 
-	s.logger.Debug("movie cache miss", zap.String("id", id.String()))
+	s.logger.Debug("movie cache miss", slog.String("id", id.String()))
 
 	// Cache miss - load from database
 	result, err := s.Service.GetMovie(ctx, id)
@@ -58,7 +58,7 @@ func (s *CachedService) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, err
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie", zap.Error(setErr))
+			s.logger.Warn("failed to cache movie", slog.Any("error",setErr))
 		}
 	}()
 
@@ -77,11 +77,11 @@ func (s *CachedService) ListMovies(ctx context.Context, filters ListFilters) ([]
 	// Try cache first
 	var movies []Movie
 	if err := s.cache.GetJSON(ctx, cacheKey, &movies); err == nil {
-		s.logger.Debug("list movies cache hit", zap.String("key", cacheKey))
+		s.logger.Debug("list movies cache hit", slog.String("key", cacheKey))
 		return movies, nil
 	}
 
-	s.logger.Debug("list movies cache miss", zap.String("key", cacheKey))
+	s.logger.Debug("list movies cache miss", slog.String("key", cacheKey))
 
 	// Cache miss - load from database
 	result, err := s.Service.ListMovies(ctx, filters)
@@ -94,7 +94,7 @@ func (s *CachedService) ListMovies(ctx context.Context, filters ListFilters) ([]
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache movie list", zap.Error(setErr))
+			s.logger.Warn("failed to cache movie list", slog.Any("error",setErr))
 		}
 	}()
 
@@ -127,7 +127,7 @@ func (s *CachedService) ListRecentlyAdded(ctx context.Context, limit, offset int
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, 2*time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache recently added", zap.Error(setErr))
+			s.logger.Warn("failed to cache recently added", slog.Any("error",setErr))
 		}
 	}()
 
@@ -160,7 +160,7 @@ func (s *CachedService) ListTopRated(ctx context.Context, minVotes int32, limit,
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieTTL); setErr != nil {
-			s.logger.Warn("failed to cache top rated", zap.Error(setErr))
+			s.logger.Warn("failed to cache top rated", slog.Any("error",setErr))
 		}
 	}()
 
@@ -178,7 +178,7 @@ func (s *CachedService) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]
 	// Try cache first
 	var cast []MovieCredit
 	if err := s.cache.GetJSON(ctx, cacheKey, &cast); err == nil {
-		s.logger.Debug("movie cast cache hit", zap.String("movie_id", movieID.String()))
+		s.logger.Debug("movie cast cache hit", slog.String("movie_id", movieID.String()))
 		return cast, nil
 	}
 
@@ -193,7 +193,7 @@ func (s *CachedService) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie cast", zap.Error(setErr))
+			s.logger.Warn("failed to cache movie cast", slog.Any("error",setErr))
 		}
 	}()
 
@@ -211,7 +211,7 @@ func (s *CachedService) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]
 	// Try cache first
 	var crew []MovieCredit
 	if err := s.cache.GetJSON(ctx, cacheKey, &crew); err == nil {
-		s.logger.Debug("movie crew cache hit", zap.String("movie_id", movieID.String()))
+		s.logger.Debug("movie crew cache hit", slog.String("movie_id", movieID.String()))
 		return crew, nil
 	}
 
@@ -226,7 +226,7 @@ func (s *CachedService) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie crew", zap.Error(setErr))
+			s.logger.Warn("failed to cache movie crew", slog.Any("error",setErr))
 		}
 	}()
 
@@ -244,7 +244,7 @@ func (s *CachedService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) (
 	// Try cache first
 	var genres []MovieGenre
 	if err := s.cache.GetJSON(ctx, cacheKey, &genres); err == nil {
-		s.logger.Debug("movie genres cache hit", zap.String("movie_id", movieID.String()))
+		s.logger.Debug("movie genres cache hit", slog.String("movie_id", movieID.String()))
 		return genres, nil
 	}
 
@@ -259,7 +259,7 @@ func (s *CachedService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) (
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie genres", zap.Error(setErr))
+			s.logger.Warn("failed to cache movie genres", slog.Any("error",setErr))
 		}
 	}()
 
@@ -277,7 +277,7 @@ func (s *CachedService) GetMovieCollection(ctx context.Context, id uuid.UUID) (*
 	// Try cache first
 	var collection MovieCollection
 	if err := s.cache.GetJSON(ctx, cacheKey, &collection); err == nil {
-		s.logger.Debug("collection cache hit", zap.String("id", id.String()))
+		s.logger.Debug("collection cache hit", slog.String("id", id.String()))
 		return &collection, nil
 	}
 
@@ -292,7 +292,7 @@ func (s *CachedService) GetMovieCollection(ctx context.Context, id uuid.UUID) (*
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache collection", zap.Error(setErr))
+			s.logger.Warn("failed to cache collection", slog.Any("error",setErr))
 		}
 	}()
 
@@ -310,7 +310,7 @@ func (s *CachedService) GetContinueWatching(ctx context.Context, userID uuid.UUI
 	// Try cache first
 	var items []ContinueWatchingItem
 	if err := s.cache.GetJSON(ctx, cacheKey, &items); err == nil {
-		s.logger.Debug("continue watching cache hit", zap.String("user_id", userID.String()))
+		s.logger.Debug("continue watching cache hit", slog.String("user_id", userID.String()))
 		return items, nil
 	}
 
@@ -325,7 +325,7 @@ func (s *CachedService) GetContinueWatching(ctx context.Context, userID uuid.UUI
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
 		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache continue watching", zap.Error(setErr))
+			s.logger.Warn("failed to cache continue watching", slog.Any("error",setErr))
 		}
 	}()
 
@@ -372,7 +372,7 @@ func (s *CachedService) UpdateWatchProgress(ctx context.Context, userID, movieID
 	if s.cache != nil {
 		pattern := fmt.Sprintf("%scontinue-watching:%s:*", cache.KeyPrefixMovie, userID.String())
 		if invErr := s.cache.Invalidate(ctx, pattern); invErr != nil {
-			s.logger.Warn("failed to invalidate continue watching cache", zap.Error(invErr))
+			s.logger.Warn("failed to invalidate continue watching cache", slog.Any("error",invErr))
 		}
 	}
 
@@ -389,7 +389,7 @@ func (s *CachedService) MarkAsWatched(ctx context.Context, userID, movieID uuid.
 	if s.cache != nil {
 		pattern := fmt.Sprintf("%scontinue-watching:%s:*", cache.KeyPrefixMovie, userID.String())
 		if invErr := s.cache.Invalidate(ctx, pattern); invErr != nil {
-			s.logger.Warn("failed to invalidate continue watching cache", zap.Error(invErr))
+			s.logger.Warn("failed to invalidate continue watching cache", slog.Any("error",invErr))
 		}
 	}
 
@@ -400,13 +400,13 @@ func (s *CachedService) MarkAsWatched(ctx context.Context, userID, movieID uuid.
 func (s *CachedService) invalidateMovie(ctx context.Context, movieID uuid.UUID) {
 	// Delete movie itself
 	if err := s.cache.Delete(ctx, cache.MovieKey(movieID.String())); err != nil {
-		s.logger.Warn("failed to invalidate movie cache", zap.Error(err))
+		s.logger.Warn("failed to invalidate movie cache", slog.Any("error",err))
 	}
 
 	// Delete movie metadata (cast, crew, genres)
 	pattern := fmt.Sprintf("%s%s:*", cache.KeyPrefixMovie, movieID.String())
 	if err := s.cache.Invalidate(ctx, pattern); err != nil {
-		s.logger.Warn("failed to invalidate movie metadata cache", zap.Error(err))
+		s.logger.Warn("failed to invalidate movie metadata cache", slog.Any("error",err))
 	}
 
 	// Invalidate list caches (recently-added, top-rated)
@@ -418,7 +418,7 @@ func (s *CachedService) invalidateMovie(ctx context.Context, movieID uuid.UUID) 
 	}
 	for _, p := range patterns {
 		if err := s.cache.Invalidate(ctx, p); err != nil {
-			s.logger.Warn("failed to invalidate movie list cache", zap.String("pattern", p), zap.Error(err))
+			s.logger.Warn("failed to invalidate movie list cache", slog.String("pattern", p), slog.Any("error",err))
 		}
 	}
 }

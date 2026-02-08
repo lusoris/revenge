@@ -9,7 +9,7 @@ import (
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
 	"github.com/lusoris/revenge/internal/service/search"
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 // SearchLibraryMovies searches movies in the library using Typesense.
@@ -40,7 +40,7 @@ func (h *Handler) SearchLibraryMovies(ctx context.Context, params ogen.SearchLib
 	// Execute search — return empty results on error (e.g. collection not found)
 	result, err := h.searchService.Search(ctx, searchParams)
 	if err != nil {
-		h.logger.Warn("search unavailable, returning empty results", zap.Error(err))
+		h.logger.Warn("search unavailable, returning empty results", slog.Any("error",err))
 		return &ogen.SearchResults{
 			TotalHits:    ogen.NewOptInt(0),
 			TotalPages:   ogen.NewOptInt(0),
@@ -154,7 +154,7 @@ func (h *Handler) AutocompleteMovies(ctx context.Context, params ogen.Autocomple
 
 	suggestions, err := h.searchService.Autocomplete(ctx, params.Q, limit)
 	if err != nil {
-		h.logger.Warn("autocomplete unavailable, returning empty", zap.Error(err))
+		h.logger.Warn("autocomplete unavailable, returning empty", slog.Any("error",err))
 		return &ogen.AutocompleteResults{
 			Suggestions: []string{},
 		}, nil
@@ -171,7 +171,7 @@ func (h *Handler) GetSearchFacets(ctx context.Context) (ogen.GetSearchFacetsRes,
 
 	facets, err := h.searchService.GetFacets(ctx, facetNames)
 	if err != nil {
-		h.logger.Warn("facets unavailable, returning empty", zap.Error(err))
+		h.logger.Warn("facets unavailable, returning empty", slog.Any("error",err))
 		return &ogen.SearchFacets{}, nil
 	}
 
@@ -209,11 +209,11 @@ func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, err
 		Operation: moviejobs.SearchIndexOperationReindex,
 	}, nil)
 	if err != nil {
-		h.logger.Error("failed to enqueue reindex job", zap.Error(err))
+		h.logger.Error("failed to enqueue reindex job", slog.Any("error",err))
 		return nil, fmt.Errorf("failed to enqueue reindex job: %w", err)
 	}
 
-	h.logger.Info("reindex job enqueued", zap.Int64("job_id", result.Job.ID))
+	h.logger.Info("reindex job enqueued", slog.Int64("job_id", result.Job.ID))
 
 	return &ogen.ReindexSearchAccepted{
 		Message: ogen.NewOptString("Reindex job enqueued"),
