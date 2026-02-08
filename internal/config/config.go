@@ -320,11 +320,29 @@ type MetadataConfig struct {
 
 	// TVmaze configuration for free TV metadata (no API key required).
 	TVmaze TVmazeConfig `koanf:"tvmaze"`
+
+	// AniList configuration for anime metadata (no API key required).
+	AniList AniListConfig `koanf:"anilist"`
+
+	// Kitsu configuration for anime metadata (no API key required).
+	Kitsu KitsuConfig `koanf:"kitsu"`
 }
 
 // TVmazeConfig holds TVmaze configuration.
 type TVmazeConfig struct {
 	// Enabled activates TVmaze as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+}
+
+// AniListConfig holds AniList configuration.
+type AniListConfig struct {
+	// Enabled activates AniList as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+}
+
+// KitsuConfig holds Kitsu configuration.
+type KitsuConfig struct {
+	// Enabled activates Kitsu as a metadata provider.
 	Enabled bool `koanf:"enabled"`
 }
 

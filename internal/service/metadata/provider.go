@@ -18,6 +18,10 @@ const (
 	ProviderOMDb ProviderID = "omdb"
 	// ProviderTVmaze is TVmaze provider (free TV metadata, no auth required).
 	ProviderTVmaze ProviderID = "tvmaze"
+	// ProviderAniList is AniList provider (anime metadata via GraphQL, no auth for public queries).
+	ProviderAniList ProviderID = "anilist"
+	// ProviderKitsu is Kitsu provider (anime/manga metadata via JSON:API, no auth for public queries).
+	ProviderKitsu ProviderID = "kitsu"
 )
 
 // Provider represents an external metadata provider.

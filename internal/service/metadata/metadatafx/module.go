@@ -7,7 +7,9 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 	movieadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/movie"
 	tvshowadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/tvshow"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/anilist"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/fanarttv"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/kitsu"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/omdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
@@ -44,6 +46,12 @@ type Config struct {
 
 	// TVmaze configuration (optional, no API key needed)
 	TVmazeEnabled bool
+
+	// AniList configuration (optional, no API key needed)
+	AniListEnabled bool
+
+	// Kitsu configuration (optional, no API key needed)
+	KitsuEnabled bool
 }
 
 // ModuleParams contains parameters for the metadata module.
@@ -56,6 +64,8 @@ type ModuleParams struct {
 	FanartTVConfig fanarttv.Config `optional:"true"`
 	OMDbConfig     omdb.Config     `optional:"true"`
 	TVmazeConfig   tvmaze.Config   `optional:"true"`
+	AniListConfig  anilist.Config  `optional:"true"`
+	KitsuConfig    kitsu.Config    `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -70,6 +80,8 @@ type ModuleResult struct {
 	FanartTVProvider      *fanarttv.Provider `optional:"true"`
 	OMDbProvider          *omdb.Provider     `optional:"true"`
 	TVmazeProvider        *tvmaze.Provider   `optional:"true"`
+	AniListProvider       *anilist.Provider   `optional:"true"`
+	KitsuProvider         *kitsu.Provider     `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -171,6 +183,34 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(tvmazeProvider)
 		result.TVmazeProvider = tvmazeProvider
+	}
+
+	// Create and register AniList provider if enabled (no API key needed)
+	if params.AniListConfig.Enabled || params.Config.AniListEnabled {
+		anilistConfig := params.AniListConfig
+		if !anilistConfig.Enabled {
+			anilistConfig.Enabled = true
+		}
+		anilistProvider, err := anilist.NewProvider(anilistConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(anilistProvider)
+		result.AniListProvider = anilistProvider
+	}
+
+	// Create and register Kitsu provider if enabled (no API key needed)
+	if params.KitsuConfig.Enabled || params.Config.KitsuEnabled {
+		kitsuConfig := params.KitsuConfig
+		if !kitsuConfig.Enabled {
+			kitsuConfig.Enabled = true
+		}
+		kitsuProvider, err := kitsu.NewProvider(kitsuConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(kitsuProvider)
+		result.KitsuProvider = kitsuProvider
 	}
 
 	result.Service = svc
