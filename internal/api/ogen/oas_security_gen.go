@@ -13,6 +13,9 @@ import (
 
 // SecurityHandler is handler for security parameters.
 type SecurityHandler interface {
+	// HandleApiKeyAuth handles apiKeyAuth security.
+	// API key from /api/v1/apikeys.
+	HandleApiKeyAuth(ctx context.Context, operationName OperationName, t ApiKeyAuth) (context.Context, error)
 	// HandleBearerAuth handles bearerAuth security.
 	// JWT access token from /api/v1/auth/login.
 	HandleBearerAuth(ctx context.Context, operationName OperationName, t BearerAuth) (context.Context, error)
@@ -31,6 +34,173 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 		return value, true
 	}
 	return "", false
+}
+
+var operationRolesApiKeyAuth = map[string][]string{
+	AddPolicyOperation:                     []string{},
+	AdminCreateOIDCProviderOperation:       []string{},
+	AdminDeleteOIDCProviderOperation:       []string{},
+	AdminDisableOIDCProviderOperation:      []string{},
+	AdminEnableOIDCProviderOperation:       []string{},
+	AdminGetOIDCProviderOperation:          []string{},
+	AdminGetRadarrQualityProfilesOperation: []string{},
+	AdminGetRadarrRootFoldersOperation:     []string{},
+	AdminGetRadarrStatusOperation:          []string{},
+	AdminGetSonarrQualityProfilesOperation: []string{},
+	AdminGetSonarrRootFoldersOperation:     []string{},
+	AdminGetSonarrStatusOperation:          []string{},
+	AdminListOIDCProvidersOperation:        []string{},
+	AdminSetDefaultOIDCProviderOperation:   []string{},
+	AdminTriggerRadarrSyncOperation:        []string{},
+	AdminTriggerSonarrSyncOperation:        []string{},
+	AdminUpdateOIDCProviderOperation:       []string{},
+	AssignRoleOperation:                    []string{},
+	AutocompleteMoviesOperation:            []string{},
+	BeginWebAuthnLoginOperation:            []string{},
+	BeginWebAuthnRegistrationOperation:     []string{},
+	ChangePasswordOperation:                []string{},
+	CreateAPIKeyOperation:                  []string{},
+	CreateLibraryOperation:                 []string{},
+	CreateRoleOperation:                    []string{},
+	DeleteLibraryOperation:                 []string{},
+	DeleteRoleOperation:                    []string{},
+	DeleteTVEpisodeProgressOperation:       []string{},
+	DeleteUserSettingOperation:             []string{},
+	DeleteWatchProgressOperation:           []string{},
+	DeleteWebAuthnCredentialOperation:      []string{},
+	DisableMFAOperation:                    []string{},
+	DisableTOTPOperation:                   []string{},
+	EnableMFAOperation:                     []string{},
+	FinishWebAuthnLoginOperation:           []string{},
+	FinishWebAuthnRegistrationOperation:    []string{},
+	GenerateBackupCodesOperation:           []string{},
+	GetAPIKeyOperation:                     []string{},
+	GetActivityStatsOperation:              []string{},
+	GetCollectionOperation:                 []string{},
+	GetCollectionMetadataOperation:         []string{},
+	GetCollectionMoviesOperation:           []string{},
+	GetContinueWatchingOperation:           []string{},
+	GetCurrentSessionOperation:             []string{},
+	GetCurrentUserOperation:                []string{},
+	GetEpisodeMetadataOperation:            []string{},
+	GetLibraryOperation:                    []string{},
+	GetMFAStatusOperation:                  []string{},
+	GetMovieOperation:                      []string{},
+	GetMovieCastOperation:                  []string{},
+	GetMovieCollectionOperation:            []string{},
+	GetMovieCrewOperation:                  []string{},
+	GetMovieFilesOperation:                 []string{},
+	GetMovieGenresOperation:                []string{},
+	GetMovieMetadataOperation:              []string{},
+	GetPlaybackSessionOperation:            []string{},
+	GetRecentActionsOperation:              []string{},
+	GetRecentEpisodesOperation:             []string{},
+	GetRecentlyAddedOperation:              []string{},
+	GetRecentlyAddedTVShowsOperation:       []string{},
+	GetResourceActivityLogsOperation:       []string{},
+	GetRoleOperation:                       []string{},
+	GetSearchFacetsOperation:               []string{},
+	GetSeasonMetadataOperation:             []string{},
+	GetServerSettingOperation:              []string{},
+	GetSimilarMoviesOperation:              []string{},
+	GetTVContinueWatchingOperation:         []string{},
+	GetTVEpisodeOperation:                  []string{},
+	GetTVEpisodeFilesOperation:             []string{},
+	GetTVEpisodeProgressOperation:          []string{},
+	GetTVSeasonOperation:                   []string{},
+	GetTVSeasonEpisodesOperation:           []string{},
+	GetTVShowOperation:                     []string{},
+	GetTVShowCastOperation:                 []string{},
+	GetTVShowCrewOperation:                 []string{},
+	GetTVShowEpisodesOperation:             []string{},
+	GetTVShowGenresOperation:               []string{},
+	GetTVShowMetadataOperation:             []string{},
+	GetTVShowNetworksOperation:             []string{},
+	GetTVShowNextEpisodeOperation:          []string{},
+	GetTVShowSeasonsOperation:              []string{},
+	GetTVShowWatchStatsOperation:           []string{},
+	GetTopRatedOperation:                   []string{},
+	GetUpcomingEpisodesOperation:           []string{},
+	GetUserActivityLogsOperation:           []string{},
+	GetUserByIdOperation:                   []string{},
+	GetUserMovieStatsOperation:             []string{},
+	GetUserPreferencesOperation:            []string{},
+	GetUserRolesOperation:                  []string{},
+	GetUserSettingOperation:                []string{},
+	GetUserTVStatsOperation:                []string{},
+	GetWatchHistoryOperation:               []string{},
+	GetWatchProgressOperation:              []string{},
+	GrantLibraryPermissionOperation:        []string{},
+	InitOIDCLinkOperation:                  []string{},
+	ListAPIKeysOperation:                   []string{},
+	ListLibrariesOperation:                 []string{},
+	ListLibraryPermissionsOperation:        []string{},
+	ListLibraryScansOperation:              []string{},
+	ListMoviesOperation:                    []string{},
+	ListPermissionsOperation:               []string{},
+	ListPoliciesOperation:                  []string{},
+	ListRolesOperation:                     []string{},
+	ListServerSettingsOperation:            []string{},
+	ListSessionsOperation:                  []string{},
+	ListTVShowsOperation:                   []string{},
+	ListUserOIDCLinksOperation:             []string{},
+	ListUserSettingsOperation:              []string{},
+	ListWebAuthnCredentialsOperation:       []string{},
+	LogoutOperation:                        []string{},
+	LogoutAllOperation:                     []string{},
+	LogoutCurrentOperation:                 []string{},
+	MarkAsWatchedOperation:                 []string{},
+	MarkTVEpisodeWatchedOperation:          []string{},
+	RefreshMovieMetadataOperation:          []string{},
+	RefreshTVShowMetadataOperation:         []string{},
+	RegenerateBackupCodesOperation:         []string{},
+	ReindexSearchOperation:                 []string{},
+	RemovePolicyOperation:                  []string{},
+	RemoveRoleOperation:                    []string{},
+	RenameWebAuthnCredentialOperation:      []string{},
+	ResendVerificationOperation:            []string{},
+	RevokeAPIKeyOperation:                  []string{},
+	RevokeLibraryPermissionOperation:       []string{},
+	RevokeSessionOperation:                 []string{},
+	SearchActivityLogsOperation:            []string{},
+	SearchLibraryMoviesOperation:           []string{},
+	SearchMoviesOperation:                  []string{},
+	SearchMoviesMetadataOperation:          []string{},
+	SearchTVShowsOperation:                 []string{},
+	SearchTVShowsMetadataOperation:         []string{},
+	SetupTOTPOperation:                     []string{},
+	StartPlaybackSessionOperation:          []string{},
+	StopPlaybackSessionOperation:           []string{},
+	TriggerLibraryScanOperation:            []string{},
+	UnlinkOIDCProviderOperation:            []string{},
+	UpdateCurrentUserOperation:             []string{},
+	UpdateLibraryOperation:                 []string{},
+	UpdateRolePermissionsOperation:         []string{},
+	UpdateServerSettingOperation:           []string{},
+	UpdateTVEpisodeProgressOperation:       []string{},
+	UpdateUserPreferencesOperation:         []string{},
+	UpdateUserSettingOperation:             []string{},
+	UpdateWatchProgressOperation:           []string{},
+	UploadAvatarOperation:                  []string{},
+	VerifyTOTPOperation:                    []string{},
+}
+
+func (s *Server) securityApiKeyAuth(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
+	var t ApiKeyAuth
+	const parameterName = "X-API-Key"
+	value := req.Header.Get(parameterName)
+	if value == "" {
+		return ctx, false, nil
+	}
+	t.APIKey = value
+	t.Roles = operationRolesApiKeyAuth[operationName]
+	rctx, err := s.sec.HandleApiKeyAuth(ctx, operationName, t)
+	if errors.Is(err, ogenerrors.ErrSkipServerSecurity) {
+		return nil, false, nil
+	} else if err != nil {
+		return nil, false, err
+	}
+	return rctx, true, err
 }
 
 var operationRolesBearerAuth = map[string][]string{
@@ -201,11 +371,22 @@ func (s *Server) securityBearerAuth(ctx context.Context, operationName Operation
 
 // SecuritySource is provider of security values (tokens, passwords, etc.).
 type SecuritySource interface {
+	// ApiKeyAuth provides apiKeyAuth security value.
+	// API key from /api/v1/apikeys.
+	ApiKeyAuth(ctx context.Context, operationName OperationName) (ApiKeyAuth, error)
 	// BearerAuth provides bearerAuth security value.
 	// JWT access token from /api/v1/auth/login.
 	BearerAuth(ctx context.Context, operationName OperationName) (BearerAuth, error)
 }
 
+func (s *Client) securityApiKeyAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
+	t, err := s.sec.ApiKeyAuth(ctx, operationName)
+	if err != nil {
+		return errors.Wrap(err, "security source \"ApiKeyAuth\"")
+	}
+	req.Header.Set("X-API-Key", t.APIKey)
+	return nil
+}
 func (s *Client) securityBearerAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
 	t, err := s.sec.BearerAuth(ctx, operationName)
 	if err != nil {

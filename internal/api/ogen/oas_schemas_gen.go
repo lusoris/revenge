@@ -1101,6 +1101,31 @@ type AdminUpdateOIDCProviderUnauthorized Error
 
 func (*AdminUpdateOIDCProviderUnauthorized) adminUpdateOIDCProviderRes() {}
 
+type ApiKeyAuth struct {
+	APIKey string
+	Roles  []string
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *ApiKeyAuth) GetAPIKey() string {
+	return s.APIKey
+}
+
+// GetRoles returns the value of Roles.
+func (s *ApiKeyAuth) GetRoles() []string {
+	return s.Roles
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *ApiKeyAuth) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// SetRoles sets the value of Roles.
+func (s *ApiKeyAuth) SetRoles(val []string) {
+	s.Roles = val
+}
+
 type AssignRoleBadRequest Error
 
 func (*AssignRoleBadRequest) assignRoleRes() {}
@@ -3056,7 +3081,6 @@ func (*Error) handleSonarrWebhookRes()       {}
 func (*Error) listAPIKeysRes()               {}
 func (*Error) listLibrariesRes()             {}
 func (*Error) listMoviesRes()                {}
-func (*Error) listServerSettingsRes()        {}
 func (*Error) listSessionsRes()              {}
 func (*Error) listTVShowsRes()               {}
 func (*Error) listUserOIDCLinksRes()         {}
@@ -3663,6 +3687,10 @@ func (*GetSeasonMetadataNotFound) getSeasonMetadataRes() {}
 type GetSeasonMetadataUnauthorized Error
 
 func (*GetSeasonMetadataUnauthorized) getSeasonMetadataRes() {}
+
+type GetServerSettingForbidden Error
+
+func (*GetServerSettingForbidden) getServerSettingRes() {}
 
 type GetServerSettingNotFound Error
 
@@ -4938,9 +4966,17 @@ type ListRolesUnauthorized Error
 
 func (*ListRolesUnauthorized) listRolesRes() {}
 
+type ListServerSettingsForbidden Error
+
+func (*ListServerSettingsForbidden) listServerSettingsRes() {}
+
 type ListServerSettingsOKApplicationJSON []ServerSetting
 
 func (*ListServerSettingsOKApplicationJSON) listServerSettingsRes() {}
+
+type ListServerSettingsUnauthorized Error
+
+func (*ListServerSettingsUnauthorized) listServerSettingsRes() {}
 
 type ListTVShowsOKApplicationJSON []TVSeries
 
@@ -17628,6 +17664,10 @@ func (*UpdateRolePermissionsUnauthorized) updateRolePermissionsRes() {}
 type UpdateServerSettingBadRequest Error
 
 func (*UpdateServerSettingBadRequest) updateServerSettingRes() {}
+
+type UpdateServerSettingForbidden Error
+
+func (*UpdateServerSettingForbidden) updateServerSettingRes() {}
 
 type UpdateServerSettingNotFound Error
 

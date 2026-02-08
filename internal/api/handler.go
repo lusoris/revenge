@@ -65,6 +65,26 @@ type riverClient interface {
 	Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error)
 }
 
+// HandleApiKeyAuth implements the SecurityHandler interface.
+// Validates API keys from the X-API-Key header and injects user context.
+func (h *Handler) HandleApiKeyAuth(ctx context.Context, operationName ogen.OperationName, t ogen.ApiKeyAuth) (context.Context, error) {
+	h.logger.Debug("API key auth requested", zap.String("operation", string(operationName)))
+
+	key, err := h.apikeyService.ValidateKey(ctx, t.APIKey)
+	if err != nil {
+		h.logger.Warn("Invalid API key", zap.Error(err))
+		return nil, errors.Wrap(err, "invalid API key")
+	}
+
+	ctx = WithUserID(ctx, key.UserID)
+
+	h.logger.Debug("API key validated successfully",
+		zap.String("user_id", key.UserID.String()),
+		zap.String("key_name", key.Name))
+
+	return ctx, nil
+}
+
 // HandleBearerAuth implements the SecurityHandler interface.
 // Validates JWT access tokens and injects user context.
 func (h *Handler) HandleBearerAuth(ctx context.Context, operationName ogen.OperationName, t ogen.BearerAuth) (context.Context, error) {
@@ -163,9 +183,32 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 // Server Settings Handlers
 // ============================================================================
 
-// ListServerSettings retrieves all server settings.
+// ListServerSettings retrieves all server settings (admin only).
 func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettingsRes, error) {
 	h.logger.Debug("List server settings requested")
+
+	userID, ok := h.getUserID(ctx)
+	if !ok {
+		return &ogen.ListServerSettingsUnauthorized{
+			Code:    401,
+			Message: "Authentication required",
+		}, nil
+	}
+
+	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
+	if err != nil {
+		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		return &ogen.ListServerSettingsForbidden{
+			Code:    500,
+			Message: "Failed to check permissions",
+		}, nil
+	}
+	if !isAdmin {
+		return &ogen.ListServerSettingsForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
 
 	settingsList, err := h.settingsService.ListServerSettings(ctx)
 	if err != nil {
@@ -180,9 +223,32 @@ func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettin
 	return (*ogen.ListServerSettingsOKApplicationJSON)(&result), nil
 }
 
-// GetServerSetting retrieves a specific server setting.
+// GetServerSetting retrieves a specific server setting (admin only).
 func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSettingParams) (ogen.GetServerSettingRes, error) {
 	h.logger.Debug("Get server setting requested", zap.String("key", params.Key))
+
+	userID, ok := h.getUserID(ctx)
+	if !ok {
+		return &ogen.GetServerSettingUnauthorized{
+			Code:    401,
+			Message: "Authentication required",
+		}, nil
+	}
+
+	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
+	if err != nil {
+		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		return &ogen.GetServerSettingForbidden{
+			Code:    500,
+			Message: "Failed to check permissions",
+		}, nil
+	}
+	if !isAdmin {
+		return &ogen.GetServerSettingForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
+	}
 
 	setting, err := h.settingsService.GetServerSetting(ctx, params.Key)
 	if err != nil {
@@ -193,13 +259,31 @@ func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSet
 	return &result, nil
 }
 
-// UpdateServerSetting updates a server setting value.
+// UpdateServerSetting updates a server setting value (admin only).
 func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateServerSettingParams) (ogen.UpdateServerSettingRes, error) {
 	h.logger.Debug("Update server setting requested", zap.String("key", params.Key))
 
-	userID, err := GetUserID(ctx)
+	userID, ok := h.getUserID(ctx)
+	if !ok {
+		return &ogen.UpdateServerSettingUnauthorized{
+			Code:    401,
+			Message: "Authentication required",
+		}, nil
+	}
+
+	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
-		return nil, errors.Wrap(err, "unauthorized")
+		h.logger.Error("failed to check admin role", zap.String("user_id", userID.String()), zap.Error(err))
+		return &ogen.UpdateServerSettingForbidden{
+			Code:    500,
+			Message: "Failed to check permissions",
+		}, nil
+	}
+	if !isAdmin {
+		return &ogen.UpdateServerSettingForbidden{
+			Code:    403,
+			Message: "Admin access required",
+		}, nil
 	}
 
 	setting, err := h.settingsService.SetServerSetting(ctx, params.Key, req.Value, userID)
