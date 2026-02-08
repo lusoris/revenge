@@ -90,6 +90,36 @@ func (c *Client) Start(ctx context.Context) error {
 	if err := c.client.Start(ctx); err != nil {
 		return fmt.Errorf("failed to start River client: %w", err)
 	}
+
+	// Subscribe to job lifecycle events for metrics
+	eventCh, cancel := c.client.Subscribe(river.EventKindJobCompleted, river.EventKindJobFailed)
+	go func() {
+		defer cancel()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case event, ok := <-eventCh:
+				if !ok {
+					return
+				}
+				jobKind := event.Job.Kind
+
+				switch event.Kind {
+				case river.EventKindJobCompleted:
+					observability.RecordJobCompleted(jobKind, "success")
+				case river.EventKindJobFailed:
+					observability.RecordJobCompleted(jobKind, "failure")
+				}
+
+				if event.Job.FinalizedAt != nil && event.Job.AttemptedAt != nil {
+					duration := event.Job.FinalizedAt.Sub(*event.Job.AttemptedAt).Seconds()
+					observability.JobDuration.WithLabelValues(jobKind).Observe(duration)
+				}
+			}
+		}
+	}()
+
 	c.logger.Info("River job queue client started")
 	return nil
 }
