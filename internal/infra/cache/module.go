@@ -35,8 +35,16 @@ const (
 // Module provides cache dependencies.
 var Module = fx.Module("cache",
 	fx.Provide(NewClient),
+	fx.Provide(provideRueidisClient),
 	fx.Invoke(registerHooks),
 )
+
+// provideRueidisClient extracts the underlying rueidis.Client from our Client
+// wrapper so other packages (e.g. observability) can consume it without
+// importing cache (which would create an import cycle).
+func provideRueidisClient(c *Client) rueidis.Client {
+	return c.RueidisClient()
+}
 
 // Client represents the cache client (rueidis + otter).
 type Client struct {

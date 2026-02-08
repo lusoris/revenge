@@ -172,6 +172,76 @@
     {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "id": 107,
+      "title": "Dragonfly (L2 Cache)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "bytes" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 28 },
+      "id": 21,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"] }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "revenge_dragonfly_used_memory_bytes", "legendFormat": "Used", "refId": "A" },
+        { "expr": "revenge_dragonfly_max_memory_bytes", "legendFormat": "Max", "refId": "B" }
+      ],
+      "title": "Memory Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 28 },
+      "id": 22,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"] }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "revenge_dragonfly_total_keys", "legendFormat": "Keys", "refId": "A" },
+        { "expr": "revenge_dragonfly_connected_clients", "legendFormat": "Clients", "refId": "B" },
+        { "expr": "revenge_dragonfly_evicted_keys_total", "legendFormat": "Evicted", "refId": "C" }
+      ],
+      "title": "Keys & Clients",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 0.5 }, { "color": "green", "value": 0.8 }] }, "unit": "percentunit", "min": 0, "max": 1 },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 4, "x": 16, "y": 28 },
+      "id": 23,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto" },
+      "targets": [
+        { "expr": "revenge_dragonfly_hit_rate", "legendFormat": "Hit Rate", "refId": "A" }
+      ],
+      "title": "Hit Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "ops" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 4, "x": 20, "y": 28 },
+      "id": 24,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "rate(revenge_dragonfly_commands_processed_total[5m])", "legendFormat": "cmds/s", "refId": "A" }
+      ],
+      "title": "Commands/s",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 },
       "id": 103,
       "title": "Jobs (River)",
       "type": "row"
@@ -182,7 +252,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "short" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 28 },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 37 },
       "id": 10,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -197,7 +267,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "ops" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 28 },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 37 },
       "id": 11,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -212,7 +282,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "s" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 28 },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 37 },
       "id": 12,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -223,7 +293,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
       "id": 104,
       "title": "Search (Typesense)",
       "type": "row"
@@ -234,7 +304,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "ops" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 37 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
       "id": 13,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -249,7 +319,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "s" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 37 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
       "id": 14,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -261,7 +331,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
       "id": 105,
       "title": "Auth & Sessions",
       "type": "row"
@@ -272,7 +342,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "ops" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 46 },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 55 },
       "id": 15,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -287,7 +357,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "ops" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 46 },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 55 },
       "id": 16,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -302,7 +372,7 @@
         "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 100 }, { "color": "red", "value": 500 }] } },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 46 },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 55 },
       "id": 17,
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "orientation": "auto", "textMode": "auto" },
       "targets": [
@@ -313,7 +383,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 63 },
       "id": 106,
       "title": "Library Scanner",
       "type": "row"
@@ -324,7 +394,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "s" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 55 },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 64 },
       "id": 18,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -339,7 +409,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "short" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 55 },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 64 },
       "id": 19,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
@@ -354,7 +424,7 @@
         "defaults": { "color": { "mode": "palette-classic" }, "custom": { "lineWidth": 1, "fillOpacity": 10 }, "unit": "short" },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 55 },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 64 },
       "id": 20,
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean"] }, "tooltip": { "mode": "multi" } },
       "targets": [
