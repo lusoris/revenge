@@ -23,6 +23,32 @@ Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zer
 
 ## Recently Completed
 
+### Cookie Auth + CSRF Protection (2026-02-07)
+- Cookie-based auth middleware: extracts HttpOnly access token cookie → injects as Bearer header
+- CSRF double-submit cookie pattern with `X-CSRF-Token` header validation
+- ResponseWriter context injection for ogen handlers to set cookies
+- Login/refresh set HttpOnly cookies (access, refresh) + JS-readable CSRF cookie
+- Logout clears all auth cookies
+- Fully opt-in via `server.cookie_auth.enabled` config
+
+### SSE Real-Time Events (2026-02-07)
+- `GET /api/v1/events` Server-Sent Events endpoint
+- Broker with per-client category filtering and non-blocking broadcast
+- Auth via Bearer header or `?token=` query param
+- Bridges `notification.Agent` interface → SSE fanout
+- 30s keepalive, ResponseController for write deadline management
+
+### Tier 3 Metadata Providers (2026-02-07)
+- **Trakt** (priority 38): Movie + TV show metadata, extended info, rate-limited
+- **Simkl** (priority 36): Movie + TV + anime metadata, cross-reference IDs
+- **Letterboxd** (priority 34): Movie-only metadata, OAuth2 client credentials, rating conversion
+
+### Tier 2 Metadata Providers (2026-02-06)
+- **AniList** (priority 45): GraphQL-based anime/manga metadata
+- **AniDB** (priority 44): UDP + HTTP anime metadata with rate limiting
+- **MAL** (priority 43): MyAnimeList metadata via Jikan API
+- **Kitsu** (priority 42): JSON:API anime/manga metadata
+
 ### Metadata System - Force + Languages Plumbing (2026-02-06)
 - Added `MetadataRefreshOptions{Force, Languages}` to movie and tvshow modules
 - Plumbed through entire stack: service interfaces -> adapters -> workers
@@ -89,7 +115,8 @@ Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zer
 - [ ] Lidarr (music)
 - [ ] Whisparr (adult content)
 - [ ] Authelia, Authentik, Keycloak (SSO providers)
-- [ ] Trakt, Last.fm, ListenBrainz (scrobbling)
+- [x] Trakt (metadata provider, completed 2026-02-07)
+- [ ] Last.fm, ListenBrainz (scrobbling)
 - [ ] Additional metadata providers (MusicBrainz, Spotify, etc.)
 
 ### Features
@@ -98,6 +125,8 @@ Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zer
 - [ ] Skip Intro / Credits detection
 - [ ] SyncPlay (watch together)
 - [ ] Trickplay (timeline thumbnails)
+- [x] SSE real-time events (completed 2026-02-07)
+- [x] Cookie-based authentication + CSRF (completed 2026-02-07)
 - [ ] Release calendar
 - [ ] Content request system
 
