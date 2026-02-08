@@ -463,6 +463,15 @@ func (UnimplementedHandler) GetEpisodeMetadata(ctx context.Context, params GetEp
 	return r, ht.ErrNotImplemented
 }
 
+// GetEpisodeMetadataImages implements getEpisodeMetadataImages operation.
+//
+// Fetch all available images (stills) for a TV episode from TMDb.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+func (UnimplementedHandler) GetEpisodeMetadataImages(ctx context.Context, params GetEpisodeMetadataImagesParams) (r GetEpisodeMetadataImagesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetLibrary implements getLibrary operation.
 //
 // Get detailed information about a library.
@@ -528,6 +537,15 @@ func (UnimplementedHandler) GetMovieCrew(ctx context.Context, params GetMovieCre
 	return r, ht.ErrNotImplemented
 }
 
+// GetMovieExternalIDs implements getMovieExternalIDs operation.
+//
+// Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
+//
+// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+func (UnimplementedHandler) GetMovieExternalIDs(ctx context.Context, params GetMovieExternalIDsParams) (r GetMovieExternalIDsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetMovieFiles implements getMovieFiles operation.
 //
 // Get physical files for a movie.
@@ -553,6 +571,60 @@ func (UnimplementedHandler) GetMovieGenres(ctx context.Context, params GetMovieG
 //
 // GET /api/v1/metadata/movie/{tmdbId}
 func (UnimplementedHandler) GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (r GetMovieMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieMetadataCredits implements getMovieMetadataCredits operation.
+//
+// Fetch cast and crew credits for a movie from TMDb.
+//
+// GET /api/v1/metadata/movie/{tmdbId}/credits
+func (UnimplementedHandler) GetMovieMetadataCredits(ctx context.Context, params GetMovieMetadataCreditsParams) (r GetMovieMetadataCreditsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieMetadataImages implements getMovieMetadataImages operation.
+//
+// Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
+//
+// GET /api/v1/metadata/movie/{tmdbId}/images
+func (UnimplementedHandler) GetMovieMetadataImages(ctx context.Context, params GetMovieMetadataImagesParams) (r GetMovieMetadataImagesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetMovieRecommendationsMetadata implements getMovieRecommendationsMetadata operation.
+//
+// Fetch recommended movies from TMDb based on user ratings and viewing patterns.
+//
+// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+func (UnimplementedHandler) GetMovieRecommendationsMetadata(ctx context.Context, params GetMovieRecommendationsMetadataParams) (r GetMovieRecommendationsMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetPersonMetadata implements getPersonMetadata operation.
+//
+// Fetch detailed information about a person (actor, director, etc.) from TMDb.
+//
+// GET /api/v1/metadata/person/{tmdbId}
+func (UnimplementedHandler) GetPersonMetadata(ctx context.Context, params GetPersonMetadataParams) (r GetPersonMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetPersonMetadataCredits implements getPersonMetadataCredits operation.
+//
+// Fetch filmography (cast and crew credits) for a person from TMDb.
+//
+// GET /api/v1/metadata/person/{tmdbId}/credits
+func (UnimplementedHandler) GetPersonMetadataCredits(ctx context.Context, params GetPersonMetadataCreditsParams) (r GetPersonMetadataCreditsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetPersonMetadataImages implements getPersonMetadataImages operation.
+//
+// Fetch all available profile images for a person from TMDb.
+//
+// GET /api/v1/metadata/person/{tmdbId}/images
+func (UnimplementedHandler) GetPersonMetadataImages(ctx context.Context, params GetPersonMetadataImagesParams) (r GetPersonMetadataImagesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -660,6 +732,15 @@ func (UnimplementedHandler) GetSeasonMetadata(ctx context.Context, params GetSea
 	return r, ht.ErrNotImplemented
 }
 
+// GetSeasonMetadataImages implements getSeasonMetadataImages operation.
+//
+// Fetch all available images (posters) for a TV season from TMDb.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+func (UnimplementedHandler) GetSeasonMetadataImages(ctx context.Context, params GetSeasonMetadataImagesParams) (r GetSeasonMetadataImagesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetServerSetting implements getServerSetting operation.
 //
 // Retrieve a specific server setting by key.
@@ -675,6 +756,15 @@ func (UnimplementedHandler) GetServerSetting(ctx context.Context, params GetServ
 //
 // GET /api/v1/movies/{id}/similar
 func (UnimplementedHandler) GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (r GetSimilarMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetSimilarMoviesMetadata implements getSimilarMoviesMetadata operation.
+//
+// Fetch a list of similar movies from TMDb based on genres and keywords.
+//
+// GET /api/v1/metadata/movie/{tmdbId}/similar
+func (UnimplementedHandler) GetSimilarMoviesMetadata(ctx context.Context, params GetSimilarMoviesMetadataParams) (r GetSimilarMoviesMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -761,6 +851,15 @@ func (UnimplementedHandler) GetTVShowCast(ctx context.Context, params GetTVShowC
 	return r, ht.ErrNotImplemented
 }
 
+// GetTVShowContentRatings implements getTVShowContentRatings operation.
+//
+// Fetch content ratings (age classifications) for a TV show across different countries.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+func (UnimplementedHandler) GetTVShowContentRatings(ctx context.Context, params GetTVShowContentRatingsParams) (r GetTVShowContentRatingsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetTVShowCrew implements getTVShowCrew operation.
 //
 // Get crew members for a TV show.
@@ -776,6 +875,15 @@ func (UnimplementedHandler) GetTVShowCrew(ctx context.Context, params GetTVShowC
 //
 // GET /api/v1/tvshows/{id}/episodes
 func (UnimplementedHandler) GetTVShowEpisodes(ctx context.Context, params GetTVShowEpisodesParams) (r GetTVShowEpisodesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowExternalIDs implements getTVShowExternalIDs operation.
+//
+// Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
+//
+// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+func (UnimplementedHandler) GetTVShowExternalIDs(ctx context.Context, params GetTVShowExternalIDsParams) (r GetTVShowExternalIDsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -795,6 +903,24 @@ func (UnimplementedHandler) GetTVShowGenres(ctx context.Context, params GetTVSho
 //
 // GET /api/v1/metadata/tv/{tmdbId}
 func (UnimplementedHandler) GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (r GetTVShowMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowMetadataCredits implements getTVShowMetadataCredits operation.
+//
+// Fetch aggregate cast and crew credits for a TV show from TMDb.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/credits
+func (UnimplementedHandler) GetTVShowMetadataCredits(ctx context.Context, params GetTVShowMetadataCreditsParams) (r GetTVShowMetadataCreditsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetTVShowMetadataImages implements getTVShowMetadataImages operation.
+//
+// Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
+//
+// GET /api/v1/metadata/tv/{tmdbId}/images
+func (UnimplementedHandler) GetTVShowMetadataImages(ctx context.Context, params GetTVShowMetadataImagesParams) (r GetTVShowMetadataImagesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1018,6 +1144,15 @@ func (UnimplementedHandler) ListLibraryPermissions(ctx context.Context, params L
 //
 // GET /api/v1/libraries/{libraryId}/scans
 func (UnimplementedHandler) ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (r ListLibraryScansRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ListMetadataProviders implements listMetadataProviders operation.
+//
+// Returns the list of registered metadata providers and their capabilities.
+//
+// GET /api/v1/metadata/providers
+func (UnimplementedHandler) ListMetadataProviders(ctx context.Context) (r ListMetadataProvidersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1376,6 +1511,15 @@ func (UnimplementedHandler) SearchMovies(ctx context.Context, params SearchMovie
 //
 // GET /api/v1/metadata/search/movie
 func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (r SearchMoviesMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchPersonMetadata implements searchPersonMetadata operation.
+//
+// Search for actors, directors, and other crew members in TMDb.
+//
+// GET /api/v1/metadata/search/person
+func (UnimplementedHandler) SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (r SearchPersonMetadataRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

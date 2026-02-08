@@ -314,6 +314,12 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
 	GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error)
+	// GetEpisodeMetadataImages implements getEpisodeMetadataImages operation.
+	//
+	// Fetch all available images (stills) for a TV episode from TMDb.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+	GetEpisodeMetadataImages(ctx context.Context, params GetEpisodeMetadataImagesParams) (GetEpisodeMetadataImagesRes, error)
 	// GetLibrary implements getLibrary operation.
 	//
 	// Get detailed information about a library.
@@ -358,6 +364,12 @@ type Handler interface {
 	//
 	// GET /api/v1/movies/{id}/crew
 	GetMovieCrew(ctx context.Context, params GetMovieCrewParams) (GetMovieCrewRes, error)
+	// GetMovieExternalIDs implements getMovieExternalIDs operation.
+	//
+	// Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+	GetMovieExternalIDs(ctx context.Context, params GetMovieExternalIDsParams) (GetMovieExternalIDsRes, error)
 	// GetMovieFiles implements getMovieFiles operation.
 	//
 	// Get physical files for a movie.
@@ -377,6 +389,42 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/movie/{tmdbId}
 	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
+	// GetMovieMetadataCredits implements getMovieMetadataCredits operation.
+	//
+	// Fetch cast and crew credits for a movie from TMDb.
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}/credits
+	GetMovieMetadataCredits(ctx context.Context, params GetMovieMetadataCreditsParams) (GetMovieMetadataCreditsRes, error)
+	// GetMovieMetadataImages implements getMovieMetadataImages operation.
+	//
+	// Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}/images
+	GetMovieMetadataImages(ctx context.Context, params GetMovieMetadataImagesParams) (GetMovieMetadataImagesRes, error)
+	// GetMovieRecommendationsMetadata implements getMovieRecommendationsMetadata operation.
+	//
+	// Fetch recommended movies from TMDb based on user ratings and viewing patterns.
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+	GetMovieRecommendationsMetadata(ctx context.Context, params GetMovieRecommendationsMetadataParams) (GetMovieRecommendationsMetadataRes, error)
+	// GetPersonMetadata implements getPersonMetadata operation.
+	//
+	// Fetch detailed information about a person (actor, director, etc.) from TMDb.
+	//
+	// GET /api/v1/metadata/person/{tmdbId}
+	GetPersonMetadata(ctx context.Context, params GetPersonMetadataParams) (GetPersonMetadataRes, error)
+	// GetPersonMetadataCredits implements getPersonMetadataCredits operation.
+	//
+	// Fetch filmography (cast and crew credits) for a person from TMDb.
+	//
+	// GET /api/v1/metadata/person/{tmdbId}/credits
+	GetPersonMetadataCredits(ctx context.Context, params GetPersonMetadataCreditsParams) (GetPersonMetadataCreditsRes, error)
+	// GetPersonMetadataImages implements getPersonMetadataImages operation.
+	//
+	// Fetch all available profile images for a person from TMDb.
+	//
+	// GET /api/v1/metadata/person/{tmdbId}/images
+	GetPersonMetadataImages(ctx context.Context, params GetPersonMetadataImagesParams) (GetPersonMetadataImagesRes, error)
 	// GetPlaybackSession implements getPlaybackSession operation.
 	//
 	// Returns metadata for an active playback session.
@@ -448,6 +496,12 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
 	GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error)
+	// GetSeasonMetadataImages implements getSeasonMetadataImages operation.
+	//
+	// Fetch all available images (posters) for a TV season from TMDb.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+	GetSeasonMetadataImages(ctx context.Context, params GetSeasonMetadataImagesParams) (GetSeasonMetadataImagesRes, error)
 	// GetServerSetting implements getServerSetting operation.
 	//
 	// Retrieve a specific server setting by key.
@@ -460,6 +514,12 @@ type Handler interface {
 	//
 	// GET /api/v1/movies/{id}/similar
 	GetSimilarMovies(ctx context.Context, params GetSimilarMoviesParams) (GetSimilarMoviesRes, error)
+	// GetSimilarMoviesMetadata implements getSimilarMoviesMetadata operation.
+	//
+	// Fetch a list of similar movies from TMDb based on genres and keywords.
+	//
+	// GET /api/v1/metadata/movie/{tmdbId}/similar
+	GetSimilarMoviesMetadata(ctx context.Context, params GetSimilarMoviesMetadataParams) (GetSimilarMoviesMetadataRes, error)
 	// GetStartup implements getStartup operation.
 	//
 	// Checks if the service has completed initialization.
@@ -516,6 +576,12 @@ type Handler interface {
 	//
 	// GET /api/v1/tvshows/{id}/cast
 	GetTVShowCast(ctx context.Context, params GetTVShowCastParams) (GetTVShowCastRes, error)
+	// GetTVShowContentRatings implements getTVShowContentRatings operation.
+	//
+	// Fetch content ratings (age classifications) for a TV show across different countries.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+	GetTVShowContentRatings(ctx context.Context, params GetTVShowContentRatingsParams) (GetTVShowContentRatingsRes, error)
 	// GetTVShowCrew implements getTVShowCrew operation.
 	//
 	// Get crew members for a TV show.
@@ -528,6 +594,12 @@ type Handler interface {
 	//
 	// GET /api/v1/tvshows/{id}/episodes
 	GetTVShowEpisodes(ctx context.Context, params GetTVShowEpisodesParams) (GetTVShowEpisodesRes, error)
+	// GetTVShowExternalIDs implements getTVShowExternalIDs operation.
+	//
+	// Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+	GetTVShowExternalIDs(ctx context.Context, params GetTVShowExternalIDsParams) (GetTVShowExternalIDsRes, error)
 	// GetTVShowGenres implements getTVShowGenres operation.
 	//
 	// Get genres for a TV show.
@@ -541,6 +613,18 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/tv/{tmdbId}
 	GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error)
+	// GetTVShowMetadataCredits implements getTVShowMetadataCredits operation.
+	//
+	// Fetch aggregate cast and crew credits for a TV show from TMDb.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/credits
+	GetTVShowMetadataCredits(ctx context.Context, params GetTVShowMetadataCreditsParams) (GetTVShowMetadataCreditsRes, error)
+	// GetTVShowMetadataImages implements getTVShowMetadataImages operation.
+	//
+	// Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
+	//
+	// GET /api/v1/metadata/tv/{tmdbId}/images
+	GetTVShowMetadataImages(ctx context.Context, params GetTVShowMetadataImagesParams) (GetTVShowMetadataImagesRes, error)
 	// GetTVShowNetworks implements getTVShowNetworks operation.
 	//
 	// Get networks for a TV show.
@@ -692,6 +776,12 @@ type Handler interface {
 	//
 	// GET /api/v1/libraries/{libraryId}/scans
 	ListLibraryScans(ctx context.Context, params ListLibraryScansParams) (ListLibraryScansRes, error)
+	// ListMetadataProviders implements listMetadataProviders operation.
+	//
+	// Returns the list of registered metadata providers and their capabilities.
+	//
+	// GET /api/v1/metadata/providers
+	ListMetadataProviders(ctx context.Context) (ListMetadataProvidersRes, error)
 	// ListMovies implements listMovies operation.
 	//
 	// Get a paginated list of movies with optional filtering and sorting.
@@ -933,6 +1023,12 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
+	// SearchPersonMetadata implements searchPersonMetadata operation.
+	//
+	// Search for actors, directors, and other crew members in TMDb.
+	//
+	// GET /api/v1/metadata/search/person
+	SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (SearchPersonMetadataRes, error)
 	// SearchTVShows implements searchTVShows operation.
 	//
 	// Search TV shows by title using fuzzy matching.

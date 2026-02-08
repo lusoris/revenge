@@ -1321,16 +1321,15 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							}
 
 							// Param: "tmdbId"
-							// Leaf parameter, slashes are prohibited
+							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
-								break
+							if idx < 0 {
+								idx = len(elem)
 							}
-							args[0] = elem
-							elem = ""
+							args[0] = elem[:idx]
+							elem = elem[idx:]
 
 							if len(elem) == 0 {
-								// Leaf node.
 								switch r.Method {
 								case "GET":
 									s.handleGetMovieMetadataRequest([1]string{
@@ -1341,6 +1340,256 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								}
 
 								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'c': // Prefix: "credits"
+
+									if l := len("credits"); len(elem) >= l && elem[0:l] == "credits" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetMovieMetadataCreditsRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'e': // Prefix: "external-ids"
+
+									if l := len("external-ids"); len(elem) >= l && elem[0:l] == "external-ids" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetMovieExternalIDsRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'i': // Prefix: "images"
+
+									if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetMovieMetadataImagesRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'r': // Prefix: "recommendations"
+
+									if l := len("recommendations"); len(elem) >= l && elem[0:l] == "recommendations" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetMovieRecommendationsMetadataRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 's': // Prefix: "similar"
+
+									if l := len("similar"); len(elem) >= l && elem[0:l] == "similar" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetSimilarMoviesMetadataRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
+						case 'p': // Prefix: "p"
+
+							if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'e': // Prefix: "erson/"
+
+								if l := len("erson/"); len(elem) >= l && elem[0:l] == "erson/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "tmdbId"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[0] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch r.Method {
+									case "GET":
+										s.handleGetPersonMetadataRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 'c': // Prefix: "credits"
+
+										if l := len("credits"); len(elem) >= l && elem[0:l] == "credits" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetPersonMetadataCreditsRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									case 'i': // Prefix: "images"
+
+										if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetPersonMetadataImagesRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									}
+
+								}
+
+							case 'r': // Prefix: "roviders"
+
+								if l := len("roviders"); len(elem) >= l && elem[0:l] == "roviders" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleListMetadataProvidersRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
 							}
 
 						case 's': // Prefix: "search/"
@@ -1368,6 +1617,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									switch r.Method {
 									case "GET":
 										s.handleSearchMoviesMetadataRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
+								}
+
+							case 'p': // Prefix: "person"
+
+								if l := len("person"); len(elem) >= l && elem[0:l] == "person" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleSearchPersonMetadataRequest([0]string{}, elemIsEscaped, w, r)
 									default:
 										s.notAllowed(w, r, "GET")
 									}
@@ -1427,68 +1696,246 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								return
 							}
 							switch elem[0] {
-							case '/': // Prefix: "/season/"
+							case '/': // Prefix: "/"
 
-								if l := len("/season/"); len(elem) >= l && elem[0:l] == "/season/" {
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
-								// Param: "seasonNumber"
-								// Match until "/"
-								idx := strings.IndexByte(elem, '/')
-								if idx < 0 {
-									idx = len(elem)
-								}
-								args[1] = elem[:idx]
-								elem = elem[idx:]
-
 								if len(elem) == 0 {
-									switch r.Method {
-									case "GET":
-										s.handleGetSeasonMetadataRequest([2]string{
-											args[0],
-											args[1],
-										}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, "GET")
-									}
-
-									return
+									break
 								}
 								switch elem[0] {
-								case '/': // Prefix: "/episode/"
+								case 'c': // Prefix: "c"
 
-									if l := len("/episode/"); len(elem) >= l && elem[0:l] == "/episode/" {
+									if l := len("c"); len(elem) >= l && elem[0:l] == "c" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
-									// Param: "episodeNumber"
-									// Leaf parameter, slashes are prohibited
-									idx := strings.IndexByte(elem, '/')
-									if idx >= 0 {
+									if len(elem) == 0 {
 										break
 									}
-									args[2] = elem
-									elem = ""
+									switch elem[0] {
+									case 'o': // Prefix: "ontent-ratings"
+
+										if l := len("ontent-ratings"); len(elem) >= l && elem[0:l] == "ontent-ratings" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetTVShowContentRatingsRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									case 'r': // Prefix: "redits"
+
+										if l := len("redits"); len(elem) >= l && elem[0:l] == "redits" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetTVShowMetadataCreditsRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									}
+
+								case 'e': // Prefix: "external-ids"
+
+									if l := len("external-ids"); len(elem) >= l && elem[0:l] == "external-ids" {
+										elem = elem[l:]
+									} else {
+										break
+									}
 
 									if len(elem) == 0 {
 										// Leaf node.
 										switch r.Method {
 										case "GET":
-											s.handleGetEpisodeMetadataRequest([3]string{
+											s.handleGetTVShowExternalIDsRequest([1]string{
 												args[0],
-												args[1],
-												args[2],
 											}, elemIsEscaped, w, r)
 										default:
 											s.notAllowed(w, r, "GET")
 										}
 
 										return
+									}
+
+								case 'i': // Prefix: "images"
+
+									if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowMetadataImagesRequest([1]string{
+												args[0],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 's': // Prefix: "season/"
+
+									if l := len("season/"); len(elem) >= l && elem[0:l] == "season/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "seasonNumber"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[1] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch r.Method {
+										case "GET":
+											s.handleGetSeasonMetadataRequest([2]string{
+												args[0],
+												args[1],
+											}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/"
+
+										if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											break
+										}
+										switch elem[0] {
+										case 'e': // Prefix: "episode/"
+
+											if l := len("episode/"); len(elem) >= l && elem[0:l] == "episode/" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											// Param: "episodeNumber"
+											// Match until "/"
+											idx := strings.IndexByte(elem, '/')
+											if idx < 0 {
+												idx = len(elem)
+											}
+											args[2] = elem[:idx]
+											elem = elem[idx:]
+
+											if len(elem) == 0 {
+												switch r.Method {
+												case "GET":
+													s.handleGetEpisodeMetadataRequest([3]string{
+														args[0],
+														args[1],
+														args[2],
+													}, elemIsEscaped, w, r)
+												default:
+													s.notAllowed(w, r, "GET")
+												}
+
+												return
+											}
+											switch elem[0] {
+											case '/': // Prefix: "/images"
+
+												if l := len("/images"); len(elem) >= l && elem[0:l] == "/images" {
+													elem = elem[l:]
+												} else {
+													break
+												}
+
+												if len(elem) == 0 {
+													// Leaf node.
+													switch r.Method {
+													case "GET":
+														s.handleGetEpisodeMetadataImagesRequest([3]string{
+															args[0],
+															args[1],
+															args[2],
+														}, elemIsEscaped, w, r)
+													default:
+														s.notAllowed(w, r, "GET")
+													}
+
+													return
+												}
+
+											}
+
+										case 'i': // Prefix: "images"
+
+											if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch r.Method {
+												case "GET":
+													s.handleGetSeasonMetadataImagesRequest([2]string{
+														args[0],
+														args[1],
+													}, elemIsEscaped, w, r)
+												default:
+													s.notAllowed(w, r, "GET")
+												}
+
+												return
+											}
+
+										}
+
 									}
 
 								}
@@ -5637,16 +6084,15 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 
 							// Param: "tmdbId"
-							// Leaf parameter, slashes are prohibited
+							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
-								break
+							if idx < 0 {
+								idx = len(elem)
 							}
-							args[0] = elem
-							elem = ""
+							args[0] = elem[:idx]
+							elem = elem[idx:]
 
 							if len(elem) == 0 {
-								// Leaf node.
 								switch method {
 								case "GET":
 									r.name = GetMovieMetadataOperation
@@ -5660,6 +6106,285 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								default:
 									return
 								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'c': // Prefix: "credits"
+
+									if l := len("credits"); len(elem) >= l && elem[0:l] == "credits" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetMovieMetadataCreditsOperation
+											r.summary = "Get movie credits from metadata provider"
+											r.operationID = "getMovieMetadataCredits"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/credits"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'e': // Prefix: "external-ids"
+
+									if l := len("external-ids"); len(elem) >= l && elem[0:l] == "external-ids" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetMovieExternalIDsOperation
+											r.summary = "Get movie external IDs"
+											r.operationID = "getMovieExternalIDs"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/external-ids"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'i': // Prefix: "images"
+
+									if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetMovieMetadataImagesOperation
+											r.summary = "Get movie images from metadata provider"
+											r.operationID = "getMovieMetadataImages"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/images"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "recommendations"
+
+									if l := len("recommendations"); len(elem) >= l && elem[0:l] == "recommendations" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetMovieRecommendationsMetadataOperation
+											r.summary = "Get movie recommendations from metadata provider"
+											r.operationID = "getMovieRecommendationsMetadata"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/recommendations"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 's': // Prefix: "similar"
+
+									if l := len("similar"); len(elem) >= l && elem[0:l] == "similar" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetSimilarMoviesMetadataOperation
+											r.summary = "Get similar movies from metadata provider"
+											r.operationID = "getSimilarMoviesMetadata"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/similar"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
+							}
+
+						case 'p': // Prefix: "p"
+
+							if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								break
+							}
+							switch elem[0] {
+							case 'e': // Prefix: "erson/"
+
+								if l := len("erson/"); len(elem) >= l && elem[0:l] == "erson/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "tmdbId"
+								// Match until "/"
+								idx := strings.IndexByte(elem, '/')
+								if idx < 0 {
+									idx = len(elem)
+								}
+								args[0] = elem[:idx]
+								elem = elem[idx:]
+
+								if len(elem) == 0 {
+									switch method {
+									case "GET":
+										r.name = GetPersonMetadataOperation
+										r.summary = "Get person details from metadata provider"
+										r.operationID = "getPersonMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/person/{tmdbId}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+								switch elem[0] {
+								case '/': // Prefix: "/"
+
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										break
+									}
+									switch elem[0] {
+									case 'c': // Prefix: "credits"
+
+										if l := len("credits"); len(elem) >= l && elem[0:l] == "credits" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetPersonMetadataCreditsOperation
+												r.summary = "Get person credits from metadata provider"
+												r.operationID = "getPersonMetadataCredits"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/metadata/person/{tmdbId}/credits"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 'i': // Prefix: "images"
+
+										if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetPersonMetadataImagesOperation
+												r.summary = "Get person images from metadata provider"
+												r.operationID = "getPersonMetadataImages"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/metadata/person/{tmdbId}/images"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								}
+
+							case 'r': // Prefix: "roviders"
+
+								if l := len("roviders"); len(elem) >= l && elem[0:l] == "roviders" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = ListMetadataProvidersOperation
+										r.summary = "List available metadata providers"
+										r.operationID = "listMetadataProviders"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/providers"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
 							}
 
 						case 's': // Prefix: "search/"
@@ -5691,6 +6416,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.operationID = "searchMoviesMetadata"
 										r.operationGroup = ""
 										r.pathPattern = "/api/v1/metadata/search/movie"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 'p': // Prefix: "person"
+
+								if l := len("person"); len(elem) >= l && elem[0:l] == "person" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = SearchPersonMetadataOperation
+										r.summary = "Search people in metadata provider"
+										r.operationID = "searchPersonMetadata"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/metadata/search/person"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -5759,71 +6509,264 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								}
 							}
 							switch elem[0] {
-							case '/': // Prefix: "/season/"
+							case '/': // Prefix: "/"
 
-								if l := len("/season/"); len(elem) >= l && elem[0:l] == "/season/" {
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
-								// Param: "seasonNumber"
-								// Match until "/"
-								idx := strings.IndexByte(elem, '/')
-								if idx < 0 {
-									idx = len(elem)
-								}
-								args[1] = elem[:idx]
-								elem = elem[idx:]
-
 								if len(elem) == 0 {
-									switch method {
-									case "GET":
-										r.name = GetSeasonMetadataOperation
-										r.summary = "Get season details from TMDb"
-										r.operationID = "getSeasonMetadata"
-										r.operationGroup = ""
-										r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"
-										r.args = args
-										r.count = 2
-										return r, true
-									default:
-										return
-									}
+									break
 								}
 								switch elem[0] {
-								case '/': // Prefix: "/episode/"
+								case 'c': // Prefix: "c"
 
-									if l := len("/episode/"); len(elem) >= l && elem[0:l] == "/episode/" {
+									if l := len("c"); len(elem) >= l && elem[0:l] == "c" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
-									// Param: "episodeNumber"
-									// Leaf parameter, slashes are prohibited
-									idx := strings.IndexByte(elem, '/')
-									if idx >= 0 {
+									if len(elem) == 0 {
 										break
 									}
-									args[2] = elem
-									elem = ""
+									switch elem[0] {
+									case 'o': // Prefix: "ontent-ratings"
+
+										if l := len("ontent-ratings"); len(elem) >= l && elem[0:l] == "ontent-ratings" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetTVShowContentRatingsOperation
+												r.summary = "Get TV show content ratings"
+												r.operationID = "getTVShowContentRatings"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/content-ratings"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 'r': // Prefix: "redits"
+
+										if l := len("redits"); len(elem) >= l && elem[0:l] == "redits" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetTVShowMetadataCreditsOperation
+												r.summary = "Get TV show credits from metadata provider"
+												r.operationID = "getTVShowMetadataCredits"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/credits"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									}
+
+								case 'e': // Prefix: "external-ids"
+
+									if l := len("external-ids"); len(elem) >= l && elem[0:l] == "external-ids" {
+										elem = elem[l:]
+									} else {
+										break
+									}
 
 									if len(elem) == 0 {
 										// Leaf node.
 										switch method {
 										case "GET":
-											r.name = GetEpisodeMetadataOperation
-											r.summary = "Get episode details from TMDb"
-											r.operationID = "getEpisodeMetadata"
+											r.name = GetTVShowExternalIDsOperation
+											r.summary = "Get TV show external IDs"
+											r.operationID = "getTVShowExternalIDs"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"
+											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/external-ids"
 											r.args = args
-											r.count = 3
+											r.count = 1
 											return r, true
 										default:
 											return
 										}
+									}
+
+								case 'i': // Prefix: "images"
+
+									if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowMetadataImagesOperation
+											r.summary = "Get TV show images from metadata provider"
+											r.operationID = "getTVShowMetadataImages"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/images"
+											r.args = args
+											r.count = 1
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 's': // Prefix: "season/"
+
+									if l := len("season/"); len(elem) >= l && elem[0:l] == "season/" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									// Param: "seasonNumber"
+									// Match until "/"
+									idx := strings.IndexByte(elem, '/')
+									if idx < 0 {
+										idx = len(elem)
+									}
+									args[1] = elem[:idx]
+									elem = elem[idx:]
+
+									if len(elem) == 0 {
+										switch method {
+										case "GET":
+											r.name = GetSeasonMetadataOperation
+											r.summary = "Get season details from TMDb"
+											r.operationID = "getSeasonMetadata"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"
+											r.args = args
+											r.count = 2
+											return r, true
+										default:
+											return
+										}
+									}
+									switch elem[0] {
+									case '/': // Prefix: "/"
+
+										if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											break
+										}
+										switch elem[0] {
+										case 'e': // Prefix: "episode/"
+
+											if l := len("episode/"); len(elem) >= l && elem[0:l] == "episode/" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											// Param: "episodeNumber"
+											// Match until "/"
+											idx := strings.IndexByte(elem, '/')
+											if idx < 0 {
+												idx = len(elem)
+											}
+											args[2] = elem[:idx]
+											elem = elem[idx:]
+
+											if len(elem) == 0 {
+												switch method {
+												case "GET":
+													r.name = GetEpisodeMetadataOperation
+													r.summary = "Get episode details from TMDb"
+													r.operationID = "getEpisodeMetadata"
+													r.operationGroup = ""
+													r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"
+													r.args = args
+													r.count = 3
+													return r, true
+												default:
+													return
+												}
+											}
+											switch elem[0] {
+											case '/': // Prefix: "/images"
+
+												if l := len("/images"); len(elem) >= l && elem[0:l] == "/images" {
+													elem = elem[l:]
+												} else {
+													break
+												}
+
+												if len(elem) == 0 {
+													// Leaf node.
+													switch method {
+													case "GET":
+														r.name = GetEpisodeMetadataImagesOperation
+														r.summary = "Get episode images from metadata provider"
+														r.operationID = "getEpisodeMetadataImages"
+														r.operationGroup = ""
+														r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images"
+														r.args = args
+														r.count = 3
+														return r, true
+													default:
+														return
+													}
+												}
+
+											}
+
+										case 'i': // Prefix: "images"
+
+											if l := len("images"); len(elem) >= l && elem[0:l] == "images" {
+												elem = elem[l:]
+											} else {
+												break
+											}
+
+											if len(elem) == 0 {
+												// Leaf node.
+												switch method {
+												case "GET":
+													r.name = GetSeasonMetadataImagesOperation
+													r.summary = "Get season images from metadata provider"
+													r.operationID = "getSeasonMetadataImages"
+													r.operationGroup = ""
+													r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images"
+													r.args = args
+													r.count = 2
+													return r, true
+												default:
+													return
+												}
+											}
+
+										}
+
 									}
 
 								}

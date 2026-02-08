@@ -3104,6 +3104,7 @@ func (*Error) handleRadarrWebhookRes()       {}
 func (*Error) handleSonarrWebhookRes()       {}
 func (*Error) listAPIKeysRes()               {}
 func (*Error) listLibrariesRes()             {}
+func (*Error) listMetadataProvidersRes()     {}
 func (*Error) listMoviesRes()                {}
 func (*Error) listSessionsRes()              {}
 func (*Error) listTVShowsRes()               {}
@@ -3121,6 +3122,7 @@ func (*Error) registerRes()                  {}
 func (*Error) resendVerificationRes()        {}
 func (*Error) resetPasswordRes()             {}
 func (*Error) searchMoviesRes()              {}
+func (*Error) searchPersonMetadataRes()      {}
 func (*Error) searchTVShowsMetadataRes()     {}
 func (*Error) searchTVShowsRes()             {}
 func (*Error) setupTOTPRes()                 {}
@@ -3367,6 +3369,14 @@ type GetCurrentSessionUnauthorized Error
 
 func (*GetCurrentSessionUnauthorized) getCurrentSessionRes() {}
 
+type GetEpisodeMetadataImagesNotFound Error
+
+func (*GetEpisodeMetadataImagesNotFound) getEpisodeMetadataImagesRes() {}
+
+type GetEpisodeMetadataImagesUnauthorized Error
+
+func (*GetEpisodeMetadataImagesUnauthorized) getEpisodeMetadataImagesRes() {}
+
 type GetEpisodeMetadataNotFound Error
 
 func (*GetEpisodeMetadataNotFound) getEpisodeMetadataRes() {}
@@ -3419,6 +3429,14 @@ type GetMovieCrewUnauthorized Error
 
 func (*GetMovieCrewUnauthorized) getMovieCrewRes() {}
 
+type GetMovieExternalIDsNotFound Error
+
+func (*GetMovieExternalIDsNotFound) getMovieExternalIDsRes() {}
+
+type GetMovieExternalIDsUnauthorized Error
+
+func (*GetMovieExternalIDsUnauthorized) getMovieExternalIDsRes() {}
+
 type GetMovieFilesNotFound Error
 
 func (*GetMovieFilesNotFound) getMovieFilesRes() {}
@@ -3443,6 +3461,22 @@ type GetMovieGenresUnauthorized Error
 
 func (*GetMovieGenresUnauthorized) getMovieGenresRes() {}
 
+type GetMovieMetadataCreditsNotFound Error
+
+func (*GetMovieMetadataCreditsNotFound) getMovieMetadataCreditsRes() {}
+
+type GetMovieMetadataCreditsUnauthorized Error
+
+func (*GetMovieMetadataCreditsUnauthorized) getMovieMetadataCreditsRes() {}
+
+type GetMovieMetadataImagesNotFound Error
+
+func (*GetMovieMetadataImagesNotFound) getMovieMetadataImagesRes() {}
+
+type GetMovieMetadataImagesUnauthorized Error
+
+func (*GetMovieMetadataImagesUnauthorized) getMovieMetadataImagesRes() {}
+
 type GetMovieMetadataNotFound Error
 
 func (*GetMovieMetadataNotFound) getMovieMetadataRes() {}
@@ -3455,9 +3489,41 @@ type GetMovieNotFound Error
 
 func (*GetMovieNotFound) getMovieRes() {}
 
+type GetMovieRecommendationsMetadataNotFound Error
+
+func (*GetMovieRecommendationsMetadataNotFound) getMovieRecommendationsMetadataRes() {}
+
+type GetMovieRecommendationsMetadataUnauthorized Error
+
+func (*GetMovieRecommendationsMetadataUnauthorized) getMovieRecommendationsMetadataRes() {}
+
 type GetMovieUnauthorized Error
 
 func (*GetMovieUnauthorized) getMovieRes() {}
+
+type GetPersonMetadataCreditsNotFound Error
+
+func (*GetPersonMetadataCreditsNotFound) getPersonMetadataCreditsRes() {}
+
+type GetPersonMetadataCreditsUnauthorized Error
+
+func (*GetPersonMetadataCreditsUnauthorized) getPersonMetadataCreditsRes() {}
+
+type GetPersonMetadataImagesNotFound Error
+
+func (*GetPersonMetadataImagesNotFound) getPersonMetadataImagesRes() {}
+
+type GetPersonMetadataImagesUnauthorized Error
+
+func (*GetPersonMetadataImagesUnauthorized) getPersonMetadataImagesRes() {}
+
+type GetPersonMetadataNotFound Error
+
+func (*GetPersonMetadataNotFound) getPersonMetadataRes() {}
+
+type GetPersonMetadataUnauthorized Error
+
+func (*GetPersonMetadataUnauthorized) getPersonMetadataRes() {}
 
 type GetPlaybackSessionNotFound Error
 
@@ -3704,6 +3770,14 @@ type GetRoleUnauthorized Error
 
 func (*GetRoleUnauthorized) getRoleRes() {}
 
+type GetSeasonMetadataImagesNotFound Error
+
+func (*GetSeasonMetadataImagesNotFound) getSeasonMetadataImagesRes() {}
+
+type GetSeasonMetadataImagesUnauthorized Error
+
+func (*GetSeasonMetadataImagesUnauthorized) getSeasonMetadataImagesRes() {}
+
 type GetSeasonMetadataNotFound Error
 
 func (*GetSeasonMetadataNotFound) getSeasonMetadataRes() {}
@@ -3723,6 +3797,14 @@ func (*GetServerSettingNotFound) getServerSettingRes() {}
 type GetServerSettingUnauthorized Error
 
 func (*GetServerSettingUnauthorized) getServerSettingRes() {}
+
+type GetSimilarMoviesMetadataNotFound Error
+
+func (*GetSimilarMoviesMetadataNotFound) getSimilarMoviesMetadataRes() {}
+
+type GetSimilarMoviesMetadataUnauthorized Error
+
+func (*GetSimilarMoviesMetadataUnauthorized) getSimilarMoviesMetadataRes() {}
 
 type GetSimilarMoviesNotFound Error
 
@@ -3804,6 +3886,14 @@ type GetTVShowCastUnauthorized Error
 
 func (*GetTVShowCastUnauthorized) getTVShowCastRes() {}
 
+type GetTVShowContentRatingsNotFound Error
+
+func (*GetTVShowContentRatingsNotFound) getTVShowContentRatingsRes() {}
+
+type GetTVShowContentRatingsUnauthorized Error
+
+func (*GetTVShowContentRatingsUnauthorized) getTVShowContentRatingsRes() {}
+
 type GetTVShowCrewNotFound Error
 
 func (*GetTVShowCrewNotFound) getTVShowCrewRes() {}
@@ -3828,6 +3918,14 @@ type GetTVShowEpisodesUnauthorized Error
 
 func (*GetTVShowEpisodesUnauthorized) getTVShowEpisodesRes() {}
 
+type GetTVShowExternalIDsNotFound Error
+
+func (*GetTVShowExternalIDsNotFound) getTVShowExternalIDsRes() {}
+
+type GetTVShowExternalIDsUnauthorized Error
+
+func (*GetTVShowExternalIDsUnauthorized) getTVShowExternalIDsRes() {}
+
 type GetTVShowGenresNotFound Error
 
 func (*GetTVShowGenresNotFound) getTVShowGenresRes() {}
@@ -3839,6 +3937,22 @@ func (*GetTVShowGenresOKApplicationJSON) getTVShowGenresRes() {}
 type GetTVShowGenresUnauthorized Error
 
 func (*GetTVShowGenresUnauthorized) getTVShowGenresRes() {}
+
+type GetTVShowMetadataCreditsNotFound Error
+
+func (*GetTVShowMetadataCreditsNotFound) getTVShowMetadataCreditsRes() {}
+
+type GetTVShowMetadataCreditsUnauthorized Error
+
+func (*GetTVShowMetadataCreditsUnauthorized) getTVShowMetadataCreditsRes() {}
+
+type GetTVShowMetadataImagesNotFound Error
+
+func (*GetTVShowMetadataImagesNotFound) getTVShowMetadataImagesRes() {}
+
+type GetTVShowMetadataImagesUnauthorized Error
+
+func (*GetTVShowMetadataImagesUnauthorized) getTVShowMetadataImagesRes() {}
 
 type GetTVShowMetadataNotFound Error
 
@@ -5585,6 +5699,91 @@ func (s *MetadataCollectionPart) SetPopularity(val OptFloat32) {
 	s.Popularity = val
 }
 
+// Ref: #/components/schemas/MetadataContentRating
+type MetadataContentRating struct {
+	// ISO 3166-1 alpha-2 country code.
+	CountryCode OptString `json:"country_code"`
+	// Content rating.
+	Rating      OptString `json:"rating"`
+	Descriptors []string  `json:"descriptors"`
+}
+
+// GetCountryCode returns the value of CountryCode.
+func (s *MetadataContentRating) GetCountryCode() OptString {
+	return s.CountryCode
+}
+
+// GetRating returns the value of Rating.
+func (s *MetadataContentRating) GetRating() OptString {
+	return s.Rating
+}
+
+// GetDescriptors returns the value of Descriptors.
+func (s *MetadataContentRating) GetDescriptors() []string {
+	return s.Descriptors
+}
+
+// SetCountryCode sets the value of CountryCode.
+func (s *MetadataContentRating) SetCountryCode(val OptString) {
+	s.CountryCode = val
+}
+
+// SetRating sets the value of Rating.
+func (s *MetadataContentRating) SetRating(val OptString) {
+	s.Rating = val
+}
+
+// SetDescriptors sets the value of Descriptors.
+func (s *MetadataContentRating) SetDescriptors(val []string) {
+	s.Descriptors = val
+}
+
+// Ref: #/components/schemas/MetadataContentRatings
+type MetadataContentRatings struct {
+	Results []MetadataContentRating `json:"results"`
+}
+
+// GetResults returns the value of Results.
+func (s *MetadataContentRatings) GetResults() []MetadataContentRating {
+	return s.Results
+}
+
+// SetResults sets the value of Results.
+func (s *MetadataContentRatings) SetResults(val []MetadataContentRating) {
+	s.Results = val
+}
+
+func (*MetadataContentRatings) getTVShowContentRatingsRes() {}
+
+// Ref: #/components/schemas/MetadataCredits
+type MetadataCredits struct {
+	Cast []MetadataCastMember `json:"cast"`
+	Crew []MetadataCrewMember `json:"crew"`
+}
+
+// GetCast returns the value of Cast.
+func (s *MetadataCredits) GetCast() []MetadataCastMember {
+	return s.Cast
+}
+
+// GetCrew returns the value of Crew.
+func (s *MetadataCredits) GetCrew() []MetadataCrewMember {
+	return s.Crew
+}
+
+// SetCast sets the value of Cast.
+func (s *MetadataCredits) SetCast(val []MetadataCastMember) {
+	s.Cast = val
+}
+
+// SetCrew sets the value of Crew.
+func (s *MetadataCredits) SetCrew(val []MetadataCrewMember) {
+	s.Crew = val
+}
+
+func (*MetadataCredits) getMovieMetadataCreditsRes()  {}
+func (*MetadataCredits) getTVShowMetadataCreditsRes() {}
+
 // Ref: #/components/schemas/MetadataCrewMember
 type MetadataCrewMember struct {
 	// TMDb person ID.
@@ -5906,6 +6105,112 @@ func (s *MetadataEpisodeSummary) SetVoteCount(val OptInt) {
 	s.VoteCount = val
 }
 
+// Ref: #/components/schemas/MetadataExternalIDs
+type MetadataExternalIDs struct {
+	ImdbID      OptNilString `json:"imdb_id"`
+	TvdbID      OptNilInt    `json:"tvdb_id"`
+	TmdbID      OptNilInt    `json:"tmdb_id"`
+	WikidataID  OptNilString `json:"wikidata_id"`
+	FacebookID  OptNilString `json:"facebook_id"`
+	InstagramID OptNilString `json:"instagram_id"`
+	TwitterID   OptNilString `json:"twitter_id"`
+	TiktokID    OptNilString `json:"tiktok_id"`
+	YoutubeID   OptNilString `json:"youtube_id"`
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *MetadataExternalIDs) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *MetadataExternalIDs) GetTvdbID() OptNilInt {
+	return s.TvdbID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataExternalIDs) GetTmdbID() OptNilInt {
+	return s.TmdbID
+}
+
+// GetWikidataID returns the value of WikidataID.
+func (s *MetadataExternalIDs) GetWikidataID() OptNilString {
+	return s.WikidataID
+}
+
+// GetFacebookID returns the value of FacebookID.
+func (s *MetadataExternalIDs) GetFacebookID() OptNilString {
+	return s.FacebookID
+}
+
+// GetInstagramID returns the value of InstagramID.
+func (s *MetadataExternalIDs) GetInstagramID() OptNilString {
+	return s.InstagramID
+}
+
+// GetTwitterID returns the value of TwitterID.
+func (s *MetadataExternalIDs) GetTwitterID() OptNilString {
+	return s.TwitterID
+}
+
+// GetTiktokID returns the value of TiktokID.
+func (s *MetadataExternalIDs) GetTiktokID() OptNilString {
+	return s.TiktokID
+}
+
+// GetYoutubeID returns the value of YoutubeID.
+func (s *MetadataExternalIDs) GetYoutubeID() OptNilString {
+	return s.YoutubeID
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *MetadataExternalIDs) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *MetadataExternalIDs) SetTvdbID(val OptNilInt) {
+	s.TvdbID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataExternalIDs) SetTmdbID(val OptNilInt) {
+	s.TmdbID = val
+}
+
+// SetWikidataID sets the value of WikidataID.
+func (s *MetadataExternalIDs) SetWikidataID(val OptNilString) {
+	s.WikidataID = val
+}
+
+// SetFacebookID sets the value of FacebookID.
+func (s *MetadataExternalIDs) SetFacebookID(val OptNilString) {
+	s.FacebookID = val
+}
+
+// SetInstagramID sets the value of InstagramID.
+func (s *MetadataExternalIDs) SetInstagramID(val OptNilString) {
+	s.InstagramID = val
+}
+
+// SetTwitterID sets the value of TwitterID.
+func (s *MetadataExternalIDs) SetTwitterID(val OptNilString) {
+	s.TwitterID = val
+}
+
+// SetTiktokID sets the value of TiktokID.
+func (s *MetadataExternalIDs) SetTiktokID(val OptNilString) {
+	s.TiktokID = val
+}
+
+// SetYoutubeID sets the value of YoutubeID.
+func (s *MetadataExternalIDs) SetYoutubeID(val OptNilString) {
+	s.YoutubeID = val
+}
+
+func (*MetadataExternalIDs) getMovieExternalIDsRes()  {}
+func (*MetadataExternalIDs) getTVShowExternalIDsRes() {}
+
 // Ref: #/components/schemas/MetadataGenre
 type MetadataGenre struct {
 	// TMDb genre ID.
@@ -5932,6 +6237,398 @@ func (s *MetadataGenre) SetID(val OptInt) {
 // SetName sets the value of Name.
 func (s *MetadataGenre) SetName(val OptString) {
 	s.Name = val
+}
+
+// Ref: #/components/schemas/MetadataImage
+type MetadataImage struct {
+	// Image path for use with the image proxy.
+	FilePath    OptString  `json:"file_path"`
+	AspectRatio OptFloat64 `json:"aspect_ratio"`
+	Width       OptInt     `json:"width"`
+	Height      OptInt     `json:"height"`
+	VoteAverage OptFloat32 `json:"vote_average"`
+	VoteCount   OptInt     `json:"vote_count"`
+	// ISO 639-1 language code.
+	Language OptNilString `json:"language"`
+}
+
+// GetFilePath returns the value of FilePath.
+func (s *MetadataImage) GetFilePath() OptString {
+	return s.FilePath
+}
+
+// GetAspectRatio returns the value of AspectRatio.
+func (s *MetadataImage) GetAspectRatio() OptFloat64 {
+	return s.AspectRatio
+}
+
+// GetWidth returns the value of Width.
+func (s *MetadataImage) GetWidth() OptInt {
+	return s.Width
+}
+
+// GetHeight returns the value of Height.
+func (s *MetadataImage) GetHeight() OptInt {
+	return s.Height
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataImage) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetVoteCount returns the value of VoteCount.
+func (s *MetadataImage) GetVoteCount() OptInt {
+	return s.VoteCount
+}
+
+// GetLanguage returns the value of Language.
+func (s *MetadataImage) GetLanguage() OptNilString {
+	return s.Language
+}
+
+// SetFilePath sets the value of FilePath.
+func (s *MetadataImage) SetFilePath(val OptString) {
+	s.FilePath = val
+}
+
+// SetAspectRatio sets the value of AspectRatio.
+func (s *MetadataImage) SetAspectRatio(val OptFloat64) {
+	s.AspectRatio = val
+}
+
+// SetWidth sets the value of Width.
+func (s *MetadataImage) SetWidth(val OptInt) {
+	s.Width = val
+}
+
+// SetHeight sets the value of Height.
+func (s *MetadataImage) SetHeight(val OptInt) {
+	s.Height = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataImage) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetVoteCount sets the value of VoteCount.
+func (s *MetadataImage) SetVoteCount(val OptInt) {
+	s.VoteCount = val
+}
+
+// SetLanguage sets the value of Language.
+func (s *MetadataImage) SetLanguage(val OptNilString) {
+	s.Language = val
+}
+
+// Ref: #/components/schemas/MetadataImages
+type MetadataImages struct {
+	Posters   []MetadataImage `json:"posters"`
+	Backdrops []MetadataImage `json:"backdrops"`
+	Logos     []MetadataImage `json:"logos"`
+	Stills    []MetadataImage `json:"stills"`
+	Profiles  []MetadataImage `json:"profiles"`
+}
+
+// GetPosters returns the value of Posters.
+func (s *MetadataImages) GetPosters() []MetadataImage {
+	return s.Posters
+}
+
+// GetBackdrops returns the value of Backdrops.
+func (s *MetadataImages) GetBackdrops() []MetadataImage {
+	return s.Backdrops
+}
+
+// GetLogos returns the value of Logos.
+func (s *MetadataImages) GetLogos() []MetadataImage {
+	return s.Logos
+}
+
+// GetStills returns the value of Stills.
+func (s *MetadataImages) GetStills() []MetadataImage {
+	return s.Stills
+}
+
+// GetProfiles returns the value of Profiles.
+func (s *MetadataImages) GetProfiles() []MetadataImage {
+	return s.Profiles
+}
+
+// SetPosters sets the value of Posters.
+func (s *MetadataImages) SetPosters(val []MetadataImage) {
+	s.Posters = val
+}
+
+// SetBackdrops sets the value of Backdrops.
+func (s *MetadataImages) SetBackdrops(val []MetadataImage) {
+	s.Backdrops = val
+}
+
+// SetLogos sets the value of Logos.
+func (s *MetadataImages) SetLogos(val []MetadataImage) {
+	s.Logos = val
+}
+
+// SetStills sets the value of Stills.
+func (s *MetadataImages) SetStills(val []MetadataImage) {
+	s.Stills = val
+}
+
+// SetProfiles sets the value of Profiles.
+func (s *MetadataImages) SetProfiles(val []MetadataImage) {
+	s.Profiles = val
+}
+
+func (*MetadataImages) getEpisodeMetadataImagesRes() {}
+func (*MetadataImages) getMovieMetadataImagesRes()   {}
+func (*MetadataImages) getPersonMetadataImagesRes()  {}
+func (*MetadataImages) getSeasonMetadataImagesRes()  {}
+func (*MetadataImages) getTVShowMetadataImagesRes()  {}
+
+// Ref: #/components/schemas/MetadataMediaCredit
+type MetadataMediaCredit struct {
+	MediaType    OptMetadataMediaCreditMediaType `json:"media_type"`
+	TmdbID       OptInt                          `json:"tmdb_id"`
+	Title        OptString                       `json:"title"`
+	Character    OptNilString                    `json:"character"`
+	Job          OptNilString                    `json:"job"`
+	Department   OptNilString                    `json:"department"`
+	ReleaseDate  OptNilDate                      `json:"release_date"`
+	PosterPath   OptNilString                    `json:"poster_path"`
+	VoteAverage  OptFloat32                      `json:"vote_average"`
+	EpisodeCount OptNilInt                       `json:"episode_count"`
+}
+
+// GetMediaType returns the value of MediaType.
+func (s *MetadataMediaCredit) GetMediaType() OptMetadataMediaCreditMediaType {
+	return s.MediaType
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataMediaCredit) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *MetadataMediaCredit) GetTitle() OptString {
+	return s.Title
+}
+
+// GetCharacter returns the value of Character.
+func (s *MetadataMediaCredit) GetCharacter() OptNilString {
+	return s.Character
+}
+
+// GetJob returns the value of Job.
+func (s *MetadataMediaCredit) GetJob() OptNilString {
+	return s.Job
+}
+
+// GetDepartment returns the value of Department.
+func (s *MetadataMediaCredit) GetDepartment() OptNilString {
+	return s.Department
+}
+
+// GetReleaseDate returns the value of ReleaseDate.
+func (s *MetadataMediaCredit) GetReleaseDate() OptNilDate {
+	return s.ReleaseDate
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataMediaCredit) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *MetadataMediaCredit) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *MetadataMediaCredit) GetEpisodeCount() OptNilInt {
+	return s.EpisodeCount
+}
+
+// SetMediaType sets the value of MediaType.
+func (s *MetadataMediaCredit) SetMediaType(val OptMetadataMediaCreditMediaType) {
+	s.MediaType = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataMediaCredit) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MetadataMediaCredit) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetCharacter sets the value of Character.
+func (s *MetadataMediaCredit) SetCharacter(val OptNilString) {
+	s.Character = val
+}
+
+// SetJob sets the value of Job.
+func (s *MetadataMediaCredit) SetJob(val OptNilString) {
+	s.Job = val
+}
+
+// SetDepartment sets the value of Department.
+func (s *MetadataMediaCredit) SetDepartment(val OptNilString) {
+	s.Department = val
+}
+
+// SetReleaseDate sets the value of ReleaseDate.
+func (s *MetadataMediaCredit) SetReleaseDate(val OptNilDate) {
+	s.ReleaseDate = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataMediaCredit) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *MetadataMediaCredit) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *MetadataMediaCredit) SetEpisodeCount(val OptNilInt) {
+	s.EpisodeCount = val
+}
+
+type MetadataMediaCreditMediaType string
+
+const (
+	MetadataMediaCreditMediaTypeMovie MetadataMediaCreditMediaType = "movie"
+	MetadataMediaCreditMediaTypeTv    MetadataMediaCreditMediaType = "tv"
+)
+
+// AllValues returns all MetadataMediaCreditMediaType values.
+func (MetadataMediaCreditMediaType) AllValues() []MetadataMediaCreditMediaType {
+	return []MetadataMediaCreditMediaType{
+		MetadataMediaCreditMediaTypeMovie,
+		MetadataMediaCreditMediaTypeTv,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataMediaCreditMediaType) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataMediaCreditMediaTypeMovie:
+		return []byte(s), nil
+	case MetadataMediaCreditMediaTypeTv:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataMediaCreditMediaType) UnmarshalText(data []byte) error {
+	switch MetadataMediaCreditMediaType(data) {
+	case MetadataMediaCreditMediaTypeMovie:
+		*s = MetadataMediaCreditMediaTypeMovie
+		return nil
+	case MetadataMediaCreditMediaTypeTv:
+		*s = MetadataMediaCreditMediaTypeTv
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/MetadataMediaReference
+type MetadataMediaReference struct {
+	MediaType  OptMetadataMediaReferenceMediaType `json:"media_type"`
+	TmdbID     OptInt                             `json:"tmdb_id"`
+	Title      OptString                          `json:"title"`
+	PosterPath OptNilString                       `json:"poster_path"`
+}
+
+// GetMediaType returns the value of MediaType.
+func (s *MetadataMediaReference) GetMediaType() OptMetadataMediaReferenceMediaType {
+	return s.MediaType
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataMediaReference) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *MetadataMediaReference) GetTitle() OptString {
+	return s.Title
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *MetadataMediaReference) GetPosterPath() OptNilString {
+	return s.PosterPath
+}
+
+// SetMediaType sets the value of MediaType.
+func (s *MetadataMediaReference) SetMediaType(val OptMetadataMediaReferenceMediaType) {
+	s.MediaType = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataMediaReference) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MetadataMediaReference) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *MetadataMediaReference) SetPosterPath(val OptNilString) {
+	s.PosterPath = val
+}
+
+type MetadataMediaReferenceMediaType string
+
+const (
+	MetadataMediaReferenceMediaTypeMovie MetadataMediaReferenceMediaType = "movie"
+	MetadataMediaReferenceMediaTypeTv    MetadataMediaReferenceMediaType = "tv"
+)
+
+// AllValues returns all MetadataMediaReferenceMediaType values.
+func (MetadataMediaReferenceMediaType) AllValues() []MetadataMediaReferenceMediaType {
+	return []MetadataMediaReferenceMediaType{
+		MetadataMediaReferenceMediaTypeMovie,
+		MetadataMediaReferenceMediaTypeTv,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MetadataMediaReferenceMediaType) MarshalText() ([]byte, error) {
+	switch s {
+	case MetadataMediaReferenceMediaTypeMovie:
+		return []byte(s), nil
+	case MetadataMediaReferenceMediaTypeTv:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MetadataMediaReferenceMediaType) UnmarshalText(data []byte) error {
+	switch MetadataMediaReferenceMediaType(data) {
+	case MetadataMediaReferenceMediaTypeMovie:
+		*s = MetadataMediaReferenceMediaTypeMovie
+		return nil
+	case MetadataMediaReferenceMediaTypeTv:
+		*s = MetadataMediaReferenceMediaTypeTv
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/MetadataMovie
@@ -6209,6 +6906,373 @@ func (s *MetadataNetwork) SetLogoPath(val OptNilString) {
 	s.LogoPath = val
 }
 
+// Ref: #/components/schemas/MetadataPerson
+type MetadataPerson struct {
+	TmdbID      OptInt       `json:"tmdb_id"`
+	ImdbID      OptNilString `json:"imdb_id"`
+	Name        OptString    `json:"name"`
+	AlsoKnownAs []string     `json:"also_known_as"`
+	Biography   OptNilString `json:"biography"`
+	Birthday    OptNilDate   `json:"birthday"`
+	Deathday    OptNilDate   `json:"deathday"`
+	// 0=not specified, 1=female, 2=male, 3=non-binary.
+	Gender             OptInt       `json:"gender"`
+	PlaceOfBirth       OptNilString `json:"place_of_birth"`
+	ProfilePath        OptNilString `json:"profile_path"`
+	Homepage           OptNilString `json:"homepage"`
+	Popularity         OptFloat32   `json:"popularity"`
+	KnownForDepartment OptString    `json:"known_for_department"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataPerson) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *MetadataPerson) GetImdbID() OptNilString {
+	return s.ImdbID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataPerson) GetName() OptString {
+	return s.Name
+}
+
+// GetAlsoKnownAs returns the value of AlsoKnownAs.
+func (s *MetadataPerson) GetAlsoKnownAs() []string {
+	return s.AlsoKnownAs
+}
+
+// GetBiography returns the value of Biography.
+func (s *MetadataPerson) GetBiography() OptNilString {
+	return s.Biography
+}
+
+// GetBirthday returns the value of Birthday.
+func (s *MetadataPerson) GetBirthday() OptNilDate {
+	return s.Birthday
+}
+
+// GetDeathday returns the value of Deathday.
+func (s *MetadataPerson) GetDeathday() OptNilDate {
+	return s.Deathday
+}
+
+// GetGender returns the value of Gender.
+func (s *MetadataPerson) GetGender() OptInt {
+	return s.Gender
+}
+
+// GetPlaceOfBirth returns the value of PlaceOfBirth.
+func (s *MetadataPerson) GetPlaceOfBirth() OptNilString {
+	return s.PlaceOfBirth
+}
+
+// GetProfilePath returns the value of ProfilePath.
+func (s *MetadataPerson) GetProfilePath() OptNilString {
+	return s.ProfilePath
+}
+
+// GetHomepage returns the value of Homepage.
+func (s *MetadataPerson) GetHomepage() OptNilString {
+	return s.Homepage
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MetadataPerson) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetKnownForDepartment returns the value of KnownForDepartment.
+func (s *MetadataPerson) GetKnownForDepartment() OptString {
+	return s.KnownForDepartment
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataPerson) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *MetadataPerson) SetImdbID(val OptNilString) {
+	s.ImdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataPerson) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetAlsoKnownAs sets the value of AlsoKnownAs.
+func (s *MetadataPerson) SetAlsoKnownAs(val []string) {
+	s.AlsoKnownAs = val
+}
+
+// SetBiography sets the value of Biography.
+func (s *MetadataPerson) SetBiography(val OptNilString) {
+	s.Biography = val
+}
+
+// SetBirthday sets the value of Birthday.
+func (s *MetadataPerson) SetBirthday(val OptNilDate) {
+	s.Birthday = val
+}
+
+// SetDeathday sets the value of Deathday.
+func (s *MetadataPerson) SetDeathday(val OptNilDate) {
+	s.Deathday = val
+}
+
+// SetGender sets the value of Gender.
+func (s *MetadataPerson) SetGender(val OptInt) {
+	s.Gender = val
+}
+
+// SetPlaceOfBirth sets the value of PlaceOfBirth.
+func (s *MetadataPerson) SetPlaceOfBirth(val OptNilString) {
+	s.PlaceOfBirth = val
+}
+
+// SetProfilePath sets the value of ProfilePath.
+func (s *MetadataPerson) SetProfilePath(val OptNilString) {
+	s.ProfilePath = val
+}
+
+// SetHomepage sets the value of Homepage.
+func (s *MetadataPerson) SetHomepage(val OptNilString) {
+	s.Homepage = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MetadataPerson) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetKnownForDepartment sets the value of KnownForDepartment.
+func (s *MetadataPerson) SetKnownForDepartment(val OptString) {
+	s.KnownForDepartment = val
+}
+
+func (*MetadataPerson) getPersonMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataPersonCredits
+type MetadataPersonCredits struct {
+	TmdbID OptInt                `json:"tmdb_id"`
+	Cast   []MetadataMediaCredit `json:"cast"`
+	Crew   []MetadataMediaCredit `json:"crew"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataPersonCredits) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetCast returns the value of Cast.
+func (s *MetadataPersonCredits) GetCast() []MetadataMediaCredit {
+	return s.Cast
+}
+
+// GetCrew returns the value of Crew.
+func (s *MetadataPersonCredits) GetCrew() []MetadataMediaCredit {
+	return s.Crew
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataPersonCredits) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetCast sets the value of Cast.
+func (s *MetadataPersonCredits) SetCast(val []MetadataMediaCredit) {
+	s.Cast = val
+}
+
+// SetCrew sets the value of Crew.
+func (s *MetadataPersonCredits) SetCrew(val []MetadataMediaCredit) {
+	s.Crew = val
+}
+
+func (*MetadataPersonCredits) getPersonMetadataCreditsRes() {}
+
+// Ref: #/components/schemas/MetadataPersonSearchResult
+type MetadataPersonSearchResult struct {
+	TmdbID      OptInt       `json:"tmdb_id"`
+	Name        OptString    `json:"name"`
+	ProfilePath OptNilString `json:"profile_path"`
+	Popularity  OptFloat32   `json:"popularity"`
+	// Primary known-for department (Acting, Directing, etc.).
+	KnownForDepartment OptString                `json:"known_for_department"`
+	KnownFor           []MetadataMediaReference `json:"known_for"`
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *MetadataPersonSearchResult) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataPersonSearchResult) GetName() OptString {
+	return s.Name
+}
+
+// GetProfilePath returns the value of ProfilePath.
+func (s *MetadataPersonSearchResult) GetProfilePath() OptNilString {
+	return s.ProfilePath
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *MetadataPersonSearchResult) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetKnownForDepartment returns the value of KnownForDepartment.
+func (s *MetadataPersonSearchResult) GetKnownForDepartment() OptString {
+	return s.KnownForDepartment
+}
+
+// GetKnownFor returns the value of KnownFor.
+func (s *MetadataPersonSearchResult) GetKnownFor() []MetadataMediaReference {
+	return s.KnownFor
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *MetadataPersonSearchResult) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataPersonSearchResult) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetProfilePath sets the value of ProfilePath.
+func (s *MetadataPersonSearchResult) SetProfilePath(val OptNilString) {
+	s.ProfilePath = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *MetadataPersonSearchResult) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetKnownForDepartment sets the value of KnownForDepartment.
+func (s *MetadataPersonSearchResult) SetKnownForDepartment(val OptString) {
+	s.KnownForDepartment = val
+}
+
+// SetKnownFor sets the value of KnownFor.
+func (s *MetadataPersonSearchResult) SetKnownFor(val []MetadataMediaReference) {
+	s.KnownFor = val
+}
+
+// Ref: #/components/schemas/MetadataPersonSearchResults
+type MetadataPersonSearchResults struct {
+	Page         OptInt                       `json:"page"`
+	TotalResults OptInt                       `json:"total_results"`
+	TotalPages   OptInt                       `json:"total_pages"`
+	Results      []MetadataPersonSearchResult `json:"results"`
+}
+
+// GetPage returns the value of Page.
+func (s *MetadataPersonSearchResults) GetPage() OptInt {
+	return s.Page
+}
+
+// GetTotalResults returns the value of TotalResults.
+func (s *MetadataPersonSearchResults) GetTotalResults() OptInt {
+	return s.TotalResults
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *MetadataPersonSearchResults) GetTotalPages() OptInt {
+	return s.TotalPages
+}
+
+// GetResults returns the value of Results.
+func (s *MetadataPersonSearchResults) GetResults() []MetadataPersonSearchResult {
+	return s.Results
+}
+
+// SetPage sets the value of Page.
+func (s *MetadataPersonSearchResults) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetTotalResults sets the value of TotalResults.
+func (s *MetadataPersonSearchResults) SetTotalResults(val OptInt) {
+	s.TotalResults = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *MetadataPersonSearchResults) SetTotalPages(val OptInt) {
+	s.TotalPages = val
+}
+
+// SetResults sets the value of Results.
+func (s *MetadataPersonSearchResults) SetResults(val []MetadataPersonSearchResult) {
+	s.Results = val
+}
+
+func (*MetadataPersonSearchResults) searchPersonMetadataRes() {}
+
+// Ref: #/components/schemas/MetadataProvider
+type MetadataProvider struct {
+	// Provider identifier.
+	ID OptString `json:"id"`
+	// Provider display name.
+	Name OptString `json:"name"`
+	// List of capabilities (movie, tvshow, person, image, collection).
+	Capabilities []string `json:"capabilities"`
+}
+
+// GetID returns the value of ID.
+func (s *MetadataProvider) GetID() OptString {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MetadataProvider) GetName() OptString {
+	return s.Name
+}
+
+// GetCapabilities returns the value of Capabilities.
+func (s *MetadataProvider) GetCapabilities() []string {
+	return s.Capabilities
+}
+
+// SetID sets the value of ID.
+func (s *MetadataProvider) SetID(val OptString) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MetadataProvider) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCapabilities sets the value of Capabilities.
+func (s *MetadataProvider) SetCapabilities(val []string) {
+	s.Capabilities = val
+}
+
+// Ref: #/components/schemas/MetadataProviderList
+type MetadataProviderList struct {
+	Providers []MetadataProvider `json:"providers"`
+}
+
+// GetProviders returns the value of Providers.
+func (s *MetadataProviderList) GetProviders() []MetadataProvider {
+	return s.Providers
+}
+
+// SetProviders sets the value of Providers.
+func (s *MetadataProviderList) SetProviders(val []MetadataProvider) {
+	s.Providers = val
+}
+
+func (*MetadataProviderList) listMetadataProvidersRes() {}
+
 // Ref: #/components/schemas/MetadataSearchResult
 type MetadataSearchResult struct {
 	// TMDb movie ID.
@@ -6384,7 +7448,9 @@ func (s *MetadataSearchResults) SetResults(val []MetadataSearchResult) {
 	s.Results = val
 }
 
-func (*MetadataSearchResults) searchMoviesMetadataRes() {}
+func (*MetadataSearchResults) getMovieRecommendationsMetadataRes() {}
+func (*MetadataSearchResults) getSimilarMoviesMetadataRes()        {}
+func (*MetadataSearchResults) searchMoviesMetadataRes()            {}
 
 // Ref: #/components/schemas/MetadataSeason
 type MetadataSeason struct {
@@ -8946,6 +10012,52 @@ func (o OptFloat32) Or(d float32) float32 {
 	return d
 }
 
+// NewOptFloat64 returns new OptFloat64 with value set to v.
+func NewOptFloat64(v float64) OptFloat64 {
+	return OptFloat64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptFloat64 is optional float64.
+type OptFloat64 struct {
+	Value float64
+	Set   bool
+}
+
+// IsSet returns true if OptFloat64 was set.
+func (o OptFloat64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptFloat64) Reset() {
+	var v float64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptFloat64) SetTo(v float64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptFloat64) Get() (v float64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptFloat64) Or(d float64) float64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptHealthCheckDetails returns new OptHealthCheckDetails with value set to v.
 func NewOptHealthCheckDetails(v HealthCheckDetails) OptHealthCheckDetails {
 	return OptHealthCheckDetails{
@@ -9354,6 +10466,98 @@ func (o OptMetadataCollection) Get() (v MetadataCollection, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptMetadataCollection) Or(d MetadataCollection) MetadataCollection {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMetadataMediaCreditMediaType returns new OptMetadataMediaCreditMediaType with value set to v.
+func NewOptMetadataMediaCreditMediaType(v MetadataMediaCreditMediaType) OptMetadataMediaCreditMediaType {
+	return OptMetadataMediaCreditMediaType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMetadataMediaCreditMediaType is optional MetadataMediaCreditMediaType.
+type OptMetadataMediaCreditMediaType struct {
+	Value MetadataMediaCreditMediaType
+	Set   bool
+}
+
+// IsSet returns true if OptMetadataMediaCreditMediaType was set.
+func (o OptMetadataMediaCreditMediaType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMetadataMediaCreditMediaType) Reset() {
+	var v MetadataMediaCreditMediaType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMetadataMediaCreditMediaType) SetTo(v MetadataMediaCreditMediaType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMetadataMediaCreditMediaType) Get() (v MetadataMediaCreditMediaType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMetadataMediaCreditMediaType) Or(d MetadataMediaCreditMediaType) MetadataMediaCreditMediaType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptMetadataMediaReferenceMediaType returns new OptMetadataMediaReferenceMediaType with value set to v.
+func NewOptMetadataMediaReferenceMediaType(v MetadataMediaReferenceMediaType) OptMetadataMediaReferenceMediaType {
+	return OptMetadataMediaReferenceMediaType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptMetadataMediaReferenceMediaType is optional MetadataMediaReferenceMediaType.
+type OptMetadataMediaReferenceMediaType struct {
+	Value MetadataMediaReferenceMediaType
+	Set   bool
+}
+
+// IsSet returns true if OptMetadataMediaReferenceMediaType was set.
+func (o OptMetadataMediaReferenceMediaType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptMetadataMediaReferenceMediaType) Reset() {
+	var v MetadataMediaReferenceMediaType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptMetadataMediaReferenceMediaType) SetTo(v MetadataMediaReferenceMediaType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptMetadataMediaReferenceMediaType) Get() (v MetadataMediaReferenceMediaType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptMetadataMediaReferenceMediaType) Or(d MetadataMediaReferenceMediaType) MetadataMediaReferenceMediaType {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -17526,8 +18730,7 @@ func (s *TVSeriesCreditCreditType) UnmarshalText(data []byte) error {
 // Ref: #/components/schemas/TVShowListResponse
 type TVShowListResponse struct {
 	Items []TVSeries `json:"items"`
-	// Total number of TV shows matching the filters.
-	Total int64 `json:"total"`
+	Total int64      `json:"total"`
 }
 
 // GetItems returns the value of Items.

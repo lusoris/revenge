@@ -2027,6 +2027,598 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/metadata/movie/{tmdbId}/credits:
+    get:
+      summary: Get movie credits from metadata provider
+      description: |
+        Fetch cast and crew credits for a movie from TMDb.
+      operationId: getMovieMetadataCredits
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 550
+      responses:
+        '200':
+          description: Movie credits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataCredits'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/movie/{tmdbId}/images:
+    get:
+      summary: Get movie images from metadata provider
+      description: |
+        Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
+      operationId: getMovieMetadataImages
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 550
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO 639-1 language filter (e.g. en, de)
+          example: en
+      responses:
+        '200':
+          description: Movie images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataImages'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/movie/{tmdbId}/similar:
+    get:
+      summary: Get similar movies from metadata provider
+      description: |
+        Fetch a list of similar movies from TMDb based on genres and keywords.
+      operationId: getSimilarMoviesMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 550
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+          description: Maximum number of results
+      responses:
+        '200':
+          description: Similar movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataSearchResults'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/movie/{tmdbId}/recommendations:
+    get:
+      summary: Get movie recommendations from metadata provider
+      description: |
+        Fetch recommended movies from TMDb based on user ratings and viewing patterns.
+      operationId: getMovieRecommendationsMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 550
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+          description: Maximum number of results
+      responses:
+        '200':
+          description: Recommended movies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataSearchResults'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/movie/{tmdbId}/external-ids:
+    get:
+      summary: Get movie external IDs
+      description: |
+        Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
+      operationId: getMovieExternalIDs
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb movie ID
+          example: 550
+      responses:
+        '200':
+          description: External IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataExternalIDs'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/credits:
+    get:
+      summary: Get TV show credits from metadata provider
+      description: |
+        Fetch aggregate cast and crew credits for a TV show from TMDb.
+      operationId: getTVShowMetadataCredits
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+      responses:
+        '200':
+          description: TV show credits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataCredits'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/images:
+    get:
+      summary: Get TV show images from metadata provider
+      description: |
+        Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
+      operationId: getTVShowMetadataImages
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO 639-1 language filter
+          example: en
+      responses:
+        '200':
+          description: TV show images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataImages'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/content-ratings:
+    get:
+      summary: Get TV show content ratings
+      description: |
+        Fetch content ratings (age classifications) for a TV show across different countries.
+      operationId: getTVShowContentRatings
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+      responses:
+        '200':
+          description: Content ratings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataContentRatings'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/external-ids:
+    get:
+      summary: Get TV show external IDs
+      description: |
+        Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
+      operationId: getTVShowExternalIDs
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+      responses:
+        '200':
+          description: External IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataExternalIDs'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images:
+    get:
+      summary: Get season images from metadata provider
+      description: |
+        Fetch all available images (posters) for a TV season from TMDb.
+      operationId: getSeasonMetadataImages
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+        - name: seasonNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Season number
+          example: 1
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO 639-1 language filter
+          example: en
+      responses:
+        '200':
+          description: Season images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataImages'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images:
+    get:
+      summary: Get episode images from metadata provider
+      description: |
+        Fetch all available images (stills) for a TV episode from TMDb.
+      operationId: getEpisodeMetadataImages
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb TV show ID
+          example: 1396
+        - name: seasonNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Season number
+          example: 1
+        - name: episodeNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Episode number
+          example: 1
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO 639-1 language filter
+          example: en
+      responses:
+        '200':
+          description: Episode images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataImages'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/search/person:
+    get:
+      summary: Search people in metadata provider
+      description: |
+        Search for actors, directors, and other crew members in TMDb.
+      operationId: searchPersonMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+          example: Brad Pitt
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+          description: Maximum number of results
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataPersonSearchResults'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/person/{tmdbId}:
+    get:
+      summary: Get person details from metadata provider
+      description: |
+        Fetch detailed information about a person (actor, director, etc.) from TMDb.
+      operationId: getPersonMetadata
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb person ID
+          example: 287
+      responses:
+        '200':
+          description: Person details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataPerson'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/person/{tmdbId}/credits:
+    get:
+      summary: Get person credits from metadata provider
+      description: |
+        Fetch filmography (cast and crew credits) for a person from TMDb.
+      operationId: getPersonMetadataCredits
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb person ID
+          example: 287
+      responses:
+        '200':
+          description: Person credits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataPersonCredits'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/person/{tmdbId}/images:
+    get:
+      summary: Get person images from metadata provider
+      description: |
+        Fetch all available profile images for a person from TMDb.
+      operationId: getPersonMetadataImages
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: tmdbId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: TMDb person ID
+          example: 287
+      responses:
+        '200':
+          description: Person images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataImages'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/metadata/providers:
+    get:
+      summary: List available metadata providers
+      description: |
+        Returns the list of registered metadata providers and their capabilities.
+      operationId: listMetadataProviders
+      tags:
+        - metadata
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: Available providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataProviderList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
   /api/v1/tvshows/{id}/watch-stats:
     get:
       summary: Get watch stats for a TV show
@@ -6211,7 +6803,284 @@ components:
         total:
           type: integer
           format: int64
-          description: Total number of TV shows matching the filters
+
+    MetadataCredits:
+      type: object
+      properties:
+        cast:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCastMember'
+        crew:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataCrewMember'
+
+    MetadataImages:
+      type: object
+      properties:
+        posters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataImage'
+        backdrops:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataImage'
+        logos:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataImage'
+        stills:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataImage'
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataImage'
+
+    MetadataImage:
+      type: object
+      properties:
+        file_path:
+          type: string
+          description: Image path for use with the image proxy
+        aspect_ratio:
+          type: number
+          format: double
+        width:
+          type: integer
+        height:
+          type: integer
+        vote_average:
+          type: number
+          format: float
+        vote_count:
+          type: integer
+        language:
+          type: string
+          nullable: true
+          description: ISO 639-1 language code
+
+    MetadataExternalIDs:
+      type: object
+      properties:
+        imdb_id:
+          type: string
+          nullable: true
+        tvdb_id:
+          type: integer
+          nullable: true
+        tmdb_id:
+          type: integer
+          nullable: true
+        wikidata_id:
+          type: string
+          nullable: true
+        facebook_id:
+          type: string
+          nullable: true
+        instagram_id:
+          type: string
+          nullable: true
+        twitter_id:
+          type: string
+          nullable: true
+        tiktok_id:
+          type: string
+          nullable: true
+        youtube_id:
+          type: string
+          nullable: true
+
+    MetadataContentRatings:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataContentRating'
+
+    MetadataContentRating:
+      type: object
+      properties:
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+        rating:
+          type: string
+          description: Content rating
+          example: TV-MA
+        descriptors:
+          type: array
+          items:
+            type: string
+
+    MetadataPersonSearchResults:
+      type: object
+      properties:
+        page:
+          type: integer
+        total_results:
+          type: integer
+        total_pages:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataPersonSearchResult'
+
+    MetadataPersonSearchResult:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+        name:
+          type: string
+        profile_path:
+          type: string
+          nullable: true
+        popularity:
+          type: number
+          format: float
+        known_for_department:
+          type: string
+          description: Primary known-for department (Acting, Directing, etc.)
+        known_for:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataMediaReference'
+
+    MetadataMediaReference:
+      type: object
+      properties:
+        media_type:
+          type: string
+          enum: [movie, tv]
+        tmdb_id:
+          type: integer
+        title:
+          type: string
+        poster_path:
+          type: string
+          nullable: true
+
+    MetadataPerson:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+        imdb_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+        also_known_as:
+          type: array
+          items:
+            type: string
+        biography:
+          type: string
+          nullable: true
+        birthday:
+          type: string
+          format: date
+          nullable: true
+        deathday:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          type: integer
+          description: "0=not specified, 1=female, 2=male, 3=non-binary"
+        place_of_birth:
+          type: string
+          nullable: true
+        profile_path:
+          type: string
+          nullable: true
+        homepage:
+          type: string
+          nullable: true
+        popularity:
+          type: number
+          format: float
+        known_for_department:
+          type: string
+
+    MetadataPersonCredits:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+        cast:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataMediaCredit'
+        crew:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataMediaCredit'
+
+    MetadataMediaCredit:
+      type: object
+      properties:
+        media_type:
+          type: string
+          enum: [movie, tv]
+        tmdb_id:
+          type: integer
+        title:
+          type: string
+        character:
+          type: string
+          nullable: true
+        job:
+          type: string
+          nullable: true
+        department:
+          type: string
+          nullable: true
+        release_date:
+          type: string
+          format: date
+          nullable: true
+        poster_path:
+          type: string
+          nullable: true
+        vote_average:
+          type: number
+          format: float
+        episode_count:
+          type: integer
+          nullable: true
+
+    MetadataProviderList:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataProvider'
+
+    MetadataProvider:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Provider identifier
+          example: tmdb
+        name:
+          type: string
+          description: Provider display name
+          example: The Movie Database
+        capabilities:
+          type: array
+          items:
+            type: string
+          description: List of capabilities (movie, tvshow, person, image, collection)
 
     TVSeries:
       type: object

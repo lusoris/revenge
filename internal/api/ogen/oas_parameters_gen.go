@@ -1725,6 +1725,233 @@ func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Re
 	return params, nil
 }
 
+// GetEpisodeMetadataImagesParams is parameters of getEpisodeMetadataImages operation.
+type GetEpisodeMetadataImagesParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+	// Season number.
+	SeasonNumber int
+	// Episode number.
+	EpisodeNumber int
+	// ISO 639-1 language filter.
+	Language OptString `json:",omitempty,omitzero"`
+}
+
+func unpackGetEpisodeMetadataImagesParams(packed middleware.Parameters) (params GetEpisodeMetadataImagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "seasonNumber",
+			In:   "path",
+		}
+		params.SeasonNumber = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "episodeNumber",
+			In:   "path",
+		}
+		params.EpisodeNumber = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Language = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGetEpisodeMetadataImagesParams(args [3]string, argsEscaped bool, r *http.Request) (params GetEpisodeMetadataImagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: seasonNumber.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "seasonNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.SeasonNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "seasonNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: episodeNumber.
+	if err := func() error {
+		param := args[2]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[2])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "episodeNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.EpisodeNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "episodeNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: language.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLanguageVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLanguageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Language.SetTo(paramsDotLanguageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetLibraryParams is parameters of getLibrary operation.
 type GetLibraryParams struct {
 	// Library ID.
@@ -2055,6 +2282,72 @@ func decodeGetMovieCrewParams(args [1]string, argsEscaped bool, r *http.Request)
 	return params, nil
 }
 
+// GetMovieExternalIDsParams is parameters of getMovieExternalIDs operation.
+type GetMovieExternalIDsParams struct {
+	// TMDb movie ID.
+	TmdbId int
+}
+
+func unpackGetMovieExternalIDsParams(packed middleware.Parameters) (params GetMovieExternalIDsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetMovieExternalIDsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieExternalIDsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetMovieFilesParams is parameters of getMovieFiles operation.
 type GetMovieFilesParams struct {
 	// Movie ID.
@@ -2205,6 +2498,538 @@ func unpackGetMovieMetadataParams(packed middleware.Parameters) (params GetMovie
 }
 
 func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetMovieMetadataCreditsParams is parameters of getMovieMetadataCredits operation.
+type GetMovieMetadataCreditsParams struct {
+	// TMDb movie ID.
+	TmdbId int
+}
+
+func unpackGetMovieMetadataCreditsParams(packed middleware.Parameters) (params GetMovieMetadataCreditsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataCreditsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetMovieMetadataImagesParams is parameters of getMovieMetadataImages operation.
+type GetMovieMetadataImagesParams struct {
+	// TMDb movie ID.
+	TmdbId int
+	// ISO 639-1 language filter (e.g. en, de).
+	Language OptString `json:",omitempty,omitzero"`
+}
+
+func unpackGetMovieMetadataImagesParams(packed middleware.Parameters) (params GetMovieMetadataImagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Language = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataImagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: language.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLanguageVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLanguageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Language.SetTo(paramsDotLanguageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetMovieRecommendationsMetadataParams is parameters of getMovieRecommendationsMetadata operation.
+type GetMovieRecommendationsMetadataParams struct {
+	// TMDb movie ID.
+	TmdbId int
+	// Maximum number of results.
+	Limit OptInt `json:",omitempty,omitzero"`
+}
+
+func unpackGetMovieRecommendationsMetadataParams(packed middleware.Parameters) (params GetMovieRecommendationsMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieRecommendationsMetadataParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(20)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetPersonMetadataParams is parameters of getPersonMetadata operation.
+type GetPersonMetadataParams struct {
+	// TMDb person ID.
+	TmdbId int
+}
+
+func unpackGetPersonMetadataParams(packed middleware.Parameters) (params GetPersonMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetPersonMetadataCreditsParams is parameters of getPersonMetadataCredits operation.
+type GetPersonMetadataCreditsParams struct {
+	// TMDb person ID.
+	TmdbId int
+}
+
+func unpackGetPersonMetadataCreditsParams(packed middleware.Parameters) (params GetPersonMetadataCreditsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataCreditsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetPersonMetadataImagesParams is parameters of getPersonMetadataImages operation.
+type GetPersonMetadataImagesParams struct {
+	// TMDb person ID.
+	TmdbId int
+}
+
+func unpackGetPersonMetadataImagesParams(packed middleware.Parameters) (params GetPersonMetadataImagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetPersonMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataImagesParams, _ error) {
 	// Decode path: tmdbId.
 	if err := func() error {
 		param := args[0]
@@ -3518,6 +4343,179 @@ func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Req
 	return params, nil
 }
 
+// GetSeasonMetadataImagesParams is parameters of getSeasonMetadataImages operation.
+type GetSeasonMetadataImagesParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+	// Season number.
+	SeasonNumber int
+	// ISO 639-1 language filter.
+	Language OptString `json:",omitempty,omitzero"`
+}
+
+func unpackGetSeasonMetadataImagesParams(packed middleware.Parameters) (params GetSeasonMetadataImagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "seasonNumber",
+			In:   "path",
+		}
+		params.SeasonNumber = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Language = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGetSeasonMetadataImagesParams(args [2]string, argsEscaped bool, r *http.Request) (params GetSeasonMetadataImagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: seasonNumber.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "seasonNumber",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.SeasonNumber = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "seasonNumber",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: language.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLanguageVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLanguageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Language.SetTo(paramsDotLanguageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetServerSettingParams is parameters of getServerSetting operation.
 type GetServerSettingParams struct {
 	// Setting key.
@@ -3644,6 +4642,155 @@ func decodeGetSimilarMoviesParams(args [1]string, argsEscaped bool, r *http.Requ
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetSimilarMoviesMetadataParams is parameters of getSimilarMoviesMetadata operation.
+type GetSimilarMoviesMetadataParams struct {
+	// TMDb movie ID.
+	TmdbId int
+	// Maximum number of results.
+	Limit OptInt `json:",omitempty,omitzero"`
+}
+
+func unpackGetSimilarMoviesMetadataParams(packed middleware.Parameters) (params GetSimilarMoviesMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeGetSimilarMoviesMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetSimilarMoviesMetadataParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(20)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -4206,6 +5353,72 @@ func decodeGetTVShowCastParams(args [1]string, argsEscaped bool, r *http.Request
 	return params, nil
 }
 
+// GetTVShowContentRatingsParams is parameters of getTVShowContentRatings operation.
+type GetTVShowContentRatingsParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+}
+
+func unpackGetTVShowContentRatingsParams(packed middleware.Parameters) (params GetTVShowContentRatingsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetTVShowContentRatingsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowContentRatingsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetTVShowCrewParams is parameters of getTVShowCrew operation.
 type GetTVShowCrewParams struct {
 	// TV Show ID.
@@ -4331,6 +5544,72 @@ func decodeGetTVShowEpisodesParams(args [1]string, argsEscaped bool, r *http.Req
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetTVShowExternalIDsParams is parameters of getTVShowExternalIDs operation.
+type GetTVShowExternalIDsParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+}
+
+func unpackGetTVShowExternalIDsParams(packed middleware.Parameters) (params GetTVShowExternalIDsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetTVShowExternalIDsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowExternalIDsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
 			In:   "path",
 			Err:  err,
 		}
@@ -4464,6 +5743,191 @@ func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 		return params, &ogenerrors.DecodeParamError{
 			Name: "tmdbId",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetTVShowMetadataCreditsParams is parameters of getTVShowMetadataCredits operation.
+type GetTVShowMetadataCreditsParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+}
+
+func unpackGetTVShowMetadataCreditsParams(packed middleware.Parameters) (params GetTVShowMetadataCreditsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	return params
+}
+
+func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataCreditsParams, _ error) {
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetTVShowMetadataImagesParams is parameters of getTVShowMetadataImages operation.
+type GetTVShowMetadataImagesParams struct {
+	// TMDb TV show ID.
+	TmdbId int
+	// ISO 639-1 language filter.
+	Language OptString `json:",omitempty,omitzero"`
+}
+
+func unpackGetTVShowMetadataImagesParams(packed middleware.Parameters) (params GetTVShowMetadataImagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tmdbId",
+			In:   "path",
+		}
+		params.TmdbId = packed[key].(int)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Language = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGetTVShowMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataImagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: tmdbId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tmdbId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.TmdbId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tmdbId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: language.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLanguageVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLanguageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Language.SetTo(paramsDotLanguageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -9578,6 +11042,146 @@ func decodeSearchMoviesMetadataParams(args [0]string, argsEscaped bool, r *http.
 							Min:           1,
 							MaxSet:        true,
 							Max:           50,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// SearchPersonMetadataParams is parameters of searchPersonMetadata operation.
+type SearchPersonMetadataParams struct {
+	// Search query.
+	Q string
+	// Maximum number of results.
+	Limit OptInt `json:",omitempty,omitzero"`
+}
+
+func unpackSearchPersonMetadataParams(packed middleware.Parameters) (params SearchPersonMetadataParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		params.Q = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	return params
+}
+
+func decodeSearchPersonMetadataParams(args [0]string, argsEscaped bool, r *http.Request) (params SearchPersonMetadataParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Q = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(20)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
 							MinExclusive:  false,
 							MaxExclusive:  false,
 							MultipleOfSet: false,

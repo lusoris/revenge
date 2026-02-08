@@ -189,6 +189,10 @@ type GetCurrentUserRes interface {
 	getCurrentUserRes()
 }
 
+type GetEpisodeMetadataImagesRes interface {
+	getEpisodeMetadataImagesRes()
+}
+
 type GetEpisodeMetadataRes interface {
 	getEpisodeMetadataRes()
 }
@@ -213,6 +217,10 @@ type GetMovieCrewRes interface {
 	getMovieCrewRes()
 }
 
+type GetMovieExternalIDsRes interface {
+	getMovieExternalIDsRes()
+}
+
 type GetMovieFilesRes interface {
 	getMovieFilesRes()
 }
@@ -221,12 +229,36 @@ type GetMovieGenresRes interface {
 	getMovieGenresRes()
 }
 
+type GetMovieMetadataCreditsRes interface {
+	getMovieMetadataCreditsRes()
+}
+
+type GetMovieMetadataImagesRes interface {
+	getMovieMetadataImagesRes()
+}
+
 type GetMovieMetadataRes interface {
 	getMovieMetadataRes()
 }
 
+type GetMovieRecommendationsMetadataRes interface {
+	getMovieRecommendationsMetadataRes()
+}
+
 type GetMovieRes interface {
 	getMovieRes()
+}
+
+type GetPersonMetadataCreditsRes interface {
+	getPersonMetadataCreditsRes()
+}
+
+type GetPersonMetadataImagesRes interface {
+	getPersonMetadataImagesRes()
+}
+
+type GetPersonMetadataRes interface {
+	getPersonMetadataRes()
 }
 
 type GetPlaybackSessionRes interface {
@@ -269,12 +301,20 @@ type GetSearchFacetsRes interface {
 	getSearchFacetsRes()
 }
 
+type GetSeasonMetadataImagesRes interface {
+	getSeasonMetadataImagesRes()
+}
+
 type GetSeasonMetadataRes interface {
 	getSeasonMetadataRes()
 }
 
 type GetServerSettingRes interface {
 	getServerSettingRes()
+}
+
+type GetSimilarMoviesMetadataRes interface {
+	getSimilarMoviesMetadataRes()
 }
 
 type GetSimilarMoviesRes interface {
@@ -313,6 +353,10 @@ type GetTVShowCastRes interface {
 	getTVShowCastRes()
 }
 
+type GetTVShowContentRatingsRes interface {
+	getTVShowContentRatingsRes()
+}
+
 type GetTVShowCrewRes interface {
 	getTVShowCrewRes()
 }
@@ -321,8 +365,20 @@ type GetTVShowEpisodesRes interface {
 	getTVShowEpisodesRes()
 }
 
+type GetTVShowExternalIDsRes interface {
+	getTVShowExternalIDsRes()
+}
+
 type GetTVShowGenresRes interface {
 	getTVShowGenresRes()
+}
+
+type GetTVShowMetadataCreditsRes interface {
+	getTVShowMetadataCreditsRes()
+}
+
+type GetTVShowMetadataImagesRes interface {
+	getTVShowMetadataImagesRes()
 }
 
 type GetTVShowMetadataRes interface {
@@ -427,6 +483,10 @@ type ListLibraryPermissionsRes interface {
 
 type ListLibraryScansRes interface {
 	listLibraryScansRes()
+}
+
+type ListMetadataProvidersRes interface {
+	listMetadataProvidersRes()
 }
 
 type ListMoviesRes interface {
@@ -579,6 +639,10 @@ type SearchMoviesMetadataRes interface {
 
 type SearchMoviesRes interface {
 	searchMoviesRes()
+}
+
+type SearchPersonMetadataRes interface {
+	searchPersonMetadataRes()
 }
 
 type SearchTVShowsMetadataRes interface {

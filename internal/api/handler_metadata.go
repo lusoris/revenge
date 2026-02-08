@@ -674,6 +674,138 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 	return response, nil
 }
 
+// GetMovieMetadataCredits gets movie credits from TMDb.
+func (h *Handler) GetMovieMetadataCredits(ctx context.Context, params ogen.GetMovieMetadataCreditsParams) (ogen.GetMovieMetadataCreditsRes, error) {
+	// Get movie credits from shared metadata service
+	credits, err := h.metadataService.GetMovieCredits(ctx, int32(params.TmdbId))
+	if err != nil {
+		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
+			return &ogen.GetMovieMetadataCreditsNotFound{}, nil
+		}
+		h.logger.Error("TMDb get movie credits failed", slog.Any("error", err))
+		return nil, err
+	}
+
+	if credits == nil {
+		return &ogen.GetMovieMetadataCreditsNotFound{}, nil
+	}
+
+	// Convert to API response
+	response := &ogen.MetadataCredits{}
+
+	// Map cast
+	if len(credits.Cast) > 0 {
+		cast := make([]ogen.MetadataCastMember, 0, len(credits.Cast))
+		for _, c := range credits.Cast {
+			member := ogen.MetadataCastMember{
+				Name:      ogen.NewOptString(c.Name),
+				Character: ogen.NewOptString(c.Character),
+				Order:     ogen.NewOptInt(c.Order),
+			}
+			// Parse cast member ID from ProviderID
+			if c.ProviderID != "" {
+				var castID int
+				_, _ = fmt.Sscanf(c.ProviderID, "%d", &castID)
+				if castID > 0 {
+					member.ID = ogen.NewOptInt(castID)
+				}
+			}
+			if c.ProfilePath != nil && *c.ProfilePath != "" {
+				member.ProfilePath = ogen.NewOptNilString(*c.ProfilePath)
+			}
+			cast = append(cast, member)
+		}
+		response.Cast = cast
+	}
+
+	// Map crew
+	if len(credits.Crew) > 0 {
+		crew := make([]ogen.MetadataCrewMember, 0, len(credits.Crew))
+		for _, c := range credits.Crew {
+			member := ogen.MetadataCrewMember{
+				Name:       ogen.NewOptString(c.Name),
+				Job:        ogen.NewOptString(c.Job),
+				Department: ogen.NewOptString(c.Department),
+			}
+			// Parse crew member ID from ProviderID
+			if c.ProviderID != "" {
+				var crewID int
+				_, _ = fmt.Sscanf(c.ProviderID, "%d", &crewID)
+				if crewID > 0 {
+					member.ID = ogen.NewOptInt(crewID)
+				}
+			}
+			if c.ProfilePath != nil && *c.ProfilePath != "" {
+				member.ProfilePath = ogen.NewOptNilString(*c.ProfilePath)
+			}
+			crew = append(crew, member)
+		}
+		response.Crew = crew
+	}
+
+	return response, nil
+}
+
+func (h *Handler) GetMovieMetadataImages(ctx context.Context, params ogen.GetMovieMetadataImagesParams) (ogen.GetMovieMetadataImagesRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetSimilarMoviesMetadata(ctx context.Context, params ogen.GetSimilarMoviesMetadataParams) (ogen.GetSimilarMoviesMetadataRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetMovieRecommendationsMetadata(ctx context.Context, params ogen.GetMovieRecommendationsMetadataParams) (ogen.GetMovieRecommendationsMetadataRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetMovieExternalIDs(ctx context.Context, params ogen.GetMovieExternalIDsParams) (ogen.GetMovieExternalIDsRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetTVShowMetadataCredits(ctx context.Context, params ogen.GetTVShowMetadataCreditsParams) (ogen.GetTVShowMetadataCreditsRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetTVShowMetadataImages(ctx context.Context, params ogen.GetTVShowMetadataImagesParams) (ogen.GetTVShowMetadataImagesRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetTVShowContentRatings(ctx context.Context, params ogen.GetTVShowContentRatingsParams) (ogen.GetTVShowContentRatingsRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetTVShowExternalIDs(ctx context.Context, params ogen.GetTVShowExternalIDsParams) (ogen.GetTVShowExternalIDsRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetSeasonMetadataImages(ctx context.Context, params ogen.GetSeasonMetadataImagesParams) (ogen.GetSeasonMetadataImagesRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetEpisodeMetadataImages(ctx context.Context, params ogen.GetEpisodeMetadataImagesParams) (ogen.GetEpisodeMetadataImagesRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) SearchPersonMetadata(ctx context.Context, params ogen.SearchPersonMetadataParams) (ogen.SearchPersonMetadataRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetPersonMetadata(ctx context.Context, params ogen.GetPersonMetadataParams) (ogen.GetPersonMetadataRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetPersonMetadataCredits(ctx context.Context, params ogen.GetPersonMetadataCreditsParams) (ogen.GetPersonMetadataCreditsRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) GetPersonMetadataImages(ctx context.Context, params ogen.GetPersonMetadataImagesParams) (ogen.GetPersonMetadataImagesRes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (h *Handler) ListMetadataProviders(ctx context.Context) (ogen.ListMetadataProvidersRes, error) {
+	return nil, errors.New("not implemented")
+}
+
 func min(a, b int) int {
 	if a < b {
 		return a
