@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	openapidoc "github.com/lusoris/revenge/api/openapi"
 	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
@@ -35,6 +36,20 @@ import (
 	"go.uber.org/fx"
 	"log/slog"
 )
+
+// scalarHTML is the Scalar API reference UI, loaded from the embedded OpenAPI spec.
+const scalarHTML = `<!doctype html>
+<html>
+<head>
+  <title>Revenge API Reference</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+  <script id="api-reference" data-url="/api/openapi.yaml"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+</body>
+</html>`
 
 // Server wraps the ogen-generated HTTP server with lifecycle management.
 type Server struct {
@@ -257,14 +272,32 @@ func NewServer(p ServerParams) (*Server, error) {
 	// The wrapper adds X-Request-ID to response headers
 	rootHandler := http.Handler(middleware.RequestIDHTTPWrapper(ogenServer))
 
-	// If HLS streaming is enabled, intercept /api/v1/playback/stream/ paths
-	// before they reach ogen (raw binary content served directly).
+	// Serve OpenAPI spec for frontend dev tools
+	specHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/yaml")
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+		w.Write(openapidoc.Spec) //nolint:errcheck
+	})
+
+	// Serve interactive API documentation (Scalar)
+	docsHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Write([]byte(scalarHTML)) //nolint:errcheck
+	})
+
+	// Register non-ogen routes on a mux (spec, docs, HLS streaming)
+	mux := http.NewServeMux()
+	mux.Handle("GET /api/openapi.yaml", specHandler)
+	mux.Handle("GET /api/docs", docsHandler)
 	if p.StreamHandler != nil {
-		mux := http.NewServeMux()
 		mux.Handle("/api/v1/playback/stream/", p.StreamHandler)
-		mux.Handle("/", rootHandler)
-		rootHandler = mux
 	}
+	mux.Handle("/", rootHandler)
+	rootHandler = mux
+
+	// Wrap with CORS middleware (outermost layer so all responses get CORS headers,
+	// including preflight OPTIONS, error responses, and HLS endpoints).
+	rootHandler = middleware.CORSMiddleware(p.Config.Server.CORS)(rootHandler)
 
 	httpServer := &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", p.Config.Server.Host, p.Config.Server.Port),

@@ -349,10 +349,15 @@ func (s *APIKeyListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfAPIKeyListResponse = [1]string{
+var jsonFieldsNameOfAPIKeyListResponse = [2]string{
 	0: "keys",
+	1: "total",
 }
 
 // Decode decodes APIKeyListResponse from json.
@@ -382,6 +387,18 @@ func (s *APIKeyListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"keys\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -392,7 +409,7 @@ func (s *APIKeyListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -3342,10 +3359,15 @@ func (s *AdminOIDCProviderListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfAdminOIDCProviderListResponse = [1]string{
+var jsonFieldsNameOfAdminOIDCProviderListResponse = [2]string{
 	0: "providers",
+	1: "total",
 }
 
 // Decode decodes AdminOIDCProviderListResponse from json.
@@ -3375,6 +3397,18 @@ func (s *AdminOIDCProviderListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"providers\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -3385,7 +3419,7 @@ func (s *AdminOIDCProviderListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -15524,10 +15558,15 @@ func (s *LibraryPermissionListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfLibraryPermissionListResponse = [1]string{
+var jsonFieldsNameOfLibraryPermissionListResponse = [2]string{
 	0: "permissions",
+	1: "total",
 }
 
 // Decode decodes LibraryPermissionListResponse from json.
@@ -15557,6 +15596,18 @@ func (s *LibraryPermissionListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"permissions\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -15567,7 +15618,7 @@ func (s *LibraryPermissionListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -23221,10 +23272,15 @@ func (s *OIDCProviderListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfOIDCProviderListResponse = [1]string{
+var jsonFieldsNameOfOIDCProviderListResponse = [2]string{
 	0: "providers",
+	1: "total",
 }
 
 // Decode decodes OIDCProviderListResponse from json.
@@ -23254,6 +23310,18 @@ func (s *OIDCProviderListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"providers\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -23264,7 +23332,7 @@ func (s *OIDCProviderListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -23508,10 +23576,15 @@ func (s *OIDCUserLinkListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfOIDCUserLinkListResponse = [1]string{
+var jsonFieldsNameOfOIDCUserLinkListResponse = [2]string{
 	0: "links",
+	1: "total",
 }
 
 // Decode decodes OIDCUserLinkListResponse from json.
@@ -23541,6 +23614,18 @@ func (s *OIDCUserLinkListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"links\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -23551,7 +23636,7 @@ func (s *OIDCUserLinkListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -25999,10 +26084,15 @@ func (s *PermissionsResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfPermissionsResponse = [1]string{
+var jsonFieldsNameOfPermissionsResponse = [2]string{
 	0: "permissions",
+	1: "total",
 }
 
 // Decode decodes PermissionsResponse from json.
@@ -26032,6 +26122,18 @@ func (s *PermissionsResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"permissions\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -26042,7 +26144,7 @@ func (s *PermissionsResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -27023,10 +27125,15 @@ func (s *PolicyListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfPolicyListResponse = [1]string{
+var jsonFieldsNameOfPolicyListResponse = [2]string{
 	0: "policies",
+	1: "total",
 }
 
 // Decode decodes PolicyListResponse from json.
@@ -27056,6 +27163,18 @@ func (s *PolicyListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"policies\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -27066,7 +27185,7 @@ func (s *PolicyListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -31309,10 +31428,15 @@ func (s *RoleListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfRoleListResponse = [1]string{
+var jsonFieldsNameOfRoleListResponse = [2]string{
 	0: "roles",
+	1: "total",
 }
 
 // Decode decodes RoleListResponse from json.
@@ -31344,6 +31468,18 @@ func (s *RoleListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"roles\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -31354,7 +31490,7 @@ func (s *RoleListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -31417,10 +31553,15 @@ func (s *RolesResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfRolesResponse = [1]string{
+var jsonFieldsNameOfRolesResponse = [2]string{
 	0: "roles",
+	1: "total",
 }
 
 // Decode decodes RolesResponse from json.
@@ -31450,6 +31591,18 @@ func (s *RolesResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"roles\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -31460,7 +31613,7 @@ func (s *RolesResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -33704,10 +33857,15 @@ func (s *SessionListResponse) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("total")
+		e.Int64(s.Total)
+	}
 }
 
-var jsonFieldsNameOfSessionListResponse = [1]string{
+var jsonFieldsNameOfSessionListResponse = [2]string{
 	0: "sessions",
+	1: "total",
 }
 
 // Decode decodes SessionListResponse from json.
@@ -33737,6 +33895,18 @@ func (s *SessionListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"sessions\"")
 			}
+		case "total":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Int64()
+				s.Total = int64(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -33747,7 +33917,7 @@ func (s *SessionListResponse) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00000011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

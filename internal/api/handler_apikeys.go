@@ -37,7 +37,8 @@ func (h *Handler) ListAPIKeys(ctx context.Context) (ogen.ListAPIKeysRes, error) 
 	}
 
 	return &ogen.APIKeyListResponse{
-		Keys: keyInfos,
+		Keys:  keyInfos,
+		Total: int64(len(keyInfos)),
 	}, nil
 }
 

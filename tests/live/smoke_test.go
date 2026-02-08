@@ -2494,6 +2494,92 @@ func TestLive_UnauthenticatedAccess_Extended(t *testing.T) {
 	}
 }
 
+// =============================================================================
+// CORS & OpenAPI Docs
+// =============================================================================
+
+func TestLive_CORS(t *testing.T) {
+	t.Run("preflight_returns_cors_headers", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodOptions, baseURL+"/api/v1/auth/login", nil)
+		require.NoError(t, err)
+		req.Header.Set("Origin", "http://localhost:5173")
+		req.Header.Set("Access-Control-Request-Method", "POST")
+		req.Header.Set("Access-Control-Request-Headers", "Authorization, Content-Type")
+
+		resp, err := client.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+		assert.Equal(t, "http://localhost:5173", resp.Header.Get("Access-Control-Allow-Origin"))
+		assert.Contains(t, resp.Header.Get("Access-Control-Allow-Methods"), "POST")
+		assert.Contains(t, resp.Header.Get("Access-Control-Allow-Headers"), "Authorization")
+	})
+
+	t.Run("regular_request_has_cors_headers", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, baseURL+"/healthz", nil)
+		require.NoError(t, err)
+		req.Header.Set("Origin", "http://localhost:5173")
+
+		resp, err := client.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, "http://localhost:5173", resp.Header.Get("Access-Control-Allow-Origin"))
+	})
+}
+
+func TestLive_OpenAPIDocs(t *testing.T) {
+	t.Run("openapi_yaml_served", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/openapi.yaml", "", nil)
+		defer resp.Body.Close()
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, "application/yaml", resp.Header.Get("Content-Type"))
+
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "openapi:")
+		assert.Contains(t, string(body), "Revenge")
+	})
+
+	t.Run("scalar_docs_served", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/docs", "", nil)
+		defer resp.Body.Close()
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Contains(t, resp.Header.Get("Content-Type"), "text/html")
+
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+		assert.Contains(t, string(body), "scalar")
+		assert.Contains(t, string(body), "openapi.yaml")
+	})
+}
+
+func TestLive_ListResponsesHaveTotal(t *testing.T) {
+	creds := registerAndLogin(t)
+
+	endpoints := []string{
+		"/api/v1/sessions",
+		"/api/v1/apikeys",
+		"/api/v1/oidc/providers",
+	}
+
+	for _, path := range endpoints {
+		t.Run(path, func(t *testing.T) {
+			resp := doRequest(t, "GET", path, creds.accessToken, nil)
+			defer resp.Body.Close()
+			require.Equal(t, http.StatusOK, resp.StatusCode)
+
+			var result map[string]interface{}
+			err := json.NewDecoder(resp.Body).Decode(&result)
+			require.NoError(t, err)
+			_, hasTotal := result["total"]
+			assert.True(t, hasTotal, "response for %s should have 'total' field, got keys: %v", path, keys(result))
+		})
+	}
+}
+
 // keys returns the keys of a map (for debug logging).
 func keys(m map[string]interface{}) []string {
 	result := make([]string, 0, len(m))

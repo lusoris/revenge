@@ -61,6 +61,7 @@ func (h *Handler) ListPolicies(ctx context.Context) (ogen.ListPoliciesRes, error
 
 	return &ogen.PolicyListResponse{
 		Policies: policyList,
+		Total:    int64(len(policyList)),
 	}, nil
 }
 
@@ -104,7 +105,11 @@ func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.
 		}, nil
 	}
 
-	return &ogen.AddPolicyCreated{}, nil
+	return &ogen.Policy{
+		Subject: req.Subject,
+		Object:  req.Object,
+		Action:  req.Action,
+	}, nil
 }
 
 // RemovePolicy removes an authorization policy (admin only).
@@ -173,6 +178,7 @@ func (h *Handler) GetUserRoles(ctx context.Context, params ogen.GetUserRolesPara
 
 	return &ogen.RoleListResponse{
 		Roles: roles,
+		Total: int64(len(roles)),
 	}, nil
 }
 
@@ -217,7 +223,23 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 		}, nil
 	}
 
-	return &ogen.AssignRoleCreated{}, nil
+	// Return updated role list for the target user
+	roles, err := h.rbacService.GetUserRoles(ctx, targetUserID)
+	if err != nil {
+		h.logger.Error("failed to get user roles after assign",
+			slog.String("user_id", targetUserID.String()),
+			slog.Any("error", err),
+		)
+		return &ogen.RoleListResponse{
+			Roles: []string{req.Role},
+			Total: 1,
+		}, nil
+	}
+
+	return &ogen.RoleListResponse{
+		Roles: roles,
+		Total: int64(len(roles)),
+	}, nil
 }
 
 // RemoveRole removes a role from a user (admin only).
@@ -321,6 +343,7 @@ func (h *Handler) ListRoles(ctx context.Context) (ogen.ListRolesRes, error) {
 
 	return &ogen.RolesResponse{
 		Roles: roleDetails,
+		Total: int64(len(roleDetails)),
 	}, nil
 }
 
@@ -635,5 +658,6 @@ func (h *Handler) ListPermissions(ctx context.Context) (ogen.ListPermissionsRes,
 
 	return &ogen.PermissionsResponse{
 		Permissions: permissions,
+		Total:       int64(len(permissions)),
 	}, nil
 }

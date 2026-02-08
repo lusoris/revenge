@@ -197,6 +197,8 @@ func (s *APIKeyInfoScopesItem) UnmarshalText(data []byte) error {
 // Ref: #/components/schemas/APIKeyListResponse
 type APIKeyListResponse struct {
 	Keys []APIKeyInfo `json:"keys"`
+	// Total number of API keys.
+	Total int64 `json:"total"`
 }
 
 // GetKeys returns the value of Keys.
@@ -204,9 +206,19 @@ func (s *APIKeyListResponse) GetKeys() []APIKeyInfo {
 	return s.Keys
 }
 
+// GetTotal returns the value of Total.
+func (s *APIKeyListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetKeys sets the value of Keys.
 func (s *APIKeyListResponse) SetKeys(val []APIKeyInfo) {
 	s.Keys = val
+}
+
+// SetTotal sets the value of Total.
+func (s *APIKeyListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*APIKeyListResponse) listAPIKeysRes() {}
@@ -548,11 +560,6 @@ func (*ActivityStats) getActivityStatsRes() {}
 type AddPolicyBadRequest Error
 
 func (*AddPolicyBadRequest) addPolicyRes() {}
-
-// AddPolicyCreated is response for AddPolicy operation.
-type AddPolicyCreated struct{}
-
-func (*AddPolicyCreated) addPolicyRes() {}
 
 type AddPolicyForbidden Error
 
@@ -963,6 +970,8 @@ func (*AdminOIDCProvider) adminUpdateOIDCProviderRes() {}
 // Ref: #/components/schemas/AdminOIDCProviderListResponse
 type AdminOIDCProviderListResponse struct {
 	Providers []AdminOIDCProvider `json:"providers"`
+	// Total number of providers.
+	Total int64 `json:"total"`
 }
 
 // GetProviders returns the value of Providers.
@@ -970,9 +979,19 @@ func (s *AdminOIDCProviderListResponse) GetProviders() []AdminOIDCProvider {
 	return s.Providers
 }
 
+// GetTotal returns the value of Total.
+func (s *AdminOIDCProviderListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetProviders sets the value of Providers.
 func (s *AdminOIDCProviderListResponse) SetProviders(val []AdminOIDCProvider) {
 	s.Providers = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AdminOIDCProviderListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*AdminOIDCProviderListResponse) adminListOIDCProvidersRes() {}
@@ -1129,11 +1148,6 @@ func (s *ApiKeyAuth) SetRoles(val []string) {
 type AssignRoleBadRequest Error
 
 func (*AssignRoleBadRequest) assignRoleRes() {}
-
-// AssignRoleCreated is response for AssignRole operation.
-type AssignRoleCreated struct{}
-
-func (*AssignRoleCreated) assignRoleRes() {}
 
 type AssignRoleForbidden Error
 
@@ -4406,6 +4420,8 @@ func (*LibraryPermission) grantLibraryPermissionRes() {}
 // Ref: #/components/schemas/LibraryPermissionListResponse
 type LibraryPermissionListResponse struct {
 	Permissions []LibraryPermission `json:"permissions"`
+	// Total number of permissions.
+	Total int64 `json:"total"`
 }
 
 // GetPermissions returns the value of Permissions.
@@ -4413,9 +4429,19 @@ func (s *LibraryPermissionListResponse) GetPermissions() []LibraryPermission {
 	return s.Permissions
 }
 
+// GetTotal returns the value of Total.
+func (s *LibraryPermissionListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetPermissions sets the value of Permissions.
 func (s *LibraryPermissionListResponse) SetPermissions(val []LibraryPermission) {
 	s.Permissions = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LibraryPermissionListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*LibraryPermissionListResponse) listLibraryPermissionsRes() {}
@@ -8173,6 +8199,8 @@ func (s *OIDCProviderInfo) SetIsDefault(val OptBool) {
 // Ref: #/components/schemas/OIDCProviderListResponse
 type OIDCProviderListResponse struct {
 	Providers []OIDCProviderInfo `json:"providers"`
+	// Total number of providers.
+	Total int64 `json:"total"`
 }
 
 // GetProviders returns the value of Providers.
@@ -8180,9 +8208,19 @@ func (s *OIDCProviderListResponse) GetProviders() []OIDCProviderInfo {
 	return s.Providers
 }
 
+// GetTotal returns the value of Total.
+func (s *OIDCProviderListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetProviders sets the value of Providers.
 func (s *OIDCProviderListResponse) SetProviders(val []OIDCProviderInfo) {
 	s.Providers = val
+}
+
+// SetTotal sets the value of Total.
+func (s *OIDCProviderListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 // Ref: #/components/schemas/OIDCUserLink
@@ -8258,6 +8296,8 @@ func (s *OIDCUserLink) SetLinkedAt(val time.Time) {
 // Ref: #/components/schemas/OIDCUserLinkListResponse
 type OIDCUserLinkListResponse struct {
 	Links []OIDCUserLink `json:"links"`
+	// Total number of linked providers.
+	Total int64 `json:"total"`
 }
 
 // GetLinks returns the value of Links.
@@ -8265,9 +8305,19 @@ func (s *OIDCUserLinkListResponse) GetLinks() []OIDCUserLink {
 	return s.Links
 }
 
+// GetTotal returns the value of Total.
+func (s *OIDCUserLinkListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetLinks sets the value of Links.
 func (s *OIDCUserLinkListResponse) SetLinks(val []OIDCUserLink) {
 	s.Links = val
+}
+
+// SetTotal sets the value of Total.
+func (s *OIDCUserLinkListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*OIDCUserLinkListResponse) listUserOIDCLinksRes() {}
@@ -11555,6 +11605,8 @@ func (s *Permission) SetAction(val string) {
 // Ref: #/components/schemas/PermissionsResponse
 type PermissionsResponse struct {
 	Permissions []Permission `json:"permissions"`
+	// Total number of permissions.
+	Total int64 `json:"total"`
 }
 
 // GetPermissions returns the value of Permissions.
@@ -11562,9 +11614,19 @@ func (s *PermissionsResponse) GetPermissions() []Permission {
 	return s.Permissions
 }
 
+// GetTotal returns the value of Total.
+func (s *PermissionsResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetPermissions sets the value of Permissions.
 func (s *PermissionsResponse) SetPermissions(val []Permission) {
 	s.Permissions = val
+}
+
+// SetTotal sets the value of Total.
+func (s *PermissionsResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*PermissionsResponse) listPermissionsRes() {}
@@ -11940,9 +12002,13 @@ func (s *Policy) SetAction(val string) {
 	s.Action = val
 }
 
+func (*Policy) addPolicyRes() {}
+
 // Ref: #/components/schemas/PolicyListResponse
 type PolicyListResponse struct {
 	Policies []Policy `json:"policies"`
+	// Total number of policies.
+	Total int64 `json:"total"`
 }
 
 // GetPolicies returns the value of Policies.
@@ -11950,9 +12016,19 @@ func (s *PolicyListResponse) GetPolicies() []Policy {
 	return s.Policies
 }
 
+// GetTotal returns the value of Total.
+func (s *PolicyListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetPolicies sets the value of Policies.
 func (s *PolicyListResponse) SetPolicies(val []Policy) {
 	s.Policies = val
+}
+
+// SetTotal sets the value of Total.
+func (s *PolicyListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*PolicyListResponse) listPoliciesRes() {}
@@ -13352,6 +13428,8 @@ func (*RoleDetail) updateRolePermissionsRes() {}
 // Ref: #/components/schemas/RoleListResponse
 type RoleListResponse struct {
 	Roles []string `json:"roles"`
+	// Total number of roles.
+	Total int64 `json:"total"`
 }
 
 // GetRoles returns the value of Roles.
@@ -13359,16 +13437,29 @@ func (s *RoleListResponse) GetRoles() []string {
 	return s.Roles
 }
 
+// GetTotal returns the value of Total.
+func (s *RoleListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetRoles sets the value of Roles.
 func (s *RoleListResponse) SetRoles(val []string) {
 	s.Roles = val
 }
 
+// SetTotal sets the value of Total.
+func (s *RoleListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*RoleListResponse) assignRoleRes()   {}
 func (*RoleListResponse) getUserRolesRes() {}
 
 // Ref: #/components/schemas/RolesResponse
 type RolesResponse struct {
 	Roles []RoleDetail `json:"roles"`
+	// Total number of roles.
+	Total int64 `json:"total"`
 }
 
 // GetRoles returns the value of Roles.
@@ -13376,9 +13467,19 @@ func (s *RolesResponse) GetRoles() []RoleDetail {
 	return s.Roles
 }
 
+// GetTotal returns the value of Total.
+func (s *RolesResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetRoles sets the value of Roles.
 func (s *RolesResponse) SetRoles(val []RoleDetail) {
 	s.Roles = val
+}
+
+// SetTotal sets the value of Total.
+func (s *RolesResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*RolesResponse) listRolesRes() {}
@@ -14545,6 +14646,8 @@ func (*SessionInfo) getCurrentSessionRes() {}
 // Ref: #/components/schemas/SessionListResponse
 type SessionListResponse struct {
 	Sessions []SessionInfo `json:"sessions"`
+	// Total number of sessions.
+	Total int64 `json:"total"`
 }
 
 // GetSessions returns the value of Sessions.
@@ -14552,9 +14655,19 @@ func (s *SessionListResponse) GetSessions() []SessionInfo {
 	return s.Sessions
 }
 
+// GetTotal returns the value of Total.
+func (s *SessionListResponse) GetTotal() int64 {
+	return s.Total
+}
+
 // SetSessions sets the value of Sessions.
 func (s *SessionListResponse) SetSessions(val []SessionInfo) {
 	s.Sessions = val
+}
+
+// SetTotal sets the value of Total.
+func (s *SessionListResponse) SetTotal(val int64) {
+	s.Total = val
 }
 
 func (*SessionListResponse) listSessionsRes() {}

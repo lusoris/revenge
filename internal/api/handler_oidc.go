@@ -23,6 +23,7 @@ func (h *Handler) ListOIDCProviders(ctx context.Context) (*ogen.OIDCProviderList
 		h.logger.Error("failed to list OIDC providers", slog.Any("error",err))
 		return &ogen.OIDCProviderListResponse{
 			Providers: []ogen.OIDCProviderInfo{},
+			Total:     0,
 		}, nil
 	}
 
@@ -37,6 +38,7 @@ func (h *Handler) ListOIDCProviders(ctx context.Context) (*ogen.OIDCProviderList
 
 	return &ogen.OIDCProviderListResponse{
 		Providers: infos,
+		Total:     int64(len(infos)),
 	}, nil
 }
 
@@ -229,6 +231,7 @@ func (h *Handler) ListUserOIDCLinks(ctx context.Context) (ogen.ListUserOIDCLinks
 
 	return &ogen.OIDCUserLinkListResponse{
 		Links: ogenLinks,
+		Total: int64(len(ogenLinks)),
 	}, nil
 }
 
@@ -314,6 +317,7 @@ func (h *Handler) AdminListOIDCProviders(ctx context.Context) (ogen.AdminListOID
 
 	return &ogen.AdminOIDCProviderListResponse{
 		Providers: ogenProviders,
+		Total:     int64(len(ogenProviders)),
 	}, nil
 }
 

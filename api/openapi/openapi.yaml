@@ -3625,6 +3625,10 @@ paths:
       responses:
         '201':
           description: Policy created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -3719,6 +3723,10 @@ paths:
       responses:
         '201':
           description: Role assigned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -8185,11 +8193,16 @@ components:
       type: object
       required:
         - sessions
+        - total
       properties:
         sessions:
           type: array
           items:
             $ref: '#/components/schemas/SessionInfo'
+        total:
+          type: integer
+          format: int64
+          description: Total number of sessions
 
     RefreshSessionRequest:
       type: object
@@ -8256,21 +8269,31 @@ components:
       type: object
       required:
         - policies
+        - total
       properties:
         policies:
           type: array
           items:
             $ref: '#/components/schemas/Policy'
+        total:
+          type: integer
+          format: int64
+          description: Total number of policies
 
     RoleListResponse:
       type: object
       required:
         - roles
+        - total
       properties:
         roles:
           type: array
           items:
             type: string
+        total:
+          type: integer
+          format: int64
+          description: Total number of roles
 
     AssignRoleRequest:
       type: object
@@ -8324,11 +8347,16 @@ components:
       type: object
       required:
         - roles
+        - total
       properties:
         roles:
           type: array
           items:
             $ref: '#/components/schemas/RoleDetail'
+        total:
+          type: integer
+          format: int64
+          description: Total number of roles
 
     CreateRoleRequest:
       type: object
@@ -8363,11 +8391,16 @@ components:
       type: object
       required:
         - permissions
+        - total
       properties:
         permissions:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+        total:
+          type: integer
+          format: int64
+          description: Total number of permissions
 
 
     # API Keys schemas
@@ -8423,11 +8456,16 @@ components:
       type: object
       required:
         - keys
+        - total
       properties:
         keys:
           type: array
           items:
             $ref: '#/components/schemas/APIKeyInfo'
+        total:
+          type: integer
+          format: int64
+          description: Total number of API keys
 
     CreateAPIKeyRequest:
       type: object
@@ -8510,11 +8548,16 @@ components:
       type: object
       required:
         - providers
+        - total
       properties:
         providers:
           type: array
           items:
             $ref: '#/components/schemas/OIDCProviderInfo'
+        total:
+          type: integer
+          format: int64
+          description: Total number of providers
 
     OIDCAuthURLResponse:
       type: object
@@ -8575,11 +8618,16 @@ components:
       type: object
       required:
         - links
+        - total
       properties:
         links:
           type: array
           items:
             $ref: '#/components/schemas/OIDCUserLink'
+        total:
+          type: integer
+          format: int64
+          description: Total number of linked providers
 
     # Admin OIDC schemas
     ClaimMappings:
@@ -8682,11 +8730,16 @@ components:
       type: object
       required:
         - providers
+        - total
       properties:
         providers:
           type: array
           items:
             $ref: '#/components/schemas/AdminOIDCProvider'
+        total:
+          type: integer
+          format: int64
+          description: Total number of providers
 
     CreateOIDCProviderRequest:
       type: object
@@ -9686,11 +9739,16 @@ components:
       type: object
       required:
         - permissions
+        - total
       properties:
         permissions:
           type: array
           items:
             $ref: '#/components/schemas/LibraryPermission'
+        total:
+          type: integer
+          format: int64
+          description: Total number of permissions
 
     # Playback / HLS schemas
     StartPlaybackRequest:

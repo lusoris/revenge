@@ -15,9 +15,16 @@ import (
 
 func encodeAddPolicyResponse(response AddPolicyRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *AddPolicyCreated:
+	case *Policy:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(201)
 		span.SetStatus(codes.Ok, http.StatusText(201))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 
@@ -1022,9 +1029,16 @@ func encodeAdminUpdateOIDCProviderResponse(response AdminUpdateOIDCProviderRes, 
 
 func encodeAssignRoleResponse(response AssignRoleRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *AssignRoleCreated:
+	case *RoleListResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(201)
 		span.SetStatus(codes.Ok, http.StatusText(201))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 

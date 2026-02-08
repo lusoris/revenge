@@ -432,6 +432,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 
 	return &ogen.LibraryPermissionListResponse{
 		Permissions: convertLibraryPermissions(perms),
+		Total:       int64(len(perms)),
 	}, nil
 }
 

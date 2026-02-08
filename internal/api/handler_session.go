@@ -47,6 +47,7 @@ func (h *Handler) ListSessions(ctx context.Context) (ogen.ListSessionsRes, error
 
 	return &ogen.SessionListResponse{
 		Sessions: sessionInfos,
+		Total:    int64(len(sessionInfos)),
 	}, nil
 }
 

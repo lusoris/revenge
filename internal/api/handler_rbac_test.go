@@ -170,8 +170,11 @@ func TestHandler_AddPolicy_Success(t *testing.T) {
 	result, err := handler.AddPolicy(ctx, req)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AddPolicyCreated)
+	policy, ok := result.(*ogen.Policy)
 	require.True(t, ok)
+	assert.Equal(t, "alice", policy.Subject)
+	assert.Equal(t, "data1", policy.Object)
+	assert.Equal(t, "read", policy.Action)
 
 	// Verify policy was added
 	allowed, err := handler.rbacService.Enforce(context.Background(), "alice", "data1", "read")
@@ -359,8 +362,9 @@ func TestHandler_AssignRole_Success(t *testing.T) {
 	result, err := handler.AssignRole(ctx, req, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AssignRoleCreated)
+	roleList, ok := result.(*ogen.RoleListResponse)
 	require.True(t, ok)
+	assert.Contains(t, roleList.Roles, "editor")
 
 	// Verify role was assigned
 	hasRole, err := handler.rbacService.HasRole(context.Background(), regularUserID, "editor")

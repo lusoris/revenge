@@ -92,6 +92,23 @@ type ServerConfig struct {
 
 	// RateLimit configures API rate limiting.
 	RateLimit RateLimitConfig `koanf:"rate_limit"`
+
+	// CORS configures Cross-Origin Resource Sharing for frontend access.
+	CORS CORSConfig `koanf:"cors"`
+}
+
+// CORSConfig holds CORS configuration for browser-based frontend access.
+type CORSConfig struct {
+	// AllowedOrigins is the list of allowed origins. Use ["*"] to allow all origins.
+	// When AllowCredentials is true and AllowedOrigins contains "*", the middleware
+	// reflects the request Origin header (browsers reject literal "*" with credentials).
+	AllowedOrigins []string `koanf:"allowed_origins"`
+
+	// AllowCredentials controls the Access-Control-Allow-Credentials header.
+	AllowCredentials bool `koanf:"allow_credentials"`
+
+	// MaxAge is how long preflight responses can be cached by browsers.
+	MaxAge time.Duration `koanf:"max_age"`
 }
 
 // RateLimitConfig holds rate limiting configuration.
@@ -544,6 +561,11 @@ func Defaults() map[string]interface{} {
 		// Cache defaults
 		"cache.url":     "",
 		"cache.enabled": false,
+
+		// CORS defaults
+		"server.cors.allowed_origins":   []string{"*"},
+		"server.cors.allow_credentials": true,
+		"server.cors.max_age":           "12h",
 
 		// Rate limit defaults (nested under server)
 		"server.rate_limit.enabled":                    true,
