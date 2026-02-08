@@ -11,9 +11,12 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata/providers/anilist"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/fanarttv"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/kitsu"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/letterboxd"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/mal"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/omdb"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/simkl"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/trakt"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvmaze"
 
@@ -63,6 +66,19 @@ type Config struct {
 	// MAL configuration (optional)
 	MALEnabled  bool
 	MALClientID string
+
+	// Trakt configuration (optional)
+	TraktEnabled  bool
+	TraktClientID string
+
+	// Simkl configuration (optional)
+	SimklEnabled  bool
+	SimklClientID string
+
+	// Letterboxd configuration (optional)
+	LetterboxdEnabled   bool
+	LetterboxdAPIKey    string
+	LetterboxdAPISecret string
 }
 
 // ModuleParams contains parameters for the metadata module.
@@ -79,6 +95,9 @@ type ModuleParams struct {
 	KitsuConfig    kitsu.Config    `optional:"true"`
 	AniDBConfig    anidb.Config    `optional:"true"`
 	MALConfig      mal.Config      `optional:"true"`
+	TraktConfig       trakt.Config       `optional:"true"`
+	SimklConfig       simkl.Config       `optional:"true"`
+	LetterboxdConfig  letterboxd.Config  `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -97,6 +116,9 @@ type ModuleResult struct {
 	KitsuProvider         *kitsu.Provider     `optional:"true"`
 	AniDBProvider         *anidb.Provider     `optional:"true"`
 	MALProvider           *mal.Provider       `optional:"true"`
+	TraktProvider         *trakt.Provider      `optional:"true"`
+	SimklProvider         *simkl.Provider      `optional:"true"`
+	LetterboxdProvider    *letterboxd.Provider `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -267,6 +289,67 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(malProvider)
 		result.MALProvider = malProvider
+	}
+
+	// Create and register Trakt provider if configured
+	traktConfig := params.TraktConfig
+	if traktConfig.ClientID == "" && params.Config.TraktClientID != "" {
+		traktConfig = trakt.Config{
+			Enabled:  true,
+			ClientID: params.Config.TraktClientID,
+		}
+	}
+	if traktConfig.ClientID != "" || params.Config.TraktEnabled {
+		if !traktConfig.Enabled {
+			traktConfig.Enabled = true
+		}
+		traktProvider, err := trakt.NewProvider(traktConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(traktProvider)
+		result.TraktProvider = traktProvider
+	}
+
+	// Create and register Simkl provider if configured
+	simklConfig := params.SimklConfig
+	if simklConfig.ClientID == "" && params.Config.SimklClientID != "" {
+		simklConfig = simkl.Config{
+			Enabled:  true,
+			ClientID: params.Config.SimklClientID,
+		}
+	}
+	if simklConfig.ClientID != "" || params.Config.SimklEnabled {
+		if !simklConfig.Enabled {
+			simklConfig.Enabled = true
+		}
+		simklProvider, err := simkl.NewProvider(simklConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(simklProvider)
+		result.SimklProvider = simklProvider
+	}
+
+	// Create and register Letterboxd provider if configured
+	letterboxdConfig := params.LetterboxdConfig
+	if letterboxdConfig.APIKey == "" && params.Config.LetterboxdAPIKey != "" {
+		letterboxdConfig = letterboxd.Config{
+			Enabled:   true,
+			APIKey:    params.Config.LetterboxdAPIKey,
+			APISecret: params.Config.LetterboxdAPISecret,
+		}
+	}
+	if (letterboxdConfig.APIKey != "" && letterboxdConfig.APISecret != "") || params.Config.LetterboxdEnabled {
+		if !letterboxdConfig.Enabled {
+			letterboxdConfig.Enabled = true
+		}
+		letterboxdProvider, err := letterboxd.NewProvider(letterboxdConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(letterboxdProvider)
+		result.LetterboxdProvider = letterboxdProvider
 	}
 
 	result.Service = svc

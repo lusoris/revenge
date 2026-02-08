@@ -26,6 +26,12 @@ const (
 	ProviderAniDB ProviderID = "anidb"
 	// ProviderMAL is MyAnimeList provider (anime ratings, rankings, community data).
 	ProviderMAL ProviderID = "mal"
+	// ProviderTrakt is Trakt provider (movies + TV, community ratings, cross-referenced IDs).
+	ProviderTrakt ProviderID = "trakt"
+	// ProviderSimkl is Simkl provider (movies, TV, anime tracking with cross-referenced IDs).
+	ProviderSimkl ProviderID = "simkl"
+	// ProviderLetterboxd is Letterboxd provider (movie-focused community ratings and reviews).
+	ProviderLetterboxd ProviderID = "letterboxd"
 )
 
 // Provider represents an external metadata provider.

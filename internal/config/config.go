@@ -332,6 +332,15 @@ type MetadataConfig struct {
 
 	// MAL (MyAnimeList) configuration for anime ratings and rankings.
 	MAL MALConfig `koanf:"mal"`
+
+	// Trakt configuration for movie/TV community metadata.
+	Trakt TraktConfig `koanf:"trakt"`
+
+	// Simkl configuration for movie/TV/anime metadata.
+	Simkl SimklConfig `koanf:"simkl"`
+
+	// Letterboxd configuration for movie metadata.
+	Letterboxd LetterboxdConfig `koanf:"letterboxd"`
 }
 
 // TVmazeConfig holds TVmaze configuration.
@@ -373,6 +382,38 @@ type MALConfig struct {
 	// ClientID is the MAL API client ID (required).
 	// Obtain from https://myanimelist.net/apiconfig
 	ClientID string `koanf:"client_id"`
+}
+
+// TraktConfig holds Trakt configuration.
+type TraktConfig struct {
+	// Enabled activates Trakt as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+
+	// ClientID is the Trakt API client ID (required).
+	// Obtain from https://trakt.tv/oauth/applications
+	ClientID string `koanf:"client_id"`
+}
+
+// SimklConfig holds Simkl configuration.
+type SimklConfig struct {
+	// Enabled activates Simkl as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+
+	// ClientID is the Simkl API client ID (required).
+	// Obtain from https://simkl.com/settings/developer/
+	ClientID string `koanf:"client_id"`
+}
+
+// LetterboxdConfig holds Letterboxd configuration.
+type LetterboxdConfig struct {
+	// Enabled activates Letterboxd as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+
+	// APIKey is the Letterboxd API key (required).
+	APIKey string `koanf:"api_key"`
+
+	// APISecret is the Letterboxd API shared secret (required).
+	APISecret string `koanf:"api_secret"`
 }
 
 // FanartTVConfig holds Fanart.tv API configuration.
