@@ -1464,6 +1464,1036 @@ func TestLive_Chain_AdminJourney(t *testing.T) {
 	}
 }
 
+// =============================================================================
+// 18. Movie Detail Subresources (404 paths for non-existent movie)
+// =============================================================================
+
+func TestLive_MovieDetailSubresources(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+	fakeID := "00000000-0000-0000-0000-000000000001"
+
+	// These return 404 because they verify the movie exists first
+	notFoundSubresources := []string{
+		"/collection",
+		"/similar",
+		"/progress",
+	}
+
+	for _, sub := range notFoundSubresources {
+		t.Run("GET_movies_"+fakeID+sub, func(t *testing.T) {
+			status, _ := doJSON(t, "GET", "/api/v1/movies/"+fakeID+sub, tok, nil)
+			assert.Equal(t, 404, status, "should return 404 for non-existent movie subresource %s", sub)
+		})
+	}
+
+	// These return 200 with empty arrays (query-based, no parent existence check)
+	emptyListSubresources := []string{
+		"/files",
+		"/cast",
+		"/crew",
+		"/genres",
+	}
+
+	for _, sub := range emptyListSubresources {
+		t.Run("GET_movies_"+fakeID+sub+"_empty", func(t *testing.T) {
+			status, _ := doJSON(t, "GET", "/api/v1/movies/"+fakeID+sub, tok, nil)
+			assert.Equal(t, 200, status, "should return 200 with empty list for %s", sub)
+		})
+	}
+
+	// POST watched on non-existent movie
+	t.Run("POST_watched_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/movies/"+fakeID+"/watched", tok, nil)
+		assert.Equal(t, 404, status, "watched on non-existent movie should 404")
+	})
+
+	// POST progress on non-existent movie (uses camelCase: progressSeconds, durationSeconds)
+	t.Run("POST_progress_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/movies/"+fakeID+"/progress", tok, map[string]interface{}{
+			"progressSeconds": 120,
+			"durationSeconds": 7200,
+		})
+		assert.True(t, status == 404 || status == 400,
+			"progress on non-existent movie should fail (got %d)", status)
+	})
+
+	// DELETE progress on non-existent movie — idempotent, returns 204 even if nothing to delete
+	t.Run("DELETE_progress_idempotent", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/movies/"+fakeID+"/progress", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 204 || resp.StatusCode == 404,
+			"delete progress should be idempotent (got %d)", resp.StatusCode)
+	})
+
+	// POST refresh (admin-only) on non-existent movie
+	t.Run("POST_refresh_not_found", func(t *testing.T) {
+		admin := ensureAdmin(t)
+		status, _ := doJSON(t, "POST", "/api/v1/movies/"+fakeID+"/refresh", admin.accessToken, nil)
+		assert.Equal(t, 404, status, "refresh on non-existent movie should 404")
+	})
+
+	// Non-admin refresh: server checks resource existence (404) before auth (403)
+	t.Run("POST_refresh_non_admin", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/movies/"+fakeID+"/refresh", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 403 || resp.StatusCode == 404,
+			"non-admin refresh should return 403 or 404 (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 19. TV Show Detail Subresources (404 paths for non-existent show)
+// =============================================================================
+
+func TestLive_TVShowDetailSubresources(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+	fakeID := "00000000-0000-0000-0000-000000000001"
+
+	// These return 404 because they verify the show exists first
+	notFoundSubresources := []string{
+		"/watch-stats",
+		"/next-episode",
+	}
+
+	for _, sub := range notFoundSubresources {
+		t.Run("GET_tvshows_"+fakeID+sub, func(t *testing.T) {
+			status, _ := doJSON(t, "GET", "/api/v1/tvshows/"+fakeID+sub, tok, nil)
+			assert.Equal(t, 404, status, "should return 404 for non-existent tvshow subresource %s", sub)
+		})
+	}
+
+	// These return 200 with empty arrays (query-based, no parent existence check)
+	emptyListSubresources := []string{
+		"/seasons",
+		"/episodes",
+		"/cast",
+		"/crew",
+		"/genres",
+		"/networks",
+	}
+
+	for _, sub := range emptyListSubresources {
+		t.Run("GET_tvshows_"+fakeID+sub+"_empty", func(t *testing.T) {
+			status, _ := doJSON(t, "GET", "/api/v1/tvshows/"+fakeID+sub, tok, nil)
+			assert.Equal(t, 200, status, "should return 200 with empty list for %s", sub)
+		})
+	}
+
+	// Season-level endpoints
+	t.Run("GET_season_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/tvshows/seasons/"+fakeID, tok, nil)
+		assert.Equal(t, 404, status, "non-existent season should 404")
+	})
+
+	t.Run("GET_season_episodes_empty", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/tvshows/seasons/"+fakeID+"/episodes", tok, nil)
+		assert.True(t, status == 200 || status == 404,
+			"season episodes should return 200 empty or 404 (got %d)", status)
+	})
+
+	// Episode-level endpoints
+	t.Run("GET_episode_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/tvshows/episodes/"+fakeID, tok, nil)
+		assert.Equal(t, 404, status, "non-existent episode should 404")
+	})
+
+	t.Run("GET_episode_files_empty", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/tvshows/episodes/"+fakeID+"/files", tok, nil)
+		assert.True(t, status == 200 || status == 404,
+			"episode files should return 200 empty or 404 (got %d)", status)
+	})
+
+	t.Run("GET_episode_progress_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/tvshows/episodes/"+fakeID+"/progress", tok, nil)
+		assert.Equal(t, 404, status, "non-existent episode progress should 404")
+	})
+
+	t.Run("PUT_episode_progress_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "PUT", "/api/v1/tvshows/episodes/"+fakeID+"/progress", tok, map[string]interface{}{
+			"progressSeconds": 60,
+			"durationSeconds": 3600,
+		})
+		assert.True(t, status == 404 || status == 400,
+			"set progress on non-existent episode should fail (got %d)", status)
+	})
+
+	// DELETE progress is idempotent — returns 204 even if nothing to delete
+	t.Run("DELETE_episode_progress_idempotent", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/tvshows/episodes/"+fakeID+"/progress", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 204 || resp.StatusCode == 404,
+			"delete progress should be idempotent (got %d)", resp.StatusCode)
+	})
+
+	t.Run("POST_episode_watched_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/tvshows/episodes/"+fakeID+"/watched", tok, nil)
+		assert.Equal(t, 404, status, "watched on non-existent episode should 404")
+	})
+
+	// Admin refresh on non-existent show
+	t.Run("POST_refresh_not_found", func(t *testing.T) {
+		admin := ensureAdmin(t)
+		status, _ := doJSON(t, "POST", "/api/v1/tvshows/"+fakeID+"/refresh", admin.accessToken, nil)
+		assert.Equal(t, 404, status, "refresh on non-existent tvshow should 404")
+	})
+
+	// Non-admin refresh: server checks resource existence (404) before auth (403)
+	t.Run("POST_refresh_non_admin", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/tvshows/"+fakeID+"/refresh", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 403 || resp.StatusCode == 404,
+			"non-admin refresh should return 403 or 404 (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 20. Collections (404 paths)
+// =============================================================================
+
+func TestLive_Collections(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+	fakeID := "00000000-0000-0000-0000-000000000001"
+
+	t.Run("GET_collection_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/collections/"+fakeID, tok, nil)
+		assert.Equal(t, 404, status, "non-existent collection should 404")
+	})
+
+	t.Run("GET_collection_movies_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/collections/"+fakeID+"/movies", tok, nil)
+		// Returns 200 with empty array (query-based) or 404
+		assert.True(t, status == 200 || status == 404,
+			"collection movies should respond (got %d)", status)
+	})
+}
+
+// =============================================================================
+// 21. Playback Sessions
+// =============================================================================
+
+func TestLive_PlaybackSessions(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+	fakeSessionID := "00000000-0000-0000-0000-000000000099"
+	fakeMovieID := "00000000-0000-0000-0000-000000000001"
+
+	// Start playback with non-existent media should fail
+	t.Run("start_session_no_media", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/playback/sessions", tok, map[string]interface{}{
+			"media_type": "movie",
+			"media_id":   fakeMovieID,
+		})
+		// Should be 404 (movie not found) or 422 (unprocessable)
+		assert.True(t, status == 404 || status == 422 || status == 400,
+			"playback start with non-existent media should fail (got %d)", status)
+	})
+
+	// Get non-existent session
+	t.Run("get_session_not_found", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/playback/sessions/"+fakeSessionID, tok, nil)
+		assert.Equal(t, 404, status, "non-existent playback session should 404")
+	})
+
+	// Stop non-existent session
+	t.Run("stop_session_not_found", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/playback/sessions/"+fakeSessionID, tok, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 404, resp.StatusCode, "stop non-existent session should 404")
+	})
+}
+
+// =============================================================================
+// 22. MFA Complete Flows
+// =============================================================================
+
+func TestLive_MFACompleteFlows(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+
+	// Enable MFA without setting up TOTP first should fail
+	t.Run("enable_without_setup", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/enable", tok, nil)
+		assert.True(t, status >= 400 && status < 500,
+			"enable MFA without setup should fail (got %d)", status)
+	})
+
+	// Disable MFA when not enabled — idempotent operation
+	t.Run("disable_when_not_enabled", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/disable", tok, nil)
+		// 200 = idempotent success, 400/409 = strict mode
+		assert.True(t, status == 200 || status == 204 || (status >= 400 && status < 500),
+			"disable MFA when not enabled should respond (got %d)", status)
+	})
+
+	// Verify TOTP with invalid code
+	t.Run("verify_totp_invalid", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/totp/verify", tok, map[string]string{
+			"code": "000000",
+		})
+		assert.True(t, status >= 400 && status < 500,
+			"invalid TOTP code should fail (got %d)", status)
+	})
+
+	// Delete TOTP when not set up — returns 204 (idempotent SQL DELETE)
+	t.Run("delete_totp_not_setup", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/mfa/totp", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 204 || (resp.StatusCode >= 400 && resp.StatusCode < 500),
+			"delete TOTP should return 204 or client error (got %d)", resp.StatusCode)
+	})
+
+	// Regenerate backup codes (may require MFA to be enabled first)
+	t.Run("regenerate_backup_codes", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/backup-codes/regenerate", tok, nil)
+		// May fail if MFA isn't fully enabled yet, which is fine
+		assert.True(t, status == 200 || (status >= 400 && status < 500),
+			"regenerate backup codes should return valid response (got %d)", status)
+	})
+
+	// WebAuthn register begin (no browser, so just test the endpoint responds)
+	t.Run("webauthn_register_begin", func(t *testing.T) {
+		status, body := doJSON(t, "POST", "/api/v1/mfa/webauthn/register/begin", tok, nil)
+		// Should return 200 with registration options or a client error
+		assert.True(t, status == 200 || (status >= 400 && status < 500),
+			"WebAuthn register begin should respond (got %d)", status)
+		if status == 200 {
+			assert.NotNil(t, body, "should return registration options")
+		}
+	})
+
+	// WebAuthn register finish with invalid data
+	t.Run("webauthn_register_finish_invalid", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/webauthn/register/finish", tok, map[string]interface{}{
+			"id":    "fake-credential",
+			"type":  "public-key",
+			"rawId": "ZmFrZQ==",
+		})
+		assert.True(t, status >= 400 && status < 500,
+			"WebAuthn finish with invalid data should fail (got %d)", status)
+	})
+
+	// WebAuthn login begin (no credentials registered)
+	t.Run("webauthn_login_begin", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/mfa/webauthn/login/begin", tok, nil)
+		// May fail because no credentials are registered
+		assert.True(t, status == 200 || (status >= 400 && status < 500),
+			"WebAuthn login begin should respond (got %d)", status)
+	})
+
+	// Delete non-existent WebAuthn credential
+	t.Run("webauthn_delete_nonexistent", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/mfa/webauthn/credentials/nonexistent-cred-id", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 404 || resp.StatusCode == 400,
+			"delete non-existent WebAuthn credential should fail (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 23. Sessions Granular
+// =============================================================================
+
+func TestLive_SessionsGranular(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+
+	// Refresh via sessions endpoint (uses session-based refresh, auth tokens may differ)
+	t.Run("sessions_refresh", func(t *testing.T) {
+		status, _ := doJSON(t, "POST", "/api/v1/sessions/refresh", tok, map[string]string{
+			"refresh_token": creds.refreshToken,
+		})
+		// 200 = refreshed, 401 = auth-module tokens not valid for session-module refresh
+		assert.True(t, status == 200 || status == 201 || status == 401,
+			"session refresh should respond (got %d)", status)
+	})
+
+	// Delete current session
+	t.Run("delete_current_session", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/sessions/current", tok, nil)
+		defer resp.Body.Close()
+		// May return 200/204 if session_id is in JWT claims, or 401 if not
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204 || resp.StatusCode == 401,
+			"delete current session should respond (got %d)", resp.StatusCode)
+	})
+
+	// Delete specific session by ID (fake ID)
+	t.Run("delete_specific_session", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/sessions/00000000-0000-0000-0000-000000000099", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 404 || resp.StatusCode == 204 || resp.StatusCode == 401,
+			"delete non-existent session should respond (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 24. Admin Activity Granular
+// =============================================================================
+
+func TestLive_AdminActivityGranular(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+
+	// Activity for specific user
+	t.Run("activity_for_user", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/admin/activity/users/"+admin.userID, tok, nil)
+		assert.Equal(t, 200, status, "activity for specific user should work")
+	})
+
+	// Activity for non-existent resource
+	t.Run("activity_for_resource", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/activity/resources/library/00000000-0000-0000-0000-000000000001", tok, nil)
+		defer resp.Body.Close()
+		// Should return 200 with empty list or 404
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 404,
+			"activity for resource should respond (got %d)", resp.StatusCode)
+	})
+
+	// List action types
+	t.Run("list_action_types", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/admin/activity/actions", tok, nil)
+		assert.Equal(t, 200, status, "list action types should work")
+	})
+
+	// Non-admin denied
+	regular := registerAndLogin(t)
+	t.Run("non_admin_denied_user_activity", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/activity/users/"+admin.userID, regular.accessToken, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 403, resp.StatusCode, "non-admin should be denied user activity")
+	})
+}
+
+// =============================================================================
+// 25. Library Granular (update, scans, permissions)
+// =============================================================================
+
+func TestLive_LibraryGranular(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+	regular := registerAndLogin(t)
+
+	// Create library for testing
+	var libraryID string
+	t.Run("setup_create_library", func(t *testing.T) {
+		status, body := doJSON(t, "POST", "/api/v1/libraries", tok, map[string]interface{}{
+			"name":  "Granular Test Library",
+			"type":  "movie",
+			"paths": []string{"/media/granular-test"},
+		})
+		if status == 201 || status == 200 {
+			libraryID, _ = body["id"].(string)
+		}
+		require.True(t, status == 201 || status == 200, "library creation should succeed (got %d)", status)
+		require.NotEmpty(t, libraryID)
+	})
+
+	// Update library
+	t.Run("update_library", func(t *testing.T) {
+		resp := doRequest(t, "PUT", "/api/v1/libraries/"+libraryID, tok, map[string]interface{}{
+			"name":  "Updated Library Name",
+			"paths": []string{"/media/granular-test", "/media/extra"},
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"library update should succeed (got %d)", resp.StatusCode)
+	})
+
+	// List scan history
+	t.Run("list_scans", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/libraries/"+libraryID+"/scans", tok, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 200, resp.StatusCode, "list scans should work")
+	})
+
+	// List library permissions
+	t.Run("list_permissions", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/libraries/"+libraryID+"/permissions", tok, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 200, resp.StatusCode, "list permissions should work")
+	})
+
+	// Grant permission to regular user
+	t.Run("grant_permission", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/libraries/"+libraryID+"/permissions", tok, map[string]interface{}{
+			"userId":     regular.userID,
+			"permission": "view",
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 201 || resp.StatusCode == 204,
+			"grant permission should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Revoke permission (requires ?permission= query param)
+	t.Run("revoke_permission", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/libraries/"+libraryID+"/permissions/"+regular.userID+"?permission=view", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"revoke permission should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Non-admin can't update
+	t.Run("non_admin_update_denied", func(t *testing.T) {
+		resp := doRequest(t, "PUT", "/api/v1/libraries/"+libraryID, regular.accessToken, map[string]interface{}{
+			"name": "Hacked",
+		})
+		defer resp.Body.Close()
+		assert.Equal(t, 403, resp.StatusCode, "non-admin should be denied library update")
+	})
+
+	// Cleanup
+	t.Run("cleanup", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/libraries/"+libraryID, tok, nil)
+		resp.Body.Close()
+	})
+}
+
+// =============================================================================
+// 26. RBAC Granular (get role, update permissions, policy CRUD)
+// =============================================================================
+
+func TestLive_RBACGranular(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+
+	// Create a role for testing
+	t.Run("create_role", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/rbac/roles", tok, map[string]interface{}{
+			"name":        "test-viewer",
+			"description": "Test viewer role for granular tests",
+			"permissions": []map[string]string{
+				{"resource": "library", "action": "read"},
+			},
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 201,
+			"role creation should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Get specific role
+	t.Run("get_role", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/rbac/roles/test-viewer", tok, nil)
+		assert.Equal(t, 200, status, "get specific role should work")
+		if body != nil {
+			assert.Equal(t, "test-viewer", body["name"])
+		}
+	})
+
+	// Update role permissions
+	t.Run("update_role_permissions", func(t *testing.T) {
+		resp := doRequest(t, "PUT", "/api/v1/rbac/roles/test-viewer/permissions", tok, map[string]interface{}{
+			"permissions": []map[string]string{
+				{"resource": "library", "action": "read"},
+				{"resource": "movie", "action": "read"},
+			},
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"update role permissions should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Create policy
+	t.Run("create_policy", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/rbac/policies", tok, map[string]interface{}{
+			"subject": "role:test-viewer",
+			"object":  "tvshow",
+			"action":  "read",
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 201 || resp.StatusCode == 204,
+			"create policy should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Delete policy
+	t.Run("delete_policy", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/rbac/policies", tok, map[string]interface{}{
+			"subject": "role:test-viewer",
+			"object":  "tvshow",
+			"action":  "read",
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"delete policy should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Get non-existent role
+	t.Run("get_nonexistent_role", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/rbac/roles/does-not-exist", tok, nil)
+		assert.Equal(t, 404, status, "non-existent role should 404")
+	})
+
+	// Clean up
+	t.Run("cleanup_role", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/rbac/roles/test-viewer", tok, nil)
+		resp.Body.Close()
+	})
+}
+
+// =============================================================================
+// 27. Settings Granular (server key get/put)
+// =============================================================================
+
+func TestLive_SettingsGranular(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+	regular := registerAndLogin(t)
+
+	// Set a server setting
+	t.Run("set_server_setting", func(t *testing.T) {
+		resp := doRequest(t, "PUT", "/api/v1/settings/server/app_name", tok, map[string]string{
+			"value": "Revenge Test",
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"set server setting should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Get server setting
+	t.Run("get_server_setting", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/settings/server/app_name", tok, nil)
+		if status == 200 && body != nil {
+			assert.Equal(t, "Revenge Test", body["value"])
+		}
+		assert.True(t, status == 200 || status == 404,
+			"get server setting should respond (got %d)", status)
+	})
+
+	// Non-admin denied server settings
+	t.Run("non_admin_denied_server_setting", func(t *testing.T) {
+		resp := doRequest(t, "PUT", "/api/v1/settings/server/app_name", regular.accessToken, map[string]string{
+			"value": "Hacked",
+		})
+		defer resp.Body.Close()
+		assert.Equal(t, 403, resp.StatusCode, "non-admin should be denied server settings")
+	})
+
+	t.Run("non_admin_denied_get_server_setting", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/settings/server/app_name", regular.accessToken, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 403, resp.StatusCode, "non-admin should be denied reading server settings")
+	})
+}
+
+// =============================================================================
+// 28. Auth Edge Cases
+// =============================================================================
+
+func TestLive_AuthEdgeCases(t *testing.T) {
+	creds := registerAndLogin(t)
+
+	// Resend verification email (requires auth, no body)
+	t.Run("resend_verification", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/auth/resend-verification", creds.accessToken, nil)
+		defer resp.Body.Close()
+		// Should accept even if email service isn't configured (204 = success, 409 = already verified)
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 202 || resp.StatusCode == 204 || resp.StatusCode == 409,
+			"resend verification should be accepted (got %d)", resp.StatusCode)
+	})
+
+	// Resend verification without auth should fail
+	t.Run("resend_verification_unauthed", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/auth/resend-verification", "", nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 401, resp.StatusCode,
+			"resend verification without auth should be 401 (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 29. Metadata Endpoints (TMDb - graceful error if not configured)
+// =============================================================================
+
+func TestLive_MetadataEndpoints(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+
+	// Movie search
+	t.Run("search_movie", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/search/movie?q=inception", tok, nil)
+		defer resp.Body.Close()
+		// May return 200 (TMDb configured) or 503/500 (not configured)
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata search should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// TV search
+	t.Run("search_tv", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/search/tv?q=breaking+bad", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata TV search should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// Movie lookup by TMDb ID
+	t.Run("movie_lookup", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/movie/550", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata movie lookup should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// Collection lookup
+	t.Run("collection_lookup", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/collection/10", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata collection lookup should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// TV lookup
+	t.Run("tv_lookup", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/tv/1396", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata TV lookup should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// Season lookup
+	t.Run("tv_season_lookup", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/tv/1396/season/1", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata season lookup should not return auth error (got %d)", resp.StatusCode)
+	})
+
+	// Episode lookup
+	t.Run("tv_episode_lookup", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/metadata/tv/1396/season/1/episode/1", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode != 401 && resp.StatusCode != 403,
+			"metadata episode lookup should not return auth error (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 30. OIDC Admin CRUD
+// =============================================================================
+
+func TestLive_OIDCAdminCRUD(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+	regular := registerAndLogin(t)
+
+	// Create OIDC provider
+	var providerID string
+	t.Run("create_provider", func(t *testing.T) {
+		status, body := doJSON(t, "POST", "/api/v1/admin/oidc/providers", tok, map[string]interface{}{
+			"name":         "test-oidc",
+			"displayName":  "Test OIDC Provider",
+			"clientId":     "test-client-id",
+			"clientSecret": "test-client-secret",
+			"issuerUrl":    "https://accounts.google.com",
+		})
+		if status == 201 || status == 200 {
+			providerID, _ = body["id"].(string)
+		}
+		assert.True(t, status == 201 || status == 200,
+			"OIDC provider creation should succeed (got %d)", status)
+	})
+
+	// Get provider
+	t.Run("get_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		status, body := doJSON(t, "GET", "/api/v1/admin/oidc/providers/"+providerID, tok, nil)
+		assert.Equal(t, 200, status)
+		if body != nil {
+			assert.Equal(t, "test-oidc", body["name"])
+		}
+	})
+
+	// Update provider
+	t.Run("update_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		resp := doRequest(t, "PATCH", "/api/v1/admin/oidc/providers/"+providerID, tok, map[string]interface{}{
+			"displayName": "Updated OIDC Provider",
+		})
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"update provider should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Disable provider
+	t.Run("disable_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		resp := doRequest(t, "POST", "/api/v1/admin/oidc/providers/"+providerID+"/disable", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"disable provider should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Enable provider
+	t.Run("enable_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		resp := doRequest(t, "POST", "/api/v1/admin/oidc/providers/"+providerID+"/enable", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"enable provider should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Set as default
+	t.Run("set_default_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		resp := doRequest(t, "POST", "/api/v1/admin/oidc/providers/"+providerID+"/default", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"set default provider should succeed (got %d)", resp.StatusCode)
+	})
+
+	// Non-admin denied
+	t.Run("non_admin_denied_create", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/admin/oidc/providers", regular.accessToken, map[string]interface{}{
+			"name":         "hack-provider",
+			"displayName":  "Hack Provider",
+			"clientId":     "hack",
+			"clientSecret": "hack-secret",
+			"issuerUrl":    "https://hack.example.com",
+		})
+		defer resp.Body.Close()
+		// May be 403 (authz checked first) or 400 (validation first)
+		assert.True(t, resp.StatusCode == 403 || resp.StatusCode == 400,
+			"non-admin should be denied OIDC admin (got %d)", resp.StatusCode)
+	})
+
+	// Delete provider
+	t.Run("delete_provider", func(t *testing.T) {
+		if providerID == "" {
+			t.Skip("no provider ID")
+		}
+		resp := doRequest(t, "DELETE", "/api/v1/admin/oidc/providers/"+providerID, tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"delete provider should succeed (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 31. OIDC User Endpoints
+// =============================================================================
+
+func TestLive_OIDCUserEndpoints(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+
+	// List linked providers (should be empty)
+	t.Run("list_linked_providers", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/users/me/oidc", tok, nil)
+		defer resp.Body.Close()
+		assert.Equal(t, 200, resp.StatusCode, "list linked providers should work")
+	})
+
+	// Unlink non-existent provider
+	t.Run("unlink_nonexistent", func(t *testing.T) {
+		resp := doRequest(t, "DELETE", "/api/v1/users/me/oidc/google", tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 404 || resp.StatusCode == 400,
+			"unlink non-existent provider should fail (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 32. Integration Endpoints (graceful errors without external services)
+// =============================================================================
+
+func TestLive_IntegrationEndpoints(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+
+	// Radarr endpoints
+	t.Run("radarr_sync", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/admin/integrations/radarr/sync", tok, nil)
+		defer resp.Body.Close()
+		// Should fail gracefully (not configured), not 500
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"radarr sync should not 500 (got %d)", resp.StatusCode)
+	})
+
+	t.Run("radarr_quality_profiles", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/integrations/radarr/quality-profiles", tok, nil)
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"radarr quality profiles should not 500 (got %d)", resp.StatusCode)
+	})
+
+	t.Run("radarr_root_folders", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/integrations/radarr/root-folders", tok, nil)
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"radarr root folders should not 500 (got %d)", resp.StatusCode)
+	})
+
+	// Sonarr endpoints
+	t.Run("sonarr_sync", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/admin/integrations/sonarr/sync", tok, nil)
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"sonarr sync should not 500 (got %d)", resp.StatusCode)
+	})
+
+	t.Run("sonarr_quality_profiles", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/integrations/sonarr/quality-profiles", tok, nil)
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"sonarr quality profiles should not 500 (got %d)", resp.StatusCode)
+	})
+
+	t.Run("sonarr_root_folders", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/admin/integrations/sonarr/root-folders", tok, nil)
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"sonarr root folders should not 500 (got %d)", resp.StatusCode)
+	})
+
+	// Webhook endpoints (no API key / wrong payload, should not 500)
+	t.Run("radarr_webhook", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/webhooks/radarr", "", map[string]interface{}{
+			"eventType": "Test",
+		})
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"radarr webhook should not 500 (got %d)", resp.StatusCode)
+	})
+
+	t.Run("sonarr_webhook", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/webhooks/sonarr", "", map[string]interface{}{
+			"eventType": "Test",
+		})
+		defer resp.Body.Close()
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"sonarr webhook should not 500 (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 33. Misc Endpoints (avatar, user by ID, images)
+// =============================================================================
+
+func TestLive_MiscEndpoints(t *testing.T) {
+	admin := ensureAdmin(t)
+	regular := registerAndLogin(t)
+
+	// Get user by ID (admin)
+	t.Run("admin_get_user_by_id", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/users/"+regular.userID, admin.accessToken, nil)
+		// 200 = found, 404 = profile set to private by default
+		assert.True(t, status == 200 || status == 404,
+			"admin get user by ID should respond (got %d)", status)
+		if status == 200 && body != nil {
+			assert.Equal(t, regular.username, body["username"])
+		}
+	})
+
+	// Non-admin get user by ID (may be allowed or denied)
+	t.Run("regular_get_user_by_id", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/users/"+admin.userID, regular.accessToken, nil)
+		defer resp.Body.Close()
+		// Could be 200 (public profiles) or 403 (restricted)
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"get user by ID should not 500 (got %d)", resp.StatusCode)
+	})
+
+	// Image proxy (non-existent image)
+	t.Run("image_proxy_not_found", func(t *testing.T) {
+		resp := doRequest(t, "GET", "/api/v1/images/poster/w500/nonexistent.jpg", regular.accessToken, nil)
+		defer resp.Body.Close()
+		// Should return 404 or a proxy error, not 500
+		assert.NotEqual(t, 500, resp.StatusCode,
+			"image proxy should not 500 (got %d)", resp.StatusCode)
+	})
+
+	// Avatar upload (without actual file, should fail validation)
+	t.Run("avatar_upload_no_file", func(t *testing.T) {
+		resp := doRequest(t, "POST", "/api/v1/users/me/avatar", regular.accessToken, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode >= 400 && resp.StatusCode < 500,
+			"avatar upload without file should fail (got %d)", resp.StatusCode)
+	})
+}
+
+// =============================================================================
+// 34. Comprehensive Unauthenticated Access (all new endpoints)
+// =============================================================================
+
+func TestLive_UnauthenticatedAccess_Extended(t *testing.T) {
+	fakeID := "00000000-0000-0000-0000-000000000001"
+
+	protectedEndpoints := []struct {
+		method string
+		path   string
+	}{
+		// Movie subresources
+		{"GET", "/api/v1/movies/" + fakeID + "/files"},
+		{"GET", "/api/v1/movies/" + fakeID + "/cast"},
+		{"GET", "/api/v1/movies/" + fakeID + "/crew"},
+		{"GET", "/api/v1/movies/" + fakeID + "/genres"},
+		{"GET", "/api/v1/movies/" + fakeID + "/collection"},
+		{"GET", "/api/v1/movies/" + fakeID + "/similar"},
+		{"GET", "/api/v1/movies/" + fakeID + "/progress"},
+		{"POST", "/api/v1/movies/" + fakeID + "/progress"},
+		{"POST", "/api/v1/movies/" + fakeID + "/watched"},
+		{"POST", "/api/v1/movies/" + fakeID + "/refresh"},
+		// TV show subresources
+		{"GET", "/api/v1/tvshows/" + fakeID + "/seasons"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/episodes"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/cast"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/crew"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/genres"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/networks"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/watch-stats"},
+		{"GET", "/api/v1/tvshows/" + fakeID + "/next-episode"},
+		{"POST", "/api/v1/tvshows/" + fakeID + "/refresh"},
+		{"GET", "/api/v1/tvshows/seasons/" + fakeID},
+		{"GET", "/api/v1/tvshows/seasons/" + fakeID + "/episodes"},
+		{"GET", "/api/v1/tvshows/episodes/" + fakeID},
+		{"GET", "/api/v1/tvshows/episodes/" + fakeID + "/files"},
+		{"GET", "/api/v1/tvshows/episodes/" + fakeID + "/progress"},
+		{"POST", "/api/v1/tvshows/episodes/" + fakeID + "/watched"},
+		// Collections
+		{"GET", "/api/v1/collections/" + fakeID},
+		{"GET", "/api/v1/collections/" + fakeID + "/movies"},
+		// Playback
+		{"POST", "/api/v1/playback/sessions"},
+		{"GET", "/api/v1/playback/sessions/" + fakeID},
+		// Metadata
+		{"GET", "/api/v1/metadata/search/movie?q=test"},
+		{"GET", "/api/v1/metadata/movie/550"},
+		{"GET", "/api/v1/metadata/search/tv?q=test"},
+		{"GET", "/api/v1/metadata/tv/1396"},
+		// Admin OIDC
+		{"POST", "/api/v1/admin/oidc/providers"},
+		// Admin integrations
+		{"POST", "/api/v1/admin/integrations/radarr/sync"},
+		{"POST", "/api/v1/admin/integrations/sonarr/sync"},
+		{"GET", "/api/v1/admin/integrations/radarr/quality-profiles"},
+		{"GET", "/api/v1/admin/integrations/sonarr/quality-profiles"},
+		// Admin activity granular
+		{"GET", "/api/v1/admin/activity/actions"},
+		// User endpoints
+		{"POST", "/api/v1/users/me/avatar"},
+		{"GET", "/api/v1/users/me/oidc"},
+	}
+
+	for _, ep := range protectedEndpoints {
+		t.Run(ep.method+"_"+strings.ReplaceAll(strings.TrimPrefix(ep.path, "/api/v1/"), "/", "_"), func(t *testing.T) {
+			resp := doRequest(t, ep.method, ep.path, "", nil)
+			defer resp.Body.Close()
+			assert.NotEqual(t, 200, resp.StatusCode,
+				"%s %s should not succeed without auth (got %d)", ep.method, ep.path, resp.StatusCode)
+		})
+	}
+}
+
 // keys returns the keys of a map (for debug logging).
 func keys(m map[string]interface{}) []string {
 	result := make([]string, 0, len(m))
