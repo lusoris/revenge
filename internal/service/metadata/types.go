@@ -52,10 +52,11 @@ type MovieMetadata struct {
 	Revenue *int64
 
 	// Ratings
-	VoteAverage float64
-	VoteCount   int
-	Popularity  float64
-	Adult       bool
+	VoteAverage     float64
+	VoteCount       int
+	Popularity      float64
+	Adult           bool
+	ExternalRatings []ExternalRating // IMDb, Rotten Tomatoes, Metacritic (from OMDb)
 
 	// Images
 	PosterPath   *string
@@ -135,10 +136,11 @@ type TVShowMetadata struct {
 	EpisodeRuntime   []int
 
 	// Ratings
-	VoteAverage float64
-	VoteCount   int
-	Popularity  float64
-	Adult       bool
+	VoteAverage     float64
+	VoteCount       int
+	Popularity      float64
+	Adult           bool
+	ExternalRatings []ExternalRating // IMDb, Rotten Tomatoes, Metacritic (from OMDb)
 
 	// Images
 	PosterPath   *string
@@ -476,6 +478,13 @@ type TranslationData struct {
 	Tagline  string
 	Homepage string
 	Runtime  *int32
+}
+
+// ExternalRating represents a rating from an external source (IMDb, Rotten Tomatoes, etc.).
+type ExternalRating struct {
+	Source string  // "Internet Movie Database", "Rotten Tomatoes", "Metacritic"
+	Value  string  // "8.8/10", "96%", "90/100"
+	Score  float64 // Normalized 0-100 scale
 }
 
 // ExternalIDs contains external identifiers from various sources.

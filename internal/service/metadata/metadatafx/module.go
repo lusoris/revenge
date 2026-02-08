@@ -8,6 +8,7 @@ import (
 	movieadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/movie"
 	tvshowadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/tvshow"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/fanarttv"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/omdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
 
@@ -36,6 +37,9 @@ type Config struct {
 	// Fanart.tv configuration (optional)
 	FanartTVAPIKey    string
 	FanartTVClientKey string
+
+	// OMDb configuration (optional)
+	OMDbAPIKey string
 }
 
 // ModuleParams contains parameters for the metadata module.
@@ -46,6 +50,7 @@ type ModuleParams struct {
 	TMDbConfig     tmdb.Config     `optional:"true"`
 	TVDbConfig     tvdb.Config     `optional:"true"`
 	FanartTVConfig fanarttv.Config `optional:"true"`
+	OMDbConfig     omdb.Config     `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -58,6 +63,7 @@ type ModuleResult struct {
 	TMDbProvider          *tmdb.Provider     `optional:"true"`
 	TVDbProvider          *tvdb.Provider     `optional:"true"`
 	FanartTVProvider      *fanarttv.Provider `optional:"true"`
+	OMDbProvider          *omdb.Provider     `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -132,6 +138,23 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(fanartProvider)
 		result.FanartTVProvider = fanartProvider
+	}
+
+	// Create and register OMDb provider if configured
+	omdbConfig := params.OMDbConfig
+	if omdbConfig.APIKey == "" && params.Config.OMDbAPIKey != "" {
+		omdbConfig = omdb.Config{
+			APIKey: params.Config.OMDbAPIKey,
+		}
+	}
+
+	if omdbConfig.APIKey != "" {
+		omdbProvider, err := omdb.NewProvider(omdbConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(omdbProvider)
+		result.OMDbProvider = omdbProvider
 	}
 
 	result.Service = svc
