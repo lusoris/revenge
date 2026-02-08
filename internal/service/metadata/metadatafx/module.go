@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata/providers/omdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/tvmaze"
 
 	"go.uber.org/fx"
 )
@@ -40,6 +41,9 @@ type Config struct {
 
 	// OMDb configuration (optional)
 	OMDbAPIKey string
+
+	// TVmaze configuration (optional, no API key needed)
+	TVmazeEnabled bool
 }
 
 // ModuleParams contains parameters for the metadata module.
@@ -51,6 +55,7 @@ type ModuleParams struct {
 	TVDbConfig     tvdb.Config     `optional:"true"`
 	FanartTVConfig fanarttv.Config `optional:"true"`
 	OMDbConfig     omdb.Config     `optional:"true"`
+	TVmazeConfig   tvmaze.Config   `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -64,6 +69,7 @@ type ModuleResult struct {
 	TVDbProvider          *tvdb.Provider     `optional:"true"`
 	FanartTVProvider      *fanarttv.Provider `optional:"true"`
 	OMDbProvider          *omdb.Provider     `optional:"true"`
+	TVmazeProvider        *tvmaze.Provider   `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -155,6 +161,16 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(omdbProvider)
 		result.OMDbProvider = omdbProvider
+	}
+
+	// Create and register TVmaze provider if enabled (no API key needed)
+	if params.Config.TVmazeEnabled {
+		tvmazeProvider, err := tvmaze.NewProvider(params.TVmazeConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(tvmazeProvider)
+		result.TVmazeProvider = tvmazeProvider
 	}
 
 	result.Service = svc

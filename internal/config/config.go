@@ -317,6 +317,15 @@ type MetadataConfig struct {
 
 	// OMDb configuration for ratings data.
 	OMDb OMDbConfig `koanf:"omdb"`
+
+	// TVmaze configuration for free TV metadata (no API key required).
+	TVmaze TVmazeConfig `koanf:"tvmaze"`
+}
+
+// TVmazeConfig holds TVmaze configuration.
+type TVmazeConfig struct {
+	// Enabled activates TVmaze as a metadata provider.
+	Enabled bool `koanf:"enabled"`
 }
 
 // FanartTVConfig holds Fanart.tv API configuration.
@@ -620,6 +629,7 @@ func Defaults() map[string]interface{} {
 		"metadata.fanarttv.api_key":    "",
 		"metadata.fanarttv.client_key": "",
 		"metadata.omdb.api_key":        "",
+		"metadata.tvmaze.enabled":      false,
 
 		// Search defaults
 		"search.url":     "",

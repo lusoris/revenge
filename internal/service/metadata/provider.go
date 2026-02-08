@@ -16,6 +16,8 @@ const (
 	ProviderFanartTV ProviderID = "fanarttv"
 	// ProviderOMDb is Open Movie Database provider.
 	ProviderOMDb ProviderID = "omdb"
+	// ProviderTVmaze is TVmaze provider (free TV metadata, no auth required).
+	ProviderTVmaze ProviderID = "tvmaze"
 )
 
 // Provider represents an external metadata provider.
