@@ -167,10 +167,14 @@ func (w *RadarrWebhookWorker) Timeout(job *river.Job[RadarrWebhookJobArgs]) time
 func (w *RadarrWebhookWorker) Work(ctx context.Context, job *river.Job[RadarrWebhookJobArgs]) error {
 	args := job.Args
 
+	var movieID int
+	if args.Payload.Movie != nil {
+		movieID = args.Payload.Movie.ID
+	}
 	w.logger.Info("processing radarr webhook",
 		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
 		slog.String("event_type", args.Payload.EventType),
-		slog.Int("movie_id", args.Payload.Movie.ID),
+		slog.Int("movie_id", movieID),
 	)
 
 	// Check if webhook handler is available

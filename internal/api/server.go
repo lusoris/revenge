@@ -75,7 +75,7 @@ type ServerParams struct {
 	// Content modules
 	MovieHandler    *movie.Handler
 	MetadataService metadata.Service `optional:"true"`
-	ImageService    *image.Service   `optional:"true"`
+	ImageService    *image.Service
 	TVShowService   tvshow.Service         `optional:"true"`
 	// Playback / HLS streaming (optional)
 	PlaybackService *playback.Service      `optional:"true"`

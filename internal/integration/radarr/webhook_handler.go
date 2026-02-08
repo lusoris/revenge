@@ -22,10 +22,23 @@ func NewWebhookHandler(syncService *SyncService, logger *slog.Logger) *WebhookHa
 // HandleWebhook processes a Radarr webhook payload.
 // It handles events like grab, download, rename, movie delete, etc.
 func (h *WebhookHandler) HandleWebhook(ctx context.Context, payload *WebhookPayload) error {
+	if h.syncService == nil {
+		h.logger.Debug("radarr sync service not configured, ignoring webhook",
+			"event_type", payload.EventType,
+		)
+		return nil
+	}
+
+	var movieID int
+	var movieTitle string
+	if payload.Movie != nil {
+		movieID = payload.Movie.ID
+		movieTitle = payload.Movie.Title
+	}
 	h.logger.Info("received radarr webhook",
 		"event_type", payload.EventType,
-		"movie_id", payload.Movie.ID,
-		"title", payload.Movie.Title,
+		"movie_id", movieID,
+		"title", movieTitle,
 	)
 
 	switch payload.EventType {

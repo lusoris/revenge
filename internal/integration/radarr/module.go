@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -16,8 +17,50 @@ var Module = fx.Module("radarr",
 		NewClientFromConfig,
 		NewMapper,
 		NewSyncServiceFromDeps,
+		NewWebhookHandlerFromDeps,
+		NewRadarrSyncWorkerFromDeps,
+		NewRadarrWebhookWorkerFromDeps,
 	),
+	fx.Invoke(registerRadarrWorkers),
 )
+
+// WebhookHandlerDeps contains dependencies for the webhook handler.
+type WebhookHandlerDeps struct {
+	fx.In
+
+	SyncService *SyncService `optional:"true"`
+	Logger      *slog.Logger
+}
+
+// NewWebhookHandlerFromDeps creates a new webhook handler from fx dependencies.
+func NewWebhookHandlerFromDeps(deps WebhookHandlerDeps) *WebhookHandler {
+	return NewWebhookHandler(deps.SyncService, deps.Logger)
+}
+
+// WorkerDeps contains dependencies for Radarr River workers.
+type WorkerDeps struct {
+	fx.In
+
+	SyncService    *SyncService    `optional:"true"`
+	WebhookHandler *WebhookHandler
+	Logger         *slog.Logger
+}
+
+// NewRadarrSyncWorkerFromDeps creates a new Radarr sync worker from fx dependencies.
+func NewRadarrSyncWorkerFromDeps(deps WorkerDeps) *RadarrSyncWorker {
+	return NewRadarrSyncWorker(deps.SyncService, deps.Logger)
+}
+
+// NewRadarrWebhookWorkerFromDeps creates a new Radarr webhook worker from fx dependencies.
+func NewRadarrWebhookWorkerFromDeps(deps WorkerDeps) *RadarrWebhookWorker {
+	return NewRadarrWebhookWorker(deps.WebhookHandler, deps.Logger)
+}
+
+// registerRadarrWorkers registers Radarr workers with the River workers registry.
+func registerRadarrWorkers(workers *river.Workers, syncWorker *RadarrSyncWorker, webhookWorker *RadarrWebhookWorker) {
+	river.AddWorker(workers, syncWorker)
+	river.AddWorker(workers, webhookWorker)
+}
 
 // NewClientFromConfig creates a new Radarr client from configuration.
 func NewClientFromConfig(cfg *config.Config, logger *slog.Logger) *Client {

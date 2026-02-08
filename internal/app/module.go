@@ -13,6 +13,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/infra/image"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/observability"
@@ -51,6 +52,7 @@ var Module = fx.Module("app",
 	jobs.Module,
 	raft.Module,
 	health.Module,
+	image.Module,
 	appcrypto.Module,
 
 	// Services

@@ -24,6 +24,13 @@ func NewWebhookHandler(syncService *SyncService, logger *slog.Logger) *WebhookHa
 
 // HandleWebhook processes a Sonarr webhook payload.
 func (h *WebhookHandler) HandleWebhook(ctx context.Context, payload *WebhookPayload) error {
+	if h.syncService == nil {
+		h.logger.Debug("sonarr sync service not configured, ignoring webhook",
+			"event_type", payload.EventType,
+		)
+		return nil
+	}
+
 	h.logger.Info("received webhook",
 		"event_type", payload.EventType,
 		"instance", payload.InstanceName,

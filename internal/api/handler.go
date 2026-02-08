@@ -667,7 +667,7 @@ func (h *Handler) UpdateCurrentUser(ctx context.Context, req *ogen.UserUpdate) (
 func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams) (ogen.GetUserByIdRes, error) {
 	u, err := h.userService.GetUser(ctx, params.UserId)
 	if err != nil {
-		return &ogen.GetUserByIdNotFound{}, fmt.Errorf("user not found: %w", err)
+		return &ogen.GetUserByIdNotFound{}, nil
 	}
 
 	// Check profile visibility (own profile always visible)
