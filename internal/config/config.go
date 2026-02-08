@@ -326,6 +326,12 @@ type MetadataConfig struct {
 
 	// Kitsu configuration for anime metadata (no API key required).
 	Kitsu KitsuConfig `koanf:"kitsu"`
+
+	// AniDB configuration for detailed anime episode data.
+	AniDB AniDBConfig `koanf:"anidb"`
+
+	// MAL (MyAnimeList) configuration for anime ratings and rankings.
+	MAL MALConfig `koanf:"mal"`
 }
 
 // TVmazeConfig holds TVmaze configuration.
@@ -344,6 +350,29 @@ type AniListConfig struct {
 type KitsuConfig struct {
 	// Enabled activates Kitsu as a metadata provider.
 	Enabled bool `koanf:"enabled"`
+}
+
+// AniDBConfig holds AniDB configuration.
+type AniDBConfig struct {
+	// Enabled activates AniDB as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+
+	// ClientName is the registered AniDB client identifier.
+	// Register at https://anidb.net/perl-bin/animedb.pl?show=client
+	ClientName string `koanf:"client_name"`
+
+	// ClientVersion is the client version number (default: 1).
+	ClientVersion int `koanf:"client_version"`
+}
+
+// MALConfig holds MyAnimeList configuration.
+type MALConfig struct {
+	// Enabled activates MyAnimeList as a metadata provider.
+	Enabled bool `koanf:"enabled"`
+
+	// ClientID is the MAL API client ID (required).
+	// Obtain from https://myanimelist.net/apiconfig
+	ClientID string `koanf:"client_id"`
 }
 
 // FanartTVConfig holds Fanart.tv API configuration.

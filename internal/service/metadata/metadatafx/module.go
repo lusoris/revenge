@@ -7,9 +7,11 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 	movieadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/movie"
 	tvshowadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/tvshow"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/anidb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/anilist"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/fanarttv"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/kitsu"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/mal"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/omdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
@@ -52,6 +54,15 @@ type Config struct {
 
 	// Kitsu configuration (optional, no API key needed)
 	KitsuEnabled bool
+
+	// AniDB configuration (optional)
+	AniDBEnabled       bool
+	AniDBClientName    string
+	AniDBClientVersion int
+
+	// MAL configuration (optional)
+	MALEnabled  bool
+	MALClientID string
 }
 
 // ModuleParams contains parameters for the metadata module.
@@ -66,6 +77,8 @@ type ModuleParams struct {
 	TVmazeConfig   tvmaze.Config   `optional:"true"`
 	AniListConfig  anilist.Config  `optional:"true"`
 	KitsuConfig    kitsu.Config    `optional:"true"`
+	AniDBConfig    anidb.Config    `optional:"true"`
+	MALConfig      mal.Config      `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -82,6 +95,8 @@ type ModuleResult struct {
 	TVmazeProvider        *tvmaze.Provider   `optional:"true"`
 	AniListProvider       *anilist.Provider   `optional:"true"`
 	KitsuProvider         *kitsu.Provider     `optional:"true"`
+	AniDBProvider         *anidb.Provider     `optional:"true"`
+	MALProvider           *mal.Provider       `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -211,6 +226,47 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(kitsuProvider)
 		result.KitsuProvider = kitsuProvider
+	}
+
+	// Create and register AniDB provider if configured
+	anidbConfig := params.AniDBConfig
+	if anidbConfig.ClientName == "" && params.Config.AniDBClientName != "" {
+		anidbConfig = anidb.Config{
+			Enabled:       true,
+			ClientName:    params.Config.AniDBClientName,
+			ClientVersion: params.Config.AniDBClientVersion,
+		}
+	}
+	if anidbConfig.ClientName != "" || params.Config.AniDBEnabled {
+		if !anidbConfig.Enabled {
+			anidbConfig.Enabled = true
+		}
+		anidbProvider, err := anidb.NewProvider(anidbConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(anidbProvider)
+		result.AniDBProvider = anidbProvider
+	}
+
+	// Create and register MAL provider if configured
+	malConfig := params.MALConfig
+	if malConfig.ClientID == "" && params.Config.MALClientID != "" {
+		malConfig = mal.Config{
+			Enabled:  true,
+			ClientID: params.Config.MALClientID,
+		}
+	}
+	if malConfig.ClientID != "" || params.Config.MALEnabled {
+		if !malConfig.Enabled {
+			malConfig.Enabled = true
+		}
+		malProvider, err := mal.NewProvider(malConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(malProvider)
+		result.MALProvider = malProvider
 	}
 
 	result.Service = svc

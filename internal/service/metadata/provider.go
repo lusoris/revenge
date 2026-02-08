@@ -22,6 +22,10 @@ const (
 	ProviderAniList ProviderID = "anilist"
 	// ProviderKitsu is Kitsu provider (anime/manga metadata via JSON:API, no auth for public queries).
 	ProviderKitsu ProviderID = "kitsu"
+	// ProviderAniDB is AniDB provider (detailed anime episode data, characters, tags).
+	ProviderAniDB ProviderID = "anidb"
+	// ProviderMAL is MyAnimeList provider (anime ratings, rankings, community data).
+	ProviderMAL ProviderID = "mal"
 )
 
 // Provider represents an external metadata provider.
