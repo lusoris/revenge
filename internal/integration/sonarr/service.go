@@ -90,6 +90,16 @@ func (s *SyncService) GetRootFolders(ctx context.Context) ([]RootFolder, error) 
 	return s.client.GetRootFolders(ctx)
 }
 
+// LookupSeries searches for TV series via Sonarr's lookup API.
+func (s *SyncService) LookupSeries(ctx context.Context, term string) ([]Series, error) {
+	return s.client.LookupSeries(ctx, term)
+}
+
+// LookupSeriesByTVDbID looks up a series by TVDb ID via Sonarr.
+func (s *SyncService) LookupSeriesByTVDbID(ctx context.Context, tvdbID int) (*Series, error) {
+	return s.client.LookupSeriesByTVDbID(ctx, tvdbID)
+}
+
 // SyncLibrary performs a full library sync from Sonarr to Revenge.
 func (s *SyncService) SyncLibrary(ctx context.Context) (*SyncResult, error) {
 	s.syncMu.Lock()

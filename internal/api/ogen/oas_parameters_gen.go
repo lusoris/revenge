@@ -10842,7 +10842,8 @@ type SearchMoviesMetadataParams struct {
 	Year OptInt `json:",omitempty,omitzero"`
 	// Maximum results to return.
 	Limit OptInt `json:",omitempty,omitzero"`
-	// Metadata provider to search (default tmdb).
+	// Metadata provider to search (default tmdb). Use 'radarr' to search via the configured Radarr
+	// instance.
 	Provider OptSearchMoviesMetadataProvider `json:",omitempty,omitzero"`
 	// ISO 639-1 language code (e.g., en, de, pt-BR).
 	Language OptString `json:",omitempty,omitzero"`
@@ -11751,7 +11752,8 @@ type SearchTVShowsMetadataParams struct {
 	Year OptInt `json:",omitempty,omitzero"`
 	// Maximum results to return.
 	Limit OptInt `json:",omitempty,omitzero"`
-	// Metadata provider to search (default tmdb).
+	// Metadata provider to search (default tmdb). Use 'sonarr' to search via the configured Sonarr
+	// instance.
 	Provider OptSearchTVShowsMetadataProvider `json:",omitempty,omitzero"`
 	// ISO 639-1 language code (e.g., en, de, pt-BR).
 	Language OptString `json:",omitempty,omitzero"`

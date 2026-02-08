@@ -3629,6 +3629,8 @@ func (s SearchMoviesMetadataProvider) Validate() error {
 		return nil
 	case "tvdb":
 		return nil
+	case "radarr":
+		return nil
 	default:
 		return errors.Errorf("invalid value: %v", s)
 	}
@@ -3752,6 +3754,8 @@ func (s SearchTVShowsMetadataProvider) Validate() error {
 	case "tmdb":
 		return nil
 	case "tvdb":
+		return nil
+	case "sonarr":
 		return nil
 	default:
 		return errors.Errorf("invalid value: %v", s)

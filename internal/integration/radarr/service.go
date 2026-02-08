@@ -86,6 +86,21 @@ func (s *SyncService) GetRootFolders(ctx context.Context) ([]RootFolder, error) 
 	return s.client.GetRootFolders(ctx)
 }
 
+// LookupMovie searches for movies via Radarr's lookup API.
+func (s *SyncService) LookupMovie(ctx context.Context, term string) ([]Movie, error) {
+	return s.client.LookupMovie(ctx, term)
+}
+
+// LookupMovieByTMDbID looks up a movie by TMDb ID via Radarr.
+func (s *SyncService) LookupMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, error) {
+	return s.client.LookupMovieByTMDbID(ctx, tmdbID)
+}
+
+// LookupMovieByIMDbID looks up a movie by IMDb ID via Radarr.
+func (s *SyncService) LookupMovieByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
+	return s.client.LookupMovieByIMDbID(ctx, imdbID)
+}
+
 // SyncLibrary performs a full library sync from Radarr to Revenge.
 // This is the main sync operation that imports all movies from Radarr.
 func (s *SyncService) SyncLibrary(ctx context.Context) (*SyncResult, error) {

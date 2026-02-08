@@ -3043,7 +3043,8 @@ paths:
             enum:
               - tmdb
               - tvdb
-          description: Metadata provider to search (default tmdb)
+              - radarr
+          description: Metadata provider to search (default tmdb). Use 'radarr' to search via the configured Radarr instance.
         - name: language
           in: query
           required: false
@@ -3178,7 +3179,8 @@ paths:
             enum:
               - tmdb
               - tvdb
-          description: Metadata provider to search (default tmdb)
+              - sonarr
+          description: Metadata provider to search (default tmdb). Use 'sonarr' to search via the configured Sonarr instance.
         - name: language
           in: query
           required: false

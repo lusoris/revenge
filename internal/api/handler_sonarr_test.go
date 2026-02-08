@@ -52,6 +52,10 @@ func (m *mockSonarrService) SyncLibrary(ctx context.Context) (*sonarr.SyncResult
 	}, nil
 }
 
+func (m *mockSonarrService) LookupSeries(_ context.Context, _ string) ([]sonarr.Series, error) {
+	return nil, nil
+}
+
 // ============================================================================
 // AdminGetSonarrStatus Tests
 // ============================================================================

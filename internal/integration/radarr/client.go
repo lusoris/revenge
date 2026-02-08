@@ -528,6 +528,107 @@ func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error
 	return &result, nil
 }
 
+// LookupMovie searches for movies via Radarr's lookup API.
+// This calls the user's Radarr instance which internally uses its metadata sources.
+func (c *Client) LookupMovie(ctx context.Context, term string) ([]Movie, error) {
+	cacheKey := fmt.Sprintf("lookup:term:%s", term)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.([]Movie); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("term", term).
+		SetSuccessResult(&result).
+		Get("/movie/lookup")
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr lookup request: %w", err)
+	}
+
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("radarr lookup error: %s", resp.Status)
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// LookupMovieByTMDbID looks up a movie in Radarr's metadata by TMDb ID.
+func (c *Client) LookupMovieByTMDbID(ctx context.Context, tmdbID int) (*Movie, error) {
+	cacheKey := fmt.Sprintf("lookup:tmdb:%d", tmdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.(*Movie); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetSuccessResult(&result).
+		Get(fmt.Sprintf("/movie/lookup/tmdb/%d", tmdbID))
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr lookup request: %w", err)
+	}
+
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
+			return nil, ErrMovieNotFound
+		}
+		return nil, fmt.Errorf("radarr lookup error: %s", resp.Status)
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
+// LookupMovieByIMDbID looks up a movie in Radarr's metadata by IMDb ID.
+func (c *Client) LookupMovieByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
+	cacheKey := fmt.Sprintf("lookup:imdb:%s", imdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.(*Movie); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result Movie
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetSuccessResult(&result).
+		Get(fmt.Sprintf("/movie/lookup/imdb/%s", imdbID))
+
+	if err != nil {
+		return nil, fmt.Errorf("radarr lookup request: %w", err)
+	}
+
+	if resp.IsErrorState() {
+		if resp.StatusCode == 404 {
+			return nil, ErrMovieNotFound
+		}
+		return nil, fmt.Errorf("radarr lookup error: %s", resp.Status)
+	}
+
+	c.setCache(cacheKey, &result)
+	return &result, nil
+}
+
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
 	c.cache.Clear()

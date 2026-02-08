@@ -61,6 +61,10 @@ func (m *mockRadarrService) SyncLibrary(ctx context.Context) (*radarr.SyncResult
 	}, nil
 }
 
+func (m *mockRadarrService) LookupMovie(_ context.Context, _ string) ([]radarr.Movie, error) {
+	return nil, nil
+}
+
 // mockRiverClient is a mock implementation of riverClient for testing.
 type mockRiverClient struct {
 	insertedArgs []river.JobArgs

@@ -18,6 +18,7 @@ type sonarrService interface {
 	GetQualityProfiles(ctx context.Context) ([]sonarr.QualityProfile, error)
 	GetRootFolders(ctx context.Context) ([]sonarr.RootFolder, error)
 	SyncLibrary(ctx context.Context) (*sonarr.SyncResult, error)
+	LookupSeries(ctx context.Context, term string) ([]sonarr.Series, error)
 }
 
 // AdminGetSonarrStatus returns the current Sonarr integration status.

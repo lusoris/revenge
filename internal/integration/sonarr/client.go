@@ -710,6 +710,76 @@ func (c *Client) GetCommand(ctx context.Context, commandID int) (*Command, error
 	return &result, nil
 }
 
+// LookupSeries searches for TV series via Sonarr's lookup API.
+// This calls the user's Sonarr instance which internally uses its metadata sources.
+func (c *Client) LookupSeries(ctx context.Context, term string) ([]Series, error) {
+	cacheKey := fmt.Sprintf("lookup:term:%s", term)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.([]Series); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	var result []Series
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("term", term).
+		SetSuccessResult(&result).
+		Get("/series/lookup")
+
+	if err != nil {
+		return nil, fmt.Errorf("sonarr lookup request: %w", err)
+	}
+
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr lookup error: %s", resp.Status)
+	}
+
+	c.setCache(cacheKey, result)
+	return result, nil
+}
+
+// LookupSeriesByTVDbID looks up a series in Sonarr's metadata by TVDb ID.
+func (c *Client) LookupSeriesByTVDbID(ctx context.Context, tvdbID int) (*Series, error) {
+	cacheKey := fmt.Sprintf("lookup:tvdb:%d", tvdbID)
+	if cached := c.getFromCache(cacheKey); cached != nil {
+		if result, ok := cached.(*Series); ok {
+			return result, nil
+		}
+	}
+
+	if err := c.rateLimiter.Wait(ctx); err != nil {
+		return nil, fmt.Errorf("rate limit wait: %w", err)
+	}
+
+	// Sonarr lookup by tvdbid is done via the term parameter with prefix
+	var results []Series
+	resp, err := c.client.R().
+		SetContext(ctx).
+		SetQueryParam("term", fmt.Sprintf("tvdb:%d", tvdbID)).
+		SetSuccessResult(&results).
+		Get("/series/lookup")
+
+	if err != nil {
+		return nil, fmt.Errorf("sonarr lookup request: %w", err)
+	}
+
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("sonarr lookup error: %s", resp.Status)
+	}
+
+	if len(results) == 0 {
+		return nil, ErrSeriesNotFound
+	}
+
+	c.setCache(cacheKey, &results[0])
+	return &results[0], nil
+}
+
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
 	c.cache.Clear()

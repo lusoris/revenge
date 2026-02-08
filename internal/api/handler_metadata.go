@@ -13,6 +13,11 @@ import (
 
 // SearchMoviesMetadata searches for movies via metadata provider.
 func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMoviesMetadataParams) (ogen.SearchMoviesMetadataRes, error) {
+	// Handle Radarr provider directly via the *arr integration
+	if params.Provider.Set && params.Provider.Value == ogen.SearchMoviesMetadataProviderRadarr {
+		return h.searchMoviesViaRadarr(ctx, params)
+	}
+
 	// Build search options
 	opts := metadata.SearchOptions{}
 	if params.Year.Set {
@@ -283,6 +288,11 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 
 // SearchTVShowsMetadata searches for TV shows via metadata provider.
 func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchTVShowsMetadataParams) (ogen.SearchTVShowsMetadataRes, error) {
+	// Handle Sonarr provider directly via the *arr integration
+	if params.Provider.Set && params.Provider.Value == ogen.SearchTVShowsMetadataProviderSonarr {
+		return h.searchTVShowsViaSonarr(ctx, params)
+	}
+
 	// Build search options
 	opts := metadata.SearchOptions{}
 	if params.Year.Set {
@@ -1411,4 +1421,133 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// searchMoviesViaRadarr searches for movies via the configured Radarr instance's lookup API.
+func (h *Handler) searchMoviesViaRadarr(ctx context.Context, params ogen.SearchMoviesMetadataParams) (ogen.SearchMoviesMetadataRes, error) {
+	if h.radarrService == nil {
+		badReq := ogen.SearchMoviesMetadataBadRequest(ogen.Error{
+			Code:    400,
+			Message: "Radarr integration not configured",
+		})
+		return &badReq, nil
+	}
+
+	movies, err := h.radarrService.LookupMovie(ctx, params.Q)
+	if err != nil {
+		h.logger.Error("radarr movie lookup failed", slog.Any("error", err))
+		return nil, err
+	}
+
+	limit := 20
+	if params.Limit.Set {
+		limit = int(params.Limit.Value)
+	}
+
+	response := &ogen.MetadataSearchResults{
+		Page:         ogen.NewOptInt(1),
+		TotalResults: ogen.NewOptInt(len(movies)),
+		TotalPages:   ogen.NewOptInt(1),
+		Results:      make([]ogen.MetadataSearchResult, 0, min(len(movies), limit)),
+	}
+
+	for i, m := range movies {
+		if i >= limit {
+			break
+		}
+
+		result := ogen.MetadataSearchResult{
+			Title: ogen.NewOptString(m.Title),
+		}
+		if m.TMDbID > 0 {
+			result.TmdbID = ogen.NewOptInt(m.TMDbID)
+		}
+		if m.OriginalTitle != "" {
+			result.OriginalTitle = ogen.NewOptString(m.OriginalTitle)
+		}
+		if m.Overview != "" {
+			result.Overview = ogen.NewOptNilString(m.Overview)
+		}
+		// Map best available rating
+		if m.Ratings.TMDb != nil && m.Ratings.TMDb.Value > 0 {
+			result.VoteAverage = ogen.NewOptFloat32(float32(m.Ratings.TMDb.Value))
+			result.VoteCount = ogen.NewOptInt(m.Ratings.TMDb.Votes)
+		} else if m.Ratings.IMDb != nil && m.Ratings.IMDb.Value > 0 {
+			result.VoteAverage = ogen.NewOptFloat32(float32(m.Ratings.IMDb.Value))
+			result.VoteCount = ogen.NewOptInt(m.Ratings.IMDb.Votes)
+		}
+		// Map poster from Radarr images
+		for _, img := range m.Images {
+			if img.CoverType == "poster" && img.RemoteURL != "" {
+				result.PosterPath = ogen.NewOptNilString(img.RemoteURL)
+			}
+			if img.CoverType == "fanart" && img.RemoteURL != "" {
+				result.BackdropPath = ogen.NewOptNilString(img.RemoteURL)
+			}
+		}
+
+		response.Results = append(response.Results, result)
+	}
+
+	return response, nil
+}
+
+// searchTVShowsViaSonarr searches for TV shows via the configured Sonarr instance's lookup API.
+func (h *Handler) searchTVShowsViaSonarr(ctx context.Context, params ogen.SearchTVShowsMetadataParams) (ogen.SearchTVShowsMetadataRes, error) {
+	if h.sonarrService == nil {
+		return &ogen.MetadataTVSearchResults{
+			Page:         ogen.NewOptInt(1),
+			TotalResults: ogen.NewOptInt(0),
+			TotalPages:   ogen.NewOptInt(1),
+			Results:      []ogen.MetadataTVSearchResult{},
+		}, nil
+	}
+
+	series, err := h.sonarrService.LookupSeries(ctx, params.Q)
+	if err != nil {
+		h.logger.Error("sonarr series lookup failed", slog.Any("error", err))
+		return nil, err
+	}
+
+	limit := 20
+	if params.Limit.Set {
+		limit = int(params.Limit.Value)
+	}
+
+	response := &ogen.MetadataTVSearchResults{
+		Page:         ogen.NewOptInt(1),
+		TotalResults: ogen.NewOptInt(len(series)),
+		TotalPages:   ogen.NewOptInt(1),
+		Results:      make([]ogen.MetadataTVSearchResult, 0, min(len(series), limit)),
+	}
+
+	for i, s := range series {
+		if i >= limit {
+			break
+		}
+
+		result := ogen.MetadataTVSearchResult{
+			Name: ogen.NewOptString(s.Title),
+		}
+		if s.Overview != "" {
+			result.Overview = ogen.NewOptNilString(s.Overview)
+		}
+		if s.Ratings.Value > 0 {
+			result.VoteAverage = ogen.NewOptFloat32(float32(s.Ratings.Value))
+			result.VoteCount = ogen.NewOptInt(s.Ratings.Votes)
+		}
+		// Map poster from Sonarr images
+		for _, img := range s.Images {
+			if img.CoverType == "poster" && img.RemoteURL != "" {
+				result.PosterPath = ogen.NewOptNilString(img.RemoteURL)
+			}
+			if img.CoverType == "fanart" && img.RemoteURL != "" {
+				result.BackdropPath = ogen.NewOptNilString(img.RemoteURL)
+			}
+		}
+
+		response.Results = append(response.Results, result)
+	}
+
+	return response, nil
 }

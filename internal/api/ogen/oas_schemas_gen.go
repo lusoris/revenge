@@ -15431,8 +15431,9 @@ func (*SearchMoviesMetadataBadRequest) searchMoviesMetadataRes() {}
 type SearchMoviesMetadataProvider string
 
 const (
-	SearchMoviesMetadataProviderTmdb SearchMoviesMetadataProvider = "tmdb"
-	SearchMoviesMetadataProviderTvdb SearchMoviesMetadataProvider = "tvdb"
+	SearchMoviesMetadataProviderTmdb   SearchMoviesMetadataProvider = "tmdb"
+	SearchMoviesMetadataProviderTvdb   SearchMoviesMetadataProvider = "tvdb"
+	SearchMoviesMetadataProviderRadarr SearchMoviesMetadataProvider = "radarr"
 )
 
 // AllValues returns all SearchMoviesMetadataProvider values.
@@ -15440,6 +15441,7 @@ func (SearchMoviesMetadataProvider) AllValues() []SearchMoviesMetadataProvider {
 	return []SearchMoviesMetadataProvider{
 		SearchMoviesMetadataProviderTmdb,
 		SearchMoviesMetadataProviderTvdb,
+		SearchMoviesMetadataProviderRadarr,
 	}
 }
 
@@ -15449,6 +15451,8 @@ func (s SearchMoviesMetadataProvider) MarshalText() ([]byte, error) {
 	case SearchMoviesMetadataProviderTmdb:
 		return []byte(s), nil
 	case SearchMoviesMetadataProviderTvdb:
+		return []byte(s), nil
+	case SearchMoviesMetadataProviderRadarr:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -15463,6 +15467,9 @@ func (s *SearchMoviesMetadataProvider) UnmarshalText(data []byte) error {
 		return nil
 	case SearchMoviesMetadataProviderTvdb:
 		*s = SearchMoviesMetadataProviderTvdb
+		return nil
+	case SearchMoviesMetadataProviderRadarr:
+		*s = SearchMoviesMetadataProviderRadarr
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -15610,8 +15617,9 @@ func (s *SearchResultsFacets) init() SearchResultsFacets {
 type SearchTVShowsMetadataProvider string
 
 const (
-	SearchTVShowsMetadataProviderTmdb SearchTVShowsMetadataProvider = "tmdb"
-	SearchTVShowsMetadataProviderTvdb SearchTVShowsMetadataProvider = "tvdb"
+	SearchTVShowsMetadataProviderTmdb   SearchTVShowsMetadataProvider = "tmdb"
+	SearchTVShowsMetadataProviderTvdb   SearchTVShowsMetadataProvider = "tvdb"
+	SearchTVShowsMetadataProviderSonarr SearchTVShowsMetadataProvider = "sonarr"
 )
 
 // AllValues returns all SearchTVShowsMetadataProvider values.
@@ -15619,6 +15627,7 @@ func (SearchTVShowsMetadataProvider) AllValues() []SearchTVShowsMetadataProvider
 	return []SearchTVShowsMetadataProvider{
 		SearchTVShowsMetadataProviderTmdb,
 		SearchTVShowsMetadataProviderTvdb,
+		SearchTVShowsMetadataProviderSonarr,
 	}
 }
 
@@ -15628,6 +15637,8 @@ func (s SearchTVShowsMetadataProvider) MarshalText() ([]byte, error) {
 	case SearchTVShowsMetadataProviderTmdb:
 		return []byte(s), nil
 	case SearchTVShowsMetadataProviderTvdb:
+		return []byte(s), nil
+	case SearchTVShowsMetadataProviderSonarr:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -15642,6 +15653,9 @@ func (s *SearchTVShowsMetadataProvider) UnmarshalText(data []byte) error {
 		return nil
 	case SearchTVShowsMetadataProviderTvdb:
 		*s = SearchTVShowsMetadataProviderTvdb
+		return nil
+	case SearchTVShowsMetadataProviderSonarr:
+		*s = SearchTVShowsMetadataProviderSonarr
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)

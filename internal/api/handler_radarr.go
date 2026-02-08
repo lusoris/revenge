@@ -18,6 +18,7 @@ type radarrService interface {
 	GetQualityProfiles(ctx context.Context) ([]radarr.QualityProfile, error)
 	GetRootFolders(ctx context.Context) ([]radarr.RootFolder, error)
 	SyncLibrary(ctx context.Context) (*radarr.SyncResult, error)
+	LookupMovie(ctx context.Context, term string) ([]radarr.Movie, error)
 }
 
 // AdminGetRadarrStatus returns the current Radarr integration status.
