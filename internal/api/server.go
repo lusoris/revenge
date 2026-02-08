@@ -301,6 +301,15 @@ func NewServer(p ServerParams) (*Server, error) {
 	mux.Handle("/", rootHandler)
 	rootHandler = mux
 
+	// Inject ResponseWriter into context so ogen handlers can set cookies
+	rootHandler = middleware.ResponseWriterMiddleware(rootHandler)
+
+	// Cookie auth: extract token from cookie → inject as Bearer header
+	rootHandler = middleware.CookieAuthMiddleware(p.Config.Server.CookieAuth)(rootHandler)
+
+	// CSRF protection (only active when cookie auth is enabled)
+	rootHandler = middleware.CSRFMiddleware(p.Config.Server.CookieAuth)(rootHandler)
+
 	// Wrap with CORS middleware (outermost layer so all responses get CORS headers,
 	// including preflight OPTIONS, error responses, and HLS endpoints).
 	rootHandler = middleware.CORSMiddleware(p.Config.Server.CORS)(rootHandler)

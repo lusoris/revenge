@@ -985,6 +985,16 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 
 	h.logger.Info("Login successful", slog.String("user_id", loginResp.User.ID.String()))
 
+	// Set auth cookies if cookie auth is enabled
+	if h.cfg.Server.CookieAuth.Enabled {
+		if w, ok := middleware.GetResponseWriter(ctx); ok {
+			csrfToken, _ := middleware.GenerateCSRFToken()
+			middleware.SetAuthCookies(w, h.cfg.Server.CookieAuth,
+				loginResp.AccessToken, loginResp.RefreshToken, csrfToken,
+				int(loginResp.ExpiresIn))
+		}
+	}
+
 	return &ogen.LoginResponse{
 		User: ogen.User{
 			ID:            loginResp.User.ID,
@@ -1026,6 +1036,13 @@ func (h *Handler) Logout(ctx context.Context, req *ogen.LogoutRequest) (ogen.Log
 		}
 	}
 
+	// Clear auth cookies if cookie auth is enabled
+	if h.cfg.Server.CookieAuth.Enabled {
+		if w, ok := middleware.GetResponseWriter(ctx); ok {
+			middleware.ClearAuthCookies(w, h.cfg.Server.CookieAuth)
+		}
+	}
+
 	return &ogen.LogoutNoContent{}, nil
 }
 
@@ -1041,6 +1058,16 @@ func (h *Handler) RefreshToken(ctx context.Context, req *ogen.RefreshRequest) (o
 			Code:    401,
 			Message: "Invalid or expired refresh token",
 		}, nil
+	}
+
+	// Update access token cookie if cookie auth is enabled
+	if h.cfg.Server.CookieAuth.Enabled {
+		if w, ok := middleware.GetResponseWriter(ctx); ok {
+			csrfToken, _ := middleware.GenerateCSRFToken()
+			middleware.SetAuthCookies(w, h.cfg.Server.CookieAuth,
+				loginResp.AccessToken, "", csrfToken,
+				int(loginResp.ExpiresIn))
+		}
 	}
 
 	return &ogen.RefreshResponse{

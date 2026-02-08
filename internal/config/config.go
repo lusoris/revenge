@@ -98,6 +98,9 @@ type ServerConfig struct {
 
 	// CORS configures Cross-Origin Resource Sharing for frontend access.
 	CORS CORSConfig `koanf:"cors"`
+
+	// CookieAuth enables HttpOnly cookie-based authentication for SSR frontends.
+	CookieAuth CookieAuthConfig `koanf:"cookie_auth"`
 }
 
 // CORSConfig holds CORS configuration for browser-based frontend access.
@@ -112,6 +115,30 @@ type CORSConfig struct {
 
 	// MaxAge is how long preflight responses can be cached by browsers.
 	MaxAge time.Duration `koanf:"max_age"`
+}
+
+// CookieAuthConfig enables optional HttpOnly cookie-based authentication.
+// When enabled, login and refresh endpoints will set HttpOnly cookies in
+// addition to returning tokens in the JSON body. A middleware reads these
+// cookies and injects them as Bearer tokens for ogen's security handler.
+// CSRF protection is automatically enabled when cookie auth is active.
+type CookieAuthConfig struct {
+	// Enabled activates cookie-based authentication.
+	Enabled bool `koanf:"enabled"`
+
+	// Domain restricts the cookie to a specific domain (e.g. ".example.com").
+	// Leave empty to use the request host.
+	Domain string `koanf:"domain"`
+
+	// Secure sets the Secure flag on cookies (HTTPS only). Default: true.
+	Secure bool `koanf:"secure"`
+
+	// SameSite controls the SameSite cookie attribute: "strict", "lax", or "none".
+	// Default: "lax" (recommended for SSR).
+	SameSite string `koanf:"same_site"`
+
+	// Path restricts the cookie to a specific path. Default: "/".
+	Path string `koanf:"path"`
 }
 
 // RateLimitConfig holds rate limiting configuration.
