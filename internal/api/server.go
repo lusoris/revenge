@@ -8,6 +8,7 @@ import (
 
 	openapidoc "github.com/lusoris/revenge/api/openapi"
 	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -95,6 +96,8 @@ type ServerParams struct {
 	// Playback / HLS streaming (optional)
 	PlaybackService *playback.Service      `optional:"true"`
 	StreamHandler   *hls.StreamHandler     `optional:"true"`
+	// SSE real-time events (optional)
+	SSEHandler      *sse.Handler           `optional:"true"`
 	// Integration services (optional)
 	RadarrService *radarr.SyncService `optional:"true"`
 	SonarrService *sonarr.SyncService `optional:"true"`
@@ -291,6 +294,9 @@ func NewServer(p ServerParams) (*Server, error) {
 	mux.Handle("GET /api/docs", docsHandler)
 	if p.StreamHandler != nil {
 		mux.Handle("/api/v1/playback/stream/", p.StreamHandler)
+	}
+	if p.SSEHandler != nil {
+		mux.Handle("GET /api/v1/events", p.SSEHandler)
 	}
 	mux.Handle("/", rootHandler)
 	rootHandler = mux

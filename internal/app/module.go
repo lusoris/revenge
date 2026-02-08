@@ -3,6 +3,7 @@ package app
 
 import (
 	"github.com/lusoris/revenge/internal/api"
+	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	appcrypto "github.com/lusoris/revenge/internal/crypto"
@@ -91,6 +92,9 @@ var Module = fx.Module("app",
 
 	// Observability (metrics, pprof)
 	observability.Module,
+
+	// SSE Real-Time Events
+	sse.Module,
 
 	// HTTP API Server (ogen-generated)
 	api.Module,
