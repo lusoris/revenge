@@ -404,3 +404,103 @@ After all fixes, clean stack with full live test suite:
 | `internal/api/ogen/*` | Regenerated from updated OpenAPI spec |
 | `internal/service/search/module.go` | `initializeCollections` startup hook |
 | `internal/service/search/tvshow_schema.go` | `popularity` not optional |
+
+---
+
+## Phase 7: Docker Tuning, Security Hardening, Expanded Tests (COMPLETE)
+
+### Docker Compose Tuning
+
+Researched and applied optimal settings for all three backing services in `docker-compose.dev.yml`.
+
+**PostgreSQL 18** (~2GB container):
+- `shared_buffers=512MB` (25% of container memory)
+- `effective_cache_size=1536MB` (75% memory estimate)
+- `work_mem=16MB`, `maintenance_work_mem=128MB`
+- WAL tuning: `wal_buffers=16MB`, `checkpoint_completion_target=0.9`, `max_wal_size=1GB`, `wal_compression=on`
+- SSD-optimized: `random_page_cost=1.1`, `effective_io_concurrency=200`
+- Autovacuum: `max_workers=3`, `naptime=30s`
+- `shm_size: 256mb` for shared_buffers
+
+**Dragonfly** (~1.5GB container):
+- `cache_mode=true` (LFRU eviction, no persistence)
+- `maxmemory=1G` (headroom within container)
+- `proactor_threads=2`
+- Persistence disabled (`dbfilename=`)
+- `ulimits.memlock: -1` for memory management
+
+**Typesense 27.1** (~1.5GB container):
+- `thread-pool-size=8` (4x CPU for I/O-bound search)
+- `num-collections-parallel-load=4` (faster startup)
+- `healthy-read-lag=1000`, `healthy-write-lag=500` (backpressure)
+- `snapshot-interval-seconds=3600` (hourly snapshots)
+- Resource limits with reservations
+
+### Trivy Container Scan Results
+
+| Scan Type | CRITICAL | HIGH | Status |
+|-----------|----------|------|--------|
+| Docker image (OS + Go binary) | 0 | 0 | CLEAN |
+| Filesystem (Go modules) | 0 | 0 | CLEAN |
+| Config: Production Dockerfile | 0 | 0 | CLEAN |
+| Config: Devcontainer Dockerfile | 0 | 2 | Fixed |
+| Config: Helm deployment.yaml | 0 | 12 | Fixed |
+
+### Trivy Fixes Applied
+
+**Helm chart** (`charts/revenge/templates/deployment.yaml`):
+- Added `securityContext` at pod level: `runAsNonRoot: true`, `fsGroup`
+- Added `securityContext` at container level: `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, `allowPrivilegeEscalation: false`
+- Applied to all 4 containers: revenge, postgresql, dragonfly, typesense
+
+**Devcontainer Dockerfile**:
+- Added `--no-install-recommends` to `apt-get install` (DS-0029)
+
+### gosec Findings Fixed
+
+**G301 — Directory permissions** (4 MEDIUM → Fixed):
+- Changed `0o755` → `0o750` in:
+  - `internal/playback/transcode/pipeline.go` (2 locations)
+  - `internal/playback/subtitle/extract.go`
+  - `internal/playback/service.go`
+
+**G304 — Path traversal** (3 MEDIUM → Already mitigated):
+- `storage.go` already has `sanitizeKey()` with `filepath.Clean`, `..` removal, prefix validation
+- HLS paths use session-generated UUIDs + profile names (not user input)
+- Assessment: false positive in current code
+
+### Expanded Live Test Coverage
+
+Added TV show search tests to `tests/live/smoke_test.go`:
+- `TestLive_TVShowSearchInfrastructure` — 5 subtests:
+  - Typesense search (empty results)
+  - Autocomplete (empty suggestions)
+  - Facets (endpoint functional)
+  - Search with pagination params
+  - Search with filter_by
+- Added 3 TV show search endpoints to unauthenticated access tests
+
+### Verification
+
+```
+$ make docker-test
+Health check: OK
+
+$ make test-live
+ok  github.com/lusoris/revenge/tests/live  34.728s
+
+$ docker logs revenge-dev 2>&1 | grep '\[91mERR'
+(zero results — 0 ERR-level log lines)
+```
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `docker-compose.dev.yml` | Full PostgreSQL/Dragonfly/Typesense tuning with resource limits |
+| `charts/revenge/templates/deployment.yaml` | Security contexts for all 4 containers + pods |
+| `.devcontainer/Dockerfile` | `--no-install-recommends` |
+| `internal/playback/transcode/pipeline.go` | `0o755` → `0o750` (2 locations) |
+| `internal/playback/subtitle/extract.go` | `0o755` → `0o750` |
+| `internal/playback/service.go` | `0o755` → `0o750` |
+| `tests/live/smoke_test.go` | +TV show search tests, +unauthenticated access coverage |

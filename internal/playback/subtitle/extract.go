@@ -13,7 +13,7 @@ import (
 // ExtractToWebVTT extracts a subtitle track from a media file to WebVTT format.
 // trackIndex is the subtitle stream index (0-based within subtitle streams).
 func ExtractToWebVTT(ctx context.Context, ffmpegPath, inputFile, outputDir string, trackIndex int) (string, error) {
-	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+	if err := os.MkdirAll(outputDir, 0o750); err != nil {
 		return "", fmt.Errorf("failed to create subtitle output dir: %w", err)
 	}
 

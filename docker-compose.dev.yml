@@ -1,5 +1,6 @@
 # Development docker-compose with all required services
 # PostgreSQL 18+, Dragonfly, Typesense
+# Tuned for dev/small-prod (~5GB total memory across all services)
 
 services:
   revenge:
@@ -35,57 +36,145 @@ services:
       typesense:
         condition: service_healthy
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   # PostgreSQL 18+ (REQUIRED)
+  # Tuned for moderate writes (library scans) + heavy reads (API serving)
   postgres:
     image: postgres:18-alpine
     container_name: revenge-postgres-dev
+    shm_size: 256mb  # Required for shared_buffers > default
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=revenge
       - POSTGRES_USER=revenge
       - POSTGRES_PASSWORD=revenge_dev_pass
+    command:
+      - postgres
+      # Memory: 2GB container, 25% shared_buffers
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - effective_cache_size=1536MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - work_mem=16MB
+      # WAL: tuned for moderate write load
+      - -c
+      - wal_buffers=16MB
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - checkpoint_timeout=15min
+      - -c
+      - max_wal_size=1GB
+      - -c
+      - min_wal_size=256MB
+      - -c
+      - wal_compression=on
+      # Query planner: SSD-optimized
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - effective_io_concurrency=200
+      # Connections
+      - -c
+      - max_connections=100
+      # Autovacuum: active for metadata-heavy workload
+      - -c
+      - autovacuum_max_workers=3
+      - -c
+      - autovacuum_naptime=30s
+      # Logging: only slow queries
+      - -c
+      - log_min_duration_statement=1000
+      - -c
+      - log_statement=none
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U revenge"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U revenge -d revenge"]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
 
   # Dragonfly (Redis-compatible, REQUIRED)
+  # Pure cache mode: LFRU eviction, no persistence
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     container_name: revenge-dragonfly-dev
-    command: ["--cache_mode"]
+    ulimits:
+      memlock: -1  # Required for Dragonfly memory management
+    command:
+      - dragonfly
+      - --cache_mode=true           # LFRU eviction when approaching maxmemory
+      - --maxmemory=1G              # 1GB cache (headroom within 1.5GB container)
+      - --proactor_threads=2        # Match allocated CPUs
+      - --dbfilename=               # Disable RDB snapshots (pure cache)
+      - --logtostderr=true
     ports:
       - "6379:6379"
     volumes:
       - dragonfly-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+      interval: 10s
       timeout: 3s
       retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+        reservations:
+          memory: 512M
 
   # Typesense 27.1 (REQUIRED)
+  # Full-text search for movie + tvshow libraries
   typesense:
     image: typesense/typesense:27.1
     container_name: revenge-typesense-dev
+    command:
+      - --data-dir=/data
+      - --api-key=dev_api_key
+      - --api-address=0.0.0.0
+      - --api-port=8108
+      - --thread-pool-size=8                   # 4x CPU cores for I/O-bound search
+      - --num-collections-parallel-load=4      # Faster startup
+      - --enable-cors=true
+      - --log-slow-requests-time-ms=1000       # Log slow queries
+      - --healthy-read-lag=1000                # Backpressure thresholds
+      - --healthy-write-lag=500
+      - --snapshot-interval-seconds=3600       # Snapshot every hour
+      - --reset-peers-on-error=false           # Single-node setup
     ports:
       - "8108:8108"
-    environment:
-      - TYPESENSE_DATA_DIR=/data
-      - TYPESENSE_API_KEY=dev_api_key
-      - TYPESENSE_ENABLE_CORS=true
     volumes:
       - typesense-data:/data
     healthcheck:
       test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8108'"]
-      interval: 5s
-      timeout: 3s
+      interval: 15s
+      timeout: 5s
       retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+        reservations:
+          memory: 512M
 
   # pgAdmin (optional - for database management)
   pgadmin:

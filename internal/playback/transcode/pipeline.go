@@ -55,7 +55,7 @@ func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID u
 	key := processKey(sessionID, pd.Name)
 
 	profileDir := filepath.Join(segmentDir, pd.Name)
-	if err := os.MkdirAll(profileDir, 0o755); err != nil {
+	if err := os.MkdirAll(profileDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create segment dir %s: %w", profileDir, err)
 	}
 
@@ -72,7 +72,7 @@ func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uu
 	key := processKey(sessionID, renditionName)
 
 	audioDir := filepath.Join(segmentDir, "audio", fmt.Sprintf("%d", trackIndex))
-	if err := os.MkdirAll(audioDir, 0o755); err != nil {
+	if err := os.MkdirAll(audioDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create audio rendition dir %s: %w", audioDir, err)
 	}
 

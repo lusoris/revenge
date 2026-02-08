@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/go:1-1.25-bookworm
 
 # System deps
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 	ffmpeg \
 	postgresql-client \
 	curl \

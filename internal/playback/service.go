@@ -104,7 +104,7 @@ func (s *Service) StartSession(ctx context.Context, userID uuid.UUID, req *Start
 	}
 
 	// 5. Create segment directory
-	if err := os.MkdirAll(segmentDir, 0o755); err != nil {
+	if err := os.MkdirAll(segmentDir, 0o750); err != nil {
 		s.sessions.Delete(sessionID)
 		return nil, fmt.Errorf("failed to create segment dir: %w", err)
 	}

@@ -888,6 +888,63 @@ func TestLive_SearchInfrastructure(t *testing.T) {
 }
 
 // =============================================================================
+// 10b. TV Show Search Infrastructure (Typesense)
+// =============================================================================
+
+func TestLive_TVShowSearchInfrastructure(t *testing.T) {
+	creds := registerAndLogin(t)
+	tok := creds.accessToken
+
+	// Typesense-backed TV show search
+	t.Run("typesense_tvshow_search_empty", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/search/tvshows?q=nonexistent", tok, nil)
+		assert.Equal(t, 200, status, "TV show search should work (got %d)", status)
+		if body != nil {
+			if hits, ok := body["hits"].([]interface{}); ok {
+				assert.Empty(t, hits)
+			}
+			// Verify response structure
+			assert.Contains(t, body, "total_hits", "should have total_hits field")
+			assert.Contains(t, body, "total_pages", "should have total_pages field")
+		}
+	})
+
+	// TV show autocomplete
+	t.Run("typesense_tvshow_autocomplete", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/search/tvshows/autocomplete?q=test", tok, nil)
+		assert.Equal(t, 200, status, "TV show autocomplete should work (got %d)", status)
+		if body != nil {
+			if suggestions, ok := body["suggestions"].([]interface{}); ok {
+				assert.Empty(t, suggestions)
+			}
+		}
+	})
+
+	// TV show facets
+	t.Run("typesense_tvshow_facets", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/search/tvshows/facets", tok, nil)
+		assert.Equal(t, 200, status, "TV show facets should work (got %d)", status)
+	})
+
+	// Search with pagination params
+	t.Run("tvshow_search_with_params", func(t *testing.T) {
+		status, body := doJSON(t, "GET", "/api/v1/search/tvshows?q=test&page=1&per_page=5&sort_by=popularity:desc", tok, nil)
+		assert.Equal(t, 200, status, "parameterized search should work (got %d)", status)
+		if body != nil {
+			if currentPage, ok := body["current_page"].(float64); ok {
+				assert.Equal(t, float64(1), currentPage)
+			}
+		}
+	})
+
+	// Search with filter
+	t.Run("tvshow_search_with_filter", func(t *testing.T) {
+		status, _ := doJSON(t, "GET", "/api/v1/search/tvshows?q=*&filter_by=year:>2020", tok, nil)
+		assert.Equal(t, 200, status, "filtered search should work (got %d)", status)
+	})
+}
+
+// =============================================================================
 // 11. Admin Endpoints (requires direct DB role grant)
 // =============================================================================
 
@@ -1169,6 +1226,9 @@ func TestLive_UnauthenticatedAccess(t *testing.T) {
 		{"GET", "/api/v1/settings/user"},
 		// Search
 		{"GET", "/api/v1/search/movies?q=test"},
+		{"GET", "/api/v1/search/tvshows?q=test"},
+		{"GET", "/api/v1/search/tvshows/autocomplete?q=test"},
+		{"GET", "/api/v1/search/tvshows/facets"},
 		// Admin
 		{"GET", "/api/v1/settings/server"},
 		{"GET", "/api/v1/rbac/roles"},
