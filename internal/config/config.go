@@ -60,6 +60,9 @@ type Config struct {
 
 	// Playback configuration (HLS streaming)
 	Playback PlaybackConfig `koanf:"playback"`
+
+	// Metadata provider configuration
+	Metadata MetadataConfig `koanf:"metadata"`
 }
 
 // ActivityConfig holds activity log configuration.
@@ -305,6 +308,30 @@ type TMDbConfig struct {
 
 	// ProxyURL is optional SOCKS5/HTTP proxy for TMDb requests.
 	ProxyURL string `koanf:"proxy_url"`
+}
+
+// MetadataConfig holds metadata provider configuration.
+type MetadataConfig struct {
+	// FanartTV configuration for high-quality artwork.
+	FanartTV FanartTVConfig `koanf:"fanarttv"`
+
+	// OMDb configuration for ratings data.
+	OMDb OMDbConfig `koanf:"omdb"`
+}
+
+// FanartTVConfig holds Fanart.tv API configuration.
+type FanartTVConfig struct {
+	// APIKey is the Fanart.tv project API key.
+	APIKey string `koanf:"api_key"`
+
+	// ClientKey is the personal API key for faster image access (optional).
+	ClientKey string `koanf:"client_key"`
+}
+
+// OMDbConfig holds OMDb API configuration.
+type OMDbConfig struct {
+	// APIKey is the OMDb API key.
+	APIKey string `koanf:"api_key"`
 }
 
 // LibraryConfig holds movie library configuration.
@@ -588,6 +615,11 @@ func Defaults() map[string]interface{} {
 		"movie.tmdb.proxy_url":  "",
 		"movie.library.paths":   []string{},
 		"movie.library.scan_interval": "0s", // Disabled by default
+
+		// Metadata provider defaults
+		"metadata.fanarttv.api_key":    "",
+		"metadata.fanarttv.client_key": "",
+		"metadata.omdb.api_key":        "",
 
 		// Search defaults
 		"search.url":     "",

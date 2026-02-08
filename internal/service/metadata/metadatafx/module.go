@@ -7,6 +7,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 	movieadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/movie"
 	tvshowadapter "github.com/lusoris/revenge/internal/service/metadata/adapters/tvshow"
+	"github.com/lusoris/revenge/internal/service/metadata/providers/fanarttv"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tmdb"
 	"github.com/lusoris/revenge/internal/service/metadata/providers/tvdb"
 
@@ -31,15 +32,20 @@ type Config struct {
 	// TVDb configuration (optional)
 	TVDbAPIKey string
 	TVDbPIN    string
+
+	// Fanart.tv configuration (optional)
+	FanartTVAPIKey    string
+	FanartTVClientKey string
 }
 
 // ModuleParams contains parameters for the metadata module.
 type ModuleParams struct {
 	fx.In
 
-	Config      Config       `optional:"true"`
-	TMDbConfig  tmdb.Config  `optional:"true"`
-	TVDbConfig  tvdb.Config  `optional:"true"`
+	Config         Config          `optional:"true"`
+	TMDbConfig     tmdb.Config     `optional:"true"`
+	TVDbConfig     tvdb.Config     `optional:"true"`
+	FanartTVConfig fanarttv.Config `optional:"true"`
 }
 
 // ModuleResult contains the provided services.
@@ -49,8 +55,9 @@ type ModuleResult struct {
 	Service               metadata.Service
 	MovieMetadataAdapter  movie.MetadataProvider
 	TVShowMetadataAdapter tvshow.MetadataProvider
-	TMDbProvider          *tmdb.Provider `optional:"true"`
-	TVDbProvider          *tvdb.Provider `optional:"true"`
+	TMDbProvider          *tmdb.Provider     `optional:"true"`
+	TVDbProvider          *tvdb.Provider     `optional:"true"`
+	FanartTVProvider      *fanarttv.Provider `optional:"true"`
 }
 
 // NewModule creates a new metadata service with providers.
@@ -107,6 +114,24 @@ func NewModule(params ModuleParams) (ModuleResult, error) {
 		}
 		svc.RegisterProvider(tvdbProvider)
 		result.TVDbProvider = tvdbProvider
+	}
+
+	// Create and register Fanart.tv provider if configured
+	fanartConfig := params.FanartTVConfig
+	if fanartConfig.APIKey == "" && params.Config.FanartTVAPIKey != "" {
+		fanartConfig = fanarttv.Config{
+			APIKey:    params.Config.FanartTVAPIKey,
+			ClientKey: params.Config.FanartTVClientKey,
+		}
+	}
+
+	if fanartConfig.APIKey != "" {
+		fanartProvider, err := fanarttv.NewProvider(fanartConfig)
+		if err != nil {
+			return ModuleResult{}, err
+		}
+		svc.RegisterProvider(fanartProvider)
+		result.FanartTVProvider = fanartProvider
 	}
 
 	result.Service = svc

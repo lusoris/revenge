@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/playback"
@@ -403,6 +404,9 @@ func TestStreamHandler_ServeMediaPlaylist_Cached(t *testing.T) {
 	handler.ServeHTTP(rec1, httptest.NewRequest(http.MethodGet, url, nil))
 	assert.Equal(t, http.StatusOK, rec1.Code)
 	body1 := rec1.Body.String()
+
+	// Otter Set is asynchronous — give it time to commit
+	time.Sleep(50 * time.Millisecond)
 
 	// Delete the file on disk to verify second request serves from cache
 	require.NoError(t, os.Remove(filepath.Join(profileDir, "index.m3u8")))

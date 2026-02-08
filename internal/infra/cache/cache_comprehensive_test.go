@@ -100,23 +100,14 @@ func TestCache_Eviction(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	// Otter performs evictions asynchronously for performance
-	// Size may temporarily exceed max during eviction processing
-	initialSize := cache.l1.Size()
-
-	// Wait for background evictions to complete
-	time.Sleep(100 * time.Millisecond)
-
-	finalSize := cache.l1.Size()
-
-	// Final size should be close to max (allow 20% variance for async eviction)
+	// Otter performs evictions asynchronously for performance.
+	// Poll until the cache size settles near max (allow 20% variance).
 	maxAllowedSize := int(float64(maxSize) * 1.2)
-	assert.LessOrEqual(t, finalSize, maxAllowedSize,
-		"Cache should settle near max size after evictions complete")
-
-	// Verify evictions did occur
-	assert.Less(t, finalSize, initialSize,
-		"Evictions should have reduced cache size from initial burst")
+	require.Eventually(t, func() bool {
+		return cache.l1.Size() <= maxAllowedSize
+	}, 2*time.Second, 10*time.Millisecond,
+		"Cache should settle near max size after evictions complete (max allowed: %d, got: %d)",
+		maxAllowedSize, cache.l1.Size())
 }
 
 // TestCache_TTLExpiration tests that expired entries are not returned
