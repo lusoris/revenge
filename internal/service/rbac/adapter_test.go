@@ -111,6 +111,35 @@ func TestAdapter_LoadPolicy_NullableV3V4V5(t *testing.T) {
 	assert.Equal(t, []string{"charlie", "data3", "delete"}, m["p"]["p"].Policy[0])
 }
 
+func TestAdapter_LoadPolicy_NullableV0V1V2(t *testing.T) {
+	t.Parallel()
+	adapter, testDB := setupTestAdapter(t)
+	ctx := context.Background()
+
+	// Insert a group rule with only ptype, v0, v1 set (v2-v5 are NULL).
+	// This is the typical pattern for role assignment (g-type) rules.
+	_, err := testDB.Pool().Exec(ctx,
+		"INSERT INTO shared.casbin_rule (ptype, v0, v1) VALUES ($1, $2, $3)",
+		"g", "alice", "admin")
+	require.NoError(t, err)
+
+	// Also insert a policy rule that has v2 to ensure mixed NULLs work
+	_, err = testDB.Pool().Exec(ctx,
+		"INSERT INTO shared.casbin_rule (ptype, v0, v1, v2) VALUES ($1, $2, $3, $4)",
+		"p", "admin", "*", "*")
+	require.NoError(t, err)
+
+	m := newTestModel(t)
+	err = adapter.LoadPolicy(m)
+	require.NoError(t, err, "LoadPolicy should handle NULL v2 columns")
+
+	assert.Len(t, m["g"]["g"].Policy, 1, "should load g-type rule with NULL v2")
+	assert.Equal(t, []string{"alice", "admin"}, m["g"]["g"].Policy[0])
+
+	assert.Len(t, m["p"]["p"].Policy, 1, "should load p-type rule")
+	assert.Equal(t, []string{"admin", "*", "*"}, m["p"]["p"].Policy[0])
+}
+
 // =====================================================
 // SavePolicy tests
 // =====================================================

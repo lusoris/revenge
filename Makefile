@@ -82,7 +82,7 @@ test-coverage: test ## Run tests and open coverage report
 
 docker-build: ## Build Docker image locally
 	@echo "Building Docker image..."
-	docker build -t ${DOCKER_IMAGE}:${VERSION} -t ${DOCKER_IMAGE}:dev .
+	docker build -t ${DOCKER_IMAGE}:${VERSION} -t ${DOCKER_IMAGE}:dev -t revenge/revenge:dev .
 
 docker-scan: docker-build ## Build and scan Docker image with Trivy
 	@echo "Scanning Docker image with Trivy..."
@@ -94,14 +94,14 @@ docker-test: docker-build ## Build image and run smoke test with full stack
 	docker compose -f docker-compose.dev.yml up -d --wait
 	@echo "Running smoke tests against real image..."
 	@sleep 5
-	@curl -sf http://localhost:8096/health/live && echo "Health check: OK" || echo "Health check: FAILED"
+	@curl -sf http://localhost:8096/healthz && echo "Health check: OK" || echo "Health check: FAILED"
 	docker compose -f docker-compose.dev.yml down
 
 docker-local: docker-build ## Build and run full local stack
 	docker compose -f docker-compose.dev.yml up -d --wait
 	@echo "Waiting for services to initialize..."
 	@sleep 5
-	@curl -sf http://localhost:8096/health/live && echo "Revenge is healthy!" || echo "Startup failed - check logs with: docker compose -f docker-compose.dev.yml logs revenge"
+	@curl -sf http://localhost:8096/healthz && echo "Revenge is healthy!" || echo "Startup failed - check logs with: docker compose -f docker-compose.dev.yml logs revenge"
 
 docker-up: ## Start dev services (postgres, dragonfly, typesense)
 	docker compose -f docker-compose.dev.yml up -d --wait

@@ -408,22 +408,57 @@ func TestLoad_CacheConfig(t *testing.T) {
 func TestLoad_SearchConfig(t *testing.T) {
 	t.Setenv("REVENGE_SEARCH_ENABLED", "true")
 	t.Setenv("REVENGE_SEARCH_URL", "http://localhost:8108")
-	// Note: API_KEY becomes api.key due to _ -> . conversion
-	// This is a limitation of the current env var mapping
+	t.Setenv("REVENGE_SEARCH_API_KEY", "test-typesense-key")
 
 	cfg, err := Load("")
 	require.NoError(t, err)
 
 	assert.True(t, cfg.Search.Enabled)
 	assert.Equal(t, "http://localhost:8108", cfg.Search.URL)
+	assert.Equal(t, "test-typesense-key", cfg.Search.APIKey)
 }
 
 func TestLoad_LegacyConfig(t *testing.T) {
 	t.Setenv("REVENGE_LEGACY_ENABLED", "true")
-	// Note: ENCRYPTION_KEY becomes encryption.key due to _ -> . conversion
+	t.Setenv("REVENGE_LEGACY_ENCRYPTION_KEY", "test-encryption-key")
 
 	cfg, err := Load("")
 	require.NoError(t, err)
 
 	assert.True(t, cfg.Legacy.Enabled)
+	assert.Equal(t, "test-encryption-key", cfg.Legacy.EncryptionKey)
+}
+
+func TestLoad_CompoundEnvVarMapping(t *testing.T) {
+	// Verify that compound field names (containing underscores) are mapped correctly.
+	// The simple _→. transform would break these: SEARCH_API_KEY → search.api.key
+	// instead of search.api_key. The applyCompoundEnvOverrides fix handles this.
+
+	t.Run("search_api_key", func(t *testing.T) {
+		t.Setenv("REVENGE_SEARCH_API_KEY", "ts-key-123")
+		cfg, err := Load("")
+		require.NoError(t, err)
+		assert.Equal(t, "ts-key-123", cfg.Search.APIKey)
+	})
+
+	t.Run("radarr_api_key", func(t *testing.T) {
+		t.Setenv("REVENGE_INTEGRATIONS_RADARR_API_KEY", "radarr-key-456")
+		cfg, err := Load("")
+		require.NoError(t, err)
+		assert.Equal(t, "radarr-key-456", cfg.Integrations.Radarr.APIKey)
+	})
+
+	t.Run("sonarr_api_key", func(t *testing.T) {
+		t.Setenv("REVENGE_INTEGRATIONS_SONARR_API_KEY", "sonarr-key-789")
+		cfg, err := Load("")
+		require.NoError(t, err)
+		assert.Equal(t, "sonarr-key-789", cfg.Integrations.Sonarr.APIKey)
+	})
+
+	t.Run("radarr_base_url", func(t *testing.T) {
+		t.Setenv("REVENGE_INTEGRATIONS_RADARR_BASE_URL", "http://radarr:7878")
+		cfg, err := Load("")
+		require.NoError(t, err)
+		assert.Equal(t, "http://radarr:7878", cfg.Integrations.Radarr.BaseURL)
+	})
 }

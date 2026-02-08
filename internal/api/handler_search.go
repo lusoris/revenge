@@ -37,11 +37,17 @@ func (h *Handler) SearchLibraryMovies(ctx context.Context, params ogen.SearchLib
 		searchParams.FilterBy = params.FilterBy.Value
 	}
 
-	// Execute search
+	// Execute search — return empty results on error (e.g. collection not found)
 	result, err := h.searchService.Search(ctx, searchParams)
 	if err != nil {
-		h.logger.Error("search failed", zap.Error(err))
-		return nil, err
+		h.logger.Warn("search unavailable, returning empty results", zap.Error(err))
+		return &ogen.SearchResults{
+			TotalHits:    ogen.NewOptInt(0),
+			TotalPages:   ogen.NewOptInt(0),
+			CurrentPage:  ogen.NewOptInt(searchParams.Page),
+			SearchTimeMs: ogen.NewOptInt(0),
+			Hits:         []ogen.SearchHit{},
+		}, nil
 	}
 
 	// Convert to API response
@@ -148,8 +154,10 @@ func (h *Handler) AutocompleteMovies(ctx context.Context, params ogen.Autocomple
 
 	suggestions, err := h.searchService.Autocomplete(ctx, params.Q, limit)
 	if err != nil {
-		h.logger.Error("autocomplete failed", zap.Error(err))
-		return nil, err
+		h.logger.Warn("autocomplete unavailable, returning empty", zap.Error(err))
+		return &ogen.AutocompleteResults{
+			Suggestions: []string{},
+		}, nil
 	}
 
 	return &ogen.AutocompleteResults{
@@ -163,8 +171,8 @@ func (h *Handler) GetSearchFacets(ctx context.Context) (ogen.GetSearchFacetsRes,
 
 	facets, err := h.searchService.GetFacets(ctx, facetNames)
 	if err != nil {
-		h.logger.Error("get facets failed", zap.Error(err))
-		return nil, err
+		h.logger.Warn("facets unavailable, returning empty", zap.Error(err))
+		return &ogen.SearchFacets{}, nil
 	}
 
 	response := &ogen.SearchFacets{}

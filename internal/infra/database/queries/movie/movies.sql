@@ -388,6 +388,6 @@ LIMIT $2 OFFSET $3;
 SELECT
     COUNT(*) FILTER (WHERE is_completed) as watched_count,
     COUNT(*) FILTER (WHERE NOT is_completed AND progress_percent > 5) as in_progress_count,
-    SUM(watch_count) as total_watches
+    COALESCE(SUM(watch_count), 0)::bigint as total_watches
 FROM public.movie_watched
 WHERE user_id = $1;

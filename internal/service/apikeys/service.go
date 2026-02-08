@@ -136,9 +136,9 @@ func (s *Service) GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error) 
 	return &key, nil
 }
 
-// ListUserKeys lists all API keys for a user
+// ListUserKeys lists active API keys for a user
 func (s *Service) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error) {
-	dbKeys, err := s.repo.ListUserAPIKeys(ctx, userID)
+	dbKeys, err := s.repo.ListActiveUserAPIKeys(ctx, userID)
 	if err != nil {
 		s.logger.Error("failed to list user API keys",
 			zap.String("user_id", userID.String()),

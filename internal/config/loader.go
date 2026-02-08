@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -52,6 +53,10 @@ func Load(configPath string) (*Config, error) {
 		return nil, err
 	}
 
+	// Fix compound field names where the simple _→. transform is wrong.
+	// e.g. REVENGE_SEARCH_API_KEY → "search.api.key" but should be "search.api_key"
+	applyCompoundEnvOverrides(k)
+
 	// Unmarshal into Config struct
 	var cfg Config
 	if err := k.Unmarshal("", &cfg); err != nil {
@@ -95,6 +100,9 @@ func LoadWithKoanf(configPath string) (*Config, *koanf.Koanf, error) {
 		return nil, nil, err
 	}
 
+	// Fix compound field names (same as Load)
+	applyCompoundEnvOverrides(k)
+
 	// Unmarshal into Config struct
 	var cfg Config
 	if err := k.Unmarshal("", &cfg); err != nil {
@@ -117,6 +125,34 @@ func MustLoad(configPath string) *Config {
 		panic("failed to load configuration: " + err.Error())
 	}
 	return cfg
+}
+
+// compoundEnvVars maps environment variables with compound field names
+// (containing underscores) to their correct koanf keys. The simple _→.
+// transform converts ALL underscores to dots, which breaks field names
+// like "api_key" → "api.key" instead of keeping them as "api_key".
+var compoundEnvVars = map[string]string{
+	"REVENGE_SEARCH_API_KEY":               "search.api_key",
+	"REVENGE_MOVIE_TMDB_API_KEY":           "movie.tmdb.api_key",
+	"REVENGE_MOVIE_TMDB_RATE_LIMIT":        "movie.tmdb.rate_limit",
+	"REVENGE_MOVIE_TMDB_CACHE_TTL":         "movie.tmdb.cache_ttl",
+	"REVENGE_INTEGRATIONS_RADARR_API_KEY":  "integrations.radarr.api_key",
+	"REVENGE_INTEGRATIONS_RADARR_BASE_URL": "integrations.radarr.base_url",
+	"REVENGE_INTEGRATIONS_SONARR_API_KEY":  "integrations.sonarr.api_key",
+	"REVENGE_INTEGRATIONS_SONARR_BASE_URL": "integrations.sonarr.base_url",
+	"REVENGE_EMAIL_SENDGRID_API_KEY":       "email.sendgrid.api_key",
+	"REVENGE_EMAIL_SMTP_SKIP_VERIFY":       "email.smtp.skip_verify",
+	"REVENGE_LEGACY_ENCRYPTION_KEY":        "legacy.encryption_key",
+}
+
+// applyCompoundEnvOverrides fixes env vars that the simple _→. transform
+// maps incorrectly due to compound field names containing underscores.
+func applyCompoundEnvOverrides(k *koanf.Koanf) {
+	for envVar, configKey := range compoundEnvVars {
+		if v := os.Getenv(envVar); v != "" {
+			_ = k.Set(configKey, v)
+		}
+	}
 }
 
 // validate validates the configuration using the validator package.

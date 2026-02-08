@@ -17,6 +17,7 @@ var Module = fx.Module("moviejobs",
 		NewMovieFileMatchWorker,
 		NewMovieSearchIndexWorker,
 	),
+	fx.Invoke(RegisterWorkers),
 )
 
 // RegisterWorkers registers all movie job workers with the River workers registry.

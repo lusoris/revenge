@@ -2,12 +2,13 @@ package movie
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/govalues/decimal"
@@ -33,8 +34,8 @@ func NewPostgresRepository(pool *pgxpool.Pool) Repository {
 func (r *postgresRepository) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
 	movie, err := r.queries.GetMovie(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("movie not found: %w", err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrMovieNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie: %w", err)
 	}
@@ -45,8 +46,8 @@ func (r *postgresRepository) GetMovie(ctx context.Context, id uuid.UUID) (*Movie
 func (r *postgresRepository) GetMovieByTMDbID(ctx context.Context, tmdbID int32) (*Movie, error) {
 	movie, err := r.queries.GetMovieByTMDbID(ctx, &tmdbID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("movie not found: %w", err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrMovieNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie by TMDb ID: %w", err)
 	}
@@ -57,8 +58,8 @@ func (r *postgresRepository) GetMovieByTMDbID(ctx context.Context, tmdbID int32)
 func (r *postgresRepository) GetMovieByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
 	movie, err := r.queries.GetMovieByIMDbID(ctx, &imdbID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("movie not found: %w", err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrMovieNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie by IMDb ID: %w", err)
 	}
@@ -69,8 +70,8 @@ func (r *postgresRepository) GetMovieByIMDbID(ctx context.Context, imdbID string
 func (r *postgresRepository) GetMovieByRadarrID(ctx context.Context, radarrID int32) (*Movie, error) {
 	movie, err := r.queries.GetMovieByRadarrID(ctx, &radarrID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("movie not found: %w", err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrMovieNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie by Radarr ID: %w", err)
 	}
@@ -521,8 +522,8 @@ func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovie
 	}
 	movie, err := r.queries.UpdateMovie(ctx, dbParams)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("movie not found: %w", err)
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrMovieNotFound
 		}
 		return nil, fmt.Errorf("failed to update movie: %w", err)
 	}
@@ -557,7 +558,7 @@ func (r *postgresRepository) CreateMovieFile(ctx context.Context, params CreateM
 func (r *postgresRepository) GetMovieFile(ctx context.Context, id uuid.UUID) (*MovieFile, error) {
 	file, err := r.queries.GetMovieFile(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrMovieFileNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie file: %w", err)
@@ -568,7 +569,7 @@ func (r *postgresRepository) GetMovieFile(ctx context.Context, id uuid.UUID) (*M
 func (r *postgresRepository) GetMovieFileByPath(ctx context.Context, path string) (*MovieFile, error) {
 	file, err := r.queries.GetMovieFileByPath(ctx, path)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrMovieFileNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie file by path: %w", err)
@@ -579,7 +580,7 @@ func (r *postgresRepository) GetMovieFileByPath(ctx context.Context, path string
 func (r *postgresRepository) GetMovieFileByRadarrID(ctx context.Context, radarrFileID int32) (*MovieFile, error) {
 	file, err := r.queries.GetMovieFileByRadarrID(ctx, &radarrFileID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrMovieFileNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie file by Radarr ID: %w", err)
@@ -615,7 +616,7 @@ func (r *postgresRepository) UpdateMovieFile(ctx context.Context, params UpdateM
 		RadarrFileID:      params.RadarrFileID,
 	})
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrMovieFileNotFound
 		}
 		return nil, fmt.Errorf("failed to update movie file: %w", err)
@@ -690,7 +691,7 @@ func (r *postgresRepository) CreateMovieCollection(ctx context.Context, params C
 func (r *postgresRepository) GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error) {
 	coll, err := r.queries.GetMovieCollection(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrCollectionNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie collection: %w", err)
@@ -701,7 +702,7 @@ func (r *postgresRepository) GetMovieCollection(ctx context.Context, id uuid.UUI
 func (r *postgresRepository) GetMovieCollectionByTMDbID(ctx context.Context, tmdbCollectionID int32) (*MovieCollection, error) {
 	coll, err := r.queries.GetMovieCollectionByTMDbID(ctx, &tmdbCollectionID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrCollectionNotFound
 		}
 		return nil, fmt.Errorf("failed to get movie collection by TMDb ID: %w", err)
@@ -719,7 +720,7 @@ func (r *postgresRepository) UpdateMovieCollection(ctx context.Context, params U
 		BackdropPath:     params.BackdropPath,
 	})
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrCollectionNotFound
 		}
 		return nil, fmt.Errorf("failed to update movie collection: %w", err)
@@ -757,7 +758,7 @@ func (r *postgresRepository) ListMoviesByCollection(ctx context.Context, collect
 func (r *postgresRepository) GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (*MovieCollection, error) {
 	coll, err := r.queries.GetCollectionForMovie(ctx, movieID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotInCollection
 		}
 		return nil, fmt.Errorf("failed to get collection for movie: %w", err)
@@ -889,7 +890,7 @@ func (r *postgresRepository) GetWatchProgress(ctx context.Context, userID, movie
 		MovieID: movieID,
 	})
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrProgressNotFound
 		}
 		return nil, fmt.Errorf("failed to get watch progress: %w", err)

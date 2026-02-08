@@ -141,20 +141,22 @@ type Movie struct {
 	// Plot overviews by language code: {"en": "Imprisoned in the 1940s...", "de": "In den 1940er Jahren eingesperrt..."}
 	OverviewsI18n []byte `json:"overviewsI18n"`
 	// Age ratings by country code and rating system: {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
-	AgeRatings []byte `json:"ageRatings"`
+	AgeRatings []byte             `json:"ageRatings"`
+	DeletedAt  pgtype.Timestamptz `json:"deletedAt"`
 }
 
 // Movie collections from TMDb (e.g., MCU, Star Wars)
 type MovieCollection struct {
 	ID uuid.UUID `json:"id"`
 	// TMDb collection ID for metadata sync
-	TmdbCollectionID *int32    `json:"tmdbCollectionId"`
-	Name             string    `json:"name"`
-	Overview         *string   `json:"overview"`
-	PosterPath       *string   `json:"posterPath"`
-	BackdropPath     *string   `json:"backdropPath"`
-	CreatedAt        time.Time `json:"createdAt"`
-	UpdatedAt        time.Time `json:"updatedAt"`
+	TmdbCollectionID *int32             `json:"tmdbCollectionId"`
+	Name             string             `json:"name"`
+	Overview         *string            `json:"overview"`
+	PosterPath       *string            `json:"posterPath"`
+	BackdropPath     *string            `json:"backdropPath"`
+	CreatedAt        time.Time          `json:"createdAt"`
+	UpdatedAt        time.Time          `json:"updatedAt"`
+	DeletedAt        pgtype.Timestamptz `json:"deletedAt"`
 }
 
 // Junction table linking movies to collections
@@ -184,9 +186,10 @@ type MovieCredit struct {
 	// Job title for crew members (Director, Writer, etc.)
 	Job *string `json:"job"`
 	// Department for crew members (Directing, Writing, etc.)
-	Department *string   `json:"department"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	Department *string            `json:"department"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	UpdatedAt  time.Time          `json:"updatedAt"`
+	DeletedAt  pgtype.Timestamptz `json:"deletedAt"`
 }
 
 // Physical media files associated with movies
@@ -220,6 +223,7 @@ type MovieFile struct {
 	IsMonitored   *bool              `json:"isMonitored"`
 	CreatedAt     time.Time          `json:"createdAt"`
 	UpdatedAt     time.Time          `json:"updatedAt"`
+	DeletedAt     pgtype.Timestamptz `json:"deletedAt"`
 }
 
 // Junction table linking movies to TMDb genres

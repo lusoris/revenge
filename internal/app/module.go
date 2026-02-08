@@ -30,6 +30,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
+	searchsvc "github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/storage"
@@ -66,6 +67,7 @@ var Module = fx.Module("app",
 	notification.Module,
 	storage.Module,
 	library.Module,
+	searchsvc.Module,
 
 	// Content Modules
 	movie.Module,

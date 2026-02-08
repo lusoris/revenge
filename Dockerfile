@@ -85,7 +85,7 @@ EXPOSE 8096
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8096/health/live || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8096/healthz || exit 1
 
 VOLUME ["/data", "/config", "/media"]
 

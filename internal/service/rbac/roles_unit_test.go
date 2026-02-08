@@ -20,7 +20,7 @@ func setupRolesTestService(t *testing.T) *rbac.Service {
 	m, err := model.NewModelFromString(casbinModelConf)
 	require.NoError(t, err)
 
-	enforcer, err := casbin.NewEnforcer(m)
+	enforcer, err := casbin.NewSyncedEnforcer(m)
 	require.NoError(t, err)
 
 	logger := zap.NewNop()

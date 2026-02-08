@@ -22,7 +22,7 @@ func TestNewService_FieldsSet(t *testing.T) {
 	m, err := casbinmodel.NewModelFromString(casbinModelConfInternal)
 	require.NoError(t, err)
 
-	enforcer, err := casbin.NewEnforcer(m)
+	enforcer, err := casbin.NewSyncedEnforcer(m)
 	require.NoError(t, err)
 
 	logger := zap.NewNop()

@@ -33,7 +33,7 @@ func setupTestService(t *testing.T) (*Service, testutil.DB) {
 
 	// Use the actual model file from the project
 	modelPath := "../../../config/casbin_model.conf"
-	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
+	enforcer, err := casbin.NewSyncedEnforcer(modelPath, adapter)
 	require.NoError(t, err)
 
 	logger := zaptest.NewLogger(t)
@@ -322,7 +322,7 @@ func TestService_LoadPolicy(t *testing.T) {
 	// Create a new service with the same database (simulating a restart)
 	adapter := NewAdapter(testDB.Pool())
 	modelPath := "../../../config/casbin_model.conf"
-	enforcer, err := casbin.NewEnforcer(modelPath, adapter)
+	enforcer, err := casbin.NewSyncedEnforcer(modelPath, adapter)
 	require.NoError(t, err)
 
 	logger := zaptest.NewLogger(t)

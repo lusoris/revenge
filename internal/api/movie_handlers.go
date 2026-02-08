@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
@@ -14,7 +15,7 @@ import (
 func (h *Handler) GetMovie(ctx context.Context, params ogen.GetMovieParams) (ogen.GetMovieRes, error) {
 	m, err := h.movieHandler.GetMovie(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieNotFound{}, nil
 		}
 		return nil, err
@@ -200,7 +201,7 @@ func (h *Handler) GetUserMovieStats(ctx context.Context) (ogen.GetUserMovieStats
 func (h *Handler) GetMovieFiles(ctx context.Context, params ogen.GetMovieFilesParams) (ogen.GetMovieFilesRes, error) {
 	files, err := h.movieHandler.GetMovieFiles(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieFilesNotFound{}, nil
 		}
 		return nil, err
@@ -218,7 +219,7 @@ func (h *Handler) GetMovieFiles(ctx context.Context, params ogen.GetMovieFilesPa
 func (h *Handler) GetMovieCast(ctx context.Context, params ogen.GetMovieCastParams) (ogen.GetMovieCastRes, error) {
 	cast, err := h.movieHandler.GetMovieCast(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieCastNotFound{}, nil
 		}
 		return nil, err
@@ -236,7 +237,7 @@ func (h *Handler) GetMovieCast(ctx context.Context, params ogen.GetMovieCastPara
 func (h *Handler) GetMovieCrew(ctx context.Context, params ogen.GetMovieCrewParams) (ogen.GetMovieCrewRes, error) {
 	crew, err := h.movieHandler.GetMovieCrew(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieCrewNotFound{}, nil
 		}
 		return nil, err
@@ -254,7 +255,7 @@ func (h *Handler) GetMovieCrew(ctx context.Context, params ogen.GetMovieCrewPara
 func (h *Handler) GetMovieGenres(ctx context.Context, params ogen.GetMovieGenresParams) (ogen.GetMovieGenresRes, error) {
 	genres, err := h.movieHandler.GetMovieGenres(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieGenresNotFound{}, nil
 		}
 		return nil, err
@@ -272,7 +273,7 @@ func (h *Handler) GetMovieGenres(ctx context.Context, params ogen.GetMovieGenres
 func (h *Handler) GetMovieCollection(ctx context.Context, params ogen.GetMovieCollectionParams) (ogen.GetMovieCollectionRes, error) {
 	collection, err := h.movieHandler.GetMovieCollection(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound || err == movie.ErrNotInCollection {
+		if errors.Is(err, movie.ErrMovieNotFound) || errors.Is(err, movie.ErrNotInCollection) {
 			return &ogen.GetMovieCollectionNotFound{}, nil
 		}
 		return nil, err
@@ -290,7 +291,7 @@ func (h *Handler) GetWatchProgress(ctx context.Context, params ogen.GetWatchProg
 
 	progress, err := h.movieHandler.GetWatchProgress(ctx, userID, params.ID.String())
 	if err != nil {
-		if err == movie.ErrProgressNotFound {
+		if errors.Is(err, movie.ErrProgressNotFound) {
 			return &ogen.GetWatchProgressNotFound{}, nil
 		}
 		return nil, err
@@ -313,7 +314,7 @@ func (h *Handler) UpdateWatchProgress(ctx context.Context, req *ogen.UpdateWatch
 
 	progress, err := h.movieHandler.UpdateWatchProgress(ctx, userID, params.ID.String(), updateParams)
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.UpdateWatchProgressNotFound{}, nil
 		}
 		return nil, err
@@ -331,7 +332,7 @@ func (h *Handler) DeleteWatchProgress(ctx context.Context, params ogen.DeleteWat
 
 	err = h.movieHandler.DeleteWatchProgress(ctx, userID, params.ID.String())
 	if err != nil {
-		if err == movie.ErrProgressNotFound {
+		if errors.Is(err, movie.ErrProgressNotFound) {
 			return &ogen.DeleteWatchProgressNotFound{}, nil
 		}
 		return nil, err
@@ -349,7 +350,7 @@ func (h *Handler) MarkAsWatched(ctx context.Context, params ogen.MarkAsWatchedPa
 
 	err = h.movieHandler.MarkAsWatched(ctx, userID, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.MarkAsWatchedNotFound{}, nil
 		}
 		return nil, err
@@ -362,7 +363,7 @@ func (h *Handler) MarkAsWatched(ctx context.Context, params ogen.MarkAsWatchedPa
 func (h *Handler) RefreshMovieMetadata(ctx context.Context, params ogen.RefreshMovieMetadataParams) (ogen.RefreshMovieMetadataRes, error) {
 	err := h.movieHandler.RefreshMetadata(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.RefreshMovieMetadataNotFound{}, nil
 		}
 		return nil, err
@@ -375,7 +376,7 @@ func (h *Handler) RefreshMovieMetadata(ctx context.Context, params ogen.RefreshM
 func (h *Handler) GetCollection(ctx context.Context, params ogen.GetCollectionParams) (ogen.GetCollectionRes, error) {
 	collection, err := h.movieHandler.GetCollection(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrCollectionNotFound {
+		if errors.Is(err, movie.ErrCollectionNotFound) {
 			return &ogen.GetCollectionNotFound{}, nil
 		}
 		return nil, err
@@ -388,7 +389,7 @@ func (h *Handler) GetCollection(ctx context.Context, params ogen.GetCollectionPa
 func (h *Handler) GetCollectionMovies(ctx context.Context, params ogen.GetCollectionMoviesParams) (ogen.GetCollectionMoviesRes, error) {
 	movies, err := h.movieHandler.GetCollectionMovies(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrCollectionNotFound {
+		if errors.Is(err, movie.ErrCollectionNotFound) {
 			return &ogen.GetCollectionMoviesNotFound{}, nil
 		}
 		return nil, err
@@ -407,7 +408,7 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 	// Get the movie to find its TMDb ID
 	m, err := h.movieHandler.GetMovie(ctx, params.ID.String())
 	if err != nil {
-		if err == movie.ErrMovieNotFound {
+		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetSimilarMoviesNotFound{}, nil
 		}
 		return nil, err

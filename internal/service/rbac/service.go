@@ -12,13 +12,13 @@ import (
 
 // Service provides RBAC functionality using Casbin.
 type Service struct {
-	enforcer       *casbin.Enforcer
+	enforcer       *casbin.SyncedEnforcer
 	logger         *zap.Logger
 	activityLogger activity.Logger
 }
 
 // NewService creates a new RBAC service.
-func NewService(enforcer *casbin.Enforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
+func NewService(enforcer *casbin.SyncedEnforcer, logger *zap.Logger, activityLogger activity.Logger) *Service {
 	return &Service{
 		enforcer:       enforcer,
 		logger:         logger.Named("rbac"),

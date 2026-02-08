@@ -19,6 +19,7 @@ var Module = fx.Module("tvshowjobs",
 		provideSearchIndexWorker,
 		provideSeriesRefreshWorker,
 	),
+	fx.Invoke(RegisterWorkers),
 )
 
 // WorkerProviderParams holds common dependencies for worker providers.

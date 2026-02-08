@@ -50,12 +50,21 @@ func (a *Adapter) LoadPolicy(model model.Model) error {
 
 	for rows.Next() {
 		var rule CasbinRule
-		var v3, v4, v5 *string
-		if err := rows.Scan(&rule.PType, &rule.V0, &rule.V1, &rule.V2, &v3, &v4, &v5); err != nil {
+		var v0, v1, v2, v3, v4, v5 *string
+		if err := rows.Scan(&rule.PType, &v0, &v1, &v2, &v3, &v4, &v5); err != nil {
 			return fmt.Errorf("failed to scan casbin rule: %w", err)
 		}
 
-		// Handle nullable columns
+		// Handle nullable columns (all v0-v5 are nullable VARCHAR)
+		if v0 != nil {
+			rule.V0 = *v0
+		}
+		if v1 != nil {
+			rule.V1 = *v1
+		}
+		if v2 != nil {
+			rule.V2 = *v2
+		}
 		if v3 != nil {
 			rule.V3 = *v3
 		}
