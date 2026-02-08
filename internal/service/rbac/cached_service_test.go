@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -22,7 +22,7 @@ func setupCachedTestService(t *testing.T) (*CachedService, testutil.DB) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cachedSvc := NewCachedService(svc, testCache, zap.NewNop())
+	cachedSvc := NewCachedService(svc, testCache, logging.NewTestLogger())
 	return cachedSvc, testDB
 }
 
@@ -33,7 +33,7 @@ func TestNewCachedService(t *testing.T) {
 	testCache, err := cache.NewCache(nil, 1000, 15*time.Minute)
 	require.NoError(t, err)
 
-	cached := NewCachedService(svc, testCache, zap.NewNop())
+	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 	require.NotNil(t, cached)
 	assert.NotNil(t, cached.Service)
 	assert.NotNil(t, cached.cache)
@@ -65,7 +65,7 @@ func TestCachedService_Enforce_NoCache(t *testing.T) {
 	ctx := context.Background()
 
 	// Create cached service without cache (nil cache)
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 
 	// Add a policy
 	err := svc.AddPolicy(ctx, "bob", "data2", "write")
@@ -131,7 +131,7 @@ func TestCachedService_GetUserRoles_NoCache(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 	userID := uuid.Must(uuid.NewV7())
 
 	// Should work without cache
@@ -175,7 +175,7 @@ func TestCachedService_HasRole_NoCache(t *testing.T) {
 	svc, _ := setupTestService(t)
 	ctx := context.Background()
 
-	cachedSvc := NewCachedService(svc, nil, zap.NewNop())
+	cachedSvc := NewCachedService(svc, nil, logging.NewTestLogger())
 	userID := uuid.Must(uuid.NewV7())
 
 	// Should work without cache

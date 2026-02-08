@@ -8,10 +8,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -21,7 +21,7 @@ func setupTestService(t *testing.T) (*Service, *RepositoryPg, testutil.DB) {
 	queries := db.New(testDB.Pool())
 	repo := NewRepositoryPg(queries)
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	encryptKey := make([]byte, 32) // 32 bytes for AES-256
 	for i := range encryptKey {
 		encryptKey[i] = byte(i)

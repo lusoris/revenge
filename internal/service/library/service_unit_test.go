@@ -8,12 +8,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func makeTestLibrary(id uuid.UUID, name, libType string) *library.Library {
@@ -43,7 +43,7 @@ func makeTestScan(id, libraryID uuid.UUID, scanType, status string) *library.Lib
 }
 
 func setupLibraryService(repo library.Repository) *library.Service {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activityLogger := activity.NewNoopLogger()
 	return library.NewService(repo, logger, activityLogger)
 }
@@ -1508,7 +1508,7 @@ func TestLibraryService_RevokePermission_ErrorPaths_Short(t *testing.T) {
 // ============================================================================
 
 func setupCachedServiceWithNilCache(repo library.Repository) *library.CachedService {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activityLogger := activity.NewNoopLogger()
 	svc := library.NewService(repo, logger, activityLogger)
 	return library.NewCachedService(svc, nil, logger)
@@ -1520,7 +1520,7 @@ func TestCachedService_NewCachedService_Short(t *testing.T) {
 	}
 
 	mockRepo := NewMockLibraryRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activityLogger := activity.NewNoopLogger()
 	svc := library.NewService(mockRepo, logger, activityLogger)
 
@@ -1810,7 +1810,7 @@ func setupCachedServiceWithL1Cache(t *testing.T, repo library.Repository) *libra
 	c, err := cache.NewNamedCache(nil, 1000, 5*time.Minute, "library-test")
 	require.NoError(t, err)
 	t.Cleanup(func() { c.Close() })
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	activityLogger := activity.NewNoopLogger()
 	svc := library.NewService(repo, logger, activityLogger)
 	return library.NewCachedService(svc, c, logger)

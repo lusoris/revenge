@@ -2817,6 +2817,81 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								return
 							}
 
+						case 't': // Prefix: "tvshows"
+
+							if l := len("tvshows"); len(elem) >= l && elem[0:l] == "tvshows" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleSearchLibraryTVShowsRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "autocomplete"
+
+									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleAutocompleteTVShowsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'f': // Prefix: "facets"
+
+									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleGetTVShowSearchFacetsRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								}
+
+							}
+
 						}
 
 					case 's': // Prefix: "ssions"
@@ -7324,6 +7399,96 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								default:
 									return
 								}
+							}
+
+						case 't': // Prefix: "tvshows"
+
+							if l := len("tvshows"); len(elem) >= l && elem[0:l] == "tvshows" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = SearchLibraryTVShowsOperation
+									r.summary = "Search TV shows in library"
+									r.operationID = "searchLibraryTVShows"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/search/tvshows"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 'a': // Prefix: "autocomplete"
+
+									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = AutocompleteTVShowsOperation
+											r.summary = "Autocomplete TV show titles"
+											r.operationID = "autocompleteTVShows"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/tvshows/autocomplete"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'f': // Prefix: "facets"
+
+									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = GetTVShowSearchFacetsOperation
+											r.summary = "Get TV show search facets"
+											r.operationID = "getTVShowSearchFacets"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/tvshows/facets"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								}
+
 							}
 
 						}

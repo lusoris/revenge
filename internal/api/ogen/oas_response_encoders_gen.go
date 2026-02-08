@@ -1131,6 +1131,52 @@ func encodeAutocompleteMoviesResponse(response AutocompleteMoviesRes, w http.Res
 	}
 }
 
+func encodeAutocompleteTVShowsResponse(response AutocompleteTVShowsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AutocompleteResults:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AutocompleteTVShowsBadRequest:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+		span.SetStatus(codes.Error, http.StatusText(400))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AutocompleteTVShowsUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeBeginWebAuthnLoginResponse(response BeginWebAuthnLoginRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *WebAuthnBeginLoginResponse:
@@ -4037,6 +4083,39 @@ func encodeGetTVShowNextEpisodeResponse(response GetTVShowNextEpisodeRes, w http
 	}
 }
 
+func encodeGetTVShowSearchFacetsResponse(response GetTVShowSearchFacetsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *TVShowSearchFacets:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetTVShowSeasonsResponse(response GetTVShowSeasonsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetTVShowSeasonsOKApplicationJSON:
@@ -6309,6 +6388,52 @@ func encodeSearchLibraryMoviesResponse(response SearchLibraryMoviesRes, w http.R
 		return nil
 
 	case *SearchLibraryMoviesUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeSearchLibraryTVShowsResponse(response SearchLibraryTVShowsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *TVShowSearchResults:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *SearchLibraryTVShowsBadRequest:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+		span.SetStatus(codes.Error, http.StatusText(400))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *SearchLibraryTVShowsUnauthorized:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(401)
 		span.SetStatus(codes.Error, http.StatusText(401))

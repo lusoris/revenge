@@ -2910,6 +2910,148 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/search/tvshows:
+    get:
+      summary: Search TV shows in library
+      description: |
+        Full-text search across the TV show library using Typesense.
+        Supports filtering by genres, year, status, type, networks, and more.
+        Returns faceted results for filtering.
+      operationId: searchLibraryTVShows
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Search query (searches title, overview, cast, networks)
+          example: "Breaking Bad"
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Results per page
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [popularity:desc, popularity:asc, vote_average:desc, vote_average:asc, first_air_date:desc, first_air_date:asc, title:asc, title:desc]
+            default: popularity:desc
+          description: Sort field and direction
+        - name: filter_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            Typesense filter syntax. Examples:
+            - `genres:=Drama`
+            - `year:>=2020`
+            - `has_file:=true && status:=Returning Series`
+          example: "genres:=Drama"
+      responses:
+        '200':
+          description: Search results with facets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVShowSearchResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/tvshows/autocomplete:
+    get:
+      summary: Autocomplete TV show titles
+      description: |
+        Provides search suggestions for TV show titles.
+        Useful for search-as-you-type interfaces.
+      operationId: autocompleteTVShows
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+          description: Partial search query
+          example: "Break"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 5
+          description: Maximum suggestions to return
+      responses:
+        '200':
+          description: Autocomplete suggestions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutocompleteResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/tvshows/facets:
+    get:
+      summary: Get TV show search facets
+      description: |
+        Returns available facet values for TV show filtering (genres, years, networks, etc.).
+        Use this to populate filter dropdowns in the UI.
+      operationId: getTVShowSearchFacets
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: Available facet values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TVShowSearchFacets'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Settings endpoints
   /api/v1/settings/server:
     get:
@@ -6770,6 +6912,162 @@ components:
           items:
             $ref: '#/components/schemas/FacetValue'
           description: Available resolutions
+        has_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: File availability
+
+    # TV Show Search schemas (Typesense library search)
+    TVShowSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVShowSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching documents
+        total_pages:
+          type: integer
+          description: Total number of pages
+        current_page:
+          type: integer
+          description: Current page number
+        search_time_ms:
+          type: integer
+          description: Search execution time in milliseconds
+        facets:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FacetValue'
+          description: Facet counts for filtering
+
+    TVShowSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/TVShowSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Highlighted snippets for matching fields
+
+    TVShowSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Series ID
+        tmdb_id:
+          type: integer
+          description: TMDb series ID
+        tvdb_id:
+          type: integer
+          description: TVDb series ID
+        imdb_id:
+          type: string
+          description: IMDb ID
+        title:
+          type: string
+          description: Series title
+        original_title:
+          type: string
+          description: Original title
+        year:
+          type: integer
+          description: First air year
+        first_air_date:
+          type: string
+          format: date
+          description: First air date
+        overview:
+          type: string
+          description: Plot summary
+        status:
+          type: string
+          description: Series status (Returning Series, Ended, etc.)
+        type:
+          type: string
+          description: Series type (Scripted, Reality, etc.)
+        poster_path:
+          type: string
+          description: Poster image path
+        backdrop_path:
+          type: string
+          description: Backdrop image path
+        vote_average:
+          type: number
+          format: float
+          description: Average rating (0-10)
+        popularity:
+          type: number
+          format: float
+          description: Popularity score
+        genres:
+          type: array
+          items:
+            type: string
+          description: Genre names
+        cast:
+          type: array
+          items:
+            type: string
+          description: Cast member names (top 20)
+        networks:
+          type: array
+          items:
+            type: string
+          description: Network names (HBO, Netflix, etc.)
+        total_seasons:
+          type: integer
+          description: Total number of seasons
+        total_episodes:
+          type: integer
+          description: Total number of episodes
+        has_file:
+          type: boolean
+          description: Whether series has any episode files in the library
+
+    TVShowSearchFacets:
+      type: object
+      properties:
+        genres:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available genres
+        years:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available first air years
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available statuses
+        type:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available series types
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetValue'
+          description: Available networks
         has_file:
           type: array
           items:

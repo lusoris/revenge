@@ -221,6 +221,192 @@ func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, err
 	}, nil
 }
 
+// SearchLibraryTVShows searches TV shows in the library using Typesense.
+func (h *Handler) SearchLibraryTVShows(ctx context.Context, params ogen.SearchLibraryTVShowsParams) (ogen.SearchLibraryTVShowsRes, error) {
+	if h.tvshowSearchService == nil {
+		return &ogen.TVShowSearchResults{
+			TotalHits:    ogen.NewOptInt(0),
+			TotalPages:   ogen.NewOptInt(0),
+			CurrentPage:  ogen.NewOptInt(1),
+			SearchTimeMs: ogen.NewOptInt(0),
+			Hits:         []ogen.TVShowSearchHit{},
+		}, nil
+	}
+
+	searchParams := search.TVShowSearchParams{
+		Query:             params.Q,
+		Page:              1,
+		PerPage:           20,
+		SortBy:            "popularity:desc",
+		IncludeHighlights: true,
+		FacetBy:           []string{"genres", "year", "status", "type", "networks", "has_file"},
+	}
+
+	if params.Page.Set {
+		searchParams.Page = params.Page.Value
+	}
+	if params.PerPage.Set {
+		searchParams.PerPage = params.PerPage.Value
+	}
+	if params.SortBy.Set {
+		searchParams.SortBy = string(params.SortBy.Value)
+	}
+	if params.FilterBy.Set {
+		searchParams.FilterBy = params.FilterBy.Value
+	}
+
+	result, err := h.tvshowSearchService.SearchSeries(ctx, searchParams)
+	if err != nil {
+		h.logger.Warn("tvshow search unavailable, returning empty results", slog.Any("error", err))
+		return &ogen.TVShowSearchResults{
+			TotalHits:    ogen.NewOptInt(0),
+			TotalPages:   ogen.NewOptInt(0),
+			CurrentPage:  ogen.NewOptInt(searchParams.Page),
+			SearchTimeMs: ogen.NewOptInt(0),
+			Hits:         []ogen.TVShowSearchHit{},
+		}, nil
+	}
+
+	response := &ogen.TVShowSearchResults{
+		TotalHits:    ogen.NewOptInt(result.TotalHits),
+		TotalPages:   ogen.NewOptInt(result.TotalPages),
+		CurrentPage:  ogen.NewOptInt(result.CurrentPage),
+		SearchTimeMs: ogen.NewOptInt(int(result.SearchTime.Milliseconds())),
+		Hits:         make([]ogen.TVShowSearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		apiHit := ogen.TVShowSearchHit{
+			Score: ogen.NewOptFloat32(float32(hit.Score)),
+		}
+
+		doc := hit.Document
+		apiDoc := ogen.TVShowSearchDocument{
+			ID:            ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:        ogen.NewOptInt(int(doc.TMDbID)),
+			TvdbID:        ogen.NewOptInt(int(doc.TVDbID)),
+			ImdbID:        ogen.NewOptString(doc.IMDbID),
+			Title:         ogen.NewOptString(doc.Title),
+			OriginalTitle: ogen.NewOptString(doc.OriginalTitle),
+			Year:          ogen.NewOptInt(int(doc.Year)),
+			Overview:      ogen.NewOptString(doc.Overview),
+			Status:        ogen.NewOptString(doc.Status),
+			Type:          ogen.NewOptString(doc.Type),
+			PosterPath:    ogen.NewOptString(doc.PosterPath),
+			BackdropPath:  ogen.NewOptString(doc.BackdropPath),
+			VoteAverage:   ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			Popularity:    ogen.NewOptFloat32(float32(doc.Popularity)),
+			HasFile:       ogen.NewOptBool(doc.HasFile),
+			TotalSeasons:  ogen.NewOptInt(int(doc.TotalSeasons)),
+			TotalEpisodes: ogen.NewOptInt(int(doc.TotalEpisodes)),
+		}
+
+		if doc.FirstAirDate > 0 {
+			t := time.Unix(doc.FirstAirDate, 0)
+			apiDoc.FirstAirDate = ogen.NewOptDate(t)
+		}
+
+		if len(doc.Genres) > 0 {
+			apiDoc.Genres = make([]string, len(doc.Genres))
+			copy(apiDoc.Genres, doc.Genres)
+		}
+		if len(doc.Cast) > 0 {
+			apiDoc.Cast = make([]string, len(doc.Cast))
+			copy(apiDoc.Cast, doc.Cast)
+		}
+		if len(doc.Networks) > 0 {
+			apiDoc.Networks = make([]string, len(doc.Networks))
+			copy(apiDoc.Networks, doc.Networks)
+		}
+
+		apiHit.Document = ogen.NewOptTVShowSearchDocument(apiDoc)
+
+		if len(hit.Highlights) > 0 {
+			highlightMap := make(ogen.TVShowSearchHitHighlights)
+			for field, snippets := range hit.Highlights {
+				highlightMap[field] = snippets
+			}
+			apiHit.Highlights = ogen.OptTVShowSearchHitHighlights{
+				Value: highlightMap,
+				Set:   true,
+			}
+		}
+
+		response.Hits = append(response.Hits, apiHit)
+	}
+
+	if len(result.Facets) > 0 {
+		facets := ogen.OptTVShowSearchResultsFacets{
+			Set:   true,
+			Value: make(ogen.TVShowSearchResultsFacets),
+		}
+		for facetName, values := range result.Facets {
+			facets.Value[facetName] = convertFacetValues(values)
+		}
+		response.Facets = facets
+	}
+
+	return response, nil
+}
+
+// AutocompleteTVShows provides autocomplete suggestions for TV show titles.
+func (h *Handler) AutocompleteTVShows(ctx context.Context, params ogen.AutocompleteTVShowsParams) (ogen.AutocompleteTVShowsRes, error) {
+	if h.tvshowSearchService == nil {
+		return &ogen.AutocompleteResults{Suggestions: []string{}}, nil
+	}
+
+	limit := 5
+	if params.Limit.Set {
+		limit = params.Limit.Value
+	}
+
+	suggestions, err := h.tvshowSearchService.AutocompleteSeries(ctx, params.Q, limit)
+	if err != nil {
+		h.logger.Warn("tvshow autocomplete unavailable, returning empty", slog.Any("error", err))
+		return &ogen.AutocompleteResults{Suggestions: []string{}}, nil
+	}
+
+	return &ogen.AutocompleteResults{Suggestions: suggestions}, nil
+}
+
+// GetTVShowSearchFacets returns available facet values for TV show filtering.
+func (h *Handler) GetTVShowSearchFacets(ctx context.Context) (ogen.GetTVShowSearchFacetsRes, error) {
+	if h.tvshowSearchService == nil {
+		return &ogen.TVShowSearchFacets{}, nil
+	}
+
+	facetNames := []string{"genres", "year", "status", "type", "networks", "has_file"}
+
+	facets, err := h.tvshowSearchService.GetFacets(ctx, facetNames)
+	if err != nil {
+		h.logger.Warn("tvshow facets unavailable, returning empty", slog.Any("error", err))
+		return &ogen.TVShowSearchFacets{}, nil
+	}
+
+	response := &ogen.TVShowSearchFacets{}
+
+	if values, ok := facets["genres"]; ok {
+		response.Genres = convertFacetValues(values)
+	}
+	if values, ok := facets["year"]; ok {
+		response.Years = convertFacetValues(values)
+	}
+	if values, ok := facets["status"]; ok {
+		response.Status = convertFacetValues(values)
+	}
+	if values, ok := facets["type"]; ok {
+		response.Type = convertFacetValues(values)
+	}
+	if values, ok := facets["networks"]; ok {
+		response.Networks = convertFacetValues(values)
+	}
+	if values, ok := facets["has_file"]; ok {
+		response.HasFile = convertFacetValues(values)
+	}
+
+	return response, nil
+}
+
 // Helper functions
 
 func parseUUID(s string) uuid.UUID {

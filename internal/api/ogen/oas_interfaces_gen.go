@@ -77,6 +77,10 @@ type AutocompleteMoviesRes interface {
 	autocompleteMoviesRes()
 }
 
+type AutocompleteTVShowsRes interface {
+	autocompleteTVShowsRes()
+}
+
 type BeginWebAuthnLoginRes interface {
 	beginWebAuthnLoginRes()
 }
@@ -337,6 +341,10 @@ type GetTVShowRes interface {
 	getTVShowRes()
 }
 
+type GetTVShowSearchFacetsRes interface {
+	getTVShowSearchFacetsRes()
+}
+
 type GetTVShowSeasonsRes interface {
 	getTVShowSeasonsRes()
 }
@@ -559,6 +567,10 @@ type SearchActivityLogsRes interface {
 
 type SearchLibraryMoviesRes interface {
 	searchLibraryMoviesRes()
+}
+
+type SearchLibraryTVShowsRes interface {
+	searchLibraryTVShowsRes()
 }
 
 type SearchMoviesMetadataRes interface {

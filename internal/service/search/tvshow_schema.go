@@ -75,7 +75,7 @@ func TVShowCollectionSchema() *api.CollectionSchema {
 			// Ratings and popularity (sortable)
 			{Name: "vote_average", Type: "float", Facet: ptr(false), Index: ptr(true), Sort: ptr(true), Optional: ptr(true)},
 			{Name: "vote_count", Type: "int32", Facet: ptr(false), Index: ptr(true), Optional: ptr(true)},
-			{Name: "popularity", Type: "float", Facet: ptr(false), Index: ptr(true), Sort: ptr(true), Optional: ptr(true)},
+			{Name: "popularity", Type: "float", Facet: ptr(false), Index: ptr(true), Sort: ptr(true)},
 
 			// Genres (array, facetable, filterable)
 			{Name: "genres", Type: "string[]", Facet: ptr(true), Index: ptr(true), Optional: ptr(true)},

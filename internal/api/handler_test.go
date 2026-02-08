@@ -170,8 +170,7 @@ func TestHandler_NewError(t *testing.T) {
 
 	assert.Equal(t, 500, result.StatusCode)
 	assert.Equal(t, 500, result.Response.Code)
-	assert.Contains(t, result.Response.Message, "Internal server error")
-	assert.Contains(t, result.Response.Message, testErr.Error())
+	assert.Equal(t, "Internal server error", result.Response.Message)
 }
 
 func TestHandler_GetLiveness_Concurrent(t *testing.T) {
@@ -245,32 +244,36 @@ func TestHandler_NewError_VariousErrors(t *testing.T) {
 	ctx := context.Background()
 
 	testCases := []struct {
-		name    string
-		err     error
-		wantMsg string
+		name       string
+		err        error
+		wantStatus int
+		wantMsg    string
 	}{
 		{
-			name:    "generic error",
-			err:     assert.AnError,
-			wantMsg: "Internal server error",
+			name:       "generic error",
+			err:        assert.AnError,
+			wantStatus: 500,
+			wantMsg:    "Internal server error",
 		},
 		{
-			name:    "context canceled",
-			err:     context.Canceled,
-			wantMsg: "context canceled",
+			name:       "context canceled",
+			err:        context.Canceled,
+			wantStatus: 500,
+			wantMsg:    "Internal server error",
 		},
 		{
-			name:    "context deadline exceeded",
-			err:     context.DeadlineExceeded,
-			wantMsg: "context deadline exceeded",
+			name:       "context deadline exceeded",
+			err:        context.DeadlineExceeded,
+			wantStatus: 500,
+			wantMsg:    "Internal server error",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			result := handler.NewError(ctx, tc.err)
-			assert.Equal(t, 500, result.StatusCode)
-			assert.Contains(t, result.Response.Message, tc.wantMsg)
+			assert.Equal(t, tc.wantStatus, result.StatusCode)
+			assert.Equal(t, tc.wantMsg, result.Response.Message)
 		})
 	}
 }

@@ -10,10 +10,10 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
 
 	"github.com/lusoris/revenge/internal/crypto"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -63,7 +63,7 @@ func setupMFAManager(t *testing.T) (*MFAManager, *db.Queries, context.Context, u
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	ctx := context.Background()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	// Create an encryption key for TOTP secrets
 	key := make([]byte, 32)
@@ -117,7 +117,7 @@ func TestNewMFAManager(t *testing.T) {
 
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	key := make([]byte, 32)
 	_, err := rand.Read(key)

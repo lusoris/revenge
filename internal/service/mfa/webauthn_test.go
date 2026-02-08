@@ -13,18 +13,18 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/lusoris/revenge/internal/util"
 )
 
 func TestNewWebAuthnService(t *testing.T) {
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	tests := []struct {
 		name          string
@@ -287,7 +287,7 @@ func setupWebAuthnService(t *testing.T) (*WebAuthnService, *db.Queries, context.
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
 	ctx := context.Background()
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	service, err := NewWebAuthnService(queries, logger, nil, "Test App", "localhost", []string{"http://localhost:3000"})
 	require.NoError(t, err)
@@ -777,7 +777,7 @@ func TestNewTOTPServiceFromConfig(t *testing.T) {
 
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	// Create an encryption key
 	key := make([]byte, 32)
@@ -799,7 +799,7 @@ func TestNewTOTPServiceFromConfig(t *testing.T) {
 func TestWebAuthnService_HasCache(t *testing.T) {
 	t.Parallel()
 
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	t.Run("returns false when no cache configured", func(t *testing.T) {
 		service, err := NewWebAuthnService(nil, logger, nil, "Test", "localhost", []string{"http://localhost"})
@@ -821,7 +821,7 @@ func TestWebAuthnService_HasCache(t *testing.T) {
 func TestWebAuthnService_SessionCache(t *testing.T) {
 	t.Parallel()
 
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 	ctx := context.Background()
 
 	t.Run("stores and retrieves registration session", func(t *testing.T) {
@@ -925,7 +925,7 @@ func TestNewWebAuthnServiceFromConfig(t *testing.T) {
 
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	t.Run("uses localhost when host is empty", func(t *testing.T) {
 		cfg := &config.Config{

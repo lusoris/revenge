@@ -8,10 +8,10 @@ import (
 	"github.com/casbin/casbin/v2/model"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func setupRolesTestService(t *testing.T) *rbac.Service {
@@ -23,7 +23,7 @@ func setupRolesTestService(t *testing.T) *rbac.Service {
 	enforcer, err := casbin.NewSyncedEnforcer(m)
 	require.NoError(t, err)
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	return rbac.NewService(enforcer, logger, activity.NewNoopLogger())
 }
 

@@ -1187,7 +1187,16 @@ func (s *AutocompleteResults) SetSuggestions(val []string) {
 	s.Suggestions = val
 }
 
-func (*AutocompleteResults) autocompleteMoviesRes() {}
+func (*AutocompleteResults) autocompleteMoviesRes()  {}
+func (*AutocompleteResults) autocompleteTVShowsRes() {}
+
+type AutocompleteTVShowsBadRequest Error
+
+func (*AutocompleteTVShowsBadRequest) autocompleteTVShowsRes() {}
+
+type AutocompleteTVShowsUnauthorized Error
+
+func (*AutocompleteTVShowsUnauthorized) autocompleteTVShowsRes() {}
 
 // Ref: #/components/schemas/Avatar
 type Avatar struct {
@@ -3069,6 +3078,7 @@ func (*Error) getRecentlyAddedRes()          {}
 func (*Error) getRecentlyAddedTVShowsRes()   {}
 func (*Error) getSearchFacetsRes()           {}
 func (*Error) getTVContinueWatchingRes()     {}
+func (*Error) getTVShowSearchFacetsRes()     {}
 func (*Error) getTopRatedRes()               {}
 func (*Error) getUpcomingEpisodesRes()       {}
 func (*Error) getUserMovieStatsRes()         {}
@@ -10042,6 +10052,52 @@ func (o OptSearchLibraryMoviesSortBy) Or(d SearchLibraryMoviesSortBy) SearchLibr
 	return d
 }
 
+// NewOptSearchLibraryTVShowsSortBy returns new OptSearchLibraryTVShowsSortBy with value set to v.
+func NewOptSearchLibraryTVShowsSortBy(v SearchLibraryTVShowsSortBy) OptSearchLibraryTVShowsSortBy {
+	return OptSearchLibraryTVShowsSortBy{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchLibraryTVShowsSortBy is optional SearchLibraryTVShowsSortBy.
+type OptSearchLibraryTVShowsSortBy struct {
+	Value SearchLibraryTVShowsSortBy
+	Set   bool
+}
+
+// IsSet returns true if OptSearchLibraryTVShowsSortBy was set.
+func (o OptSearchLibraryTVShowsSortBy) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchLibraryTVShowsSortBy) Reset() {
+	var v SearchLibraryTVShowsSortBy
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchLibraryTVShowsSortBy) SetTo(v SearchLibraryTVShowsSortBy) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchLibraryTVShowsSortBy) Get() (v SearchLibraryTVShowsSortBy, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchLibraryTVShowsSortBy) Or(d SearchLibraryTVShowsSortBy) SearchLibraryTVShowsSortBy {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchResultsFacets returns new OptSearchResultsFacets with value set to v.
 func NewOptSearchResultsFacets(v SearchResultsFacets) OptSearchResultsFacets {
 	return OptSearchResultsFacets{
@@ -10312,6 +10368,144 @@ func (o OptTVSeriesCreditCreditType) Get() (v TVSeriesCreditCreditType, ok bool)
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTVSeriesCreditCreditType) Or(d TVSeriesCreditCreditType) TVSeriesCreditCreditType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTVShowSearchDocument returns new OptTVShowSearchDocument with value set to v.
+func NewOptTVShowSearchDocument(v TVShowSearchDocument) OptTVShowSearchDocument {
+	return OptTVShowSearchDocument{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTVShowSearchDocument is optional TVShowSearchDocument.
+type OptTVShowSearchDocument struct {
+	Value TVShowSearchDocument
+	Set   bool
+}
+
+// IsSet returns true if OptTVShowSearchDocument was set.
+func (o OptTVShowSearchDocument) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTVShowSearchDocument) Reset() {
+	var v TVShowSearchDocument
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTVShowSearchDocument) SetTo(v TVShowSearchDocument) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTVShowSearchDocument) Get() (v TVShowSearchDocument, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTVShowSearchDocument) Or(d TVShowSearchDocument) TVShowSearchDocument {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTVShowSearchHitHighlights returns new OptTVShowSearchHitHighlights with value set to v.
+func NewOptTVShowSearchHitHighlights(v TVShowSearchHitHighlights) OptTVShowSearchHitHighlights {
+	return OptTVShowSearchHitHighlights{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTVShowSearchHitHighlights is optional TVShowSearchHitHighlights.
+type OptTVShowSearchHitHighlights struct {
+	Value TVShowSearchHitHighlights
+	Set   bool
+}
+
+// IsSet returns true if OptTVShowSearchHitHighlights was set.
+func (o OptTVShowSearchHitHighlights) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTVShowSearchHitHighlights) Reset() {
+	var v TVShowSearchHitHighlights
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTVShowSearchHitHighlights) SetTo(v TVShowSearchHitHighlights) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTVShowSearchHitHighlights) Get() (v TVShowSearchHitHighlights, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTVShowSearchHitHighlights) Or(d TVShowSearchHitHighlights) TVShowSearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTVShowSearchResultsFacets returns new OptTVShowSearchResultsFacets with value set to v.
+func NewOptTVShowSearchResultsFacets(v TVShowSearchResultsFacets) OptTVShowSearchResultsFacets {
+	return OptTVShowSearchResultsFacets{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTVShowSearchResultsFacets is optional TVShowSearchResultsFacets.
+type OptTVShowSearchResultsFacets struct {
+	Value TVShowSearchResultsFacets
+	Set   bool
+}
+
+// IsSet returns true if OptTVShowSearchResultsFacets was set.
+func (o OptTVShowSearchResultsFacets) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTVShowSearchResultsFacets) Reset() {
+	var v TVShowSearchResultsFacets
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTVShowSearchResultsFacets) SetTo(v TVShowSearchResultsFacets) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTVShowSearchResultsFacets) Get() (v TVShowSearchResultsFacets, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTVShowSearchResultsFacets) Or(d TVShowSearchResultsFacets) TVShowSearchResultsFacets {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -13674,6 +13868,97 @@ func (s *SearchLibraryMoviesSortBy) UnmarshalText(data []byte) error {
 type SearchLibraryMoviesUnauthorized Error
 
 func (*SearchLibraryMoviesUnauthorized) searchLibraryMoviesRes() {}
+
+type SearchLibraryTVShowsBadRequest Error
+
+func (*SearchLibraryTVShowsBadRequest) searchLibraryTVShowsRes() {}
+
+type SearchLibraryTVShowsSortBy string
+
+const (
+	SearchLibraryTVShowsSortByPopularityDesc   SearchLibraryTVShowsSortBy = "popularity:desc"
+	SearchLibraryTVShowsSortByPopularityAsc    SearchLibraryTVShowsSortBy = "popularity:asc"
+	SearchLibraryTVShowsSortByVoteAverageDesc  SearchLibraryTVShowsSortBy = "vote_average:desc"
+	SearchLibraryTVShowsSortByVoteAverageAsc   SearchLibraryTVShowsSortBy = "vote_average:asc"
+	SearchLibraryTVShowsSortByFirstAirDateDesc SearchLibraryTVShowsSortBy = "first_air_date:desc"
+	SearchLibraryTVShowsSortByFirstAirDateAsc  SearchLibraryTVShowsSortBy = "first_air_date:asc"
+	SearchLibraryTVShowsSortByTitleAsc         SearchLibraryTVShowsSortBy = "title:asc"
+	SearchLibraryTVShowsSortByTitleDesc        SearchLibraryTVShowsSortBy = "title:desc"
+)
+
+// AllValues returns all SearchLibraryTVShowsSortBy values.
+func (SearchLibraryTVShowsSortBy) AllValues() []SearchLibraryTVShowsSortBy {
+	return []SearchLibraryTVShowsSortBy{
+		SearchLibraryTVShowsSortByPopularityDesc,
+		SearchLibraryTVShowsSortByPopularityAsc,
+		SearchLibraryTVShowsSortByVoteAverageDesc,
+		SearchLibraryTVShowsSortByVoteAverageAsc,
+		SearchLibraryTVShowsSortByFirstAirDateDesc,
+		SearchLibraryTVShowsSortByFirstAirDateAsc,
+		SearchLibraryTVShowsSortByTitleAsc,
+		SearchLibraryTVShowsSortByTitleDesc,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchLibraryTVShowsSortBy) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchLibraryTVShowsSortByPopularityDesc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByPopularityAsc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByVoteAverageDesc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByVoteAverageAsc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByFirstAirDateDesc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByFirstAirDateAsc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByTitleAsc:
+		return []byte(s), nil
+	case SearchLibraryTVShowsSortByTitleDesc:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchLibraryTVShowsSortBy) UnmarshalText(data []byte) error {
+	switch SearchLibraryTVShowsSortBy(data) {
+	case SearchLibraryTVShowsSortByPopularityDesc:
+		*s = SearchLibraryTVShowsSortByPopularityDesc
+		return nil
+	case SearchLibraryTVShowsSortByPopularityAsc:
+		*s = SearchLibraryTVShowsSortByPopularityAsc
+		return nil
+	case SearchLibraryTVShowsSortByVoteAverageDesc:
+		*s = SearchLibraryTVShowsSortByVoteAverageDesc
+		return nil
+	case SearchLibraryTVShowsSortByVoteAverageAsc:
+		*s = SearchLibraryTVShowsSortByVoteAverageAsc
+		return nil
+	case SearchLibraryTVShowsSortByFirstAirDateDesc:
+		*s = SearchLibraryTVShowsSortByFirstAirDateDesc
+		return nil
+	case SearchLibraryTVShowsSortByFirstAirDateAsc:
+		*s = SearchLibraryTVShowsSortByFirstAirDateAsc
+		return nil
+	case SearchLibraryTVShowsSortByTitleAsc:
+		*s = SearchLibraryTVShowsSortByTitleAsc
+		return nil
+	case SearchLibraryTVShowsSortByTitleDesc:
+		*s = SearchLibraryTVShowsSortByTitleDesc
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SearchLibraryTVShowsUnauthorized Error
+
+func (*SearchLibraryTVShowsUnauthorized) searchLibraryTVShowsRes() {}
 
 type SearchMoviesMetadataBadRequest Error
 
@@ -17102,6 +17387,480 @@ func (s *TVSeriesCreditCreditType) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/TVShowSearchDocument
+type TVShowSearchDocument struct {
+	// Series ID.
+	ID OptUUID `json:"id"`
+	// TMDb series ID.
+	TmdbID OptInt `json:"tmdb_id"`
+	// TVDb series ID.
+	TvdbID OptInt `json:"tvdb_id"`
+	// IMDb ID.
+	ImdbID OptString `json:"imdb_id"`
+	// Series title.
+	Title OptString `json:"title"`
+	// Original title.
+	OriginalTitle OptString `json:"original_title"`
+	// First air year.
+	Year OptInt `json:"year"`
+	// First air date.
+	FirstAirDate OptDate `json:"first_air_date"`
+	// Plot summary.
+	Overview OptString `json:"overview"`
+	// Series status (Returning Series, Ended, etc.).
+	Status OptString `json:"status"`
+	// Series type (Scripted, Reality, etc.).
+	Type OptString `json:"type"`
+	// Poster image path.
+	PosterPath OptString `json:"poster_path"`
+	// Backdrop image path.
+	BackdropPath OptString `json:"backdrop_path"`
+	// Average rating (0-10).
+	VoteAverage OptFloat32 `json:"vote_average"`
+	// Popularity score.
+	Popularity OptFloat32 `json:"popularity"`
+	// Genre names.
+	Genres []string `json:"genres"`
+	// Cast member names (top 20).
+	Cast []string `json:"cast"`
+	// Network names (HBO, Netflix, etc.).
+	Networks []string `json:"networks"`
+	// Total number of seasons.
+	TotalSeasons OptInt `json:"total_seasons"`
+	// Total number of episodes.
+	TotalEpisodes OptInt `json:"total_episodes"`
+	// Whether series has any episode files in the library.
+	HasFile OptBool `json:"has_file"`
+}
+
+// GetID returns the value of ID.
+func (s *TVShowSearchDocument) GetID() OptUUID {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *TVShowSearchDocument) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetTvdbID returns the value of TvdbID.
+func (s *TVShowSearchDocument) GetTvdbID() OptInt {
+	return s.TvdbID
+}
+
+// GetImdbID returns the value of ImdbID.
+func (s *TVShowSearchDocument) GetImdbID() OptString {
+	return s.ImdbID
+}
+
+// GetTitle returns the value of Title.
+func (s *TVShowSearchDocument) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOriginalTitle returns the value of OriginalTitle.
+func (s *TVShowSearchDocument) GetOriginalTitle() OptString {
+	return s.OriginalTitle
+}
+
+// GetYear returns the value of Year.
+func (s *TVShowSearchDocument) GetYear() OptInt {
+	return s.Year
+}
+
+// GetFirstAirDate returns the value of FirstAirDate.
+func (s *TVShowSearchDocument) GetFirstAirDate() OptDate {
+	return s.FirstAirDate
+}
+
+// GetOverview returns the value of Overview.
+func (s *TVShowSearchDocument) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetStatus returns the value of Status.
+func (s *TVShowSearchDocument) GetStatus() OptString {
+	return s.Status
+}
+
+// GetType returns the value of Type.
+func (s *TVShowSearchDocument) GetType() OptString {
+	return s.Type
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *TVShowSearchDocument) GetPosterPath() OptString {
+	return s.PosterPath
+}
+
+// GetBackdropPath returns the value of BackdropPath.
+func (s *TVShowSearchDocument) GetBackdropPath() OptString {
+	return s.BackdropPath
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *TVShowSearchDocument) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetPopularity returns the value of Popularity.
+func (s *TVShowSearchDocument) GetPopularity() OptFloat32 {
+	return s.Popularity
+}
+
+// GetGenres returns the value of Genres.
+func (s *TVShowSearchDocument) GetGenres() []string {
+	return s.Genres
+}
+
+// GetCast returns the value of Cast.
+func (s *TVShowSearchDocument) GetCast() []string {
+	return s.Cast
+}
+
+// GetNetworks returns the value of Networks.
+func (s *TVShowSearchDocument) GetNetworks() []string {
+	return s.Networks
+}
+
+// GetTotalSeasons returns the value of TotalSeasons.
+func (s *TVShowSearchDocument) GetTotalSeasons() OptInt {
+	return s.TotalSeasons
+}
+
+// GetTotalEpisodes returns the value of TotalEpisodes.
+func (s *TVShowSearchDocument) GetTotalEpisodes() OptInt {
+	return s.TotalEpisodes
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *TVShowSearchDocument) GetHasFile() OptBool {
+	return s.HasFile
+}
+
+// SetID sets the value of ID.
+func (s *TVShowSearchDocument) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *TVShowSearchDocument) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetTvdbID sets the value of TvdbID.
+func (s *TVShowSearchDocument) SetTvdbID(val OptInt) {
+	s.TvdbID = val
+}
+
+// SetImdbID sets the value of ImdbID.
+func (s *TVShowSearchDocument) SetImdbID(val OptString) {
+	s.ImdbID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *TVShowSearchDocument) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOriginalTitle sets the value of OriginalTitle.
+func (s *TVShowSearchDocument) SetOriginalTitle(val OptString) {
+	s.OriginalTitle = val
+}
+
+// SetYear sets the value of Year.
+func (s *TVShowSearchDocument) SetYear(val OptInt) {
+	s.Year = val
+}
+
+// SetFirstAirDate sets the value of FirstAirDate.
+func (s *TVShowSearchDocument) SetFirstAirDate(val OptDate) {
+	s.FirstAirDate = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *TVShowSearchDocument) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetStatus sets the value of Status.
+func (s *TVShowSearchDocument) SetStatus(val OptString) {
+	s.Status = val
+}
+
+// SetType sets the value of Type.
+func (s *TVShowSearchDocument) SetType(val OptString) {
+	s.Type = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *TVShowSearchDocument) SetPosterPath(val OptString) {
+	s.PosterPath = val
+}
+
+// SetBackdropPath sets the value of BackdropPath.
+func (s *TVShowSearchDocument) SetBackdropPath(val OptString) {
+	s.BackdropPath = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *TVShowSearchDocument) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetPopularity sets the value of Popularity.
+func (s *TVShowSearchDocument) SetPopularity(val OptFloat32) {
+	s.Popularity = val
+}
+
+// SetGenres sets the value of Genres.
+func (s *TVShowSearchDocument) SetGenres(val []string) {
+	s.Genres = val
+}
+
+// SetCast sets the value of Cast.
+func (s *TVShowSearchDocument) SetCast(val []string) {
+	s.Cast = val
+}
+
+// SetNetworks sets the value of Networks.
+func (s *TVShowSearchDocument) SetNetworks(val []string) {
+	s.Networks = val
+}
+
+// SetTotalSeasons sets the value of TotalSeasons.
+func (s *TVShowSearchDocument) SetTotalSeasons(val OptInt) {
+	s.TotalSeasons = val
+}
+
+// SetTotalEpisodes sets the value of TotalEpisodes.
+func (s *TVShowSearchDocument) SetTotalEpisodes(val OptInt) {
+	s.TotalEpisodes = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *TVShowSearchDocument) SetHasFile(val OptBool) {
+	s.HasFile = val
+}
+
+// Ref: #/components/schemas/TVShowSearchFacets
+type TVShowSearchFacets struct {
+	// Available genres.
+	Genres []FacetValue `json:"genres"`
+	// Available first air years.
+	Years []FacetValue `json:"years"`
+	// Available statuses.
+	Status []FacetValue `json:"status"`
+	// Available series types.
+	Type []FacetValue `json:"type"`
+	// Available networks.
+	Networks []FacetValue `json:"networks"`
+	// File availability.
+	HasFile []FacetValue `json:"has_file"`
+}
+
+// GetGenres returns the value of Genres.
+func (s *TVShowSearchFacets) GetGenres() []FacetValue {
+	return s.Genres
+}
+
+// GetYears returns the value of Years.
+func (s *TVShowSearchFacets) GetYears() []FacetValue {
+	return s.Years
+}
+
+// GetStatus returns the value of Status.
+func (s *TVShowSearchFacets) GetStatus() []FacetValue {
+	return s.Status
+}
+
+// GetType returns the value of Type.
+func (s *TVShowSearchFacets) GetType() []FacetValue {
+	return s.Type
+}
+
+// GetNetworks returns the value of Networks.
+func (s *TVShowSearchFacets) GetNetworks() []FacetValue {
+	return s.Networks
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *TVShowSearchFacets) GetHasFile() []FacetValue {
+	return s.HasFile
+}
+
+// SetGenres sets the value of Genres.
+func (s *TVShowSearchFacets) SetGenres(val []FacetValue) {
+	s.Genres = val
+}
+
+// SetYears sets the value of Years.
+func (s *TVShowSearchFacets) SetYears(val []FacetValue) {
+	s.Years = val
+}
+
+// SetStatus sets the value of Status.
+func (s *TVShowSearchFacets) SetStatus(val []FacetValue) {
+	s.Status = val
+}
+
+// SetType sets the value of Type.
+func (s *TVShowSearchFacets) SetType(val []FacetValue) {
+	s.Type = val
+}
+
+// SetNetworks sets the value of Networks.
+func (s *TVShowSearchFacets) SetNetworks(val []FacetValue) {
+	s.Networks = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *TVShowSearchFacets) SetHasFile(val []FacetValue) {
+	s.HasFile = val
+}
+
+func (*TVShowSearchFacets) getTVShowSearchFacetsRes() {}
+
+// Ref: #/components/schemas/TVShowSearchHit
+type TVShowSearchHit struct {
+	Document OptTVShowSearchDocument `json:"document"`
+	// Search relevance score.
+	Score OptFloat32 `json:"score"`
+	// Highlighted snippets for matching fields.
+	Highlights OptTVShowSearchHitHighlights `json:"highlights"`
+}
+
+// GetDocument returns the value of Document.
+func (s *TVShowSearchHit) GetDocument() OptTVShowSearchDocument {
+	return s.Document
+}
+
+// GetScore returns the value of Score.
+func (s *TVShowSearchHit) GetScore() OptFloat32 {
+	return s.Score
+}
+
+// GetHighlights returns the value of Highlights.
+func (s *TVShowSearchHit) GetHighlights() OptTVShowSearchHitHighlights {
+	return s.Highlights
+}
+
+// SetDocument sets the value of Document.
+func (s *TVShowSearchHit) SetDocument(val OptTVShowSearchDocument) {
+	s.Document = val
+}
+
+// SetScore sets the value of Score.
+func (s *TVShowSearchHit) SetScore(val OptFloat32) {
+	s.Score = val
+}
+
+// SetHighlights sets the value of Highlights.
+func (s *TVShowSearchHit) SetHighlights(val OptTVShowSearchHitHighlights) {
+	s.Highlights = val
+}
+
+// Highlighted snippets for matching fields.
+type TVShowSearchHitHighlights map[string][]string
+
+func (s *TVShowSearchHitHighlights) init() TVShowSearchHitHighlights {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/TVShowSearchResults
+type TVShowSearchResults struct {
+	Hits []TVShowSearchHit `json:"hits"`
+	// Total number of matching documents.
+	TotalHits OptInt `json:"total_hits"`
+	// Total number of pages.
+	TotalPages OptInt `json:"total_pages"`
+	// Current page number.
+	CurrentPage OptInt `json:"current_page"`
+	// Search execution time in milliseconds.
+	SearchTimeMs OptInt `json:"search_time_ms"`
+	// Facet counts for filtering.
+	Facets OptTVShowSearchResultsFacets `json:"facets"`
+}
+
+// GetHits returns the value of Hits.
+func (s *TVShowSearchResults) GetHits() []TVShowSearchHit {
+	return s.Hits
+}
+
+// GetTotalHits returns the value of TotalHits.
+func (s *TVShowSearchResults) GetTotalHits() OptInt {
+	return s.TotalHits
+}
+
+// GetTotalPages returns the value of TotalPages.
+func (s *TVShowSearchResults) GetTotalPages() OptInt {
+	return s.TotalPages
+}
+
+// GetCurrentPage returns the value of CurrentPage.
+func (s *TVShowSearchResults) GetCurrentPage() OptInt {
+	return s.CurrentPage
+}
+
+// GetSearchTimeMs returns the value of SearchTimeMs.
+func (s *TVShowSearchResults) GetSearchTimeMs() OptInt {
+	return s.SearchTimeMs
+}
+
+// GetFacets returns the value of Facets.
+func (s *TVShowSearchResults) GetFacets() OptTVShowSearchResultsFacets {
+	return s.Facets
+}
+
+// SetHits sets the value of Hits.
+func (s *TVShowSearchResults) SetHits(val []TVShowSearchHit) {
+	s.Hits = val
+}
+
+// SetTotalHits sets the value of TotalHits.
+func (s *TVShowSearchResults) SetTotalHits(val OptInt) {
+	s.TotalHits = val
+}
+
+// SetTotalPages sets the value of TotalPages.
+func (s *TVShowSearchResults) SetTotalPages(val OptInt) {
+	s.TotalPages = val
+}
+
+// SetCurrentPage sets the value of CurrentPage.
+func (s *TVShowSearchResults) SetCurrentPage(val OptInt) {
+	s.CurrentPage = val
+}
+
+// SetSearchTimeMs sets the value of SearchTimeMs.
+func (s *TVShowSearchResults) SetSearchTimeMs(val OptInt) {
+	s.SearchTimeMs = val
+}
+
+// SetFacets sets the value of Facets.
+func (s *TVShowSearchResults) SetFacets(val OptTVShowSearchResultsFacets) {
+	s.Facets = val
+}
+
+func (*TVShowSearchResults) searchLibraryTVShowsRes() {}
+
+// Facet counts for filtering.
+type TVShowSearchResultsFacets map[string][]FacetValue
+
+func (s *TVShowSearchResultsFacets) init() TVShowSearchResultsFacets {
+	m := *s
+	if m == nil {
+		m = map[string][]FacetValue{}
+		*s = m
+	}
+	return m
 }
 
 type TriggerLibraryScanBadRequest Error

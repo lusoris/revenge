@@ -199,6 +199,16 @@ func (UnimplementedHandler) AutocompleteMovies(ctx context.Context, params Autoc
 	return r, ht.ErrNotImplemented
 }
 
+// AutocompleteTVShows implements autocompleteTVShows operation.
+//
+// Provides search suggestions for TV show titles.
+// Useful for search-as-you-type interfaces.
+//
+// GET /api/v1/search/tvshows/autocomplete
+func (UnimplementedHandler) AutocompleteTVShows(ctx context.Context, params AutocompleteTVShowsParams) (r AutocompleteTVShowsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // BeginWebAuthnLogin implements beginWebAuthnLogin operation.
 //
 // Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
@@ -806,6 +816,16 @@ func (UnimplementedHandler) GetTVShowNextEpisode(ctx context.Context, params Get
 	return r, ht.ErrNotImplemented
 }
 
+// GetTVShowSearchFacets implements getTVShowSearchFacets operation.
+//
+// Returns available facet values for TV show filtering (genres, years, networks, etc.).
+// Use this to populate filter dropdowns in the UI.
+//
+// GET /api/v1/search/tvshows/facets
+func (UnimplementedHandler) GetTVShowSearchFacets(ctx context.Context) (r GetTVShowSearchFacetsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetTVShowSeasons implements getTVShowSeasons operation.
 //
 // Get all seasons for a TV show.
@@ -1323,6 +1343,17 @@ func (UnimplementedHandler) SearchActivityLogs(ctx context.Context, params Searc
 //
 // GET /api/v1/search/movies
 func (UnimplementedHandler) SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (r SearchLibraryMoviesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchLibraryTVShows implements searchLibraryTVShows operation.
+//
+// Full-text search across the TV show library using Typesense.
+// Supports filtering by genres, year, status, type, networks, and more.
+// Returns faceted results for filtering.
+//
+// GET /api/v1/search/tvshows
+func (UnimplementedHandler) SearchLibraryTVShows(ctx context.Context, params SearchLibraryTVShowsParams) (r SearchLibraryTVShowsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

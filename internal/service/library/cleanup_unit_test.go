@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
@@ -30,7 +30,7 @@ func TestLibraryScanCleanupArgs_InsertOpts(t *testing.T) {
 
 func TestNewLibraryScanCleanupWorker(t *testing.T) {
 	mockRepo := NewMockLibraryRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 	assert.NotNil(t, worker)
@@ -38,7 +38,7 @@ func TestNewLibraryScanCleanupWorker(t *testing.T) {
 
 func TestLibraryScanCleanupWorker_Timeout(t *testing.T) {
 	mockRepo := NewMockLibraryRepository(t)
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 	job := &river.Job[library.LibraryScanCleanupArgs]{
@@ -53,7 +53,7 @@ func TestLibraryScanCleanupWorker_Timeout(t *testing.T) {
 func TestLibraryScanCleanupWorker_Work(t *testing.T) {
 	t.Run("success with cleanup", func(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 		mockRepo.On("DeleteOldScans", mock.Anything, mock.AnythingOfType("time.Time")).
@@ -71,7 +71,7 @@ func TestLibraryScanCleanupWorker_Work(t *testing.T) {
 
 	t.Run("success with dry run", func(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 		job := &river.Job[library.LibraryScanCleanupArgs]{
@@ -90,7 +90,7 @@ func TestLibraryScanCleanupWorker_Work(t *testing.T) {
 
 	t.Run("default retention days when zero", func(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 		mockRepo.On("DeleteOldScans", mock.Anything, mock.AnythingOfType("time.Time")).
@@ -107,7 +107,7 @@ func TestLibraryScanCleanupWorker_Work(t *testing.T) {
 
 	t.Run("default retention days when negative", func(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 		mockRepo.On("DeleteOldScans", mock.Anything, mock.AnythingOfType("time.Time")).
@@ -124,7 +124,7 @@ func TestLibraryScanCleanupWorker_Work(t *testing.T) {
 
 	t.Run("error from repo", func(t *testing.T) {
 		mockRepo := NewMockLibraryRepository(t)
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		worker := library.NewLibraryScanCleanupWorker(nil, mockRepo, logger)
 
 		mockRepo.On("DeleteOldScans", mock.Anything, mock.AnythingOfType("time.Time")).

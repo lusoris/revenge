@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
 
@@ -49,7 +49,7 @@ func makeTestUserLink(id, userID, providerID uuid.UUID, subject string) *oidc.Us
 }
 
 func setupOIDCService(repo oidc.Repository) *oidc.Service {
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	return oidc.NewService(repo, logger, "https://app.example.com/callback", nil)
 }
 
@@ -923,7 +923,7 @@ func TestOIDCService_WithEncryption_Short(t *testing.T) {
 	encryptKey := []byte("12345678901234567890123456789012")
 
 	setupEncryptedService := func(repo oidc.Repository) *oidc.Service {
-		logger := zap.NewNop()
+		logger := logging.NewTestLogger()
 		return oidc.NewService(repo, logger, "https://app.example.com/callback", encryptKey)
 	}
 

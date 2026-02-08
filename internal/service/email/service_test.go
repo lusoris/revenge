@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestNewService(t *testing.T) {
@@ -27,7 +27,7 @@ func TestNewService(t *testing.T) {
 		BaseURL:     "http://localhost:8080",
 	}
 
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 	svc := NewService(cfg, logger)
 
 	require.NotNil(t, svc)
@@ -47,7 +47,7 @@ func TestService_IsEnabled(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := config.EmailConfig{Enabled: tt.enabled}
-			svc := NewService(cfg, zap.NewNop())
+			svc := NewService(cfg, logging.NewTestLogger())
 			assert.Equal(t, tt.want, svc.IsEnabled())
 		})
 	}
@@ -55,7 +55,7 @@ func TestService_IsEnabled(t *testing.T) {
 
 func TestService_SendVerificationEmail_Disabled(t *testing.T) {
 	cfg := config.EmailConfig{Enabled: false}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	// Should return nil when disabled (no-op)
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
@@ -64,7 +64,7 @@ func TestService_SendVerificationEmail_Disabled(t *testing.T) {
 
 func TestService_SendPasswordResetEmail_Disabled(t *testing.T) {
 	cfg := config.EmailConfig{Enabled: false}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	// Should return nil when disabled (no-op)
 	err := svc.SendPasswordResetEmail(context.Background(), "user@example.com", "testuser", "token123")
@@ -73,7 +73,7 @@ func TestService_SendPasswordResetEmail_Disabled(t *testing.T) {
 
 func TestService_SendWelcomeEmail_Disabled(t *testing.T) {
 	cfg := config.EmailConfig{Enabled: false}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	// Should return nil when disabled (no-op)
 	err := svc.SendWelcomeEmail(context.Background(), "user@example.com", "testuser")
@@ -89,7 +89,7 @@ func TestService_SendSMTP_NoHost(t *testing.T) {
 			Host: "", // No host configured
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
@@ -124,7 +124,7 @@ func TestService_SendSendGrid_Success(t *testing.T) {
 			APIKey: "SG.test-api-key",
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	require.NoError(t, err)
@@ -161,7 +161,7 @@ func TestService_SendSendGrid_APIError(t *testing.T) {
 			APIKey: "bad-key",
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	require.Error(t, err)
@@ -220,7 +220,7 @@ func TestService_SendUnknownProvider(t *testing.T) {
 		Provider:    "unknown_provider",
 		FromAddress: "test@example.com",
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
@@ -236,7 +236,7 @@ func TestService_SendSendGrid_NoAPIKey(t *testing.T) {
 			APIKey: "", // No API key
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
@@ -250,7 +250,7 @@ func TestBuildMessage(t *testing.T) {
 		FromAddress: "test@example.com",
 		FromName:    "Test Sender",
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	msg := svc.buildMessage("recipient@example.com", "Test Subject", "<p>Test Body</p>")
 
@@ -272,7 +272,7 @@ func TestBuildMessage_NoFromName(t *testing.T) {
 		FromAddress: "test@example.com",
 		FromName:    "", // No from name
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	msg := svc.buildMessage("recipient@example.com", "Test Subject", "<p>Test Body</p>")
 
@@ -314,7 +314,7 @@ func TestService_SendPasswordResetEmail_Enabled(t *testing.T) {
 			Host: "", // Will fail due to no host
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	// Should fail when trying to send (no SMTP host)
 	err := svc.SendPasswordResetEmail(context.Background(), "user@example.com", "testuser", "token123")
@@ -332,7 +332,7 @@ func TestService_SendWelcomeEmail_Enabled(t *testing.T) {
 			Host: "", // Will fail due to no host
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	// Should fail when trying to send (no SMTP host)
 	err := svc.SendWelcomeEmail(context.Background(), "user@example.com", "testuser")
@@ -350,7 +350,7 @@ func TestService_EmptyProvider(t *testing.T) {
 			Host: "", // Will fail due to no host
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
@@ -449,7 +449,7 @@ func TestService_SendSMTP_Success(t *testing.T) {
 			Timeout: 5 * time.Second,
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err = svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	require.NoError(t, err)
@@ -484,7 +484,7 @@ func TestService_SendSMTP_DefaultTimeout(t *testing.T) {
 			Timeout: 0, // Should default to 30s
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err = svc.SendPasswordResetEmail(context.Background(), "user@example.com", "testuser", "token123")
 	require.NoError(t, err)
@@ -502,7 +502,7 @@ func TestService_SendSMTP_ConnectionRefused(t *testing.T) {
 			Timeout: 1 * time.Second,
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err := svc.SendVerificationEmail(context.Background(), "user@example.com", "testuser", "token123")
 	assert.Error(t, err)
@@ -529,7 +529,7 @@ func TestService_SendSMTP_WelcomeEmail(t *testing.T) {
 			Timeout: 5 * time.Second,
 		},
 	}
-	svc := NewService(cfg, zap.NewNop())
+	svc := NewService(cfg, logging.NewTestLogger())
 
 	err = svc.SendWelcomeEmail(context.Background(), "user@example.com", "testuser")
 	require.NoError(t, err)
@@ -550,7 +550,7 @@ func TestService_ProvideService(t *testing.T) {
 			FromAddress: "test@example.com",
 		},
 	}
-	logger := zap.NewNop()
+	logger := logging.NewTestLogger()
 
 	svc := provideService(cfg, logger)
 	require.NotNil(t, svc)

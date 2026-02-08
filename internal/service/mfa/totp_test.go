@@ -12,10 +12,10 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zaptest"
 
 	"github.com/lusoris/revenge/internal/crypto"
 	db "github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -23,7 +23,7 @@ func setupTOTPService(t *testing.T) (*TOTPService, *db.Queries) {
 	t.Helper()
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	// Create an encryption key for TOTP secrets
 	key := make([]byte, 32)
@@ -266,7 +266,7 @@ func TestTOTPAlgorithm_EncryptionIntegration(t *testing.T) {
 func TestTOTPService_NewTOTPService(t *testing.T) {
 	testDB := testutil.NewFastTestDB(t)
 	queries := db.New(testDB.Pool())
-	logger := zaptest.NewLogger(t)
+	logger := logging.NewTestLogger()
 
 	key := make([]byte, 32)
 	_, err := rand.Read(key)

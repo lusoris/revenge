@@ -137,6 +137,13 @@ type Handler interface {
 	//
 	// GET /api/v1/search/movies/autocomplete
 	AutocompleteMovies(ctx context.Context, params AutocompleteMoviesParams) (AutocompleteMoviesRes, error)
+	// AutocompleteTVShows implements autocompleteTVShows operation.
+	//
+	// Provides search suggestions for TV show titles.
+	// Useful for search-as-you-type interfaces.
+	//
+	// GET /api/v1/search/tvshows/autocomplete
+	AutocompleteTVShows(ctx context.Context, params AutocompleteTVShowsParams) (AutocompleteTVShowsRes, error)
 	// BeginWebAuthnLogin implements beginWebAuthnLogin operation.
 	//
 	// Start the WebAuthn authentication ceremony. Returns PublicKeyCredentialRequestOptions.
@@ -546,6 +553,13 @@ type Handler interface {
 	//
 	// GET /api/v1/tvshows/{id}/next-episode
 	GetTVShowNextEpisode(ctx context.Context, params GetTVShowNextEpisodeParams) (GetTVShowNextEpisodeRes, error)
+	// GetTVShowSearchFacets implements getTVShowSearchFacets operation.
+	//
+	// Returns available facet values for TV show filtering (genres, years, networks, etc.).
+	// Use this to populate filter dropdowns in the UI.
+	//
+	// GET /api/v1/search/tvshows/facets
+	GetTVShowSearchFacets(ctx context.Context) (GetTVShowSearchFacetsRes, error)
 	// GetTVShowSeasons implements getTVShowSeasons operation.
 	//
 	// Get all seasons for a TV show.
@@ -895,6 +909,14 @@ type Handler interface {
 	//
 	// GET /api/v1/search/movies
 	SearchLibraryMovies(ctx context.Context, params SearchLibraryMoviesParams) (SearchLibraryMoviesRes, error)
+	// SearchLibraryTVShows implements searchLibraryTVShows operation.
+	//
+	// Full-text search across the TV show library using Typesense.
+	// Supports filtering by genres, year, status, type, networks, and more.
+	// Returns faceted results for filtering.
+	//
+	// GET /api/v1/search/tvshows
+	SearchLibraryTVShows(ctx context.Context, params SearchLibraryTVShowsParams) (SearchLibraryTVShowsRes, error)
 	// SearchMovies implements searchMovies operation.
 	//
 	// Search movies by title using fuzzy matching.

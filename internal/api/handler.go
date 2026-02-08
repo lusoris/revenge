@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -47,7 +48,8 @@ type Handler struct {
 	oidcService     *oidc.Service
 	activityService *activity.Service
 	libraryService  *library.Service
-	searchService   *search.MovieSearchService
+	searchService       *search.MovieSearchService
+	tvshowSearchService *search.TVShowSearchService
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
 	movieHandler    *movie.Handler
@@ -173,6 +175,56 @@ type statusCoder interface {
 
 // NewError creates an error response for failed requests.
 func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode {
+	// Handle ogen framework errors (security, params, request decode)
+	// These have proper HTTP codes via ogenerrors.ErrorCode().
+	var secErr *ogenerrors.SecurityError
+	if errors.As(err, &secErr) {
+		code := secErr.Code()
+		h.logger.Debug("Security check failed",
+			slog.String("operation", secErr.OperationName()),
+			slog.String("security", secErr.Security),
+		)
+		return &ogen.ErrorStatusCode{
+			StatusCode: code,
+			Response: ogen.Error{
+				Code:    code,
+				Message: "Authentication required",
+			},
+		}
+	}
+
+	var decodeParamsErr *ogenerrors.DecodeParamsError
+	if errors.As(err, &decodeParamsErr) {
+		code := decodeParamsErr.Code()
+		h.logger.Warn("Invalid request parameters",
+			slog.String("operation", decodeParamsErr.OperationName()),
+			slog.Any("error", err),
+		)
+		return &ogen.ErrorStatusCode{
+			StatusCode: code,
+			Response: ogen.Error{
+				Code:    code,
+				Message: fmt.Sprintf("Invalid parameters: %v", decodeParamsErr.Err),
+			},
+		}
+	}
+
+	var decodeReqErr *ogenerrors.DecodeRequestError
+	if errors.As(err, &decodeReqErr) {
+		code := decodeReqErr.Code()
+		h.logger.Warn("Invalid request body",
+			slog.String("operation", decodeReqErr.OperationName()),
+			slog.Any("error", err),
+		)
+		return &ogen.ErrorStatusCode{
+			StatusCode: code,
+			Response: ogen.Error{
+				Code:    code,
+				Message: fmt.Sprintf("Invalid request: %v", decodeReqErr.Err),
+			},
+		}
+	}
+
 	// Check if error carries its own status code (e.g. rate limit 429)
 	var sc statusCoder
 	if errors.As(err, &sc) {
@@ -193,7 +245,7 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 		StatusCode: 500,
 		Response: ogen.Error{
 			Code:    500,
-			Message: fmt.Sprintf("Internal server error: %v", err),
+			Message: "Internal server error",
 		},
 	}
 }
@@ -972,8 +1024,11 @@ func (h *Handler) VerifyEmail(ctx context.Context, req *ogen.VerifyEmailRequest)
 
 	// Verify email token
 	if err := h.authService.VerifyEmail(ctx, req.Token); err != nil {
-		h.logger.Warn("Email verification failed", slog.Any("error",err))
-		return &ogen.Error{}, fmt.Errorf("verification failed: %w", err)
+		h.logger.Warn("Email verification failed", slog.Any("error", err))
+		return &ogen.Error{
+			Code:    400,
+			Message: "Invalid or expired verification token",
+		}, nil
 	}
 
 	h.logger.Info("Email verified successfully")
@@ -992,8 +1047,11 @@ func (h *Handler) ResendVerification(ctx context.Context) (ogen.ResendVerificati
 
 	// Resend verification email
 	if err := h.authService.ResendVerification(ctx, userID); err != nil {
-		h.logger.Error("Resend verification failed", slog.Any("error",err))
-		return &ogen.Error{}, fmt.Errorf("resend failed: %w", err)
+		h.logger.Warn("Resend verification failed", slog.Any("error", err))
+		return &ogen.Error{
+			Code:    500,
+			Message: "Failed to resend verification email",
+		}, nil
 	}
 
 	return &ogen.ResendVerificationNoContent{}, nil

@@ -330,3 +330,77 @@ ok  github.com/lusoris/revenge/internal/service/...   (all pass)
 ```
 
 Note: `go.uber.org/zap` remains in `go.mod` as an `// indirect` dependency (transitive dep from another library). All direct zap imports from authored code are removed.
+
+---
+
+## Phase 6: API Completeness Audit & Bug Fixes (COMPLETE)
+
+### Audit Results
+
+Comprehensive audit of all production code for stubs, TODOs, placeholders, and incomplete implementations.
+
+**Finding**: No stubs, TODOs, or placeholder code in production code. The only placeholder is an sqlc scaffolding query in `tvshow/db/placeholder.sql.go` (valid pattern — sqlc requires non-empty query directories).
+
+### Gap Found: TV Show Typesense Search Endpoints Missing
+
+The TV show search service was fully implemented at the service layer (`tvshow_service.go` with Search, Autocomplete, GetFacets, ReindexAll) but had **no HTTP handlers**. TV show search only used a basic database `SearchSeries` query, not the Typesense index.
+
+**Fix**: Added 3 new API endpoints + 4 new OpenAPI schemas:
+
+| Endpoint | Operation | Description |
+|----------|-----------|-------------|
+| `GET /api/v1/search/tvshows` | `searchLibraryTVShows` | Full-text search with filtering, facets, pagination, sorting |
+| `GET /api/v1/search/tvshows/autocomplete` | `autocompleteTVShows` | Title suggestions for search-as-you-type |
+| `GET /api/v1/search/tvshows/facets` | `getTVShowSearchFacets` | Filter values (genres, years, networks, status, type) |
+
+**Schemas added**: `TVShowSearchResults`, `TVShowSearchHit`, `TVShowSearchDocument`, `TVShowSearchFacets`
+
+### Bug 13: Security Errors Logged as ERR and Returned 500
+
+**Symptom**: Every unauthenticated request logged at ERR level and returned HTTP 500.
+**Root Cause**: `NewError()` didn't recognize ogen's `SecurityError`, `DecodeParamsError`, or `DecodeRequestError` types. All fell through to the generic 500 handler.
+**Fix**: Added `ogenerrors` type matching — security errors → 401 at DEBUG level, param/request decode errors → 400 at WARN level, rate limit errors → 429 via `statusCoder` interface.
+**Files**: `internal/api/handler.go`
+
+### Bug 14: Search Collections Not Initialized on Startup
+
+**Symptom**: Search/autocomplete/facets returned Typesense 404 on fresh stack (collections didn't exist until first reindex job).
+**Root Cause**: No startup hook to create collections.
+**Fix**: Added `fx.Invoke(initializeCollections)` in `search/module.go` that creates both `movies` and `tvshows` collections on startup.
+**Files**: `internal/service/search/module.go`
+
+### Bug 15: TV Show Schema Popularity Field Optional
+
+**Symptom**: `"Default sorting field 'popularity' cannot be an optional field"` — tvshows collection creation failed.
+**Root Cause**: `popularity` field marked `Optional: true` in `tvshow_schema.go` but used as `DefaultSortingField`.
+**Fix**: Removed `Optional` from the popularity field.
+**Files**: `internal/service/search/tvshow_schema.go`
+
+### Bug 16: Email Verification Returned 500 ERR
+
+**Symptom**: Invalid verification token requests logged as ERR and returned HTTP 500.
+**Root Cause**: `VerifyEmail` handler returned error through `fmt.Errorf()` → `NewError()`, which logged at ERR level and returned 500. But "invalid token" is a client error.
+**Fix**: Return proper 400 response inline with WRN-level logging.
+**Files**: `internal/api/handler.go`
+
+### Container Log Verification
+
+After all fixes, clean stack with full live test suite:
+- **ERR lines**: 0
+- **WRN lines**: All expected (email disabled, deliberate test failures)
+- **Both search collections**: Created on startup (`movies`, `tvshows`)
+- **Rate limiting**: Redis-backed, enabled (50 RPS global, 5 RPS auth)
+- **All live tests**: Pass (37.6s)
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `api/openapi/openapi.yaml` | +3 TV show search endpoints, +4 schemas |
+| `internal/api/handler.go` | `tvshowSearchService` field, `ogenerrors` handling in `NewError()`, email verify fix |
+| `internal/api/handler_search.go` | +3 TV show search handler methods |
+| `internal/api/handler_test.go` | Updated `NewError` test assertions |
+| `internal/api/server.go` | `TVShowSearchService` in DI params + wiring |
+| `internal/api/ogen/*` | Regenerated from updated OpenAPI spec |
+| `internal/service/search/module.go` | `initializeCollections` startup hook |
+| `internal/service/search/tvshow_schema.go` | `popularity` not optional |

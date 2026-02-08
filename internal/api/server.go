@@ -62,7 +62,8 @@ type ServerParams struct {
 	OIDCService     *oidc.Service
 	ActivityService *activity.Service
 	LibraryService  *library.Service
-	SearchService   *search.MovieSearchService `optional:"true"`
+	SearchService       *search.MovieSearchService   `optional:"true"`
+	TVShowSearchService *search.TVShowSearchService `optional:"true"`
 	TokenManager    auth.TokenManager
 	// Cache client for Redis-based rate limiting
 	CacheClient *cache.Client `optional:"true"`
@@ -111,7 +112,8 @@ func NewServer(p ServerParams) (*Server, error) {
 		oidcService:     p.OIDCService,
 		activityService: p.ActivityService,
 		libraryService:  p.LibraryService,
-		searchService:   p.SearchService,
+		searchService:       p.SearchService,
+		tvshowSearchService: p.TVShowSearchService,
 		tokenManager:    p.TokenManager,
 		mfaHandler:      mfaHandler,
 		movieHandler:    p.MovieHandler,
