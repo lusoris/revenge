@@ -1,0 +1,11 @@
+# Prometheus scrape configuration for Revenge development
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "revenge"
+    static_configs:
+      - targets: ["revenge-dev:9096"]
+        labels:
+          instance: "dev"

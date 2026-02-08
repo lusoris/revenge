@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/errors"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -87,6 +88,8 @@ func (s *Service) CreateSession(ctx context.Context, userID uuid.UUID, deviceInf
 	if err != nil {
 		return "", "", fmt.Errorf("failed to create session: %w", err)
 	}
+
+	observability.ActiveSessions.Inc()
 
 	s.logger.Info("Session created",
 		slog.String("user_id", userID.String()),
@@ -208,6 +211,8 @@ func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error 
 	if err := s.repo.RevokeSession(ctx, sessionID, &reason); err != nil {
 		return fmt.Errorf("failed to revoke session: %w", err)
 	}
+
+	observability.ActiveSessions.Dec()
 
 	s.logger.Info("Session revoked", slog.String("session_id", sessionID.String()))
 	return nil

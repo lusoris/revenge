@@ -9,6 +9,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	"github.com/riverqueue/river/rivertype"
@@ -111,7 +112,11 @@ func (c *Client) Insert(ctx context.Context, args river.JobArgs, opts *river.Ins
 	if c.client == nil {
 		return nil, errors.New("river client not initialized")
 	}
-	return c.client.Insert(ctx, args, opts)
+	result, err := c.client.Insert(ctx, args, opts)
+	if err == nil {
+		observability.RecordJobEnqueued(args.Kind())
+	}
+	return result, err
 }
 
 // InsertMany enqueues multiple jobs in a single transaction.
@@ -119,7 +124,13 @@ func (c *Client) InsertMany(ctx context.Context, params []river.InsertManyParams
 	if c.client == nil {
 		return nil, errors.New("river client not initialized")
 	}
-	return c.client.InsertMany(ctx, params)
+	results, err := c.client.InsertMany(ctx, params)
+	if err == nil {
+		for _, p := range params {
+			observability.RecordJobEnqueued(p.Args.Kind())
+		}
+	}
+	return results, err
 }
 
 // JobGet retrieves a job by ID.

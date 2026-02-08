@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // RateLimitConfig contains rate limiting configuration.
@@ -184,6 +185,7 @@ func (rl *RateLimiter) Middleware() middleware.Middleware {
 
 		// Check if request is allowed
 		if !limiter.Allow() {
+			observability.RecordRateLimitHit(req.OperationName, "blocked")
 			rl.logger.Warn("Rate limit exceeded",
 				slog.String("ip", clientIP),
 				slog.String("operation", req.OperationName),

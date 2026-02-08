@@ -10,6 +10,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const MovieLibraryScanJobKind = "movie_library_scan"
@@ -64,6 +65,7 @@ func (w *MovieLibraryScanWorker) Timeout(job *river.Job[MovieLibraryScanArgs]) t
 // Work performs the movie library scan job.
 func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieLibraryScanArgs]) error {
 	args := job.Args
+	scanStart := time.Now()
 
 	w.logger.Info("starting movie library scan",
 		slog.Any("paths", args.Paths),
@@ -76,7 +78,14 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 		w.logger.Error("library scan failed",
 			slog.Any("error",err),
 		)
+		observability.LibraryScanErrorsTotal.WithLabelValues("movies", "fatal").Inc()
 		return fmt.Errorf("library scan failed: %w", err)
+	}
+
+	observability.LibraryScanDuration.WithLabelValues("movies").Observe(time.Since(scanStart).Seconds())
+	observability.LibraryFilesScanned.WithLabelValues("movies").Add(float64(summary.TotalFiles))
+	if len(summary.Errors) > 0 {
+		observability.LibraryScanErrorsTotal.WithLabelValues("movies", "scan").Add(float64(len(summary.Errors)))
 	}
 
 	// Log summary

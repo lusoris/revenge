@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
@@ -243,6 +244,8 @@ func (s *MovieSearchService) Search(ctx context.Context, params SearchParams) (*
 	start := time.Now()
 	result, err := s.client.Search(ctx, MovieCollectionName, searchParams)
 	searchTime := time.Since(start)
+	observability.SearchQueriesTotal.WithLabelValues("search").Inc()
+	observability.SearchQueryDuration.WithLabelValues("search").Observe(searchTime.Seconds())
 
 	if err != nil {
 		return nil, fmt.Errorf("search failed: %w", err)
@@ -335,7 +338,10 @@ func (s *MovieSearchService) Autocomplete(ctx context.Context, query string, lim
 		DropTokensThreshold: ptr(0),
 	}
 
+	start := time.Now()
 	result, err := s.client.Search(ctx, MovieCollectionName, searchParams)
+	observability.SearchQueriesTotal.WithLabelValues("autocomplete").Inc()
+	observability.SearchQueryDuration.WithLabelValues("autocomplete").Observe(time.Since(start).Seconds())
 	if err != nil {
 		return nil, fmt.Errorf("autocomplete failed: %w", err)
 	}

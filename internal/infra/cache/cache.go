@@ -91,6 +91,7 @@ func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Dura
 	// This ensures short-lived items expire accurately in L2
 	if ttl == 0 || ttl >= c.l1TTL {
 		c.l1.Set(key, value)
+		observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
 	} else {
 		// For short TTLs, remove from L1 to prevent stale reads
 		c.l1.Delete(key)
@@ -132,6 +133,7 @@ func (c *Cache) Delete(ctx context.Context, key string) error {
 
 	// Delete from L1
 	c.l1.Delete(key)
+	observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
 
 	// Delete from L2 if available
 	if c.client != nil && c.client.rueidisClient != nil {
@@ -176,6 +178,7 @@ func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
 func (c *Cache) Invalidate(ctx context.Context, pattern string) error {
 	// Clear entire L1 (pattern matching not supported in otter)
 	c.l1.Clear()
+	observability.CacheSize.WithLabelValues(c.name).Set(0)
 
 	// Invalidate pattern in L2 if available
 	if c.client != nil && c.client.rueidisClient != nil {

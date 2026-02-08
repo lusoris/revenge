@@ -48,11 +48,8 @@ func NewServer(p ServerParams) *Server {
 		_, _ = w.Write([]byte("OK"))
 	})
 
-	// Only expose pprof in development mode
-	if p.Config.Logging.Development {
-		RegisterPprofHandlers(mux)
-		p.Logger.Info("pprof endpoints enabled (development mode)")
-	}
+	// Always expose pprof — observability port is internal-only (never public)
+	RegisterPprofHandlers(mux)
 
 	// Use a different port for observability (main port + 1000 or configurable)
 	port := p.Config.Server.Port + 1000
@@ -75,7 +72,6 @@ func NewServer(p ServerParams) *Server {
 			go func() {
 				server.logger.Info("Starting observability server",
 					slog.String("address", addr),
-					slog.Bool("pprof_enabled", p.Config.Logging.Development),
 				)
 				if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 					server.logger.Error("Observability server error", slog.Any("error",err))

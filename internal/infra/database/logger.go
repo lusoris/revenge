@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/tracelog"
+
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // QueryLogger wraps slog.Logger for pgx query logging.
@@ -52,6 +55,33 @@ func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg stri
 			attrs = append(attrs, slog.Bool("slow_query", true))
 			slogLevel = slog.LevelWarn
 		}
+	}
+
+	// Record DB query metrics
+	if duration, ok := data["time"].(time.Duration); ok {
+		operation := "query"
+		if sql, ok := data["sql"].(string); ok && len(sql) > 0 {
+			// Extract operation type from SQL (SELECT, INSERT, UPDATE, DELETE)
+			for _, prefix := range []string{"SELECT", "INSERT", "UPDATE", "DELETE", "BEGIN", "COMMIT", "ROLLBACK"} {
+				if len(sql) >= len(prefix) && strings.EqualFold(sql[:len(prefix)], prefix) {
+					operation = strings.ToLower(prefix)
+					break
+				}
+			}
+		}
+		observability.DBQueryDuration.WithLabelValues(operation).Observe(duration.Seconds())
+	}
+	if level == tracelog.LogLevelError {
+		operation := "query"
+		if sql, ok := data["sql"].(string); ok && len(sql) > 0 {
+			for _, prefix := range []string{"SELECT", "INSERT", "UPDATE", "DELETE", "BEGIN", "COMMIT", "ROLLBACK"} {
+				if len(sql) >= len(prefix) && strings.EqualFold(sql[:len(prefix)], prefix) {
+					operation = strings.ToLower(prefix)
+					break
+				}
+			}
+		}
+		observability.DBQueryErrorsTotal.WithLabelValues(operation).Inc()
 	}
 
 	l.logger.LogAttrs(ctx, slogLevel, msg, attrs...)

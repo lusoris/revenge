@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/email"
 )
@@ -115,6 +116,7 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 		DisplayName:  req.DisplayName,
 	})
 	if err != nil {
+		observability.RecordAuthAttempt("register", "failure")
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
@@ -132,6 +134,8 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.Shared
 	if err := tx.Commit(ctx); err != nil {
 		return nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
+
+	observability.RecordAuthAttempt("register", "success")
 
 	// Send verification email asynchronously (outside transaction)
 	if s.emailService != nil {
@@ -151,6 +155,7 @@ func (s *Service) VerifyEmail(ctx context.Context, token string) error {
 
 	emailToken, err := s.repo.GetEmailVerificationToken(ctx, tokenHash)
 	if err != nil {
+		observability.RecordAuthAttempt("verify_email", "failure")
 		return fmt.Errorf("invalid or expired verification token: %w", err)
 	}
 
@@ -179,6 +184,8 @@ func (s *Service) VerifyEmail(ctx context.Context, token string) error {
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
+
+	observability.RecordAuthAttempt("verify_email", "success")
 
 	return nil
 }
@@ -300,6 +307,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 				IPAddress:    &activityIP,
 				UserAgent:    userAgent,
 			})
+			observability.RecordAuthAttempt("login", "failure")
 			return nil, fmt.Errorf("account locked due to too many failed login attempts. Please try again later")
 		}
 	}
@@ -349,6 +357,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 			IPAddress:    &activityIP,
 			UserAgent:    userAgent,
 		})
+		observability.RecordAuthAttempt("login", "failure")
 		return nil, errors.New("invalid username or password")
 	}
 
@@ -363,6 +372,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 			IPAddress:    &activityIP,
 			UserAgent:    userAgent,
 		})
+		observability.RecordAuthAttempt("login", "failure")
 		return nil, errors.New("account is disabled")
 	}
 
@@ -421,6 +431,8 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 			"device_name": ptrToString(deviceName),
 		},
 	})
+
+	observability.RecordAuthAttempt("login", "success")
 
 	return &LoginResponse{
 		User:         user,

@@ -155,6 +155,32 @@ migrate-create: ## Create a new migration (usage: make migrate-create NAME=creat
 	migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq ${NAME}
 
 # =============================================================================
+# Benchmarking & Profiling
+# =============================================================================
+
+PPROF_HOST?=localhost:9096
+
+bench: ## Run all benchmarks
+	go test -bench=. -benchmem -count=3 -run=^$$ ./...
+
+bench-cpu: ## Run benchmarks with CPU profile
+	go test -bench=. -cpuprofile=cpu.prof -benchmem -run=^$$ ./internal/...
+	@echo "CPU profile: cpu.prof — view with: go tool pprof -http=:6060 cpu.prof"
+
+bench-mem: ## Run benchmarks with memory profile
+	go test -bench=. -memprofile=mem.prof -benchmem -run=^$$ ./internal/...
+	@echo "Memory profile: mem.prof — view with: go tool pprof -http=:6060 mem.prof"
+
+pprof-cpu: ## Capture 30s CPU profile from running instance
+	go tool pprof -http=:6060 http://$(PPROF_HOST)/debug/pprof/profile?seconds=30
+
+pprof-heap: ## Capture heap profile from running instance
+	go tool pprof -http=:6060 http://$(PPROF_HOST)/debug/pprof/heap
+
+pprof-goroutine: ## Capture goroutine profile from running instance
+	go tool pprof -http=:6060 http://$(PPROF_HOST)/debug/pprof/goroutine
+
+# =============================================================================
 # Code Generation
 # =============================================================================
 
@@ -187,7 +213,7 @@ install-tools: ## Install development tools
 
 clean: ## Clean build artifacts
 	rm -rf bin/ dist/
-	rm -f coverage.out coverage.html
+	rm -f coverage.out coverage.html cpu.prof mem.prof
 	go clean
 
 deps: ## Download and verify dependencies
