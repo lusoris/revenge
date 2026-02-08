@@ -1017,15 +1017,16 @@ type Handler interface {
 	SearchMovies(ctx context.Context, params SearchMoviesParams) (SearchMoviesRes, error)
 	// SearchMoviesMetadata implements searchMoviesMetadata operation.
 	//
-	// Search for movies in the TMDb database. This searches the external
-	// metadata provider, not the local library. Use this to find movies
-	// to add to your library or to identify unmatched files.
+	// Search for movies using an external metadata provider. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
+	// This searches the external metadata provider, not the local library.
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
 	// SearchPersonMetadata implements searchPersonMetadata operation.
 	//
-	// Search for actors, directors, and other crew members in TMDb.
+	// Search for actors, directors, and other crew members. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 	//
 	// GET /api/v1/metadata/search/person
 	SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (SearchPersonMetadataRes, error)
@@ -1037,7 +1038,8 @@ type Handler interface {
 	SearchTVShows(ctx context.Context, params SearchTVShowsParams) (SearchTVShowsRes, error)
 	// SearchTVShowsMetadata implements searchTVShowsMetadata operation.
 	//
-	// Search for TV shows on TMDb by query string.
+	// Search for TV shows using an external metadata provider. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 	// Returns matching TV shows with basic metadata.
 	//
 	// GET /api/v1/metadata/search/tv

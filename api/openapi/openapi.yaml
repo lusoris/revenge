@@ -2459,9 +2459,10 @@ paths:
 
   /api/v1/metadata/search/person:
     get:
-      summary: Search people in metadata provider
+      summary: Search people via metadata provider
       description: |
-        Search for actors, directors, and other crew members in TMDb.
+        Search for actors, directors, and other crew members. By default uses TMDb.
+        Use the `provider` parameter to search via a different provider (e.g., tvdb).
       operationId: searchPersonMetadata
       tags:
         - metadata
@@ -2485,6 +2486,23 @@ paths:
             minimum: 1
             maximum: 100
           description: Maximum number of results
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - tmdb
+              - tvdb
+          description: Metadata provider to search (default tmdb)
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+          description: ISO 639-1 language code (e.g., en, de, pt-BR)
+          example: en
       responses:
         '200':
           description: Search results
@@ -2978,11 +2996,11 @@ paths:
   # Metadata endpoints (external lookup)
   /api/v1/metadata/search/movie:
     get:
-      summary: Search movies on TMDb
+      summary: Search movies via metadata provider
       description: |
-        Search for movies in the TMDb database. This searches the external
-        metadata provider, not the local library. Use this to find movies
-        to add to your library or to identify unmatched files.
+        Search for movies using an external metadata provider. By default uses TMDb.
+        Use the `provider` parameter to search via a different provider (e.g., tvdb).
+        This searches the external metadata provider, not the local library.
       operationId: searchMoviesMetadata
       tags:
         - metadata
@@ -3017,9 +3035,26 @@ paths:
             maximum: 50
             default: 20
           description: Maximum results to return
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - tmdb
+              - tvdb
+          description: Metadata provider to search (default tmdb)
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+          description: ISO 639-1 language code (e.g., en, de, pt-BR)
+          example: en
       responses:
         '200':
-          description: Search results from TMDb
+          description: Search results from metadata provider
           content:
             application/json:
               schema:
@@ -3101,9 +3136,10 @@ paths:
 
   /api/v1/metadata/search/tv:
     get:
-      summary: Search TV shows on TMDb
+      summary: Search TV shows via metadata provider
       description: |
-        Search for TV shows on TMDb by query string.
+        Search for TV shows using an external metadata provider. By default uses TMDb.
+        Use the `provider` parameter to search via a different provider (e.g., tvdb).
         Returns matching TV shows with basic metadata.
       operationId: searchTVShowsMetadata
       tags:
@@ -3134,6 +3170,23 @@ paths:
             default: 20
             maximum: 100
           description: Maximum results to return
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - tmdb
+              - tvdb
+          description: Metadata provider to search (default tmdb)
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: '^[a-z]{2}(-[A-Z]{2})?$'
+          description: ISO 639-1 language code (e.g., en, de, pt-BR)
+          example: en
       responses:
         '200':
           description: TV show search results

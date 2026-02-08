@@ -170,6 +170,10 @@ type CollectionProvider interface {
 
 // SearchOptions configures metadata search queries.
 type SearchOptions struct {
+	// ProviderID selects a specific provider for the search.
+	// When empty, the highest-priority provider is used with fallback.
+	ProviderID ProviderID
+
 	// Year filters results by release/air year.
 	Year *int
 

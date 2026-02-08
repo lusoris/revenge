@@ -11373,6 +11373,98 @@ func (o OptSearchLibraryTVShowsSortBy) Or(d SearchLibraryTVShowsSortBy) SearchLi
 	return d
 }
 
+// NewOptSearchMoviesMetadataProvider returns new OptSearchMoviesMetadataProvider with value set to v.
+func NewOptSearchMoviesMetadataProvider(v SearchMoviesMetadataProvider) OptSearchMoviesMetadataProvider {
+	return OptSearchMoviesMetadataProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchMoviesMetadataProvider is optional SearchMoviesMetadataProvider.
+type OptSearchMoviesMetadataProvider struct {
+	Value SearchMoviesMetadataProvider
+	Set   bool
+}
+
+// IsSet returns true if OptSearchMoviesMetadataProvider was set.
+func (o OptSearchMoviesMetadataProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchMoviesMetadataProvider) Reset() {
+	var v SearchMoviesMetadataProvider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchMoviesMetadataProvider) SetTo(v SearchMoviesMetadataProvider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchMoviesMetadataProvider) Get() (v SearchMoviesMetadataProvider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchMoviesMetadataProvider) Or(d SearchMoviesMetadataProvider) SearchMoviesMetadataProvider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchPersonMetadataProvider returns new OptSearchPersonMetadataProvider with value set to v.
+func NewOptSearchPersonMetadataProvider(v SearchPersonMetadataProvider) OptSearchPersonMetadataProvider {
+	return OptSearchPersonMetadataProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchPersonMetadataProvider is optional SearchPersonMetadataProvider.
+type OptSearchPersonMetadataProvider struct {
+	Value SearchPersonMetadataProvider
+	Set   bool
+}
+
+// IsSet returns true if OptSearchPersonMetadataProvider was set.
+func (o OptSearchPersonMetadataProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchPersonMetadataProvider) Reset() {
+	var v SearchPersonMetadataProvider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchPersonMetadataProvider) SetTo(v SearchPersonMetadataProvider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchPersonMetadataProvider) Get() (v SearchPersonMetadataProvider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchPersonMetadataProvider) Or(d SearchPersonMetadataProvider) SearchPersonMetadataProvider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchResultsFacets returns new OptSearchResultsFacets with value set to v.
 func NewOptSearchResultsFacets(v SearchResultsFacets) OptSearchResultsFacets {
 	return OptSearchResultsFacets{
@@ -11413,6 +11505,52 @@ func (o OptSearchResultsFacets) Get() (v SearchResultsFacets, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptSearchResultsFacets) Or(d SearchResultsFacets) SearchResultsFacets {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSearchTVShowsMetadataProvider returns new OptSearchTVShowsMetadataProvider with value set to v.
+func NewOptSearchTVShowsMetadataProvider(v SearchTVShowsMetadataProvider) OptSearchTVShowsMetadataProvider {
+	return OptSearchTVShowsMetadataProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchTVShowsMetadataProvider is optional SearchTVShowsMetadataProvider.
+type OptSearchTVShowsMetadataProvider struct {
+	Value SearchTVShowsMetadataProvider
+	Set   bool
+}
+
+// IsSet returns true if OptSearchTVShowsMetadataProvider was set.
+func (o OptSearchTVShowsMetadataProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchTVShowsMetadataProvider) Reset() {
+	var v SearchTVShowsMetadataProvider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchTVShowsMetadataProvider) SetTo(v SearchTVShowsMetadataProvider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchTVShowsMetadataProvider) Get() (v SearchTVShowsMetadataProvider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchTVShowsMetadataProvider) Or(d SearchTVShowsMetadataProvider) SearchTVShowsMetadataProvider {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -15290,6 +15428,47 @@ type SearchMoviesMetadataBadRequest Error
 
 func (*SearchMoviesMetadataBadRequest) searchMoviesMetadataRes() {}
 
+type SearchMoviesMetadataProvider string
+
+const (
+	SearchMoviesMetadataProviderTmdb SearchMoviesMetadataProvider = "tmdb"
+	SearchMoviesMetadataProviderTvdb SearchMoviesMetadataProvider = "tvdb"
+)
+
+// AllValues returns all SearchMoviesMetadataProvider values.
+func (SearchMoviesMetadataProvider) AllValues() []SearchMoviesMetadataProvider {
+	return []SearchMoviesMetadataProvider{
+		SearchMoviesMetadataProviderTmdb,
+		SearchMoviesMetadataProviderTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchMoviesMetadataProvider) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchMoviesMetadataProviderTmdb:
+		return []byte(s), nil
+	case SearchMoviesMetadataProviderTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchMoviesMetadataProvider) UnmarshalText(data []byte) error {
+	switch SearchMoviesMetadataProvider(data) {
+	case SearchMoviesMetadataProviderTmdb:
+		*s = SearchMoviesMetadataProviderTmdb
+		return nil
+	case SearchMoviesMetadataProviderTvdb:
+		*s = SearchMoviesMetadataProviderTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 type SearchMoviesMetadataUnauthorized Error
 
 func (*SearchMoviesMetadataUnauthorized) searchMoviesMetadataRes() {}
@@ -15297,6 +15476,47 @@ func (*SearchMoviesMetadataUnauthorized) searchMoviesMetadataRes() {}
 type SearchMoviesOKApplicationJSON []Movie
 
 func (*SearchMoviesOKApplicationJSON) searchMoviesRes() {}
+
+type SearchPersonMetadataProvider string
+
+const (
+	SearchPersonMetadataProviderTmdb SearchPersonMetadataProvider = "tmdb"
+	SearchPersonMetadataProviderTvdb SearchPersonMetadataProvider = "tvdb"
+)
+
+// AllValues returns all SearchPersonMetadataProvider values.
+func (SearchPersonMetadataProvider) AllValues() []SearchPersonMetadataProvider {
+	return []SearchPersonMetadataProvider{
+		SearchPersonMetadataProviderTmdb,
+		SearchPersonMetadataProviderTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchPersonMetadataProvider) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchPersonMetadataProviderTmdb:
+		return []byte(s), nil
+	case SearchPersonMetadataProviderTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchPersonMetadataProvider) UnmarshalText(data []byte) error {
+	switch SearchPersonMetadataProvider(data) {
+	case SearchPersonMetadataProviderTmdb:
+		*s = SearchPersonMetadataProviderTmdb
+		return nil
+	case SearchPersonMetadataProviderTvdb:
+		*s = SearchPersonMetadataProviderTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
 
 // Ref: #/components/schemas/SearchResults
 type SearchResults struct {
@@ -15385,6 +15605,47 @@ func (s *SearchResultsFacets) init() SearchResultsFacets {
 		*s = m
 	}
 	return m
+}
+
+type SearchTVShowsMetadataProvider string
+
+const (
+	SearchTVShowsMetadataProviderTmdb SearchTVShowsMetadataProvider = "tmdb"
+	SearchTVShowsMetadataProviderTvdb SearchTVShowsMetadataProvider = "tvdb"
+)
+
+// AllValues returns all SearchTVShowsMetadataProvider values.
+func (SearchTVShowsMetadataProvider) AllValues() []SearchTVShowsMetadataProvider {
+	return []SearchTVShowsMetadataProvider{
+		SearchTVShowsMetadataProviderTmdb,
+		SearchTVShowsMetadataProviderTvdb,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchTVShowsMetadataProvider) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchTVShowsMetadataProviderTmdb:
+		return []byte(s), nil
+	case SearchTVShowsMetadataProviderTvdb:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchTVShowsMetadataProvider) UnmarshalText(data []byte) error {
+	switch SearchTVShowsMetadataProvider(data) {
+	case SearchTVShowsMetadataProviderTmdb:
+		*s = SearchTVShowsMetadataProviderTmdb
+		return nil
+	case SearchTVShowsMetadataProviderTvdb:
+		*s = SearchTVShowsMetadataProviderTvdb
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 type SearchTVShowsOKApplicationJSON []TVSeries

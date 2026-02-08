@@ -190,10 +190,19 @@ func (s *service) SearchMovie(ctx context.Context, query string, opts SearchOpti
 		opts.Language = s.getDefaultLanguage()
 	}
 
-	// Use primary provider
+	// Route to specific provider if requested
+	if opts.ProviderID != "" {
+		for _, p := range providers {
+			if p.ID() == opts.ProviderID {
+				return p.SearchMovie(ctx, query, opts)
+			}
+		}
+		return nil, fmt.Errorf("provider %q does not support movie search: %w", opts.ProviderID, ErrNoProviders)
+	}
+
+	// Use primary provider with fallback
 	results, err := providers[0].SearchMovie(ctx, query, opts)
 	if err != nil && s.config.EnableProviderFallback && len(providers) > 1 {
-		// Try fallback providers
 		for _, p := range providers[1:] {
 			results, err = p.SearchMovie(ctx, query, opts)
 			if err == nil {
@@ -360,6 +369,17 @@ func (s *service) SearchTVShow(ctx context.Context, query string, opts SearchOpt
 		opts.Language = s.getDefaultLanguage()
 	}
 
+	// Route to specific provider if requested
+	if opts.ProviderID != "" {
+		for _, p := range providers {
+			if p.ID() == opts.ProviderID {
+				return p.SearchTVShow(ctx, query, opts)
+			}
+		}
+		return nil, fmt.Errorf("provider %q does not support TV show search: %w", opts.ProviderID, ErrNoProviders)
+	}
+
+	// Use primary provider with fallback
 	results, err := providers[0].SearchTVShow(ctx, query, opts)
 	if err != nil && s.config.EnableProviderFallback && len(providers) > 1 {
 		for _, p := range providers[1:] {
@@ -626,6 +646,17 @@ func (s *service) SearchPerson(ctx context.Context, query string, opts SearchOpt
 		opts.Language = s.getDefaultLanguage()
 	}
 
+	// Route to specific provider if requested
+	if opts.ProviderID != "" {
+		for _, p := range providers {
+			if p.ID() == opts.ProviderID {
+				return p.SearchPerson(ctx, query, opts)
+			}
+		}
+		return nil, fmt.Errorf("provider %q does not support person search: %w", opts.ProviderID, ErrNoProviders)
+	}
+
+	// Use primary provider with fallback
 	results, err := providers[0].SearchPerson(ctx, query, opts)
 	if err != nil && s.config.EnableProviderFallback && len(providers) > 1 {
 		for _, p := range providers[1:] {

@@ -6412,7 +6412,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									switch method {
 									case "GET":
 										r.name = SearchMoviesMetadataOperation
-										r.summary = "Search movies on TMDb"
+										r.summary = "Search movies via metadata provider"
 										r.operationID = "searchMoviesMetadata"
 										r.operationGroup = ""
 										r.pathPattern = "/api/v1/metadata/search/movie"
@@ -6437,7 +6437,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									switch method {
 									case "GET":
 										r.name = SearchPersonMetadataOperation
-										r.summary = "Search people in metadata provider"
+										r.summary = "Search people via metadata provider"
 										r.operationID = "searchPersonMetadata"
 										r.operationGroup = ""
 										r.pathPattern = "/api/v1/metadata/search/person"
@@ -6462,7 +6462,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									switch method {
 									case "GET":
 										r.name = SearchTVShowsMetadataOperation
-										r.summary = "Search TV shows on TMDb"
+										r.summary = "Search TV shows via metadata provider"
 										r.operationID = "searchTVShowsMetadata"
 										r.operationGroup = ""
 										r.pathPattern = "/api/v1/metadata/search/tv"

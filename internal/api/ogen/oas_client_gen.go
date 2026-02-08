@@ -1037,15 +1037,16 @@ type Invoker interface {
 	SearchMovies(ctx context.Context, params SearchMoviesParams) (SearchMoviesRes, error)
 	// SearchMoviesMetadata invokes searchMoviesMetadata operation.
 	//
-	// Search for movies in the TMDb database. This searches the external
-	// metadata provider, not the local library. Use this to find movies
-	// to add to your library or to identify unmatched files.
+	// Search for movies using an external metadata provider. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
+	// This searches the external metadata provider, not the local library.
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
 	// SearchPersonMetadata invokes searchPersonMetadata operation.
 	//
-	// Search for actors, directors, and other crew members in TMDb.
+	// Search for actors, directors, and other crew members. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 	//
 	// GET /api/v1/metadata/search/person
 	SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (SearchPersonMetadataRes, error)
@@ -1057,7 +1058,8 @@ type Invoker interface {
 	SearchTVShows(ctx context.Context, params SearchTVShowsParams) (SearchTVShowsRes, error)
 	// SearchTVShowsMetadata invokes searchTVShowsMetadata operation.
 	//
-	// Search for TV shows on TMDb by query string.
+	// Search for TV shows using an external metadata provider. By default uses TMDb.
+	// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 	// Returns matching TV shows with basic metadata.
 	//
 	// GET /api/v1/metadata/search/tv
@@ -22647,9 +22649,9 @@ func (c *Client) sendSearchMovies(ctx context.Context, params SearchMoviesParams
 
 // SearchMoviesMetadata invokes searchMoviesMetadata operation.
 //
-// Search for movies in the TMDb database. This searches the external
-// metadata provider, not the local library. Use this to find movies
-// to add to your library or to identify unmatched files.
+// Search for movies using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
+// This searches the external metadata provider, not the local library.
 //
 // GET /api/v1/metadata/search/movie
 func (c *Client) SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error) {
@@ -22748,6 +22750,40 @@ func (c *Client) sendSearchMoviesMetadata(ctx context.Context, params SearchMovi
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "provider" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Provider.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "language" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Language.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -22819,7 +22855,8 @@ func (c *Client) sendSearchMoviesMetadata(ctx context.Context, params SearchMovi
 
 // SearchPersonMetadata invokes searchPersonMetadata operation.
 //
-// Search for actors, directors, and other crew members in TMDb.
+// Search for actors, directors, and other crew members. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 //
 // GET /api/v1/metadata/search/person
 func (c *Client) SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (SearchPersonMetadataRes, error) {
@@ -22895,6 +22932,40 @@ func (c *Client) sendSearchPersonMetadata(ctx context.Context, params SearchPers
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Limit.Get(); ok {
 				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "provider" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Provider.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "language" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Language.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -23142,7 +23213,8 @@ func (c *Client) sendSearchTVShows(ctx context.Context, params SearchTVShowsPara
 
 // SearchTVShowsMetadata invokes searchTVShowsMetadata operation.
 //
-// Search for TV shows on TMDb by query string.
+// Search for TV shows using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 // Returns matching TV shows with basic metadata.
 //
 // GET /api/v1/metadata/search/tv
@@ -23236,6 +23308,40 @@ func (c *Client) sendSearchTVShowsMetadata(ctx context.Context, params SearchTVS
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Limit.Get(); ok {
 				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "provider" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Provider.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "language" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Language.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
 		}); err != nil {

@@ -3623,6 +3623,17 @@ func (s SearchLibraryTVShowsSortBy) Validate() error {
 	}
 }
 
+func (s SearchMoviesMetadataProvider) Validate() error {
+	switch s {
+	case "tmdb":
+		return nil
+	case "tvdb":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
 func (s SearchMoviesOKApplicationJSON) Validate() error {
 	alias := ([]Movie)(s)
 	if alias == nil {
@@ -3646,6 +3657,17 @@ func (s SearchMoviesOKApplicationJSON) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
+}
+
+func (s SearchPersonMetadataProvider) Validate() error {
+	switch s {
+	case "tmdb":
+		return nil
+	case "tvdb":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s *SearchResults) Validate() error {
@@ -3723,6 +3745,17 @@ func (s SearchResultsFacets) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
+}
+
+func (s SearchTVShowsMetadataProvider) Validate() error {
+	switch s {
+	case "tmdb":
+		return nil
+	case "tvdb":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s SearchTVShowsOKApplicationJSON) Validate() error {

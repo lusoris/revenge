@@ -11,13 +11,19 @@ import (
 	"log/slog"
 )
 
-// SearchMoviesMetadata searches TMDb for movies.
+// SearchMoviesMetadata searches for movies via metadata provider.
 func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMoviesMetadataParams) (ogen.SearchMoviesMetadataRes, error) {
 	// Build search options
 	opts := metadata.SearchOptions{}
 	if params.Year.Set {
 		y := int(params.Year.Value)
 		opts.Year = &y
+	}
+	if params.Provider.Set {
+		opts.ProviderID = metadata.ProviderID(params.Provider.Value)
+	}
+	if params.Language.Set {
+		opts.Language = params.Language.Value
 	}
 
 	// Get limit
@@ -32,7 +38,7 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 		if errors.Is(err, metadata.ErrNoProviders) {
 			return &ogen.MetadataSearchResults{Results: []ogen.MetadataSearchResult{}}, nil
 		}
-		h.logger.Error("TMDb search failed", slog.Any("error", err))
+		h.logger.Error("metadata movie search failed", slog.Any("error", err))
 		return nil, err
 	}
 
@@ -275,13 +281,19 @@ func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetColl
 	return response, nil
 }
 
-// SearchTVShowsMetadata searches TMDb for TV shows.
+// SearchTVShowsMetadata searches for TV shows via metadata provider.
 func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchTVShowsMetadataParams) (ogen.SearchTVShowsMetadataRes, error) {
 	// Build search options
 	opts := metadata.SearchOptions{}
 	if params.Year.Set {
 		y := int(params.Year.Value)
 		opts.Year = &y
+	}
+	if params.Provider.Set {
+		opts.ProviderID = metadata.ProviderID(params.Provider.Value)
+	}
+	if params.Language.Set {
+		opts.Language = params.Language.Value
 	}
 
 	// Get limit
@@ -296,7 +308,7 @@ func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchT
 		if errors.Is(err, metadata.ErrNoProviders) {
 			return &ogen.MetadataTVSearchResults{Results: []ogen.MetadataTVSearchResult{}}, nil
 		}
-		h.logger.Error("TMDb TV search failed", slog.Any("error", err))
+		h.logger.Error("metadata TV search failed", slog.Any("error", err))
 		return nil, err
 	}
 
@@ -934,14 +946,22 @@ func (h *Handler) GetEpisodeMetadataImages(ctx context.Context, params ogen.GetE
 	return convertImages(images), nil
 }
 
-// SearchPersonMetadata searches for people in metadata provider.
+// SearchPersonMetadata searches for people via metadata provider.
 func (h *Handler) SearchPersonMetadata(ctx context.Context, params ogen.SearchPersonMetadataParams) (ogen.SearchPersonMetadataRes, error) {
+	opts := metadata.SearchOptions{}
+	if params.Provider.Set {
+		opts.ProviderID = metadata.ProviderID(params.Provider.Value)
+	}
+	if params.Language.Set {
+		opts.Language = params.Language.Value
+	}
+
 	limit := 20
 	if params.Limit.Set {
 		limit = int(params.Limit.Value)
 	}
 
-	results, err := h.metadataService.SearchPerson(ctx, params.Q, metadata.SearchOptions{})
+	results, err := h.metadataService.SearchPerson(ctx, params.Q, opts)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) {
 			return &ogen.MetadataPersonSearchResults{Results: []ogen.MetadataPersonSearchResult{}}, nil

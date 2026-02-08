@@ -33780,9 +33780,9 @@ func (s *Server) handleSearchMoviesRequest(args [0]string, argsEscaped bool, w h
 
 // handleSearchMoviesMetadataRequest handles searchMoviesMetadata operation.
 //
-// Search for movies in the TMDb database. This searches the external
-// metadata provider, not the local library. Use this to find movies
-// to add to your library or to identify unmatched files.
+// Search for movies using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
+// This searches the external metadata provider, not the local library.
 //
 // GET /api/v1/metadata/search/movie
 func (s *Server) handleSearchMoviesMetadataRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -33937,7 +33937,7 @@ func (s *Server) handleSearchMoviesMetadataRequest(args [0]string, argsEscaped b
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    SearchMoviesMetadataOperation,
-			OperationSummary: "Search movies on TMDb",
+			OperationSummary: "Search movies via metadata provider",
 			OperationID:      "searchMoviesMetadata",
 			Body:             nil,
 			RawBody:          rawBody,
@@ -33954,6 +33954,14 @@ func (s *Server) handleSearchMoviesMetadataRequest(args [0]string, argsEscaped b
 					Name: "limit",
 					In:   "query",
 				}: params.Limit,
+				{
+					Name: "provider",
+					In:   "query",
+				}: params.Provider,
+				{
+					Name: "language",
+					In:   "query",
+				}: params.Language,
 			},
 			Raw: r,
 		}
@@ -34007,7 +34015,8 @@ func (s *Server) handleSearchMoviesMetadataRequest(args [0]string, argsEscaped b
 
 // handleSearchPersonMetadataRequest handles searchPersonMetadata operation.
 //
-// Search for actors, directors, and other crew members in TMDb.
+// Search for actors, directors, and other crew members. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 //
 // GET /api/v1/metadata/search/person
 func (s *Server) handleSearchPersonMetadataRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -34162,7 +34171,7 @@ func (s *Server) handleSearchPersonMetadataRequest(args [0]string, argsEscaped b
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    SearchPersonMetadataOperation,
-			OperationSummary: "Search people in metadata provider",
+			OperationSummary: "Search people via metadata provider",
 			OperationID:      "searchPersonMetadata",
 			Body:             nil,
 			RawBody:          rawBody,
@@ -34175,6 +34184,14 @@ func (s *Server) handleSearchPersonMetadataRequest(args [0]string, argsEscaped b
 					Name: "limit",
 					In:   "query",
 				}: params.Limit,
+				{
+					Name: "provider",
+					In:   "query",
+				}: params.Provider,
+				{
+					Name: "language",
+					In:   "query",
+				}: params.Language,
 			},
 			Raw: r,
 		}
@@ -34453,7 +34470,8 @@ func (s *Server) handleSearchTVShowsRequest(args [0]string, argsEscaped bool, w 
 
 // handleSearchTVShowsMetadataRequest handles searchTVShowsMetadata operation.
 //
-// Search for TV shows on TMDb by query string.
+// Search for TV shows using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 // Returns matching TV shows with basic metadata.
 //
 // GET /api/v1/metadata/search/tv
@@ -34609,7 +34627,7 @@ func (s *Server) handleSearchTVShowsMetadataRequest(args [0]string, argsEscaped 
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    SearchTVShowsMetadataOperation,
-			OperationSummary: "Search TV shows on TMDb",
+			OperationSummary: "Search TV shows via metadata provider",
 			OperationID:      "searchTVShowsMetadata",
 			Body:             nil,
 			RawBody:          rawBody,
@@ -34626,6 +34644,14 @@ func (s *Server) handleSearchTVShowsMetadataRequest(args [0]string, argsEscaped 
 					Name: "limit",
 					In:   "query",
 				}: params.Limit,
+				{
+					Name: "provider",
+					In:   "query",
+				}: params.Provider,
+				{
+					Name: "language",
+					In:   "query",
+				}: params.Language,
 			},
 			Raw: r,
 		}

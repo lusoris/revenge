@@ -1505,9 +1505,9 @@ func (UnimplementedHandler) SearchMovies(ctx context.Context, params SearchMovie
 
 // SearchMoviesMetadata implements searchMoviesMetadata operation.
 //
-// Search for movies in the TMDb database. This searches the external
-// metadata provider, not the local library. Use this to find movies
-// to add to your library or to identify unmatched files.
+// Search for movies using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
+// This searches the external metadata provider, not the local library.
 //
 // GET /api/v1/metadata/search/movie
 func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (r SearchMoviesMetadataRes, _ error) {
@@ -1516,7 +1516,8 @@ func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params Sea
 
 // SearchPersonMetadata implements searchPersonMetadata operation.
 //
-// Search for actors, directors, and other crew members in TMDb.
+// Search for actors, directors, and other crew members. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 //
 // GET /api/v1/metadata/search/person
 func (UnimplementedHandler) SearchPersonMetadata(ctx context.Context, params SearchPersonMetadataParams) (r SearchPersonMetadataRes, _ error) {
@@ -1534,7 +1535,8 @@ func (UnimplementedHandler) SearchTVShows(ctx context.Context, params SearchTVSh
 
 // SearchTVShowsMetadata implements searchTVShowsMetadata operation.
 //
-// Search for TV shows on TMDb by query string.
+// Search for TV shows using an external metadata provider. By default uses TMDb.
+// Use the `provider` parameter to search via a different provider (e.g., tvdb).
 // Returns matching TV shows with basic metadata.
 //
 // GET /api/v1/metadata/search/tv
