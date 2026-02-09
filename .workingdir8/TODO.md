@@ -306,7 +306,7 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`) ✅ `4d8f8919` — 7 endpoints updated, proper caching with pagination in cache keys
 - [x] **2B.3**: Standardize query param naming to snake_case ✅ `9a9babe2` — renamed `orderBy`→`order_by`, `minVotes`→`min_votes` in OpenAPI spec + regenerated ogen
 - [x] **2B.5**: Add admin user management endpoints (list+search, delete)
-- [ ] **5B.1**: Index episodes in Typesense (with series context)
+- [ ] **5B.1**: Index episodes in Typesense (with series context) ✅ `72056505` — EpisodeDocument (20 fields), EpisodeSearchService, CachedEpisodeSearchService, worker integration, 19 tests
 - [ ] **5B.2**: Index seasons in Typesense (named seasons)
 - [ ] **5B.3**: Create standalone people collection in Typesense (own pages)
 - [ ] **5B.4**: Add `/search/multi` unified search endpoint
