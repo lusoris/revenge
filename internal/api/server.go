@@ -204,6 +204,7 @@ func NewServer(p ServerParams) (*Server, error) {
 				ogen.WithMiddleware(
 					middleware.RequestIDMiddleware(),
 					middleware.RequestMetadataMiddleware(),
+					middleware.CacheControlMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					redisAuthLimiter.Middleware(),
 					redisGlobalLimiter.Middleware(),
@@ -248,6 +249,7 @@ func NewServer(p ServerParams) (*Server, error) {
 				ogen.WithMiddleware(
 					middleware.RequestIDMiddleware(),
 					middleware.RequestMetadataMiddleware(),
+					middleware.CacheControlMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					authLimiter.Middleware(),
 					globalLimiter.Middleware(),
@@ -263,6 +265,7 @@ func NewServer(p ServerParams) (*Server, error) {
 			ogen.WithMiddleware(
 				middleware.RequestIDMiddleware(),
 				middleware.RequestMetadataMiddleware(),
+				middleware.CacheControlMiddleware(),
 				observability.HTTPMetricsMiddleware(),
 			),
 			ogen.WithErrorHandler(middleware.ErrorHandler),
