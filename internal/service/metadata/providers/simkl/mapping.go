@@ -103,6 +103,27 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 				Score:  m.Ratings.MAL.Rating * 10,
 			})
 		}
+		if m.Ratings.Tmdb != nil && m.Ratings.Tmdb.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "TMDb",
+				Value:  fmt.Sprintf("%.1f/10", m.Ratings.Tmdb.Rating),
+				Score:  m.Ratings.Tmdb.Rating * 10,
+			})
+		}
+		if m.Ratings.Trakt != nil && m.Ratings.Trakt.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Trakt",
+				Value:  fmt.Sprintf("%.1f/10", m.Ratings.Trakt.Rating),
+				Score:  m.Ratings.Trakt.Rating * 10,
+			})
+		}
+		if m.Ratings.Letterboxd != nil && m.Ratings.Letterboxd.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Letterboxd",
+				Value:  fmt.Sprintf("%.1f/5", m.Ratings.Letterboxd.Rating),
+				Score:  m.Ratings.Letterboxd.Rating * 20,
+			})
+		}
 	}
 
 	for _, g := range m.Genres {
@@ -232,6 +253,27 @@ func mapShowToMetadata(s *Show) *metadata.TVShowMetadata {
 				Source: "MAL",
 				Value:  strconv.FormatFloat(s.Ratings.MAL.Rating, 'f', 1, 64) + "/10",
 				Score:  s.Ratings.MAL.Rating * 10,
+			})
+		}
+		if s.Ratings.Tmdb != nil && s.Ratings.Tmdb.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "TMDb",
+				Value:  fmt.Sprintf("%.1f/10", s.Ratings.Tmdb.Rating),
+				Score:  s.Ratings.Tmdb.Rating * 10,
+			})
+		}
+		if s.Ratings.Trakt != nil && s.Ratings.Trakt.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Trakt",
+				Value:  fmt.Sprintf("%.1f/10", s.Ratings.Trakt.Rating),
+				Score:  s.Ratings.Trakt.Rating * 10,
+			})
+		}
+		if s.Ratings.Letterboxd != nil && s.Ratings.Letterboxd.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Letterboxd",
+				Value:  fmt.Sprintf("%.1f/5", s.Ratings.Letterboxd.Rating),
+				Score:  s.Ratings.Letterboxd.Rating * 20,
 			})
 		}
 	}
