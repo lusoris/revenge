@@ -8,6 +8,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
+	"github.com/lusoris/revenge/internal/infra/image"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/metadata"
 	"github.com/riverqueue/river"
@@ -299,13 +300,15 @@ func (w *EnrichContentWorker) Work(ctx context.Context, job *river.Job[EnrichCon
 // Currently a stub — will be implemented when integrated with the image service.
 type DownloadImageWorker struct {
 	river.WorkerDefaults[DownloadImageArgs]
-	logger *slog.Logger
+	imageService *image.Service
+	logger       *slog.Logger
 }
 
 // NewDownloadImageWorker creates a new image download worker.
-func NewDownloadImageWorker(logger *slog.Logger) *DownloadImageWorker {
+func NewDownloadImageWorker(imageService *image.Service, logger *slog.Logger) *DownloadImageWorker {
 	return &DownloadImageWorker{
-		logger: logger.With("component", "metadata_download_image"),
+		imageService: imageService,
+		logger:       logger.With("component", "metadata_download_image"),
 	}
 }
 
@@ -314,13 +317,29 @@ func (w *DownloadImageWorker) Timeout(job *river.Job[DownloadImageArgs]) time.Du
 	return 2 * time.Minute
 }
 
-// Work executes the image download job.
+// Work executes the image download job by fetching the image into the local cache.
 func (w *DownloadImageWorker) Work(ctx context.Context, job *river.Job[DownloadImageArgs]) error {
-	w.logger.Warn("image download not yet implemented — job accepted but no-op",
-		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
-		slog.String("content_type", job.Args.ContentType),
-		slog.String("image_type", job.Args.ImageType),
-		slog.String("path", job.Args.Path),
+	args := job.Args
+
+	if args.Path == "" {
+		w.logger.Debug("skipping image download — empty path",
+			slog.String("content_type", args.ContentType),
+			slog.String("content_id", args.ContentID),
+		)
+		return nil
+	}
+
+	w.logger.Debug("downloading image",
+		slog.String("content_type", args.ContentType),
+		slog.String("image_type", args.ImageType),
+		slog.String("path", args.Path),
+		slog.String("size", args.Size),
 	)
+
+	_, _, err := w.imageService.FetchImage(ctx, args.ImageType, args.Path, args.Size)
+	if err != nil {
+		return fmt.Errorf("download image %s/%s: %w", args.ImageType, args.Path, err)
+	}
+
 	return nil
 }
