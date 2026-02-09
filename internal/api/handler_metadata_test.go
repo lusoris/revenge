@@ -141,6 +141,8 @@ func (m *mockMetadataService) ClearCache() {}
 
 func (m *mockMetadataService) RegisterProvider(_ metadata.Provider) {}
 
+func (m *mockMetadataService) SetJobQueue(_ metadata.JobQueue) {}
+
 func (m *mockMetadataService) GetProviders() []metadata.Provider {
 	return nil
 }

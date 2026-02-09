@@ -56,6 +56,9 @@ type Service interface {
 	// Provider management
 	RegisterProvider(provider Provider)
 	GetProviders() []Provider
+
+	// Job queue configuration
+	SetJobQueue(queue JobQueue)
 }
 
 // ServiceConfig configures the metadata service.

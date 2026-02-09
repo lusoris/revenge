@@ -28,6 +28,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
@@ -82,6 +83,7 @@ var Module = fx.Module("app",
 	// Job Workers
 	moviejobs.Module,
 	tvshowjobs.Module,
+	metadatajobs.Module,
 
 	// Integrations
 	radarr.Module,

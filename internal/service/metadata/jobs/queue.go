@@ -4,16 +4,17 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/riverqueue/river"
 )
 
 // Queue provides an interface for enqueuing metadata jobs.
 type Queue struct {
-	client *river.Client[any]
+	client *infrajobs.Client
 }
 
 // NewQueue creates a new metadata job queue.
-func NewQueue(client *river.Client[any]) *Queue {
+func NewQueue(client *infrajobs.Client) *Queue {
 	return &Queue{client: client}
 }
 
