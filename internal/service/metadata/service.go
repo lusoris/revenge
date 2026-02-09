@@ -46,6 +46,10 @@ type Service interface {
 	// Image operations
 	GetImageURL(path string, size ImageSize) string
 
+	// Enrichment operations (call from background workers only)
+	EnrichMovieRatings(ctx context.Context, result *MovieMetadata)
+	EnrichTVShowRatings(ctx context.Context, result *TVShowMetadata)
+
 	// Refresh operations (triggers async jobs)
 	RefreshMovie(ctx context.Context, movieID uuid.UUID) error
 	RefreshTVShow(ctx context.Context, seriesID uuid.UUID) error
@@ -263,11 +267,6 @@ func (s *service) GetMovieMetadata(ctx context.Context, tmdbID int32, languages 
 		return nil, aggErr.First()
 	}
 
-	// Enrich with ratings from secondary providers
-	if s.config.EnableEnrichment {
-		s.enrichMovieRatings(ctx, result)
-	}
-
 	return result, nil
 }
 
@@ -443,11 +442,6 @@ func (s *service) GetTVShowMetadata(ctx context.Context, tmdbID int32, languages
 
 	if result == nil {
 		return nil, aggErr.First()
-	}
-
-	// Enrich with ratings from secondary providers
-	if s.config.EnableEnrichment {
-		s.enrichTVShowRatings(ctx, result)
 	}
 
 	return result, nil
@@ -824,9 +818,13 @@ func (s *service) ClearCache() {
 	}
 }
 
-// enrichMovieRatings fetches ExternalRatings from secondary movie providers
+// EnrichMovieRatings fetches ExternalRatings from secondary movie providers
 // (e.g. OMDb for IMDb/RT/Metacritic) and merges them into the primary result.
-func (s *service) enrichMovieRatings(ctx context.Context, result *MovieMetadata) {
+// This should be called from background workers only, not in the API request path.
+func (s *service) EnrichMovieRatings(ctx context.Context, result *MovieMetadata) {
+	if !s.config.EnableEnrichment {
+		return
+	}
 	if result.IMDbID == nil || *result.IMDbID == "" {
 		return
 	}
@@ -872,9 +870,13 @@ func (s *service) enrichMovieRatings(ctx context.Context, result *MovieMetadata)
 	}
 }
 
-// enrichTVShowRatings fetches ExternalRatings from secondary TV show providers
+// EnrichTVShowRatings fetches ExternalRatings from secondary TV show providers
 // and merges them into the primary result.
-func (s *service) enrichTVShowRatings(ctx context.Context, result *TVShowMetadata) {
+// This should be called from background workers only, not in the API request path.
+func (s *service) EnrichTVShowRatings(ctx context.Context, result *TVShowMetadata) {
+	if !s.config.EnableEnrichment {
+		return
+	}
 	if result.IMDbID == nil || *result.IMDbID == "" {
 		return
 	}

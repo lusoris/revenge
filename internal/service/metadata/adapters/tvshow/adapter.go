@@ -76,6 +76,10 @@ func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series
 		return fmt.Errorf("get series metadata: %w", err)
 	}
 
+	// Enrich with external ratings from secondary providers (OMDb, etc.)
+	// Safe to call here — this runs inside a River background worker, not in API request path.
+	a.service.EnrichTVShowRatings(ctx, meta)
+
 	// Get content ratings for age ratings
 	contentRatings, err := a.service.GetTVShowContentRatings(ctx, *series.TMDbID)
 	if err != nil {

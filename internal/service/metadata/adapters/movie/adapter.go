@@ -76,6 +76,10 @@ func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie, opts
 		return fmt.Errorf("get movie metadata: %w", err)
 	}
 
+	// Enrich with external ratings from secondary providers (OMDb, etc.)
+	// Safe to call here — this runs inside a River background worker, not in API request path.
+	a.service.EnrichMovieRatings(ctx, meta)
+
 	// Get release dates for age ratings
 	releaseDates, err := a.service.GetMovieReleaseDates(ctx, *mov.TMDbID)
 	if err != nil {
