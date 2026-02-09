@@ -337,7 +337,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
 - [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
 - [x] **3C.9**: Create `DownloadImageWorker` for cache warming
-- [ ] **3C.11**: Periodic stats/analytics aggregation job
+- [x] **3C.11**: Periodic stats/analytics aggregation job ✅ `8896fdbb` — migration 000037, StatsAggregationWorker (hourly, low queue), 10 aggregate stat keys, 13 tests
 - [x] **1C.5-7**: Clean up TODO comments and stale test comments ✅ `72f19cdc`
 - [x] **1D.9-10**: Delete vestigial sqlc placeholders ✅ `033bc406` — removed source SQL + regenerated sqlc
 - [x] **10B.2**: Upgrade `raft-boltdb` to v2 ✅ `c837af04` — switched to v2 (go.etcd.io/bbolt), API-compatible
