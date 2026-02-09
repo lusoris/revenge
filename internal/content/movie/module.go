@@ -1,9 +1,12 @@
 package movie
 
 import (
+	"log/slog"
+
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
 // Module provides the movie content module
@@ -19,10 +22,12 @@ var Module = fx.Module("movie",
 	),
 )
 
-// provideService creates movie service with MetadataProvider.
+// provideService creates movie service wrapped with caching.
 // MetadataProvider is injected from metadatafx module (MovieMetadataAdapter).
-func provideService(repo Repository, metadataProvider MetadataProvider) Service {
-	return NewService(repo, metadataProvider)
+// Cache may be nil if caching is disabled — CachedService handles nil gracefully.
+func provideService(repo Repository, metadataProvider MetadataProvider, c *cache.Cache, logger *slog.Logger) Service {
+	base := NewService(repo, metadataProvider)
+	return NewCachedService(base, c, logger)
 }
 
 // provideLibraryService creates library service from config.

@@ -39,6 +39,18 @@ const (
 	KeyPrefixMovieRecent      = "movie:recent"
 	KeyPrefixMovieTopRated    = "movie:toprated"
 	KeyPrefixMovieMeta        = "movie:meta:"
+
+	// TV show cache keys
+	KeyPrefixTVShow          = "tvshow:"
+	KeyPrefixTVShowCast      = "tvshow:cast:"
+	KeyPrefixTVShowCrew      = "tvshow:crew:"
+	KeyPrefixTVShowGenres    = "tvshow:genres:"
+	KeyPrefixTVShowNetworks  = "tvshow:networks:"
+	KeyPrefixTVShowList      = "tvshow:list:"
+	KeyPrefixTVShowRecent    = "tvshow:recent"
+	KeyPrefixTVShowSeasons   = "tvshow:seasons:"
+	KeyPrefixTVShowEpisodes  = "tvshow:episodes:"
+
 	KeyPrefixLibrary          = "library:"
 	KeyPrefixLibraryStats     = "library:stats:"
 	KeyPrefixSearch           = "search:"
@@ -100,6 +112,15 @@ const (
 
 	// TopRatedTTL is the TTL for top rated movies list.
 	TopRatedTTL = 5 * time.Minute
+
+	// TVShowTTL is the TTL for TV show series data cache.
+	TVShowTTL = 5 * time.Minute
+
+	// TVShowMetaTTL is the TTL for TV show metadata (cast, crew, genres, networks).
+	TVShowMetaTTL = 10 * time.Minute
+
+	// TVShowSeasonTTL is the TTL for season/episode data.
+	TVShowSeasonTTL = 5 * time.Minute
 )
 
 // SessionKey returns the cache key for a session by token hash.
@@ -190,6 +211,51 @@ func MovieTopRatedKey(minVotes, limit, offset int32) string {
 // MovieMetaKey returns the cache key for movie metadata by external ID.
 func MovieMetaKey(provider, externalID string) string {
 	return fmt.Sprintf("%s%s:%s", KeyPrefixMovieMeta, provider, externalID)
+}
+
+// TVShowKey returns the cache key for a TV show series by ID.
+func TVShowKey(seriesID string) string {
+	return KeyPrefixTVShow + seriesID
+}
+
+// TVShowCastKey returns the cache key for a series' cast.
+func TVShowCastKey(seriesID string) string {
+	return KeyPrefixTVShowCast + seriesID
+}
+
+// TVShowCrewKey returns the cache key for a series' crew.
+func TVShowCrewKey(seriesID string) string {
+	return KeyPrefixTVShowCrew + seriesID
+}
+
+// TVShowGenresKey returns the cache key for a series' genres.
+func TVShowGenresKey(seriesID string) string {
+	return KeyPrefixTVShowGenres + seriesID
+}
+
+// TVShowNetworksKey returns the cache key for a series' networks.
+func TVShowNetworksKey(seriesID string) string {
+	return KeyPrefixTVShowNetworks + seriesID
+}
+
+// TVShowListKey returns the cache key for a TV show list with filters hash.
+func TVShowListKey(hash string) string {
+	return KeyPrefixTVShowList + hash
+}
+
+// TVShowRecentKey returns the cache key for recently added TV shows.
+func TVShowRecentKey(limit, offset int32) string {
+	return fmt.Sprintf("%s:%d:%d", KeyPrefixTVShowRecent, limit, offset)
+}
+
+// TVShowSeasonsKey returns the cache key for seasons of a series.
+func TVShowSeasonsKey(seriesID string) string {
+	return KeyPrefixTVShowSeasons + seriesID
+}
+
+// TVShowEpisodesKey returns the cache key for episodes of a season.
+func TVShowEpisodesKey(seasonID string) string {
+	return KeyPrefixTVShowEpisodes + seasonID
 }
 
 // LibraryKey returns the cache key for a library by ID.
@@ -354,6 +420,43 @@ func (c *Cache) InvalidateMovieLists(ctx context.Context) error {
 // InvalidateSearch invalidates all search caches.
 func (c *Cache) InvalidateSearch(ctx context.Context) error {
 	return c.Invalidate(ctx, KeyPrefixSearch+"*")
+}
+
+// InvalidateTVShow invalidates all cache entries for a TV show series.
+func (c *Cache) InvalidateTVShow(ctx context.Context, seriesID string) error {
+	patterns := []string{
+		KeyPrefixTVShow + seriesID,
+		KeyPrefixTVShowCast + seriesID,
+		KeyPrefixTVShowCrew + seriesID,
+		KeyPrefixTVShowGenres + seriesID,
+		KeyPrefixTVShowNetworks + seriesID,
+		KeyPrefixTVShowSeasons + seriesID,
+	}
+
+	for _, pattern := range patterns {
+		if err := c.Delete(ctx, pattern); err != nil {
+			return fmt.Errorf("failed to invalidate tvshow cache %s: %w", pattern, err)
+		}
+	}
+
+	// Also invalidate episode caches for this series and list caches
+	return c.InvalidateTVShowLists(ctx)
+}
+
+// InvalidateTVShowLists invalidates all TV show list caches (recently added, etc).
+func (c *Cache) InvalidateTVShowLists(ctx context.Context) error {
+	patterns := []string{
+		KeyPrefixTVShowList + "*",
+		KeyPrefixTVShowRecent + "*",
+	}
+
+	for _, pattern := range patterns {
+		if err := c.Invalidate(ctx, pattern); err != nil {
+			return fmt.Errorf("failed to invalidate tvshow list cache %s: %w", pattern, err)
+		}
+	}
+
+	return nil
 }
 
 // InvalidateLibrary invalidates all cache entries for a library.
