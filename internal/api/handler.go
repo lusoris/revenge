@@ -6,18 +6,19 @@ import (
 	"fmt"
 	"net/netip"
 
+	"log/slog"
+
 	"github.com/go-faster/errors"
-	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/middleware"
-	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
-	"github.com/lusoris/revenge/internal/playback"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
+	"github.com/lusoris/revenge/internal/playback"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -29,9 +30,9 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
-	"log/slog"
 )
 
 // Handler implements the ogen.Handler interface for health check endpoints.

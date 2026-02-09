@@ -143,7 +143,7 @@ func (q *Queries) ListNetworksBySeries(ctx context.Context, seriesID uuid.UUID) 
 }
 
 const listSeriesByNetwork = `-- name: ListSeriesByNetwork :many
-SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at FROM tvshow.series s
+SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings FROM tvshow.series s
 JOIN tvshow.series_networks sn ON s.id = sn.series_id
 WHERE sn.network_id = $1
 ORDER BY s.first_air_date DESC NULLS LAST
@@ -196,6 +196,7 @@ func (q *Queries) ListSeriesByNetwork(ctx context.Context, arg ListSeriesByNetwo
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}

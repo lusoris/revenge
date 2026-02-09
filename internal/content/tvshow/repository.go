@@ -133,6 +133,7 @@ type CreateSeriesParams struct {
 	TaglinesI18n     map[string]string
 	OverviewsI18n    map[string]string
 	AgeRatings       map[string]map[string]string
+	ExternalRatings  []ExternalRating
 	MetadataUpdatedAt *string
 }
 
@@ -165,6 +166,7 @@ type UpdateSeriesParams struct {
 	TaglinesI18n      map[string]string
 	OverviewsI18n     map[string]string
 	AgeRatings        map[string]map[string]string
+	ExternalRatings   []ExternalRating
 	MetadataUpdatedAt *string
 }
 

@@ -88,9 +88,12 @@ type EpisodeIDs struct {
 
 // Ratings contains rating information from Simkl and external sources.
 type Ratings struct {
-	Simkl *RatingInfo `json:"simkl,omitempty"`
-	IMDb  *RatingInfo `json:"imdb,omitempty"`
-	MAL   *RatingInfo `json:"mal,omitempty"`
+	Simkl      *RatingInfo `json:"simkl,omitempty"`
+	IMDb       *RatingInfo `json:"imdb,omitempty"`
+	MAL        *RatingInfo `json:"mal,omitempty"`
+	Tmdb       *RatingInfo `json:"tmdb,omitempty"`
+	Trakt      *RatingInfo `json:"trakt,omitempty"`
+	Letterboxd *RatingInfo `json:"letterboxd,omitempty"`
 }
 
 // RatingInfo is a single rating source.

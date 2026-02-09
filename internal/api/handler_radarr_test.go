@@ -7,11 +7,11 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"

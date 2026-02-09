@@ -45,11 +45,21 @@ type Series struct {
 	OverviewsI18n map[string]string            // {"en": "A chemistry teacher...", "de": "Ein Chemielehrer..."}
 	AgeRatings    map[string]map[string]string // {"US": {"TV": "TV-MA"}, "DE": {"FSK": "16"}}
 
+	// External ratings from various providers (IMDb, Rotten Tomatoes, Metacritic, TMDb, etc.)
+	ExternalRatings []ExternalRating
+
 	// Relations (populated by repository when requested)
 	Seasons []Season
 	Genres  []SeriesGenre
 	Credits []SeriesCredit
 	Networks []Network
+}
+
+// ExternalRating represents a rating from an external source.
+type ExternalRating struct {
+	Source string  `json:"source"` // e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb"
+	Value  string  `json:"value"`  // e.g. "8.8/10", "96%", "90/100"
+	Score  float64 `json:"score"`  // Normalized 0-100 scale
 }
 
 // GetTitle returns the series title in the preferred language with fallback chain:

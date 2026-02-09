@@ -293,6 +293,18 @@ func mapMetadataToSeries(series *contenttvshow.Series, meta *metadata.TVShowMeta
 			}
 		}
 	}
+
+	// Map external ratings (IMDb, Rotten Tomatoes, Metacritic, etc.)
+	if len(meta.ExternalRatings) > 0 {
+		series.ExternalRatings = make([]contenttvshow.ExternalRating, len(meta.ExternalRatings))
+		for i, er := range meta.ExternalRatings {
+			series.ExternalRatings[i] = contenttvshow.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  er.Score,
+			}
+		}
+	}
 }
 
 // mapSeasonMetadataToSeason maps shared metadata to season domain type.

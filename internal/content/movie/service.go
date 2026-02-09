@@ -357,6 +357,7 @@ func movieToUpdateParams(m *Movie) UpdateMovieParams {
 		TaglinesI18n:     m.TaglinesI18n,
 		OverviewsI18n:    m.OverviewsI18n,
 		AgeRatings:       m.AgeRatings,
+		ExternalRatings:  m.ExternalRatings,
 		PosterPath:       m.PosterPath,
 		BackdropPath:     m.BackdropPath,
 		TrailerURL:       m.TrailerURL,

@@ -1,6 +1,7 @@
 package letterboxd
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -83,6 +84,12 @@ func mapFilmToMetadata(f *Film) metadata.MovieMetadata {
 	// Rating: convert 0.5-5.0 → 0-10 scale
 	if f.Rating > 0 {
 		m.VoteAverage = f.Rating * 2.0
+		// Add Letterboxd as an ExternalRating (original 0.5-5.0 scale)
+		m.ExternalRatings = append(m.ExternalRatings, metadata.ExternalRating{
+			Source: "Letterboxd",
+			Value:  fmt.Sprintf("%.1f/5", f.Rating),
+			Score:  f.Rating * 20, // normalize to 0-100
+		})
 	}
 
 	// Poster

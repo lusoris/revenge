@@ -41,6 +41,16 @@ type Movie struct {
 	TaglinesI18n  map[string]string            // {"en": "Fear can hold you prisoner...", "de": "Angst kann dich gefangen halten..."}
 	OverviewsI18n map[string]string            // {"en": "Imprisoned in the 1940s...", "de": "In den 1940er Jahren eingesperrt..."}
 	AgeRatings    map[string]map[string]string // {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
+
+	// External ratings from various providers (IMDb, Rotten Tomatoes, Metacritic, TMDb, etc.)
+	ExternalRatings []ExternalRating
+}
+
+// ExternalRating represents a rating from an external source.
+type ExternalRating struct {
+	Source string  `json:"source"` // e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb"
+	Value  string  `json:"value"`  // e.g. "8.8/10", "96%", "90/100"
+	Score  float64 `json:"score"`  // Normalized 0-100 scale
 }
 
 // GetTitle returns the movie title in the preferred language with fallback chain:

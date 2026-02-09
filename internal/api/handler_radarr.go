@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/integration/radarr"
-	"log/slog"
 )
 
 // radarrService is an optional dependency for Radarr integration.

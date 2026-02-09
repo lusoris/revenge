@@ -692,6 +692,7 @@ func seriesToUpdateParams(s *Series) UpdateSeriesParams {
 		TaglinesI18n:     s.TaglinesI18n,
 		OverviewsI18n:    s.OverviewsI18n,
 		AgeRatings:       s.AgeRatings,
+		ExternalRatings:  s.ExternalRatings,
 	}
 	if s.FirstAirDate != nil {
 		d := s.FirstAirDate.Format("2006-01-02")

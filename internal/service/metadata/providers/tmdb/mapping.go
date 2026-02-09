@@ -1,6 +1,7 @@
 package tmdb
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -64,6 +65,15 @@ func mapMovieMetadata(r *MovieResponse) *metadata.MovieMetadata {
 		PosterPath:       r.PosterPath,
 		BackdropPath:     r.BackdropPath,
 		Homepage:         r.Homepage,
+	}
+
+	// Add TMDb as an ExternalRating
+	if r.VoteAverage > 0 {
+		result.ExternalRatings = append(result.ExternalRatings, metadata.ExternalRating{
+			Source: "TMDb",
+			Value:  fmt.Sprintf("%.1f/10", r.VoteAverage),
+			Score:  r.VoteAverage * 10,
+		})
 	}
 
 	if r.ReleaseDate != "" {
@@ -196,6 +206,15 @@ func mapTVShowMetadata(r *TVResponse) *metadata.TVShowMetadata {
 		BackdropPath:     r.BackdropPath,
 		Homepage:         r.Homepage,
 		OriginCountries:  r.OriginCountry,
+	}
+
+	// Add TMDb as an ExternalRating
+	if r.VoteAverage > 0 {
+		result.ExternalRatings = append(result.ExternalRatings, metadata.ExternalRating{
+			Source: "TMDb",
+			Value:  fmt.Sprintf("%.1f/10", r.VoteAverage),
+			Score:  r.VoteAverage * 10,
+		})
 	}
 
 	if r.FirstAirDate != "" {

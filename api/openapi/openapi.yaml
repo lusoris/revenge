@@ -6649,6 +6649,11 @@ components:
           type: integer
           nullable: true
           description: Radarr movie ID
+        external_ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalRating'
+          description: Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.)
         created_at:
           type: string
           format: date-time
@@ -7233,6 +7238,11 @@ components:
           type: string
           nullable: true
           description: Official homepage URL
+        external_ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalRating'
+          description: Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.)
         library_added_at:
           type: string
           format: date-time
@@ -10878,6 +10888,24 @@ components:
         isForced:
           type: boolean
           description: Whether this is a forced subtitle track (e.g., foreign language signs)
+
+    ExternalRating:
+      type: object
+      required:
+        - source
+        - value
+        - score
+      properties:
+        source:
+          type: string
+          description: Rating source name (e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb")
+        value:
+          type: string
+          description: Original rating value (e.g. "8.8/10", "96%", "90/100")
+        score:
+          type: number
+          format: float
+          description: Normalized score on a 0-100 scale
 
     Error:
       type: object

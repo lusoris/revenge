@@ -201,7 +201,13 @@
       "Bash(docker compose:*)",
       "Bash(docker build:*)",
       "Bash(docker exec:*)",
-      "Bash(for d in /home/kilian/dev/revenge/internal/service/*/)"
+      "Bash(for d in /home/kilian/dev/revenge/internal/service/*/)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 grep:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go run:*)",
+      "WebFetch(domain:fanarttv.docs.apiary.io)",
+      "WebFetch(domain:fanart.tv)",
+      "WebFetch(domain:www.omdbapi.com)",
+      "WebFetch(domain:www.tvmaze.com)"
     ],
     "additionalDirectories": [
       "\\tmp"
