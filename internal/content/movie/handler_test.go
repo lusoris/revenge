@@ -61,20 +61,20 @@ func (m *MockService) SearchMovies(ctx context.Context, query string, filters Se
 	return args.Get(0).([]Movie), args.Error(1)
 }
 
-func (m *MockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error) {
+func (m *MockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, int64, error) {
 	args := m.Called(ctx, limit, offset)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return nil, 0, args.Error(2)
 	}
-	return args.Get(0).([]Movie), args.Error(1)
+	return args.Get(0).([]Movie), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *MockService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error) {
+func (m *MockService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, int64, error) {
 	args := m.Called(ctx, minVotes, limit, offset)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return nil, 0, args.Error(2)
 	}
-	return args.Get(0).([]Movie), args.Error(1)
+	return args.Get(0).([]Movie), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *MockService) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
@@ -119,20 +119,20 @@ func (m *MockService) DeleteMovieFile(ctx context.Context, id uuid.UUID) error {
 	return args.Error(0)
 }
 
-func (m *MockService) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	args := m.Called(ctx, movieID)
+func (m *MockService) GetMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
+	args := m.Called(ctx, movieID, limit, offset)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return nil, 0, args.Error(2)
 	}
-	return args.Get(0).([]MovieCredit), args.Error(1)
+	return args.Get(0).([]MovieCredit), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *MockService) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	args := m.Called(ctx, movieID)
+func (m *MockService) GetMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
+	args := m.Called(ctx, movieID, limit, offset)
 	if args.Get(0) == nil {
-		return nil, args.Error(1)
+		return nil, 0, args.Error(2)
 	}
-	return args.Get(0).([]MovieCredit), args.Error(1)
+	return args.Get(0).([]MovieCredit), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *MockService) GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error) {
@@ -380,11 +380,12 @@ func TestHandler_GetRecentlyAdded(t *testing.T) {
 		Offset: 0,
 	}
 
-	svc.On("ListRecentlyAdded", ctx, int32(10), int32(0)).Return(movies, nil)
+	svc.On("ListRecentlyAdded", ctx, int32(10), int32(0)).Return(movies, int64(1), nil)
 
-	result, err := h.GetRecentlyAdded(ctx, params)
+	result, total, err := h.GetRecentlyAdded(ctx, params)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	svc.AssertExpectations(t)
 }
 
@@ -400,11 +401,12 @@ func TestHandler_GetTopRated(t *testing.T) {
 			MinVotes: nil, // Default to 100
 		}
 
-		svc.On("ListTopRated", ctx, int32(100), int32(10), int32(0)).Return(movies, nil)
+		svc.On("ListTopRated", ctx, int32(100), int32(10), int32(0)).Return(movies, int64(1), nil)
 
-		result, err := h.GetTopRated(ctx, params)
+		result, total, err := h.GetTopRated(ctx, params)
 		require.NoError(t, err)
 		assert.Len(t, result, 1)
+		assert.Equal(t, int64(1), total)
 		svc.AssertExpectations(t)
 	})
 
@@ -420,11 +422,12 @@ func TestHandler_GetTopRated(t *testing.T) {
 			MinVotes: &minVotes,
 		}
 
-		svc.On("ListTopRated", ctx, int32(500), int32(10), int32(0)).Return(movies, nil)
+		svc.On("ListTopRated", ctx, int32(500), int32(10), int32(0)).Return(movies, int64(1), nil)
 
-		result, err := h.GetTopRated(ctx, params)
+		result, total, err := h.GetTopRated(ctx, params)
 		require.NoError(t, err)
 		assert.Len(t, result, 1)
+		assert.Equal(t, int64(1), total)
 		svc.AssertExpectations(t)
 	})
 }
@@ -463,12 +466,14 @@ func TestHandler_GetMovieCast(t *testing.T) {
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		cast := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"}}
+		params := CreditPaginationParams{Limit: 50, Offset: 0}
 
-		svc.On("GetMovieCast", ctx, movieID).Return(cast, nil)
+		svc.On("GetMovieCast", ctx, movieID, int32(50), int32(0)).Return(cast, int64(1), nil)
 
-		result, err := h.GetMovieCast(ctx, movieID.String())
+		result, total, err := h.GetMovieCast(ctx, movieID.String(), params)
 		require.NoError(t, err)
 		assert.Len(t, result, 1)
+		assert.Equal(t, int64(1), total)
 		svc.AssertExpectations(t)
 	})
 
@@ -476,8 +481,9 @@ func TestHandler_GetMovieCast(t *testing.T) {
 		svc := new(MockService)
 		h := newTestHandler(svc)
 		ctx := context.Background()
+		params := CreditPaginationParams{Limit: 50, Offset: 0}
 
-		result, err := h.GetMovieCast(ctx, "not-a-uuid")
+		result, _, err := h.GetMovieCast(ctx, "not-a-uuid", params)
 		assert.Error(t, err)
 		assert.Nil(t, result)
 	})
@@ -490,12 +496,14 @@ func TestHandler_GetMovieCrew(t *testing.T) {
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		crew := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
+		params := CreditPaginationParams{Limit: 50, Offset: 0}
 
-		svc.On("GetMovieCrew", ctx, movieID).Return(crew, nil)
+		svc.On("GetMovieCrew", ctx, movieID, int32(50), int32(0)).Return(crew, int64(1), nil)
 
-		result, err := h.GetMovieCrew(ctx, movieID.String())
+		result, total, err := h.GetMovieCrew(ctx, movieID.String(), params)
 		require.NoError(t, err)
 		assert.Len(t, result, 1)
+		assert.Equal(t, int64(1), total)
 		svc.AssertExpectations(t)
 	})
 
@@ -503,8 +511,9 @@ func TestHandler_GetMovieCrew(t *testing.T) {
 		svc := new(MockService)
 		h := newTestHandler(svc)
 		ctx := context.Background()
+		params := CreditPaginationParams{Limit: 50, Offset: 0}
 
-		result, err := h.GetMovieCrew(ctx, "not-valid-uuid")
+		result, _, err := h.GetMovieCrew(ctx, "not-valid-uuid", params)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid movie ID")
 		assert.Nil(t, result)

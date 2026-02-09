@@ -272,6 +272,14 @@ LIMIT $2
 OFFSET
     $3;
 
+-- name: CountTopRated :one
+SELECT COUNT(*)
+FROM movie.movies
+WHERE
+    deleted_at IS NULL
+    AND vote_average IS NOT NULL
+    AND vote_count > $1;
+
 -- Movie Files Operations
 -- name: CreateMovieFile :one
 INSERT INTO
@@ -420,7 +428,18 @@ WHERE
     movie_id = $1
     AND credit_type = 'cast'
     AND deleted_at IS NULL
-ORDER BY cast_order ASC NULLS LAST;
+ORDER BY cast_order ASC NULLS LAST
+LIMIT $2
+OFFSET
+    $3;
+
+-- name: CountMovieCast :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'cast'
+    AND deleted_at IS NULL;
 
 -- name: ListMovieCrew :many
 SELECT *
@@ -436,7 +455,18 @@ ORDER BY
         WHEN 'Production' THEN 3
         ELSE 99
     END,
-    name ASC;
+    name ASC
+LIMIT $2
+OFFSET
+    $3;
+
+-- name: CountMovieCrew :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'crew'
+    AND deleted_at IS NULL;
 
 -- name: DeleteMovieCredits :exec
 UPDATE movie.movie_credits

@@ -311,7 +311,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **5B.3**: Create standalone people collection in Typesense (own pages)
 - [ ] **5B.4**: Add `/search/multi` unified search endpoint
 - [x] **7.1**: Extract `requireAdmin()` helper — migrated 42 handlers across 7 files (commit `6523726e`)
-- [ ] **7.4**: Create `internal/util/ptr/` generic pointer package
+- [x] **7.4**: Create `internal/util/ptr/` generic pointer package — `ptr.To`, `ptr.Value`, `ptr.ValueOr`, etc (commit `3847c32b`)
 - [ ] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs
 - [ ] **2B.1**: Add CSP middleware
 - [ ] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib`

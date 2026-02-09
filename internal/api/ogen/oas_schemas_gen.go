@@ -3453,10 +3453,6 @@ type GetMovieCastNotFound Error
 
 func (*GetMovieCastNotFound) getMovieCastRes() {}
 
-type GetMovieCastOKApplicationJSON []MovieCredit
-
-func (*GetMovieCastOKApplicationJSON) getMovieCastRes() {}
-
 type GetMovieCastUnauthorized Error
 
 func (*GetMovieCastUnauthorized) getMovieCastRes() {}
@@ -3472,10 +3468,6 @@ func (*GetMovieCollectionUnauthorized) getMovieCollectionRes() {}
 type GetMovieCrewNotFound Error
 
 func (*GetMovieCrewNotFound) getMovieCrewRes() {}
-
-type GetMovieCrewOKApplicationJSON []MovieCredit
-
-func (*GetMovieCrewOKApplicationJSON) getMovieCrewRes() {}
 
 type GetMovieCrewUnauthorized Error
 
@@ -3790,14 +3782,6 @@ type GetRecentEpisodesOKApplicationJSON []EpisodeWithSeriesInfo
 
 func (*GetRecentEpisodesOKApplicationJSON) getRecentEpisodesRes() {}
 
-type GetRecentlyAddedOKApplicationJSON []Movie
-
-func (*GetRecentlyAddedOKApplicationJSON) getRecentlyAddedRes() {}
-
-type GetRecentlyAddedTVShowsOKApplicationJSON []TVSeries
-
-func (*GetRecentlyAddedTVShowsOKApplicationJSON) getRecentlyAddedTVShowsRes() {}
-
 type GetResourceActivityLogsForbidden Error
 
 func (*GetResourceActivityLogsForbidden) getResourceActivityLogsRes() {}
@@ -3930,10 +3914,6 @@ type GetTVShowCastNotFound Error
 
 func (*GetTVShowCastNotFound) getTVShowCastRes() {}
 
-type GetTVShowCastOKApplicationJSON []TVSeriesCredit
-
-func (*GetTVShowCastOKApplicationJSON) getTVShowCastRes() {}
-
 type GetTVShowCastUnauthorized Error
 
 func (*GetTVShowCastUnauthorized) getTVShowCastRes() {}
@@ -3949,10 +3929,6 @@ func (*GetTVShowContentRatingsUnauthorized) getTVShowContentRatingsRes() {}
 type GetTVShowCrewNotFound Error
 
 func (*GetTVShowCrewNotFound) getTVShowCrewRes() {}
-
-type GetTVShowCrewOKApplicationJSON []TVSeriesCredit
-
-func (*GetTVShowCrewOKApplicationJSON) getTVShowCrewRes() {}
 
 type GetTVShowCrewUnauthorized Error
 
@@ -4061,10 +4037,6 @@ func (*GetTVShowWatchStatsNotFound) getTVShowWatchStatsRes() {}
 type GetTVShowWatchStatsUnauthorized Error
 
 func (*GetTVShowWatchStatsUnauthorized) getTVShowWatchStatsRes() {}
-
-type GetTopRatedOKApplicationJSON []Movie
-
-func (*GetTopRatedOKApplicationJSON) getTopRatedRes() {}
 
 type GetUpcomingEpisodesOKApplicationJSON []EpisodeWithSeriesInfo
 
@@ -8726,6 +8698,60 @@ func (s *MovieCreditCreditType) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/MovieCreditListResponse
+type MovieCreditListResponse struct {
+	Items []MovieCredit `json:"items"`
+	// Total number of credits.
+	Total int64 `json:"total"`
+	// Current page number (1-indexed).
+	Page OptInt `json:"page"`
+	// Number of items per page.
+	PageSize OptInt `json:"pageSize"`
+}
+
+// GetItems returns the value of Items.
+func (s *MovieCreditListResponse) GetItems() []MovieCredit {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *MovieCreditListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *MovieCreditListResponse) GetPage() OptInt {
+	return s.Page
+}
+
+// GetPageSize returns the value of PageSize.
+func (s *MovieCreditListResponse) GetPageSize() OptInt {
+	return s.PageSize
+}
+
+// SetItems sets the value of Items.
+func (s *MovieCreditListResponse) SetItems(val []MovieCredit) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *MovieCreditListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *MovieCreditListResponse) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetPageSize sets the value of PageSize.
+func (s *MovieCreditListResponse) SetPageSize(val OptInt) {
+	s.PageSize = val
+}
+
+func (*MovieCreditListResponse) getMovieCastRes() {}
+func (*MovieCreditListResponse) getMovieCrewRes() {}
+
 // Ref: #/components/schemas/MovieFile
 type MovieFile struct {
 	ID      OptUUID `json:"id"`
@@ -9065,6 +9091,10 @@ type MovieListResponse struct {
 	Items []Movie `json:"items"`
 	// Total number of movies matching the filters.
 	Total int64 `json:"total"`
+	// Current page number (1-indexed).
+	Page OptInt `json:"page"`
+	// Number of items per page.
+	PageSize OptInt `json:"pageSize"`
 }
 
 // GetItems returns the value of Items.
@@ -9077,6 +9107,16 @@ func (s *MovieListResponse) GetTotal() int64 {
 	return s.Total
 }
 
+// GetPage returns the value of Page.
+func (s *MovieListResponse) GetPage() OptInt {
+	return s.Page
+}
+
+// GetPageSize returns the value of PageSize.
+func (s *MovieListResponse) GetPageSize() OptInt {
+	return s.PageSize
+}
+
 // SetItems sets the value of Items.
 func (s *MovieListResponse) SetItems(val []Movie) {
 	s.Items = val
@@ -9087,7 +9127,19 @@ func (s *MovieListResponse) SetTotal(val int64) {
 	s.Total = val
 }
 
-func (*MovieListResponse) listMoviesRes() {}
+// SetPage sets the value of Page.
+func (s *MovieListResponse) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetPageSize sets the value of PageSize.
+func (s *MovieListResponse) SetPageSize(val OptInt) {
+	s.PageSize = val
+}
+
+func (*MovieListResponse) getRecentlyAddedRes() {}
+func (*MovieListResponse) getTopRatedRes()      {}
+func (*MovieListResponse) listMoviesRes()       {}
 
 // Ref: #/components/schemas/MovieWatched
 type MovieWatched struct {
@@ -19077,6 +19129,113 @@ func (s *TVSeriesCreditCreditType) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// Ref: #/components/schemas/TVSeriesCreditListResponse
+type TVSeriesCreditListResponse struct {
+	Items []TVSeriesCredit `json:"items"`
+	// Total number of credits.
+	Total int64 `json:"total"`
+	// Current page number (1-indexed).
+	Page OptInt `json:"page"`
+	// Number of items per page.
+	PageSize OptInt `json:"pageSize"`
+}
+
+// GetItems returns the value of Items.
+func (s *TVSeriesCreditListResponse) GetItems() []TVSeriesCredit {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *TVSeriesCreditListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *TVSeriesCreditListResponse) GetPage() OptInt {
+	return s.Page
+}
+
+// GetPageSize returns the value of PageSize.
+func (s *TVSeriesCreditListResponse) GetPageSize() OptInt {
+	return s.PageSize
+}
+
+// SetItems sets the value of Items.
+func (s *TVSeriesCreditListResponse) SetItems(val []TVSeriesCredit) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *TVSeriesCreditListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *TVSeriesCreditListResponse) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetPageSize sets the value of PageSize.
+func (s *TVSeriesCreditListResponse) SetPageSize(val OptInt) {
+	s.PageSize = val
+}
+
+func (*TVSeriesCreditListResponse) getTVShowCastRes() {}
+func (*TVSeriesCreditListResponse) getTVShowCrewRes() {}
+
+// Ref: #/components/schemas/TVSeriesListResponse
+type TVSeriesListResponse struct {
+	Items []TVSeries `json:"items"`
+	// Total number of TV series matching the filters.
+	Total int64 `json:"total"`
+	// Current page number (1-indexed).
+	Page OptInt `json:"page"`
+	// Number of items per page.
+	PageSize OptInt `json:"pageSize"`
+}
+
+// GetItems returns the value of Items.
+func (s *TVSeriesListResponse) GetItems() []TVSeries {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *TVSeriesListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *TVSeriesListResponse) GetPage() OptInt {
+	return s.Page
+}
+
+// GetPageSize returns the value of PageSize.
+func (s *TVSeriesListResponse) GetPageSize() OptInt {
+	return s.PageSize
+}
+
+// SetItems sets the value of Items.
+func (s *TVSeriesListResponse) SetItems(val []TVSeries) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *TVSeriesListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *TVSeriesListResponse) SetPage(val OptInt) {
+	s.Page = val
+}
+
+// SetPageSize sets the value of PageSize.
+func (s *TVSeriesListResponse) SetPageSize(val OptInt) {
+	s.PageSize = val
+}
+
+func (*TVSeriesListResponse) getRecentlyAddedTVShowsRes() {}
 
 // Ref: #/components/schemas/TVShowListResponse
 type TVShowListResponse struct {

@@ -56,12 +56,60 @@ func (q *Queries) AddMovieToCollection(ctx context.Context, arg AddMovieToCollec
 	return err
 }
 
+const countMovieCast = `-- name: CountMovieCast :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'cast'
+    AND deleted_at IS NULL
+`
+
+func (q *Queries) CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countMovieCast, movieID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countMovieCrew = `-- name: CountMovieCrew :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'crew'
+    AND deleted_at IS NULL
+`
+
+func (q *Queries) CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countMovieCrew, movieID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countMovies = `-- name: CountMovies :one
 SELECT COUNT(*) FROM movie.movies WHERE deleted_at IS NULL
 `
 
 func (q *Queries) CountMovies(ctx context.Context) (int64, error) {
 	row := q.db.QueryRow(ctx, countMovies)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countTopRated = `-- name: CountTopRated :one
+SELECT COUNT(*)
+FROM movie.movies
+WHERE
+    deleted_at IS NULL
+    AND vote_average IS NOT NULL
+    AND vote_count > $1
+`
+
+func (q *Queries) CountTopRated(ctx context.Context, voteCount *int32) (int64, error) {
+	row := q.db.QueryRow(ctx, countTopRated, voteCount)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -1101,10 +1149,18 @@ WHERE
     AND credit_type = 'cast'
     AND deleted_at IS NULL
 ORDER BY cast_order ASC NULLS LAST
+LIMIT $2
+OFFSET $3
 `
 
-func (q *Queries) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	rows, err := q.db.Query(ctx, listMovieCast, movieID)
+type ListMovieCastParams struct {
+	MovieID uuid.UUID `json:"movieId"`
+	Limit   int32     `json:"limit"`
+	Offset  int32     `json:"offset"`
+}
+
+func (q *Queries) ListMovieCast(ctx context.Context, arg ListMovieCastParams) ([]MovieCredit, error) {
+	rows, err := q.db.Query(ctx, listMovieCast, arg.MovieID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -1152,10 +1208,18 @@ ORDER BY
         ELSE 99
     END,
     name ASC
+LIMIT $2
+OFFSET $3
 `
 
-func (q *Queries) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	rows, err := q.db.Query(ctx, listMovieCrew, movieID)
+type ListMovieCrewParams struct {
+	MovieID uuid.UUID `json:"movieId"`
+	Limit   int32     `json:"limit"`
+	Offset  int32     `json:"offset"`
+}
+
+func (q *Queries) ListMovieCrew(ctx context.Context, arg ListMovieCrewParams) ([]MovieCredit, error) {
+	rows, err := q.db.Query(ctx, listMovieCrew, arg.MovieID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

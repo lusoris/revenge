@@ -2616,7 +2616,7 @@ func encodeGetMovieResponse(response GetMovieRes, w http.ResponseWriter, span tr
 
 func encodeGetMovieCastResponse(response GetMovieCastRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetMovieCastOKApplicationJSON:
+	case *MovieCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2708,7 +2708,7 @@ func encodeGetMovieCollectionResponse(response GetMovieCollectionRes, w http.Res
 
 func encodeGetMovieCrewResponse(response GetMovieCrewRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetMovieCrewOKApplicationJSON:
+	case *MovieCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3435,7 +3435,7 @@ func encodeGetRecentEpisodesResponse(response GetRecentEpisodesRes, w http.Respo
 
 func encodeGetRecentlyAddedResponse(response GetRecentlyAddedRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetRecentlyAddedOKApplicationJSON:
+	case *MovieListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3468,7 +3468,7 @@ func encodeGetRecentlyAddedResponse(response GetRecentlyAddedRes, w http.Respons
 
 func encodeGetRecentlyAddedTVShowsResponse(response GetRecentlyAddedTVShowsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetRecentlyAddedTVShowsOKApplicationJSON:
+	case *TVSeriesListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4237,7 +4237,7 @@ func encodeGetTVShowResponse(response GetTVShowRes, w http.ResponseWriter, span 
 
 func encodeGetTVShowCastResponse(response GetTVShowCastRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTVShowCastOKApplicationJSON:
+	case *TVSeriesCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4329,7 +4329,7 @@ func encodeGetTVShowContentRatingsResponse(response GetTVShowContentRatingsRes, 
 
 func encodeGetTVShowCrewResponse(response GetTVShowCrewRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTVShowCrewOKApplicationJSON:
+	case *TVSeriesCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4868,7 +4868,7 @@ func encodeGetTVShowWatchStatsResponse(response GetTVShowWatchStatsRes, w http.R
 
 func encodeGetTopRatedResponse(response GetTopRatedRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTopRatedOKApplicationJSON:
+	case *MovieListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))

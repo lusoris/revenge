@@ -60,12 +60,12 @@ func (h *Handler) SearchMovies(ctx context.Context, params SearchMoviesParams) (
 }
 
 // GetRecentlyAdded handles GET /api/v1/movies/recently-added
-func (h *Handler) GetRecentlyAdded(ctx context.Context, params PaginationParams) ([]Movie, error) {
+func (h *Handler) GetRecentlyAdded(ctx context.Context, params PaginationParams) ([]Movie, int64, error) {
 	return h.service.ListRecentlyAdded(ctx, params.Limit, params.Offset)
 }
 
 // GetTopRated handles GET /api/v1/movies/top-rated
-func (h *Handler) GetTopRated(ctx context.Context, params TopRatedParams) ([]Movie, error) {
+func (h *Handler) GetTopRated(ctx context.Context, params TopRatedParams) ([]Movie, int64, error) {
 	minVotes := int32(100) // Default minimum votes
 	if params.MinVotes != nil {
 		minVotes = *params.MinVotes
@@ -84,24 +84,30 @@ func (h *Handler) GetMovieFiles(ctx context.Context, id string) ([]MovieFile, er
 	return h.service.GetMovieFiles(ctx, movieID)
 }
 
+// CreditPaginationParams contains pagination params for credit queries
+type CreditPaginationParams struct {
+	Limit  int32
+	Offset int32
+}
+
 // GetMovieCast handles GET /api/v1/movies/:id/cast
-func (h *Handler) GetMovieCast(ctx context.Context, id string) ([]MovieCredit, error) {
+func (h *Handler) GetMovieCast(ctx context.Context, id string, params CreditPaginationParams) ([]MovieCredit, int64, error) {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid movie ID: %w", err)
+		return nil, 0, fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.GetMovieCast(ctx, movieID)
+	return h.service.GetMovieCast(ctx, movieID, params.Limit, params.Offset)
 }
 
 // GetMovieCrew handles GET /api/v1/movies/:id/crew
-func (h *Handler) GetMovieCrew(ctx context.Context, id string) ([]MovieCredit, error) {
+func (h *Handler) GetMovieCrew(ctx context.Context, id string, params CreditPaginationParams) ([]MovieCredit, int64, error) {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid movie ID: %w", err)
+		return nil, 0, fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.GetMovieCrew(ctx, movieID)
+	return h.service.GetMovieCrew(ctx, movieID, params.Limit, params.Offset)
 }
 
 // GetMovieGenres handles GET /api/v1/movies/:id/genres

@@ -811,8 +811,12 @@ func (r *postgresRepository) CreateSeriesCredit(ctx context.Context, params Crea
 	return dbSeriesCreditToSeriesCredit(dbCredit), nil
 }
 
-func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	dbCredits, err := r.queries.ListSeriesCast(ctx, seriesID)
+func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	dbCredits, err := r.queries.ListSeriesCast(ctx, tvshowdb.ListSeriesCastParams{
+		SeriesID: seriesID,
+		Limit:    limit,
+		Offset:   offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list series cast: %w", err)
 	}
@@ -824,8 +828,16 @@ func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.U
 	return result, nil
 }
 
-func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	dbCredits, err := r.queries.ListSeriesCrew(ctx, seriesID)
+func (r *postgresRepository) CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	return r.queries.CountSeriesCast(ctx, seriesID)
+}
+
+func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	dbCredits, err := r.queries.ListSeriesCrew(ctx, tvshowdb.ListSeriesCrewParams{
+		SeriesID: seriesID,
+		Limit:    limit,
+		Offset:   offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list series crew: %w", err)
 	}
@@ -835,6 +847,10 @@ func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.U
 		result[i] = *dbSeriesCreditToSeriesCredit(c)
 	}
 	return result, nil
+}
+
+func (r *postgresRepository) CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	return r.queries.CountSeriesCrew(ctx, seriesID)
 }
 
 func (r *postgresRepository) DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error {

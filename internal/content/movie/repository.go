@@ -21,6 +21,7 @@ type Repository interface {
 	ListMoviesByYear(ctx context.Context, year int32, limit, offset int32) ([]Movie, error)
 	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error)
 	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error)
+	CountTopRated(ctx context.Context, minVotes int32) (int64, error)
 	CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error)
 	UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error)
 	DeleteMovie(ctx context.Context, id uuid.UUID) error
@@ -36,8 +37,10 @@ type Repository interface {
 
 	// Credits
 	CreateMovieCredit(ctx context.Context, params CreateMovieCreditParams) (*MovieCredit, error)
-	ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
-	ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	ListMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error)
+	ListMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error)
+	CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error)
+	CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error)
 	DeleteMovieCredits(ctx context.Context, movieID uuid.UUID) error
 
 	// Collections

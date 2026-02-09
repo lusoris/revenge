@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 
+	"log/slog"
+
 	"github.com/go-faster/jx"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/validate"
-	"log/slog"
 )
 
 // ============================================================================

@@ -859,13 +859,14 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 		genres = nil
 	}
 
-	cast, err := w.service.GetSeriesCast(ctx, seriesID)
+	// Fetch all credits (use high limit for indexing)
+	cast, _, err := w.service.GetSeriesCast(ctx, seriesID, 1000, 0)
 	if err != nil {
 		w.logger.Warn("failed to get cast", slog.Any("error", err))
 		cast = nil
 	}
 
-	crew, err := w.service.GetSeriesCrew(ctx, seriesID)
+	crew, _, err := w.service.GetSeriesCrew(ctx, seriesID, 1000, 0)
 	if err != nil {
 		w.logger.Warn("failed to get crew", slog.Any("error", err))
 		crew = nil

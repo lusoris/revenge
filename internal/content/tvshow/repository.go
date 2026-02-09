@@ -68,8 +68,10 @@ type Repository interface {
 
 	// Series Credits
 	CreateSeriesCredit(ctx context.Context, params CreateSeriesCreditParams) (*SeriesCredit, error)
-	ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
-	ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
+	ListSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error)
+	ListSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error)
+	CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error)
+	CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error)
 	DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error
 
 	// Episode Credits

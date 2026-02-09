@@ -11,6 +11,30 @@ import (
 	"github.com/google/uuid"
 )
 
+const countSeriesCast = `-- name: CountSeriesCast :one
+SELECT COUNT(*) FROM tvshow.series_credits
+WHERE series_id = $1 AND credit_type = 'cast'
+`
+
+func (q *Queries) CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSeriesCast, seriesID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countSeriesCrew = `-- name: CountSeriesCrew :one
+SELECT COUNT(*) FROM tvshow.series_credits
+WHERE series_id = $1 AND credit_type = 'crew'
+`
+
+func (q *Queries) CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSeriesCrew, seriesID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createEpisodeCredit = `-- name: CreateEpisodeCredit :one
 INSERT INTO tvshow.episode_credits (
     episode_id, tmdb_person_id, name, credit_type,
@@ -220,11 +244,19 @@ const listSeriesCast = `-- name: ListSeriesCast :many
 SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.series_credits
 WHERE series_id = $1 AND credit_type = 'cast'
 ORDER BY cast_order ASC NULLS LAST, name ASC
+LIMIT $2
+OFFSET $3
 `
 
+type ListSeriesCastParams struct {
+	SeriesID uuid.UUID `json:"seriesId"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
 // Series Credits
-func (q *Queries) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error) {
-	rows, err := q.db.Query(ctx, listSeriesCast, seriesID)
+func (q *Queries) ListSeriesCast(ctx context.Context, arg ListSeriesCastParams) ([]TvshowSeriesCredit, error) {
+	rows, err := q.db.Query(ctx, listSeriesCast, arg.SeriesID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -260,10 +292,18 @@ const listSeriesCrew = `-- name: ListSeriesCrew :many
 SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.series_credits
 WHERE series_id = $1 AND credit_type = 'crew'
 ORDER BY department ASC, name ASC
+LIMIT $2
+OFFSET $3
 `
 
-func (q *Queries) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error) {
-	rows, err := q.db.Query(ctx, listSeriesCrew, seriesID)
+type ListSeriesCrewParams struct {
+	SeriesID uuid.UUID `json:"seriesId"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
+func (q *Queries) ListSeriesCrew(ctx context.Context, arg ListSeriesCrewParams) ([]TvshowSeriesCredit, error) {
+	rows, err := q.db.Query(ctx, listSeriesCrew, arg.SeriesID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

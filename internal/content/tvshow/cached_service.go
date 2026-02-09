@@ -99,33 +99,42 @@ func (s *CachedService) ListSeries(ctx context.Context, filters SeriesListFilter
 }
 
 // ListRecentlyAdded returns recently added series with caching (2 min TTL).
-func (s *CachedService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, error) {
+// Cache key includes pagination params, caches both items and total.
+func (s *CachedService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, int64, error) {
 	if s.cache == nil {
 		return s.Service.ListRecentlyAdded(ctx, limit, offset)
 	}
 
-	cacheKey := fmt.Sprintf("%s:%d:%d", cache.KeyPrefixTVShowRecent, limit, offset)
+	cacheKey := fmt.Sprintf("%srecently-added:%d:%d", cache.KeyPrefixTVShow, limit, offset)
 
-	var series []Series
-	if err := s.cache.GetJSON(ctx, cacheKey, &series); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedSeries struct {
+		Items []Series `json:"items"`
+		Total int64    `json:"total"`
+	}
+	var cached cachedSeries
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("recently added series cache hit")
-		return series, nil
+		return cached.Items, cached.Total, nil
 	}
 
-	result, err := s.Service.ListRecentlyAdded(ctx, limit, offset)
+	// Cache miss - load from database
+	items, total, err := s.Service.ListRecentlyAdded(ctx, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
+	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, 2*time.Minute); setErr != nil {
+		toCache := cachedSeries{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, 2*time.Minute); setErr != nil {
 			s.logger.Warn("failed to cache recently added series", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // =============================================================================
@@ -197,63 +206,81 @@ func (s *CachedService) ListEpisodesBySeason(ctx context.Context, seasonID uuid.
 // =============================================================================
 
 // GetSeriesCast returns the cast for a series with caching (10 min TTL).
-func (s *CachedService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
+// Cache key includes pagination params.
+func (s *CachedService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error) {
 	if s.cache == nil {
-		return s.Service.GetSeriesCast(ctx, seriesID)
+		return s.Service.GetSeriesCast(ctx, seriesID, limit, offset)
 	}
 
-	cacheKey := cache.TVShowCastKey(seriesID.String())
+	cacheKey := fmt.Sprintf("%s%s:%d:%d", cache.KeyPrefixTVShowCast, seriesID.String(), limit, offset)
 
-	var cast []SeriesCredit
-	if err := s.cache.GetJSON(ctx, cacheKey, &cast); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedCredits struct {
+		Items []SeriesCredit `json:"items"`
+		Total int64          `json:"total"`
+	}
+	var cached cachedCredits
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("series cast cache hit", slog.String("series_id", seriesID.String()))
-		return cast, nil
+		return cached.Items, cached.Total, nil
 	}
 
-	result, err := s.Service.GetSeriesCast(ctx, seriesID)
+	// Cache miss - load from database
+	items, total, err := s.Service.GetSeriesCast(ctx, seriesID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
+	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.TVShowMetaTTL); setErr != nil {
+		toCache := cachedCredits{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, cache.TVShowMetaTTL); setErr != nil {
 			s.logger.Warn("failed to cache series cast", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // GetSeriesCrew returns the crew for a series with caching (10 min TTL).
-func (s *CachedService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
+// Cache key includes pagination params.
+func (s *CachedService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error) {
 	if s.cache == nil {
-		return s.Service.GetSeriesCrew(ctx, seriesID)
+		return s.Service.GetSeriesCrew(ctx, seriesID, limit, offset)
 	}
 
-	cacheKey := cache.TVShowCrewKey(seriesID.String())
+	cacheKey := fmt.Sprintf("%s%s:%d:%d", cache.KeyPrefixTVShowCrew, seriesID.String(), limit, offset)
 
-	var crew []SeriesCredit
-	if err := s.cache.GetJSON(ctx, cacheKey, &crew); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedCredits struct {
+		Items []SeriesCredit `json:"items"`
+		Total int64          `json:"total"`
+	}
+	var cached cachedCredits
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("series crew cache hit", slog.String("series_id", seriesID.String()))
-		return crew, nil
+		return cached.Items, cached.Total, nil
 	}
 
-	result, err := s.Service.GetSeriesCrew(ctx, seriesID)
+	// Cache miss - load from database
+	items, total, err := s.Service.GetSeriesCrew(ctx, seriesID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
+	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.TVShowMetaTTL); setErr != nil {
+		toCache := cachedCredits{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, cache.TVShowMetaTTL); setErr != nil {
 			s.logger.Warn("failed to cache series crew", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // GetSeriesGenres returns genres for a series with caching (10 min TTL).

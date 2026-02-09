@@ -132,10 +132,12 @@ func TestService_ListRecentlyAdded(t *testing.T) {
 	movies := []Movie{*newTestMovie()}
 
 	repo.On("ListRecentlyAdded", ctx, int32(10), int32(0)).Return(movies, nil)
+	repo.On("CountMovies", ctx).Return(int64(1), nil)
 
-	result, err := svc.ListRecentlyAdded(ctx, 10, 0)
+	result, total, err := svc.ListRecentlyAdded(ctx, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -146,10 +148,12 @@ func TestService_ListTopRated(t *testing.T) {
 	movies := []Movie{*newTestMovie()}
 
 	repo.On("ListTopRated", ctx, int32(100), int32(10), int32(0)).Return(movies, nil)
+	repo.On("CountTopRated", ctx, int32(100)).Return(int64(1), nil)
 
-	result, err := svc.ListTopRated(ctx, 100, 10, 0)
+	result, total, err := svc.ListTopRated(ctx, 100, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -365,11 +369,13 @@ func TestService_GetMovieCast(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"},
 	}
 
-	repo.On("ListMovieCast", ctx, movieID).Return(cast, nil)
+	repo.On("ListMovieCast", ctx, movieID, int32(10), int32(0)).Return(cast, nil)
+	repo.On("CountMovieCast", ctx, movieID).Return(int64(1), nil)
 
-	result, err := svc.GetMovieCast(ctx, movieID)
+	result, total, err := svc.GetMovieCast(ctx, movieID, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	assert.Equal(t, "Brad Pitt", result[0].Name)
 	repo.AssertExpectations(t)
 }
@@ -383,11 +389,13 @@ func TestService_GetMovieCrew(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr.To("Director")},
 	}
 
-	repo.On("ListMovieCrew", ctx, movieID).Return(crew, nil)
+	repo.On("ListMovieCrew", ctx, movieID, int32(10), int32(0)).Return(crew, nil)
+	repo.On("CountMovieCrew", ctx, movieID).Return(int64(1), nil)
 
-	result, err := svc.GetMovieCrew(ctx, movieID)
+	result, total, err := svc.GetMovieCrew(ctx, movieID, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	assert.Equal(t, "David Fincher", result[0].Name)
 	repo.AssertExpectations(t)
 }

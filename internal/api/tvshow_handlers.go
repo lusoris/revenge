@@ -70,7 +70,10 @@ func (h *Handler) SearchTVShows(ctx context.Context, params ogen.SearchTVShowsPa
 
 // GetRecentlyAddedTVShows returns recently added TV shows.
 func (h *Handler) GetRecentlyAddedTVShows(ctx context.Context, params ogen.GetRecentlyAddedTVShowsParams) (ogen.GetRecentlyAddedTVShowsRes, error) {
-	series, err := h.tvshowService.ListRecentlyAdded(ctx, util.SafeIntToInt32(params.Limit.Or(20)), 0)
+	limit := util.SafeIntToInt32(params.Limit.Or(20))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
+
+	series, total, err := h.tvshowService.ListRecentlyAdded(ctx, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -78,12 +81,18 @@ func (h *Handler) GetRecentlyAddedTVShows(ctx context.Context, params ogen.GetRe
 	lang := h.GetMetadataLanguage(ctx)
 	localized := LocalizeSeriesList(series, lang)
 
-	result := make([]ogen.TVSeries, len(localized))
+	items := make([]ogen.TVSeries, len(localized))
 	for i, s := range localized {
-		result[i] = *seriesToOgen(&s)
+		items[i] = *seriesToOgen(&s)
 	}
 
-	return (*ogen.GetRecentlyAddedTVShowsOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.TVSeriesListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetTVContinueWatching returns the continue watching list for TV shows.
@@ -218,42 +227,52 @@ func (h *Handler) GetTVShowEpisodes(ctx context.Context, params ogen.GetTVShowEp
 
 // GetTVShowCast returns the cast for a TV show.
 func (h *Handler) GetTVShowCast(ctx context.Context, params ogen.GetTVShowCastParams) (ogen.GetTVShowCastRes, error) {
-	seriesID, err := uuid.Parse(params.ID.String())
+	seriesID := params.ID
+	limit := util.SafeIntToInt32(params.Limit.Or(50))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
+
+	cast, total, err := h.tvshowService.GetSeriesCast(ctx, seriesID, limit, offset)
 	if err != nil {
 		return &ogen.GetTVShowCastNotFound{}, nil
 	}
 
-	cast, err := h.tvshowService.GetSeriesCast(ctx, seriesID)
-	if err != nil {
-		return &ogen.GetTVShowCastNotFound{}, nil
-	}
-
-	result := make([]ogen.TVSeriesCredit, len(cast))
+	items := make([]ogen.TVSeriesCredit, len(cast))
 	for i, c := range cast {
-		result[i] = *seriesCreditToOgen(&c)
+		items[i] = *seriesCreditToOgen(&c)
 	}
 
-	return (*ogen.GetTVShowCastOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.TVSeriesCreditListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetTVShowCrew returns the crew for a TV show.
 func (h *Handler) GetTVShowCrew(ctx context.Context, params ogen.GetTVShowCrewParams) (ogen.GetTVShowCrewRes, error) {
-	seriesID, err := uuid.Parse(params.ID.String())
+	seriesID := params.ID
+	limit := util.SafeIntToInt32(params.Limit.Or(50))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
+
+	crew, total, err := h.tvshowService.GetSeriesCrew(ctx, seriesID, limit, offset)
 	if err != nil {
 		return &ogen.GetTVShowCrewNotFound{}, nil
 	}
 
-	crew, err := h.tvshowService.GetSeriesCrew(ctx, seriesID)
-	if err != nil {
-		return &ogen.GetTVShowCrewNotFound{}, nil
-	}
-
-	result := make([]ogen.TVSeriesCredit, len(crew))
+	items := make([]ogen.TVSeriesCredit, len(crew))
 	for i, c := range crew {
-		result[i] = *seriesCreditToOgen(&c)
+		items[i] = *seriesCreditToOgen(&c)
 	}
 
-	return (*ogen.GetTVShowCrewOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.TVSeriesCreditListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetTVShowGenres returns the genres for a TV show.

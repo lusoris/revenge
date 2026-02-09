@@ -872,9 +872,9 @@ func (m *mockService) SearchSeries(ctx context.Context, query string, limit, off
 	return args.Get(0).([]tvshow.Series), args.Error(1)
 }
 
-func (m *mockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]tvshow.Series, error) {
+func (m *mockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]tvshow.Series, int64, error) {
 	args := m.Called(ctx, limit, offset)
-	return args.Get(0).([]tvshow.Series), args.Error(1)
+	return args.Get(0).([]tvshow.Series), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *mockService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]tvshow.Series, error) {
@@ -1104,14 +1104,14 @@ func (m *mockService) DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error
 	return args.Error(0)
 }
 
-func (m *mockService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
-	return args.Get(0).([]tvshow.SeriesCredit), args.Error(1)
+func (m *mockService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]tvshow.SeriesCredit, int64, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
+	return args.Get(0).([]tvshow.SeriesCredit), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *mockService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
-	return args.Get(0).([]tvshow.SeriesCredit), args.Error(1)
+func (m *mockService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]tvshow.SeriesCredit, int64, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
+	return args.Get(0).([]tvshow.SeriesCredit), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *mockService) GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]tvshow.EpisodeCredit, error) {

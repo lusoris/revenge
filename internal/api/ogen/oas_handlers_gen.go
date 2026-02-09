@@ -11359,6 +11359,14 @@ func (s *Server) handleGetMovieCastRequest(args [1]string, argsEscaped bool, w h
 					Name: "id",
 					In:   "path",
 				}: params.ID,
+				{
+					Name: "limit",
+					In:   "query",
+				}: params.Limit,
+				{
+					Name: "offset",
+					In:   "query",
+				}: params.Offset,
 			},
 			Raw: r,
 		}
@@ -11793,6 +11801,14 @@ func (s *Server) handleGetMovieCrewRequest(args [1]string, argsEscaped bool, w h
 					Name: "id",
 					In:   "path",
 				}: params.ID,
+				{
+					Name: "limit",
+					In:   "query",
+				}: params.Limit,
+				{
+					Name: "offset",
+					In:   "query",
+				}: params.Offset,
 			},
 			Raw: r,
 		}
@@ -15361,6 +15377,10 @@ func (s *Server) handleGetRecentlyAddedTVShowsRequest(args [0]string, argsEscape
 					Name: "limit",
 					In:   "query",
 				}: params.Limit,
+				{
+					Name: "offset",
+					In:   "query",
+				}: params.Offset,
 			},
 			Raw: r,
 		}
@@ -18983,6 +19003,14 @@ func (s *Server) handleGetTVShowCastRequest(args [1]string, argsEscaped bool, w 
 					Name: "id",
 					In:   "path",
 				}: params.ID,
+				{
+					Name: "limit",
+					In:   "query",
+				}: params.Limit,
+				{
+					Name: "offset",
+					In:   "query",
+				}: params.Offset,
 			},
 			Raw: r,
 		}
@@ -19417,6 +19445,14 @@ func (s *Server) handleGetTVShowCrewRequest(args [1]string, argsEscaped bool, w 
 					Name: "id",
 					In:   "path",
 				}: params.ID,
+				{
+					Name: "limit",
+					In:   "query",
+				}: params.Limit,
+				{
+					Name: "offset",
+					In:   "query",
+				}: params.Offset,
 			},
 			Raw: r,
 		}

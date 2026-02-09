@@ -3,6 +3,7 @@ package tvshow
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"testing"
 	"time"
 
@@ -341,14 +342,24 @@ func (m *MockRepository) CreateSeriesCredit(ctx context.Context, params CreateSe
 	return args.Get(0).(*SeriesCredit), args.Error(1)
 }
 
-func (m *MockRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
+func (m *MockRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
 	return args.Get(0).([]SeriesCredit), args.Error(1)
 }
 
-func (m *MockRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
+func (m *MockRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
 	return args.Get(0).([]SeriesCredit), args.Error(1)
+}
+
+func (m *MockRepository) CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	args := m.Called(ctx, seriesID)
+	return args.Get(0).(int64), args.Error(1)
+}
+
+func (m *MockRepository) CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	args := m.Called(ctx, seriesID)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (m *MockRepository) DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error {
@@ -1185,10 +1196,12 @@ func TestListRecentlyAdded(t *testing.T) {
 	}
 
 	repo.On("ListRecentlyAddedSeries", ctx, int32(10), int32(0)).Return(expected, nil)
+	repo.On("CountSeries", ctx).Return(int64(1), nil)
 
-	result, err := svc.ListRecentlyAdded(ctx, 10, 0)
+	result, total, err := svc.ListRecentlyAdded(ctx, 10, 0)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -2104,11 +2117,13 @@ func TestGetSeriesCast(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, Name: "Aaron Paul", CreditType: "cast"},
 	}
 
-	repo.On("ListSeriesCast", ctx, seriesID).Return(expected, nil)
+	repo.On("ListSeriesCast", ctx, seriesID, int32(50), int32(0)).Return(expected, nil)
+	repo.On("CountSeriesCast", ctx, seriesID).Return(int64(2), nil)
 
-	result, err := svc.GetSeriesCast(ctx, seriesID)
+	result, total, err := svc.GetSeriesCast(ctx, seriesID, 50, 0)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
+	assert.Equal(t, int64(2), total)
 	assert.Len(t, result, 2)
 	repo.AssertExpectations(t)
 }
@@ -2123,11 +2138,13 @@ func TestGetSeriesCrew(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, Name: "Vince Gilligan", CreditType: "crew"},
 	}
 
-	repo.On("ListSeriesCrew", ctx, seriesID).Return(expected, nil)
+	repo.On("ListSeriesCrew", ctx, seriesID, int32(50), int32(0)).Return(expected, nil)
+	repo.On("CountSeriesCrew", ctx, seriesID).Return(int64(1), nil)
 
-	result, err := svc.GetSeriesCrew(ctx, seriesID)
+	result, total, err := svc.GetSeriesCrew(ctx, seriesID, 50, 0)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -3091,6 +3108,6 @@ func TestProvideService(t *testing.T) {
 	repo := new(MockRepository)
 	mdp := new(MockMetadataProvider)
 
-	svc := provideService(repo, mdp)
+	svc := provideService(repo, mdp, nil, slog.Default())
 	assert.NotNil(t, svc)
 }

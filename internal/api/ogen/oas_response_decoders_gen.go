@@ -8648,7 +8648,7 @@ func decodeGetMovieCastResponse(resp *http.Response) (res GetMovieCastRes, _ err
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetMovieCastOKApplicationJSON
+			var response MovieCreditListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -8963,7 +8963,7 @@ func decodeGetMovieCrewResponse(resp *http.Response) (res GetMovieCrewRes, _ err
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetMovieCrewOKApplicationJSON
+			var response MovieCreditListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -11460,7 +11460,7 @@ func decodeGetRecentlyAddedResponse(resp *http.Response) (res GetRecentlyAddedRe
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetRecentlyAddedOKApplicationJSON
+			var response MovieListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -11587,7 +11587,7 @@ func decodeGetRecentlyAddedTVShowsResponse(resp *http.Response) (res GetRecently
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetRecentlyAddedTVShowsOKApplicationJSON
+			var response TVSeriesListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -14297,7 +14297,7 @@ func decodeGetTVShowCastResponse(resp *http.Response) (res GetTVShowCastRes, _ e
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetTVShowCastOKApplicationJSON
+			var response TVSeriesCreditListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -14612,7 +14612,7 @@ func decodeGetTVShowCrewResponse(resp *http.Response) (res GetTVShowCrewRes, _ e
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetTVShowCrewOKApplicationJSON
+			var response TVSeriesCreditListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -16494,7 +16494,7 @@ func decodeGetTopRatedResponse(resp *http.Response) (res GetTopRatedRes, _ error
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response GetTopRatedOKApplicationJSON
+			var response MovieListResponse
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

@@ -5,11 +5,12 @@ import (
 	"errors"
 	"strings"
 
+	"log/slog"
+
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/oidc"
-	"log/slog"
 )
 
 // ============================================================================

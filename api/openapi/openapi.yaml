@@ -922,9 +922,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/MovieListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -967,9 +965,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/MovieListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -1151,15 +1147,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Movie cast
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovieCredit'
+                $ref: '#/components/schemas/MovieCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1185,15 +1192,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Movie crew
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovieCredit'
+                $ref: '#/components/schemas/MovieCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1642,15 +1660,19 @@ paths:
             default: 20
             minimum: 1
             maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Recently added TV shows
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeries'
+                $ref: '#/components/schemas/TVSeriesListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -1909,15 +1931,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: TV show cast
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeriesCredit'
+                $ref: '#/components/schemas/TVSeriesCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1943,15 +1976,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: TV show crew
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeriesCredit'
+                $ref: '#/components/schemas/TVSeriesCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -6548,6 +6592,33 @@ components:
           type: integer
           format: int64
           description: Total number of movies matching the filters
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
+
+    MovieCreditListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieCredit'
+        total:
+          type: integer
+          format: int64
+          description: Total number of credits
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
 
     Movie:
       type: object
@@ -7141,6 +7212,48 @@ components:
           items:
             type: string
           description: List of capabilities (movie, tvshow, person, image, collection)
+
+    TVSeriesListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVSeries'
+        total:
+          type: integer
+          format: int64
+          description: Total number of TV series matching the filters
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
+
+    TVSeriesCreditListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVSeriesCredit'
+        total:
+          type: integer
+          format: int64
+          description: Total number of credits
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
 
     TVSeries:
       type: object
