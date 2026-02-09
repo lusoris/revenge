@@ -81,7 +81,7 @@ jobs:
     needs: [docker, helm-dev]
     steps:
       - name: Prune old dev versions
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const owner = context.repo.owner;
