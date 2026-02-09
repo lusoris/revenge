@@ -1,13 +1,24 @@
-FROM mcr.microsoft.com/devcontainers/go:1-1.25-bookworm
+FROM golang:1.25-alpine
 
-# System deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	ffmpeg \
-	postgresql-client \
+# System deps (runtime + CGO build dependencies)
+RUN apk add --no-cache \
+	# Build tools
+	git \
+	make \
+	gcc \
+	musl-dev \
+	pkgconfig \
+	bash \
 	curl \
 	wget \
 	jq \
-	&& rm -rf /var/lib/apt/lists/*
+	# Runtime
+	ffmpeg \
+	postgresql16-client \
+	# CGO build deps: govips image processing
+	vips-dev \
+	# CGO build deps: go-astiav FFmpeg bindings
+	ffmpeg-dev
 
 # Go dev tools (versions match go.mod / Makefile)
 ENV GOEXPERIMENT=greenteagc,jsonv2
