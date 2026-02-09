@@ -20,6 +20,8 @@ var (
 
 // Provider implements the metadata provider interface for OMDb.
 type Provider struct {
+	metadata.MovieProviderBase
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -76,22 +78,6 @@ func (p *Provider) GetMovie(ctx context.Context, id string, _ string) (*metadata
 	return m, nil
 }
 
-func (p *Provider) GetMovieCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetMovieImages(_ context.Context, _ string) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetMovieTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
-
 func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	resp, err := p.client.GetByIMDbID(ctx, id)
 	if err != nil {
@@ -103,14 +89,6 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	return &metadata.ExternalIDs{
 		IMDbID: &resp.IMDbID,
 	}, nil
-}
-
-func (p *Provider) GetSimilarMovies(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
-}
-
-func (p *Provider) GetMovieRecommendations(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
 }
 
 // --- TVShowProvider ---
@@ -143,22 +121,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	return m, nil
 }
 
-func (p *Provider) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetTVShowImages(_ context.Context, _ string) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
-
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	resp, err := p.client.GetByIMDbID(ctx, id)
 	if err != nil {
@@ -170,28 +132,4 @@ func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metada
 	return &metadata.ExternalIDs{
 		IMDbID: &resp.IMDbID,
 	}, nil
-}
-
-func (p *Provider) GetSeason(_ context.Context, _ string, _ int, _ string) (*metadata.SeasonMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetEpisode(_ context.Context, _ string, _, _ int, _ string) (*metadata.EpisodeMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
-
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
 }

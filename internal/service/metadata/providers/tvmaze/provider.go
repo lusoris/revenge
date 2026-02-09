@@ -19,6 +19,7 @@ var (
 
 // Provider implements the metadata provider interface for TVmaze.
 type Provider struct {
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -128,13 +129,7 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-func (p *Provider) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	showID, err := strconv.Atoi(id)
@@ -202,13 +197,7 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	return sm, nil
 }
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, episodeNum int, _ string) (*metadata.EpisodeMetadata, error) {
 	sid, err := strconv.Atoi(showID)
@@ -253,10 +242,4 @@ func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, epi
 	return nil, metadata.ErrNotFound
 }
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}

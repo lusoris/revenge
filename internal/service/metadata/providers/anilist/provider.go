@@ -19,6 +19,7 @@ var (
 
 // Provider implements the metadata provider interface for AniList.
 type Provider struct {
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -130,15 +131,7 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-func (p *Provider) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
-	// AniList doesn't provide regional content ratings
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	// AniList provides limited translation data (title only)
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	animeID, err := strconv.Atoi(id)
@@ -161,26 +154,8 @@ func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metada
 // AniList doesn't have per-season/episode data in the same way western TV providers do.
 // Anime typically has a single "season" representing the entire series run.
 
-func (p *Provider) GetSeason(_ context.Context, _ string, _ int, _ string) (*metadata.SeasonMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisode(_ context.Context, _ string, _, _ int, _ string) (*metadata.EpisodeMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
