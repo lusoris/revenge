@@ -435,6 +435,16 @@ type SharedServerSetting struct {
 	UpdatedBy     pgtype.UUID    `json:"updatedBy"`
 }
 
+// Pre-computed server-wide aggregate statistics
+type SharedServerStat struct {
+	// Unique metric identifier (e.g. total_users, total_movies)
+	StatKey string `json:"statKey"`
+	// Integer metric value
+	StatValue int64 `json:"statValue"`
+	// When this value was last recomputed
+	ComputedAt time.Time `json:"computedAt"`
+}
+
 // User sessions with JWT token management
 type SharedSession struct {
 	ID     uuid.UUID `json:"id"`

@@ -23,6 +23,7 @@ import (
 	"github.com/lusoris/revenge/internal/integration/sonarr"
 	"github.com/lusoris/revenge/internal/playback/playbackfx"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/email"
@@ -75,6 +76,7 @@ var Module = fx.Module("app",
 	mfa.Module,
 	oidc.Module,
 	activity.Module,
+	analytics.Module,
 	notification.Module,
 	storage.Module,
 	library.Module,

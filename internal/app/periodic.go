@@ -10,6 +10,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	playbackjobs "github.com/lusoris/revenge/internal/playback/jobs"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/library"
 )
 
@@ -62,6 +63,15 @@ func providePeriodicJobs(cfg *config.Config) []*river.PeriodicJob {
 				return playbackjobs.CleanupArgs{}, nil
 			},
 			&river.PeriodicJobOpts{ID: "playback_health_check"},
+		),
+
+		// Stats aggregation: compute server-wide metrics (hourly)
+		river.NewPeriodicJob(
+			river.PeriodicInterval(1*time.Hour),
+			func() (river.JobArgs, *river.InsertOpts) {
+				return analytics.StatsAggregationArgs{}, nil
+			},
+			&river.PeriodicJobOpts{ID: "stats_aggregation_hourly", RunOnStart: true},
 		),
 	}
 }
