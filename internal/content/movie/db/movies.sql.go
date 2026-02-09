@@ -1141,6 +1141,39 @@ func (q *Queries) ListContinueWatching(ctx context.Context, arg ListContinueWatc
 	return items, nil
 }
 
+const listDistinctMovieGenres = `-- name: ListDistinctMovieGenres :many
+SELECT tmdb_genre_id, name, COUNT(DISTINCT movie_id)::bigint AS item_count
+FROM movie.movie_genres
+GROUP BY tmdb_genre_id, name
+ORDER BY name ASC
+`
+
+type ListDistinctMovieGenresRow struct {
+	TmdbGenreID int32  `json:"tmdbGenreId"`
+	Name        string `json:"name"`
+	ItemCount   int64  `json:"itemCount"`
+}
+
+func (q *Queries) ListDistinctMovieGenres(ctx context.Context) ([]ListDistinctMovieGenresRow, error) {
+	rows, err := q.db.Query(ctx, listDistinctMovieGenres)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDistinctMovieGenresRow{}
+	for rows.Next() {
+		var i ListDistinctMovieGenresRow
+		if err := rows.Scan(&i.TmdbGenreID, &i.Name, &i.ItemCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMovieCast = `-- name: ListMovieCast :many
 SELECT id, movie_id, tmdb_person_id, name, profile_path, credit_type, character, cast_order, job, department, created_at, updated_at, deleted_at
 FROM movie.movie_credits

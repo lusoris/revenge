@@ -758,6 +758,13 @@ type Handler interface {
 	//
 	// GET /api/v1/apikeys
 	ListAPIKeys(ctx context.Context) (ListAPIKeysRes, error)
+	// ListGenres implements listGenres operation.
+	//
+	// Returns all distinct genres across movies and TV shows with per-content-type item counts. Useful
+	// for building genre filter UIs. Genres are identified by their TMDb ID and name.
+	//
+	// GET /api/v1/genres
+	ListGenres(ctx context.Context) (ListGenresRes, error)
 	// ListLibraries implements listLibraries operation.
 	//
 	// List all libraries the authenticated user can access. Admins see all libraries.

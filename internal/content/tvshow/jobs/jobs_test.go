@@ -9,6 +9,7 @@ import (
 
 	"github.com/govalues/decimal"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/content/shared/scanner"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
@@ -1127,6 +1128,14 @@ func (m *mockService) GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) (
 func (m *mockService) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesGenre, error) {
 	args := m.Called(ctx, seriesID)
 	return args.Get(0).([]tvshow.SeriesGenre), args.Error(1)
+}
+
+func (m *mockService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]content.GenreSummary), args.Error(1)
 }
 
 func (m *mockService) GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]tvshow.Network, error) {

@@ -1120,6 +1120,16 @@ func (UnimplementedHandler) ListAPIKeys(ctx context.Context) (r ListAPIKeysRes, 
 	return r, ht.ErrNotImplemented
 }
 
+// ListGenres implements listGenres operation.
+//
+// Returns all distinct genres across movies and TV shows with per-content-type item counts. Useful
+// for building genre filter UIs. Genres are identified by their TMDb ID and name.
+//
+// GET /api/v1/genres
+func (UnimplementedHandler) ListGenres(ctx context.Context) (r ListGenresRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListLibraries implements listLibraries operation.
 //
 // List all libraries the authenticated user can access. Admins see all libraries.

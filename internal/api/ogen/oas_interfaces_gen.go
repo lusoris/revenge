@@ -473,6 +473,10 @@ type ListAPIKeysRes interface {
 	listAPIKeysRes()
 }
 
+type ListGenresRes interface {
+	listGenresRes()
+}
+
 type ListLibrariesRes interface {
 	listLibrariesRes()
 }

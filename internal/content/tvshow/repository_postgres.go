@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/lusoris/revenge/internal/content"
 	tvshowdb "github.com/lusoris/revenge/internal/content/tvshow/db"
 )
 
@@ -934,6 +935,22 @@ func (r *postgresRepository) ListSeriesGenres(ctx context.Context, seriesID uuid
 		}
 	}
 	return result, nil
+}
+
+func (r *postgresRepository) ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	rows, err := r.queries.ListDistinctSeriesGenres(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list distinct series genres: %w", err)
+	}
+	genres := make([]content.GenreSummary, len(rows))
+	for i, row := range rows {
+		genres[i] = content.GenreSummary{
+			TMDbGenreID: row.TmdbGenreID,
+			Name:        row.Name,
+			ItemCount:   row.ItemCount,
+		}
+	}
+	return genres, nil
 }
 
 func (r *postgresRepository) DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error {

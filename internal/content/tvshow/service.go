@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Service defines business logic for TV shows
@@ -67,6 +68,7 @@ type Service interface {
 
 	// Genres & Networks
 	GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
+	ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error)
 	GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error)
 
 	// Watch progress
@@ -438,6 +440,11 @@ func (s *tvService) GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]
 
 func (s *tvService) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error) {
 	return s.repo.ListSeriesGenres(ctx, seriesID)
+}
+
+// ListDistinctGenres returns all distinct TV show genres with item counts.
+func (s *tvService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return s.repo.ListDistinctSeriesGenres(ctx)
 }
 
 func (s *tvService) GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error) {

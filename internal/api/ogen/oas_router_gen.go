@@ -997,6 +997,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
+				case 'g': // Prefix: "genres"
+
+					if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleListGenresRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
 				case 'i': // Prefix: "images/"
 
 					if l := len("images/"); len(elem) >= l && elem[0:l] == "images/" {
@@ -5713,6 +5733,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 						}
 
+					}
+
+				case 'g': // Prefix: "genres"
+
+					if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = ListGenresOperation
+							r.summary = "List all genres"
+							r.operationID = "listGenres"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/genres"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 
 				case 'i': // Prefix: "images/"

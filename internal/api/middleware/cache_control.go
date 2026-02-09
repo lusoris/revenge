@@ -38,7 +38,7 @@ var cacheableOperations = map[string]struct{}{
 
 	// Search facets & libraries
 	"getSearchFacets": {}, "getTVShowSearchFacets": {},
-	"listLibraries": {}, "getLibrary": {},
+	"listLibraries": {}, "getLibrary": {}, "listGenres": {},
 	"searchLibraryMovies": {}, "searchLibraryTVShows": {},
 
 	// Reference data

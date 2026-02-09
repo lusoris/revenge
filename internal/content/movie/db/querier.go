@@ -46,6 +46,7 @@ type Querier interface {
 	GetUserMovieStats(ctx context.Context, userID uuid.UUID) (GetUserMovieStatsRow, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (MovieWatched, error)
 	ListContinueWatching(ctx context.Context, arg ListContinueWatchingParams) ([]ListContinueWatchingRow, error)
+	ListDistinctMovieGenres(ctx context.Context) ([]ListDistinctMovieGenresRow, error)
 	ListMovieCast(ctx context.Context, arg ListMovieCastParams) ([]MovieCredit, error)
 	ListMovieCrew(ctx context.Context, arg ListMovieCrewParams) ([]MovieCredit, error)
 	ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error)

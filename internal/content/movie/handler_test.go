@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // MockService implements Service for testing handlers
@@ -173,6 +175,14 @@ func (m *MockService) GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, l
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]Movie), args.Error(1)
+}
+
+func (m *MockService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]content.GenreSummary), args.Error(1)
 }
 
 func (m *MockService) UpdateWatchProgress(ctx context.Context, userID, movieID uuid.UUID, progressSeconds, durationSeconds int32) (*MovieWatched, error) {
@@ -567,6 +577,40 @@ func TestHandler_GetMoviesByGenre(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, result, 2)
 	svc.AssertExpectations(t)
+}
+
+func TestHandler_ListDistinctGenres(t *testing.T) {
+	t.Run("Success", func(t *testing.T) {
+		svc := new(MockService)
+		h := newTestHandler(svc)
+		ctx := context.Background()
+		genres := []content.GenreSummary{
+			{TMDbGenreID: 28, Name: "Action", ItemCount: 15},
+			{TMDbGenreID: 18, Name: "Drama", ItemCount: 30},
+		}
+
+		svc.On("ListDistinctGenres", ctx).Return(genres, nil)
+
+		result, err := h.ListDistinctGenres(ctx)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, "Action", result[0].Name)
+		assert.Equal(t, int64(15), result[0].ItemCount)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("Error", func(t *testing.T) {
+		svc := new(MockService)
+		h := newTestHandler(svc)
+		ctx := context.Background()
+
+		svc.On("ListDistinctGenres", ctx).Return(nil, errors.New("db error"))
+
+		result, err := h.ListDistinctGenres(ctx)
+		assert.Error(t, err)
+		assert.Nil(t, result)
+		svc.AssertExpectations(t)
+	})
 }
 
 func TestHandler_GetMovieCollection(t *testing.T) {

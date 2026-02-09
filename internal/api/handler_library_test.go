@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -12,6 +13,9 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/content"
+	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -469,4 +473,138 @@ func TestHandler_DeleteLibrary_AdminSuccess(t *testing.T) {
 	notFound, ok := getResult.(*ogen.GetLibraryNotFound)
 	require.True(t, ok, "expected *ogen.GetLibraryNotFound after deletion, got %T", getResult)
 	assert.Equal(t, 404, notFound.Code)
+}
+
+// ============================================================================
+// ListGenres tests
+// ============================================================================
+
+// mockMovieService is a minimal mock for movie.Service used by ListGenres tests.
+type mockMovieService struct {
+	movie.Service // embed to satisfy interface; only override what's needed
+	genres        []content.GenreSummary
+	err           error
+}
+
+func (m *mockMovieService) ListDistinctGenres(_ context.Context) ([]content.GenreSummary, error) {
+	return m.genres, m.err
+}
+
+// mockTVService is a minimal mock for tvshow.Service used by ListGenres tests.
+type mockTVService struct {
+	tvshow.Service // embed to satisfy interface; only override what's needed
+	genres         []content.GenreSummary
+	err            error
+}
+
+func (m *mockTVService) ListDistinctGenres(_ context.Context) ([]content.GenreSummary, error) {
+	return m.genres, m.err
+}
+
+func TestHandler_ListGenres_Success(t *testing.T) {
+	t.Parallel()
+
+	movieSvc := &mockMovieService{
+		genres: []content.GenreSummary{
+			{TMDbGenreID: 28, Name: "Action", ItemCount: 10},
+			{TMDbGenreID: 18, Name: "Drama", ItemCount: 25},
+			{TMDbGenreID: 35, Name: "Comedy", ItemCount: 5},
+		},
+	}
+	tvSvc := &mockTVService{
+		genres: []content.GenreSummary{
+			{TMDbGenreID: 18, Name: "Drama", ItemCount: 15},
+			{TMDbGenreID: 10765, Name: "Sci-Fi & Fantasy", ItemCount: 8},
+		},
+	}
+
+	handler := &Handler{
+		logger:        logging.NewTestLogger(),
+		movieHandler:  movie.NewHandler(movieSvc, nil),
+		tvshowService: tvSvc,
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	genres, ok := result.(*ogen.ListGenresOKApplicationJSON)
+	require.True(t, ok, "expected *ogen.ListGenresOKApplicationJSON, got %T", result)
+
+	// Should have 4 distinct genres: Action, Comedy, Drama, Sci-Fi & Fantasy
+	require.Len(t, *genres, 4)
+
+	// Verify alphabetical sort
+	assert.Equal(t, "Action", (*genres)[0].Name)
+	assert.Equal(t, "Comedy", (*genres)[1].Name)
+	assert.Equal(t, "Drama", (*genres)[2].Name)
+	assert.Equal(t, "Sci-Fi & Fantasy", (*genres)[3].Name)
+
+	// Verify Drama is merged: 25 movies + 15 TV shows
+	drama := (*genres)[2]
+	assert.Equal(t, 28, (*genres)[0].TmdbGenreID) // Action TMDb ID
+	assert.Equal(t, int64(25), drama.MovieCount)
+	assert.Equal(t, int64(15), drama.TvshowCount)
+
+	// Verify Action: movies only
+	assert.Equal(t, int64(10), (*genres)[0].MovieCount)
+	assert.Equal(t, int64(0), (*genres)[0].TvshowCount)
+
+	// Verify Sci-Fi & Fantasy: TV only
+	assert.Equal(t, int64(0), (*genres)[3].MovieCount)
+	assert.Equal(t, int64(8), (*genres)[3].TvshowCount)
+}
+
+func TestHandler_ListGenres_EmptyDB(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger:        logging.NewTestLogger(),
+		movieHandler:  movie.NewHandler(&mockMovieService{}, nil),
+		tvshowService: &mockTVService{},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	genres, ok := result.(*ogen.ListGenresOKApplicationJSON)
+	require.True(t, ok)
+	assert.Empty(t, *genres)
+}
+
+func TestHandler_ListGenres_MovieError(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+		movieHandler: movie.NewHandler(&mockMovieService{
+			err: errors.New("movie db error"),
+		}, nil),
+		tvshowService: &mockTVService{},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	errResp, ok := result.(*ogen.Error)
+	require.True(t, ok, "expected *ogen.Error, got %T", result)
+	assert.Equal(t, 500, errResp.Code)
+}
+
+func TestHandler_ListGenres_TVShowError(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+		movieHandler: movie.NewHandler(&mockMovieService{
+			genres: []content.GenreSummary{{TMDbGenreID: 28, Name: "Action", ItemCount: 5}},
+		}, nil),
+		tvshowService: &mockTVService{err: errors.New("tv db error")},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	errResp, ok := result.(*ogen.Error)
+	require.True(t, ok, "expected *ogen.Error, got %T", result)
+	assert.Equal(t, 500, errResp.Code)
 }

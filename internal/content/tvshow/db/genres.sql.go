@@ -37,6 +37,39 @@ func (q *Queries) DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) er
 	return err
 }
 
+const listDistinctSeriesGenres = `-- name: ListDistinctSeriesGenres :many
+SELECT tmdb_genre_id, name, COUNT(DISTINCT series_id)::bigint AS item_count
+FROM tvshow.series_genres
+GROUP BY tmdb_genre_id, name
+ORDER BY name ASC
+`
+
+type ListDistinctSeriesGenresRow struct {
+	TmdbGenreID int32  `json:"tmdbGenreId"`
+	Name        string `json:"name"`
+	ItemCount   int64  `json:"itemCount"`
+}
+
+func (q *Queries) ListDistinctSeriesGenres(ctx context.Context) ([]ListDistinctSeriesGenresRow, error) {
+	rows, err := q.db.Query(ctx, listDistinctSeriesGenres)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDistinctSeriesGenresRow{}
+	for rows.Next() {
+		var i ListDistinctSeriesGenresRow
+		if err := rows.Scan(&i.TmdbGenreID, &i.Name, &i.ItemCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listSeriesByGenre = `-- name: ListSeriesByGenre :many
 SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings FROM tvshow.series s
 JOIN tvshow.series_genres sg ON s.id = sg.series_id

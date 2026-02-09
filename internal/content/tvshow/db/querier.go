@@ -59,6 +59,7 @@ type Querier interface {
 	GetSeriesWatchStats(ctx context.Context, arg GetSeriesWatchStatsParams) (GetSeriesWatchStatsRow, error)
 	GetUserTVStats(ctx context.Context, userID uuid.UUID) (GetUserTVStatsRow, error)
 	ListContinueWatchingSeries(ctx context.Context, arg ListContinueWatchingSeriesParams) ([]ListContinueWatchingSeriesRow, error)
+	ListDistinctSeriesGenres(ctx context.Context) ([]ListDistinctSeriesGenresRow, error)
 	ListEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]TvshowEpisodeCredit, error)
 	ListEpisodeFilesByEpisode(ctx context.Context, episodeID uuid.UUID) ([]TvshowEpisodeFile, error)
 	// Episode Credits (Guest Stars)

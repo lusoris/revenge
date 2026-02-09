@@ -1520,6 +1520,14 @@ func (s LibraryType) Validate() error {
 	}
 }
 
+func (s ListGenresOKApplicationJSON) Validate() error {
+	alias := ([]Genre)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s ListMoviesOrderBy) Validate() error {
 	switch s {
 	case "title":

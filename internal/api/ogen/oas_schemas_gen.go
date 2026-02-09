@@ -3115,6 +3115,7 @@ func (*Error) getWatchHistoryRes()           {}
 func (*Error) handleRadarrWebhookRes()       {}
 func (*Error) handleSonarrWebhookRes()       {}
 func (*Error) listAPIKeysRes()               {}
+func (*Error) listGenresRes()                {}
 func (*Error) listLibrariesRes()             {}
 func (*Error) listMetadataProvidersRes()     {}
 func (*Error) listMoviesRes()                {}
@@ -3364,6 +3365,59 @@ func (s *GenerateBackupCodesOK) SetCount(val OptInt) {
 }
 
 func (*GenerateBackupCodesOK) generateBackupCodesRes() {}
+
+// A distinct genre with per-content-type item counts.
+// Ref: #/components/schemas/Genre
+type Genre struct {
+	// TMDb genre ID.
+	TmdbGenreID int `json:"tmdb_genre_id"`
+	// Genre name.
+	Name string `json:"name"`
+	// Number of movies with this genre.
+	MovieCount int64 `json:"movie_count"`
+	// Number of TV shows with this genre.
+	TvshowCount int64 `json:"tvshow_count"`
+}
+
+// GetTmdbGenreID returns the value of TmdbGenreID.
+func (s *Genre) GetTmdbGenreID() int {
+	return s.TmdbGenreID
+}
+
+// GetName returns the value of Name.
+func (s *Genre) GetName() string {
+	return s.Name
+}
+
+// GetMovieCount returns the value of MovieCount.
+func (s *Genre) GetMovieCount() int64 {
+	return s.MovieCount
+}
+
+// GetTvshowCount returns the value of TvshowCount.
+func (s *Genre) GetTvshowCount() int64 {
+	return s.TvshowCount
+}
+
+// SetTmdbGenreID sets the value of TmdbGenreID.
+func (s *Genre) SetTmdbGenreID(val int) {
+	s.TmdbGenreID = val
+}
+
+// SetName sets the value of Name.
+func (s *Genre) SetName(val string) {
+	s.Name = val
+}
+
+// SetMovieCount sets the value of MovieCount.
+func (s *Genre) SetMovieCount(val int64) {
+	s.MovieCount = val
+}
+
+// SetTvshowCount sets the value of TvshowCount.
+func (s *Genre) SetTvshowCount(val int64) {
+	s.TvshowCount = val
+}
 
 type GetAPIKeyNotFound Error
 
@@ -5032,6 +5086,10 @@ func (s *LibraryType) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+type ListGenresOKApplicationJSON []Genre
+
+func (*ListGenresOKApplicationJSON) listGenresRes() {}
 
 type ListLibraryPermissionsForbidden Error
 

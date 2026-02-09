@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Service defines business logic for movies
@@ -39,6 +40,7 @@ type Service interface {
 	// Genres
 	GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
 	GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
+	ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error)
 
 	// Watch progress
 	UpdateWatchProgress(ctx context.Context, userID, movieID uuid.UUID, progressSeconds, durationSeconds int32) (*MovieWatched, error)
@@ -231,6 +233,11 @@ func (s *movieService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([
 // GetMoviesByGenre returns movies filtered by genre
 func (s *movieService) GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
 	return s.repo.ListMoviesByGenre(ctx, tmdbGenreID, limit, offset)
+}
+
+// ListDistinctGenres returns all distinct movie genres with item counts.
+func (s *movieService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return s.repo.ListDistinctMovieGenres(ctx)
 }
 
 // UpdateWatchProgress updates or creates watch progress for a user

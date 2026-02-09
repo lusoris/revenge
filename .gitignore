@@ -124,3 +124,4 @@ node_modules/
 .analysis/
 *-preview/
 errors.cov
+ogen

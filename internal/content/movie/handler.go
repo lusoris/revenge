@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // MetadataQueue allows enqueuing metadata refresh jobs.
@@ -123,6 +124,11 @@ func (h *Handler) GetMovieGenres(ctx context.Context, id string) ([]MovieGenre, 
 // GetMoviesByGenre handles GET /api/v1/movies/genre/:genreId
 func (h *Handler) GetMoviesByGenre(ctx context.Context, genreID int32, params PaginationParams) ([]Movie, error) {
 	return h.service.GetMoviesByGenre(ctx, genreID, params.Limit, params.Offset)
+}
+
+// ListDistinctGenres returns all distinct movie genres with item counts.
+func (h *Handler) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return h.service.ListDistinctGenres(ctx)
 }
 
 // GetMovieCollection handles GET /api/v1/movies/:id/collection

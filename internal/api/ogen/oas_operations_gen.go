@@ -125,6 +125,7 @@ const (
 	HandleSonarrWebhookOperation             OperationName = "HandleSonarrWebhook"
 	InitOIDCLinkOperation                    OperationName = "InitOIDCLink"
 	ListAPIKeysOperation                     OperationName = "ListAPIKeys"
+	ListGenresOperation                      OperationName = "ListGenres"
 	ListLibrariesOperation                   OperationName = "ListLibraries"
 	ListLibraryPermissionsOperation          OperationName = "ListLibraryPermissions"
 	ListLibraryScansOperation                OperationName = "ListLibraryScans"

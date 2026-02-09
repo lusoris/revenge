@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"sort"
 	"time"
 
 	"log/slog"
@@ -724,4 +725,59 @@ func optDateTimeFromPtr(t *time.Time) ogen.OptDateTime {
 		return ogen.OptDateTime{}
 	}
 	return ogen.NewOptDateTime(*t)
+}
+
+// ============================================================================
+// Genre Endpoints
+// ============================================================================
+
+// ListGenres returns all distinct genres across movies and TV shows with item counts.
+// GET /api/v1/genres
+func (h *Handler) ListGenres(ctx context.Context) (ogen.ListGenresRes, error) {
+	movieGenres, err := h.movieHandler.ListDistinctGenres(ctx)
+	if err != nil {
+		h.logger.Error("failed to list movie genres", slog.Any("error", err))
+		return &ogen.Error{Code: 500, Message: "Failed to list genres"}, nil
+	}
+
+	tvGenres, err := h.tvshowService.ListDistinctGenres(ctx)
+	if err != nil {
+		h.logger.Error("failed to list tvshow genres", slog.Any("error", err))
+		return &ogen.Error{Code: 500, Message: "Failed to list genres"}, nil
+	}
+
+	// Merge by TMDb genre ID: same genre can appear in both movies and TV shows
+	type merged struct {
+		name        string
+		movieCount  int64
+		tvshowCount int64
+	}
+	byID := make(map[int32]*merged, len(movieGenres)+len(tvGenres))
+	for _, g := range movieGenres {
+		byID[g.TMDbGenreID] = &merged{name: g.Name, movieCount: g.ItemCount}
+	}
+	for _, g := range tvGenres {
+		if m, ok := byID[g.TMDbGenreID]; ok {
+			m.tvshowCount = g.ItemCount
+		} else {
+			byID[g.TMDbGenreID] = &merged{name: g.Name, tvshowCount: g.ItemCount}
+		}
+	}
+
+	// Build sorted result
+	result := make([]ogen.Genre, 0, len(byID))
+	for id, m := range byID {
+		result = append(result, ogen.Genre{
+			TmdbGenreID: int(id),
+			Name:        m.name,
+			MovieCount:  m.movieCount,
+			TvshowCount: m.tvshowCount,
+		})
+	}
+	// Sort alphabetically by name
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return (*ogen.ListGenresOKApplicationJSON)(&result), nil
 }

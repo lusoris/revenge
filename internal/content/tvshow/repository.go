@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Repository defines database operations for TV shows
@@ -83,6 +84,7 @@ type Repository interface {
 	// Genres
 	AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, tmdbGenreID int32, name string) error
 	ListSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
+	ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error
 
 	// Networks

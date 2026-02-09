@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Repository defines database operations for movies
@@ -56,6 +57,7 @@ type Repository interface {
 	// Genres
 	AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error
 	ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
+	ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteMovieGenres(ctx context.Context, movieID uuid.UUID) error
 	ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
 

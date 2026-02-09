@@ -574,6 +574,12 @@ WHERE
     movie_id = $1
 ORDER BY name ASC;
 
+-- name: ListDistinctMovieGenres :many
+SELECT tmdb_genre_id, name, COUNT(DISTINCT movie_id)::bigint AS item_count
+FROM movie.movie_genres
+GROUP BY tmdb_genre_id, name
+ORDER BY name ASC;
+
 -- name: DeleteMovieGenres :exec
 DELETE FROM movie.movie_genres WHERE movie_id = $1;
 

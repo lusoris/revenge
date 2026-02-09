@@ -5,6 +5,8 @@ package movie
 import (
 	context "context"
 
+	content "github.com/lusoris/revenge/internal/content"
+
 	mock "github.com/stretchr/testify/mock"
 
 	uuid "github.com/google/uuid"
@@ -1884,6 +1886,64 @@ func (_c *MockMovieRepository_ListMovieGenres_Call) Return(_a0 []MovieGenre, _a1
 }
 
 func (_c *MockMovieRepository_ListMovieGenres_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieGenre, error)) *MockMovieRepository_ListMovieGenres_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDistinctMovieGenres provides a mock function with given fields: ctx
+func (_m *MockMovieRepository) ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDistinctMovieGenres")
+	}
+
+	var r0 []content.GenreSummary
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]content.GenreSummary, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []content.GenreSummary); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]content.GenreSummary)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_ListDistinctMovieGenres_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDistinctMovieGenres'
+type MockMovieRepository_ListDistinctMovieGenres_Call struct {
+	*mock.Call
+}
+
+// ListDistinctMovieGenres is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockMovieRepository_Expecter) ListDistinctMovieGenres(ctx interface{}) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	return &MockMovieRepository_ListDistinctMovieGenres_Call{Call: _e.mock.On("ListDistinctMovieGenres", ctx)}
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) Run(run func(ctx context.Context)) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) Return(_a0 []content.GenreSummary, _a1 error) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) RunAndReturn(run func(context.Context) ([]content.GenreSummary, error)) *MockMovieRepository_ListDistinctMovieGenres_Call {
 	_c.Call.Return(run)
 	return _c
 }

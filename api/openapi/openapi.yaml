@@ -5450,6 +5450,36 @@ paths:
           $ref: '#/components/responses/Error'
 
   # ============================================================================
+  # Genre Endpoints
+  # ============================================================================
+
+  /api/v1/genres:
+    get:
+      summary: List all genres
+      description: >
+        Returns all distinct genres across movies and TV shows with per-content-type item counts.
+        Useful for building genre filter UIs. Genres are identified by their TMDb ID and name.
+      operationId: listGenres
+      tags:
+        - Libraries
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: All genres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genre'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # ============================================================================
   # Library Endpoints
   # ============================================================================
 
@@ -6900,6 +6930,32 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    Genre:
+      type: object
+      description: A distinct genre with per-content-type item counts.
+      required:
+        - tmdb_genre_id
+        - name
+        - movie_count
+        - tvshow_count
+      properties:
+        tmdb_genre_id:
+          type: integer
+          description: TMDb genre ID
+          example: 28
+        name:
+          type: string
+          description: Genre name
+          example: "Action"
+        movie_count:
+          type: integer
+          format: int64
+          description: Number of movies with this genre
+        tvshow_count:
+          type: integer
+          format: int64
+          description: Number of TV shows with this genre
 
     MovieGenre:
       type: object

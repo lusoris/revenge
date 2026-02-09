@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -404,6 +405,14 @@ func (m *MockRepository) ListSeriesGenres(ctx context.Context, seriesID uuid.UUI
 func (m *MockRepository) DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error {
 	args := m.Called(ctx, seriesID)
 	return args.Error(0)
+}
+
+func (m *MockRepository) ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]content.GenreSummary), args.Error(1)
 }
 
 // Network operations

@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/lusoris/revenge/internal/content"
 	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
 )
 
@@ -897,6 +898,22 @@ func (r *postgresRepository) ListMovieGenres(ctx context.Context, movieID uuid.U
 	genres := make([]MovieGenre, len(dbGenres))
 	for i, g := range dbGenres {
 		genres[i] = *dbGenreToGenre(g)
+	}
+	return genres, nil
+}
+
+func (r *postgresRepository) ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	rows, err := r.queries.ListDistinctMovieGenres(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list distinct movie genres: %w", err)
+	}
+	genres := make([]content.GenreSummary, len(rows))
+	for i, r := range rows {
+		genres[i] = content.GenreSummary{
+			TMDbGenreID: r.TmdbGenreID,
+			Name:        r.Name,
+			ItemCount:   r.ItemCount,
+		}
 	}
 	return genres, nil
 }
