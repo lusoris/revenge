@@ -326,7 +326,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **2B.7**: Add bulk episode watched endpoint
 - [ ] **2B.8**: Add TV show reindex endpoint
 - [ ] **5B.5**: Create users collection in Typesense (admin search)
-- [ ] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder
+- [x] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder ✅ `ed2028b9` — renamed to `GetAPIKeyLastUsedAt`, removed misleading comments
 - [x] **7.3**: Extract `copyMovieFieldsToOgen` helper — **SKIPPED**: ogen generates flat types with no shared interface; any extraction (19-field interface / reflection) adds more complexity than the 3 copies of schema-driven boilerplate
 - [ ] **4B.3**: Fix L1 pattern invalidation (verify Otter `DeleteByFunc` or per-domain instances)
 - [ ] **4B.4**: Verify + fix Redis pattern invalidation (`KEYS` → `SCAN`)
