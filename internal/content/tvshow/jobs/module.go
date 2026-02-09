@@ -30,6 +30,7 @@ type WorkerProviderParams struct {
 	MetadataProvider     tvshow.MetadataProvider      `optional:"true"`
 	SearchService        *search.TVShowSearchService  `optional:"true"`
 	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
+	SeasonSearchService  *search.SeasonSearchService  `optional:"true"`
 	JobClient            *infrajobs.Client
 	Logger               *slog.Logger
 }
@@ -51,7 +52,7 @@ func provideFileMatchWorker(p WorkerProviderParams) *FileMatchWorker {
 
 // provideSearchIndexWorker creates a search index worker.
 func provideSearchIndexWorker(p WorkerProviderParams) *SearchIndexWorker {
-	return NewSearchIndexWorker(p.Service, p.SearchService, p.EpisodeSearchService, p.Logger)
+	return NewSearchIndexWorker(p.Service, p.SearchService, p.EpisodeSearchService, p.SeasonSearchService, p.Logger)
 }
 
 // provideSeriesRefreshWorker creates a series refresh worker.

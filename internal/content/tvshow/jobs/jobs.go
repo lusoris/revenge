@@ -779,15 +779,17 @@ type SearchIndexWorker struct {
 	service              tvshow.Service
 	searchService        *search.TVShowSearchService
 	episodeSearchService *search.EpisodeSearchService
+	seasonSearchService  *search.SeasonSearchService
 	logger               *slog.Logger
 }
 
 // NewSearchIndexWorker creates a new search index worker.
-func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, episodeSearchService *search.EpisodeSearchService, logger *slog.Logger) *SearchIndexWorker {
+func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, episodeSearchService *search.EpisodeSearchService, seasonSearchService *search.SeasonSearchService, logger *slog.Logger) *SearchIndexWorker {
 	return &SearchIndexWorker{
 		service:              service,
 		searchService:        searchService,
 		episodeSearchService: episodeSearchService,
+		seasonSearchService:  seasonSearchService,
 		logger:               logger.With("component", "tvshow_search_index"),
 	}
 }
@@ -835,6 +837,12 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 			result.AddError(fmt.Errorf("full episode reindex: %w", err))
 		} else {
 			w.logger.Info("full episode reindex completed")
+		}
+		// Full reindex of seasons
+		if err := w.seasonSearchService.ReindexAll(ctx, w.service); err != nil {
+			result.AddError(fmt.Errorf("full season reindex: %w", err))
+		} else {
+			w.logger.Info("full season reindex completed")
 		}
 	}
 
@@ -915,6 +923,16 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 		}
 	}
 
+	// Also index all seasons for this series
+	if w.seasonSearchService.IsEnabled() {
+		if err := w.indexSeriesSeasons(ctx, series); err != nil {
+			w.logger.Warn("failed to index seasons for series",
+				slog.String("series_id", seriesID.String()),
+				slog.Any("error", err),
+			)
+		}
+	}
+
 	w.logger.Info("series indexed successfully",
 		slog.String("series_id", seriesID.String()),
 		slog.String("title", series.Title),
@@ -955,6 +973,43 @@ func (w *SearchIndexWorker) indexSeriesEpisodes(ctx context.Context, series *tvs
 	}
 
 	w.logger.Debug("indexed episodes for series",
+		slog.String("series_id", series.ID.String()),
+		slog.Int("count", len(batch)),
+	)
+
+	return nil
+}
+
+// indexSeriesSeasons indexes all seasons for a series into the season search index.
+func (w *SearchIndexWorker) indexSeriesSeasons(ctx context.Context, series *tvshow.Series) error {
+	seasons, err := w.service.ListSeasons(ctx, series.ID)
+	if err != nil {
+		return fmt.Errorf("failed to list seasons: %w", err)
+	}
+
+	if len(seasons) == 0 {
+		return nil
+	}
+
+	posterPath := ""
+	if series.PosterPath != nil {
+		posterPath = *series.PosterPath
+	}
+
+	batch := make([]search.SeasonWithContext, 0, len(seasons))
+	for i := range seasons {
+		batch = append(batch, search.SeasonWithContext{
+			Season:           &seasons[i],
+			SeriesTitle:      series.Title,
+			SeriesPosterPath: posterPath,
+		})
+	}
+
+	if err := w.seasonSearchService.BulkIndexSeasons(ctx, batch); err != nil {
+		return fmt.Errorf("failed to bulk index seasons: %w", err)
+	}
+
+	w.logger.Debug("indexed seasons for series",
 		slog.String("series_id", series.ID.String()),
 		slog.Int("count", len(batch)),
 	)
