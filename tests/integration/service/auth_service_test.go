@@ -16,6 +16,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,14 +24,12 @@ import (
 const jwtSecret = "test-secret-key-for-integration-tests-only"
 
 func setupAuthService(t *testing.T) (*auth.Service, *user.Service, *pgxpool.Pool, func()) {
-	ctx := context.Background()
+	t.Helper()
 
-	// Create database pool
-	pool, err := pgxpool.New(ctx, testDatabaseURL)
-	require.NoError(t, err)
+	pg := testutil.NewPostgreSQLContainer(t)
 
 	// Create queries
-	queries := db.New(pool)
+	queries := db.New(pg.Pool)
 
 	// Create repositories
 	authRepo := auth.NewRepositoryPG(queries)
@@ -43,20 +42,20 @@ func setupAuthService(t *testing.T) (*auth.Service, *user.Service, *pgxpool.Pool
 	activityLogger := activity.NewNoopLogger()
 
 	// Create services (using test helpers that don't require email)
-	authSvc := auth.NewServiceForTesting(pool, authRepo, tokenManager, activityLogger, 15*time.Minute, 7*24*time.Hour)
+	authSvc := auth.NewServiceForTesting(pg.Pool, authRepo, tokenManager, activityLogger, 15*time.Minute, 7*24*time.Hour)
 	mockStorage := storage.NewMockStorage()
 	avatarCfg := config.AvatarConfig{
 		StoragePath:  "/tmp/test-avatars",
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	userSvc := user.NewService(pool, userRepo, activityLogger, mockStorage, avatarCfg)
+	userSvc := user.NewService(pg.Pool, userRepo, activityLogger, mockStorage, avatarCfg)
 
 	cleanup := func() {
-		pool.Close()
+		pg.Close()
 	}
 
-	return authSvc, userSvc, pool, cleanup
+	return authSvc, userSvc, pg.Pool, cleanup
 }
 
 func TestAuthService_Register(t *testing.T) {

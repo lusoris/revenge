@@ -15,21 +15,18 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-const testDatabaseURL = "postgres://revenge:revenge_dev_pass@localhost:5432/revenge?sslmode=disable"
-
 func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
-	ctx := context.Background()
+	t.Helper()
 
-	// Create database pool
-	pool, err := pgxpool.New(ctx, testDatabaseURL)
-	require.NoError(t, err)
+	pg := testutil.NewPostgreSQLContainer(t)
 
 	// Create queries and repository
-	queries := db.New(pool)
+	queries := db.New(pg.Pool)
 	repo := user.NewPostgresRepository(queries)
 	mockStorage := storage.NewMockStorage()
 	avatarCfg := config.AvatarConfig{
@@ -37,13 +34,13 @@ func setupUserService(t *testing.T) (*user.Service, *pgxpool.Pool, func()) {
 		MaxSizeBytes: 5 * 1024 * 1024,
 		AllowedTypes: []string{"image/jpeg", "image/png", "image/webp"},
 	}
-	svc := user.NewService(pool, repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
+	svc := user.NewService(pg.Pool, repo, activity.NewNoopLogger(), mockStorage, avatarCfg)
 
 	cleanup := func() {
-		pool.Close()
+		pg.Close()
 	}
 
-	return svc, pool, cleanup
+	return svc, pg.Pool, cleanup
 }
 
 func TestUserService_CreateUser(t *testing.T) {

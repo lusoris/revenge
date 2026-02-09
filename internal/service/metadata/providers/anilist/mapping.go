@@ -300,11 +300,7 @@ func findExternalIDs(m *Media) *metadata.ExternalIDs {
 
 	ids := &metadata.ExternalIDs{}
 
-	// MAL ID
-	if m.IDMal != nil {
-		// Store MAL ID — no direct field in ExternalIDs, but we can use it for cross-referencing.
-		// We could store via WikidataID or similar, but for now we skip MAL-specific field.
-	}
+	// MAL ID — no direct field in ExternalIDs for MAL, available via cross-referencing
 
 	// Parse external links for known sites
 	for _, link := range m.ExternalLinks {

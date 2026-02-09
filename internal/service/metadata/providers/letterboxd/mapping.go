@@ -1,7 +1,6 @@
 package letterboxd
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -317,27 +316,4 @@ func genreNameToID(name string) int {
 	}
 
 	return 0
-}
-
-// mapContentRatings extracts content ratings from release data.
-func mapContentRatings(releases []Release) []metadata.ContentRating {
-	var ratings []metadata.ContentRating
-	seen := make(map[string]bool)
-
-	for _, r := range releases {
-		if r.Certification == "" {
-			continue
-		}
-		key := fmt.Sprintf("%s:%s", r.Country.Code, r.Certification)
-		if seen[key] {
-			continue
-		}
-		seen[key] = true
-		ratings = append(ratings, metadata.ContentRating{
-			CountryCode: r.Country.Code,
-			Rating:      r.Certification,
-		})
-	}
-
-	return ratings
 }

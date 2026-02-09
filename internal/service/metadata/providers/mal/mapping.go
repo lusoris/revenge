@@ -58,7 +58,7 @@ func mapAnimeToTVShowSearchResult(a Anime) metadata.TVShowSearchResult {
 	}
 
 	for _, g := range a.Genres {
-		result.GenreIDs = append(result.GenreIDs, g.ID)
+		result.GenreIDs = append(result.GenreIDs, malGenreToStandardID(g.ID))
 	}
 
 	return result

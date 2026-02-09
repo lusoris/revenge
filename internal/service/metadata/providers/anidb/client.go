@@ -268,7 +268,7 @@ func (c *Client) loadTitleDump(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("fetch title dump: %w", err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // best-effort cleanup
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("title dump: status %d", resp.StatusCode)
@@ -278,7 +278,7 @@ func (c *Client) loadTitleDump(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("title dump gzip: %w", err)
 	}
-	defer gz.Close()
+	defer gz.Close() //nolint:errcheck // best-effort cleanup
 
 	entries, err := parseTitleDump(gz)
 	if err != nil {
