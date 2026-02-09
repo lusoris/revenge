@@ -290,27 +290,14 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettingsRes, error) {
 	h.logger.Debug("List server settings requested")
 
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.ListServerSettingsUnauthorized{
-			Code:    401,
-			Message: "Authentication required",
-		}, nil
-	}
-
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
-		return &ogen.ListServerSettingsForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-	if !isAdmin {
-		return &ogen.ListServerSettingsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.ListServerSettingsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.ListServerSettingsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	settingsList, err := h.settingsService.ListServerSettings(ctx)
@@ -330,27 +317,14 @@ func (h *Handler) ListServerSettings(ctx context.Context) (ogen.ListServerSettin
 func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSettingParams) (ogen.GetServerSettingRes, error) {
 	h.logger.Debug("Get server setting requested", slog.String("key", params.Key))
 
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.GetServerSettingUnauthorized{
-			Code:    401,
-			Message: "Authentication required",
-		}, nil
-	}
-
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
-		return &ogen.GetServerSettingForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-	if !isAdmin {
-		return &ogen.GetServerSettingForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetServerSettingUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetServerSettingForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	setting, err := h.settingsService.GetServerSetting(ctx, params.Key)
@@ -366,27 +340,15 @@ func (h *Handler) GetServerSetting(ctx context.Context, params ogen.GetServerSet
 func (h *Handler) UpdateServerSetting(ctx context.Context, req *ogen.SettingValue, params ogen.UpdateServerSettingParams) (ogen.UpdateServerSettingRes, error) {
 	h.logger.Debug("Update server setting requested", slog.String("key", params.Key))
 
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.UpdateServerSettingUnauthorized{
-			Code:    401,
-			Message: "Authentication required",
-		}, nil
-	}
-
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
+	userID, err := h.requireAdmin(ctx)
 	if err != nil {
-		h.logger.Error("failed to check admin role", slog.String("user_id", userID.String()), slog.Any("error",err))
-		return &ogen.UpdateServerSettingForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-	if !isAdmin {
-		return &ogen.UpdateServerSettingForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.UpdateServerSettingUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.UpdateServerSettingForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	setting, err := h.settingsService.SetServerSetting(ctx, params.Key, req.Value, userID)
@@ -545,22 +507,61 @@ func (h *Handler) getSessionID(ctx context.Context) (uuid.UUID, bool) {
 	return sessionID, ok
 }
 
+// Admin authorization errors.
+var (
+	// errNotAuthenticated indicates no valid user session exists in the request context.
+	errNotAuthenticated = errors.New("authentication required")
+
+	// errNotAdmin indicates the user is authenticated but lacks admin privileges.
+	errNotAdmin = errors.New("admin access required")
+)
+
+// requireAdmin validates that the caller is authenticated and holds the admin role.
+// On success, returns the authenticated user's ID. On failure, returns one of:
+//   - errNotAuthenticated: no valid session in context (caller should return 401)
+//   - errNotAdmin: authenticated but not an admin (caller should return 403)
+//   - any other error: RBAC service failure (caller should return 500 or propagate)
+func (h *Handler) requireAdmin(ctx context.Context) (uuid.UUID, error) {
+	userID, ok := h.getUserID(ctx)
+	if !ok {
+		return uuid.Nil, errNotAuthenticated
+	}
+
+	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
+	if err != nil {
+		h.logger.Error("failed to check admin role",
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
+		)
+		return uuid.Nil, fmt.Errorf("admin role check: %w", err)
+	}
+
+	if !isAdmin {
+		return uuid.Nil, errNotAdmin
+	}
+
+	return userID, nil
+}
+
 // isAdmin checks if the current user has admin role via RBAC service.
+// For gate-style checks (admin-only endpoints), prefer requireAdmin which
+// distinguishes unauthenticated (401) from unauthorized (403) from service
+// errors (500). This method is intended for branch-style checks where the
+// handler serves both admin and non-admin users with different behavior.
 func (h *Handler) isAdmin(ctx context.Context) bool {
 	userID, ok := h.getUserID(ctx)
 	if !ok {
 		return false
 	}
-	roles, err := h.rbacService.GetUserRoles(ctx, userID)
+	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
 	if err != nil {
+		h.logger.Error("failed to check admin role",
+			slog.String("user_id", userID.String()),
+			slog.Any("error", err),
+		)
 		return false
 	}
-	for _, r := range roles {
-		if r == "admin" {
-			return true
-		}
-	}
-	return false
+	return isAdmin
 }
 
 func stringPtrToString(s *string) string {

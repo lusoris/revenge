@@ -3,8 +3,8 @@ package activity
 import (
 	"log/slog"
 
-	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 )

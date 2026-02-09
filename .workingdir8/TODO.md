@@ -89,7 +89,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 | 3 | **`metadata_enrich_content` has no Worker** | High | Create `EnrichContentWorker` — enrichment must run as River job, NOT synchronous in request path |
 | 4 | **Periodic cleanup never actually runs** — `Schedule*` functions take `*river.Client[any]` but app uses `*river.Client[pgx.Tx]` (type mismatch), and they're never called from DI lifecycle | **Critical** | Fix the type signatures and wire `Schedule*` into the fx `OnStart` hook |
 | 5 | **Movie metadata refresh is synchronous in API handler** | **High** | `handler.go:201` calls service method directly — must `Insert` a `RefreshMovieArgs` job and return `202 Accepted` |
-| 6 | **Rating enrichment is synchronous in request path** | **High** | `enrichMovieRatings()` / `enrichTVShowRatings()` call external provider APIs synchronously — must be River jobs. User gets cached/partial data immediately, enrichment runs async |
+| 6 | ~~**Rating enrichment is synchronous in request path**~~ | **High** | ~~`enrichMovieRatings()` / `enrichTVShowRatings()` call external provider APIs synchronously — must be River jobs. User gets cached/partial data immediately, enrichment runs async~~ ✅ `d2281594` — moved to adapter Enrich methods (River workers only) |
 | 7 | **Activity logging is synchronous** — `service/activity/service.go:33` blocks on DB insert | Medium | Create `ActivityLogArgs` job, process on `low` queue |
 | 8 | **Bare goroutine fallback** in `handler_radarr.go:145` / `handler_sonarr.go:155` when `riverClient == nil` | Low | Remove fallback or add basic error handling |
 
@@ -116,7 +116,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 
 | # | Gap | Severity | Fix |
 |---|-----|----------|-----|
-| 1 | **No CachedService for TV shows** — all TV show reads hit DB every time | **Critical** | Create `CachedTVShowService` mirroring the movie pattern |
+| 1 | ~~**No CachedService for TV shows**~~ — all TV show reads hit DB every time | **Critical** | ~~Create `CachedTVShowService` mirroring the movie pattern~~ ✅ `962f8192` — created + wired in DI (movie too) |
 | 2 | **No CachedTVShowSearchService** — TV show Typesense searches always hit Typesense | **High** | Create cached wrapper like `CachedMovieSearchService` |
 | 3 | **L1 fully cleared on any pattern invalidation** — Otter doesn't support prefix delete | Medium | Verify Otter docs for `DeleteByFunc`, or use a separate cache instance per domain |
 | 4 | **Redis `KEYS` command for pattern invalidation** — O(N), blocks | Medium | Verify current impl — use `SCAN` instead, or restructure keys to avoid pattern matching |
@@ -222,7 +222,7 @@ This is inconsistent and violates the "each content module owns its schema" prin
 
 ### Steps
 
-- [ ] **9.1** New migration `000036_create_movie_schema.up.sql`:
+- [x] **9.1** New migration `000036_create_movie_schema.up.sql`:
   - `CREATE SCHEMA IF NOT EXISTS movie;`
   - `ALTER TABLE public.movies SET SCHEMA movie;`
   - `ALTER TABLE public.movie_files SET SCHEMA movie;`
@@ -232,15 +232,15 @@ This is inconsistent and violates the "each content module owns its schema" prin
   - `ALTER TABLE public.movie_genres SET SCHEMA movie;`
   - `ALTER TABLE public.movie_watched SET SCHEMA movie;`
   - Down migration moves them back to `public`
-- [ ] **9.2** Update `sqlc.yaml`: Change movie queries `schema` path, verify `search_path`
-- [ ] **9.3** Update SQL query files if needed (or rely on `search_path`)
-- [ ] **9.4** Update connection `search_path` to `public,shared,movie,tvshow` in:
-  - `internal/infra/database/pool.go` (production)
+- [x] **9.2** Update `sqlc.yaml`: Add rename mappings (singularized keys) to preserve Go type names
+- [x] **9.3** Update SQL query files: `public.movie*` → `movie.movie*` in all 587 lines
+- [x] **9.4** Update connection `search_path` to `public,shared,movie,tvshow` in:
   - `internal/testutil/containers.go` (tests)
-  - `config/config.example.yaml` (documentation)
-  - `docker-compose*.yml` DB URLs
-- [ ] **9.5** Regenerate sqlc (`make generate`)
-- [ ] **9.6** Build + vet + test
+  - `docker-compose.dev.yml`
+  - `docker-compose.prod.yml`
+  - `.devcontainer/docker-compose.yml`
+- [x] **9.5** Regenerate sqlc (`sqlc generate`) — all types correct: Movie, MovieFile, etc.
+- [x] **9.6** Build + vet + test — all 42 packages pass
 - [ ] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect four-schema model
 
 ### Architecture Decision
@@ -283,7 +283,7 @@ Before implementing cache-related fixes, verify against current package document
 |---|-------|---------|---------------|
 | 1 | Otter supports `DeleteByFunc` for prefix invalidation | `maypok86/otter` | Check if method exists in current API |
 | 2 | We use `KEYS` for Redis pattern invalidation | `redis/rueidis` | Check actual impl — might already use `SCAN` |
-| 3 | `*river.Client[any]` vs `[pgx.Tx]` type mismatch | `riverqueue/river` | Verify this is still an issue in our River version |
+| 3 | `*river.Client[any]` vs `[pgx.Tx]` type mismatch | `riverqueue/river` | ✅ Verified and FIXED — `aac680d5` changed queue.go to use `*infrajobs.Client` |
 
 ---
 
@@ -291,15 +291,15 @@ Before implementing cache-related fixes, verify against current package document
 
 ### Tier 1 — Must Fix (Broken / Architecture)
 
-- [ ] **9.1-9.7**: Move movie tables to own `movie` schema
-- [ ] **3B.2**: Register workers for 5 metadata job kinds or remove dead code
-- [ ] **3B.4**: Fix periodic cleanup type mismatch and wire into fx `OnStart`
-- [ ] **3B.5**: Move movie metadata refresh to River job (return 202)
-- [ ] **3B.6**: Move rating enrichment to River job (not synchronous in request path)
-- [ ] **4B.1**: Create `CachedTVShowService` (all TV show reads MUST go through cache)
-- [ ] **4B.2**: Create `CachedTVShowSearchService`
-- [ ] **1A.1**: Implement WebAuthn `VerifyMFA` (we want it testable)
-- [ ] **3B.1**: Wire auth/login, streaming, SSE jobs to `critical` queue
+- [x] **9.1-9.7**: Move movie tables to own `movie` schema — `7036592b`
+- [x] **3B.2**: Register workers for 5+1 metadata job kinds — `aac680d5`
+- [x] **3B.4**: Wire periodic cleanup jobs into River via fx — `6157182e`
+- [x] **3B.5**: Move movie metadata refresh to River job (return 202) — `37717e60`
+- [x] **3B.6**: Move rating enrichment to background workers — `d2281594`
+- [x] **4B.1**: Create `CachedTVShowService` + wire DI (movie too) — `962f8192`
+- [x] **4B.2**: ~~Create `CachedTVShowSearchService`~~ ✅ `796971ec` — created + wired in DI
+- [x] **1A.1**: Implement WebAuthn `VerifyMFA` ✅ `9bdbc1b9` — VerifyWebAuthn on MFAManager, wired in VerifyMFA
+- [x] **3B.1**: Wire auth/login, streaming, SSE jobs to `critical` queue ✅ `13c480e9` — AsyncLogger routes security actions to critical queue
 
 ### Tier 2 — High Value (API Readiness + Dedup)
 
@@ -318,7 +318,7 @@ Before implementing cache-related fixes, verify against current package document
 
 ### Tier 3 — Medium Value
 
-- [ ] **3B.7**: Make activity logging async (River job on `low` queue)
+- [x] **3B.7**: Make activity logging async (River job on `low` queue) ✅ done in 3B.1 (`13c480e9`)
 - [ ] **7.2**: Extract `externalRatingsToOgen()` helper
 - [ ] **7.6**: Move test helpers to `internal/testutil/helpers.go`
 - [ ] **2B.2**: Add Cache-Control headers on JSON API responses
@@ -335,7 +335,7 @@ Before implementing cache-related fixes, verify against current package document
 
 - [ ] **8B.3**: Delete dead `database/metrics.go` + test
 - [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
-- [ ] **3B.3**: Create `EnrichContentWorker`
+- [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
 - [ ] **3C.9**: Create `DownloadImageWorker` for cache warming
 - [ ] **3C.11**: Periodic stats/analytics aggregation job
 - [ ] **1C.5-7**: Clean up TODO comments and stale test comments

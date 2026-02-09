@@ -300,8 +300,14 @@ func (h *Handler) UnlinkOIDCProvider(ctx context.Context, params ogen.UnlinkOIDC
 
 // AdminListOIDCProviders lists all OIDC providers (admin only)
 func (h *Handler) AdminListOIDCProviders(ctx context.Context) (ogen.AdminListOIDCProvidersRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminListOIDCProvidersForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminListOIDCProvidersUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminListOIDCProvidersForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	providers, err := h.oidcService.ListProviders(ctx)
@@ -323,8 +329,14 @@ func (h *Handler) AdminListOIDCProviders(ctx context.Context) (ogen.AdminListOID
 
 // AdminCreateOIDCProvider creates a new OIDC provider (admin only)
 func (h *Handler) AdminCreateOIDCProvider(ctx context.Context, req *ogen.CreateOIDCProviderRequest) (ogen.AdminCreateOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminCreateOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminCreateOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminCreateOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	createReq := oidc.CreateProviderRequest{
@@ -409,8 +421,14 @@ func (h *Handler) AdminCreateOIDCProvider(ctx context.Context, req *ogen.CreateO
 
 // AdminGetOIDCProvider gets a provider by ID (admin only)
 func (h *Handler) AdminGetOIDCProvider(ctx context.Context, params ogen.AdminGetOIDCProviderParams) (ogen.AdminGetOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	provider, err := h.oidcService.GetProvider(ctx, params.ProviderId)
@@ -428,8 +446,14 @@ func (h *Handler) AdminGetOIDCProvider(ctx context.Context, params ogen.AdminGet
 
 // AdminUpdateOIDCProvider updates a provider (admin only)
 func (h *Handler) AdminUpdateOIDCProvider(ctx context.Context, req *ogen.UpdateOIDCProviderRequest, params ogen.AdminUpdateOIDCProviderParams) (ogen.AdminUpdateOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminUpdateOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminUpdateOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminUpdateOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	updateReq := oidc.UpdateProviderRequest{}
@@ -522,8 +546,14 @@ func (h *Handler) AdminUpdateOIDCProvider(ctx context.Context, req *ogen.UpdateO
 
 // AdminDeleteOIDCProvider deletes a provider (admin only)
 func (h *Handler) AdminDeleteOIDCProvider(ctx context.Context, params ogen.AdminDeleteOIDCProviderParams) (ogen.AdminDeleteOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminDeleteOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminDeleteOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminDeleteOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.oidcService.DeleteProvider(ctx, params.ProviderId); err != nil {
@@ -539,8 +569,14 @@ func (h *Handler) AdminDeleteOIDCProvider(ctx context.Context, params ogen.Admin
 
 // AdminEnableOIDCProvider enables a provider (admin only)
 func (h *Handler) AdminEnableOIDCProvider(ctx context.Context, params ogen.AdminEnableOIDCProviderParams) (ogen.AdminEnableOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminEnableOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminEnableOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminEnableOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.oidcService.EnableProvider(ctx, params.ProviderId); err != nil {
@@ -556,8 +592,14 @@ func (h *Handler) AdminEnableOIDCProvider(ctx context.Context, params ogen.Admin
 
 // AdminDisableOIDCProvider disables a provider (admin only)
 func (h *Handler) AdminDisableOIDCProvider(ctx context.Context, params ogen.AdminDisableOIDCProviderParams) (ogen.AdminDisableOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminDisableOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminDisableOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminDisableOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.oidcService.DisableProvider(ctx, params.ProviderId); err != nil {
@@ -573,8 +615,14 @@ func (h *Handler) AdminDisableOIDCProvider(ctx context.Context, params ogen.Admi
 
 // AdminSetDefaultOIDCProvider sets a provider as default (admin only)
 func (h *Handler) AdminSetDefaultOIDCProvider(ctx context.Context, params ogen.AdminSetDefaultOIDCProviderParams) (ogen.AdminSetDefaultOIDCProviderRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminSetDefaultOIDCProviderForbidden{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminSetDefaultOIDCProviderUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminSetDefaultOIDCProviderForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.oidcService.SetDefaultProvider(ctx, params.ProviderId); err != nil {

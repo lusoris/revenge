@@ -58,11 +58,14 @@ func (h *Handler) ListLibraries(ctx context.Context) (ogen.ListLibrariesRes, err
 // CreateLibrary creates a new media library. Admin only.
 // POST /api/v1/libraries
 func (h *Handler) CreateLibrary(ctx context.Context, req *ogen.CreateLibraryRequest) (ogen.CreateLibraryRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.CreateLibraryForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.CreateLibraryUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.CreateLibraryForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Validate library type
@@ -176,11 +179,14 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 // UpdateLibrary updates a library's settings. Admin only.
 // PUT /api/v1/libraries/{libraryId}
 func (h *Handler) UpdateLibrary(ctx context.Context, req *ogen.UpdateLibraryRequest, params ogen.UpdateLibraryParams) (ogen.UpdateLibraryRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.UpdateLibraryForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.UpdateLibraryUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.UpdateLibraryForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	update := &library.LibraryUpdate{}
@@ -238,11 +244,14 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *ogen.UpdateLibraryRequ
 // DeleteLibrary deletes a library and all its content. Admin only.
 // DELETE /api/v1/libraries/{libraryId}
 func (h *Handler) DeleteLibrary(ctx context.Context, params ogen.DeleteLibraryParams) (ogen.DeleteLibraryRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.DeleteLibraryForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.DeleteLibraryUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.DeleteLibraryForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	err := h.libraryService.Delete(ctx, params.LibraryId)
@@ -270,11 +279,14 @@ func (h *Handler) DeleteLibrary(ctx context.Context, params ogen.DeleteLibraryPa
 // TriggerLibraryScan starts a library scan job. Admin only.
 // POST /api/v1/libraries/{libraryId}/scan
 func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibraryScanReq, params ogen.TriggerLibraryScanParams) (ogen.TriggerLibraryScanRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.TriggerLibraryScanForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.TriggerLibraryScanUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.TriggerLibraryScanForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	scanType := string(req.ScanType)
@@ -398,11 +410,14 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 // ListLibraryPermissions returns all permissions for a library. Admin only.
 // GET /api/v1/libraries/{libraryId}/permissions
 func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLibraryPermissionsParams) (ogen.ListLibraryPermissionsRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.ListLibraryPermissionsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.ListLibraryPermissionsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.ListLibraryPermissionsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if library exists
@@ -439,11 +454,14 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 // GrantLibraryPermission grants a user permission to access a library. Admin only.
 // POST /api/v1/libraries/{libraryId}/permissions
 func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLibraryPermissionReq, params ogen.GrantLibraryPermissionParams) (ogen.GrantLibraryPermissionRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.GrantLibraryPermissionForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GrantLibraryPermissionUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GrantLibraryPermissionForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	permission := string(req.Permission)
@@ -492,11 +510,14 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 // RevokeLibraryPermission revokes a user's permission for a library. Admin only.
 // DELETE /api/v1/libraries/{libraryId}/permissions/{userId}
 func (h *Handler) RevokeLibraryPermission(ctx context.Context, params ogen.RevokeLibraryPermissionParams) (ogen.RevokeLibraryPermissionRes, error) {
-	if !h.isAdmin(ctx) {
-		return &ogen.RevokeLibraryPermissionForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.RevokeLibraryPermissionUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.RevokeLibraryPermissionForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	permission := string(params.Permission)
