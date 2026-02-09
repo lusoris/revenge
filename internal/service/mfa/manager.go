@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
 
 	db "github.com/lusoris/revenge/internal/infra/database/db"
@@ -262,6 +263,45 @@ func (m *MFAManager) VerifyBackupCode(ctx context.Context, userID uuid.UUID, cod
 	return &VerificationResult{
 		Success: valid,
 		Method:  VerifyMethodBackupCode,
+		UserID:  userID,
+	}, nil
+}
+
+// VerifyWebAuthn verifies a WebAuthn assertion for a user.
+// This retrieves the cached login session (from BeginLogin) and validates the
+// client's assertion response. The session is cleaned up regardless of outcome.
+func (m *MFAManager) VerifyWebAuthn(
+	ctx context.Context,
+	userID uuid.UUID,
+	username string,
+	assertion *protocol.ParsedCredentialAssertionData,
+) (*VerificationResult, error) {
+	if m.webauthn == nil {
+		return nil, errors.New("webauthn service not configured")
+	}
+	if assertion == nil {
+		return nil, errors.New("webauthn assertion data is required")
+	}
+
+	// Retrieve the login session stored by BeginLogin
+	sessionData, err := m.webauthn.GetLoginSession(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("login session expired or not found: %w", err)
+	}
+	defer m.webauthn.DeleteLoginSession(ctx, userID)
+
+	// Complete the WebAuthn ceremony
+	if err := m.webauthn.FinishLogin(ctx, userID, username, username, assertion, *sessionData); err != nil {
+		return &VerificationResult{
+			Success: false,
+			Method:  VerifyMethodWebAuthn,
+			UserID:  userID,
+		}, nil
+	}
+
+	return &VerificationResult{
+		Success: true,
+		Method:  VerifyMethodWebAuthn,
 		UserID:  userID,
 	}, nil
 }

@@ -1892,7 +1892,7 @@ func TestVerifyMFA_BackupCodeEmptyCode(t *testing.T) {
 	assert.Contains(t, err.Error(), "backup code is required")
 }
 
-func TestVerifyMFA_WebAuthnNotImplemented(t *testing.T) {
+func TestVerifyMFA_WebAuthn_NilAssertion(t *testing.T) {
 	t.Parallel()
 	auth := NewMFAAuthenticator(nil)
 
@@ -1900,7 +1900,7 @@ func TestVerifyMFA_WebAuthnNotImplemented(t *testing.T) {
 		Method: "webauthn",
 	})
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "webauthn verification not yet implemented")
+	assert.Contains(t, err.Error(), "webauthn assertion data is required")
 }
 
 // ============================================================================
