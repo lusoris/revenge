@@ -310,7 +310,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **5B.2**: Index seasons in Typesense (named seasons)
 - [ ] **5B.3**: Create standalone people collection in Typesense (own pages)
 - [ ] **5B.4**: Add `/search/multi` unified search endpoint
-- [ ] **7.1**: Extract `requireAdmin()` helper (dedup ~20 handlers)
+- [x] **7.1**: Extract `requireAdmin()` helper — migrated 42 handlers across 7 files (commit `6523726e`)
 - [ ] **7.4**: Create `internal/util/ptr/` generic pointer package
 - [ ] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs
 - [ ] **2B.1**: Add CSP middleware

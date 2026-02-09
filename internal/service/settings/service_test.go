@@ -12,6 +12,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 func TestMain(m *testing.M) {
@@ -40,10 +41,6 @@ func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	})
 	require.NoError(t, err)
 	return user.ID
-}
-
-func ptr[T any](v T) *T {
-	return &v
 }
 
 // ============================================================================
@@ -128,7 +125,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err := repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting1",
 		Value:     []byte(`"value1"`),
-		Category:  ptr("cat1"),
+		Category:  ptr.To("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -136,7 +133,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err = repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting2",
 		Value:     []byte(`"value2"`),
-		Category:  ptr("cat1"),
+		Category:  ptr.To("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -239,7 +236,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user1",
 		Value:    []byte(`"value1"`),
-		Category: ptr("cat1"),
+		Category: ptr.To("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)
@@ -247,7 +244,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user2",
 		Value:    []byte(`"value2"`),
-		Category: ptr("cat1"),
+		Category: ptr.To("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)
