@@ -291,7 +291,7 @@ func TestService_CleanupExpiredSessions(t *testing.T) {
 
 	count, err := service.CleanupExpiredSessions(ctx)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, count, 0) // Count not implemented yet
+	assert.GreaterOrEqual(t, count, 0)
 
 	// Session should be deleted
 	var dbCount int
