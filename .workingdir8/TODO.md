@@ -60,7 +60,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 | 1 | **No Content Security Policy** headers | Medium | Add CSP middleware: `default-src 'self'; img-src 'self' image.tmdb.org; media-src 'self' blob:; script-src 'self'` |
 | 2 | **No Cache-Control on JSON API responses** | Medium | Add `private, no-cache` for user-specific, `public, max-age=60` for library listings |
 | 3 | **Query param naming inconsistency** | **High** | Movies use `orderBy` (camelCase), TV shows use `order_by` (snake_case) — **standardize to snake_case** (REST convention, matches Go/PostgreSQL, TS client can transform) |
-| 4 | **All list endpoints need pagination** | **High** | `getRecentlyAdded`, `getTopRated`, cast/crew return bare arrays — **must** return `{items, total, page, page_size}` for frontend infinite scroll / load more |
+| 4 | ~~**All list endpoints need pagination**~~ | ✅ DONE | ~~`getRecentlyAdded`, `getTopRated`, cast/crew return bare arrays~~ — `4d8f8919`: 7 endpoints now return `{items, total, page, page_size}` with proper caching |
 | 5 | **No admin user management endpoint** | **High** | Need `GET /api/v1/admin/users` (list+search), `DELETE /api/v1/users/{id}` — backend must be ready before frontend |
 | 6 | **No global genre endpoint** | Medium | `GET /api/v1/genres` for filter UIs (currently only via search facets) |
 | 7 | **No bulk episode watched endpoint** | Medium | `POST /api/v1/shows/{id}/seasons/{num}/watched` to mark entire season |
@@ -303,7 +303,7 @@ Before implementing cache-related fixes, verify against current package document
 
 ### Tier 2 — High Value (API Readiness + Dedup)
 
-- [ ] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`)
+- [x] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`) ✅ `4d8f8919` — 7 endpoints updated, proper caching with pagination in cache keys
 - [ ] **2B.3**: Standardize query param naming to snake_case
 - [ ] **2B.5**: Add admin user management endpoints (list+search, delete)
 - [ ] **5B.1**: Index episodes in Typesense (with series context)
