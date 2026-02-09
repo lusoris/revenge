@@ -323,7 +323,7 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **7.6**: Move test helpers to `internal/testutil/helpers.go` ✅ `56678c6a` — added `UniqueUser()`, deduplicated 3 `createTestUser` functions
 - [x] **2B.2**: Add Cache-Control headers on JSON API responses ✅ `42ee5a3b` — ogen middleware categorizing ~50 cacheable catalog ops (`private, max-age=60`) vs user-specific (`private, no-store`) vs mutations (`no-store`)
 - [x] **2B.6**: Add `GET /api/v1/genres` endpoint — `deb694c1` unified genre aggregation from movies + TV shows
-- [ ] **2B.7**: Add bulk episode watched endpoint
+- [x] **2B.7**: Add bulk episode watched endpoint — `9d075c40` batch SQL with CTE, POST /api/v1/tvshows/episodes/bulk-watched
 - [ ] **2B.8**: Add TV show reindex endpoint
 - [ ] **5B.5**: Create users collection in Typesense (admin search)
 - [x] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder ✅ `ed2028b9` — renamed to `GetAPIKeyLastUsedAt`, removed misleading comments
