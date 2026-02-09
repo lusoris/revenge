@@ -124,17 +124,4 @@ func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[Activit
 	return nil
 }
 
-// ScheduleActivityCleanup creates a periodic cleanup job.
-// This should be called during application startup to ensure cleanup runs regularly.
-func ScheduleActivityCleanup(client *river.Client[any], retentionDays int) error {
-	_, err := client.Insert(context.Background(), ActivityCleanupArgs{
-		RetentionDays: retentionDays,
-		DryRun:        false,
-	}, &river.InsertOpts{
-		UniqueOpts: river.UniqueOpts{
-			ByArgs:   true,
-			ByPeriod: 24 * time.Hour, // Run once per day
-		},
-	})
-	return err
-}
+

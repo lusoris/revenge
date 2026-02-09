@@ -27,8 +27,8 @@ import (
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
-	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
+	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
@@ -56,6 +56,10 @@ var Module = fx.Module("app",
 	health.Module,
 	image.Module,
 	appcrypto.Module,
+
+	// Periodic Jobs (provided before jobs.Module resolves the River client)
+	fx.Provide(providePeriodicJobs),
+	fx.Invoke(registerActivityCleanupWorker, registerLibraryCleanupWorker),
 
 	// Services
 	settings.Module,
