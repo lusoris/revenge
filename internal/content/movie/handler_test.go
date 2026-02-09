@@ -230,6 +230,22 @@ func (m *MockService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, op
 	return args.Error(0)
 }
 
+// MockMetadataQueue implements MetadataQueue for testing.
+type MockMetadataQueue struct {
+	mock.Mock
+}
+
+func (m *MockMetadataQueue) EnqueueRefreshMovie(ctx context.Context, movieID uuid.UUID, force bool, languages []string) error {
+	args := m.Called(ctx, movieID, force, languages)
+	return args.Error(0)
+}
+
+// newTestHandler creates a Handler with a mock service and a no-op metadata queue.
+// For tests that need to assert on the queue, pass a custom MockMetadataQueue.
+func newTestHandler(svc *MockService) *Handler {
+	return NewHandler(svc, &MockMetadataQueue{})
+}
+
 // Handler Tests
 
 func TestHTTPError(t *testing.T) {
@@ -259,14 +275,17 @@ func TestInternalError(t *testing.T) {
 
 func TestNewHandler(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	q := new(MockMetadataQueue)
+	h := NewHandler(svc, q)
 	assert.NotNil(t, h)
+	assert.Equal(t, svc, h.service)
+	assert.Equal(t, q, h.metadataQueue)
 }
 
 func TestHandler_GetMovie(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movie := newTestMovie()
 
@@ -280,7 +299,7 @@ func TestHandler_GetMovie(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovie(ctx, "invalid-uuid")
@@ -291,7 +310,7 @@ func TestHandler_GetMovie(t *testing.T) {
 
 	t.Run("Not found", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		id := uuid.Must(uuid.NewV7())
 
@@ -306,7 +325,7 @@ func TestHandler_GetMovie(t *testing.T) {
 
 func TestHandler_ListMovies(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	movies := []Movie{*newTestMovie(), *newTestMovie()}
 	params := ListMoviesParams{
@@ -330,7 +349,7 @@ func TestHandler_ListMovies(t *testing.T) {
 
 func TestHandler_SearchMovies(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	movies := []Movie{*newTestMovie()}
 	params := SearchMoviesParams{
@@ -353,7 +372,7 @@ func TestHandler_SearchMovies(t *testing.T) {
 
 func TestHandler_GetRecentlyAdded(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	movies := []Movie{*newTestMovie()}
 	params := PaginationParams{
@@ -372,7 +391,7 @@ func TestHandler_GetRecentlyAdded(t *testing.T) {
 func TestHandler_GetTopRated(t *testing.T) {
 	t.Run("With default min votes", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movies := []Movie{*newTestMovie()}
 		params := TopRatedParams{
@@ -391,7 +410,7 @@ func TestHandler_GetTopRated(t *testing.T) {
 
 	t.Run("With custom min votes", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movies := []Movie{*newTestMovie()}
 		minVotes := int32(500)
@@ -413,7 +432,7 @@ func TestHandler_GetTopRated(t *testing.T) {
 func TestHandler_GetMovieFiles(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		files := []MovieFile{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, FilePath: "/movies/test.mkv"}}
@@ -428,7 +447,7 @@ func TestHandler_GetMovieFiles(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovieFiles(ctx, "invalid")
@@ -440,7 +459,7 @@ func TestHandler_GetMovieFiles(t *testing.T) {
 func TestHandler_GetMovieCast(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		cast := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"}}
@@ -455,7 +474,7 @@ func TestHandler_GetMovieCast(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovieCast(ctx, "not-a-uuid")
@@ -467,7 +486,7 @@ func TestHandler_GetMovieCast(t *testing.T) {
 func TestHandler_GetMovieCrew(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		crew := []MovieCredit{{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew"}}
@@ -482,7 +501,7 @@ func TestHandler_GetMovieCrew(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovieCrew(ctx, "not-valid-uuid")
@@ -495,7 +514,7 @@ func TestHandler_GetMovieCrew(t *testing.T) {
 func TestHandler_GetMovieGenres(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		genres := []MovieGenre{
@@ -513,7 +532,7 @@ func TestHandler_GetMovieGenres(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovieGenres(ctx, "bad-uuid")
@@ -525,7 +544,7 @@ func TestHandler_GetMovieGenres(t *testing.T) {
 
 func TestHandler_GetMoviesByGenre(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	movies := []Movie{*newTestMovie(), *newTestMovie()}
 	params := PaginationParams{
@@ -544,7 +563,7 @@ func TestHandler_GetMoviesByGenre(t *testing.T) {
 func TestHandler_GetMovieCollection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		collection := &MovieCollection{
@@ -562,7 +581,7 @@ func TestHandler_GetMovieCollection(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetMovieCollection(ctx, "invalid")
@@ -575,7 +594,7 @@ func TestHandler_GetMovieCollection(t *testing.T) {
 func TestHandler_GetCollection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		collectionID := uuid.Must(uuid.NewV7())
 		collection := &MovieCollection{
@@ -593,7 +612,7 @@ func TestHandler_GetCollection(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetCollection(ctx, "not-uuid")
@@ -606,7 +625,7 @@ func TestHandler_GetCollection(t *testing.T) {
 func TestHandler_GetCollectionMovies(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		collectionID := uuid.Must(uuid.NewV7())
 		movies := []Movie{*newTestMovie(), *newTestMovie(), *newTestMovie()}
@@ -621,7 +640,7 @@ func TestHandler_GetCollectionMovies(t *testing.T) {
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		result, err := h.GetCollectionMovies(ctx, "bad-id")
@@ -634,7 +653,7 @@ func TestHandler_GetCollectionMovies(t *testing.T) {
 func TestHandler_UpdateWatchProgress(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 		movieID := uuid.Must(uuid.NewV7())
@@ -660,7 +679,7 @@ func TestHandler_UpdateWatchProgress(t *testing.T) {
 
 	t.Run("Invalid movie UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 		params := UpdateWatchProgressParams{}
@@ -674,7 +693,7 @@ func TestHandler_UpdateWatchProgress(t *testing.T) {
 func TestHandler_GetWatchProgress(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 		movieID := uuid.Must(uuid.NewV7())
@@ -695,7 +714,7 @@ func TestHandler_GetWatchProgress(t *testing.T) {
 
 	t.Run("Invalid movie UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 
@@ -708,7 +727,7 @@ func TestHandler_GetWatchProgress(t *testing.T) {
 func TestHandler_MarkAsWatched(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 		movieID := uuid.Must(uuid.NewV7())
@@ -722,7 +741,7 @@ func TestHandler_MarkAsWatched(t *testing.T) {
 
 	t.Run("Invalid movie UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 
@@ -734,7 +753,7 @@ func TestHandler_MarkAsWatched(t *testing.T) {
 func TestHandler_DeleteWatchProgress(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 		movieID := uuid.Must(uuid.NewV7())
@@ -748,7 +767,7 @@ func TestHandler_DeleteWatchProgress(t *testing.T) {
 
 	t.Run("Invalid movie UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 		userID := uuid.Must(uuid.NewV7())
 
@@ -759,7 +778,7 @@ func TestHandler_DeleteWatchProgress(t *testing.T) {
 
 func TestHandler_GetContinueWatching(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	items := []ContinueWatchingItem{
@@ -776,7 +795,7 @@ func TestHandler_GetContinueWatching(t *testing.T) {
 
 func TestHandler_GetWatchHistory(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	items := []WatchedMovieItem{
@@ -794,7 +813,7 @@ func TestHandler_GetWatchHistory(t *testing.T) {
 
 func TestHandler_GetUserStats(t *testing.T) {
 	svc := new(MockService)
-	h := NewHandler(svc)
+	h := newTestHandler(svc)
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	stats := &UserMovieStats{
@@ -811,25 +830,68 @@ func TestHandler_GetUserStats(t *testing.T) {
 }
 
 func TestHandler_RefreshMetadata(t *testing.T) {
-	t.Run("Success", func(t *testing.T) {
+	t.Run("Success — verifies movie exists then enqueues async job", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		q := new(MockMetadataQueue)
+		h := NewHandler(svc, q)
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
+		mov := newTestMovie()
+		mov.ID = movieID
 
-		svc.On("RefreshMovieMetadata", ctx, movieID).Return(nil)
+		svc.On("GetMovie", ctx, movieID).Return(mov, nil)
+		q.On("EnqueueRefreshMovie", ctx, movieID, true, []string(nil)).Return(nil)
 
 		err := h.RefreshMetadata(ctx, movieID.String())
 		require.NoError(t, err)
 		svc.AssertExpectations(t)
+		q.AssertExpectations(t)
+
+		// Service.RefreshMovieMetadata must NOT be called — it's async now
+		svc.AssertNotCalled(t, "RefreshMovieMetadata", mock.Anything, mock.Anything)
 	})
 
 	t.Run("Invalid UUID", func(t *testing.T) {
 		svc := new(MockService)
-		h := NewHandler(svc)
+		h := newTestHandler(svc)
 		ctx := context.Background()
 
 		err := h.RefreshMetadata(ctx, "invalid-id")
 		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "invalid movie ID")
+	})
+
+	t.Run("Movie not found — returns error without enqueuing", func(t *testing.T) {
+		svc := new(MockService)
+		q := new(MockMetadataQueue)
+		h := NewHandler(svc, q)
+		ctx := context.Background()
+		movieID := uuid.Must(uuid.NewV7())
+
+		svc.On("GetMovie", ctx, movieID).Return(nil, ErrMovieNotFound)
+
+		err := h.RefreshMetadata(ctx, movieID.String())
+		assert.ErrorIs(t, err, ErrMovieNotFound)
+		svc.AssertExpectations(t)
+		q.AssertNotCalled(t, "EnqueueRefreshMovie", mock.Anything, mock.Anything, mock.Anything, mock.Anything)
+	})
+
+	t.Run("Enqueue failure — returns error", func(t *testing.T) {
+		svc := new(MockService)
+		q := new(MockMetadataQueue)
+		h := NewHandler(svc, q)
+		ctx := context.Background()
+		movieID := uuid.Must(uuid.NewV7())
+		mov := newTestMovie()
+		mov.ID = movieID
+
+		svc.On("GetMovie", ctx, movieID).Return(mov, nil)
+		q.On("EnqueueRefreshMovie", ctx, movieID, true, []string(nil)).Return(errors.New("queue full"))
+
+		err := h.RefreshMetadata(ctx, movieID.String())
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "queue full")
+		svc.AssertExpectations(t)
+		q.AssertExpectations(t)
 	})
 }
