@@ -311,6 +311,9 @@ func NewServer(p ServerParams) (*Server, error) {
 	// CSRF protection (only active when cookie auth is enabled)
 	rootHandler = middleware.CSRFMiddleware(p.Config.Server.CookieAuth)(rootHandler)
 
+	// Security headers (CSP, X-Frame-Options, X-Content-Type-Options, etc.)
+	rootHandler = middleware.SecurityHeadersMiddleware()(rootHandler)
+
 	// Wrap with CORS middleware (outermost layer so all responses get CORS headers,
 	// including preflight OPTIONS, error responses, and HLS endpoints).
 	rootHandler = middleware.CORSMiddleware(p.Config.Server.CORS)(rootHandler)
