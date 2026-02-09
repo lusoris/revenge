@@ -241,7 +241,7 @@ This is inconsistent and violates the "each content module owns its schema" prin
   - `.devcontainer/docker-compose.yml`
 - [x] **9.5** Regenerate sqlc (`sqlc generate`) — all types correct: Movie, MovieFile, etc.
 - [x] **9.6** Build + vet + test — all 42 packages pass
-- [ ] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect four-schema model
+- [x] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect schema-per-module convention — `d59f2b88`
 
 ### Architecture Decision
 
