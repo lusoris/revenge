@@ -322,7 +322,7 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **7.2**: Extract `externalRatingsToOgen()` helper ✅ `cc2d0d4c` — shared `content.ExternalRating` type + type aliases + one converter replacing 4 copies
 - [x] **7.6**: Move test helpers to `internal/testutil/helpers.go` ✅ `56678c6a` — added `UniqueUser()`, deduplicated 3 `createTestUser` functions
 - [x] **2B.2**: Add Cache-Control headers on JSON API responses ✅ `42ee5a3b` — ogen middleware categorizing ~50 cacheable catalog ops (`private, max-age=60`) vs user-specific (`private, no-store`) vs mutations (`no-store`)
-- [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
+- [x] **2B.6**: Add `GET /api/v1/genres` endpoint — `deb694c1` unified genre aggregation from movies + TV shows
 - [ ] **2B.7**: Add bulk episode watched endpoint
 - [ ] **2B.8**: Add TV show reindex endpoint
 - [ ] **5B.5**: Create users collection in Typesense (admin search)
