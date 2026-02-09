@@ -147,21 +147,11 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 		}, nil
 	}
 
-	// No River client, start sync directly (blocking)
-	go func() {
-		// Use a new context with timeout since the request context will be done
-		syncCtx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-		defer cancel()
-
-		if _, err := h.radarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Radarr sync failed", slog.Any("error",err))
-		}
-	}()
-
-	h.logger.Info("Radarr sync started directly")
-	return &ogen.RadarrSyncResponse{
-		Message: "Sync started",
-		Status:  ogen.RadarrSyncResponseStatusStarted,
+	// River client is required for async job processing
+	h.logger.Error("River client not available, cannot queue Radarr sync")
+	return &ogen.AdminTriggerRadarrSyncServiceUnavailable{
+		Code:    503,
+		Message: "Job queue not available",
 	}, nil
 }
 

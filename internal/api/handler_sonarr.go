@@ -155,21 +155,11 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 		}, nil
 	}
 
-	// No River client, start sync directly (blocking)
-	go func() {
-		// Use a new context with timeout since the request context will be done
-		syncCtx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
-		defer cancel()
-
-		if _, err := h.sonarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Sonarr sync failed", slog.Any("error",err))
-		}
-	}()
-
-	h.logger.Info("Sonarr sync started directly")
-	return &ogen.SonarrSyncResponse{
-		Message: "Sync started",
-		Status:  ogen.SonarrSyncResponseStatusStarted,
+	// River client is required for async job processing
+	h.logger.Error("River client not available, cannot queue Sonarr sync")
+	return &ogen.AdminTriggerSonarrSyncServiceUnavailable{
+		Code:    503,
+		Message: "Job queue not available",
 	}, nil
 }
 
