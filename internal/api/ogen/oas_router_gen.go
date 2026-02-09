@@ -3355,6 +3355,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 										return
 									}
 
+								case 'r': // Prefix: "reindex"
+
+									if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleReindexTVShowSearchRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
+										}
+
+										return
+									}
+
 								}
 
 							}
@@ -8488,6 +8508,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.operationID = "getTVShowSearchFacets"
 											r.operationGroup = ""
 											r.pathPattern = "/api/v1/search/tvshows/facets"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "reindex"
+
+									if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = ReindexTVShowSearchOperation
+											r.summary = "Reindex all TV shows"
+											r.operationID = "reindexTVShowSearch"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/tvshows/reindex"
 											r.args = args
 											r.count = 0
 											return r, true

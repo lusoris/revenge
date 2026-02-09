@@ -157,6 +157,7 @@ const (
 	RegenerateBackupCodesOperation           OperationName = "RegenerateBackupCodes"
 	RegisterOperation                        OperationName = "Register"
 	ReindexSearchOperation                   OperationName = "ReindexSearch"
+	ReindexTVShowSearchOperation             OperationName = "ReindexTVShowSearch"
 	RemovePolicyOperation                    OperationName = "RemovePolicy"
 	RemoveRoleOperation                      OperationName = "RemoveRole"
 	RenameWebAuthnCredentialOperation        OperationName = "RenameWebAuthnCredential"

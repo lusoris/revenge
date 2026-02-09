@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
 	"log/slog"
 )
@@ -217,6 +218,28 @@ func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, err
 
 	return &ogen.ReindexSearchAccepted{
 		Message: ogen.NewOptString("Reindex job enqueued"),
+		JobID:   ogen.NewOptUUID(uuid.Must(uuid.NewV7())),
+	}, nil
+}
+
+// ReindexTVShowSearch triggers a full reindex of all TV shows via River job queue.
+func (h *Handler) ReindexTVShowSearch(ctx context.Context) (ogen.ReindexTVShowSearchRes, error) {
+	if h.riverClient == nil {
+		return nil, fmt.Errorf("job queue not available")
+	}
+
+	result, err := h.riverClient.Insert(ctx, tvshowjobs.SearchIndexArgs{
+		FullReindex: true,
+	}, nil)
+	if err != nil {
+		h.logger.Error("failed to enqueue TV show reindex job", slog.Any("error", err))
+		return nil, fmt.Errorf("failed to enqueue TV show reindex job: %w", err)
+	}
+
+	h.logger.Info("TV show reindex job enqueued", slog.Int64("job_id", result.Job.ID))
+
+	return &ogen.ReindexTVShowSearchAccepted{
+		Message: ogen.NewOptString("TV show reindex job enqueued"),
 		JobID:   ogen.NewOptUUID(uuid.Must(uuid.NewV7())),
 	}, nil
 }

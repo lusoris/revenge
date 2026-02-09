@@ -6686,6 +6686,52 @@ func encodeReindexSearchResponse(response ReindexSearchRes, w http.ResponseWrite
 	}
 }
 
+func encodeReindexTVShowSearchResponse(response ReindexTVShowSearchRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ReindexTVShowSearchAccepted:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(202)
+		span.SetStatus(codes.Ok, http.StatusText(202))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ReindexTVShowSearchUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ReindexTVShowSearchForbidden:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(403)
+		span.SetStatus(codes.Error, http.StatusText(403))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeRemovePolicyResponse(response RemovePolicyRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *RemovePolicyNoContent:

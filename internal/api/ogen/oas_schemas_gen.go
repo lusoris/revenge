@@ -14712,6 +14712,42 @@ type ReindexSearchUnauthorized Error
 
 func (*ReindexSearchUnauthorized) reindexSearchRes() {}
 
+type ReindexTVShowSearchAccepted struct {
+	Message OptString `json:"message"`
+	// Job ID for tracking progress.
+	JobID OptUUID `json:"job_id"`
+}
+
+// GetMessage returns the value of Message.
+func (s *ReindexTVShowSearchAccepted) GetMessage() OptString {
+	return s.Message
+}
+
+// GetJobID returns the value of JobID.
+func (s *ReindexTVShowSearchAccepted) GetJobID() OptUUID {
+	return s.JobID
+}
+
+// SetMessage sets the value of Message.
+func (s *ReindexTVShowSearchAccepted) SetMessage(val OptString) {
+	s.Message = val
+}
+
+// SetJobID sets the value of JobID.
+func (s *ReindexTVShowSearchAccepted) SetJobID(val OptUUID) {
+	s.JobID = val
+}
+
+func (*ReindexTVShowSearchAccepted) reindexTVShowSearchRes() {}
+
+type ReindexTVShowSearchForbidden Error
+
+func (*ReindexTVShowSearchForbidden) reindexTVShowSearchRes() {}
+
+type ReindexTVShowSearchUnauthorized Error
+
+func (*ReindexTVShowSearchUnauthorized) reindexTVShowSearchRes() {}
+
 type RemovePolicyBadRequest Error
 
 func (*RemovePolicyBadRequest) removePolicyRes() {}

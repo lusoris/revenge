@@ -597,6 +597,10 @@ type ReindexSearchRes interface {
 	reindexSearchRes()
 }
 
+type ReindexTVShowSearchRes interface {
+	reindexTVShowSearchRes()
+}
+
 type RemovePolicyRes interface {
 	removePolicyRes()
 }

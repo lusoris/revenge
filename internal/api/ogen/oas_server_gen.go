@@ -954,6 +954,13 @@ type Handler interface {
 	//
 	// POST /api/v1/search/reindex
 	ReindexSearch(ctx context.Context) (ReindexSearchRes, error)
+	// ReindexTVShowSearch implements reindexTVShowSearch operation.
+	//
+	// Triggers a full reindex of all TV shows in the search engine.
+	// This is an admin-only operation and may take a while for large libraries.
+	//
+	// POST /api/v1/search/tvshows/reindex
+	ReindexTVShowSearch(ctx context.Context) (ReindexTVShowSearchRes, error)
 	// RemovePolicy implements removePolicy operation.
 	//
 	// Remove an authorization policy (admin only).

@@ -1412,6 +1412,16 @@ func (UnimplementedHandler) ReindexSearch(ctx context.Context) (r ReindexSearchR
 	return r, ht.ErrNotImplemented
 }
 
+// ReindexTVShowSearch implements reindexTVShowSearch operation.
+//
+// Triggers a full reindex of all TV shows in the search engine.
+// This is an admin-only operation and may take a while for large libraries.
+//
+// POST /api/v1/search/tvshows/reindex
+func (UnimplementedHandler) ReindexTVShowSearch(ctx context.Context) (r ReindexTVShowSearchRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // RemovePolicy implements removePolicy operation.
 //
 // Remove an authorization policy (admin only).
