@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Series represents a TV show with metadata from TMDb/TVDb/Sonarr.
@@ -55,12 +56,8 @@ type Series struct {
 	Networks []Network
 }
 
-// ExternalRating represents a rating from an external source.
-type ExternalRating struct {
-	Source string  `json:"source"` // e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb"
-	Value  string  `json:"value"`  // e.g. "8.8/10", "96%", "90/100"
-	Score  float64 `json:"score"`  // Normalized 0-100 scale
-}
+// ExternalRating is an alias for the shared content.ExternalRating type.
+type ExternalRating = content.ExternalRating
 
 // GetTitle returns the series title in the preferred language with fallback chain:
 // 1. Requested language from TitlesI18n

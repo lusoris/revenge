@@ -2,8 +2,27 @@ package api
 
 import (
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/content/movie"
 )
+
+// externalRatingsToOgen converts domain external ratings to ogen format.
+// Works with both movie.ExternalRating and tvshow.ExternalRating (both are
+// type aliases for content.ExternalRating).
+func externalRatingsToOgen(ratings []content.ExternalRating) []ogen.ExternalRating {
+	if len(ratings) == 0 {
+		return nil
+	}
+	out := make([]ogen.ExternalRating, len(ratings))
+	for i, r := range ratings {
+		out[i] = ogen.ExternalRating{
+			Source: r.Source,
+			Value:  r.Value,
+			Score:  float32(r.Score),
+		}
+	}
+	return out
+}
 
 // movieToOgen converts a movie domain type to ogen Movie.
 func movieToOgen(m *movie.Movie) *ogen.Movie {
@@ -78,17 +97,7 @@ func movieToOgen(m *movie.Movie) *ogen.Movie {
 		o.RadarrID.SetTo(int(*m.RadarrID))
 	}
 
-	// External ratings
-	if len(m.ExternalRatings) > 0 {
-		o.ExternalRatings = make([]ogen.ExternalRating, len(m.ExternalRatings))
-		for i, er := range m.ExternalRatings {
-			o.ExternalRatings[i] = ogen.ExternalRating{
-				Source: er.Source,
-				Value:  er.Value,
-				Score:  float32(er.Score),
-			}
-		}
-	}
+	o.ExternalRatings = externalRatingsToOgen(m.ExternalRatings)
 
 	return o
 }
@@ -327,17 +336,7 @@ func continueWatchingItemToOgen(item *movie.ContinueWatchingItem) ogen.ContinueW
 		o.ProgressPercent.SetTo(int(*item.ProgressPercent))
 	}
 
-	// External ratings
-	if len(item.ExternalRatings) > 0 {
-		o.ExternalRatings = make([]ogen.ExternalRating, len(item.ExternalRatings))
-		for i, er := range item.ExternalRatings {
-			o.ExternalRatings[i] = ogen.ExternalRating{
-				Source: er.Source,
-				Value:  er.Value,
-				Score:  float32(er.Score),
-			}
-		}
-	}
+	o.ExternalRatings = externalRatingsToOgen(item.ExternalRatings)
 
 	return o
 }
@@ -418,17 +417,7 @@ func watchedMovieItemToOgen(item *movie.WatchedMovieItem) ogen.WatchedMovieItem 
 		o.RadarrID.SetTo(int(*item.RadarrID))
 	}
 
-	// External ratings
-	if len(item.ExternalRatings) > 0 {
-		o.ExternalRatings = make([]ogen.ExternalRating, len(item.ExternalRatings))
-		for i, er := range item.ExternalRatings {
-			o.ExternalRatings[i] = ogen.ExternalRating{
-				Source: er.Source,
-				Value:  er.Value,
-				Score:  float32(er.Score),
-			}
-		}
-	}
+	o.ExternalRatings = externalRatingsToOgen(item.ExternalRatings)
 
 	return o
 }
