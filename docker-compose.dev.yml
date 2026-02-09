@@ -11,6 +11,7 @@ services:
     container_name: revenge-dev
     ports:
       - "8096:8096"
+      - "9096:9096"  # Prometheus metrics port
       - "2345:2345"  # Delve debugger port
     environment:
       - REVENGE_LOG_LEVEL=debug

@@ -210,6 +210,8 @@ deduplication, and API structure.
 
 ### Tier 4 — Polish
 
+- [ ] **8B.3**: Delete dead `database/metrics.go` + test (superseded by `observability/collector.go`)
+- [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
 - [ ] **2B.4**: Wrap bare array list responses in `{items, total}`
 - [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
 - [ ] **2B.7**: Add bulk episode watched endpoint
@@ -220,6 +222,34 @@ deduplication, and API structure.
 - [ ] **1C.7**: Delete stale test comment
 - [ ] **1D.9-10**: Delete vestigial sqlc placeholders
 - [ ] **1E.11**: Remove gobreaker from go.mod
+
+---
+
+## 8. Monitoring & Observability — Broken Wiring
+
+### Root Cause: ALL Grafana Panels Show NO DATA
+
+**P0 — Datasource UID mismatch** (FIXED):
+Every panel in `deploy/grafana/provisioning/dashboards/revenge.json` hardcodes
+`"uid": "PBFA97CFB590B2093"` but `deploy/grafana/provisioning/datasources/prometheus.yml`
+did NOT set a `uid`. Grafana generates a random UID on provisioning → panels can't
+resolve their datasource → **all 20+ panels broken**.
+
+**Fix applied**: Added `uid: PBFA97CFB590B2093` to the datasource provisioning file.
+
+### 8A — Fixes Applied
+
+| # | Issue | Fix |
+|---|-------|-----|
+| 1 | Datasource UID mismatch → all panels NO DATA | Added `uid: PBFA97CFB590B2093` to `deploy/grafana/provisioning/datasources/prometheus.yml` |
+| 2 | Metrics port 9096 not exposed | Added `EXPOSE 9096` to Dockerfile, added `9096:9096` to `docker-compose.dev.yml` |
+
+### 8B — Outstanding
+
+| # | Issue | Severity | Fix |
+|---|-------|----------|-----|
+| 3 | `database/metrics.go` — dead code (`RecordPoolMetrics` has 0 callers, 0% coverage) | Low | Delete file + test — `observability/collector.go` already handles pgxpool metrics under `revenge_pgxpool_*` namespace |
+| 4 | Metrics wiring is correct (47+ metrics registered, all incremented) but untested end-to-end | Low | After UID fix, smoke test: `docker compose -f docker-compose.dev.yml up`, then check `http://localhost:9096/metrics` and Grafana panels |
 
 ---
 

@@ -81,7 +81,7 @@ RUN mkdir -p /data /config /cache /media && \
 
 USER revenge
 
-EXPOSE 8096
+EXPOSE 8096 9096
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
