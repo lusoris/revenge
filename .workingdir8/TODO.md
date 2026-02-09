@@ -321,28 +321,28 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **3B.7**: Make activity logging async (River job on `low` queue) ✅ done in 3B.1 (`13c480e9`)
 - [x] **7.2**: Extract `externalRatingsToOgen()` helper ✅ `cc2d0d4c` — shared `content.ExternalRating` type + type aliases + one converter replacing 4 copies
 - [x] **7.6**: Move test helpers to `internal/testutil/helpers.go` ✅ `56678c6a` — added `UniqueUser()`, deduplicated 3 `createTestUser` functions
-- [ ] **2B.2**: Add Cache-Control headers on JSON API responses
+- [x] **2B.2**: Add Cache-Control headers on JSON API responses ✅ `42ee5a3b` — ogen middleware categorizing ~50 cacheable catalog ops (`private, max-age=60`) vs user-specific (`private, no-store`) vs mutations (`no-store`)
 - [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
 - [ ] **2B.7**: Add bulk episode watched endpoint
 - [ ] **2B.8**: Add TV show reindex endpoint
 - [ ] **5B.5**: Create users collection in Typesense (admin search)
 - [ ] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder
-- [ ] **7.3**: Extract `copyMovieFieldsToOgen` helper
+- [x] **7.3**: Extract `copyMovieFieldsToOgen` helper — **SKIPPED**: ogen generates flat types with no shared interface; any extraction (19-field interface / reflection) adds more complexity than the 3 copies of schema-driven boilerplate
 - [ ] **4B.3**: Fix L1 pattern invalidation (verify Otter `DeleteByFunc` or per-domain instances)
 - [ ] **4B.4**: Verify + fix Redis pattern invalidation (`KEYS` → `SCAN`)
 
 ### Tier 4 — Polish
 
-- [ ] **8B.3**: Delete dead `database/metrics.go` + test
+- [x] **8B.3**: Delete dead `database/metrics.go` + test ✅ `033bc406`
 - [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
 - [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
 - [ ] **3C.9**: Create `DownloadImageWorker` for cache warming
 - [ ] **3C.11**: Periodic stats/analytics aggregation job
-- [ ] **1C.5-7**: Clean up TODO comments and stale test comments
-- [ ] **1D.9-10**: Delete vestigial sqlc placeholders
+- [x] **1C.5-7**: Clean up TODO comments and stale test comments ✅ `72f19cdc`
+- [x] **1D.9-10**: Delete vestigial sqlc placeholders ✅ `033bc406` — removed source SQL + regenerated sqlc
 - [ ] **10B.2**: Upgrade `raft-boltdb` to v2
-- [ ] **10B.3**: Delete empty `pkg/` directory
-- [ ] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers
+- [x] **10B.3**: Delete empty `pkg/` directory ✅ `033bc406`
+- [x] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers ✅ `f6326dab` — return 503 when River unavailable
 
 ---
 
