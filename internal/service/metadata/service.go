@@ -260,6 +260,11 @@ func (s *service) GetMovieMetadata(ctx context.Context, tmdbID int32, languages 
 		return nil, aggErr.First()
 	}
 
+	// Enrich with ratings from secondary providers
+	if s.config.EnableEnrichment {
+		s.enrichMovieRatings(ctx, result)
+	}
+
 	return result, nil
 }
 
@@ -435,6 +440,11 @@ func (s *service) GetTVShowMetadata(ctx context.Context, tmdbID int32, languages
 
 	if result == nil {
 		return nil, aggErr.First()
+	}
+
+	// Enrich with ratings from secondary providers
+	if s.config.EnableEnrichment {
+		s.enrichTVShowRatings(ctx, result)
 	}
 
 	return result, nil
@@ -809,6 +819,120 @@ func (s *service) ClearCache() {
 	for _, p := range providers {
 		p.ClearCache()
 	}
+}
+
+// enrichMovieRatings fetches ExternalRatings from secondary movie providers
+// (e.g. OMDb for IMDb/RT/Metacritic) and merges them into the primary result.
+func (s *service) enrichMovieRatings(ctx context.Context, result *MovieMetadata) {
+	if result.IMDbID == nil || *result.IMDbID == "" {
+		return
+	}
+
+	s.mu.RLock()
+	providers := s.movieProviders
+	s.mu.RUnlock()
+
+	if len(providers) < 2 {
+		return
+	}
+
+	imdbID := *result.IMDbID
+	primary := providers[0]
+
+	var (
+		wg      sync.WaitGroup
+		mu      sync.Mutex
+		results [][]ExternalRating
+	)
+
+	for _, p := range providers[1:] {
+		if p.ID() == primary.ID() {
+			continue
+		}
+		wg.Add(1)
+		go func(provider MovieProvider) {
+			defer wg.Done()
+			meta, err := provider.GetMovie(ctx, imdbID, "en")
+			if err != nil || meta == nil || len(meta.ExternalRatings) == 0 {
+				return
+			}
+			mu.Lock()
+			results = append(results, meta.ExternalRatings)
+			mu.Unlock()
+		}(p)
+	}
+
+	wg.Wait()
+
+	for _, ratings := range results {
+		result.ExternalRatings = mergeExternalRatings(result.ExternalRatings, ratings)
+	}
+}
+
+// enrichTVShowRatings fetches ExternalRatings from secondary TV show providers
+// and merges them into the primary result.
+func (s *service) enrichTVShowRatings(ctx context.Context, result *TVShowMetadata) {
+	if result.IMDbID == nil || *result.IMDbID == "" {
+		return
+	}
+
+	s.mu.RLock()
+	providers := s.tvProviders
+	s.mu.RUnlock()
+
+	if len(providers) < 2 {
+		return
+	}
+
+	imdbID := *result.IMDbID
+	primary := providers[0]
+
+	var (
+		wg      sync.WaitGroup
+		mu      sync.Mutex
+		results [][]ExternalRating
+	)
+
+	for _, p := range providers[1:] {
+		if p.ID() == primary.ID() {
+			continue
+		}
+		wg.Add(1)
+		go func(provider TVShowProvider) {
+			defer wg.Done()
+			meta, err := provider.GetTVShow(ctx, imdbID, "en")
+			if err != nil || meta == nil || len(meta.ExternalRatings) == 0 {
+				return
+			}
+			mu.Lock()
+			results = append(results, meta.ExternalRatings)
+			mu.Unlock()
+		}(p)
+	}
+
+	wg.Wait()
+
+	for _, ratings := range results {
+		result.ExternalRatings = mergeExternalRatings(result.ExternalRatings, ratings)
+	}
+}
+
+// mergeExternalRatings merges additional ratings into an existing slice,
+// deduplicating by Source (keeps the first occurrence).
+func mergeExternalRatings(existing, additional []ExternalRating) []ExternalRating {
+	seen := make(map[string]struct{}, len(existing))
+	for _, r := range existing {
+		seen[r.Source] = struct{}{}
+	}
+
+	for _, r := range additional {
+		if _, ok := seen[r.Source]; !ok {
+			existing = append(existing, r)
+			seen[r.Source] = struct{}{}
+		}
+	}
+
+	return existing
 }
 
 // getDefaultLanguage returns the first default language.

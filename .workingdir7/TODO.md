@@ -61,18 +61,18 @@ Three distinct systems are broken or missing:
 - [x] Update API converters (`movieToOgen`, `seriesToOgen`, continue watching, watched items)
 - [x] Build + lint pass cleanly
 
-### P2: All Providers Populate ExternalRatings for Their Own Score
+### P2: All Providers Populate ExternalRatings for Their Own Score ✅ DONE
 
 Each provider should add itself as an ExternalRating entry alongside setting VoteAverage:
 
 | Provider | Status | Fix |
 |----------|--------|-----|
-| TMDb | Missing | Add `{Source: "TMDb", Value: "7.5/10", Score: 75}` |
-| TVDb | Missing | Add TVDb ExternalRating |
-| TVmaze | Missing | Add TVmaze ExternalRating |
-| Trakt | Wrong (has certifications) | Replace certification abuse with real Trakt rating |
-| Letterboxd | Missing | Add `{Source: "Letterboxd", Value: "4.2/5", Score: 84}` |
-| Simkl | Missing (only VoteAverage) | Add Simkl ExternalRating |
+| TMDb | ✅ Done | Add `{Source: "TMDb", Value: "7.5/10", Score: 75}` |
+| TVDb | ✅ Done | Add TVDb ExternalRating |
+| TVmaze | ✅ Done | Add TVmaze ExternalRating |
+| Trakt | ✅ Done | Replace certification abuse with real Trakt rating |
+| Letterboxd | ✅ Done | Add `{Source: "Letterboxd", Value: "4.2/5", Score: 84}` |
+| Simkl | ✅ Done | Add Simkl ExternalRating |
 | OMDb | Done | Already creates IMDb, RT (Tomatometer), Metacritic entries |
 | AniList | Done | Already creates AniList entry |
 | AniDB | Done | Already creates Permanent + Temporary entries |
@@ -81,30 +81,30 @@ Each provider should add itself as an ExternalRating entry alongside setting Vot
 
 **RT Audience Score note**: OMDb only has Tomatometer (critics). RT Audience Score is not available from any free API. If we ever want it, we'd need to scrape or use a paid source. For now, Tomatometer from OMDb is what we expose as "Rotten Tomatoes" — the Value already says e.g. "96%" which is the critics score. We should name it clearly: `Source: "Rotten Tomatoes (Tomatometer)"`.
 
-### P3: Fix Missing VoteCount
+### P3: Fix Missing VoteCount ✅ DONE
 
-| Provider | Data Available | Currently Set |
-|----------|---------------|---------------|
-| TVDb | Yes (score) | No VoteCount |
-| TVmaze | Weight field | No |
-| MAL | NumScoringUsers | Search only, not metadata |
-| Letterboxd | FilmStatistics.Counts.Ratings | Not fetched |
-| Kitsu | UserCount | Used, but RatingFrequencies sum would be better |
-| Simkl | No direct count | N/A |
+| Provider | Data Available | Status |
+|----------|---------------|--------|
+| TVDb | Score only (no count) | N/A |
+| TVmaze | Weight (not vote count) | N/A |
+| MAL | NumScoringUsers | Search only |
+| Letterboxd | FilmStatistics.Counts.Ratings | ✅ Done (P1) |
+| Kitsu | UserCount | Already used |
+| Simkl | Ratings.Simkl.Votes | ✅ Done |
 
-### P4: Cross-Provider Rating Enrichment
+### P4: Cross-Provider Rating Enrichment ✅ DONE
 
-- [ ] Implement enrichment in `metadata/service.go` (config: `EnableEnrichment: true`)
-- [ ] After fetching from primary provider (TMDb), concurrently fetch from OMDb (IMDb ID lookup)
-- [ ] Merge ExternalRatings into single slice with dedup by Source
-- [ ] Optionally fetch Trakt/Letterboxd community scores if configured
+- [x] Implement enrichment in `metadata/service.go` (config: `EnableEnrichment: true`)
+- [x] After fetching from primary provider (TMDb), concurrently fetch from OMDb (IMDb ID lookup)
+- [x] Merge ExternalRatings into single slice with dedup by Source
+- [x] Optionally fetch Trakt/Letterboxd community scores if configured (all secondary MovieProvider/TVShowProvider used)
 
-### P5: Fix Provider-Specific Issues
+### P5: Fix Provider-Specific Issues ✅ DONE
 
-- [ ] Trakt: Stop abusing ExternalRatings for certifications — use proper field or drop them
-- [ ] Simkl movies: Add MAL rating (already done for shows, missing for movies)
-- [ ] Simkl types: Add `Tmdb`, `Trakt`, `Letterboxd` to Ratings struct (API returns them)
-- [ ] Letterboxd: Fetch FilmStatistics for vote count
+- [x] Trakt: Stop abusing ExternalRatings for certifications — use proper field or drop them (done in P2)
+- [x] Simkl movies: Add MAL rating (already done for shows, missing for movies) (done in P2)
+- [x] Simkl types: Add `Tmdb`, `Trakt`, `Letterboxd` to Ratings struct + map as ExternalRatings
+- [x] Letterboxd: Fetch FilmStatistics for vote count (already done in P1)
 
 ### P6: User Rating System (new feature)
 
