@@ -1,0 +1,2655 @@
+{
+	"Golang errors": {},
+	"Issues": [
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int64 -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/movie/repository_postgres.go",
+			"code": "273: \t}\n274: \ti32 := int32(i64.Int64)\n275: \treturn \u0026i32\n",
+			"line": "274",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/search/tvshow_service.go",
+			"code": "469: \t\tdoc.FirstAirDate = series.FirstAirDate.Unix()\n470: \t\tdoc.Year = int32(series.FirstAirDate.Year())\n471: \t}\n",
+			"line": "470",
+			"column": "19",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "402: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n403: \t\t\t\ttmdbID := int32(id)\n404: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "403",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "391: \n392: \ttvdbID32 := int32(tvdbID)\n393: \tresult := \u0026metadata.ExternalIDs{\n",
+			"line": "392",
+			"column": "19",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "194: \n195: \treturn mapRemoteIDsToExternalIDs(resp.RemoteIDs, int32(tvdbID)), nil\n196: }\n",
+			"line": "195",
+			"column": "56",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "457: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n458: \t\t\t\ttmdbID := int32(id)\n459: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "458",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "306: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n307: \t\t\t\ttmdbID := int32(id)\n308: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "307",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "208: \tif r.Runtime != nil \u0026\u0026 *r.Runtime \u003e 0 {\n209: \t\truntime := int32(*r.Runtime)\n210: \t\tresult.Runtime = \u0026runtime\n",
+			"line": "209",
+			"column": "19",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "189: func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMetadata {\n190: \ttvdbID := int32(r.ID)\n191: \tresult := \u0026metadata.EpisodeMetadata{\n",
+			"line": "190",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "157: func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadata {\n158: \ttvdbID := int32(r.ID)\n159: \tresult := \u0026metadata.SeasonMetadata{\n",
+			"line": "158",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "133: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n134: \t\t\t\ttmdbID := int32(id)\n135: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "134",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "37: func mapTVShowMetadata(r *SeriesResponse) *metadata.TVShowMetadata {\n38: \ttvdbID := int32(r.ID)\n39: \tresult := \u0026metadata.TVShowMetadata{\n",
+			"line": "38",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "494: \n495: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n496: }\n",
+			"line": "495",
+			"column": "35",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "329: \n330: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n331: }\n",
+			"line": "330",
+			"column": "35",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "184: \n185: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n186: }\n",
+			"line": "185",
+			"column": "35",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "663: \tif r.TVRageID != nil \u0026\u0026 *r.TVRageID \u003e 0 {\n664: \t\trageID := int32(*r.TVRageID)\n665: \t\tresult.TVRageID = \u0026rageID\n",
+			"line": "664",
+			"column": "18",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "659: \tif r.TVDbID != nil \u0026\u0026 *r.TVDbID \u003e 0 {\n660: \t\ttvdbID := int32(*r.TVDbID)\n661: \t\tresult.TVDbID = \u0026tvdbID\n",
+			"line": "660",
+			"column": "18",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "641: \t\tif t.Data.Runtime != nil {\n642: \t\t\truntime := int32(*t.Data.Runtime)\n643: \t\t\tresult.Data.Runtime = \u0026runtime\n",
+			"line": "642",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "409: func mapPersonMetadata(r *PersonResponse) *metadata.PersonMetadata {\n410: \ttmdbID := int32(r.ID)\n411: \tresult := \u0026metadata.PersonMetadata{\n",
+			"line": "410",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "343: \tif r.Runtime != nil \u0026\u0026 *r.Runtime \u003e 0 {\n344: \t\truntime := int32(*r.Runtime)\n345: \t\tresult.Runtime = \u0026runtime\n",
+			"line": "344",
+			"column": "19",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "323: func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMetadata {\n324: \ttmdbID := int32(r.ID)\n325: \tresult := \u0026metadata.EpisodeMetadata{\n",
+			"line": "324",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "313: \t\tif e.Runtime != nil \u0026\u0026 *e.Runtime \u003e 0 {\n314: \t\t\truntime := int32(*e.Runtime)\n315: \t\t\tresult.Episodes[i].Runtime = \u0026runtime\n",
+			"line": "314",
+			"column": "20",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "279: func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadata {\n280: \ttmdbID := int32(r.ID)\n281: \tresult := \u0026metadata.SeasonMetadata{\n",
+			"line": "280",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "174: func mapTVShowMetadata(r *TVResponse) *metadata.TVShowMetadata {\n175: \ttmdbID := int32(r.ID)\n176: \tresult := \u0026metadata.TVShowMetadata{\n",
+			"line": "175",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "73: \tif r.Runtime != nil \u0026\u0026 *r.Runtime \u003e 0 {\n74: \t\truntime := int32(*r.Runtime)\n75: \t\tresult.Runtime = \u0026runtime\n",
+			"line": "74",
+			"column": "19",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/mapping.go",
+			"code": "47: func mapMovieMetadata(r *MovieResponse) *metadata.MovieMetadata {\n48: \ttmdbID := int32(r.ID)\n49: \tresult := \u0026metadata.MovieMetadata{\n",
+			"line": "48",
+			"column": "17",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "445: \t}\n446: \tv := int32(*i)\n447: \treturn \u0026v\n",
+			"line": "446",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "343: \tif meta.VoteCount \u003e 0 {\n344: \t\tvc := int32(meta.VoteCount)\n345: \t\tepisode.VoteCount = \u0026vc\n",
+			"line": "344",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "303: \tseason.AirDate = meta.AirDate\n304: \tseason.EpisodeCount = int32(len(meta.Episodes))\n305: \tseason.TMDbID = meta.TMDbID\n",
+			"line": "304",
+			"column": "29",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "254: \tif meta.VoteCount \u003e 0 {\n255: \t\tvc := int32(meta.VoteCount)\n256: \t\tseries.VoteCount = \u0026vc\n",
+			"line": "255",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "239: \tseries.TotalSeasons = int32(meta.NumberOfSeasons)\n240: \tseries.TotalEpisodes = int32(meta.NumberOfEpisodes)\n241: \tseries.PosterPath = meta.PosterPath\n",
+			"line": "240",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "238: \tseries.LastAirDate = meta.LastAirDate\n239: \tseries.TotalSeasons = int32(meta.NumberOfSeasons)\n240: \tseries.TotalEpisodes = int32(meta.NumberOfEpisodes)\n",
+			"line": "239",
+			"column": "29",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "208: \tif r.VoteCount \u003e 0 {\n209: \t\tvc := int32(r.VoteCount)\n210: \t\tseries.VoteCount = \u0026vc\n",
+			"line": "209",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "176: \t\t\tID:            uuid.Must(uuid.NewV7()),\n177: \t\t\tTMDbID:        int32(n.ID),\n178: \t\t\tName:          n.Name,\n",
+			"line": "177",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "167: func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contenttvshow.Network, error) {\n168: \tmeta, err := a.service.GetTVShowMetadata(ctx, int32(tmdbID), []string{a.languages[0]})\n169: \tif err != nil {\n",
+			"line": "168",
+			"column": "53",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "157: \t\t\tSeriesID:    seriesID,\n158: \t\t\tTMDbGenreID: int32(g.ID),\n159: \t\t\tName:        g.Name,\n",
+			"line": "158",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "147: func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesGenre, error) {\n148: \tmeta, err := a.service.GetTVShowMetadata(ctx, int32(tmdbID), []string{a.languages[0]})\n149: \tif err != nil {\n",
+			"line": "148",
+			"column": "53",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/tvshow/adapter.go",
+			"code": "137: func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesCredit, error) {\n138: \tcredits, err := a.service.GetTVShowCredits(ctx, int32(tmdbID))\n139: \tif err != nil {\n",
+			"line": "138",
+			"column": "55",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "346: \t}\n347: \tv := int32(*i)\n348: \treturn \u0026v\n",
+			"line": "347",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "338: \t}\n339: \tv := int32(*i)\n340: \treturn \u0026v\n",
+			"line": "339",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "215: \tif meta.VoteCount \u003e 0 {\n216: \t\tvc := int32(meta.VoteCount)\n217: \t\tmov.VoteCount = \u0026vc\n",
+			"line": "216",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "205: \tif meta.ReleaseDate != nil {\n206: \t\tyear := int32(meta.ReleaseDate.Year())\n207: \t\tmov.Year = \u0026year\n",
+			"line": "206",
+			"column": "16",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "168: \tif r.VoteCount \u003e 0 {\n169: \t\tvc := int32(r.VoteCount)\n170: \t\tmov.VoteCount = \u0026vc\n",
+			"line": "169",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "137: func (a *Adapter) GetMovieImages(ctx context.Context, tmdbID int) (*metadata.Images, error) {\n138: \treturn a.service.GetMovieImages(ctx, int32(tmdbID))\n139: }\n",
+			"line": "138",
+			"column": "44",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "123: func (a *Adapter) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*contentmovie.Movie, error) {\n124: \tmeta, err := a.service.GetMovieMetadata(ctx, int32(tmdbID), a.languages)\n125: \tif err != nil {\n",
+			"line": "124",
+			"column": "52",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "113: \t\t\tMovieID:     movieID,\n114: \t\t\tTMDbGenreID: int32(g.ID),\n115: \t\t\tName:        g.Name,\n",
+			"line": "114",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "103: func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]contentmovie.MovieGenre, error) {\n104: \tmeta, err := a.service.GetMovieMetadata(ctx, int32(tmdbID), []string{a.languages[0]})\n105: \tif err != nil {\n",
+			"line": "104",
+			"column": "52",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/adapters/movie/adapter.go",
+			"code": "93: func (a *Adapter) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]contentmovie.MovieCredit, error) {\n94: \tcredits, err := a.service.GetMovieCredits(ctx, int32(tmdbID))\n95: \tif err != nil {\n",
+			"line": "94",
+			"column": "54",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/service.go",
+			"code": "368: \n369: \t\tif existingEpisodeID, exists := episodeMap[int32(se.EpisodeNumber)]; exists {\n370: \t\t\t// Update existing episode\n",
+			"line": "369",
+			"column": "51",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/service.go",
+			"code": "324: \t\t\t\tName:         fmt.Sprintf(\"Season %d\", seasonNum),\n325: \t\t\t\tEpisodeCount: int32(len(episodes)),\n326: \t\t\t}\n",
+			"line": "325",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/service.go",
+			"code": "322: \t\t\t\tSeriesID:     seriesID,\n323: \t\t\t\tSeasonNumber: int32(seasonNum),\n324: \t\t\t\tName:         fmt.Sprintf(\"Season %d\", seasonNum),\n",
+			"line": "323",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/service.go",
+			"code": "316: \n317: \t\tif existingSeasonID, exists := seasonMap[int32(seasonNum)]; exists {\n318: \t\t\tseasonID = existingSeasonID\n",
+			"line": "317",
+			"column": "49",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "106: \t\tSeasonNumber:  int32(se.SeasonNumber),\n107: \t\tEpisodeNumber: int32(se.EpisodeNumber),\n108: \t\tTitle:         se.Title,\n",
+			"line": "107",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "105: \t\tTVDbID:        ptr(util.SafeIntToInt32(se.TVDbID)),\n106: \t\tSeasonNumber:  int32(se.SeasonNumber),\n107: \t\tEpisodeNumber: int32(se.EpisodeNumber),\n",
+			"line": "106",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "92: \tif si.Statistics != nil {\n93: \t\tseason.EpisodeCount = int32(si.Statistics.EpisodeCount)\n94: \t}\n",
+			"line": "93",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "81: \t\tSeriesID:     seriesID,\n82: \t\tSeasonNumber: int32(si.SeasonNumber),\n83: \t\tName:         fmt.Sprintf(\"Season %d\", si.SeasonNumber),\n",
+			"line": "82",
+			"column": "22",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "40: \tif ss.Statistics != nil {\n41: \t\tresult.TotalEpisodes = int32(ss.Statistics.TotalEpisodeCount)\n42: \t}\n",
+			"line": "41",
+			"column": "31",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/integration/sonarr/mapper.go",
+			"code": "33: \t\tLastAirDate:      ss.LastAired,\n34: \t\tTotalSeasons:     int32(len(ss.Seasons)),\n35: \t\tCreatedAt:        time.Now(),\n",
+			"line": "34",
+			"column": "26",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "708: \t\t\tSeasonNumber:  int32(seasonNum),\n709: \t\t\tEpisodeNumber: int32(episodeNum),\n710: \t\t\tTitle:         fmt.Sprintf(\"Episode %d\", episodeNum),\n",
+			"line": "709",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "707: \t\t\tSeasonID:      season.ID,\n708: \t\t\tSeasonNumber:  int32(seasonNum),\n709: \t\t\tEpisodeNumber: int32(episodeNum),\n",
+			"line": "708",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "698: \t// Find or create episode\n699: \tepisode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(seasonNum), int32(episodeNum))\n700: \tif err != nil {\n",
+			"line": "699",
+			"column": "86",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "698: \t// Find or create episode\n699: \tepisode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(seasonNum), int32(episodeNum))\n700: \tif err != nil {\n",
+			"line": "699",
+			"column": "68",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "686: \t\t\tSeriesID:     series.ID,\n687: \t\t\tSeasonNumber: int32(seasonNum),\n688: \t\t\tName:         fmt.Sprintf(\"Season %d\", seasonNum),\n",
+			"line": "687",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "678: \t// Find or create season\n679: \tseason, err := w.service.GetSeasonByNumber(ctx, series.ID, int32(seasonNum))\n680: \tif err != nil {\n",
+			"line": "679",
+			"column": "66",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "353: \t\tzap.Int32(\"season\", int32(*seasonNum)),\n354: \t\tzap.Int32(\"episode\", int32(*episodeNum)),\n355: \t)\n",
+			"line": "354",
+			"column": "29",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "352: \t\tzap.String(\"series\", series.Title),\n353: \t\tzap.Int32(\"season\", int32(*seasonNum)),\n354: \t\tzap.Int32(\"episode\", int32(*episodeNum)),\n",
+			"line": "353",
+			"column": "28",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "311: \t\t\t\tSeasonNumber:  int32(*seasonNum),\n312: \t\t\t\tEpisodeNumber: int32(*episodeNum),\n313: \t\t\t}\n",
+			"line": "312",
+			"column": "25",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "310: \t\t\t\tSeasonID:      season.ID,\n311: \t\t\t\tSeasonNumber:  int32(*seasonNum),\n312: \t\t\t\tEpisodeNumber: int32(*episodeNum),\n",
+			"line": "311",
+			"column": "25",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "296: \t\t\tSeasonNumber:  int32(*seasonNum),\n297: \t\t\tEpisodeNumber: int32(*episodeNum),\n298: \t\t\tTitle:         fmt.Sprintf(\"Episode %d\", *episodeNum),\n",
+			"line": "297",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "295: \t\t\tSeasonID:      season.ID,\n296: \t\t\tSeasonNumber:  int32(*seasonNum),\n297: \t\t\tEpisodeNumber: int32(*episodeNum),\n",
+			"line": "296",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "289: \t// Find or create episode\n290: \tepisode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(*seasonNum), int32(*episodeNum))\n291: \tif err != nil {\n",
+			"line": "290",
+			"column": "87",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "289: \t// Find or create episode\n290: \tepisode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(*seasonNum), int32(*episodeNum))\n291: \tif err != nil {\n",
+			"line": "290",
+			"column": "68",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "267: \t\t\t\tSeriesID:     series.ID,\n268: \t\t\t\tSeasonNumber: int32(*seasonNum),\n269: \t\t\t}\n",
+			"line": "268",
+			"column": "24",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "258: \t\t\tSeriesID:     series.ID,\n259: \t\t\tSeasonNumber: int32(*seasonNum),\n260: \t\t\tName:         fmt.Sprintf(\"Season %d\", *seasonNum),\n",
+			"line": "259",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/jobs/jobs.go",
+			"code": "253: \t// Find or create season\n254: \tseason, err := w.service.GetSeasonByNumber(ctx, series.ID, int32(*seasonNum))\n255: \tif err != nil {\n",
+			"line": "254",
+			"column": "66",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/tvshow_handlers.go",
+			"code": "446: \n447: \tprogress, err := h.tvshowService.UpdateEpisodeProgress(ctx, userID, episodeID, int32(req.ProgressSeconds), int32(req.DurationSeconds))\n448: \tif err != nil {\n",
+			"line": "447",
+			"column": "86",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/tvshow_handlers.go",
+			"code": "446: \n447: \tprogress, err := h.tvshowService.UpdateEpisodeProgress(ctx, userID, episodeID, int32(req.ProgressSeconds), int32(req.DurationSeconds))\n448: \tif err != nil {\n",
+			"line": "447",
+			"column": "114",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_metadata.go",
+			"code": "556: \t// Get episode details from shared metadata service\n557: \tepisodeMeta, err := h.metadataService.GetEpisodeMetadata(ctx, int32(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber), nil)\n558: \tif err != nil {\n",
+			"line": "557",
+			"column": "69",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_metadata.go",
+			"code": "480: \t// Get season details from shared metadata service\n481: \tseasonMeta, err := h.metadataService.GetSeasonMetadata(ctx, int32(params.TmdbId), int(params.SeasonNumber), nil)\n482: \tif err != nil {\n",
+			"line": "481",
+			"column": "67",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_metadata.go",
+			"code": "345: \t// Get TV show details from shared metadata service\n346: \ttvMeta, err := h.metadataService.GetTVShowMetadata(ctx, int32(params.TmdbId), nil)\n347: \tif err != nil {\n",
+			"line": "346",
+			"column": "63",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_metadata.go",
+			"code": "183: \t// Get collection details from shared metadata service\n184: \tcollection, err := h.metadataService.GetCollectionMetadata(ctx, int32(params.TmdbId), nil)\n185: \tif err != nil {\n",
+			"line": "184",
+			"column": "71",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler_metadata.go",
+			"code": "94: \t// Get movie details from shared metadata service\n95: \tmovieMeta, err := h.metadataService.GetMovieMetadata(ctx, int32(params.TmdbId), nil)\n96: \tif err != nil {\n",
+			"line": "95",
+			"column": "65",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler.go",
+			"code": "693: \t\tWidth:         int32(width),\n694: \t\tHeight:        int32(height),\n695: \t}\n",
+			"line": "694",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G115",
+			"details": "integer overflow conversion int -\u003e int32",
+			"file": "/home/kilian/dev/revenge/internal/api/handler.go",
+			"code": "692: \t\tMimeType:      contentType,\n693: \t\tWidth:         int32(width),\n694: \t\tHeight:        int32(height),\n",
+			"line": "693",
+			"column": "23",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/service/auth/service.go",
+			"code": "23: // Hash of: \"dummy-password-for-timing-attack-mitigation\"\n24: const dummyPasswordHash = \"$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xXw$DXkAY76TwLxFcMyqpMQQowtoWwhHfcs5Da9lFIid0Bg\"\n25: \n",
+			"line": "24",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/users.sql.go",
+			"code": "572: \n573: const updatePassword = `-- name: UpdatePassword :exec\n574: UPDATE shared.users\n575: SET password_hash = $2, updated_at = NOW()\n576: WHERE id = $1 AND deleted_at IS NULL\n577: `\n578: \n",
+			"line": "573-577",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "511: \n512: const updateSessionActivityByTokenHash = `-- name: UpdateSessionActivityByTokenHash :exec\n513: UPDATE shared.sessions\n514: SET last_activity_at = NOW()\n515: WHERE token_hash = $1\n516:   AND revoked_at IS NULL\n517: `\n518: \n",
+			"line": "512-517",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "482: \n483: const revokeSessionByTokenHash = `-- name: RevokeSessionByTokenHash :exec\n484: UPDATE shared.sessions\n485: SET revoked_at = NOW(),\n486:     revoke_reason = $2\n487: WHERE token_hash = $1\n488: `\n489: \n",
+			"line": "483-488",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "401: \n402: const markSessionMFAVerifiedByTokenHash = `-- name: MarkSessionMFAVerifiedByTokenHash :exec\n403: UPDATE shared.sessions\n404: SET mfa_verified = TRUE,\n405:     mfa_verified_at = NOW()\n406: WHERE token_hash = $1\n407:   AND revoked_at IS NULL\n408: `\n409: \n",
+			"line": "402-408",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "267: \n268: const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one\n269: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions\n270: WHERE token_hash = $1\n271:   AND revoked_at IS NULL\n272:   AND expires_at \u003e NOW()\n273: LIMIT 1\n274: `\n275: \n",
+			"line": "268-274",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/sessions.sql.go",
+			"code": "236: \n237: const getSessionByRefreshTokenHash = `-- name: GetSessionByRefreshTokenHash :one\n238: SELECT id, user_id, token_hash, refresh_token_hash, ip_address, user_agent, device_name, scopes, expires_at, last_activity_at, created_at, revoked_at, revoke_reason, mfa_verified, mfa_verified_at FROM shared.sessions\n239: WHERE refresh_token_hash = $1\n240:   AND revoked_at IS NULL\n241:   AND expires_at \u003e NOW()\n242: LIMIT 1\n243: `\n244: \n",
+			"line": "237-243",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "769: \n770: const verifyTOTPSecret = `-- name: VerifyTOTPSecret :exec\n771: UPDATE public.user_totp_secrets\n772: SET verified_at = NOW(),\n773:     enabled = true,\n774:     updated_at = NOW()\n775: WHERE user_id = $1 AND verified_at IS NULL\n776: `\n777: \n",
+			"line": "770-776",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "733: \n734: const updateWebAuthnCredentialName = `-- name: UpdateWebAuthnCredentialName :exec\n735: UPDATE public.webauthn_credentials\n736: SET name = $2\n737: WHERE id = $1\n738: `\n739: \n",
+			"line": "734-738",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "695: \n696: const updateTOTPSecret = `-- name: UpdateTOTPSecret :exec\n697: UPDATE public.user_totp_secrets\n698: SET encrypted_secret = $2,\n699:     verified_at = NULL,\n700:     enabled = false,\n701:     updated_at = NOW()\n702: WHERE user_id = $1\n703: `\n704: \n",
+			"line": "696-703",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "530: \n531: const listWebAuthnCredentials = `-- name: ListWebAuthnCredentials :many\n532: \n533: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n534: WHERE user_id = $1\n535: ORDER BY last_used_at DESC NULLS LAST, created_at DESC\n536: `\n537: \n",
+			"line": "531-536",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "484: \n485: const getWebAuthnCredentialByCredentialID = `-- name: GetWebAuthnCredentialByCredentialID :one\n486: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n487: WHERE credential_id = $1\n488: `\n489: \n",
+			"line": "485-488",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "454: \n455: const getWebAuthnCredential = `-- name: GetWebAuthnCredential :one\n456: SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials\n457: WHERE id = $1\n458: `\n459: \n",
+			"line": "455-458",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "429: \n430: const getUserTOTPSecret = `-- name: GetUserTOTPSecret :one\n431: \n432: SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets\n433: WHERE user_id = $1\n434: `\n435: \n",
+			"line": "430-434",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "267: \n268: const deleteWebAuthnCredential = `-- name: DeleteWebAuthnCredential :exec\n269: DELETE FROM public.webauthn_credentials\n270: WHERE id = $1 AND user_id = $2\n271: `\n272: \n",
+			"line": "268-271",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "245: \n246: const deleteTOTPSecret = `-- name: DeleteTOTPSecret :exec\n247: DELETE FROM public.user_totp_secrets\n248: WHERE user_id = $1\n249: `\n250: \n",
+			"line": "246-249",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "165: \n166: const createWebAuthnCredential = `-- name: CreateWebAuthnCredential :one\n167: INSERT INTO public.webauthn_credentials (\n168:     user_id,\n169:     credential_id,\n170:     public_key,\n171:     attestation_type,\n172:     transports,\n173:     backup_eligible,\n174:     backup_state,\n175:     user_present,\n176:     user_verified,\n177:     aaguid,\n178:     name\n179: ) VALUES (\n180:     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11\n181: ) RETURNING id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at\n182: `\n183: \n",
+			"line": "166-182",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "80: \n81: const createTOTPSecret = `-- name: CreateTOTPSecret :one\n82: INSERT INTO public.user_totp_secrets (\n83:     user_id,\n84:     encrypted_secret,\n85:     enabled\n86: ) VALUES (\n87:     $1, $2, false\n88: ) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at\n89: `\n90: \n",
+			"line": "81-89",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/mfa.sql.go",
+			"code": "62: \n63: const countWebAuthnCredentials = `-- name: CountWebAuthnCredentials :one\n64: SELECT COUNT(*) FROM public.webauthn_credentials\n65: WHERE user_id = $1\n66: `\n67: \n",
+			"line": "63-66",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "599: \n600: const updateAuthTokenLastUsed = `-- name: UpdateAuthTokenLastUsed :exec\n601: UPDATE shared.auth_tokens\n602: SET last_used_at = NOW(),\n603:     updated_at = NOW()\n604: WHERE id = $1\n605: `\n606: \n",
+			"line": "600-605",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "587: \n588: const revokeAuthTokenByHash = `-- name: RevokeAuthTokenByHash :exec\n589: UPDATE shared.auth_tokens\n590: SET revoked_at = NOW(),\n591:     updated_at = NOW()\n592: WHERE token_hash = $1\n593: `\n594: \n",
+			"line": "588-593",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "575: \n576: const revokeAuthToken = `-- name: RevokeAuthToken :exec\n577: UPDATE shared.auth_tokens\n578: SET revoked_at = NOW(),\n579:     updated_at = NOW()\n580: WHERE id = $1\n581: `\n582: \n",
+			"line": "576-581",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "556: \n557: const revokeAllUserAuthTokensExcept = `-- name: RevokeAllUserAuthTokensExcept :exec\n558: UPDATE shared.auth_tokens\n559: SET revoked_at = NOW(),\n560:     updated_at = NOW()\n561: WHERE user_id = $1\n562:   AND id != $2\n563:   AND revoked_at IS NULL\n564: `\n565: \n",
+			"line": "557-564",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "543: \n544: const revokeAllUserAuthTokens = `-- name: RevokeAllUserAuthTokens :exec\n545: UPDATE shared.auth_tokens\n546: SET revoked_at = NOW(),\n547:     updated_at = NOW()\n548: WHERE user_id = $1\n549:   AND revoked_at IS NULL\n550: `\n551: \n",
+			"line": "544-550",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "511: \n512: const markPasswordResetTokenUsed = `-- name: MarkPasswordResetTokenUsed :exec\n513: UPDATE shared.password_reset_tokens\n514: SET used_at = NOW()\n515: WHERE id = $1\n516: `\n517: \n",
+			"line": "512-516",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "500: \n501: const markEmailVerificationTokenUsed = `-- name: MarkEmailVerificationTokenUsed :exec\n502: UPDATE shared.email_verification_tokens\n503: SET verified_at = NOW()\n504: WHERE id = $1\n505: `\n506: \n",
+			"line": "501-505",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "488: \n489: const invalidateUserPasswordResetTokens = `-- name: InvalidateUserPasswordResetTokens :exec\n490: UPDATE shared.password_reset_tokens\n491: SET used_at = NOW()\n492: WHERE user_id = $1\n493:   AND used_at IS NULL\n494: `\n495: \n",
+			"line": "489-494",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "476: \n477: const invalidateUserEmailVerificationTokens = `-- name: InvalidateUserEmailVerificationTokens :exec\n478: UPDATE shared.email_verification_tokens\n479: SET verified_at = NOW()\n480: WHERE user_id = $1\n481:   AND verified_at IS NULL\n482: `\n483: \n",
+			"line": "477-482",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "464: \n465: const invalidateEmailVerificationTokensByEmail = `-- name: InvalidateEmailVerificationTokensByEmail :exec\n466: UPDATE shared.email_verification_tokens\n467: SET verified_at = NOW()\n468: WHERE email = $1\n469:   AND verified_at IS NULL\n470: `\n471: \n",
+			"line": "465-470",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "440: \n441: const getPasswordResetToken = `-- name: GetPasswordResetToken :one\n442: SELECT id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at FROM shared.password_reset_tokens\n443: WHERE token_hash = $1\n444:   AND used_at IS NULL\n445:   AND expires_at \u003e NOW()\n446: LIMIT 1\n447: `\n448: \n",
+			"line": "441-447",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "415: \n416: const getEmailVerificationToken = `-- name: GetEmailVerificationToken :one\n417: SELECT id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at FROM shared.email_verification_tokens\n418: WHERE token_hash = $1\n419:   AND verified_at IS NULL\n420:   AND expires_at \u003e NOW()\n421: LIMIT 1\n422: `\n423: \n",
+			"line": "416-422",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "373: \n374: const getAuthTokensByUserID = `-- name: GetAuthTokensByUserID :many\n375: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n376: WHERE user_id = $1\n377:   AND revoked_at IS NULL\n378:   AND expires_at \u003e NOW()\n379: ORDER BY created_at DESC\n380: `\n381: \n",
+			"line": "374-380",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "325: \n326: const getAuthTokensByDeviceFingerprint = `-- name: GetAuthTokensByDeviceFingerprint :many\n327: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n328: WHERE user_id = $1\n329:   AND device_fingerprint = $2\n330:   AND revoked_at IS NULL\n331:   AND expires_at \u003e NOW()\n332: ORDER BY created_at DESC\n333: `\n334: \n",
+			"line": "326-333",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "296: \n297: const getAuthTokenByHash = `-- name: GetAuthTokenByHash :one\n298: SELECT id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at FROM shared.auth_tokens\n299: WHERE token_hash = $1\n300:   AND revoked_at IS NULL\n301:   AND expires_at \u003e NOW()\n302: LIMIT 1\n303: `\n304: \n",
+			"line": "297-303",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "285: \n286: const deleteVerifiedEmailTokens = `-- name: DeleteVerifiedEmailTokens :exec\n287: DELETE FROM shared.email_verification_tokens\n288: WHERE verified_at IS NOT NULL\n289:   AND verified_at \u003c NOW() - INTERVAL '7 days'\n290: `\n291: \n",
+			"line": "286-290",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "274: \n275: const deleteUsedPasswordResetTokens = `-- name: DeleteUsedPasswordResetTokens :exec\n276: DELETE FROM shared.password_reset_tokens\n277: WHERE used_at IS NOT NULL\n278:   AND used_at \u003c NOW() - INTERVAL '7 days'\n279: `\n280: \n",
+			"line": "275-279",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "263: \n264: const deleteRevokedAuthTokens = `-- name: DeleteRevokedAuthTokens :exec\n265: DELETE FROM shared.auth_tokens\n266: WHERE revoked_at IS NOT NULL\n267:   AND revoked_at \u003c NOW() - INTERVAL '30 days'\n268: `\n269: \n",
+			"line": "264-268",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "243: \n244: const deleteExpiredPasswordResetTokens = `-- name: DeleteExpiredPasswordResetTokens :exec\n245: DELETE FROM shared.password_reset_tokens\n246: WHERE expires_at \u003c NOW()\n247: `\n248: \n",
+			"line": "244-247",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "233: \n234: const deleteExpiredEmailVerificationTokens = `-- name: DeleteExpiredEmailVerificationTokens :exec\n235: DELETE FROM shared.email_verification_tokens\n236: WHERE expires_at \u003c NOW()\n237: `\n238: \n",
+			"line": "234-237",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "223: \n224: const deleteExpiredAuthTokens = `-- name: DeleteExpiredAuthTokens :exec\n225: DELETE FROM shared.auth_tokens\n226: WHERE expires_at \u003c NOW()\n227: `\n228: \n",
+			"line": "224-227",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "179: \n180: const createPasswordResetToken = `-- name: CreatePasswordResetToken :one\n181: \n182: INSERT INTO shared.password_reset_tokens (\n183:     user_id,\n184:     token_hash,\n185:     ip_address,\n186:     user_agent,\n187:     expires_at\n188: ) VALUES (\n189:     $1, $2, $3, $4, $5\n190: ) RETURNING id, user_id, token_hash, ip_address, user_agent, expires_at, used_at, created_at\n191: `\n192: \n",
+			"line": "180-191",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "131: \n132: const createEmailVerificationToken = `-- name: CreateEmailVerificationToken :one\n133: \n134: INSERT INTO shared.email_verification_tokens (\n135:     user_id,\n136:     token_hash,\n137:     email,\n138:     ip_address,\n139:     user_agent,\n140:     expires_at\n141: ) VALUES (\n142:     $1, $2, $3, $4, $5, $6\n143: ) RETURNING id, user_id, token_hash, email, ip_address, user_agent, expires_at, verified_at, created_at\n144: `\n145: \n",
+			"line": "132-144",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "75: \n76: const createAuthToken = `-- name: CreateAuthToken :one\n77: INSERT INTO shared.auth_tokens (\n78:     user_id,\n79:     token_hash,\n80:     token_type,\n81:     device_name,\n82:     device_fingerprint,\n83:     ip_address,\n84:     user_agent,\n85:     expires_at\n86: ) VALUES (\n87:     $1, $2, $3, $4, $5, $6, $7, $8\n88: ) RETURNING id, user_id, token_hash, token_type, device_name, device_fingerprint, ip_address, user_agent, expires_at, revoked_at, last_used_at, created_at, updated_at\n89: `\n90: \n",
+			"line": "76-89",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/auth_tokens.sql.go",
+			"code": "25: \n26: const countActiveAuthTokensByUser = `-- name: CountActiveAuthTokensByUser :one\n27: SELECT COUNT(*) FROM shared.auth_tokens\n28: WHERE user_id = $1\n29:   AND revoked_at IS NULL\n30:   AND expires_at \u003e NOW()\n31: `\n32: \n",
+			"line": "26-31",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "290: \n291: const updateAPIKeyScopes = `-- name: UpdateAPIKeyScopes :exec\n292: UPDATE shared.api_keys\n293: SET scopes = $2, updated_at = NOW()\n294: WHERE id = $1\n295: `\n296: \n",
+			"line": "291-295",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "279: \n280: const updateAPIKeyLastUsed = `-- name: UpdateAPIKeyLastUsed :exec\n281: UPDATE shared.api_keys\n282: SET last_used_at = NOW(), updated_at = NOW()\n283: WHERE id = $1\n284: `\n285: \n",
+			"line": "280-284",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "268: \n269: const revokeAPIKey = `-- name: RevokeAPIKey :exec\n270: UPDATE shared.api_keys\n271: SET is_active = false, updated_at = NOW()\n272: WHERE id = $1\n273: `\n274: \n",
+			"line": "269-273",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "229: \n230: const listUserAPIKeys = `-- name: ListUserAPIKeys :many\n231: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n232: WHERE user_id = $1\n233: ORDER BY created_at DESC\n234: `\n235: \n",
+			"line": "230-234",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "190: \n191: const listActiveUserAPIKeys = `-- name: ListActiveUserAPIKeys :many\n192: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n193: WHERE user_id = $1 AND is_active = true\n194: ORDER BY created_at DESC\n195: `\n196: \n",
+			"line": "191-195",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "176: \n177: const getAPIKeyUsageCount = `-- name: GetAPIKeyUsageCount :one\n178: SELECT last_used_at FROM shared.api_keys\n179: WHERE id = $1\n180: `\n181: \n",
+			"line": "177-180",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "150: \n151: const getAPIKeyByPrefix = `-- name: GetAPIKeyByPrefix :one\n152: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n153: WHERE key_prefix = $1 AND is_active = true\n154: LIMIT 1\n155: `\n156: \n",
+			"line": "151-155",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "125: \n126: const getAPIKeyByHash = `-- name: GetAPIKeyByHash :one\n127: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n128: WHERE key_hash = $1\n129: `\n130: \n",
+			"line": "126-129",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "100: \n101: const getAPIKey = `-- name: GetAPIKey :one\n102: SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys\n103: WHERE id = $1\n104: `\n105: \n",
+			"line": "101-104",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "88: \n89: const deleteExpiredAPIKeys = `-- name: DeleteExpiredAPIKeys :exec\n90: DELETE FROM shared.api_keys\n91: WHERE expires_at IS NOT NULL\n92:   AND expires_at \u003c NOW()\n93:   AND is_active = false\n94: `\n95: \n",
+			"line": "89-94",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "78: \n79: const deleteAPIKey = `-- name: DeleteAPIKey :exec\n80: DELETE FROM shared.api_keys\n81: WHERE id = $1\n82: `\n83: \n",
+			"line": "79-82",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "26: \n27: const createAPIKey = `-- name: CreateAPIKey :one\n28: INSERT INTO shared.api_keys (\n29:     user_id,\n30:     name,\n31:     description,\n32:     key_hash,\n33:     key_prefix,\n34:     scopes,\n35:     expires_at\n36: ) VALUES (\n37:     $1, $2, $3, $4, $5, $6, $7\n38: ) RETURNING id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at\n39: `\n40: \n",
+			"line": "27-39",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/infra/database/db/apikeys.sql.go",
+			"code": "14: \n15: const countUserAPIKeys = `-- name: CountUserAPIKeys :one\n16: SELECT COUNT(*) FROM shared.api_keys\n17: WHERE user_id = $1 AND is_active = true\n18: `\n19: \n",
+			"line": "15-18",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/db/credits.sql.go",
+			"code": "128: \n129: const deleteSeriesCredits = `-- name: DeleteSeriesCredits :exec\n130: DELETE FROM tvshow.series_credits WHERE series_id = $1\n131: `\n132: \n",
+			"line": "129-131",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/db/credits.sql.go",
+			"code": "119: \n120: const deleteEpisodeCredits = `-- name: DeleteEpisodeCredits :exec\n121: DELETE FROM tvshow.episode_credits WHERE episode_id = $1\n122: `\n123: \n",
+			"line": "120-122",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/db/credits.sql.go",
+			"code": "66: \n67: const createSeriesCredit = `-- name: CreateSeriesCredit :one\n68: INSERT INTO tvshow.series_credits (\n69:     series_id, tmdb_person_id, name, credit_type,\n70:     character, cast_order, job, department, profile_path\n71: ) VALUES (\n72:     $1, $2, $3, $4,\n73:     $5, $6, $7, $8, $9\n74: )\n75: RETURNING id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at\n76: `\n77: \n",
+			"line": "67-76",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/tvshow/db/credits.sql.go",
+			"code": "13: \n14: const createEpisodeCredit = `-- name: CreateEpisodeCredit :one\n15: INSERT INTO tvshow.episode_credits (\n16:     episode_id, tmdb_person_id, name, credit_type,\n17:     character, cast_order, job, department, profile_path\n18: ) VALUES (\n19:     $1, $2, $3, $4,\n20:     $5, $6, $7, $8, $9\n21: )\n22: RETURNING id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at\n23: `\n24: \n",
+			"line": "14-23",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/movie/db/movies.sql.go",
+			"code": "442: \n443: const deleteMovieCredits = `-- name: DeleteMovieCredits :exec\n444: UPDATE public.movie_credits\n445: SET deleted_at = NOW()\n446: WHERE movie_id = $1\n447: `\n448: \n",
+			"line": "443-447",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "LOW",
+			"cwe": {
+				"id": "798",
+				"url": "https://cwe.mitre.org/data/definitions/798.html"
+			},
+			"rule_id": "G101",
+			"details": "Potential hardcoded credentials",
+			"file": "/home/kilian/dev/revenge/internal/content/movie/db/movies.sql.go",
+			"code": "236: \n237: const createMovieCredit = `-- name: CreateMovieCredit :one\n238: INSERT INTO public.movie_credits (\n239:     movie_id,\n240:     tmdb_person_id,\n241:     name,\n242:     credit_type,\n243:     character,\n244:     job,\n245:     department,\n246:     cast_order,\n247:     profile_path\n248: ) VALUES (\n249:     $1, $2, $3, $4, $5, $6, $7, $8, $9\n250: ) RETURNING id, movie_id, tmdb_person_id, name, profile_path, credit_type, character, cast_order, job, department, created_at, updated_at\n251: `\n252: \n",
+			"line": "237-251",
+			"column": "7",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "402: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n403: \t\t\t\ttmdbID := int32(id)\n404: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "403",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "391: \n392: \ttvdbID32 := int32(tvdbID)\n393: \tresult := \u0026metadata.ExternalIDs{\n",
+			"line": "392",
+			"column": "14",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/provider.go",
+			"code": "194: \n195: \treturn mapRemoteIDsToExternalIDs(resp.RemoteIDs, int32(tvdbID)), nil\n196: }\n",
+			"line": "195",
+			"column": "51",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "457: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n458: \t\t\t\ttmdbID := int32(id)\n459: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "458",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "306: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n307: \t\t\t\ttmdbID := int32(id)\n308: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "307",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tvdb/mapping.go",
+			"code": "133: \t\t\tif id, err := strconv.Atoi(remote.ID); err == nil {\n134: \t\t\t\ttmdbID := int32(id)\n135: \t\t\t\tresult.TMDbID = \u0026tmdbID\n",
+			"line": "134",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "494: \n495: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n496: }\n",
+			"line": "495",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "329: \n330: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n331: }\n",
+			"line": "330",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "HIGH",
+			"confidence": "MEDIUM",
+			"cwe": {
+				"id": "190",
+				"url": "https://cwe.mitre.org/data/definitions/190.html"
+			},
+			"rule_id": "G109",
+			"details": "Potential Integer overflow made by strconv.Atoi result conversion to int16/32",
+			"file": "/home/kilian/dev/revenge/internal/service/metadata/providers/tmdb/provider.go",
+			"code": "184: \n185: \treturn mapExternalIDs(resp, int32(tmdbID)), nil\n186: }\n",
+			"line": "185",
+			"column": "30",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "78",
+				"url": "https://cwe.mitre.org/data/definitions/78.html"
+			},
+			"rule_id": "G204",
+			"details": "Subprocess launched with variable",
+			"file": "/home/kilian/dev/revenge/internal/playback/transcode/ffmpeg.go",
+			"code": "112: \n113: \treturn exec.Command(ffmpegPath, args...)\n114: }\n",
+			"line": "113",
+			"column": "9",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "78",
+				"url": "https://cwe.mitre.org/data/definitions/78.html"
+			},
+			"rule_id": "G204",
+			"details": "Subprocess launched with variable",
+			"file": "/home/kilian/dev/revenge/internal/playback/subtitle/extract.go",
+			"code": "30: \n31: \tcmd := exec.CommandContext(ctx, ffmpegPath, args...)\n32: \tif output, err := cmd.CombinedOutput(); err != nil {\n",
+			"line": "31",
+			"column": "9",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "22",
+				"url": "https://cwe.mitre.org/data/definitions/22.html"
+			},
+			"rule_id": "G304",
+			"details": "Potential file inclusion via variable",
+			"file": "/home/kilian/dev/revenge/internal/service/storage/storage.go",
+			"code": "103: \n104: \tfile, err := os.Open(fullPath)\n105: \tif err != nil {\n",
+			"line": "104",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null,
+			"autofix": "Consider using os.Root to scope file access under a fixed root (Go \u003e=1.24). Prefer root.Open/root.Stat over os.Open/os.Stat to prevent directory traversal."
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "22",
+				"url": "https://cwe.mitre.org/data/definitions/22.html"
+			},
+			"rule_id": "G304",
+			"details": "Potential file inclusion via variable",
+			"file": "/home/kilian/dev/revenge/internal/service/storage/storage.go",
+			"code": "73: \t// Create file\n74: \tfile, err := os.Create(fullPath)\n75: \tif err != nil {\n",
+			"line": "74",
+			"column": "15",
+			"nosec": false,
+			"suppressions": null,
+			"autofix": "Consider using os.Root to scope file access under a fixed root (Go \u003e=1.24). Prefer root.Open/root.Stat over os.Open/os.Stat to prevent directory traversal."
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "22",
+				"url": "https://cwe.mitre.org/data/definitions/22.html"
+			},
+			"rule_id": "G304",
+			"details": "Potential file inclusion via variable",
+			"file": "/home/kilian/dev/revenge/internal/playback/hls/manifest.go",
+			"code": "142: \tfor i := 0; i \u003c 100; i++ {\n143: \t\tcontent, err = os.ReadFile(playlistPath)\n144: \t\tif err == nil \u0026\u0026 len(content) \u003e 0 {\n",
+			"line": "143",
+			"column": "18",
+			"nosec": false,
+			"suppressions": null,
+			"autofix": "Consider using os.Root to scope file access under a fixed root (Go \u003e=1.24). Prefer root.Open/root.Stat over os.Open/os.Stat to prevent directory traversal."
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "/home/kilian/dev/revenge/internal/playback/transcode/pipeline.go",
+			"code": "74: \taudioDir := filepath.Join(segmentDir, \"audio\", fmt.Sprintf(\"%d\", trackIndex))\n75: \tif err := os.MkdirAll(audioDir, 0o755); err != nil {\n76: \t\treturn nil, fmt.Errorf(\"failed to create audio rendition dir %s: %w\", audioDir, err)\n",
+			"line": "75",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "/home/kilian/dev/revenge/internal/playback/transcode/pipeline.go",
+			"code": "57: \tprofileDir := filepath.Join(segmentDir, pd.Name)\n58: \tif err := os.MkdirAll(profileDir, 0o755); err != nil {\n59: \t\treturn nil, fmt.Errorf(\"failed to create segment dir %s: %w\", profileDir, err)\n",
+			"line": "58",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "/home/kilian/dev/revenge/internal/playback/subtitle/extract.go",
+			"code": "15: func ExtractToWebVTT(ctx context.Context, ffmpegPath, inputFile, outputDir string, trackIndex int) (string, error) {\n16: \tif err := os.MkdirAll(outputDir, 0o755); err != nil {\n17: \t\treturn \"\", fmt.Errorf(\"failed to create subtitle output dir: %w\", err)\n",
+			"line": "16",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		},
+		{
+			"severity": "MEDIUM",
+			"confidence": "HIGH",
+			"cwe": {
+				"id": "276",
+				"url": "https://cwe.mitre.org/data/definitions/276.html"
+			},
+			"rule_id": "G301",
+			"details": "Expect directory permissions to be 0750 or less",
+			"file": "/home/kilian/dev/revenge/internal/playback/service.go",
+			"code": "106: \t// 5. Create segment directory\n107: \tif err := os.MkdirAll(segmentDir, 0o755); err != nil {\n108: \t\ts.sessions.Delete(sessionID)\n",
+			"line": "107",
+			"column": "12",
+			"nosec": false,
+			"suppressions": null
+		}
+	],
+	"Stats": {
+		"files": 279,
+		"lines": 76354,
+		"nosec": 13,
+		"found": 165
+	},
+	"GosecVersion": "2.22.11"
+}
