@@ -1150,7 +1150,8 @@ WHERE
     AND deleted_at IS NULL
 ORDER BY cast_order ASC NULLS LAST
 LIMIT $2
-OFFSET $3
+OFFSET
+    $3
 `
 
 type ListMovieCastParams struct {
@@ -1209,7 +1210,8 @@ ORDER BY
     END,
     name ASC
 LIMIT $2
-OFFSET $3
+OFFSET
+    $3
 `
 
 type ListMovieCrewParams struct {

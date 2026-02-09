@@ -304,7 +304,7 @@ Before implementing cache-related fixes, verify against current package document
 ### Tier 2 — High Value (API Readiness + Dedup)
 
 - [x] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`) ✅ `4d8f8919` — 7 endpoints updated, proper caching with pagination in cache keys
-- [ ] **2B.3**: Standardize query param naming to snake_case
+- [x] **2B.3**: Standardize query param naming to snake_case ✅ `9a9babe2` — renamed `orderBy`→`order_by`, `minVotes`→`min_votes` in OpenAPI spec + regenerated ogen
 - [ ] **2B.5**: Add admin user management endpoints (list+search, delete)
 - [ ] **5B.1**: Index episodes in Typesense (with series context)
 - [ ] **5B.2**: Index seasons in Typesense (named seasons)
@@ -312,15 +312,15 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **5B.4**: Add `/search/multi` unified search endpoint
 - [x] **7.1**: Extract `requireAdmin()` helper — migrated 42 handlers across 7 files (commit `6523726e`)
 - [x] **7.4**: Create `internal/util/ptr/` generic pointer package — `ptr.To`, `ptr.Value`, `ptr.ValueOr`, etc (commit `3847c32b`)
-- [ ] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs
-- [ ] **2B.1**: Add CSP middleware
-- [ ] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib`
+- [x] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs ✅ `c880e1eb` — base structs + tests, embedded in 10 providers, removed ~85 stub methods
+- [x] **2B.1**: Add CSP middleware ✅ `87f458c6` — SecurityHeadersMiddleware with CSP, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy
+- [x] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib` ✅ `8e4a3b3e` — switched driver to pgx, lib/pq remains indirect via embedded-postgres
 
 ### Tier 3 — Medium Value
 
 - [x] **3B.7**: Make activity logging async (River job on `low` queue) ✅ done in 3B.1 (`13c480e9`)
-- [ ] **7.2**: Extract `externalRatingsToOgen()` helper
-- [ ] **7.6**: Move test helpers to `internal/testutil/helpers.go`
+- [x] **7.2**: Extract `externalRatingsToOgen()` helper ✅ `cc2d0d4c` — shared `content.ExternalRating` type + type aliases + one converter replacing 4 copies
+- [x] **7.6**: Move test helpers to `internal/testutil/helpers.go` ✅ `56678c6a` — added `UniqueUser()`, deduplicated 3 `createTestUser` functions
 - [ ] **2B.2**: Add Cache-Control headers on JSON API responses
 - [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
 - [ ] **2B.7**: Add bulk episode watched endpoint

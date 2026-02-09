@@ -85,10 +85,6 @@ type Querier interface {
 	MarkEpisodeWatched(ctx context.Context, arg MarkEpisodeWatchedParams) (TvshowEpisodeWatched, error)
 	SearchSeriesByTitle(ctx context.Context, arg SearchSeriesByTitleParams) ([]TvshowSeries, error)
 	SearchSeriesByTitleAnyLanguage(ctx context.Context, arg SearchSeriesByTitleAnyLanguageParams) ([]TvshowSeries, error)
-	// Placeholder query for TV show content module (v0.3.0+)
-	// This minimal query is here to satisfy sqlc's requirement for non-empty query directories
-	// Real TV show queries will be implemented in v0.3.0
-	TVShowPlaceholder(ctx context.Context) (int32, error)
 	UpdateEpisode(ctx context.Context, arg UpdateEpisodeParams) (TvshowEpisode, error)
 	UpdateEpisodeFile(ctx context.Context, arg UpdateEpisodeFileParams) (TvshowEpisodeFile, error)
 	UpdateSeason(ctx context.Context, arg UpdateSeasonParams) (TvshowSeason, error)

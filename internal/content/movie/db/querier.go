@@ -57,10 +57,6 @@ type Querier interface {
 	ListRecentlyAdded(ctx context.Context, arg ListRecentlyAddedParams) ([]Movie, error)
 	ListTopRated(ctx context.Context, arg ListTopRatedParams) ([]Movie, error)
 	ListWatchedMovies(ctx context.Context, arg ListWatchedMoviesParams) ([]ListWatchedMoviesRow, error)
-	// Placeholder query for movie content module (v0.3.0+)
-	// This minimal query is here to satisfy sqlc's requirement for non-empty query directories
-	// Real movie queries will be implemented in v0.3.0
-	MoviePlaceholder(ctx context.Context) (int32, error)
 	RemoveMovieFromCollection(ctx context.Context, arg RemoveMovieFromCollectionParams) error
 	SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTitleParams) ([]Movie, error)
 	SearchMoviesByTitleAnyLanguage(ctx context.Context, arg SearchMoviesByTitleAnyLanguageParams) ([]Movie, error)
