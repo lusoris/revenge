@@ -911,6 +911,14 @@ type Invoker interface {
 	//
 	// POST /api/v1/tvshows/episodes/{id}/watched
 	MarkTVEpisodeWatched(ctx context.Context, request OptMarkTVEpisodeWatchedReq, params MarkTVEpisodeWatchedParams) (MarkTVEpisodeWatchedRes, error)
+	// MarkTVEpisodesBulkWatched invokes markTVEpisodesBulkWatched operation.
+	//
+	// Mark multiple episodes as fully watched in a single request.
+	// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+	// Episodes that do not exist are silently skipped.
+	//
+	// POST /api/v1/tvshows/episodes/bulk-watched
+	MarkTVEpisodesBulkWatched(ctx context.Context, request *BulkEpisodesWatchedRequest) (MarkTVEpisodesBulkWatchedRes, error)
 	// OidcAuthorize invokes oidcAuthorize operation.
 	//
 	// Redirects to the OIDC provider's authorization endpoint.
@@ -20016,6 +20024,129 @@ func (c *Client) sendMarkTVEpisodeWatched(ctx context.Context, request OptMarkTV
 
 	stage = "DecodeResponse"
 	result, err := decodeMarkTVEpisodeWatchedResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// MarkTVEpisodesBulkWatched invokes markTVEpisodesBulkWatched operation.
+//
+// Mark multiple episodes as fully watched in a single request.
+// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+// Episodes that do not exist are silently skipped.
+//
+// POST /api/v1/tvshows/episodes/bulk-watched
+func (c *Client) MarkTVEpisodesBulkWatched(ctx context.Context, request *BulkEpisodesWatchedRequest) (MarkTVEpisodesBulkWatchedRes, error) {
+	res, err := c.sendMarkTVEpisodesBulkWatched(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendMarkTVEpisodesBulkWatched(ctx context.Context, request *BulkEpisodesWatchedRequest) (res MarkTVEpisodesBulkWatchedRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("markTVEpisodesBulkWatched"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/v1/tvshows/episodes/bulk-watched"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, MarkTVEpisodesBulkWatchedOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/tvshows/episodes/bulk-watched"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeMarkTVEpisodesBulkWatchedRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, MarkTVEpisodesBulkWatchedOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+		{
+			stage = "Security:ApiKeyAuth"
+			switch err := c.securityApiKeyAuth(ctx, MarkTVEpisodesBulkWatchedOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+				{0b00000010},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeMarkTVEpisodesBulkWatchedResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

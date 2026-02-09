@@ -147,6 +147,7 @@ const (
 	LogoutCurrentOperation                   OperationName = "LogoutCurrent"
 	MarkAsWatchedOperation                   OperationName = "MarkAsWatched"
 	MarkTVEpisodeWatchedOperation            OperationName = "MarkTVEpisodeWatched"
+	MarkTVEpisodesBulkWatchedOperation       OperationName = "MarkTVEpisodesBulkWatched"
 	OidcAuthorizeOperation                   OperationName = "OidcAuthorize"
 	OidcCallbackOperation                    OperationName = "OidcCallback"
 	RefreshMovieMetadataOperation            OperationName = "RefreshMovieMetadata"

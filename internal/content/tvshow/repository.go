@@ -98,6 +98,7 @@ type Repository interface {
 	// Watch Progress
 	CreateOrUpdateWatchProgress(ctx context.Context, params CreateWatchProgressParams) (*EpisodeWatched, error)
 	MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID, durationSeconds int32) (*EpisodeWatched, error)
+	MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error)
 	GetWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error)
 	DeleteWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) error
 	DeleteSeriesWatchProgress(ctx context.Context, userID, seriesID uuid.UUID) error

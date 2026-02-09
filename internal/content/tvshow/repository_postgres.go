@@ -1078,6 +1078,17 @@ func (r *postgresRepository) MarkEpisodeWatched(ctx context.Context, userID, epi
 	return dbEpisodeWatchedToEpisodeWatched(dbWatched), nil
 }
 
+func (r *postgresRepository) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	affected, err := r.queries.MarkEpisodesWatchedBulk(ctx, tvshowdb.MarkEpisodesWatchedBulkParams{
+		UserID:     userID,
+		EpisodeIds: episodeIDs,
+	})
+	if err != nil {
+		return 0, fmt.Errorf("failed to bulk mark episodes watched: %w", err)
+	}
+	return affected, nil
+}
+
 func (r *postgresRepository) GetWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error) {
 	watched, err := r.queries.GetEpisodeWatchProgress(ctx, tvshowdb.GetEpisodeWatchProgressParams{
 		UserID:    userID,

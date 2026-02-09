@@ -3037,6 +3037,37 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/tvshows/episodes/bulk-watched:
+    post:
+      summary: Mark multiple episodes as watched
+      description: |
+        Mark multiple episodes as fully watched in a single request.
+        Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+        Episodes that do not exist are silently skipped.
+      operationId: markTVEpisodesBulkWatched
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkEpisodesWatchedRequest'
+      responses:
+        '200':
+          description: Episodes marked as watched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEpisodesWatchedResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Metadata endpoints (external lookup)
   /api/v1/metadata/search/movie:
     get:
@@ -7709,6 +7740,30 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    BulkEpisodesWatchedRequest:
+      type: object
+      required:
+        - episode_ids
+      properties:
+        episode_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          maxItems: 500
+          description: List of episode IDs to mark as watched
+
+    BulkEpisodesWatchedResponse:
+      type: object
+      required:
+        - marked_count
+      properties:
+        marked_count:
+          type: integer
+          format: int64
+          description: Number of episodes marked as watched
 
     EpisodeWatchProgress:
       type: object

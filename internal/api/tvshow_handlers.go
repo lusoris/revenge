@@ -519,3 +519,23 @@ func (h *Handler) MarkTVEpisodeWatched(ctx context.Context, req ogen.OptMarkTVEp
 
 	return &ogen.MarkTVEpisodeWatchedNoContent{}, nil
 }
+
+// MarkTVEpisodesBulkWatched marks multiple episodes as watched in a single request.
+func (h *Handler) MarkTVEpisodesBulkWatched(ctx context.Context, req *ogen.BulkEpisodesWatchedRequest) (ogen.MarkTVEpisodesBulkWatchedRes, error) {
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	affected, err := h.tvshowService.MarkEpisodesWatchedBulk(ctx, userID, req.EpisodeIds)
+	if err != nil {
+		return &ogen.Error{
+			Code:    500,
+			Message: "failed to mark episodes as watched",
+		}, nil
+	}
+
+	return &ogen.BulkEpisodesWatchedResponse{
+		MarkedCount: affected,
+	}, nil
+}

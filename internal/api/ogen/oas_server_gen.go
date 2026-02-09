@@ -891,6 +891,14 @@ type Handler interface {
 	//
 	// POST /api/v1/tvshows/episodes/{id}/watched
 	MarkTVEpisodeWatched(ctx context.Context, req OptMarkTVEpisodeWatchedReq, params MarkTVEpisodeWatchedParams) (MarkTVEpisodeWatchedRes, error)
+	// MarkTVEpisodesBulkWatched implements markTVEpisodesBulkWatched operation.
+	//
+	// Mark multiple episodes as fully watched in a single request.
+	// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+	// Episodes that do not exist are silently skipped.
+	//
+	// POST /api/v1/tvshows/episodes/bulk-watched
+	MarkTVEpisodesBulkWatched(ctx context.Context, req *BulkEpisodesWatchedRequest) (MarkTVEpisodesBulkWatchedRes, error)
 	// OidcAuthorize implements oidcAuthorize operation.
 	//
 	// Redirects to the OIDC provider's authorization endpoint.

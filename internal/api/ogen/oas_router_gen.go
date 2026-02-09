@@ -3660,6 +3660,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 							switch elem[0] {
+							case 'b': // Prefix: "bulk-watched"
+								origElem := elem
+								if l := len("bulk-watched"); len(elem) >= l && elem[0:l] == "bulk-watched" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleMarkTVEpisodesBulkWatchedRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+								elem = origElem
 							case 'r': // Prefix: "recent"
 								origElem := elem
 								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {
@@ -8853,6 +8874,32 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 							switch elem[0] {
+							case 'b': // Prefix: "bulk-watched"
+								origElem := elem
+								if l := len("bulk-watched"); len(elem) >= l && elem[0:l] == "bulk-watched" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = MarkTVEpisodesBulkWatchedOperation
+										r.summary = "Mark multiple episodes as watched"
+										r.operationID = "markTVEpisodesBulkWatched"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/episodes/bulk-watched"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+								elem = origElem
 							case 'r': // Prefix: "recent"
 								origElem := elem
 								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {

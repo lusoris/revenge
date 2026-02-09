@@ -537,3 +537,35 @@ func (q *Queries) MarkEpisodeWatched(ctx context.Context, arg MarkEpisodeWatched
 	)
 	return i, err
 }
+
+const markEpisodesWatchedBulk = `-- name: MarkEpisodesWatchedBulk :execrows
+WITH episode_durations AS (
+    SELECT id, COALESCE(runtime * 60, 2700) AS duration_secs
+    FROM tvshow.episodes
+    WHERE id = ANY($2::uuid[])
+)
+INSERT INTO tvshow.episode_watched (
+    user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at
+)
+SELECT $1, ed.id, ed.duration_secs, ed.duration_secs, TRUE, 1, NOW()
+FROM episode_durations ed
+ON CONFLICT (user_id, episode_id) DO UPDATE SET
+    progress_seconds = EXCLUDED.progress_seconds,
+    duration_seconds = EXCLUDED.duration_seconds,
+    is_completed = TRUE,
+    watch_count = tvshow.episode_watched.watch_count + 1,
+    last_watched_at = NOW()
+`
+
+type MarkEpisodesWatchedBulkParams struct {
+	UserID     uuid.UUID   `json:"userId"`
+	EpisodeIds []uuid.UUID `json:"episodeIds"`
+}
+
+func (q *Queries) MarkEpisodesWatchedBulk(ctx context.Context, arg MarkEpisodesWatchedBulkParams) (int64, error) {
+	result, err := q.db.Exec(ctx, markEpisodesWatchedBulk, arg.UserID, arg.EpisodeIds)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}

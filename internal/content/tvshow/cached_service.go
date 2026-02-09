@@ -435,6 +435,20 @@ func (s *CachedService) MarkEpisodeWatched(ctx context.Context, userID, episodeI
 	return nil
 }
 
+// MarkEpisodesWatchedBulk marks multiple episodes as watched and invalidates continue watching cache.
+func (s *CachedService) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	affected, err := s.Service.MarkEpisodesWatchedBulk(ctx, userID, episodeIDs)
+	if err != nil {
+		return 0, err
+	}
+
+	if s.cache != nil {
+		s.invalidateContinueWatching(ctx, userID)
+	}
+
+	return affected, nil
+}
+
 // MarkSeasonWatched marks a season as watched and invalidates continue watching cache.
 func (s *CachedService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {
 	if err := s.Service.MarkSeasonWatched(ctx, userID, seasonID); err != nil {

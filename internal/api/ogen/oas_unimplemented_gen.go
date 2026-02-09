@@ -1319,6 +1319,17 @@ func (UnimplementedHandler) MarkTVEpisodeWatched(ctx context.Context, req OptMar
 	return r, ht.ErrNotImplemented
 }
 
+// MarkTVEpisodesBulkWatched implements markTVEpisodesBulkWatched operation.
+//
+// Mark multiple episodes as fully watched in a single request.
+// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+// Episodes that do not exist are silently skipped.
+//
+// POST /api/v1/tvshows/episodes/bulk-watched
+func (UnimplementedHandler) MarkTVEpisodesBulkWatched(ctx context.Context, req *BulkEpisodesWatchedRequest) (r MarkTVEpisodesBulkWatchedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // OidcAuthorize implements oidcAuthorize operation.
 //
 // Redirects to the OIDC provider's authorization endpoint.

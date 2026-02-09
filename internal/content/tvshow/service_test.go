@@ -472,6 +472,11 @@ func (m *MockRepository) MarkEpisodeWatched(ctx context.Context, userID, episode
 	return args.Get(0).(*EpisodeWatched), args.Error(1)
 }
 
+func (m *MockRepository) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	args := m.Called(ctx, userID, episodeIDs)
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func (m *MockRepository) GetWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error) {
 	args := m.Called(ctx, userID, episodeID)
 	if args.Get(0) == nil {
@@ -2453,6 +2458,52 @@ func TestMarkSeriesWatched_ErrorListingSeasons(t *testing.T) {
 	err := svc.MarkSeriesWatched(ctx, userID, seriesID)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to list seasons")
+	repo.AssertExpectations(t)
+}
+
+func TestMarkEpisodesWatchedBulk_Success(t *testing.T) {
+	ctx := context.Background()
+	repo := new(MockRepository)
+	svc := NewService(repo, nil)
+
+	userID := uuid.Must(uuid.NewV7())
+	episodeIDs := []uuid.UUID{uuid.Must(uuid.NewV7()), uuid.Must(uuid.NewV7()), uuid.Must(uuid.NewV7())}
+
+	repo.On("MarkEpisodesWatchedBulk", ctx, userID, episodeIDs).Return(int64(3), nil)
+
+	affected, err := svc.MarkEpisodesWatchedBulk(ctx, userID, episodeIDs)
+	assert.NoError(t, err)
+	assert.Equal(t, int64(3), affected)
+	repo.AssertExpectations(t)
+}
+
+func TestMarkEpisodesWatchedBulk_Empty(t *testing.T) {
+	ctx := context.Background()
+	repo := new(MockRepository)
+	svc := NewService(repo, nil)
+
+	userID := uuid.Must(uuid.NewV7())
+
+	affected, err := svc.MarkEpisodesWatchedBulk(ctx, userID, []uuid.UUID{})
+	assert.NoError(t, err)
+	assert.Equal(t, int64(0), affected)
+	// Should not call repository for empty slice
+	repo.AssertNotCalled(t, "MarkEpisodesWatchedBulk")
+}
+
+func TestMarkEpisodesWatchedBulk_Error(t *testing.T) {
+	ctx := context.Background()
+	repo := new(MockRepository)
+	svc := NewService(repo, nil)
+
+	userID := uuid.Must(uuid.NewV7())
+	episodeIDs := []uuid.UUID{uuid.Must(uuid.NewV7())}
+
+	repo.On("MarkEpisodesWatchedBulk", ctx, userID, episodeIDs).Return(int64(0), errors.New("db error"))
+
+	affected, err := svc.MarkEpisodesWatchedBulk(ctx, userID, episodeIDs)
+	assert.Error(t, err)
+	assert.Equal(t, int64(0), affected)
 	repo.AssertExpectations(t)
 }
 

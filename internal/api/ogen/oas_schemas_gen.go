@@ -1398,6 +1398,40 @@ func (s *BeginWebAuthnRegistrationReq) SetCredentialName(val OptString) {
 	s.CredentialName = val
 }
 
+// Ref: #/components/schemas/BulkEpisodesWatchedRequest
+type BulkEpisodesWatchedRequest struct {
+	// List of episode IDs to mark as watched.
+	EpisodeIds []uuid.UUID `json:"episode_ids"`
+}
+
+// GetEpisodeIds returns the value of EpisodeIds.
+func (s *BulkEpisodesWatchedRequest) GetEpisodeIds() []uuid.UUID {
+	return s.EpisodeIds
+}
+
+// SetEpisodeIds sets the value of EpisodeIds.
+func (s *BulkEpisodesWatchedRequest) SetEpisodeIds(val []uuid.UUID) {
+	s.EpisodeIds = val
+}
+
+// Ref: #/components/schemas/BulkEpisodesWatchedResponse
+type BulkEpisodesWatchedResponse struct {
+	// Number of episodes marked as watched.
+	MarkedCount int64 `json:"marked_count"`
+}
+
+// GetMarkedCount returns the value of MarkedCount.
+func (s *BulkEpisodesWatchedResponse) GetMarkedCount() int64 {
+	return s.MarkedCount
+}
+
+// SetMarkedCount sets the value of MarkedCount.
+func (s *BulkEpisodesWatchedResponse) SetMarkedCount(val int64) {
+	s.MarkedCount = val
+}
+
+func (*BulkEpisodesWatchedResponse) markTVEpisodesBulkWatchedRes() {}
+
 type ChangePasswordBadRequest Error
 
 func (*ChangePasswordBadRequest) changePasswordRes() {}
@@ -3127,6 +3161,7 @@ func (*Error) listWebAuthnCredentialsRes()   {}
 func (*Error) logoutAllRes()                 {}
 func (*Error) logoutCurrentRes()             {}
 func (*Error) logoutRes()                    {}
+func (*Error) markTVEpisodesBulkWatchedRes() {}
 func (*Error) oidcAuthorizeRes()             {}
 func (*Error) oidcCallbackRes()              {}
 func (*Error) refreshSessionRes()            {}

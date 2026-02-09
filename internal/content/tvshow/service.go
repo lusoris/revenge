@@ -75,6 +75,7 @@ type Service interface {
 	UpdateEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID, progressSeconds, durationSeconds int32) (*EpisodeWatched, error)
 	GetEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error)
 	MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error
+	MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error)
 	MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error
 	MarkSeriesWatched(ctx context.Context, userID, seriesID uuid.UUID) error
 	RemoveEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) error
@@ -499,6 +500,13 @@ func (s *tvService) MarkEpisodeWatched(ctx context.Context, userID, episodeID uu
 
 	_, err = s.repo.MarkEpisodeWatched(ctx, userID, episodeID, durationSeconds)
 	return err
+}
+
+func (s *tvService) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	if len(episodeIDs) == 0 {
+		return 0, nil
+	}
+	return s.repo.MarkEpisodesWatchedBulk(ctx, userID, episodeIDs)
 }
 
 func (s *tvService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {

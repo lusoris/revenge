@@ -557,6 +557,10 @@ type MarkTVEpisodeWatchedRes interface {
 	markTVEpisodeWatchedRes()
 }
 
+type MarkTVEpisodesBulkWatchedRes interface {
+	markTVEpisodesBulkWatchedRes()
+}
+
 type OidcAuthorizeRes interface {
 	oidcAuthorizeRes()
 }

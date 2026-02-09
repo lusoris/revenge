@@ -84,6 +84,7 @@ type Querier interface {
 	ListWatchedEpisodesBySeries(ctx context.Context, arg ListWatchedEpisodesBySeriesParams) ([]ListWatchedEpisodesBySeriesRow, error)
 	ListWatchedEpisodesByUser(ctx context.Context, arg ListWatchedEpisodesByUserParams) ([]ListWatchedEpisodesByUserRow, error)
 	MarkEpisodeWatched(ctx context.Context, arg MarkEpisodeWatchedParams) (TvshowEpisodeWatched, error)
+	MarkEpisodesWatchedBulk(ctx context.Context, arg MarkEpisodesWatchedBulkParams) (int64, error)
 	SearchSeriesByTitle(ctx context.Context, arg SearchSeriesByTitleParams) ([]TvshowSeries, error)
 	SearchSeriesByTitleAnyLanguage(ctx context.Context, arg SearchSeriesByTitleAnyLanguageParams) ([]TvshowSeries, error)
 	UpdateEpisode(ctx context.Context, arg UpdateEpisodeParams) (TvshowEpisode, error)

@@ -1164,6 +1164,11 @@ func (m *mockService) MarkEpisodeWatched(ctx context.Context, userID, episodeID 
 	return args.Error(0)
 }
 
+func (m *mockService) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	args := m.Called(ctx, userID, episodeIDs)
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func (m *mockService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {
 	args := m.Called(ctx, userID, seasonID)
 	return args.Error(0)
