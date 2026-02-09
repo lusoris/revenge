@@ -171,9 +171,7 @@ type Querier interface {
 	GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error)
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (SharedApiKey, error)
-	// This is a placeholder - actual usage tracking would be in a separate table
-	// For now, we just return last_used_at
-	GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
+	GetAPIKeyLastUsedAt(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
 	// Get a single activity log entry by ID
 	GetActivityLog(ctx context.Context, id uuid.UUID) (ActivityLog, error)
 	// Get activity log statistics

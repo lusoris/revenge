@@ -63,8 +63,6 @@ WHERE expires_at IS NOT NULL
   AND expires_at < NOW()
   AND is_active = false;
 
--- name: GetAPIKeyUsageCount :one
--- This is a placeholder - actual usage tracking would be in a separate table
--- For now, we just return last_used_at
+-- name: GetAPIKeyLastUsedAt :one
 SELECT last_used_at FROM shared.api_keys
 WHERE id = $1;

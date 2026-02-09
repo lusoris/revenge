@@ -174,15 +174,13 @@ func (q *Queries) GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (Shar
 	return i, err
 }
 
-const getAPIKeyUsageCount = `-- name: GetAPIKeyUsageCount :one
+const getAPIKeyLastUsedAt = `-- name: GetAPIKeyLastUsedAt :one
 SELECT last_used_at FROM shared.api_keys
 WHERE id = $1
 `
 
-// This is a placeholder - actual usage tracking would be in a separate table
-// For now, we just return last_used_at
-func (q *Queries) GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error) {
-	row := q.db.QueryRow(ctx, getAPIKeyUsageCount, id)
+func (q *Queries) GetAPIKeyLastUsedAt(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyLastUsedAt, id)
 	var last_used_at pgtype.Timestamptz
 	err := row.Scan(&last_used_at)
 	return last_used_at, err
