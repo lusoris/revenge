@@ -87,6 +87,15 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 
 	md.ReleaseDate = parseDate(m.Released)
 
+	// Add Trakt community rating as ExternalRating
+	if m.Rating > 0 {
+		md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+			Source: "Trakt",
+			Value:  fmt.Sprintf("%.1f/10", m.Rating),
+			Score:  m.Rating * 10,
+		})
+	}
+
 	for _, g := range m.Genres {
 		md.Genres = append(md.Genres, metadata.Genre{
 			ID:   genreNameToID(g),
@@ -100,13 +109,8 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		}
 	}
 
-	if m.Certification != "" {
-		// Store certification as an external rating
-		md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
-			Source: "Trakt Certification",
-			Value:  m.Certification,
-		})
-	}
+	// Certification is not an ExternalRating — it's a content rating (e.g. PG-13)
+	// TODO: store in a dedicated Certification field when available
 
 	return md
 }
@@ -212,12 +216,17 @@ func mapShowToMetadata(s *Show) *metadata.TVShowMetadata {
 		})
 	}
 
-	if s.Certification != "" {
+	// Add Trakt community rating as ExternalRating
+	if s.Rating > 0 {
 		md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
-			Source: "Trakt Certification",
-			Value:  s.Certification,
+			Source: "Trakt",
+			Value:  fmt.Sprintf("%.1f/10", s.Rating),
+			Score:  s.Rating * 10,
 		})
 	}
+
+	// Certification is not an ExternalRating — it's a content rating (e.g. TV-MA)
+	// TODO: store in a dedicated Certification field when available
 
 	return md
 }

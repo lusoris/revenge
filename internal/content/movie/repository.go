@@ -82,6 +82,7 @@ type CreateMovieParams struct {
 	TaglinesI18n      map[string]string
 	OverviewsI18n     map[string]string
 	AgeRatings        map[string]map[string]string
+	ExternalRatings   []ExternalRating
 	PosterPath        *string
 	BackdropPath      *string
 	TrailerURL        *string
@@ -112,6 +113,7 @@ type UpdateMovieParams struct {
 	TaglinesI18n      map[string]string
 	OverviewsI18n     map[string]string
 	AgeRatings        map[string]map[string]string
+	ExternalRatings   []ExternalRating
 	PosterPath        *string
 	BackdropPath      *string
 	TrailerURL        *string

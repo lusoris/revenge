@@ -231,7 +231,7 @@ func (q *Queries) GetUserTVStats(ctx context.Context, userID uuid.UUID) (GetUser
 
 const listContinueWatchingSeries = `-- name: ListContinueWatchingSeries :many
 SELECT DISTINCT ON (s.id)
-    s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at,
+    s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings,
     e.id as last_episode_id,
     e.season_number as last_season_number,
     e.episode_number as last_episode_number,
@@ -285,6 +285,7 @@ type ListContinueWatchingSeriesRow struct {
 	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
 	CreatedAt         time.Time          `json:"createdAt"`
 	UpdatedAt         time.Time          `json:"updatedAt"`
+	ExternalRatings   json.RawMessage    `json:"externalRatings"`
 	LastEpisodeID     uuid.UUID          `json:"lastEpisodeId"`
 	LastSeasonNumber  int32              `json:"lastSeasonNumber"`
 	LastEpisodeNumber int32              `json:"lastEpisodeNumber"`
@@ -334,6 +335,7 @@ func (q *Queries) ListContinueWatchingSeries(ctx context.Context, arg ListContin
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 			&i.LastEpisodeID,
 			&i.LastSeasonNumber,
 			&i.LastEpisodeNumber,

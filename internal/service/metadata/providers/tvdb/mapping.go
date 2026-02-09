@@ -1,6 +1,7 @@
 package tvdb
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -44,6 +45,15 @@ func mapTVShowMetadata(r *SeriesResponse) *metadata.TVShowMetadata {
 		OriginalLanguage: r.OriginalLanguage,
 		Overview:         r.Overview,
 		VoteAverage:      float64(r.Score) / 10.0, // TVDb score is 0-100
+	}
+
+	// Add TVDb as an ExternalRating
+	if r.Score > 0 {
+		result.ExternalRatings = append(result.ExternalRatings, metadata.ExternalRating{
+			Source: "TVDb",
+			Value:  fmt.Sprintf("%.1f/10", float64(r.Score)/10.0),
+			Score:  float64(r.Score),
+		})
 	}
 
 	if r.Status != nil {

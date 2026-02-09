@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"log/slog"
+
 	openapidoc "github.com/lusoris/revenge/api/openapi"
 	"github.com/lusoris/revenge/internal/api/middleware"
-	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
@@ -35,7 +37,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"go.uber.org/fx"
-	"log/slog"
 )
 
 // scalarHTML is the Scalar API reference UI, loaded from the embedded OpenAPI spec.

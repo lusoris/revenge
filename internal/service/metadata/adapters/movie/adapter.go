@@ -254,6 +254,18 @@ func mapMetadataToMovie(mov *contentmovie.Movie, meta *metadata.MovieMetadata, r
 			}
 		}
 	}
+
+	// Map external ratings (IMDb, Rotten Tomatoes, Metacritic, etc.)
+	if len(meta.ExternalRatings) > 0 {
+		mov.ExternalRatings = make([]contentmovie.ExternalRating, len(meta.ExternalRatings))
+		for i, er := range meta.ExternalRatings {
+			mov.ExternalRatings[i] = contentmovie.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  er.Score,
+			}
+		}
+	}
 }
 
 // getAgeRatingSystem returns the rating system for a country code.

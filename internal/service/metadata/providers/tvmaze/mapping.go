@@ -1,6 +1,7 @@
 package tvmaze
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -94,6 +95,14 @@ func mapShowToTVShowMetadata(show *Show) *metadata.TVShowMetadata {
 
 	if show.Rating.Average != nil {
 		m.VoteAverage = *show.Rating.Average
+		// Add TVmaze as an ExternalRating
+		if *show.Rating.Average > 0 {
+			m.ExternalRatings = append(m.ExternalRatings, metadata.ExternalRating{
+				Source: "TVmaze",
+				Value:  fmt.Sprintf("%.1f/10", *show.Rating.Average),
+				Score:  *show.Rating.Average * 10,
+			})
+		}
 	}
 
 	if show.Image != nil && show.Image.Original != "" {

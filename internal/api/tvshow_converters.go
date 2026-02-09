@@ -79,6 +79,18 @@ func seriesToOgen(s *tvshow.Series) *ogen.TVSeries {
 		o.MetadataUpdatedAt.SetTo(*s.MetadataUpdatedAt)
 	}
 
+	// External ratings
+	if len(s.ExternalRatings) > 0 {
+		o.ExternalRatings = make([]ogen.ExternalRating, len(s.ExternalRatings))
+		for i, er := range s.ExternalRatings {
+			o.ExternalRatings[i] = ogen.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  float32(er.Score),
+			}
+		}
+	}
+
 	return o
 }
 

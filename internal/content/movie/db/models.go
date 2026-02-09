@@ -143,6 +143,8 @@ type Movie struct {
 	// Age ratings by country code and rating system: {"US": {"MPAA": "R"}, "DE": {"FSK": "12"}, "GB": {"BBFC": "15"}}
 	AgeRatings []byte             `json:"ageRatings"`
 	DeletedAt  pgtype.Timestamptz `json:"deletedAt"`
+	// External ratings from various providers (IMDb, RT, Metacritic, etc.) as JSON array
+	ExternalRatings json.RawMessage `json:"externalRatings"`
 }
 
 // Movie collections from TMDb (e.g., MCU, Star Wars)
@@ -671,6 +673,8 @@ type TvshowSeries struct {
 	MetadataUpdatedAt pgtype.Timestamptz `json:"metadataUpdatedAt"`
 	CreatedAt         time.Time          `json:"createdAt"`
 	UpdatedAt         time.Time          `json:"updatedAt"`
+	// External ratings from various providers (IMDb, RT, Metacritic, etc.) as JSON array
+	ExternalRatings json.RawMessage `json:"externalRatings"`
 }
 
 type TvshowSeriesCredit struct {

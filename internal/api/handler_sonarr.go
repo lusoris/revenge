@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/integration/sonarr"
-	"log/slog"
 )
 
 // sonarrService is an optional dependency for Sonarr integration.
