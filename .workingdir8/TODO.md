@@ -340,7 +340,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **3C.11**: Periodic stats/analytics aggregation job
 - [x] **1C.5-7**: Clean up TODO comments and stale test comments ✅ `72f19cdc`
 - [x] **1D.9-10**: Delete vestigial sqlc placeholders ✅ `033bc406` — removed source SQL + regenerated sqlc
-- [ ] **10B.2**: Upgrade `raft-boltdb` to v2
+- [x] **10B.2**: Upgrade `raft-boltdb` to v2 ✅ `c837af04` — switched to v2 (go.etcd.io/bbolt), API-compatible
 - [x] **10B.3**: Delete empty `pkg/` directory ✅ `033bc406`
 - [x] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers ✅ `f6326dab` — return 503 when River unavailable
 
