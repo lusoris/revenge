@@ -1,7 +1,7 @@
 # Backend Polish & Frontend Prep (2026-02-09)
 
 Full analysis of stubs, SvelteKit readiness, River jobs, caching, Typesense, logger,
-deduplication, and API structure.
+deduplication, dependency audit, schema architecture, and API structure.
 
 ---
 
@@ -11,7 +11,7 @@ deduplication, and API structure.
 
 | # | File | Issue | Fix |
 |---|------|-------|-----|
-| 1 | `internal/service/auth/mfa_integration.go:112` | WebAuthn `VerifyMFA` returns `"webauthn verification not yet implemented"` | Implement WebAuthn login assertion verification or gate the UI so users can't attempt WebAuthn MFA login |
+| 1 | `internal/service/auth/mfa_integration.go:112` | WebAuthn `VerifyMFA` returns `"webauthn verification not yet implemented"` | **Implement** WebAuthn login assertion verification (we want it testable) |
 | 2 | `internal/infra/database/db/apikeys.sql.go:182` | `GetAPIKeyUsageCount` is a placeholder — returns `last_used_at` instead of counting | Create `api_key_usage` tracking table or accept the placeholder and remove misleading name |
 
 ### 1B — Orphaned Job Definitions (High)
@@ -37,12 +37,6 @@ deduplication, and API structure.
 | 9 | `internal/content/movie/db/placeholder.sql.go` | Vestigial placeholder alongside 50+ real queries — delete |
 | 10 | `internal/content/tvshow/db/placeholder.sql.go` | Same — delete |
 
-### 1E — Dead Dependencies
-
-| # | Dependency | Issue |
-|---|-----------|-------|
-| 11 | `gobreaker` | In `go.mod` (indirect) but removed from code with comment in `search/module.go:76` |
-
 ---
 
 ## 2. SvelteKit + Tailwind Backend Prep
@@ -65,22 +59,22 @@ deduplication, and API structure.
 |---|-----|----------|-----|
 | 1 | **No Content Security Policy** headers | Medium | Add CSP middleware: `default-src 'self'; img-src 'self' image.tmdb.org; media-src 'self' blob:; script-src 'self'` |
 | 2 | **No Cache-Control on JSON API responses** | Medium | Add `private, no-cache` for user-specific, `public, max-age=60` for library listings |
-| 3 | **Query param naming inconsistency** | Medium | Movies use `orderBy` (camelCase), TV shows use `order_by` (snake_case) — standardize to snake_case |
-| 4 | **Some list endpoints return bare arrays** | Low | `getRecentlyAdded`, `getTopRated`, cast/crew return arrays without `{items, total}` wrapping |
-| 5 | **No admin user management endpoint** | Medium | Need `GET /api/v1/admin/users` (list), `DELETE /api/v1/users/{id}` |
-| 6 | **No global genre endpoint** | Low | `GET /api/v1/genres` for filter UIs (currently only via search facets) |
-| 7 | **No bulk episode watched endpoint** | Low | `POST /api/v1/shows/{id}/seasons/{num}/watched` to mark entire season |
-| 8 | **TV show reindex not exposed** | Low | No `POST /api/v1/search/tvshows/reindex` endpoint (only movies) |
+| 3 | **Query param naming inconsistency** | **High** | Movies use `orderBy` (camelCase), TV shows use `order_by` (snake_case) — **standardize to snake_case** (REST convention, matches Go/PostgreSQL, TS client can transform) |
+| 4 | **All list endpoints need pagination** | **High** | `getRecentlyAdded`, `getTopRated`, cast/crew return bare arrays — **must** return `{items, total, page, page_size}` for frontend infinite scroll / load more |
+| 5 | **No admin user management endpoint** | **High** | Need `GET /api/v1/admin/users` (list+search), `DELETE /api/v1/users/{id}` — backend must be ready before frontend |
+| 6 | **No global genre endpoint** | Medium | `GET /api/v1/genres` for filter UIs (currently only via search facets) |
+| 7 | **No bulk episode watched endpoint** | Medium | `POST /api/v1/shows/{id}/seasons/{num}/watched` to mark entire season |
+| 8 | **TV show reindex not exposed** | Medium | No `POST /api/v1/search/tvshows/reindex` endpoint (only movies) |
 
 ---
 
 ## 3. River Jobs — Gaps & Fixes
 
-### 3A — Current Queue Layout (Good)
+### 3A — Current Queue Layout
 
 | Queue | Workers | Jobs Using It |
 |-------|---------|---------------|
-| `critical` | 20 | **NONE** — 20 workers idle |
+| `critical` | 20 | Auth/login, frontend SSR, streaming/playback, SSE events (TO BE WIRED) |
 | `high` | 15 | radarr_sync, radarr_webhook, sonarr_sync, sonarr_webhook, notification |
 | `default` | 10 | movie_file_match, movie_search_index, metadata_refresh_movie, tvshow_file_match, tvshow_metadata_refresh, tvshow_series_refresh |
 | `low` | 5 | cleanup, library_scan_cleanup, activity_cleanup, playback_cleanup |
@@ -90,21 +84,22 @@ deduplication, and API structure.
 
 | # | Issue | Severity | Fix |
 |---|-------|----------|-----|
-| 1 | **`critical` queue has 0 jobs** — 20 workers allocated for nothing | High | Either use it for security/auth events or remove it and redistribute workers |
+| 1 | **`critical` queue has 0 jobs wired** — 20 workers idle | **High** | Wire auth/login events, frontend-critical tasks, streaming/playback session start, SSE delivery to `critical` queue |
 | 2 | **5 metadata job kinds have no Workers registered** (`metadata_refresh_tvshow`, `_season`, `_episode`, `_person`, `_download_image`) | **Critical** | Register workers or remove dead code. The `EnqueueRefresh*` and `EnqueueDownloadImage` functions in `metadata/jobs/queue.go` silently insert jobs that are never processed |
-| 3 | **`metadata_enrich_content` has no Worker** | High | Create `EnrichContentWorker` or remove the Args definition |
+| 3 | **`metadata_enrich_content` has no Worker** | High | Create `EnrichContentWorker` — enrichment must run as River job, NOT synchronous in request path |
 | 4 | **Periodic cleanup never actually runs** — `Schedule*` functions take `*river.Client[any]` but app uses `*river.Client[pgx.Tx]` (type mismatch), and they're never called from DI lifecycle | **Critical** | Fix the type signatures and wire `Schedule*` into the fx `OnStart` hook |
-| 5 | **Movie metadata refresh is synchronous in API handler** | High | `handler.go:201` calls service method directly — should `Insert` a `RefreshMovieArgs` job and return `202 Accepted` |
-| 6 | **Activity logging is synchronous** — `service/activity/service.go:33` blocks on DB insert | Medium | Create `ActivityLogArgs` job, process on `low` queue |
-| 7 | **Bare goroutine fallback** in `handler_radarr.go:145` / `handler_sonarr.go:155` when `riverClient == nil` | Low | Remove fallback or add basic error handling |
+| 5 | **Movie metadata refresh is synchronous in API handler** | **High** | `handler.go:201` calls service method directly — must `Insert` a `RefreshMovieArgs` job and return `202 Accepted` |
+| 6 | **Rating enrichment is synchronous in request path** | **High** | `enrichMovieRatings()` / `enrichTVShowRatings()` call external provider APIs synchronously — must be River jobs. User gets cached/partial data immediately, enrichment runs async |
+| 7 | **Activity logging is synchronous** — `service/activity/service.go:33` blocks on DB insert | Medium | Create `ActivityLogArgs` job, process on `low` queue |
+| 8 | **Bare goroutine fallback** in `handler_radarr.go:145` / `handler_sonarr.go:155` when `riverClient == nil` | Low | Remove fallback or add basic error handling |
 
-### 3C — Missing Jobs (Nice to Have)
+### 3C — Missing Jobs (Needed)
 
 | # | Operation | Current | Proposed |
 |---|-----------|---------|----------|
-| 8 | Image cache warming | Synchronous on miss | `DownloadImageWorker` pre-downloads in metadata refresh pipeline |
-| 9 | Bulk search reindex | Only movies exposed via API | Add `tvshow_search_reindex` endpoint |
-| 10 | Stats/analytics aggregation | Not implemented | Periodic job to compute library stats (counts, durations, etc.) |
+| 9 | Image cache warming | Synchronous on miss | `DownloadImageWorker` pre-downloads in metadata refresh pipeline |
+| 10 | Bulk search reindex | Only movies exposed via API | Add `tvshow_search_reindex` endpoint + job |
+| 11 | Stats/analytics aggregation | Not implemented | Periodic job to compute library stats (counts, durations, etc.) |
 
 ---
 
@@ -121,10 +116,10 @@ deduplication, and API structure.
 
 | # | Gap | Severity | Fix |
 |---|-----|----------|-----|
-| 1 | **No CachedService for TV shows** — all TV show reads hit DB every time | **High** | Create `CachedTVShowService` mirroring the movie pattern |
-| 2 | **No CachedTVShowSearchService** — TV show Typesense searches always hit Typesense | Medium | Create cached wrapper like `CachedMovieSearchService` |
-| 3 | **L1 fully cleared on any pattern invalidation** — Otter doesn't support prefix delete | Medium | Switch to Otter's `DeleteByFunc` or use a separate cache instance per domain |
-| 4 | **Redis `KEYS` command for pattern invalidation** — O(N), blocks | Low | Use `SCAN` instead, or restructure keys to avoid pattern matching |
+| 1 | **No CachedService for TV shows** — all TV show reads hit DB every time | **Critical** | Create `CachedTVShowService` mirroring the movie pattern |
+| 2 | **No CachedTVShowSearchService** — TV show Typesense searches always hit Typesense | **High** | Create cached wrapper like `CachedMovieSearchService` |
+| 3 | **L1 fully cleared on any pattern invalidation** — Otter doesn't support prefix delete | Medium | Verify Otter docs for `DeleteByFunc`, or use a separate cache instance per domain |
+| 4 | **Redis `KEYS` command for pattern invalidation** — O(N), blocks | Medium | Verify current impl — use `SCAN` instead, or restructure keys to avoid pattern matching |
 | 5 | **Metadata provider caches are L1-only** — lost on restart, not shared across instances | Low | For now acceptable (API rate limits make full provider caching undesirable) |
 | 6 | **No API key validation cache** — every API key request hits DB | Low | Add 30s cache like session validation |
 | 7 | **Movie relational data (cast/crew/genres) not cached individually** — key prefixes exist but `CachedService` only wraps top-level movie | Low | Either cache in `CachedService` or accept DB reads for detail views |
@@ -148,13 +143,13 @@ deduplication, and API structure.
 
 | # | Gap | Severity | Fix |
 |---|-----|----------|-----|
-| 1 | **Episodes not indexed** — can't search by episode title ("The Rains of Castamere") | Medium | Create `episodes` collection with series context, or embed episodes in TV show docs |
-| 2 | **People not a standalone collection** — cast embedded as string arrays, no cross-content person search | Medium | Create `people` collection (name, bio, photo, known_for, linked movies/shows) |
-| 3 | **No unified search** — must hit `/search/movies` and `/search/tvshows` separately | Medium | Add `/search/multi` endpoint that queries both collections and merges results |
-| 4 | **Settings not searchable** — but should they be? Settings are admin-only key/value pairs | Low | For an admin UI, a simple frontend filter is sufficient — Typesense overkill |
-| 5 | **Users not searchable** — admin user management would benefit from user search | Low | Only needed if admin panel requires user search; do client-side in paginated list for now |
-| 6 | **TV show reindex endpoint missing** | Low | Expose `POST /api/v1/search/tvshows/reindex` (admin-only) |
-| 7 | **TV show search not cached** | Low | Create `CachedTVShowSearchService` (30s TTL like movies) |
+| 1 | **Episodes not indexed** — can't search by episode title | **High** | Create `episodes` collection with episode title, season name, series context |
+| 2 | **Seasons not indexed** — many shows have named seasons (e.g. "American Horror Story: Coven") | **High** | Create `seasons` collection with season name, number, series context |
+| 3 | **People not a standalone collection** — cast embedded as string arrays | **High** | Create `people` collection (name, bio, photo, known_for, linked movies/shows) — people get their own pages in frontend |
+| 4 | **No unified search** — must hit `/search/movies` and `/search/tvshows` separately | **High** | Add `/search/multi` endpoint that queries all collections and merges results |
+| 5 | **Users not searchable** — admin user management needs user search | Medium | Create `users` collection for admin panel search |
+| 6 | **TV show reindex endpoint missing** | Medium | Expose `POST /api/v1/search/tvshows/reindex` (admin-only) |
+| 7 | **TV show search not cached** | **High** | Create `CachedTVShowSearchService` (30s TTL like movies) |
 
 ---
 
@@ -174,74 +169,19 @@ deduplication, and API structure.
 | 1 | **Admin auth guard** — `getUserID` + `HasRole("admin")` + early return | ~20+ handlers | **High** | Extract `requireAdmin(ctx) (uuid.UUID, error)` helper in `handler.go` |
 | 2 | **ExternalRatings→Ogen conversion** — identical `[]ogen.ExternalRating` mapping | 4 copies (movie_converters, tvshow_converters) | Medium | Extract `externalRatingsToOgen([]domain.ExternalRating) []ogen.ExternalRating` |
 | 3 | **Movie field copy in continue/watched converters** — ~100 lines of identical optional field mapping | 2 functions in `movie_converters.go` | Medium | Extract `copyMovieFieldsToOgen(movie, ogenStruct)` or generate with ogen hooks |
-| 4 | **Radarr/Sonarr webhook handler scaffolding** | 2 packages | Low | Acceptable — domains differ enough that a shared base isn't worth abstracting |
-| 5 | **Optional field `nil → SetTo` pattern** | ~200 lines across converters | Low | Unavoidable with ogen types, no fix without codegen |
+| 4 | **Pointer helpers** — `stringPtr`, `ptrToString`, `deref*` duplicated across 10+ files | 10+ copies | **High** | Create `internal/util/ptr/` with generic `To[T](*T)` and `From[T](*T) T` |
+| 5 | **Provider ErrNotFound stubs** — ~150 identical methods across 10 providers | ~150 methods | **High** | Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs with default `ErrNotFound` returns |
+| 6 | **Test helpers** — `createTestUser` in 5+ files, `setupTestService` in 7+ files | 12+ copies | Medium | Move to `internal/testutil/helpers.go` |
 
 ---
 
-## Priority Order
-
-### Tier 1 — Must Fix (Broken / Dead Code)
-
-- [ ] **3B.2**: Register workers for 5 metadata job kinds or remove dead Args + `Enqueue*` functions
-- [ ] **3B.4**: Fix periodic cleanup type mismatch and wire into fx `OnStart`
-- [ ] **4B.1**: Create `CachedTVShowService`
-- [ ] **1A.1**: Fix or gate WebAuthn `VerifyMFA` stub
-
-### Tier 2 — High Value
-
-- [ ] **3B.1**: Use `critical` queue or remove it
-- [ ] **3B.5**: Make movie metadata refresh async (return 202)
-- [ ] **7.1**: Extract `requireAdmin()` helper (dedup ~20 handlers)
-- [ ] **2B.3**: Standardize query param naming to snake_case
-- [ ] **2B.1**: Add CSP middleware
-- [ ] **7.2**: Extract `externalRatingsToOgen()` helper
-
-### Tier 3 — Medium Value
-
-- [ ] **3B.6**: Make activity logging async
-- [ ] **4B.2**: Create `CachedTVShowSearchService`
-- [ ] **5B.3**: Add unified `/search/multi` endpoint
-- [ ] **2B.2**: Add Cache-Control headers on JSON API responses
-- [ ] **2B.5**: Add admin user management endpoints
-- [ ] **5B.1**: Index episodes in Typesense
-- [ ] **5B.2**: Create standalone people collection in Typesense
-- [ ] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder
-
-### Tier 4 — Polish
-
-- [ ] **8B.3**: Delete dead `database/metrics.go` + test (superseded by `observability/collector.go`)
-- [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
-- [ ] **2B.4**: Wrap bare array list responses in `{items, total}`
-- [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
-- [ ] **2B.7**: Add bulk episode watched endpoint
-- [ ] **3B.3**: Create `EnrichContentWorker`
-- [ ] **3C.8**: Create `DownloadImageWorker` for cache warming
-- [ ] **4B.3**: Fix L1 pattern invalidation (avoid full cache clear)
-- [ ] **4B.4**: Replace Redis `KEYS` with `SCAN`
-- [ ] **1C.7**: Delete stale test comment
-- [ ] **1D.9-10**: Delete vestigial sqlc placeholders
-- [ ] **1E.11**: Remove gobreaker from go.mod
-
----
-
-## 8. Monitoring & Observability — Broken Wiring
-
-### Root Cause: ALL Grafana Panels Show NO DATA
-
-**P0 — Datasource UID mismatch** (FIXED):
-Every panel in `deploy/grafana/provisioning/dashboards/revenge.json` hardcodes
-`"uid": "PBFA97CFB590B2093"` but `deploy/grafana/provisioning/datasources/prometheus.yml`
-did NOT set a `uid`. Grafana generates a random UID on provisioning → panels can't
-resolve their datasource → **all 20+ panels broken**.
-
-**Fix applied**: Added `uid: PBFA97CFB590B2093` to the datasource provisioning file.
+## 8. Monitoring & Observability
 
 ### 8A — Fixes Applied
 
 | # | Issue | Fix |
 |---|-------|-----|
-| 1 | Datasource UID mismatch → all panels NO DATA | Added `uid: PBFA97CFB590B2093` to `deploy/grafana/provisioning/datasources/prometheus.yml` |
+| 1 | Datasource UID mismatch → all Grafana panels NO DATA | Added `uid: PBFA97CFB590B2093` to `deploy/grafana/provisioning/datasources/prometheus.yml` |
 | 2 | Metrics port 9096 not exposed | Added `EXPOSE 9096` to Dockerfile, added `9096:9096` to `docker-compose.dev.yml` |
 
 ### 8B — Outstanding
@@ -253,11 +193,168 @@ resolve their datasource → **all 20+ panels broken**.
 
 ---
 
+## 9. Schema Architecture — Movie Module Needs Own Schema
+
+### Problem
+
+TV Shows have their own `tvshow` schema. Movies are dumped in `public` alongside
+shared infrastructure tables (`libraries`, `activity_log`, `library_permissions`).
+This is inconsistent and violates the "each content module owns its schema" principle.
+
+**Current layout (broken):**
+
+| Schema | Contains |
+|--------|----------|
+| `shared` | users, auth, sessions, settings, RBAC, MFA, OIDC (~17 tables) |
+| `public` | libraries + activity **mixed with** movies, movie_files, movie_credits, movie_collections, movie_genres, movie_watched |
+| `tvshow` | series, seasons, episodes, episode_files, series_credits, series_genres, networks (~10 tables) |
+| `qar` | empty (later: own DB) |
+
+**Target layout:**
+
+| Schema | Contains |
+|--------|----------|
+| `shared` | users, auth, sessions, settings, RBAC, MFA, OIDC |
+| `public` | libraries, library_scans, library_permissions, activity_log |
+| `movie` | movies, movie_files, movie_credits, movie_collections, movie_collection_members, movie_genres, movie_watched |
+| `tvshow` | (unchanged) |
+| `qar` | later: separate DB + own pool |
+
+### Steps
+
+- [ ] **9.1** New migration `000036_create_movie_schema.up.sql`:
+  - `CREATE SCHEMA IF NOT EXISTS movie;`
+  - `ALTER TABLE public.movies SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_files SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_credits SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_collections SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_collection_members SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_genres SET SCHEMA movie;`
+  - `ALTER TABLE public.movie_watched SET SCHEMA movie;`
+  - Down migration moves them back to `public`
+- [ ] **9.2** Update `sqlc.yaml`: Change movie queries `schema` path, verify `search_path`
+- [ ] **9.3** Update SQL query files if needed (or rely on `search_path`)
+- [ ] **9.4** Update connection `search_path` to `public,shared,movie,tvshow` in:
+  - `internal/infra/database/pool.go` (production)
+  - `internal/testutil/containers.go` (tests)
+  - `config/config.example.yaml` (documentation)
+  - `docker-compose*.yml` DB URLs
+- [ ] **9.5** Regenerate sqlc (`make generate`)
+- [ ] **9.6** Build + vet + test
+- [ ] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect four-schema model
+
+### Architecture Decision
+
+- **Movie/TVShow/shared**: Schemas in one DB (cross-schema JOINs for `user_id` FKs, shared buffer pool)
+- **QAR**: Separate DB (`revenge_qar`) + own connection pool when implemented (full isolation, separate backups, deletable, compliance)
+
+---
+
+## 10. Dependency Audit
+
+### 10A — Circuit Breaker
+
+**Decision: gobreaker NOT needed.** All external provider API calls (TMDb, Trakt, Simkl, OMDb,
+Letterboxd, Fanart) must run as **River jobs** — River provides retry with exponential backoff,
+max attempts, and dead-letter. Adding a circuit breaker on top of River would be double
+resilience logic and counterproductive.
+
+Internal infrastructure (Typesense, Redis/Dragonfly, PostgreSQL) already has built-in
+resilience: Typesense has own retry, Rueidis has auto-reconnect, pgxpool has health checks.
+
+The synchronous external calls currently in the request path (metadata fetch, rating enrichment)
+are **bugs** — they must be moved to River jobs (see 3B.5, 3B.6).
+
+`gobreaker` can be removed from `go.mod` after `go mod tidy`.
+
+### 10B — Other Issues
+
+| # | Issue | Severity | Fix |
+|---|-------|----------|-----|
+| 1 | **`lib/pq` + `pgx/v5` — two PG drivers** | Medium | `lib/pq` only used in 1 smoke test (`tests/live/smoke_test.go:22`) as `_ "github.com/lib/pq"`. Switch to `_ "github.com/jackc/pgx/v5/stdlib"` and remove `lib/pq` |
+| 2 | **`hashicorp/raft-boltdb` uses archived BoltDB** (`boltdb/bolt`) | Low | Consider `hashicorp/raft-boltdb/v2` which uses `go.etcd.io/bbolt` |
+| 3 | **Empty `pkg/` directory** | Low | Contains only `.gitkeep`, no Go files import from it — delete or document |
+
+### 10C — Needs Verification Against Package Docs
+
+Before implementing cache-related fixes, verify against current package documentation:
+
+| # | Claim | Package | What to verify |
+|---|-------|---------|---------------|
+| 1 | Otter supports `DeleteByFunc` for prefix invalidation | `maypok86/otter` | Check if method exists in current API |
+| 2 | We use `KEYS` for Redis pattern invalidation | `redis/rueidis` | Check actual impl — might already use `SCAN` |
+| 3 | `*river.Client[any]` vs `[pgx.Tx]` type mismatch | `riverqueue/river` | Verify this is still an issue in our River version |
+
+---
+
+## Priority Order
+
+### Tier 1 — Must Fix (Broken / Architecture)
+
+- [ ] **9.1-9.7**: Move movie tables to own `movie` schema
+- [ ] **3B.2**: Register workers for 5 metadata job kinds or remove dead code
+- [ ] **3B.4**: Fix periodic cleanup type mismatch and wire into fx `OnStart`
+- [ ] **3B.5**: Move movie metadata refresh to River job (return 202)
+- [ ] **3B.6**: Move rating enrichment to River job (not synchronous in request path)
+- [ ] **4B.1**: Create `CachedTVShowService` (all TV show reads MUST go through cache)
+- [ ] **4B.2**: Create `CachedTVShowSearchService`
+- [ ] **1A.1**: Implement WebAuthn `VerifyMFA` (we want it testable)
+- [ ] **3B.1**: Wire auth/login, streaming, SSE jobs to `critical` queue
+
+### Tier 2 — High Value (API Readiness + Dedup)
+
+- [ ] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`)
+- [ ] **2B.3**: Standardize query param naming to snake_case
+- [ ] **2B.5**: Add admin user management endpoints (list+search, delete)
+- [ ] **5B.1**: Index episodes in Typesense (with series context)
+- [ ] **5B.2**: Index seasons in Typesense (named seasons)
+- [ ] **5B.3**: Create standalone people collection in Typesense (own pages)
+- [ ] **5B.4**: Add `/search/multi` unified search endpoint
+- [ ] **7.1**: Extract `requireAdmin()` helper (dedup ~20 handlers)
+- [ ] **7.4**: Create `internal/util/ptr/` generic pointer package
+- [ ] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs
+- [ ] **2B.1**: Add CSP middleware
+- [ ] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib`
+
+### Tier 3 — Medium Value
+
+- [ ] **3B.7**: Make activity logging async (River job on `low` queue)
+- [ ] **7.2**: Extract `externalRatingsToOgen()` helper
+- [ ] **7.6**: Move test helpers to `internal/testutil/helpers.go`
+- [ ] **2B.2**: Add Cache-Control headers on JSON API responses
+- [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
+- [ ] **2B.7**: Add bulk episode watched endpoint
+- [ ] **2B.8**: Add TV show reindex endpoint
+- [ ] **5B.5**: Create users collection in Typesense (admin search)
+- [ ] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder
+- [ ] **7.3**: Extract `copyMovieFieldsToOgen` helper
+- [ ] **4B.3**: Fix L1 pattern invalidation (verify Otter `DeleteByFunc` or per-domain instances)
+- [ ] **4B.4**: Verify + fix Redis pattern invalidation (`KEYS` → `SCAN`)
+
+### Tier 4 — Polish
+
+- [ ] **8B.3**: Delete dead `database/metrics.go` + test
+- [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
+- [ ] **3B.3**: Create `EnrichContentWorker`
+- [ ] **3C.9**: Create `DownloadImageWorker` for cache warming
+- [ ] **3C.11**: Periodic stats/analytics aggregation job
+- [ ] **1C.5-7**: Clean up TODO comments and stale test comments
+- [ ] **1D.9-10**: Delete vestigial sqlc placeholders
+- [ ] **10B.2**: Upgrade `raft-boltdb` to v2
+- [ ] **10B.3**: Delete empty `pkg/` directory
+- [ ] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers
+
+---
+
 ## Notes
 
+- **Circuit Breaker**: NOT needed — all external API calls run as River jobs with built-in retry/backoff. Internal infra has own resilience. `gobreaker` removed.
 - **Logger**: Already clean and unified on `slog` — no work needed
 - **API structure**: Solid overall. OpenAPI 3.1.0 spec, ogen codegen, fx DI, proper error handling, SSE events
-- **Caching**: Excellent L1/L2 architecture, just missing TV show coverage
-- **River jobs**: Good queue design, but several orphaned job definitions and unscheduled periodic tasks
-- **Search**: Strong movie/tvshow coverage, needs episodes + people + unified endpoint
-- **Frontend readiness**: 7/10 — auth, CORS, cookies, SSE all ready; needs CSP, cache headers, API consistency
+- **Caching**: Excellent L1/L2 architecture — TV show coverage is the critical gap
+- **River jobs**: Good queue design. `critical` queue reserved for auth/login, streaming, SSE, frontend-critical tasks. Several orphaned job definitions. Synchronous external calls in request path must move to jobs.
+- **Search**: Strong movie/tvshow coverage. Needs episodes, seasons, people, users, and unified `/search/multi` endpoint
+- **Frontend readiness**: 7/10 — auth, CORS, cookies, SSE all ready. Needs: pagination on all lists, snake_case params, CSP, cache headers, admin endpoints
+- **Schema**: Movie module inconsistently in `public` — needs own `movie` schema to match `tvshow` pattern
+- **QAR**: Future separate DB (`revenge_qar`) — not current scope
+- **Package docs**: Cache-related fixes (Otter, Rueidis, River) need verification against current package docs before implementation
