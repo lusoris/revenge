@@ -53,12 +53,9 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		rt := int32(m.Runtime)
 		md.Runtime = &rt
 	}
-	if m.Certification != "" {
-		md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
-			Source: "Simkl Certification",
-			Value:  m.Certification,
-		})
-	}
+
+	// Certification is not an ExternalRating — it's a content rating (e.g. PG-13)
+	// TODO: store in a dedicated Certification field when available
 
 	// Cross-referenced IDs
 	if m.IDs.IMDb != "" {
@@ -77,15 +74,33 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 
 	if m.Ratings != nil && m.Ratings.Simkl != nil {
 		md.VoteAverage = m.Ratings.Simkl.Rating
+		if m.Ratings.Simkl.Votes > 0 {
+			md.VoteCount = m.Ratings.Simkl.Votes
+		}
 	}
 
 	// Add external ratings
 	if m.Ratings != nil {
+		// Simkl's own rating
+		if m.Ratings.Simkl != nil && m.Ratings.Simkl.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Simkl",
+				Value:  fmt.Sprintf("%.1f/10", m.Ratings.Simkl.Rating),
+				Score:  m.Ratings.Simkl.Rating * 10,
+			})
+		}
 		if m.Ratings.IMDb != nil {
 			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
 				Source: "IMDb",
 				Value:  strconv.FormatFloat(m.Ratings.IMDb.Rating, 'f', 1, 64) + "/10",
 				Score:  m.Ratings.IMDb.Rating * 10,
+			})
+		}
+		if m.Ratings.MAL != nil {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "MAL",
+				Value:  strconv.FormatFloat(m.Ratings.MAL.Rating, 'f', 1, 64) + "/10",
+				Score:  m.Ratings.MAL.Rating * 10,
 			})
 		}
 	}
@@ -191,9 +206,20 @@ func mapShowToMetadata(s *Show) *metadata.TVShowMetadata {
 
 	if s.Ratings != nil && s.Ratings.Simkl != nil {
 		md.VoteAverage = s.Ratings.Simkl.Rating
+		if s.Ratings.Simkl.Votes > 0 {
+			md.VoteCount = s.Ratings.Simkl.Votes
+		}
 	}
 
 	if s.Ratings != nil {
+		// Simkl's own rating
+		if s.Ratings.Simkl != nil && s.Ratings.Simkl.Rating > 0 {
+			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
+				Source: "Simkl",
+				Value:  fmt.Sprintf("%.1f/10", s.Ratings.Simkl.Rating),
+				Score:  s.Ratings.Simkl.Rating * 10,
+			})
+		}
 		if s.Ratings.IMDb != nil {
 			md.ExternalRatings = append(md.ExternalRatings, metadata.ExternalRating{
 				Source: "IMDb",
