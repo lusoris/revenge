@@ -602,6 +602,23 @@ type AdminDeleteOIDCProviderUnauthorized Error
 
 func (*AdminDeleteOIDCProviderUnauthorized) adminDeleteOIDCProviderRes() {}
 
+type AdminDeleteUserForbidden Error
+
+func (*AdminDeleteUserForbidden) adminDeleteUserRes() {}
+
+// AdminDeleteUserNoContent is response for AdminDeleteUser operation.
+type AdminDeleteUserNoContent struct{}
+
+func (*AdminDeleteUserNoContent) adminDeleteUserRes() {}
+
+type AdminDeleteUserNotFound Error
+
+func (*AdminDeleteUserNotFound) adminDeleteUserRes() {}
+
+type AdminDeleteUserUnauthorized Error
+
+func (*AdminDeleteUserUnauthorized) adminDeleteUserRes() {}
+
 type AdminDisableOIDCProviderForbidden Error
 
 func (*AdminDisableOIDCProviderForbidden) adminDisableOIDCProviderRes() {}
@@ -727,6 +744,14 @@ func (*AdminListOIDCProvidersForbidden) adminListOIDCProvidersRes() {}
 type AdminListOIDCProvidersUnauthorized Error
 
 func (*AdminListOIDCProvidersUnauthorized) adminListOIDCProvidersRes() {}
+
+type AdminListUsersForbidden Error
+
+func (*AdminListUsersForbidden) adminListUsersRes() {}
+
+type AdminListUsersUnauthorized Error
+
+func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 
 // Ref: #/components/schemas/AdminOIDCProvider
 type AdminOIDCProvider struct {
@@ -1119,6 +1144,35 @@ func (*AdminUpdateOIDCProviderNotFound) adminUpdateOIDCProviderRes() {}
 type AdminUpdateOIDCProviderUnauthorized Error
 
 func (*AdminUpdateOIDCProviderUnauthorized) adminUpdateOIDCProviderRes() {}
+
+// Ref: #/components/schemas/AdminUserListResponse
+type AdminUserListResponse struct {
+	Users []User `json:"users"`
+	// Total number of matching users.
+	Total int64 `json:"total"`
+}
+
+// GetUsers returns the value of Users.
+func (s *AdminUserListResponse) GetUsers() []User {
+	return s.Users
+}
+
+// GetTotal returns the value of Total.
+func (s *AdminUserListResponse) GetTotal() int64 {
+	return s.Total
+}
+
+// SetUsers sets the value of Users.
+func (s *AdminUserListResponse) SetUsers(val []User) {
+	s.Users = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AdminUserListResponse) SetTotal(val int64) {
+	s.Total = val
+}
+
+func (*AdminUserListResponse) adminListUsersRes() {}
 
 type ApiKeyAuth struct {
 	APIKey string

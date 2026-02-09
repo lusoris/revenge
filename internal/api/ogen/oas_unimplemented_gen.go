@@ -40,6 +40,15 @@ func (UnimplementedHandler) AdminDeleteOIDCProvider(ctx context.Context, params 
 	return r, ht.ErrNotImplemented
 }
 
+// AdminDeleteUser implements adminDeleteUser operation.
+//
+// Soft-deletes a user account. The user will no longer be able to log in.
+//
+// DELETE /api/v1/admin/users/{userId}
+func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (r AdminDeleteUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
 //
 // Disables an OIDC provider.
@@ -137,6 +146,16 @@ func (UnimplementedHandler) AdminGetSonarrStatus(ctx context.Context) (r AdminGe
 //
 // GET /api/v1/admin/oidc/providers
 func (UnimplementedHandler) AdminListOIDCProviders(ctx context.Context) (r AdminListOIDCProvidersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListUsers implements adminListUsers operation.
+//
+// List all users with optional text search and filters. Searches across username, email, and display
+// name.
+//
+// GET /api/v1/admin/users
+func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminListUsersParams) (r AdminListUsersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

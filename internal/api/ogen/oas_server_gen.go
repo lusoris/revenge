@@ -26,6 +26,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/admin/oidc/providers/{providerId}
 	AdminDeleteOIDCProvider(ctx context.Context, params AdminDeleteOIDCProviderParams) (AdminDeleteOIDCProviderRes, error)
+	// AdminDeleteUser implements adminDeleteUser operation.
+	//
+	// Soft-deletes a user account. The user will no longer be able to log in.
+	//
+	// DELETE /api/v1/admin/users/{userId}
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
 	// AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
 	//
 	// Disables an OIDC provider.
@@ -96,6 +102,13 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/oidc/providers
 	AdminListOIDCProviders(ctx context.Context) (AdminListOIDCProvidersRes, error)
+	// AdminListUsers implements adminListUsers operation.
+	//
+	// List all users with optional text search and filters. Searches across username, email, and display
+	// name.
+	//
+	// GET /api/v1/admin/users
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
 	// AdminSetDefaultOIDCProvider implements adminSetDefaultOIDCProvider operation.
 	//
 	// Sets an OIDC provider as the default for SSO.

@@ -13,6 +13,10 @@ type AdminDeleteOIDCProviderRes interface {
 	adminDeleteOIDCProviderRes()
 }
 
+type AdminDeleteUserRes interface {
+	adminDeleteUserRes()
+}
+
 type AdminDisableOIDCProviderRes interface {
 	adminDisableOIDCProviderRes()
 }
@@ -51,6 +55,10 @@ type AdminGetSonarrStatusRes interface {
 
 type AdminListOIDCProvidersRes interface {
 	adminListOIDCProvidersRes()
+}
+
+type AdminListUsersRes interface {
+	adminListUsersRes()
 }
 
 type AdminSetDefaultOIDCProviderRes interface {

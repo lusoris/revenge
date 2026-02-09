@@ -17,16 +17,22 @@ SELECT COUNT(*) FROM shared.users
 WHERE deleted_at IS NULL
   AND ($1::boolean IS NULL OR is_active = $1)
   AND ($2::boolean IS NULL OR is_admin = $2)
+  AND ($3::text IS NULL OR (
+    username ILIKE '%' || $3 || '%'
+    OR email ILIKE '%' || $3 || '%'
+    OR display_name ILIKE '%' || $3 || '%'
+  ))
 `
 
 type CountUsersParams struct {
-	IsActive *bool `json:"isActive"`
-	IsAdmin  *bool `json:"isAdmin"`
+	IsActive *bool   `json:"isActive"`
+	IsAdmin  *bool   `json:"isAdmin"`
+	Query    *string `json:"query"`
 }
 
 // Count users matching filters
 func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countUsers, arg.IsActive, arg.IsAdmin)
+	row := q.db.QueryRow(ctx, countUsers, arg.IsActive, arg.IsAdmin, arg.Query)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -478,15 +484,21 @@ SELECT id, username, email, password_hash, display_name, avatar_url, locale, tim
 WHERE deleted_at IS NULL
   AND ($1::boolean IS NULL OR is_active = $1)
   AND ($2::boolean IS NULL OR is_admin = $2)
+  AND ($3::text IS NULL OR (
+    username ILIKE '%' || $3 || '%'
+    OR email ILIKE '%' || $3 || '%'
+    OR display_name ILIKE '%' || $3 || '%'
+  ))
 ORDER BY created_at DESC
-LIMIT $4 OFFSET $3
+LIMIT $5 OFFSET $4
 `
 
 type ListUsersParams struct {
-	IsActive *bool `json:"isActive"`
-	IsAdmin  *bool `json:"isAdmin"`
-	Offset   int32 `json:"offset"`
-	Limit    int32 `json:"limit"`
+	IsActive *bool   `json:"isActive"`
+	IsAdmin  *bool   `json:"isAdmin"`
+	Query    *string `json:"query"`
+	Offset   int32   `json:"offset"`
+	Limit    int32   `json:"limit"`
 }
 
 // List all active users with optional filters
@@ -495,6 +507,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedU
 	rows, err := q.db.Query(ctx, listUsers,
 		arg.IsActive,
 		arg.IsAdmin,
+		arg.Query,
 		arg.Offset,
 		arg.Limit,
 	)

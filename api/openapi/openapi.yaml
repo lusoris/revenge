@@ -5014,6 +5014,93 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Admin User Management endpoints
+  /api/v1/admin/users:
+    get:
+      operationId: adminListUsers
+      summary: List and search users (admin)
+      description: List all users with optional text search and filters. Searches across username, email, and display name.
+      tags:
+        - Users Admin
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: Text search across username, email, and display name
+          schema:
+            type: string
+            maxLength: 200
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: is_admin
+          in: query
+          description: Filter by admin status
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of results (default 50, max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Users retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/users/{userId}:
+    delete:
+      operationId: adminDeleteUser
+      summary: Delete a user (admin)
+      description: Soft-deletes a user account. The user will no longer be able to log in.
+      tags:
+        - Users Admin
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User ID to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Admin OIDC endpoints
   /api/v1/admin/oidc/providers:
     get:
@@ -9159,6 +9246,21 @@ components:
           format: date-time
           description: Last login timestamp
           example: 2024-01-15T12:30:00Z
+
+    AdminUserListResponse:
+      type: object
+      required:
+        - users
+        - total
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        total:
+          type: integer
+          format: int64
+          description: Total number of matching users
 
     UserUpdate:
       type: object

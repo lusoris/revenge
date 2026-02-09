@@ -63,6 +63,7 @@ func (r *postgresRepository) ListUsers(ctx context.Context, filters UserFilters)
 	count, err := r.queries.CountUsers(ctx, db.CountUsersParams{
 		IsActive: filters.IsActive,
 		IsAdmin:  filters.IsAdmin,
+		Query:    filters.Query,
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to count users: %w", err)
@@ -72,6 +73,7 @@ func (r *postgresRepository) ListUsers(ctx context.Context, filters UserFilters)
 	users, err := r.queries.ListUsers(ctx, db.ListUsersParams{
 		IsActive: filters.IsActive,
 		IsAdmin:  filters.IsAdmin,
+		Query:    filters.Query,
 		Limit:    filters.Limit,
 		Offset:   filters.Offset,
 	})
