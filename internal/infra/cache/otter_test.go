@@ -235,3 +235,77 @@ func TestDefaultConstants_L1(t *testing.T) {
 	assert.Equal(t, 10000, DefaultL1MaxSize)
 	assert.Equal(t, 5*time.Minute, DefaultL1TTL)
 }
+
+func TestL1Cache_DeleteByPrefix(t *testing.T) {
+	cache, err := NewL1Cache[string, string](100, 1*time.Minute)
+	require.NoError(t, err)
+	defer cache.Close()
+
+	cache.Set("movie:1", "a")
+	cache.Set("movie:2", "b")
+	cache.Set("tvshow:1", "c")
+	cache.Set("session:x", "d")
+
+	deleted := cache.DeleteByPrefix("movie:")
+	assert.Equal(t, 2, deleted)
+	assert.Equal(t, 2, cache.Size())
+
+	_, ok := cache.Get("movie:1")
+	assert.False(t, ok)
+	_, ok = cache.Get("movie:2")
+	assert.False(t, ok)
+	_, ok = cache.Get("tvshow:1")
+	assert.True(t, ok)
+	_, ok = cache.Get("session:x")
+	assert.True(t, ok)
+}
+
+func TestL1Cache_DeleteByPrefix_NoMatch(t *testing.T) {
+	cache, err := NewL1Cache[string, string](100, 1*time.Minute)
+	require.NoError(t, err)
+	defer cache.Close()
+
+	cache.Set("a:1", "val")
+	deleted := cache.DeleteByPrefix("z:")
+	assert.Equal(t, 0, deleted)
+	assert.Equal(t, 1, cache.Size())
+}
+
+func TestL1Cache_DeleteByPrefix_NonStringKey(t *testing.T) {
+	cache, err := NewL1Cache[int, string](100, 1*time.Minute)
+	require.NoError(t, err)
+	defer cache.Close()
+
+	cache.Set(1, "val")
+	// Non-string key type — should return 0 (type assertion fails)
+	deleted := cache.DeleteByPrefix("1")
+	assert.Equal(t, 0, deleted)
+	assert.Equal(t, 1, cache.Size())
+}
+
+func TestSimpleGlobPrefix(t *testing.T) {
+	tests := []struct {
+		pattern    string
+		wantPrefix string
+		wantOk     bool
+	}{
+		{"user:*", "user:", true},
+		{"rbac:*", "rbac:", true},
+		{"*", "", true},
+		{"user:1", "", false},            // no trailing *
+		{"user:*:detail:*", "", false},    // multiple wildcards
+		{"user:?:*", "", false},           // ? in prefix
+		{"user:[abc]:*", "", false},       // [ in prefix
+		{"", "", false},                   // empty
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.pattern, func(t *testing.T) {
+			prefix, ok := simpleGlobPrefix(tt.pattern)
+			assert.Equal(t, tt.wantOk, ok)
+			if ok {
+				assert.Equal(t, tt.wantPrefix, prefix)
+			}
+		})
+	}
+}

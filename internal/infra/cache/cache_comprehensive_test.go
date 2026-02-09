@@ -216,9 +216,14 @@ func TestCache_InvalidatePattern(t *testing.T) {
 	err = cache.Invalidate(ctx, "user:*")
 	require.NoError(t, err)
 
-	// All L1 cache should be cleared (pattern matching limitation)
-	size := cache.l1.Size()
-	assert.Equal(t, 0, size, "L1 should be completely cleared on pattern invalidate")
+	// Only user:* keys should be gone; session:1 survives
+	_, ok := cache.l1.Get("user:1")
+	assert.False(t, ok, "user:1 should be invalidated")
+	_, ok = cache.l1.Get("user:2")
+	assert.False(t, ok, "user:2 should be invalidated")
+	_, ok = cache.l1.Get("session:1")
+	assert.True(t, ok, "session:1 should survive prefix invalidation")
+	assert.Equal(t, 1, cache.l1.Size())
 }
 
 // TestCache_JSONOperations tests JSON marshal/unmarshal

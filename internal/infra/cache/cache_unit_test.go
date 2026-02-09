@@ -242,19 +242,27 @@ func TestCache_Exists_ClientWithNilRueidis(t *testing.T) {
 	assert.False(t, exists)
 }
 
-// TestCache_Invalidate_NoL2 verifies Invalidate clears L1 and succeeds with no L2.
+// TestCache_Invalidate_NoL2 verifies Invalidate removes only matching keys from L1 with no L2.
 func TestCache_Invalidate_NoL2(t *testing.T) {
 	c := newL1OnlyCache(t)
 	ctx := context.Background()
 
-	c.l1.Set("a", []byte("1"))
-	c.l1.Set("b", []byte("2"))
-	c.l1.Set("c", []byte("3"))
-	assert.Greater(t, c.l1.Size(), 0)
+	c.l1.Set("user:1", []byte("1"))
+	c.l1.Set("user:2", []byte("2"))
+	c.l1.Set("session:1", []byte("3"))
+	assert.Equal(t, 3, c.l1.Size())
 
-	err := c.Invalidate(ctx, "a:*")
+	err := c.Invalidate(ctx, "user:*")
 	require.NoError(t, err)
-	assert.Equal(t, 0, c.l1.Size())
+
+	// Only user:* keys removed, session:1 survives
+	_, ok := c.l1.Get("user:1")
+	assert.False(t, ok)
+	_, ok = c.l1.Get("user:2")
+	assert.False(t, ok)
+	_, ok = c.l1.Get("session:1")
+	assert.True(t, ok)
+	assert.Equal(t, 1, c.l1.Size())
 }
 
 // TestCache_Invalidate_ClientWithNilRueidis verifies Invalidate with client but no rueidis.
@@ -926,12 +934,12 @@ func TestCache_Invalidate_Multiple(t *testing.T) {
 	c.l1.Set("x:1", []byte("a"))
 	c.l1.Set("y:1", []byte("b"))
 
-	// First invalidate
+	// First invalidate — only x:* removed
 	err := c.Invalidate(ctx, "x:*")
 	require.NoError(t, err)
-	assert.Equal(t, 0, c.l1.Size())
+	assert.Equal(t, 1, c.l1.Size())
 
-	// Second invalidate on empty cache should be fine
+	// Second invalidate — removes y:*
 	err = c.Invalidate(ctx, "y:*")
 	require.NoError(t, err)
 	assert.Equal(t, 0, c.l1.Size())
@@ -1202,12 +1210,15 @@ func TestCache_Invalidate_L2_WithKeys(t *testing.T) {
 	c, mockClient := newMockL2Cache(t, ctrl)
 	ctx := context.Background()
 
-	// KEYS returns matching keys
+	// SCAN returns matching keys with cursor=0 (done)
 	mockClient.EXPECT().
-		Do(gomock.Any(), mock.Match("KEYS", "prefix:*")).
+		Do(gomock.Any(), mock.Match("SCAN", "0", "MATCH", "prefix:*", "COUNT", "100")).
 		Return(mock.Result(mock.RedisArray(
-			mock.RedisBlobString("prefix:a"),
-			mock.RedisBlobString("prefix:b"),
+			mock.RedisBlobString("0"),
+			mock.RedisArray(
+				mock.RedisBlobString("prefix:a"),
+				mock.RedisBlobString("prefix:b"),
+			),
 		)))
 
 	// DEL deletes those keys
@@ -1225,17 +1236,20 @@ func TestCache_Invalidate_L2_NoKeys(t *testing.T) {
 	c, mockClient := newMockL2Cache(t, ctrl)
 	ctx := context.Background()
 
-	// KEYS returns empty array
+	// SCAN returns empty result with cursor=0
 	mockClient.EXPECT().
-		Do(gomock.Any(), mock.Match("KEYS", "empty:*")).
-		Return(mock.Result(mock.RedisArray()))
+		Do(gomock.Any(), mock.Match("SCAN", "0", "MATCH", "empty:*", "COUNT", "100")).
+		Return(mock.Result(mock.RedisArray(
+			mock.RedisBlobString("0"),
+			mock.RedisArray(),
+		)))
 
 	err := c.Invalidate(ctx, "empty:*")
 	require.NoError(t, err)
 }
 
-// TestCache_Invalidate_L2_KeysError tests Invalidate when KEYS command fails.
-func TestCache_Invalidate_L2_KeysError(t *testing.T) {
+// TestCache_Invalidate_L2_ScanError tests Invalidate when SCAN command fails.
+func TestCache_Invalidate_L2_ScanError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	c, mockClient := newMockL2Cache(t, ctrl)
 	ctx := context.Background()
@@ -1246,20 +1260,23 @@ func TestCache_Invalidate_L2_KeysError(t *testing.T) {
 
 	err := c.Invalidate(ctx, "err:*")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "L2 cache keys lookup failed")
+	assert.Contains(t, err.Error(), "L2 cache SCAN failed")
 }
 
-// TestCache_Invalidate_L2_DelError tests Invalidate when DEL command fails.
+// TestCache_Invalidate_L2_DelError tests Invalidate when DEL command fails after SCAN succeeds.
 func TestCache_Invalidate_L2_DelError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	c, mockClient := newMockL2Cache(t, ctrl)
 	ctx := context.Background()
 
-	// KEYS succeeds
+	// SCAN succeeds with keys
 	mockClient.EXPECT().
-		Do(gomock.Any(), mock.Match("KEYS", "del-err:*")).
+		Do(gomock.Any(), mock.Match("SCAN", "0", "MATCH", "del-err:*", "COUNT", "100")).
 		Return(mock.Result(mock.RedisArray(
-			mock.RedisBlobString("del-err:a"),
+			mock.RedisBlobString("0"),
+			mock.RedisArray(
+				mock.RedisBlobString("del-err:a"),
+			),
 		)))
 
 	// DEL fails
@@ -1269,7 +1286,7 @@ func TestCache_Invalidate_L2_DelError(t *testing.T) {
 
 	err := c.Invalidate(ctx, "del-err:*")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "L2 cache pattern delete failed")
+	assert.Contains(t, err.Error(), "L2 cache batch delete failed")
 }
 
 // TestCache_Ping_L2_Success tests Ping when rueidis client succeeds.
