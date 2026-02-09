@@ -15152,9 +15152,9 @@ func (c *Client) sendGetTopRated(ctx context.Context, params GetTopRatedParams) 
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "minVotes" parameter.
+		// Encode "min_votes" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "minVotes",
+			Name:    "min_votes",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
@@ -17878,9 +17878,9 @@ func (c *Client) sendListMovies(ctx context.Context, params ListMoviesParams) (r
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "orderBy" parameter.
+		// Encode "order_by" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "orderBy",
+			Name:    "order_by",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}

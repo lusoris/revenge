@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -761,11 +762,11 @@ func TestMapper_ToGenres_Single(t *testing.T) {
 
 func TestPtr(t *testing.T) {
 	intVal := int32(42)
-	result := ptr(intVal)
+	result := ptr.To(intVal)
 	assert.Equal(t, intVal, *result)
 
 	strVal := "hello"
-	strResult := ptr(strVal)
+	strResult := ptr.To(strVal)
 	assert.Equal(t, strVal, *strResult)
 }
 

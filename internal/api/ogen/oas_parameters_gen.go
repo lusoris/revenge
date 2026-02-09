@@ -6942,7 +6942,7 @@ type GetTopRatedParams struct {
 func unpackGetTopRatedParams(packed middleware.Parameters) (params GetTopRatedParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "minVotes",
+			Name: "min_votes",
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
@@ -6972,15 +6972,15 @@ func unpackGetTopRatedParams(packed middleware.Parameters) (params GetTopRatedPa
 
 func decodeGetTopRatedParams(args [0]string, argsEscaped bool, r *http.Request) (params GetTopRatedParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Set default value for query: minVotes.
+	// Set default value for query: min_votes.
 	{
 		val := int(100)
 		params.MinVotes.SetTo(val)
 	}
-	// Decode query: minVotes.
+	// Decode query: min_votes.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "minVotes",
+			Name:    "min_votes",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
@@ -7038,7 +7038,7 @@ func decodeGetTopRatedParams(args [0]string, argsEscaped bool, r *http.Request) 
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "minVotes",
+			Name: "min_votes",
 			In:   "query",
 			Err:  err,
 		}
@@ -8450,7 +8450,7 @@ type ListMoviesParams struct {
 func unpackListMoviesParams(packed middleware.Parameters) (params ListMoviesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "orderBy",
+			Name: "order_by",
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
@@ -8480,15 +8480,15 @@ func unpackListMoviesParams(packed middleware.Parameters) (params ListMoviesPara
 
 func decodeListMoviesParams(args [0]string, argsEscaped bool, r *http.Request) (params ListMoviesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Set default value for query: orderBy.
+	// Set default value for query: order_by.
 	{
 		val := ListMoviesOrderBy("added")
 		params.OrderBy.SetTo(val)
 	}
-	// Decode query: orderBy.
+	// Decode query: order_by.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "orderBy",
+			Name:    "order_by",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
@@ -8536,7 +8536,7 @@ func decodeListMoviesParams(args [0]string, argsEscaped bool, r *http.Request) (
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "orderBy",
+			Name: "order_by",
 			In:   "query",
 			Err:  err,
 		}

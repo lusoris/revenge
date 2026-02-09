@@ -22045,7 +22045,7 @@ func (s *Server) handleGetTopRatedRequest(args [0]string, argsEscaped bool, w ht
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "minVotes",
+					Name: "min_votes",
 					In:   "query",
 				}: params.MinVotes,
 				{
@@ -26310,7 +26310,7 @@ func (s *Server) handleListMoviesRequest(args [0]string, argsEscaped bool, w htt
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "orderBy",
+					Name: "order_by",
 					In:   "query",
 				}: params.OrderBy,
 				{

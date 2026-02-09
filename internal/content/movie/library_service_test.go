@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // MockMetadataProvider implements MetadataProvider for testing
@@ -89,11 +91,11 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		// Mock Metadata Search (TMDb)
 		tmdbMovie := &Movie{
 			Title:      "The Matrix",
-			Year:       ptr(int32(1999)),
-			TMDbID:     ptr(int32(603)),
+			Year:       ptr.To(int32(1999)),
+			TMDbID:     ptr.To(int32(603)),
 			Popularity: decimalPtr("100.0"),
 		}
-		metadata.On("SearchMovies", ctx, "The Matrix", ptr(1999)).Return([]*Movie{tmdbMovie}, nil)
+		metadata.On("SearchMovies", ctx, "The Matrix", ptr.To(1999)).Return([]*Movie{tmdbMovie}, nil)
 
 		// Mock Metadata Enrich
 		metadata.On("EnrichMovie", ctx, mock.AnythingOfType("*movie.Movie")).Return(nil)
@@ -104,7 +106,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		// 1. Create Movie
 		repo.On("CreateMovie", ctx, mock.MatchedBy(func(p CreateMovieParams) bool {
 			return p.Title == "The Matrix" && *p.TMDbID == 603
-		})).Return(&Movie{ID: uuid.Must(uuid.NewV7()), Title: "The Matrix", TMDbID: ptr(int32(603))}, nil)
+		})).Return(&Movie{ID: uuid.Must(uuid.NewV7()), Title: "The Matrix", TMDbID: ptr.To(int32(603))}, nil)
 
 		// 2. Create Movie File
 		repo.On("CreateMovieFile", ctx, mock.MatchedBy(func(p CreateMovieFileParams) bool {
@@ -140,7 +142,7 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 		repo.On("SearchMoviesByTitle", ctx, "The Matrix", int32(10), int32(0)).Return([]Movie{}, nil)
 
 		// Mock Metadata Search (return empty - no TMDb results)
-		metadata.On("SearchMovies", ctx, "The Matrix", ptr(1999)).Return([]*Movie{}, nil)
+		metadata.On("SearchMovies", ctx, "The Matrix", ptr.To(1999)).Return([]*Movie{}, nil)
 
 		summary, err := svc.ScanLibrary(ctx)
 		require.NoError(t, err)
@@ -187,7 +189,7 @@ func TestLibraryService_RefreshMovie(t *testing.T) {
 	ctx := context.Background()
 
 	movieID := uuid.Must(uuid.NewV7())
-	movie := &Movie{ID: movieID, TMDbID: ptr(int32(603)), Title: "The Matrix"}
+	movie := &Movie{ID: movieID, TMDbID: ptr.To(int32(603)), Title: "The Matrix"}
 
 	repo.On("GetMovie", ctx, movieID).Return(movie, nil)
 	metadata.On("EnrichMovie", ctx, movie).Return(nil)

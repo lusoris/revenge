@@ -814,7 +814,7 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: orderBy
+        - name: order_by
           in: query
           description: Sort order (title, year, added, rating)
           schema:
@@ -939,7 +939,7 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: minVotes
+        - name: min_votes
           in: query
           description: Minimum number of votes required
           schema:

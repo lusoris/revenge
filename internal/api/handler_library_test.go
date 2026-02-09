@@ -40,8 +40,8 @@ func TestHandler_ListLibraries_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", errResp.Message)
 }
 
-// TestHandler_CreateLibrary_NotAdmin verifies that CreateLibrary returns 403
-// when the caller is not an admin (no user in context means isAdmin returns false).
+// TestHandler_CreateLibrary_NotAdmin verifies that CreateLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_CreateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -55,10 +55,10 @@ func TestHandler_CreateLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.CreateLibrary(ctx, req)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.CreateLibraryForbidden)
-	require.True(t, ok, "expected *ogen.CreateLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.CreateLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.CreateLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // TestHandler_GetLibrary_NoAuth verifies that GetLibrary returns 401
@@ -82,8 +82,8 @@ func TestHandler_GetLibrary_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_UpdateLibrary_NotAdmin verifies that UpdateLibrary returns 403
-// when the caller is not an admin.
+// TestHandler_UpdateLibrary_NotAdmin verifies that UpdateLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -98,14 +98,14 @@ func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.UpdateLibrary(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.UpdateLibraryForbidden)
-	require.True(t, ok, "expected *ogen.UpdateLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.UpdateLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.UpdateLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_DeleteLibrary_NotAdmin verifies that DeleteLibrary returns 403
-// when the caller is not an admin.
+// TestHandler_DeleteLibrary_NotAdmin verifies that DeleteLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -119,14 +119,14 @@ func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.DeleteLibrary(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.DeleteLibraryForbidden)
-	require.True(t, ok, "expected *ogen.DeleteLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.DeleteLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.DeleteLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_TriggerLibraryScan_NotAdmin verifies that TriggerLibraryScan returns 403
-// when the caller is not an admin.
+// TestHandler_TriggerLibraryScan_NotAdmin verifies that TriggerLibraryScan returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -141,10 +141,10 @@ func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 	result, err := handler.TriggerLibraryScan(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.TriggerLibraryScanForbidden)
-	require.True(t, ok, "expected *ogen.TriggerLibraryScanForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.TriggerLibraryScanUnauthorized)
+	require.True(t, ok, "expected *ogen.TriggerLibraryScanUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // TestHandler_ListLibraryScans_NoAuth verifies that ListLibraryScans returns 401
@@ -168,8 +168,8 @@ func TestHandler_ListLibraryScans_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_ListLibraryPermissions_NotAdmin verifies that ListLibraryPermissions returns 403
-// when the caller is not an admin.
+// TestHandler_ListLibraryPermissions_NotAdmin verifies that ListLibraryPermissions returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -183,14 +183,14 @@ func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	result, err := handler.ListLibraryPermissions(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.ListLibraryPermissionsForbidden)
-	require.True(t, ok, "expected *ogen.ListLibraryPermissionsForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.ListLibraryPermissionsUnauthorized)
+	require.True(t, ok, "expected *ogen.ListLibraryPermissionsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_GrantLibraryPermission_NotAdmin verifies that GrantLibraryPermission returns 403
-// when the caller is not an admin.
+// TestHandler_GrantLibraryPermission_NotAdmin verifies that GrantLibraryPermission returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -208,14 +208,14 @@ func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 	result, err := handler.GrantLibraryPermission(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GrantLibraryPermissionForbidden)
-	require.True(t, ok, "expected *ogen.GrantLibraryPermissionForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.GrantLibraryPermissionUnauthorized)
+	require.True(t, ok, "expected *ogen.GrantLibraryPermissionUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_RevokeLibraryPermission_NotAdmin verifies that RevokeLibraryPermission returns 403
-// when the caller is not an admin.
+// TestHandler_RevokeLibraryPermission_NotAdmin verifies that RevokeLibraryPermission returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -233,10 +233,10 @@ func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 	result, err := handler.RevokeLibraryPermission(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.RevokeLibraryPermissionForbidden)
-	require.True(t, ok, "expected *ogen.RevokeLibraryPermissionForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.RevokeLibraryPermissionUnauthorized)
+	require.True(t, ok, "expected *ogen.RevokeLibraryPermissionUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // ============================================================================
