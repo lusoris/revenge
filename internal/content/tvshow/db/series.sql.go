@@ -28,7 +28,7 @@ const createSeries = `-- name: CreateSeries :one
 INSERT INTO tvshow.series (
     tmdb_id, tvdb_id, imdb_id, sonarr_id,
     title, tagline, overview,
-    titles_i18n, taglines_i18n, overviews_i18n, age_ratings,
+    titles_i18n, taglines_i18n, overviews_i18n, age_ratings, external_ratings,
     original_language, original_title,
     status, type, first_air_date, last_air_date,
     vote_average, vote_count, popularity,
@@ -39,16 +39,16 @@ INSERT INTO tvshow.series (
 ) VALUES (
     $1, $2, $3, $4,
     $5, $6, $7,
-    $8, $9, $10, $11,
-    $12, $13,
-    $14, $15, $16, $17,
-    $18, $19, $20,
-    $21, $22,
-    $23, $24,
-    $25, $26,
-    $27
+    $8, $9, $10, $11, $12,
+    $13, $14,
+    $15, $16, $17, $18,
+    $19, $20, $21,
+    $22, $23,
+    $24, $25,
+    $26, $27,
+    $28
 )
-RETURNING id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at
+RETURNING id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings
 `
 
 type CreateSeriesParams struct {
@@ -63,6 +63,7 @@ type CreateSeriesParams struct {
 	TaglinesI18n      json.RawMessage    `json:"taglinesI18n"`
 	OverviewsI18n     json.RawMessage    `json:"overviewsI18n"`
 	AgeRatings        json.RawMessage    `json:"ageRatings"`
+	ExternalRatings   json.RawMessage    `json:"externalRatings"`
 	OriginalLanguage  string             `json:"originalLanguage"`
 	OriginalTitle     *string            `json:"originalTitle"`
 	Status            *string            `json:"status"`
@@ -94,6 +95,7 @@ func (q *Queries) CreateSeries(ctx context.Context, arg CreateSeriesParams) (Tvs
 		arg.TaglinesI18n,
 		arg.OverviewsI18n,
 		arg.AgeRatings,
+		arg.ExternalRatings,
 		arg.OriginalLanguage,
 		arg.OriginalTitle,
 		arg.Status,
@@ -143,6 +145,7 @@ func (q *Queries) CreateSeries(ctx context.Context, arg CreateSeriesParams) (Tvs
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
@@ -157,7 +160,7 @@ func (q *Queries) DeleteSeries(ctx context.Context, id uuid.UUID) error {
 }
 
 const getSeries = `-- name: GetSeries :one
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series WHERE id = $1
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series WHERE id = $1
 `
 
 func (q *Queries) GetSeries(ctx context.Context, id uuid.UUID) (TvshowSeries, error) {
@@ -194,12 +197,13 @@ func (q *Queries) GetSeries(ctx context.Context, id uuid.UUID) (TvshowSeries, er
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getSeriesBySonarrID = `-- name: GetSeriesBySonarrID :one
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series WHERE sonarr_id = $1
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series WHERE sonarr_id = $1
 `
 
 func (q *Queries) GetSeriesBySonarrID(ctx context.Context, sonarrID *int32) (TvshowSeries, error) {
@@ -236,12 +240,13 @@ func (q *Queries) GetSeriesBySonarrID(ctx context.Context, sonarrID *int32) (Tvs
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getSeriesByTMDbID = `-- name: GetSeriesByTMDbID :one
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series WHERE tmdb_id = $1
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series WHERE tmdb_id = $1
 `
 
 func (q *Queries) GetSeriesByTMDbID(ctx context.Context, tmdbID *int32) (TvshowSeries, error) {
@@ -278,12 +283,13 @@ func (q *Queries) GetSeriesByTMDbID(ctx context.Context, tmdbID *int32) (TvshowS
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getSeriesByTVDbID = `-- name: GetSeriesByTVDbID :one
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series WHERE tvdb_id = $1
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series WHERE tvdb_id = $1
 `
 
 func (q *Queries) GetSeriesByTVDbID(ctx context.Context, tvdbID *int32) (TvshowSeries, error) {
@@ -320,12 +326,13 @@ func (q *Queries) GetSeriesByTVDbID(ctx context.Context, tvdbID *int32) (TvshowS
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const listRecentlyAddedSeries = `-- name: ListRecentlyAddedSeries :many
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
@@ -375,6 +382,7 @@ func (q *Queries) ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyA
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -387,7 +395,7 @@ func (q *Queries) ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyA
 }
 
 const listSeries = `-- name: ListSeries :many
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series
 ORDER BY
     CASE WHEN $3::text = 'title' AND $4::text = 'asc' THEN title END ASC,
     CASE WHEN $3::text = 'title' AND $4::text = 'desc' THEN title END DESC,
@@ -451,6 +459,7 @@ func (q *Queries) ListSeries(ctx context.Context, arg ListSeriesParams) ([]Tvsho
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -463,7 +472,7 @@ func (q *Queries) ListSeries(ctx context.Context, arg ListSeriesParams) ([]Tvsho
 }
 
 const listSeriesByStatus = `-- name: ListSeriesByStatus :many
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series
 WHERE status = $1
 ORDER BY first_air_date DESC
 LIMIT $2 OFFSET $3
@@ -515,6 +524,7 @@ func (q *Queries) ListSeriesByStatus(ctx context.Context, arg ListSeriesByStatus
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -527,7 +537,7 @@ func (q *Queries) ListSeriesByStatus(ctx context.Context, arg ListSeriesByStatus
 }
 
 const searchSeriesByTitle = `-- name: SearchSeriesByTitle :many
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series
 WHERE title ILIKE '%' || $1 || '%'
    OR original_title ILIKE '%' || $1 || '%'
 ORDER BY
@@ -586,6 +596,7 @@ func (q *Queries) SearchSeriesByTitle(ctx context.Context, arg SearchSeriesByTit
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -598,7 +609,7 @@ func (q *Queries) SearchSeriesByTitle(ctx context.Context, arg SearchSeriesByTit
 }
 
 const searchSeriesByTitleAnyLanguage = `-- name: SearchSeriesByTitleAnyLanguage :many
-SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at FROM tvshow.series
+SELECT id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings FROM tvshow.series
 WHERE title ILIKE '%' || $1 || '%'
    OR original_title ILIKE '%' || $1 || '%'
    OR titles_i18n::text ILIKE '%' || $1 || '%'
@@ -658,6 +669,7 @@ func (q *Queries) SearchSeriesByTitleAnyLanguage(ctx context.Context, arg Search
 			&i.MetadataUpdatedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -682,24 +694,25 @@ UPDATE tvshow.series SET
     taglines_i18n = COALESCE($9, taglines_i18n),
     overviews_i18n = COALESCE($10, overviews_i18n),
     age_ratings = COALESCE($11, age_ratings),
-    original_language = COALESCE($12, original_language),
-    original_title = COALESCE($13, original_title),
-    status = COALESCE($14, status),
-    type = COALESCE($15, type),
-    first_air_date = COALESCE($16, first_air_date),
-    last_air_date = COALESCE($17, last_air_date),
-    vote_average = COALESCE($18, vote_average),
-    vote_count = COALESCE($19, vote_count),
-    popularity = COALESCE($20, popularity),
-    poster_path = COALESCE($21, poster_path),
-    backdrop_path = COALESCE($22, backdrop_path),
-    total_seasons = COALESCE($23, total_seasons),
-    total_episodes = COALESCE($24, total_episodes),
-    trailer_url = COALESCE($25, trailer_url),
-    homepage = COALESCE($26, homepage),
-    metadata_updated_at = COALESCE($27, metadata_updated_at)
-WHERE id = $28
-RETURNING id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at
+    external_ratings = COALESCE($12, external_ratings),
+    original_language = COALESCE($13, original_language),
+    original_title = COALESCE($14, original_title),
+    status = COALESCE($15, status),
+    type = COALESCE($16, type),
+    first_air_date = COALESCE($17, first_air_date),
+    last_air_date = COALESCE($18, last_air_date),
+    vote_average = COALESCE($19, vote_average),
+    vote_count = COALESCE($20, vote_count),
+    popularity = COALESCE($21, popularity),
+    poster_path = COALESCE($22, poster_path),
+    backdrop_path = COALESCE($23, backdrop_path),
+    total_seasons = COALESCE($24, total_seasons),
+    total_episodes = COALESCE($25, total_episodes),
+    trailer_url = COALESCE($26, trailer_url),
+    homepage = COALESCE($27, homepage),
+    metadata_updated_at = COALESCE($28, metadata_updated_at)
+WHERE id = $29
+RETURNING id, tmdb_id, tvdb_id, imdb_id, sonarr_id, title, tagline, overview, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, original_language, original_title, status, type, first_air_date, last_air_date, vote_average, vote_count, popularity, poster_path, backdrop_path, total_seasons, total_episodes, trailer_url, homepage, metadata_updated_at, created_at, updated_at, external_ratings
 `
 
 type UpdateSeriesParams struct {
@@ -714,6 +727,7 @@ type UpdateSeriesParams struct {
 	TaglinesI18n      []byte             `json:"taglinesI18n"`
 	OverviewsI18n     []byte             `json:"overviewsI18n"`
 	AgeRatings        []byte             `json:"ageRatings"`
+	ExternalRatings   []byte             `json:"externalRatings"`
 	OriginalLanguage  *string            `json:"originalLanguage"`
 	OriginalTitle     *string            `json:"originalTitle"`
 	Status            *string            `json:"status"`
@@ -746,6 +760,7 @@ func (q *Queries) UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (Tvs
 		arg.TaglinesI18n,
 		arg.OverviewsI18n,
 		arg.AgeRatings,
+		arg.ExternalRatings,
 		arg.OriginalLanguage,
 		arg.OriginalTitle,
 		arg.Status,
@@ -796,6 +811,7 @@ func (q *Queries) UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (Tvs
 		&i.MetadataUpdatedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }

@@ -7,6 +7,7 @@ package moviedb
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -84,6 +85,7 @@ INSERT INTO public.movies (
     taglines_i18n,
     overviews_i18n,
     age_ratings,
+    external_ratings,
     poster_path,
     backdrop_path,
     trailer_url,
@@ -95,8 +97,8 @@ INSERT INTO public.movies (
     radarr_id,
     metadata_updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
-) RETURNING id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26
+) RETURNING id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings
 `
 
 type CreateMovieParams struct {
@@ -115,6 +117,7 @@ type CreateMovieParams struct {
 	TaglinesI18n      []byte             `json:"taglinesI18n"`
 	OverviewsI18n     []byte             `json:"overviewsI18n"`
 	AgeRatings        []byte             `json:"ageRatings"`
+	ExternalRatings   json.RawMessage    `json:"externalRatings"`
 	PosterPath        *string            `json:"posterPath"`
 	BackdropPath      *string            `json:"backdropPath"`
 	TrailerUrl        *string            `json:"trailerUrl"`
@@ -145,6 +148,7 @@ func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie
 		arg.TaglinesI18n,
 		arg.OverviewsI18n,
 		arg.AgeRatings,
+		arg.ExternalRatings,
 		arg.PosterPath,
 		arg.BackdropPath,
 		arg.TrailerUrl,
@@ -188,6 +192,7 @@ func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
@@ -517,7 +522,7 @@ func (q *Queries) GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) 
 }
 
 const getMovie = `-- name: GetMovie :one
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE id = $1 AND deleted_at IS NULL
 `
 
@@ -555,12 +560,13 @@ func (q *Queries) GetMovie(ctx context.Context, id uuid.UUID) (Movie, error) {
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getMovieByIMDbID = `-- name: GetMovieByIMDbID :one
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE imdb_id = $1 AND deleted_at IS NULL
 `
 
@@ -598,12 +604,13 @@ func (q *Queries) GetMovieByIMDbID(ctx context.Context, imdbID *string) (Movie, 
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getMovieByRadarrID = `-- name: GetMovieByRadarrID :one
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE radarr_id = $1 AND deleted_at IS NULL
 `
 
@@ -641,12 +648,13 @@ func (q *Queries) GetMovieByRadarrID(ctx context.Context, radarrID *int32) (Movi
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
 
 const getMovieByTMDbID = `-- name: GetMovieByTMDbID :one
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE tmdb_id = $1 AND deleted_at IS NULL
 `
 
@@ -684,6 +692,7 @@ func (q *Queries) GetMovieByTMDbID(ctx context.Context, tmdbID *int32) (Movie, e
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }
@@ -896,7 +905,7 @@ func (q *Queries) GetWatchProgress(ctx context.Context, arg GetWatchProgressPara
 }
 
 const listContinueWatching = `-- name: ListContinueWatching :many
-SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, mw.progress_seconds, mw.duration_seconds, mw.progress_percent, mw.last_watched_at
+SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, m.external_ratings, mw.progress_seconds, mw.duration_seconds, mw.progress_percent, mw.last_watched_at
 FROM public.movies m
 JOIN public.movie_watched mw ON m.id = mw.movie_id
 WHERE mw.user_id = $1
@@ -943,6 +952,7 @@ type ListContinueWatchingRow struct {
 	OverviewsI18n     []byte             `json:"overviewsI18n"`
 	AgeRatings        []byte             `json:"ageRatings"`
 	DeletedAt         pgtype.Timestamptz `json:"deletedAt"`
+	ExternalRatings   json.RawMessage    `json:"externalRatings"`
 	ProgressSeconds   int32              `json:"progressSeconds"`
 	DurationSeconds   *int32             `json:"durationSeconds"`
 	ProgressPercent   pgtype.Numeric     `json:"progressPercent"`
@@ -989,6 +999,7 @@ func (q *Queries) ListContinueWatching(ctx context.Context, arg ListContinueWatc
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 			&i.ProgressSeconds,
 			&i.DurationSeconds,
 			&i.ProgressPercent,
@@ -1179,7 +1190,7 @@ func (q *Queries) ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]Mov
 }
 
 const listMovies = `-- name: ListMovies :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
 ORDER BY
     CASE WHEN $3::text = 'title' THEN title END ASC,
@@ -1236,6 +1247,7 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1248,7 +1260,7 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie
 }
 
 const listMoviesByCollection = `-- name: ListMoviesByCollection :many
-SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at FROM public.movies m
+SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, m.external_ratings FROM public.movies m
 JOIN public.movie_collection_members mcm ON m.id = mcm.movie_id
 WHERE mcm.collection_id = $1
     AND m.deleted_at IS NULL
@@ -1295,6 +1307,7 @@ func (q *Queries) ListMoviesByCollection(ctx context.Context, collectionID uuid.
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1307,7 +1320,7 @@ func (q *Queries) ListMoviesByCollection(ctx context.Context, collectionID uuid.
 }
 
 const listMoviesByGenre = `-- name: ListMoviesByGenre :many
-SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at FROM public.movies m
+SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, m.external_ratings FROM public.movies m
 JOIN public.movie_genres mg ON m.id = mg.movie_id
 WHERE mg.tmdb_genre_id = $1
     AND m.deleted_at IS NULL
@@ -1361,6 +1374,7 @@ func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenrePa
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1373,7 +1387,7 @@ func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenrePa
 }
 
 const listMoviesByYear = `-- name: ListMoviesByYear :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
     AND year = $1
 ORDER BY vote_average DESC NULLS LAST, title ASC
@@ -1426,6 +1440,7 @@ func (q *Queries) ListMoviesByYear(ctx context.Context, arg ListMoviesByYearPara
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1438,7 +1453,7 @@ func (q *Queries) ListMoviesByYear(ctx context.Context, arg ListMoviesByYearPara
 }
 
 const listRecentlyAdded = `-- name: ListRecentlyAdded :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
 ORDER BY library_added_at DESC
 LIMIT $1 OFFSET $2
@@ -1489,6 +1504,7 @@ func (q *Queries) ListRecentlyAdded(ctx context.Context, arg ListRecentlyAddedPa
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1501,7 +1517,7 @@ func (q *Queries) ListRecentlyAdded(ctx context.Context, arg ListRecentlyAddedPa
 }
 
 const listTopRated = `-- name: ListTopRated :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
     AND vote_average IS NOT NULL
     AND vote_count > $1
@@ -1555,6 +1571,7 @@ func (q *Queries) ListTopRated(ctx context.Context, arg ListTopRatedParams) ([]M
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1567,7 +1584,7 @@ func (q *Queries) ListTopRated(ctx context.Context, arg ListTopRatedParams) ([]M
 }
 
 const listWatchedMovies = `-- name: ListWatchedMovies :many
-SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, mw.watch_count, mw.last_watched_at
+SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_date, m.runtime, m.overview, m.tagline, m.status, m.original_language, m.poster_path, m.backdrop_path, m.trailer_url, m.vote_average, m.vote_count, m.popularity, m.budget, m.revenue, m.library_added_at, m.metadata_updated_at, m.radarr_id, m.created_at, m.updated_at, m.titles_i18n, m.taglines_i18n, m.overviews_i18n, m.age_ratings, m.deleted_at, m.external_ratings, mw.watch_count, mw.last_watched_at
 FROM public.movies m
 JOIN public.movie_watched mw ON m.id = mw.movie_id
 WHERE mw.user_id = $1
@@ -1614,6 +1631,7 @@ type ListWatchedMoviesRow struct {
 	OverviewsI18n     []byte             `json:"overviewsI18n"`
 	AgeRatings        []byte             `json:"ageRatings"`
 	DeletedAt         pgtype.Timestamptz `json:"deletedAt"`
+	ExternalRatings   json.RawMessage    `json:"externalRatings"`
 	WatchCount        *int32             `json:"watchCount"`
 	LastWatchedAt     time.Time          `json:"lastWatchedAt"`
 }
@@ -1658,6 +1676,7 @@ func (q *Queries) ListWatchedMovies(ctx context.Context, arg ListWatchedMoviesPa
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 			&i.WatchCount,
 			&i.LastWatchedAt,
 		); err != nil {
@@ -1687,7 +1706,7 @@ func (q *Queries) RemoveMovieFromCollection(ctx context.Context, arg RemoveMovie
 }
 
 const searchMoviesByTitle = `-- name: SearchMoviesByTitle :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
     AND (title % $1 OR original_title % $1)
 ORDER BY
@@ -1742,6 +1761,7 @@ func (q *Queries) SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTit
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1754,7 +1774,7 @@ func (q *Queries) SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTit
 }
 
 const searchMoviesByTitleAnyLanguage = `-- name: SearchMoviesByTitleAnyLanguage :many
-SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at FROM public.movies
+SELECT id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings FROM public.movies
 WHERE deleted_at IS NULL
     AND (
         title ILIKE '%' || $1 || '%'
@@ -1822,6 +1842,7 @@ func (q *Queries) SearchMoviesByTitleAnyLanguage(ctx context.Context, arg Search
 			&i.OverviewsI18n,
 			&i.AgeRatings,
 			&i.DeletedAt,
+			&i.ExternalRatings,
 		); err != nil {
 			return nil, err
 		}
@@ -1851,18 +1872,19 @@ SET
     taglines_i18n = COALESCE($13, taglines_i18n),
     overviews_i18n = COALESCE($14, overviews_i18n),
     age_ratings = COALESCE($15, age_ratings),
-    poster_path = COALESCE($16, poster_path),
-    backdrop_path = COALESCE($17, backdrop_path),
-    trailer_url = COALESCE($18, trailer_url),
-    vote_average = COALESCE($19, vote_average),
-    vote_count = COALESCE($20, vote_count),
-    popularity = COALESCE($21, popularity),
-    budget = COALESCE($22, budget),
-    revenue = COALESCE($23, revenue),
-    radarr_id = COALESCE($24, radarr_id),
-    metadata_updated_at = COALESCE($25, metadata_updated_at)
-WHERE id = $26 AND deleted_at IS NULL
-RETURNING id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at
+    external_ratings = COALESCE($16, external_ratings),
+    poster_path = COALESCE($17, poster_path),
+    backdrop_path = COALESCE($18, backdrop_path),
+    trailer_url = COALESCE($19, trailer_url),
+    vote_average = COALESCE($20, vote_average),
+    vote_count = COALESCE($21, vote_count),
+    popularity = COALESCE($22, popularity),
+    budget = COALESCE($23, budget),
+    revenue = COALESCE($24, revenue),
+    radarr_id = COALESCE($25, radarr_id),
+    metadata_updated_at = COALESCE($26, metadata_updated_at)
+WHERE id = $27 AND deleted_at IS NULL
+RETURNING id, tmdb_id, imdb_id, title, original_title, year, release_date, runtime, overview, tagline, status, original_language, poster_path, backdrop_path, trailer_url, vote_average, vote_count, popularity, budget, revenue, library_added_at, metadata_updated_at, radarr_id, created_at, updated_at, titles_i18n, taglines_i18n, overviews_i18n, age_ratings, deleted_at, external_ratings
 `
 
 type UpdateMovieParams struct {
@@ -1881,6 +1903,7 @@ type UpdateMovieParams struct {
 	TaglinesI18n      []byte             `json:"taglinesI18n"`
 	OverviewsI18n     []byte             `json:"overviewsI18n"`
 	AgeRatings        []byte             `json:"ageRatings"`
+	ExternalRatings   []byte             `json:"externalRatings"`
 	PosterPath        *string            `json:"posterPath"`
 	BackdropPath      *string            `json:"backdropPath"`
 	TrailerUrl        *string            `json:"trailerUrl"`
@@ -1911,6 +1934,7 @@ func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie
 		arg.TaglinesI18n,
 		arg.OverviewsI18n,
 		arg.AgeRatings,
+		arg.ExternalRatings,
 		arg.PosterPath,
 		arg.BackdropPath,
 		arg.TrailerUrl,
@@ -1955,6 +1979,7 @@ func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie
 		&i.OverviewsI18n,
 		&i.AgeRatings,
 		&i.DeletedAt,
+		&i.ExternalRatings,
 	)
 	return i, err
 }

@@ -6,9 +6,10 @@ import (
 	"errors"
 	"fmt"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/metadata"
-	"log/slog"
 )
 
 // SearchMoviesMetadata searches for movies via metadata provider.

@@ -78,6 +78,18 @@ func movieToOgen(m *movie.Movie) *ogen.Movie {
 		o.RadarrID.SetTo(int(*m.RadarrID))
 	}
 
+	// External ratings
+	if len(m.ExternalRatings) > 0 {
+		o.ExternalRatings = make([]ogen.ExternalRating, len(m.ExternalRatings))
+		for i, er := range m.ExternalRatings {
+			o.ExternalRatings[i] = ogen.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  float32(er.Score),
+			}
+		}
+	}
+
 	return o
 }
 
@@ -315,6 +327,18 @@ func continueWatchingItemToOgen(item *movie.ContinueWatchingItem) ogen.ContinueW
 		o.ProgressPercent.SetTo(int(*item.ProgressPercent))
 	}
 
+	// External ratings
+	if len(item.ExternalRatings) > 0 {
+		o.ExternalRatings = make([]ogen.ExternalRating, len(item.ExternalRatings))
+		for i, er := range item.ExternalRatings {
+			o.ExternalRatings[i] = ogen.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  float32(er.Score),
+			}
+		}
+	}
+
 	return o
 }
 
@@ -392,6 +416,18 @@ func watchedMovieItemToOgen(item *movie.WatchedMovieItem) ogen.WatchedMovieItem 
 	}
 	if item.RadarrID != nil {
 		o.RadarrID.SetTo(int(*item.RadarrID))
+	}
+
+	// External ratings
+	if len(item.ExternalRatings) > 0 {
+		o.ExternalRatings = make([]ogen.ExternalRating, len(item.ExternalRatings))
+		for i, er := range item.ExternalRatings {
+			o.ExternalRatings[i] = ogen.ExternalRating{
+				Source: er.Source,
+				Value:  er.Value,
+				Score:  float32(er.Score),
+			}
+		}
 	}
 
 	return o

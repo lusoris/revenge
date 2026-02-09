@@ -1551,13 +1551,15 @@ type ContinueWatchingItem struct {
 	// Last metadata update.
 	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
 	// Radarr movie ID.
-	RadarrID        OptNilInt   `json:"radarr_id"`
-	CreatedAt       OptDateTime `json:"created_at"`
-	UpdatedAt       OptDateTime `json:"updated_at"`
-	ProgressSeconds OptInt      `json:"progress_seconds"`
-	DurationSeconds OptInt      `json:"duration_seconds"`
-	ProgressPercent OptNilInt   `json:"progress_percent"`
-	LastWatchedAt   OptDateTime `json:"last_watched_at"`
+	RadarrID OptNilInt `json:"radarr_id"`
+	// Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.).
+	ExternalRatings []ExternalRating `json:"external_ratings"`
+	CreatedAt       OptDateTime      `json:"created_at"`
+	UpdatedAt       OptDateTime      `json:"updated_at"`
+	ProgressSeconds OptInt           `json:"progress_seconds"`
+	DurationSeconds OptInt           `json:"duration_seconds"`
+	ProgressPercent OptNilInt        `json:"progress_percent"`
+	LastWatchedAt   OptDateTime      `json:"last_watched_at"`
 }
 
 // GetID returns the value of ID.
@@ -1673,6 +1675,11 @@ func (s *ContinueWatchingItem) GetMetadataUpdatedAt() OptNilDateTime {
 // GetRadarrID returns the value of RadarrID.
 func (s *ContinueWatchingItem) GetRadarrID() OptNilInt {
 	return s.RadarrID
+}
+
+// GetExternalRatings returns the value of ExternalRatings.
+func (s *ContinueWatchingItem) GetExternalRatings() []ExternalRating {
+	return s.ExternalRatings
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -1818,6 +1825,11 @@ func (s *ContinueWatchingItem) SetMetadataUpdatedAt(val OptNilDateTime) {
 // SetRadarrID sets the value of RadarrID.
 func (s *ContinueWatchingItem) SetRadarrID(val OptNilInt) {
 	s.RadarrID = val
+}
+
+// SetExternalRatings sets the value of ExternalRatings.
+func (s *ContinueWatchingItem) SetExternalRatings(val []ExternalRating) {
+	s.ExternalRatings = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -3164,6 +3176,46 @@ func (s *ErrorStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/ExternalRating
+type ExternalRating struct {
+	// Rating source name (e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb").
+	Source string `json:"source"`
+	// Original rating value (e.g. "8.8/10", "96%", "90/100").
+	Value string `json:"value"`
+	// Normalized score on a 0-100 scale.
+	Score float32 `json:"score"`
+}
+
+// GetSource returns the value of Source.
+func (s *ExternalRating) GetSource() string {
+	return s.Source
+}
+
+// GetValue returns the value of Value.
+func (s *ExternalRating) GetValue() string {
+	return s.Value
+}
+
+// GetScore returns the value of Score.
+func (s *ExternalRating) GetScore() float32 {
+	return s.Score
+}
+
+// SetSource sets the value of Source.
+func (s *ExternalRating) SetSource(val string) {
+	s.Source = val
+}
+
+// SetValue sets the value of Value.
+func (s *ExternalRating) SetValue(val string) {
+	s.Value = val
+}
+
+// SetScore sets the value of Score.
+func (s *ExternalRating) SetScore(val float32) {
+	s.Score = val
 }
 
 // Ref: #/components/schemas/FacetValue
@@ -8119,9 +8171,11 @@ type Movie struct {
 	// Last metadata update.
 	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
 	// Radarr movie ID.
-	RadarrID  OptNilInt   `json:"radarr_id"`
-	CreatedAt OptDateTime `json:"created_at"`
-	UpdatedAt OptDateTime `json:"updated_at"`
+	RadarrID OptNilInt `json:"radarr_id"`
+	// Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.).
+	ExternalRatings []ExternalRating `json:"external_ratings"`
+	CreatedAt       OptDateTime      `json:"created_at"`
+	UpdatedAt       OptDateTime      `json:"updated_at"`
 }
 
 // GetID returns the value of ID.
@@ -8237,6 +8291,11 @@ func (s *Movie) GetMetadataUpdatedAt() OptNilDateTime {
 // GetRadarrID returns the value of RadarrID.
 func (s *Movie) GetRadarrID() OptNilInt {
 	return s.RadarrID
+}
+
+// GetExternalRatings returns the value of ExternalRatings.
+func (s *Movie) GetExternalRatings() []ExternalRating {
+	return s.ExternalRatings
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -8362,6 +8421,11 @@ func (s *Movie) SetMetadataUpdatedAt(val OptNilDateTime) {
 // SetRadarrID sets the value of RadarrID.
 func (s *Movie) SetRadarrID(val OptNilInt) {
 	s.RadarrID = val
+}
+
+// SetExternalRatings sets the value of ExternalRatings.
+func (s *Movie) SetExternalRatings(val []ExternalRating) {
+	s.ExternalRatings = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -18536,6 +18600,8 @@ type TVSeries struct {
 	TrailerURL OptNilString `json:"trailer_url"`
 	// Official homepage URL.
 	Homepage OptNilString `json:"homepage"`
+	// Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.).
+	ExternalRatings []ExternalRating `json:"external_ratings"`
 	// When added to library.
 	LibraryAddedAt OptDateTime `json:"library_added_at"`
 	// Last metadata update.
@@ -18657,6 +18723,11 @@ func (s *TVSeries) GetTrailerURL() OptNilString {
 // GetHomepage returns the value of Homepage.
 func (s *TVSeries) GetHomepage() OptNilString {
 	return s.Homepage
+}
+
+// GetExternalRatings returns the value of ExternalRatings.
+func (s *TVSeries) GetExternalRatings() []ExternalRating {
+	return s.ExternalRatings
 }
 
 // GetLibraryAddedAt returns the value of LibraryAddedAt.
@@ -18792,6 +18863,11 @@ func (s *TVSeries) SetTrailerURL(val OptNilString) {
 // SetHomepage sets the value of Homepage.
 func (s *TVSeries) SetHomepage(val OptNilString) {
 	s.Homepage = val
+}
+
+// SetExternalRatings sets the value of ExternalRatings.
+func (s *TVSeries) SetExternalRatings(val []ExternalRating) {
+	s.ExternalRatings = val
 }
 
 // SetLibraryAddedAt sets the value of LibraryAddedAt.
@@ -21705,11 +21781,13 @@ type WatchedMovieItem struct {
 	// Last metadata update.
 	MetadataUpdatedAt OptNilDateTime `json:"metadata_updated_at"`
 	// Radarr movie ID.
-	RadarrID      OptNilInt   `json:"radarr_id"`
-	CreatedAt     OptDateTime `json:"created_at"`
-	UpdatedAt     OptDateTime `json:"updated_at"`
-	WatchCount    OptInt      `json:"watch_count"`
-	LastWatchedAt OptDateTime `json:"last_watched_at"`
+	RadarrID OptNilInt `json:"radarr_id"`
+	// Ratings from external providers (IMDb, Rotten Tomatoes, Metacritic, etc.).
+	ExternalRatings []ExternalRating `json:"external_ratings"`
+	CreatedAt       OptDateTime      `json:"created_at"`
+	UpdatedAt       OptDateTime      `json:"updated_at"`
+	WatchCount      OptInt           `json:"watch_count"`
+	LastWatchedAt   OptDateTime      `json:"last_watched_at"`
 }
 
 // GetID returns the value of ID.
@@ -21825,6 +21903,11 @@ func (s *WatchedMovieItem) GetMetadataUpdatedAt() OptNilDateTime {
 // GetRadarrID returns the value of RadarrID.
 func (s *WatchedMovieItem) GetRadarrID() OptNilInt {
 	return s.RadarrID
+}
+
+// GetExternalRatings returns the value of ExternalRatings.
+func (s *WatchedMovieItem) GetExternalRatings() []ExternalRating {
+	return s.ExternalRatings
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -21960,6 +22043,11 @@ func (s *WatchedMovieItem) SetMetadataUpdatedAt(val OptNilDateTime) {
 // SetRadarrID sets the value of RadarrID.
 func (s *WatchedMovieItem) SetRadarrID(val OptNilInt) {
 	s.RadarrID = val
+}
+
+// SetExternalRatings sets the value of ExternalRatings.
+func (s *WatchedMovieItem) SetExternalRatings(val []ExternalRating) {
+	s.ExternalRatings = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.

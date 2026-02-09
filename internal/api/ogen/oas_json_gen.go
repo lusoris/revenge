@@ -5484,6 +5484,16 @@ func (s *ContinueWatchingItem) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.ExternalRatings != nil {
+			e.FieldStart("external_ratings")
+			e.ArrStart()
+			for _, elem := range s.ExternalRatings {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
 		if s.CreatedAt.Set {
 			e.FieldStart("created_at")
 			s.CreatedAt.Encode(e, json.EncodeDateTime)
@@ -5521,7 +5531,7 @@ func (s *ContinueWatchingItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfContinueWatchingItem = [29]string{
+var jsonFieldsNameOfContinueWatchingItem = [30]string{
 	0:  "id",
 	1:  "tmdb_id",
 	2:  "imdb_id",
@@ -5545,12 +5555,13 @@ var jsonFieldsNameOfContinueWatchingItem = [29]string{
 	20: "library_added_at",
 	21: "metadata_updated_at",
 	22: "radarr_id",
-	23: "created_at",
-	24: "updated_at",
-	25: "progress_seconds",
-	26: "duration_seconds",
-	27: "progress_percent",
-	28: "last_watched_at",
+	23: "external_ratings",
+	24: "created_at",
+	25: "updated_at",
+	26: "progress_seconds",
+	27: "duration_seconds",
+	28: "progress_percent",
+	29: "last_watched_at",
 }
 
 // Decode decodes ContinueWatchingItem from json.
@@ -5790,6 +5801,23 @@ func (s *ContinueWatchingItem) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "external_ratings":
+			if err := func() error {
+				s.ExternalRatings = make([]ExternalRating, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ExternalRating
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.ExternalRatings = append(s.ExternalRatings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"external_ratings\"")
 			}
 		case "created_at":
 			if err := func() error {
@@ -9150,6 +9178,136 @@ func (s ErrorDetails) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ErrorDetails) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *ExternalRating) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *ExternalRating) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("source")
+		e.Str(s.Source)
+	}
+	{
+		e.FieldStart("value")
+		e.Str(s.Value)
+	}
+	{
+		e.FieldStart("score")
+		e.Float32(s.Score)
+	}
+}
+
+var jsonFieldsNameOfExternalRating = [3]string{
+	0: "source",
+	1: "value",
+	2: "score",
+}
+
+// Decode decodes ExternalRating from json.
+func (s *ExternalRating) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ExternalRating to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "source":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Source = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"source\"")
+			}
+		case "value":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Value = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"value\"")
+			}
+		case "score":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Float32()
+				s.Score = float32(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"score\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode ExternalRating")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfExternalRating) {
+					name = jsonFieldsNameOfExternalRating[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *ExternalRating) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ExternalRating) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -24320,6 +24478,16 @@ func (s *Movie) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.ExternalRatings != nil {
+			e.FieldStart("external_ratings")
+			e.ArrStart()
+			for _, elem := range s.ExternalRatings {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
 		if s.CreatedAt.Set {
 			e.FieldStart("created_at")
 			s.CreatedAt.Encode(e, json.EncodeDateTime)
@@ -24333,7 +24501,7 @@ func (s *Movie) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfMovie = [25]string{
+var jsonFieldsNameOfMovie = [26]string{
 	0:  "id",
 	1:  "tmdb_id",
 	2:  "imdb_id",
@@ -24357,8 +24525,9 @@ var jsonFieldsNameOfMovie = [25]string{
 	20: "library_added_at",
 	21: "metadata_updated_at",
 	22: "radarr_id",
-	23: "created_at",
-	24: "updated_at",
+	23: "external_ratings",
+	24: "created_at",
+	25: "updated_at",
 }
 
 // Decode decodes Movie from json.
@@ -24598,6 +24767,23 @@ func (s *Movie) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "external_ratings":
+			if err := func() error {
+				s.ExternalRatings = make([]ExternalRating, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ExternalRating
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.ExternalRatings = append(s.ExternalRatings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"external_ratings\"")
 			}
 		case "created_at":
 			if err := func() error {
@@ -42138,6 +42324,16 @@ func (s *TVSeries) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.ExternalRatings != nil {
+			e.FieldStart("external_ratings")
+			e.ArrStart()
+			for _, elem := range s.ExternalRatings {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
 		if s.LibraryAddedAt.Set {
 			e.FieldStart("library_added_at")
 			s.LibraryAddedAt.Encode(e, json.EncodeDateTime)
@@ -42163,7 +42359,7 @@ func (s *TVSeries) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfTVSeries = [27]string{
+var jsonFieldsNameOfTVSeries = [28]string{
 	0:  "id",
 	1:  "tmdb_id",
 	2:  "tvdb_id",
@@ -42187,10 +42383,11 @@ var jsonFieldsNameOfTVSeries = [27]string{
 	20: "total_episodes",
 	21: "trailer_url",
 	22: "homepage",
-	23: "library_added_at",
-	24: "metadata_updated_at",
-	25: "created_at",
-	26: "updated_at",
+	23: "external_ratings",
+	24: "library_added_at",
+	25: "metadata_updated_at",
+	26: "created_at",
+	27: "updated_at",
 }
 
 // Decode decodes TVSeries from json.
@@ -42430,6 +42627,23 @@ func (s *TVSeries) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"homepage\"")
+			}
+		case "external_ratings":
+			if err := func() error {
+				s.ExternalRatings = make([]ExternalRating, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ExternalRating
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.ExternalRatings = append(s.ExternalRatings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"external_ratings\"")
 			}
 		case "library_added_at":
 			if err := func() error {
@@ -49193,6 +49407,16 @@ func (s *WatchedMovieItem) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.ExternalRatings != nil {
+			e.FieldStart("external_ratings")
+			e.ArrStart()
+			for _, elem := range s.ExternalRatings {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
 		if s.CreatedAt.Set {
 			e.FieldStart("created_at")
 			s.CreatedAt.Encode(e, json.EncodeDateTime)
@@ -49218,7 +49442,7 @@ func (s *WatchedMovieItem) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfWatchedMovieItem = [27]string{
+var jsonFieldsNameOfWatchedMovieItem = [28]string{
 	0:  "id",
 	1:  "tmdb_id",
 	2:  "imdb_id",
@@ -49242,10 +49466,11 @@ var jsonFieldsNameOfWatchedMovieItem = [27]string{
 	20: "library_added_at",
 	21: "metadata_updated_at",
 	22: "radarr_id",
-	23: "created_at",
-	24: "updated_at",
-	25: "watch_count",
-	26: "last_watched_at",
+	23: "external_ratings",
+	24: "created_at",
+	25: "updated_at",
+	26: "watch_count",
+	27: "last_watched_at",
 }
 
 // Decode decodes WatchedMovieItem from json.
@@ -49485,6 +49710,23 @@ func (s *WatchedMovieItem) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"radarr_id\"")
+			}
+		case "external_ratings":
+			if err := func() error {
+				s.ExternalRatings = make([]ExternalRating, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem ExternalRating
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.ExternalRatings = append(s.ExternalRatings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"external_ratings\"")
 			}
 		case "created_at":
 			if err := func() error {

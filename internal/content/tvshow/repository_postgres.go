@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/govalues/decimal"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/govalues/decimal"
 
 	tvshowdb "github.com/lusoris/revenge/internal/content/tvshow/db"
 )
@@ -213,6 +213,7 @@ func (r *postgresRepository) CreateSeries(ctx context.Context, params CreateSeri
 		TaglinesI18n:      marshalStringMap(params.TaglinesI18n),
 		OverviewsI18n:     marshalStringMap(params.OverviewsI18n),
 		AgeRatings:        marshalNestedStringMap(params.AgeRatings),
+		ExternalRatings:   marshalExternalRatings(params.ExternalRatings),
 		OriginalLanguage:  params.OriginalLanguage,
 		OriginalTitle:     params.OriginalTitle,
 		Status:            params.Status,
@@ -250,6 +251,7 @@ func (r *postgresRepository) UpdateSeries(ctx context.Context, params UpdateSeri
 		TaglinesI18n:      marshalStringMapToBytes(params.TaglinesI18n),
 		OverviewsI18n:     marshalStringMapToBytes(params.OverviewsI18n),
 		AgeRatings:        marshalNestedStringMapToBytes(params.AgeRatings),
+		ExternalRatings:   marshalExternalRatingsToBytes(params.ExternalRatings),
 		OriginalLanguage:  params.OriginalLanguage,
 		OriginalTitle:     params.OriginalTitle,
 		Status:            params.Status,
@@ -1277,6 +1279,7 @@ func dbSeriesToSeries(s tvshowdb.TvshowSeries) *Series {
 		TaglinesI18n:      unmarshalStringMap(s.TaglinesI18n),
 		OverviewsI18n:     unmarshalStringMap(s.OverviewsI18n),
 		AgeRatings:        unmarshalNestedStringMap(s.AgeRatings),
+		ExternalRatings:   unmarshalExternalRatings(s.ExternalRatings),
 		MetadataUpdatedAt: pgTimestamptzToTimePtr(s.MetadataUpdatedAt),
 		CreatedAt:         s.CreatedAt,
 		UpdatedAt:         s.UpdatedAt,
@@ -1518,5 +1521,33 @@ func unmarshalNestedStringMap(data json.RawMessage) map[string]map[string]string
 	var m map[string]map[string]string
 	_ = json.Unmarshal(data, &m)
 	return m
+}
+
+// marshalExternalRatings marshals []ExternalRating to JSONB json.RawMessage
+func marshalExternalRatings(ratings []ExternalRating) json.RawMessage {
+	if ratings == nil {
+		return json.RawMessage("[]")
+	}
+	b, _ := json.Marshal(ratings)
+	return b
+}
+
+// marshalExternalRatingsToBytes marshals []ExternalRating to JSONB []byte
+func marshalExternalRatingsToBytes(ratings []ExternalRating) []byte {
+	if ratings == nil {
+		return []byte("[]")
+	}
+	b, _ := json.Marshal(ratings)
+	return b
+}
+
+// unmarshalExternalRatings unmarshals JSONB json.RawMessage to []ExternalRating
+func unmarshalExternalRatings(data json.RawMessage) []ExternalRating {
+	if len(data) == 0 {
+		return nil
+	}
+	var result []ExternalRating
+	_ = json.Unmarshal(data, &result)
+	return result
 }
 

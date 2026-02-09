@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/govalues/decimal"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/govalues/decimal"
 
 	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
 )
@@ -97,6 +97,7 @@ func dbMovieToMovie(dbMovie moviedb.Movie) *Movie {
 		TaglinesI18n:      unmarshalStringMap(dbMovie.TaglinesI18n),
 		OverviewsI18n:     unmarshalStringMap(dbMovie.OverviewsI18n),
 		AgeRatings:        unmarshalNestedStringMap(dbMovie.AgeRatings),
+		ExternalRatings:   unmarshalExternalRatings(dbMovie.ExternalRatings),
 		PosterPath:        dbMovie.PosterPath,
 		BackdropPath:      dbMovie.BackdropPath,
 		TrailerURL:        dbMovie.TrailerUrl,
@@ -340,6 +341,30 @@ func marshalNestedStringMap(m map[string]map[string]string) []byte {
 	return data
 }
 
+// marshalExternalRatings marshals []ExternalRating to JSONB []byte
+func marshalExternalRatings(ratings []ExternalRating) []byte {
+	if ratings == nil {
+		return []byte("[]")
+	}
+	data, err := json.Marshal(ratings)
+	if err != nil {
+		return []byte("[]")
+	}
+	return data
+}
+
+// unmarshalExternalRatings unmarshals JSONB []byte to []ExternalRating
+func unmarshalExternalRatings(data []byte) []ExternalRating {
+	if len(data) == 0 {
+		return nil
+	}
+	var result []ExternalRating
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil
+	}
+	return result
+}
+
 func (r *postgresRepository) ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error) {
 	dbMovies, err := r.queries.ListMovies(ctx, moviedb.ListMoviesParams{
 		Limit:   filters.Limit,
@@ -456,6 +481,7 @@ func (r *postgresRepository) CreateMovie(ctx context.Context, params CreateMovie
 		TaglinesI18n:      marshalStringMap(params.TaglinesI18n),
 		OverviewsI18n:     marshalStringMap(params.OverviewsI18n),
 		AgeRatings:        marshalNestedStringMap(params.AgeRatings),
+		ExternalRatings:   marshalExternalRatings(params.ExternalRatings),
 		PosterPath:        params.PosterPath,
 		BackdropPath:      params.BackdropPath,
 		TrailerUrl:        params.TrailerURL,
@@ -478,6 +504,7 @@ func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovie
 	// Convert maps to []byte for JSONB fields (only if not nil)
 	var titlesI18n, taglinesI18n, overviewsI18n []byte
 	var ageRatings []byte
+	var externalRatings []byte
 
 	if params.TitlesI18n != nil {
 		titlesI18n = marshalStringMap(params.TitlesI18n)
@@ -490,6 +517,9 @@ func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovie
 	}
 	if params.AgeRatings != nil {
 		ageRatings = marshalNestedStringMap(params.AgeRatings)
+	}
+	if params.ExternalRatings != nil {
+		externalRatings = marshalExternalRatings(params.ExternalRatings)
 	}
 
 	dbParams := moviedb.UpdateMovieParams{
@@ -509,6 +539,7 @@ func (r *postgresRepository) UpdateMovie(ctx context.Context, params UpdateMovie
 		TaglinesI18n:      taglinesI18n,
 		OverviewsI18n:     overviewsI18n,
 		AgeRatings:        ageRatings,
+		ExternalRatings:   externalRatings,
 		PosterPath:        params.PosterPath,
 		BackdropPath:      params.BackdropPath,
 		TrailerUrl:        params.TrailerURL,
