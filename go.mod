@@ -52,7 +52,7 @@ require (
 	github.com/hashicorp/raft-boltdb v0.0.0-20251103221153-05f9dd7a5148
 	github.com/imroc/req/v3 v3.57.0
 	github.com/jackc/pgx/v5 v5.8.0
-	github.com/lib/pq v1.10.9
+	github.com/lib/pq v1.11.1
 	github.com/lmittmann/tint v1.1.3
 	github.com/maypok86/otter/v2 v2.3.0
 	github.com/ogen-go/ogen v1.18.0
@@ -72,7 +72,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.40.0
 	go.uber.org/fx v1.24.0
 	go.uber.org/mock v0.6.0
-	golang.org/x/oauth2 v0.34.0
+	golang.org/x/oauth2 v0.35.0
 	golang.org/x/time v0.14.0
 )
 
