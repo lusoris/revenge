@@ -328,8 +328,8 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **5B.5**: Create users collection in Typesense (admin search)
 - [x] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder ✅ `ed2028b9` — renamed to `GetAPIKeyLastUsedAt`, removed misleading comments
 - [x] **7.3**: Extract `copyMovieFieldsToOgen` helper — **SKIPPED**: ogen generates flat types with no shared interface; any extraction (19-field interface / reflection) adds more complexity than the 3 copies of schema-driven boilerplate
-- [ ] **4B.3**: Fix L1 pattern invalidation (verify Otter `DeleteByFunc` or per-domain instances)
-- [ ] **4B.4**: Verify + fix Redis pattern invalidation (`KEYS` → `SCAN`)
+- [x] **4B.3**: Fix L1 pattern invalidation ✅ `bd2be17f` — `DeleteByPrefix()` on Otter Keys() iterator, `simpleGlobPrefix()` detects prefix* patterns
+- [x] **4B.4**: Verify + fix Redis pattern invalidation ✅ `bd2be17f` — replaced `KEYS` with cursor-based `SCAN` + batch delete
 
 ### Tier 4 — Polish
 
