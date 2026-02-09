@@ -12,9 +12,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/lusoris/revenge/internal/errors"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
