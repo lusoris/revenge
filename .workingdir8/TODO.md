@@ -336,7 +336,7 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **8B.3**: Delete dead `database/metrics.go` + test ✅ `033bc406`
 - [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
 - [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
-- [ ] **3C.9**: Create `DownloadImageWorker` for cache warming
+- [x] **3C.9**: Create `DownloadImageWorker` for cache warming
 - [ ] **3C.11**: Periodic stats/analytics aggregation job
 - [x] **1C.5-7**: Clean up TODO comments and stale test comments ✅ `72f19cdc`
 - [x] **1D.9-10**: Delete vestigial sqlc placeholders ✅ `033bc406` — removed source SQL + regenerated sqlc
