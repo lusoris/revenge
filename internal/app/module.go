@@ -61,6 +61,9 @@ var Module = fx.Module("app",
 	fx.Provide(providePeriodicJobs),
 	fx.Invoke(registerActivityCleanupWorker, registerLibraryCleanupWorker),
 
+	// Bridge: metadata jobs Queue → movie.MetadataQueue interface
+	fx.Provide(func(q *metadatajobs.Queue) movie.MetadataQueue { return q }),
+
 	// Services
 	settings.Module,
 	user.Module,

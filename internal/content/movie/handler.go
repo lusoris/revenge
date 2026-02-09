@@ -8,15 +8,22 @@ import (
 	"github.com/google/uuid"
 )
 
+// MetadataQueue allows enqueuing metadata refresh jobs.
+type MetadataQueue interface {
+	EnqueueRefreshMovie(ctx context.Context, movieID uuid.UUID, force bool, languages []string) error
+}
+
 // Handler handles HTTP requests for movies
 type Handler struct {
-	service Service
+	service       Service
+	metadataQueue MetadataQueue
 }
 
 // NewHandler creates a new movie handler
-func NewHandler(service Service) *Handler {
+func NewHandler(service Service, metadataQueue MetadataQueue) *Handler {
 	return &Handler{
-		service: service,
+		service:       service,
+		metadataQueue: metadataQueue,
 	}
 }
 
@@ -197,14 +204,21 @@ func (h *Handler) GetUserStats(ctx context.Context, userID uuid.UUID) (*UserMovi
 	return h.service.GetUserStats(ctx, userID)
 }
 
-// RefreshMetadata handles POST /api/v1/movies/:id/refresh
+// RefreshMetadata handles POST /api/v1/movies/:id/refresh.
+// It validates that the movie exists, then enqueues an async metadata refresh job.
 func (h *Handler) RefreshMetadata(ctx context.Context, id string) error {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
 		return fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.RefreshMovieMetadata(ctx, movieID)
+	// Verify movie exists before enqueuing
+	if _, err := h.service.GetMovie(ctx, movieID); err != nil {
+		return err
+	}
+
+	// Enqueue async refresh — returns immediately with 202 Accepted
+	return h.metadataQueue.EnqueueRefreshMovie(ctx, movieID, true, nil)
 }
 
 // Request/Response parameter types
