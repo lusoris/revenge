@@ -55,6 +55,7 @@ const (
 	KeyPrefixLibraryStats     = "library:stats:"
 	KeyPrefixSearch           = "search:"
 	KeyPrefixSearchMovies     = "search:movies:"
+	KeyPrefixSearchTVShows    = "search:tvshows:"
 	KeyPrefixSearchAutocomplete = "search:autocomplete:"
 	KeyPrefixImage            = "image:"
 	KeyPrefixContinueWatching = "user:continue:"
@@ -271,6 +272,11 @@ func LibraryStatsKey(libraryID string) string {
 // SearchMoviesKey returns the cache key for movie search results.
 func SearchMoviesKey(hash string) string {
 	return KeyPrefixSearchMovies + hash
+}
+
+// SearchTVShowsKey returns the cache key for TV show search results.
+func SearchTVShowsKey(hash string) string {
+	return KeyPrefixSearchTVShows + hash
 }
 
 // SearchAutocompleteKey returns the cache key for autocomplete results.

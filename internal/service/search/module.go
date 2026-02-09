@@ -5,6 +5,7 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"go.uber.org/fx"
 )
 
@@ -12,8 +13,20 @@ import (
 var Module = fx.Module("search_service",
 	fx.Provide(NewMovieSearchService),
 	fx.Provide(NewTVShowSearchService),
+	fx.Provide(provideCachedMovieSearchService),
+	fx.Provide(provideCachedTVShowSearchService),
 	fx.Invoke(initializeCollections),
 )
+
+// provideCachedMovieSearchService wraps the movie search service with caching.
+func provideCachedMovieSearchService(svc *MovieSearchService, c *cache.Cache, logger *slog.Logger) *CachedMovieSearchService {
+	return NewCachedMovieSearchService(svc, c, logger)
+}
+
+// provideCachedTVShowSearchService wraps the TV show search service with caching.
+func provideCachedTVShowSearchService(svc *TVShowSearchService, c *cache.Cache, logger *slog.Logger) *CachedTVShowSearchService {
+	return NewCachedTVShowSearchService(svc, c, logger)
+}
 
 // initializeCollections creates Typesense collections on startup if they don't exist.
 func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, logger *slog.Logger) {
