@@ -776,17 +776,19 @@ func (SearchIndexArgs) InsertOpts() river.InsertOpts {
 // SearchIndexWorker indexes TV show content for search.
 type SearchIndexWorker struct {
 	river.WorkerDefaults[SearchIndexArgs]
-	service       tvshow.Service
-	searchService *search.TVShowSearchService
-	logger        *slog.Logger
+	service              tvshow.Service
+	searchService        *search.TVShowSearchService
+	episodeSearchService *search.EpisodeSearchService
+	logger               *slog.Logger
 }
 
 // NewSearchIndexWorker creates a new search index worker.
-func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, logger *slog.Logger) *SearchIndexWorker {
+func NewSearchIndexWorker(service tvshow.Service, searchService *search.TVShowSearchService, episodeSearchService *search.EpisodeSearchService, logger *slog.Logger) *SearchIndexWorker {
 	return &SearchIndexWorker{
-		service:       service,
-		searchService: searchService,
-		logger:        logger.With("component", "tvshow_search_index"),
+		service:              service,
+		searchService:        searchService,
+		episodeSearchService: episodeSearchService,
+		logger:               logger.With("component", "tvshow_search_index"),
 	}
 }
 
@@ -822,11 +824,17 @@ func (w *SearchIndexWorker) Work(ctx context.Context, job *river.Job[SearchIndex
 			result.ItemsProcessed++
 		}
 	} else if args.FullReindex {
-		// Full reindex via search service
+		// Full reindex of series
 		if err := w.searchService.ReindexAll(ctx, w.service); err != nil {
-			result.AddError(fmt.Errorf("full reindex: %w", err))
+			result.AddError(fmt.Errorf("full series reindex: %w", err))
 		} else {
-			w.logger.Info("full reindex completed")
+			w.logger.Info("full series reindex completed")
+		}
+		// Full reindex of episodes
+		if err := w.episodeSearchService.ReindexAll(ctx, w.service); err != nil {
+			result.AddError(fmt.Errorf("full episode reindex: %w", err))
+		} else {
+			w.logger.Info("full episode reindex completed")
 		}
 	}
 
@@ -897,9 +905,58 @@ func (w *SearchIndexWorker) indexSeries(ctx context.Context, seriesID uuid.UUID)
 		return fmt.Errorf("failed to index series: %w", err)
 	}
 
+	// Also index all episodes for this series
+	if w.episodeSearchService.IsEnabled() {
+		if err := w.indexSeriesEpisodes(ctx, series, episodes); err != nil {
+			w.logger.Warn("failed to index episodes for series",
+				slog.String("series_id", seriesID.String()),
+				slog.Any("error", err),
+			)
+		}
+	}
+
 	w.logger.Info("series indexed successfully",
 		slog.String("series_id", seriesID.String()),
 		slog.String("title", series.Title),
+	)
+
+	return nil
+}
+
+// indexSeriesEpisodes indexes all episodes for a series into the episode search index.
+func (w *SearchIndexWorker) indexSeriesEpisodes(ctx context.Context, series *tvshow.Series, episodes []tvshow.Episode) error {
+	if len(episodes) == 0 {
+		return nil
+	}
+
+	posterPath := ""
+	if series.PosterPath != nil {
+		posterPath = *series.PosterPath
+	}
+
+	batch := make([]search.EpisodeWithContext, 0, len(episodes))
+	for i := range episodes {
+		hasFile := false
+		files, err := w.service.ListEpisodeFiles(ctx, episodes[i].ID)
+		if err == nil && len(files) > 0 {
+			hasFile = true
+		}
+
+		batch = append(batch, search.EpisodeWithContext{
+			Episode:          &episodes[i],
+			SeriesTitle:      series.Title,
+			SeriesPosterPath: posterPath,
+			HasFile:          hasFile,
+		})
+	}
+
+	if err := w.episodeSearchService.BulkIndexEpisodes(ctx, batch); err != nil {
+		return fmt.Errorf("failed to bulk index episodes: %w", err)
+	}
+
+	w.logger.Debug("indexed episodes for series",
+		slog.String("series_id", series.ID.String()),
+		slog.Int("count", len(batch)),
 	)
 
 	return nil

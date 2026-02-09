@@ -7,16 +7,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/govalues/decimal"
 	"github.com/google/uuid"
+	"github.com/govalues/decimal"
 	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/content/shared/scanner"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -402,11 +402,12 @@ func TestNewSearchIndexWorker(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewSearchIndexWorker(nil, nil, logger)
+	worker := NewSearchIndexWorker(nil, nil, nil, logger)
 
 	assert.NotNil(t, worker)
 	assert.Nil(t, worker.service)
 	assert.Nil(t, worker.searchService)
+	assert.Nil(t, worker.episodeSearchService)
 	assert.NotNil(t, worker.logger)
 }
 
@@ -460,7 +461,7 @@ func TestSearchIndexWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewSearchIndexWorker(nil, nil, logger)
+	worker := NewSearchIndexWorker(nil, nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[SearchIndexArgs]{})
 	assert.Equal(t, 10*time.Minute, timeout)
@@ -549,7 +550,7 @@ func TestSearchIndexWorker_Work_SearchDisabled(t *testing.T) {
 	logger := logging.NewTestLogger()
 	// A nil-client TVShowSearchService will have IsEnabled() return false.
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: KindSearchIndex},
@@ -1830,7 +1831,7 @@ func TestSearchIndexWorker_Work_SearchDisabled_FullReindex(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: KindSearchIndex},
@@ -1849,7 +1850,7 @@ func TestSearchIndexWorker_Work_SpecificSeries_SearchDisabled(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	job := &river.Job[SearchIndexArgs]{
@@ -1869,7 +1870,7 @@ func TestSearchIndexWorker_Work_NoArgs_SearchDisabled(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 3, Kind: KindSearchIndex},
@@ -3167,7 +3168,7 @@ func TestRegisterWorkers(t *testing.T) {
 	libraryScan := NewLibraryScanWorker(nil, nil, nil, logger)
 	metadataRefresh := NewMetadataRefreshWorker(nil, nil, logger)
 	fileMatch := NewFileMatchWorker(nil, nil, logger)
-	searchIndex := NewSearchIndexWorker(nil, nil, logger)
+	searchIndex := NewSearchIndexWorker(nil, nil, nil, logger)
 	seriesRefresh := NewSeriesRefreshWorker(nil, nil, logger)
 
 	err := RegisterWorkers(workers, libraryScan, metadataRefresh, fileMatch, searchIndex, seriesRefresh)

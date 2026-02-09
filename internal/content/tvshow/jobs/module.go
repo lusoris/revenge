@@ -26,11 +26,12 @@ var Module = fx.Module("tvshowjobs",
 type WorkerProviderParams struct {
 	fx.In
 
-	Service          tvshow.Service
-	MetadataProvider tvshow.MetadataProvider      `optional:"true"`
-	SearchService    *search.TVShowSearchService  `optional:"true"`
-	JobClient        *infrajobs.Client
-	Logger           *slog.Logger
+	Service              tvshow.Service
+	MetadataProvider     tvshow.MetadataProvider      `optional:"true"`
+	SearchService        *search.TVShowSearchService  `optional:"true"`
+	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
+	JobClient            *infrajobs.Client
+	Logger               *slog.Logger
 }
 
 // provideLibraryScanWorker creates a library scan worker with optional metadata provider.
@@ -50,7 +51,7 @@ func provideFileMatchWorker(p WorkerProviderParams) *FileMatchWorker {
 
 // provideSearchIndexWorker creates a search index worker.
 func provideSearchIndexWorker(p WorkerProviderParams) *SearchIndexWorker {
-	return NewSearchIndexWorker(p.Service, p.SearchService, p.Logger)
+	return NewSearchIndexWorker(p.Service, p.SearchService, p.EpisodeSearchService, p.Logger)
 }
 
 // provideSeriesRefreshWorker creates a series refresh worker.

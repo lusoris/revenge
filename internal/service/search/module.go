@@ -13,8 +13,10 @@ import (
 var Module = fx.Module("search_service",
 	fx.Provide(NewMovieSearchService),
 	fx.Provide(NewTVShowSearchService),
+	fx.Provide(NewEpisodeSearchService),
 	fx.Provide(provideCachedMovieSearchService),
 	fx.Provide(provideCachedTVShowSearchService),
+	fx.Provide(provideCachedEpisodeSearchService),
 	fx.Invoke(initializeCollections),
 )
 
@@ -28,8 +30,13 @@ func provideCachedTVShowSearchService(svc *TVShowSearchService, c *cache.Cache, 
 	return NewCachedTVShowSearchService(svc, c, logger)
 }
 
+// provideCachedEpisodeSearchService wraps the episode search service with caching.
+func provideCachedEpisodeSearchService(svc *EpisodeSearchService, c *cache.Cache, logger *slog.Logger) *CachedEpisodeSearchService {
+	return NewCachedEpisodeSearchService(svc, c, logger)
+}
+
 // initializeCollections creates Typesense collections on startup if they don't exist.
-func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, logger *slog.Logger) {
+func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, logger *slog.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			if movieSearch.IsEnabled() {
@@ -40,6 +47,11 @@ func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvs
 			if tvshowSearch.IsEnabled() {
 				if err := tvshowSearch.InitializeCollection(ctx); err != nil {
 					logger.Warn("failed to initialize tvshows search collection", slog.Any("error", err))
+				}
+			}
+			if episodeSearch.IsEnabled() {
+				if err := episodeSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize episodes search collection", slog.Any("error", err))
 				}
 			}
 			return nil
