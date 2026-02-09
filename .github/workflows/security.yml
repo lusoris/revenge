@@ -106,7 +106,7 @@ jobs:
       - name: Install system dependencies
         run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev tar zstd
       - uses: actions/checkout@v6
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             /go/pkg/mod
