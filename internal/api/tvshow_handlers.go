@@ -171,12 +171,12 @@ func (h *Handler) GetUpcomingEpisodes(ctx context.Context, params ogen.GetUpcomi
 func (h *Handler) GetTVShow(ctx context.Context, params ogen.GetTVShowParams) (ogen.GetTVShowRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowNotFound{}, nil
+		return (*ogen.GetTVShowNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	series, err := h.tvshowService.GetSeries(ctx, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowNotFound{}, nil
+		return (*ogen.GetTVShowNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	lang := h.GetMetadataLanguage(ctx)
@@ -189,12 +189,12 @@ func (h *Handler) GetTVShow(ctx context.Context, params ogen.GetTVShowParams) (o
 func (h *Handler) GetTVShowSeasons(ctx context.Context, params ogen.GetTVShowSeasonsParams) (ogen.GetTVShowSeasonsRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowSeasonsNotFound{}, nil
+		return (*ogen.GetTVShowSeasonsNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	seasons, err := h.tvshowService.ListSeasons(ctx, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowSeasonsNotFound{}, nil
+		return (*ogen.GetTVShowSeasonsNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	result := make([]ogen.TVSeason, len(seasons))
@@ -209,12 +209,12 @@ func (h *Handler) GetTVShowSeasons(ctx context.Context, params ogen.GetTVShowSea
 func (h *Handler) GetTVShowEpisodes(ctx context.Context, params ogen.GetTVShowEpisodesParams) (ogen.GetTVShowEpisodesRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowEpisodesNotFound{}, nil
+		return (*ogen.GetTVShowEpisodesNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	episodes, err := h.tvshowService.ListEpisodesBySeries(ctx, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowEpisodesNotFound{}, nil
+		return (*ogen.GetTVShowEpisodesNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	result := make([]ogen.TVEpisode, len(episodes))
@@ -233,7 +233,7 @@ func (h *Handler) GetTVShowCast(ctx context.Context, params ogen.GetTVShowCastPa
 
 	cast, total, err := h.tvshowService.GetSeriesCast(ctx, seriesID, limit, offset)
 	if err != nil {
-		return &ogen.GetTVShowCastNotFound{}, nil
+		return (*ogen.GetTVShowCastNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	items := make([]ogen.TVSeriesCredit, len(cast))
@@ -258,7 +258,7 @@ func (h *Handler) GetTVShowCrew(ctx context.Context, params ogen.GetTVShowCrewPa
 
 	crew, total, err := h.tvshowService.GetSeriesCrew(ctx, seriesID, limit, offset)
 	if err != nil {
-		return &ogen.GetTVShowCrewNotFound{}, nil
+		return (*ogen.GetTVShowCrewNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	items := make([]ogen.TVSeriesCredit, len(crew))
@@ -279,12 +279,12 @@ func (h *Handler) GetTVShowCrew(ctx context.Context, params ogen.GetTVShowCrewPa
 func (h *Handler) GetTVShowGenres(ctx context.Context, params ogen.GetTVShowGenresParams) (ogen.GetTVShowGenresRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowGenresNotFound{}, nil
+		return (*ogen.GetTVShowGenresNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	genres, err := h.tvshowService.GetSeriesGenres(ctx, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowGenresNotFound{}, nil
+		return (*ogen.GetTVShowGenresNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	result := make([]ogen.TVGenre, len(genres))
@@ -299,12 +299,12 @@ func (h *Handler) GetTVShowGenres(ctx context.Context, params ogen.GetTVShowGenr
 func (h *Handler) GetTVShowNetworks(ctx context.Context, params ogen.GetTVShowNetworksParams) (ogen.GetTVShowNetworksRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowNetworksNotFound{}, nil
+		return (*ogen.GetTVShowNetworksNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	networks, err := h.tvshowService.GetSeriesNetworks(ctx, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowNetworksNotFound{}, nil
+		return (*ogen.GetTVShowNetworksNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	result := make([]ogen.TVNetwork, len(networks))
@@ -324,12 +324,12 @@ func (h *Handler) GetTVShowWatchStats(ctx context.Context, params ogen.GetTVShow
 
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowWatchStatsNotFound{}, nil
+		return (*ogen.GetTVShowWatchStatsNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	stats, err := h.tvshowService.GetSeriesWatchStats(ctx, userID, seriesID)
 	if err != nil {
-		return &ogen.GetTVShowWatchStatsNotFound{}, nil
+		return (*ogen.GetTVShowWatchStatsNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	return seriesWatchStatsToOgen(stats, seriesID.String()), nil
@@ -344,12 +344,12 @@ func (h *Handler) GetTVShowNextEpisode(ctx context.Context, params ogen.GetTVSho
 
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVShowNextEpisodeNotFound{}, nil
+		return (*ogen.GetTVShowNextEpisodeNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	episode, err := h.tvshowService.GetNextEpisode(ctx, userID, seriesID)
 	if err != nil || episode == nil {
-		return &ogen.GetTVShowNextEpisodeNotFound{}, nil
+		return (*ogen.GetTVShowNextEpisodeNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	return episodeToOgen(episode), nil
@@ -359,12 +359,12 @@ func (h *Handler) GetTVShowNextEpisode(ctx context.Context, params ogen.GetTVSho
 func (h *Handler) RefreshTVShowMetadata(ctx context.Context, params ogen.RefreshTVShowMetadataParams) (ogen.RefreshTVShowMetadataRes, error) {
 	seriesID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.RefreshTVShowMetadataNotFound{}, nil
+		return (*ogen.RefreshTVShowMetadataNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	err = h.tvshowService.RefreshSeriesMetadata(ctx, seriesID)
 	if err != nil {
-		return &ogen.RefreshTVShowMetadataNotFound{}, nil
+		return (*ogen.RefreshTVShowMetadataNotFound)(OgenNotFound("TV show not found")), nil
 	}
 
 	return &ogen.RefreshTVShowMetadataAccepted{}, nil
@@ -374,12 +374,12 @@ func (h *Handler) RefreshTVShowMetadata(ctx context.Context, params ogen.Refresh
 func (h *Handler) GetTVSeason(ctx context.Context, params ogen.GetTVSeasonParams) (ogen.GetTVSeasonRes, error) {
 	seasonID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVSeasonNotFound{}, nil
+		return (*ogen.GetTVSeasonNotFound)(OgenNotFound("Season not found")), nil
 	}
 
 	season, err := h.tvshowService.GetSeason(ctx, seasonID)
 	if err != nil {
-		return &ogen.GetTVSeasonNotFound{}, nil
+		return (*ogen.GetTVSeasonNotFound)(OgenNotFound("Season not found")), nil
 	}
 
 	return seasonToOgen(season), nil
@@ -389,12 +389,12 @@ func (h *Handler) GetTVSeason(ctx context.Context, params ogen.GetTVSeasonParams
 func (h *Handler) GetTVSeasonEpisodes(ctx context.Context, params ogen.GetTVSeasonEpisodesParams) (ogen.GetTVSeasonEpisodesRes, error) {
 	seasonID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVSeasonEpisodesNotFound{}, nil
+		return (*ogen.GetTVSeasonEpisodesNotFound)(OgenNotFound("Season not found")), nil
 	}
 
 	episodes, err := h.tvshowService.ListEpisodesBySeason(ctx, seasonID)
 	if err != nil {
-		return &ogen.GetTVSeasonEpisodesNotFound{}, nil
+		return (*ogen.GetTVSeasonEpisodesNotFound)(OgenNotFound("Season not found")), nil
 	}
 
 	result := make([]ogen.TVEpisode, len(episodes))
@@ -409,12 +409,12 @@ func (h *Handler) GetTVSeasonEpisodes(ctx context.Context, params ogen.GetTVSeas
 func (h *Handler) GetTVEpisode(ctx context.Context, params ogen.GetTVEpisodeParams) (ogen.GetTVEpisodeRes, error) {
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVEpisodeNotFound{}, nil
+		return (*ogen.GetTVEpisodeNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	episode, err := h.tvshowService.GetEpisode(ctx, episodeID)
 	if err != nil {
-		return &ogen.GetTVEpisodeNotFound{}, nil
+		return (*ogen.GetTVEpisodeNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	return episodeToOgen(episode), nil
@@ -424,12 +424,12 @@ func (h *Handler) GetTVEpisode(ctx context.Context, params ogen.GetTVEpisodePara
 func (h *Handler) GetTVEpisodeFiles(ctx context.Context, params ogen.GetTVEpisodeFilesParams) (ogen.GetTVEpisodeFilesRes, error) {
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVEpisodeFilesNotFound{}, nil
+		return (*ogen.GetTVEpisodeFilesNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	files, err := h.tvshowService.ListEpisodeFiles(ctx, episodeID)
 	if err != nil {
-		return &ogen.GetTVEpisodeFilesNotFound{}, nil
+		return (*ogen.GetTVEpisodeFilesNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	result := make([]ogen.TVEpisodeFile, len(files))
@@ -449,12 +449,12 @@ func (h *Handler) GetTVEpisodeProgress(ctx context.Context, params ogen.GetTVEpi
 
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.GetTVEpisodeProgressNotFound{}, nil
+		return (*ogen.GetTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	progress, err := h.tvshowService.GetEpisodeProgress(ctx, userID, episodeID)
 	if err != nil {
-		return &ogen.GetTVEpisodeProgressNotFound{}, nil
+		return (*ogen.GetTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	return episodeWatchProgressToOgen(progress), nil
@@ -469,12 +469,12 @@ func (h *Handler) UpdateTVEpisodeProgress(ctx context.Context, req *ogen.UpdateE
 
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.UpdateTVEpisodeProgressNotFound{}, nil
+		return (*ogen.UpdateTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	progress, err := h.tvshowService.UpdateEpisodeProgress(ctx, userID, episodeID, util.SafeIntToInt32(req.ProgressSeconds), util.SafeIntToInt32(req.DurationSeconds))
 	if err != nil {
-		return &ogen.UpdateTVEpisodeProgressNotFound{}, nil
+		return (*ogen.UpdateTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	return episodeWatchProgressToOgen(progress), nil
@@ -489,12 +489,12 @@ func (h *Handler) DeleteTVEpisodeProgress(ctx context.Context, params ogen.Delet
 
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.DeleteTVEpisodeProgressNotFound{}, nil
+		return (*ogen.DeleteTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	err = h.tvshowService.RemoveEpisodeProgress(ctx, userID, episodeID)
 	if err != nil {
-		return &ogen.DeleteTVEpisodeProgressNotFound{}, nil
+		return (*ogen.DeleteTVEpisodeProgressNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	return &ogen.DeleteTVEpisodeProgressNoContent{}, nil
@@ -509,12 +509,12 @@ func (h *Handler) MarkTVEpisodeWatched(ctx context.Context, req ogen.OptMarkTVEp
 
 	episodeID, err := uuid.Parse(params.ID.String())
 	if err != nil {
-		return &ogen.MarkTVEpisodeWatchedNotFound{}, nil
+		return (*ogen.MarkTVEpisodeWatchedNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	err = h.tvshowService.MarkEpisodeWatched(ctx, userID, episodeID)
 	if err != nil {
-		return &ogen.MarkTVEpisodeWatchedNotFound{}, nil
+		return (*ogen.MarkTVEpisodeWatchedNotFound)(OgenNotFound("Episode not found")), nil
 	}
 
 	return &ogen.MarkTVEpisodeWatchedNoContent{}, nil
