@@ -32,7 +32,7 @@ func SecurityHeadersMiddleware() func(http.Handler) http.Handler {
 					"img-src 'self' image.tmdb.org *.image.tmdb.org data: https://cdn.jsdelivr.net; "+
 					"media-src 'self' blob:; "+
 					"connect-src 'self' https://cdn.jsdelivr.net https://proxy.scalar.com; "+
-					"font-src 'self' https://cdn.jsdelivr.net data: blob:; "+
+					"font-src 'self' https://cdn.jsdelivr.net https://fonts.scalar.com data: blob:; "+
 					"object-src 'none'; "+
 					"frame-ancestors 'none'; "+
 					"base-uri 'self'; "+
