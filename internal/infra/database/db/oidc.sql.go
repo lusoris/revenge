@@ -130,18 +130,20 @@ const createOIDCState = `-- name: CreateOIDCState :one
 INSERT INTO shared.oidc_states (
     state,
     code_verifier,
+    nonce,
     provider_id,
     user_id,
     redirect_url,
     expires_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
-) RETURNING id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at
+    $1, $2, $3, $4, $5, $6, $7
+) RETURNING id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at, nonce
 `
 
 type CreateOIDCStateParams struct {
 	State        string      `json:"state"`
 	CodeVerifier *string     `json:"codeVerifier"`
+	Nonce        *string     `json:"nonce"`
 	ProviderID   uuid.UUID   `json:"providerId"`
 	UserID       pgtype.UUID `json:"userId"`
 	RedirectUrl  *string     `json:"redirectUrl"`
@@ -156,6 +158,7 @@ func (q *Queries) CreateOIDCState(ctx context.Context, arg CreateOIDCStateParams
 	row := q.db.QueryRow(ctx, createOIDCState,
 		arg.State,
 		arg.CodeVerifier,
+		arg.Nonce,
 		arg.ProviderID,
 		arg.UserID,
 		arg.RedirectUrl,
@@ -171,6 +174,7 @@ func (q *Queries) CreateOIDCState(ctx context.Context, arg CreateOIDCStateParams
 		&i.RedirectUrl,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.Nonce,
 	)
 	return i, err
 }
@@ -434,7 +438,7 @@ func (q *Queries) GetOIDCProviderByName(ctx context.Context, name string) (Share
 }
 
 const getOIDCState = `-- name: GetOIDCState :one
-SELECT id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at FROM shared.oidc_states WHERE state = $1
+SELECT id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at, nonce FROM shared.oidc_states WHERE state = $1
 `
 
 // Gets an OAuth2 state by state token
@@ -450,6 +454,7 @@ func (q *Queries) GetOIDCState(ctx context.Context, state string) (SharedOidcSta
 		&i.RedirectUrl,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.Nonce,
 	)
 	return i, err
 }

@@ -379,6 +379,7 @@ func (r *RepositoryPg) CreateState(ctx context.Context, req CreateStateRequest) 
 	dbState, err := r.q.CreateOIDCState(ctx, db.CreateOIDCStateParams{
 		State:        req.State,
 		CodeVerifier: req.CodeVerifier,
+		Nonce:        req.Nonce,
 		ProviderID:   req.ProviderID,
 		UserID:       userID,
 		RedirectUrl:  req.RedirectURL,
@@ -508,6 +509,7 @@ func dbStateToState(dbs db.SharedOidcState) *State {
 		ID:           dbs.ID,
 		State:        dbs.State,
 		CodeVerifier: dbs.CodeVerifier,
+		Nonce:        dbs.Nonce,
 		ProviderID:   dbs.ProviderID,
 		RedirectURL:  dbs.RedirectUrl,
 		ExpiresAt:    dbs.ExpiresAt,

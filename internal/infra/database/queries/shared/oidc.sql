@@ -165,12 +165,13 @@ SELECT COUNT(*) FROM shared.oidc_user_links WHERE user_id = $1;
 INSERT INTO shared.oidc_states (
     state,
     code_verifier,
+    nonce,
     provider_id,
     user_id,
     redirect_url,
     expires_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING *;
 
 -- name: GetOIDCState :one

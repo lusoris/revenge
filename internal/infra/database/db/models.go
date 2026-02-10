@@ -381,6 +381,7 @@ type SharedOidcState struct {
 	RedirectUrl  *string     `json:"redirectUrl"`
 	ExpiresAt    time.Time   `json:"expiresAt"`
 	CreatedAt    time.Time   `json:"createdAt"`
+	Nonce        *string     `json:"nonce"`
 }
 
 type SharedOidcUserLink struct {

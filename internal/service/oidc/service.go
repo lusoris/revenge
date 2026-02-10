@@ -48,6 +48,7 @@ const (
 	StateExpiry           = 10 * time.Minute
 	CodeVerifierLen       = 64
 	StateLen              = 32
+	NonceLen              = 32
 	ProviderTypeGeneric   = "generic"
 	ProviderTypeAuthentik = "authentik"
 	ProviderTypeKeycloak  = "keycloak"
@@ -225,7 +226,7 @@ func (s *Service) GetAuthURL(ctx context.Context, providerName string, redirectU
 		return nil, ErrProviderDisabled
 	}
 
-	// Generate state and PKCE verifier
+	// Generate state, PKCE verifier, and nonce
 	state, err := generateRandomString(StateLen)
 	if err != nil {
 		return nil, err
@@ -234,11 +235,16 @@ func (s *Service) GetAuthURL(ctx context.Context, providerName string, redirectU
 	if err != nil {
 		return nil, err
 	}
+	nonce, err := generateRandomString(NonceLen)
+	if err != nil {
+		return nil, err
+	}
 
 	// Store state
 	_, err = s.repo.CreateState(ctx, CreateStateRequest{
 		State:        state,
 		CodeVerifier: &codeVerifier,
+		Nonce:        &nonce,
 		ProviderID:   provider.ID,
 		UserID:       userID,
 		RedirectURL:  &redirectURL,
@@ -254,11 +260,12 @@ func (s *Service) GetAuthURL(ctx context.Context, providerName string, redirectU
 	// Generate code challenge (S256)
 	codeChallenge := generateCodeChallenge(codeVerifier)
 
-	// Generate auth URL with PKCE
+	// Generate auth URL with PKCE and nonce
 	authURL := oauth2Config.AuthCodeURL(
 		state,
 		oauth2.SetAuthURLParam("code_challenge", codeChallenge),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
+		oidc.Nonce(nonce),
 	)
 
 	return &AuthURLResult{
@@ -350,6 +357,15 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 	if err != nil {
 		s.logger.Error("ID token verification failed", slog.Any("error",err))
 		return nil, fmt.Errorf("invalid id_token: %w", err)
+	}
+
+	// Verify nonce to prevent replay attacks
+	if state.Nonce != nil && idToken.Nonce != *state.Nonce {
+		s.logger.Error("ID token nonce mismatch",
+			slog.String("expected", *state.Nonce),
+			slog.String("got", idToken.Nonce),
+		)
+		return nil, fmt.Errorf("invalid id_token: nonce mismatch")
 	}
 
 	// Extract claims
