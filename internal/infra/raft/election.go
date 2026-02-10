@@ -175,6 +175,98 @@ func (le *LeaderElection) Close() error {
 	return le.raft.Shutdown().Error()
 }
 
+// AddVoter adds a new node to the Raft cluster as a voter.
+// Must be called on the leader node. The joining node should already be
+// running and listening on the specified address.
+func (le *LeaderElection) AddVoter(nodeID, addr string) error {
+	if le == nil || le.raft == nil {
+		return fmt.Errorf("raft is not initialized")
+	}
+	if le.raft.State() != raft.Leader {
+		return fmt.Errorf("not the leader, cannot add voter")
+	}
+
+	le.logger.Info("Adding voter to Raft cluster",
+		slog.String("node_id", nodeID),
+		slog.String("address", addr),
+	)
+
+	future := le.raft.AddVoter(
+		raft.ServerID(nodeID),
+		raft.ServerAddress(addr),
+		0, // prevIndex=0 lets Raft handle log index
+		30*time.Second,
+	)
+	if err := future.Error(); err != nil {
+		return fmt.Errorf("failed to add voter %s: %w", nodeID, err)
+	}
+
+	le.logger.Info("Voter added to Raft cluster",
+		slog.String("node_id", nodeID),
+		slog.String("address", addr),
+	)
+	return nil
+}
+
+// RemoveServer removes a node from the Raft cluster.
+// Must be called on the leader node.
+func (le *LeaderElection) RemoveServer(nodeID string) error {
+	if le == nil || le.raft == nil {
+		return fmt.Errorf("raft is not initialized")
+	}
+	if le.raft.State() != raft.Leader {
+		return fmt.Errorf("not the leader, cannot remove server")
+	}
+
+	le.logger.Info("Removing server from Raft cluster",
+		slog.String("node_id", nodeID),
+	)
+
+	future := le.raft.RemoveServer(
+		raft.ServerID(nodeID),
+		0, // prevIndex=0 lets Raft handle log index
+		30*time.Second,
+	)
+	if err := future.Error(); err != nil {
+		return fmt.Errorf("failed to remove server %s: %w", nodeID, err)
+	}
+
+	le.logger.Info("Server removed from Raft cluster",
+		slog.String("node_id", nodeID),
+	)
+	return nil
+}
+
+// ClusterMember represents a node in the Raft cluster.
+type ClusterMember struct {
+	ID      string `json:"id"`
+	Address string `json:"address"`
+	Voter   bool   `json:"voter"`
+}
+
+// GetClusterMembers returns the current Raft cluster configuration.
+func (le *LeaderElection) GetClusterMembers() ([]ClusterMember, error) {
+	if le == nil || le.raft == nil {
+		return []ClusterMember{{ID: "single-node", Address: "local", Voter: true}}, nil
+	}
+
+	future := le.raft.GetConfiguration()
+	if err := future.Error(); err != nil {
+		return nil, fmt.Errorf("failed to get cluster configuration: %w", err)
+	}
+
+	servers := future.Configuration().Servers
+	members := make([]ClusterMember, 0, len(servers))
+	for _, server := range servers {
+		members = append(members, ClusterMember{
+			ID:      string(server.ID),
+			Address: string(server.Address),
+			Voter:   server.Suffrage == raft.Voter,
+		})
+	}
+	return members, nil
+}
+
 // simpleFSM is a minimal FSM implementation for leader election.
 // We don't need to maintain any state - just need leader election.
 type simpleFSM struct{}
