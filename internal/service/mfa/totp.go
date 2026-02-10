@@ -28,6 +28,11 @@ type TOTPService struct {
 	issuer    string // Application name shown in authenticator apps
 }
 
+// Errors for TOTP operations
+var (
+	ErrTOTPAlreadyVerified = errors.New("TOTP already verified, disable before re-enrolling")
+)
+
 // NewTOTPService creates a new TOTP service
 func NewTOTPService(
 	queries *db.Queries,
@@ -93,9 +98,14 @@ func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, acco
 
 	// Store encrypted secret in database (upsert: update if exists, create if not)
 	// Note: nonce is prepended to encrypted_secret by AES-256-GCM, no separate storage needed
-	_, existsErr := s.queries.GetUserTOTPSecret(ctx, userID)
+	existing, existsErr := s.queries.GetUserTOTPSecret(ctx, userID)
 	if existsErr == nil {
-		// User has existing secret, update it (re-enrollment)
+		// User has existing verified secret — require disable first to prevent
+		// an attacker with session access from silently re-enrolling TOTP.
+		if existing.VerifiedAt.Valid {
+			return nil, ErrTOTPAlreadyVerified
+		}
+		// Unverified secret — allow overwrite (re-enrollment before verification)
 		err = s.queries.UpdateTOTPSecret(ctx, db.UpdateTOTPSecretParams{
 			UserID:          userID,
 			EncryptedSecret: encryptedSecret,

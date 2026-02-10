@@ -456,11 +456,13 @@ func (s *WebAuthnService) FinishLogin(
 		return fmt.Errorf("failed to get credential: %w", err)
 	}
 
-	// Clone detection: sign counter must always increment
+	// Clone detection: sign counter must always increment.
+	// Skip when both counters are 0 — some authenticators (e.g., platform authenticators)
+	// never increment the counter and always report 0.
 	newCounter := credential.Authenticator.SignCount
 	oldCounter := util.SafeInt32ToUint32(dbCred.SignCount)
 
-	if newCounter <= oldCounter {
+	if newCounter <= oldCounter && !(newCounter == 0 && oldCounter == 0) {
 		// Sign counter did not increment - possible clone!
 		s.logger.Warn("webauthn clone detected",
 			slog.String("user_id", userID.String()),
