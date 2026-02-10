@@ -28,7 +28,7 @@ func ExtractToWebVTT(ctx context.Context, ffmpegPath, inputFile, outputDir strin
 		outputFile,
 	}
 
-	cmd := exec.CommandContext(ctx, ffmpegPath, args...)
+	cmd := exec.CommandContext(ctx, ffmpegPath, args...) // #nosec G204 -- ffmpegPath is from validated config
 	if output, err := cmd.CombinedOutput(); err != nil {
 		return "", fmt.Errorf("subtitle extraction failed for track %d: %w (output: %s)", trackIndex, err, string(output))
 	}

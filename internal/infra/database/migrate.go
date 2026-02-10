@@ -11,6 +11,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/jackc/pgx/v5/stdlib" // Register pgx driver
 	"github.com/lusoris/revenge/internal/errors"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 //go:embed migrations/shared/*.sql
@@ -38,7 +39,7 @@ func MigrateUp(databaseURL string, logger *slog.Logger) error {
 		logger.Warn("database is in dirty state, forcing version reset",
 			slog.Uint64("version", uint64(version)),
 		)
-		if err := m.Force(int(version)); err != nil {
+		if err := m.Force(util.SafeUintToInt(version)); err != nil {
 			return errors.Wrap(err, "failed to force migration version")
 		}
 	}
@@ -81,7 +82,7 @@ func MigrateDown(databaseURL string, logger *slog.Logger) error {
 		logger.Warn("database is in dirty state, forcing version reset before rollback",
 			slog.Uint64("version", uint64(version)),
 		)
-		if err := m.Force(int(version)); err != nil {
+		if err := m.Force(util.SafeUintToInt(version)); err != nil {
 			return errors.Wrap(err, "failed to force migration version")
 		}
 	}
@@ -141,7 +142,7 @@ func MigrateTo(databaseURL string, version uint, logger *slog.Logger) error {
 		logger.Warn("database is in dirty state, forcing version reset before targeted migration",
 			slog.Uint64("version", uint64(currentVersion)),
 		)
-		if err := m.Force(int(currentVersion)); err != nil {
+		if err := m.Force(util.SafeUintToInt(currentVersion)); err != nil {
 			return errors.Wrap(err, "failed to force migration version")
 		}
 	}

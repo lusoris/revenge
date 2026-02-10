@@ -16,9 +16,9 @@
 - [x] **IsRedisNil check** — ~~Done as part of DoCache() fix (commit ab2c5435)~~
 
 ### otter
-- [ ] **Close() on provider caches** — Add `Close()` method + fx lifecycle hook to all 14 metadata/integration clients → all provider `client.go` files
-- [ ] **Pipeline cache TTL bug** — `ttl=0` falls through to 5min default, fix `NewL1Cache` to allow zero TTL → `internal/playback/transcode/pipeline.go`, `internal/infra/cache/otter.go`
-- [ ] **OnDeletion for transcode cache** — Add deletion listener to kill evicted FFmpeg processes → `internal/playback/transcode/pipeline.go`
+- [x] **Close() on provider caches** — Added `Close()` method to all 14 metadata/integration clients — commit a89d4bcd
+- [x] **Pipeline cache TTL bug** — Fixed `ttl<=0` → `ttl<0` so zero TTL means no expiry — commit a89d4bcd
+- [x] **OnDeletion for transcode cache** — Added deletion listener to kill evicted FFmpeg processes — commit a89d4bcd
 
 ### Raft
 - [x] **Structured logging for transport/snapshots** — ~~Done (commit faac9188) — slogWriter for transport & snapshots~~
@@ -44,7 +44,7 @@
 
 ### S3
 - [x] **SDK error types** — ~~Done (commit de5108a2) — errors.As with types.NoSuchKey/types.NotFound~~
-- [ ] **Multipart upload** — Use `s3.UploadManager` for large files → `internal/service/storage/s3.go:89-95`
+- [x] **Multipart upload** — Use `s3manager.Uploader` for large files — commit a89d4bcd
 
 ### req/v3
 - [x] **Fix ad-hoc clients** — ~~Done (commit cf52c6fc) — dedicated imgClient in both files~~
@@ -58,44 +58,44 @@
 ## LOW Priority
 
 ### rueidis
-- [ ] **rueidisotel integration** — Add built-in OTel metrics for `do_cache_miss/hits` → `internal/infra/cache/module.go`
-- [ ] **Fix misleading comment** — `DisableAutoPipelining: false` comment says "disable" → `internal/infra/cache/module.go:107`
+- [x] **rueidisotel integration** — Added rueidisotel.NewClient for built-in OTel metrics — commit a89d4bcd
+- [x] **Fix misleading comment** — Fixed "disable" comment on DisableAutoPipelining — commit a89d4bcd
 
 ### otter
-- [ ] **ExpiryAccessing for metadata caches** — Use `ExpiryAccessing` instead of `ExpiryWriting` for read-heavy provider caches
+- [x] **ExpiryAccessing for metadata caches** — Switched all 15 caches to ExpiryAccessing — commit a89d4bcd
 - [ ] **Typed generics** — Replace `L1Cache[string, any]` with concrete types where feasible
 
 ### Raft
-- [ ] **Merge BoltDB stores** — Use single BoltStore for both log and stable → `internal/infra/raft/election.go:87-96`
+- [x] **Merge BoltDB stores** — Merged into single raft.db — commit a89d4bcd
 
 ### River
-- [ ] **Cleanup retry count** — Override `MaxAttempts` for cleanup jobs (currently uses global 25) → `internal/infra/jobs/cleanup_job.go`
+- [x] **Cleanup retry count** — Added MaxAttempts:5 — commit a89d4bcd
 
 ### Casbin
-- [ ] **Deny policies** — Consider adding `eft` field for explicit deny support → `config/casbin_model.conf`
+- [ ] **Deny policies** — Model is allow-only by design; adding deny needs `eft` field + effect change (enhancement, not bug)
 
 ### ogen
-- [ ] **AdminListUsers error type** — 400 validation errors returned as 403 type → `internal/api/handler_admin_users.go:54-61` (may need OpenAPI spec fix)
+- [x] **AdminListUsers error type** — Fixed error codes 400→403 with descriptive messages — commit a89d4bcd
 
 ### req/v3
-- [ ] **Retry condition filter** — Add `SetCommonRetryCondition` to skip retries on 4xx → all 17 clients
+- [x] **Retry condition filter** — Added SetCommonRetryCondition to all 17 clients — commit a89d4bcd
 
 ### govips
-- [ ] **StartupConfig tuning** — Set explicit `ConcurrencyLevel` and `MaxCacheSize` → `internal/api/image_utils.go:19`
+- [x] **StartupConfig tuning** — Set ConcurrencyLevel and MaxCacheSize — commit a89d4bcd
 
 ### S3
 - [x] **Remove custom contains** — ~~Done (commit de5108a2) — removed contains/containsInner, replaced with errors.As~~
 
 ### Typesense
-- [ ] **URL parsing** — Use `net/url.Parse` instead of manual parsing → `internal/infra/search/module.go:44-69`
-- [ ] **Client timeout** — Add `WithConnectionTimeout` to Typesense client → `internal/infra/search/module.go:78`
+- [x] **URL parsing** — Replaced with net/url.Parse — commit a89d4bcd
+- [x] **Client timeout** — Added WithConnectionTimeout(5s) — commit a89d4bcd
 
 ### Prometheus
 - [x] **Fix dragonflyCommandsProcessed** — ~~Gauge with .Set() is correct for externally scraped monotonic values (Counter only supports .Inc/.Add)~~
-- [ ] **Remove duplicate queue metric** — Deduplicate `JobsQueueSize` vs `riverQueueSize` → `metrics.go:144`, `collector.go:19`
+- [x] **Remove duplicate queue metric** — Deprecated JobsQueueSize, kept riverQueueSize — commit a89d4bcd
 
 ### Argon2id
-- [ ] **Param consistency** — Align test parallelism (p=4) with production (p=2) → `internal/service/user/service_unit_test.go:70`
+- [x] **Param consistency** — Aligned test p=4 to p=2 — commit a89d4bcd
 
 ## DONE ✅
 

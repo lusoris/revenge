@@ -33,14 +33,14 @@ func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 		Status:           ptrString(ss.Status),
 		FirstAirDate:     ss.FirstAired,
 		LastAirDate:      ss.LastAired,
-		TotalSeasons:     int32(len(ss.Seasons)),
+		TotalSeasons:     util.SafeIntToInt32(len(ss.Seasons)),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
 
 	// Calculate total episodes from statistics
 	if ss.Statistics != nil {
-		result.TotalEpisodes = int32(ss.Statistics.TotalEpisodeCount)
+		result.TotalEpisodes = util.SafeIntToInt32(ss.Statistics.TotalEpisodeCount)
 	}
 
 	// Set ratings
@@ -81,7 +81,7 @@ func (m *Mapper) ToSeason(si *SeasonInfo, seriesID uuid.UUID) *tvshow.Season {
 	season := &tvshow.Season{
 		ID:           uuid.Must(uuid.NewV7()),
 		SeriesID:     seriesID,
-		SeasonNumber: int32(si.SeasonNumber),
+		SeasonNumber: util.SafeIntToInt32(si.SeasonNumber),
 		Name:         fmt.Sprintf("Season %d", si.SeasonNumber),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -92,7 +92,7 @@ func (m *Mapper) ToSeason(si *SeasonInfo, seriesID uuid.UUID) *tvshow.Season {
 	}
 
 	if si.Statistics != nil {
-		season.EpisodeCount = int32(si.Statistics.EpisodeCount)
+		season.EpisodeCount = util.SafeIntToInt32(si.Statistics.EpisodeCount)
 	}
 
 	return season
@@ -105,8 +105,8 @@ func (m *Mapper) ToEpisode(se *Episode, seriesID, seasonID uuid.UUID) *tvshow.Ep
 		SeriesID:      seriesID,
 		SeasonID:      seasonID,
 		TVDbID:        ptr.To(util.SafeIntToInt32(se.TVDbID)),
-		SeasonNumber:  int32(se.SeasonNumber),
-		EpisodeNumber: int32(se.EpisodeNumber),
+		SeasonNumber:  util.SafeIntToInt32(se.SeasonNumber),
+		EpisodeNumber: util.SafeIntToInt32(se.EpisodeNumber),
 		Title:         se.Title,
 		Overview:      ptrString(se.Overview),
 		AirDate:       se.AirDateUtc,

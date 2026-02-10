@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 var htmlTagRegex = regexp.MustCompile(`<[^>]*>`)
@@ -74,7 +75,7 @@ func mapShowToTVShowMetadata(show *Show) *metadata.TVShowMetadata {
 		m.IMDbID = show.Externals.IMDb
 	}
 	if show.Externals.TVDb != nil {
-		tvdbID := int32(*show.Externals.TVDb)
+		tvdbID := util.SafeIntToInt32(*show.Externals.TVDb)
 		m.TVDbID = &tvdbID
 	}
 
@@ -190,7 +191,7 @@ func mapEpisodes(episodes []Episode, seasonNum int) []metadata.EpisodeSummary {
 			es.EpisodeNumber = *ep.Number
 		}
 		if ep.Runtime != nil {
-			rt := int32(*ep.Runtime)
+			rt := util.SafeIntToInt32(*ep.Runtime)
 			es.Runtime = &rt
 		}
 		if ep.Rating.Average != nil {
@@ -286,11 +287,11 @@ func mapExternalIDs(show *Show) *metadata.ExternalIDs {
 		IMDbID: show.Externals.IMDb,
 	}
 	if show.Externals.TVDb != nil {
-		tvdbID := int32(*show.Externals.TVDb)
+		tvdbID := util.SafeIntToInt32(*show.Externals.TVDb)
 		ids.TVDbID = &tvdbID
 	}
 	if show.Externals.TVRage != nil {
-		rageID := int32(*show.Externals.TVRage)
+		rageID := util.SafeIntToInt32(*show.Externals.TVRage)
 		ids.TVRageID = &rageID
 	}
 	return ids

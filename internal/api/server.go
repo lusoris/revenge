@@ -8,6 +8,7 @@ import (
 
 	"log/slog"
 
+	"github.com/davidbyttow/govips/v2/vips"
 	openapidoc "github.com/lusoris/revenge/api/openapi"
 	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
@@ -36,7 +37,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
-	"github.com/davidbyttow/govips/v2/vips"
 	"go.uber.org/fx"
 )
 

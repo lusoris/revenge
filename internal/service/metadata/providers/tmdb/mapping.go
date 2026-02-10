@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapMovieSearchResult converts a TMDb search result to metadata type.
@@ -46,7 +47,7 @@ func mapMovieSearchResults(resp *SearchResultsResponse) []metadata.MovieSearchRe
 
 // mapMovieMetadata converts a TMDb movie response to metadata type.
 func mapMovieMetadata(r *MovieResponse) *metadata.MovieMetadata {
-	tmdbID := int32(r.ID)
+	tmdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.MovieMetadata{
 		ProviderID:       strconv.Itoa(r.ID),
 		Provider:         metadata.ProviderTMDb,
@@ -81,7 +82,7 @@ func mapMovieMetadata(r *MovieResponse) *metadata.MovieMetadata {
 	}
 
 	if r.Runtime != nil && *r.Runtime > 0 {
-		runtime := int32(*r.Runtime)
+		runtime := util.SafeIntToInt32(*r.Runtime)
 		result.Runtime = &runtime
 	}
 
@@ -182,7 +183,7 @@ func mapTVSearchResult(r *TVSearchResponse) metadata.TVShowSearchResult {
 
 // mapTVShowMetadata converts a TMDb TV response to metadata type.
 func mapTVShowMetadata(r *TVResponse) *metadata.TVShowMetadata {
-	tmdbID := int32(r.ID)
+	tmdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.TVShowMetadata{
 		ProviderID:       strconv.Itoa(r.ID),
 		Provider:         metadata.ProviderTMDb,
@@ -296,7 +297,7 @@ func mapTVShowMetadata(r *TVResponse) *metadata.TVShowMetadata {
 
 // mapSeasonMetadata converts a TMDb season response to metadata type.
 func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadata {
-	tmdbID := int32(r.ID)
+	tmdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.SeasonMetadata{
 		ProviderID:   strconv.Itoa(r.ID),
 		Provider:     metadata.ProviderTMDb,
@@ -330,7 +331,7 @@ func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadat
 			result.Episodes[i].AirDate = parseDate(e.AirDate)
 		}
 		if e.Runtime != nil && *e.Runtime > 0 {
-			runtime := int32(*e.Runtime)
+			runtime := util.SafeIntToInt32(*e.Runtime)
 			result.Episodes[i].Runtime = &runtime
 		}
 	}
@@ -340,7 +341,7 @@ func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadat
 
 // mapEpisodeMetadata converts a TMDb episode response to metadata type.
 func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMetadata {
-	tmdbID := int32(r.ID)
+	tmdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.EpisodeMetadata{
 		ProviderID:     strconv.Itoa(r.ID),
 		Provider:       metadata.ProviderTMDb,
@@ -360,7 +361,7 @@ func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMeta
 		result.AirDate = parseDate(r.AirDate)
 	}
 	if r.Runtime != nil && *r.Runtime > 0 {
-		runtime := int32(*r.Runtime)
+		runtime := util.SafeIntToInt32(*r.Runtime)
 		result.Runtime = &runtime
 	}
 
@@ -426,7 +427,7 @@ func mapPersonSearchResult(r *PersonSearchResponse) metadata.PersonSearchResult 
 
 // mapPersonMetadata converts a TMDb person response to metadata type.
 func mapPersonMetadata(r *PersonResponse) *metadata.PersonMetadata {
-	tmdbID := int32(r.ID)
+	tmdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.PersonMetadata{
 		ProviderID:   strconv.Itoa(r.ID),
 		Provider:     metadata.ProviderTMDb,
@@ -658,7 +659,7 @@ func mapTranslations(r *TranslationsWrapper) []metadata.Translation {
 			Homepage: t.Data.Homepage,
 		}
 		if t.Data.Runtime != nil {
-			runtime := int32(*t.Data.Runtime)
+			runtime := util.SafeIntToInt32(*t.Data.Runtime)
 			result.Data.Runtime = &runtime
 		}
 
@@ -676,11 +677,11 @@ func mapExternalIDs(r *ExternalIDsResponse, tmdbID int32) *metadata.ExternalIDs 
 	}
 
 	if r.TVDbID != nil && *r.TVDbID > 0 {
-		tvdbID := int32(*r.TVDbID)
+		tvdbID := util.SafeIntToInt32(*r.TVDbID)
 		result.TVDbID = &tvdbID
 	}
 	if r.TVRageID != nil && *r.TVRageID > 0 {
-		rageID := int32(*r.TVRageID)
+		rageID := util.SafeIntToInt32(*r.TVRageID)
 		result.TVRageID = &rageID
 	}
 

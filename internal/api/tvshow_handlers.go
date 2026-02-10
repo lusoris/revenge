@@ -472,7 +472,7 @@ func (h *Handler) UpdateTVEpisodeProgress(ctx context.Context, req *ogen.UpdateE
 		return &ogen.UpdateTVEpisodeProgressNotFound{}, nil
 	}
 
-	progress, err := h.tvshowService.UpdateEpisodeProgress(ctx, userID, episodeID, int32(req.ProgressSeconds), int32(req.DurationSeconds))
+	progress, err := h.tvshowService.UpdateEpisodeProgress(ctx, userID, episodeID, util.SafeIntToInt32(req.ProgressSeconds), util.SafeIntToInt32(req.DurationSeconds))
 	if err != nil {
 		return &ogen.UpdateTVEpisodeProgressNotFound{}, nil
 	}

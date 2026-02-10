@@ -11,8 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/imroc/req/v3"
 	"log/slog"
+
+	"github.com/imroc/req/v3"
 )
 
 const (

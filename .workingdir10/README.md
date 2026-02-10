@@ -8,13 +8,13 @@
 
 ## Status
 - [x] Raft leader election review
-- [ ] Rueidis/Otter integration fixes
+- [x] Rueidis/Otter integration fixes
 - [x] Dragonfly cluster emulation fix
-- [ ] Unit tests passing
-- [ ] Integration tests passing
-- [ ] Lint clean
-- [ ] gosec clean
-- [ ] trivy clean
+- [x] Unit tests passing
+- [x] Integration tests passing
+- [x] Lint clean
+- [x] gosec clean
+- [x] trivy clean
 
 ---
 

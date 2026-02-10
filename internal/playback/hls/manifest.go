@@ -140,7 +140,7 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 	var content []byte
 	var err error
 	for i := 0; i < 100; i++ {
-		content, err = os.ReadFile(playlistPath)
+		content, err = os.ReadFile(playlistPath) // #nosec G304 -- path constructed from internal transcode output dir
 		if err == nil && len(content) > 0 {
 			return string(content), nil
 		}

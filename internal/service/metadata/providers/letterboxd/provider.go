@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Ensure Provider implements required interfaces.
@@ -106,7 +107,7 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 			ids.IMDbID = &link.ID
 		case "tmdb":
 			if tmdbID, err := strconv.Atoi(link.ID); err == nil {
-				id32 := int32(tmdbID)
+				id32 := util.SafeIntToInt32(tmdbID)
 				ids.TMDbID = &id32
 			}
 		}

@@ -8,9 +8,10 @@ import (
 	"sync"
 	"time"
 
+	"log/slog"
+
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/redis/rueidis"
-	"log/slog"
 )
 
 // RedisRateLimiterConfig contains Redis-based rate limiting configuration.
