@@ -27,6 +27,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/mfa"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -107,6 +108,7 @@ func setupServer(t *testing.T) *TestServer {
 		fx.Provide(func() []*river.PeriodicJob { return nil }),
 		fx.Provide(func() movie.MetadataProvider { return nil }),
 		fx.Provide(func() movie.MetadataQueue { return nil }),
+		fx.Provide(func() *notification.Dispatcher { return nil }),
 
 		// API module
 		api.Module,
