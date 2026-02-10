@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"log/slog"
+
 	"github.com/google/uuid"
 	sharedjobs "github.com/lusoris/revenge/internal/content/shared/jobs"
 	"github.com/lusoris/revenge/internal/content/shared/scanner"
@@ -18,7 +20,6 @@ import (
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
-	"log/slog"
 )
 
 // Job kind constants for TV show jobs

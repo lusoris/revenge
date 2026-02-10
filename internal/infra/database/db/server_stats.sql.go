@@ -28,7 +28,8 @@ func (q *Queries) CountActiveUsers(ctx context.Context) (int64, error) {
 const countActiveUsersLast24h = `-- name: CountActiveUsersLast24h :one
 SELECT COUNT(DISTINCT user_id)
 FROM shared.sessions
-WHERE last_activity_at > NOW() - INTERVAL '24 hours'
+WHERE
+    last_activity_at > NOW() - INTERVAL '24 hours'
 `
 
 // Count users active in the last 24 hours (by session activity)
@@ -112,7 +113,10 @@ func (q *Queries) CountTotalSeries(ctx context.Context) (int64, error) {
 }
 
 const getAllServerStats = `-- name: GetAllServerStats :many
-SELECT stat_key, stat_value, computed_at
+SELECT
+    stat_key,
+    stat_value,
+    computed_at
 FROM shared.server_stats
 ORDER BY stat_key
 `
@@ -139,9 +143,13 @@ func (q *Queries) GetAllServerStats(ctx context.Context) ([]SharedServerStat, er
 }
 
 const getServerStat = `-- name: GetServerStat :one
-SELECT stat_key, stat_value, computed_at
+SELECT
+    stat_key,
+    stat_value,
+    computed_at
 FROM shared.server_stats
-WHERE stat_key = $1
+WHERE
+    stat_key = $1
 `
 
 // Get a single server statistic by key
@@ -181,10 +189,17 @@ func (q *Queries) SumMovieWatchDurationSeconds(ctx context.Context) (int64, erro
 }
 
 const upsertServerStat = `-- name: UpsertServerStat :exec
-INSERT INTO shared.server_stats (stat_key, stat_value, computed_at)
-VALUES ($1, $2, NOW())
-ON CONFLICT (stat_key) DO UPDATE
-SET stat_value = EXCLUDED.stat_value, computed_at = NOW()
+INSERT INTO
+    shared.server_stats (
+        stat_key,
+        stat_value,
+        computed_at
+    )
+VALUES ($1, $2, NOW()) ON CONFLICT (stat_key) DO
+UPDATE
+SET
+    stat_value = EXCLUDED.stat_value,
+    computed_at = NOW()
 `
 
 type UpsertServerStatParams struct {

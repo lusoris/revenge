@@ -12,9 +12,13 @@ import (
 )
 
 const addSeriesGenre = `-- name: AddSeriesGenre :exec
-INSERT INTO tvshow.series_genres (series_id, tmdb_genre_id, name)
-VALUES ($1, $2, $3)
-ON CONFLICT (series_id, tmdb_genre_id) DO NOTHING
+INSERT INTO
+    tvshow.series_genres (
+        series_id,
+        tmdb_genre_id,
+        name
+    )
+VALUES ($1, $2, $3) ON CONFLICT (series_id, tmdb_genre_id) DO NOTHING
 `
 
 type AddSeriesGenreParams struct {
@@ -71,11 +75,15 @@ func (q *Queries) ListDistinctSeriesGenres(ctx context.Context) ([]ListDistinctS
 }
 
 const listSeriesByGenre = `-- name: ListSeriesByGenre :many
-SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings FROM tvshow.series s
-JOIN tvshow.series_genres sg ON s.id = sg.series_id
-WHERE sg.tmdb_genre_id = $1
+SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings
+FROM tvshow.series s
+    JOIN tvshow.series_genres sg ON s.id = sg.series_id
+WHERE
+    sg.tmdb_genre_id = $1
 ORDER BY s.popularity DESC NULLS LAST
-LIMIT $2 OFFSET $3
+LIMIT $2
+OFFSET
+    $3
 `
 
 type ListSeriesByGenreParams struct {
@@ -137,8 +145,10 @@ func (q *Queries) ListSeriesByGenre(ctx context.Context, arg ListSeriesByGenrePa
 }
 
 const listSeriesGenres = `-- name: ListSeriesGenres :many
-SELECT id, series_id, tmdb_genre_id, name, created_at FROM tvshow.series_genres
-WHERE series_id = $1
+SELECT id, series_id, tmdb_genre_id, name, created_at
+FROM tvshow.series_genres
+WHERE
+    series_id = $1
 ORDER BY name ASC
 `
 

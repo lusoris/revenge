@@ -1,9 +1,10 @@
 package jobs
 
 import (
+	"log/slog"
+
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
-	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
