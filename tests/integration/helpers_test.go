@@ -46,6 +46,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
@@ -58,6 +59,7 @@ type TestServer struct {
 	BaseURL    string
 	HTTPClient *http.Client
 	DB         *testutil.PostgreSQLContainer
+	AppPool    *pgxpool.Pool // DI-managed database pool (for health tests)
 }
 
 // setupServer starts a test server with all dependencies.
@@ -88,6 +90,17 @@ func setupServer(t *testing.T) *TestServer {
 	storageDir := t.TempDir()
 	cfg.Storage.Backend = "local"
 	cfg.Storage.Local.Path = storageDir
+
+	// Auth config (empty JWT secret / zero expiry causes instant token expiry)
+	cfg.Auth.JWTSecret = "integration-test-secret-key-must-be-32chars!!"
+	cfg.Auth.JWTExpiry = 15 * time.Minute
+	cfg.Auth.RefreshExpiry = 24 * time.Hour
+	cfg.Auth.LockoutThreshold = 5
+	cfg.Auth.LockoutWindow = 15 * time.Minute
+	cfg.Auth.LockoutEnabled = false
+
+	// Capture the DI-managed pool for health tests
+	var appPool *pgxpool.Pool
 
 	// Create fx app for testing
 	// Mirrors app.Module but replaces config.Module with fx.Supply(cfg)
@@ -158,6 +171,9 @@ func setupServer(t *testing.T) *TestServer {
 
 		// HTTP API Server (ogen-generated)
 		api.Module,
+
+		// Extract DI-managed pool for test use (e.g. health tests)
+		fx.Populate(&appPool),
 	)
 
 	// Start app
@@ -173,7 +189,8 @@ func setupServer(t *testing.T) *TestServer {
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-		DB: pgContainer,
+		DB:      pgContainer,
+		AppPool: appPool,
 	}
 }
 
