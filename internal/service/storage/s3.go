@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -10,6 +11,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/lusoris/revenge/internal/config"
 )
 
@@ -170,26 +172,11 @@ func (s *S3Storage) GetURL(key string) string {
 }
 
 // isNotFoundError checks if the error is a "not found" error from S3.
-// This is a simplified check; for production, consider using AWS error types.
 func isNotFoundError(err error) bool {
 	if err == nil {
 		return false
 	}
-	// AWS SDK v2 wraps errors, check error string
-	errStr := err.Error()
-	return contains(errStr, "NotFound") || contains(errStr, "NoSuchKey")
-}
-
-// contains is a simple helper to check if a string contains a substring.
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && (s[:len(substr)] == substr || s[len(s)-len(substr):] == substr || containsInner(s, substr)))
-}
-
-func containsInner(s, substr string) bool {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return true
-		}
-	}
-	return false
+	var noSuchKey *types.NoSuchKey
+	var notFound *types.NotFound
+	return errors.As(err, &noSuchKey) || errors.As(err, &notFound)
 }

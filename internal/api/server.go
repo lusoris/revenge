@@ -36,6 +36,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/davidbyttow/govips/v2/vips"
 	"go.uber.org/fx"
 )
 
@@ -377,6 +378,8 @@ func NewServer(p ServerParams) (*Server, error) {
 			if server.redisGlobalLimiter != nil {
 				server.redisGlobalLimiter.Stop()
 			}
+			// Shutdown libvips if it was initialized
+			vips.Shutdown()
 			return httpServer.Shutdown(ctx)
 		},
 	})
