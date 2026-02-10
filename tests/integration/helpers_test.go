@@ -12,7 +12,11 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/api"
+	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	"github.com/lusoris/revenge/internal/content/tvshow"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	appcrypto "github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
@@ -22,16 +26,25 @@ import (
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/integration/radarr"
+	"github.com/lusoris/revenge/internal/integration/sonarr"
+	"github.com/lusoris/revenge/internal/playback/playbackfx"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
+	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
+	searchsvc "github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/riverqueue/river"
@@ -71,46 +84,79 @@ func setupServer(t *testing.T) *TestServer {
 	cfg.Server.ReadTimeout = 5000000000  // 5s
 	cfg.Server.WriteTimeout = 5000000000 // 5s
 
+	// Use a temp directory for local storage in tests
+	storageDir := t.TempDir()
+	cfg.Storage.Backend = "local"
+	cfg.Storage.Local.Path = storageDir
+
 	// Create fx app for testing
-	// Note: We don't use app.Module because it includes config.Module
-	// Instead, we provide cfg directly and include only the needed modules
+	// Mirrors app.Module but replaces config.Module with fx.Supply(cfg)
+	// and omits observability.Module (starts extra HTTP server for metrics).
 	app := fxtest.New(t,
 		// Provide configuration directly (from PostgreSQL container)
 		fx.Supply(cfg),
 
-		// Infrastructure modules (logging provides zap.Logger)
+		// Infrastructure
 		logging.Module,
 		database.Module,
 		cache.Module,
 		search.Module,
 		jobs.Module,
+		raft.Module,
 		health.Module,
 		image.Module,
 		appcrypto.Module,
-		raft.Module,
 
-		// Service modules (required by API)
+		// Periodic jobs stub (no real periodic jobs in tests)
+		fx.Provide(func() []*river.PeriodicJob { return nil }),
+		fx.Invoke(
+			func(workers *river.Workers, w *activity.ActivityCleanupWorker) { river.AddWorker(workers, w) },
+			func(workers *river.Workers, w *library.LibraryScanCleanupWorker) { river.AddWorker(workers, w) },
+		),
+
+		// Bridge: metadata jobs Queue → movie.MetadataQueue interface
+		fx.Provide(func(q *metadatajobs.Queue) movie.MetadataQueue { return q }),
+
+		// Services
+		settings.Module,
 		user.Module,
 		auth.Module,
+		email.Module,
 		session.Module,
-		settings.Module,
 		rbac.Module,
 		apikeys.Module,
+		mfa.Module,
 		oidc.Module,
 		activity.Module,
+		analytics.Module,
+		notification.Module,
+		storage.Module,
 		library.Module,
-		mfa.Module,
+		searchsvc.Module,
 
 		// Content modules
 		movie.Module,
+		tvshow.Module,
 
-		// Stubs for dependencies not needed in integration tests
-		fx.Provide(func() []*river.PeriodicJob { return nil }),
-		fx.Provide(func() movie.MetadataProvider { return nil }),
-		fx.Provide(func() movie.MetadataQueue { return nil }),
-		fx.Provide(func() *notification.Dispatcher { return nil }),
+		// Playback / HLS Streaming
+		playbackfx.Module,
 
-		// API module
+		// Job Workers
+		moviejobs.Module,
+		tvshowjobs.Module,
+		metadatajobs.Module,
+
+		// Integrations
+		radarr.Module,
+		sonarr.Module,
+
+		// Metadata Service
+		metadatafx.Module,
+
+		// SSE Real-Time Events
+		sse.Module,
+
+		// HTTP API Server (ogen-generated)
 		api.Module,
 	)
 
