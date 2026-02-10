@@ -72,6 +72,7 @@ func DefaultConfig() Config {
 // Client is the TMDb API client with rate limiting and caching.
 type Client struct {
 	httpClient  *req.Client
+	imgClient   *req.Client
 	apiKey      string
 	accessToken string
 	rateLimiter *rate.Limiter
@@ -113,8 +114,15 @@ func NewClient(config Config) (*Client, error) {
 		client.SetProxyURL(config.ProxyURL)
 	}
 
+	// Dedicated client for image CDN downloads (different host, no auth headers).
+	imgClient := req.C().
+		SetTimeout(config.Timeout).
+		SetCommonRetryCount(2).
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+
 	return &Client{
 		httpClient:  client,
+		imgClient:   imgClient,
 		apiKey:      config.APIKey,
 		accessToken: config.AccessToken,
 		rateLimiter: rate.NewLimiter(config.RateLimit, config.Burst),
@@ -1234,8 +1242,7 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 
 	url := c.GetImageURL(path, size)
 
-	// Use separate client for image CDN
-	resp, err := req.C().R().
+	resp, err := c.imgClient.R().
 		SetContext(ctx).
 		Get(url)
 
