@@ -13,6 +13,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/content/movie"
+	appcrypto "github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
