@@ -3,12 +3,14 @@ package trakt
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -76,6 +78,29 @@ func NewClient(config Config) (*Client, error) {
 				return true
 			}
 			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			mediaType := "unknown"
+			path := resp.Request.RawURL
+			if strings.Contains(path, "/movies") {
+				mediaType = "movie"
+			} else if strings.Contains(path, "/shows") {
+				mediaType = "tvshow"
+			} else if strings.Contains(path, "/people") {
+				mediaType = "person"
+			} else if strings.Contains(path, "/search") {
+				mediaType = "search"
+			}
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("trakt")
+				}
+			}
+			observability.RecordMetadataFetch("trakt", mediaType, status, resp.TotalTime().Seconds())
+			return nil
 		})
 
 	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())

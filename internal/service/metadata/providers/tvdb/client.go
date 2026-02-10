@@ -3,6 +3,7 @@ package tvdb
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -118,6 +120,27 @@ func NewClient(config Config) (*Client, error) {
 				return true
 			}
 			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			mediaType := "tvshow"
+			path := resp.Request.RawURL
+			if strings.Contains(path, "/movies") {
+				mediaType = "movie"
+			} else if strings.Contains(path, "/people") {
+				mediaType = "person"
+			} else if strings.Contains(path, "/search") {
+				mediaType = "search"
+			}
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("tvdb")
+				}
+			}
+			observability.RecordMetadataFetch("tvdb", mediaType, status, resp.TotalTime().Seconds())
+			return nil
 		})
 
 	if config.ProxyURL != "" {

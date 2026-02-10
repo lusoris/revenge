@@ -8,20 +8,24 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/maypok86/otter/v2"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // FFmpegProcess tracks a running FFmpeg process.
 type FFmpegProcess struct {
-	Cmd       *exec.Cmd
-	SessionID uuid.UUID
-	Profile   string
-	Done      chan struct{}
-	Err       error
+	Cmd         *exec.Cmd
+	SessionID   uuid.UUID
+	Profile     string
+	Done        chan struct{}
+	Err         error
+	StartTime   time.Time
+	IsTranscode bool
 }
 
 // PipelineManager manages running FFmpeg processes per session+profile.
@@ -104,10 +108,12 @@ func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uu
 
 func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uuid.UUID, name string, isTranscode bool) (*FFmpegProcess, error) {
 	proc := &FFmpegProcess{
-		Cmd:       cmd,
-		SessionID: sessionID,
-		Profile:   name,
-		Done:      make(chan struct{}),
+		Cmd:         cmd,
+		SessionID:   sessionID,
+		Profile:     name,
+		Done:        make(chan struct{}),
+		StartTime:   time.Now(),
+		IsTranscode: isTranscode,
 	}
 
 	if err := cmd.Start(); err != nil {
@@ -115,6 +121,11 @@ func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uui
 	}
 
 	pm.processes.Set(key, proc)
+
+	// Record transcoding start metric
+	if isTranscode {
+		observability.RecordTranscodingStart()
+	}
 
 	pm.logger.Info("FFmpeg process started",
 		slog.String("session_id", sessionID.String()),
@@ -126,6 +137,23 @@ func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uui
 	go func() {
 		defer close(proc.Done)
 		proc.Err = cmd.Wait()
+
+		// Record transcoding end metric
+		if proc.IsTranscode {
+			duration := time.Since(proc.StartTime).Seconds()
+			// Extract resolution from profile name (e.g., "1080p", "720p", "480p")
+			resolution := "unknown"
+			if strings.Contains(proc.Profile, "1080") {
+				resolution = "1080p"
+			} else if strings.Contains(proc.Profile, "720") {
+				resolution = "720p"
+			} else if strings.Contains(proc.Profile, "480") {
+				resolution = "480p"
+			} else if proc.Profile == "original" {
+				resolution = "original"
+			}
+			observability.RecordTranscodingEnd("h264", resolution, duration)
+		}
 
 		if proc.Err != nil {
 			pm.logger.Error("FFmpeg process failed",

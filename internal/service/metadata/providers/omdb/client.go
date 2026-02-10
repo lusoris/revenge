@@ -3,12 +3,14 @@ package omdb
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -86,6 +88,23 @@ func NewClient(config Config) (*Client, error) {
 				return true
 			}
 			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			// OMDB returns type in query param or response
+			mediaType := "movie" // OMDB is primarily movie-focused
+			if strings.Contains(resp.Request.RawURL, "type=series") {
+				mediaType = "tvshow"
+			}
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("omdb")
+				}
+			}
+			observability.RecordMetadataFetch("omdb", mediaType, status, resp.TotalTime().Seconds())
+			return nil
 		})
 
 	return &Client{

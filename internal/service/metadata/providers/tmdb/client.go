@@ -3,12 +3,14 @@ package tmdb
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -114,6 +116,36 @@ func NewClient(config Config) (*Client, error) {
 				return true
 			}
 			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			// Determine media type from URL path
+			mediaType := "unknown"
+			path := resp.Request.RawURL
+			switch {
+			case strings.Contains(path, "/movie"):
+				mediaType = "movie"
+			case strings.Contains(path, "/tv"), strings.Contains(path, "/season"), strings.Contains(path, "/episode"):
+				mediaType = "tvshow"
+			case strings.Contains(path, "/person"):
+				mediaType = "person"
+			case strings.Contains(path, "/search"):
+				mediaType = "search"
+			}
+
+			// Determine status
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("tmdb")
+				}
+			}
+
+			// Record metrics
+			duration := resp.TotalTime().Seconds()
+			observability.RecordMetadataFetch("tmdb", mediaType, status, duration)
+			return nil
 		})
 
 	if config.ProxyURL != "" {

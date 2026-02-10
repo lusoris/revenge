@@ -13,6 +13,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/playback/subtitle"
 	"github.com/lusoris/revenge/internal/playback/transcode"
 )
@@ -137,6 +138,13 @@ func (s *Service) StartSession(ctx context.Context, userID uuid.UUID, req *Start
 	// 8. Extract subtitles (async, non-blocking) — full VTT files, not segmented
 	go s.extractSubtitles(sessionID, filePath, segmentDir, info)
 
+	// Record playback start metrics
+	quality := "direct"
+	if len(decision.Profiles) > 0 {
+		quality = decision.Profiles[0].Name
+	}
+	observability.RecordPlaybackStart(string(req.MediaType), quality)
+
 	s.logger.Info("playback session started",
 		slog.String("session_id", sessionID.String()),
 		slog.String("user_id", userID.String()),
@@ -161,6 +169,10 @@ func (s *Service) StopSession(sessionID uuid.UUID) error {
 	if sess == nil {
 		return fmt.Errorf("session %s not found", sessionID)
 	}
+
+	// Record playback end metrics
+	duration := time.Since(sess.CreatedAt).Seconds()
+	observability.RecordPlaybackEnd(string(sess.MediaType), duration)
 
 	// Stop all FFmpeg processes
 	s.pipeline.StopAllForSession(sessionID)
