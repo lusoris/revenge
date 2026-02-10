@@ -18,7 +18,23 @@ import (
 
 const testDatabaseURL = "postgres://revenge:revenge_dev_pass@localhost:5432/revenge?sslmode=disable"
 
+// requirePostgres skips the test if PostgreSQL is not reachable at localhost:5432.
+func requirePostgres(t *testing.T) {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	pool, err := pgxpool.New(ctx, testDatabaseURL)
+	if err != nil {
+		t.Skipf("PostgreSQL not available: %v", err)
+	}
+	defer pool.Close()
+	if err := pool.Ping(ctx); err != nil {
+		t.Skipf("PostgreSQL not reachable: %v", err)
+	}
+}
+
 func TestDatabaseConnection(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -31,6 +47,7 @@ func TestDatabaseConnection(t *testing.T) {
 }
 
 func TestDatabasePoolStats(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	config, err := pgxpool.ParseConfig(testDatabaseURL)
@@ -64,6 +81,7 @@ func TestDatabasePoolStats(t *testing.T) {
 }
 
 func TestDatabaseTransactions(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -97,6 +115,7 @@ func TestDatabaseTransactions(t *testing.T) {
 }
 
 func TestDatabaseConcurrentOperations(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -135,6 +154,7 @@ func TestDatabaseConcurrentOperations(t *testing.T) {
 }
 
 func TestDatabaseConnectionPoolExhaustion(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	config, err := pgxpool.ParseConfig(testDatabaseURL)
@@ -166,6 +186,7 @@ func TestDatabaseConnectionPoolExhaustion(t *testing.T) {
 }
 
 func TestDatabaseSchemaExists(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -192,6 +213,7 @@ func TestDatabaseSchemaExists(t *testing.T) {
 }
 
 func TestDatabaseNullableTypes(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
