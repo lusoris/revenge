@@ -972,7 +972,7 @@ func TestServiceIntegration_BuildOAuth2Config_DecryptsSecret(t *testing.T) {
 	require.NoError(t, err)
 
 	// buildOAuth2Config should decrypt the secret
-	config := svc.buildOAuth2Config(stored)
+	config := svc.buildOAuth2Config(stored, nil)
 	assert.Equal(t, "test-client-secret-value", config.ClientSecret)
 	assert.Equal(t, "client-oauth2_config", config.ClientID)
 }
@@ -995,7 +995,7 @@ func TestServiceIntegration_BuildOAuth2Config_WithCustomEndpoints(t *testing.T) 
 	stored, err := repo.GetProvider(ctx, provider.ID)
 	require.NoError(t, err)
 
-	config := svc.buildOAuth2Config(stored)
+	config := svc.buildOAuth2Config(stored, nil)
 	assert.Equal(t, authEndpoint, config.Endpoint.AuthURL)
 	assert.Equal(t, tokenEndpoint, config.Endpoint.TokenURL)
 }
@@ -1013,7 +1013,7 @@ func TestServiceIntegration_BuildOAuth2Config_DefaultEndpoints(t *testing.T) {
 	stored, err := repo.GetProvider(ctx, provider.ID)
 	require.NoError(t, err)
 
-	config := svc.buildOAuth2Config(stored)
+	config := svc.buildOAuth2Config(stored, nil)
 	assert.Equal(t, stored.IssuerURL+"/authorize", config.Endpoint.AuthURL)
 	assert.Equal(t, stored.IssuerURL+"/token", config.Endpoint.TokenURL)
 }

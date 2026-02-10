@@ -51,10 +51,15 @@ func (NotificationArgs) Kind() string {
 
 // InsertOpts returns the default insert options for notification jobs.
 // Notifications use QueueHigh for responsive user experience.
+// UniqueOpts prevents duplicate sends for the same event within a 1-hour window.
 func (NotificationArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		Queue:       QueueHigh,
 		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 1 * time.Hour,
+		},
 	}
 }
 

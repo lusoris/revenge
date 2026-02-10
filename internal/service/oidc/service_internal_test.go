@@ -691,7 +691,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 			TokenEndpoint:         &tokenURL,
 		}
 
-		config := svc.buildOAuth2Config(provider)
+		config := svc.buildOAuth2Config(provider, nil)
 
 		assert.Equal(t, "client-123", config.ClientID)
 		assert.Equal(t, "secret-456", config.ClientSecret) // No encryption key, passthrough
@@ -713,7 +713,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 			Scopes:                []string{"openid"},
 		}
 
-		config := svc.buildOAuth2Config(provider)
+		config := svc.buildOAuth2Config(provider, nil)
 
 		assert.Equal(t, "https://issuer.example.com/authorize", config.Endpoint.AuthURL)
 		assert.Equal(t, "https://issuer.example.com/token", config.Endpoint.TokenURL)
@@ -729,7 +729,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 			Scopes:                []string{"openid"},
 		}
 
-		config := svc.buildOAuth2Config(provider)
+		config := svc.buildOAuth2Config(provider, nil)
 
 		// Should NOT append provider name since URL already contains /callback/
 		assert.Equal(t, "http://localhost:8080/callback/existing", config.RedirectURL)
@@ -745,7 +745,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 			Scopes:                []string{"openid"},
 		}
 
-		config := svc.buildOAuth2Config(provider)
+		config := svc.buildOAuth2Config(provider, nil)
 
 		assert.Equal(t, "http://localhost:8080/auth/keycloak", config.RedirectURL)
 	})
@@ -760,7 +760,7 @@ func Test_buildOAuth2Config(t *testing.T) {
 			Scopes:                []string{"openid"},
 		}
 
-		config := svc.buildOAuth2Config(provider)
+		config := svc.buildOAuth2Config(provider, nil)
 
 		assert.Equal(t, "http://localhost:8080/auth/authentik", config.RedirectURL)
 	})

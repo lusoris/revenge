@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -56,10 +57,11 @@ const (
 
 // Service implements OIDC business logic
 type Service struct {
-	repo        Repository
-	logger      *slog.Logger
-	callbackURL string
-	encryptKey  []byte // For encrypting client secrets and tokens
+	repo          Repository
+	logger        *slog.Logger
+	callbackURL   string
+	encryptKey    []byte // For encrypting client secrets and tokens
+	providerCache sync.Map // issuerURL -> *oidc.Provider
 }
 
 // NewService creates a new OIDC service
@@ -254,8 +256,13 @@ func (s *Service) GetAuthURL(ctx context.Context, providerName string, redirectU
 		return nil, err
 	}
 
-	// Build OAuth2 config
-	oauth2Config := s.buildOAuth2Config(provider)
+	// Try to discover OIDC endpoints (cached); fall back to configured/default endpoints
+	oidcProv, err := s.getOrCreateOIDCProvider(ctx, provider.IssuerURL)
+	if err != nil {
+		s.logger.Warn("OIDC discovery failed for auth URL, using fallback endpoints",
+			slog.String("issuer", provider.IssuerURL), slog.Any("error", err))
+	}
+	oauth2Config := s.buildOAuth2Config(provider, oidcProv)
 
 	// Generate code challenge (S256)
 	codeChallenge := generateCodeChallenge(codeVerifier)
@@ -323,15 +330,15 @@ func (s *Service) HandleCallback(ctx context.Context, stateParam, code string) (
 		return nil, ErrProviderDisabled
 	}
 
-	// Create OIDC provider and verifier
-	oidcProvider, err := oidc.NewProvider(ctx, provider.IssuerURL)
+	// Create OIDC provider and verifier (cached to avoid repeated discovery HTTP calls)
+	oidcProvider, err := s.getOrCreateOIDCProvider(ctx, provider.IssuerURL)
 	if err != nil {
 		s.logger.Error("failed to create OIDC provider", slog.String("issuer", provider.IssuerURL), slog.Any("error",err))
 		return nil, ErrDiscoveryFailed
 	}
 
-	// Build OAuth2 config
-	oauth2Config := s.buildOAuth2Config(provider)
+	// Build OAuth2 config using discovered endpoints
+	oauth2Config := s.buildOAuth2Config(provider, oidcProvider)
 
 	// Exchange code for tokens
 	var tokenOpts []oauth2.AuthCodeOption
@@ -491,7 +498,25 @@ func (s *Service) ListUserLinks(ctx context.Context, userID uuid.UUID) ([]UserLi
 // Helpers
 // ============================================================================
 
-func (s *Service) buildOAuth2Config(provider *Provider) *oauth2.Config {
+// getOrCreateOIDCProvider returns a cached OIDC provider or creates a new one.
+// Caching avoids repeated HTTP calls to the issuer's .well-known/openid-configuration endpoint.
+func (s *Service) getOrCreateOIDCProvider(ctx context.Context, issuerURL string) (*oidc.Provider, error) {
+	if cached, ok := s.providerCache.Load(issuerURL); ok {
+		if p, valid := cached.(*oidc.Provider); valid {
+			return p, nil
+		}
+	}
+
+	provider, err := oidc.NewProvider(ctx, issuerURL)
+	if err != nil {
+		return nil, err
+	}
+
+	s.providerCache.Store(issuerURL, provider)
+	return provider, nil
+}
+
+func (s *Service) buildOAuth2Config(provider *Provider, oidcProvider *oidc.Provider) *oauth2.Config {
 	callbackURL := s.callbackURL
 	if !strings.Contains(callbackURL, "/callback/") {
 		// Append provider name to callback URL
@@ -505,14 +530,16 @@ func (s *Service) buildOAuth2Config(provider *Provider) *oauth2.Config {
 		Scopes:       provider.Scopes,
 	}
 
-	// Use discovered endpoints or custom endpoints
+	// Use custom endpoints if explicitly configured, otherwise use discovered endpoints
 	if provider.AuthorizationEndpoint != nil && provider.TokenEndpoint != nil {
 		config.Endpoint = oauth2.Endpoint{
 			AuthURL:  *provider.AuthorizationEndpoint,
 			TokenURL: *provider.TokenEndpoint,
 		}
+	} else if oidcProvider != nil {
+		config.Endpoint = oidcProvider.Endpoint()
 	} else {
-		// Use standard OIDC endpoints
+		// Last resort fallback (should not happen with caching)
 		config.Endpoint = oauth2.Endpoint{
 			AuthURL:  provider.IssuerURL + "/authorize",
 			TokenURL: provider.IssuerURL + "/token",
