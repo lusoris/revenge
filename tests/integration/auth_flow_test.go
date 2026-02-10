@@ -75,7 +75,7 @@ func TestAuthFlow_Register(t *testing.T) {
 				assert.Equal(t, "testuser1", user.Username)
 				assert.Equal(t, "test1@example.com", user.Email)
 				assert.NotEmpty(t, user.ID)
-				assert.True(t, user.IsActive)
+				assert.False(t, user.IsActive, "new users should be inactive until email verification")
 				assert.False(t, user.EmailVerified)
 			},
 		},
@@ -301,13 +301,19 @@ func TestAuthFlow_CompleteFlow(t *testing.T) {
 
 	// Step 4: Logout
 	t.Run("step_4_logout", func(t *testing.T) {
-		if accessToken == "" {
-			t.Skip("no access token from login")
+		if accessToken == "" || refreshToken == "" {
+			t.Skip("no tokens from login")
 		}
 
-		req, err := http.NewRequestWithContext(ctx, "POST", ts.BaseURL+"/api/v1/auth/logout", nil)
+		logoutBody, err := json.Marshal(map[string]interface{}{
+			"refresh_token": refreshToken,
+		})
+		require.NoError(t, err)
+
+		req, err := http.NewRequestWithContext(ctx, "POST", ts.BaseURL+"/api/v1/auth/logout", bytes.NewReader(logoutBody))
 		require.NoError(t, err)
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
+		req.Header.Set("Content-Type", "application/json")
 
 		resp, err := ts.HTTPClient.Do(req)
 		require.NoError(t, err)

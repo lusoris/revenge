@@ -12,7 +12,11 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/api"
+	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	"github.com/lusoris/revenge/internal/content/tvshow"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	appcrypto "github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
@@ -22,16 +26,27 @@ import (
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/integration/radarr"
+	"github.com/lusoris/revenge/internal/integration/sonarr"
+	"github.com/lusoris/revenge/internal/playback/playbackfx"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
+	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	"github.com/lusoris/revenge/internal/service/mfa"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
+	searchsvc "github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
+	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
@@ -44,6 +59,7 @@ type TestServer struct {
 	BaseURL    string
 	HTTPClient *http.Client
 	DB         *testutil.PostgreSQLContainer
+	AppPool    *pgxpool.Pool // DI-managed database pool (for health tests)
 }
 
 // setupServer starts a test server with all dependencies.
@@ -70,46 +86,94 @@ func setupServer(t *testing.T) *TestServer {
 	cfg.Server.ReadTimeout = 5000000000  // 5s
 	cfg.Server.WriteTimeout = 5000000000 // 5s
 
+	// Use a temp directory for local storage in tests
+	storageDir := t.TempDir()
+	cfg.Storage.Backend = "local"
+	cfg.Storage.Local.Path = storageDir
+
+	// Auth config (empty JWT secret / zero expiry causes instant token expiry)
+	cfg.Auth.JWTSecret = "integration-test-secret-key-must-be-32chars!!"
+	cfg.Auth.JWTExpiry = 15 * time.Minute
+	cfg.Auth.RefreshExpiry = 24 * time.Hour
+	cfg.Auth.LockoutThreshold = 5
+	cfg.Auth.LockoutWindow = 15 * time.Minute
+	cfg.Auth.LockoutEnabled = false
+
+	// Capture the DI-managed pool for health tests
+	var appPool *pgxpool.Pool
+
 	// Create fx app for testing
-	// Note: We don't use app.Module because it includes config.Module
-	// Instead, we provide cfg directly and include only the needed modules
+	// Mirrors app.Module but replaces config.Module with fx.Supply(cfg)
+	// and omits observability.Module (starts extra HTTP server for metrics).
 	app := fxtest.New(t,
 		// Provide configuration directly (from PostgreSQL container)
 		fx.Supply(cfg),
 
-		// Infrastructure modules (logging provides zap.Logger)
+		// Infrastructure
 		logging.Module,
 		database.Module,
 		cache.Module,
 		search.Module,
 		jobs.Module,
+		raft.Module,
 		health.Module,
 		image.Module,
 		appcrypto.Module,
-		raft.Module,
 
-		// Service modules (required by API)
+		// Periodic jobs stub (no real periodic jobs in tests)
+		fx.Provide(func() []*river.PeriodicJob { return nil }),
+		fx.Invoke(
+			func(workers *river.Workers, w *activity.ActivityCleanupWorker) { river.AddWorker(workers, w) },
+			func(workers *river.Workers, w *library.LibraryScanCleanupWorker) { river.AddWorker(workers, w) },
+		),
+
+		// Bridge: metadata jobs Queue → movie.MetadataQueue interface
+		fx.Provide(func(q *metadatajobs.Queue) movie.MetadataQueue { return q }),
+
+		// Services
+		settings.Module,
 		user.Module,
 		auth.Module,
+		email.Module,
 		session.Module,
-		settings.Module,
 		rbac.Module,
 		apikeys.Module,
+		mfa.Module,
 		oidc.Module,
 		activity.Module,
+		analytics.Module,
+		notification.Module,
+		storage.Module,
 		library.Module,
-		mfa.Module,
+		searchsvc.Module,
 
 		// Content modules
 		movie.Module,
+		tvshow.Module,
 
-		// Stubs for dependencies not needed in integration tests
-		fx.Provide(func() []*river.PeriodicJob { return nil }),
-		fx.Provide(func() movie.MetadataProvider { return nil }),
-		fx.Provide(func() movie.MetadataQueue { return nil }),
+		// Playback / HLS Streaming
+		playbackfx.Module,
 
-		// API module
+		// Job Workers
+		moviejobs.Module,
+		tvshowjobs.Module,
+		metadatajobs.Module,
+
+		// Integrations
+		radarr.Module,
+		sonarr.Module,
+
+		// Metadata Service
+		metadatafx.Module,
+
+		// SSE Real-Time Events
+		sse.Module,
+
+		// HTTP API Server (ogen-generated)
 		api.Module,
+
+		// Extract DI-managed pool for test use (e.g. health tests)
+		fx.Populate(&appPool),
 	)
 
 	// Start app
@@ -125,7 +189,8 @@ func setupServer(t *testing.T) *TestServer {
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-		DB: pgContainer,
+		DB:      pgContainer,
+		AppPool: appPool,
 	}
 }
 
@@ -180,6 +245,14 @@ func resetDatabase(t *testing.T, ts *TestServer) {
 
 // TestMain runs before all tests.
 func TestMain(m *testing.M) {
+	// go test sets cwd to the package directory (tests/integration/).
+	// Many modules expect to find files relative to the repo root
+	// (e.g. config/casbin_model.conf), so chdir to repo root.
+	if err := os.Chdir("../.."); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to chdir to repo root: %v\n", err)
+		os.Exit(1)
+	}
+
 	// Check if Docker is available
 	if !isDockerAvailable() {
 		fmt.Println("Docker is not available - skipping integration tests")
