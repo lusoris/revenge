@@ -373,9 +373,9 @@ paths:
             schema:
               type: object
               required:
-                - accountName
+                - account_name
               properties:
-                accountName:
+                account_name:
                   type: string
                   description: Account name to display in authenticator app (usually email or username)
                   example: user@example.com
@@ -1373,14 +1373,14 @@ paths:
             schema:
               type: object
               required:
-                - progressSeconds
-                - durationSeconds
+                - progress_seconds
+                - duration_seconds
               properties:
-                progressSeconds:
+                progress_seconds:
                   type: integer
                   minimum: 0
                   description: Current playback position in seconds
-                durationSeconds:
+                duration_seconds:
                   type: integer
                   minimum: 1
                   description: Total duration in seconds
@@ -5874,9 +5874,9 @@ paths:
             schema:
               type: object
               required:
-                - scanType
+                - scan_type
               properties:
-                scanType:
+                scan_type:
                   type: string
                   enum: [full, incremental, metadata]
                   description: Type of scan to perform
@@ -6009,10 +6009,10 @@ paths:
             schema:
               type: object
               required:
-                - userId
+                - user_id
                 - permission
               properties:
-                userId:
+                user_id:
                   type: string
                   format: uuid
                   description: User ID to grant permission to
@@ -6425,7 +6425,7 @@ paths:
       description: |
         Creates a new HLS playback session for a movie or episode.
         Returns a master playlist URL and session metadata.
-        Video and audio are segmented separately — audio tracks are individual
+        Video and audio are segmented separately  --  audio tracks are individual
         HLS renditions so the player can switch tracks instantly without
         restarting the stream.
       tags:
@@ -6822,7 +6822,7 @@ components:
         page:
           type: integer
           description: Current page number (1-indexed)
-        pageSize:
+        page_size:
           type: integer
           description: Number of items per page
 
@@ -6843,7 +6843,7 @@ components:
         page:
           type: integer
           description: Current page number (1-indexed)
-        pageSize:
+        page_size:
           type: integer
           description: Number of items per page
 
@@ -7483,7 +7483,7 @@ components:
         page:
           type: integer
           description: Current page number (1-indexed)
-        pageSize:
+        page_size:
           type: integer
           description: Number of items per page
 
@@ -7504,7 +7504,7 @@ components:
         page:
           type: integer
           description: Current page number (1-indexed)
-        pageSize:
+        page_size:
           type: integer
           description: Number of items per page
 
@@ -10100,15 +10100,15 @@ components:
       type: object
       required:
         - name
-        - displayName
+        - display_name
       properties:
         name:
           type: string
           description: Provider identifier
-        displayName:
+        display_name:
           type: string
           description: Display name for UI
-        isDefault:
+        is_default:
           type: boolean
           description: Whether this is the default provider
 
@@ -10130,29 +10130,29 @@ components:
     OIDCAuthURLResponse:
       type: object
       required:
-        - authUrl
+        - auth_url
       properties:
-        authUrl:
+        auth_url:
           type: string
           description: URL to redirect for OIDC authentication
 
     OIDCCallbackResponse:
       type: object
       required:
-        - accessToken
-        - tokenType
-        - expiresIn
+        - access_token
+        - token_type
+        - expires_in
       properties:
-        accessToken:
+        access_token:
           type: string
           description: JWT access token
-        tokenType:
+        token_type:
           type: string
           description: Token type (Bearer)
-        expiresIn:
+        expires_in:
           type: integer
           description: Token expiry in seconds
-        refreshToken:
+        refresh_token:
           type: string
           description: Refresh token (if issued)
         user:
@@ -10162,23 +10162,23 @@ components:
       type: object
       required:
         - id
-        - providerName
-        - providerDisplayName
-        - linkedAt
+        - provider_name
+        - provider_display_name
+        - linked_at
       properties:
         id:
           type: string
           format: uuid
-        providerName:
+        provider_name:
           type: string
-        providerDisplayName:
+        provider_display_name:
           type: string
         email:
           type: string
-        lastLoginAt:
+        last_login_at:
           type: string
           format: date-time
-        linkedAt:
+        linked_at:
           type: string
           format: date-time
 
@@ -10227,70 +10227,70 @@ components:
       required:
         - id
         - name
-        - displayName
-        - providerType
-        - issuerUrl
-        - clientId
+        - display_name
+        - provider_type
+        - issuer_url
+        - client_id
         - scopes
-        - autoCreateUsers
-        - updateUserInfo
-        - allowLinking
-        - isEnabled
-        - isDefault
-        - createdAt
-        - updatedAt
+        - auto_create_users
+        - update_user_info
+        - allow_linking
+        - is_enabled
+        - is_default
+        - created_at
+        - updated_at
       properties:
         id:
           type: string
           format: uuid
         name:
           type: string
-        displayName:
+        display_name:
           type: string
-        providerType:
+        provider_type:
           type: string
           enum:
             - generic
             - authentik
             - keycloak
-        issuerUrl:
+        issuer_url:
           type: string
-        clientId:
+        client_id:
           type: string
-        authorizationEndpoint:
+        authorization_endpoint:
           type: string
-        tokenEndpoint:
+        token_endpoint:
           type: string
-        userInfoEndpoint:
+        user_info_endpoint:
           type: string
-        jwksUri:
+        jwks_uri:
           type: string
-        endSessionEndpoint:
+        end_session_endpoint:
           type: string
         scopes:
           type: array
           items:
             type: string
-        claimMappings:
+        claim_mappings:
           $ref: '#/components/schemas/ClaimMappings'
-        roleMappings:
+        role_mappings:
           type: object
           additionalProperties:
             type: string
-        autoCreateUsers:
+        auto_create_users:
           type: boolean
-        updateUserInfo:
+        update_user_info:
           type: boolean
-        allowLinking:
+        allow_linking:
           type: boolean
-        isEnabled:
+        is_enabled:
           type: boolean
-        isDefault:
+        is_default:
           type: boolean
-        createdAt:
+        created_at:
           type: string
           format: date-time
-        updatedAt:
+        updated_at:
           type: string
           format: date-time
 
@@ -10313,50 +10313,50 @@ components:
       type: object
       required:
         - name
-        - displayName
-        - issuerUrl
-        - clientId
-        - clientSecret
+        - display_name
+        - issuer_url
+        - client_id
+        - client_secret
       properties:
         name:
           type: string
           description: Unique provider identifier
           minLength: 1
           maxLength: 100
-        displayName:
+        display_name:
           type: string
           description: Display name for UI
           minLength: 1
           maxLength: 255
-        providerType:
+        provider_type:
           type: string
           enum:
             - generic
             - authentik
             - keycloak
           default: generic
-        issuerUrl:
+        issuer_url:
           type: string
           description: OIDC issuer URL
-        clientId:
+        client_id:
           type: string
           description: OAuth2 client ID
-        clientSecret:
+        client_secret:
           type: string
           description: OAuth2 client secret
-        authorizationEndpoint:
+        authorization_endpoint:
           type: string
           description: Override authorization endpoint
-        tokenEndpoint:
+        token_endpoint:
           type: string
           description: Override token endpoint
-        userInfoEndpoint:
+        user_info_endpoint:
           type: string
           description: Override user info endpoint
-        jwksUri:
+        jwks_uri:
           type: string
           description: Override JWKS URI
-        endSessionEndpoint:
+        end_session_endpoint:
           type: string
           description: Override end session endpoint
         scopes:
@@ -10364,80 +10364,80 @@ components:
           items:
             type: string
           description: OAuth scopes (defaults to openid, profile, email)
-        claimMappings:
+        claim_mappings:
           $ref: '#/components/schemas/ClaimMappings'
-        roleMappings:
+        role_mappings:
           type: object
           additionalProperties:
             type: string
           description: Map provider roles to Revenge roles
-        autoCreateUsers:
+        auto_create_users:
           type: boolean
           default: true
           description: Create users on first OIDC login
-        updateUserInfo:
+        update_user_info:
           type: boolean
           default: true
           description: Update user info on each login
-        allowLinking:
+        allow_linking:
           type: boolean
           default: true
           description: Allow users to link existing accounts
-        isEnabled:
+        is_enabled:
           type: boolean
           default: true
-        isDefault:
+        is_default:
           type: boolean
           default: false
 
     UpdateOIDCProviderRequest:
       type: object
       properties:
-        displayName:
+        display_name:
           type: string
           minLength: 1
           maxLength: 255
-        providerType:
+        provider_type:
           type: string
           enum:
             - generic
             - authentik
             - keycloak
-        issuerUrl:
+        issuer_url:
           type: string
-        clientId:
+        client_id:
           type: string
-        clientSecret:
+        client_secret:
           type: string
-        authorizationEndpoint:
+        authorization_endpoint:
           type: string
-        tokenEndpoint:
+        token_endpoint:
           type: string
-        userInfoEndpoint:
+        user_info_endpoint:
           type: string
-        jwksUri:
+        jwks_uri:
           type: string
-        endSessionEndpoint:
+        end_session_endpoint:
           type: string
         scopes:
           type: array
           items:
             type: string
-        claimMappings:
+        claim_mappings:
           $ref: '#/components/schemas/ClaimMappings'
-        roleMappings:
+        role_mappings:
           type: object
           additionalProperties:
             type: string
-        autoCreateUsers:
+        auto_create_users:
           type: boolean
-        updateUserInfo:
+        update_user_info:
           type: boolean
-        allowLinking:
+        allow_linking:
           type: boolean
-        isEnabled:
+        is_enabled:
           type: boolean
-        isDefault:
+        is_default:
           type: boolean
 
     # Activity schemas
@@ -10447,12 +10447,12 @@ components:
         - id
         - action
         - success
-        - createdAt
+        - created_at
       properties:
         id:
           type: string
           format: uuid
-        userId:
+        user_id:
           type: string
           format: uuid
         username:
@@ -10460,10 +10460,10 @@ components:
         action:
           type: string
           description: Action type (e.g., user.login, settings.update)
-        resourceType:
+        resource_type:
           type: string
           description: Resource type (user, library, movie, etc.)
-        resourceId:
+        resource_id:
           type: string
           format: uuid
         changes:
@@ -10474,15 +10474,15 @@ components:
           type: object
           additionalProperties: true
           description: Additional context
-        ipAddress:
+        ip_address:
           type: string
-        userAgent:
+        user_agent:
           type: string
         success:
           type: boolean
-        errorMessage:
+        error_message:
           type: string
-        createdAt:
+        created_at:
           type: string
           format: date-time
 
@@ -10503,30 +10503,30 @@ components:
         page:
           type: integer
           description: Current page number
-        pageSize:
+        page_size:
           type: integer
           description: Number of entries per page
 
     ActivityStats:
       type: object
       required:
-        - totalCount
-        - successCount
-        - failedCount
+        - total_count
+        - success_count
+        - failed_count
       properties:
-        totalCount:
+        total_count:
           type: integer
           format: int64
-        successCount:
+        success_count:
           type: integer
           format: int64
-        failedCount:
+        failed_count:
           type: integer
           format: int64
-        oldestEntry:
+        oldest_entry:
           type: string
           format: date-time
-        newestEntry:
+        newest_entry:
           type: string
           format: date-time
 
@@ -11058,10 +11058,10 @@ components:
         - type
         - paths
         - enabled
-        - scanOnStartup
-        - realtimeMonitoring
-        - createdAt
-        - updatedAt
+        - scan_on_startup
+        - realtime_monitoring
+        - created_at
+        - updated_at
       properties:
         id:
           type: string
@@ -11083,30 +11083,30 @@ components:
         enabled:
           type: boolean
           description: Whether the library is enabled
-        scanOnStartup:
+        scan_on_startup:
           type: boolean
           description: Whether to scan the library on server startup
-        realtimeMonitoring:
+        realtime_monitoring:
           type: boolean
           description: Whether to monitor for real-time file changes
-        metadataProvider:
+        metadata_provider:
           type: string
           description: Preferred metadata provider
           example: tmdb
-        preferredLanguage:
+        preferred_language:
           type: string
           description: Preferred language for metadata
           example: en
-        scannerConfig:
+        scanner_config:
           type: object
           additionalProperties: true
           description: Type-specific scanner configuration
-        latestScan:
+        latest_scan:
           $ref: '#/components/schemas/LibraryScan'
-        createdAt:
+        created_at:
           type: string
           format: date-time
-        updatedAt:
+        updated_at:
           type: string
           format: date-time
 
@@ -11152,23 +11152,23 @@ components:
           type: boolean
           default: true
           description: Whether the library is enabled
-        scanOnStartup:
+        scan_on_startup:
           type: boolean
           default: false
           description: Whether to scan the library on server startup
-        realtimeMonitoring:
+        realtime_monitoring:
           type: boolean
           default: false
           description: Whether to monitor for real-time file changes
-        metadataProvider:
+        metadata_provider:
           type: string
           description: Preferred metadata provider
           example: tmdb
-        preferredLanguage:
+        preferred_language:
           type: string
           description: Preferred language for metadata
           example: en
-        scannerConfig:
+        scanner_config:
           type: object
           additionalProperties: true
           description: Type-specific scanner configuration
@@ -11190,19 +11190,19 @@ components:
         enabled:
           type: boolean
           description: Whether the library is enabled
-        scanOnStartup:
+        scan_on_startup:
           type: boolean
           description: Whether to scan the library on server startup
-        realtimeMonitoring:
+        realtime_monitoring:
           type: boolean
           description: Whether to monitor for real-time file changes
-        metadataProvider:
+        metadata_provider:
           type: string
           description: Preferred metadata provider
-        preferredLanguage:
+        preferred_language:
           type: string
           description: Preferred language for metadata
-        scannerConfig:
+        scanner_config:
           type: object
           additionalProperties: true
           description: Type-specific scanner configuration
@@ -11211,18 +11211,18 @@ components:
       type: object
       required:
         - id
-        - libraryId
-        - scanType
+        - library_id
+        - scan_type
         - status
-        - createdAt
+        - created_at
       properties:
         id:
           type: string
           format: uuid
-        libraryId:
+        library_id:
           type: string
           format: uuid
-        scanType:
+        scan_type:
           type: string
           enum: [full, incremental, metadata]
           description: Type of scan
@@ -11230,36 +11230,36 @@ components:
           type: string
           enum: [pending, running, completed, failed, cancelled]
           description: Current scan status
-        itemsScanned:
+        items_scanned:
           type: integer
           format: int64
           description: Number of items scanned
-        itemsAdded:
+        items_added:
           type: integer
           format: int64
           description: Number of new items added
-        itemsUpdated:
+        items_updated:
           type: integer
           format: int64
           description: Number of items updated
-        itemsRemoved:
+        items_removed:
           type: integer
           format: int64
           description: Number of items removed
-        errorCount:
+        error_count:
           type: integer
           format: int64
           description: Number of errors during scan
-        errorMessage:
+        error_message:
           type: string
           description: Error message if scan failed
-        startedAt:
+        started_at:
           type: string
           format: date-time
-        completedAt:
+        completed_at:
           type: string
           format: date-time
-        createdAt:
+        created_at:
           type: string
           format: date-time
 
@@ -11281,25 +11281,25 @@ components:
       type: object
       required:
         - id
-        - libraryId
-        - userId
+        - library_id
+        - user_id
         - permission
-        - createdAt
+        - created_at
       properties:
         id:
           type: string
           format: uuid
-        libraryId:
+        library_id:
           type: string
           format: uuid
-        userId:
+        user_id:
           type: string
           format: uuid
         permission:
           type: string
           enum: [view, download, manage]
           description: Permission type
-        createdAt:
+        created_at:
           type: string
           format: date-time
 
@@ -11322,29 +11322,29 @@ components:
     StartPlaybackRequest:
       type: object
       required:
-        - mediaType
-        - mediaId
+        - media_type
+        - media_id
       properties:
-        mediaType:
+        media_type:
           type: string
           enum: [movie, episode]
           description: Type of media to play
-        mediaId:
+        media_id:
           type: string
           format: uuid
           description: Movie or episode ID
-        fileId:
+        file_id:
           type: string
           format: uuid
           description: Specific file ID (optional, uses default if omitted)
-        audioTrack:
+        audio_track:
           type: integer
           default: 0
           description: Audio track index to select initially
-        subtitleTrack:
+        subtitle_track:
           type: integer
           description: Subtitle track index (omit to disable subtitles)
-        startPosition:
+        start_position:
           type: integer
           default: 0
           description: Start position in seconds (for resume)
@@ -11352,23 +11352,23 @@ components:
     PlaybackSession:
       type: object
       required:
-        - sessionId
-        - masterPlaylistUrl
-        - durationSeconds
+        - session_id
+        - master_playlist_url
+        - duration_seconds
         - profiles
-        - audioTracks
-        - subtitleTracks
-        - createdAt
-        - expiresAt
+        - audio_tracks
+        - subtitle_tracks
+        - created_at
+        - expires_at
       properties:
-        sessionId:
+        session_id:
           type: string
           format: uuid
-        masterPlaylistUrl:
+        master_playlist_url:
           type: string
           description: URL to the HLS master playlist
           example: /api/v1/playback/stream/01234567-89ab-cdef-0123-456789abcdef/master.m3u8
-        durationSeconds:
+        duration_seconds:
           type: number
           format: double
           description: Total media duration in seconds
@@ -11377,25 +11377,25 @@ components:
           items:
             $ref: '#/components/schemas/PlaybackProfile'
           description: Available quality profiles
-        audioTracks:
+        audio_tracks:
           type: array
           items:
             $ref: '#/components/schemas/PlaybackAudioTrack'
           description: |
-            Available audio tracks. Each track is a separate HLS rendition —
+            Available audio tracks. Each track is a separate HLS rendition  -- 
             the player downloads only the active track's segments, so switching
             is instant without restarting the stream.
-        subtitleTracks:
+        subtitle_tracks:
           type: array
           items:
             $ref: '#/components/schemas/PlaybackSubtitleTrack'
           description: |
             Available subtitle tracks. Each is a pre-extracted WebVTT file
             served in full, so switching is instant client-side.
-        createdAt:
+        created_at:
           type: string
           format: date-time
-        expiresAt:
+        expires_at:
           type: string
           format: date-time
 
@@ -11406,7 +11406,7 @@ components:
         - width
         - height
         - bitrate
-        - isOriginal
+        - is_original
       properties:
         name:
           type: string
@@ -11421,7 +11421,7 @@ components:
         bitrate:
           type: integer
           description: Video bitrate in kbps (0 for direct copy)
-        isOriginal:
+        is_original:
           type: boolean
           description: Whether this profile copies the original streams without transcoding
 
@@ -11431,7 +11431,7 @@ components:
         - index
         - channels
         - codec
-        - isDefault
+        - is_default
       properties:
         index:
           type: integer
@@ -11456,7 +11456,7 @@ components:
           type: string
           description: Source audio codec
           example: eac3
-        isDefault:
+        is_default:
           type: boolean
           description: Whether this is the default audio track
 
@@ -11466,7 +11466,7 @@ components:
         - index
         - codec
         - url
-        - isForced
+        - is_forced
       properties:
         index:
           type: integer
@@ -11487,7 +11487,7 @@ components:
           type: string
           description: URL to the WebVTT subtitle file
           example: /api/v1/playback/stream/01234567-89ab-cdef-0123-456789abcdef/subs/0.vtt
-        isForced:
+        is_forced:
           type: boolean
           description: Whether this is a forced subtitle track (e.g., foreign language signs)
 

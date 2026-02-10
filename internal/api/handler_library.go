@@ -141,7 +141,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 		}, nil
 	}
 
-	lib, err := h.libraryService.Get(ctx, params.LibraryId)
+	lib, err := h.libraryService.Get(ctx, params.LibraryID)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.GetLibraryNotFound{
@@ -159,7 +159,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 	// Check access permission for non-admins
 	isAdmin := h.isAdmin(ctx)
 	if !isAdmin {
-		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
+		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryID, userID, isAdmin)
 		if err != nil {
 			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.GetLibraryNotFound{
@@ -219,7 +219,7 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *ogen.UpdateLibraryRequ
 		update.ScannerConfig = config
 	}
 
-	updated, err := h.libraryService.Update(ctx, params.LibraryId, update)
+	updated, err := h.libraryService.Update(ctx, params.LibraryID, update)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.UpdateLibraryNotFound{
@@ -256,7 +256,7 @@ func (h *Handler) DeleteLibrary(ctx context.Context, params ogen.DeleteLibraryPa
 		return nil, err
 	}
 
-	err := h.libraryService.Delete(ctx, params.LibraryId)
+	err := h.libraryService.Delete(ctx, params.LibraryID)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.DeleteLibraryNotFound{
@@ -299,7 +299,7 @@ func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibra
 		}, nil
 	}
 
-	scan, err := h.libraryService.TriggerScan(ctx, params.LibraryId, scanType)
+	scan, err := h.libraryService.TriggerScan(ctx, params.LibraryID, scanType)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.TriggerLibraryScanNotFound{
@@ -343,7 +343,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	// Check access permission for non-admins
 	isAdmin := h.isAdmin(ctx)
 	if !isAdmin {
-		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
+		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryID, userID, isAdmin)
 		if err != nil {
 			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.ListLibraryScansNotFound{
@@ -384,7 +384,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 		offset = o
 	}
 
-	scans, total, err := h.libraryService.ListScans(ctx, params.LibraryId, limit, offset)
+	scans, total, err := h.libraryService.ListScans(ctx, params.LibraryID, limit, offset)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.ListLibraryScansNotFound{
@@ -423,7 +423,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 	}
 
 	// Check if library exists
-	_, err := h.libraryService.Get(ctx, params.LibraryId)
+	_, err := h.libraryService.Get(ctx, params.LibraryID)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.ListLibraryPermissionsNotFound{
@@ -438,7 +438,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 		}, nil
 	}
 
-	perms, err := h.libraryService.ListPermissions(ctx, params.LibraryId)
+	perms, err := h.libraryService.ListPermissions(ctx, params.LibraryID)
 	if err != nil {
 		h.logger.Error("failed to list library permissions", slog.Any("error",err))
 		return &ogen.ListLibraryPermissionsNotFound{
@@ -474,7 +474,7 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 		}, nil
 	}
 
-	err := h.libraryService.GrantPermission(ctx, params.LibraryId, req.UserId, permission)
+	err := h.libraryService.GrantPermission(ctx, params.LibraryID, req.UserID, permission)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.GrantLibraryPermissionNotFound{
@@ -496,12 +496,12 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 	}
 
 	// Return the created permission - get it from the service
-	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryId, req.UserId, permission)
+	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryID, req.UserID, permission)
 	if perm == nil {
 		return &ogen.LibraryPermission{
 			ID:         uuid.Must(uuid.NewV7()),
-			LibraryId:  params.LibraryId,
-			UserId:     req.UserId,
+			LibraryID:  params.LibraryID,
+			UserID:     req.UserID,
 			Permission: ogen.LibraryPermissionPermission(permission),
 			CreatedAt:  time.Now(),
 		}, nil
@@ -530,7 +530,7 @@ func (h *Handler) RevokeLibraryPermission(ctx context.Context, params ogen.Revok
 		}, nil
 	}
 
-	err := h.libraryService.RevokePermission(ctx, params.LibraryId, params.UserId, permission)
+	err := h.libraryService.RevokePermission(ctx, params.LibraryID, params.UserID, permission)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.RevokeLibraryPermissionNotFound{
@@ -599,7 +599,7 @@ func convertLibraryToOgen(lib *library.Library) *ogen.Library {
 func convertLibraryScanToOgen(scan *library.LibraryScan) *ogen.LibraryScan {
 	result := &ogen.LibraryScan{
 		ID:           scan.ID,
-		LibraryId:    scan.LibraryID,
+		LibraryID:    scan.LibraryID,
 		ScanType:     ogen.LibraryScanScanType(scan.ScanType),
 		Status:       ogen.LibraryScanStatus(scan.Status),
 		ItemsScanned: ogen.NewOptInt64(int64(scan.ItemsScanned)),
@@ -620,7 +620,7 @@ func convertLibraryScans(scans []library.LibraryScan) []ogen.LibraryScan {
 	for i, scan := range scans {
 		result[i] = ogen.LibraryScan{
 			ID:           scan.ID,
-			LibraryId:    scan.LibraryID,
+			LibraryID:    scan.LibraryID,
 			ScanType:     ogen.LibraryScanScanType(scan.ScanType),
 			Status:       ogen.LibraryScanStatus(scan.Status),
 			ItemsScanned: ogen.NewOptInt64(int64(scan.ItemsScanned)),
@@ -642,8 +642,8 @@ func convertLibraryPermissions(perms []library.Permission) []ogen.LibraryPermiss
 	for i, perm := range perms {
 		result[i] = ogen.LibraryPermission{
 			ID:         perm.ID,
-			LibraryId:  perm.LibraryID,
-			UserId:     perm.UserID,
+			LibraryID:  perm.LibraryID,
+			UserID:     perm.UserID,
 			Permission: ogen.LibraryPermissionPermission(perm.Permission),
 			CreatedAt:  perm.CreatedAt,
 		}
@@ -654,8 +654,8 @@ func convertLibraryPermissions(perms []library.Permission) []ogen.LibraryPermiss
 func convertLibraryPermissionToOgen(perm *library.Permission) *ogen.LibraryPermission {
 	return &ogen.LibraryPermission{
 		ID:         perm.ID,
-		LibraryId:  perm.LibraryID,
-		UserId:     perm.UserID,
+		LibraryID:  perm.LibraryID,
+		UserID:     perm.UserID,
 		Permission: ogen.LibraryPermissionPermission(perm.Permission),
 		CreatedAt:  perm.CreatedAt,
 	}

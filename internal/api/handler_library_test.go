@@ -75,7 +75,7 @@ func TestHandler_GetLibrary_NoAuth(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	params := ogen.GetLibraryParams{LibraryId: uuid.New()}
+	params := ogen.GetLibraryParams{LibraryID: uuid.New()}
 
 	result, err := handler.GetLibrary(ctx, params)
 	require.NoError(t, err)
@@ -97,7 +97,7 @@ func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	req := &ogen.UpdateLibraryRequest{}
-	params := ogen.UpdateLibraryParams{LibraryId: uuid.New()}
+	params := ogen.UpdateLibraryParams{LibraryID: uuid.New()}
 
 	result, err := handler.UpdateLibrary(ctx, req, params)
 	require.NoError(t, err)
@@ -118,7 +118,7 @@ func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	params := ogen.DeleteLibraryParams{LibraryId: uuid.New()}
+	params := ogen.DeleteLibraryParams{LibraryID: uuid.New()}
 
 	result, err := handler.DeleteLibrary(ctx, params)
 	require.NoError(t, err)
@@ -140,7 +140,7 @@ func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	req := &ogen.TriggerLibraryScanReq{ScanType: ogen.TriggerLibraryScanReqScanType("full")}
-	params := ogen.TriggerLibraryScanParams{LibraryId: uuid.New()}
+	params := ogen.TriggerLibraryScanParams{LibraryID: uuid.New()}
 
 	result, err := handler.TriggerLibraryScan(ctx, req, params)
 	require.NoError(t, err)
@@ -161,7 +161,7 @@ func TestHandler_ListLibraryScans_NoAuth(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	params := ogen.ListLibraryScansParams{LibraryId: uuid.New()}
+	params := ogen.ListLibraryScansParams{LibraryID: uuid.New()}
 
 	result, err := handler.ListLibraryScans(ctx, params)
 	require.NoError(t, err)
@@ -182,7 +182,7 @@ func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	params := ogen.ListLibraryPermissionsParams{LibraryId: uuid.New()}
+	params := ogen.ListLibraryPermissionsParams{LibraryID: uuid.New()}
 
 	result, err := handler.ListLibraryPermissions(ctx, params)
 	require.NoError(t, err)
@@ -204,10 +204,10 @@ func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	req := &ogen.GrantLibraryPermissionReq{
-		UserId:     uuid.New(),
+		UserID:     uuid.New(),
 		Permission: ogen.GrantLibraryPermissionReqPermission("read"),
 	}
-	params := ogen.GrantLibraryPermissionParams{LibraryId: uuid.New()}
+	params := ogen.GrantLibraryPermissionParams{LibraryID: uuid.New()}
 
 	result, err := handler.GrantLibraryPermission(ctx, req, params)
 	require.NoError(t, err)
@@ -229,8 +229,8 @@ func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.RevokeLibraryPermissionParams{
-		LibraryId:  uuid.New(),
-		UserId:     uuid.New(),
+		LibraryID:  uuid.New(),
+		UserID:     uuid.New(),
 		Permission: ogen.RevokeLibraryPermissionPermission("read"),
 	}
 
@@ -408,7 +408,7 @@ func TestHandler_GetLibrary_AdminSuccess(t *testing.T) {
 	require.True(t, ok, "expected *ogen.Library from create, got %T", createResult)
 
 	// Now get it by ID
-	getParams := ogen.GetLibraryParams{LibraryId: created.ID}
+	getParams := ogen.GetLibraryParams{LibraryID: created.ID}
 	getResult, err := handler.GetLibrary(ctx, getParams)
 	require.NoError(t, err)
 
@@ -428,7 +428,7 @@ func TestHandler_GetLibrary_NotFound(t *testing.T) {
 
 	ctx := WithUserID(context.Background(), adminID)
 
-	params := ogen.GetLibraryParams{LibraryId: uuid.New()}
+	params := ogen.GetLibraryParams{LibraryID: uuid.New()}
 	result, err := handler.GetLibrary(ctx, params)
 	require.NoError(t, err)
 
@@ -458,7 +458,7 @@ func TestHandler_DeleteLibrary_AdminSuccess(t *testing.T) {
 	require.True(t, ok, "expected *ogen.Library from create, got %T", createResult)
 
 	// Delete it
-	deleteParams := ogen.DeleteLibraryParams{LibraryId: created.ID}
+	deleteParams := ogen.DeleteLibraryParams{LibraryID: created.ID}
 	deleteResult, err := handler.DeleteLibrary(ctx, deleteParams)
 	require.NoError(t, err)
 
@@ -466,7 +466,7 @@ func TestHandler_DeleteLibrary_AdminSuccess(t *testing.T) {
 	require.True(t, ok, "expected *ogen.DeleteLibraryNoContent, got %T", deleteResult)
 
 	// Verify it no longer exists
-	getParams := ogen.GetLibraryParams{LibraryId: created.ID}
+	getParams := ogen.GetLibraryParams{LibraryID: created.ID}
 	getResult, err := handler.GetLibrary(ctx, getParams)
 	require.NoError(t, err)
 

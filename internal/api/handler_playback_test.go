@@ -70,7 +70,7 @@ func TestHandler_GetPlaybackSession_Disabled(t *testing.T) {
 
 	handler := &Handler{logger: logging.NewTestLogger()}
 
-	params := ogen.GetPlaybackSessionParams{SessionId: uuid.New()}
+	params := ogen.GetPlaybackSessionParams{SessionID: uuid.New()}
 
 	result, err := handler.GetPlaybackSession(context.Background(), params)
 	require.NoError(t, err)
@@ -89,7 +89,7 @@ func TestHandler_GetPlaybackSession_Unauthorized(t *testing.T) {
 		playbackService: new(playback.Service),
 	}
 
-	params := ogen.GetPlaybackSessionParams{SessionId: uuid.New()}
+	params := ogen.GetPlaybackSessionParams{SessionID: uuid.New()}
 
 	result, err := handler.GetPlaybackSession(context.Background(), params)
 	require.NoError(t, err)
@@ -109,7 +109,7 @@ func TestHandler_StopPlaybackSession_Disabled(t *testing.T) {
 
 	handler := &Handler{logger: logging.NewTestLogger()}
 
-	params := ogen.StopPlaybackSessionParams{SessionId: uuid.New()}
+	params := ogen.StopPlaybackSessionParams{SessionID: uuid.New()}
 
 	result, err := handler.StopPlaybackSession(context.Background(), params)
 	require.NoError(t, err)
@@ -128,7 +128,7 @@ func TestHandler_StopPlaybackSession_Unauthorized(t *testing.T) {
 		playbackService: new(playback.Service),
 	}
 
-	params := ogen.StopPlaybackSessionParams{SessionId: uuid.New()}
+	params := ogen.StopPlaybackSessionParams{SessionID: uuid.New()}
 
 	result, err := handler.StopPlaybackSession(context.Background(), params)
 	require.NoError(t, err)

@@ -144,10 +144,10 @@ func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserAc
 		offset = o
 	}
 
-	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserId, limit, offset)
+	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserID, limit, offset)
 	if err != nil {
 		h.logger.Error("failed to get user activity logs",
-			slog.String("user_id", params.UserId.String()),
+			slog.String("user_id", params.UserID.String()),
 			slog.Any("error",err),
 		)
 		return &ogen.GetUserActivityLogsForbidden{
@@ -203,11 +203,11 @@ func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetRe
 		offset = o
 	}
 
-	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceId, limit, offset)
+	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceID, limit, offset)
 	if err != nil {
 		h.logger.Error("failed to get resource activity logs",
 			slog.String("resource_type", params.ResourceType),
-			slog.String("resource_id", params.ResourceId.String()),
+			slog.String("resource_id", params.ResourceID.String()),
 			slog.Any("error",err),
 		)
 		return &ogen.GetResourceActivityLogsForbidden{
@@ -328,7 +328,7 @@ func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
 		}
 
 		if e.UserID != nil {
-			entry.UserId = ogen.NewOptUUID(*e.UserID)
+			entry.UserID = ogen.NewOptUUID(*e.UserID)
 		}
 		if e.Username != nil {
 			entry.Username = ogen.NewOptString(*e.Username)
@@ -337,10 +337,10 @@ func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
 			entry.ResourceType = ogen.NewOptString(*e.ResourceType)
 		}
 		if e.ResourceID != nil {
-			entry.ResourceId = ogen.NewOptUUID(*e.ResourceID)
+			entry.ResourceID = ogen.NewOptUUID(*e.ResourceID)
 		}
 		if e.IPAddress != nil {
-			entry.IpAddress = ogen.NewOptString(e.IPAddress.String())
+			entry.IPAddress = ogen.NewOptString(e.IPAddress.String())
 		}
 		if e.UserAgent != nil {
 			entry.UserAgent = ogen.NewOptString(*e.UserAgent)

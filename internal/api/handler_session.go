@@ -184,7 +184,7 @@ func (h *Handler) RevokeSession(ctx context.Context, params ogen.RevokeSessionPa
 		return &ogen.RevokeSessionUnauthorized{}, nil
 	}
 
-	sessionID := params.SessionId
+	sessionID := params.SessionID
 
 	// Verify session belongs to user
 	sessions, err := h.sessionService.ListUserSessions(ctx, userID)

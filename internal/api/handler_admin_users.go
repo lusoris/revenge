@@ -109,19 +109,19 @@ func (h *Handler) AdminDeleteUser(ctx context.Context, params ogen.AdminDeleteUs
 	}
 
 	// Prevent self-deletion
-	if adminID == params.UserId {
+	if adminID == params.UserID {
 		return &ogen.AdminDeleteUserForbidden{Code: 400, Message: "Cannot delete your own account"}, nil
 	}
 
 	// Verify user exists
-	_, err = h.userService.GetUser(ctx, params.UserId)
+	_, err = h.userService.GetUser(ctx, params.UserID)
 	if err != nil {
 		return &ogen.AdminDeleteUserNotFound{Code: 404, Message: "User not found"}, nil
 	}
 
-	if err := h.userService.DeleteUser(ctx, params.UserId); err != nil {
+	if err := h.userService.DeleteUser(ctx, params.UserID); err != nil {
 		h.logger.Error("failed to delete user",
-			slog.String("user_id", params.UserId.String()),
+			slog.String("user_id", params.UserID.String()),
 			slog.Any("error", err),
 		)
 		return &ogen.AdminDeleteUserForbidden{Code: 500, Message: "Failed to delete user"}, nil

@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
-	"log/slog"
 )
 
 // ============================================================================
@@ -33,10 +34,10 @@ func (h *Handler) StartPlaybackSession(ctx context.Context, req *ogen.StartPlayb
 	// Convert ogen request to internal request
 	pbReq := &playback.StartPlaybackRequest{
 		MediaType: playback.MediaType(req.MediaType),
-		MediaID:   req.MediaId,
+		MediaID:   req.MediaID,
 	}
-	if req.FileId.Set {
-		id := req.FileId.Value
+	if req.FileID.Set {
+		id := req.FileID.Value
 		pbReq.FileID = &id
 	}
 	if req.AudioTrack.Set {
@@ -83,7 +84,7 @@ func (h *Handler) GetPlaybackSession(ctx context.Context, params ogen.GetPlaybac
 		}, nil
 	}
 
-	sess, ok := h.playbackService.GetSession(params.SessionId)
+	sess, ok := h.playbackService.GetSession(params.SessionID)
 	if !ok {
 		return &ogen.GetPlaybackSessionNotFound{
 			Code:    404,
@@ -112,7 +113,7 @@ func (h *Handler) StopPlaybackSession(ctx context.Context, params ogen.StopPlayb
 		}, nil
 	}
 
-	if err := h.playbackService.StopSession(params.SessionId); err != nil {
+	if err := h.playbackService.StopSession(params.SessionID); err != nil {
 		return &ogen.StopPlaybackSessionNotFound{
 			Code:    404,
 			Message: "Session not found",
@@ -175,8 +176,8 @@ func sessionToOgen(sess *playback.Session) *ogen.PlaybackSession {
 	}
 
 	return &ogen.PlaybackSession{
-		SessionId:         resp.SessionID,
-		MasterPlaylistUrl: resp.MasterPlaylistURL,
+		SessionID:         resp.SessionID,
+		MasterPlaylistURL: resp.MasterPlaylistURL,
 		DurationSeconds:   resp.DurationSeconds,
 		Profiles:          profiles,
 		AudioTracks:       audioTracks,

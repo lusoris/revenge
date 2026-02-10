@@ -701,17 +701,17 @@ func (h *Handler) UpdateCurrentUser(ctx context.Context, req *ogen.UserUpdate) (
 
 // GetUserById returns a user's public profile
 func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams) (ogen.GetUserByIdRes, error) {
-	u, err := h.userService.GetUser(ctx, params.UserId)
+	u, err := h.userService.GetUser(ctx, params.UserID)
 	if err != nil {
 		return &ogen.GetUserByIdNotFound{}, nil
 	}
 
 	// Check profile visibility (own profile always visible)
 	currentUserID, _ := GetUserID(ctx)
-	isOwnProfile := currentUserID == params.UserId
+	isOwnProfile := currentUserID == params.UserID
 
 	if !isOwnProfile {
-		prefs, err := h.userService.GetUserPreferences(ctx, params.UserId)
+		prefs, err := h.userService.GetUserPreferences(ctx, params.UserID)
 		if err == nil {
 			if prefs.ProfileVisibility != nil {
 				switch *prefs.ProfileVisibility {

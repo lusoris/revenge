@@ -269,22 +269,22 @@ func (*ActionCountListResponse) getRecentActionsRes() {}
 // Ref: #/components/schemas/ActivityLogEntry
 type ActivityLogEntry struct {
 	ID       uuid.UUID `json:"id"`
-	UserId   OptUUID   `json:"userId"`
+	UserID   OptUUID   `json:"user_id"`
 	Username OptString `json:"username"`
 	// Action type (e.g., user.login, settings.update).
 	Action string `json:"action"`
 	// Resource type (user, library, movie, etc.).
-	ResourceType OptString `json:"resourceType"`
-	ResourceId   OptUUID   `json:"resourceId"`
+	ResourceType OptString `json:"resource_type"`
+	ResourceID   OptUUID   `json:"resource_id"`
 	// Field changes as JSON.
 	Changes OptActivityLogEntryChanges `json:"changes"`
 	// Additional context.
 	Metadata     OptActivityLogEntryMetadata `json:"metadata"`
-	IpAddress    OptString                   `json:"ipAddress"`
-	UserAgent    OptString                   `json:"userAgent"`
+	IPAddress    OptString                   `json:"ip_address"`
+	UserAgent    OptString                   `json:"user_agent"`
 	Success      bool                        `json:"success"`
-	ErrorMessage OptString                   `json:"errorMessage"`
-	CreatedAt    time.Time                   `json:"createdAt"`
+	ErrorMessage OptString                   `json:"error_message"`
+	CreatedAt    time.Time                   `json:"created_at"`
 }
 
 // GetID returns the value of ID.
@@ -292,9 +292,9 @@ func (s *ActivityLogEntry) GetID() uuid.UUID {
 	return s.ID
 }
 
-// GetUserId returns the value of UserId.
-func (s *ActivityLogEntry) GetUserId() OptUUID {
-	return s.UserId
+// GetUserID returns the value of UserID.
+func (s *ActivityLogEntry) GetUserID() OptUUID {
+	return s.UserID
 }
 
 // GetUsername returns the value of Username.
@@ -312,9 +312,9 @@ func (s *ActivityLogEntry) GetResourceType() OptString {
 	return s.ResourceType
 }
 
-// GetResourceId returns the value of ResourceId.
-func (s *ActivityLogEntry) GetResourceId() OptUUID {
-	return s.ResourceId
+// GetResourceID returns the value of ResourceID.
+func (s *ActivityLogEntry) GetResourceID() OptUUID {
+	return s.ResourceID
 }
 
 // GetChanges returns the value of Changes.
@@ -327,9 +327,9 @@ func (s *ActivityLogEntry) GetMetadata() OptActivityLogEntryMetadata {
 	return s.Metadata
 }
 
-// GetIpAddress returns the value of IpAddress.
-func (s *ActivityLogEntry) GetIpAddress() OptString {
-	return s.IpAddress
+// GetIPAddress returns the value of IPAddress.
+func (s *ActivityLogEntry) GetIPAddress() OptString {
+	return s.IPAddress
 }
 
 // GetUserAgent returns the value of UserAgent.
@@ -357,9 +357,9 @@ func (s *ActivityLogEntry) SetID(val uuid.UUID) {
 	s.ID = val
 }
 
-// SetUserId sets the value of UserId.
-func (s *ActivityLogEntry) SetUserId(val OptUUID) {
-	s.UserId = val
+// SetUserID sets the value of UserID.
+func (s *ActivityLogEntry) SetUserID(val OptUUID) {
+	s.UserID = val
 }
 
 // SetUsername sets the value of Username.
@@ -377,9 +377,9 @@ func (s *ActivityLogEntry) SetResourceType(val OptString) {
 	s.ResourceType = val
 }
 
-// SetResourceId sets the value of ResourceId.
-func (s *ActivityLogEntry) SetResourceId(val OptUUID) {
-	s.ResourceId = val
+// SetResourceID sets the value of ResourceID.
+func (s *ActivityLogEntry) SetResourceID(val OptUUID) {
+	s.ResourceID = val
 }
 
 // SetChanges sets the value of Changes.
@@ -392,9 +392,9 @@ func (s *ActivityLogEntry) SetMetadata(val OptActivityLogEntryMetadata) {
 	s.Metadata = val
 }
 
-// SetIpAddress sets the value of IpAddress.
-func (s *ActivityLogEntry) SetIpAddress(val OptString) {
-	s.IpAddress = val
+// SetIPAddress sets the value of IPAddress.
+func (s *ActivityLogEntry) SetIPAddress(val OptString) {
+	s.IPAddress = val
 }
 
 // SetUserAgent sets the value of UserAgent.
@@ -449,7 +449,7 @@ type ActivityLogListResponse struct {
 	// Current page number.
 	Page OptInt `json:"page"`
 	// Number of entries per page.
-	PageSize OptInt `json:"pageSize"`
+	PageSize OptInt `json:"page_size"`
 }
 
 // GetEntries returns the value of Entries.
@@ -498,11 +498,11 @@ func (*ActivityLogListResponse) searchActivityLogsRes()      {}
 
 // Ref: #/components/schemas/ActivityStats
 type ActivityStats struct {
-	TotalCount   int64       `json:"totalCount"`
-	SuccessCount int64       `json:"successCount"`
-	FailedCount  int64       `json:"failedCount"`
-	OldestEntry  OptDateTime `json:"oldestEntry"`
-	NewestEntry  OptDateTime `json:"newestEntry"`
+	TotalCount   int64       `json:"total_count"`
+	SuccessCount int64       `json:"success_count"`
+	FailedCount  int64       `json:"failed_count"`
+	OldestEntry  OptDateTime `json:"oldest_entry"`
+	NewestEntry  OptDateTime `json:"newest_entry"`
 }
 
 // GetTotalCount returns the value of TotalCount.
@@ -757,25 +757,25 @@ func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 type AdminOIDCProvider struct {
 	ID                    uuid.UUID                        `json:"id"`
 	Name                  string                           `json:"name"`
-	DisplayName           string                           `json:"displayName"`
-	ProviderType          AdminOIDCProviderProviderType    `json:"providerType"`
-	IssuerUrl             string                           `json:"issuerUrl"`
-	ClientId              string                           `json:"clientId"`
-	AuthorizationEndpoint OptString                        `json:"authorizationEndpoint"`
-	TokenEndpoint         OptString                        `json:"tokenEndpoint"`
-	UserInfoEndpoint      OptString                        `json:"userInfoEndpoint"`
-	JwksUri               OptString                        `json:"jwksUri"`
-	EndSessionEndpoint    OptString                        `json:"endSessionEndpoint"`
+	DisplayName           string                           `json:"display_name"`
+	ProviderType          AdminOIDCProviderProviderType    `json:"provider_type"`
+	IssuerURL             string                           `json:"issuer_url"`
+	ClientID              string                           `json:"client_id"`
+	AuthorizationEndpoint OptString                        `json:"authorization_endpoint"`
+	TokenEndpoint         OptString                        `json:"token_endpoint"`
+	UserInfoEndpoint      OptString                        `json:"user_info_endpoint"`
+	JwksURI               OptString                        `json:"jwks_uri"`
+	EndSessionEndpoint    OptString                        `json:"end_session_endpoint"`
 	Scopes                []string                         `json:"scopes"`
-	ClaimMappings         OptClaimMappings                 `json:"claimMappings"`
-	RoleMappings          OptAdminOIDCProviderRoleMappings `json:"roleMappings"`
-	AutoCreateUsers       bool                             `json:"autoCreateUsers"`
-	UpdateUserInfo        bool                             `json:"updateUserInfo"`
-	AllowLinking          bool                             `json:"allowLinking"`
-	IsEnabled             bool                             `json:"isEnabled"`
-	IsDefault             bool                             `json:"isDefault"`
-	CreatedAt             time.Time                        `json:"createdAt"`
-	UpdatedAt             time.Time                        `json:"updatedAt"`
+	ClaimMappings         OptClaimMappings                 `json:"claim_mappings"`
+	RoleMappings          OptAdminOIDCProviderRoleMappings `json:"role_mappings"`
+	AutoCreateUsers       bool                             `json:"auto_create_users"`
+	UpdateUserInfo        bool                             `json:"update_user_info"`
+	AllowLinking          bool                             `json:"allow_linking"`
+	IsEnabled             bool                             `json:"is_enabled"`
+	IsDefault             bool                             `json:"is_default"`
+	CreatedAt             time.Time                        `json:"created_at"`
+	UpdatedAt             time.Time                        `json:"updated_at"`
 }
 
 // GetID returns the value of ID.
@@ -798,14 +798,14 @@ func (s *AdminOIDCProvider) GetProviderType() AdminOIDCProviderProviderType {
 	return s.ProviderType
 }
 
-// GetIssuerUrl returns the value of IssuerUrl.
-func (s *AdminOIDCProvider) GetIssuerUrl() string {
-	return s.IssuerUrl
+// GetIssuerURL returns the value of IssuerURL.
+func (s *AdminOIDCProvider) GetIssuerURL() string {
+	return s.IssuerURL
 }
 
-// GetClientId returns the value of ClientId.
-func (s *AdminOIDCProvider) GetClientId() string {
-	return s.ClientId
+// GetClientID returns the value of ClientID.
+func (s *AdminOIDCProvider) GetClientID() string {
+	return s.ClientID
 }
 
 // GetAuthorizationEndpoint returns the value of AuthorizationEndpoint.
@@ -823,9 +823,9 @@ func (s *AdminOIDCProvider) GetUserInfoEndpoint() OptString {
 	return s.UserInfoEndpoint
 }
 
-// GetJwksUri returns the value of JwksUri.
-func (s *AdminOIDCProvider) GetJwksUri() OptString {
-	return s.JwksUri
+// GetJwksURI returns the value of JwksURI.
+func (s *AdminOIDCProvider) GetJwksURI() OptString {
+	return s.JwksURI
 }
 
 // GetEndSessionEndpoint returns the value of EndSessionEndpoint.
@@ -903,14 +903,14 @@ func (s *AdminOIDCProvider) SetProviderType(val AdminOIDCProviderProviderType) {
 	s.ProviderType = val
 }
 
-// SetIssuerUrl sets the value of IssuerUrl.
-func (s *AdminOIDCProvider) SetIssuerUrl(val string) {
-	s.IssuerUrl = val
+// SetIssuerURL sets the value of IssuerURL.
+func (s *AdminOIDCProvider) SetIssuerURL(val string) {
+	s.IssuerURL = val
 }
 
-// SetClientId sets the value of ClientId.
-func (s *AdminOIDCProvider) SetClientId(val string) {
-	s.ClientId = val
+// SetClientID sets the value of ClientID.
+func (s *AdminOIDCProvider) SetClientID(val string) {
+	s.ClientID = val
 }
 
 // SetAuthorizationEndpoint sets the value of AuthorizationEndpoint.
@@ -928,9 +928,9 @@ func (s *AdminOIDCProvider) SetUserInfoEndpoint(val OptString) {
 	s.UserInfoEndpoint = val
 }
 
-// SetJwksUri sets the value of JwksUri.
-func (s *AdminOIDCProvider) SetJwksUri(val OptString) {
-	s.JwksUri = val
+// SetJwksURI sets the value of JwksURI.
+func (s *AdminOIDCProvider) SetJwksURI(val OptString) {
+	s.JwksURI = val
 }
 
 // SetEndSessionEndpoint sets the value of EndSessionEndpoint.
@@ -2162,15 +2162,15 @@ type CreateLibraryRequest struct {
 	// Whether the library is enabled.
 	Enabled OptBool `json:"enabled"`
 	// Whether to scan the library on server startup.
-	ScanOnStartup OptBool `json:"scanOnStartup"`
+	ScanOnStartup OptBool `json:"scan_on_startup"`
 	// Whether to monitor for real-time file changes.
-	RealtimeMonitoring OptBool `json:"realtimeMonitoring"`
+	RealtimeMonitoring OptBool `json:"realtime_monitoring"`
 	// Preferred metadata provider.
-	MetadataProvider OptString `json:"metadataProvider"`
+	MetadataProvider OptString `json:"metadata_provider"`
 	// Preferred language for metadata.
-	PreferredLanguage OptString `json:"preferredLanguage"`
+	PreferredLanguage OptString `json:"preferred_language"`
 	// Type-specific scanner configuration.
-	ScannerConfig OptCreateLibraryRequestScannerConfig `json:"scannerConfig"`
+	ScannerConfig OptCreateLibraryRequestScannerConfig `json:"scanner_config"`
 }
 
 // GetName returns the value of Name.
@@ -2375,37 +2375,37 @@ type CreateOIDCProviderRequest struct {
 	// Unique provider identifier.
 	Name string `json:"name"`
 	// Display name for UI.
-	DisplayName  string                                   `json:"displayName"`
-	ProviderType OptCreateOIDCProviderRequestProviderType `json:"providerType"`
+	DisplayName  string                                   `json:"display_name"`
+	ProviderType OptCreateOIDCProviderRequestProviderType `json:"provider_type"`
 	// OIDC issuer URL.
-	IssuerUrl string `json:"issuerUrl"`
+	IssuerURL string `json:"issuer_url"`
 	// OAuth2 client ID.
-	ClientId string `json:"clientId"`
+	ClientID string `json:"client_id"`
 	// OAuth2 client secret.
-	ClientSecret string `json:"clientSecret"`
+	ClientSecret string `json:"client_secret"`
 	// Override authorization endpoint.
-	AuthorizationEndpoint OptString `json:"authorizationEndpoint"`
+	AuthorizationEndpoint OptString `json:"authorization_endpoint"`
 	// Override token endpoint.
-	TokenEndpoint OptString `json:"tokenEndpoint"`
+	TokenEndpoint OptString `json:"token_endpoint"`
 	// Override user info endpoint.
-	UserInfoEndpoint OptString `json:"userInfoEndpoint"`
+	UserInfoEndpoint OptString `json:"user_info_endpoint"`
 	// Override JWKS URI.
-	JwksUri OptString `json:"jwksUri"`
+	JwksURI OptString `json:"jwks_uri"`
 	// Override end session endpoint.
-	EndSessionEndpoint OptString `json:"endSessionEndpoint"`
+	EndSessionEndpoint OptString `json:"end_session_endpoint"`
 	// OAuth scopes (defaults to openid, profile, email).
 	Scopes        []string         `json:"scopes"`
-	ClaimMappings OptClaimMappings `json:"claimMappings"`
+	ClaimMappings OptClaimMappings `json:"claim_mappings"`
 	// Map provider roles to Revenge roles.
-	RoleMappings OptCreateOIDCProviderRequestRoleMappings `json:"roleMappings"`
+	RoleMappings OptCreateOIDCProviderRequestRoleMappings `json:"role_mappings"`
 	// Create users on first OIDC login.
-	AutoCreateUsers OptBool `json:"autoCreateUsers"`
+	AutoCreateUsers OptBool `json:"auto_create_users"`
 	// Update user info on each login.
-	UpdateUserInfo OptBool `json:"updateUserInfo"`
+	UpdateUserInfo OptBool `json:"update_user_info"`
 	// Allow users to link existing accounts.
-	AllowLinking OptBool `json:"allowLinking"`
-	IsEnabled    OptBool `json:"isEnabled"`
-	IsDefault    OptBool `json:"isDefault"`
+	AllowLinking OptBool `json:"allow_linking"`
+	IsEnabled    OptBool `json:"is_enabled"`
+	IsDefault    OptBool `json:"is_default"`
 }
 
 // GetName returns the value of Name.
@@ -2423,14 +2423,14 @@ func (s *CreateOIDCProviderRequest) GetProviderType() OptCreateOIDCProviderReque
 	return s.ProviderType
 }
 
-// GetIssuerUrl returns the value of IssuerUrl.
-func (s *CreateOIDCProviderRequest) GetIssuerUrl() string {
-	return s.IssuerUrl
+// GetIssuerURL returns the value of IssuerURL.
+func (s *CreateOIDCProviderRequest) GetIssuerURL() string {
+	return s.IssuerURL
 }
 
-// GetClientId returns the value of ClientId.
-func (s *CreateOIDCProviderRequest) GetClientId() string {
-	return s.ClientId
+// GetClientID returns the value of ClientID.
+func (s *CreateOIDCProviderRequest) GetClientID() string {
+	return s.ClientID
 }
 
 // GetClientSecret returns the value of ClientSecret.
@@ -2453,9 +2453,9 @@ func (s *CreateOIDCProviderRequest) GetUserInfoEndpoint() OptString {
 	return s.UserInfoEndpoint
 }
 
-// GetJwksUri returns the value of JwksUri.
-func (s *CreateOIDCProviderRequest) GetJwksUri() OptString {
-	return s.JwksUri
+// GetJwksURI returns the value of JwksURI.
+func (s *CreateOIDCProviderRequest) GetJwksURI() OptString {
+	return s.JwksURI
 }
 
 // GetEndSessionEndpoint returns the value of EndSessionEndpoint.
@@ -2518,14 +2518,14 @@ func (s *CreateOIDCProviderRequest) SetProviderType(val OptCreateOIDCProviderReq
 	s.ProviderType = val
 }
 
-// SetIssuerUrl sets the value of IssuerUrl.
-func (s *CreateOIDCProviderRequest) SetIssuerUrl(val string) {
-	s.IssuerUrl = val
+// SetIssuerURL sets the value of IssuerURL.
+func (s *CreateOIDCProviderRequest) SetIssuerURL(val string) {
+	s.IssuerURL = val
 }
 
-// SetClientId sets the value of ClientId.
-func (s *CreateOIDCProviderRequest) SetClientId(val string) {
-	s.ClientId = val
+// SetClientID sets the value of ClientID.
+func (s *CreateOIDCProviderRequest) SetClientID(val string) {
+	s.ClientID = val
 }
 
 // SetClientSecret sets the value of ClientSecret.
@@ -2548,9 +2548,9 @@ func (s *CreateOIDCProviderRequest) SetUserInfoEndpoint(val OptString) {
 	s.UserInfoEndpoint = val
 }
 
-// SetJwksUri sets the value of JwksUri.
-func (s *CreateOIDCProviderRequest) SetJwksUri(val OptString) {
-	s.JwksUri = val
+// SetJwksURI sets the value of JwksURI.
+func (s *CreateOIDCProviderRequest) SetJwksURI(val OptString) {
+	s.JwksURI = val
 }
 
 // SetEndSessionEndpoint sets the value of EndSessionEndpoint.
@@ -4463,14 +4463,14 @@ func (*GrantLibraryPermissionNotFound) grantLibraryPermissionRes() {}
 
 type GrantLibraryPermissionReq struct {
 	// User ID to grant permission to.
-	UserId uuid.UUID `json:"userId"`
+	UserID uuid.UUID `json:"user_id"`
 	// Permission type.
 	Permission GrantLibraryPermissionReqPermission `json:"permission"`
 }
 
-// GetUserId returns the value of UserId.
-func (s *GrantLibraryPermissionReq) GetUserId() uuid.UUID {
-	return s.UserId
+// GetUserID returns the value of UserID.
+func (s *GrantLibraryPermissionReq) GetUserID() uuid.UUID {
+	return s.UserID
 }
 
 // GetPermission returns the value of Permission.
@@ -4478,9 +4478,9 @@ func (s *GrantLibraryPermissionReq) GetPermission() GrantLibraryPermissionReqPer
 	return s.Permission
 }
 
-// SetUserId sets the value of UserId.
-func (s *GrantLibraryPermissionReq) SetUserId(val uuid.UUID) {
-	s.UserId = val
+// SetUserID sets the value of UserID.
+func (s *GrantLibraryPermissionReq) SetUserID(val uuid.UUID) {
+	s.UserID = val
 }
 
 // SetPermission sets the value of Permission.
@@ -4684,18 +4684,18 @@ type Library struct {
 	// Whether the library is enabled.
 	Enabled bool `json:"enabled"`
 	// Whether to scan the library on server startup.
-	ScanOnStartup bool `json:"scanOnStartup"`
+	ScanOnStartup bool `json:"scan_on_startup"`
 	// Whether to monitor for real-time file changes.
-	RealtimeMonitoring bool `json:"realtimeMonitoring"`
+	RealtimeMonitoring bool `json:"realtime_monitoring"`
 	// Preferred metadata provider.
-	MetadataProvider OptString `json:"metadataProvider"`
+	MetadataProvider OptString `json:"metadata_provider"`
 	// Preferred language for metadata.
-	PreferredLanguage OptString `json:"preferredLanguage"`
+	PreferredLanguage OptString `json:"preferred_language"`
 	// Type-specific scanner configuration.
-	ScannerConfig OptLibraryScannerConfig `json:"scannerConfig"`
-	LatestScan    OptLibraryScan          `json:"latestScan"`
-	CreatedAt     time.Time               `json:"createdAt"`
-	UpdatedAt     time.Time               `json:"updatedAt"`
+	ScannerConfig OptLibraryScannerConfig `json:"scanner_config"`
+	LatestScan    OptLibraryScan          `json:"latest_scan"`
+	CreatedAt     time.Time               `json:"created_at"`
+	UpdatedAt     time.Time               `json:"updated_at"`
 }
 
 // GetID returns the value of ID.
@@ -4863,11 +4863,11 @@ func (*LibraryListResponse) listLibrariesRes() {}
 // Ref: #/components/schemas/LibraryPermission
 type LibraryPermission struct {
 	ID        uuid.UUID `json:"id"`
-	LibraryId uuid.UUID `json:"libraryId"`
-	UserId    uuid.UUID `json:"userId"`
+	LibraryID uuid.UUID `json:"library_id"`
+	UserID    uuid.UUID `json:"user_id"`
 	// Permission type.
 	Permission LibraryPermissionPermission `json:"permission"`
-	CreatedAt  time.Time                   `json:"createdAt"`
+	CreatedAt  time.Time                   `json:"created_at"`
 }
 
 // GetID returns the value of ID.
@@ -4875,14 +4875,14 @@ func (s *LibraryPermission) GetID() uuid.UUID {
 	return s.ID
 }
 
-// GetLibraryId returns the value of LibraryId.
-func (s *LibraryPermission) GetLibraryId() uuid.UUID {
-	return s.LibraryId
+// GetLibraryID returns the value of LibraryID.
+func (s *LibraryPermission) GetLibraryID() uuid.UUID {
+	return s.LibraryID
 }
 
-// GetUserId returns the value of UserId.
-func (s *LibraryPermission) GetUserId() uuid.UUID {
-	return s.UserId
+// GetUserID returns the value of UserID.
+func (s *LibraryPermission) GetUserID() uuid.UUID {
+	return s.UserID
 }
 
 // GetPermission returns the value of Permission.
@@ -4900,14 +4900,14 @@ func (s *LibraryPermission) SetID(val uuid.UUID) {
 	s.ID = val
 }
 
-// SetLibraryId sets the value of LibraryId.
-func (s *LibraryPermission) SetLibraryId(val uuid.UUID) {
-	s.LibraryId = val
+// SetLibraryID sets the value of LibraryID.
+func (s *LibraryPermission) SetLibraryID(val uuid.UUID) {
+	s.LibraryID = val
 }
 
-// SetUserId sets the value of UserId.
-func (s *LibraryPermission) SetUserId(val uuid.UUID) {
-	s.UserId = val
+// SetUserID sets the value of UserID.
+func (s *LibraryPermission) SetUserID(val uuid.UUID) {
+	s.UserID = val
 }
 
 // SetPermission sets the value of Permission.
@@ -5003,26 +5003,26 @@ func (s *LibraryPermissionPermission) UnmarshalText(data []byte) error {
 // Ref: #/components/schemas/LibraryScan
 type LibraryScan struct {
 	ID        uuid.UUID `json:"id"`
-	LibraryId uuid.UUID `json:"libraryId"`
+	LibraryID uuid.UUID `json:"library_id"`
 	// Type of scan.
-	ScanType LibraryScanScanType `json:"scanType"`
+	ScanType LibraryScanScanType `json:"scan_type"`
 	// Current scan status.
 	Status LibraryScanStatus `json:"status"`
 	// Number of items scanned.
-	ItemsScanned OptInt64 `json:"itemsScanned"`
+	ItemsScanned OptInt64 `json:"items_scanned"`
 	// Number of new items added.
-	ItemsAdded OptInt64 `json:"itemsAdded"`
+	ItemsAdded OptInt64 `json:"items_added"`
 	// Number of items updated.
-	ItemsUpdated OptInt64 `json:"itemsUpdated"`
+	ItemsUpdated OptInt64 `json:"items_updated"`
 	// Number of items removed.
-	ItemsRemoved OptInt64 `json:"itemsRemoved"`
+	ItemsRemoved OptInt64 `json:"items_removed"`
 	// Number of errors during scan.
-	ErrorCount OptInt64 `json:"errorCount"`
+	ErrorCount OptInt64 `json:"error_count"`
 	// Error message if scan failed.
-	ErrorMessage OptString   `json:"errorMessage"`
-	StartedAt    OptDateTime `json:"startedAt"`
-	CompletedAt  OptDateTime `json:"completedAt"`
-	CreatedAt    time.Time   `json:"createdAt"`
+	ErrorMessage OptString   `json:"error_message"`
+	StartedAt    OptDateTime `json:"started_at"`
+	CompletedAt  OptDateTime `json:"completed_at"`
+	CreatedAt    time.Time   `json:"created_at"`
 }
 
 // GetID returns the value of ID.
@@ -5030,9 +5030,9 @@ func (s *LibraryScan) GetID() uuid.UUID {
 	return s.ID
 }
 
-// GetLibraryId returns the value of LibraryId.
-func (s *LibraryScan) GetLibraryId() uuid.UUID {
-	return s.LibraryId
+// GetLibraryID returns the value of LibraryID.
+func (s *LibraryScan) GetLibraryID() uuid.UUID {
+	return s.LibraryID
 }
 
 // GetScanType returns the value of ScanType.
@@ -5095,9 +5095,9 @@ func (s *LibraryScan) SetID(val uuid.UUID) {
 	s.ID = val
 }
 
-// SetLibraryId sets the value of LibraryId.
-func (s *LibraryScan) SetLibraryId(val uuid.UUID) {
-	s.LibraryId = val
+// SetLibraryID sets the value of LibraryID.
+func (s *LibraryScan) SetLibraryID(val uuid.UUID) {
+	s.LibraryID = val
 }
 
 // SetScanType sets the value of ScanType.
@@ -9077,7 +9077,7 @@ type MovieCreditListResponse struct {
 	// Current page number (1-indexed).
 	Page OptInt `json:"page"`
 	// Number of items per page.
-	PageSize OptInt `json:"pageSize"`
+	PageSize OptInt `json:"page_size"`
 }
 
 // GetItems returns the value of Items.
@@ -9465,7 +9465,7 @@ type MovieListResponse struct {
 	// Current page number (1-indexed).
 	Page OptInt `json:"page"`
 	// Number of items per page.
-	PageSize OptInt `json:"pageSize"`
+	PageSize OptInt `json:"page_size"`
 }
 
 // GetItems returns the value of Items.
@@ -9710,17 +9710,17 @@ func (*MultiSearchResults) searchMultiRes() {}
 // Ref: #/components/schemas/OIDCAuthURLResponse
 type OIDCAuthURLResponse struct {
 	// URL to redirect for OIDC authentication.
-	AuthUrl string `json:"authUrl"`
+	AuthURL string `json:"auth_url"`
 }
 
-// GetAuthUrl returns the value of AuthUrl.
-func (s *OIDCAuthURLResponse) GetAuthUrl() string {
-	return s.AuthUrl
+// GetAuthURL returns the value of AuthURL.
+func (s *OIDCAuthURLResponse) GetAuthURL() string {
+	return s.AuthURL
 }
 
-// SetAuthUrl sets the value of AuthUrl.
-func (s *OIDCAuthURLResponse) SetAuthUrl(val string) {
-	s.AuthUrl = val
+// SetAuthURL sets the value of AuthURL.
+func (s *OIDCAuthURLResponse) SetAuthURL(val string) {
+	s.AuthURL = val
 }
 
 func (*OIDCAuthURLResponse) initOIDCLinkRes()  {}
@@ -9729,13 +9729,13 @@ func (*OIDCAuthURLResponse) oidcAuthorizeRes() {}
 // Ref: #/components/schemas/OIDCCallbackResponse
 type OIDCCallbackResponse struct {
 	// JWT access token.
-	AccessToken string `json:"accessToken"`
+	AccessToken string `json:"access_token"`
 	// Token type (Bearer).
-	TokenType string `json:"tokenType"`
+	TokenType string `json:"token_type"`
 	// Token expiry in seconds.
-	ExpiresIn int `json:"expiresIn"`
+	ExpiresIn int `json:"expires_in"`
 	// Refresh token (if issued).
-	RefreshToken OptString `json:"refreshToken"`
+	RefreshToken OptString `json:"refresh_token"`
 	User         OptUser   `json:"user"`
 }
 
@@ -9796,9 +9796,9 @@ type OIDCProviderInfo struct {
 	// Provider identifier.
 	Name string `json:"name"`
 	// Display name for UI.
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"display_name"`
 	// Whether this is the default provider.
-	IsDefault OptBool `json:"isDefault"`
+	IsDefault OptBool `json:"is_default"`
 }
 
 // GetName returns the value of Name.
@@ -9861,11 +9861,11 @@ func (s *OIDCProviderListResponse) SetTotal(val int64) {
 // Ref: #/components/schemas/OIDCUserLink
 type OIDCUserLink struct {
 	ID                  uuid.UUID   `json:"id"`
-	ProviderName        string      `json:"providerName"`
-	ProviderDisplayName string      `json:"providerDisplayName"`
+	ProviderName        string      `json:"provider_name"`
+	ProviderDisplayName string      `json:"provider_display_name"`
 	Email               OptString   `json:"email"`
-	LastLoginAt         OptDateTime `json:"lastLoginAt"`
-	LinkedAt            time.Time   `json:"linkedAt"`
+	LastLoginAt         OptDateTime `json:"last_login_at"`
+	LinkedAt            time.Time   `json:"linked_at"`
 }
 
 // GetID returns the value of ID.
@@ -14257,7 +14257,7 @@ type PlaybackAudioTrack struct {
 	// Source audio codec.
 	Codec string `json:"codec"`
 	// Whether this is the default audio track.
-	IsDefault bool `json:"isDefault"`
+	IsDefault bool `json:"is_default"`
 }
 
 // GetIndex returns the value of Index.
@@ -14341,7 +14341,7 @@ type PlaybackProfile struct {
 	// Video bitrate in kbps (0 for direct copy).
 	Bitrate int `json:"bitrate"`
 	// Whether this profile copies the original streams without transcoding.
-	IsOriginal bool `json:"isOriginal"`
+	IsOriginal bool `json:"is_original"`
 }
 
 // GetName returns the value of Name.
@@ -14396,32 +14396,32 @@ func (s *PlaybackProfile) SetIsOriginal(val bool) {
 
 // Ref: #/components/schemas/PlaybackSession
 type PlaybackSession struct {
-	SessionId uuid.UUID `json:"sessionId"`
+	SessionID uuid.UUID `json:"session_id"`
 	// URL to the HLS master playlist.
-	MasterPlaylistUrl string `json:"masterPlaylistUrl"`
+	MasterPlaylistURL string `json:"master_playlist_url"`
 	// Total media duration in seconds.
-	DurationSeconds float64 `json:"durationSeconds"`
+	DurationSeconds float64 `json:"duration_seconds"`
 	// Available quality profiles.
 	Profiles []PlaybackProfile `json:"profiles"`
-	// Available audio tracks. Each track is a separate HLS rendition —
+	// Available audio tracks. Each track is a separate HLS rendition  --
 	// the player downloads only the active track's segments, so switching
 	// is instant without restarting the stream.
-	AudioTracks []PlaybackAudioTrack `json:"audioTracks"`
+	AudioTracks []PlaybackAudioTrack `json:"audio_tracks"`
 	// Available subtitle tracks. Each is a pre-extracted WebVTT file
 	// served in full, so switching is instant client-side.
-	SubtitleTracks []PlaybackSubtitleTrack `json:"subtitleTracks"`
-	CreatedAt      time.Time               `json:"createdAt"`
-	ExpiresAt      time.Time               `json:"expiresAt"`
+	SubtitleTracks []PlaybackSubtitleTrack `json:"subtitle_tracks"`
+	CreatedAt      time.Time               `json:"created_at"`
+	ExpiresAt      time.Time               `json:"expires_at"`
 }
 
-// GetSessionId returns the value of SessionId.
-func (s *PlaybackSession) GetSessionId() uuid.UUID {
-	return s.SessionId
+// GetSessionID returns the value of SessionID.
+func (s *PlaybackSession) GetSessionID() uuid.UUID {
+	return s.SessionID
 }
 
-// GetMasterPlaylistUrl returns the value of MasterPlaylistUrl.
-func (s *PlaybackSession) GetMasterPlaylistUrl() string {
-	return s.MasterPlaylistUrl
+// GetMasterPlaylistURL returns the value of MasterPlaylistURL.
+func (s *PlaybackSession) GetMasterPlaylistURL() string {
+	return s.MasterPlaylistURL
 }
 
 // GetDurationSeconds returns the value of DurationSeconds.
@@ -14454,14 +14454,14 @@ func (s *PlaybackSession) GetExpiresAt() time.Time {
 	return s.ExpiresAt
 }
 
-// SetSessionId sets the value of SessionId.
-func (s *PlaybackSession) SetSessionId(val uuid.UUID) {
-	s.SessionId = val
+// SetSessionID sets the value of SessionID.
+func (s *PlaybackSession) SetSessionID(val uuid.UUID) {
+	s.SessionID = val
 }
 
-// SetMasterPlaylistUrl sets the value of MasterPlaylistUrl.
-func (s *PlaybackSession) SetMasterPlaylistUrl(val string) {
-	s.MasterPlaylistUrl = val
+// SetMasterPlaylistURL sets the value of MasterPlaylistURL.
+func (s *PlaybackSession) SetMasterPlaylistURL(val string) {
+	s.MasterPlaylistURL = val
 }
 
 // SetDurationSeconds sets the value of DurationSeconds.
@@ -14510,7 +14510,7 @@ type PlaybackSubtitleTrack struct {
 	// URL to the WebVTT subtitle file.
 	URL string `json:"url"`
 	// Whether this is a forced subtitle track (e.g., foreign language signs).
-	IsForced bool `json:"isForced"`
+	IsForced bool `json:"is_forced"`
 }
 
 // GetIndex returns the value of Index.
@@ -17805,7 +17805,7 @@ type SettingValueValue3 struct{}
 
 type SetupTOTPReq struct {
 	// Account name to display in authenticator app (usually email or username).
-	AccountName string `json:"accountName"`
+	AccountName string `json:"account_name"`
 }
 
 // GetAccountName returns the value of AccountName.
@@ -18955,17 +18955,17 @@ func (s *SonarrWebhookSeries) SetType(val OptString) {
 // Ref: #/components/schemas/StartPlaybackRequest
 type StartPlaybackRequest struct {
 	// Type of media to play.
-	MediaType StartPlaybackRequestMediaType `json:"mediaType"`
+	MediaType StartPlaybackRequestMediaType `json:"media_type"`
 	// Movie or episode ID.
-	MediaId uuid.UUID `json:"mediaId"`
+	MediaID uuid.UUID `json:"media_id"`
 	// Specific file ID (optional, uses default if omitted).
-	FileId OptUUID `json:"fileId"`
+	FileID OptUUID `json:"file_id"`
 	// Audio track index to select initially.
-	AudioTrack OptInt `json:"audioTrack"`
+	AudioTrack OptInt `json:"audio_track"`
 	// Subtitle track index (omit to disable subtitles).
-	SubtitleTrack OptInt `json:"subtitleTrack"`
+	SubtitleTrack OptInt `json:"subtitle_track"`
 	// Start position in seconds (for resume).
-	StartPosition OptInt `json:"startPosition"`
+	StartPosition OptInt `json:"start_position"`
 }
 
 // GetMediaType returns the value of MediaType.
@@ -18973,14 +18973,14 @@ func (s *StartPlaybackRequest) GetMediaType() StartPlaybackRequestMediaType {
 	return s.MediaType
 }
 
-// GetMediaId returns the value of MediaId.
-func (s *StartPlaybackRequest) GetMediaId() uuid.UUID {
-	return s.MediaId
+// GetMediaID returns the value of MediaID.
+func (s *StartPlaybackRequest) GetMediaID() uuid.UUID {
+	return s.MediaID
 }
 
-// GetFileId returns the value of FileId.
-func (s *StartPlaybackRequest) GetFileId() OptUUID {
-	return s.FileId
+// GetFileID returns the value of FileID.
+func (s *StartPlaybackRequest) GetFileID() OptUUID {
+	return s.FileID
 }
 
 // GetAudioTrack returns the value of AudioTrack.
@@ -19003,14 +19003,14 @@ func (s *StartPlaybackRequest) SetMediaType(val StartPlaybackRequestMediaType) {
 	s.MediaType = val
 }
 
-// SetMediaId sets the value of MediaId.
-func (s *StartPlaybackRequest) SetMediaId(val uuid.UUID) {
-	s.MediaId = val
+// SetMediaID sets the value of MediaID.
+func (s *StartPlaybackRequest) SetMediaID(val uuid.UUID) {
+	s.MediaID = val
 }
 
-// SetFileId sets the value of FileId.
-func (s *StartPlaybackRequest) SetFileId(val OptUUID) {
-	s.FileId = val
+// SetFileID sets the value of FileID.
+func (s *StartPlaybackRequest) SetFileID(val OptUUID) {
+	s.FileID = val
 }
 
 // SetAudioTrack sets the value of AudioTrack.
@@ -20516,7 +20516,7 @@ type TVSeriesCreditListResponse struct {
 	// Current page number (1-indexed).
 	Page OptInt `json:"page"`
 	// Number of items per page.
-	PageSize OptInt `json:"pageSize"`
+	PageSize OptInt `json:"page_size"`
 }
 
 // GetItems returns the value of Items.
@@ -20570,7 +20570,7 @@ type TVSeriesListResponse struct {
 	// Current page number (1-indexed).
 	Page OptInt `json:"page"`
 	// Number of items per page.
-	PageSize OptInt `json:"pageSize"`
+	PageSize OptInt `json:"page_size"`
 }
 
 // GetItems returns the value of Items.
@@ -21135,7 +21135,7 @@ func (*TriggerLibraryScanNotFound) triggerLibraryScanRes() {}
 
 type TriggerLibraryScanReq struct {
 	// Type of scan to perform.
-	ScanType TriggerLibraryScanReqScanType `json:"scanType"`
+	ScanType TriggerLibraryScanReqScanType `json:"scan_type"`
 }
 
 // GetScanType returns the value of ScanType.
@@ -21275,15 +21275,15 @@ type UpdateLibraryRequest struct {
 	// Whether the library is enabled.
 	Enabled OptBool `json:"enabled"`
 	// Whether to scan the library on server startup.
-	ScanOnStartup OptBool `json:"scanOnStartup"`
+	ScanOnStartup OptBool `json:"scan_on_startup"`
 	// Whether to monitor for real-time file changes.
-	RealtimeMonitoring OptBool `json:"realtimeMonitoring"`
+	RealtimeMonitoring OptBool `json:"realtime_monitoring"`
 	// Preferred metadata provider.
-	MetadataProvider OptString `json:"metadataProvider"`
+	MetadataProvider OptString `json:"metadata_provider"`
 	// Preferred language for metadata.
-	PreferredLanguage OptString `json:"preferredLanguage"`
+	PreferredLanguage OptString `json:"preferred_language"`
 	// Type-specific scanner configuration.
-	ScannerConfig OptUpdateLibraryRequestScannerConfig `json:"scannerConfig"`
+	ScannerConfig OptUpdateLibraryRequestScannerConfig `json:"scanner_config"`
 }
 
 // GetName returns the value of Name.
@@ -21384,24 +21384,24 @@ func (*UpdateLibraryUnauthorized) updateLibraryRes() {}
 
 // Ref: #/components/schemas/UpdateOIDCProviderRequest
 type UpdateOIDCProviderRequest struct {
-	DisplayName           OptString                                `json:"displayName"`
-	ProviderType          OptUpdateOIDCProviderRequestProviderType `json:"providerType"`
-	IssuerUrl             OptString                                `json:"issuerUrl"`
-	ClientId              OptString                                `json:"clientId"`
-	ClientSecret          OptString                                `json:"clientSecret"`
-	AuthorizationEndpoint OptString                                `json:"authorizationEndpoint"`
-	TokenEndpoint         OptString                                `json:"tokenEndpoint"`
-	UserInfoEndpoint      OptString                                `json:"userInfoEndpoint"`
-	JwksUri               OptString                                `json:"jwksUri"`
-	EndSessionEndpoint    OptString                                `json:"endSessionEndpoint"`
+	DisplayName           OptString                                `json:"display_name"`
+	ProviderType          OptUpdateOIDCProviderRequestProviderType `json:"provider_type"`
+	IssuerURL             OptString                                `json:"issuer_url"`
+	ClientID              OptString                                `json:"client_id"`
+	ClientSecret          OptString                                `json:"client_secret"`
+	AuthorizationEndpoint OptString                                `json:"authorization_endpoint"`
+	TokenEndpoint         OptString                                `json:"token_endpoint"`
+	UserInfoEndpoint      OptString                                `json:"user_info_endpoint"`
+	JwksURI               OptString                                `json:"jwks_uri"`
+	EndSessionEndpoint    OptString                                `json:"end_session_endpoint"`
 	Scopes                []string                                 `json:"scopes"`
-	ClaimMappings         OptClaimMappings                         `json:"claimMappings"`
-	RoleMappings          OptUpdateOIDCProviderRequestRoleMappings `json:"roleMappings"`
-	AutoCreateUsers       OptBool                                  `json:"autoCreateUsers"`
-	UpdateUserInfo        OptBool                                  `json:"updateUserInfo"`
-	AllowLinking          OptBool                                  `json:"allowLinking"`
-	IsEnabled             OptBool                                  `json:"isEnabled"`
-	IsDefault             OptBool                                  `json:"isDefault"`
+	ClaimMappings         OptClaimMappings                         `json:"claim_mappings"`
+	RoleMappings          OptUpdateOIDCProviderRequestRoleMappings `json:"role_mappings"`
+	AutoCreateUsers       OptBool                                  `json:"auto_create_users"`
+	UpdateUserInfo        OptBool                                  `json:"update_user_info"`
+	AllowLinking          OptBool                                  `json:"allow_linking"`
+	IsEnabled             OptBool                                  `json:"is_enabled"`
+	IsDefault             OptBool                                  `json:"is_default"`
 }
 
 // GetDisplayName returns the value of DisplayName.
@@ -21414,14 +21414,14 @@ func (s *UpdateOIDCProviderRequest) GetProviderType() OptUpdateOIDCProviderReque
 	return s.ProviderType
 }
 
-// GetIssuerUrl returns the value of IssuerUrl.
-func (s *UpdateOIDCProviderRequest) GetIssuerUrl() OptString {
-	return s.IssuerUrl
+// GetIssuerURL returns the value of IssuerURL.
+func (s *UpdateOIDCProviderRequest) GetIssuerURL() OptString {
+	return s.IssuerURL
 }
 
-// GetClientId returns the value of ClientId.
-func (s *UpdateOIDCProviderRequest) GetClientId() OptString {
-	return s.ClientId
+// GetClientID returns the value of ClientID.
+func (s *UpdateOIDCProviderRequest) GetClientID() OptString {
+	return s.ClientID
 }
 
 // GetClientSecret returns the value of ClientSecret.
@@ -21444,9 +21444,9 @@ func (s *UpdateOIDCProviderRequest) GetUserInfoEndpoint() OptString {
 	return s.UserInfoEndpoint
 }
 
-// GetJwksUri returns the value of JwksUri.
-func (s *UpdateOIDCProviderRequest) GetJwksUri() OptString {
-	return s.JwksUri
+// GetJwksURI returns the value of JwksURI.
+func (s *UpdateOIDCProviderRequest) GetJwksURI() OptString {
+	return s.JwksURI
 }
 
 // GetEndSessionEndpoint returns the value of EndSessionEndpoint.
@@ -21504,14 +21504,14 @@ func (s *UpdateOIDCProviderRequest) SetProviderType(val OptUpdateOIDCProviderReq
 	s.ProviderType = val
 }
 
-// SetIssuerUrl sets the value of IssuerUrl.
-func (s *UpdateOIDCProviderRequest) SetIssuerUrl(val OptString) {
-	s.IssuerUrl = val
+// SetIssuerURL sets the value of IssuerURL.
+func (s *UpdateOIDCProviderRequest) SetIssuerURL(val OptString) {
+	s.IssuerURL = val
 }
 
-// SetClientId sets the value of ClientId.
-func (s *UpdateOIDCProviderRequest) SetClientId(val OptString) {
-	s.ClientId = val
+// SetClientID sets the value of ClientID.
+func (s *UpdateOIDCProviderRequest) SetClientID(val OptString) {
+	s.ClientID = val
 }
 
 // SetClientSecret sets the value of ClientSecret.
@@ -21534,9 +21534,9 @@ func (s *UpdateOIDCProviderRequest) SetUserInfoEndpoint(val OptString) {
 	s.UserInfoEndpoint = val
 }
 
-// SetJwksUri sets the value of JwksUri.
-func (s *UpdateOIDCProviderRequest) SetJwksUri(val OptString) {
-	s.JwksUri = val
+// SetJwksURI sets the value of JwksURI.
+func (s *UpdateOIDCProviderRequest) SetJwksURI(val OptString) {
+	s.JwksURI = val
 }
 
 // SetEndSessionEndpoint sets the value of EndSessionEndpoint.
@@ -21720,9 +21720,9 @@ func (*UpdateWatchProgressNotFound) updateWatchProgressRes() {}
 
 type UpdateWatchProgressReq struct {
 	// Current playback position in seconds.
-	ProgressSeconds int `json:"progressSeconds"`
+	ProgressSeconds int `json:"progress_seconds"`
 	// Total duration in seconds.
-	DurationSeconds int `json:"durationSeconds"`
+	DurationSeconds int `json:"duration_seconds"`
 }
 
 // GetProgressSeconds returns the value of ProgressSeconds.

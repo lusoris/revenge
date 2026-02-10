@@ -95,8 +95,8 @@ func TestHandler_OIDC_AdminCreateOIDCProvider_Forbidden(t *testing.T) {
 	req := &ogen.CreateOIDCProviderRequest{
 		Name:         "test",
 		DisplayName:  "Test",
-		IssuerUrl:    "https://example.com",
-		ClientId:     "client-id",
+		IssuerURL:    "https://example.com",
+		ClientID:     "client-id",
 		ClientSecret: "secret",
 	}
 	result, err := handler.AdminCreateOIDCProvider(ctx, req)
