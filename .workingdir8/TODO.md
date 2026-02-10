@@ -325,7 +325,7 @@ Before implementing cache-related fixes, verify against current package document
 - [x] **2B.6**: Add `GET /api/v1/genres` endpoint — `deb694c1` unified genre aggregation from movies + TV shows
 - [x] **2B.7**: Add bulk episode watched endpoint — `9d075c40` batch SQL with CTE, POST /api/v1/tvshows/episodes/bulk-watched
 - [x] **2B.8**: Add TV show reindex endpoint — `db0a2f21` POST /api/v1/search/tvshows/reindex, enqueues River job
-- [ ] **5B.5**: Create users collection in Typesense (admin search)
+- [x] **5B.5**: Create users collection in Typesense (admin search)
 - [x] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder ✅ `ed2028b9` — renamed to `GetAPIKeyLastUsedAt`, removed misleading comments
 - [x] **7.3**: Extract `copyMovieFieldsToOgen` helper — **SKIPPED**: ogen generates flat types with no shared interface; any extraction (19-field interface / reflection) adds more complexity than the 3 copies of schema-driven boilerplate
 - [x] **4B.3**: Fix L1 pattern invalidation ✅ `bd2be17f` — `DeleteByPrefix()` on Otter Keys() iterator, `simpleGlobPrefix()` detects prefix* patterns
