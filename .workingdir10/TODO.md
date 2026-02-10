@@ -12,7 +12,7 @@
 ## MEDIUM Priority
 
 ### rueidis
-- [ ] **NewLuaScript for rate limiter** — Replace raw `EVAL` with `rueidis.NewLuaScript()` for EVALSHA optimization → `internal/api/middleware/ratelimit_redis.go`
+- [x] **NewLuaScript for rate limiter** — ~~Done (commit 3589e5fc) — rueidis.NewLuaScript for EVALSHA~~
 - [x] **IsRedisNil check** — ~~Done as part of DoCache() fix (commit ab2c5435)~~
 
 ### otter
@@ -21,39 +21,39 @@
 - [ ] **OnDeletion for transcode cache** — Add deletion listener to kill evicted FFmpeg processes → `internal/playback/transcode/pipeline.go`
 
 ### Raft
-- [ ] **Structured logging for transport/snapshots** — Pass slog-based writer instead of `os.Stderr` → `internal/infra/raft/election.go:76,81`
-- [ ] **hcLogAdapter args** — Implement proper key-value arg forwarding in all log methods → `internal/infra/raft/election.go:218-223`
-- [ ] **Close BoltDB stores** — Store references on struct, close in `Close()` → `internal/infra/raft/election.go:87-96`
+- [x] **Structured logging for transport/snapshots** — ~~Done (commit faac9188) — slogWriter for transport & snapshots~~
+- [x] **hcLogAdapter args** — ~~Done (commit faac9188) — forward key-value args~~
+- [x] **Close BoltDB stores** — ~~Done (commit faac9188) — store refs, close in Close()~~
 
 ### River
-- [ ] **UniqueOpts on notification jobs** — Add uniqueness constraint to prevent duplicate sends → `internal/infra/jobs/notification_job.go:56-62`
+- [x] **UniqueOpts on notification jobs** — ~~Done (commit 97864681) — ByArgs + ByPeriod: 1h~~
 
 ### Casbin
 - [x] **SavePolicy atomicity** — ~~Already uses tx.Begin → DELETE → INSERT → tx.Commit (no fix needed)~~
 - [x] **RemovePolicy empty fields** — ~~Empty fields as wildcards is standard Casbin adapter semantics (by design)~~
 
 ### OIDC
-- [ ] **Cache OIDC provider/discovery** — Avoid `oidc.NewProvider()` on every callback → `internal/service/oidc/service.go:320`
-- [ ] **Fix fallback endpoints** — Use discovered endpoints instead of hardcoded `/authorize`, `/token` → `internal/service/oidc/service.go:506-511`
+- [x] **Cache OIDC provider/discovery** — ~~Done (commit 97864681) — sync.Map cache~~
+- [x] **Fix fallback endpoints** — ~~Done (commit 97864681) — use oidcProvider.Endpoint()~~
 
 ### TOTP
-- [ ] **Re-enrollment guard** — Require current TOTP verification before generating new secret → `internal/service/mfa/totp.go:97-114`
+- [x] **Re-enrollment guard** — ~~Done (commit 5bb597cb) — refuse GenerateSecret when TOTP verified~~
 
 ### WebAuthn
-- [ ] **Counter=0 handling** — Skip clone detection when authenticator always reports counter=0 → `internal/service/mfa/webauthn.go:449`
+- [x] **Counter=0 handling** — ~~Done (commit 5bb597cb) — skip when both counters are 0~~
 
 ### S3
 - [x] **SDK error types** — ~~Done (commit de5108a2) — errors.As with types.NoSuchKey/types.NotFound~~
 - [ ] **Multipart upload** — Use `s3.UploadManager` for large files → `internal/service/storage/s3.go:89-95`
 
 ### req/v3
-- [ ] **Fix ad-hoc clients** — Replace `req.C()` with configured client for image downloads → `internal/content/shared/metadata/images.go:172`, `internal/service/metadata/providers/tmdb/client.go:1238`
+- [x] **Fix ad-hoc clients** — ~~Done (commit cf52c6fc) — dedicated imgClient in both files~~
 
 ### govips
 - [x] **vips.Shutdown()** — ~~Done (commit de5108a2) — added to server OnStop lifecycle hook~~
 
 ### Typesense
-- [ ] **Bulk index error propagation** — Return error when individual documents fail → `internal/service/search/movie_service.go:140-158`
+- [x] **Bulk index error propagation** — ~~Done (commit cf52c6fc) — return error with count~~
 
 ## LOW Priority
 
@@ -110,3 +110,9 @@
 - [x] **Casbin RemovePolicy** — empty fields as wildcards is by design
 - [x] **Prometheus counter** — Gauge with .Set() is correct for external values
 - [x] **S3 remove contains** — removed in commit de5108a2
+- [x] **NewLuaScript rate limiter** — commit 3589e5fc
+- [x] **Raft BoltDB/logging/args** — commit faac9188
+- [x] **UniqueOpts notifications** — commit 97864681
+- [x] **OIDC caching + endpoints** — commit 97864681
+- [x] **MFA re-enrollment + counter=0** — commit 5bb597cb
+- [x] **Ad-hoc clients + bulk errors** — commit cf52c6fc
