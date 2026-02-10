@@ -9,7 +9,6 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 )
 
@@ -46,23 +45,21 @@ func (StatsAggregationArgs) InsertOpts() river.InsertOpts {
 }
 
 // StatsAggregationWorker computes server-wide aggregate stats and persists them.
+// Leader election is handled by River's built-in leader election.
 type StatsAggregationWorker struct {
 	river.WorkerDefaults[StatsAggregationArgs]
-	leaderElection *raft.LeaderElection
-	queries        *db.Queries
-	logger         *slog.Logger
+	queries *db.Queries
+	logger  *slog.Logger
 }
 
 // NewStatsAggregationWorker creates a new stats aggregation worker.
 func NewStatsAggregationWorker(
-	leaderElection *raft.LeaderElection,
 	queries *db.Queries,
 	logger *slog.Logger,
 ) *StatsAggregationWorker {
 	return &StatsAggregationWorker{
-		leaderElection: leaderElection,
-		queries:        queries,
-		logger:         logger.With("component", "stats-aggregation"),
+		queries: queries,
+		logger:  logger.With("component", "stats-aggregation"),
 	}
 }
 
@@ -72,15 +69,8 @@ func (w *StatsAggregationWorker) Timeout(_ *river.Job[StatsAggregationArgs]) tim
 }
 
 // Work executes the stats aggregation job.
+// Leader election is handled by River's periodic job scheduler.
 func (w *StatsAggregationWorker) Work(ctx context.Context, job *river.Job[StatsAggregationArgs]) error {
-	// Only the leader collects stats in a multi-node deployment
-	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
-		w.logger.Debug("skipping stats aggregation: not the leader node",
-			slog.Int64("job_id", job.ID),
-		)
-		return nil
-	}
-
 	w.logger.Info("starting stats aggregation", slog.Int64("job_id", job.ID))
 	start := time.Now()
 
