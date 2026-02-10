@@ -155,11 +155,14 @@ func DefaultUser() User {
 
 // UniqueUser returns a test user with unique credentials, safe for multiple calls
 // within the same test. Each call generates a unique username and email.
+// Uses the last 12 chars of a UUIDv7 (random bits) to avoid timestamp-based
+// collisions when called multiple times within the same millisecond.
 func UniqueUser() User {
-	id := uuid.Must(uuid.NewV7()).String()[:8]
+	id := uuid.Must(uuid.NewV7()).String()
+	suffix := id[len(id)-12:] // last 12 hex chars are purely random
 	return User{
-		Username:    "testuser_" + id,
-		Email:       "test_" + id + "@example.com",
+		Username:    "testuser_" + suffix,
+		Email:       "test_" + suffix + "@example.com",
 		DisplayName: "Test User",
 		IsActive:    true,
 		IsAdmin:     false,

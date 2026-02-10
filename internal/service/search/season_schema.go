@@ -36,7 +36,7 @@ func SeasonCollectionSchema() *api.CollectionSchema {
 	return &api.CollectionSchema{
 		Name:                SeasonCollectionName,
 		EnableNestedFields:  ptr.To(false),
-		TokenSeparators:     &[]string{"-", "_", "'", "\u2019"},
+		TokenSeparators:     &[]string{"-", "_"},
 		SymbolsToIndex:      &[]string{"&"},
 		DefaultSortingField: ptr.To("air_date"),
 		Fields: []api.Field{
