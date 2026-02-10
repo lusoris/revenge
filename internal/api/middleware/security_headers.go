@@ -19,19 +19,20 @@ func SecurityHeadersMiddleware() func(http.Handler) http.Handler {
 			h := w.Header()
 
 			// CSP: restrictive policy suitable for an API server.
-			// - 'self' allows the Scalar docs page to load its own scripts/styles
+			// - 'self' allows the server's own assets
+			// - cdn.jsdelivr.net hosts the Scalar API reference UI
 			// - img-src includes image.tmdb.org for proxied poster/backdrop images
 			// - media-src blob: for HLS playback segments
 			// - connect-src 'self' for API calls and SSE from the docs page
 			// - style-src 'unsafe-inline' required by Scalar's inline styles
 			h.Set("Content-Security-Policy",
 				"default-src 'self'; "+
-					"script-src 'self'; "+
-					"style-src 'self' 'unsafe-inline'; "+
-					"img-src 'self' image.tmdb.org *.image.tmdb.org data:; "+
+					"script-src 'self' https://cdn.jsdelivr.net; "+
+					"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "+
+					"img-src 'self' image.tmdb.org *.image.tmdb.org data: https://cdn.jsdelivr.net; "+
 					"media-src 'self' blob:; "+
 					"connect-src 'self'; "+
-					"font-src 'self'; "+
+					"font-src 'self' https://cdn.jsdelivr.net; "+
 					"object-src 'none'; "+
 					"frame-ancestors 'none'; "+
 					"base-uri 'self'; "+

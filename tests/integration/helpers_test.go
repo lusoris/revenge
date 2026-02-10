@@ -78,6 +78,8 @@ func setupServer(t *testing.T) *TestServer {
 		search.Module,
 		jobs.Module,
 		health.Module,
+		image.Module,
+		appcrypto.Module,
 
 		// Service modules (required by API)
 		user.Module,
@@ -89,6 +91,15 @@ func setupServer(t *testing.T) *TestServer {
 		oidc.Module,
 		activity.Module,
 		library.Module,
+		mfa.Module,
+
+		// Content modules
+		movie.Module,
+
+		// Stubs for dependencies not needed in integration tests
+		fx.Provide(func() []*river.PeriodicJob { return nil }),
+		fx.Provide(func() movie.MetadataProvider { return nil }),
+		fx.Provide(func() movie.MetadataQueue { return nil }),
 
 		// API module
 		api.Module,

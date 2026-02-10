@@ -194,6 +194,12 @@ type CacheConfig struct {
 
 	// Enabled indicates if cache is enabled.
 	Enabled bool `koanf:"enabled"`
+
+	// L1MaxSize is the maximum number of entries in the in-process L1 (otter) cache.
+	L1MaxSize int `koanf:"l1_max_size"`
+
+	// L1TTL is the time-to-live for L1 cache entries.
+	L1TTL time.Duration `koanf:"l1_ttl"`
 }
 
 // SearchConfig holds search (Typesense) configuration.
@@ -716,8 +722,10 @@ func Defaults() map[string]interface{} {
 		"database.health_check_period": "30s",
 
 		// Cache defaults
-		"cache.url":     "",
-		"cache.enabled": false,
+		"cache.url":          "",
+		"cache.enabled":      false,
+		"cache.l1_max_size":  10000,
+		"cache.l1_ttl":       "5m",
 
 		// CORS defaults
 		"server.cors.allowed_origins":   []string{"*"},
