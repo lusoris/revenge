@@ -20,6 +20,8 @@ var (
 
 // Provider implements the metadata provider interface for Fanart.tv.
 type Provider struct {
+	metadata.MovieProviderBase
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -62,17 +64,8 @@ func (p *Provider) DownloadImage(_ context.Context, _ string, _ metadata.ImageSi
 
 // --- MovieProvider (image methods only) ---
 
-func (p *Provider) SearchMovie(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovie(_ context.Context, _ string, _ string) (*metadata.MovieMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetMovieImages(ctx context.Context, id string) (*metadata.Images, error) {
 	resp, err := p.client.GetMovieImages(ctx, id)
@@ -86,41 +79,17 @@ func (p *Provider) GetMovieImages(ctx context.Context, id string) (*metadata.Ima
 	return images, nil
 }
 
-func (p *Provider) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieExternalIDs(_ context.Context, _ string) (*metadata.ExternalIDs, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSimilarMovies(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieRecommendations(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
-}
 
 // --- TVShowProvider (image methods only) ---
 // NOTE: Fanart.tv uses TVDb IDs for TV shows. When the service passes TMDb IDs,
 // this may return 404. A TMDb→TVDb ID mapping at the service layer would fix this.
 
-func (p *Provider) SearchTVShow(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.TVShowSearchResult, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShow(_ context.Context, _ string, _ string) (*metadata.TVShowMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	resp, err := p.client.GetTVShowImages(ctx, id)
@@ -134,25 +103,10 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-func (p *Provider) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowExternalIDs(_ context.Context, _ string) (*metadata.ExternalIDs, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeason(_ context.Context, _ string, _ int, _ string) (*metadata.SeasonMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetSeasonImages(ctx context.Context, showID string, seasonNum int) (*metadata.Images, error) {
 	resp, err := p.client.GetTVShowImages(ctx, showID)
@@ -166,13 +120,7 @@ func (p *Provider) GetSeasonImages(ctx context.Context, showID string, seasonNum
 	return images, nil
 }
 
-func (p *Provider) GetEpisode(_ context.Context, _ string, _, _ int, _ string) (*metadata.EpisodeMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
 	// Fanart.tv doesn't have per-episode images

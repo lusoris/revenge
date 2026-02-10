@@ -20,7 +20,11 @@ var Module = fx.Module("jobs",
 		NewRiverClient,
 		NewNotificationWorker,
 	),
-	fx.Invoke(registerHooks, registerCleanupWorker, registerNotificationWorker),
+	fx.Invoke(
+		registerHooks,
+		registerCleanupWorker,
+		registerNotificationWorker,
+	),
 )
 
 // registerCleanupWorker registers the cleanup worker with the River workers registry.
@@ -45,6 +49,7 @@ func NewRiverClient(
 	workers *river.Workers,
 	cfg *config.Config,
 	logger *slog.Logger,
+	periodicJobs []*river.PeriodicJob,
 ) (*Client, error) {
 	// Run River schema migrations (creates river_job, river_queue, river_leader tables)
 	migrator, err := rivermigrate.New(riverpgxv5.New(pool), nil)
@@ -70,6 +75,7 @@ func NewRiverClient(
 		FetchPollInterval:    cfg.Jobs.FetchPollInterval,
 		RescueStuckJobsAfter: cfg.Jobs.RescueStuckJobsAfter,
 		MaxAttempts:          cfg.Jobs.MaxAttempts,
+		PeriodicJobs:         periodicJobs,
 	}
 
 	return NewClient(pool, workers, jobsConfig, logger)

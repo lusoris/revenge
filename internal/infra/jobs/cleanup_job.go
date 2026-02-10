@@ -228,16 +228,4 @@ func (w *CleanupWorker) validateArgs(args CleanupArgs) error {
 	return nil
 }
 
-// ScheduleCleanup creates a periodic cleanup job that runs all cleanup targets.
-func ScheduleCleanup(client *river.Client[any]) error {
-	_, err := client.Insert(context.Background(), CleanupArgs{
-		TargetType: CleanupTargetAll,
-		OlderThan:  24 * time.Hour,
-	}, &river.InsertOpts{
-		UniqueOpts: river.UniqueOpts{
-			ByArgs:   true,
-			ByPeriod: 24 * time.Hour,
-		},
-	})
-	return err
-}
+

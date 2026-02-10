@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"strings"
 	"time"
 
 	"github.com/maypok86/otter/v2"
@@ -83,4 +84,23 @@ func (l *L1Cache[K, V]) Close() {
 func (l *L1Cache[K, V]) Has(key K) bool {
 	_, ok := l.cache.GetIfPresent(key)
 	return ok
+}
+
+// DeleteByPrefix removes all entries whose key starts with the given prefix.
+// This is more targeted than Clear() and avoids evicting unrelated entries.
+// Only works when K is string.
+func (l *L1Cache[K, V]) DeleteByPrefix(prefix any) int {
+	p, ok := prefix.(string)
+	if !ok {
+		return 0
+	}
+
+	deleted := 0
+	for k := range l.cache.Keys() {
+		if ks, ok := any(k).(string); ok && strings.HasPrefix(ks, p) {
+			l.cache.Invalidate(k)
+			deleted++
+		}
+	}
+	return deleted
 }

@@ -109,8 +109,8 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		}
 	}
 
-	// Certification is not an ExternalRating — it's a content rating (e.g. PG-13)
-	// TODO: store in a dedicated Certification field when available
+	// Certification (e.g. PG-13) is not mapped — MovieMetadata lacks a top-level
+	// certification field. The data is available via Trakt's m.Certification.
 
 	return md
 }
@@ -225,8 +225,8 @@ func mapShowToMetadata(s *Show) *metadata.TVShowMetadata {
 		})
 	}
 
-	// Certification is not an ExternalRating — it's a content rating (e.g. TV-MA)
-	// TODO: store in a dedicated Certification field when available
+	// Certification (e.g. TV-MA) is not mapped — TVShowMetadata lacks a top-level
+	// certification field. The data is available via Trakt's s.Certification.
 
 	return md
 }

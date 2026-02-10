@@ -23,10 +23,12 @@ import (
 	"github.com/lusoris/revenge/internal/integration/sonarr"
 	"github.com/lusoris/revenge/internal/playback/playbackfx"
 	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/analytics"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/email"
 	"github.com/lusoris/revenge/internal/service/library"
+	metadatajobs "github.com/lusoris/revenge/internal/service/metadata/jobs"
 	"github.com/lusoris/revenge/internal/service/metadata/metadatafx"
 	"github.com/lusoris/revenge/internal/service/mfa"
 	"github.com/lusoris/revenge/internal/service/notification"
@@ -56,6 +58,13 @@ var Module = fx.Module("app",
 	image.Module,
 	appcrypto.Module,
 
+	// Periodic Jobs (provided before jobs.Module resolves the River client)
+	fx.Provide(providePeriodicJobs),
+	fx.Invoke(registerActivityCleanupWorker, registerLibraryCleanupWorker),
+
+	// Bridge: metadata jobs Queue → movie.MetadataQueue interface
+	fx.Provide(func(q *metadatajobs.Queue) movie.MetadataQueue { return q }),
+
 	// Services
 	settings.Module,
 	user.Module,
@@ -67,6 +76,7 @@ var Module = fx.Module("app",
 	mfa.Module,
 	oidc.Module,
 	activity.Module,
+	analytics.Module,
 	notification.Module,
 	storage.Module,
 	library.Module,
@@ -82,6 +92,7 @@ var Module = fx.Module("app",
 	// Job Workers
 	moviejobs.Module,
 	tvshowjobs.Module,
+	metadatajobs.Module,
 
 	// Integrations
 	radarr.Module,

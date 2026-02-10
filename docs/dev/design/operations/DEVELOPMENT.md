@@ -127,7 +127,7 @@ DATABASE_URL=postgres://revenge:revenge_dev_pass@localhost:5432/revenge?sslmode=
 - Backends: Docker (default), Kubernetes, K3s, Docker Swarm
 - IDEs: Zed (SSH, default), VS Code (browser/desktop), JetBrains Gateway, Terminal
 - Resources: 2-16 CPU cores (4 default), 4-16 GB memory (8 default), 30Gi disk
-- Images: Go 1.25.6, PostgreSQL 18-alpine, Dragonfly latest, Typesense 0.25.2
+- Images: Go 1.25.7, PostgreSQL 18-alpine, Dragonfly latest, Typesense 0.25.2
 
 ## Linting Configuration
 

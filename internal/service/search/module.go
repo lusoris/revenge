@@ -5,6 +5,7 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"go.uber.org/fx"
 )
 
@@ -12,11 +13,51 @@ import (
 var Module = fx.Module("search_service",
 	fx.Provide(NewMovieSearchService),
 	fx.Provide(NewTVShowSearchService),
+	fx.Provide(NewEpisodeSearchService),
+	fx.Provide(NewSeasonSearchService),
+	fx.Provide(NewPersonSearchService),
+	fx.Provide(NewUserSearchService),
+	fx.Provide(provideCachedMovieSearchService),
+	fx.Provide(provideCachedTVShowSearchService),
+	fx.Provide(provideCachedEpisodeSearchService),
+	fx.Provide(provideCachedSeasonSearchService),
+	fx.Provide(provideCachedPersonSearchService),
+	fx.Provide(provideCachedUserSearchService),
 	fx.Invoke(initializeCollections),
 )
 
+// provideCachedMovieSearchService wraps the movie search service with caching.
+func provideCachedMovieSearchService(svc *MovieSearchService, c *cache.Cache, logger *slog.Logger) *CachedMovieSearchService {
+	return NewCachedMovieSearchService(svc, c, logger)
+}
+
+// provideCachedTVShowSearchService wraps the TV show search service with caching.
+func provideCachedTVShowSearchService(svc *TVShowSearchService, c *cache.Cache, logger *slog.Logger) *CachedTVShowSearchService {
+	return NewCachedTVShowSearchService(svc, c, logger)
+}
+
+// provideCachedEpisodeSearchService wraps the episode search service with caching.
+func provideCachedEpisodeSearchService(svc *EpisodeSearchService, c *cache.Cache, logger *slog.Logger) *CachedEpisodeSearchService {
+	return NewCachedEpisodeSearchService(svc, c, logger)
+}
+
+// provideCachedSeasonSearchService wraps the season search service with caching.
+func provideCachedSeasonSearchService(svc *SeasonSearchService, c *cache.Cache, logger *slog.Logger) *CachedSeasonSearchService {
+	return NewCachedSeasonSearchService(svc, c, logger)
+}
+
+// provideCachedPersonSearchService wraps the person search service with caching.
+func provideCachedPersonSearchService(svc *PersonSearchService, c *cache.Cache, logger *slog.Logger) *CachedPersonSearchService {
+	return NewCachedPersonSearchService(svc, c, logger)
+}
+
+// provideCachedUserSearchService wraps the user search service with caching.
+func provideCachedUserSearchService(svc *UserSearchService, c *cache.Cache, logger *slog.Logger) *CachedUserSearchService {
+	return NewCachedUserSearchService(svc, c, logger)
+}
+
 // initializeCollections creates Typesense collections on startup if they don't exist.
-func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, logger *slog.Logger) {
+func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, seasonSearch *SeasonSearchService, personSearch *PersonSearchService, userSearch *UserSearchService, logger *slog.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			if movieSearch.IsEnabled() {
@@ -27,6 +68,26 @@ func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvs
 			if tvshowSearch.IsEnabled() {
 				if err := tvshowSearch.InitializeCollection(ctx); err != nil {
 					logger.Warn("failed to initialize tvshows search collection", slog.Any("error", err))
+				}
+			}
+			if episodeSearch.IsEnabled() {
+				if err := episodeSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize episodes search collection", slog.Any("error", err))
+				}
+			}
+			if seasonSearch.IsEnabled() {
+				if err := seasonSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize seasons search collection", slog.Any("error", err))
+				}
+			}
+			if personSearch.IsEnabled() {
+				if err := personSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize people search collection", slog.Any("error", err))
+				}
+			}
+			if userSearch.IsEnabled() {
+				if err := userSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize users search collection", slog.Any("error", err))
 				}
 			}
 			return nil

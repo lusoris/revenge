@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -12,6 +13,9 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/content"
+	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -40,8 +44,8 @@ func TestHandler_ListLibraries_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", errResp.Message)
 }
 
-// TestHandler_CreateLibrary_NotAdmin verifies that CreateLibrary returns 403
-// when the caller is not an admin (no user in context means isAdmin returns false).
+// TestHandler_CreateLibrary_NotAdmin verifies that CreateLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_CreateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -55,10 +59,10 @@ func TestHandler_CreateLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.CreateLibrary(ctx, req)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.CreateLibraryForbidden)
-	require.True(t, ok, "expected *ogen.CreateLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.CreateLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.CreateLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // TestHandler_GetLibrary_NoAuth verifies that GetLibrary returns 401
@@ -82,8 +86,8 @@ func TestHandler_GetLibrary_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_UpdateLibrary_NotAdmin verifies that UpdateLibrary returns 403
-// when the caller is not an admin.
+// TestHandler_UpdateLibrary_NotAdmin verifies that UpdateLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -98,14 +102,14 @@ func TestHandler_UpdateLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.UpdateLibrary(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.UpdateLibraryForbidden)
-	require.True(t, ok, "expected *ogen.UpdateLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.UpdateLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.UpdateLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_DeleteLibrary_NotAdmin verifies that DeleteLibrary returns 403
-// when the caller is not an admin.
+// TestHandler_DeleteLibrary_NotAdmin verifies that DeleteLibrary returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -119,14 +123,14 @@ func TestHandler_DeleteLibrary_NotAdmin(t *testing.T) {
 	result, err := handler.DeleteLibrary(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.DeleteLibraryForbidden)
-	require.True(t, ok, "expected *ogen.DeleteLibraryForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.DeleteLibraryUnauthorized)
+	require.True(t, ok, "expected *ogen.DeleteLibraryUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_TriggerLibraryScan_NotAdmin verifies that TriggerLibraryScan returns 403
-// when the caller is not an admin.
+// TestHandler_TriggerLibraryScan_NotAdmin verifies that TriggerLibraryScan returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -141,10 +145,10 @@ func TestHandler_TriggerLibraryScan_NotAdmin(t *testing.T) {
 	result, err := handler.TriggerLibraryScan(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.TriggerLibraryScanForbidden)
-	require.True(t, ok, "expected *ogen.TriggerLibraryScanForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.TriggerLibraryScanUnauthorized)
+	require.True(t, ok, "expected *ogen.TriggerLibraryScanUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // TestHandler_ListLibraryScans_NoAuth verifies that ListLibraryScans returns 401
@@ -168,8 +172,8 @@ func TestHandler_ListLibraryScans_NoAuth(t *testing.T) {
 	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_ListLibraryPermissions_NotAdmin verifies that ListLibraryPermissions returns 403
-// when the caller is not an admin.
+// TestHandler_ListLibraryPermissions_NotAdmin verifies that ListLibraryPermissions returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -183,14 +187,14 @@ func TestHandler_ListLibraryPermissions_NotAdmin(t *testing.T) {
 	result, err := handler.ListLibraryPermissions(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.ListLibraryPermissionsForbidden)
-	require.True(t, ok, "expected *ogen.ListLibraryPermissionsForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.ListLibraryPermissionsUnauthorized)
+	require.True(t, ok, "expected *ogen.ListLibraryPermissionsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_GrantLibraryPermission_NotAdmin verifies that GrantLibraryPermission returns 403
-// when the caller is not an admin.
+// TestHandler_GrantLibraryPermission_NotAdmin verifies that GrantLibraryPermission returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -208,14 +212,14 @@ func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 	result, err := handler.GrantLibraryPermission(ctx, req, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GrantLibraryPermissionForbidden)
-	require.True(t, ok, "expected *ogen.GrantLibraryPermissionForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.GrantLibraryPermissionUnauthorized)
+	require.True(t, ok, "expected *ogen.GrantLibraryPermissionUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
-// TestHandler_RevokeLibraryPermission_NotAdmin verifies that RevokeLibraryPermission returns 403
-// when the caller is not an admin.
+// TestHandler_RevokeLibraryPermission_NotAdmin verifies that RevokeLibraryPermission returns 401
+// when no user is in the context (unauthenticated).
 func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -233,10 +237,10 @@ func TestHandler_RevokeLibraryPermission_NotAdmin(t *testing.T) {
 	result, err := handler.RevokeLibraryPermission(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.RevokeLibraryPermissionForbidden)
-	require.True(t, ok, "expected *ogen.RevokeLibraryPermissionForbidden, got %T", result)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Equal(t, "Admin access required", forbidden.Message)
+	unauthorized, ok := result.(*ogen.RevokeLibraryPermissionUnauthorized)
+	require.True(t, ok, "expected *ogen.RevokeLibraryPermissionUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Equal(t, "Authentication required", unauthorized.Message)
 }
 
 // ============================================================================
@@ -469,4 +473,138 @@ func TestHandler_DeleteLibrary_AdminSuccess(t *testing.T) {
 	notFound, ok := getResult.(*ogen.GetLibraryNotFound)
 	require.True(t, ok, "expected *ogen.GetLibraryNotFound after deletion, got %T", getResult)
 	assert.Equal(t, 404, notFound.Code)
+}
+
+// ============================================================================
+// ListGenres tests
+// ============================================================================
+
+// mockMovieService is a minimal mock for movie.Service used by ListGenres tests.
+type mockMovieService struct {
+	movie.Service // embed to satisfy interface; only override what's needed
+	genres        []content.GenreSummary
+	err           error
+}
+
+func (m *mockMovieService) ListDistinctGenres(_ context.Context) ([]content.GenreSummary, error) {
+	return m.genres, m.err
+}
+
+// mockTVService is a minimal mock for tvshow.Service used by ListGenres tests.
+type mockTVService struct {
+	tvshow.Service // embed to satisfy interface; only override what's needed
+	genres         []content.GenreSummary
+	err            error
+}
+
+func (m *mockTVService) ListDistinctGenres(_ context.Context) ([]content.GenreSummary, error) {
+	return m.genres, m.err
+}
+
+func TestHandler_ListGenres_Success(t *testing.T) {
+	t.Parallel()
+
+	movieSvc := &mockMovieService{
+		genres: []content.GenreSummary{
+			{TMDbGenreID: 28, Name: "Action", ItemCount: 10},
+			{TMDbGenreID: 18, Name: "Drama", ItemCount: 25},
+			{TMDbGenreID: 35, Name: "Comedy", ItemCount: 5},
+		},
+	}
+	tvSvc := &mockTVService{
+		genres: []content.GenreSummary{
+			{TMDbGenreID: 18, Name: "Drama", ItemCount: 15},
+			{TMDbGenreID: 10765, Name: "Sci-Fi & Fantasy", ItemCount: 8},
+		},
+	}
+
+	handler := &Handler{
+		logger:        logging.NewTestLogger(),
+		movieHandler:  movie.NewHandler(movieSvc, nil),
+		tvshowService: tvSvc,
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	genres, ok := result.(*ogen.ListGenresOKApplicationJSON)
+	require.True(t, ok, "expected *ogen.ListGenresOKApplicationJSON, got %T", result)
+
+	// Should have 4 distinct genres: Action, Comedy, Drama, Sci-Fi & Fantasy
+	require.Len(t, *genres, 4)
+
+	// Verify alphabetical sort
+	assert.Equal(t, "Action", (*genres)[0].Name)
+	assert.Equal(t, "Comedy", (*genres)[1].Name)
+	assert.Equal(t, "Drama", (*genres)[2].Name)
+	assert.Equal(t, "Sci-Fi & Fantasy", (*genres)[3].Name)
+
+	// Verify Drama is merged: 25 movies + 15 TV shows
+	drama := (*genres)[2]
+	assert.Equal(t, 28, (*genres)[0].TmdbGenreID) // Action TMDb ID
+	assert.Equal(t, int64(25), drama.MovieCount)
+	assert.Equal(t, int64(15), drama.TvshowCount)
+
+	// Verify Action: movies only
+	assert.Equal(t, int64(10), (*genres)[0].MovieCount)
+	assert.Equal(t, int64(0), (*genres)[0].TvshowCount)
+
+	// Verify Sci-Fi & Fantasy: TV only
+	assert.Equal(t, int64(0), (*genres)[3].MovieCount)
+	assert.Equal(t, int64(8), (*genres)[3].TvshowCount)
+}
+
+func TestHandler_ListGenres_EmptyDB(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger:        logging.NewTestLogger(),
+		movieHandler:  movie.NewHandler(&mockMovieService{}, nil),
+		tvshowService: &mockTVService{},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	genres, ok := result.(*ogen.ListGenresOKApplicationJSON)
+	require.True(t, ok)
+	assert.Empty(t, *genres)
+}
+
+func TestHandler_ListGenres_MovieError(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+		movieHandler: movie.NewHandler(&mockMovieService{
+			err: errors.New("movie db error"),
+		}, nil),
+		tvshowService: &mockTVService{},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	errResp, ok := result.(*ogen.Error)
+	require.True(t, ok, "expected *ogen.Error, got %T", result)
+	assert.Equal(t, 500, errResp.Code)
+}
+
+func TestHandler_ListGenres_TVShowError(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+		movieHandler: movie.NewHandler(&mockMovieService{
+			genres: []content.GenreSummary{{TMDbGenreID: 28, Name: "Action", ItemCount: 5}},
+		}, nil),
+		tvshowService: &mockTVService{err: errors.New("tv db error")},
+	}
+
+	result, err := handler.ListGenres(context.Background())
+	require.NoError(t, err)
+
+	errResp, ok := result.(*ogen.Error)
+	require.True(t, ok, "expected *ogen.Error, got %T", result)
+	assert.Equal(t, 500, errResp.Code)
 }

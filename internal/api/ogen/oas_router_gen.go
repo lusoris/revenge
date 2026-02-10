@@ -645,6 +645,58 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 							}
 
+						case 'u': // Prefix: "users"
+
+							if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch r.Method {
+								case "GET":
+									s.handleAdminListUsersRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "GET")
+								}
+
+								return
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "userId"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "DELETE":
+										s.handleAdminDeleteUserRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "DELETE")
+									}
+
+									return
+								}
+
+							}
+
 						}
 
 					case 'p': // Prefix: "pikeys"
@@ -995,6 +1047,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 
+					}
+
+				case 'g': // Prefix: "genres"
+
+					if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleListGenresRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
 					}
 
 				case 'i': // Prefix: "images/"
@@ -3169,77 +3241,111 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							break
 						}
 						switch elem[0] {
-						case 'm': // Prefix: "movies"
+						case 'm': // Prefix: "m"
 
-							if l := len("movies"); len(elem) >= l && elem[0:l] == "movies" {
+							if l := len("m"); len(elem) >= l && elem[0:l] == "m" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								switch r.Method {
-								case "GET":
-									s.handleSearchLibraryMoviesRequest([0]string{}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, "GET")
-								}
-
-								return
+								break
 							}
 							switch elem[0] {
-							case '/': // Prefix: "/"
+							case 'o': // Prefix: "ovies"
 
-								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								if l := len("ovies"); len(elem) >= l && elem[0:l] == "ovies" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
 								if len(elem) == 0 {
-									break
+									switch r.Method {
+									case "GET":
+										s.handleSearchLibraryMoviesRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
 								}
 								switch elem[0] {
-								case 'a': // Prefix: "autocomplete"
+								case '/': // Prefix: "/"
 
-									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
 									if len(elem) == 0 {
-										// Leaf node.
-										switch r.Method {
-										case "GET":
-											s.handleAutocompleteMoviesRequest([0]string{}, elemIsEscaped, w, r)
-										default:
-											s.notAllowed(w, r, "GET")
-										}
-
-										return
-									}
-
-								case 'f': // Prefix: "facets"
-
-									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
-										elem = elem[l:]
-									} else {
 										break
 									}
+									switch elem[0] {
+									case 'a': // Prefix: "autocomplete"
 
-									if len(elem) == 0 {
-										// Leaf node.
-										switch r.Method {
-										case "GET":
-											s.handleGetSearchFacetsRequest([0]string{}, elemIsEscaped, w, r)
-										default:
-											s.notAllowed(w, r, "GET")
+										if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+											elem = elem[l:]
+										} else {
+											break
 										}
 
-										return
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleAutocompleteMoviesRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
+									case 'f': // Prefix: "facets"
+
+										if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "GET":
+												s.handleGetSearchFacetsRequest([0]string{}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, "GET")
+											}
+
+											return
+										}
+
 									}
 
+								}
+
+							case 'u': // Prefix: "ulti"
+
+								if l := len("ulti"); len(elem) >= l && elem[0:l] == "ulti" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "GET":
+										s.handleSearchMultiRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "GET")
+									}
+
+									return
 								}
 
 							}
@@ -3330,6 +3436,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 											s.handleGetTVShowSearchFacetsRequest([0]string{}, elemIsEscaped, w, r)
 										default:
 											s.notAllowed(w, r, "GET")
+										}
+
+										return
+									}
+
+								case 'r': // Prefix: "reindex"
+
+									if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "POST":
+											s.handleReindexTVShowSearchRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, "POST")
 										}
 
 										return
@@ -3640,6 +3766,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 							switch elem[0] {
+							case 'b': // Prefix: "bulk-watched"
+								origElem := elem
+								if l := len("bulk-watched"); len(elem) >= l && elem[0:l] == "bulk-watched" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleMarkTVEpisodesBulkWatchedRequest([0]string{}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, "POST")
+									}
+
+									return
+								}
+
+								elem = origElem
 							case 'r': // Prefix: "recent"
 								origElem := elem
 								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {
@@ -5292,6 +5439,66 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 							}
 
+						case 'u': // Prefix: "users"
+
+							if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "GET":
+									r.name = AdminListUsersOperation
+									r.summary = "List and search users (admin)"
+									r.operationID = "adminListUsers"
+									r.operationGroup = ""
+									r.pathPattern = "/api/v1/admin/users"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+							switch elem[0] {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								// Param: "userId"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "DELETE":
+										r.name = AdminDeleteUserOperation
+										r.summary = "Delete a user (admin)"
+										r.operationID = "adminDeleteUser"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/admin/users/{userId}"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							}
+
 						}
 
 					case 'p': // Prefix: "pikeys"
@@ -5713,6 +5920,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 						}
 
+					}
+
+				case 'g': // Prefix: "genres"
+
+					if l := len("genres"); len(elem) >= l && elem[0:l] == "genres" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = ListGenresOperation
+							r.summary = "List all genres"
+							r.operationID = "listGenres"
+							r.operationGroup = ""
+							r.pathPattern = "/api/v1/genres"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 
 				case 'i': // Prefix: "images/"
@@ -8229,92 +8461,131 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							break
 						}
 						switch elem[0] {
-						case 'm': // Prefix: "movies"
+						case 'm': // Prefix: "m"
 
-							if l := len("movies"); len(elem) >= l && elem[0:l] == "movies" {
+							if l := len("m"); len(elem) >= l && elem[0:l] == "m" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								switch method {
-								case "GET":
-									r.name = SearchLibraryMoviesOperation
-									r.summary = "Search movies in library"
-									r.operationID = "searchLibraryMovies"
-									r.operationGroup = ""
-									r.pathPattern = "/api/v1/search/movies"
-									r.args = args
-									r.count = 0
-									return r, true
-								default:
-									return
-								}
+								break
 							}
 							switch elem[0] {
-							case '/': // Prefix: "/"
+							case 'o': // Prefix: "ovies"
 
-								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								if l := len("ovies"); len(elem) >= l && elem[0:l] == "ovies" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
 								if len(elem) == 0 {
-									break
+									switch method {
+									case "GET":
+										r.name = SearchLibraryMoviesOperation
+										r.summary = "Search movies in library"
+										r.operationID = "searchLibraryMovies"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/search/movies"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
 								}
 								switch elem[0] {
-								case 'a': // Prefix: "autocomplete"
+								case '/': // Prefix: "/"
 
-									if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
 									if len(elem) == 0 {
-										// Leaf node.
-										switch method {
-										case "GET":
-											r.name = AutocompleteMoviesOperation
-											r.summary = "Autocomplete movie titles"
-											r.operationID = "autocompleteMovies"
-											r.operationGroup = ""
-											r.pathPattern = "/api/v1/search/movies/autocomplete"
-											r.args = args
-											r.count = 0
-											return r, true
-										default:
-											return
-										}
-									}
-
-								case 'f': // Prefix: "facets"
-
-									if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
-										elem = elem[l:]
-									} else {
 										break
 									}
+									switch elem[0] {
+									case 'a': // Prefix: "autocomplete"
 
-									if len(elem) == 0 {
-										// Leaf node.
-										switch method {
-										case "GET":
-											r.name = GetSearchFacetsOperation
-											r.summary = "Get search facets"
-											r.operationID = "getSearchFacets"
-											r.operationGroup = ""
-											r.pathPattern = "/api/v1/search/movies/facets"
-											r.args = args
-											r.count = 0
-											return r, true
-										default:
-											return
+										if l := len("autocomplete"); len(elem) >= l && elem[0:l] == "autocomplete" {
+											elem = elem[l:]
+										} else {
+											break
 										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = AutocompleteMoviesOperation
+												r.summary = "Autocomplete movie titles"
+												r.operationID = "autocompleteMovies"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/search/movies/autocomplete"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 'f': // Prefix: "facets"
+
+										if l := len("facets"); len(elem) >= l && elem[0:l] == "facets" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "GET":
+												r.name = GetSearchFacetsOperation
+												r.summary = "Get search facets"
+												r.operationID = "getSearchFacets"
+												r.operationGroup = ""
+												r.pathPattern = "/api/v1/search/movies/facets"
+												r.args = args
+												r.count = 0
+												return r, true
+											default:
+												return
+											}
+										}
+
 									}
 
+								}
+
+							case 'u': // Prefix: "ulti"
+
+								if l := len("ulti"); len(elem) >= l && elem[0:l] == "ulti" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "GET":
+										r.name = SearchMultiOperation
+										r.summary = "Search across all collections"
+										r.operationID = "searchMulti"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/search/multi"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
 								}
 
 							}
@@ -8422,6 +8693,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.operationID = "getTVShowSearchFacets"
 											r.operationGroup = ""
 											r.pathPattern = "/api/v1/search/tvshows/facets"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+								case 'r': // Prefix: "reindex"
+
+									if l := len("reindex"); len(elem) >= l && elem[0:l] == "reindex" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "POST":
+											r.name = ReindexTVShowSearchOperation
+											r.summary = "Reindex all TV shows"
+											r.operationID = "reindexTVShowSearch"
+											r.operationGroup = ""
+											r.pathPattern = "/api/v1/search/tvshows/reindex"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -8808,6 +9104,32 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 							switch elem[0] {
+							case 'b': // Prefix: "bulk-watched"
+								origElem := elem
+								if l := len("bulk-watched"); len(elem) >= l && elem[0:l] == "bulk-watched" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = MarkTVEpisodesBulkWatchedOperation
+										r.summary = "Mark multiple episodes as watched"
+										r.operationID = "markTVEpisodesBulkWatched"
+										r.operationGroup = ""
+										r.pathPattern = "/api/v1/tvshows/episodes/bulk-watched"
+										r.args = args
+										r.count = 0
+										return r, true
+									default:
+										return
+									}
+								}
+
+								elem = origElem
 							case 'r': // Prefix: "recent"
 								origElem := elem
 								if l := len("recent"); len(elem) >= l && elem[0:l] == "recent" {

@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 )
@@ -80,8 +80,8 @@ func TestHandler_OIDC_AdminListOIDCProviders_Forbidden(t *testing.T) {
 	result, err := handler.AdminListOIDCProviders(ctx)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminListOIDCProvidersForbidden)
-	require.True(t, ok, "expected *ogen.AdminListOIDCProvidersForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminListOIDCProvidersUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminListOIDCProvidersUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminCreateOIDCProvider_Forbidden(t *testing.T) {
@@ -102,8 +102,8 @@ func TestHandler_OIDC_AdminCreateOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminCreateOIDCProvider(ctx, req)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminCreateOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminCreateOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminCreateOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminCreateOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminGetOIDCProvider_Forbidden(t *testing.T) {
@@ -118,8 +118,8 @@ func TestHandler_OIDC_AdminGetOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminGetOIDCProvider(ctx, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminGetOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminGetOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminGetOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminUpdateOIDCProvider_Forbidden(t *testing.T) {
@@ -135,8 +135,8 @@ func TestHandler_OIDC_AdminUpdateOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminUpdateOIDCProvider(ctx, req, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminUpdateOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminUpdateOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminUpdateOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminUpdateOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminDeleteOIDCProvider_Forbidden(t *testing.T) {
@@ -151,8 +151,8 @@ func TestHandler_OIDC_AdminDeleteOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminDeleteOIDCProvider(ctx, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminDeleteOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminDeleteOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminDeleteOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminDeleteOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminEnableOIDCProvider_Forbidden(t *testing.T) {
@@ -167,8 +167,8 @@ func TestHandler_OIDC_AdminEnableOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminEnableOIDCProvider(ctx, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminEnableOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminEnableOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminEnableOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminEnableOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminDisableOIDCProvider_Forbidden(t *testing.T) {
@@ -183,8 +183,8 @@ func TestHandler_OIDC_AdminDisableOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminDisableOIDCProvider(ctx, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminDisableOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminDisableOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminDisableOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminDisableOIDCProviderUnauthorized, got %T", result)
 }
 
 func TestHandler_OIDC_AdminSetDefaultOIDCProvider_Forbidden(t *testing.T) {
@@ -199,6 +199,6 @@ func TestHandler_OIDC_AdminSetDefaultOIDCProvider_Forbidden(t *testing.T) {
 	result, err := handler.AdminSetDefaultOIDCProvider(ctx, params)
 	require.NoError(t, err)
 
-	_, ok := result.(*ogen.AdminSetDefaultOIDCProviderForbidden)
-	require.True(t, ok, "expected *ogen.AdminSetDefaultOIDCProviderForbidden, got %T", result)
+	_, ok := result.(*ogen.AdminSetDefaultOIDCProviderUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminSetDefaultOIDCProviderUnauthorized, got %T", result)
 }

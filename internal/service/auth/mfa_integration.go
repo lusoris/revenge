@@ -7,6 +7,7 @@ import (
 	"net/netip"
 	"time"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/service/mfa"
 )
@@ -43,11 +44,12 @@ type MFALoginResponse struct {
 
 // MFAVerifyRequest contains MFA verification data
 type MFAVerifyRequest struct {
-	UserID            uuid.UUID   `json:"user_id"`
-	Method            string      `json:"method"`                       // "totp", "webauthn", "backup_code"
-	Code              string      `json:"code,omitempty"`               // For TOTP or backup code
-	ClientIP          *netip.Addr `json:"-"`                            // For backup code IP tracking
-	WebAuthnAssertion interface{} `json:"webauthn_assertion,omitempty"` // For WebAuthn
+	UserID            uuid.UUID                                  `json:"user_id"`
+	Method            string                                     `json:"method"`                       // "totp", "webauthn", "backup_code"
+	Code              string                                     `json:"code,omitempty"`               // For TOTP or backup code
+	ClientIP          *netip.Addr                                `json:"-"`                            // For backup code IP tracking
+	Username          string                                     `json:"-"`                            // For WebAuthn user lookup
+	WebAuthnAssertion *protocol.ParsedCredentialAssertionData    `json:"-"`                            // For WebAuthn
 }
 
 // CheckMFARequired checks if the user requires MFA verification
@@ -107,9 +109,10 @@ func (m *MFAAuthenticator) VerifyMFA(ctx context.Context, req MFAVerifyRequest) 
 		return m.mfaManager.VerifyBackupCode(ctx, req.UserID, req.Code, clientIP)
 
 	case "webauthn":
-		// WebAuthn verification would go here
-		// This requires implementing the assertion verification in the MFA manager
-		return nil, errors.New("webauthn verification not yet implemented")
+		if req.WebAuthnAssertion == nil {
+			return nil, errors.New("webauthn assertion data is required")
+		}
+		return m.mfaManager.VerifyWebAuthn(ctx, req.UserID, req.Username, req.WebAuthnAssertion)
 
 	default:
 		return nil, fmt.Errorf("unsupported MFA method: %s", req.Method)

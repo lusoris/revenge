@@ -14,7 +14,10 @@ type Querier interface {
 	// Movie Genres Operations
 	AddMovieGenre(ctx context.Context, arg AddMovieGenreParams) error
 	AddMovieToCollection(ctx context.Context, arg AddMovieToCollectionParams) error
+	CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error)
+	CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error)
 	CountMovies(ctx context.Context) (int64, error)
+	CountTopRated(ctx context.Context, voteCount *int32) (int64, error)
 	// Movie CRUD Operations
 	CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie, error)
 	// Movie Collections Operations
@@ -43,8 +46,9 @@ type Querier interface {
 	GetUserMovieStats(ctx context.Context, userID uuid.UUID) (GetUserMovieStatsRow, error)
 	GetWatchProgress(ctx context.Context, arg GetWatchProgressParams) (MovieWatched, error)
 	ListContinueWatching(ctx context.Context, arg ListContinueWatchingParams) ([]ListContinueWatchingRow, error)
-	ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
-	ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	ListDistinctMovieGenres(ctx context.Context) ([]ListDistinctMovieGenresRow, error)
+	ListMovieCast(ctx context.Context, arg ListMovieCastParams) ([]MovieCredit, error)
+	ListMovieCrew(ctx context.Context, arg ListMovieCrewParams) ([]MovieCredit, error)
 	ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error)
 	ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
 	ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie, error)
@@ -54,10 +58,6 @@ type Querier interface {
 	ListRecentlyAdded(ctx context.Context, arg ListRecentlyAddedParams) ([]Movie, error)
 	ListTopRated(ctx context.Context, arg ListTopRatedParams) ([]Movie, error)
 	ListWatchedMovies(ctx context.Context, arg ListWatchedMoviesParams) ([]ListWatchedMoviesRow, error)
-	// Placeholder query for movie content module (v0.3.0+)
-	// This minimal query is here to satisfy sqlc's requirement for non-empty query directories
-	// Real movie queries will be implemented in v0.3.0
-	MoviePlaceholder(ctx context.Context) (int32, error)
 	RemoveMovieFromCollection(ctx context.Context, arg RemoveMovieFromCollectionParams) error
 	SearchMoviesByTitle(ctx context.Context, arg SearchMoviesByTitleParams) ([]Movie, error)
 	SearchMoviesByTitleAnyLanguage(ctx context.Context, arg SearchMoviesByTitleAnyLanguageParams) ([]Movie, error)

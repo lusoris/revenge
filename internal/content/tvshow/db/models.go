@@ -97,7 +97,7 @@ type MfaBackupCode struct {
 }
 
 // Movie metadata from TMDb/Radarr with library tracking
-type Movie struct {
+type MovieMovie struct {
 	// UUID v7 primary key (time-ordered)
 	ID uuid.UUID `json:"id"`
 	// The Movie Database (TMDb) ID - primary metadata source
@@ -148,7 +148,7 @@ type Movie struct {
 }
 
 // Movie collections from TMDb (e.g., MCU, Star Wars)
-type MovieCollection struct {
+type MovieMovieCollection struct {
 	ID uuid.UUID `json:"id"`
 	// TMDb collection ID for metadata sync
 	TmdbCollectionID *int32             `json:"tmdbCollectionId"`
@@ -162,7 +162,7 @@ type MovieCollection struct {
 }
 
 // Junction table linking movies to collections
-type MovieCollectionMember struct {
+type MovieMovieCollectionMember struct {
 	ID           uuid.UUID `json:"id"`
 	CollectionID uuid.UUID `json:"collectionId"`
 	MovieID      uuid.UUID `json:"movieId"`
@@ -172,7 +172,7 @@ type MovieCollectionMember struct {
 }
 
 // Cast and crew information from TMDb
-type MovieCredit struct {
+type MovieMovieCredit struct {
 	ID      uuid.UUID `json:"id"`
 	MovieID uuid.UUID `json:"movieId"`
 	// TMDb person ID for linking to person data
@@ -195,7 +195,7 @@ type MovieCredit struct {
 }
 
 // Physical media files associated with movies
-type MovieFile struct {
+type MovieMovieFile struct {
 	ID      uuid.UUID `json:"id"`
 	MovieID uuid.UUID `json:"movieId"`
 	// Absolute path to file on disk
@@ -229,7 +229,7 @@ type MovieFile struct {
 }
 
 // Junction table linking movies to TMDb genres
-type MovieGenre struct {
+type MovieMovieGenre struct {
 	ID      uuid.UUID `json:"id"`
 	MovieID uuid.UUID `json:"movieId"`
 	// TMDb genre ID (28=Action, 35=Comedy, etc.)
@@ -240,7 +240,7 @@ type MovieGenre struct {
 }
 
 // User watch history and progress tracking for movies
-type MovieWatched struct {
+type MovieMovieWatched struct {
 	ID      uuid.UUID `json:"id"`
 	UserID  uuid.UUID `json:"userId"`
 	MovieID uuid.UUID `json:"movieId"`
@@ -433,6 +433,16 @@ type SharedServerSetting struct {
 	CreatedAt     time.Time      `json:"createdAt"`
 	UpdatedAt     time.Time      `json:"updatedAt"`
 	UpdatedBy     pgtype.UUID    `json:"updatedBy"`
+}
+
+// Pre-computed server-wide aggregate statistics
+type SharedServerStat struct {
+	// Unique metric identifier (e.g. total_users, total_movies)
+	StatKey string `json:"statKey"`
+	// Integer metric value
+	StatValue int64 `json:"statValue"`
+	// When this value was last recomputed
+	ComputedAt time.Time `json:"computedAt"`
 }
 
 // User sessions with JWT token management

@@ -81,6 +81,9 @@ type ServerParams struct {
 	LibraryService  *library.Service
 	SearchService       *search.MovieSearchService   `optional:"true"`
 	TVShowSearchService *search.TVShowSearchService `optional:"true"`
+	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
+	SeasonSearchService  *search.SeasonSearchService  `optional:"true"`
+	PersonSearchService  *search.PersonSearchService  `optional:"true"`
 	TokenManager    auth.TokenManager
 	// Cache client for Redis-based rate limiting
 	CacheClient *cache.Client `optional:"true"`
@@ -133,6 +136,9 @@ func NewServer(p ServerParams) (*Server, error) {
 		libraryService:  p.LibraryService,
 		searchService:       p.SearchService,
 		tvshowSearchService: p.TVShowSearchService,
+		episodeSearchService: p.EpisodeSearchService,
+		seasonSearchService:  p.SeasonSearchService,
+		personSearchService:  p.PersonSearchService,
 		tokenManager:    p.TokenManager,
 		mfaHandler:      mfaHandler,
 		movieHandler:    p.MovieHandler,
@@ -204,6 +210,7 @@ func NewServer(p ServerParams) (*Server, error) {
 				ogen.WithMiddleware(
 					middleware.RequestIDMiddleware(),
 					middleware.RequestMetadataMiddleware(),
+					middleware.CacheControlMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					redisAuthLimiter.Middleware(),
 					redisGlobalLimiter.Middleware(),
@@ -248,6 +255,7 @@ func NewServer(p ServerParams) (*Server, error) {
 				ogen.WithMiddleware(
 					middleware.RequestIDMiddleware(),
 					middleware.RequestMetadataMiddleware(),
+					middleware.CacheControlMiddleware(),
 					observability.HTTPMetricsMiddleware(),
 					authLimiter.Middleware(),
 					globalLimiter.Middleware(),
@@ -263,6 +271,7 @@ func NewServer(p ServerParams) (*Server, error) {
 			ogen.WithMiddleware(
 				middleware.RequestIDMiddleware(),
 				middleware.RequestMetadataMiddleware(),
+				middleware.CacheControlMiddleware(),
 				observability.HTTPMetricsMiddleware(),
 			),
 			ogen.WithErrorHandler(middleware.ErrorHandler),
@@ -310,6 +319,9 @@ func NewServer(p ServerParams) (*Server, error) {
 
 	// CSRF protection (only active when cookie auth is enabled)
 	rootHandler = middleware.CSRFMiddleware(p.Config.Server.CookieAuth)(rootHandler)
+
+	// Security headers (CSP, X-Frame-Options, X-Content-Type-Options, etc.)
+	rootHandler = middleware.SecurityHeadersMiddleware()(rootHandler)
 
 	// Wrap with CORS middleware (outermost layer so all responses get CORS headers,
 	// including preflight OPTIONS, error responses, and HLS endpoints).

@@ -5,6 +5,8 @@ package movie
 import (
 	context "context"
 
+	content "github.com/lusoris/revenge/internal/content"
+
 	mock "github.com/stretchr/testify/mock"
 
 	uuid "github.com/google/uuid"
@@ -173,6 +175,177 @@ func (_c *MockMovieRepository_CountMovies_Call) Return(_a0 int64, _a1 error) *Mo
 }
 
 func (_c *MockMovieRepository_CountMovies_Call) RunAndReturn(run func(context.Context) (int64, error)) *MockMovieRepository_CountMovies_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CountMovieCast provides a mock function with given fields: ctx, movieID
+func (_m *MockMovieRepository) CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	ret := _m.Called(ctx, movieID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountMovieCast")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (int64, error)); ok {
+		return rf(ctx, movieID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) int64); ok {
+		r0 = rf(ctx, movieID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = rf(ctx, movieID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_CountMovieCast_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountMovieCast'
+type MockMovieRepository_CountMovieCast_Call struct {
+	*mock.Call
+}
+
+// CountMovieCast is a helper method to define mock.On call
+//   - ctx context.Context
+//   - movieID uuid.UUID
+func (_e *MockMovieRepository_Expecter) CountMovieCast(ctx interface{}, movieID interface{}) *MockMovieRepository_CountMovieCast_Call {
+	return &MockMovieRepository_CountMovieCast_Call{Call: _e.mock.On("CountMovieCast", ctx, movieID)}
+}
+
+func (_c *MockMovieRepository_CountMovieCast_Call) Run(run func(ctx context.Context, movieID uuid.UUID)) *MockMovieRepository_CountMovieCast_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_CountMovieCast_Call) Return(_a0 int64, _a1 error) *MockMovieRepository_CountMovieCast_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_CountMovieCast_Call) RunAndReturn(run func(context.Context, uuid.UUID) (int64, error)) *MockMovieRepository_CountMovieCast_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CountMovieCrew provides a mock function with given fields: ctx, movieID
+func (_m *MockMovieRepository) CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	ret := _m.Called(ctx, movieID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountMovieCrew")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (int64, error)); ok {
+		return rf(ctx, movieID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) int64); ok {
+		r0 = rf(ctx, movieID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = rf(ctx, movieID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_CountMovieCrew_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountMovieCrew'
+type MockMovieRepository_CountMovieCrew_Call struct {
+	*mock.Call
+}
+
+// CountMovieCrew is a helper method to define mock.On call
+//   - ctx context.Context
+//   - movieID uuid.UUID
+func (_e *MockMovieRepository_Expecter) CountMovieCrew(ctx interface{}, movieID interface{}) *MockMovieRepository_CountMovieCrew_Call {
+	return &MockMovieRepository_CountMovieCrew_Call{Call: _e.mock.On("CountMovieCrew", ctx, movieID)}
+}
+
+func (_c *MockMovieRepository_CountMovieCrew_Call) Run(run func(ctx context.Context, movieID uuid.UUID)) *MockMovieRepository_CountMovieCrew_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_CountMovieCrew_Call) Return(_a0 int64, _a1 error) *MockMovieRepository_CountMovieCrew_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_CountMovieCrew_Call) RunAndReturn(run func(context.Context, uuid.UUID) (int64, error)) *MockMovieRepository_CountMovieCrew_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CountTopRated provides a mock function with given fields: ctx, minVotes
+func (_m *MockMovieRepository) CountTopRated(ctx context.Context, minVotes int32) (int64, error) {
+	ret := _m.Called(ctx, minVotes)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountTopRated")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int32) (int64, error)); ok {
+		return rf(ctx, minVotes)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int32) int64); ok {
+		r0 = rf(ctx, minVotes)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+		r1 = rf(ctx, minVotes)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_CountTopRated_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountTopRated'
+type MockMovieRepository_CountTopRated_Call struct {
+	*mock.Call
+}
+
+// CountTopRated is a helper method to define mock.On call
+//   - ctx context.Context
+//   - minVotes int32
+func (_e *MockMovieRepository_Expecter) CountTopRated(ctx interface{}, minVotes interface{}) *MockMovieRepository_CountTopRated_Call {
+	return &MockMovieRepository_CountTopRated_Call{Call: _e.mock.On("CountTopRated", ctx, minVotes)}
+}
+
+func (_c *MockMovieRepository_CountTopRated_Call) Run(run func(ctx context.Context, minVotes int32)) *MockMovieRepository_CountTopRated_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(int32))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_CountTopRated_Call) Return(_a0 int64, _a1 error) *MockMovieRepository_CountTopRated_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_CountTopRated_Call) RunAndReturn(run func(context.Context, int32) (int64, error)) *MockMovieRepository_CountTopRated_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1477,9 +1650,9 @@ func (_c *MockMovieRepository_ListContinueWatching_Call) RunAndReturn(run func(c
 	return _c
 }
 
-// ListMovieCast provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	ret := _m.Called(ctx, movieID)
+// ListMovieCast provides a mock function with given fields: ctx, movieID, limit, offset
+func (_m *MockMovieRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID, limit int32, offset int32) ([]MovieCredit, error) {
+	ret := _m.Called(ctx, movieID, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieCast")
@@ -1487,19 +1660,19 @@ func (_m *MockMovieRepository) ListMovieCast(ctx context.Context, movieID uuid.U
 
 	var r0 []MovieCredit
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieCredit, error)); ok {
-		return rf(ctx, movieID)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) ([]MovieCredit, error)); ok {
+		return rf(ctx, movieID, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieCredit); ok {
-		r0 = rf(ctx, movieID)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) []MovieCredit); ok {
+		r0 = rf(ctx, movieID, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]MovieCredit)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
-		r1 = rf(ctx, movieID)
+	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID, int32, int32) error); ok {
+		r1 = rf(ctx, movieID, limit, offset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1515,13 +1688,15 @@ type MockMovieRepository_ListMovieCast_Call struct {
 // ListMovieCast is a helper method to define mock.On call
 //   - ctx context.Context
 //   - movieID uuid.UUID
-func (_e *MockMovieRepository_Expecter) ListMovieCast(ctx interface{}, movieID interface{}) *MockMovieRepository_ListMovieCast_Call {
-	return &MockMovieRepository_ListMovieCast_Call{Call: _e.mock.On("ListMovieCast", ctx, movieID)}
+//   - limit int32
+//   - offset int32
+func (_e *MockMovieRepository_Expecter) ListMovieCast(ctx interface{}, movieID interface{}, limit interface{}, offset interface{}) *MockMovieRepository_ListMovieCast_Call {
+	return &MockMovieRepository_ListMovieCast_Call{Call: _e.mock.On("ListMovieCast", ctx, movieID, limit, offset)}
 }
 
-func (_c *MockMovieRepository_ListMovieCast_Call) Run(run func(ctx context.Context, movieID uuid.UUID)) *MockMovieRepository_ListMovieCast_Call {
+func (_c *MockMovieRepository_ListMovieCast_Call) Run(run func(ctx context.Context, movieID uuid.UUID, limit int32, offset int32)) *MockMovieRepository_ListMovieCast_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uuid.UUID))
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(int32), args[3].(int32))
 	})
 	return _c
 }
@@ -1531,14 +1706,14 @@ func (_c *MockMovieRepository_ListMovieCast_Call) Return(_a0 []MovieCredit, _a1 
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCast_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCast_Call {
+func (_c *MockMovieRepository_ListMovieCast_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32, int32) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCast_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListMovieCrew provides a mock function with given fields: ctx, movieID
-func (_m *MockMovieRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	ret := _m.Called(ctx, movieID)
+// ListMovieCrew provides a mock function with given fields: ctx, movieID, limit, offset
+func (_m *MockMovieRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID, limit int32, offset int32) ([]MovieCredit, error) {
+	ret := _m.Called(ctx, movieID, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMovieCrew")
@@ -1546,19 +1721,19 @@ func (_m *MockMovieRepository) ListMovieCrew(ctx context.Context, movieID uuid.U
 
 	var r0 []MovieCredit
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]MovieCredit, error)); ok {
-		return rf(ctx, movieID)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) ([]MovieCredit, error)); ok {
+		return rf(ctx, movieID, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) []MovieCredit); ok {
-		r0 = rf(ctx, movieID)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, int32) []MovieCredit); ok {
+		r0 = rf(ctx, movieID, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]MovieCredit)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
-		r1 = rf(ctx, movieID)
+	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID, int32, int32) error); ok {
+		r1 = rf(ctx, movieID, limit, offset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1574,13 +1749,15 @@ type MockMovieRepository_ListMovieCrew_Call struct {
 // ListMovieCrew is a helper method to define mock.On call
 //   - ctx context.Context
 //   - movieID uuid.UUID
-func (_e *MockMovieRepository_Expecter) ListMovieCrew(ctx interface{}, movieID interface{}) *MockMovieRepository_ListMovieCrew_Call {
-	return &MockMovieRepository_ListMovieCrew_Call{Call: _e.mock.On("ListMovieCrew", ctx, movieID)}
+//   - limit int32
+//   - offset int32
+func (_e *MockMovieRepository_Expecter) ListMovieCrew(ctx interface{}, movieID interface{}, limit interface{}, offset interface{}) *MockMovieRepository_ListMovieCrew_Call {
+	return &MockMovieRepository_ListMovieCrew_Call{Call: _e.mock.On("ListMovieCrew", ctx, movieID, limit, offset)}
 }
 
-func (_c *MockMovieRepository_ListMovieCrew_Call) Run(run func(ctx context.Context, movieID uuid.UUID)) *MockMovieRepository_ListMovieCrew_Call {
+func (_c *MockMovieRepository_ListMovieCrew_Call) Run(run func(ctx context.Context, movieID uuid.UUID, limit int32, offset int32)) *MockMovieRepository_ListMovieCrew_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uuid.UUID))
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(int32), args[3].(int32))
 	})
 	return _c
 }
@@ -1590,7 +1767,7 @@ func (_c *MockMovieRepository_ListMovieCrew_Call) Return(_a0 []MovieCredit, _a1 
 	return _c
 }
 
-func (_c *MockMovieRepository_ListMovieCrew_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCrew_Call {
+func (_c *MockMovieRepository_ListMovieCrew_Call) RunAndReturn(run func(context.Context, uuid.UUID, int32, int32) ([]MovieCredit, error)) *MockMovieRepository_ListMovieCrew_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1709,6 +1886,64 @@ func (_c *MockMovieRepository_ListMovieGenres_Call) Return(_a0 []MovieGenre, _a1
 }
 
 func (_c *MockMovieRepository_ListMovieGenres_Call) RunAndReturn(run func(context.Context, uuid.UUID) ([]MovieGenre, error)) *MockMovieRepository_ListMovieGenres_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDistinctMovieGenres provides a mock function with given fields: ctx
+func (_m *MockMovieRepository) ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDistinctMovieGenres")
+	}
+
+	var r0 []content.GenreSummary
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]content.GenreSummary, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []content.GenreSummary); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]content.GenreSummary)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockMovieRepository_ListDistinctMovieGenres_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDistinctMovieGenres'
+type MockMovieRepository_ListDistinctMovieGenres_Call struct {
+	*mock.Call
+}
+
+// ListDistinctMovieGenres is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockMovieRepository_Expecter) ListDistinctMovieGenres(ctx interface{}) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	return &MockMovieRepository_ListDistinctMovieGenres_Call{Call: _e.mock.On("ListDistinctMovieGenres", ctx)}
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) Run(run func(ctx context.Context)) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) Return(_a0 []content.GenreSummary, _a1 error) *MockMovieRepository_ListDistinctMovieGenres_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockMovieRepository_ListDistinctMovieGenres_Call) RunAndReturn(run func(context.Context) ([]content.GenreSummary, error)) *MockMovieRepository_ListDistinctMovieGenres_Call {
 	_c.Call.Return(run)
 	return _c
 }

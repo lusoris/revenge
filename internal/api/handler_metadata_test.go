@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/metadata"
@@ -139,7 +139,13 @@ func (m *mockMetadataService) RefreshTVShow(_ context.Context, _ uuid.UUID) erro
 
 func (m *mockMetadataService) ClearCache() {}
 
+func (m *mockMetadataService) EnrichMovieRatings(_ context.Context, _ *metadata.MovieMetadata) {}
+
+func (m *mockMetadataService) EnrichTVShowRatings(_ context.Context, _ *metadata.TVShowMetadata) {}
+
 func (m *mockMetadataService) RegisterProvider(_ metadata.Provider) {}
+
+func (m *mockMetadataService) SetJobQueue(_ metadata.JobQueue) {}
 
 func (m *mockMetadataService) GetProviders() []metadata.Provider {
 	return nil

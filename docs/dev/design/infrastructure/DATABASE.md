@@ -17,19 +17,18 @@ internal/infra/database/
 ├── module.go              # fx module (pool, queries, lifecycle hooks)
 ├── migrate.go             # golang-migrate with embedded FS (iofs)
 ├── logger.go              # QueryLogger (slog) with slow query detection
-├── metrics.go             # 12 Prometheus pool metrics
 ├── testing.go             # Embedded PostgreSQL for tests
-├── db/                    # sqlc-generated code (425 methods)
-│   ├── db.go              # DBTX interface, Queries struct
-│   ├── models.go          # 20+ model structs
-│   ├── querier.go         # Querier interface (425 methods)
-│   └── *.sql.go           # Generated query implementations
-├── queries/               # Hand-written SQL source
+├── queries/               # Hand-written SQL source (one dir per schema)
 │   ├── shared/            # Auth, sessions, settings, activity, library, MFA, OIDC, API keys
 │   ├── movie/             # Movie metadata queries
 │   ├── tvshow/            # TV show series/season/episode queries
-│   └── qar/               # Adult content queries (placeholder)
-└── migrations/shared/     # 32 versioned migrations (64 .sql files)
+│   ├── qar/               # Adult content queries (placeholder)
+│   └── <module>/          # Each new content module gets its own directory
+└── migrations/shared/     # Versioned migrations (all schemas in one sequence)
+
+# sqlc-generated code lives in each content module's db/ package:
+internal/infra/database/db/        # Shared queries (auth, sessions, settings, etc.)
+internal/content/<module>/db/      # Module-specific queries (one per content schema)
 ```
 
 ## Connection Pool
@@ -50,7 +49,7 @@ func Stats(pool *pgxpool.Pool) map[string]interface{}
 
 ## Migrations
 
-32 versioned migrations embedded via `//go:embed migrations/shared/*.sql`:
+36 versioned migrations embedded via `//go:embed migrations/shared/*.sql`:
 
 | Range | Coverage |
 |-------|----------|
@@ -60,8 +59,25 @@ func Stats(pool *pgxpool.Pool) map[string]interface{}
 | 016-020 | MFA (TOTP, WebAuthn, backup codes, MFA settings, session MFA tracking) |
 | 021-026 | Movies (table, files, credits, collections, genres, watched) |
 | 027-032 | Moderator role, TOTP cleanup, fine-grained permissions, failed logins, multi-language movies, TV shows |
+| 033-035 | Metadata language, movie soft delete, external ratings |
+| 036 | Create `movie` schema (migrate movie tables from `public`) |
 
-**Three-schema model**: `shared` (auth/config), `public` (content), `qar` (adult content)
+**Schema-per-module model**: each content module owns a dedicated PostgreSQL schema.
+All schemas live in the same database to allow cross-schema JOINs (e.g. `user_id` FKs into `shared.users`) and share a single connection pool.
+
+| Schema | Module | Purpose |
+|--------|--------|---------|
+| `shared` | infra | Auth, sessions, settings, RBAC, API keys, OIDC, MFA, libraries, activity |
+| `movie` | content/movie | Movies, files, credits, collections, genres, watch progress |
+| `tvshow` | content/tvshow | Series, seasons, episodes, files, credits, genres, networks, watch progress |
+| `qar` | content/qar | Adult content (placeholder) |
+| *`<name>`* | *content/`<name>`* | *New content modules follow the same convention* |
+
+**Convention for adding a new content module**:
+1. Create a migration: `CREATE SCHEMA IF NOT EXISTS <name>;` + tables
+2. Add SQL queries in `queries/<name>/`
+3. Add a sqlc target outputting to `internal/content/<name>/db/`
+4. Add repository, service, and handler layers in `internal/content/<name>/`
 
 ```go
 func MigrateUp(databaseURL string, logger *slog.Logger) error
@@ -72,18 +88,17 @@ func MigrateTo(databaseURL string, version uint, logger *slog.Logger) error
 
 ## Query Generation (sqlc)
 
-**sqlc v1.30.0** generates 425 typed Go methods from hand-written SQL queries.
+**sqlc v1.30.0** generates typed Go methods from hand-written SQL queries.
+Each content schema has its own sqlc target (separate `queries/` dir → separate `db/` package).
 
-Query domains:
-- **Users** (749 lines): CRUD, search, count, avatar management
-- **Sessions** (522): Token management, MFA tracking, device fingerprints
-- **Auth Tokens** (610): Lifecycle, device filtering, revocation
-- **API Keys** (305): CRUD, scope management, usage tracking
-- **MFA** (782): TOTP, WebAuthn, backup codes, MFA settings
-- **OIDC** (876): Providers, states, user links, OAuth2 flow
-- **Settings** (619): Server/user settings, upsert operations
-- **Activity** (643): Audit logs, search/filter, stats
-- **Library** (923): Libraries, permissions, scans, progress
+| Target | Queries | Output | Scope |
+|--------|---------|--------|-------|
+| shared | `queries/shared/` | `internal/infra/database/db/` | Users, sessions, auth tokens, API keys, MFA, OIDC, settings, activity, libraries |
+| movie | `queries/movie/` | `internal/content/movie/db/` | Movies, files, credits, collections, genres, watch progress |
+| tvshow | `queries/tvshow/` | `internal/content/tvshow/db/` | Series, seasons, episodes, files, credits, genres, networks, watch progress |
+| qar | `queries/qar/` | `internal/content/qar/db/` | *(placeholder)* |
+
+All targets share the same migration source (`migrations/shared/`) so sqlc can resolve cross-schema references.
 
 ## Query Logging
 

@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -334,8 +335,8 @@ func (s *MovieSearchService) Autocomplete(ctx context.Context, query string, lim
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr("true"),
-		DropTokensThreshold: ptr(0),
+		Prefix:              ptr.To("true"),
+		DropTokensThreshold: ptr.To(0),
 	}
 
 	start := time.Now()
@@ -424,8 +425,8 @@ func (s *MovieSearchService) ReindexAll(ctx context.Context, movieRepo movie.Rep
 		moviesWithRelations := make([]MovieWithRelations, 0, len(movies))
 		for _, m := range movies {
 			genres, _ := movieRepo.ListMovieGenres(ctx, m.ID)
-			cast, _ := movieRepo.ListMovieCast(ctx, m.ID)
-			crew, _ := movieRepo.ListMovieCrew(ctx, m.ID)
+			cast, _ := movieRepo.ListMovieCast(ctx, m.ID, 1000, 0)
+			crew, _ := movieRepo.ListMovieCrew(ctx, m.ID, 1000, 0)
 			files, _ := movieRepo.ListMovieFilesByMovieID(ctx, m.ID)
 
 			// Combine cast and crew into credits

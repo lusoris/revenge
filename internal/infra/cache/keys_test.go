@@ -189,3 +189,34 @@ func TestAdditionalTTLs(t *testing.T) {
 	assert.Equal(t, 2*time.Minute, RecentlyAddedTTL)
 	assert.Equal(t, 5*time.Minute, TopRatedTTL)
 }
+
+func TestTVShowKeyPrefixes(t *testing.T) {
+	assert.Equal(t, "tvshow:", KeyPrefixTVShow)
+	assert.Equal(t, "tvshow:cast:", KeyPrefixTVShowCast)
+	assert.Equal(t, "tvshow:crew:", KeyPrefixTVShowCrew)
+	assert.Equal(t, "tvshow:genres:", KeyPrefixTVShowGenres)
+	assert.Equal(t, "tvshow:networks:", KeyPrefixTVShowNetworks)
+	assert.Equal(t, "tvshow:list:", KeyPrefixTVShowList)
+	assert.Equal(t, "tvshow:recent", KeyPrefixTVShowRecent)
+	assert.Equal(t, "tvshow:seasons:", KeyPrefixTVShowSeasons)
+	assert.Equal(t, "tvshow:episodes:", KeyPrefixTVShowEpisodes)
+}
+
+func TestTVShowKeys(t *testing.T) {
+	assert.Equal(t, "tvshow:series-uuid", TVShowKey("series-uuid"))
+	assert.Equal(t, "tvshow:cast:series-uuid", TVShowCastKey("series-uuid"))
+	assert.Equal(t, "tvshow:crew:series-uuid", TVShowCrewKey("series-uuid"))
+	assert.Equal(t, "tvshow:genres:series-uuid", TVShowGenresKey("series-uuid"))
+	assert.Equal(t, "tvshow:networks:series-uuid", TVShowNetworksKey("series-uuid"))
+	assert.Equal(t, "tvshow:list:filter-hash", TVShowListKey("filter-hash"))
+	assert.Equal(t, "tvshow:recent:10:0", TVShowRecentKey(10, 0))
+	assert.Equal(t, "tvshow:recent:25:50", TVShowRecentKey(25, 50))
+	assert.Equal(t, "tvshow:seasons:series-uuid", TVShowSeasonsKey("series-uuid"))
+	assert.Equal(t, "tvshow:episodes:season-uuid", TVShowEpisodesKey("season-uuid"))
+}
+
+func TestTVShowTTLs(t *testing.T) {
+	assert.Equal(t, 5*time.Minute, TVShowTTL)
+	assert.Equal(t, 10*time.Minute, TVShowMetaTTL)
+	assert.Equal(t, 5*time.Minute, TVShowSeasonTTL)
+}

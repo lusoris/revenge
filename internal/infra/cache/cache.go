@@ -4,7 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/redis/rueidis"
 
 	"github.com/lusoris/revenge/internal/infra/observability"
 )
@@ -173,37 +176,77 @@ func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
 	return false, nil
 }
 
-// Invalidate removes all keys matching a pattern from L2 cache.
-// Note: L1 is fully cleared as pattern matching is not supported.
+// Invalidate removes all keys matching a pattern from both cache layers.
+//
+// L1: If the pattern is a simple prefix glob (e.g. "movie:*"), only matching
+// keys are evicted. Otherwise L1 is fully cleared as a safe fallback.
+//
+// L2: Uses SCAN (non-blocking, cursor-based) instead of KEYS to avoid
+// blocking Redis on large keyspaces. Matching keys are deleted in batches.
 func (c *Cache) Invalidate(ctx context.Context, pattern string) error {
-	// Clear entire L1 (pattern matching not supported in otter)
-	c.l1.Clear()
-	observability.CacheSize.WithLabelValues(c.name).Set(0)
+	// L1: targeted prefix delete when pattern is "prefix*"
+	if prefix, ok := simpleGlobPrefix(pattern); ok {
+		deleted := c.l1.DeleteByPrefix(prefix)
+		observability.CacheSize.WithLabelValues(c.name).Set(float64(c.l1.Size()))
+		_ = deleted
+	} else {
+		c.l1.Clear()
+		observability.CacheSize.WithLabelValues(c.name).Set(0)
+	}
 
-	// Invalidate pattern in L2 if available
+	// L2: use SCAN to find matching keys (non-blocking)
 	if c.client != nil && c.client.rueidisClient != nil {
-		// Use KEYS command to find matching keys (not recommended for production large datasets)
-		keysCmd := c.client.rueidisClient.B().Keys().Pattern(pattern).Build()
-		keysResp := c.client.rueidisClient.Do(ctx, keysCmd)
+		client := c.client.rueidisClient
 
-		if err := keysResp.Error(); err != nil {
-			return fmt.Errorf("L2 cache keys lookup failed: %w", err)
+		scanner := rueidis.NewScanner(func(cursor uint64) (rueidis.ScanEntry, error) {
+			cmd := client.B().Scan().Cursor(cursor).Match(pattern).Count(100).Build()
+			return client.Do(ctx, cmd).AsScanEntry()
+		})
+
+		var batch []string
+		for key := range scanner.Iter() {
+			batch = append(batch, key)
+			if len(batch) >= 100 {
+				if err := c.deleteBatch(ctx, batch); err != nil {
+					return err
+				}
+				batch = batch[:0]
+			}
 		}
-
-		keys, err := keysResp.AsStrSlice()
-		if err != nil {
-			return fmt.Errorf("L2 cache keys decode failed: %w", err)
+		if err := scanner.Err(); err != nil {
+			return fmt.Errorf("L2 cache SCAN failed: %w", err)
 		}
-
-		if len(keys) > 0 {
-			delCmd := c.client.rueidisClient.B().Del().Key(keys...).Build()
-			if err := c.client.rueidisClient.Do(ctx, delCmd).Error(); err != nil {
-				return fmt.Errorf("L2 cache pattern delete failed: %w", err)
+		if len(batch) > 0 {
+			if err := c.deleteBatch(ctx, batch); err != nil {
+				return err
 			}
 		}
 	}
 
 	return nil
+}
+
+// deleteBatch deletes a slice of keys from L2.
+func (c *Cache) deleteBatch(ctx context.Context, keys []string) error {
+	cmd := c.client.rueidisClient.B().Del().Key(keys...).Build()
+	if err := c.client.rueidisClient.Do(ctx, cmd).Error(); err != nil {
+		return fmt.Errorf("L2 cache batch delete failed: %w", err)
+	}
+	return nil
+}
+
+// simpleGlobPrefix checks if pattern is a simple "prefix*" glob (no other
+// wildcards or special chars). Returns the prefix and true if so.
+func simpleGlobPrefix(pattern string) (string, bool) {
+	if !strings.HasSuffix(pattern, "*") {
+		return "", false
+	}
+	prefix := strings.TrimSuffix(pattern, "*")
+	// Reject patterns with wildcards or special glob chars in the prefix
+	if strings.ContainsAny(prefix, "*?[\\") {
+		return "", false
+	}
+	return prefix, true
 }
 
 // Close closes both L1 and L2 caches.

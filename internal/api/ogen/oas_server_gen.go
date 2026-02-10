@@ -26,6 +26,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/admin/oidc/providers/{providerId}
 	AdminDeleteOIDCProvider(ctx context.Context, params AdminDeleteOIDCProviderParams) (AdminDeleteOIDCProviderRes, error)
+	// AdminDeleteUser implements adminDeleteUser operation.
+	//
+	// Soft-deletes a user account. The user will no longer be able to log in.
+	//
+	// DELETE /api/v1/admin/users/{userId}
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
 	// AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
 	//
 	// Disables an OIDC provider.
@@ -96,6 +102,13 @@ type Handler interface {
 	//
 	// GET /api/v1/admin/oidc/providers
 	AdminListOIDCProviders(ctx context.Context) (AdminListOIDCProvidersRes, error)
+	// AdminListUsers implements adminListUsers operation.
+	//
+	// List all users with optional text search and filters. Searches across username, email, and display
+	// name.
+	//
+	// GET /api/v1/admin/users
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
 	// AdminSetDefaultOIDCProvider implements adminSetDefaultOIDCProvider operation.
 	//
 	// Sets an OIDC provider as the default for SSO.
@@ -758,6 +771,13 @@ type Handler interface {
 	//
 	// GET /api/v1/apikeys
 	ListAPIKeys(ctx context.Context) (ListAPIKeysRes, error)
+	// ListGenres implements listGenres operation.
+	//
+	// Returns all distinct genres across movies and TV shows with per-content-type item counts. Useful
+	// for building genre filter UIs. Genres are identified by their TMDb ID and name.
+	//
+	// GET /api/v1/genres
+	ListGenres(ctx context.Context) (ListGenresRes, error)
 	// ListLibraries implements listLibraries operation.
 	//
 	// List all libraries the authenticated user can access. Admins see all libraries.
@@ -884,6 +904,14 @@ type Handler interface {
 	//
 	// POST /api/v1/tvshows/episodes/{id}/watched
 	MarkTVEpisodeWatched(ctx context.Context, req OptMarkTVEpisodeWatchedReq, params MarkTVEpisodeWatchedParams) (MarkTVEpisodeWatchedRes, error)
+	// MarkTVEpisodesBulkWatched implements markTVEpisodesBulkWatched operation.
+	//
+	// Mark multiple episodes as fully watched in a single request.
+	// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+	// Episodes that do not exist are silently skipped.
+	//
+	// POST /api/v1/tvshows/episodes/bulk-watched
+	MarkTVEpisodesBulkWatched(ctx context.Context, req *BulkEpisodesWatchedRequest) (MarkTVEpisodesBulkWatchedRes, error)
 	// OidcAuthorize implements oidcAuthorize operation.
 	//
 	// Redirects to the OIDC provider's authorization endpoint.
@@ -939,6 +967,13 @@ type Handler interface {
 	//
 	// POST /api/v1/search/reindex
 	ReindexSearch(ctx context.Context) (ReindexSearchRes, error)
+	// ReindexTVShowSearch implements reindexTVShowSearch operation.
+	//
+	// Triggers a full reindex of all TV shows in the search engine.
+	// This is an admin-only operation and may take a while for large libraries.
+	//
+	// POST /api/v1/search/tvshows/reindex
+	ReindexTVShowSearch(ctx context.Context) (ReindexTVShowSearchRes, error)
 	// RemovePolicy implements removePolicy operation.
 	//
 	// Remove an authorization policy (admin only).
@@ -1023,6 +1058,13 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
+	// SearchMulti implements searchMulti operation.
+	//
+	// Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+	// in parallel, returning the top results from each collection. Designed for global search bars.
+	//
+	// GET /api/v1/search/multi
+	SearchMulti(ctx context.Context, params SearchMultiParams) (SearchMultiRes, error)
 	// SearchPersonMetadata implements searchPersonMetadata operation.
 	//
 	// Search for actors, directors, and other crew members. By default uses TMDb.

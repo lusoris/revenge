@@ -10,22 +10,19 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-)
 
-// Helper functions for creating test data
-func ptr[T any](v T) *T {
-	return &v
-}
+	"github.com/lusoris/revenge/internal/util/ptr"
+)
 
 func newTestMovie() *Movie {
 	return &Movie{
 		ID:        uuid.Must(uuid.NewV7()),
-		TMDbID:    ptr(int32(550)),
-		IMDbID:    ptr("tt0137523"),
+		TMDbID:    ptr.To(int32(550)),
+		IMDbID:    ptr.To("tt0137523"),
 		Title:     "Fight Club",
-		Year:      ptr(int32(1999)),
-		Runtime:   ptr(int32(139)),
-		Overview:  ptr("A depressed man suffering from insomnia meets a strange soap salesman."),
+		Year:      ptr.To(int32(1999)),
+		Runtime:   ptr.To(int32(139)),
+		Overview:  ptr.To("A depressed man suffering from insomnia meets a strange soap salesman."),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -135,10 +132,12 @@ func TestService_ListRecentlyAdded(t *testing.T) {
 	movies := []Movie{*newTestMovie()}
 
 	repo.On("ListRecentlyAdded", ctx, int32(10), int32(0)).Return(movies, nil)
+	repo.On("CountMovies", ctx).Return(int64(1), nil)
 
-	result, err := svc.ListRecentlyAdded(ctx, 10, 0)
+	result, total, err := svc.ListRecentlyAdded(ctx, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -149,10 +148,12 @@ func TestService_ListTopRated(t *testing.T) {
 	movies := []Movie{*newTestMovie()}
 
 	repo.On("ListTopRated", ctx, int32(100), int32(10), int32(0)).Return(movies, nil)
+	repo.On("CountTopRated", ctx, int32(100)).Return(int64(1), nil)
 
-	result, err := svc.ListTopRated(ctx, 100, 10, 0)
+	result, total, err := svc.ListTopRated(ctx, 100, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	repo.AssertExpectations(t)
 }
 
@@ -164,8 +165,8 @@ func TestService_CreateMovie(t *testing.T) {
 		movie := newTestMovie()
 		params := CreateMovieParams{
 			Title:  "Fight Club",
-			TMDbID: ptr(int32(550)),
-			Year:   ptr(int32(1999)),
+			TMDbID: ptr.To(int32(550)),
+			Year:   ptr.To(int32(1999)),
 		}
 
 		repo.On("CreateMovie", ctx, params).Return(movie, nil)
@@ -368,11 +369,13 @@ func TestService_GetMovieCast(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "Brad Pitt", CreditType: "cast"},
 	}
 
-	repo.On("ListMovieCast", ctx, movieID).Return(cast, nil)
+	repo.On("ListMovieCast", ctx, movieID, int32(10), int32(0)).Return(cast, nil)
+	repo.On("CountMovieCast", ctx, movieID).Return(int64(1), nil)
 
-	result, err := svc.GetMovieCast(ctx, movieID)
+	result, total, err := svc.GetMovieCast(ctx, movieID, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	assert.Equal(t, "Brad Pitt", result[0].Name)
 	repo.AssertExpectations(t)
 }
@@ -383,14 +386,16 @@ func TestService_GetMovieCrew(t *testing.T) {
 	ctx := context.Background()
 	movieID := uuid.Must(uuid.NewV7())
 	crew := []MovieCredit{
-		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr("Director")},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr.To("Director")},
 	}
 
-	repo.On("ListMovieCrew", ctx, movieID).Return(crew, nil)
+	repo.On("ListMovieCrew", ctx, movieID, int32(10), int32(0)).Return(crew, nil)
+	repo.On("CountMovieCrew", ctx, movieID).Return(int64(1), nil)
 
-	result, err := svc.GetMovieCrew(ctx, movieID)
+	result, total, err := svc.GetMovieCrew(ctx, movieID, 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
+	assert.Equal(t, int64(1), total)
 	assert.Equal(t, "David Fincher", result[0].Name)
 	repo.AssertExpectations(t)
 }
@@ -656,7 +661,7 @@ func TestService_GetContinueWatching(t *testing.T) {
 			Movie:           Movie{ID: uuid.Must(uuid.NewV7()), Title: "Fight Club"},
 			ProgressSeconds: 3000,
 			DurationSeconds: 8340,
-			ProgressPercent: ptr(int32(36)),
+			ProgressPercent: ptr.To(int32(36)),
 			LastWatchedAt:   time.Now(),
 		},
 	}
@@ -698,7 +703,7 @@ func TestService_GetUserStats(t *testing.T) {
 	stats := &UserMovieStats{
 		WatchedCount:    42,
 		InProgressCount: 5,
-		TotalWatches:    ptr(int64(50)),
+		TotalWatches:    ptr.To(int64(50)),
 	}
 
 	repo.On("GetUserMovieStats", ctx, userID).Return(stats, nil)

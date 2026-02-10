@@ -17,7 +17,7 @@ services:
       - REVENGE_LOG_LEVEL=debug
       - REVENGE_LOG_FORMAT=console
       - REVENGE_SERVER_PORT=8096
-      - REVENGE_DATABASE_URL=postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable
+      - REVENGE_DATABASE_URL=postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable&search_path=public,shared,movie,tvshow
       - REVENGE_CACHE_ENABLED=true
       - REVENGE_CACHE_URL=redis://dragonfly:6379
       - REVENGE_SEARCH_ENABLED=true

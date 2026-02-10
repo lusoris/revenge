@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Service defines business logic for movies
@@ -16,8 +17,8 @@ type Service interface {
 	ListMovies(ctx context.Context, filters ListFilters) ([]Movie, error)
 	CountMovies(ctx context.Context) (int64, error)
 	SearchMovies(ctx context.Context, query string, filters SearchFilters) ([]Movie, error)
-	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error)
-	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error)
+	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, int64, error)
+	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, int64, error)
 	CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error)
 	UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error)
 	DeleteMovie(ctx context.Context, id uuid.UUID) error
@@ -28,8 +29,8 @@ type Service interface {
 	DeleteMovieFile(ctx context.Context, id uuid.UUID) error
 
 	// Credits
-	GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
-	GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	GetMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error)
+	GetMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error)
 
 	// Collections
 	GetMovieCollection(ctx context.Context, id uuid.UUID) (*MovieCollection, error)
@@ -39,6 +40,7 @@ type Service interface {
 	// Genres
 	GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
 	GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
+	ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error)
 
 	// Watch progress
 	UpdateWatchProgress(ctx context.Context, userID, movieID uuid.UUID, progressSeconds, durationSeconds int32) (*MovieWatched, error)
@@ -97,14 +99,30 @@ func (s *movieService) SearchMovies(ctx context.Context, query string, filters S
 	return s.repo.SearchMoviesByTitle(ctx, query, filters.Limit, filters.Offset)
 }
 
-// ListRecentlyAdded returns recently added movies
-func (s *movieService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error) {
-	return s.repo.ListRecentlyAdded(ctx, limit, offset)
+// ListRecentlyAdded returns recently added movies with total count
+func (s *movieService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, int64, error) {
+	movies, err := s.repo.ListRecentlyAdded(ctx, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountMovies(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return movies, count, nil
 }
 
-// ListTopRated returns top-rated movies
-func (s *movieService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error) {
-	return s.repo.ListTopRated(ctx, minVotes, limit, offset)
+// ListTopRated returns top-rated movies with total count
+func (s *movieService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, int64, error) {
+	movies, err := s.repo.ListTopRated(ctx, minVotes, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountTopRated(ctx, minVotes)
+	if err != nil {
+		return nil, 0, err
+	}
+	return movies, count, nil
 }
 
 // CreateMovie creates a new movie
@@ -166,14 +184,30 @@ func (s *movieService) DeleteMovieFile(ctx context.Context, id uuid.UUID) error 
 	return s.repo.DeleteMovieFile(ctx, id)
 }
 
-// GetMovieCast returns the cast for a movie
-func (s *movieService) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	return s.repo.ListMovieCast(ctx, movieID)
+// GetMovieCast returns the cast for a movie with total count
+func (s *movieService) GetMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
+	credits, err := s.repo.ListMovieCast(ctx, movieID, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountMovieCast(ctx, movieID)
+	if err != nil {
+		return nil, 0, err
+	}
+	return credits, count, nil
 }
 
-// GetMovieCrew returns the crew for a movie
-func (s *movieService) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	return s.repo.ListMovieCrew(ctx, movieID)
+// GetMovieCrew returns the crew for a movie with total count
+func (s *movieService) GetMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
+	credits, err := s.repo.ListMovieCrew(ctx, movieID, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountMovieCrew(ctx, movieID)
+	if err != nil {
+		return nil, 0, err
+	}
+	return credits, count, nil
 }
 
 // GetMovieCollection retrieves a collection by ID
@@ -199,6 +233,11 @@ func (s *movieService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([
 // GetMoviesByGenre returns movies filtered by genre
 func (s *movieService) GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
 	return s.repo.ListMoviesByGenre(ctx, tmdbGenreID, limit, offset)
+}
+
+// ListDistinctGenres returns all distinct movie genres with item counts.
+func (s *movieService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return s.repo.ListDistinctMovieGenres(ctx)
 }
 
 // UpdateWatchProgress updates or creates watch progress for a user

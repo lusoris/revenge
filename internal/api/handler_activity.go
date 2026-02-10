@@ -3,12 +3,14 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
+
+	"log/slog"
 
 	"github.com/go-faster/jx"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/validate"
-	"log/slog"
 )
 
 // ============================================================================
@@ -19,11 +21,14 @@ import (
 // GET /api/v1/admin/activity
 func (h *Handler) SearchActivityLogs(ctx context.Context, params ogen.SearchActivityLogsParams) (ogen.SearchActivityLogsRes, error) {
 	// Admin check
-	if !h.isAdmin(ctx) {
-		return &ogen.SearchActivityLogsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.SearchActivityLogsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.SearchActivityLogsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Build search filters
@@ -104,11 +109,14 @@ func (h *Handler) SearchActivityLogs(ctx context.Context, params ogen.SearchActi
 // GET /api/v1/admin/activity/users/{userId}
 func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserActivityLogsParams) (ogen.GetUserActivityLogsRes, error) {
 	// Admin check
-	if !h.isAdmin(ctx) {
-		return &ogen.GetUserActivityLogsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetUserActivityLogsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetUserActivityLogsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	limit := int32(50)
@@ -160,11 +168,14 @@ func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserAc
 // GET /api/v1/admin/activity/resources/{resourceType}/{resourceId}
 func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetResourceActivityLogsParams) (ogen.GetResourceActivityLogsRes, error) {
 	// Admin check
-	if !h.isAdmin(ctx) {
-		return &ogen.GetResourceActivityLogsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetResourceActivityLogsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetResourceActivityLogsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	limit := int32(50)
@@ -217,11 +228,14 @@ func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetRe
 // GET /api/v1/admin/activity/stats
 func (h *Handler) GetActivityStats(ctx context.Context) (ogen.GetActivityStatsRes, error) {
 	// Admin check
-	if !h.isAdmin(ctx) {
-		return &ogen.GetActivityStatsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetActivityStatsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetActivityStatsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	stats, err := h.activityService.GetStats(ctx)
@@ -253,11 +267,14 @@ func (h *Handler) GetActivityStats(ctx context.Context) (ogen.GetActivityStatsRe
 // GET /api/v1/admin/activity/actions
 func (h *Handler) GetRecentActions(ctx context.Context, params ogen.GetRecentActionsParams) (ogen.GetRecentActionsRes, error) {
 	// Admin check
-	if !h.isAdmin(ctx) {
-		return &ogen.GetRecentActionsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetRecentActionsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetRecentActionsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	limit := int32(20)

@@ -40,6 +40,15 @@ func (UnimplementedHandler) AdminDeleteOIDCProvider(ctx context.Context, params 
 	return r, ht.ErrNotImplemented
 }
 
+// AdminDeleteUser implements adminDeleteUser operation.
+//
+// Soft-deletes a user account. The user will no longer be able to log in.
+//
+// DELETE /api/v1/admin/users/{userId}
+func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (r AdminDeleteUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminDisableOIDCProvider implements adminDisableOIDCProvider operation.
 //
 // Disables an OIDC provider.
@@ -137,6 +146,16 @@ func (UnimplementedHandler) AdminGetSonarrStatus(ctx context.Context) (r AdminGe
 //
 // GET /api/v1/admin/oidc/providers
 func (UnimplementedHandler) AdminListOIDCProviders(ctx context.Context) (r AdminListOIDCProvidersRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListUsers implements adminListUsers operation.
+//
+// List all users with optional text search and filters. Searches across username, email, and display
+// name.
+//
+// GET /api/v1/admin/users
+func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminListUsersParams) (r AdminListUsersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1120,6 +1139,16 @@ func (UnimplementedHandler) ListAPIKeys(ctx context.Context) (r ListAPIKeysRes, 
 	return r, ht.ErrNotImplemented
 }
 
+// ListGenres implements listGenres operation.
+//
+// Returns all distinct genres across movies and TV shows with per-content-type item counts. Useful
+// for building genre filter UIs. Genres are identified by their TMDb ID and name.
+//
+// GET /api/v1/genres
+func (UnimplementedHandler) ListGenres(ctx context.Context) (r ListGenresRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListLibraries implements listLibraries operation.
 //
 // List all libraries the authenticated user can access. Admins see all libraries.
@@ -1309,6 +1338,17 @@ func (UnimplementedHandler) MarkTVEpisodeWatched(ctx context.Context, req OptMar
 	return r, ht.ErrNotImplemented
 }
 
+// MarkTVEpisodesBulkWatched implements markTVEpisodesBulkWatched operation.
+//
+// Mark multiple episodes as fully watched in a single request.
+// Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+// Episodes that do not exist are silently skipped.
+//
+// POST /api/v1/tvshows/episodes/bulk-watched
+func (UnimplementedHandler) MarkTVEpisodesBulkWatched(ctx context.Context, req *BulkEpisodesWatchedRequest) (r MarkTVEpisodesBulkWatchedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // OidcAuthorize implements oidcAuthorize operation.
 //
 // Redirects to the OIDC provider's authorization endpoint.
@@ -1388,6 +1428,16 @@ func (UnimplementedHandler) Register(ctx context.Context, req *RegisterRequest) 
 //
 // POST /api/v1/search/reindex
 func (UnimplementedHandler) ReindexSearch(ctx context.Context) (r ReindexSearchRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// ReindexTVShowSearch implements reindexTVShowSearch operation.
+//
+// Triggers a full reindex of all TV shows in the search engine.
+// This is an admin-only operation and may take a while for large libraries.
+//
+// POST /api/v1/search/tvshows/reindex
+func (UnimplementedHandler) ReindexTVShowSearch(ctx context.Context) (r ReindexTVShowSearchRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -1511,6 +1561,16 @@ func (UnimplementedHandler) SearchMovies(ctx context.Context, params SearchMovie
 //
 // GET /api/v1/metadata/search/movie
 func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (r SearchMoviesMetadataRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SearchMulti implements searchMulti operation.
+//
+// Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+// in parallel, returning the top results from each collection. Designed for global search bars.
+//
+// GET /api/v1/search/multi
+func (UnimplementedHandler) SearchMulti(ctx context.Context, params SearchMultiParams) (r SearchMultiRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

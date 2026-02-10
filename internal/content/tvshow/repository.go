@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Repository defines database operations for TV shows
@@ -68,8 +69,10 @@ type Repository interface {
 
 	// Series Credits
 	CreateSeriesCredit(ctx context.Context, params CreateSeriesCreditParams) (*SeriesCredit, error)
-	ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
-	ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
+	ListSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error)
+	ListSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error)
+	CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error)
+	CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error)
 	DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error
 
 	// Episode Credits
@@ -81,6 +84,7 @@ type Repository interface {
 	// Genres
 	AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, tmdbGenreID int32, name string) error
 	ListSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
+	ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error
 
 	// Networks
@@ -94,6 +98,7 @@ type Repository interface {
 	// Watch Progress
 	CreateOrUpdateWatchProgress(ctx context.Context, params CreateWatchProgressParams) (*EpisodeWatched, error)
 	MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID, durationSeconds int32) (*EpisodeWatched, error)
+	MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error)
 	GetWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error)
 	DeleteWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) error
 	DeleteSeriesWatchProgress(ctx context.Context, userID, seriesID uuid.UUID) error

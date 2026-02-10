@@ -113,17 +113,4 @@ func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[Libr
 	return nil
 }
 
-// ScheduleLibraryScanCleanup creates a periodic cleanup job.
-// This should be called during application startup to ensure cleanup runs regularly.
-func ScheduleLibraryScanCleanup(client *river.Client[any], retentionDays int) error {
-	_, err := client.Insert(context.Background(), LibraryScanCleanupArgs{
-		RetentionDays: retentionDays,
-		DryRun:        false,
-	}, &river.InsertOpts{
-		UniqueOpts: river.UniqueOpts{
-			ByArgs:   true,
-			ByPeriod: 24 * time.Hour, // Run once per day
-		},
-	})
-	return err
-}
+

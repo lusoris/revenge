@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
 	"github.com/lusoris/revenge/internal/content/tvshow"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -182,7 +183,7 @@ func TestSeriesToDocument(t *testing.T) {
 	credits := []tvshow.SeriesCredit{
 		{CreditType: "cast", Name: "Bryan Cranston"},
 		{CreditType: "cast", Name: "Aaron Paul"},
-		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr("Creator")},
+		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr.To("Creator")},
 	}
 
 	networks := []tvshow.Network{
@@ -321,8 +322,8 @@ func TestSeriesToDocumentWithCrewOnly(t *testing.T) {
 	}
 
 	credits := []tvshow.SeriesCredit{
-		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr("Creator")},
-		{CreditType: "crew", Name: "Peter Gould", Job: ptr("Writer")},
+		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr.To("Creator")},
+		{CreditType: "crew", Name: "Peter Gould", Job: ptr.To("Writer")},
 	}
 
 	doc := s.seriesToDocument(series, nil, credits, nil, false)

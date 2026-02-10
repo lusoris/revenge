@@ -113,13 +113,13 @@ func (w *MovieSearchIndexWorker) indexMovie(ctx context.Context, movieID uuid.UU
 		genres = nil
 	}
 
-	cast, err := w.movieRepo.ListMovieCast(ctx, movieID)
+	cast, err := w.movieRepo.ListMovieCast(ctx, movieID, 1000, 0)
 	if err != nil {
 		w.logger.Warn("failed to get cast", slog.Any("error",err))
 		cast = nil
 	}
 
-	crew, err := w.movieRepo.ListMovieCrew(ctx, movieID)
+	crew, err := w.movieRepo.ListMovieCrew(ctx, movieID, 1000, 0)
 	if err != nil {
 		w.logger.Warn("failed to get crew", slog.Any("error",err))
 		crew = nil

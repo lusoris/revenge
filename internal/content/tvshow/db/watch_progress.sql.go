@@ -15,18 +15,28 @@ import (
 )
 
 const createOrUpdateWatchProgress = `-- name: CreateOrUpdateWatchProgress :one
-INSERT INTO tvshow.episode_watched (
-    user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at
-) VALUES (
-    $1, $2, $3, $4, $5, 1, NOW()
-)
-ON CONFLICT (user_id, episode_id) DO UPDATE SET
+INSERT INTO
+    tvshow.episode_watched (
+        user_id,
+        episode_id,
+        progress_seconds,
+        duration_seconds,
+        is_completed,
+        watch_count,
+        last_watched_at
+    )
+VALUES ($1, $2, $3, $4, $5, 1, NOW()) ON CONFLICT (user_id, episode_id) DO
+UPDATE
+SET
     progress_seconds = $3,
     duration_seconds = $4,
     is_completed = $5,
-    watch_count = CASE WHEN $5 AND NOT tvshow.episode_watched.is_completed THEN tvshow.episode_watched.watch_count + 1 ELSE tvshow.episode_watched.watch_count END,
-    last_watched_at = NOW()
-RETURNING id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at
+    watch_count = CASE
+        WHEN $5
+        AND NOT tvshow.episode_watched.is_completed THEN tvshow.episode_watched.watch_count + 1
+        ELSE tvshow.episode_watched.watch_count
+    END,
+    last_watched_at = NOW() RETURNING id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at
 `
 
 type CreateOrUpdateWatchProgressParams struct {
@@ -63,9 +73,14 @@ func (q *Queries) CreateOrUpdateWatchProgress(ctx context.Context, arg CreateOrU
 
 const deleteSeriesWatchProgress = `-- name: DeleteSeriesWatchProgress :exec
 DELETE FROM tvshow.episode_watched
-WHERE user_id = $1 AND episode_id IN (
-    SELECT id FROM tvshow.episodes WHERE series_id = $2
-)
+WHERE
+    user_id = $1
+    AND episode_id IN (
+        SELECT id
+        FROM tvshow.episodes
+        WHERE
+            series_id = $2
+    )
 `
 
 type DeleteSeriesWatchProgressParams struct {
@@ -80,7 +95,9 @@ func (q *Queries) DeleteSeriesWatchProgress(ctx context.Context, arg DeleteSerie
 
 const deleteWatchProgress = `-- name: DeleteWatchProgress :exec
 DELETE FROM tvshow.episode_watched
-WHERE user_id = $1 AND episode_id = $2
+WHERE
+    user_id = $1
+    AND episode_id = $2
 `
 
 type DeleteWatchProgressParams struct {
@@ -94,8 +111,11 @@ func (q *Queries) DeleteWatchProgress(ctx context.Context, arg DeleteWatchProgre
 }
 
 const getEpisodeWatchProgress = `-- name: GetEpisodeWatchProgress :one
-SELECT id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at FROM tvshow.episode_watched
-WHERE user_id = $1 AND episode_id = $2
+SELECT id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at
+FROM tvshow.episode_watched
+WHERE
+    user_id = $1
+    AND episode_id = $2
 `
 
 type GetEpisodeWatchProgressParams struct {
@@ -124,9 +144,14 @@ func (q *Queries) GetEpisodeWatchProgress(ctx context.Context, arg GetEpisodeWat
 const getNextUnwatchedEpisode = `-- name: GetNextUnwatchedEpisode :one
 SELECT e.id, e.series_id, e.season_id, e.tmdb_id, e.tvdb_id, e.imdb_id, e.season_number, e.episode_number, e.title, e.overview, e.titles_i18n, e.overviews_i18n, e.air_date, e.runtime, e.vote_average, e.vote_count, e.still_path, e.production_code, e.created_at, e.updated_at
 FROM tvshow.episodes e
-LEFT JOIN tvshow.episode_watched ew ON e.id = ew.episode_id AND ew.user_id = $1
-WHERE e.series_id = $2
-    AND (ew.is_completed IS NULL OR ew.is_completed = FALSE)
+    LEFT JOIN tvshow.episode_watched ew ON e.id = ew.episode_id
+    AND ew.user_id = $1
+WHERE
+    e.series_id = $2
+    AND (
+        ew.is_completed IS NULL
+        OR ew.is_completed = FALSE
+    )
 ORDER BY e.season_number ASC, e.episode_number ASC
 LIMIT 1
 `
@@ -166,13 +191,27 @@ func (q *Queries) GetNextUnwatchedEpisode(ctx context.Context, arg GetNextUnwatc
 
 const getSeriesWatchStats = `-- name: GetSeriesWatchStats :one
 SELECT
-    COUNT(*) FILTER (WHERE ew.is_completed = TRUE) as watched_count,
-    COUNT(*) FILTER (WHERE ew.is_completed = FALSE AND ew.progress_seconds > 0) as in_progress_count,
+    COUNT(*) FILTER (
+        WHERE
+            ew.is_completed = TRUE
+    ) as watched_count,
+    COUNT(*) FILTER (
+        WHERE
+            ew.is_completed = FALSE
+            AND ew.progress_seconds > 0
+    ) as in_progress_count,
     SUM(ew.watch_count) as total_watches,
-    (SELECT COUNT(*) FROM tvshow.episodes ep WHERE ep.series_id = $2) as total_episodes
+    (
+        SELECT COUNT(*)
+        FROM tvshow.episodes ep
+        WHERE
+            ep.series_id = $2
+    ) as total_episodes
 FROM tvshow.episode_watched ew
-JOIN tvshow.episodes e ON ew.episode_id = e.id
-WHERE ew.user_id = $1 AND e.series_id = $2
+    JOIN tvshow.episodes e ON ew.episode_id = e.id
+WHERE
+    ew.user_id = $1
+    AND e.series_id = $2
 `
 
 type GetSeriesWatchStatsParams struct {
@@ -202,12 +241,20 @@ func (q *Queries) GetSeriesWatchStats(ctx context.Context, arg GetSeriesWatchSta
 const getUserTVStats = `-- name: GetUserTVStats :one
 SELECT
     COUNT(DISTINCT e.series_id) as series_count,
-    COUNT(*) FILTER (WHERE ew.is_completed = TRUE) as episodes_watched,
-    COUNT(*) FILTER (WHERE ew.is_completed = FALSE AND ew.progress_seconds > 0) as episodes_in_progress,
+    COUNT(*) FILTER (
+        WHERE
+            ew.is_completed = TRUE
+    ) as episodes_watched,
+    COUNT(*) FILTER (
+        WHERE
+            ew.is_completed = FALSE
+            AND ew.progress_seconds > 0
+    ) as episodes_in_progress,
     COALESCE(SUM(ew.watch_count), 0) as total_watches
 FROM tvshow.episode_watched ew
-JOIN tvshow.episodes e ON ew.episode_id = e.id
-WHERE ew.user_id = $1
+    JOIN tvshow.episodes e ON ew.episode_id = e.id
+WHERE
+    ew.user_id = $1
 `
 
 type GetUserTVStatsRow struct {
@@ -230,8 +277,8 @@ func (q *Queries) GetUserTVStats(ctx context.Context, userID uuid.UUID) (GetUser
 }
 
 const listContinueWatchingSeries = `-- name: ListContinueWatchingSeries :many
-SELECT DISTINCT ON (s.id)
-    s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings,
+SELECT DISTINCT
+    ON (s.id) s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s.overview, s.titles_i18n, s.taglines_i18n, s.overviews_i18n, s.age_ratings, s.original_language, s.original_title, s.status, s.type, s.first_air_date, s.last_air_date, s.vote_average, s.vote_count, s.popularity, s.poster_path, s.backdrop_path, s.total_seasons, s.total_episodes, s.trailer_url, s.homepage, s.metadata_updated_at, s.created_at, s.updated_at, s.external_ratings,
     e.id as last_episode_id,
     e.season_number as last_season_number,
     e.episode_number as last_episode_number,
@@ -240,9 +287,10 @@ SELECT DISTINCT ON (s.id)
     ew.duration_seconds,
     ew.last_watched_at
 FROM tvshow.episode_watched ew
-JOIN tvshow.episodes e ON ew.episode_id = e.id
-JOIN tvshow.series s ON e.series_id = s.id
-WHERE ew.user_id = $1
+    JOIN tvshow.episodes e ON ew.episode_id = e.id
+    JOIN tvshow.series s ON e.series_id = s.id
+WHERE
+    ew.user_id = $1
     AND NOT ew.is_completed
     AND ew.progress_seconds > 0
 ORDER BY s.id, ew.last_watched_at DESC
@@ -357,8 +405,10 @@ func (q *Queries) ListContinueWatchingSeries(ctx context.Context, arg ListContin
 const listWatchedEpisodesBySeries = `-- name: ListWatchedEpisodesBySeries :many
 SELECT ew.id, ew.user_id, ew.episode_id, ew.progress_seconds, ew.duration_seconds, ew.is_completed, ew.watch_count, ew.last_watched_at, ew.created_at, ew.updated_at, e.season_number, e.episode_number, e.title as episode_title
 FROM tvshow.episode_watched ew
-JOIN tvshow.episodes e ON ew.episode_id = e.id
-WHERE ew.user_id = $1 AND e.series_id = $2
+    JOIN tvshow.episodes e ON ew.episode_id = e.id
+WHERE
+    ew.user_id = $1
+    AND e.series_id = $2
 ORDER BY e.season_number ASC, e.episode_number ASC
 `
 
@@ -428,11 +478,15 @@ SELECT
     s.title as series_title,
     s.poster_path as series_poster_path
 FROM tvshow.episode_watched ew
-JOIN tvshow.episodes e ON ew.episode_id = e.id
-JOIN tvshow.series s ON e.series_id = s.id
-WHERE ew.user_id = $1 AND ew.is_completed = TRUE
+    JOIN tvshow.episodes e ON ew.episode_id = e.id
+    JOIN tvshow.series s ON e.series_id = s.id
+WHERE
+    ew.user_id = $1
+    AND ew.is_completed = TRUE
 ORDER BY ew.last_watched_at DESC
-LIMIT $2 OFFSET $3
+LIMIT $2
+OFFSET
+    $3
 `
 
 type ListWatchedEpisodesByUserParams struct {
@@ -500,18 +554,32 @@ func (q *Queries) ListWatchedEpisodesByUser(ctx context.Context, arg ListWatched
 }
 
 const markEpisodeWatched = `-- name: MarkEpisodeWatched :one
-INSERT INTO tvshow.episode_watched (
-    user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at
-) VALUES (
-    $1, $2, $3, $3, TRUE, 1, NOW()
-)
-ON CONFLICT (user_id, episode_id) DO UPDATE SET
+INSERT INTO
+    tvshow.episode_watched (
+        user_id,
+        episode_id,
+        progress_seconds,
+        duration_seconds,
+        is_completed,
+        watch_count,
+        last_watched_at
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $3,
+        TRUE,
+        1,
+        NOW()
+    ) ON CONFLICT (user_id, episode_id) DO
+UPDATE
+SET
     progress_seconds = $3,
     duration_seconds = $3,
     is_completed = TRUE,
     watch_count = tvshow.episode_watched.watch_count + 1,
-    last_watched_at = NOW()
-RETURNING id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at
+    last_watched_at = NOW() RETURNING id, user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at, created_at, updated_at
 `
 
 type MarkEpisodeWatchedParams struct {
@@ -536,4 +604,36 @@ func (q *Queries) MarkEpisodeWatched(ctx context.Context, arg MarkEpisodeWatched
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const markEpisodesWatchedBulk = `-- name: MarkEpisodesWatchedBulk :execrows
+WITH episode_durations AS (
+    SELECT id, COALESCE(runtime * 60, 2700) AS duration_secs
+    FROM tvshow.episodes
+    WHERE id = ANY($2::uuid[])
+)
+INSERT INTO tvshow.episode_watched (
+    user_id, episode_id, progress_seconds, duration_seconds, is_completed, watch_count, last_watched_at
+)
+SELECT $1, ed.id, ed.duration_secs, ed.duration_secs, TRUE, 1, NOW()
+FROM episode_durations ed
+ON CONFLICT (user_id, episode_id) DO UPDATE SET
+    progress_seconds = EXCLUDED.progress_seconds,
+    duration_seconds = EXCLUDED.duration_seconds,
+    is_completed = TRUE,
+    watch_count = tvshow.episode_watched.watch_count + 1,
+    last_watched_at = NOW()
+`
+
+type MarkEpisodesWatchedBulkParams struct {
+	UserID     uuid.UUID   `json:"userId"`
+	EpisodeIds []uuid.UUID `json:"episodeIds"`
+}
+
+func (q *Queries) MarkEpisodesWatchedBulk(ctx context.Context, arg MarkEpisodesWatchedBulkParams) (int64, error) {
+	result, err := q.db.Exec(ctx, markEpisodesWatchedBulk, arg.UserID, arg.EpisodeIds)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }

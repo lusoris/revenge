@@ -1,6 +1,9 @@
 package tvshow
 
 import (
+	"log/slog"
+
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"go.uber.org/fx"
 )
 
@@ -13,8 +16,10 @@ var Module = fx.Module("tvshow",
 	),
 )
 
-// provideService creates TV show service with MetadataProvider.
+// provideService creates TV show service wrapped with caching.
 // MetadataProvider is injected from metadatafx module (TVShowMetadataAdapter).
-func provideService(repo Repository, metadataProvider MetadataProvider) Service {
-	return NewService(repo, metadataProvider)
+// Cache may be nil if caching is disabled — CachedService handles nil gracefully.
+func provideService(repo Repository, metadataProvider MetadataProvider, c *cache.Cache, logger *slog.Logger) Service {
+	base := NewService(repo, metadataProvider)
+	return NewCachedService(base, c, logger)
 }

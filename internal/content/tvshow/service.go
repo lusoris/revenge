@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Service defines business logic for TV shows
@@ -17,7 +18,7 @@ type Service interface {
 	ListSeries(ctx context.Context, filters SeriesListFilters) ([]Series, error)
 	CountSeries(ctx context.Context) (int64, error)
 	SearchSeries(ctx context.Context, query string, limit, offset int32) ([]Series, error)
-	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, error)
+	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, int64, error)
 	ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error)
 	ListByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error)
 	ListByStatus(ctx context.Context, status string, limit, offset int32) ([]Series, error)
@@ -60,19 +61,21 @@ type Service interface {
 	DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error
 
 	// Credits
-	GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
-	GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error)
+	GetSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error)
+	GetSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error)
 	GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error)
 	GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error)
 
 	// Genres & Networks
 	GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
+	ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error)
 	GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error)
 
 	// Watch progress
 	UpdateEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID, progressSeconds, durationSeconds int32) (*EpisodeWatched, error)
 	GetEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error)
 	MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error
+	MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error)
 	MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error
 	MarkSeriesWatched(ctx context.Context, userID, seriesID uuid.UUID) error
 	RemoveEpisodeProgress(ctx context.Context, userID, episodeID uuid.UUID) error
@@ -134,8 +137,16 @@ func (s *tvService) SearchSeries(ctx context.Context, query string, limit, offse
 	return s.repo.SearchSeriesByTitle(ctx, query, limit, offset)
 }
 
-func (s *tvService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, error) {
-	return s.repo.ListRecentlyAddedSeries(ctx, limit, offset)
+func (s *tvService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, int64, error) {
+	series, err := s.repo.ListRecentlyAddedSeries(ctx, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountSeries(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return series, count, nil
 }
 
 func (s *tvService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error) {
@@ -392,12 +403,28 @@ func (s *tvService) DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error {
 // Credits Operations
 // =============================================================================
 
-func (s *tvService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	return s.repo.ListSeriesCast(ctx, seriesID)
+func (s *tvService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error) {
+	credits, err := s.repo.ListSeriesCast(ctx, seriesID, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountSeriesCast(ctx, seriesID)
+	if err != nil {
+		return nil, 0, err
+	}
+	return credits, count, nil
 }
 
-func (s *tvService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	return s.repo.ListSeriesCrew(ctx, seriesID)
+func (s *tvService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, int64, error) {
+	credits, err := s.repo.ListSeriesCrew(ctx, seriesID, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	count, err := s.repo.CountSeriesCrew(ctx, seriesID)
+	if err != nil {
+		return nil, 0, err
+	}
+	return credits, count, nil
 }
 
 func (s *tvService) GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]EpisodeCredit, error) {
@@ -414,6 +441,11 @@ func (s *tvService) GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]
 
 func (s *tvService) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error) {
 	return s.repo.ListSeriesGenres(ctx, seriesID)
+}
+
+// ListDistinctGenres returns all distinct TV show genres with item counts.
+func (s *tvService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return s.repo.ListDistinctSeriesGenres(ctx)
 }
 
 func (s *tvService) GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]Network, error) {
@@ -468,6 +500,13 @@ func (s *tvService) MarkEpisodeWatched(ctx context.Context, userID, episodeID uu
 
 	_, err = s.repo.MarkEpisodeWatched(ctx, userID, episodeID, durationSeconds)
 	return err
+}
+
+func (s *tvService) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	if len(episodeIDs) == 0 {
+		return 0, nil
+	}
+	return s.repo.MarkEpisodesWatchedBulk(ctx, userID, episodeIDs)
 }
 
 func (s *tvService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {

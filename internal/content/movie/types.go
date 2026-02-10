@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Movie represents a movie with metadata from TMDb/Radarr
@@ -46,12 +47,8 @@ type Movie struct {
 	ExternalRatings []ExternalRating
 }
 
-// ExternalRating represents a rating from an external source.
-type ExternalRating struct {
-	Source string  `json:"source"` // e.g. "Internet Movie Database", "Rotten Tomatoes", "Metacritic", "TMDb"
-	Value  string  `json:"value"`  // e.g. "8.8/10", "96%", "90/100"
-	Score  float64 `json:"score"`  // Normalized 0-100 scale
-}
+// ExternalRating is an alias for the shared content.ExternalRating type.
+type ExternalRating = content.ExternalRating
 
 // GetTitle returns the movie title in the preferred language with fallback chain:
 // 1. Requested language from TitlesI18n

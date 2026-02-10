@@ -54,8 +54,8 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		md.Runtime = &rt
 	}
 
-	// Certification is not an ExternalRating — it's a content rating (e.g. PG-13)
-	// TODO: store in a dedicated Certification field when available
+	// Certification (e.g. PG-13) is not mapped — MovieMetadata lacks a top-level
+	// certification field. The data is available via Simkl's m.Certification.
 
 	// Cross-referenced IDs
 	if m.IDs.IMDb != "" {

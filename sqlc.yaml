@@ -56,6 +56,14 @@ sql:
         output_db_file_name: db.go
         output_models_file_name: models.go
         output_querier_file_name: querier.go
+        rename:
+          movie_movie: Movie
+          movie_movie_file: MovieFile
+          movie_movie_credit: MovieCredit
+          movie_movie_collection: MovieCollection
+          movie_movie_collection_member: MovieCollectionMember
+          movie_movie_genre: MovieGenre
+          movie_movie_watched: MovieWatched
         overrides:
           - db_type: uuid
             go_type: github.com/google/uuid.UUID

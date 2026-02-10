@@ -12,9 +12,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/lusoris/revenge/internal/errors"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/testutil"
 )
 
@@ -291,7 +291,7 @@ func TestService_CleanupExpiredSessions(t *testing.T) {
 
 	count, err := service.CleanupExpiredSessions(ctx)
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, count, 0) // Count not implemented yet
+	assert.GreaterOrEqual(t, count, 0)
 
 	// Session should be deleted
 	var dbCount int

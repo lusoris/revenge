@@ -24,6 +24,13 @@ type Querier interface {
 	ClearTrustedDevices(ctx context.Context, userID uuid.UUID) error
 	CountActiveAuthTokensByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountActiveUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
+	// =============================================================================
+	// Aggregate queries used by the stats aggregation worker
+	// =============================================================================
+	// Count total active (non-deleted) users
+	CountActiveUsers(ctx context.Context) (int64, error)
+	// Count users active in the last 24 hours (by session activity)
+	CountActiveUsersLast24h(ctx context.Context) (int64, error)
 	// Count total activity logs
 	CountActivityLogs(ctx context.Context) (int64, error)
 	CountFailedLoginAttemptsByIP(ctx context.Context, arg CountFailedLoginAttemptsByIPParams) (int64, error)
@@ -40,6 +47,18 @@ type Querier interface {
 	CountResourceActivityLogs(ctx context.Context, arg CountResourceActivityLogsParams) (int64, error)
 	// Count activity logs matching search filters
 	CountSearchActivityLogs(ctx context.Context, arg CountSearchActivityLogsParams) (int64, error)
+	// Count total episode watch records
+	CountTotalEpisodeWatches(ctx context.Context) (int64, error)
+	// Count total TV episodes
+	CountTotalEpisodes(ctx context.Context) (int64, error)
+	// Count total enabled libraries
+	CountTotalLibraries(ctx context.Context) (int64, error)
+	// Count total movie watch records
+	CountTotalMovieWatches(ctx context.Context) (int64, error)
+	// Count total movies across all libraries
+	CountTotalMovies(ctx context.Context) (int64, error)
+	// Count total TV series
+	CountTotalSeries(ctx context.Context) (int64, error)
 	// Count unused backup codes for a user
 	CountUnusedBackupCodes(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64, error)
@@ -171,9 +190,7 @@ type Querier interface {
 	GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error)
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (SharedApiKey, error)
-	// This is a placeholder - actual usage tracking would be in a separate table
-	// For now, we just return last_used_at
-	GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
+	GetAPIKeyLastUsedAt(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error)
 	// Get a single activity log entry by ID
 	GetActivityLog(ctx context.Context, id uuid.UUID) (ActivityLog, error)
 	// Get activity log statistics
@@ -182,6 +199,8 @@ type Querier interface {
 	GetActivityLogsByAction(ctx context.Context, arg GetActivityLogsByActionParams) ([]ActivityLog, error)
 	// Get activity logs from a specific IP address
 	GetActivityLogsByIP(ctx context.Context, arg GetActivityLogsByIPParams) ([]ActivityLog, error)
+	// Get all server statistics
+	GetAllServerStats(ctx context.Context) ([]SharedServerStat, error)
 	GetAuthTokenByHash(ctx context.Context, tokenHash string) (SharedAuthToken, error)
 	GetAuthTokensByDeviceFingerprint(ctx context.Context, arg GetAuthTokensByDeviceFingerprintParams) ([]SharedAuthToken, error)
 	GetAuthTokensByUserID(ctx context.Context, userID uuid.UUID) ([]SharedAuthToken, error)
@@ -237,6 +256,8 @@ type Querier interface {
 	GetRunningScans(ctx context.Context) ([]LibraryScan, error)
 	// Get a server setting by key
 	GetServerSetting(ctx context.Context, key string) (SharedServerSetting, error)
+	// Get a single server statistic by key
+	GetServerStat(ctx context.Context, statKey string) (SharedServerStat, error)
 	GetSessionByID(ctx context.Context, id uuid.UUID) (SharedSession, error)
 	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash *string) (SharedSession, error)
 	GetSessionByTokenHash(ctx context.Context, tokenHash string) (SharedSession, error)
@@ -361,6 +382,10 @@ type Querier interface {
 	SetCurrentAvatar(ctx context.Context, id uuid.UUID) error
 	// Sets a provider as default (clears other defaults first)
 	SetDefaultOIDCProvider(ctx context.Context) error
+	// Sum total episode watch duration in seconds
+	SumEpisodeWatchDurationSeconds(ctx context.Context) (int64, error)
+	// Sum total movie watch duration in seconds
+	SumMovieWatchDurationSeconds(ctx context.Context) (int64, error)
 	// Mark all user's avatars as not current (before setting a new current)
 	UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) error
 	UpdateAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error
@@ -410,6 +435,8 @@ type Querier interface {
 	UpdateWebAuthnCredentialName(ctx context.Context, arg UpdateWebAuthnCredentialNameParams) error
 	// Insert or update a server setting
 	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (SharedServerSetting, error)
+	// Upsert a single server statistic
+	UpsertServerStat(ctx context.Context, arg UpsertServerStatParams) error
 	// Create or update user preferences
 	UpsertUserPreferences(ctx context.Context, arg UpsertUserPreferencesParams) (SharedUserPreference, error)
 	// Insert or update a user setting
