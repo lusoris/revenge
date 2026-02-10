@@ -174,7 +174,7 @@ func TestHandler_AdminDeleteUser_Unauthorized(t *testing.T) {
 	handler, _, _ := setupAdminUserTestHandler(t)
 
 	result, err := handler.AdminDeleteUser(context.Background(), ogen.AdminDeleteUserParams{
-		UserID: uuid.Must(uuid.NewV7()),
+		UserId: uuid.Must(uuid.NewV7()),
 	})
 	require.NoError(t, err)
 
@@ -193,7 +193,7 @@ func TestHandler_AdminDeleteUser_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	result, err := handler.AdminDeleteUser(ctx, ogen.AdminDeleteUserParams{
-		UserID: target.ID,
+		UserId: target.ID,
 	})
 	require.NoError(t, err)
 
@@ -211,7 +211,7 @@ func TestHandler_AdminDeleteUser_SelfDelete(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	result, err := handler.AdminDeleteUser(ctx, ogen.AdminDeleteUserParams{
-		UserID: adminID,
+		UserId: adminID,
 	})
 	require.NoError(t, err)
 
@@ -226,7 +226,7 @@ func TestHandler_AdminDeleteUser_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	result, err := handler.AdminDeleteUser(ctx, ogen.AdminDeleteUserParams{
-		UserID: uuid.Must(uuid.NewV7()),
+		UserId: uuid.Must(uuid.NewV7()),
 	})
 	require.NoError(t, err)
 

@@ -274,7 +274,7 @@ func TestHandler_GetUserRoles_NoAuth(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.GetUserRolesParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 	}
 
 	result, err := handler.GetUserRoles(ctx, params)
@@ -295,7 +295,7 @@ func TestHandler_GetUserRoles_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	params := ogen.GetUserRolesParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 	}
 
 	result, err := handler.GetUserRoles(ctx, params)
@@ -317,7 +317,7 @@ func TestHandler_AssignRole_NoAuth(t *testing.T) {
 		Role: "editor",
 	}
 	params := ogen.AssignRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 	}
 
 	result, err := handler.AssignRole(ctx, req, params)
@@ -336,7 +336,7 @@ func TestHandler_AssignRole_NotAdmin(t *testing.T) {
 		Role: "editor",
 	}
 	params := ogen.AssignRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 	}
 
 	result, err := handler.AssignRole(ctx, req, params)
@@ -356,7 +356,7 @@ func TestHandler_AssignRole_Success(t *testing.T) {
 		Role: "editor",
 	}
 	params := ogen.AssignRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 	}
 
 	result, err := handler.AssignRole(ctx, req, params)
@@ -380,7 +380,7 @@ func TestHandler_RemoveRole_NoAuth(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.RemoveRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 		Role:   "editor",
 	}
 
@@ -397,7 +397,7 @@ func TestHandler_RemoveRole_NotAdmin(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), regularUserID)
 	params := ogen.RemoveRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 		Role:   "editor",
 	}
 
@@ -419,7 +419,7 @@ func TestHandler_RemoveRole_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	params := ogen.RemoveRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 		Role:   "editor",
 	}
 
@@ -441,7 +441,7 @@ func TestHandler_RemoveRole_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	params := ogen.RemoveRoleParams{
-		UserID: regularUserID,
+UserId: regularUserID,
 		Role:   "nonexistent",
 	}
 

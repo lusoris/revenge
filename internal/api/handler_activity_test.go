@@ -161,7 +161,7 @@ func TestHandler_GetUserActivityLogs_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.GetUserActivityLogsParams{
-		UserID: uuid.Must(uuid.NewV7()),
+UserId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetUserActivityLogs(ctx, params)
@@ -192,7 +192,7 @@ func TestHandler_GetUserActivityLogs_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	params := ogen.GetUserActivityLogsParams{
-		UserID: user.ID,
+UserId: user.ID,
 		Limit:  ogen.NewOptInt(50),
 		Offset: ogen.NewOptInt(0),
 	}
@@ -211,8 +211,8 @@ func TestHandler_GetResourceActivityLogs_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.GetResourceActivityLogsParams{
-		ResourceType: "test_type",
-		ResourceID:   uuid.Must(uuid.NewV7()),
+ResourceType: "test_type",
+ResourceId:   uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.GetResourceActivityLogs(ctx, params)
@@ -245,8 +245,8 @@ func TestHandler_GetResourceActivityLogs_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), adminID)
 	params := ogen.GetResourceActivityLogsParams{
-		ResourceType: "test_resource",
-		ResourceID:   resourceID,
+ResourceType: "test_resource",
+ResourceId:   resourceID,
 		Limit:        ogen.NewOptInt(50),
 		Offset:       ogen.NewOptInt(0),
 	}

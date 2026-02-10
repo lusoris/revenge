@@ -144,10 +144,10 @@ func (h *Handler) GetUserActivityLogs(ctx context.Context, params ogen.GetUserAc
 		offset = o
 	}
 
-	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserID, limit, offset)
+	entries, total, err := h.activityService.GetUserActivity(ctx, params.UserId, limit, offset)
 	if err != nil {
 		h.logger.Error("failed to get user activity logs",
-			slog.String("user_id", params.UserID.String()),
+			slog.String("user_id", params.UserId.String()),
 			slog.Any("error",err),
 		)
 		return &ogen.GetUserActivityLogsForbidden{
@@ -203,11 +203,11 @@ func (h *Handler) GetResourceActivityLogs(ctx context.Context, params ogen.GetRe
 		offset = o
 	}
 
-	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceID, limit, offset)
+	entries, total, err := h.activityService.GetResourceActivity(ctx, params.ResourceType, params.ResourceId, limit, offset)
 	if err != nil {
 		h.logger.Error("failed to get resource activity logs",
 			slog.String("resource_type", params.ResourceType),
-			slog.String("resource_id", params.ResourceID.String()),
+			slog.String("resource_id", params.ResourceId.String()),
 			slog.Any("error",err),
 		)
 		return &ogen.GetResourceActivityLogsForbidden{

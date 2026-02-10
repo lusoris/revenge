@@ -84,7 +84,7 @@ func (h *Handler) GetPlaybackSession(ctx context.Context, params ogen.GetPlaybac
 		}, nil
 	}
 
-	sess, ok := h.playbackService.GetSession(params.SessionID)
+	sess, ok := h.playbackService.GetSession(params.SessionId)
 	if !ok {
 		return &ogen.GetPlaybackSessionNotFound{
 			Code:    404,
@@ -113,7 +113,7 @@ func (h *Handler) StopPlaybackSession(ctx context.Context, params ogen.StopPlayb
 		}, nil
 	}
 
-	if err := h.playbackService.StopSession(params.SessionID); err != nil {
+	if err := h.playbackService.StopSession(params.SessionId); err != nil {
 		return &ogen.StopPlaybackSessionNotFound{
 			Code:    404,
 			Message: "Session not found",

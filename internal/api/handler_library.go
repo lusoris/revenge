@@ -141,7 +141,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 		}, nil
 	}
 
-	lib, err := h.libraryService.Get(ctx, params.LibraryID)
+	lib, err := h.libraryService.Get(ctx, params.LibraryId)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.GetLibraryNotFound{
@@ -159,7 +159,7 @@ func (h *Handler) GetLibrary(ctx context.Context, params ogen.GetLibraryParams) 
 	// Check access permission for non-admins
 	isAdmin := h.isAdmin(ctx)
 	if !isAdmin {
-		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryID, userID, isAdmin)
+		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
 		if err != nil {
 			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.GetLibraryNotFound{
@@ -219,7 +219,7 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *ogen.UpdateLibraryRequ
 		update.ScannerConfig = config
 	}
 
-	updated, err := h.libraryService.Update(ctx, params.LibraryID, update)
+	updated, err := h.libraryService.Update(ctx, params.LibraryId, update)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.UpdateLibraryNotFound{
@@ -256,7 +256,7 @@ func (h *Handler) DeleteLibrary(ctx context.Context, params ogen.DeleteLibraryPa
 		return nil, err
 	}
 
-	err := h.libraryService.Delete(ctx, params.LibraryID)
+	err := h.libraryService.Delete(ctx, params.LibraryId)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.DeleteLibraryNotFound{
@@ -299,7 +299,7 @@ func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibra
 		}, nil
 	}
 
-	scan, err := h.libraryService.TriggerScan(ctx, params.LibraryID, scanType)
+	scan, err := h.libraryService.TriggerScan(ctx, params.LibraryId, scanType)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.TriggerLibraryScanNotFound{
@@ -343,7 +343,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 	// Check access permission for non-admins
 	isAdmin := h.isAdmin(ctx)
 	if !isAdmin {
-		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryID, userID, isAdmin)
+		canAccess, err := h.libraryService.CanAccess(ctx, params.LibraryId, userID, isAdmin)
 		if err != nil {
 			h.logger.Error("failed to check library access", slog.Any("error",err))
 			return &ogen.ListLibraryScansNotFound{
@@ -384,7 +384,7 @@ func (h *Handler) ListLibraryScans(ctx context.Context, params ogen.ListLibraryS
 		offset = o
 	}
 
-	scans, total, err := h.libraryService.ListScans(ctx, params.LibraryID, limit, offset)
+	scans, total, err := h.libraryService.ListScans(ctx, params.LibraryId, limit, offset)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.ListLibraryScansNotFound{
@@ -423,7 +423,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 	}
 
 	// Check if library exists
-	_, err := h.libraryService.Get(ctx, params.LibraryID)
+	_, err := h.libraryService.Get(ctx, params.LibraryId)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.ListLibraryPermissionsNotFound{
@@ -438,7 +438,7 @@ func (h *Handler) ListLibraryPermissions(ctx context.Context, params ogen.ListLi
 		}, nil
 	}
 
-	perms, err := h.libraryService.ListPermissions(ctx, params.LibraryID)
+	perms, err := h.libraryService.ListPermissions(ctx, params.LibraryId)
 	if err != nil {
 		h.logger.Error("failed to list library permissions", slog.Any("error",err))
 		return &ogen.ListLibraryPermissionsNotFound{
@@ -474,7 +474,7 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 		}, nil
 	}
 
-	err := h.libraryService.GrantPermission(ctx, params.LibraryID, req.UserID, permission)
+	err := h.libraryService.GrantPermission(ctx, params.LibraryId, req.UserID, permission)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.GrantLibraryPermissionNotFound{
@@ -496,11 +496,11 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 	}
 
 	// Return the created permission - get it from the service
-	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryID, req.UserID, permission)
+	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryId, req.UserID, permission)
 	if perm == nil {
 		return &ogen.LibraryPermission{
 			ID:         uuid.Must(uuid.NewV7()),
-			LibraryID:  params.LibraryID,
+			LibraryID:  params.LibraryId,
 			UserID:     req.UserID,
 			Permission: ogen.LibraryPermissionPermission(permission),
 			CreatedAt:  time.Now(),
@@ -530,7 +530,7 @@ func (h *Handler) RevokeLibraryPermission(ctx context.Context, params ogen.Revok
 		}, nil
 	}
 
-	err := h.libraryService.RevokePermission(ctx, params.LibraryID, params.UserID, permission)
+	err := h.libraryService.RevokePermission(ctx, params.LibraryId, params.UserId, permission)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.RevokeLibraryPermissionNotFound{

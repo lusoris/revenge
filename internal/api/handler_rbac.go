@@ -109,7 +109,7 @@ func (h *Handler) GetUserRoles(ctx context.Context, params ogen.GetUserRolesPara
 		}, nil
 	}
 
-	targetUserID := params.UserID
+	targetUserID := params.UserId
 
 	roles, err := h.rbacService.GetUserRoles(ctx, targetUserID)
 	if err != nil {
@@ -138,7 +138,7 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 		return nil, err
 	}
 
-	targetUserID := params.UserID
+	targetUserID := params.UserId
 
 	if err := h.rbacService.AssignRole(ctx, targetUserID, req.Role); err != nil {
 		h.logger.Error("failed to assign role",
@@ -180,7 +180,7 @@ func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) 
 		return nil, err
 	}
 
-	targetUserID := params.UserID
+	targetUserID := params.UserId
 
 	if err := h.rbacService.RemoveRole(ctx, targetUserID, params.Role); err != nil {
 		h.logger.Warn("failed to remove role",

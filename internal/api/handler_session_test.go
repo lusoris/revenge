@@ -312,7 +312,7 @@ func TestHandler_RevokeSession_NoAuth(t *testing.T) {
 
 	ctx := context.Background()
 	params := ogen.RevokeSessionParams{
-		SessionID: sessionID,
+		SessionId: sessionID,
 	}
 
 	result, err := handler.RevokeSession(ctx, params)
@@ -335,7 +335,7 @@ func TestHandler_RevokeSession_NotOwner(t *testing.T) {
 	// Try to revoke first user's session as other user
 	ctx := contextWithUserID(context.Background(), otherUser.ID)
 	params := ogen.RevokeSessionParams{
-		SessionID: sessionID,
+		SessionId: sessionID,
 	}
 
 	result, err := handler.RevokeSession(ctx, params)
@@ -365,7 +365,7 @@ func TestHandler_RevokeSession_Success(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), userID)
 	params := ogen.RevokeSessionParams{
-		SessionID: newSess.ID,
+		SessionId: newSess.ID,
 	}
 
 	result, err := handler.RevokeSession(ctx, params)
@@ -390,7 +390,7 @@ func TestHandler_RevokeSession_NotFound(t *testing.T) {
 
 	ctx := contextWithUserID(context.Background(), userID)
 	params := ogen.RevokeSessionParams{
-		SessionID: uuid.Must(uuid.NewV7()),
+		SessionId: uuid.Must(uuid.NewV7()),
 	}
 
 	result, err := handler.RevokeSession(ctx, params)
