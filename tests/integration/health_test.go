@@ -84,8 +84,9 @@ func TestHealthReadinessEndpointWithoutDB(t *testing.T) {
 	ts := setupServer(t)
 	defer teardownServer(t, ts)
 
-	// Close database connection to simulate DB failure
-	ts.DB.Pool.Close()
+	// Close the DI-managed database pool to simulate DB failure.
+	// Note: ts.DB.Pool is the testutil pool, NOT the pool used by the health service.
+	ts.AppPool.Close()
 
 	// Wait a moment for health check to detect the issue
 	time.Sleep(100 * time.Millisecond)
