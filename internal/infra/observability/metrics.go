@@ -206,6 +206,79 @@ var (
 	}, []string{"limiter", "action"})
 )
 
+// Metadata fetch metrics
+var (
+	// MetadataFetchTotal counts metadata fetch attempts by provider and status.
+	MetadataFetchTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "revenge",
+		Subsystem: "metadata",
+		Name:      "fetch_total",
+		Help:      "Total number of metadata fetch requests.",
+	}, []string{"provider", "type", "status"})
+
+	// MetadataFetchDuration measures metadata fetch latency by provider.
+	MetadataFetchDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Namespace: "revenge",
+		Subsystem: "metadata",
+		Name:      "fetch_duration_seconds",
+		Help:      "Metadata fetch request latency in seconds.",
+		Buckets:   []float64{.05, .1, .25, .5, 1, 2.5, 5, 10},
+	}, []string{"provider", "type"})
+
+	// MetadataRateLimitedTotal counts rate-limited metadata requests.
+	MetadataRateLimitedTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "revenge",
+		Subsystem: "metadata",
+		Name:      "rate_limited_total",
+		Help:      "Total number of rate-limited metadata requests.",
+	}, []string{"provider"})
+)
+
+// Playback metrics
+var (
+	// PlaybackSessionsActive tracks active playback sessions.
+	PlaybackSessionsActive = promauto.NewGauge(prometheus.GaugeOpts{
+		Namespace: "revenge",
+		Subsystem: "playback",
+		Name:      "sessions_active",
+		Help:      "Number of active playback sessions.",
+	})
+
+	// PlaybackStartTotal counts playback session starts.
+	PlaybackStartTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Namespace: "revenge",
+		Subsystem: "playback",
+		Name:      "start_total",
+		Help:      "Total number of playback sessions started.",
+	}, []string{"media_type", "quality"})
+
+	// PlaybackDuration measures playback session durations.
+	PlaybackDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Namespace: "revenge",
+		Subsystem: "playback",
+		Name:      "duration_seconds",
+		Help:      "Playback session duration in seconds.",
+		Buckets:   []float64{60, 300, 600, 1800, 3600, 7200, 14400},
+	}, []string{"media_type"})
+
+	// TranscodingSessionsActive tracks active transcoding sessions.
+	TranscodingSessionsActive = promauto.NewGauge(prometheus.GaugeOpts{
+		Namespace: "revenge",
+		Subsystem: "transcoding",
+		Name:      "sessions_active",
+		Help:      "Number of active transcoding sessions.",
+	})
+
+	// TranscodingDuration measures transcoding operation durations.
+	TranscodingDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Namespace: "revenge",
+		Subsystem: "transcoding",
+		Name:      "duration_seconds",
+		Help:      "Transcoding operation duration in seconds.",
+		Buckets:   []float64{1, 5, 10, 30, 60, 120, 300, 600},
+	}, []string{"codec", "resolution"})
+)
+
 // RecordCacheHit records a cache hit.
 func RecordCacheHit(cacheName, layer string) {
 	CacheHitsTotal.WithLabelValues(cacheName, layer).Inc()
@@ -234,4 +307,38 @@ func RecordAuthAttempt(method, status string) {
 // RecordRateLimitHit records a rate limit hit.
 func RecordRateLimitHit(limiter, action string) {
 	RateLimitHitsTotal.WithLabelValues(limiter, action).Inc()
+}
+
+// RecordMetadataFetch records a metadata fetch operation.
+func RecordMetadataFetch(provider, mediaType, status string, duration float64) {
+	MetadataFetchTotal.WithLabelValues(provider, mediaType, status).Inc()
+	MetadataFetchDuration.WithLabelValues(provider, mediaType).Observe(duration)
+}
+
+// RecordMetadataRateLimited records a rate-limited metadata request.
+func RecordMetadataRateLimited(provider string) {
+	MetadataRateLimitedTotal.WithLabelValues(provider).Inc()
+}
+
+// RecordPlaybackStart records a playback session start.
+func RecordPlaybackStart(mediaType, quality string) {
+	PlaybackStartTotal.WithLabelValues(mediaType, quality).Inc()
+	PlaybackSessionsActive.Inc()
+}
+
+// RecordPlaybackEnd records a playback session end.
+func RecordPlaybackEnd(mediaType string, duration float64) {
+	PlaybackSessionsActive.Dec()
+	PlaybackDuration.WithLabelValues(mediaType).Observe(duration)
+}
+
+// RecordTranscodingStart records a transcoding session start.
+func RecordTranscodingStart() {
+	TranscodingSessionsActive.Inc()
+}
+
+// RecordTranscodingEnd records a transcoding session end.
+func RecordTranscodingEnd(codec, resolution string, duration float64) {
+	TranscodingSessionsActive.Dec()
+	TranscodingDuration.WithLabelValues(codec, resolution).Observe(duration)
 }

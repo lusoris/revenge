@@ -61,9 +61,16 @@ func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg stri
 	if duration, ok := data["time"].(time.Duration); ok {
 		operation := "query"
 		if sql, ok := data["sql"].(string); ok && len(sql) > 0 {
+			// Skip sqlc comment prefix (e.g., "-- name: GetMovie :one\n")
+			sqlToCheck := sql
+			if strings.HasPrefix(sql, "-- ") {
+				if idx := strings.Index(sql, "\n"); idx != -1 {
+					sqlToCheck = strings.TrimSpace(sql[idx+1:])
+				}
+			}
 			// Extract operation type from SQL (SELECT, INSERT, UPDATE, DELETE)
 			for _, prefix := range []string{"SELECT", "INSERT", "UPDATE", "DELETE", "BEGIN", "COMMIT", "ROLLBACK"} {
-				if len(sql) >= len(prefix) && strings.EqualFold(sql[:len(prefix)], prefix) {
+				if len(sqlToCheck) >= len(prefix) && strings.EqualFold(sqlToCheck[:len(prefix)], prefix) {
 					operation = strings.ToLower(prefix)
 					break
 				}
@@ -74,8 +81,15 @@ func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg stri
 	if level == tracelog.LogLevelError {
 		operation := "query"
 		if sql, ok := data["sql"].(string); ok && len(sql) > 0 {
+			// Skip sqlc comment prefix
+			sqlToCheck := sql
+			if strings.HasPrefix(sql, "-- ") {
+				if idx := strings.Index(sql, "\n"); idx != -1 {
+					sqlToCheck = strings.TrimSpace(sql[idx+1:])
+				}
+			}
 			for _, prefix := range []string{"SELECT", "INSERT", "UPDATE", "DELETE", "BEGIN", "COMMIT", "ROLLBACK"} {
-				if len(sql) >= len(prefix) && strings.EqualFold(sql[:len(prefix)], prefix) {
+				if len(sqlToCheck) >= len(prefix) && strings.EqualFold(sqlToCheck[:len(prefix)], prefix) {
 					operation = strings.ToLower(prefix)
 					break
 				}

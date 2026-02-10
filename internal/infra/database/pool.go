@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/tracelog"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/errors"
 	"github.com/lusoris/revenge/internal/validate"
@@ -66,6 +67,9 @@ func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Attach query tracer for metrics and slow query logging
+	poolConfig.ConnConfig.Tracer = TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
 
 	logger.Info("connecting to database",
 		slog.String("database", poolConfig.ConnConfig.Database),

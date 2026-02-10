@@ -12,6 +12,8 @@ import (
 
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/redis/rueidis"
+
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // RedisRateLimiterConfig contains Redis-based rate limiting configuration.
@@ -258,6 +260,7 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 		}
 
 		if !allowed {
+			observability.RecordRateLimitHit(req.OperationName, "blocked")
 			rl.logger.Warn("Rate limit exceeded",
 				slog.String("ip", clientIP),
 				slog.String("operation", req.OperationName),
@@ -271,6 +274,7 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 			}
 		}
 
+		observability.RecordRateLimitHit(req.OperationName, "allowed")
 		return next(req)
 	}
 }
