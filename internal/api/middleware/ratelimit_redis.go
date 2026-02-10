@@ -159,7 +159,9 @@ func (rl *RedisRateLimiter) shouldLimit(operationName string) bool {
 
 // slidingWindowScript is a Lua script for sliding window rate limiting.
 // Uses a sorted set to track request timestamps.
-const slidingWindowScript = `
+// Wrapped with rueidis.NewLuaScript for EVALSHA optimization (sends SHA1 hash
+// instead of full script text on repeated calls).
+var slidingWindowScript = rueidis.NewLuaScript(`
 local key = KEYS[1]
 local now = tonumber(ARGV[1])
 local window = tonumber(ARGV[2])
@@ -183,7 +185,7 @@ redis.call('ZADD', key, now, now .. '-' .. math.random())
 redis.call('EXPIRE', key, expire)
 
 return 1
-`
+`)
 
 // allow checks if a request is allowed using the sliding window algorithm.
 func (rl *RedisRateLimiter) allow(ctx context.Context, ip string) (bool, error) {
@@ -200,16 +202,16 @@ func (rl *RedisRateLimiter) allow(ctx context.Context, ip string) (bool, error) 
 		expireSec = 1
 	}
 
-	// Execute the Lua script
-	result := rl.client.Do(ctx, rl.client.B().Eval().
-		Script(slidingWindowScript).
-		Numkeys(1).
-		Key(key).
-		Arg(strconv.FormatInt(now, 10)).
-		Arg(strconv.FormatInt(windowMs, 10)).
-		Arg(strconv.Itoa(limit)).
-		Arg(strconv.FormatInt(expireSec, 10)).
-		Build())
+	// Execute the Lua script via EVALSHA (falls back to EVAL on cache miss)
+	result := slidingWindowScript.Exec(ctx, rl.client,
+		[]string{key},
+		[]string{
+			strconv.FormatInt(now, 10),
+			strconv.FormatInt(windowMs, 10),
+			strconv.Itoa(limit),
+			strconv.FormatInt(expireSec, 10),
+		},
+	)
 
 	if err := result.Error(); err != nil {
 		return false, fmt.Errorf("redis eval failed: %w", err)
