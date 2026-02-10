@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 
+	"log/slog"
+
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
-	"log/slog"
 )
 
 // ============================================================================
@@ -33,10 +34,10 @@ func (h *Handler) StartPlaybackSession(ctx context.Context, req *ogen.StartPlayb
 	// Convert ogen request to internal request
 	pbReq := &playback.StartPlaybackRequest{
 		MediaType: playback.MediaType(req.MediaType),
-		MediaID:   req.MediaId,
+		MediaID:   req.MediaID,
 	}
-	if req.FileId.Set {
-		id := req.FileId.Value
+	if req.FileID.Set {
+		id := req.FileID.Value
 		pbReq.FileID = &id
 	}
 	if req.AudioTrack.Set {
@@ -175,8 +176,8 @@ func sessionToOgen(sess *playback.Session) *ogen.PlaybackSession {
 	}
 
 	return &ogen.PlaybackSession{
-		SessionId:         resp.SessionID,
-		MasterPlaylistUrl: resp.MasterPlaylistURL,
+		SessionID:         resp.SessionID,
+		MasterPlaylistURL: resp.MasterPlaylistURL,
 		DurationSeconds:   resp.DurationSeconds,
 		Profiles:          profiles,
 		AudioTracks:       audioTracks,

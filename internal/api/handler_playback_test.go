@@ -24,7 +24,7 @@ func TestHandler_StartPlaybackSession_Disabled(t *testing.T) {
 
 	req := &ogen.StartPlaybackRequest{
 		MediaType: "movie",
-		MediaId:   uuid.New(),
+		MediaID:   uuid.New(),
 	}
 
 	result, err := handler.StartPlaybackSession(context.Background(), req)
@@ -49,7 +49,7 @@ func TestHandler_StartPlaybackSession_Unauthorized(t *testing.T) {
 
 	req := &ogen.StartPlaybackRequest{
 		MediaType: "movie",
-		MediaId:   uuid.New(),
+		MediaID:   uuid.New(),
 	}
 
 	result, err := handler.StartPlaybackSession(context.Background(), req)

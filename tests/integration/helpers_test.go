@@ -13,12 +13,14 @@ import (
 
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/content/movie"
+	appcrypto "github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
+	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
@@ -84,6 +86,7 @@ func setupServer(t *testing.T) *TestServer {
 		health.Module,
 		image.Module,
 		appcrypto.Module,
+		raft.Module,
 
 		// Service modules (required by API)
 		user.Module,

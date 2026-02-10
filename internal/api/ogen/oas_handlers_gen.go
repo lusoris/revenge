@@ -36258,7 +36258,7 @@ func (s *Server) handleSetupTOTPRequest(args [0]string, argsEscaped bool, w http
 //
 // Creates a new HLS playback session for a movie or episode.
 // Returns a master playlist URL and session metadata.
-// Video and audio are segmented separately — audio tracks are individual
+// Video and audio are segmented separately  --  audio tracks are individual
 // HLS renditions so the player can switch tracks instantly without
 // restarting the stream.
 //

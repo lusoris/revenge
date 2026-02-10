@@ -67,7 +67,7 @@ func (h *Handler) OidcAuthorize(ctx context.Context, params ogen.OidcAuthorizePa
 	}
 
 	return &ogen.OIDCAuthURLResponse{
-		AuthUrl: result.URL,
+		AuthURL: result.URL,
 	}, nil
 }
 
@@ -260,7 +260,7 @@ func (h *Handler) InitOIDCLink(ctx context.Context, params ogen.InitOIDCLinkPara
 	}
 
 	return &ogen.OIDCAuthURLResponse{
-		AuthUrl: result.URL,
+		AuthURL: result.URL,
 	}, nil
 }
 
@@ -344,8 +344,8 @@ func (h *Handler) AdminCreateOIDCProvider(ctx context.Context, req *ogen.CreateO
 		Name:                  req.Name,
 		DisplayName:           req.DisplayName,
 		ProviderType:          string(req.ProviderType.Or(ogen.CreateOIDCProviderRequestProviderTypeGeneric)),
-		IssuerURL:             req.IssuerUrl,
-		ClientID:              req.ClientId,
+		IssuerURL:             req.IssuerURL,
+		ClientID:              req.ClientID,
 		ClientSecretEncrypted: []byte(req.ClientSecret),
 		AutoCreateUsers:       req.AutoCreateUsers.Or(true),
 		UpdateUserInfo:        req.UpdateUserInfo.Or(true),
@@ -366,8 +366,8 @@ func (h *Handler) AdminCreateOIDCProvider(ctx context.Context, req *ogen.CreateO
 		v := req.UserInfoEndpoint.Value
 		createReq.UserInfoEndpoint = &v
 	}
-	if req.JwksUri.IsSet() {
-		v := req.JwksUri.Value
+	if req.JwksURI.IsSet() {
+		v := req.JwksURI.Value
 		createReq.JWKSURI = &v
 	}
 	if req.EndSessionEndpoint.IsSet() {
@@ -467,12 +467,12 @@ func (h *Handler) AdminUpdateOIDCProvider(ctx context.Context, req *ogen.UpdateO
 		v := string(req.ProviderType.Value)
 		updateReq.ProviderType = &v
 	}
-	if req.IssuerUrl.IsSet() {
-		v := req.IssuerUrl.Value
+	if req.IssuerURL.IsSet() {
+		v := req.IssuerURL.Value
 		updateReq.IssuerURL = &v
 	}
-	if req.ClientId.IsSet() {
-		v := req.ClientId.Value
+	if req.ClientID.IsSet() {
+		v := req.ClientID.Value
 		updateReq.ClientID = &v
 	}
 	if req.ClientSecret.IsSet() {
@@ -490,8 +490,8 @@ func (h *Handler) AdminUpdateOIDCProvider(ctx context.Context, req *ogen.UpdateO
 		v := req.UserInfoEndpoint.Value
 		updateReq.UserInfoEndpoint = &v
 	}
-	if req.JwksUri.IsSet() {
-		v := req.JwksUri.Value
+	if req.JwksURI.IsSet() {
+		v := req.JwksURI.Value
 		updateReq.JWKSURI = &v
 	}
 	if req.EndSessionEndpoint.IsSet() {
@@ -647,8 +647,8 @@ func providerToOgen(p oidc.Provider) ogen.AdminOIDCProvider {
 		Name:            p.Name,
 		DisplayName:     p.DisplayName,
 		ProviderType:    ogen.AdminOIDCProviderProviderType(p.ProviderType),
-		IssuerUrl:       p.IssuerURL,
-		ClientId:        p.ClientID,
+		IssuerURL:       p.IssuerURL,
+		ClientID:        p.ClientID,
 		Scopes:          p.Scopes,
 		AutoCreateUsers: p.AutoCreateUsers,
 		UpdateUserInfo:  p.UpdateUserInfo,
@@ -669,7 +669,7 @@ func providerToOgen(p oidc.Provider) ogen.AdminOIDCProvider {
 		result.UserInfoEndpoint.SetTo(*p.UserInfoEndpoint)
 	}
 	if p.JWKSURI != nil {
-		result.JwksUri.SetTo(*p.JWKSURI)
+		result.JwksURI.SetTo(*p.JWKSURI)
 	}
 	if p.EndSessionEndpoint != nil {
 		result.EndSessionEndpoint.SetTo(*p.EndSessionEndpoint)

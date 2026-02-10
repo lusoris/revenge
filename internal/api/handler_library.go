@@ -474,7 +474,7 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 		}, nil
 	}
 
-	err := h.libraryService.GrantPermission(ctx, params.LibraryId, req.UserId, permission)
+	err := h.libraryService.GrantPermission(ctx, params.LibraryId, req.UserID, permission)
 	if err != nil {
 		if errors.Is(err, library.ErrNotFound) {
 			return &ogen.GrantLibraryPermissionNotFound{
@@ -496,12 +496,12 @@ func (h *Handler) GrantLibraryPermission(ctx context.Context, req *ogen.GrantLib
 	}
 
 	// Return the created permission - get it from the service
-	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryId, req.UserId, permission)
+	perm, _ := h.libraryService.GetPermission(ctx, params.LibraryId, req.UserID, permission)
 	if perm == nil {
 		return &ogen.LibraryPermission{
 			ID:         uuid.Must(uuid.NewV7()),
-			LibraryId:  params.LibraryId,
-			UserId:     req.UserId,
+			LibraryID:  params.LibraryId,
+			UserID:     req.UserID,
 			Permission: ogen.LibraryPermissionPermission(permission),
 			CreatedAt:  time.Now(),
 		}, nil
@@ -599,7 +599,7 @@ func convertLibraryToOgen(lib *library.Library) *ogen.Library {
 func convertLibraryScanToOgen(scan *library.LibraryScan) *ogen.LibraryScan {
 	result := &ogen.LibraryScan{
 		ID:           scan.ID,
-		LibraryId:    scan.LibraryID,
+		LibraryID:    scan.LibraryID,
 		ScanType:     ogen.LibraryScanScanType(scan.ScanType),
 		Status:       ogen.LibraryScanStatus(scan.Status),
 		ItemsScanned: ogen.NewOptInt64(int64(scan.ItemsScanned)),
@@ -620,7 +620,7 @@ func convertLibraryScans(scans []library.LibraryScan) []ogen.LibraryScan {
 	for i, scan := range scans {
 		result[i] = ogen.LibraryScan{
 			ID:           scan.ID,
-			LibraryId:    scan.LibraryID,
+			LibraryID:    scan.LibraryID,
 			ScanType:     ogen.LibraryScanScanType(scan.ScanType),
 			Status:       ogen.LibraryScanStatus(scan.Status),
 			ItemsScanned: ogen.NewOptInt64(int64(scan.ItemsScanned)),
@@ -642,8 +642,8 @@ func convertLibraryPermissions(perms []library.Permission) []ogen.LibraryPermiss
 	for i, perm := range perms {
 		result[i] = ogen.LibraryPermission{
 			ID:         perm.ID,
-			LibraryId:  perm.LibraryID,
-			UserId:     perm.UserID,
+			LibraryID:  perm.LibraryID,
+			UserID:     perm.UserID,
 			Permission: ogen.LibraryPermissionPermission(perm.Permission),
 			CreatedAt:  perm.CreatedAt,
 		}
@@ -654,8 +654,8 @@ func convertLibraryPermissions(perms []library.Permission) []ogen.LibraryPermiss
 func convertLibraryPermissionToOgen(perm *library.Permission) *ogen.LibraryPermission {
 	return &ogen.LibraryPermission{
 		ID:         perm.ID,
-		LibraryId:  perm.LibraryID,
-		UserId:     perm.UserID,
+		LibraryID:  perm.LibraryID,
+		UserID:     perm.UserID,
 		Permission: ogen.LibraryPermissionPermission(perm.Permission),
 		CreatedAt:  perm.CreatedAt,
 	}

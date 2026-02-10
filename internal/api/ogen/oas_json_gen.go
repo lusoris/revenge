@@ -689,9 +689,9 @@ func (s *ActivityLogEntry) encodeFields(e *jx.Encoder) {
 		json.EncodeUUID(e, s.ID)
 	}
 	{
-		if s.UserId.Set {
-			e.FieldStart("userId")
-			s.UserId.Encode(e)
+		if s.UserID.Set {
+			e.FieldStart("user_id")
+			s.UserID.Encode(e)
 		}
 	}
 	{
@@ -706,14 +706,14 @@ func (s *ActivityLogEntry) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ResourceType.Set {
-			e.FieldStart("resourceType")
+			e.FieldStart("resource_type")
 			s.ResourceType.Encode(e)
 		}
 	}
 	{
-		if s.ResourceId.Set {
-			e.FieldStart("resourceId")
-			s.ResourceId.Encode(e)
+		if s.ResourceID.Set {
+			e.FieldStart("resource_id")
+			s.ResourceID.Encode(e)
 		}
 	}
 	{
@@ -729,14 +729,14 @@ func (s *ActivityLogEntry) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.IpAddress.Set {
-			e.FieldStart("ipAddress")
-			s.IpAddress.Encode(e)
+		if s.IPAddress.Set {
+			e.FieldStart("ip_address")
+			s.IPAddress.Encode(e)
 		}
 	}
 	{
 		if s.UserAgent.Set {
-			e.FieldStart("userAgent")
+			e.FieldStart("user_agent")
 			s.UserAgent.Encode(e)
 		}
 	}
@@ -746,30 +746,30 @@ func (s *ActivityLogEntry) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ErrorMessage.Set {
-			e.FieldStart("errorMessage")
+			e.FieldStart("error_message")
 			s.ErrorMessage.Encode(e)
 		}
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 }
 
 var jsonFieldsNameOfActivityLogEntry = [13]string{
 	0:  "id",
-	1:  "userId",
+	1:  "user_id",
 	2:  "username",
 	3:  "action",
-	4:  "resourceType",
-	5:  "resourceId",
+	4:  "resource_type",
+	5:  "resource_id",
 	6:  "changes",
 	7:  "metadata",
-	8:  "ipAddress",
-	9:  "userAgent",
+	8:  "ip_address",
+	9:  "user_agent",
 	10: "success",
-	11: "errorMessage",
-	12: "createdAt",
+	11: "error_message",
+	12: "created_at",
 }
 
 // Decode decodes ActivityLogEntry from json.
@@ -793,15 +793,15 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "userId":
+		case "user_id":
 			if err := func() error {
-				s.UserId.Reset()
-				if err := s.UserId.Decode(d); err != nil {
+				s.UserID.Reset()
+				if err := s.UserID.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userId\"")
+				return errors.Wrap(err, "decode field \"user_id\"")
 			}
 		case "username":
 			if err := func() error {
@@ -825,7 +825,7 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"action\"")
 			}
-		case "resourceType":
+		case "resource_type":
 			if err := func() error {
 				s.ResourceType.Reset()
 				if err := s.ResourceType.Decode(d); err != nil {
@@ -833,17 +833,17 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"resourceType\"")
+				return errors.Wrap(err, "decode field \"resource_type\"")
 			}
-		case "resourceId":
+		case "resource_id":
 			if err := func() error {
-				s.ResourceId.Reset()
-				if err := s.ResourceId.Decode(d); err != nil {
+				s.ResourceID.Reset()
+				if err := s.ResourceID.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"resourceId\"")
+				return errors.Wrap(err, "decode field \"resource_id\"")
 			}
 		case "changes":
 			if err := func() error {
@@ -865,17 +865,17 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"metadata\"")
 			}
-		case "ipAddress":
+		case "ip_address":
 			if err := func() error {
-				s.IpAddress.Reset()
-				if err := s.IpAddress.Decode(d); err != nil {
+				s.IPAddress.Reset()
+				if err := s.IPAddress.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"ipAddress\"")
+				return errors.Wrap(err, "decode field \"ip_address\"")
 			}
-		case "userAgent":
+		case "user_agent":
 			if err := func() error {
 				s.UserAgent.Reset()
 				if err := s.UserAgent.Decode(d); err != nil {
@@ -883,7 +883,7 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userAgent\"")
+				return errors.Wrap(err, "decode field \"user_agent\"")
 			}
 		case "success":
 			requiredBitSet[1] |= 1 << 2
@@ -897,7 +897,7 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"success\"")
 			}
-		case "errorMessage":
+		case "error_message":
 			if err := func() error {
 				s.ErrorMessage.Reset()
 				if err := s.ErrorMessage.Decode(d); err != nil {
@@ -905,9 +905,9 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"errorMessage\"")
+				return errors.Wrap(err, "decode field \"error_message\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -917,7 +917,7 @@ func (s *ActivityLogEntry) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
 		default:
 			return d.Skip()
@@ -1121,7 +1121,7 @@ func (s *ActivityLogListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.PageSize.Set {
-			e.FieldStart("pageSize")
+			e.FieldStart("page_size")
 			s.PageSize.Encode(e)
 		}
 	}
@@ -1131,7 +1131,7 @@ var jsonFieldsNameOfActivityLogListResponse = [4]string{
 	0: "entries",
 	1: "total",
 	2: "page",
-	3: "pageSize",
+	3: "page_size",
 }
 
 // Decode decodes ActivityLogListResponse from json.
@@ -1183,7 +1183,7 @@ func (s *ActivityLogListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"page\"")
 			}
-		case "pageSize":
+		case "page_size":
 			if err := func() error {
 				s.PageSize.Reset()
 				if err := s.PageSize.Decode(d); err != nil {
@@ -1191,7 +1191,7 @@ func (s *ActivityLogListResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"pageSize\"")
+				return errors.Wrap(err, "decode field \"page_size\"")
 			}
 		default:
 			return d.Skip()
@@ -1259,37 +1259,37 @@ func (s *ActivityStats) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *ActivityStats) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("totalCount")
+		e.FieldStart("total_count")
 		e.Int64(s.TotalCount)
 	}
 	{
-		e.FieldStart("successCount")
+		e.FieldStart("success_count")
 		e.Int64(s.SuccessCount)
 	}
 	{
-		e.FieldStart("failedCount")
+		e.FieldStart("failed_count")
 		e.Int64(s.FailedCount)
 	}
 	{
 		if s.OldestEntry.Set {
-			e.FieldStart("oldestEntry")
+			e.FieldStart("oldest_entry")
 			s.OldestEntry.Encode(e, json.EncodeDateTime)
 		}
 	}
 	{
 		if s.NewestEntry.Set {
-			e.FieldStart("newestEntry")
+			e.FieldStart("newest_entry")
 			s.NewestEntry.Encode(e, json.EncodeDateTime)
 		}
 	}
 }
 
 var jsonFieldsNameOfActivityStats = [5]string{
-	0: "totalCount",
-	1: "successCount",
-	2: "failedCount",
-	3: "oldestEntry",
-	4: "newestEntry",
+	0: "total_count",
+	1: "success_count",
+	2: "failed_count",
+	3: "oldest_entry",
+	4: "newest_entry",
 }
 
 // Decode decodes ActivityStats from json.
@@ -1301,7 +1301,7 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "totalCount":
+		case "total_count":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Int64()
@@ -1311,9 +1311,9 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"totalCount\"")
+				return errors.Wrap(err, "decode field \"total_count\"")
 			}
-		case "successCount":
+		case "success_count":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Int64()
@@ -1323,9 +1323,9 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"successCount\"")
+				return errors.Wrap(err, "decode field \"success_count\"")
 			}
-		case "failedCount":
+		case "failed_count":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Int64()
@@ -1335,9 +1335,9 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"failedCount\"")
+				return errors.Wrap(err, "decode field \"failed_count\"")
 			}
-		case "oldestEntry":
+		case "oldest_entry":
 			if err := func() error {
 				s.OldestEntry.Reset()
 				if err := s.OldestEntry.Decode(d, json.DecodeDateTime); err != nil {
@@ -1345,9 +1345,9 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"oldestEntry\"")
+				return errors.Wrap(err, "decode field \"oldest_entry\"")
 			}
-		case "newestEntry":
+		case "newest_entry":
 			if err := func() error {
 				s.NewestEntry.Reset()
 				if err := s.NewestEntry.Decode(d, json.DecodeDateTime); err != nil {
@@ -1355,7 +1355,7 @@ func (s *ActivityStats) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"newestEntry\"")
+				return errors.Wrap(err, "decode field \"newest_entry\"")
 			}
 		default:
 			return d.Skip()
@@ -3103,48 +3103,48 @@ func (s *AdminOIDCProvider) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
-		e.FieldStart("displayName")
+		e.FieldStart("display_name")
 		e.Str(s.DisplayName)
 	}
 	{
-		e.FieldStart("providerType")
+		e.FieldStart("provider_type")
 		s.ProviderType.Encode(e)
 	}
 	{
-		e.FieldStart("issuerUrl")
-		e.Str(s.IssuerUrl)
+		e.FieldStart("issuer_url")
+		e.Str(s.IssuerURL)
 	}
 	{
-		e.FieldStart("clientId")
-		e.Str(s.ClientId)
+		e.FieldStart("client_id")
+		e.Str(s.ClientID)
 	}
 	{
 		if s.AuthorizationEndpoint.Set {
-			e.FieldStart("authorizationEndpoint")
+			e.FieldStart("authorization_endpoint")
 			s.AuthorizationEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.TokenEndpoint.Set {
-			e.FieldStart("tokenEndpoint")
+			e.FieldStart("token_endpoint")
 			s.TokenEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.UserInfoEndpoint.Set {
-			e.FieldStart("userInfoEndpoint")
+			e.FieldStart("user_info_endpoint")
 			s.UserInfoEndpoint.Encode(e)
 		}
 	}
 	{
-		if s.JwksUri.Set {
-			e.FieldStart("jwksUri")
-			s.JwksUri.Encode(e)
+		if s.JwksURI.Set {
+			e.FieldStart("jwks_uri")
+			s.JwksURI.Encode(e)
 		}
 	}
 	{
 		if s.EndSessionEndpoint.Set {
-			e.FieldStart("endSessionEndpoint")
+			e.FieldStart("end_session_endpoint")
 			s.EndSessionEndpoint.Encode(e)
 		}
 	}
@@ -3158,42 +3158,42 @@ func (s *AdminOIDCProvider) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ClaimMappings.Set {
-			e.FieldStart("claimMappings")
+			e.FieldStart("claim_mappings")
 			s.ClaimMappings.Encode(e)
 		}
 	}
 	{
 		if s.RoleMappings.Set {
-			e.FieldStart("roleMappings")
+			e.FieldStart("role_mappings")
 			s.RoleMappings.Encode(e)
 		}
 	}
 	{
-		e.FieldStart("autoCreateUsers")
+		e.FieldStart("auto_create_users")
 		e.Bool(s.AutoCreateUsers)
 	}
 	{
-		e.FieldStart("updateUserInfo")
+		e.FieldStart("update_user_info")
 		e.Bool(s.UpdateUserInfo)
 	}
 	{
-		e.FieldStart("allowLinking")
+		e.FieldStart("allow_linking")
 		e.Bool(s.AllowLinking)
 	}
 	{
-		e.FieldStart("isEnabled")
+		e.FieldStart("is_enabled")
 		e.Bool(s.IsEnabled)
 	}
 	{
-		e.FieldStart("isDefault")
+		e.FieldStart("is_default")
 		e.Bool(s.IsDefault)
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 	{
-		e.FieldStart("updatedAt")
+		e.FieldStart("updated_at")
 		json.EncodeDateTime(e, s.UpdatedAt)
 	}
 }
@@ -3201,25 +3201,25 @@ func (s *AdminOIDCProvider) encodeFields(e *jx.Encoder) {
 var jsonFieldsNameOfAdminOIDCProvider = [21]string{
 	0:  "id",
 	1:  "name",
-	2:  "displayName",
-	3:  "providerType",
-	4:  "issuerUrl",
-	5:  "clientId",
-	6:  "authorizationEndpoint",
-	7:  "tokenEndpoint",
-	8:  "userInfoEndpoint",
-	9:  "jwksUri",
-	10: "endSessionEndpoint",
+	2:  "display_name",
+	3:  "provider_type",
+	4:  "issuer_url",
+	5:  "client_id",
+	6:  "authorization_endpoint",
+	7:  "token_endpoint",
+	8:  "user_info_endpoint",
+	9:  "jwks_uri",
+	10: "end_session_endpoint",
 	11: "scopes",
-	12: "claimMappings",
-	13: "roleMappings",
-	14: "autoCreateUsers",
-	15: "updateUserInfo",
-	16: "allowLinking",
-	17: "isEnabled",
-	18: "isDefault",
-	19: "createdAt",
-	20: "updatedAt",
+	12: "claim_mappings",
+	13: "role_mappings",
+	14: "auto_create_users",
+	15: "update_user_info",
+	16: "allow_linking",
+	17: "is_enabled",
+	18: "is_default",
+	19: "created_at",
+	20: "updated_at",
 }
 
 // Decode decodes AdminOIDCProvider from json.
@@ -3255,7 +3255,7 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "displayName":
+		case "display_name":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
@@ -3265,9 +3265,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"displayName\"")
+				return errors.Wrap(err, "decode field \"display_name\"")
 			}
-		case "providerType":
+		case "provider_type":
 			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				if err := s.ProviderType.Decode(d); err != nil {
@@ -3275,33 +3275,33 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"providerType\"")
+				return errors.Wrap(err, "decode field \"provider_type\"")
 			}
-		case "issuerUrl":
+		case "issuer_url":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Str()
-				s.IssuerUrl = string(v)
+				s.IssuerURL = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"issuerUrl\"")
+				return errors.Wrap(err, "decode field \"issuer_url\"")
 			}
-		case "clientId":
+		case "client_id":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Str()
-				s.ClientId = string(v)
+				s.ClientID = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"clientId\"")
+				return errors.Wrap(err, "decode field \"client_id\"")
 			}
-		case "authorizationEndpoint":
+		case "authorization_endpoint":
 			if err := func() error {
 				s.AuthorizationEndpoint.Reset()
 				if err := s.AuthorizationEndpoint.Decode(d); err != nil {
@@ -3309,9 +3309,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"authorizationEndpoint\"")
+				return errors.Wrap(err, "decode field \"authorization_endpoint\"")
 			}
-		case "tokenEndpoint":
+		case "token_endpoint":
 			if err := func() error {
 				s.TokenEndpoint.Reset()
 				if err := s.TokenEndpoint.Decode(d); err != nil {
@@ -3319,9 +3319,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tokenEndpoint\"")
+				return errors.Wrap(err, "decode field \"token_endpoint\"")
 			}
-		case "userInfoEndpoint":
+		case "user_info_endpoint":
 			if err := func() error {
 				s.UserInfoEndpoint.Reset()
 				if err := s.UserInfoEndpoint.Decode(d); err != nil {
@@ -3329,19 +3329,19 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userInfoEndpoint\"")
+				return errors.Wrap(err, "decode field \"user_info_endpoint\"")
 			}
-		case "jwksUri":
+		case "jwks_uri":
 			if err := func() error {
-				s.JwksUri.Reset()
-				if err := s.JwksUri.Decode(d); err != nil {
+				s.JwksURI.Reset()
+				if err := s.JwksURI.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"jwksUri\"")
+				return errors.Wrap(err, "decode field \"jwks_uri\"")
 			}
-		case "endSessionEndpoint":
+		case "end_session_endpoint":
 			if err := func() error {
 				s.EndSessionEndpoint.Reset()
 				if err := s.EndSessionEndpoint.Decode(d); err != nil {
@@ -3349,7 +3349,7 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"endSessionEndpoint\"")
+				return errors.Wrap(err, "decode field \"end_session_endpoint\"")
 			}
 		case "scopes":
 			requiredBitSet[1] |= 1 << 3
@@ -3371,7 +3371,7 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"scopes\"")
 			}
-		case "claimMappings":
+		case "claim_mappings":
 			if err := func() error {
 				s.ClaimMappings.Reset()
 				if err := s.ClaimMappings.Decode(d); err != nil {
@@ -3379,9 +3379,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"claimMappings\"")
+				return errors.Wrap(err, "decode field \"claim_mappings\"")
 			}
-		case "roleMappings":
+		case "role_mappings":
 			if err := func() error {
 				s.RoleMappings.Reset()
 				if err := s.RoleMappings.Decode(d); err != nil {
@@ -3389,9 +3389,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"roleMappings\"")
+				return errors.Wrap(err, "decode field \"role_mappings\"")
 			}
-		case "autoCreateUsers":
+		case "auto_create_users":
 			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				v, err := d.Bool()
@@ -3401,9 +3401,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"autoCreateUsers\"")
+				return errors.Wrap(err, "decode field \"auto_create_users\"")
 			}
-		case "updateUserInfo":
+		case "update_user_info":
 			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				v, err := d.Bool()
@@ -3413,9 +3413,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"updateUserInfo\"")
+				return errors.Wrap(err, "decode field \"update_user_info\"")
 			}
-		case "allowLinking":
+		case "allow_linking":
 			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				v, err := d.Bool()
@@ -3425,9 +3425,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"allowLinking\"")
+				return errors.Wrap(err, "decode field \"allow_linking\"")
 			}
-		case "isEnabled":
+		case "is_enabled":
 			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				v, err := d.Bool()
@@ -3437,9 +3437,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isEnabled\"")
+				return errors.Wrap(err, "decode field \"is_enabled\"")
 			}
-		case "isDefault":
+		case "is_default":
 			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				v, err := d.Bool()
@@ -3449,9 +3449,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isDefault\"")
+				return errors.Wrap(err, "decode field \"is_default\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -3461,9 +3461,9 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
-		case "updatedAt":
+		case "updated_at":
 			requiredBitSet[2] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -3473,7 +3473,7 @@ func (s *AdminOIDCProvider) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"updatedAt\"")
+				return errors.Wrap(err, "decode field \"updated_at\"")
 			}
 		default:
 			return d.Skip()
@@ -7053,31 +7053,31 @@ func (s *CreateLibraryRequest) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ScanOnStartup.Set {
-			e.FieldStart("scanOnStartup")
+			e.FieldStart("scan_on_startup")
 			s.ScanOnStartup.Encode(e)
 		}
 	}
 	{
 		if s.RealtimeMonitoring.Set {
-			e.FieldStart("realtimeMonitoring")
+			e.FieldStart("realtime_monitoring")
 			s.RealtimeMonitoring.Encode(e)
 		}
 	}
 	{
 		if s.MetadataProvider.Set {
-			e.FieldStart("metadataProvider")
+			e.FieldStart("metadata_provider")
 			s.MetadataProvider.Encode(e)
 		}
 	}
 	{
 		if s.PreferredLanguage.Set {
-			e.FieldStart("preferredLanguage")
+			e.FieldStart("preferred_language")
 			s.PreferredLanguage.Encode(e)
 		}
 	}
 	{
 		if s.ScannerConfig.Set {
-			e.FieldStart("scannerConfig")
+			e.FieldStart("scanner_config")
 			s.ScannerConfig.Encode(e)
 		}
 	}
@@ -7088,11 +7088,11 @@ var jsonFieldsNameOfCreateLibraryRequest = [9]string{
 	1: "type",
 	2: "paths",
 	3: "enabled",
-	4: "scanOnStartup",
-	5: "realtimeMonitoring",
-	6: "metadataProvider",
-	7: "preferredLanguage",
-	8: "scannerConfig",
+	4: "scan_on_startup",
+	5: "realtime_monitoring",
+	6: "metadata_provider",
+	7: "preferred_language",
+	8: "scanner_config",
 }
 
 // Decode decodes CreateLibraryRequest from json.
@@ -7157,7 +7157,7 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"enabled\"")
 			}
-		case "scanOnStartup":
+		case "scan_on_startup":
 			if err := func() error {
 				s.ScanOnStartup.Reset()
 				if err := s.ScanOnStartup.Decode(d); err != nil {
@@ -7165,9 +7165,9 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scanOnStartup\"")
+				return errors.Wrap(err, "decode field \"scan_on_startup\"")
 			}
-		case "realtimeMonitoring":
+		case "realtime_monitoring":
 			if err := func() error {
 				s.RealtimeMonitoring.Reset()
 				if err := s.RealtimeMonitoring.Decode(d); err != nil {
@@ -7175,9 +7175,9 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"realtimeMonitoring\"")
+				return errors.Wrap(err, "decode field \"realtime_monitoring\"")
 			}
-		case "metadataProvider":
+		case "metadata_provider":
 			if err := func() error {
 				s.MetadataProvider.Reset()
 				if err := s.MetadataProvider.Decode(d); err != nil {
@@ -7185,9 +7185,9 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"metadataProvider\"")
+				return errors.Wrap(err, "decode field \"metadata_provider\"")
 			}
-		case "preferredLanguage":
+		case "preferred_language":
 			if err := func() error {
 				s.PreferredLanguage.Reset()
 				if err := s.PreferredLanguage.Decode(d); err != nil {
@@ -7195,9 +7195,9 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"preferredLanguage\"")
+				return errors.Wrap(err, "decode field \"preferred_language\"")
 			}
-		case "scannerConfig":
+		case "scanner_config":
 			if err := func() error {
 				s.ScannerConfig.Reset()
 				if err := s.ScannerConfig.Decode(d); err != nil {
@@ -7205,7 +7205,7 @@ func (s *CreateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scannerConfig\"")
+				return errors.Wrap(err, "decode field \"scanner_config\"")
 			}
 		default:
 			return d.Skip()
@@ -7428,54 +7428,54 @@ func (s *CreateOIDCProviderRequest) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
-		e.FieldStart("displayName")
+		e.FieldStart("display_name")
 		e.Str(s.DisplayName)
 	}
 	{
 		if s.ProviderType.Set {
-			e.FieldStart("providerType")
+			e.FieldStart("provider_type")
 			s.ProviderType.Encode(e)
 		}
 	}
 	{
-		e.FieldStart("issuerUrl")
-		e.Str(s.IssuerUrl)
+		e.FieldStart("issuer_url")
+		e.Str(s.IssuerURL)
 	}
 	{
-		e.FieldStart("clientId")
-		e.Str(s.ClientId)
+		e.FieldStart("client_id")
+		e.Str(s.ClientID)
 	}
 	{
-		e.FieldStart("clientSecret")
+		e.FieldStart("client_secret")
 		e.Str(s.ClientSecret)
 	}
 	{
 		if s.AuthorizationEndpoint.Set {
-			e.FieldStart("authorizationEndpoint")
+			e.FieldStart("authorization_endpoint")
 			s.AuthorizationEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.TokenEndpoint.Set {
-			e.FieldStart("tokenEndpoint")
+			e.FieldStart("token_endpoint")
 			s.TokenEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.UserInfoEndpoint.Set {
-			e.FieldStart("userInfoEndpoint")
+			e.FieldStart("user_info_endpoint")
 			s.UserInfoEndpoint.Encode(e)
 		}
 	}
 	{
-		if s.JwksUri.Set {
-			e.FieldStart("jwksUri")
-			s.JwksUri.Encode(e)
+		if s.JwksURI.Set {
+			e.FieldStart("jwks_uri")
+			s.JwksURI.Encode(e)
 		}
 	}
 	{
 		if s.EndSessionEndpoint.Set {
-			e.FieldStart("endSessionEndpoint")
+			e.FieldStart("end_session_endpoint")
 			s.EndSessionEndpoint.Encode(e)
 		}
 	}
@@ -7491,43 +7491,43 @@ func (s *CreateOIDCProviderRequest) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ClaimMappings.Set {
-			e.FieldStart("claimMappings")
+			e.FieldStart("claim_mappings")
 			s.ClaimMappings.Encode(e)
 		}
 	}
 	{
 		if s.RoleMappings.Set {
-			e.FieldStart("roleMappings")
+			e.FieldStart("role_mappings")
 			s.RoleMappings.Encode(e)
 		}
 	}
 	{
 		if s.AutoCreateUsers.Set {
-			e.FieldStart("autoCreateUsers")
+			e.FieldStart("auto_create_users")
 			s.AutoCreateUsers.Encode(e)
 		}
 	}
 	{
 		if s.UpdateUserInfo.Set {
-			e.FieldStart("updateUserInfo")
+			e.FieldStart("update_user_info")
 			s.UpdateUserInfo.Encode(e)
 		}
 	}
 	{
 		if s.AllowLinking.Set {
-			e.FieldStart("allowLinking")
+			e.FieldStart("allow_linking")
 			s.AllowLinking.Encode(e)
 		}
 	}
 	{
 		if s.IsEnabled.Set {
-			e.FieldStart("isEnabled")
+			e.FieldStart("is_enabled")
 			s.IsEnabled.Encode(e)
 		}
 	}
 	{
 		if s.IsDefault.Set {
-			e.FieldStart("isDefault")
+			e.FieldStart("is_default")
 			s.IsDefault.Encode(e)
 		}
 	}
@@ -7535,24 +7535,24 @@ func (s *CreateOIDCProviderRequest) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfCreateOIDCProviderRequest = [19]string{
 	0:  "name",
-	1:  "displayName",
-	2:  "providerType",
-	3:  "issuerUrl",
-	4:  "clientId",
-	5:  "clientSecret",
-	6:  "authorizationEndpoint",
-	7:  "tokenEndpoint",
-	8:  "userInfoEndpoint",
-	9:  "jwksUri",
-	10: "endSessionEndpoint",
+	1:  "display_name",
+	2:  "provider_type",
+	3:  "issuer_url",
+	4:  "client_id",
+	5:  "client_secret",
+	6:  "authorization_endpoint",
+	7:  "token_endpoint",
+	8:  "user_info_endpoint",
+	9:  "jwks_uri",
+	10: "end_session_endpoint",
 	11: "scopes",
-	12: "claimMappings",
-	13: "roleMappings",
-	14: "autoCreateUsers",
-	15: "updateUserInfo",
-	16: "allowLinking",
-	17: "isEnabled",
-	18: "isDefault",
+	12: "claim_mappings",
+	13: "role_mappings",
+	14: "auto_create_users",
+	15: "update_user_info",
+	16: "allow_linking",
+	17: "is_enabled",
+	18: "is_default",
 }
 
 // Decode decodes CreateOIDCProviderRequest from json.
@@ -7577,7 +7577,7 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "displayName":
+		case "display_name":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
@@ -7587,9 +7587,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"displayName\"")
+				return errors.Wrap(err, "decode field \"display_name\"")
 			}
-		case "providerType":
+		case "provider_type":
 			if err := func() error {
 				s.ProviderType.Reset()
 				if err := s.ProviderType.Decode(d); err != nil {
@@ -7597,33 +7597,33 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"providerType\"")
+				return errors.Wrap(err, "decode field \"provider_type\"")
 			}
-		case "issuerUrl":
+		case "issuer_url":
 			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				v, err := d.Str()
-				s.IssuerUrl = string(v)
+				s.IssuerURL = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"issuerUrl\"")
+				return errors.Wrap(err, "decode field \"issuer_url\"")
 			}
-		case "clientId":
+		case "client_id":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Str()
-				s.ClientId = string(v)
+				s.ClientID = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"clientId\"")
+				return errors.Wrap(err, "decode field \"client_id\"")
 			}
-		case "clientSecret":
+		case "client_secret":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Str()
@@ -7633,9 +7633,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"clientSecret\"")
+				return errors.Wrap(err, "decode field \"client_secret\"")
 			}
-		case "authorizationEndpoint":
+		case "authorization_endpoint":
 			if err := func() error {
 				s.AuthorizationEndpoint.Reset()
 				if err := s.AuthorizationEndpoint.Decode(d); err != nil {
@@ -7643,9 +7643,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"authorizationEndpoint\"")
+				return errors.Wrap(err, "decode field \"authorization_endpoint\"")
 			}
-		case "tokenEndpoint":
+		case "token_endpoint":
 			if err := func() error {
 				s.TokenEndpoint.Reset()
 				if err := s.TokenEndpoint.Decode(d); err != nil {
@@ -7653,9 +7653,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tokenEndpoint\"")
+				return errors.Wrap(err, "decode field \"token_endpoint\"")
 			}
-		case "userInfoEndpoint":
+		case "user_info_endpoint":
 			if err := func() error {
 				s.UserInfoEndpoint.Reset()
 				if err := s.UserInfoEndpoint.Decode(d); err != nil {
@@ -7663,19 +7663,19 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userInfoEndpoint\"")
+				return errors.Wrap(err, "decode field \"user_info_endpoint\"")
 			}
-		case "jwksUri":
+		case "jwks_uri":
 			if err := func() error {
-				s.JwksUri.Reset()
-				if err := s.JwksUri.Decode(d); err != nil {
+				s.JwksURI.Reset()
+				if err := s.JwksURI.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"jwksUri\"")
+				return errors.Wrap(err, "decode field \"jwks_uri\"")
 			}
-		case "endSessionEndpoint":
+		case "end_session_endpoint":
 			if err := func() error {
 				s.EndSessionEndpoint.Reset()
 				if err := s.EndSessionEndpoint.Decode(d); err != nil {
@@ -7683,7 +7683,7 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"endSessionEndpoint\"")
+				return errors.Wrap(err, "decode field \"end_session_endpoint\"")
 			}
 		case "scopes":
 			if err := func() error {
@@ -7704,7 +7704,7 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"scopes\"")
 			}
-		case "claimMappings":
+		case "claim_mappings":
 			if err := func() error {
 				s.ClaimMappings.Reset()
 				if err := s.ClaimMappings.Decode(d); err != nil {
@@ -7712,9 +7712,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"claimMappings\"")
+				return errors.Wrap(err, "decode field \"claim_mappings\"")
 			}
-		case "roleMappings":
+		case "role_mappings":
 			if err := func() error {
 				s.RoleMappings.Reset()
 				if err := s.RoleMappings.Decode(d); err != nil {
@@ -7722,9 +7722,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"roleMappings\"")
+				return errors.Wrap(err, "decode field \"role_mappings\"")
 			}
-		case "autoCreateUsers":
+		case "auto_create_users":
 			if err := func() error {
 				s.AutoCreateUsers.Reset()
 				if err := s.AutoCreateUsers.Decode(d); err != nil {
@@ -7732,9 +7732,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"autoCreateUsers\"")
+				return errors.Wrap(err, "decode field \"auto_create_users\"")
 			}
-		case "updateUserInfo":
+		case "update_user_info":
 			if err := func() error {
 				s.UpdateUserInfo.Reset()
 				if err := s.UpdateUserInfo.Decode(d); err != nil {
@@ -7742,9 +7742,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"updateUserInfo\"")
+				return errors.Wrap(err, "decode field \"update_user_info\"")
 			}
-		case "allowLinking":
+		case "allow_linking":
 			if err := func() error {
 				s.AllowLinking.Reset()
 				if err := s.AllowLinking.Decode(d); err != nil {
@@ -7752,9 +7752,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"allowLinking\"")
+				return errors.Wrap(err, "decode field \"allow_linking\"")
 			}
-		case "isEnabled":
+		case "is_enabled":
 			if err := func() error {
 				s.IsEnabled.Reset()
 				if err := s.IsEnabled.Decode(d); err != nil {
@@ -7762,9 +7762,9 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isEnabled\"")
+				return errors.Wrap(err, "decode field \"is_enabled\"")
 			}
-		case "isDefault":
+		case "is_default":
 			if err := func() error {
 				s.IsDefault.Reset()
 				if err := s.IsDefault.Decode(d); err != nil {
@@ -7772,7 +7772,7 @@ func (s *CreateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isDefault\"")
+				return errors.Wrap(err, "decode field \"is_default\"")
 			}
 		default:
 			return d.Skip()
@@ -16503,8 +16503,8 @@ func (s *GrantLibraryPermissionReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *GrantLibraryPermissionReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("userId")
-		json.EncodeUUID(e, s.UserId)
+		e.FieldStart("user_id")
+		json.EncodeUUID(e, s.UserID)
 	}
 	{
 		e.FieldStart("permission")
@@ -16513,7 +16513,7 @@ func (s *GrantLibraryPermissionReq) encodeFields(e *jx.Encoder) {
 }
 
 var jsonFieldsNameOfGrantLibraryPermissionReq = [2]string{
-	0: "userId",
+	0: "user_id",
 	1: "permission",
 }
 
@@ -16526,17 +16526,17 @@ func (s *GrantLibraryPermissionReq) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "userId":
+		case "user_id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.UserId = v
+				s.UserID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userId\"")
+				return errors.Wrap(err, "decode field \"user_id\"")
 			}
 		case "permission":
 			requiredBitSet[0] |= 1 << 1
@@ -17039,43 +17039,43 @@ func (s *Library) encodeFields(e *jx.Encoder) {
 		e.Bool(s.Enabled)
 	}
 	{
-		e.FieldStart("scanOnStartup")
+		e.FieldStart("scan_on_startup")
 		e.Bool(s.ScanOnStartup)
 	}
 	{
-		e.FieldStart("realtimeMonitoring")
+		e.FieldStart("realtime_monitoring")
 		e.Bool(s.RealtimeMonitoring)
 	}
 	{
 		if s.MetadataProvider.Set {
-			e.FieldStart("metadataProvider")
+			e.FieldStart("metadata_provider")
 			s.MetadataProvider.Encode(e)
 		}
 	}
 	{
 		if s.PreferredLanguage.Set {
-			e.FieldStart("preferredLanguage")
+			e.FieldStart("preferred_language")
 			s.PreferredLanguage.Encode(e)
 		}
 	}
 	{
 		if s.ScannerConfig.Set {
-			e.FieldStart("scannerConfig")
+			e.FieldStart("scanner_config")
 			s.ScannerConfig.Encode(e)
 		}
 	}
 	{
 		if s.LatestScan.Set {
-			e.FieldStart("latestScan")
+			e.FieldStart("latest_scan")
 			s.LatestScan.Encode(e)
 		}
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 	{
-		e.FieldStart("updatedAt")
+		e.FieldStart("updated_at")
 		json.EncodeDateTime(e, s.UpdatedAt)
 	}
 }
@@ -17086,14 +17086,14 @@ var jsonFieldsNameOfLibrary = [13]string{
 	2:  "type",
 	3:  "paths",
 	4:  "enabled",
-	5:  "scanOnStartup",
-	6:  "realtimeMonitoring",
-	7:  "metadataProvider",
-	8:  "preferredLanguage",
-	9:  "scannerConfig",
-	10: "latestScan",
-	11: "createdAt",
-	12: "updatedAt",
+	5:  "scan_on_startup",
+	6:  "realtime_monitoring",
+	7:  "metadata_provider",
+	8:  "preferred_language",
+	9:  "scanner_config",
+	10: "latest_scan",
+	11: "created_at",
+	12: "updated_at",
 }
 
 // Decode decodes Library from json.
@@ -17171,7 +17171,7 @@ func (s *Library) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"enabled\"")
 			}
-		case "scanOnStartup":
+		case "scan_on_startup":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Bool()
@@ -17181,9 +17181,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scanOnStartup\"")
+				return errors.Wrap(err, "decode field \"scan_on_startup\"")
 			}
-		case "realtimeMonitoring":
+		case "realtime_monitoring":
 			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := d.Bool()
@@ -17193,9 +17193,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"realtimeMonitoring\"")
+				return errors.Wrap(err, "decode field \"realtime_monitoring\"")
 			}
-		case "metadataProvider":
+		case "metadata_provider":
 			if err := func() error {
 				s.MetadataProvider.Reset()
 				if err := s.MetadataProvider.Decode(d); err != nil {
@@ -17203,9 +17203,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"metadataProvider\"")
+				return errors.Wrap(err, "decode field \"metadata_provider\"")
 			}
-		case "preferredLanguage":
+		case "preferred_language":
 			if err := func() error {
 				s.PreferredLanguage.Reset()
 				if err := s.PreferredLanguage.Decode(d); err != nil {
@@ -17213,9 +17213,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"preferredLanguage\"")
+				return errors.Wrap(err, "decode field \"preferred_language\"")
 			}
-		case "scannerConfig":
+		case "scanner_config":
 			if err := func() error {
 				s.ScannerConfig.Reset()
 				if err := s.ScannerConfig.Decode(d); err != nil {
@@ -17223,9 +17223,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scannerConfig\"")
+				return errors.Wrap(err, "decode field \"scanner_config\"")
 			}
-		case "latestScan":
+		case "latest_scan":
 			if err := func() error {
 				s.LatestScan.Reset()
 				if err := s.LatestScan.Decode(d); err != nil {
@@ -17233,9 +17233,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"latestScan\"")
+				return errors.Wrap(err, "decode field \"latest_scan\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -17245,9 +17245,9 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
-		case "updatedAt":
+		case "updated_at":
 			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -17257,7 +17257,7 @@ func (s *Library) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"updatedAt\"")
+				return errors.Wrap(err, "decode field \"updated_at\"")
 			}
 		default:
 			return d.Skip()
@@ -17453,29 +17453,29 @@ func (s *LibraryPermission) encodeFields(e *jx.Encoder) {
 		json.EncodeUUID(e, s.ID)
 	}
 	{
-		e.FieldStart("libraryId")
-		json.EncodeUUID(e, s.LibraryId)
+		e.FieldStart("library_id")
+		json.EncodeUUID(e, s.LibraryID)
 	}
 	{
-		e.FieldStart("userId")
-		json.EncodeUUID(e, s.UserId)
+		e.FieldStart("user_id")
+		json.EncodeUUID(e, s.UserID)
 	}
 	{
 		e.FieldStart("permission")
 		s.Permission.Encode(e)
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 }
 
 var jsonFieldsNameOfLibraryPermission = [5]string{
 	0: "id",
-	1: "libraryId",
-	2: "userId",
+	1: "library_id",
+	2: "user_id",
 	3: "permission",
-	4: "createdAt",
+	4: "created_at",
 }
 
 // Decode decodes LibraryPermission from json.
@@ -17499,29 +17499,29 @@ func (s *LibraryPermission) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "libraryId":
+		case "library_id":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.LibraryId = v
+				s.LibraryID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"libraryId\"")
+				return errors.Wrap(err, "decode field \"library_id\"")
 			}
-		case "userId":
+		case "user_id":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.UserId = v
+				s.UserID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userId\"")
+				return errors.Wrap(err, "decode field \"user_id\"")
 			}
 		case "permission":
 			requiredBitSet[0] |= 1 << 3
@@ -17533,7 +17533,7 @@ func (s *LibraryPermission) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"permission\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -17543,7 +17543,7 @@ func (s *LibraryPermission) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
 		default:
 			return d.Skip()
@@ -17780,11 +17780,11 @@ func (s *LibraryScan) encodeFields(e *jx.Encoder) {
 		json.EncodeUUID(e, s.ID)
 	}
 	{
-		e.FieldStart("libraryId")
-		json.EncodeUUID(e, s.LibraryId)
+		e.FieldStart("library_id")
+		json.EncodeUUID(e, s.LibraryID)
 	}
 	{
-		e.FieldStart("scanType")
+		e.FieldStart("scan_type")
 		s.ScanType.Encode(e)
 	}
 	{
@@ -17793,72 +17793,72 @@ func (s *LibraryScan) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ItemsScanned.Set {
-			e.FieldStart("itemsScanned")
+			e.FieldStart("items_scanned")
 			s.ItemsScanned.Encode(e)
 		}
 	}
 	{
 		if s.ItemsAdded.Set {
-			e.FieldStart("itemsAdded")
+			e.FieldStart("items_added")
 			s.ItemsAdded.Encode(e)
 		}
 	}
 	{
 		if s.ItemsUpdated.Set {
-			e.FieldStart("itemsUpdated")
+			e.FieldStart("items_updated")
 			s.ItemsUpdated.Encode(e)
 		}
 	}
 	{
 		if s.ItemsRemoved.Set {
-			e.FieldStart("itemsRemoved")
+			e.FieldStart("items_removed")
 			s.ItemsRemoved.Encode(e)
 		}
 	}
 	{
 		if s.ErrorCount.Set {
-			e.FieldStart("errorCount")
+			e.FieldStart("error_count")
 			s.ErrorCount.Encode(e)
 		}
 	}
 	{
 		if s.ErrorMessage.Set {
-			e.FieldStart("errorMessage")
+			e.FieldStart("error_message")
 			s.ErrorMessage.Encode(e)
 		}
 	}
 	{
 		if s.StartedAt.Set {
-			e.FieldStart("startedAt")
+			e.FieldStart("started_at")
 			s.StartedAt.Encode(e, json.EncodeDateTime)
 		}
 	}
 	{
 		if s.CompletedAt.Set {
-			e.FieldStart("completedAt")
+			e.FieldStart("completed_at")
 			s.CompletedAt.Encode(e, json.EncodeDateTime)
 		}
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 }
 
 var jsonFieldsNameOfLibraryScan = [13]string{
 	0:  "id",
-	1:  "libraryId",
-	2:  "scanType",
+	1:  "library_id",
+	2:  "scan_type",
 	3:  "status",
-	4:  "itemsScanned",
-	5:  "itemsAdded",
-	6:  "itemsUpdated",
-	7:  "itemsRemoved",
-	8:  "errorCount",
-	9:  "errorMessage",
-	10: "startedAt",
-	11: "completedAt",
-	12: "createdAt",
+	4:  "items_scanned",
+	5:  "items_added",
+	6:  "items_updated",
+	7:  "items_removed",
+	8:  "error_count",
+	9:  "error_message",
+	10: "started_at",
+	11: "completed_at",
+	12: "created_at",
 }
 
 // Decode decodes LibraryScan from json.
@@ -17882,19 +17882,19 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "libraryId":
+		case "library_id":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.LibraryId = v
+				s.LibraryID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"libraryId\"")
+				return errors.Wrap(err, "decode field \"library_id\"")
 			}
-		case "scanType":
+		case "scan_type":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				if err := s.ScanType.Decode(d); err != nil {
@@ -17902,7 +17902,7 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scanType\"")
+				return errors.Wrap(err, "decode field \"scan_type\"")
 			}
 		case "status":
 			requiredBitSet[0] |= 1 << 3
@@ -17914,7 +17914,7 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"status\"")
 			}
-		case "itemsScanned":
+		case "items_scanned":
 			if err := func() error {
 				s.ItemsScanned.Reset()
 				if err := s.ItemsScanned.Decode(d); err != nil {
@@ -17922,9 +17922,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"itemsScanned\"")
+				return errors.Wrap(err, "decode field \"items_scanned\"")
 			}
-		case "itemsAdded":
+		case "items_added":
 			if err := func() error {
 				s.ItemsAdded.Reset()
 				if err := s.ItemsAdded.Decode(d); err != nil {
@@ -17932,9 +17932,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"itemsAdded\"")
+				return errors.Wrap(err, "decode field \"items_added\"")
 			}
-		case "itemsUpdated":
+		case "items_updated":
 			if err := func() error {
 				s.ItemsUpdated.Reset()
 				if err := s.ItemsUpdated.Decode(d); err != nil {
@@ -17942,9 +17942,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"itemsUpdated\"")
+				return errors.Wrap(err, "decode field \"items_updated\"")
 			}
-		case "itemsRemoved":
+		case "items_removed":
 			if err := func() error {
 				s.ItemsRemoved.Reset()
 				if err := s.ItemsRemoved.Decode(d); err != nil {
@@ -17952,9 +17952,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"itemsRemoved\"")
+				return errors.Wrap(err, "decode field \"items_removed\"")
 			}
-		case "errorCount":
+		case "error_count":
 			if err := func() error {
 				s.ErrorCount.Reset()
 				if err := s.ErrorCount.Decode(d); err != nil {
@@ -17962,9 +17962,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"errorCount\"")
+				return errors.Wrap(err, "decode field \"error_count\"")
 			}
-		case "errorMessage":
+		case "error_message":
 			if err := func() error {
 				s.ErrorMessage.Reset()
 				if err := s.ErrorMessage.Decode(d); err != nil {
@@ -17972,9 +17972,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"errorMessage\"")
+				return errors.Wrap(err, "decode field \"error_message\"")
 			}
-		case "startedAt":
+		case "started_at":
 			if err := func() error {
 				s.StartedAt.Reset()
 				if err := s.StartedAt.Decode(d, json.DecodeDateTime); err != nil {
@@ -17982,9 +17982,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"startedAt\"")
+				return errors.Wrap(err, "decode field \"started_at\"")
 			}
-		case "completedAt":
+		case "completed_at":
 			if err := func() error {
 				s.CompletedAt.Reset()
 				if err := s.CompletedAt.Decode(d, json.DecodeDateTime); err != nil {
@@ -17992,9 +17992,9 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"completedAt\"")
+				return errors.Wrap(err, "decode field \"completed_at\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -18004,7 +18004,7 @@ func (s *LibraryScan) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
 		default:
 			return d.Skip()
@@ -26218,7 +26218,7 @@ func (s *MovieCreditListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.PageSize.Set {
-			e.FieldStart("pageSize")
+			e.FieldStart("page_size")
 			s.PageSize.Encode(e)
 		}
 	}
@@ -26228,7 +26228,7 @@ var jsonFieldsNameOfMovieCreditListResponse = [4]string{
 	0: "items",
 	1: "total",
 	2: "page",
-	3: "pageSize",
+	3: "page_size",
 }
 
 // Decode decodes MovieCreditListResponse from json.
@@ -26280,7 +26280,7 @@ func (s *MovieCreditListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"page\"")
 			}
-		case "pageSize":
+		case "page_size":
 			if err := func() error {
 				s.PageSize.Reset()
 				if err := s.PageSize.Decode(d); err != nil {
@@ -26288,7 +26288,7 @@ func (s *MovieCreditListResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"pageSize\"")
+				return errors.Wrap(err, "decode field \"page_size\"")
 			}
 		default:
 			return d.Skip()
@@ -26969,7 +26969,7 @@ func (s *MovieListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.PageSize.Set {
-			e.FieldStart("pageSize")
+			e.FieldStart("page_size")
 			s.PageSize.Encode(e)
 		}
 	}
@@ -26979,7 +26979,7 @@ var jsonFieldsNameOfMovieListResponse = [4]string{
 	0: "items",
 	1: "total",
 	2: "page",
-	3: "pageSize",
+	3: "page_size",
 }
 
 // Decode decodes MovieListResponse from json.
@@ -27031,7 +27031,7 @@ func (s *MovieListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"page\"")
 			}
-		case "pageSize":
+		case "page_size":
 			if err := func() error {
 				s.PageSize.Reset()
 				if err := s.PageSize.Decode(d); err != nil {
@@ -27039,7 +27039,7 @@ func (s *MovieListResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"pageSize\"")
+				return errors.Wrap(err, "decode field \"page_size\"")
 			}
 		default:
 			return d.Skip()
@@ -27471,13 +27471,13 @@ func (s *OIDCAuthURLResponse) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *OIDCAuthURLResponse) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("authUrl")
-		e.Str(s.AuthUrl)
+		e.FieldStart("auth_url")
+		e.Str(s.AuthURL)
 	}
 }
 
 var jsonFieldsNameOfOIDCAuthURLResponse = [1]string{
-	0: "authUrl",
+	0: "auth_url",
 }
 
 // Decode decodes OIDCAuthURLResponse from json.
@@ -27489,17 +27489,17 @@ func (s *OIDCAuthURLResponse) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "authUrl":
+		case "auth_url":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
-				s.AuthUrl = string(v)
+				s.AuthURL = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"authUrl\"")
+				return errors.Wrap(err, "decode field \"auth_url\"")
 			}
 		default:
 			return d.Skip()
@@ -27567,20 +27567,20 @@ func (s *OIDCCallbackResponse) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *OIDCCallbackResponse) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("accessToken")
+		e.FieldStart("access_token")
 		e.Str(s.AccessToken)
 	}
 	{
-		e.FieldStart("tokenType")
+		e.FieldStart("token_type")
 		e.Str(s.TokenType)
 	}
 	{
-		e.FieldStart("expiresIn")
+		e.FieldStart("expires_in")
 		e.Int(s.ExpiresIn)
 	}
 	{
 		if s.RefreshToken.Set {
-			e.FieldStart("refreshToken")
+			e.FieldStart("refresh_token")
 			s.RefreshToken.Encode(e)
 		}
 	}
@@ -27593,10 +27593,10 @@ func (s *OIDCCallbackResponse) encodeFields(e *jx.Encoder) {
 }
 
 var jsonFieldsNameOfOIDCCallbackResponse = [5]string{
-	0: "accessToken",
-	1: "tokenType",
-	2: "expiresIn",
-	3: "refreshToken",
+	0: "access_token",
+	1: "token_type",
+	2: "expires_in",
+	3: "refresh_token",
 	4: "user",
 }
 
@@ -27609,7 +27609,7 @@ func (s *OIDCCallbackResponse) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "accessToken":
+		case "access_token":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
@@ -27619,9 +27619,9 @@ func (s *OIDCCallbackResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"accessToken\"")
+				return errors.Wrap(err, "decode field \"access_token\"")
 			}
-		case "tokenType":
+		case "token_type":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
@@ -27631,9 +27631,9 @@ func (s *OIDCCallbackResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tokenType\"")
+				return errors.Wrap(err, "decode field \"token_type\"")
 			}
-		case "expiresIn":
+		case "expires_in":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Int()
@@ -27643,9 +27643,9 @@ func (s *OIDCCallbackResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"expiresIn\"")
+				return errors.Wrap(err, "decode field \"expires_in\"")
 			}
-		case "refreshToken":
+		case "refresh_token":
 			if err := func() error {
 				s.RefreshToken.Reset()
 				if err := s.RefreshToken.Decode(d); err != nil {
@@ -27653,7 +27653,7 @@ func (s *OIDCCallbackResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"refreshToken\"")
+				return errors.Wrap(err, "decode field \"refresh_token\"")
 			}
 		case "user":
 			if err := func() error {
@@ -27735,12 +27735,12 @@ func (s *OIDCProviderInfo) encodeFields(e *jx.Encoder) {
 		e.Str(s.Name)
 	}
 	{
-		e.FieldStart("displayName")
+		e.FieldStart("display_name")
 		e.Str(s.DisplayName)
 	}
 	{
 		if s.IsDefault.Set {
-			e.FieldStart("isDefault")
+			e.FieldStart("is_default")
 			s.IsDefault.Encode(e)
 		}
 	}
@@ -27748,8 +27748,8 @@ func (s *OIDCProviderInfo) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfOIDCProviderInfo = [3]string{
 	0: "name",
-	1: "displayName",
-	2: "isDefault",
+	1: "display_name",
+	2: "is_default",
 }
 
 // Decode decodes OIDCProviderInfo from json.
@@ -27773,7 +27773,7 @@ func (s *OIDCProviderInfo) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
-		case "displayName":
+		case "display_name":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
@@ -27783,9 +27783,9 @@ func (s *OIDCProviderInfo) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"displayName\"")
+				return errors.Wrap(err, "decode field \"display_name\"")
 			}
-		case "isDefault":
+		case "is_default":
 			if err := func() error {
 				s.IsDefault.Reset()
 				if err := s.IsDefault.Decode(d); err != nil {
@@ -27793,7 +27793,7 @@ func (s *OIDCProviderInfo) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isDefault\"")
+				return errors.Wrap(err, "decode field \"is_default\"")
 			}
 		default:
 			return d.Skip()
@@ -27988,11 +27988,11 @@ func (s *OIDCUserLink) encodeFields(e *jx.Encoder) {
 		json.EncodeUUID(e, s.ID)
 	}
 	{
-		e.FieldStart("providerName")
+		e.FieldStart("provider_name")
 		e.Str(s.ProviderName)
 	}
 	{
-		e.FieldStart("providerDisplayName")
+		e.FieldStart("provider_display_name")
 		e.Str(s.ProviderDisplayName)
 	}
 	{
@@ -28003,23 +28003,23 @@ func (s *OIDCUserLink) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.LastLoginAt.Set {
-			e.FieldStart("lastLoginAt")
+			e.FieldStart("last_login_at")
 			s.LastLoginAt.Encode(e, json.EncodeDateTime)
 		}
 	}
 	{
-		e.FieldStart("linkedAt")
+		e.FieldStart("linked_at")
 		json.EncodeDateTime(e, s.LinkedAt)
 	}
 }
 
 var jsonFieldsNameOfOIDCUserLink = [6]string{
 	0: "id",
-	1: "providerName",
-	2: "providerDisplayName",
+	1: "provider_name",
+	2: "provider_display_name",
 	3: "email",
-	4: "lastLoginAt",
-	5: "linkedAt",
+	4: "last_login_at",
+	5: "linked_at",
 }
 
 // Decode decodes OIDCUserLink from json.
@@ -28043,7 +28043,7 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "providerName":
+		case "provider_name":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
@@ -28053,9 +28053,9 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"providerName\"")
+				return errors.Wrap(err, "decode field \"provider_name\"")
 			}
-		case "providerDisplayName":
+		case "provider_display_name":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
@@ -28065,7 +28065,7 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"providerDisplayName\"")
+				return errors.Wrap(err, "decode field \"provider_display_name\"")
 			}
 		case "email":
 			if err := func() error {
@@ -28077,7 +28077,7 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"email\"")
 			}
-		case "lastLoginAt":
+		case "last_login_at":
 			if err := func() error {
 				s.LastLoginAt.Reset()
 				if err := s.LastLoginAt.Decode(d, json.DecodeDateTime); err != nil {
@@ -28085,9 +28085,9 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"lastLoginAt\"")
+				return errors.Wrap(err, "decode field \"last_login_at\"")
 			}
-		case "linkedAt":
+		case "linked_at":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -28097,7 +28097,7 @@ func (s *OIDCUserLink) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"linkedAt\"")
+				return errors.Wrap(err, "decode field \"linked_at\"")
 			}
 		default:
 			return d.Skip()
@@ -31804,7 +31804,7 @@ func (s *PlaybackAudioTrack) encodeFields(e *jx.Encoder) {
 		e.Str(s.Codec)
 	}
 	{
-		e.FieldStart("isDefault")
+		e.FieldStart("is_default")
 		e.Bool(s.IsDefault)
 	}
 }
@@ -31816,7 +31816,7 @@ var jsonFieldsNameOfPlaybackAudioTrack = [7]string{
 	3: "channels",
 	4: "layout",
 	5: "codec",
-	6: "isDefault",
+	6: "is_default",
 }
 
 // Decode decodes PlaybackAudioTrack from json.
@@ -31894,7 +31894,7 @@ func (s *PlaybackAudioTrack) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"codec\"")
 			}
-		case "isDefault":
+		case "is_default":
 			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := d.Bool()
@@ -31904,7 +31904,7 @@ func (s *PlaybackAudioTrack) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isDefault\"")
+				return errors.Wrap(err, "decode field \"is_default\"")
 			}
 		default:
 			return d.Skip()
@@ -31988,7 +31988,7 @@ func (s *PlaybackProfile) encodeFields(e *jx.Encoder) {
 		e.Int(s.Bitrate)
 	}
 	{
-		e.FieldStart("isOriginal")
+		e.FieldStart("is_original")
 		e.Bool(s.IsOriginal)
 	}
 }
@@ -31998,7 +31998,7 @@ var jsonFieldsNameOfPlaybackProfile = [5]string{
 	1: "width",
 	2: "height",
 	3: "bitrate",
-	4: "isOriginal",
+	4: "is_original",
 }
 
 // Decode decodes PlaybackProfile from json.
@@ -32058,7 +32058,7 @@ func (s *PlaybackProfile) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"bitrate\"")
 			}
-		case "isOriginal":
+		case "is_original":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Bool()
@@ -32068,7 +32068,7 @@ func (s *PlaybackProfile) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isOriginal\"")
+				return errors.Wrap(err, "decode field \"is_original\"")
 			}
 		default:
 			return d.Skip()
@@ -32136,15 +32136,15 @@ func (s *PlaybackSession) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *PlaybackSession) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("sessionId")
-		json.EncodeUUID(e, s.SessionId)
+		e.FieldStart("session_id")
+		json.EncodeUUID(e, s.SessionID)
 	}
 	{
-		e.FieldStart("masterPlaylistUrl")
-		e.Str(s.MasterPlaylistUrl)
+		e.FieldStart("master_playlist_url")
+		e.Str(s.MasterPlaylistURL)
 	}
 	{
-		e.FieldStart("durationSeconds")
+		e.FieldStart("duration_seconds")
 		e.Float64(s.DurationSeconds)
 	}
 	{
@@ -32156,7 +32156,7 @@ func (s *PlaybackSession) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("audioTracks")
+		e.FieldStart("audio_tracks")
 		e.ArrStart()
 		for _, elem := range s.AudioTracks {
 			elem.Encode(e)
@@ -32164,7 +32164,7 @@ func (s *PlaybackSession) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("subtitleTracks")
+		e.FieldStart("subtitle_tracks")
 		e.ArrStart()
 		for _, elem := range s.SubtitleTracks {
 			elem.Encode(e)
@@ -32172,24 +32172,24 @@ func (s *PlaybackSession) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("createdAt")
+		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 	{
-		e.FieldStart("expiresAt")
+		e.FieldStart("expires_at")
 		json.EncodeDateTime(e, s.ExpiresAt)
 	}
 }
 
 var jsonFieldsNameOfPlaybackSession = [8]string{
-	0: "sessionId",
-	1: "masterPlaylistUrl",
-	2: "durationSeconds",
+	0: "session_id",
+	1: "master_playlist_url",
+	2: "duration_seconds",
 	3: "profiles",
-	4: "audioTracks",
-	5: "subtitleTracks",
-	6: "createdAt",
-	7: "expiresAt",
+	4: "audio_tracks",
+	5: "subtitle_tracks",
+	6: "created_at",
+	7: "expires_at",
 }
 
 // Decode decodes PlaybackSession from json.
@@ -32201,31 +32201,31 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "sessionId":
+		case "session_id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.SessionId = v
+				s.SessionID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"sessionId\"")
+				return errors.Wrap(err, "decode field \"session_id\"")
 			}
-		case "masterPlaylistUrl":
+		case "master_playlist_url":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
-				s.MasterPlaylistUrl = string(v)
+				s.MasterPlaylistURL = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"masterPlaylistUrl\"")
+				return errors.Wrap(err, "decode field \"master_playlist_url\"")
 			}
-		case "durationSeconds":
+		case "duration_seconds":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Float64()
@@ -32235,7 +32235,7 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"durationSeconds\"")
+				return errors.Wrap(err, "decode field \"duration_seconds\"")
 			}
 		case "profiles":
 			requiredBitSet[0] |= 1 << 3
@@ -32255,7 +32255,7 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"profiles\"")
 			}
-		case "audioTracks":
+		case "audio_tracks":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				s.AudioTracks = make([]PlaybackAudioTrack, 0)
@@ -32271,9 +32271,9 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"audioTracks\"")
+				return errors.Wrap(err, "decode field \"audio_tracks\"")
 			}
-		case "subtitleTracks":
+		case "subtitle_tracks":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				s.SubtitleTracks = make([]PlaybackSubtitleTrack, 0)
@@ -32289,9 +32289,9 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"subtitleTracks\"")
+				return errors.Wrap(err, "decode field \"subtitle_tracks\"")
 			}
-		case "createdAt":
+		case "created_at":
 			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -32301,9 +32301,9 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"createdAt\"")
+				return errors.Wrap(err, "decode field \"created_at\"")
 			}
-		case "expiresAt":
+		case "expires_at":
 			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
@@ -32313,7 +32313,7 @@ func (s *PlaybackSession) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"expiresAt\"")
+				return errors.Wrap(err, "decode field \"expires_at\"")
 			}
 		default:
 			return d.Skip()
@@ -32405,7 +32405,7 @@ func (s *PlaybackSubtitleTrack) encodeFields(e *jx.Encoder) {
 		e.Str(s.URL)
 	}
 	{
-		e.FieldStart("isForced")
+		e.FieldStart("is_forced")
 		e.Bool(s.IsForced)
 	}
 }
@@ -32416,7 +32416,7 @@ var jsonFieldsNameOfPlaybackSubtitleTrack = [6]string{
 	2: "title",
 	3: "codec",
 	4: "url",
-	5: "isForced",
+	5: "is_forced",
 }
 
 // Decode decodes PlaybackSubtitleTrack from json.
@@ -32484,7 +32484,7 @@ func (s *PlaybackSubtitleTrack) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"url\"")
 			}
-		case "isForced":
+		case "is_forced":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Bool()
@@ -32494,7 +32494,7 @@ func (s *PlaybackSubtitleTrack) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isForced\"")
+				return errors.Wrap(err, "decode field \"is_forced\"")
 			}
 		default:
 			return d.Skip()
@@ -40472,13 +40472,13 @@ func (s *SetupTOTPReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *SetupTOTPReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("accountName")
+		e.FieldStart("account_name")
 		e.Str(s.AccountName)
 	}
 }
 
 var jsonFieldsNameOfSetupTOTPReq = [1]string{
-	0: "accountName",
+	0: "account_name",
 }
 
 // Decode decodes SetupTOTPReq from json.
@@ -40490,7 +40490,7 @@ func (s *SetupTOTPReq) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "accountName":
+		case "account_name":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
@@ -40500,7 +40500,7 @@ func (s *SetupTOTPReq) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"accountName\"")
+				return errors.Wrap(err, "decode field \"account_name\"")
 			}
 		default:
 			return d.Skip()
@@ -42996,46 +42996,46 @@ func (s *StartPlaybackRequest) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *StartPlaybackRequest) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("mediaType")
+		e.FieldStart("media_type")
 		s.MediaType.Encode(e)
 	}
 	{
-		e.FieldStart("mediaId")
-		json.EncodeUUID(e, s.MediaId)
+		e.FieldStart("media_id")
+		json.EncodeUUID(e, s.MediaID)
 	}
 	{
-		if s.FileId.Set {
-			e.FieldStart("fileId")
-			s.FileId.Encode(e)
+		if s.FileID.Set {
+			e.FieldStart("file_id")
+			s.FileID.Encode(e)
 		}
 	}
 	{
 		if s.AudioTrack.Set {
-			e.FieldStart("audioTrack")
+			e.FieldStart("audio_track")
 			s.AudioTrack.Encode(e)
 		}
 	}
 	{
 		if s.SubtitleTrack.Set {
-			e.FieldStart("subtitleTrack")
+			e.FieldStart("subtitle_track")
 			s.SubtitleTrack.Encode(e)
 		}
 	}
 	{
 		if s.StartPosition.Set {
-			e.FieldStart("startPosition")
+			e.FieldStart("start_position")
 			s.StartPosition.Encode(e)
 		}
 	}
 }
 
 var jsonFieldsNameOfStartPlaybackRequest = [6]string{
-	0: "mediaType",
-	1: "mediaId",
-	2: "fileId",
-	3: "audioTrack",
-	4: "subtitleTrack",
-	5: "startPosition",
+	0: "media_type",
+	1: "media_id",
+	2: "file_id",
+	3: "audio_track",
+	4: "subtitle_track",
+	5: "start_position",
 }
 
 // Decode decodes StartPlaybackRequest from json.
@@ -43048,7 +43048,7 @@ func (s *StartPlaybackRequest) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "mediaType":
+		case "media_type":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				if err := s.MediaType.Decode(d); err != nil {
@@ -43056,31 +43056,31 @@ func (s *StartPlaybackRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"mediaType\"")
+				return errors.Wrap(err, "decode field \"media_type\"")
 			}
-		case "mediaId":
+		case "media_id":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeUUID(d)
-				s.MediaId = v
+				s.MediaID = v
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"mediaId\"")
+				return errors.Wrap(err, "decode field \"media_id\"")
 			}
-		case "fileId":
+		case "file_id":
 			if err := func() error {
-				s.FileId.Reset()
-				if err := s.FileId.Decode(d); err != nil {
+				s.FileID.Reset()
+				if err := s.FileID.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"fileId\"")
+				return errors.Wrap(err, "decode field \"file_id\"")
 			}
-		case "audioTrack":
+		case "audio_track":
 			if err := func() error {
 				s.AudioTrack.Reset()
 				if err := s.AudioTrack.Decode(d); err != nil {
@@ -43088,9 +43088,9 @@ func (s *StartPlaybackRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"audioTrack\"")
+				return errors.Wrap(err, "decode field \"audio_track\"")
 			}
-		case "subtitleTrack":
+		case "subtitle_track":
 			if err := func() error {
 				s.SubtitleTrack.Reset()
 				if err := s.SubtitleTrack.Decode(d); err != nil {
@@ -43098,9 +43098,9 @@ func (s *StartPlaybackRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"subtitleTrack\"")
+				return errors.Wrap(err, "decode field \"subtitle_track\"")
 			}
-		case "startPosition":
+		case "start_position":
 			if err := func() error {
 				s.StartPosition.Reset()
 				if err := s.StartPosition.Decode(d); err != nil {
@@ -43108,7 +43108,7 @@ func (s *StartPlaybackRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"startPosition\"")
+				return errors.Wrap(err, "decode field \"start_position\"")
 			}
 		default:
 			return d.Skip()
@@ -45836,7 +45836,7 @@ func (s *TVSeriesCreditListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.PageSize.Set {
-			e.FieldStart("pageSize")
+			e.FieldStart("page_size")
 			s.PageSize.Encode(e)
 		}
 	}
@@ -45846,7 +45846,7 @@ var jsonFieldsNameOfTVSeriesCreditListResponse = [4]string{
 	0: "items",
 	1: "total",
 	2: "page",
-	3: "pageSize",
+	3: "page_size",
 }
 
 // Decode decodes TVSeriesCreditListResponse from json.
@@ -45898,7 +45898,7 @@ func (s *TVSeriesCreditListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"page\"")
 			}
-		case "pageSize":
+		case "page_size":
 			if err := func() error {
 				s.PageSize.Reset()
 				if err := s.PageSize.Decode(d); err != nil {
@@ -45906,7 +45906,7 @@ func (s *TVSeriesCreditListResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"pageSize\"")
+				return errors.Wrap(err, "decode field \"page_size\"")
 			}
 		default:
 			return d.Skip()
@@ -45993,7 +45993,7 @@ func (s *TVSeriesListResponse) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.PageSize.Set {
-			e.FieldStart("pageSize")
+			e.FieldStart("page_size")
 			s.PageSize.Encode(e)
 		}
 	}
@@ -46003,7 +46003,7 @@ var jsonFieldsNameOfTVSeriesListResponse = [4]string{
 	0: "items",
 	1: "total",
 	2: "page",
-	3: "pageSize",
+	3: "page_size",
 }
 
 // Decode decodes TVSeriesListResponse from json.
@@ -46055,7 +46055,7 @@ func (s *TVSeriesListResponse) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"page\"")
 			}
-		case "pageSize":
+		case "page_size":
 			if err := func() error {
 				s.PageSize.Reset()
 				if err := s.PageSize.Decode(d); err != nil {
@@ -46063,7 +46063,7 @@ func (s *TVSeriesListResponse) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"pageSize\"")
+				return errors.Wrap(err, "decode field \"page_size\"")
 			}
 		default:
 			return d.Skip()
@@ -47452,13 +47452,13 @@ func (s *TriggerLibraryScanReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *TriggerLibraryScanReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("scanType")
+		e.FieldStart("scan_type")
 		s.ScanType.Encode(e)
 	}
 }
 
 var jsonFieldsNameOfTriggerLibraryScanReq = [1]string{
-	0: "scanType",
+	0: "scan_type",
 }
 
 // Decode decodes TriggerLibraryScanReq from json.
@@ -47470,7 +47470,7 @@ func (s *TriggerLibraryScanReq) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "scanType":
+		case "scan_type":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				if err := s.ScanType.Decode(d); err != nil {
@@ -47478,7 +47478,7 @@ func (s *TriggerLibraryScanReq) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scanType\"")
+				return errors.Wrap(err, "decode field \"scan_type\"")
 			}
 		default:
 			return d.Skip()
@@ -48066,31 +48066,31 @@ func (s *UpdateLibraryRequest) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ScanOnStartup.Set {
-			e.FieldStart("scanOnStartup")
+			e.FieldStart("scan_on_startup")
 			s.ScanOnStartup.Encode(e)
 		}
 	}
 	{
 		if s.RealtimeMonitoring.Set {
-			e.FieldStart("realtimeMonitoring")
+			e.FieldStart("realtime_monitoring")
 			s.RealtimeMonitoring.Encode(e)
 		}
 	}
 	{
 		if s.MetadataProvider.Set {
-			e.FieldStart("metadataProvider")
+			e.FieldStart("metadata_provider")
 			s.MetadataProvider.Encode(e)
 		}
 	}
 	{
 		if s.PreferredLanguage.Set {
-			e.FieldStart("preferredLanguage")
+			e.FieldStart("preferred_language")
 			s.PreferredLanguage.Encode(e)
 		}
 	}
 	{
 		if s.ScannerConfig.Set {
-			e.FieldStart("scannerConfig")
+			e.FieldStart("scanner_config")
 			s.ScannerConfig.Encode(e)
 		}
 	}
@@ -48100,11 +48100,11 @@ var jsonFieldsNameOfUpdateLibraryRequest = [8]string{
 	0: "name",
 	1: "paths",
 	2: "enabled",
-	3: "scanOnStartup",
-	4: "realtimeMonitoring",
-	5: "metadataProvider",
-	6: "preferredLanguage",
-	7: "scannerConfig",
+	3: "scan_on_startup",
+	4: "realtime_monitoring",
+	5: "metadata_provider",
+	6: "preferred_language",
+	7: "scanner_config",
 }
 
 // Decode decodes UpdateLibraryRequest from json.
@@ -48154,7 +48154,7 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"enabled\"")
 			}
-		case "scanOnStartup":
+		case "scan_on_startup":
 			if err := func() error {
 				s.ScanOnStartup.Reset()
 				if err := s.ScanOnStartup.Decode(d); err != nil {
@@ -48162,9 +48162,9 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scanOnStartup\"")
+				return errors.Wrap(err, "decode field \"scan_on_startup\"")
 			}
-		case "realtimeMonitoring":
+		case "realtime_monitoring":
 			if err := func() error {
 				s.RealtimeMonitoring.Reset()
 				if err := s.RealtimeMonitoring.Decode(d); err != nil {
@@ -48172,9 +48172,9 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"realtimeMonitoring\"")
+				return errors.Wrap(err, "decode field \"realtime_monitoring\"")
 			}
-		case "metadataProvider":
+		case "metadata_provider":
 			if err := func() error {
 				s.MetadataProvider.Reset()
 				if err := s.MetadataProvider.Decode(d); err != nil {
@@ -48182,9 +48182,9 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"metadataProvider\"")
+				return errors.Wrap(err, "decode field \"metadata_provider\"")
 			}
-		case "preferredLanguage":
+		case "preferred_language":
 			if err := func() error {
 				s.PreferredLanguage.Reset()
 				if err := s.PreferredLanguage.Decode(d); err != nil {
@@ -48192,9 +48192,9 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"preferredLanguage\"")
+				return errors.Wrap(err, "decode field \"preferred_language\"")
 			}
-		case "scannerConfig":
+		case "scanner_config":
 			if err := func() error {
 				s.ScannerConfig.Reset()
 				if err := s.ScannerConfig.Decode(d); err != nil {
@@ -48202,7 +48202,7 @@ func (s *UpdateLibraryRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"scannerConfig\"")
+				return errors.Wrap(err, "decode field \"scanner_config\"")
 			}
 		default:
 			return d.Skip()
@@ -48335,61 +48335,61 @@ func (s *UpdateOIDCProviderRequest) Encode(e *jx.Encoder) {
 func (s *UpdateOIDCProviderRequest) encodeFields(e *jx.Encoder) {
 	{
 		if s.DisplayName.Set {
-			e.FieldStart("displayName")
+			e.FieldStart("display_name")
 			s.DisplayName.Encode(e)
 		}
 	}
 	{
 		if s.ProviderType.Set {
-			e.FieldStart("providerType")
+			e.FieldStart("provider_type")
 			s.ProviderType.Encode(e)
 		}
 	}
 	{
-		if s.IssuerUrl.Set {
-			e.FieldStart("issuerUrl")
-			s.IssuerUrl.Encode(e)
+		if s.IssuerURL.Set {
+			e.FieldStart("issuer_url")
+			s.IssuerURL.Encode(e)
 		}
 	}
 	{
-		if s.ClientId.Set {
-			e.FieldStart("clientId")
-			s.ClientId.Encode(e)
+		if s.ClientID.Set {
+			e.FieldStart("client_id")
+			s.ClientID.Encode(e)
 		}
 	}
 	{
 		if s.ClientSecret.Set {
-			e.FieldStart("clientSecret")
+			e.FieldStart("client_secret")
 			s.ClientSecret.Encode(e)
 		}
 	}
 	{
 		if s.AuthorizationEndpoint.Set {
-			e.FieldStart("authorizationEndpoint")
+			e.FieldStart("authorization_endpoint")
 			s.AuthorizationEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.TokenEndpoint.Set {
-			e.FieldStart("tokenEndpoint")
+			e.FieldStart("token_endpoint")
 			s.TokenEndpoint.Encode(e)
 		}
 	}
 	{
 		if s.UserInfoEndpoint.Set {
-			e.FieldStart("userInfoEndpoint")
+			e.FieldStart("user_info_endpoint")
 			s.UserInfoEndpoint.Encode(e)
 		}
 	}
 	{
-		if s.JwksUri.Set {
-			e.FieldStart("jwksUri")
-			s.JwksUri.Encode(e)
+		if s.JwksURI.Set {
+			e.FieldStart("jwks_uri")
+			s.JwksURI.Encode(e)
 		}
 	}
 	{
 		if s.EndSessionEndpoint.Set {
-			e.FieldStart("endSessionEndpoint")
+			e.FieldStart("end_session_endpoint")
 			s.EndSessionEndpoint.Encode(e)
 		}
 	}
@@ -48405,67 +48405,67 @@ func (s *UpdateOIDCProviderRequest) encodeFields(e *jx.Encoder) {
 	}
 	{
 		if s.ClaimMappings.Set {
-			e.FieldStart("claimMappings")
+			e.FieldStart("claim_mappings")
 			s.ClaimMappings.Encode(e)
 		}
 	}
 	{
 		if s.RoleMappings.Set {
-			e.FieldStart("roleMappings")
+			e.FieldStart("role_mappings")
 			s.RoleMappings.Encode(e)
 		}
 	}
 	{
 		if s.AutoCreateUsers.Set {
-			e.FieldStart("autoCreateUsers")
+			e.FieldStart("auto_create_users")
 			s.AutoCreateUsers.Encode(e)
 		}
 	}
 	{
 		if s.UpdateUserInfo.Set {
-			e.FieldStart("updateUserInfo")
+			e.FieldStart("update_user_info")
 			s.UpdateUserInfo.Encode(e)
 		}
 	}
 	{
 		if s.AllowLinking.Set {
-			e.FieldStart("allowLinking")
+			e.FieldStart("allow_linking")
 			s.AllowLinking.Encode(e)
 		}
 	}
 	{
 		if s.IsEnabled.Set {
-			e.FieldStart("isEnabled")
+			e.FieldStart("is_enabled")
 			s.IsEnabled.Encode(e)
 		}
 	}
 	{
 		if s.IsDefault.Set {
-			e.FieldStart("isDefault")
+			e.FieldStart("is_default")
 			s.IsDefault.Encode(e)
 		}
 	}
 }
 
 var jsonFieldsNameOfUpdateOIDCProviderRequest = [18]string{
-	0:  "displayName",
-	1:  "providerType",
-	2:  "issuerUrl",
-	3:  "clientId",
-	4:  "clientSecret",
-	5:  "authorizationEndpoint",
-	6:  "tokenEndpoint",
-	7:  "userInfoEndpoint",
-	8:  "jwksUri",
-	9:  "endSessionEndpoint",
+	0:  "display_name",
+	1:  "provider_type",
+	2:  "issuer_url",
+	3:  "client_id",
+	4:  "client_secret",
+	5:  "authorization_endpoint",
+	6:  "token_endpoint",
+	7:  "user_info_endpoint",
+	8:  "jwks_uri",
+	9:  "end_session_endpoint",
 	10: "scopes",
-	11: "claimMappings",
-	12: "roleMappings",
-	13: "autoCreateUsers",
-	14: "updateUserInfo",
-	15: "allowLinking",
-	16: "isEnabled",
-	17: "isDefault",
+	11: "claim_mappings",
+	12: "role_mappings",
+	13: "auto_create_users",
+	14: "update_user_info",
+	15: "allow_linking",
+	16: "is_enabled",
+	17: "is_default",
 }
 
 // Decode decodes UpdateOIDCProviderRequest from json.
@@ -48476,7 +48476,7 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "displayName":
+		case "display_name":
 			if err := func() error {
 				s.DisplayName.Reset()
 				if err := s.DisplayName.Decode(d); err != nil {
@@ -48484,9 +48484,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"displayName\"")
+				return errors.Wrap(err, "decode field \"display_name\"")
 			}
-		case "providerType":
+		case "provider_type":
 			if err := func() error {
 				s.ProviderType.Reset()
 				if err := s.ProviderType.Decode(d); err != nil {
@@ -48494,29 +48494,29 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"providerType\"")
+				return errors.Wrap(err, "decode field \"provider_type\"")
 			}
-		case "issuerUrl":
+		case "issuer_url":
 			if err := func() error {
-				s.IssuerUrl.Reset()
-				if err := s.IssuerUrl.Decode(d); err != nil {
+				s.IssuerURL.Reset()
+				if err := s.IssuerURL.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"issuerUrl\"")
+				return errors.Wrap(err, "decode field \"issuer_url\"")
 			}
-		case "clientId":
+		case "client_id":
 			if err := func() error {
-				s.ClientId.Reset()
-				if err := s.ClientId.Decode(d); err != nil {
+				s.ClientID.Reset()
+				if err := s.ClientID.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"clientId\"")
+				return errors.Wrap(err, "decode field \"client_id\"")
 			}
-		case "clientSecret":
+		case "client_secret":
 			if err := func() error {
 				s.ClientSecret.Reset()
 				if err := s.ClientSecret.Decode(d); err != nil {
@@ -48524,9 +48524,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"clientSecret\"")
+				return errors.Wrap(err, "decode field \"client_secret\"")
 			}
-		case "authorizationEndpoint":
+		case "authorization_endpoint":
 			if err := func() error {
 				s.AuthorizationEndpoint.Reset()
 				if err := s.AuthorizationEndpoint.Decode(d); err != nil {
@@ -48534,9 +48534,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"authorizationEndpoint\"")
+				return errors.Wrap(err, "decode field \"authorization_endpoint\"")
 			}
-		case "tokenEndpoint":
+		case "token_endpoint":
 			if err := func() error {
 				s.TokenEndpoint.Reset()
 				if err := s.TokenEndpoint.Decode(d); err != nil {
@@ -48544,9 +48544,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tokenEndpoint\"")
+				return errors.Wrap(err, "decode field \"token_endpoint\"")
 			}
-		case "userInfoEndpoint":
+		case "user_info_endpoint":
 			if err := func() error {
 				s.UserInfoEndpoint.Reset()
 				if err := s.UserInfoEndpoint.Decode(d); err != nil {
@@ -48554,19 +48554,19 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userInfoEndpoint\"")
+				return errors.Wrap(err, "decode field \"user_info_endpoint\"")
 			}
-		case "jwksUri":
+		case "jwks_uri":
 			if err := func() error {
-				s.JwksUri.Reset()
-				if err := s.JwksUri.Decode(d); err != nil {
+				s.JwksURI.Reset()
+				if err := s.JwksURI.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"jwksUri\"")
+				return errors.Wrap(err, "decode field \"jwks_uri\"")
 			}
-		case "endSessionEndpoint":
+		case "end_session_endpoint":
 			if err := func() error {
 				s.EndSessionEndpoint.Reset()
 				if err := s.EndSessionEndpoint.Decode(d); err != nil {
@@ -48574,7 +48574,7 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"endSessionEndpoint\"")
+				return errors.Wrap(err, "decode field \"end_session_endpoint\"")
 			}
 		case "scopes":
 			if err := func() error {
@@ -48595,7 +48595,7 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"scopes\"")
 			}
-		case "claimMappings":
+		case "claim_mappings":
 			if err := func() error {
 				s.ClaimMappings.Reset()
 				if err := s.ClaimMappings.Decode(d); err != nil {
@@ -48603,9 +48603,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"claimMappings\"")
+				return errors.Wrap(err, "decode field \"claim_mappings\"")
 			}
-		case "roleMappings":
+		case "role_mappings":
 			if err := func() error {
 				s.RoleMappings.Reset()
 				if err := s.RoleMappings.Decode(d); err != nil {
@@ -48613,9 +48613,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"roleMappings\"")
+				return errors.Wrap(err, "decode field \"role_mappings\"")
 			}
-		case "autoCreateUsers":
+		case "auto_create_users":
 			if err := func() error {
 				s.AutoCreateUsers.Reset()
 				if err := s.AutoCreateUsers.Decode(d); err != nil {
@@ -48623,9 +48623,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"autoCreateUsers\"")
+				return errors.Wrap(err, "decode field \"auto_create_users\"")
 			}
-		case "updateUserInfo":
+		case "update_user_info":
 			if err := func() error {
 				s.UpdateUserInfo.Reset()
 				if err := s.UpdateUserInfo.Decode(d); err != nil {
@@ -48633,9 +48633,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"updateUserInfo\"")
+				return errors.Wrap(err, "decode field \"update_user_info\"")
 			}
-		case "allowLinking":
+		case "allow_linking":
 			if err := func() error {
 				s.AllowLinking.Reset()
 				if err := s.AllowLinking.Decode(d); err != nil {
@@ -48643,9 +48643,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"allowLinking\"")
+				return errors.Wrap(err, "decode field \"allow_linking\"")
 			}
-		case "isEnabled":
+		case "is_enabled":
 			if err := func() error {
 				s.IsEnabled.Reset()
 				if err := s.IsEnabled.Decode(d); err != nil {
@@ -48653,9 +48653,9 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isEnabled\"")
+				return errors.Wrap(err, "decode field \"is_enabled\"")
 			}
-		case "isDefault":
+		case "is_default":
 			if err := func() error {
 				s.IsDefault.Reset()
 				if err := s.IsDefault.Decode(d); err != nil {
@@ -48663,7 +48663,7 @@ func (s *UpdateOIDCProviderRequest) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"isDefault\"")
+				return errors.Wrap(err, "decode field \"is_default\"")
 			}
 		default:
 			return d.Skip()
@@ -49473,18 +49473,18 @@ func (s *UpdateWatchProgressReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *UpdateWatchProgressReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("progressSeconds")
+		e.FieldStart("progress_seconds")
 		e.Int(s.ProgressSeconds)
 	}
 	{
-		e.FieldStart("durationSeconds")
+		e.FieldStart("duration_seconds")
 		e.Int(s.DurationSeconds)
 	}
 }
 
 var jsonFieldsNameOfUpdateWatchProgressReq = [2]string{
-	0: "progressSeconds",
-	1: "durationSeconds",
+	0: "progress_seconds",
+	1: "duration_seconds",
 }
 
 // Decode decodes UpdateWatchProgressReq from json.
@@ -49496,7 +49496,7 @@ func (s *UpdateWatchProgressReq) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "progressSeconds":
+		case "progress_seconds":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Int()
@@ -49506,9 +49506,9 @@ func (s *UpdateWatchProgressReq) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"progressSeconds\"")
+				return errors.Wrap(err, "decode field \"progress_seconds\"")
 			}
-		case "durationSeconds":
+		case "duration_seconds":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Int()
@@ -49518,7 +49518,7 @@ func (s *UpdateWatchProgressReq) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"durationSeconds\"")
+				return errors.Wrap(err, "decode field \"duration_seconds\"")
 			}
 		default:
 			return d.Skip()
