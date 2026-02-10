@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y pkg-config libvips-dev
       - name: Build FFmpeg 8.0 from source
         run: |
-          git clone --depth 1 --branch n8.0 https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
+          git clone --depth 1 --branch n8.0 https://github.com/FFmpeg/FFmpeg.git /tmp/ffmpeg
           cd /tmp/ffmpeg
           ./configure --prefix=/usr/local --enable-shared --disable-static --disable-programs --disable-doc --disable-x86asm
           make -j$(nproc)
