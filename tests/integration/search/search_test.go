@@ -39,6 +39,13 @@ func newTestClient(t *testing.T) *search.Client {
 	}
 	require.NotNil(t, client, "client should not be nil")
 
+	// Verify Typesense is actually reachable before running tests
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	if err := client.HealthCheck(ctx); err != nil {
+		t.Skipf("Typesense not reachable: %v", err)
+	}
+
 	return client
 }
 
