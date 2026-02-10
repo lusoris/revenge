@@ -61,6 +61,7 @@ nul
 /logs/
 /config/
 !/config/casbin_model.conf
+!/config/config.example.yaml
 /cache/
 *.db
 *.db-shm
