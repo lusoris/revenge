@@ -391,6 +391,7 @@ INSERT INTO
         movie_id,
         file_path,
         file_size,
+        file_name,
         resolution,
         quality_profile,
         video_codec,
@@ -413,7 +414,8 @@ VALUES (
         $9,
         $10,
         $11,
-        $12
+        $12,
+        $13
     ) RETURNING id, movie_id, file_path, file_size, file_name, resolution, quality_profile, video_codec, audio_codec, container, duration_seconds, bitrate_kbps, framerate, dynamic_range, color_space, audio_channels, audio_languages, subtitle_languages, radarr_file_id, last_scanned_at, is_monitored, created_at, updated_at, deleted_at
 `
 
@@ -421,6 +423,7 @@ type CreateMovieFileParams struct {
 	MovieID           uuid.UUID `json:"movieId"`
 	FilePath          string    `json:"filePath"`
 	FileSize          int64     `json:"fileSize"`
+	FileName          string    `json:"fileName"`
 	Resolution        *string   `json:"resolution"`
 	QualityProfile    *string   `json:"qualityProfile"`
 	VideoCodec        *string   `json:"videoCodec"`
@@ -438,6 +441,7 @@ func (q *Queries) CreateMovieFile(ctx context.Context, arg CreateMovieFileParams
 		arg.MovieID,
 		arg.FilePath,
 		arg.FileSize,
+		arg.FileName,
 		arg.Resolution,
 		arg.QualityProfile,
 		arg.VideoCodec,

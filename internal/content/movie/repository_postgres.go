@@ -576,6 +576,7 @@ func (r *postgresRepository) CreateMovieFile(ctx context.Context, params CreateM
 		MovieID:           params.MovieID,
 		FilePath:          params.FilePath,
 		FileSize:          params.FileSize,
+		FileName:          params.FileName,
 		Resolution:        params.Resolution,
 		QualityProfile:    params.QualityProfile,
 		VideoCodec:        params.VideoCodec,

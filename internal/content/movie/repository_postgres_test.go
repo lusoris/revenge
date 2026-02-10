@@ -307,9 +307,6 @@ func TestRepo_ListTopRated(t *testing.T) {
 
 func TestRepo_MovieFiles_CRUD(t *testing.T) {
 	t.Parallel()
-	// Skip: CreateMovieFile SQL omits file_name column but schema has it as NOT NULL.
-	// This is a pre-existing schema inconsistency (migration 000022 vs sqlc query).
-	t.Skip("skipped: CreateMovieFile SQL omits file_name (NOT NULL column) — schema inconsistency")
 
 	repo, _ := setupTestRepo(t)
 	ctx := context.Background()
@@ -321,6 +318,7 @@ func TestRepo_MovieFiles_CRUD(t *testing.T) {
 		MovieID:           m.ID,
 		FilePath:          "/movies/file_test.mkv",
 		FileSize:          42000000000,
+		FileName:          "file_test.mkv",
 		Resolution:        strPtr("2160p"),
 		QualityProfile:    strPtr("UHD Remux"),
 		VideoCodec:        strPtr("HEVC"),
