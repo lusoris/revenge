@@ -86,6 +86,12 @@ func NewService(cfg Config, logger *slog.Logger) (*Service, error) {
 		SetTimeout(30 * time.Second).
 		SetCommonRetryCount(3).
 		SetCommonRetryFixedInterval(1 * time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		}).
 		SetCommonHeader("User-Agent", cfg.UserAgent)
 
 	if cfg.ProxyURL != "" {

@@ -113,6 +113,7 @@ services:
 
   # Dragonfly (Redis-compatible, REQUIRED)
   # Pure cache mode: LFRU eviction, no persistence
+  # NOTE: --cluster_mode=emulated is required for rueidis client compatibility
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     container_name: revenge-dragonfly-dev
@@ -120,6 +121,7 @@ services:
       memlock: -1  # Required for Dragonfly memory management
     command:
       - dragonfly
+      - --cluster_mode=emulated     # Required for rueidis client compatibility
       - --cache_mode=true           # LFRU eviction when approaching maxmemory
       - --maxmemory=1G              # 1GB cache (headroom within 1.5GB container)
       - --proactor_threads=2        # Match allocated CPUs

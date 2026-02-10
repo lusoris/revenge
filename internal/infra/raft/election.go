@@ -21,11 +21,10 @@ import (
 // LeaderElection manages Raft-based leader election for a cluster.
 // Only the leader should execute periodic cleanup jobs to prevent duplicates.
 type LeaderElection struct {
-	raft        *raft.Raft
-	logger      *slog.Logger
-	logStore    *raftboltdb.BoltStore
-	stableStore *raftboltdb.BoltStore
-	transport   *raft.NetworkTransport
+	raft      *raft.Raft
+	logger    *slog.Logger
+	boltStore *raftboltdb.BoltStore
+	transport *raft.NetworkTransport
 }
 
 // Config holds configuration for Raft leader election.
@@ -88,22 +87,19 @@ func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error)
 		return nil, fmt.Errorf("failed to create snapshot store: %w", err)
 	}
 
-	// Create the log store and stable store using BoltDB
-	logStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft-log.db"))
+	// Create the log store and stable store using a single BoltDB file.
+	// raft-boltdb uses separate internal buckets for log vs stable data,
+	// so a single file is safe and reduces file descriptor usage.
+	boltStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft.db"))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create log store: %w", err)
-	}
-
-	stableStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft-stable.db"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create stable store: %w", err)
+		return nil, fmt.Errorf("failed to create bolt store: %w", err)
 	}
 
 	// Create FSM (simple no-op for leader election only)
 	fsm := &simpleFSM{}
 
 	// Instantiate the Raft system
-	ra, err := raft.NewRaft(config, fsm, logStore, stableStore, snapshots, transport)
+	ra, err := raft.NewRaft(config, fsm, boltStore, boltStore, snapshots, transport)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create raft instance: %w", err)
 	}
@@ -126,11 +122,10 @@ func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error)
 	}
 
 	return &LeaderElection{
-		raft:        ra,
-		logger:      logger.With("component", "raft"),
-		logStore:    logStore,
-		stableStore: stableStore,
-		transport:   transport,
+		raft:      ra,
+		logger:    logger.With("component", "raft"),
+		boltStore: boltStore,
+		transport: transport,
 	}, nil
 }
 
@@ -188,14 +183,9 @@ func (le *LeaderElection) Close() error {
 			le.logger.Warn("Failed to close Raft transport", slog.Any("error", err))
 		}
 	}
-	if le.logStore != nil {
-		if err := le.logStore.Close(); err != nil {
-			le.logger.Warn("Failed to close Raft log store", slog.Any("error", err))
-		}
-	}
-	if le.stableStore != nil {
-		if err := le.stableStore.Close(); err != nil {
-			le.logger.Warn("Failed to close Raft stable store", slog.Any("error", err))
+	if le.boltStore != nil {
+		if err := le.boltStore.Close(); err != nil {
+			le.logger.Warn("Failed to close Raft bolt store", slog.Any("error", err))
 		}
 	}
 	return nil

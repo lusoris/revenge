@@ -381,6 +381,7 @@ type SharedOidcState struct {
 	RedirectUrl  *string     `json:"redirectUrl"`
 	ExpiresAt    time.Time   `json:"expiresAt"`
 	CreatedAt    time.Time   `json:"createdAt"`
+	Nonce        *string     `json:"nonce"`
 }
 
 type SharedOidcUserLink struct {
@@ -745,6 +746,8 @@ type UserTotpSecret struct {
 	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
 	UpdatedAt  time.Time          `json:"updatedAt"`
+	// Last successfully used TOTP code to prevent replay attacks
+	LastUsedCode *string `json:"lastUsedCode"`
 }
 
 // WebAuthn/FIDO2 credentials for passwordless and multi-factor authentication

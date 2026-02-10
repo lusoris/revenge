@@ -80,7 +80,7 @@ func NewClient(config Config) (*Client, error) {
 		config.Timeout = 15 * time.Second
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create mal cache: %w", err)
 	}
@@ -91,7 +91,13 @@ func NewClient(config Config) (*Client, error) {
 		SetCommonRetryCount(2).
 		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
 		SetCommonHeader("Accept", "application/json").
-		SetCommonHeader("X-MAL-CLIENT-ID", config.ClientID)
+		SetCommonHeader("X-MAL-CLIENT-ID", config.ClientID).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &Client{
 		httpClient:  client,
@@ -183,4 +189,11 @@ func (c *Client) GetAnime(ctx context.Context, id int) (*Anime, error) {
 
 	c.setCache(cacheKey, &result)
 	return &result, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

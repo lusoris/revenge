@@ -65,10 +65,11 @@ services:
       retries: 5
 
   # Dragonfly (REQUIRED)
+  # NOTE: --cluster_mode=emulated is required for rueidis client compatibility
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     container_name: revenge-dragonfly
-    command: ["--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
+    command: ["--cluster_mode=emulated", "--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
     volumes:
       - dragonfly-data:/data
     restart: unless-stopped

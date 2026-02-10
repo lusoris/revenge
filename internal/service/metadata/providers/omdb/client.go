@@ -71,7 +71,7 @@ func NewClient(config Config) (*Client, error) {
 		config.Timeout = 10 * time.Second
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create omdb cache: %w", err)
 	}
@@ -80,7 +80,13 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &Client{
 		httpClient:  client,
@@ -227,4 +233,11 @@ func (c *Client) Search(ctx context.Context, query string, year string, mediaTyp
 
 	c.setCache(cacheKey, &result)
 	return &result, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

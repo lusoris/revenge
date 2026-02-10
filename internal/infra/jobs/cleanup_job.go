@@ -57,7 +57,8 @@ func (CleanupArgs) Kind() string {
 // Cleanup runs on the low-priority queue since it's maintenance work.
 func (CleanupArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: QueueLow,
+		Queue:       QueueLow,
+		MaxAttempts: 5, // Cleanup is idempotent; limit retries to avoid noise
 	}
 }
 

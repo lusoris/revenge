@@ -51,14 +51,14 @@ func (h *Handler) AdminListUsers(ctx context.Context, params ogen.AdminListUsers
 	if params.Limit.IsSet() {
 		limit, err := validate.SafeInt32(params.Limit.Value)
 		if err != nil || limit < 1 || limit > 100 {
-			return &ogen.AdminListUsersForbidden{Code: 400, Message: "limit must be 1-100"}, nil
+			return &ogen.AdminListUsersForbidden{Code: 403, Message: "Invalid limit: must be 1-100"}, nil
 		}
 		filters.Limit = limit
 	}
 	if params.Offset.IsSet() {
 		offset, err := validate.SafeInt32(params.Offset.Value)
 		if err != nil || offset < 0 {
-			return &ogen.AdminListUsersForbidden{Code: 400, Message: "offset must be >= 0"}, nil
+			return &ogen.AdminListUsersForbidden{Code: 403, Message: "Invalid offset: must be >= 0"}, nil
 		}
 		filters.Offset = offset
 	}

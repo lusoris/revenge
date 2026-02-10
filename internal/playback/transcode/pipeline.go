@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/maypok86/otter/v2"
+
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
@@ -32,17 +34,36 @@ type PipelineManager struct {
 
 // NewPipelineManager creates a new pipeline manager.
 func NewPipelineManager(ffmpegPath string, segmentDuration int, logger *slog.Logger) (*PipelineManager, error) {
-	processCache, err := cache.NewL1Cache[string, *FFmpegProcess](1000, 0) // no TTL, manual cleanup
+	pm := &PipelineManager{
+		ffmpegPath:      ffmpegPath,
+		segmentDuration: segmentDuration,
+		logger:          logger,
+	}
+
+	// ttl=0: no automatic expiration — processes are managed manually via StopProcess/StopAllForSession.
+	// OnDeletion: kill FFmpeg processes evicted by cache size pressure to prevent orphaned children.
+	processCache, err := cache.NewL1Cache[string, *FFmpegProcess](1000, 0,
+		cache.WithOnDeletion(func(e otter.DeletionEvent[string, *FFmpegProcess]) {
+			if !e.WasEvicted() {
+				return // manual invalidation already handled in StopProcess
+			}
+			proc := e.Value
+			if proc != nil && proc.Cmd.Process != nil {
+				logger.Warn("killing evicted FFmpeg process",
+					slog.String("key", e.Key),
+					slog.String("session_id", proc.SessionID.String()),
+					slog.String("profile", proc.Profile),
+				)
+				_ = proc.Cmd.Process.Kill()
+			}
+		}),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create process cache: %w", err)
 	}
+	pm.processes = processCache
 
-	return &PipelineManager{
-		ffmpegPath:      ffmpegPath,
-		segmentDuration: segmentDuration,
-		processes:       processCache,
-		logger:          logger,
-	}, nil
+	return pm, nil
 }
 
 func processKey(sessionID uuid.UUID, profile string) string {

@@ -103,7 +103,7 @@ func NewClient(config Config) (*Client, error) {
 		config.RetryCount = 3
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("tvdb l1 cache: %w", err)
 	}
@@ -112,7 +112,13 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(config.RetryCount).
-		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
@@ -793,4 +799,11 @@ func (c *Client) Logout() {
 	defer c.tokenMutex.Unlock()
 	c.token = ""
 	c.tokenExpiry = time.Time{}
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

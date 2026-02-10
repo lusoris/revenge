@@ -69,9 +69,15 @@ func NewClient(config Config) (*Client, error) {
 		SetCommonHeader("Content-Type", "application/json").
 		SetCommonHeader("simkl-api-key", config.ClientID).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
-	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		l1, _ = cache.NewL1Cache[string, any](0, 0)
 	}
@@ -440,6 +446,13 @@ func (c *Client) GetRating(ctx context.Context, simklID int) (*Ratings, error) {
 
 	c.setCache(cacheKey, &result)
 	return &result, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }
 
 // ImageURL constructs a full Simkl image URL from a relative path with a size suffix.

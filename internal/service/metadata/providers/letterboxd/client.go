@@ -64,9 +64,15 @@ func NewClient(config Config) (*Client, error) {
 		SetTimeout(config.Timeout).
 		SetCommonHeader("Accept", "application/json").
 		SetCommonRetryCount(2).
-		SetCommonRetryFixedInterval(time.Second)
+		SetCommonRetryFixedInterval(time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
-	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](2000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		l1, _ = cache.NewL1Cache[string, any](0, 0)
 	}
@@ -248,4 +254,11 @@ func (c *Client) GetFilmCollection(ctx context.Context, id string) (*FilmCollect
 
 	c.cache.Set(cacheKey, &collection)
 	return &collection, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

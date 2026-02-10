@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+	s3manager "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/lusoris/revenge/internal/config"
@@ -19,6 +20,7 @@ import (
 // Suitable for production clustering where multiple instances need shared storage.
 type S3Storage struct {
 	client   *s3.Client
+	uploader *s3manager.Uploader //nolint:staticcheck // transfermanager is pre-v1, using stable manager
 	bucket   string
 	endpoint string
 	logger   *slog.Logger
@@ -55,6 +57,7 @@ func NewS3Storage(cfg config.S3Config, logger *slog.Logger) (*S3Storage, error) 
 
 	storage := &S3Storage{
 		client:   client,
+		uploader: s3manager.NewUploader(client), //nolint:staticcheck // transfermanager is pre-v1
 		bucket:   cfg.Bucket,
 		endpoint: cfg.Endpoint,
 		logger:   logger.With("component", "s3-storage"),
@@ -80,11 +83,13 @@ func (s *S3Storage) verifyBucket(ctx context.Context) error {
 }
 
 // Store uploads a file to S3 and returns its key.
+// Uses the S3 upload manager which automatically handles multipart uploads
+// for large files (>5 MiB), improving throughput and reliability.
 func (s *S3Storage) Store(ctx context.Context, key string, reader io.Reader, contentType string) (string, error) {
 	// Sanitize key to prevent path traversal
 	key = sanitizeKey(key)
 
-	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
+	_, err := s.uploader.Upload(ctx, &s3.PutObjectInput{ //nolint:staticcheck // transfermanager is pre-v1
 		Bucket:      aws.String(s.bucket),
 		Key:         aws.String(key),
 		Body:        reader,

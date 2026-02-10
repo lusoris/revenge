@@ -128,12 +128,14 @@ var (
 		Buckets:   []float64{.1, .5, 1, 5, 10, 30, 60, 120, 300, 600},
 	}, []string{"job_type"})
 
-	// JobsQueueSize tracks the number of jobs in queue by state.
+	// JobsQueueSize is DEPRECATED — use the periodically-collected riverQueueSize
+	// in collector.go instead, which queries actual River job states from the DB.
+	// Kept for backward-compatible metric exposition but no longer populated.
 	JobsQueueSize = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "revenge",
 		Subsystem: "jobs",
 		Name:      "queue_size",
-		Help:      "Number of jobs in queue by state.",
+		Help:      "DEPRECATED: Use revenge_river_queue_size instead. Number of jobs in queue by state.",
 	}, []string{"state"})
 )
 

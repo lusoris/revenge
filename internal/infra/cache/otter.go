@@ -15,6 +15,33 @@ const (
 	DefaultL1TTL = 5 * time.Minute
 )
 
+// l1Config holds optional configuration for L1Cache construction.
+type l1Config[K comparable, V any] struct {
+	useAccessing bool
+	onDeletion   func(e otter.DeletionEvent[K, V])
+}
+
+// L1Option configures optional behavior for L1Cache.
+type L1Option[K comparable, V any] func(*l1Config[K, V])
+
+// WithExpiryAccessing uses access-based expiration (TTL resets on read).
+// Better for read-heavy workloads like metadata caches where hot entries
+// should stay cached as long as they're being accessed.
+func WithExpiryAccessing[K comparable, V any]() L1Option[K, V] {
+	return func(c *l1Config[K, V]) {
+		c.useAccessing = true
+	}
+}
+
+// WithOnDeletion registers an async callback invoked when entries are
+// evicted, expired, or invalidated. Use this for cleanup of resources
+// held by cached values (e.g., killing child processes).
+func WithOnDeletion[K comparable, V any](fn func(e otter.DeletionEvent[K, V])) L1Option[K, V] {
+	return func(c *l1Config[K, V]) {
+		c.onDeletion = fn
+	}
+}
+
 // L1Cache wraps otter cache for in-memory L1 caching using W-TinyLFU eviction.
 //
 // IMPORTANT: Evictions are performed asynchronously in background goroutines
@@ -29,18 +56,40 @@ type L1Cache[K comparable, V any] struct {
 }
 
 // NewL1Cache creates a new L1 in-memory cache with W-TinyLFU eviction policy.
-func NewL1Cache[K comparable, V any](maxSize int, ttl time.Duration) (*L1Cache[K, V], error) {
+// Pass ttl=0 for no automatic expiration (entries live until evicted by size).
+// Pass ttl<0 to use DefaultL1TTL (5 minutes).
+func NewL1Cache[K comparable, V any](maxSize int, ttl time.Duration, opts ...L1Option[K, V]) (*L1Cache[K, V], error) {
 	if maxSize <= 0 {
 		maxSize = DefaultL1MaxSize
 	}
-	if ttl <= 0 {
+	if ttl < 0 {
 		ttl = DefaultL1TTL
 	}
 
-	cache, err := otter.New(&otter.Options[K, V]{
-		MaximumSize:      maxSize,
-		ExpiryCalculator: otter.ExpiryWriting[K, V](ttl),
-	})
+	// Collect option flags
+	cfg := &l1Config[K, V]{}
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
+	o := &otter.Options[K, V]{
+		MaximumSize: maxSize,
+	}
+
+	// Set expiry policy only when TTL > 0 (ttl=0 means no expiry)
+	if ttl > 0 {
+		if cfg.useAccessing {
+			o.ExpiryCalculator = otter.ExpiryAccessing[K, V](ttl)
+		} else {
+			o.ExpiryCalculator = otter.ExpiryWriting[K, V](ttl)
+		}
+	}
+
+	if cfg.onDeletion != nil {
+		o.OnDeletion = cfg.onDeletion
+	}
+
+	cache, err := otter.New(o)
 	if err != nil {
 		return nil, err
 	}

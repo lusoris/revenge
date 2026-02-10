@@ -99,7 +99,7 @@ func NewClient(config Config) (*Client, error) {
 		config.RetryCount = 3
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create tmdb cache: %w", err)
 	}
@@ -108,7 +108,13 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(config.RetryCount).
-		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
@@ -118,7 +124,13 @@ func NewClient(config Config) (*Client, error) {
 	imgClient := req.C().
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &Client{
 		httpClient:  client,
@@ -1260,4 +1272,11 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
 	c.clearCache()
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"runtime"
 	"sync"
 
 	"github.com/davidbyttow/govips/v2/vips"
@@ -12,11 +13,14 @@ import (
 
 var vipsOnce sync.Once
 
-// ensureVips initializes libvips on first use.
+// ensureVips initializes libvips on first use with tuned concurrency and cache limits.
 func ensureVips() {
 	vipsOnce.Do(func() {
 		vips.LoggingSettings(nil, vips.LogLevelError)
-		vips.Startup(nil)
+		vips.Startup(&vips.Config{
+			ConcurrencyLevel: runtime.NumCPU(),
+			MaxCacheSize:     100, // limit operation cache to avoid unbounded memory growth
+		})
 	})
 }
 

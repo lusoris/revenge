@@ -157,7 +157,13 @@ func NewImageDownloader(client *BaseClient) *ImageDownloader {
 	imgClient := req.C().
 		SetTimeout(30 * time.Second).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &ImageDownloader{
 		client:     client,
