@@ -182,6 +182,14 @@ func resetDatabase(t *testing.T, ts *TestServer) {
 
 // TestMain runs before all tests.
 func TestMain(m *testing.M) {
+	// go test sets cwd to the package directory (tests/integration/).
+	// Many modules expect to find files relative to the repo root
+	// (e.g. config/casbin_model.conf), so chdir to repo root.
+	if err := os.Chdir("../.."); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to chdir to repo root: %v\n", err)
+		os.Exit(1)
+	}
+
 	// Check if Docker is available
 	if !isDockerAvailable() {
 		fmt.Println("Docker is not available - skipping integration tests")
