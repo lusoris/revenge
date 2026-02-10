@@ -16,11 +16,13 @@ var Module = fx.Module("search_service",
 	fx.Provide(NewEpisodeSearchService),
 	fx.Provide(NewSeasonSearchService),
 	fx.Provide(NewPersonSearchService),
+	fx.Provide(NewUserSearchService),
 	fx.Provide(provideCachedMovieSearchService),
 	fx.Provide(provideCachedTVShowSearchService),
 	fx.Provide(provideCachedEpisodeSearchService),
 	fx.Provide(provideCachedSeasonSearchService),
 	fx.Provide(provideCachedPersonSearchService),
+	fx.Provide(provideCachedUserSearchService),
 	fx.Invoke(initializeCollections),
 )
 
@@ -49,8 +51,13 @@ func provideCachedPersonSearchService(svc *PersonSearchService, c *cache.Cache, 
 	return NewCachedPersonSearchService(svc, c, logger)
 }
 
+// provideCachedUserSearchService wraps the user search service with caching.
+func provideCachedUserSearchService(svc *UserSearchService, c *cache.Cache, logger *slog.Logger) *CachedUserSearchService {
+	return NewCachedUserSearchService(svc, c, logger)
+}
+
 // initializeCollections creates Typesense collections on startup if they don't exist.
-func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, seasonSearch *SeasonSearchService, personSearch *PersonSearchService, logger *slog.Logger) {
+func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, seasonSearch *SeasonSearchService, personSearch *PersonSearchService, userSearch *UserSearchService, logger *slog.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			if movieSearch.IsEnabled() {
@@ -76,6 +83,11 @@ func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvs
 			if personSearch.IsEnabled() {
 				if err := personSearch.InitializeCollection(ctx); err != nil {
 					logger.Warn("failed to initialize people search collection", slog.Any("error", err))
+				}
+			}
+			if userSearch.IsEnabled() {
+				if err := userSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize users search collection", slog.Any("error", err))
 				}
 			}
 			return nil
