@@ -81,6 +81,9 @@ type ServerParams struct {
 	LibraryService  *library.Service
 	SearchService       *search.MovieSearchService   `optional:"true"`
 	TVShowSearchService *search.TVShowSearchService `optional:"true"`
+	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
+	SeasonSearchService  *search.SeasonSearchService  `optional:"true"`
+	PersonSearchService  *search.PersonSearchService  `optional:"true"`
 	TokenManager    auth.TokenManager
 	// Cache client for Redis-based rate limiting
 	CacheClient *cache.Client `optional:"true"`
@@ -133,6 +136,9 @@ func NewServer(p ServerParams) (*Server, error) {
 		libraryService:  p.LibraryService,
 		searchService:       p.SearchService,
 		tvshowSearchService: p.TVShowSearchService,
+		episodeSearchService: p.EpisodeSearchService,
+		seasonSearchService:  p.SeasonSearchService,
+		personSearchService:  p.PersonSearchService,
 		tokenManager:    p.TokenManager,
 		mfaHandler:      mfaHandler,
 		movieHandler:    p.MovieHandler,

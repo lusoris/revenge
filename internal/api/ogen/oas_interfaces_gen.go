@@ -661,6 +661,10 @@ type SearchMoviesRes interface {
 	searchMoviesRes()
 }
 
+type SearchMultiRes interface {
+	searchMultiRes()
+}
+
 type SearchPersonMetadataRes interface {
 	searchPersonMetadataRes()
 }

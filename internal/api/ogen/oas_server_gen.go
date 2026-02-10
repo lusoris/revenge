@@ -1058,6 +1058,13 @@ type Handler interface {
 	//
 	// GET /api/v1/metadata/search/movie
 	SearchMoviesMetadata(ctx context.Context, params SearchMoviesMetadataParams) (SearchMoviesMetadataRes, error)
+	// SearchMulti implements searchMulti operation.
+	//
+	// Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+	// in parallel, returning the top results from each collection. Designed for global search bars.
+	//
+	// GET /api/v1/search/multi
+	SearchMulti(ctx context.Context, params SearchMultiParams) (SearchMultiRes, error)
 	// SearchPersonMetadata implements searchPersonMetadata operation.
 	//
 	// Search for actors, directors, and other crew members. By default uses TMDb.

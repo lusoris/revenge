@@ -464,3 +464,97 @@ func TestHandler_GetTVShowSearchFacets_DisabledService(t *testing.T) {
 	assert.Nil(t, facets.Networks)
 	assert.Nil(t, facets.HasFile)
 }
+
+// ============================================================================
+// SearchMulti Tests
+// ============================================================================
+
+func TestHandler_SearchMulti_AllNilServices(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "test",
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	multi, ok := result.(*ogen.MultiSearchResults)
+	require.True(t, ok)
+	assert.False(t, multi.Movies.Set, "movies should not be set")
+	assert.False(t, multi.Tvshows.Set, "tvshows should not be set")
+	assert.False(t, multi.Episodes.Set, "episodes should not be set")
+	assert.False(t, multi.Seasons.Set, "seasons should not be set")
+	assert.False(t, multi.People.Set, "people should not be set")
+}
+
+func TestHandler_SearchMulti_DisabledServices(t *testing.T) {
+	t.Parallel()
+
+	logger := logging.NewTestLogger()
+
+	handler := &Handler{
+		logger:               logger,
+		searchService:        search.NewMovieSearchService(nil, logger),
+		tvshowSearchService:  search.NewTVShowSearchService(nil, logger),
+		episodeSearchService: search.NewEpisodeSearchService(nil, logger),
+		seasonSearchService:  search.NewSeasonSearchService(nil, logger),
+		personSearchService:  search.NewPersonSearchService(nil, logger),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "breaking bad",
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	multi, ok := result.(*ogen.MultiSearchResults)
+	require.True(t, ok)
+	// Disabled services (nil client) return IsEnabled()=false, so no search is performed
+	assert.False(t, multi.Movies.Set)
+	assert.False(t, multi.Tvshows.Set)
+	assert.False(t, multi.Episodes.Set)
+	assert.False(t, multi.Seasons.Set)
+	assert.False(t, multi.People.Set)
+}
+
+func TestHandler_SearchMulti_DefaultLimit(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "test",
+	}
+
+	// Just verifying it doesn't panic with default limit
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+}
+
+func TestHandler_SearchMulti_CustomLimit(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q:     "test",
+		Limit: ogen.NewOptInt(10),
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+}

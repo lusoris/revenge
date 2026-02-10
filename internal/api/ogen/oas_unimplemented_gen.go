@@ -1564,6 +1564,16 @@ func (UnimplementedHandler) SearchMoviesMetadata(ctx context.Context, params Sea
 	return r, ht.ErrNotImplemented
 }
 
+// SearchMulti implements searchMulti operation.
+//
+// Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+// in parallel, returning the top results from each collection. Designed for global search bars.
+//
+// GET /api/v1/search/multi
+func (UnimplementedHandler) SearchMulti(ctx context.Context, params SearchMultiParams) (r SearchMultiRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SearchPersonMetadata implements searchPersonMetadata operation.
 //
 // Search for actors, directors, and other crew members. By default uses TMDb.

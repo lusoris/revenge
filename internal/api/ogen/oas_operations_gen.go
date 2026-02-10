@@ -173,6 +173,7 @@ const (
 	SearchLibraryTVShowsOperation            OperationName = "SearchLibraryTVShows"
 	SearchMoviesOperation                    OperationName = "SearchMovies"
 	SearchMoviesMetadataOperation            OperationName = "SearchMoviesMetadata"
+	SearchMultiOperation                     OperationName = "SearchMulti"
 	SearchPersonMetadataOperation            OperationName = "SearchPersonMetadata"
 	SearchTVShowsOperation                   OperationName = "SearchTVShows"
 	SearchTVShowsMetadataOperation           OperationName = "SearchTVShowsMetadata"

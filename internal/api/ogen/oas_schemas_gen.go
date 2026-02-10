@@ -2848,6 +2848,230 @@ type EnableMFAUnauthorized Error
 
 func (*EnableMFAUnauthorized) enableMFARes() {}
 
+// Ref: #/components/schemas/EpisodeSearchDocument
+type EpisodeSearchDocument struct {
+	ID            OptUUID   `json:"id"`
+	SeriesID      OptUUID   `json:"series_id"`
+	SeasonNumber  OptInt    `json:"season_number"`
+	EpisodeNumber OptInt    `json:"episode_number"`
+	Title         OptString `json:"title"`
+	Overview      OptString `json:"overview"`
+	// Unix timestamp.
+	AirDate          OptInt     `json:"air_date"`
+	Runtime          OptInt     `json:"runtime"`
+	VoteAverage      OptFloat32 `json:"vote_average"`
+	StillPath        OptString  `json:"still_path"`
+	HasFile          OptBool    `json:"has_file"`
+	SeriesTitle      OptString  `json:"series_title"`
+	SeriesPosterPath OptString  `json:"series_poster_path"`
+}
+
+// GetID returns the value of ID.
+func (s *EpisodeSearchDocument) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *EpisodeSearchDocument) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *EpisodeSearchDocument) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetEpisodeNumber returns the value of EpisodeNumber.
+func (s *EpisodeSearchDocument) GetEpisodeNumber() OptInt {
+	return s.EpisodeNumber
+}
+
+// GetTitle returns the value of Title.
+func (s *EpisodeSearchDocument) GetTitle() OptString {
+	return s.Title
+}
+
+// GetOverview returns the value of Overview.
+func (s *EpisodeSearchDocument) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *EpisodeSearchDocument) GetAirDate() OptInt {
+	return s.AirDate
+}
+
+// GetRuntime returns the value of Runtime.
+func (s *EpisodeSearchDocument) GetRuntime() OptInt {
+	return s.Runtime
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *EpisodeSearchDocument) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetStillPath returns the value of StillPath.
+func (s *EpisodeSearchDocument) GetStillPath() OptString {
+	return s.StillPath
+}
+
+// GetHasFile returns the value of HasFile.
+func (s *EpisodeSearchDocument) GetHasFile() OptBool {
+	return s.HasFile
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *EpisodeSearchDocument) GetSeriesTitle() OptString {
+	return s.SeriesTitle
+}
+
+// GetSeriesPosterPath returns the value of SeriesPosterPath.
+func (s *EpisodeSearchDocument) GetSeriesPosterPath() OptString {
+	return s.SeriesPosterPath
+}
+
+// SetID sets the value of ID.
+func (s *EpisodeSearchDocument) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *EpisodeSearchDocument) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *EpisodeSearchDocument) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetEpisodeNumber sets the value of EpisodeNumber.
+func (s *EpisodeSearchDocument) SetEpisodeNumber(val OptInt) {
+	s.EpisodeNumber = val
+}
+
+// SetTitle sets the value of Title.
+func (s *EpisodeSearchDocument) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *EpisodeSearchDocument) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *EpisodeSearchDocument) SetAirDate(val OptInt) {
+	s.AirDate = val
+}
+
+// SetRuntime sets the value of Runtime.
+func (s *EpisodeSearchDocument) SetRuntime(val OptInt) {
+	s.Runtime = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *EpisodeSearchDocument) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetStillPath sets the value of StillPath.
+func (s *EpisodeSearchDocument) SetStillPath(val OptString) {
+	s.StillPath = val
+}
+
+// SetHasFile sets the value of HasFile.
+func (s *EpisodeSearchDocument) SetHasFile(val OptBool) {
+	s.HasFile = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *EpisodeSearchDocument) SetSeriesTitle(val OptString) {
+	s.SeriesTitle = val
+}
+
+// SetSeriesPosterPath sets the value of SeriesPosterPath.
+func (s *EpisodeSearchDocument) SetSeriesPosterPath(val OptString) {
+	s.SeriesPosterPath = val
+}
+
+// Ref: #/components/schemas/EpisodeSearchHit
+type EpisodeSearchHit struct {
+	Document OptEpisodeSearchDocument `json:"document"`
+	// Search relevance score.
+	Score      OptFloat32                    `json:"score"`
+	Highlights OptEpisodeSearchHitHighlights `json:"highlights"`
+}
+
+// GetDocument returns the value of Document.
+func (s *EpisodeSearchHit) GetDocument() OptEpisodeSearchDocument {
+	return s.Document
+}
+
+// GetScore returns the value of Score.
+func (s *EpisodeSearchHit) GetScore() OptFloat32 {
+	return s.Score
+}
+
+// GetHighlights returns the value of Highlights.
+func (s *EpisodeSearchHit) GetHighlights() OptEpisodeSearchHitHighlights {
+	return s.Highlights
+}
+
+// SetDocument sets the value of Document.
+func (s *EpisodeSearchHit) SetDocument(val OptEpisodeSearchDocument) {
+	s.Document = val
+}
+
+// SetScore sets the value of Score.
+func (s *EpisodeSearchHit) SetScore(val OptFloat32) {
+	s.Score = val
+}
+
+// SetHighlights sets the value of Highlights.
+func (s *EpisodeSearchHit) SetHighlights(val OptEpisodeSearchHitHighlights) {
+	s.Highlights = val
+}
+
+type EpisodeSearchHitHighlights map[string][]string
+
+func (s *EpisodeSearchHitHighlights) init() EpisodeSearchHitHighlights {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/EpisodeSearchResults
+type EpisodeSearchResults struct {
+	Hits []EpisodeSearchHit `json:"hits"`
+	// Total number of matching episodes.
+	TotalHits OptInt `json:"total_hits"`
+}
+
+// GetHits returns the value of Hits.
+func (s *EpisodeSearchResults) GetHits() []EpisodeSearchHit {
+	return s.Hits
+}
+
+// GetTotalHits returns the value of TotalHits.
+func (s *EpisodeSearchResults) GetTotalHits() OptInt {
+	return s.TotalHits
+}
+
+// SetHits sets the value of Hits.
+func (s *EpisodeSearchResults) SetHits(val []EpisodeSearchHit) {
+	s.Hits = val
+}
+
+// SetTotalHits sets the value of TotalHits.
+func (s *EpisodeSearchResults) SetTotalHits(val OptInt) {
+	s.TotalHits = val
+}
+
 // Ref: #/components/schemas/EpisodeWatchProgress
 type EpisodeWatchProgress struct {
 	ID        OptUUID `json:"id"`
@@ -9422,6 +9646,67 @@ func (s *MovieWatched) SetUpdatedAt(val OptDateTime) {
 func (*MovieWatched) getWatchProgressRes()    {}
 func (*MovieWatched) updateWatchProgressRes() {}
 
+// Ref: #/components/schemas/MultiSearchResults
+type MultiSearchResults struct {
+	Movies   OptSearchResults        `json:"movies"`
+	Tvshows  OptTVShowSearchResults  `json:"tvshows"`
+	Episodes OptEpisodeSearchResults `json:"episodes"`
+	Seasons  OptSeasonSearchResults  `json:"seasons"`
+	People   OptPersonSearchResults  `json:"people"`
+}
+
+// GetMovies returns the value of Movies.
+func (s *MultiSearchResults) GetMovies() OptSearchResults {
+	return s.Movies
+}
+
+// GetTvshows returns the value of Tvshows.
+func (s *MultiSearchResults) GetTvshows() OptTVShowSearchResults {
+	return s.Tvshows
+}
+
+// GetEpisodes returns the value of Episodes.
+func (s *MultiSearchResults) GetEpisodes() OptEpisodeSearchResults {
+	return s.Episodes
+}
+
+// GetSeasons returns the value of Seasons.
+func (s *MultiSearchResults) GetSeasons() OptSeasonSearchResults {
+	return s.Seasons
+}
+
+// GetPeople returns the value of People.
+func (s *MultiSearchResults) GetPeople() OptPersonSearchResults {
+	return s.People
+}
+
+// SetMovies sets the value of Movies.
+func (s *MultiSearchResults) SetMovies(val OptSearchResults) {
+	s.Movies = val
+}
+
+// SetTvshows sets the value of Tvshows.
+func (s *MultiSearchResults) SetTvshows(val OptTVShowSearchResults) {
+	s.Tvshows = val
+}
+
+// SetEpisodes sets the value of Episodes.
+func (s *MultiSearchResults) SetEpisodes(val OptEpisodeSearchResults) {
+	s.Episodes = val
+}
+
+// SetSeasons sets the value of Seasons.
+func (s *MultiSearchResults) SetSeasons(val OptSeasonSearchResults) {
+	s.Seasons = val
+}
+
+// SetPeople sets the value of People.
+func (s *MultiSearchResults) SetPeople(val OptPersonSearchResults) {
+	s.People = val
+}
+
+func (*MultiSearchResults) searchMultiRes() {}
+
 // Ref: #/components/schemas/OIDCAuthURLResponse
 type OIDCAuthURLResponse struct {
 	// URL to redirect for OIDC authentication.
@@ -10177,6 +10462,144 @@ func (o OptDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEpisodeSearchDocument returns new OptEpisodeSearchDocument with value set to v.
+func NewOptEpisodeSearchDocument(v EpisodeSearchDocument) OptEpisodeSearchDocument {
+	return OptEpisodeSearchDocument{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEpisodeSearchDocument is optional EpisodeSearchDocument.
+type OptEpisodeSearchDocument struct {
+	Value EpisodeSearchDocument
+	Set   bool
+}
+
+// IsSet returns true if OptEpisodeSearchDocument was set.
+func (o OptEpisodeSearchDocument) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEpisodeSearchDocument) Reset() {
+	var v EpisodeSearchDocument
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEpisodeSearchDocument) SetTo(v EpisodeSearchDocument) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEpisodeSearchDocument) Get() (v EpisodeSearchDocument, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEpisodeSearchDocument) Or(d EpisodeSearchDocument) EpisodeSearchDocument {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEpisodeSearchHitHighlights returns new OptEpisodeSearchHitHighlights with value set to v.
+func NewOptEpisodeSearchHitHighlights(v EpisodeSearchHitHighlights) OptEpisodeSearchHitHighlights {
+	return OptEpisodeSearchHitHighlights{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEpisodeSearchHitHighlights is optional EpisodeSearchHitHighlights.
+type OptEpisodeSearchHitHighlights struct {
+	Value EpisodeSearchHitHighlights
+	Set   bool
+}
+
+// IsSet returns true if OptEpisodeSearchHitHighlights was set.
+func (o OptEpisodeSearchHitHighlights) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEpisodeSearchHitHighlights) Reset() {
+	var v EpisodeSearchHitHighlights
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEpisodeSearchHitHighlights) SetTo(v EpisodeSearchHitHighlights) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEpisodeSearchHitHighlights) Get() (v EpisodeSearchHitHighlights, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEpisodeSearchHitHighlights) Or(d EpisodeSearchHitHighlights) EpisodeSearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptEpisodeSearchResults returns new OptEpisodeSearchResults with value set to v.
+func NewOptEpisodeSearchResults(v EpisodeSearchResults) OptEpisodeSearchResults {
+	return OptEpisodeSearchResults{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptEpisodeSearchResults is optional EpisodeSearchResults.
+type OptEpisodeSearchResults struct {
+	Value EpisodeSearchResults
+	Set   bool
+}
+
+// IsSet returns true if OptEpisodeSearchResults was set.
+func (o OptEpisodeSearchResults) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptEpisodeSearchResults) Reset() {
+	var v EpisodeSearchResults
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptEpisodeSearchResults) SetTo(v EpisodeSearchResults) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptEpisodeSearchResults) Get() (v EpisodeSearchResults, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptEpisodeSearchResults) Or(d EpisodeSearchResults) EpisodeSearchResults {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -11314,6 +11737,144 @@ func (o OptNilString) Or(d string) string {
 	return d
 }
 
+// NewOptPersonSearchDocument returns new OptPersonSearchDocument with value set to v.
+func NewOptPersonSearchDocument(v PersonSearchDocument) OptPersonSearchDocument {
+	return OptPersonSearchDocument{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptPersonSearchDocument is optional PersonSearchDocument.
+type OptPersonSearchDocument struct {
+	Value PersonSearchDocument
+	Set   bool
+}
+
+// IsSet returns true if OptPersonSearchDocument was set.
+func (o OptPersonSearchDocument) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptPersonSearchDocument) Reset() {
+	var v PersonSearchDocument
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptPersonSearchDocument) SetTo(v PersonSearchDocument) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptPersonSearchDocument) Get() (v PersonSearchDocument, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptPersonSearchDocument) Or(d PersonSearchDocument) PersonSearchDocument {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptPersonSearchHitHighlights returns new OptPersonSearchHitHighlights with value set to v.
+func NewOptPersonSearchHitHighlights(v PersonSearchHitHighlights) OptPersonSearchHitHighlights {
+	return OptPersonSearchHitHighlights{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptPersonSearchHitHighlights is optional PersonSearchHitHighlights.
+type OptPersonSearchHitHighlights struct {
+	Value PersonSearchHitHighlights
+	Set   bool
+}
+
+// IsSet returns true if OptPersonSearchHitHighlights was set.
+func (o OptPersonSearchHitHighlights) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptPersonSearchHitHighlights) Reset() {
+	var v PersonSearchHitHighlights
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptPersonSearchHitHighlights) SetTo(v PersonSearchHitHighlights) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptPersonSearchHitHighlights) Get() (v PersonSearchHitHighlights, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptPersonSearchHitHighlights) Or(d PersonSearchHitHighlights) PersonSearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptPersonSearchResults returns new OptPersonSearchResults with value set to v.
+func NewOptPersonSearchResults(v PersonSearchResults) OptPersonSearchResults {
+	return OptPersonSearchResults{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptPersonSearchResults is optional PersonSearchResults.
+type OptPersonSearchResults struct {
+	Value PersonSearchResults
+	Set   bool
+}
+
+// IsSet returns true if OptPersonSearchResults was set.
+func (o OptPersonSearchResults) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptPersonSearchResults) Reset() {
+	var v PersonSearchResults
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptPersonSearchResults) SetTo(v PersonSearchResults) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptPersonSearchResults) Get() (v PersonSearchResults, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptPersonSearchResults) Or(d PersonSearchResults) PersonSearchResults {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptRadarrWebhookMovie returns new OptRadarrWebhookMovie with value set to v.
 func NewOptRadarrWebhookMovie(v RadarrWebhookMovie) OptRadarrWebhookMovie {
 	return OptRadarrWebhookMovie{
@@ -11728,6 +12289,52 @@ func (o OptSearchPersonMetadataProvider) Or(d SearchPersonMetadataProvider) Sear
 	return d
 }
 
+// NewOptSearchResults returns new OptSearchResults with value set to v.
+func NewOptSearchResults(v SearchResults) OptSearchResults {
+	return OptSearchResults{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchResults is optional SearchResults.
+type OptSearchResults struct {
+	Value SearchResults
+	Set   bool
+}
+
+// IsSet returns true if OptSearchResults was set.
+func (o OptSearchResults) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchResults) Reset() {
+	var v SearchResults
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchResults) SetTo(v SearchResults) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchResults) Get() (v SearchResults, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchResults) Or(d SearchResults) SearchResults {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptSearchResultsFacets returns new OptSearchResultsFacets with value set to v.
 func NewOptSearchResultsFacets(v SearchResultsFacets) OptSearchResultsFacets {
 	return OptSearchResultsFacets{
@@ -11814,6 +12421,144 @@ func (o OptSearchTVShowsMetadataProvider) Get() (v SearchTVShowsMetadataProvider
 
 // Or returns value if set, or given parameter if does not.
 func (o OptSearchTVShowsMetadataProvider) Or(d SearchTVShowsMetadataProvider) SearchTVShowsMetadataProvider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeasonSearchDocument returns new OptSeasonSearchDocument with value set to v.
+func NewOptSeasonSearchDocument(v SeasonSearchDocument) OptSeasonSearchDocument {
+	return OptSeasonSearchDocument{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeasonSearchDocument is optional SeasonSearchDocument.
+type OptSeasonSearchDocument struct {
+	Value SeasonSearchDocument
+	Set   bool
+}
+
+// IsSet returns true if OptSeasonSearchDocument was set.
+func (o OptSeasonSearchDocument) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeasonSearchDocument) Reset() {
+	var v SeasonSearchDocument
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeasonSearchDocument) SetTo(v SeasonSearchDocument) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeasonSearchDocument) Get() (v SeasonSearchDocument, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeasonSearchDocument) Or(d SeasonSearchDocument) SeasonSearchDocument {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeasonSearchHitHighlights returns new OptSeasonSearchHitHighlights with value set to v.
+func NewOptSeasonSearchHitHighlights(v SeasonSearchHitHighlights) OptSeasonSearchHitHighlights {
+	return OptSeasonSearchHitHighlights{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeasonSearchHitHighlights is optional SeasonSearchHitHighlights.
+type OptSeasonSearchHitHighlights struct {
+	Value SeasonSearchHitHighlights
+	Set   bool
+}
+
+// IsSet returns true if OptSeasonSearchHitHighlights was set.
+func (o OptSeasonSearchHitHighlights) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeasonSearchHitHighlights) Reset() {
+	var v SeasonSearchHitHighlights
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeasonSearchHitHighlights) SetTo(v SeasonSearchHitHighlights) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeasonSearchHitHighlights) Get() (v SeasonSearchHitHighlights, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeasonSearchHitHighlights) Or(d SeasonSearchHitHighlights) SeasonSearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSeasonSearchResults returns new OptSeasonSearchResults with value set to v.
+func NewOptSeasonSearchResults(v SeasonSearchResults) OptSeasonSearchResults {
+	return OptSeasonSearchResults{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSeasonSearchResults is optional SeasonSearchResults.
+type OptSeasonSearchResults struct {
+	Value SeasonSearchResults
+	Set   bool
+}
+
+// IsSet returns true if OptSeasonSearchResults was set.
+func (o OptSeasonSearchResults) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSeasonSearchResults) Reset() {
+	var v SeasonSearchResults
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSeasonSearchResults) SetTo(v SeasonSearchResults) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSeasonSearchResults) Get() (v SeasonSearchResults, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSeasonSearchResults) Or(d SeasonSearchResults) SeasonSearchResults {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -12136,6 +12881,52 @@ func (o OptTVShowSearchHitHighlights) Get() (v TVShowSearchHitHighlights, ok boo
 
 // Or returns value if set, or given parameter if does not.
 func (o OptTVShowSearchHitHighlights) Or(d TVShowSearchHitHighlights) TVShowSearchHitHighlights {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptTVShowSearchResults returns new OptTVShowSearchResults with value set to v.
+func NewOptTVShowSearchResults(v TVShowSearchResults) OptTVShowSearchResults {
+	return OptTVShowSearchResults{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTVShowSearchResults is optional TVShowSearchResults.
+type OptTVShowSearchResults struct {
+	Value TVShowSearchResults
+	Set   bool
+}
+
+// IsSet returns true if OptTVShowSearchResults was set.
+func (o OptTVShowSearchResults) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTVShowSearchResults) Reset() {
+	var v TVShowSearchResults
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTVShowSearchResults) SetTo(v TVShowSearchResults) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTVShowSearchResults) Get() (v TVShowSearchResults, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTVShowSearchResults) Or(d TVShowSearchResults) TVShowSearchResults {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -13256,6 +14047,200 @@ func (s *PermissionsResponse) SetTotal(val int64) {
 }
 
 func (*PermissionsResponse) listPermissionsRes() {}
+
+// Ref: #/components/schemas/PersonSearchDocument
+type PersonSearchDocument struct {
+	// TMDb person ID as string.
+	ID          OptString `json:"id"`
+	TmdbID      OptInt    `json:"tmdb_id"`
+	Name        OptString `json:"name"`
+	ProfilePath OptString `json:"profile_path"`
+	// Movie/show titles.
+	KnownFor []string `json:"known_for"`
+	// Character names played.
+	Characters []string `json:"characters"`
+	// Departments (Acting, Directing, etc.).
+	Departments  []string `json:"departments"`
+	MovieCount   OptInt   `json:"movie_count"`
+	TvshowCount  OptInt   `json:"tvshow_count"`
+	TotalCredits OptInt   `json:"total_credits"`
+}
+
+// GetID returns the value of ID.
+func (s *PersonSearchDocument) GetID() OptString {
+	return s.ID
+}
+
+// GetTmdbID returns the value of TmdbID.
+func (s *PersonSearchDocument) GetTmdbID() OptInt {
+	return s.TmdbID
+}
+
+// GetName returns the value of Name.
+func (s *PersonSearchDocument) GetName() OptString {
+	return s.Name
+}
+
+// GetProfilePath returns the value of ProfilePath.
+func (s *PersonSearchDocument) GetProfilePath() OptString {
+	return s.ProfilePath
+}
+
+// GetKnownFor returns the value of KnownFor.
+func (s *PersonSearchDocument) GetKnownFor() []string {
+	return s.KnownFor
+}
+
+// GetCharacters returns the value of Characters.
+func (s *PersonSearchDocument) GetCharacters() []string {
+	return s.Characters
+}
+
+// GetDepartments returns the value of Departments.
+func (s *PersonSearchDocument) GetDepartments() []string {
+	return s.Departments
+}
+
+// GetMovieCount returns the value of MovieCount.
+func (s *PersonSearchDocument) GetMovieCount() OptInt {
+	return s.MovieCount
+}
+
+// GetTvshowCount returns the value of TvshowCount.
+func (s *PersonSearchDocument) GetTvshowCount() OptInt {
+	return s.TvshowCount
+}
+
+// GetTotalCredits returns the value of TotalCredits.
+func (s *PersonSearchDocument) GetTotalCredits() OptInt {
+	return s.TotalCredits
+}
+
+// SetID sets the value of ID.
+func (s *PersonSearchDocument) SetID(val OptString) {
+	s.ID = val
+}
+
+// SetTmdbID sets the value of TmdbID.
+func (s *PersonSearchDocument) SetTmdbID(val OptInt) {
+	s.TmdbID = val
+}
+
+// SetName sets the value of Name.
+func (s *PersonSearchDocument) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetProfilePath sets the value of ProfilePath.
+func (s *PersonSearchDocument) SetProfilePath(val OptString) {
+	s.ProfilePath = val
+}
+
+// SetKnownFor sets the value of KnownFor.
+func (s *PersonSearchDocument) SetKnownFor(val []string) {
+	s.KnownFor = val
+}
+
+// SetCharacters sets the value of Characters.
+func (s *PersonSearchDocument) SetCharacters(val []string) {
+	s.Characters = val
+}
+
+// SetDepartments sets the value of Departments.
+func (s *PersonSearchDocument) SetDepartments(val []string) {
+	s.Departments = val
+}
+
+// SetMovieCount sets the value of MovieCount.
+func (s *PersonSearchDocument) SetMovieCount(val OptInt) {
+	s.MovieCount = val
+}
+
+// SetTvshowCount sets the value of TvshowCount.
+func (s *PersonSearchDocument) SetTvshowCount(val OptInt) {
+	s.TvshowCount = val
+}
+
+// SetTotalCredits sets the value of TotalCredits.
+func (s *PersonSearchDocument) SetTotalCredits(val OptInt) {
+	s.TotalCredits = val
+}
+
+// Ref: #/components/schemas/PersonSearchHit
+type PersonSearchHit struct {
+	Document OptPersonSearchDocument `json:"document"`
+	// Search relevance score.
+	Score      OptFloat32                   `json:"score"`
+	Highlights OptPersonSearchHitHighlights `json:"highlights"`
+}
+
+// GetDocument returns the value of Document.
+func (s *PersonSearchHit) GetDocument() OptPersonSearchDocument {
+	return s.Document
+}
+
+// GetScore returns the value of Score.
+func (s *PersonSearchHit) GetScore() OptFloat32 {
+	return s.Score
+}
+
+// GetHighlights returns the value of Highlights.
+func (s *PersonSearchHit) GetHighlights() OptPersonSearchHitHighlights {
+	return s.Highlights
+}
+
+// SetDocument sets the value of Document.
+func (s *PersonSearchHit) SetDocument(val OptPersonSearchDocument) {
+	s.Document = val
+}
+
+// SetScore sets the value of Score.
+func (s *PersonSearchHit) SetScore(val OptFloat32) {
+	s.Score = val
+}
+
+// SetHighlights sets the value of Highlights.
+func (s *PersonSearchHit) SetHighlights(val OptPersonSearchHitHighlights) {
+	s.Highlights = val
+}
+
+type PersonSearchHitHighlights map[string][]string
+
+func (s *PersonSearchHitHighlights) init() PersonSearchHitHighlights {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/PersonSearchResults
+type PersonSearchResults struct {
+	Hits []PersonSearchHit `json:"hits"`
+	// Total number of matching people.
+	TotalHits OptInt `json:"total_hits"`
+}
+
+// GetHits returns the value of Hits.
+func (s *PersonSearchResults) GetHits() []PersonSearchHit {
+	return s.Hits
+}
+
+// GetTotalHits returns the value of TotalHits.
+func (s *PersonSearchResults) GetTotalHits() OptInt {
+	return s.TotalHits
+}
+
+// SetHits sets the value of Hits.
+func (s *PersonSearchResults) SetHits(val []PersonSearchHit) {
+	s.Hits = val
+}
+
+// SetTotalHits sets the value of TotalHits.
+func (s *PersonSearchResults) SetTotalHits(val OptInt) {
+	s.TotalHits = val
+}
 
 // Ref: #/components/schemas/PlaybackAudioTrack
 type PlaybackAudioTrack struct {
@@ -15783,6 +16768,14 @@ type SearchMoviesOKApplicationJSON []Movie
 
 func (*SearchMoviesOKApplicationJSON) searchMoviesRes() {}
 
+type SearchMultiBadRequest Error
+
+func (*SearchMultiBadRequest) searchMultiRes() {}
+
+type SearchMultiUnauthorized Error
+
+func (*SearchMultiUnauthorized) searchMultiRes() {}
+
 type SearchPersonMetadataProvider string
 
 const (
@@ -15964,6 +16957,208 @@ func (s *SearchTVShowsMetadataProvider) UnmarshalText(data []byte) error {
 type SearchTVShowsOKApplicationJSON []TVSeries
 
 func (*SearchTVShowsOKApplicationJSON) searchTVShowsRes() {}
+
+// Ref: #/components/schemas/SeasonSearchDocument
+type SeasonSearchDocument struct {
+	ID           OptUUID   `json:"id"`
+	SeriesID     OptUUID   `json:"series_id"`
+	SeasonNumber OptInt    `json:"season_number"`
+	Name         OptString `json:"name"`
+	Overview     OptString `json:"overview"`
+	// Unix timestamp.
+	AirDate          OptInt     `json:"air_date"`
+	EpisodeCount     OptInt     `json:"episode_count"`
+	VoteAverage      OptFloat32 `json:"vote_average"`
+	PosterPath       OptString  `json:"poster_path"`
+	SeriesTitle      OptString  `json:"series_title"`
+	SeriesPosterPath OptString  `json:"series_poster_path"`
+}
+
+// GetID returns the value of ID.
+func (s *SeasonSearchDocument) GetID() OptUUID {
+	return s.ID
+}
+
+// GetSeriesID returns the value of SeriesID.
+func (s *SeasonSearchDocument) GetSeriesID() OptUUID {
+	return s.SeriesID
+}
+
+// GetSeasonNumber returns the value of SeasonNumber.
+func (s *SeasonSearchDocument) GetSeasonNumber() OptInt {
+	return s.SeasonNumber
+}
+
+// GetName returns the value of Name.
+func (s *SeasonSearchDocument) GetName() OptString {
+	return s.Name
+}
+
+// GetOverview returns the value of Overview.
+func (s *SeasonSearchDocument) GetOverview() OptString {
+	return s.Overview
+}
+
+// GetAirDate returns the value of AirDate.
+func (s *SeasonSearchDocument) GetAirDate() OptInt {
+	return s.AirDate
+}
+
+// GetEpisodeCount returns the value of EpisodeCount.
+func (s *SeasonSearchDocument) GetEpisodeCount() OptInt {
+	return s.EpisodeCount
+}
+
+// GetVoteAverage returns the value of VoteAverage.
+func (s *SeasonSearchDocument) GetVoteAverage() OptFloat32 {
+	return s.VoteAverage
+}
+
+// GetPosterPath returns the value of PosterPath.
+func (s *SeasonSearchDocument) GetPosterPath() OptString {
+	return s.PosterPath
+}
+
+// GetSeriesTitle returns the value of SeriesTitle.
+func (s *SeasonSearchDocument) GetSeriesTitle() OptString {
+	return s.SeriesTitle
+}
+
+// GetSeriesPosterPath returns the value of SeriesPosterPath.
+func (s *SeasonSearchDocument) GetSeriesPosterPath() OptString {
+	return s.SeriesPosterPath
+}
+
+// SetID sets the value of ID.
+func (s *SeasonSearchDocument) SetID(val OptUUID) {
+	s.ID = val
+}
+
+// SetSeriesID sets the value of SeriesID.
+func (s *SeasonSearchDocument) SetSeriesID(val OptUUID) {
+	s.SeriesID = val
+}
+
+// SetSeasonNumber sets the value of SeasonNumber.
+func (s *SeasonSearchDocument) SetSeasonNumber(val OptInt) {
+	s.SeasonNumber = val
+}
+
+// SetName sets the value of Name.
+func (s *SeasonSearchDocument) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetOverview sets the value of Overview.
+func (s *SeasonSearchDocument) SetOverview(val OptString) {
+	s.Overview = val
+}
+
+// SetAirDate sets the value of AirDate.
+func (s *SeasonSearchDocument) SetAirDate(val OptInt) {
+	s.AirDate = val
+}
+
+// SetEpisodeCount sets the value of EpisodeCount.
+func (s *SeasonSearchDocument) SetEpisodeCount(val OptInt) {
+	s.EpisodeCount = val
+}
+
+// SetVoteAverage sets the value of VoteAverage.
+func (s *SeasonSearchDocument) SetVoteAverage(val OptFloat32) {
+	s.VoteAverage = val
+}
+
+// SetPosterPath sets the value of PosterPath.
+func (s *SeasonSearchDocument) SetPosterPath(val OptString) {
+	s.PosterPath = val
+}
+
+// SetSeriesTitle sets the value of SeriesTitle.
+func (s *SeasonSearchDocument) SetSeriesTitle(val OptString) {
+	s.SeriesTitle = val
+}
+
+// SetSeriesPosterPath sets the value of SeriesPosterPath.
+func (s *SeasonSearchDocument) SetSeriesPosterPath(val OptString) {
+	s.SeriesPosterPath = val
+}
+
+// Ref: #/components/schemas/SeasonSearchHit
+type SeasonSearchHit struct {
+	Document OptSeasonSearchDocument `json:"document"`
+	// Search relevance score.
+	Score      OptFloat32                   `json:"score"`
+	Highlights OptSeasonSearchHitHighlights `json:"highlights"`
+}
+
+// GetDocument returns the value of Document.
+func (s *SeasonSearchHit) GetDocument() OptSeasonSearchDocument {
+	return s.Document
+}
+
+// GetScore returns the value of Score.
+func (s *SeasonSearchHit) GetScore() OptFloat32 {
+	return s.Score
+}
+
+// GetHighlights returns the value of Highlights.
+func (s *SeasonSearchHit) GetHighlights() OptSeasonSearchHitHighlights {
+	return s.Highlights
+}
+
+// SetDocument sets the value of Document.
+func (s *SeasonSearchHit) SetDocument(val OptSeasonSearchDocument) {
+	s.Document = val
+}
+
+// SetScore sets the value of Score.
+func (s *SeasonSearchHit) SetScore(val OptFloat32) {
+	s.Score = val
+}
+
+// SetHighlights sets the value of Highlights.
+func (s *SeasonSearchHit) SetHighlights(val OptSeasonSearchHitHighlights) {
+	s.Highlights = val
+}
+
+type SeasonSearchHitHighlights map[string][]string
+
+func (s *SeasonSearchHitHighlights) init() SeasonSearchHitHighlights {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
+}
+
+// Ref: #/components/schemas/SeasonSearchResults
+type SeasonSearchResults struct {
+	Hits []SeasonSearchHit `json:"hits"`
+	// Total number of matching seasons.
+	TotalHits OptInt `json:"total_hits"`
+}
+
+// GetHits returns the value of Hits.
+func (s *SeasonSearchResults) GetHits() []SeasonSearchHit {
+	return s.Hits
+}
+
+// GetTotalHits returns the value of TotalHits.
+func (s *SeasonSearchResults) GetTotalHits() OptInt {
+	return s.TotalHits
+}
+
+// SetHits sets the value of Hits.
+func (s *SeasonSearchResults) SetHits(val []SeasonSearchHit) {
+	s.Hits = val
+}
+
+// SetTotalHits sets the value of TotalHits.
+func (s *SeasonSearchResults) SetTotalHits(val OptInt) {
+	s.TotalHits = val
+}
 
 // Ref: #/components/schemas/SeriesWatchStats
 type SeriesWatchStats struct {

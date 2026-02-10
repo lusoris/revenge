@@ -3804,6 +3804,51 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/search/multi:
+    get:
+      summary: Search across all collections
+      description: |
+        Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+        in parallel, returning the top results from each collection. Designed for global search bars.
+      operationId: searchMulti
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Search query
+          example: "Breaking Bad"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 5
+          description: Maximum results per collection
+      responses:
+        '200':
+          description: Multi-collection search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiSearchResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Settings endpoints
   /api/v1/settings/server:
     get:
@@ -8392,6 +8437,203 @@ components:
           items:
             $ref: '#/components/schemas/FacetValue'
           description: File availability
+
+    # Multi-search schemas (unified search across all collections)
+    MultiSearchResults:
+      type: object
+      properties:
+        movies:
+          $ref: '#/components/schemas/SearchResults'
+        tvshows:
+          $ref: '#/components/schemas/TVShowSearchResults'
+        episodes:
+          $ref: '#/components/schemas/EpisodeSearchResults'
+        seasons:
+          $ref: '#/components/schemas/SeasonSearchResults'
+        people:
+          $ref: '#/components/schemas/PersonSearchResults'
+
+    # Episode search schemas
+    EpisodeSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching episodes
+
+    EpisodeSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/EpisodeSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    EpisodeSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+        title:
+          type: string
+        overview:
+          type: string
+        air_date:
+          type: integer
+          description: Unix timestamp
+        runtime:
+          type: integer
+        vote_average:
+          type: number
+          format: float
+        still_path:
+          type: string
+        has_file:
+          type: boolean
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+
+    # Season search schemas
+    SeasonSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeasonSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching seasons
+
+    SeasonSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/SeasonSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    SeasonSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        season_number:
+          type: integer
+        name:
+          type: string
+        overview:
+          type: string
+        air_date:
+          type: integer
+          description: Unix timestamp
+        episode_count:
+          type: integer
+        vote_average:
+          type: number
+          format: float
+        poster_path:
+          type: string
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+
+    # Person search schemas
+    PersonSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching people
+
+    PersonSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/PersonSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    PersonSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          description: TMDb person ID as string
+        tmdb_id:
+          type: integer
+        name:
+          type: string
+        profile_path:
+          type: string
+        known_for:
+          type: array
+          items:
+            type: string
+          description: Movie/show titles
+        characters:
+          type: array
+          items:
+            type: string
+          description: Character names played
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments (Acting, Directing, etc.)
+        movie_count:
+          type: integer
+        tvshow_count:
+          type: integer
+        total_credits:
+          type: integer
 
     # Metadata schemas (TMDb lookup)
     MetadataSearchResults:

@@ -8996,6 +8996,529 @@ func (s *EnableMFAUnauthorized) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *EpisodeSearchDocument) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeSearchDocument) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.SeriesID.Set {
+			e.FieldStart("series_id")
+			s.SeriesID.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("season_number")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeNumber.Set {
+			e.FieldStart("episode_number")
+			s.EpisodeNumber.Encode(e)
+		}
+	}
+	{
+		if s.Title.Set {
+			e.FieldStart("title")
+			s.Title.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e)
+		}
+	}
+	{
+		if s.Runtime.Set {
+			e.FieldStart("runtime")
+			s.Runtime.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.StillPath.Set {
+			e.FieldStart("still_path")
+			s.StillPath.Encode(e)
+		}
+	}
+	{
+		if s.HasFile.Set {
+			e.FieldStart("has_file")
+			s.HasFile.Encode(e)
+		}
+	}
+	{
+		if s.SeriesTitle.Set {
+			e.FieldStart("series_title")
+			s.SeriesTitle.Encode(e)
+		}
+	}
+	{
+		if s.SeriesPosterPath.Set {
+			e.FieldStart("series_poster_path")
+			s.SeriesPosterPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfEpisodeSearchDocument = [13]string{
+	0:  "id",
+	1:  "series_id",
+	2:  "season_number",
+	3:  "episode_number",
+	4:  "title",
+	5:  "overview",
+	6:  "air_date",
+	7:  "runtime",
+	8:  "vote_average",
+	9:  "still_path",
+	10: "has_file",
+	11: "series_title",
+	12: "series_poster_path",
+}
+
+// Decode decodes EpisodeSearchDocument from json.
+func (s *EpisodeSearchDocument) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeSearchDocument to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "series_id":
+			if err := func() error {
+				s.SeriesID.Reset()
+				if err := s.SeriesID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_id\"")
+			}
+		case "season_number":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"season_number\"")
+			}
+		case "episode_number":
+			if err := func() error {
+				s.EpisodeNumber.Reset()
+				if err := s.EpisodeNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_number\"")
+			}
+		case "title":
+			if err := func() error {
+				s.Title.Reset()
+				if err := s.Title.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"title\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "runtime":
+			if err := func() error {
+				s.Runtime.Reset()
+				if err := s.Runtime.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"runtime\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "still_path":
+			if err := func() error {
+				s.StillPath.Reset()
+				if err := s.StillPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"still_path\"")
+			}
+		case "has_file":
+			if err := func() error {
+				s.HasFile.Reset()
+				if err := s.HasFile.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"has_file\"")
+			}
+		case "series_title":
+			if err := func() error {
+				s.SeriesTitle.Reset()
+				if err := s.SeriesTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_title\"")
+			}
+		case "series_poster_path":
+			if err := func() error {
+				s.SeriesPosterPath.Reset()
+				if err := s.SeriesPosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_poster_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeSearchDocument")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeSearchHit) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeSearchHit) encodeFields(e *jx.Encoder) {
+	{
+		if s.Document.Set {
+			e.FieldStart("document")
+			s.Document.Encode(e)
+		}
+	}
+	{
+		if s.Score.Set {
+			e.FieldStart("score")
+			s.Score.Encode(e)
+		}
+	}
+	{
+		if s.Highlights.Set {
+			e.FieldStart("highlights")
+			s.Highlights.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfEpisodeSearchHit = [3]string{
+	0: "document",
+	1: "score",
+	2: "highlights",
+}
+
+// Decode decodes EpisodeSearchHit from json.
+func (s *EpisodeSearchHit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeSearchHit to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "document":
+			if err := func() error {
+				s.Document.Reset()
+				if err := s.Document.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"document\"")
+			}
+		case "score":
+			if err := func() error {
+				s.Score.Reset()
+				if err := s.Score.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"score\"")
+			}
+		case "highlights":
+			if err := func() error {
+				s.Highlights.Reset()
+				if err := s.Highlights.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"highlights\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeSearchHit")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeSearchHit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeSearchHit) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s EpisodeSearchHitHighlights) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s EpisodeSearchHitHighlights) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.ArrStart()
+		for _, elem := range elem {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+// Decode decodes EpisodeSearchHitHighlights from json.
+func (s *EpisodeSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeSearchHitHighlights to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem []string
+		if err := func() error {
+			elem = make([]string, 0)
+			if err := d.Arr(func(d *jx.Decoder) error {
+				var elemElem string
+				v, err := d.Str()
+				elemElem = string(v)
+				if err != nil {
+					return err
+				}
+				elem = append(elem, elemElem)
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeSearchHitHighlights")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s EpisodeSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *EpisodeSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *EpisodeSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Hits != nil {
+			e.FieldStart("hits")
+			e.ArrStart()
+			for _, elem := range s.Hits {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.TotalHits.Set {
+			e.FieldStart("total_hits")
+			s.TotalHits.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfEpisodeSearchResults = [2]string{
+	0: "hits",
+	1: "total_hits",
+}
+
+// Decode decodes EpisodeSearchResults from json.
+func (s *EpisodeSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode EpisodeSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "hits":
+			if err := func() error {
+				s.Hits = make([]EpisodeSearchHit, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem EpisodeSearchHit
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Hits = append(s.Hits, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"hits\"")
+			}
+		case "total_hits":
+			if err := func() error {
+				s.TotalHits.Reset()
+				if err := s.TotalHits.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_hits\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode EpisodeSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *EpisodeSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *EpisodeSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *EpisodeWatchProgress) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -26808,6 +27331,137 @@ func (s *MovieWatched) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *MultiSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *MultiSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Movies.Set {
+			e.FieldStart("movies")
+			s.Movies.Encode(e)
+		}
+	}
+	{
+		if s.Tvshows.Set {
+			e.FieldStart("tvshows")
+			s.Tvshows.Encode(e)
+		}
+	}
+	{
+		if s.Episodes.Set {
+			e.FieldStart("episodes")
+			s.Episodes.Encode(e)
+		}
+	}
+	{
+		if s.Seasons.Set {
+			e.FieldStart("seasons")
+			s.Seasons.Encode(e)
+		}
+	}
+	{
+		if s.People.Set {
+			e.FieldStart("people")
+			s.People.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfMultiSearchResults = [5]string{
+	0: "movies",
+	1: "tvshows",
+	2: "episodes",
+	3: "seasons",
+	4: "people",
+}
+
+// Decode decodes MultiSearchResults from json.
+func (s *MultiSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode MultiSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "movies":
+			if err := func() error {
+				s.Movies.Reset()
+				if err := s.Movies.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movies\"")
+			}
+		case "tvshows":
+			if err := func() error {
+				s.Tvshows.Reset()
+				if err := s.Tvshows.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvshows\"")
+			}
+		case "episodes":
+			if err := func() error {
+				s.Episodes.Reset()
+				if err := s.Episodes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episodes\"")
+			}
+		case "seasons":
+			if err := func() error {
+				s.Seasons.Reset()
+				if err := s.Seasons.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"seasons\"")
+			}
+		case "people":
+			if err := func() error {
+				s.People.Reset()
+				if err := s.People.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"people\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode MultiSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *MultiSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *MultiSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *OIDCAuthURLResponse) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -27998,6 +28652,106 @@ func (s *OptDateTime) UnmarshalJSON(data []byte) error {
 	return s.Decode(d, json.DecodeDateTime)
 }
 
+// Encode encodes EpisodeSearchDocument as json.
+func (o OptEpisodeSearchDocument) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EpisodeSearchDocument from json.
+func (o *OptEpisodeSearchDocument) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEpisodeSearchDocument to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEpisodeSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEpisodeSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EpisodeSearchHitHighlights as json.
+func (o OptEpisodeSearchHitHighlights) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EpisodeSearchHitHighlights from json.
+func (o *OptEpisodeSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEpisodeSearchHitHighlights to nil")
+	}
+	o.Set = true
+	o.Value = make(EpisodeSearchHitHighlights)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEpisodeSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEpisodeSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes EpisodeSearchResults as json.
+func (o OptEpisodeSearchResults) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes EpisodeSearchResults from json.
+func (o *OptEpisodeSearchResults) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptEpisodeSearchResults to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptEpisodeSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptEpisodeSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes ErrorDetails as json.
 func (o OptErrorDetails) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -28795,6 +29549,106 @@ func (s *OptNilString) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes PersonSearchDocument as json.
+func (o OptPersonSearchDocument) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes PersonSearchDocument from json.
+func (o *OptPersonSearchDocument) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptPersonSearchDocument to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptPersonSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptPersonSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes PersonSearchHitHighlights as json.
+func (o OptPersonSearchHitHighlights) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes PersonSearchHitHighlights from json.
+func (o *OptPersonSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptPersonSearchHitHighlights to nil")
+	}
+	o.Set = true
+	o.Value = make(PersonSearchHitHighlights)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptPersonSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptPersonSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes PersonSearchResults as json.
+func (o OptPersonSearchResults) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes PersonSearchResults from json.
+func (o *OptPersonSearchResults) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptPersonSearchResults to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptPersonSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptPersonSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes RadarrWebhookMovie as json.
 func (o OptRadarrWebhookMovie) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -28961,6 +29815,39 @@ func (s *OptSearchHitHighlights) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes SearchResults as json.
+func (o OptSearchResults) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SearchResults from json.
+func (o *OptSearchResults) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSearchResults to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSearchResults) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes SearchResultsFacets as json.
 func (o OptSearchResultsFacets) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -28991,6 +29878,106 @@ func (s OptSearchResultsFacets) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptSearchResultsFacets) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeasonSearchDocument as json.
+func (o OptSeasonSearchDocument) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SeasonSearchDocument from json.
+func (o *OptSeasonSearchDocument) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeasonSearchDocument to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeasonSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeasonSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeasonSearchHitHighlights as json.
+func (o OptSeasonSearchHitHighlights) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SeasonSearchHitHighlights from json.
+func (o *OptSeasonSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeasonSearchHitHighlights to nil")
+	}
+	o.Set = true
+	o.Value = make(SeasonSearchHitHighlights)
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeasonSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeasonSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SeasonSearchResults as json.
+func (o OptSeasonSearchResults) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SeasonSearchResults from json.
+func (o *OptSeasonSearchResults) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSeasonSearchResults to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSeasonSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSeasonSearchResults) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -29225,6 +30212,39 @@ func (s OptTVShowSearchHitHighlights) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptTVShowSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes TVShowSearchResults as json.
+func (o OptTVShowSearchResults) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes TVShowSearchResults from json.
+func (o *OptTVShowSearchResults) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptTVShowSearchResults to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptTVShowSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptTVShowSearchResults) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -30229,6 +31249,517 @@ func (s *PermissionsResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *PermissionsResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *PersonSearchDocument) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PersonSearchDocument) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TmdbID.Set {
+			e.FieldStart("tmdb_id")
+			s.TmdbID.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.ProfilePath.Set {
+			e.FieldStart("profile_path")
+			s.ProfilePath.Encode(e)
+		}
+	}
+	{
+		if s.KnownFor != nil {
+			e.FieldStart("known_for")
+			e.ArrStart()
+			for _, elem := range s.KnownFor {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Characters != nil {
+			e.FieldStart("characters")
+			e.ArrStart()
+			for _, elem := range s.Characters {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.Departments != nil {
+			e.FieldStart("departments")
+			e.ArrStart()
+			for _, elem := range s.Departments {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.MovieCount.Set {
+			e.FieldStart("movie_count")
+			s.MovieCount.Encode(e)
+		}
+	}
+	{
+		if s.TvshowCount.Set {
+			e.FieldStart("tvshow_count")
+			s.TvshowCount.Encode(e)
+		}
+	}
+	{
+		if s.TotalCredits.Set {
+			e.FieldStart("total_credits")
+			s.TotalCredits.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfPersonSearchDocument = [10]string{
+	0: "id",
+	1: "tmdb_id",
+	2: "name",
+	3: "profile_path",
+	4: "known_for",
+	5: "characters",
+	6: "departments",
+	7: "movie_count",
+	8: "tvshow_count",
+	9: "total_credits",
+}
+
+// Decode decodes PersonSearchDocument from json.
+func (s *PersonSearchDocument) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PersonSearchDocument to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "tmdb_id":
+			if err := func() error {
+				s.TmdbID.Reset()
+				if err := s.TmdbID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tmdb_id\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "profile_path":
+			if err := func() error {
+				s.ProfilePath.Reset()
+				if err := s.ProfilePath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"profile_path\"")
+			}
+		case "known_for":
+			if err := func() error {
+				s.KnownFor = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.KnownFor = append(s.KnownFor, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"known_for\"")
+			}
+		case "characters":
+			if err := func() error {
+				s.Characters = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Characters = append(s.Characters, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"characters\"")
+			}
+		case "departments":
+			if err := func() error {
+				s.Departments = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.Departments = append(s.Departments, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"departments\"")
+			}
+		case "movie_count":
+			if err := func() error {
+				s.MovieCount.Reset()
+				if err := s.MovieCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"movie_count\"")
+			}
+		case "tvshow_count":
+			if err := func() error {
+				s.TvshowCount.Reset()
+				if err := s.TvshowCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"tvshow_count\"")
+			}
+		case "total_credits":
+			if err := func() error {
+				s.TotalCredits.Reset()
+				if err := s.TotalCredits.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_credits\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PersonSearchDocument")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PersonSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PersonSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *PersonSearchHit) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PersonSearchHit) encodeFields(e *jx.Encoder) {
+	{
+		if s.Document.Set {
+			e.FieldStart("document")
+			s.Document.Encode(e)
+		}
+	}
+	{
+		if s.Score.Set {
+			e.FieldStart("score")
+			s.Score.Encode(e)
+		}
+	}
+	{
+		if s.Highlights.Set {
+			e.FieldStart("highlights")
+			s.Highlights.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfPersonSearchHit = [3]string{
+	0: "document",
+	1: "score",
+	2: "highlights",
+}
+
+// Decode decodes PersonSearchHit from json.
+func (s *PersonSearchHit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PersonSearchHit to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "document":
+			if err := func() error {
+				s.Document.Reset()
+				if err := s.Document.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"document\"")
+			}
+		case "score":
+			if err := func() error {
+				s.Score.Reset()
+				if err := s.Score.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"score\"")
+			}
+		case "highlights":
+			if err := func() error {
+				s.Highlights.Reset()
+				if err := s.Highlights.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"highlights\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PersonSearchHit")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PersonSearchHit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PersonSearchHit) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s PersonSearchHitHighlights) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s PersonSearchHitHighlights) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.ArrStart()
+		for _, elem := range elem {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+// Decode decodes PersonSearchHitHighlights from json.
+func (s *PersonSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PersonSearchHitHighlights to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem []string
+		if err := func() error {
+			elem = make([]string, 0)
+			if err := d.Arr(func(d *jx.Decoder) error {
+				var elemElem string
+				v, err := d.Str()
+				elemElem = string(v)
+				if err != nil {
+					return err
+				}
+				elem = append(elem, elemElem)
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PersonSearchHitHighlights")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s PersonSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PersonSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *PersonSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PersonSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Hits != nil {
+			e.FieldStart("hits")
+			e.ArrStart()
+			for _, elem := range s.Hits {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.TotalHits.Set {
+			e.FieldStart("total_hits")
+			s.TotalHits.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfPersonSearchResults = [2]string{
+	0: "hits",
+	1: "total_hits",
+}
+
+// Decode decodes PersonSearchResults from json.
+func (s *PersonSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PersonSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "hits":
+			if err := func() error {
+				s.Hits = make([]PersonSearchHit, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem PersonSearchHit
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Hits = append(s.Hits, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"hits\"")
+			}
+		case "total_hits":
+			if err := func() error {
+				s.TotalHits.Reset()
+				if err := s.TotalHits.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_hits\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PersonSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PersonSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PersonSearchResults) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -37016,6 +38547,82 @@ func (s *SearchMoviesOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes SearchMultiBadRequest as json.
+func (s *SearchMultiBadRequest) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes SearchMultiBadRequest from json.
+func (s *SearchMultiBadRequest) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SearchMultiBadRequest to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SearchMultiBadRequest(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SearchMultiBadRequest) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SearchMultiBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SearchMultiUnauthorized as json.
+func (s *SearchMultiUnauthorized) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes SearchMultiUnauthorized from json.
+func (s *SearchMultiUnauthorized) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SearchMultiUnauthorized to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SearchMultiUnauthorized(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SearchMultiUnauthorized) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SearchMultiUnauthorized) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode implements json.Marshaler.
 func (s *SearchResults) Encode(e *jx.Encoder) {
 	e.ObjStart()
@@ -37287,6 +38894,495 @@ func (s SearchTVShowsOKApplicationJSON) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SearchTVShowsOKApplicationJSON) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeasonSearchDocument) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeasonSearchDocument) encodeFields(e *jx.Encoder) {
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.SeriesID.Set {
+			e.FieldStart("series_id")
+			s.SeriesID.Encode(e)
+		}
+	}
+	{
+		if s.SeasonNumber.Set {
+			e.FieldStart("season_number")
+			s.SeasonNumber.Encode(e)
+		}
+	}
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Overview.Set {
+			e.FieldStart("overview")
+			s.Overview.Encode(e)
+		}
+	}
+	{
+		if s.AirDate.Set {
+			e.FieldStart("air_date")
+			s.AirDate.Encode(e)
+		}
+	}
+	{
+		if s.EpisodeCount.Set {
+			e.FieldStart("episode_count")
+			s.EpisodeCount.Encode(e)
+		}
+	}
+	{
+		if s.VoteAverage.Set {
+			e.FieldStart("vote_average")
+			s.VoteAverage.Encode(e)
+		}
+	}
+	{
+		if s.PosterPath.Set {
+			e.FieldStart("poster_path")
+			s.PosterPath.Encode(e)
+		}
+	}
+	{
+		if s.SeriesTitle.Set {
+			e.FieldStart("series_title")
+			s.SeriesTitle.Encode(e)
+		}
+	}
+	{
+		if s.SeriesPosterPath.Set {
+			e.FieldStart("series_poster_path")
+			s.SeriesPosterPath.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeasonSearchDocument = [11]string{
+	0:  "id",
+	1:  "series_id",
+	2:  "season_number",
+	3:  "name",
+	4:  "overview",
+	5:  "air_date",
+	6:  "episode_count",
+	7:  "vote_average",
+	8:  "poster_path",
+	9:  "series_title",
+	10: "series_poster_path",
+}
+
+// Decode decodes SeasonSearchDocument from json.
+func (s *SeasonSearchDocument) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonSearchDocument to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "series_id":
+			if err := func() error {
+				s.SeriesID.Reset()
+				if err := s.SeriesID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_id\"")
+			}
+		case "season_number":
+			if err := func() error {
+				s.SeasonNumber.Reset()
+				if err := s.SeasonNumber.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"season_number\"")
+			}
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "overview":
+			if err := func() error {
+				s.Overview.Reset()
+				if err := s.Overview.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"overview\"")
+			}
+		case "air_date":
+			if err := func() error {
+				s.AirDate.Reset()
+				if err := s.AirDate.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"air_date\"")
+			}
+		case "episode_count":
+			if err := func() error {
+				s.EpisodeCount.Reset()
+				if err := s.EpisodeCount.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"episode_count\"")
+			}
+		case "vote_average":
+			if err := func() error {
+				s.VoteAverage.Reset()
+				if err := s.VoteAverage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"vote_average\"")
+			}
+		case "poster_path":
+			if err := func() error {
+				s.PosterPath.Reset()
+				if err := s.PosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"poster_path\"")
+			}
+		case "series_title":
+			if err := func() error {
+				s.SeriesTitle.Reset()
+				if err := s.SeriesTitle.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_title\"")
+			}
+		case "series_poster_path":
+			if err := func() error {
+				s.SeriesPosterPath.Reset()
+				if err := s.SeriesPosterPath.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"series_poster_path\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonSearchDocument")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeasonSearchDocument) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonSearchDocument) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeasonSearchHit) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeasonSearchHit) encodeFields(e *jx.Encoder) {
+	{
+		if s.Document.Set {
+			e.FieldStart("document")
+			s.Document.Encode(e)
+		}
+	}
+	{
+		if s.Score.Set {
+			e.FieldStart("score")
+			s.Score.Encode(e)
+		}
+	}
+	{
+		if s.Highlights.Set {
+			e.FieldStart("highlights")
+			s.Highlights.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeasonSearchHit = [3]string{
+	0: "document",
+	1: "score",
+	2: "highlights",
+}
+
+// Decode decodes SeasonSearchHit from json.
+func (s *SeasonSearchHit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonSearchHit to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "document":
+			if err := func() error {
+				s.Document.Reset()
+				if err := s.Document.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"document\"")
+			}
+		case "score":
+			if err := func() error {
+				s.Score.Reset()
+				if err := s.Score.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"score\"")
+			}
+		case "highlights":
+			if err := func() error {
+				s.Highlights.Reset()
+				if err := s.Highlights.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"highlights\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonSearchHit")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeasonSearchHit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonSearchHit) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s SeasonSearchHitHighlights) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields implements json.Marshaler.
+func (s SeasonSearchHitHighlights) encodeFields(e *jx.Encoder) {
+	for k, elem := range s {
+		e.FieldStart(k)
+
+		e.ArrStart()
+		for _, elem := range elem {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+// Decode decodes SeasonSearchHitHighlights from json.
+func (s *SeasonSearchHitHighlights) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonSearchHitHighlights to nil")
+	}
+	m := s.init()
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		var elem []string
+		if err := func() error {
+			elem = make([]string, 0)
+			if err := d.Arr(func(d *jx.Decoder) error {
+				var elemElem string
+				v, err := d.Str()
+				elemElem = string(v)
+				if err != nil {
+					return err
+				}
+				elem = append(elem, elemElem)
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrapf(err, "decode field %q", k)
+		}
+		m[string(k)] = elem
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonSearchHitHighlights")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s SeasonSearchHitHighlights) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonSearchHitHighlights) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SeasonSearchResults) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SeasonSearchResults) encodeFields(e *jx.Encoder) {
+	{
+		if s.Hits != nil {
+			e.FieldStart("hits")
+			e.ArrStart()
+			for _, elem := range s.Hits {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.TotalHits.Set {
+			e.FieldStart("total_hits")
+			s.TotalHits.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSeasonSearchResults = [2]string{
+	0: "hits",
+	1: "total_hits",
+}
+
+// Decode decodes SeasonSearchResults from json.
+func (s *SeasonSearchResults) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SeasonSearchResults to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "hits":
+			if err := func() error {
+				s.Hits = make([]SeasonSearchHit, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SeasonSearchHit
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Hits = append(s.Hits, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"hits\"")
+			}
+		case "total_hits":
+			if err := func() error {
+				s.TotalHits.Reset()
+				if err := s.TotalHits.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"total_hits\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SeasonSearchResults")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SeasonSearchResults) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SeasonSearchResults) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

@@ -51,6 +51,9 @@ type Handler struct {
 	libraryService  *library.Service
 	searchService       *search.MovieSearchService
 	tvshowSearchService *search.TVShowSearchService
+	episodeSearchService *search.EpisodeSearchService
+	seasonSearchService  *search.SeasonSearchService
+	personSearchService  *search.PersonSearchService
 	tokenManager    auth.TokenManager
 	mfaHandler      *MFAHandler
 	movieHandler    *movie.Handler
