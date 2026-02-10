@@ -1,7 +1,7 @@
 -- Movie CRUD Operations
 -- name: CreateMovie :one
 INSERT INTO
-    public.movies (
+    movie.movies (
         tmdb_id,
         imdb_id,
         title,
@@ -59,31 +59,31 @@ VALUES (
     ) RETURNING *;
 
 -- name: GetMovie :one
-SELECT * FROM public.movies WHERE id = $1 AND deleted_at IS NULL;
+SELECT * FROM movie.movies WHERE id = $1 AND deleted_at IS NULL;
 
 -- name: GetMovieByTMDbID :one
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     tmdb_id = $1
     AND deleted_at IS NULL;
 
 -- name: GetMovieByIMDbID :one
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     imdb_id = $1
     AND deleted_at IS NULL;
 
 -- name: GetMovieByRadarrID :one
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     radarr_id = $1
     AND deleted_at IS NULL;
 
 -- name: UpdateMovie :one
-UPDATE public.movies
+UPDATE movie.movies
 SET
     tmdb_id = COALESCE(
         sqlc.narg ('tmdb_id'),
@@ -182,10 +182,10 @@ WHERE
     AND deleted_at IS NULL RETURNING *;
 
 -- name: DeleteMovie :exec
-UPDATE public.movies SET deleted_at = NOW() WHERE id = $1;
+UPDATE movie.movies SET deleted_at = NOW() WHERE id = $1;
 
 -- name: ListMovies :many
-SELECT * FROM public.movies
+SELECT * FROM movie.movies
 WHERE deleted_at IS NULL
 ORDER BY
     CASE WHEN sqlc.narg('order_by')::text = 'title' THEN title END ASC,
@@ -196,11 +196,11 @@ ORDER BY
 LIMIT $1 OFFSET $2;
 
 -- name: CountMovies :one
-SELECT COUNT(*) FROM public.movies WHERE deleted_at IS NULL;
+SELECT COUNT(*) FROM movie.movies WHERE deleted_at IS NULL;
 
 -- name: SearchMoviesByTitle :many
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     deleted_at IS NULL
     AND (
@@ -214,7 +214,7 @@ OFFSET
 
 -- name: SearchMoviesByTitleAnyLanguage :many
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     deleted_at IS NULL
     AND (
@@ -241,7 +241,7 @@ OFFSET
 
 -- name: ListMoviesByYear :many
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     deleted_at IS NULL
     AND year = $1
@@ -252,7 +252,7 @@ OFFSET
 
 -- name: ListRecentlyAdded :many
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     deleted_at IS NULL
 ORDER BY library_added_at DESC
@@ -262,7 +262,7 @@ OFFSET
 
 -- name: ListTopRated :many
 SELECT *
-FROM public.movies
+FROM movie.movies
 WHERE
     deleted_at IS NULL
     AND vote_average IS NOT NULL
@@ -272,10 +272,18 @@ LIMIT $2
 OFFSET
     $3;
 
+-- name: CountTopRated :one
+SELECT COUNT(*)
+FROM movie.movies
+WHERE
+    deleted_at IS NULL
+    AND vote_average IS NOT NULL
+    AND vote_count > $1;
+
 -- Movie Files Operations
 -- name: CreateMovieFile :one
 INSERT INTO
-    public.movie_files (
+    movie.movie_files (
         movie_id,
         file_path,
         file_size,
@@ -306,14 +314,14 @@ VALUES (
 
 -- name: GetMovieFile :one
 SELECT *
-FROM public.movie_files
+FROM movie.movie_files
 WHERE
     id = $1
     AND deleted_at IS NULL;
 
 -- name: ListMovieFilesByMovieID :many
 SELECT *
-FROM public.movie_files
+FROM movie.movie_files
 WHERE
     movie_id = $1
     AND deleted_at IS NULL
@@ -321,20 +329,20 @@ ORDER BY created_at DESC;
 
 -- name: GetMovieFileByPath :one
 SELECT *
-FROM public.movie_files
+FROM movie.movie_files
 WHERE
     file_path = $1
     AND deleted_at IS NULL;
 
 -- name: GetMovieFileByRadarrID :one
 SELECT *
-FROM public.movie_files
+FROM movie.movie_files
 WHERE
     radarr_file_id = $1
     AND deleted_at IS NULL;
 
 -- name: UpdateMovieFile :one
-UPDATE public.movie_files
+UPDATE movie.movie_files
 SET
     file_path = COALESCE(
         sqlc.narg ('file_path'),
@@ -385,12 +393,12 @@ WHERE
     AND deleted_at IS NULL RETURNING *;
 
 -- name: DeleteMovieFile :exec
-UPDATE public.movie_files SET deleted_at = NOW() WHERE id = $1;
+UPDATE movie.movie_files SET deleted_at = NOW() WHERE id = $1;
 
 -- Movie Credits Operations
 -- name: CreateMovieCredit :one
 INSERT INTO
-    public.movie_credits (
+    movie.movie_credits (
         movie_id,
         tmdb_person_id,
         name,
@@ -415,16 +423,27 @@ VALUES (
 
 -- name: ListMovieCast :many
 SELECT *
-FROM public.movie_credits
+FROM movie.movie_credits
 WHERE
     movie_id = $1
     AND credit_type = 'cast'
     AND deleted_at IS NULL
-ORDER BY cast_order ASC NULLS LAST;
+ORDER BY cast_order ASC NULLS LAST
+LIMIT $2
+OFFSET
+    $3;
+
+-- name: CountMovieCast :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'cast'
+    AND deleted_at IS NULL;
 
 -- name: ListMovieCrew :many
 SELECT *
-FROM public.movie_credits
+FROM movie.movie_credits
 WHERE
     movie_id = $1
     AND credit_type = 'crew'
@@ -436,10 +455,21 @@ ORDER BY
         WHEN 'Production' THEN 3
         ELSE 99
     END,
-    name ASC;
+    name ASC
+LIMIT $2
+OFFSET
+    $3;
+
+-- name: CountMovieCrew :one
+SELECT COUNT(*)
+FROM movie.movie_credits
+WHERE
+    movie_id = $1
+    AND credit_type = 'crew'
+    AND deleted_at IS NULL;
 
 -- name: DeleteMovieCredits :exec
-UPDATE public.movie_credits
+UPDATE movie.movie_credits
 SET
     deleted_at = NOW()
 WHERE
@@ -448,7 +478,7 @@ WHERE
 -- Movie Collections Operations
 -- name: CreateMovieCollection :one
 INSERT INTO
-    public.movie_collections (
+    movie.movie_collections (
         tmdb_collection_id,
         name,
         overview,
@@ -459,20 +489,20 @@ VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
 -- name: GetMovieCollection :one
 SELECT *
-FROM public.movie_collections
+FROM movie.movie_collections
 WHERE
     id = $1
     AND deleted_at IS NULL;
 
 -- name: GetMovieCollectionByTMDbID :one
 SELECT *
-FROM public.movie_collections
+FROM movie.movie_collections
 WHERE
     tmdb_collection_id = $1
     AND deleted_at IS NULL;
 
 -- name: UpdateMovieCollection :one
-UPDATE public.movie_collections
+UPDATE movie.movie_collections
 SET
     tmdb_collection_id = COALESCE(
         sqlc.narg ('tmdb_collection_id'),
@@ -497,7 +527,7 @@ WHERE
 
 -- name: AddMovieToCollection :exec
 INSERT INTO
-    public.movie_collection_members (
+    movie.movie_collection_members (
         collection_id,
         movie_id,
         collection_order
@@ -508,15 +538,15 @@ SET
     collection_order = EXCLUDED.collection_order;
 
 -- name: RemoveMovieFromCollection :exec
-DELETE FROM public.movie_collection_members
+DELETE FROM movie.movie_collection_members
 WHERE
     collection_id = $1
     AND movie_id = $2;
 
 -- name: ListMoviesByCollection :many
 SELECT m.*
-FROM public.movies m
-    JOIN public.movie_collection_members mcm ON m.id = mcm.movie_id
+FROM movie.movies m
+    JOIN movie.movie_collection_members mcm ON m.id = mcm.movie_id
 WHERE
     mcm.collection_id = $1
     AND m.deleted_at IS NULL
@@ -524,8 +554,8 @@ ORDER BY mcm.collection_order ASC NULLS LAST, m.year ASC;
 
 -- name: GetCollectionForMovie :one
 SELECT c.*
-FROM public.movie_collections c
-    JOIN public.movie_collection_members mcm ON c.id = mcm.collection_id
+FROM movie.movie_collections c
+    JOIN movie.movie_collection_members mcm ON c.id = mcm.collection_id
 WHERE
     mcm.movie_id = $1
     AND c.deleted_at IS NULL
@@ -534,23 +564,29 @@ LIMIT 1;
 -- Movie Genres Operations
 -- name: AddMovieGenre :exec
 INSERT INTO
-    public.movie_genres (movie_id, tmdb_genre_id, name)
+    movie.movie_genres (movie_id, tmdb_genre_id, name)
 VALUES ($1, $2, $3) ON CONFLICT (movie_id, tmdb_genre_id) DO NOTHING;
 
 -- name: ListMovieGenres :many
 SELECT *
-FROM public.movie_genres
+FROM movie.movie_genres
 WHERE
     movie_id = $1
 ORDER BY name ASC;
 
+-- name: ListDistinctMovieGenres :many
+SELECT tmdb_genre_id, name, COUNT(DISTINCT movie_id)::bigint AS item_count
+FROM movie.movie_genres
+GROUP BY tmdb_genre_id, name
+ORDER BY name ASC;
+
 -- name: DeleteMovieGenres :exec
-DELETE FROM public.movie_genres WHERE movie_id = $1;
+DELETE FROM movie.movie_genres WHERE movie_id = $1;
 
 -- name: ListMoviesByGenre :many
 SELECT m.*
-FROM public.movies m
-    JOIN public.movie_genres mg ON m.id = mg.movie_id
+FROM movie.movies m
+    JOIN movie.movie_genres mg ON m.id = mg.movie_id
 WHERE
     mg.tmdb_genre_id = $1
     AND m.deleted_at IS NULL
@@ -562,7 +598,7 @@ OFFSET
 -- Movie Watch Progress Operations
 -- name: CreateOrUpdateWatchProgress :one
 INSERT INTO
-    public.movie_watched (
+    movie.movie_watched (
         user_id,
         movie_id,
         progress_seconds,
@@ -584,21 +620,21 @@ SET
 
 -- name: GetWatchProgress :one
 SELECT *
-FROM public.movie_watched
+FROM movie.movie_watched
 WHERE
     user_id = $1
     AND movie_id = $2;
 
 -- name: DeleteWatchProgress :exec
-DELETE FROM public.movie_watched
+DELETE FROM movie.movie_watched
 WHERE
     user_id = $1
     AND movie_id = $2;
 
 -- name: ListContinueWatching :many
 SELECT m.*, mw.progress_seconds, mw.duration_seconds, mw.progress_percent, mw.last_watched_at
-FROM public.movies m
-    JOIN public.movie_watched mw ON m.id = mw.movie_id
+FROM movie.movies m
+    JOIN movie.movie_watched mw ON m.id = mw.movie_id
 WHERE
     mw.user_id = $1
     AND mw.is_completed = FALSE
@@ -609,8 +645,8 @@ LIMIT $2;
 
 -- name: ListWatchedMovies :many
 SELECT m.*, mw.watch_count, mw.last_watched_at
-FROM public.movies m
-    JOIN public.movie_watched mw ON m.id = mw.movie_id
+FROM movie.movies m
+    JOIN movie.movie_watched mw ON m.id = mw.movie_id
 WHERE
     mw.user_id = $1
     AND mw.is_completed = TRUE
@@ -625,5 +661,5 @@ SELECT
     COUNT(*) FILTER (WHERE is_completed) as watched_count,
     COUNT(*) FILTER (WHERE NOT is_completed AND progress_percent > 5) as in_progress_count,
     COALESCE(SUM(watch_count), 0)::bigint as total_watches
-FROM public.movie_watched
+FROM movie.movie_watched
 WHERE user_id = $1;

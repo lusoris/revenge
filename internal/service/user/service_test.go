@@ -15,6 +15,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // TestMain is in repository_pg_test.go
@@ -206,8 +207,8 @@ func TestService_ListUsers(t *testing.T) {
 			Username:     "listuser" + string(rune('0'+i)),
 			Email:        "listuser" + string(rune('0'+i)) + "@example.com",
 			PasswordHash: "password123",
-			IsActive:     ptr(false),
-			IsAdmin:      ptr(false),
+			IsActive:     ptr.To(false),
+			IsAdmin:      ptr.To(false),
 		})
 		require.NoError(t, err)
 	}
@@ -838,42 +839,42 @@ func TestService_ValidatePreferences(t *testing.T) {
 	}{
 		{
 			name:    "valid theme light",
-			params:  UpsertPreferencesParams{Theme: ptr("light")},
+			params:  UpsertPreferencesParams{Theme: ptr.To("light")},
 			wantErr: "",
 		},
 		{
 			name:    "valid theme dark",
-			params:  UpsertPreferencesParams{Theme: ptr("dark")},
+			params:  UpsertPreferencesParams{Theme: ptr.To("dark")},
 			wantErr: "",
 		},
 		{
 			name:    "valid theme system",
-			params:  UpsertPreferencesParams{Theme: ptr("system")},
+			params:  UpsertPreferencesParams{Theme: ptr.To("system")},
 			wantErr: "",
 		},
 		{
 			name:    "invalid theme",
-			params:  UpsertPreferencesParams{Theme: ptr("rainbow")},
+			params:  UpsertPreferencesParams{Theme: ptr.To("rainbow")},
 			wantErr: "invalid theme",
 		},
 		{
 			name:    "valid visibility public",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr("public")},
+			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("public")},
 			wantErr: "",
 		},
 		{
 			name:    "valid visibility friends",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr("friends")},
+			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("friends")},
 			wantErr: "",
 		},
 		{
 			name:    "valid visibility private",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr("private")},
+			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("private")},
 			wantErr: "",
 		},
 		{
 			name:    "invalid visibility",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr("hidden")},
+			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("hidden")},
 			wantErr: "invalid profile visibility",
 		},
 	}

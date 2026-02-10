@@ -15,17 +15,14 @@ import (
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
-// Helper functions for creating pointers
-func ptr[T any](v T) *T {
-	return &v
-}
-
 func newTestClient(t *testing.T) *search.Client {
+	t.Helper()
 	cfg := &config.Config{
 		Search: config.SearchConfig{
 			Enabled: true,
@@ -37,7 +34,9 @@ func newTestClient(t *testing.T) *search.Client {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelWarn}))
 
 	client, err := search.NewClient(cfg, logger)
-	require.NoError(t, err, "should create search client")
+	if err != nil {
+		t.Skipf("Typesense not available: %v", err)
+	}
 	require.NotNil(t, client, "client should not be nil")
 
 	return client
@@ -77,7 +76,7 @@ func TestSearchCollectionLifecycle(t *testing.T) {
 			{Name: "id", Type: "string"},
 			{Name: "title", Type: "string"},
 			{Name: "description", Type: "string"},
-			{Name: "year", Type: "int32", Facet: ptr(true)},
+			{Name: "year", Type: "int32", Facet: ptr.To(true)},
 		},
 	}
 
@@ -146,8 +145,8 @@ func TestSearchDocumentOperations(t *testing.T) {
 
 	// Search for the document
 	searchParams := &api.SearchCollectionParams{
-		Q:       ptr("test"),
-		QueryBy: ptr("title,content"),
+		Q:       ptr.To("test"),
+		QueryBy: ptr.To("title,content"),
 	}
 
 	results, err := client.Search(ctx, collectionName, searchParams)
@@ -214,8 +213,8 @@ func TestSearchBulkImport(t *testing.T) {
 
 	// Search to verify
 	searchParams := &api.SearchCollectionParams{
-		Q:       ptr("movie"),
-		QueryBy: ptr("title"),
+		Q:       ptr.To("movie"),
+		QueryBy: ptr.To("title"),
 	}
 
 	searchResults, err := client.Search(ctx, collectionName, searchParams)
@@ -230,8 +229,8 @@ func TestSearchErrorHandling(t *testing.T) {
 
 	// Try to search non-existent collection
 	searchParams := &api.SearchCollectionParams{
-		Q:       ptr("query"),
-		QueryBy: ptr("title"),
+		Q:       ptr.To("query"),
+		QueryBy: ptr.To("title"),
 	}
 
 	_, err := client.Search(ctx, "nonexistent_collection_12345", searchParams)
@@ -259,10 +258,10 @@ func TestSearchWithFiltersAndSorting(t *testing.T) {
 		Fields: []api.Field{
 			{Name: "id", Type: "string"},
 			{Name: "title", Type: "string"},
-			{Name: "year", Type: "int32", Facet: ptr(true)},
+			{Name: "year", Type: "int32", Facet: ptr.To(true)},
 			{Name: "rating", Type: "float"},
 		},
-		DefaultSortingField: ptr("rating"),
+		DefaultSortingField: ptr.To("rating"),
 	}
 
 	err := client.CreateCollection(ctx, schema)
@@ -286,10 +285,10 @@ func TestSearchWithFiltersAndSorting(t *testing.T) {
 
 	// Search with filter (year > 2000)
 	searchParams := &api.SearchCollectionParams{
-		Q:        ptr("*"),
-		QueryBy:  ptr("title"),
-		FilterBy: ptr("year:>2000"),
-		SortBy:   ptr("rating:desc"),
+		Q:        ptr.To("*"),
+		QueryBy:  ptr.To("title"),
+		FilterBy: ptr.To("year:>2000"),
+		SortBy:   ptr.To("rating:desc"),
 	}
 
 	results, err := client.Search(ctx, collectionName, searchParams)

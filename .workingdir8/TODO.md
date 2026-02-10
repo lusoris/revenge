@@ -60,7 +60,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 | 1 | **No Content Security Policy** headers | Medium | Add CSP middleware: `default-src 'self'; img-src 'self' image.tmdb.org; media-src 'self' blob:; script-src 'self'` |
 | 2 | **No Cache-Control on JSON API responses** | Medium | Add `private, no-cache` for user-specific, `public, max-age=60` for library listings |
 | 3 | **Query param naming inconsistency** | **High** | Movies use `orderBy` (camelCase), TV shows use `order_by` (snake_case) — **standardize to snake_case** (REST convention, matches Go/PostgreSQL, TS client can transform) |
-| 4 | **All list endpoints need pagination** | **High** | `getRecentlyAdded`, `getTopRated`, cast/crew return bare arrays — **must** return `{items, total, page, page_size}` for frontend infinite scroll / load more |
+| 4 | ~~**All list endpoints need pagination**~~ | ✅ DONE | ~~`getRecentlyAdded`, `getTopRated`, cast/crew return bare arrays~~ — `4d8f8919`: 7 endpoints now return `{items, total, page, page_size}` with proper caching |
 | 5 | **No admin user management endpoint** | **High** | Need `GET /api/v1/admin/users` (list+search), `DELETE /api/v1/users/{id}` — backend must be ready before frontend |
 | 6 | **No global genre endpoint** | Medium | `GET /api/v1/genres` for filter UIs (currently only via search facets) |
 | 7 | **No bulk episode watched endpoint** | Medium | `POST /api/v1/shows/{id}/seasons/{num}/watched` to mark entire season |
@@ -89,7 +89,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 | 3 | **`metadata_enrich_content` has no Worker** | High | Create `EnrichContentWorker` — enrichment must run as River job, NOT synchronous in request path |
 | 4 | **Periodic cleanup never actually runs** — `Schedule*` functions take `*river.Client[any]` but app uses `*river.Client[pgx.Tx]` (type mismatch), and they're never called from DI lifecycle | **Critical** | Fix the type signatures and wire `Schedule*` into the fx `OnStart` hook |
 | 5 | **Movie metadata refresh is synchronous in API handler** | **High** | `handler.go:201` calls service method directly — must `Insert` a `RefreshMovieArgs` job and return `202 Accepted` |
-| 6 | **Rating enrichment is synchronous in request path** | **High** | `enrichMovieRatings()` / `enrichTVShowRatings()` call external provider APIs synchronously — must be River jobs. User gets cached/partial data immediately, enrichment runs async |
+| 6 | ~~**Rating enrichment is synchronous in request path**~~ | **High** | ~~`enrichMovieRatings()` / `enrichTVShowRatings()` call external provider APIs synchronously — must be River jobs. User gets cached/partial data immediately, enrichment runs async~~ ✅ `d2281594` — moved to adapter Enrich methods (River workers only) |
 | 7 | **Activity logging is synchronous** — `service/activity/service.go:33` blocks on DB insert | Medium | Create `ActivityLogArgs` job, process on `low` queue |
 | 8 | **Bare goroutine fallback** in `handler_radarr.go:145` / `handler_sonarr.go:155` when `riverClient == nil` | Low | Remove fallback or add basic error handling |
 
@@ -116,7 +116,7 @@ deduplication, dependency audit, schema architecture, and API structure.
 
 | # | Gap | Severity | Fix |
 |---|-----|----------|-----|
-| 1 | **No CachedService for TV shows** — all TV show reads hit DB every time | **Critical** | Create `CachedTVShowService` mirroring the movie pattern |
+| 1 | ~~**No CachedService for TV shows**~~ — all TV show reads hit DB every time | **Critical** | ~~Create `CachedTVShowService` mirroring the movie pattern~~ ✅ `962f8192` — created + wired in DI (movie too) |
 | 2 | **No CachedTVShowSearchService** — TV show Typesense searches always hit Typesense | **High** | Create cached wrapper like `CachedMovieSearchService` |
 | 3 | **L1 fully cleared on any pattern invalidation** — Otter doesn't support prefix delete | Medium | Verify Otter docs for `DeleteByFunc`, or use a separate cache instance per domain |
 | 4 | **Redis `KEYS` command for pattern invalidation** — O(N), blocks | Medium | Verify current impl — use `SCAN` instead, or restructure keys to avoid pattern matching |
@@ -222,7 +222,7 @@ This is inconsistent and violates the "each content module owns its schema" prin
 
 ### Steps
 
-- [ ] **9.1** New migration `000036_create_movie_schema.up.sql`:
+- [x] **9.1** New migration `000036_create_movie_schema.up.sql`:
   - `CREATE SCHEMA IF NOT EXISTS movie;`
   - `ALTER TABLE public.movies SET SCHEMA movie;`
   - `ALTER TABLE public.movie_files SET SCHEMA movie;`
@@ -232,16 +232,16 @@ This is inconsistent and violates the "each content module owns its schema" prin
   - `ALTER TABLE public.movie_genres SET SCHEMA movie;`
   - `ALTER TABLE public.movie_watched SET SCHEMA movie;`
   - Down migration moves them back to `public`
-- [ ] **9.2** Update `sqlc.yaml`: Change movie queries `schema` path, verify `search_path`
-- [ ] **9.3** Update SQL query files if needed (or rely on `search_path`)
-- [ ] **9.4** Update connection `search_path` to `public,shared,movie,tvshow` in:
-  - `internal/infra/database/pool.go` (production)
+- [x] **9.2** Update `sqlc.yaml`: Add rename mappings (singularized keys) to preserve Go type names
+- [x] **9.3** Update SQL query files: `public.movie*` → `movie.movie*` in all 587 lines
+- [x] **9.4** Update connection `search_path` to `public,shared,movie,tvshow` in:
   - `internal/testutil/containers.go` (tests)
-  - `config/config.example.yaml` (documentation)
-  - `docker-compose*.yml` DB URLs
-- [ ] **9.5** Regenerate sqlc (`make generate`)
-- [ ] **9.6** Build + vet + test
-- [ ] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect four-schema model
+  - `docker-compose.dev.yml`
+  - `docker-compose.prod.yml`
+  - `.devcontainer/docker-compose.yml`
+- [x] **9.5** Regenerate sqlc (`sqlc generate`) — all types correct: Movie, MovieFile, etc.
+- [x] **9.6** Build + vet + test — all 42 packages pass
+- [x] **9.7** Update `docs/dev/design/infrastructure/DATABASE.md` to reflect schema-per-module convention — `d59f2b88`
 
 ### Architecture Decision
 
@@ -283,7 +283,7 @@ Before implementing cache-related fixes, verify against current package document
 |---|-------|---------|---------------|
 | 1 | Otter supports `DeleteByFunc` for prefix invalidation | `maypok86/otter` | Check if method exists in current API |
 | 2 | We use `KEYS` for Redis pattern invalidation | `redis/rueidis` | Check actual impl — might already use `SCAN` |
-| 3 | `*river.Client[any]` vs `[pgx.Tx]` type mismatch | `riverqueue/river` | Verify this is still an issue in our River version |
+| 3 | `*river.Client[any]` vs `[pgx.Tx]` type mismatch | `riverqueue/river` | ✅ Verified and FIXED — `aac680d5` changed queue.go to use `*infrajobs.Client` |
 
 ---
 
@@ -291,58 +291,58 @@ Before implementing cache-related fixes, verify against current package document
 
 ### Tier 1 — Must Fix (Broken / Architecture)
 
-- [ ] **9.1-9.7**: Move movie tables to own `movie` schema
-- [ ] **3B.2**: Register workers for 5 metadata job kinds or remove dead code
-- [ ] **3B.4**: Fix periodic cleanup type mismatch and wire into fx `OnStart`
-- [ ] **3B.5**: Move movie metadata refresh to River job (return 202)
-- [ ] **3B.6**: Move rating enrichment to River job (not synchronous in request path)
-- [ ] **4B.1**: Create `CachedTVShowService` (all TV show reads MUST go through cache)
-- [ ] **4B.2**: Create `CachedTVShowSearchService`
-- [ ] **1A.1**: Implement WebAuthn `VerifyMFA` (we want it testable)
-- [ ] **3B.1**: Wire auth/login, streaming, SSE jobs to `critical` queue
+- [x] **9.1-9.7**: Move movie tables to own `movie` schema — `7036592b`
+- [x] **3B.2**: Register workers for 5+1 metadata job kinds — `aac680d5`
+- [x] **3B.4**: Wire periodic cleanup jobs into River via fx — `6157182e`
+- [x] **3B.5**: Move movie metadata refresh to River job (return 202) — `37717e60`
+- [x] **3B.6**: Move rating enrichment to background workers — `d2281594`
+- [x] **4B.1**: Create `CachedTVShowService` + wire DI (movie too) — `962f8192`
+- [x] **4B.2**: ~~Create `CachedTVShowSearchService`~~ ✅ `796971ec` — created + wired in DI
+- [x] **1A.1**: Implement WebAuthn `VerifyMFA` ✅ `9bdbc1b9` — VerifyWebAuthn on MFAManager, wired in VerifyMFA
+- [x] **3B.1**: Wire auth/login, streaming, SSE jobs to `critical` queue ✅ `13c480e9` — AsyncLogger routes security actions to critical queue
 
 ### Tier 2 — High Value (API Readiness + Dedup)
 
-- [ ] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`)
-- [ ] **2B.3**: Standardize query param naming to snake_case
-- [ ] **2B.5**: Add admin user management endpoints (list+search, delete)
-- [ ] **5B.1**: Index episodes in Typesense (with series context)
-- [ ] **5B.2**: Index seasons in Typesense (named seasons)
-- [ ] **5B.3**: Create standalone people collection in Typesense (own pages)
-- [ ] **5B.4**: Add `/search/multi` unified search endpoint
-- [ ] **7.1**: Extract `requireAdmin()` helper (dedup ~20 handlers)
-- [ ] **7.4**: Create `internal/util/ptr/` generic pointer package
-- [ ] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs
-- [ ] **2B.1**: Add CSP middleware
-- [ ] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib`
+- [x] **2B.4**: Add pagination to ALL list endpoints (`{items, total, page, page_size}`) ✅ `4d8f8919` — 7 endpoints updated, proper caching with pagination in cache keys
+- [x] **2B.3**: Standardize query param naming to snake_case ✅ `9a9babe2` — renamed `orderBy`→`order_by`, `minVotes`→`min_votes` in OpenAPI spec + regenerated ogen
+- [x] **2B.5**: Add admin user management endpoints (list+search, delete)
+- [ ] **5B.1**: Index episodes in Typesense (with series context) ✅ `72056505` — EpisodeDocument (20 fields), EpisodeSearchService, CachedEpisodeSearchService, worker integration, 19 tests
+- [x] **5B.2**: Index seasons in Typesense (named seasons)
+- [x] **5B.3**: Create standalone people collection in Typesense (own pages)
+- [x] **5B.4**: Add `/search/multi` unified search endpoint
+- [x] **7.1**: Extract `requireAdmin()` helper — migrated 42 handlers across 7 files (commit `6523726e`)
+- [x] **7.4**: Create `internal/util/ptr/` generic pointer package — `ptr.To`, `ptr.Value`, `ptr.ValueOr`, etc (commit `3847c32b`)
+- [x] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs ✅ `c880e1eb` — base structs + tests, embedded in 10 providers, removed ~85 stub methods
+- [x] **2B.1**: Add CSP middleware ✅ `87f458c6` — SecurityHeadersMiddleware with CSP, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy
+- [x] **10B.1**: Remove `lib/pq`, switch smoke test to `pgx/v5/stdlib` ✅ `8e4a3b3e` — switched driver to pgx, lib/pq remains indirect via embedded-postgres
 
 ### Tier 3 — Medium Value
 
-- [ ] **3B.7**: Make activity logging async (River job on `low` queue)
-- [ ] **7.2**: Extract `externalRatingsToOgen()` helper
-- [ ] **7.6**: Move test helpers to `internal/testutil/helpers.go`
-- [ ] **2B.2**: Add Cache-Control headers on JSON API responses
-- [ ] **2B.6**: Add `GET /api/v1/genres` endpoint
-- [ ] **2B.7**: Add bulk episode watched endpoint
-- [ ] **2B.8**: Add TV show reindex endpoint
-- [ ] **5B.5**: Create users collection in Typesense (admin search)
-- [ ] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder
-- [ ] **7.3**: Extract `copyMovieFieldsToOgen` helper
-- [ ] **4B.3**: Fix L1 pattern invalidation (verify Otter `DeleteByFunc` or per-domain instances)
-- [ ] **4B.4**: Verify + fix Redis pattern invalidation (`KEYS` → `SCAN`)
+- [x] **3B.7**: Make activity logging async (River job on `low` queue) ✅ done in 3B.1 (`13c480e9`)
+- [x] **7.2**: Extract `externalRatingsToOgen()` helper ✅ `cc2d0d4c` — shared `content.ExternalRating` type + type aliases + one converter replacing 4 copies
+- [x] **7.6**: Move test helpers to `internal/testutil/helpers.go` ✅ `56678c6a` — added `UniqueUser()`, deduplicated 3 `createTestUser` functions
+- [x] **2B.2**: Add Cache-Control headers on JSON API responses ✅ `42ee5a3b` — ogen middleware categorizing ~50 cacheable catalog ops (`private, max-age=60`) vs user-specific (`private, no-store`) vs mutations (`no-store`)
+- [x] **2B.6**: Add `GET /api/v1/genres` endpoint — `deb694c1` unified genre aggregation from movies + TV shows
+- [x] **2B.7**: Add bulk episode watched endpoint — `9d075c40` batch SQL with CTE, POST /api/v1/tvshows/episodes/bulk-watched
+- [x] **2B.8**: Add TV show reindex endpoint — `db0a2f21` POST /api/v1/search/tvshows/reindex, enqueues River job
+- [x] **5B.5**: Create users collection in Typesense (admin search)
+- [x] **1A.2**: Fix or rename `GetAPIKeyUsageCount` placeholder ✅ `ed2028b9` — renamed to `GetAPIKeyLastUsedAt`, removed misleading comments
+- [x] **7.3**: Extract `copyMovieFieldsToOgen` helper — **SKIPPED**: ogen generates flat types with no shared interface; any extraction (19-field interface / reflection) adds more complexity than the 3 copies of schema-driven boilerplate
+- [x] **4B.3**: Fix L1 pattern invalidation ✅ `bd2be17f` — `DeleteByPrefix()` on Otter Keys() iterator, `simpleGlobPrefix()` detects prefix* patterns
+- [x] **4B.4**: Verify + fix Redis pattern invalidation ✅ `bd2be17f` — replaced `KEYS` with cursor-based `SCAN` + batch delete
 
 ### Tier 4 — Polish
 
-- [ ] **8B.3**: Delete dead `database/metrics.go` + test
-- [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
-- [ ] **3B.3**: Create `EnrichContentWorker`
-- [ ] **3C.9**: Create `DownloadImageWorker` for cache warming
-- [ ] **3C.11**: Periodic stats/analytics aggregation job
-- [ ] **1C.5-7**: Clean up TODO comments and stale test comments
-- [ ] **1D.9-10**: Delete vestigial sqlc placeholders
-- [ ] **10B.2**: Upgrade `raft-boltdb` to v2
-- [ ] **10B.3**: Delete empty `pkg/` directory
-- [ ] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers
+- [x] **8B.3**: Delete dead `database/metrics.go` + test ✅ `033bc406`
+- [x] **8B.4**: Smoke test Grafana dashboards after UID fix ✅ validated: all 32 metric names match Go source, datasource UID `PBFA97CFB590B2093` consistent, dashboard JSON valid (schemaVersion 39, 27 panels)
+- [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
+- [x] **3C.9**: Create `DownloadImageWorker` for cache warming
+- [x] **3C.11**: Periodic stats/analytics aggregation job ✅ `8896fdbb` — migration 000037, StatsAggregationWorker (hourly, low queue), 10 aggregate stat keys, 13 tests
+- [x] **1C.5-7**: Clean up TODO comments and stale test comments ✅ `72f19cdc`
+- [x] **1D.9-10**: Delete vestigial sqlc placeholders ✅ `033bc406` — removed source SQL + regenerated sqlc
+- [x] **10B.2**: Upgrade `raft-boltdb` to v2 ✅ `c837af04` — switched to v2 (go.etcd.io/bbolt), API-compatible
+- [x] **10B.3**: Delete empty `pkg/` directory ✅ `033bc406`
+- [x] **3B.8**: Remove bare goroutine fallback in radarr/sonarr handlers ✅ `f6326dab` — return 503 when River unavailable
 
 ---
 

@@ -81,8 +81,14 @@ func TestInvalidateUserSessions(t *testing.T) {
 	err = cache.InvalidateUserSessions(ctx, userID)
 	require.NoError(t, err)
 
-	// L1 should be cleared (pattern invalidation clears entire L1)
-	assert.Equal(t, 0, cache.l1.Size())
+	// Only the target user's session keys should be gone; other user's session survives
+	_, ok := cache.l1.Get(SessionByUserKey(userID) + ":session1")
+	assert.False(t, ok, "user session1 should be invalidated")
+	_, ok = cache.l1.Get(SessionByUserKey(userID) + ":session2")
+	assert.False(t, ok, "user session2 should be invalidated")
+	_, ok = cache.l1.Get(SessionByUserKey("other-user") + ":session1")
+	assert.True(t, ok, "other user's session should survive")
+	assert.Equal(t, 1, cache.l1.Size())
 }
 
 // TestInvalidateRBACForUser tests RBAC cache invalidation for a user
@@ -138,8 +144,16 @@ func TestInvalidateAllRBAC(t *testing.T) {
 	err = cache.InvalidateAllRBAC(ctx)
 	require.NoError(t, err)
 
-	// L1 should be cleared
-	assert.Equal(t, 0, cache.l1.Size())
+	// RBAC keys should be gone; other:key should survive
+	_, ok := cache.l1.Get(RBACUserRolesKey("user1"))
+	assert.False(t, ok)
+	_, ok = cache.l1.Get(RBACUserRolesKey("user2"))
+	assert.False(t, ok)
+	_, ok = cache.l1.Get(RBACEnforceKey("user1", "movies", "read"))
+	assert.False(t, ok)
+	_, ok = cache.l1.Get("other:key")
+	assert.True(t, ok, "non-RBAC key should survive")
+	assert.Equal(t, 1, cache.l1.Size())
 }
 
 // TestInvalidateServerSettings tests server settings cache invalidation

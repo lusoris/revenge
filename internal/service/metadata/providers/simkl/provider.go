@@ -21,6 +21,8 @@ var (
 
 // Provider implements the metadata provider interface for Simkl.
 type Provider struct {
+	metadata.MovieProviderBase
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -81,18 +83,8 @@ func (p *Provider) GetMovieCredits(_ context.Context, _ string) (*metadata.Credi
 	return nil, metadata.ErrNotFound
 }
 
-func (p *Provider) GetMovieImages(_ context.Context, _ string) (*metadata.Images, error) {
-	// Simkl images are available directly on the metadata objects
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	movie, err := p.client.GetMovie(ctx, id)
@@ -102,13 +94,7 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	return mapExternalIDs(movie.IDs), nil
 }
 
-func (p *Provider) GetSimilarMovies(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieRecommendations(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	return nil, 0, metadata.ErrNotFound
-}
 
 // --- TVShowProvider ---
 
@@ -167,21 +153,9 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	return md, nil
 }
 
-func (p *Provider) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowImages(_ context.Context, _ string) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	show, err := p.client.GetShow(ctx, id)
@@ -225,22 +199,7 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	return sm, nil
 }
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisode(_ context.Context, _ string, _, _ int, _ string) (*metadata.EpisodeMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}

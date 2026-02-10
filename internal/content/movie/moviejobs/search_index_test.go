@@ -51,18 +51,30 @@ func (m *mockMovieRepo) ListMovieGenres(ctx context.Context, movieID uuid.UUID) 
 	return nil, nil
 }
 
-func (m *mockMovieRepo) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]movie.MovieCredit, error) {
+func (m *mockMovieRepo) ListMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]movie.MovieCredit, error) {
 	if m.listMovieCastFunc != nil {
 		return m.listMovieCastFunc(ctx, movieID)
 	}
 	return nil, nil
 }
 
-func (m *mockMovieRepo) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]movie.MovieCredit, error) {
+func (m *mockMovieRepo) CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	return 0, nil
+}
+
+func (m *mockMovieRepo) ListMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]movie.MovieCredit, error) {
 	if m.listMovieCrewFunc != nil {
 		return m.listMovieCrewFunc(ctx, movieID)
 	}
 	return nil, nil
+}
+
+func (m *mockMovieRepo) CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	return 0, nil
+}
+
+func (m *mockMovieRepo) CountTopRated(ctx context.Context, minVotes int32) (int64, error) {
+	return 0, nil
 }
 
 func (m *mockMovieRepo) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID) ([]movie.MovieFile, error) {

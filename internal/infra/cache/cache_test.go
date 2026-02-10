@@ -194,12 +194,18 @@ func TestCache_Invalidate(t *testing.T) {
 	// Verify L1 has entries
 	assert.Greater(t, cache.l1.Size(), 0)
 
-	// Invalidate pattern (clears entire L1)
+	// Invalidate pattern (only matching keys removed from L1)
 	err = cache.Invalidate(ctx, "user:*")
 	require.NoError(t, err)
 
-	// L1 should be empty
-	assert.Equal(t, 0, cache.l1.Size())
+	// Only user:* keys should be gone, session:abc should survive
+	_, ok := cache.l1.Get("user:1")
+	assert.False(t, ok, "user:1 should be invalidated")
+	_, ok = cache.l1.Get("user:2")
+	assert.False(t, ok, "user:2 should be invalidated")
+	_, ok = cache.l1.Get("session:abc")
+	assert.True(t, ok, "session:abc should survive prefix invalidation")
+	assert.Equal(t, 1, cache.l1.Size())
 }
 
 func TestCache_GetJSON(t *testing.T) {

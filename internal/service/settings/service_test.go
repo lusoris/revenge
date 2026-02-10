@@ -12,6 +12,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 func TestMain(m *testing.M) {
@@ -28,22 +29,10 @@ func setupTestService(t *testing.T) (Service, testutil.DB) {
 	return svc, testDB
 }
 
-// createTestUser creates a user for FK constraints
+// createTestUser creates a user for FK constraints.
 func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	t.Helper()
-	queries := db.New(testDB.Pool())
-	unique := uuid.Must(uuid.NewV7()).String()
-	user, err := queries.CreateUser(context.Background(), db.CreateUserParams{
-		Username:     "testuser_" + unique,
-		Email:        "test_" + unique + "@example.com",
-		PasswordHash: "hash",
-	})
-	require.NoError(t, err)
-	return user.ID
-}
-
-func ptr[T any](v T) *T {
-	return &v
+	return testutil.CreateUser(t, testDB.Pool(), testutil.UniqueUser()).ID
 }
 
 // ============================================================================
@@ -128,7 +117,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err := repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting1",
 		Value:     []byte(`"value1"`),
-		Category:  ptr("cat1"),
+		Category:  ptr.To("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -136,7 +125,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err = repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting2",
 		Value:     []byte(`"value2"`),
-		Category:  ptr("cat1"),
+		Category:  ptr.To("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -239,7 +228,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user1",
 		Value:    []byte(`"value1"`),
-		Category: ptr("cat1"),
+		Category: ptr.To("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)
@@ -247,7 +236,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user2",
 		Value:    []byte(`"value2"`),
-		Category: ptr("cat1"),
+		Category: ptr.To("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)

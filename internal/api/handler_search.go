@@ -3,13 +3,16 @@ package api
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
+
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
-	"log/slog"
 )
 
 // SearchLibraryMovies searches movies in the library using Typesense.
@@ -221,6 +224,28 @@ func (h *Handler) ReindexSearch(ctx context.Context) (ogen.ReindexSearchRes, err
 	}, nil
 }
 
+// ReindexTVShowSearch triggers a full reindex of all TV shows via River job queue.
+func (h *Handler) ReindexTVShowSearch(ctx context.Context) (ogen.ReindexTVShowSearchRes, error) {
+	if h.riverClient == nil {
+		return nil, fmt.Errorf("job queue not available")
+	}
+
+	result, err := h.riverClient.Insert(ctx, tvshowjobs.SearchIndexArgs{
+		FullReindex: true,
+	}, nil)
+	if err != nil {
+		h.logger.Error("failed to enqueue TV show reindex job", slog.Any("error", err))
+		return nil, fmt.Errorf("failed to enqueue TV show reindex job: %w", err)
+	}
+
+	h.logger.Info("TV show reindex job enqueued", slog.Int64("job_id", result.Job.ID))
+
+	return &ogen.ReindexTVShowSearchAccepted{
+		Message: ogen.NewOptString("TV show reindex job enqueued"),
+		JobID:   ogen.NewOptUUID(uuid.Must(uuid.NewV7())),
+	}, nil
+}
+
 // SearchLibraryTVShows searches TV shows in the library using Typesense.
 func (h *Handler) SearchLibraryTVShows(ctx context.Context, params ogen.SearchLibraryTVShowsParams) (ogen.SearchLibraryTVShowsRes, error) {
 	if h.tvshowSearchService == nil {
@@ -408,6 +433,314 @@ func (h *Handler) GetTVShowSearchFacets(ctx context.Context) (ogen.GetTVShowSear
 }
 
 // Helper functions
+
+// SearchMulti searches across all collections in parallel and returns merged results.
+func (h *Handler) SearchMulti(ctx context.Context, params ogen.SearchMultiParams) (ogen.SearchMultiRes, error) {
+	limit := 5
+	if params.Limit.Set {
+		limit = params.Limit.Value
+	}
+
+	response := &ogen.MultiSearchResults{}
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+
+	// Search movies
+	if h.searchService != nil && h.searchService.IsEnabled() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result, err := h.searchService.Search(ctx, search.SearchParams{
+				Query:   params.Q,
+				Page:    1,
+				PerPage: limit,
+				SortBy:  "_text_match:desc",
+			})
+			if err != nil {
+				h.logger.Warn("multi-search: movies unavailable", slog.Any("error", err))
+				return
+			}
+			mu.Lock()
+			response.Movies = ogen.NewOptSearchResults(h.convertMovieResults(result))
+			mu.Unlock()
+		}()
+	}
+
+	// Search TV shows
+	if h.tvshowSearchService != nil && h.tvshowSearchService.IsEnabled() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result, err := h.tvshowSearchService.SearchSeries(ctx, search.TVShowSearchParams{
+				Query:   params.Q,
+				Page:    1,
+				PerPage: limit,
+				SortBy:  "_text_match:desc",
+			})
+			if err != nil {
+				h.logger.Warn("multi-search: tvshows unavailable", slog.Any("error", err))
+				return
+			}
+			mu.Lock()
+			response.Tvshows = ogen.NewOptTVShowSearchResults(h.convertTVShowResults(result))
+			mu.Unlock()
+		}()
+	}
+
+	// Search episodes
+	if h.episodeSearchService != nil && h.episodeSearchService.IsEnabled() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result, err := h.episodeSearchService.SearchEpisodes(ctx, search.EpisodeSearchParams{
+				Query:   params.Q,
+				Page:    1,
+				PerPage: limit,
+				SortBy:  "_text_match:desc",
+			})
+			if err != nil {
+				h.logger.Warn("multi-search: episodes unavailable", slog.Any("error", err))
+				return
+			}
+			mu.Lock()
+			response.Episodes = ogen.NewOptEpisodeSearchResults(h.convertEpisodeResults(result))
+			mu.Unlock()
+		}()
+	}
+
+	// Search seasons
+	if h.seasonSearchService != nil && h.seasonSearchService.IsEnabled() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result, err := h.seasonSearchService.SearchSeasons(ctx, search.SeasonSearchParams{
+				Query:   params.Q,
+				Page:    1,
+				PerPage: limit,
+				SortBy:  "_text_match:desc",
+			})
+			if err != nil {
+				h.logger.Warn("multi-search: seasons unavailable", slog.Any("error", err))
+				return
+			}
+			mu.Lock()
+			response.Seasons = ogen.NewOptSeasonSearchResults(h.convertSeasonResults(result))
+			mu.Unlock()
+		}()
+	}
+
+	// Search people
+	if h.personSearchService != nil && h.personSearchService.IsEnabled() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result, err := h.personSearchService.SearchPersons(ctx, search.PersonSearchParams{
+				Query:   params.Q,
+				Page:    1,
+				PerPage: limit,
+				SortBy:  "_text_match:desc",
+			})
+			if err != nil {
+				h.logger.Warn("multi-search: people unavailable", slog.Any("error", err))
+				return
+			}
+			mu.Lock()
+			response.People = ogen.NewOptPersonSearchResults(h.convertPersonResults(result))
+			mu.Unlock()
+		}()
+	}
+
+	wg.Wait()
+
+	return response, nil
+}
+
+// convertMovieResults converts movie search results to API response type.
+func (h *Handler) convertMovieResults(result *search.SearchResult) ogen.SearchResults {
+	if result == nil {
+		return ogen.SearchResults{Hits: []ogen.SearchHit{}}
+	}
+
+	resp := ogen.SearchResults{
+		TotalHits:    ogen.NewOptInt(result.TotalHits),
+		SearchTimeMs: ogen.NewOptInt(int(result.SearchTime.Milliseconds())),
+		Hits:         make([]ogen.SearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		doc := hit.Document
+		apiDoc := ogen.SearchDocument{
+			ID:            ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:        ogen.NewOptInt(int(doc.TMDbID)),
+			Title:         ogen.NewOptString(doc.Title),
+			Overview:      ogen.NewOptString(doc.Overview),
+			PosterPath:    ogen.NewOptString(doc.PosterPath),
+			VoteAverage:   ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			HasFile:       ogen.NewOptBool(doc.HasFile),
+			Year:          ogen.NewOptInt(int(doc.Year)),
+		}
+		if doc.ReleaseDate > 0 {
+			apiDoc.ReleaseDate = ogen.NewOptDate(time.Unix(doc.ReleaseDate, 0))
+		}
+		resp.Hits = append(resp.Hits, ogen.SearchHit{
+			Document: ogen.NewOptSearchDocument(apiDoc),
+			Score:    ogen.NewOptFloat32(float32(hit.Score)),
+		})
+	}
+
+	return resp
+}
+
+// convertTVShowResults converts TV show search results to API response type.
+func (h *Handler) convertTVShowResults(result *search.TVShowSearchResult) ogen.TVShowSearchResults {
+	if result == nil {
+		return ogen.TVShowSearchResults{Hits: []ogen.TVShowSearchHit{}}
+	}
+
+	resp := ogen.TVShowSearchResults{
+		TotalHits:    ogen.NewOptInt(result.TotalHits),
+		SearchTimeMs: ogen.NewOptInt(int(result.SearchTime.Milliseconds())),
+		Hits:         make([]ogen.TVShowSearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		doc := hit.Document
+		apiDoc := ogen.TVShowSearchDocument{
+			ID:           ogen.NewOptUUID(parseUUID(doc.ID)),
+			TmdbID:       ogen.NewOptInt(int(doc.TMDbID)),
+			Title:        ogen.NewOptString(doc.Title),
+			Overview:     ogen.NewOptString(doc.Overview),
+			PosterPath:   ogen.NewOptString(doc.PosterPath),
+			VoteAverage:  ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			HasFile:      ogen.NewOptBool(doc.HasFile),
+			Year:         ogen.NewOptInt(int(doc.Year)),
+		}
+		if doc.FirstAirDate > 0 {
+			apiDoc.FirstAirDate = ogen.NewOptDate(time.Unix(doc.FirstAirDate, 0))
+		}
+		resp.Hits = append(resp.Hits, ogen.TVShowSearchHit{
+			Document: ogen.NewOptTVShowSearchDocument(apiDoc),
+			Score:    ogen.NewOptFloat32(float32(hit.Score)),
+		})
+	}
+
+	return resp
+}
+
+// convertEpisodeResults converts episode search results to API response type.
+func (h *Handler) convertEpisodeResults(result *search.EpisodeSearchResult) ogen.EpisodeSearchResults {
+	if result == nil {
+		return ogen.EpisodeSearchResults{Hits: []ogen.EpisodeSearchHit{}}
+	}
+
+	resp := ogen.EpisodeSearchResults{
+		TotalHits: ogen.NewOptInt(result.TotalHits),
+		Hits:      make([]ogen.EpisodeSearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		doc := hit.Document
+		apiDoc := ogen.EpisodeSearchDocument{
+			ID:               ogen.NewOptUUID(parseUUID(doc.ID)),
+			SeriesID:         ogen.NewOptUUID(parseUUID(doc.SeriesID)),
+			SeasonNumber:     ogen.NewOptInt(int(doc.SeasonNumber)),
+			EpisodeNumber:    ogen.NewOptInt(int(doc.EpisodeNumber)),
+			Title:            ogen.NewOptString(doc.Title),
+			Overview:         ogen.NewOptString(doc.Overview),
+			AirDate:          ogen.NewOptInt(int(doc.AirDate)),
+			Runtime:          ogen.NewOptInt(int(doc.Runtime)),
+			VoteAverage:      ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			StillPath:        ogen.NewOptString(doc.StillPath),
+			HasFile:          ogen.NewOptBool(doc.HasFile),
+			SeriesTitle:      ogen.NewOptString(doc.SeriesTitle),
+			SeriesPosterPath: ogen.NewOptString(doc.SeriesPosterPath),
+		}
+		resp.Hits = append(resp.Hits, ogen.EpisodeSearchHit{
+			Document: ogen.NewOptEpisodeSearchDocument(apiDoc),
+			Score:    ogen.NewOptFloat32(float32(hit.Score)),
+		})
+	}
+
+	return resp
+}
+
+// convertSeasonResults converts season search results to API response type.
+func (h *Handler) convertSeasonResults(result *search.SeasonSearchResult) ogen.SeasonSearchResults {
+	if result == nil {
+		return ogen.SeasonSearchResults{Hits: []ogen.SeasonSearchHit{}}
+	}
+
+	resp := ogen.SeasonSearchResults{
+		TotalHits: ogen.NewOptInt(result.TotalHits),
+		Hits:      make([]ogen.SeasonSearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		doc := hit.Document
+		apiDoc := ogen.SeasonSearchDocument{
+			ID:               ogen.NewOptUUID(parseUUID(doc.ID)),
+			SeriesID:         ogen.NewOptUUID(parseUUID(doc.SeriesID)),
+			SeasonNumber:     ogen.NewOptInt(int(doc.SeasonNumber)),
+			Name:             ogen.NewOptString(doc.Name),
+			Overview:         ogen.NewOptString(doc.Overview),
+			AirDate:          ogen.NewOptInt(int(doc.AirDate)),
+			EpisodeCount:     ogen.NewOptInt(int(doc.EpisodeCount)),
+			VoteAverage:      ogen.NewOptFloat32(float32(doc.VoteAverage)),
+			PosterPath:       ogen.NewOptString(doc.PosterPath),
+			SeriesTitle:      ogen.NewOptString(doc.SeriesTitle),
+			SeriesPosterPath: ogen.NewOptString(doc.SeriesPosterPath),
+		}
+		resp.Hits = append(resp.Hits, ogen.SeasonSearchHit{
+			Document: ogen.NewOptSeasonSearchDocument(apiDoc),
+			Score:    ogen.NewOptFloat32(float32(hit.Score)),
+		})
+	}
+
+	return resp
+}
+
+// convertPersonResults converts person search results to API response type.
+func (h *Handler) convertPersonResults(result *search.PersonSearchResult) ogen.PersonSearchResults {
+	if result == nil {
+		return ogen.PersonSearchResults{Hits: []ogen.PersonSearchHit{}}
+	}
+
+	resp := ogen.PersonSearchResults{
+		TotalHits: ogen.NewOptInt(result.TotalHits),
+		Hits:      make([]ogen.PersonSearchHit, 0, len(result.Hits)),
+	}
+
+	for _, hit := range result.Hits {
+		doc := hit.Document
+		apiDoc := ogen.PersonSearchDocument{
+			ID:           ogen.NewOptString(doc.ID),
+			TmdbID:       ogen.NewOptInt(int(doc.TMDbID)),
+			Name:         ogen.NewOptString(doc.Name),
+			ProfilePath:  ogen.NewOptString(doc.ProfilePath),
+			MovieCount:   ogen.NewOptInt(int(doc.MovieCount)),
+			TvshowCount:  ogen.NewOptInt(int(doc.TVShowCount)),
+			TotalCredits: ogen.NewOptInt(int(doc.TotalCredits)),
+		}
+		if len(doc.KnownFor) > 0 {
+			apiDoc.KnownFor = make([]string, len(doc.KnownFor))
+			copy(apiDoc.KnownFor, doc.KnownFor)
+		}
+		if len(doc.Characters) > 0 {
+			apiDoc.Characters = make([]string, len(doc.Characters))
+			copy(apiDoc.Characters, doc.Characters)
+		}
+		if len(doc.Departments) > 0 {
+			apiDoc.Departments = make([]string, len(doc.Departments))
+			copy(apiDoc.Departments, doc.Departments)
+		}
+		resp.Hits = append(resp.Hits, ogen.PersonSearchHit{
+			Document: ogen.NewOptPersonSearchDocument(apiDoc),
+			Score:    ogen.NewOptFloat32(float32(hit.Score)),
+		})
+	}
+
+	return resp
+}
 
 func parseUUID(s string) uuid.UUID {
 	id, err := uuid.Parse(s)

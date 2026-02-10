@@ -13,6 +13,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 func TestMain(m *testing.M) {
@@ -27,11 +28,6 @@ func setupTestRepo(t *testing.T) (Repository, testutil.DB) {
 	queries := db.New(testDB.Pool())
 	repo := NewPostgresRepository(queries)
 	return repo, testDB
-}
-
-// Helper function
-func ptr[T any](v T) *T {
-	return &v
 }
 
 // contains checks if s contains any of the substrings
@@ -64,11 +60,11 @@ func TestPostgresRepository_CreateUser(t *testing.T) {
 				Username:     "testuser",
 				Email:        "test@example.com",
 				PasswordHash: "hashedpassword123",
-				DisplayName:  ptr("Test User"),
-				Timezone:     ptr("Europe/Berlin"),
-				QarEnabled:   ptr(false),
-				IsActive:     ptr(true),
-				IsAdmin:      ptr(false),
+				DisplayName:  ptr.To("Test User"),
+				Timezone:     ptr.To("Europe/Berlin"),
+				QarEnabled:   ptr.To(false),
+				IsActive:     ptr.To(true),
+				IsAdmin:      ptr.To(false),
 			},
 			wantErr: false,
 		},
@@ -87,8 +83,8 @@ func TestPostgresRepository_CreateUser(t *testing.T) {
 				Username:     "adminuser",
 				Email:        "admin@example.com",
 				PasswordHash: "adminhash",
-				IsAdmin:      ptr(true),
-				IsActive:     ptr(true),
+				IsAdmin:      ptr.To(true),
+				IsActive:     ptr.To(true),
 			},
 			wantErr: false,
 		},
@@ -213,13 +209,13 @@ func TestPostgresRepository_UpdateUser(t *testing.T) {
 		Username:     "update_user",
 		Email:        "update@example.com",
 		PasswordHash: "hash",
-		IsActive:     ptr(true),
+		IsActive:     ptr.To(true),
 	})
 	require.NoError(t, err)
 
 	t.Run("update display name", func(t *testing.T) {
 		updated, err := repo.UpdateUser(ctx, created.ID, UpdateUserParams{
-			DisplayName: ptr("New Display Name"),
+			DisplayName: ptr.To("New Display Name"),
 		})
 		require.NoError(t, err)
 		require.NotNil(t, updated.DisplayName)
@@ -228,9 +224,9 @@ func TestPostgresRepository_UpdateUser(t *testing.T) {
 
 	t.Run("update multiple fields", func(t *testing.T) {
 		updated, err := repo.UpdateUser(ctx, created.ID, UpdateUserParams{
-			Email:      ptr("newemail@example.com"),
-			Timezone:   ptr("America/New_York"),
-			QarEnabled: ptr(true),
+			Email:      ptr.To("newemail@example.com"),
+			Timezone:   ptr.To("America/New_York"),
+			QarEnabled: ptr.To(true),
 		})
 		require.NoError(t, err)
 		assert.Equal(t, "newemail@example.com", updated.Email)
@@ -242,7 +238,7 @@ func TestPostgresRepository_UpdateUser(t *testing.T) {
 
 	t.Run("update non-existent user", func(t *testing.T) {
 		_, err := repo.UpdateUser(ctx, uuid.Must(uuid.NewV7()), UpdateUserParams{
-			DisplayName: ptr("Test"),
+			DisplayName: ptr.To("Test"),
 		})
 		require.Error(t, err)
 		assert.True(t, contains(err.Error(), "not found", "no rows"))
@@ -378,8 +374,8 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 		Username:     "inactive_regular",
 		Email:        "inactive@example.com",
 		PasswordHash: "hash",
-		IsAdmin:      ptr(false),
-		IsActive:     ptr(false),
+		IsAdmin:      ptr.To(false),
+		IsActive:     ptr.To(false),
 	})
 	require.NoError(t, err)
 
@@ -387,8 +383,8 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 		Username:     "active_regular",
 		Email:        "active@example.com",
 		PasswordHash: "hash",
-		IsAdmin:      ptr(false),
-		IsActive:     ptr(true),
+		IsAdmin:      ptr.To(false),
+		IsActive:     ptr.To(true),
 	})
 	require.NoError(t, err)
 
@@ -396,8 +392,8 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 		Username:     "active_admin",
 		Email:        "admin@example.com",
 		PasswordHash: "hash",
-		IsAdmin:      ptr(true),
-		IsActive:     ptr(true),
+		IsAdmin:      ptr.To(true),
+		IsActive:     ptr.To(true),
 	})
 	require.NoError(t, err)
 
@@ -423,7 +419,7 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 
 	t.Run("filter by active", func(t *testing.T) {
 		users, count, err := repo.ListUsers(ctx, UserFilters{
-			IsActive: ptr(true),
+			IsActive: ptr.To(true),
 			Limit:    100,
 			Offset:   0,
 		})
@@ -440,7 +436,7 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 
 	t.Run("filter by inactive", func(t *testing.T) {
 		users, count, err := repo.ListUsers(ctx, UserFilters{
-			IsActive: ptr(false),
+			IsActive: ptr.To(false),
 			Limit:    100,
 			Offset:   0,
 		})
@@ -451,7 +447,7 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 
 	t.Run("filter by admin", func(t *testing.T) {
 		users, count, err := repo.ListUsers(ctx, UserFilters{
-			IsAdmin: ptr(true),
+			IsAdmin: ptr.To(true),
 			Limit:   100,
 			Offset:  0,
 		})
@@ -468,8 +464,8 @@ func TestPostgresRepository_ListUsers(t *testing.T) {
 
 	t.Run("filter by both active and admin", func(t *testing.T) {
 		users, count, err := repo.ListUsers(ctx, UserFilters{
-			IsActive: ptr(true),
-			IsAdmin:  ptr(true),
+			IsActive: ptr.To(true),
+			IsAdmin:  ptr.To(true),
 			Limit:    100,
 			Offset:   0,
 		})
@@ -499,11 +495,11 @@ func TestPostgresRepository_UpsertUserPreferences(t *testing.T) {
 	t.Run("create preferences", func(t *testing.T) {
 		prefs, err := repo.UpsertUserPreferences(ctx, UpsertPreferencesParams{
 			UserID:            user.ID,
-			Theme:             ptr("dark"),
-			DisplayLanguage:   ptr("de"),
-			ShowAdultContent:  ptr(false),
-			AutoPlayVideos:    ptr(true),
-			ProfileVisibility: ptr("private"),
+			Theme:             ptr.To("dark"),
+			DisplayLanguage:   ptr.To("de"),
+			ShowAdultContent:  ptr.To(false),
+			AutoPlayVideos:    ptr.To(true),
+			ProfileVisibility: ptr.To("private"),
 		})
 		require.NoError(t, err)
 		assert.Equal(t, user.ID, prefs.UserID)
@@ -516,7 +512,7 @@ func TestPostgresRepository_UpsertUserPreferences(t *testing.T) {
 	t.Run("update preferences", func(t *testing.T) {
 		prefs, err := repo.UpsertUserPreferences(ctx, UpsertPreferencesParams{
 			UserID: user.ID,
-			Theme:  ptr("light"),
+			Theme:  ptr.To("light"),
 		})
 		require.NoError(t, err)
 		require.NotNil(t, prefs.Theme)
@@ -539,7 +535,7 @@ func TestPostgresRepository_GetUserPreferences(t *testing.T) {
 
 	_, err = repo.UpsertUserPreferences(ctx, UpsertPreferencesParams{
 		UserID: user.ID,
-		Theme:  ptr("dark"),
+		Theme:  ptr.To("dark"),
 	})
 	require.NoError(t, err)
 
@@ -571,7 +567,7 @@ func TestPostgresRepository_DeleteUserPreferences(t *testing.T) {
 
 	_, err = repo.UpsertUserPreferences(ctx, UpsertPreferencesParams{
 		UserID: user.ID,
-		Theme:  ptr("dark"),
+		Theme:  ptr.To("dark"),
 	})
 	require.NoError(t, err)
 

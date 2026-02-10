@@ -814,7 +814,7 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: orderBy
+        - name: order_by
           in: query
           description: Sort order (title, year, added, rating)
           schema:
@@ -922,9 +922,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/MovieListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -941,7 +939,7 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: minVotes
+        - name: min_votes
           in: query
           description: Minimum number of votes required
           schema:
@@ -967,9 +965,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+                $ref: '#/components/schemas/MovieListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -1151,15 +1147,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Movie cast
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovieCredit'
+                $ref: '#/components/schemas/MovieCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1185,15 +1192,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Movie crew
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovieCredit'
+                $ref: '#/components/schemas/MovieCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1642,15 +1660,19 @@ paths:
             default: 20
             minimum: 1
             maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Recently added TV shows
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeries'
+                $ref: '#/components/schemas/TVSeriesListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -1909,15 +1931,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: TV show cast
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeriesCredit'
+                $ref: '#/components/schemas/TVSeriesCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1943,15 +1976,26 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: TV show crew
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TVSeriesCredit'
+                $ref: '#/components/schemas/TVSeriesCreditListResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2993,6 +3037,37 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/tvshows/episodes/bulk-watched:
+    post:
+      summary: Mark multiple episodes as watched
+      description: |
+        Mark multiple episodes as fully watched in a single request.
+        Uses episode runtimes for duration; defaults to 45 minutes when unavailable.
+        Episodes that do not exist are silently skipped.
+      operationId: markTVEpisodesBulkWatched
+      tags:
+        - tvshows
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkEpisodesWatchedRequest'
+      responses:
+        '200':
+          description: Episodes marked as watched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEpisodesWatchedResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Metadata endpoints (external lookup)
   /api/v1/metadata/search/movie:
     get:
@@ -3553,6 +3628,40 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/search/tvshows/reindex:
+    post:
+      summary: Reindex all TV shows
+      description: |
+        Triggers a full reindex of all TV shows in the search engine.
+        This is an admin-only operation and may take a while for large libraries.
+      operationId: reindexTVShowSearch
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      responses:
+        '202':
+          description: Reindex started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "TV show reindex job started"
+                  job_id:
+                    type: string
+                    format: uuid
+                    description: Job ID for tracking progress
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
   /api/v1/search/tvshows:
     get:
       summary: Search TV shows in library
@@ -3690,6 +3799,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TVShowSearchFacets'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/search/multi:
+    get:
+      summary: Search across all collections
+      description: |
+        Unified search endpoint that queries movies, TV shows, episodes, seasons, and people
+        in parallel, returning the top results from each collection. Designed for global search bars.
+      operationId: searchMulti
+      tags:
+        - search
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          description: Search query
+          example: "Breaking Bad"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 5
+          description: Maximum results per collection
+      responses:
+        '200':
+          description: Multi-collection search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiSearchResults'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         default:
@@ -4905,6 +5059,93 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  # Admin User Management endpoints
+  /api/v1/admin/users:
+    get:
+      operationId: adminListUsers
+      summary: List and search users (admin)
+      description: List all users with optional text search and filters. Searches across username, email, and display name.
+      tags:
+        - Users Admin
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: Text search across username, email, and display name
+          schema:
+            type: string
+            maxLength: 200
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: is_admin
+          in: query
+          description: Filter by admin status
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of results (default 50, max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Users retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /api/v1/admin/users/{userId}:
+    delete:
+      operationId: adminDeleteUser
+      summary: Delete a user (admin)
+      description: Soft-deletes a user account. The user will no longer be able to log in.
+      tags:
+        - Users Admin
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User ID to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
   # Admin OIDC endpoints
   /api/v1/admin/oidc/providers:
     get:
@@ -5402,6 +5643,36 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        default:
+          $ref: '#/components/responses/Error'
+
+  # ============================================================================
+  # Genre Endpoints
+  # ============================================================================
+
+  /api/v1/genres:
+    get:
+      summary: List all genres
+      description: >
+        Returns all distinct genres across movies and TV shows with per-content-type item counts.
+        Useful for building genre filter UIs. Genres are identified by their TMDb ID and name.
+      operationId: listGenres
+      tags:
+        - Libraries
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: All genres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genre'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         default:
           $ref: '#/components/responses/Error'
 
@@ -6548,6 +6819,33 @@ components:
           type: integer
           format: int64
           description: Total number of movies matching the filters
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
+
+    MovieCreditListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieCredit'
+        total:
+          type: integer
+          format: int64
+          description: Total number of credits
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
 
     Movie:
       type: object
@@ -6829,6 +7127,32 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    Genre:
+      type: object
+      description: A distinct genre with per-content-type item counts.
+      required:
+        - tmdb_genre_id
+        - name
+        - movie_count
+        - tvshow_count
+      properties:
+        tmdb_genre_id:
+          type: integer
+          description: TMDb genre ID
+          example: 28
+        name:
+          type: string
+          description: Genre name
+          example: "Action"
+        movie_count:
+          type: integer
+          format: int64
+          description: Number of movies with this genre
+        tvshow_count:
+          type: integer
+          format: int64
+          description: Number of TV shows with this genre
 
     MovieGenre:
       type: object
@@ -7141,6 +7465,48 @@ components:
           items:
             type: string
           description: List of capabilities (movie, tvshow, person, image, collection)
+
+    TVSeriesListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVSeries'
+        total:
+          type: integer
+          format: int64
+          description: Total number of TV series matching the filters
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
+
+    TVSeriesCreditListResponse:
+      type: object
+      required:
+        - items
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TVSeriesCredit'
+        total:
+          type: integer
+          format: int64
+          description: Total number of credits
+        page:
+          type: integer
+          description: Current page number (1-indexed)
+        pageSize:
+          type: integer
+          description: Number of items per page
 
     TVSeries:
       type: object
@@ -7540,6 +7906,30 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    BulkEpisodesWatchedRequest:
+      type: object
+      required:
+        - episode_ids
+      properties:
+        episode_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          maxItems: 500
+          description: List of episode IDs to mark as watched
+
+    BulkEpisodesWatchedResponse:
+      type: object
+      required:
+        - marked_count
+      properties:
+        marked_count:
+          type: integer
+          format: int64
+          description: Number of episodes marked as watched
 
     EpisodeWatchProgress:
       type: object
@@ -8047,6 +8437,203 @@ components:
           items:
             $ref: '#/components/schemas/FacetValue'
           description: File availability
+
+    # Multi-search schemas (unified search across all collections)
+    MultiSearchResults:
+      type: object
+      properties:
+        movies:
+          $ref: '#/components/schemas/SearchResults'
+        tvshows:
+          $ref: '#/components/schemas/TVShowSearchResults'
+        episodes:
+          $ref: '#/components/schemas/EpisodeSearchResults'
+        seasons:
+          $ref: '#/components/schemas/SeasonSearchResults'
+        people:
+          $ref: '#/components/schemas/PersonSearchResults'
+
+    # Episode search schemas
+    EpisodeSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching episodes
+
+    EpisodeSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/EpisodeSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    EpisodeSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        season_number:
+          type: integer
+        episode_number:
+          type: integer
+        title:
+          type: string
+        overview:
+          type: string
+        air_date:
+          type: integer
+          description: Unix timestamp
+        runtime:
+          type: integer
+        vote_average:
+          type: number
+          format: float
+        still_path:
+          type: string
+        has_file:
+          type: boolean
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+
+    # Season search schemas
+    SeasonSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeasonSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching seasons
+
+    SeasonSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/SeasonSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    SeasonSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        series_id:
+          type: string
+          format: uuid
+        season_number:
+          type: integer
+        name:
+          type: string
+        overview:
+          type: string
+        air_date:
+          type: integer
+          description: Unix timestamp
+        episode_count:
+          type: integer
+        vote_average:
+          type: number
+          format: float
+        poster_path:
+          type: string
+        series_title:
+          type: string
+        series_poster_path:
+          type: string
+
+    # Person search schemas
+    PersonSearchResults:
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonSearchHit'
+        total_hits:
+          type: integer
+          description: Total number of matching people
+
+    PersonSearchHit:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/PersonSearchDocument'
+        score:
+          type: number
+          format: float
+          description: Search relevance score
+        highlights:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    PersonSearchDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          description: TMDb person ID as string
+        tmdb_id:
+          type: integer
+        name:
+          type: string
+        profile_path:
+          type: string
+        known_for:
+          type: array
+          items:
+            type: string
+          description: Movie/show titles
+        characters:
+          type: array
+          items:
+            type: string
+          description: Character names played
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments (Acting, Directing, etc.)
+        movie_count:
+          type: integer
+        tvshow_count:
+          type: integer
+        total_credits:
+          type: integer
 
     # Metadata schemas (TMDb lookup)
     MetadataSearchResults:
@@ -8901,6 +9488,21 @@ components:
           format: date-time
           description: Last login timestamp
           example: 2024-01-15T12:30:00Z
+
+    AdminUserListResponse:
+      type: object
+      required:
+        - users
+        - total
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        total:
+          type: integer
+          format: int64
+          description: Total number of matching users
 
     UserUpdate:
       type: object

@@ -13,6 +13,10 @@ type AdminDeleteOIDCProviderRes interface {
 	adminDeleteOIDCProviderRes()
 }
 
+type AdminDeleteUserRes interface {
+	adminDeleteUserRes()
+}
+
 type AdminDisableOIDCProviderRes interface {
 	adminDisableOIDCProviderRes()
 }
@@ -51,6 +55,10 @@ type AdminGetSonarrStatusRes interface {
 
 type AdminListOIDCProvidersRes interface {
 	adminListOIDCProvidersRes()
+}
+
+type AdminListUsersRes interface {
+	adminListUsersRes()
 }
 
 type AdminSetDefaultOIDCProviderRes interface {
@@ -473,6 +481,10 @@ type ListAPIKeysRes interface {
 	listAPIKeysRes()
 }
 
+type ListGenresRes interface {
+	listGenresRes()
+}
+
 type ListLibrariesRes interface {
 	listLibrariesRes()
 }
@@ -553,6 +565,10 @@ type MarkTVEpisodeWatchedRes interface {
 	markTVEpisodeWatchedRes()
 }
 
+type MarkTVEpisodesBulkWatchedRes interface {
+	markTVEpisodesBulkWatchedRes()
+}
+
 type OidcAuthorizeRes interface {
 	oidcAuthorizeRes()
 }
@@ -587,6 +603,10 @@ type RegisterRes interface {
 
 type ReindexSearchRes interface {
 	reindexSearchRes()
+}
+
+type ReindexTVShowSearchRes interface {
+	reindexTVShowSearchRes()
 }
 
 type RemovePolicyRes interface {
@@ -639,6 +659,10 @@ type SearchMoviesMetadataRes interface {
 
 type SearchMoviesRes interface {
 	searchMoviesRes()
+}
+
+type SearchMultiRes interface {
+	searchMultiRes()
 }
 
 type SearchPersonMetadataRes interface {

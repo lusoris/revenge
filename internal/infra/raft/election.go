@@ -11,10 +11,11 @@ import (
 	"path/filepath"
 	"time"
 
+	"log/slog"
+
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb"
-	"log/slog"
+	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
 )
 
 // LeaderElection manages Raft-based leader election for a cluster.

@@ -3,7 +3,7 @@
 [![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
 [![Develop Build](https://github.com/lusoris/revenge/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/develop.yml)
 [![Security](https://github.com/lusoris/revenge/actions/workflows/security.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/security.yml)
-[![Go Version](https://img.shields.io/badge/go-1.25.6-00ADD8?logo=go)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/go-1.25.7-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation

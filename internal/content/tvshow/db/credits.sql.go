@@ -11,15 +11,60 @@ import (
 	"github.com/google/uuid"
 )
 
+const countSeriesCast = `-- name: CountSeriesCast :one
+SELECT COUNT(*)
+FROM tvshow.series_credits
+WHERE
+    series_id = $1
+    AND credit_type = 'cast'
+`
+
+func (q *Queries) CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSeriesCast, seriesID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countSeriesCrew = `-- name: CountSeriesCrew :one
+SELECT COUNT(*)
+FROM tvshow.series_credits
+WHERE
+    series_id = $1
+    AND credit_type = 'crew'
+`
+
+func (q *Queries) CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSeriesCrew, seriesID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createEpisodeCredit = `-- name: CreateEpisodeCredit :one
-INSERT INTO tvshow.episode_credits (
-    episode_id, tmdb_person_id, name, credit_type,
-    character, cast_order, job, department, profile_path
-) VALUES (
-    $1, $2, $3, $4,
-    $5, $6, $7, $8, $9
-)
-RETURNING id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+INSERT INTO
+    tvshow.episode_credits (
+        episode_id,
+        tmdb_person_id,
+        name,
+        credit_type,
+        character,
+        cast_order,
+        job,
+        department,
+        profile_path
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9
+    ) RETURNING id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
 `
 
 type CreateEpisodeCreditParams struct {
@@ -65,14 +110,29 @@ func (q *Queries) CreateEpisodeCredit(ctx context.Context, arg CreateEpisodeCred
 }
 
 const createSeriesCredit = `-- name: CreateSeriesCredit :one
-INSERT INTO tvshow.series_credits (
-    series_id, tmdb_person_id, name, credit_type,
-    character, cast_order, job, department, profile_path
-) VALUES (
-    $1, $2, $3, $4,
-    $5, $6, $7, $8, $9
-)
-RETURNING id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+INSERT INTO
+    tvshow.series_credits (
+        series_id,
+        tmdb_person_id,
+        name,
+        credit_type,
+        character,
+        cast_order,
+        job,
+        department,
+        profile_path
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9
+    ) RETURNING id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
 `
 
 type CreateSeriesCreditParams struct {
@@ -136,8 +196,11 @@ func (q *Queries) DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) e
 }
 
 const listEpisodeCrew = `-- name: ListEpisodeCrew :many
-SELECT id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.episode_credits
-WHERE episode_id = $1 AND credit_type = 'crew'
+SELECT id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+FROM tvshow.episode_credits
+WHERE
+    episode_id = $1
+    AND credit_type = 'crew'
 ORDER BY department ASC, name ASC
 `
 
@@ -176,8 +239,11 @@ func (q *Queries) ListEpisodeCrew(ctx context.Context, episodeID uuid.UUID) ([]T
 
 const listEpisodeGuestStars = `-- name: ListEpisodeGuestStars :many
 
-SELECT id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.episode_credits
-WHERE episode_id = $1 AND credit_type = 'guest_star'
+SELECT id, episode_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+FROM tvshow.episode_credits
+WHERE
+    episode_id = $1
+    AND credit_type = 'guest_star'
 ORDER BY cast_order ASC NULLS LAST, name ASC
 `
 
@@ -217,14 +283,26 @@ func (q *Queries) ListEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID
 
 const listSeriesCast = `-- name: ListSeriesCast :many
 
-SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.series_credits
-WHERE series_id = $1 AND credit_type = 'cast'
+SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+FROM tvshow.series_credits
+WHERE
+    series_id = $1
+    AND credit_type = 'cast'
 ORDER BY cast_order ASC NULLS LAST, name ASC
+LIMIT $2
+OFFSET
+    $3
 `
 
+type ListSeriesCastParams struct {
+	SeriesID uuid.UUID `json:"seriesId"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
 // Series Credits
-func (q *Queries) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error) {
-	rows, err := q.db.Query(ctx, listSeriesCast, seriesID)
+func (q *Queries) ListSeriesCast(ctx context.Context, arg ListSeriesCastParams) ([]TvshowSeriesCredit, error) {
+	rows, err := q.db.Query(ctx, listSeriesCast, arg.SeriesID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -257,13 +335,25 @@ func (q *Queries) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]Tvs
 }
 
 const listSeriesCrew = `-- name: ListSeriesCrew :many
-SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at FROM tvshow.series_credits
-WHERE series_id = $1 AND credit_type = 'crew'
+SELECT id, series_id, tmdb_person_id, name, credit_type, character, cast_order, job, department, profile_path, created_at, updated_at
+FROM tvshow.series_credits
+WHERE
+    series_id = $1
+    AND credit_type = 'crew'
 ORDER BY department ASC, name ASC
+LIMIT $2
+OFFSET
+    $3
 `
 
-func (q *Queries) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]TvshowSeriesCredit, error) {
-	rows, err := q.db.Query(ctx, listSeriesCrew, seriesID)
+type ListSeriesCrewParams struct {
+	SeriesID uuid.UUID `json:"seriesId"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
+func (q *Queries) ListSeriesCrew(ctx context.Context, arg ListSeriesCrewParams) ([]TvshowSeriesCredit, error) {
+	rows, err := q.db.Query(ctx, listSeriesCrew, arg.SeriesID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

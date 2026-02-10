@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"log/slog"
@@ -28,11 +29,14 @@ func (h *Handler) AdminGetSonarrStatus(ctx context.Context) (ogen.AdminGetSonarr
 	h.logger.Debug("AdminGetSonarrStatus called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetSonarrStatusForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetSonarrStatusUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetSonarrStatusForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Sonarr integration is configured
@@ -104,11 +108,14 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 	h.logger.Debug("AdminTriggerSonarrSync called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminTriggerSonarrSyncForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminTriggerSonarrSyncUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminTriggerSonarrSyncForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Sonarr integration is configured
@@ -148,21 +155,11 @@ func (h *Handler) AdminTriggerSonarrSync(ctx context.Context) (ogen.AdminTrigger
 		}, nil
 	}
 
-	// No River client, start sync directly (blocking)
-	go func() {
-		// Use a new context with timeout since the request context will be done
-		syncCtx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
-		defer cancel()
-
-		if _, err := h.sonarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Sonarr sync failed", slog.Any("error",err))
-		}
-	}()
-
-	h.logger.Info("Sonarr sync started directly")
-	return &ogen.SonarrSyncResponse{
-		Message: "Sync started",
-		Status:  ogen.SonarrSyncResponseStatusStarted,
+	// River client is required for async job processing
+	h.logger.Error("River client not available, cannot queue Sonarr sync")
+	return &ogen.AdminTriggerSonarrSyncServiceUnavailable{
+		Code:    503,
+		Message: "Job queue not available",
 	}, nil
 }
 
@@ -172,11 +169,14 @@ func (h *Handler) AdminGetSonarrQualityProfiles(ctx context.Context) (ogen.Admin
 	h.logger.Debug("AdminGetSonarrQualityProfiles called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetSonarrQualityProfilesForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetSonarrQualityProfilesUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetSonarrQualityProfilesForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Sonarr integration is configured
@@ -219,11 +219,14 @@ func (h *Handler) AdminGetSonarrRootFolders(ctx context.Context) (ogen.AdminGetS
 	h.logger.Debug("AdminGetSonarrRootFolders called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetSonarrRootFoldersForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetSonarrRootFoldersUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetSonarrRootFoldersForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Sonarr integration is configured

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -24,8 +25,8 @@ func TestService_FullUserLifecycle(t *testing.T) {
 		Username:     "lifecycle_user",
 		Email:        "lifecycle@example.com",
 		PasswordHash: "initialpassword",
-		IsActive:     ptr(true),
-		IsAdmin:      ptr(false),
+		IsActive:     ptr.To(true),
+		IsAdmin:      ptr.To(false),
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, created.ID)
@@ -460,8 +461,8 @@ func TestService_ListUsers_WithFilters(t *testing.T) {
 		Username:     "admin_filter_test",
 		Email:        "admin_filter@example.com",
 		PasswordHash: "password123",
-		IsActive:     ptr(true),
-		IsAdmin:      ptr(true),
+		IsActive:     ptr.To(true),
+		IsAdmin:      ptr.To(true),
 	})
 	require.NoError(t, err)
 
@@ -470,15 +471,15 @@ func TestService_ListUsers_WithFilters(t *testing.T) {
 		Username:     "inactive_filter_test",
 		Email:        "inactive_filter@example.com",
 		PasswordHash: "password123",
-		IsActive:     ptr(false),
-		IsAdmin:      ptr(false),
+		IsActive:     ptr.To(false),
+		IsAdmin:      ptr.To(false),
 	})
 	require.NoError(t, err)
 
 	// Filter for active admins
 	users, count, err := svc.ListUsers(ctx, UserFilters{
-		IsActive: ptr(true),
-		IsAdmin:  ptr(true),
+		IsActive: ptr.To(true),
+		IsAdmin:  ptr.To(true),
 		Limit:    10,
 		Offset:   0,
 	})
@@ -493,7 +494,7 @@ func TestService_ListUsers_WithFilters(t *testing.T) {
 
 	// Filter for inactive users
 	_, count, err = svc.ListUsers(ctx, UserFilters{
-		IsActive: ptr(false),
+		IsActive: ptr.To(false),
 		Limit:    10,
 		Offset:   0,
 	})
@@ -678,9 +679,9 @@ func TestService_CreateUser_WithAllOptionalFields(t *testing.T) {
 		PasswordHash: "password123",
 		DisplayName:  &displayName,
 		Timezone:     &tz,
-		QarEnabled:   ptr(true),
-		IsActive:     ptr(true),
-		IsAdmin:      ptr(false),
+		QarEnabled:   ptr.To(true),
+		IsActive:     ptr.To(true),
+		IsAdmin:      ptr.To(false),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "full_fields_user", user.Username)

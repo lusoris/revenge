@@ -5,8 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/govalues/decimal"
+	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
@@ -377,12 +378,12 @@ func TestDeref(t *testing.T) {
 
 func TestPtr(t *testing.T) {
 	s := "test"
-	p := ptr(s)
+	p := ptr.To(s)
 	assert.NotNil(t, p)
 	assert.Equal(t, "test", *p)
 
 	i := 42
-	pi := ptr(i)
+	pi := ptr.To(i)
 	assert.NotNil(t, pi)
 	assert.Equal(t, 42, *pi)
 }

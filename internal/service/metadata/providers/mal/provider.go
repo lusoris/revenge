@@ -19,6 +19,7 @@ var (
 
 // Provider implements the metadata provider interface for MyAnimeList.
 type Provider struct {
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -96,10 +97,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	return m, nil
 }
 
-func (p *Provider) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	// MAL API v2 does not expose characters or staff
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	animeID, err := strconv.Atoi(id)
@@ -138,37 +135,12 @@ func (p *Provider) GetTVShowContentRatings(ctx context.Context, id string) ([]me
 	}, nil
 }
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetTVShowExternalIDs(_ context.Context, _ string) (*metadata.ExternalIDs, error) {
-	// MAL doesn't provide external ID cross-references in the API
-	return nil, metadata.ErrNotFound
-}
 
 // MAL API v2 does not have per-season or per-episode data.
 
-func (p *Provider) GetSeason(_ context.Context, _ string, _ int, _ string) (*metadata.SeasonMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisode(_ context.Context, _ string, _, _ int, _ string) (*metadata.EpisodeMetadata, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}

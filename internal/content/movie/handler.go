@@ -6,17 +6,25 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
+
+// MetadataQueue allows enqueuing metadata refresh jobs.
+type MetadataQueue interface {
+	EnqueueRefreshMovie(ctx context.Context, movieID uuid.UUID, force bool, languages []string) error
+}
 
 // Handler handles HTTP requests for movies
 type Handler struct {
-	service Service
+	service       Service
+	metadataQueue MetadataQueue
 }
 
 // NewHandler creates a new movie handler
-func NewHandler(service Service) *Handler {
+func NewHandler(service Service, metadataQueue MetadataQueue) *Handler {
 	return &Handler{
-		service: service,
+		service:       service,
+		metadataQueue: metadataQueue,
 	}
 }
 
@@ -53,12 +61,12 @@ func (h *Handler) SearchMovies(ctx context.Context, params SearchMoviesParams) (
 }
 
 // GetRecentlyAdded handles GET /api/v1/movies/recently-added
-func (h *Handler) GetRecentlyAdded(ctx context.Context, params PaginationParams) ([]Movie, error) {
+func (h *Handler) GetRecentlyAdded(ctx context.Context, params PaginationParams) ([]Movie, int64, error) {
 	return h.service.ListRecentlyAdded(ctx, params.Limit, params.Offset)
 }
 
 // GetTopRated handles GET /api/v1/movies/top-rated
-func (h *Handler) GetTopRated(ctx context.Context, params TopRatedParams) ([]Movie, error) {
+func (h *Handler) GetTopRated(ctx context.Context, params TopRatedParams) ([]Movie, int64, error) {
 	minVotes := int32(100) // Default minimum votes
 	if params.MinVotes != nil {
 		minVotes = *params.MinVotes
@@ -77,24 +85,30 @@ func (h *Handler) GetMovieFiles(ctx context.Context, id string) ([]MovieFile, er
 	return h.service.GetMovieFiles(ctx, movieID)
 }
 
+// CreditPaginationParams contains pagination params for credit queries
+type CreditPaginationParams struct {
+	Limit  int32
+	Offset int32
+}
+
 // GetMovieCast handles GET /api/v1/movies/:id/cast
-func (h *Handler) GetMovieCast(ctx context.Context, id string) ([]MovieCredit, error) {
+func (h *Handler) GetMovieCast(ctx context.Context, id string, params CreditPaginationParams) ([]MovieCredit, int64, error) {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid movie ID: %w", err)
+		return nil, 0, fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.GetMovieCast(ctx, movieID)
+	return h.service.GetMovieCast(ctx, movieID, params.Limit, params.Offset)
 }
 
 // GetMovieCrew handles GET /api/v1/movies/:id/crew
-func (h *Handler) GetMovieCrew(ctx context.Context, id string) ([]MovieCredit, error) {
+func (h *Handler) GetMovieCrew(ctx context.Context, id string, params CreditPaginationParams) ([]MovieCredit, int64, error) {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("invalid movie ID: %w", err)
+		return nil, 0, fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.GetMovieCrew(ctx, movieID)
+	return h.service.GetMovieCrew(ctx, movieID, params.Limit, params.Offset)
 }
 
 // GetMovieGenres handles GET /api/v1/movies/:id/genres
@@ -110,6 +124,11 @@ func (h *Handler) GetMovieGenres(ctx context.Context, id string) ([]MovieGenre, 
 // GetMoviesByGenre handles GET /api/v1/movies/genre/:genreId
 func (h *Handler) GetMoviesByGenre(ctx context.Context, genreID int32, params PaginationParams) ([]Movie, error) {
 	return h.service.GetMoviesByGenre(ctx, genreID, params.Limit, params.Offset)
+}
+
+// ListDistinctGenres returns all distinct movie genres with item counts.
+func (h *Handler) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	return h.service.ListDistinctGenres(ctx)
 }
 
 // GetMovieCollection handles GET /api/v1/movies/:id/collection
@@ -197,14 +216,21 @@ func (h *Handler) GetUserStats(ctx context.Context, userID uuid.UUID) (*UserMovi
 	return h.service.GetUserStats(ctx, userID)
 }
 
-// RefreshMetadata handles POST /api/v1/movies/:id/refresh
+// RefreshMetadata handles POST /api/v1/movies/:id/refresh.
+// It validates that the movie exists, then enqueues an async metadata refresh job.
 func (h *Handler) RefreshMetadata(ctx context.Context, id string) error {
 	movieID, err := uuid.Parse(id)
 	if err != nil {
 		return fmt.Errorf("invalid movie ID: %w", err)
 	}
 
-	return h.service.RefreshMovieMetadata(ctx, movieID)
+	// Verify movie exists before enqueuing
+	if _, err := h.service.GetMovie(ctx, movieID); err != nil {
+		return err
+	}
+
+	// Enqueue async refresh — returns immediately with 202 Accepted
+	return h.metadataQueue.EnqueueRefreshMovie(ctx, movieID, true, nil)
 }
 
 // Request/Response parameter types

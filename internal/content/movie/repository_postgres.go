@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/lusoris/revenge/internal/content"
 	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
 )
 
@@ -464,6 +465,10 @@ func (r *postgresRepository) ListTopRated(ctx context.Context, minVotes int32, l
 	return movies, nil
 }
 
+func (r *postgresRepository) CountTopRated(ctx context.Context, minVotes int32) (int64, error) {
+	return r.queries.CountTopRated(ctx, &minVotes)
+}
+
 func (r *postgresRepository) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
 	dbParams := moviedb.CreateMovieParams{
 		TmdbID:            params.TMDbID,
@@ -677,8 +682,12 @@ func (r *postgresRepository) CreateMovieCredit(ctx context.Context, params Creat
 	return dbCreditToCredit(credit), nil
 }
 
-func (r *postgresRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	dbCredits, err := r.queries.ListMovieCast(ctx, movieID)
+func (r *postgresRepository) ListMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error) {
+	dbCredits, err := r.queries.ListMovieCast(ctx, moviedb.ListMovieCastParams{
+		MovieID: movieID,
+		Limit:   limit,
+		Offset:  offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list movie cast: %w", err)
 	}
@@ -689,8 +698,16 @@ func (r *postgresRepository) ListMovieCast(ctx context.Context, movieID uuid.UUI
 	return credits, nil
 }
 
-func (r *postgresRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
-	dbCredits, err := r.queries.ListMovieCrew(ctx, movieID)
+func (r *postgresRepository) CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	return r.queries.CountMovieCast(ctx, movieID)
+}
+
+func (r *postgresRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error) {
+	dbCredits, err := r.queries.ListMovieCrew(ctx, moviedb.ListMovieCrewParams{
+		MovieID: movieID,
+		Limit:   limit,
+		Offset:  offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list movie crew: %w", err)
 	}
@@ -699,6 +716,10 @@ func (r *postgresRepository) ListMovieCrew(ctx context.Context, movieID uuid.UUI
 		credits[i] = *dbCreditToCredit(c)
 	}
 	return credits, nil
+}
+
+func (r *postgresRepository) CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error) {
+	return r.queries.CountMovieCrew(ctx, movieID)
 }
 
 func (r *postgresRepository) DeleteMovieCredits(ctx context.Context, movieID uuid.UUID) error {
@@ -877,6 +898,22 @@ func (r *postgresRepository) ListMovieGenres(ctx context.Context, movieID uuid.U
 	genres := make([]MovieGenre, len(dbGenres))
 	for i, g := range dbGenres {
 		genres[i] = *dbGenreToGenre(g)
+	}
+	return genres, nil
+}
+
+func (r *postgresRepository) ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	rows, err := r.queries.ListDistinctMovieGenres(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list distinct movie genres: %w", err)
+	}
+	genres := make([]content.GenreSummary, len(rows))
+	for i, r := range rows {
+		genres[i] = content.GenreSummary{
+			TMDbGenreID: r.TmdbGenreID,
+			Name:        r.Name,
+			ItemCount:   r.ItemCount,
+		}
 	}
 	return genres, nil
 }

@@ -91,12 +91,14 @@ func (h *Handler) SearchMovies(ctx context.Context, params ogen.SearchMoviesPara
 
 // GetRecentlyAdded delegates to the movie handler.
 func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyAddedParams) (ogen.GetRecentlyAddedRes, error) {
+	limit := util.SafeIntToInt32(params.Limit.Or(20))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
 	handlerParams := movie.PaginationParams{
-		Limit:  util.SafeIntToInt32(params.Limit.Or(20)),
-		Offset: 0,
+		Limit:  limit,
+		Offset: offset,
 	}
 
-	movies, err := h.movieHandler.GetRecentlyAdded(ctx, handlerParams)
+	movies, total, err := h.movieHandler.GetRecentlyAdded(ctx, handlerParams)
 	if err != nil {
 		return nil, err
 	}
@@ -105,23 +107,31 @@ func (h *Handler) GetRecentlyAdded(ctx context.Context, params ogen.GetRecentlyA
 	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
-	result := make([]ogen.Movie, len(localizedMovies))
+	items := make([]ogen.Movie, len(localizedMovies))
 	for i, m := range localizedMovies {
-		result[i] = *movieToOgen(&m)
+		items[i] = *movieToOgen(&m)
 	}
 
-	return (*ogen.GetRecentlyAddedOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.MovieListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetTopRated delegates to the movie handler.
 func (h *Handler) GetTopRated(ctx context.Context, params ogen.GetTopRatedParams) (ogen.GetTopRatedRes, error) {
+	limit := util.SafeIntToInt32(params.Limit.Or(20))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
 	handlerParams := movie.TopRatedParams{
-		Limit:    util.SafeIntToInt32(params.Limit.Or(20)),
-		Offset:   0,
+		Limit:    limit,
+		Offset:   offset,
 		MinVotes: func() *int32 { v := util.SafeIntToInt32(params.MinVotes.Or(100)); return &v }(),
 	}
 
-	movies, err := h.movieHandler.GetTopRated(ctx, handlerParams)
+	movies, total, err := h.movieHandler.GetTopRated(ctx, handlerParams)
 	if err != nil {
 		return nil, err
 	}
@@ -130,12 +140,18 @@ func (h *Handler) GetTopRated(ctx context.Context, params ogen.GetTopRatedParams
 	lang := h.GetMetadataLanguage(ctx)
 	localizedMovies := LocalizeMovies(movies, lang)
 
-	result := make([]ogen.Movie, len(localizedMovies))
+	items := make([]ogen.Movie, len(localizedMovies))
 	for i, m := range localizedMovies {
-		result[i] = *movieToOgen(&m)
+		items[i] = *movieToOgen(&m)
 	}
 
-	return (*ogen.GetTopRatedOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.MovieListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetContinueWatching delegates to the movie handler.
@@ -226,7 +242,14 @@ func (h *Handler) GetMovieFiles(ctx context.Context, params ogen.GetMovieFilesPa
 
 // GetMovieCast delegates to the movie handler.
 func (h *Handler) GetMovieCast(ctx context.Context, params ogen.GetMovieCastParams) (ogen.GetMovieCastRes, error) {
-	cast, err := h.movieHandler.GetMovieCast(ctx, params.ID.String())
+	limit := util.SafeIntToInt32(params.Limit.Or(50))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
+	creditParams := movie.CreditPaginationParams{
+		Limit:  limit,
+		Offset: offset,
+	}
+
+	cast, total, err := h.movieHandler.GetMovieCast(ctx, params.ID.String(), creditParams)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieCastNotFound{}, nil
@@ -234,17 +257,30 @@ func (h *Handler) GetMovieCast(ctx context.Context, params ogen.GetMovieCastPara
 		return nil, err
 	}
 
-	result := make([]ogen.MovieCredit, len(cast))
+	items := make([]ogen.MovieCredit, len(cast))
 	for i, c := range cast {
-		result[i] = *movieCreditToOgen(&c)
+		items[i] = *movieCreditToOgen(&c)
 	}
 
-	return (*ogen.GetMovieCastOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.MovieCreditListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetMovieCrew delegates to the movie handler.
 func (h *Handler) GetMovieCrew(ctx context.Context, params ogen.GetMovieCrewParams) (ogen.GetMovieCrewRes, error) {
-	crew, err := h.movieHandler.GetMovieCrew(ctx, params.ID.String())
+	limit := util.SafeIntToInt32(params.Limit.Or(50))
+	offset := util.SafeIntToInt32(params.Offset.Or(0))
+	creditParams := movie.CreditPaginationParams{
+		Limit:  limit,
+		Offset: offset,
+	}
+
+	crew, total, err := h.movieHandler.GetMovieCrew(ctx, params.ID.String(), creditParams)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFound) {
 			return &ogen.GetMovieCrewNotFound{}, nil
@@ -252,12 +288,18 @@ func (h *Handler) GetMovieCrew(ctx context.Context, params ogen.GetMovieCrewPara
 		return nil, err
 	}
 
-	result := make([]ogen.MovieCredit, len(crew))
+	items := make([]ogen.MovieCredit, len(crew))
 	for i, c := range crew {
-		result[i] = *movieCreditToOgen(&c)
+		items[i] = *movieCreditToOgen(&c)
 	}
 
-	return (*ogen.GetMovieCrewOKApplicationJSON)(&result), nil
+	page := (offset / limit) + 1
+	return &ogen.MovieCreditListResponse{
+		Items:    items,
+		Total:    total,
+		Page:     ogen.NewOptInt(int(page)),
+		PageSize: ogen.NewOptInt(int(limit)),
+	}, nil
 }
 
 // GetMovieGenres delegates to the movie handler.

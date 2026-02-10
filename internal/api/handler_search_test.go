@@ -7,6 +7,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/stretchr/testify/assert"
@@ -71,6 +72,67 @@ func TestHandler_ReindexSearch_InsertError(t *testing.T) {
 	require.Error(t, err)
 	assert.Nil(t, result)
 	assert.Contains(t, err.Error(), "failed to enqueue reindex job")
+	assert.Contains(t, err.Error(), "queue connection failed")
+}
+
+// ============================================================================
+// ReindexTVShowSearch Tests
+// ============================================================================
+
+func TestHandler_ReindexTVShowSearch_NilRiverClient(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger:      logging.NewTestLogger(),
+		riverClient: nil,
+	}
+
+	result, err := handler.ReindexTVShowSearch(context.Background())
+	require.Error(t, err)
+	assert.Nil(t, result)
+	assert.Contains(t, err.Error(), "job queue not available")
+}
+
+func TestHandler_ReindexTVShowSearch_Success(t *testing.T) {
+	t.Parallel()
+
+	mockRiver := &mockRiverClient{}
+	handler := &Handler{
+		logger:      logging.NewTestLogger(),
+		riverClient: mockRiver,
+	}
+
+	result, err := handler.ReindexTVShowSearch(context.Background())
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	accepted, ok := result.(*ogen.ReindexTVShowSearchAccepted)
+	require.True(t, ok)
+	assert.Equal(t, "TV show reindex job enqueued", accepted.Message.Value)
+	assert.True(t, accepted.JobID.Set, "JobID should be set")
+
+	// Verify job was inserted with correct args
+	require.Len(t, mockRiver.insertedArgs, 1)
+	indexArgs, ok := mockRiver.insertedArgs[0].(tvshowjobs.SearchIndexArgs)
+	require.True(t, ok)
+	assert.True(t, indexArgs.FullReindex)
+}
+
+func TestHandler_ReindexTVShowSearch_InsertError(t *testing.T) {
+	t.Parallel()
+
+	mockRiver := &mockRiverClient{
+		insertError: errors.New("queue connection failed"),
+	}
+	handler := &Handler{
+		logger:      logging.NewTestLogger(),
+		riverClient: mockRiver,
+	}
+
+	result, err := handler.ReindexTVShowSearch(context.Background())
+	require.Error(t, err)
+	assert.Nil(t, result)
+	assert.Contains(t, err.Error(), "failed to enqueue TV show reindex job")
 	assert.Contains(t, err.Error(), "queue connection failed")
 }
 
@@ -401,4 +463,98 @@ func TestHandler_GetTVShowSearchFacets_DisabledService(t *testing.T) {
 	assert.Nil(t, facets.Type)
 	assert.Nil(t, facets.Networks)
 	assert.Nil(t, facets.HasFile)
+}
+
+// ============================================================================
+// SearchMulti Tests
+// ============================================================================
+
+func TestHandler_SearchMulti_AllNilServices(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "test",
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	multi, ok := result.(*ogen.MultiSearchResults)
+	require.True(t, ok)
+	assert.False(t, multi.Movies.Set, "movies should not be set")
+	assert.False(t, multi.Tvshows.Set, "tvshows should not be set")
+	assert.False(t, multi.Episodes.Set, "episodes should not be set")
+	assert.False(t, multi.Seasons.Set, "seasons should not be set")
+	assert.False(t, multi.People.Set, "people should not be set")
+}
+
+func TestHandler_SearchMulti_DisabledServices(t *testing.T) {
+	t.Parallel()
+
+	logger := logging.NewTestLogger()
+
+	handler := &Handler{
+		logger:               logger,
+		searchService:        search.NewMovieSearchService(nil, logger),
+		tvshowSearchService:  search.NewTVShowSearchService(nil, logger),
+		episodeSearchService: search.NewEpisodeSearchService(nil, logger),
+		seasonSearchService:  search.NewSeasonSearchService(nil, logger),
+		personSearchService:  search.NewPersonSearchService(nil, logger),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "breaking bad",
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	multi, ok := result.(*ogen.MultiSearchResults)
+	require.True(t, ok)
+	// Disabled services (nil client) return IsEnabled()=false, so no search is performed
+	assert.False(t, multi.Movies.Set)
+	assert.False(t, multi.Tvshows.Set)
+	assert.False(t, multi.Episodes.Set)
+	assert.False(t, multi.Seasons.Set)
+	assert.False(t, multi.People.Set)
+}
+
+func TestHandler_SearchMulti_DefaultLimit(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q: "test",
+	}
+
+	// Just verifying it doesn't panic with default limit
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+}
+
+func TestHandler_SearchMulti_CustomLimit(t *testing.T) {
+	t.Parallel()
+
+	handler := &Handler{
+		logger: logging.NewTestLogger(),
+	}
+
+	params := ogen.SearchMultiParams{
+		Q:     "test",
+		Limit: ogen.NewOptInt(10),
+	}
+
+	result, err := handler.SearchMulti(context.Background(), params)
+	require.NoError(t, err)
+	require.NotNil(t, result)
 }

@@ -22,6 +22,7 @@ type Config struct {
 	FetchPollInterval    time.Duration
 	RescueStuckJobsAfter time.Duration
 	MaxAttempts          int
+	PeriodicJobs         []*river.PeriodicJob
 }
 
 // DefaultConfig returns default River client configuration.
@@ -65,6 +66,7 @@ func NewClient(pool *pgxpool.Pool, workers *river.Workers, config *Config, logge
 		FetchPollInterval:    config.FetchPollInterval,
 		RescueStuckJobsAfter: config.RescueStuckJobsAfter,
 		MaxAttempts:          config.MaxAttempts,
+		PeriodicJobs:         config.PeriodicJobs,
 		Workers:              workers,
 		Logger:               logger,
 	}

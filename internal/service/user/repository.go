@@ -42,6 +42,7 @@ type Repository interface {
 
 // UserFilters contains query filters for listing users
 type UserFilters struct {
+	Query    *string
 	IsActive *bool
 	IsAdmin  *bool
 	Limit    int32

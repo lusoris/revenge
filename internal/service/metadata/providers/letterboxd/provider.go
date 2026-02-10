@@ -18,6 +18,7 @@ var (
 
 // Provider implements the metadata provider interface for Letterboxd.
 type Provider struct {
+	metadata.MovieProviderBase
 	client   *Client
 	priority int
 }
@@ -89,21 +90,8 @@ func (p *Provider) GetMovieCredits(ctx context.Context, id string) (*metadata.Cr
 	return &credits, nil
 }
 
-func (p *Provider) GetMovieImages(_ context.Context, _ string) (*metadata.Images, error) {
-	// Letterboxd provides poster and backdrop URLs directly in the Film response.
-	// There's no separate images endpoint. Consumers should use GetMovie() instead.
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
-	// Release information is available in the Film response but marked FIRST PARTY.
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	// Letterboxd does not expose a translations endpoint.
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	film, err := p.client.GetFilm(ctx, id)
@@ -127,12 +115,4 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 	return ids, nil
 }
 
-func (p *Provider) GetSimilarMovies(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	// Similar films is marked FIRST PARTY in the Letterboxd API.
-	return nil, 0, metadata.ErrNotFound
-}
 
-func (p *Provider) GetMovieRecommendations(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
-	// No recommendations endpoint available.
-	return nil, 0, metadata.ErrNotFound
-}

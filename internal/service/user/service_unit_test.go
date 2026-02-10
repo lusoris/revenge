@@ -19,6 +19,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/internal/testutil"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // ============================================================================
@@ -73,10 +74,6 @@ func makeTestUser(id uuid.UUID, username, email string) *db.SharedUser {
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
-}
-
-func ptr[T any](v T) *T {
-	return &v
 }
 
 // ============================================================================
@@ -290,11 +287,11 @@ func TestUnit_UpdateUser(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
 		params := user.UpdateUserParams{
-			DisplayName: ptr("New Name"),
+			DisplayName: ptr.To("New Name"),
 		}
 		oldUser := makeTestUser(userID, "testuser", "test@example.com")
 		updatedUser := makeTestUser(userID, "testuser", "test@example.com")
-		updatedUser.DisplayName = ptr("New Name")
+		updatedUser.DisplayName = ptr.To("New Name")
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(oldUser, nil)
 		repo.EXPECT().UpdateUser(ctx, userID, params).Return(updatedUser, nil)
@@ -309,7 +306,7 @@ func TestUnit_UpdateUser(t *testing.T) {
 	t.Run("user not found", func(t *testing.T) {
 		repo := NewMockUserRepository(t)
 		params := user.UpdateUserParams{
-			DisplayName: ptr("New Name"),
+			DisplayName: ptr.To("New Name"),
 		}
 
 		repo.EXPECT().GetUserByID(ctx, userID).Return(nil, errors.New("not found"))
@@ -519,7 +516,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID: userID,
-			Theme:  ptr("dark"),
+			Theme:  ptr.To("dark"),
 		})
 
 		require.NoError(t, err)
@@ -532,7 +529,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID: userID,
-			Theme:  ptr("invalid"),
+			Theme:  ptr.To("invalid"),
 		})
 
 		require.Error(t, err)
@@ -546,7 +543,7 @@ func TestUnit_UpdateUserPreferences(t *testing.T) {
 		svc := setupUnitTestService(t, repo)
 		result, err := svc.UpdateUserPreferences(ctx, user.UpsertPreferencesParams{
 			UserID:            userID,
-			ProfileVisibility: ptr("invalid"),
+			ProfileVisibility: ptr.To("invalid"),
 		})
 
 		require.Error(t, err)
@@ -1055,7 +1052,7 @@ func TestUnit_UpdateUser_RepoError(t *testing.T) {
 
 	repo := NewMockUserRepository(t)
 	params := user.UpdateUserParams{
-		DisplayName: ptr("New Name"),
+		DisplayName: ptr.To("New Name"),
 	}
 	oldUser := makeTestUser(userID, "testuser", "test@example.com")
 

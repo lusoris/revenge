@@ -12,40 +12,20 @@ import (
 
 // ListPolicies lists all authorization policies (admin only).
 func (h *Handler) ListPolicies(ctx context.Context) (ogen.ListPoliciesRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.ListPoliciesUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.ListPoliciesForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.ListPoliciesForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.ListPoliciesUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.ListPoliciesForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	policies, err := h.rbacService.GetPolicies(ctx)
 	if err != nil {
-		h.logger.Error("failed to get policies",
-			slog.Any("error",err),
-		)
-		return &ogen.ListPoliciesForbidden{
-			Code:    500,
-			Message: "Failed to get policies",
-		}, nil
+		h.logger.Error("failed to get policies", slog.Any("error", err))
+		return nil, err
 	}
 
 	policyList := make([]ogen.Policy, 0, len(policies))
@@ -67,29 +47,14 @@ func (h *Handler) ListPolicies(ctx context.Context) (ogen.ListPoliciesRes, error
 
 // AddPolicy adds a new authorization policy (admin only).
 func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.AddPolicyRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.AddPolicyUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.AddPolicyForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.AddPolicyForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AddPolicyUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AddPolicyForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.rbacService.AddPolicy(ctx, req.Subject, req.Object, req.Action); err != nil {
@@ -97,12 +62,9 @@ func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.
 			slog.String("subject", req.Subject),
 			slog.String("object", req.Object),
 			slog.String("action", req.Action),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
-		return &ogen.AddPolicyForbidden{
-			Code:    500,
-			Message: "Failed to add policy",
-		}, nil
+		return nil, err
 	}
 
 	return &ogen.Policy{
@@ -114,29 +76,14 @@ func (h *Handler) AddPolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.
 
 // RemovePolicy removes an authorization policy (admin only).
 func (h *Handler) RemovePolicy(ctx context.Context, req *ogen.PolicyRequest) (ogen.RemovePolicyRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.RemovePolicyUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.RemovePolicyForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.RemovePolicyForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.RemovePolicyUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.RemovePolicyForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	if err := h.rbacService.RemovePolicy(ctx, req.Subject, req.Object, req.Action); err != nil {
@@ -144,7 +91,7 @@ func (h *Handler) RemovePolicy(ctx context.Context, req *ogen.PolicyRequest) (og
 			slog.String("subject", req.Subject),
 			slog.String("object", req.Object),
 			slog.String("action", req.Action),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RemovePolicyNotFound{}, nil
 	}
@@ -168,12 +115,9 @@ func (h *Handler) GetUserRoles(ctx context.Context, params ogen.GetUserRolesPara
 	if err != nil {
 		h.logger.Error("failed to get user roles",
 			slog.String("user_id", targetUserID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
-		return &ogen.Error{
-			Code:    500,
-			Message: "Failed to get user roles",
-		}, nil
+		return nil, err
 	}
 
 	return &ogen.RoleListResponse{
@@ -184,29 +128,14 @@ func (h *Handler) GetUserRoles(ctx context.Context, params ogen.GetUserRolesPara
 
 // AssignRole assigns a role to a user (admin only).
 func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, params ogen.AssignRoleParams) (ogen.AssignRoleRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.AssignRoleUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.AssignRoleForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.AssignRoleForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AssignRoleUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AssignRoleForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	targetUserID := params.UserId
@@ -215,12 +144,9 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 		h.logger.Error("failed to assign role",
 			slog.String("user_id", targetUserID.String()),
 			slog.String("role", req.Role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
-		return &ogen.AssignRoleForbidden{
-			Code:    500,
-			Message: "Failed to assign role",
-		}, nil
+		return nil, err
 	}
 
 	// Return updated role list for the target user
@@ -244,29 +170,14 @@ func (h *Handler) AssignRole(ctx context.Context, req *ogen.AssignRoleRequest, p
 
 // RemoveRole removes a role from a user (admin only).
 func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) (ogen.RemoveRoleRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.RemoveRoleUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.RemoveRoleForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.RemoveRoleForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.RemoveRoleUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.RemoveRoleForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	targetUserID := params.UserId
@@ -275,7 +186,7 @@ func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) 
 		h.logger.Warn("failed to remove role",
 			slog.String("user_id", targetUserID.String()),
 			slog.String("role", params.Role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.RemoveRoleNotFound{}, nil
 	}
@@ -285,38 +196,20 @@ func (h *Handler) RemoveRole(ctx context.Context, params ogen.RemoveRoleParams) 
 
 // ListRoles lists all available roles with their permissions (admin only).
 func (h *Handler) ListRoles(ctx context.Context) (ogen.ListRolesRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.ListRolesUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.ListRolesForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.ListRolesForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.ListRolesUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.ListRolesForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	roles, err := h.rbacService.ListRoles(ctx)
 	if err != nil {
-		h.logger.Error("failed to list roles", slog.Any("error",err))
-		return &ogen.ListRolesForbidden{
-			Code:    500,
-			Message: "Failed to list roles",
-		}, nil
+		h.logger.Error("failed to list roles", slog.Any("error", err))
+		return nil, err
 	}
 
 	roleDetails := make([]ogen.RoleDetail, 0, len(roles))
@@ -349,29 +242,14 @@ func (h *Handler) ListRoles(ctx context.Context) (ogen.ListRolesRes, error) {
 
 // GetRole gets a specific role with its permissions (admin only).
 func (h *Handler) GetRole(ctx context.Context, params ogen.GetRoleParams) (ogen.GetRoleRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.GetRoleUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.GetRoleForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.GetRoleForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.GetRoleUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.GetRoleForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	role, err := h.rbacService.GetRole(ctx, params.RoleName)
@@ -381,12 +259,9 @@ func (h *Handler) GetRole(ctx context.Context, params ogen.GetRoleParams) (ogen.
 		}
 		h.logger.Error("failed to get role",
 			slog.String("role", params.RoleName),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
-		return &ogen.GetRoleForbidden{
-			Code:    500,
-			Message: "Failed to get role",
-		}, nil
+		return nil, err
 	}
 
 	permissions := make([]ogen.Permission, 0, len(role.Permissions))
@@ -412,29 +287,14 @@ func (h *Handler) GetRole(ctx context.Context, params ogen.GetRoleParams) (ogen.
 
 // CreateRole creates a new custom role (admin only).
 func (h *Handler) CreateRole(ctx context.Context, req *ogen.CreateRoleRequest) (ogen.CreateRoleRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.CreateRoleUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.CreateRoleForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.CreateRoleForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.CreateRoleUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.CreateRoleForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Convert permissions
@@ -461,7 +321,7 @@ func (h *Handler) CreateRole(ctx context.Context, req *ogen.CreateRoleRequest) (
 		}
 		h.logger.Error("failed to create role",
 			slog.String("role", req.Name),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.CreateRoleBadRequest{
 			Code:    400,
@@ -492,32 +352,17 @@ func (h *Handler) CreateRole(ctx context.Context, req *ogen.CreateRoleRequest) (
 
 // DeleteRole deletes a custom role (admin only, cannot delete built-in roles).
 func (h *Handler) DeleteRole(ctx context.Context, params ogen.DeleteRoleParams) (ogen.DeleteRoleRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.DeleteRoleUnauthorized{}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.DeleteRoleUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.DeleteRoleForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.DeleteRoleForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.DeleteRoleForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
-	}
-
-	err = h.rbacService.DeleteRole(ctx, params.RoleName)
+	err := h.rbacService.DeleteRole(ctx, params.RoleName)
 	if err != nil {
 		if errors.Is(err, rbac.ErrRoleNotFound) {
 			return &ogen.DeleteRoleNotFound{}, nil
@@ -536,12 +381,9 @@ func (h *Handler) DeleteRole(ctx context.Context, params ogen.DeleteRoleParams) 
 		}
 		h.logger.Error("failed to delete role",
 			slog.String("role", params.RoleName),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
-		return &ogen.DeleteRoleForbidden{
-			Code:    500,
-			Message: "Failed to delete role",
-		}, nil
+		return nil, err
 	}
 
 	return &ogen.DeleteRoleNoContent{}, nil
@@ -549,29 +391,14 @@ func (h *Handler) DeleteRole(ctx context.Context, params ogen.DeleteRoleParams) 
 
 // UpdateRolePermissions updates all permissions for a role (admin only).
 func (h *Handler) UpdateRolePermissions(ctx context.Context, req *ogen.UpdatePermissionsRequest, params ogen.UpdateRolePermissionsParams) (ogen.UpdateRolePermissionsRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.UpdateRolePermissionsUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.UpdateRolePermissionsForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.UpdateRolePermissionsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.UpdateRolePermissionsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.UpdateRolePermissionsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Convert permissions
@@ -590,7 +417,7 @@ func (h *Handler) UpdateRolePermissions(ctx context.Context, req *ogen.UpdatePer
 		}
 		h.logger.Error("failed to update role permissions",
 			slog.String("role", params.RoleName),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return &ogen.UpdateRolePermissionsBadRequest{
 			Code:    400,
@@ -621,29 +448,14 @@ func (h *Handler) UpdateRolePermissions(ctx context.Context, req *ogen.UpdatePer
 
 // ListPermissions lists all available permission combinations (admin only).
 func (h *Handler) ListPermissions(ctx context.Context) (ogen.ListPermissionsRes, error) {
-	userID, ok := h.getUserID(ctx)
-	if !ok {
-		return &ogen.ListPermissionsUnauthorized{}, nil
-	}
-
-	// Check if user is admin
-	isAdmin, err := h.rbacService.HasRole(ctx, userID, "admin")
-	if err != nil {
-		h.logger.Error("failed to check admin role",
-			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
-		)
-		return &ogen.ListPermissionsForbidden{
-			Code:    500,
-			Message: "Failed to check permissions",
-		}, nil
-	}
-
-	if !isAdmin {
-		return &ogen.ListPermissionsForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.ListPermissionsUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.ListPermissionsForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	perms := h.rbacService.ListPermissions(ctx)

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/content"
 )
 
 // Repository defines database operations for movies
@@ -21,6 +22,7 @@ type Repository interface {
 	ListMoviesByYear(ctx context.Context, year int32, limit, offset int32) ([]Movie, error)
 	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error)
 	ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error)
+	CountTopRated(ctx context.Context, minVotes int32) (int64, error)
 	CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error)
 	UpdateMovie(ctx context.Context, params UpdateMovieParams) (*Movie, error)
 	DeleteMovie(ctx context.Context, id uuid.UUID) error
@@ -36,8 +38,10 @@ type Repository interface {
 
 	// Credits
 	CreateMovieCredit(ctx context.Context, params CreateMovieCreditParams) (*MovieCredit, error)
-	ListMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
-	ListMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error)
+	ListMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error)
+	ListMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, error)
+	CountMovieCast(ctx context.Context, movieID uuid.UUID) (int64, error)
+	CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error)
 	DeleteMovieCredits(ctx context.Context, movieID uuid.UUID) error
 
 	// Collections
@@ -53,6 +57,7 @@ type Repository interface {
 	// Genres
 	AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error
 	ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
+	ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteMovieGenres(ctx context.Context, movieID uuid.UUID) error
 	ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
 

@@ -18,6 +18,7 @@ var (
 
 // Provider implements the metadata provider interface for Kitsu.
 type Provider struct {
+	metadata.TVShowProviderBase
 	client   *Client
 	priority int
 }
@@ -90,11 +91,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	return m, nil
 }
 
-func (p *Provider) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
-	// Kitsu's castings API is complex and requires multiple requests.
-	// For now, return not found; can be implemented later with the castings endpoint.
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	result, err := p.client.GetAnime(ctx, id)
@@ -134,9 +130,6 @@ func (p *Provider) GetTVShowContentRatings(ctx context.Context, id string) ([]me
 	return []metadata.ContentRating{rating}, nil
 }
 
-func (p *Provider) GetTVShowTranslations(_ context.Context, _ string) ([]metadata.Translation, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	mappings, err := p.client.GetMappings(ctx, id)
@@ -173,13 +166,7 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	return sm, nil
 }
 
-func (p *Provider) GetSeasonCredits(_ context.Context, _ string, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}
 
 func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, episodeNum int, _ string) (*metadata.EpisodeMetadata, error) {
 	// Fetch episodes and find the matching one
@@ -211,10 +198,4 @@ func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, epi
 	return nil, metadata.ErrNotFound
 }
 
-func (p *Provider) GetEpisodeCredits(_ context.Context, _ string, _, _ int) (*metadata.Credits, error) {
-	return nil, metadata.ErrNotFound
-}
 
-func (p *Provider) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
-	return nil, metadata.ErrNotFound
-}

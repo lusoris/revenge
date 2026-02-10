@@ -17,37 +17,55 @@ SELECT COUNT(*) FROM shared.users
 WHERE deleted_at IS NULL
   AND ($1::boolean IS NULL OR is_active = $1)
   AND ($2::boolean IS NULL OR is_admin = $2)
+  AND ($3::text IS NULL OR (
+    username ILIKE '%' || $3 || '%'
+    OR email ILIKE '%' || $3 || '%'
+    OR display_name ILIKE '%' || $3 || '%'
+  ))
 `
 
 type CountUsersParams struct {
-	IsActive *bool `json:"isActive"`
-	IsAdmin  *bool `json:"isAdmin"`
+	IsActive *bool   `json:"isActive"`
+	IsAdmin  *bool   `json:"isAdmin"`
+	Query    *string `json:"query"`
 }
 
 // Count users matching filters
 func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countUsers, arg.IsActive, arg.IsAdmin)
+	row := q.db.QueryRow(ctx, countUsers, arg.IsActive, arg.IsAdmin, arg.Query)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
 const createAvatar = `-- name: CreateAvatar :one
-INSERT INTO shared.user_avatars (
-    user_id,
-    file_path,
-    file_size_bytes,
-    mime_type,
-    width,
-    height,
-    is_animated,
-    version,
-    is_current,
-    uploaded_from_ip,
-    uploaded_from_user_agent
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, TRUE, $9, $10
-) RETURNING id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at
+INSERT INTO
+    shared.user_avatars (
+        user_id,
+        file_path,
+        file_size_bytes,
+        mime_type,
+        width,
+        height,
+        is_animated,
+        version,
+        is_current,
+        uploaded_from_ip,
+        uploaded_from_user_agent
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        TRUE,
+        $9,
+        $10
+    ) RETURNING id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at
 `
 
 type CreateAvatarParams struct {
@@ -100,18 +118,27 @@ func (q *Queries) CreateAvatar(ctx context.Context, arg CreateAvatarParams) (Sha
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO shared.users (
-    username,
-    email,
-    password_hash,
-    display_name,
-    timezone,
-    qar_enabled,
-    is_active,
-    is_admin
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at
+INSERT INTO
+    shared.users (
+        username,
+        email,
+        password_hash,
+        display_name,
+        timezone,
+        qar_enabled,
+        is_active,
+        is_admin
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8
+    ) RETURNING id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at
 `
 
 type CreateUserParams struct {
@@ -162,8 +189,12 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (SharedU
 
 const deleteAvatar = `-- name: DeleteAvatar :exec
 UPDATE shared.user_avatars
-SET deleted_at = NOW(), updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    deleted_at = NOW(),
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Soft delete an avatar
@@ -174,8 +205,12 @@ func (q *Queries) DeleteAvatar(ctx context.Context, id uuid.UUID) error {
 
 const deleteUser = `-- name: DeleteUser :exec
 UPDATE shared.users
-SET deleted_at = NOW(), updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    deleted_at = NOW(),
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Soft delete a user
@@ -185,8 +220,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const deleteUserPreferences = `-- name: DeleteUserPreferences :exec
-DELETE FROM shared.user_preferences
-WHERE user_id = $1
+DELETE FROM shared.user_preferences WHERE user_id = $1
 `
 
 // Delete user preferences (cleanup on user deletion)
@@ -196,8 +230,11 @@ func (q *Queries) DeleteUserPreferences(ctx context.Context, userID uuid.UUID) e
 }
 
 const getAvatarByID = `-- name: GetAvatarByID :one
-SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at FROM shared.user_avatars
-WHERE id = $1 AND deleted_at IS NULL
+SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at
+FROM shared.user_avatars
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Get a specific avatar by ID
@@ -227,8 +264,12 @@ func (q *Queries) GetAvatarByID(ctx context.Context, id uuid.UUID) (SharedUserAv
 
 const getCurrentAvatar = `-- name: GetCurrentAvatar :one
 
-SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at FROM shared.user_avatars
-WHERE user_id = $1 AND is_current = TRUE AND deleted_at IS NULL
+SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at
+FROM shared.user_avatars
+WHERE
+    user_id = $1
+    AND is_current = TRUE
+    AND deleted_at IS NULL
 `
 
 // ============================================================================
@@ -274,8 +315,7 @@ func (q *Queries) GetLatestAvatarVersion(ctx context.Context, userID uuid.UUID) 
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at FROM shared.users
-WHERE email = $1 AND deleted_at IS NULL
+SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at FROM shared.users WHERE email = $1 AND deleted_at IS NULL
 `
 
 // Get a user by email
@@ -305,8 +345,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (SharedUser,
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at FROM shared.users
-WHERE id = $1 AND deleted_at IS NULL
+SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at FROM shared.users WHERE id = $1 AND deleted_at IS NULL
 `
 
 // Get a user by their UUID
@@ -336,8 +375,11 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (SharedUser, er
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at FROM shared.users
-WHERE username = $1 AND deleted_at IS NULL
+SELECT id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at
+FROM shared.users
+WHERE
+    username = $1
+    AND deleted_at IS NULL
 `
 
 // Get a user by username
@@ -368,8 +410,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Share
 
 const getUserPreferences = `-- name: GetUserPreferences :one
 
-SELECT user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language FROM shared.user_preferences
-WHERE user_id = $1
+SELECT user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language FROM shared.user_preferences WHERE user_id = $1
 `
 
 // ============================================================================
@@ -401,8 +442,7 @@ func (q *Queries) GetUserPreferences(ctx context.Context, userID uuid.UUID) (Sha
 }
 
 const hardDeleteAvatar = `-- name: HardDeleteAvatar :exec
-DELETE FROM shared.user_avatars
-WHERE id = $1
+DELETE FROM shared.user_avatars WHERE id = $1
 `
 
 // Permanently delete an avatar file
@@ -412,8 +452,7 @@ func (q *Queries) HardDeleteAvatar(ctx context.Context, id uuid.UUID) error {
 }
 
 const hardDeleteUser = `-- name: HardDeleteUser :exec
-DELETE FROM shared.users
-WHERE id = $1
+DELETE FROM shared.users WHERE id = $1
 `
 
 // Permanently delete a user (GDPR compliance)
@@ -423,10 +462,15 @@ func (q *Queries) HardDeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const listUserAvatars = `-- name: ListUserAvatars :many
-SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at FROM shared.user_avatars
-WHERE user_id = $1 AND deleted_at IS NULL
+SELECT id, user_id, file_path, file_size_bytes, mime_type, width, height, is_animated, version, is_current, uploaded_at, uploaded_from_ip, uploaded_from_user_agent, created_at, updated_at, deleted_at
+FROM shared.user_avatars
+WHERE
+    user_id = $1
+    AND deleted_at IS NULL
 ORDER BY version DESC
-LIMIT $2 OFFSET $3
+LIMIT $2
+OFFSET
+    $3
 `
 
 type ListUserAvatarsParams struct {
@@ -478,15 +522,21 @@ SELECT id, username, email, password_hash, display_name, avatar_url, locale, tim
 WHERE deleted_at IS NULL
   AND ($1::boolean IS NULL OR is_active = $1)
   AND ($2::boolean IS NULL OR is_admin = $2)
+  AND ($3::text IS NULL OR (
+    username ILIKE '%' || $3 || '%'
+    OR email ILIKE '%' || $3 || '%'
+    OR display_name ILIKE '%' || $3 || '%'
+  ))
 ORDER BY created_at DESC
-LIMIT $4 OFFSET $3
+LIMIT $5 OFFSET $4
 `
 
 type ListUsersParams struct {
-	IsActive *bool `json:"isActive"`
-	IsAdmin  *bool `json:"isAdmin"`
-	Offset   int32 `json:"offset"`
-	Limit    int32 `json:"limit"`
+	IsActive *bool   `json:"isActive"`
+	IsAdmin  *bool   `json:"isAdmin"`
+	Query    *string `json:"query"`
+	Offset   int32   `json:"offset"`
+	Limit    int32   `json:"limit"`
 }
 
 // List all active users with optional filters
@@ -495,6 +545,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedU
 	rows, err := q.db.Query(ctx, listUsers,
 		arg.IsActive,
 		arg.IsAdmin,
+		arg.Query,
 		arg.Offset,
 		arg.Limit,
 	)
@@ -536,8 +587,12 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]SharedU
 
 const setCurrentAvatar = `-- name: SetCurrentAvatar :exec
 UPDATE shared.user_avatars
-SET is_current = TRUE, updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    is_current = TRUE,
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Set an existing avatar as current
@@ -548,8 +603,13 @@ func (q *Queries) SetCurrentAvatar(ctx context.Context, id uuid.UUID) error {
 
 const unsetCurrentAvatars = `-- name: UnsetCurrentAvatars :exec
 UPDATE shared.user_avatars
-SET is_current = FALSE, updated_at = NOW()
-WHERE user_id = $1 AND is_current = TRUE AND deleted_at IS NULL
+SET
+    is_current = FALSE,
+    updated_at = NOW()
+WHERE
+    user_id = $1
+    AND is_current = TRUE
+    AND deleted_at IS NULL
 `
 
 // Mark all user's avatars as not current (before setting a new current)
@@ -560,8 +620,12 @@ func (q *Queries) UnsetCurrentAvatars(ctx context.Context, userID uuid.UUID) err
 
 const updateLastLogin = `-- name: UpdateLastLogin :exec
 UPDATE shared.users
-SET last_login_at = NOW(), updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    last_login_at = NOW(),
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Update user last login timestamp
@@ -572,8 +636,12 @@ func (q *Queries) UpdateLastLogin(ctx context.Context, id uuid.UUID) error {
 
 const updatePassword = `-- name: UpdatePassword :exec
 UPDATE shared.users
-SET password_hash = $2, updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    password_hash = $2,
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 type UpdatePasswordParams struct {
@@ -591,15 +659,34 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE shared.users
 SET
     email = COALESCE($1, email),
-    display_name = COALESCE($2, display_name),
-    avatar_url = COALESCE($3, avatar_url),
-    timezone = COALESCE($4, timezone),
-    qar_enabled = COALESCE($5, qar_enabled),
-    is_active = COALESCE($6, is_active),
-    is_admin = COALESCE($7, is_admin),
+    display_name = COALESCE(
+        $2,
+        display_name
+    ),
+    avatar_url = COALESCE(
+        $3,
+        avatar_url
+    ),
+    timezone = COALESCE(
+        $4,
+        timezone
+    ),
+    qar_enabled = COALESCE(
+        $5,
+        qar_enabled
+    ),
+    is_active = COALESCE(
+        $6,
+        is_active
+    ),
+    is_admin = COALESCE(
+        $7,
+        is_admin
+    ),
     updated_at = NOW()
-WHERE id = $8 AND deleted_at IS NULL
-RETURNING id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at
+WHERE
+    id = $8
+    AND deleted_at IS NULL RETURNING id, username, email, password_hash, display_name, avatar_url, locale, timezone, qar_enabled, is_active, is_admin, email_verified, email_verified_at, created_at, updated_at, last_login_at, deleted_at
 `
 
 type UpdateUserParams struct {
@@ -649,40 +736,94 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (SharedU
 }
 
 const upsertUserPreferences = `-- name: UpsertUserPreferences :one
-INSERT INTO shared.user_preferences (
-    user_id,
-    email_notifications,
-    push_notifications,
-    digest_notifications,
-    profile_visibility,
-    show_email,
-    show_activity,
-    theme,
-    display_language,
-    content_language,
-    metadata_language,
-    show_adult_content,
-    show_spoilers,
-    auto_play_videos
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
-)
-ON CONFLICT (user_id) DO UPDATE SET
-    email_notifications = COALESCE(EXCLUDED.email_notifications, user_preferences.email_notifications),
-    push_notifications = COALESCE(EXCLUDED.push_notifications, user_preferences.push_notifications),
-    digest_notifications = COALESCE(EXCLUDED.digest_notifications, user_preferences.digest_notifications),
-    profile_visibility = COALESCE(EXCLUDED.profile_visibility, user_preferences.profile_visibility),
-    show_email = COALESCE(EXCLUDED.show_email, user_preferences.show_email),
-    show_activity = COALESCE(EXCLUDED.show_activity, user_preferences.show_activity),
-    theme = COALESCE(EXCLUDED.theme, user_preferences.theme),
-    display_language = COALESCE(EXCLUDED.display_language, user_preferences.display_language),
-    content_language = COALESCE(EXCLUDED.content_language, user_preferences.content_language),
-    metadata_language = COALESCE(EXCLUDED.metadata_language, user_preferences.metadata_language),
-    show_adult_content = COALESCE(EXCLUDED.show_adult_content, user_preferences.show_adult_content),
-    show_spoilers = COALESCE(EXCLUDED.show_spoilers, user_preferences.show_spoilers),
-    auto_play_videos = COALESCE(EXCLUDED.auto_play_videos, user_preferences.auto_play_videos),
-    updated_at = NOW()
-RETURNING user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language
+INSERT INTO
+    shared.user_preferences (
+        user_id,
+        email_notifications,
+        push_notifications,
+        digest_notifications,
+        profile_visibility,
+        show_email,
+        show_activity,
+        theme,
+        display_language,
+        content_language,
+        metadata_language,
+        show_adult_content,
+        show_spoilers,
+        auto_play_videos
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12,
+        $13,
+        $14
+    ) ON CONFLICT (user_id) DO
+UPDATE
+SET
+    email_notifications = COALESCE(
+        EXCLUDED.email_notifications,
+        user_preferences.email_notifications
+    ),
+    push_notifications = COALESCE(
+        EXCLUDED.push_notifications,
+        user_preferences.push_notifications
+    ),
+    digest_notifications = COALESCE(
+        EXCLUDED.digest_notifications,
+        user_preferences.digest_notifications
+    ),
+    profile_visibility = COALESCE(
+        EXCLUDED.profile_visibility,
+        user_preferences.profile_visibility
+    ),
+    show_email = COALESCE(
+        EXCLUDED.show_email,
+        user_preferences.show_email
+    ),
+    show_activity = COALESCE(
+        EXCLUDED.show_activity,
+        user_preferences.show_activity
+    ),
+    theme = COALESCE(
+        EXCLUDED.theme,
+        user_preferences.theme
+    ),
+    display_language = COALESCE(
+        EXCLUDED.display_language,
+        user_preferences.display_language
+    ),
+    content_language = COALESCE(
+        EXCLUDED.content_language,
+        user_preferences.content_language
+    ),
+    metadata_language = COALESCE(
+        EXCLUDED.metadata_language,
+        user_preferences.metadata_language
+    ),
+    show_adult_content = COALESCE(
+        EXCLUDED.show_adult_content,
+        user_preferences.show_adult_content
+    ),
+    show_spoilers = COALESCE(
+        EXCLUDED.show_spoilers,
+        user_preferences.show_spoilers
+    ),
+    auto_play_videos = COALESCE(
+        EXCLUDED.auto_play_videos,
+        user_preferences.auto_play_videos
+    ),
+    updated_at = NOW() RETURNING user_id, email_notifications, push_notifications, digest_notifications, profile_visibility, show_email, show_activity, theme, display_language, content_language, show_adult_content, show_spoilers, auto_play_videos, created_at, updated_at, metadata_language
 `
 
 type UpsertUserPreferencesParams struct {
@@ -744,8 +885,13 @@ func (q *Queries) UpsertUserPreferences(ctx context.Context, arg UpsertUserPrefe
 
 const verifyEmail = `-- name: VerifyEmail :exec
 UPDATE shared.users
-SET email_verified = TRUE, email_verified_at = NOW(), updated_at = NOW()
-WHERE id = $1 AND deleted_at IS NULL
+SET
+    email_verified = TRUE,
+    email_verified_at = NOW(),
+    updated_at = NOW()
+WHERE
+    id = $1
+    AND deleted_at IS NULL
 `
 
 // Mark email as verified

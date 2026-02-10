@@ -13,11 +13,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/lusoris/revenge/internal/config"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
+	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // ============================================================================
@@ -632,7 +633,7 @@ func TestNoDB_UpdateUser(t *testing.T) {
 			},
 		}
 		svc := newTestService(repo)
-		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr("name")})
+		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "user not found")
 	})
@@ -648,7 +649,7 @@ func TestNoDB_UpdateUser(t *testing.T) {
 			},
 		}
 		svc := newTestService(repo)
-		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr("name")})
+		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
 		require.Error(t, err)
 	})
 }
@@ -1037,7 +1038,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 				svc := newTestService(repo)
 				result, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 					UserID: userID,
-					Theme:  ptr(theme),
+					Theme:  ptr.To(theme),
 				})
 				require.NoError(t, err)
 				assert.Equal(t, theme, *result.Theme)
@@ -1050,7 +1051,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		svc := newTestService(&mockRepo{})
 		_, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 			UserID: userID,
-			Theme:  ptr("invalid"),
+			Theme:  ptr.To("invalid"),
 		})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid theme")
@@ -1071,7 +1072,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 				svc := newTestService(repo)
 				result, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 					UserID:            userID,
-					ProfileVisibility: ptr(vis),
+					ProfileVisibility: ptr.To(vis),
 				})
 				require.NoError(t, err)
 				assert.Equal(t, vis, *result.ProfileVisibility)
@@ -1084,7 +1085,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		svc := newTestService(&mockRepo{})
 		_, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 			UserID:            userID,
-			ProfileVisibility: ptr("invalid"),
+			ProfileVisibility: ptr.To("invalid"),
 		})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid profile visibility")
@@ -1462,17 +1463,17 @@ func TestNoDB_validatePreferences(t *testing.T) {
 		params  UpsertPreferencesParams
 		wantErr string
 	}{
-		{name: "valid theme light", params: UpsertPreferencesParams{Theme: ptr("light")}},
-		{name: "valid theme dark", params: UpsertPreferencesParams{Theme: ptr("dark")}},
-		{name: "valid theme system", params: UpsertPreferencesParams{Theme: ptr("system")}},
-		{name: "invalid theme", params: UpsertPreferencesParams{Theme: ptr("rainbow")}, wantErr: "invalid theme"},
-		{name: "valid visibility public", params: UpsertPreferencesParams{ProfileVisibility: ptr("public")}},
-		{name: "valid visibility friends", params: UpsertPreferencesParams{ProfileVisibility: ptr("friends")}},
-		{name: "valid visibility private", params: UpsertPreferencesParams{ProfileVisibility: ptr("private")}},
-		{name: "invalid visibility", params: UpsertPreferencesParams{ProfileVisibility: ptr("hidden")}, wantErr: "invalid profile visibility"},
+		{name: "valid theme light", params: UpsertPreferencesParams{Theme: ptr.To("light")}},
+		{name: "valid theme dark", params: UpsertPreferencesParams{Theme: ptr.To("dark")}},
+		{name: "valid theme system", params: UpsertPreferencesParams{Theme: ptr.To("system")}},
+		{name: "invalid theme", params: UpsertPreferencesParams{Theme: ptr.To("rainbow")}, wantErr: "invalid theme"},
+		{name: "valid visibility public", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("public")}},
+		{name: "valid visibility friends", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("friends")}},
+		{name: "valid visibility private", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("private")}},
+		{name: "invalid visibility", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("hidden")}, wantErr: "invalid profile visibility"},
 		{name: "nil theme and visibility passes", params: UpsertPreferencesParams{}},
-		{name: "both valid", params: UpsertPreferencesParams{Theme: ptr("dark"), ProfileVisibility: ptr("public")}},
-		{name: "invalid theme overrides valid visibility", params: UpsertPreferencesParams{Theme: ptr("neon"), ProfileVisibility: ptr("public")}, wantErr: "invalid theme"},
+		{name: "both valid", params: UpsertPreferencesParams{Theme: ptr.To("dark"), ProfileVisibility: ptr.To("public")}},
+		{name: "invalid theme overrides valid visibility", params: UpsertPreferencesParams{Theme: ptr.To("neon"), ProfileVisibility: ptr.To("public")}, wantErr: "invalid theme"},
 	}
 
 	for _, tt := range tests {
@@ -1889,7 +1890,7 @@ func TestNoDB_CachedService_UpdateUser_RepoError(t *testing.T) {
 	defer testCache.Close()
 	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
-	_, err = cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr("name")})
+	_, err = cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
 	require.Error(t, err)
 }
 

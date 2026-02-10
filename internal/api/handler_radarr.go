@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"log/slog"
@@ -28,11 +29,14 @@ func (h *Handler) AdminGetRadarrStatus(ctx context.Context) (ogen.AdminGetRadarr
 	h.logger.Debug("AdminGetRadarrStatus called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetRadarrStatusForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetRadarrStatusUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetRadarrStatusForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Radarr integration is configured
@@ -96,11 +100,14 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 	h.logger.Debug("AdminTriggerRadarrSync called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminTriggerRadarrSyncForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminTriggerRadarrSyncUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminTriggerRadarrSyncForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Radarr integration is configured
@@ -140,21 +147,11 @@ func (h *Handler) AdminTriggerRadarrSync(ctx context.Context) (ogen.AdminTrigger
 		}, nil
 	}
 
-	// No River client, start sync directly (blocking)
-	go func() {
-		// Use a new context with timeout since the request context will be done
-		syncCtx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-		defer cancel()
-
-		if _, err := h.radarrService.SyncLibrary(syncCtx); err != nil {
-			h.logger.Error("Radarr sync failed", slog.Any("error",err))
-		}
-	}()
-
-	h.logger.Info("Radarr sync started directly")
-	return &ogen.RadarrSyncResponse{
-		Message: "Sync started",
-		Status:  ogen.RadarrSyncResponseStatusStarted,
+	// River client is required for async job processing
+	h.logger.Error("River client not available, cannot queue Radarr sync")
+	return &ogen.AdminTriggerRadarrSyncServiceUnavailable{
+		Code:    503,
+		Message: "Job queue not available",
 	}, nil
 }
 
@@ -164,11 +161,14 @@ func (h *Handler) AdminGetRadarrQualityProfiles(ctx context.Context) (ogen.Admin
 	h.logger.Debug("AdminGetRadarrQualityProfiles called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetRadarrQualityProfilesForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetRadarrQualityProfilesUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetRadarrQualityProfilesForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Radarr integration is configured
@@ -211,11 +211,14 @@ func (h *Handler) AdminGetRadarrRootFolders(ctx context.Context) (ogen.AdminGetR
 	h.logger.Debug("AdminGetRadarrRootFolders called")
 
 	// Check admin authorization
-	if !h.isAdmin(ctx) {
-		return &ogen.AdminGetRadarrRootFoldersForbidden{
-			Code:    403,
-			Message: "Admin access required",
-		}, nil
+	if _, err := h.requireAdmin(ctx); err != nil {
+		if errors.Is(err, errNotAuthenticated) {
+			return &ogen.AdminGetRadarrRootFoldersUnauthorized{Code: 401, Message: "Authentication required"}, nil
+		}
+		if errors.Is(err, errNotAdmin) {
+			return &ogen.AdminGetRadarrRootFoldersForbidden{Code: 403, Message: "Admin access required"}, nil
+		}
+		return nil, err
 	}
 
 	// Check if Radarr integration is configured

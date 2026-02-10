@@ -7,15 +7,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/govalues/decimal"
 	"github.com/google/uuid"
+	"github.com/govalues/decimal"
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/content/shared/scanner"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
-	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -401,11 +402,13 @@ func TestNewSearchIndexWorker(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewSearchIndexWorker(nil, nil, logger)
+	worker := NewSearchIndexWorker(nil, nil, nil, nil, logger)
 
 	assert.NotNil(t, worker)
 	assert.Nil(t, worker.service)
 	assert.Nil(t, worker.searchService)
+	assert.Nil(t, worker.episodeSearchService)
+	assert.Nil(t, worker.seasonSearchService)
 	assert.NotNil(t, worker.logger)
 }
 
@@ -459,7 +462,7 @@ func TestSearchIndexWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewSearchIndexWorker(nil, nil, logger)
+	worker := NewSearchIndexWorker(nil, nil, nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[SearchIndexArgs]{})
 	assert.Equal(t, 10*time.Minute, timeout)
@@ -548,7 +551,7 @@ func TestSearchIndexWorker_Work_SearchDisabled(t *testing.T) {
 	logger := logging.NewTestLogger()
 	// A nil-client TVShowSearchService will have IsEnabled() return false.
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: KindSearchIndex},
@@ -872,9 +875,9 @@ func (m *mockService) SearchSeries(ctx context.Context, query string, limit, off
 	return args.Get(0).([]tvshow.Series), args.Error(1)
 }
 
-func (m *mockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]tvshow.Series, error) {
+func (m *mockService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]tvshow.Series, int64, error) {
 	args := m.Called(ctx, limit, offset)
-	return args.Get(0).([]tvshow.Series), args.Error(1)
+	return args.Get(0).([]tvshow.Series), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *mockService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]tvshow.Series, error) {
@@ -1104,14 +1107,14 @@ func (m *mockService) DeleteEpisodeFile(ctx context.Context, id uuid.UUID) error
 	return args.Error(0)
 }
 
-func (m *mockService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
-	return args.Get(0).([]tvshow.SeriesCredit), args.Error(1)
+func (m *mockService) GetSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]tvshow.SeriesCredit, int64, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
+	return args.Get(0).([]tvshow.SeriesCredit), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *mockService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesCredit, error) {
-	args := m.Called(ctx, seriesID)
-	return args.Get(0).([]tvshow.SeriesCredit), args.Error(1)
+func (m *mockService) GetSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]tvshow.SeriesCredit, int64, error) {
+	args := m.Called(ctx, seriesID, limit, offset)
+	return args.Get(0).([]tvshow.SeriesCredit), args.Get(1).(int64), args.Error(2)
 }
 
 func (m *mockService) GetEpisodeGuestStars(ctx context.Context, episodeID uuid.UUID) ([]tvshow.EpisodeCredit, error) {
@@ -1127,6 +1130,14 @@ func (m *mockService) GetEpisodeCrew(ctx context.Context, episodeID uuid.UUID) (
 func (m *mockService) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]tvshow.SeriesGenre, error) {
 	args := m.Called(ctx, seriesID)
 	return args.Get(0).([]tvshow.SeriesGenre), args.Error(1)
+}
+
+func (m *mockService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]content.GenreSummary), args.Error(1)
 }
 
 func (m *mockService) GetSeriesNetworks(ctx context.Context, seriesID uuid.UUID) ([]tvshow.Network, error) {
@@ -1153,6 +1164,11 @@ func (m *mockService) GetEpisodeProgress(ctx context.Context, userID, episodeID 
 func (m *mockService) MarkEpisodeWatched(ctx context.Context, userID, episodeID uuid.UUID) error {
 	args := m.Called(ctx, userID, episodeID)
 	return args.Error(0)
+}
+
+func (m *mockService) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	args := m.Called(ctx, userID, episodeIDs)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (m *mockService) MarkSeasonWatched(ctx context.Context, userID, seasonID uuid.UUID) error {
@@ -1816,7 +1832,7 @@ func TestSearchIndexWorker_Work_SearchDisabled_FullReindex(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: KindSearchIndex},
@@ -1835,7 +1851,7 @@ func TestSearchIndexWorker_Work_SpecificSeries_SearchDisabled(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	job := &river.Job[SearchIndexArgs]{
@@ -1855,7 +1871,7 @@ func TestSearchIndexWorker_Work_NoArgs_SearchDisabled(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	searchSvc := &search.TVShowSearchService{}
-	worker := NewSearchIndexWorker(nil, searchSvc, logger)
+	worker := NewSearchIndexWorker(nil, searchSvc, nil, nil, logger)
 
 	job := &river.Job[SearchIndexArgs]{
 		JobRow: &rivertype.JobRow{ID: 3, Kind: KindSearchIndex},
@@ -3153,7 +3169,7 @@ func TestRegisterWorkers(t *testing.T) {
 	libraryScan := NewLibraryScanWorker(nil, nil, nil, logger)
 	metadataRefresh := NewMetadataRefreshWorker(nil, nil, logger)
 	fileMatch := NewFileMatchWorker(nil, nil, logger)
-	searchIndex := NewSearchIndexWorker(nil, nil, logger)
+	searchIndex := NewSearchIndexWorker(nil, nil, nil, nil, logger)
 	seriesRefresh := NewSeriesRefreshWorker(nil, nil, logger)
 
 	err := RegisterWorkers(workers, libraryScan, metadataRefresh, fileMatch, searchIndex, seriesRefresh)

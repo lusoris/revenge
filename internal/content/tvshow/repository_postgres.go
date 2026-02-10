@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/lusoris/revenge/internal/content"
 	tvshowdb "github.com/lusoris/revenge/internal/content/tvshow/db"
 )
 
@@ -811,8 +812,12 @@ func (r *postgresRepository) CreateSeriesCredit(ctx context.Context, params Crea
 	return dbSeriesCreditToSeriesCredit(dbCredit), nil
 }
 
-func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	dbCredits, err := r.queries.ListSeriesCast(ctx, seriesID)
+func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	dbCredits, err := r.queries.ListSeriesCast(ctx, tvshowdb.ListSeriesCastParams{
+		SeriesID: seriesID,
+		Limit:    limit,
+		Offset:   offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list series cast: %w", err)
 	}
@@ -824,8 +829,16 @@ func (r *postgresRepository) ListSeriesCast(ctx context.Context, seriesID uuid.U
 	return result, nil
 }
 
-func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID) ([]SeriesCredit, error) {
-	dbCredits, err := r.queries.ListSeriesCrew(ctx, seriesID)
+func (r *postgresRepository) CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	return r.queries.CountSeriesCast(ctx, seriesID)
+}
+
+func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.UUID, limit, offset int32) ([]SeriesCredit, error) {
+	dbCredits, err := r.queries.ListSeriesCrew(ctx, tvshowdb.ListSeriesCrewParams{
+		SeriesID: seriesID,
+		Limit:    limit,
+		Offset:   offset,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list series crew: %w", err)
 	}
@@ -835,6 +848,10 @@ func (r *postgresRepository) ListSeriesCrew(ctx context.Context, seriesID uuid.U
 		result[i] = *dbSeriesCreditToSeriesCredit(c)
 	}
 	return result, nil
+}
+
+func (r *postgresRepository) CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error) {
+	return r.queries.CountSeriesCrew(ctx, seriesID)
 }
 
 func (r *postgresRepository) DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error {
@@ -918,6 +935,22 @@ func (r *postgresRepository) ListSeriesGenres(ctx context.Context, seriesID uuid
 		}
 	}
 	return result, nil
+}
+
+func (r *postgresRepository) ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	rows, err := r.queries.ListDistinctSeriesGenres(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list distinct series genres: %w", err)
+	}
+	genres := make([]content.GenreSummary, len(rows))
+	for i, row := range rows {
+		genres[i] = content.GenreSummary{
+			TMDbGenreID: row.TmdbGenreID,
+			Name:        row.Name,
+			ItemCount:   row.ItemCount,
+		}
+	}
+	return genres, nil
 }
 
 func (r *postgresRepository) DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error {
@@ -1043,6 +1076,17 @@ func (r *postgresRepository) MarkEpisodeWatched(ctx context.Context, userID, epi
 		return nil, fmt.Errorf("failed to mark episode watched: %w", err)
 	}
 	return dbEpisodeWatchedToEpisodeWatched(dbWatched), nil
+}
+
+func (r *postgresRepository) MarkEpisodesWatchedBulk(ctx context.Context, userID uuid.UUID, episodeIDs []uuid.UUID) (int64, error) {
+	affected, err := r.queries.MarkEpisodesWatchedBulk(ctx, tvshowdb.MarkEpisodesWatchedBulkParams{
+		UserID:     userID,
+		EpisodeIds: episodeIDs,
+	})
+	if err != nil {
+		return 0, fmt.Errorf("failed to bulk mark episodes watched: %w", err)
+	}
+	return affected, nil
 }
 
 func (r *postgresRepository) GetWatchProgress(ctx context.Context, userID, episodeID uuid.UUID) (*EpisodeWatched, error) {

@@ -1,158 +1,381 @@
-# Revenge Configuration Example
-# Copy this file to config.yaml or config.local.yaml and adjust values.
-# Environment variables with REVENGE_ prefix override these settings.
+# ==============================================================================
+# Revenge Media Server — Configuration Reference
+# ==============================================================================
 #
-# Examples:
+# Copy this file to config.yaml and adjust values for your deployment.
+# All settings have sensible defaults; only override what you need.
+#
+# Environment variable overrides use the REVENGE_ prefix with uppercase keys
+# and underscores replacing dots/nesting:
 #   REVENGE_SERVER_PORT=9000
 #   REVENGE_DATABASE_URL=postgres://...
-#   REVENGE_LOG_LEVEL=debug
+#   REVENGE_LOGGING_LEVEL=debug
+#   REVENGE_AUTH_JWT_SECRET=my-secret-key
+#   REVENGE_CACHE_ENABLED=true
 
-# =============================================================================
-# Server Configuration
-# =============================================================================
+# ==============================================================================
+# Server
+# ==============================================================================
 server:
-  # Host to bind to (0.0.0.0 for all interfaces, 127.0.0.1 for localhost only)
-  host: "0.0.0.0"
+  # Bind address and port
+  host: "0.0.0.0"          # 0.0.0.0 = all interfaces, 127.0.0.1 = localhost only
+  port: 8096
 
-  # Port to listen on
-  port: 8080
+  # HTTP timeouts
+  read_timeout: 30s        # Max duration for reading the entire request
+  write_timeout: 30s       # Max duration before timing out response writes
+  idle_timeout: 120s       # Max idle time between requests (keep-alive)
+  shutdown_timeout: 10s    # Grace period for in-flight requests on shutdown
 
-  # Maximum duration for reading the entire request, including the body
-  read_timeout: 30s
+  # ---------------------------------------------------------------------------
+  # CORS — Cross-Origin Resource Sharing (for browser-based frontends)
+  # ---------------------------------------------------------------------------
+  cors:
+    # Allowed origins for cross-origin requests.
+    # Use ["*"] to allow all (the middleware reflects the request Origin when
+    # allow_credentials is true, since browsers reject literal "*" with cookies).
+    # For production, list your frontend URL(s) explicitly.
+    allowed_origins:
+      - "*"
+      # - "https://app.example.com"
+      # - "http://localhost:3000"
 
-  # Maximum duration before timing out writes of the response
-  write_timeout: 30s
+    # Allow cookies / Authorization headers in cross-origin requests.
+    allow_credentials: true
 
-  # Maximum amount of time to wait for the next request when keep-alives are enabled
-  idle_timeout: 120s
+    # How long browsers can cache preflight (OPTIONS) responses.
+    max_age: 12h
 
-  # Maximum duration to wait for active connections to finish during shutdown
-  shutdown_timeout: 30s
+  # ---------------------------------------------------------------------------
+  # Cookie-Based Auth — HttpOnly cookies for SSR / SPA frontends
+  # ---------------------------------------------------------------------------
+  # When enabled, login and refresh endpoints set HttpOnly cookies in addition
+  # to returning tokens in the JSON body. A middleware reads these cookies and
+  # injects them as Bearer tokens. CSRF protection is automatically enabled.
+  cookie_auth:
+    enabled: false
+    # domain: ".example.com"  # Restrict cookie to a domain (empty = request host)
+    secure: true               # Set Secure flag (HTTPS only) — disable for local dev
+    same_site: "lax"           # "strict", "lax", or "none"
+    path: "/"
 
-  # API Rate Limiting Configuration
+  # ---------------------------------------------------------------------------
+  # Rate Limiting
+  # ---------------------------------------------------------------------------
   rate_limit:
-    # Enable/disable rate limiting
     enabled: true
 
-    # Backend for rate limiting: "memory" (single instance) or "redis" (distributed)
-    # Redis backend requires cache.enabled=true and a valid cache.url
-    # Falls back to in-memory if Redis is unavailable
-    backend: "memory"
+    # Backend: "memory" (single-instance) or "redis" (distributed, needs cache)
+    # Falls back to memory if Redis is unavailable.
+    backend: "redis"
 
-    # Global rate limit (applies to all endpoints)
+    # Global rate limit — applies to all endpoints
     global:
-      requests_per_second: 10
-      burst: 20
+      requests_per_second: 50
+      burst: 100
 
-    # Auth rate limit (stricter, applies to login/MFA/password reset)
+    # Auth rate limit — stricter, for login / MFA / password reset
     auth:
-      requests_per_second: 1
-      burst: 5
+      requests_per_second: 5
+      burst: 10
 
-# =============================================================================
-# Database Configuration (PostgreSQL)
-# =============================================================================
+# ==============================================================================
+# Database (PostgreSQL)
+# ==============================================================================
 database:
-  # PostgreSQL connection URL
+  # Connection URL
   # Format: postgres://user:password@host:port/database?sslmode=disable
-  url: "postgres://revenge:revenge@localhost:5432/revenge?sslmode=disable"
+  url: "postgres://revenge:changeme@localhost:5432/revenge?sslmode=disable"
 
-  # Maximum number of connections in the pool
-  # Recommended: (CPU cores * 2) + 1
-  max_conns: 25
+  # Connection pool sizing
+  max_conns: 0              # 0 = auto (CPU cores * 2 + 1)
+  min_conns: 2
 
-  # Minimum number of connections to keep idle
-  min_conns: 5
+  # Connection lifecycle
+  max_conn_lifetime: 30m    # Max lifetime before replacement
+  max_conn_idle_time: 5m    # Max idle time before close
+  health_check_period: 30s  # How often to health-check idle connections
 
-  # Maximum lifetime of a connection before it's closed and replaced
-  max_conn_lifetime: 30m
-
-  # Maximum time a connection can be idle before it's closed
-  max_conn_idle_time: 5m
-
-  # How often to check the health of idle connections
-  health_check_period: 1m
-
-# =============================================================================
-# Cache Configuration (Dragonfly/Redis)
-# =============================================================================
+# ==============================================================================
+# Cache (Dragonfly / Redis)
+# ==============================================================================
+# Powers L2 cache, distributed rate limiting, and session caching.
 cache:
-  # Enable/disable Redis/Dragonfly caching
-  # Required for rate_limit.backend="redis"
   enabled: false
+  url: ""                   # redis://[:password@]host:port[/db]
+  # url: "redis://localhost:6379"
 
-  # Redis/Dragonfly connection URL
-  # Format: redis://[:password@]host:port[/database]
-  url: "redis://localhost:6379"
-
-  # Number of retries for failed commands
-  max_retries: 3
-
-  # Connection pool size
-  pool_size: 10
-
-# =============================================================================
-# Search Configuration (Typesense)
-# =============================================================================
+# ==============================================================================
+# Search (Typesense)
+# ==============================================================================
+# Full-text search across movies, TV shows, episodes, seasons, people, and users.
+# Collections are created automatically on startup when enabled.
 search:
-  # Typesense server URL
-  url: "http://localhost:8108"
+  enabled: false
+  url: ""                   # e.g. "http://localhost:8108"
+  api_key: ""               # Typesense admin API key
 
-  # API key for authentication
-  api_key: ""
+# ==============================================================================
+# Logging
+# ==============================================================================
+logging:
+  level: "info"             # debug | info | warn | error
+  format: "text"            # text (colored, for dev) | json (structured, for prod)
+  development: false        # Enables caller info and stack traces
 
-# =============================================================================
-# Logging Configuration
-# =============================================================================
-log:
-  # Log level: debug, info, warn, error
-  level: "info"
-
-  # Log format: json (production), console (development with colors)
-  format: "json"
-
-# =============================================================================
-# Authentication Configuration
-# =============================================================================
+# ==============================================================================
+# Authentication
+# ==============================================================================
 auth:
-  # JWT signing secret (required for production)
-  # Generate with: openssl rand -base64 32
+  # JWT signing secret — REQUIRED for production.
+  # Generate: openssl rand -base64 32
   jwt_secret: ""
 
-# =============================================================================
-# Background Jobs Configuration (River)
-# =============================================================================
-jobs:
-  # Number of worker goroutines for processing jobs
-  # Set to 0 to disable job processing
-  workers: 4
+  # Token lifetimes
+  jwt_expiry: 24h           # Access token validity
+  refresh_expiry: 168h      # Refresh token validity (7 days)
 
-# =============================================================================
-# Movie Module Configuration
-# =============================================================================
+  # Account lockout after repeated failures
+  lockout_enabled: true
+  lockout_threshold: 5      # Failed attempts before lockout
+  lockout_window: 15m       # Window for counting failures
+
+  # AES-256 encryption key for MFA TOTP secrets, OIDC client secrets, etc.
+  # 32-byte hex-encoded (64 hex chars). If empty, derived from jwt_secret.
+  # Generate: openssl rand -hex 32
+  encryption_key: ""
+
+# ==============================================================================
+# Sessions
+# ==============================================================================
+session:
+  cache_enabled: true       # Cache sessions in Redis/Dragonfly (needs cache.enabled)
+  cache_ttl: 5m             # Session cache TTL
+  max_per_user: 10          # Max concurrent sessions per user
+  token_length: 32          # Session token length in bytes
+
+# ==============================================================================
+# RBAC (Casbin)
+# ==============================================================================
+rbac:
+  model_path: "config/casbin_model.conf"
+  policy_reload_interval: 5m   # How often to reload policies from the database
+
+# ==============================================================================
+# Background Jobs (River)
+# ==============================================================================
+# River uses PostgreSQL as its job queue backend (no extra infrastructure).
+# Jobs include: library scans, metadata enrichment, image downloads, search
+# reindexing, stats aggregation, and integration syncs.
+jobs:
+  max_workers: 100            # Max concurrent worker goroutines
+  fetch_cooldown: 200ms       # Wait between job fetch attempts
+  fetch_poll_interval: 2s     # Polling interval for new jobs
+  rescue_stuck_jobs_after: 30m  # Rescue jobs stuck longer than this
+  max_attempts: 25            # Max retry attempts for failed jobs
+
+# ==============================================================================
+# Movie Module
+# ==============================================================================
 movie:
-  # TMDb (The Movie Database) API configuration
   tmdb:
-    # TMDb API key (get from https://www.themoviedb.org/settings/api)
+    api_key: ""               # TMDb API key (https://www.themoviedb.org/settings/api)
+    rate_limit: 40            # Requests per 10 seconds (TMDb allows 40)
+    cache_ttl: 5m             # Cache TTL for TMDb responses
+    proxy_url: ""             # Optional: socks5://localhost:9050 or http://proxy:3128
+
+  library:
+    paths: []                 # Directories to scan for movie files
+      # - "/media/movies"
+      # - "/mnt/storage/movies"
+    scan_interval: "0s"       # Auto-scan interval (0s = disabled, "1h" = hourly)
+
+# ==============================================================================
+# Integrations
+# ==============================================================================
+integrations:
+  # ---------------------------------------------------------------------------
+  # Radarr — Movie management and webhook integration
+  # ---------------------------------------------------------------------------
+  radarr:
+    enabled: false
+    base_url: "http://localhost:7878"
+    api_key: ""                 # Radarr API key (Settings → General)
+    auto_sync: false            # Automatically sync library on interval
+    sync_interval: 300          # Sync interval in seconds (5 min)
+    webhook_secret: ""          # Shared secret for incoming Radarr webhooks
+
+  # ---------------------------------------------------------------------------
+  # Sonarr — TV show management and webhook integration
+  # ---------------------------------------------------------------------------
+  sonarr:
+    enabled: false
+    base_url: "http://localhost:8989"
+    api_key: ""                 # Sonarr API key (Settings → General)
+    auto_sync: false
+    sync_interval: 300
+    webhook_secret: ""          # Shared secret for incoming Sonarr webhooks
+
+# ==============================================================================
+# Metadata Providers
+# ==============================================================================
+# External APIs for enriching movie/TV metadata (artwork, ratings, descriptions).
+# Each provider can be independently enabled. API keys are required where noted.
+metadata:
+  # Fanart.tv — High-quality artwork (posters, backgrounds, logos)
+  fanarttv:
+    api_key: ""               # Project API key (https://fanart.tv/get-an-api-key/)
+    client_key: ""            # Personal key for faster access (optional)
+
+  # OMDb — Ratings aggregation (IMDb, Rotten Tomatoes, Metacritic)
+  omdb:
+    api_key: ""               # OMDb API key (https://www.omdbapi.com/apikey.aspx)
+
+  # TVmaze — Free TV metadata (no API key required)
+  tvmaze:
+    enabled: false
+
+  # AniList — Anime metadata (no API key required)
+  anilist:
+    enabled: false
+
+  # Kitsu — Anime metadata (no API key required)
+  kitsu:
+    enabled: false
+
+  # AniDB — Detailed anime episode data
+  anidb:
+    enabled: false
+    client_name: ""           # Registered client ID (https://anidb.net/perl-bin/animedb.pl?show=client)
+    client_version: 1
+
+  # MyAnimeList — Anime ratings and rankings
+  mal:
+    enabled: false
+    client_id: ""             # MAL API client ID (https://myanimelist.net/apiconfig)
+
+  # Trakt — Movie/TV community metadata and ratings
+  trakt:
+    enabled: false
+    client_id: ""             # Trakt API client ID (https://trakt.tv/oauth/applications)
+
+  # Simkl — Movie/TV/anime metadata
+  simkl:
+    enabled: false
+    client_id: ""             # Simkl API client ID (https://simkl.com/settings/developer/)
+
+  # Letterboxd — Movie metadata and ratings
+  letterboxd:
+    enabled: false
+    api_key: ""               # Letterboxd API key
+    api_secret: ""            # Letterboxd API shared secret
+
+# ==============================================================================
+# Email (Transactional)
+# ==============================================================================
+# Used for email verification, password reset, and notifications.
+email:
+  enabled: false
+  provider: "smtp"            # "smtp" or "sendgrid"
+  from_address: ""            # e.g. "noreply@example.com"
+  from_name: "Revenge Media Server"
+  base_url: "http://localhost:8096"  # App URL for links in emails
+
+  # SMTP configuration (when provider = smtp)
+  smtp:
+    host: ""                  # e.g. "smtp.gmail.com"
+    port: 587
+    username: ""
+    password: ""
+    use_tls: false            # Direct TLS (port 465)
+    use_starttls: true        # STARTTLS upgrade (port 587)
+    skip_verify: false        # Skip TLS cert verification (self-signed)
+    timeout: 30s
+
+  # SendGrid configuration (when provider = sendgrid)
+  sendgrid:
     api_key: ""
 
-    # Rate limit (requests per 10 seconds, TMDb allows 40)
-    rate_limit: 40
+# ==============================================================================
+# Avatar Upload
+# ==============================================================================
+avatar:
+  storage_path: "/data/avatars"
+  max_size_bytes: 2097152     # 2 MB
+  allowed_types:
+    - "image/jpeg"
+    - "image/png"
+    - "image/webp"
 
-    # Cache TTL for TMDb responses
-    cache_ttl: "5m"
+# ==============================================================================
+# Storage Backend
+# ==============================================================================
+# Used for avatars and other user-generated content.
+storage:
+  backend: "local"            # "local" or "s3"
 
-    # Optional SOCKS5/HTTP proxy URL for TMDb requests
-    # Example: socks5://localhost:9050 (Tor) or http://proxy:3128
-    proxy_url: ""
+  # Local filesystem storage
+  local:
+    path: "/data/storage"
 
-  # Library scanning configuration
-  library:
-    # Paths to scan for movie files
-    paths:
-      - "/media/movies"
-      # - "/mnt/storage/movies"
+  # S3-compatible storage (AWS S3, MinIO, Cloudflare R2, etc.)
+  # s3:
+  #   endpoint: ""            # Custom endpoint (MinIO: "http://minio:9000", empty for AWS)
+  #   region: "us-east-1"
+  #   bucket: ""
+  #   access_key_id: ""
+  #   secret_access_key: ""
+  #   use_path_style: false   # true for MinIO
 
-    # Automatic scan interval (0s = disabled, requires manual trigger)
-    # Example: "1h" for hourly scans
-    scan_interval: "0s"
+# ==============================================================================
+# Activity Log
+# ==============================================================================
+activity:
+  retention_days: 90          # Auto-delete logs older than this (cleanup job)
+
+# ==============================================================================
+# Playback / HLS Streaming
+# ==============================================================================
+playback:
+  enabled: true
+  segment_dir: "/tmp/revenge-segments"  # Temp directory for HLS segments
+  segment_duration: 6                   # Target segment length (seconds)
+  max_concurrent_sessions: 10           # Max simultaneous streams
+  session_timeout: 30m                  # Idle session cleanup timeout
+  ffmpeg_path: "ffmpeg"                 # Path to FFmpeg binary
+
+  # Transcoding settings
+  transcode:
+    enabled: true
+    hw_accel: "none"          # "none", "vaapi", "nvenc", "qsv"
+    hw_accel_device: ""       # e.g. "/dev/dri/renderD128" for VAAPI
+    profiles:                 # Available quality profiles
+      - "original"
+      - "1080p"
+      - "720p"
+      - "480p"
+
+# ==============================================================================
+# Raft Leader Election (Cluster Mode)
+# ==============================================================================
+# Only needed for multi-node deployments where exactly one node should run
+# scheduled jobs (library scans, metadata refresh, stats aggregation).
+# Single-node deployments should leave this disabled.
+raft:
+  enabled: false
+  node_id: ""                 # Unique node ID (empty = auto-detect from hostname)
+  bind_addr: "0.0.0.0:7000"  # Raft communication address
+  data_dir: "/data/raft"     # Raft persistent storage
+  bootstrap: false            # true ONLY for the first node in a new cluster
+
+# ==============================================================================
+# Legacy (QAR) Module
+# ==============================================================================
+# Adult content module — isolated database scope, PIN-gated access, full audit.
+# Future: separate database (revenge_qar). Currently disabled.
+legacy:
+  enabled: false
+  encryption_key: ""          # Encryption key for QAR data
+  privacy:
+    require_pin: true         # Require PIN to access content
+    audit_all_access: true    # Log every access for audit trail

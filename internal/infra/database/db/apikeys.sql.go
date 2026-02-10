@@ -13,8 +13,11 @@ import (
 )
 
 const countUserAPIKeys = `-- name: CountUserAPIKeys :one
-SELECT COUNT(*) FROM shared.api_keys
-WHERE user_id = $1 AND is_active = true
+SELECT COUNT(*)
+FROM shared.api_keys
+WHERE
+    user_id = $1
+    AND is_active = true
 `
 
 func (q *Queries) CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64, error) {
@@ -25,17 +28,17 @@ func (q *Queries) CountUserAPIKeys(ctx context.Context, userID uuid.UUID) (int64
 }
 
 const createAPIKey = `-- name: CreateAPIKey :one
-INSERT INTO shared.api_keys (
-    user_id,
-    name,
-    description,
-    key_hash,
-    key_prefix,
-    scopes,
-    expires_at
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at
+INSERT INTO
+    shared.api_keys (
+        user_id,
+        name,
+        description,
+        key_hash,
+        key_prefix,
+        scopes,
+        expires_at
+    )
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at
 `
 
 type CreateAPIKeyParams struct {
@@ -77,8 +80,7 @@ func (q *Queries) CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (Sha
 }
 
 const deleteAPIKey = `-- name: DeleteAPIKey :exec
-DELETE FROM shared.api_keys
-WHERE id = $1
+DELETE FROM shared.api_keys WHERE id = $1
 `
 
 func (q *Queries) DeleteAPIKey(ctx context.Context, id uuid.UUID) error {
@@ -88,9 +90,10 @@ func (q *Queries) DeleteAPIKey(ctx context.Context, id uuid.UUID) error {
 
 const deleteExpiredAPIKeys = `-- name: DeleteExpiredAPIKeys :exec
 DELETE FROM shared.api_keys
-WHERE expires_at IS NOT NULL
-  AND expires_at < NOW()
-  AND is_active = false
+WHERE
+    expires_at IS NOT NULL
+    AND expires_at < NOW()
+    AND is_active = false
 `
 
 func (q *Queries) DeleteExpiredAPIKeys(ctx context.Context) error {
@@ -99,8 +102,7 @@ func (q *Queries) DeleteExpiredAPIKeys(ctx context.Context) error {
 }
 
 const getAPIKey = `-- name: GetAPIKey :one
-SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE id = $1
+SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys WHERE id = $1
 `
 
 func (q *Queries) GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, error) {
@@ -124,8 +126,7 @@ func (q *Queries) GetAPIKey(ctx context.Context, id uuid.UUID) (SharedApiKey, er
 }
 
 const getAPIKeyByHash = `-- name: GetAPIKeyByHash :one
-SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE key_hash = $1
+SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys WHERE key_hash = $1
 `
 
 func (q *Queries) GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedApiKey, error) {
@@ -149,8 +150,11 @@ func (q *Queries) GetAPIKeyByHash(ctx context.Context, keyHash string) (SharedAp
 }
 
 const getAPIKeyByPrefix = `-- name: GetAPIKeyByPrefix :one
-SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE key_prefix = $1 AND is_active = true
+SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at
+FROM shared.api_keys
+WHERE
+    key_prefix = $1
+    AND is_active = true
 LIMIT 1
 `
 
@@ -174,23 +178,23 @@ func (q *Queries) GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) (Shar
 	return i, err
 }
 
-const getAPIKeyUsageCount = `-- name: GetAPIKeyUsageCount :one
-SELECT last_used_at FROM shared.api_keys
-WHERE id = $1
+const getAPIKeyLastUsedAt = `-- name: GetAPIKeyLastUsedAt :one
+SELECT last_used_at FROM shared.api_keys WHERE id = $1
 `
 
-// This is a placeholder - actual usage tracking would be in a separate table
-// For now, we just return last_used_at
-func (q *Queries) GetAPIKeyUsageCount(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error) {
-	row := q.db.QueryRow(ctx, getAPIKeyUsageCount, id)
+func (q *Queries) GetAPIKeyLastUsedAt(ctx context.Context, id uuid.UUID) (pgtype.Timestamptz, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyLastUsedAt, id)
 	var last_used_at pgtype.Timestamptz
 	err := row.Scan(&last_used_at)
 	return last_used_at, err
 }
 
 const listActiveUserAPIKeys = `-- name: ListActiveUserAPIKeys :many
-SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE user_id = $1 AND is_active = true
+SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at
+FROM shared.api_keys
+WHERE
+    user_id = $1
+    AND is_active = true
 ORDER BY created_at DESC
 `
 
@@ -228,8 +232,10 @@ func (q *Queries) ListActiveUserAPIKeys(ctx context.Context, userID uuid.UUID) (
 }
 
 const listUserAPIKeys = `-- name: ListUserAPIKeys :many
-SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at FROM shared.api_keys
-WHERE user_id = $1
+SELECT id, user_id, name, description, key_hash, key_prefix, scopes, is_active, expires_at, last_used_at, created_at, updated_at
+FROM shared.api_keys
+WHERE
+    user_id = $1
 ORDER BY created_at DESC
 `
 
@@ -268,8 +274,11 @@ func (q *Queries) ListUserAPIKeys(ctx context.Context, userID uuid.UUID) ([]Shar
 
 const revokeAPIKey = `-- name: RevokeAPIKey :exec
 UPDATE shared.api_keys
-SET is_active = false, updated_at = NOW()
-WHERE id = $1
+SET
+    is_active = false,
+    updated_at = NOW()
+WHERE
+    id = $1
 `
 
 func (q *Queries) RevokeAPIKey(ctx context.Context, id uuid.UUID) error {
@@ -279,8 +288,11 @@ func (q *Queries) RevokeAPIKey(ctx context.Context, id uuid.UUID) error {
 
 const updateAPIKeyLastUsed = `-- name: UpdateAPIKeyLastUsed :exec
 UPDATE shared.api_keys
-SET last_used_at = NOW(), updated_at = NOW()
-WHERE id = $1
+SET
+    last_used_at = NOW(),
+    updated_at = NOW()
+WHERE
+    id = $1
 `
 
 func (q *Queries) UpdateAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error {
@@ -290,8 +302,11 @@ func (q *Queries) UpdateAPIKeyLastUsed(ctx context.Context, id uuid.UUID) error 
 
 const updateAPIKeyScopes = `-- name: UpdateAPIKeyScopes :exec
 UPDATE shared.api_keys
-SET scopes = $2, updated_at = NOW()
-WHERE id = $1
+SET
+    scopes = $2,
+    updated_at = NOW()
+WHERE
+    id = $1
 `
 
 type UpdateAPIKeyScopesParams struct {

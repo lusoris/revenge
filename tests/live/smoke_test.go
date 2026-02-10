@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -114,7 +114,7 @@ func registerAndLogin(t *testing.T) *credentials {
 // (configured to reload every 10s). Use waitForAdminRole to wait for visibility.
 func makeAdmin(t *testing.T, userID string) {
 	t.Helper()
-	d, err := sql.Open("postgres", dbURL)
+	d, err := sql.Open("pgx", dbURL)
 	require.NoError(t, err, "should connect to test database")
 	defer d.Close()
 
@@ -233,7 +233,7 @@ func TestLive_Infrastructure(t *testing.T) {
 	})
 
 	t.Run("postgres_direct_connectivity", func(t *testing.T) {
-		db, err := sql.Open("postgres", dbURL)
+		db, err := sql.Open("pgx", dbURL)
 		require.NoError(t, err)
 		defer db.Close()
 
@@ -244,7 +244,7 @@ func TestLive_Infrastructure(t *testing.T) {
 	})
 
 	t.Run("postgres_schemas_exist", func(t *testing.T) {
-		db, err := sql.Open("postgres", dbURL)
+		db, err := sql.Open("pgx", dbURL)
 		require.NoError(t, err)
 		defer db.Close()
 
@@ -263,7 +263,7 @@ func TestLive_Infrastructure(t *testing.T) {
 	})
 
 	t.Run("river_tables_exist", func(t *testing.T) {
-		db, err := sql.Open("postgres", dbURL)
+		db, err := sql.Open("pgx", dbURL)
 		require.NoError(t, err)
 		defer db.Close()
 
@@ -292,7 +292,7 @@ func TestLive_Infrastructure(t *testing.T) {
 	})
 
 	t.Run("casbin_policies_loaded", func(t *testing.T) {
-		db, err := sql.Open("postgres", dbURL)
+		db, err := sql.Open("pgx", dbURL)
 		require.NoError(t, err)
 		defer db.Close()
 

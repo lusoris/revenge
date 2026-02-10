@@ -140,10 +140,26 @@ func CreateSession(t *testing.T, pool *pgxpool.Pool, session Session) *Session {
 }
 
 // DefaultUser returns a default test user for quick testing.
+// WARNING: Uses hardcoded username/email — do not call multiple times in one test.
+// Use UniqueUser() when multiple users are needed.
 func DefaultUser() User {
 	return User{
 		Username:    "testuser",
 		Email:       "test@example.com",
+		DisplayName: "Test User",
+		IsActive:    true,
+		IsAdmin:     false,
+		QAREnabled:  false,
+	}
+}
+
+// UniqueUser returns a test user with unique credentials, safe for multiple calls
+// within the same test. Each call generates a unique username and email.
+func UniqueUser() User {
+	id := uuid.Must(uuid.NewV7()).String()[:8]
+	return User{
+		Username:    "testuser_" + id,
+		Email:       "test_" + id + "@example.com",
 		DisplayName: "Test User",
 		IsActive:    true,
 		IsAdmin:     false,

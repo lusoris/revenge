@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -313,8 +314,8 @@ func (s *TVShowSearchService) AutocompleteSeries(ctx context.Context, query stri
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr("true"),
-		DropTokensThreshold: ptr(0),
+		Prefix:              ptr.To("true"),
+		DropTokensThreshold: ptr.To(0),
 	}
 
 	result, err := s.client.Search(ctx, TVShowCollectionName, searchParams)
@@ -396,8 +397,8 @@ func (s *TVShowSearchService) ReindexAll(ctx context.Context, service tvshow.Ser
 		showsWithRelations := make([]TVShowWithRelations, 0, len(seriesList))
 		for _, series := range seriesList {
 			genres, _ := service.GetSeriesGenres(ctx, series.ID)
-			cast, _ := service.GetSeriesCast(ctx, series.ID)
-			crew, _ := service.GetSeriesCrew(ctx, series.ID)
+			cast, _, _ := service.GetSeriesCast(ctx, series.ID, 1000, 0)
+			crew, _, _ := service.GetSeriesCrew(ctx, series.ID, 1000, 0)
 			networks, _ := service.GetSeriesNetworks(ctx, series.ID)
 
 			credits := append(cast, crew...)

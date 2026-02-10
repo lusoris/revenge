@@ -196,6 +196,58 @@ func encodeAdminDeleteOIDCProviderResponse(response AdminDeleteOIDCProviderRes, 
 	}
 }
 
+func encodeAdminDeleteUserResponse(response AdminDeleteUserRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AdminDeleteUserNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *AdminDeleteUserUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminDeleteUserForbidden:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(403)
+		span.SetStatus(codes.Error, http.StatusText(403))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminDeleteUserNotFound:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
+		span.SetStatus(codes.Error, http.StatusText(404))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeAdminDisableOIDCProviderResponse(response AdminDisableOIDCProviderRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *AdminDisableOIDCProviderNoContent:
@@ -742,6 +794,52 @@ func encodeAdminListOIDCProvidersResponse(response AdminListOIDCProvidersRes, w 
 		return nil
 
 	case *AdminListOIDCProvidersForbidden:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(403)
+		span.SetStatus(codes.Error, http.StatusText(403))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeAdminListUsersResponse(response AdminListUsersRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AdminUserListResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminListUsersUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminListUsersForbidden:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(403)
 		span.SetStatus(codes.Error, http.StatusText(403))
@@ -2616,7 +2714,7 @@ func encodeGetMovieResponse(response GetMovieRes, w http.ResponseWriter, span tr
 
 func encodeGetMovieCastResponse(response GetMovieCastRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetMovieCastOKApplicationJSON:
+	case *MovieCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2708,7 +2806,7 @@ func encodeGetMovieCollectionResponse(response GetMovieCollectionRes, w http.Res
 
 func encodeGetMovieCrewResponse(response GetMovieCrewRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetMovieCrewOKApplicationJSON:
+	case *MovieCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3435,7 +3533,7 @@ func encodeGetRecentEpisodesResponse(response GetRecentEpisodesRes, w http.Respo
 
 func encodeGetRecentlyAddedResponse(response GetRecentlyAddedRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetRecentlyAddedOKApplicationJSON:
+	case *MovieListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3468,7 +3566,7 @@ func encodeGetRecentlyAddedResponse(response GetRecentlyAddedRes, w http.Respons
 
 func encodeGetRecentlyAddedTVShowsResponse(response GetRecentlyAddedTVShowsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetRecentlyAddedTVShowsOKApplicationJSON:
+	case *TVSeriesListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4237,7 +4335,7 @@ func encodeGetTVShowResponse(response GetTVShowRes, w http.ResponseWriter, span 
 
 func encodeGetTVShowCastResponse(response GetTVShowCastRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTVShowCastOKApplicationJSON:
+	case *TVSeriesCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4329,7 +4427,7 @@ func encodeGetTVShowContentRatingsResponse(response GetTVShowContentRatingsRes, 
 
 func encodeGetTVShowCrewResponse(response GetTVShowCrewRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTVShowCrewOKApplicationJSON:
+	case *TVSeriesCreditListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4868,7 +4966,7 @@ func encodeGetTVShowWatchStatsResponse(response GetTVShowWatchStatsRes, w http.R
 
 func encodeGetTopRatedResponse(response GetTopRatedRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetTopRatedOKApplicationJSON:
+	case *MovieListResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -5467,6 +5565,39 @@ func encodeInitOIDCLinkResponse(response InitOIDCLinkRes, w http.ResponseWriter,
 func encodeListAPIKeysResponse(response ListAPIKeysRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *APIKeyListResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeListGenresResponse(response ListGenresRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListGenresOKApplicationJSON:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -6279,6 +6410,39 @@ func encodeMarkTVEpisodeWatchedResponse(response MarkTVEpisodeWatchedRes, w http
 	}
 }
 
+func encodeMarkTVEpisodesBulkWatchedResponse(response MarkTVEpisodesBulkWatchedRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *BulkEpisodesWatchedResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *Error:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeOidcAuthorizeResponse(response OidcAuthorizeRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *OIDCAuthURLResponse:
@@ -6603,6 +6767,52 @@ func encodeReindexSearchResponse(response ReindexSearchRes, w http.ResponseWrite
 		return nil
 
 	case *ReindexSearchForbidden:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(403)
+		span.SetStatus(codes.Error, http.StatusText(403))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeReindexTVShowSearchResponse(response ReindexTVShowSearchRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ReindexTVShowSearchAccepted:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(202)
+		span.SetStatus(codes.Ok, http.StatusText(202))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ReindexTVShowSearchUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ReindexTVShowSearchForbidden:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(403)
 		span.SetStatus(codes.Error, http.StatusText(403))
@@ -7204,6 +7414,52 @@ func encodeSearchMoviesMetadataResponse(response SearchMoviesMetadataRes, w http
 		return nil
 
 	case *SearchMoviesMetadataUnauthorized:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(401)
+		span.SetStatus(codes.Error, http.StatusText(401))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeSearchMultiResponse(response SearchMultiRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *MultiSearchResults:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *SearchMultiBadRequest:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(400)
+		span.SetStatus(codes.Error, http.StatusText(400))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *SearchMultiUnauthorized:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(401)
 		span.SetStatus(codes.Error, http.StatusText(401))

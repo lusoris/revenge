@@ -102,135 +102,159 @@ func (s *CachedService) ListMovies(ctx context.Context, filters ListFilters) ([]
 }
 
 // ListRecentlyAdded returns recently added movies with caching (2 min TTL).
-func (s *CachedService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, error) {
+// Cache key includes pagination params, caches both items and total.
+func (s *CachedService) ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Movie, int64, error) {
 	if s.cache == nil {
 		return s.Service.ListRecentlyAdded(ctx, limit, offset)
 	}
 
 	cacheKey := fmt.Sprintf("%srecently-added:%d:%d", cache.KeyPrefixMovie, limit, offset)
 
-	// Try cache first
-	var movies []Movie
-	if err := s.cache.GetJSON(ctx, cacheKey, &movies); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedMovies struct {
+		Items []Movie `json:"items"`
+		Total int64   `json:"total"`
+	}
+	var cached cachedMovies
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("recently added cache hit")
-		return movies, nil
+		return cached.Items, cached.Total, nil
 	}
 
 	// Cache miss - load from database
-	result, err := s.Service.ListRecentlyAdded(ctx, limit, offset)
+	items, total, err := s.Service.ListRecentlyAdded(ctx, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, 2*time.Minute); setErr != nil {
-			s.logger.Warn("failed to cache recently added", slog.Any("error",setErr))
+		toCache := cachedMovies{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, 2*time.Minute); setErr != nil {
+			s.logger.Warn("failed to cache recently added", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // ListTopRated returns top-rated movies with caching (5 min TTL).
-func (s *CachedService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, error) {
+// Cache key includes pagination params, caches both items and total.
+func (s *CachedService) ListTopRated(ctx context.Context, minVotes int32, limit, offset int32) ([]Movie, int64, error) {
 	if s.cache == nil {
 		return s.Service.ListTopRated(ctx, minVotes, limit, offset)
 	}
 
 	cacheKey := fmt.Sprintf("%stop-rated:%d:%d:%d", cache.KeyPrefixMovie, minVotes, limit, offset)
 
-	// Try cache first
-	var movies []Movie
-	if err := s.cache.GetJSON(ctx, cacheKey, &movies); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedMovies struct {
+		Items []Movie `json:"items"`
+		Total int64   `json:"total"`
+	}
+	var cached cachedMovies
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("top rated cache hit")
-		return movies, nil
+		return cached.Items, cached.Total, nil
 	}
 
 	// Cache miss - load from database
-	result, err := s.Service.ListTopRated(ctx, minVotes, limit, offset)
+	items, total, err := s.Service.ListTopRated(ctx, minVotes, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieTTL); setErr != nil {
-			s.logger.Warn("failed to cache top rated", slog.Any("error",setErr))
+		toCache := cachedMovies{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, cache.MovieTTL); setErr != nil {
+			s.logger.Warn("failed to cache top rated", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // GetMovieCast returns the cast for a movie with caching (10 min TTL).
-func (s *CachedService) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
+// Cache key includes pagination params.
+func (s *CachedService) GetMovieCast(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
 	if s.cache == nil {
-		return s.Service.GetMovieCast(ctx, movieID)
+		return s.Service.GetMovieCast(ctx, movieID, limit, offset)
 	}
 
-	cacheKey := fmt.Sprintf("%s%s:cast", cache.KeyPrefixMovie, movieID.String())
+	cacheKey := fmt.Sprintf("%s%s:cast:%d:%d", cache.KeyPrefixMovie, movieID.String(), limit, offset)
 
-	// Try cache first
-	var cast []MovieCredit
-	if err := s.cache.GetJSON(ctx, cacheKey, &cast); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedCredits struct {
+		Items []MovieCredit `json:"items"`
+		Total int64         `json:"total"`
+	}
+	var cached cachedCredits
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("movie cast cache hit", slog.String("movie_id", movieID.String()))
-		return cast, nil
+		return cached.Items, cached.Total, nil
 	}
 
 	// Cache miss - load from database
-	result, err := s.Service.GetMovieCast(ctx, movieID)
+	items, total, err := s.Service.GetMovieCast(ctx, movieID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie cast", slog.Any("error",setErr))
+		toCache := cachedCredits{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, cache.MovieMetaTTL); setErr != nil {
+			s.logger.Warn("failed to cache movie cast", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // GetMovieCrew returns the crew for a movie with caching (10 min TTL).
-func (s *CachedService) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]MovieCredit, error) {
+// Cache key includes pagination params.
+func (s *CachedService) GetMovieCrew(ctx context.Context, movieID uuid.UUID, limit, offset int32) ([]MovieCredit, int64, error) {
 	if s.cache == nil {
-		return s.Service.GetMovieCrew(ctx, movieID)
+		return s.Service.GetMovieCrew(ctx, movieID, limit, offset)
 	}
 
-	cacheKey := fmt.Sprintf("%s%s:crew", cache.KeyPrefixMovie, movieID.String())
+	cacheKey := fmt.Sprintf("%s%s:crew:%d:%d", cache.KeyPrefixMovie, movieID.String(), limit, offset)
 
-	// Try cache first
-	var crew []MovieCredit
-	if err := s.cache.GetJSON(ctx, cacheKey, &crew); err == nil {
+	// Try cache first - we cache both items and total count together
+	type cachedCredits struct {
+		Items []MovieCredit `json:"items"`
+		Total int64         `json:"total"`
+	}
+	var cached cachedCredits
+	if err := s.cache.GetJSON(ctx, cacheKey, &cached); err == nil {
 		s.logger.Debug("movie crew cache hit", slog.String("movie_id", movieID.String()))
-		return crew, nil
+		return cached.Items, cached.Total, nil
 	}
 
 	// Cache miss - load from database
-	result, err := s.Service.GetMovieCrew(ctx, movieID)
+	items, total, err := s.Service.GetMovieCrew(ctx, movieID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Cache the result async
 	go func() {
 		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 		defer cancel()
-		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
-			s.logger.Warn("failed to cache movie crew", slog.Any("error",setErr))
+		toCache := cachedCredits{Items: items, Total: total}
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, toCache, cache.MovieMetaTTL); setErr != nil {
+			s.logger.Warn("failed to cache movie crew", slog.Any("error", setErr))
 		}
 	}()
 
-	return result, nil
+	return items, total, nil
 }
 
 // GetMovieGenres returns genres for a movie with caching (10 min TTL).

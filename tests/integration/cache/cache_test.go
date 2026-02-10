@@ -18,6 +18,7 @@ import (
 )
 
 func newTestCache(t *testing.T) *cache.Cache {
+	t.Helper()
 	cfg := &config.Config{
 		Cache: config.CacheConfig{
 			Enabled: true,
@@ -26,7 +27,9 @@ func newTestCache(t *testing.T) *cache.Cache {
 	}
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelWarn}))
 	client, err := cache.NewClient(cfg, logger)
-	require.NoError(t, err)
+	if err != nil {
+		t.Skipf("Redis not available: %v", err)
+	}
 	c, err := cache.NewCache(client, 1000, 5*time.Minute)
 	require.NoError(t, err)
 	return c

@@ -84,7 +84,7 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 	// Build connection string
 	// Note: Include search_path in URL for schema isolation
 	// See: https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-SEARCH-PATH
-	dbURL := fmt.Sprintf("postgres://revenge_test:test_pass@%s:%s/revenge_test?sslmode=disable&search_path=public,shared",
+	dbURL := fmt.Sprintf("postgres://revenge_test:test_pass@%s:%s/revenge_test?sslmode=disable&search_path=public,shared,movie,tvshow",
 		host, port.Port())
 
 	// Run migrations

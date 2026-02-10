@@ -17,6 +17,7 @@ import (
 )
 
 func TestDatabaseUniqueConstraints(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -57,6 +58,7 @@ func TestDatabaseUniqueConstraints(t *testing.T) {
 }
 
 func TestDatabaseTransactionCommit(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -93,6 +95,7 @@ func TestDatabaseTransactionCommit(t *testing.T) {
 }
 
 func TestDatabaseNullHandling(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -126,6 +129,7 @@ func TestDatabaseNullHandling(t *testing.T) {
 }
 
 func TestDatabaseConcurrentUpdates(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -174,6 +178,7 @@ func TestDatabaseConcurrentUpdates(t *testing.T) {
 }
 
 func TestDatabaseTransactionIsolation(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
@@ -214,6 +219,7 @@ func TestDatabaseTransactionIsolation(t *testing.T) {
 }
 
 func TestDatabaseQueryTimeout(t *testing.T) {
+	requirePostgres(t)
 	ctx := context.Background()
 
 	pool, err := pgxpool.New(ctx, testDatabaseURL)
