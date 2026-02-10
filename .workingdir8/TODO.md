@@ -334,7 +334,7 @@ Before implementing cache-related fixes, verify against current package document
 ### Tier 4 — Polish
 
 - [x] **8B.3**: Delete dead `database/metrics.go` + test ✅ `033bc406`
-- [ ] **8B.4**: Smoke test Grafana dashboards after UID fix
+- [x] **8B.4**: Smoke test Grafana dashboards after UID fix ✅ validated: all 32 metric names match Go source, datasource UID `PBFA97CFB590B2093` consistent, dashboard JSON valid (schemaVersion 39, 27 panels)
 - [x] **3B.3**: Create `EnrichContentWorker` — done in 3B.2 (`aac680d5`)
 - [x] **3C.9**: Create `DownloadImageWorker` for cache warming
 - [x] **3C.11**: Periodic stats/analytics aggregation job ✅ `8896fdbb` — migration 000037, StatsAggregationWorker (hourly, low queue), 10 aggregate stat keys, 13 tests
