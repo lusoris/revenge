@@ -15,10 +15,12 @@ var Module = fx.Module("search_service",
 	fx.Provide(NewTVShowSearchService),
 	fx.Provide(NewEpisodeSearchService),
 	fx.Provide(NewSeasonSearchService),
+	fx.Provide(NewPersonSearchService),
 	fx.Provide(provideCachedMovieSearchService),
 	fx.Provide(provideCachedTVShowSearchService),
 	fx.Provide(provideCachedEpisodeSearchService),
 	fx.Provide(provideCachedSeasonSearchService),
+	fx.Provide(provideCachedPersonSearchService),
 	fx.Invoke(initializeCollections),
 )
 
@@ -42,8 +44,13 @@ func provideCachedSeasonSearchService(svc *SeasonSearchService, c *cache.Cache, 
 	return NewCachedSeasonSearchService(svc, c, logger)
 }
 
+// provideCachedPersonSearchService wraps the person search service with caching.
+func provideCachedPersonSearchService(svc *PersonSearchService, c *cache.Cache, logger *slog.Logger) *CachedPersonSearchService {
+	return NewCachedPersonSearchService(svc, c, logger)
+}
+
 // initializeCollections creates Typesense collections on startup if they don't exist.
-func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, seasonSearch *SeasonSearchService, logger *slog.Logger) {
+func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvshowSearch *TVShowSearchService, episodeSearch *EpisodeSearchService, seasonSearch *SeasonSearchService, personSearch *PersonSearchService, logger *slog.Logger) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			if movieSearch.IsEnabled() {
@@ -64,6 +71,11 @@ func initializeCollections(lc fx.Lifecycle, movieSearch *MovieSearchService, tvs
 			if seasonSearch.IsEnabled() {
 				if err := seasonSearch.InitializeCollection(ctx); err != nil {
 					logger.Warn("failed to initialize seasons search collection", slog.Any("error", err))
+				}
+			}
+			if personSearch.IsEnabled() {
+				if err := personSearch.InitializeCollection(ctx); err != nil {
+					logger.Warn("failed to initialize people search collection", slog.Any("error", err))
 				}
 			}
 			return nil
