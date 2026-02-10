@@ -44,7 +44,7 @@ func TVShowCollectionSchema() *api.CollectionSchema {
 	return &api.CollectionSchema{
 		Name:                TVShowCollectionName,
 		EnableNestedFields:  ptr.To(false),
-		TokenSeparators:     &[]string{"-", "_", "'", "'"},
+		TokenSeparators:     &[]string{"-", "_"},
 		SymbolsToIndex:      &[]string{"&"},
 		DefaultSortingField: ptr.To("popularity"),
 		Fields: []api.Field{

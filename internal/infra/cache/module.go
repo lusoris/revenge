@@ -35,9 +35,25 @@ const (
 // Module provides cache dependencies.
 var Module = fx.Module("cache",
 	fx.Provide(NewClient),
+	fx.Provide(provideCache),
 	fx.Provide(provideRueidisClient),
 	fx.Invoke(registerHooks),
 )
+
+// provideCache creates the default shared *Cache from the Client and config.
+// Returns nil (not an error) when caching is disabled so consumers can
+// operate in pass-through mode.
+func provideCache(client *Client, cfg *config.Config, logger *slog.Logger) (*Cache, error) {
+	if !cfg.Cache.Enabled {
+		logger.Info("cache disabled, providing nil *Cache")
+		return nil, nil
+	}
+	c, err := NewNamedCache(client, cfg.Cache.L1MaxSize, cfg.Cache.L1TTL, "default")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create default cache: %w", err)
+	}
+	return c, nil
+}
 
 // provideRueidisClient extracts the underlying rueidis.Client from our Client
 // wrapper so other packages (e.g. observability) can consume it without

@@ -144,17 +144,33 @@ func (s *CachedService) RevokeSession(ctx context.Context, sessionID uuid.UUID) 
 
 // RevokeAllUserSessions revokes all sessions for a user and invalidates cache.
 func (s *CachedService) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error {
+	// Collect token hashes BEFORE revoking so we can invalidate the correct cache keys.
+	// Sessions are cached under "session:<tokenHash>" — pattern-based invalidation
+	// by user ID cannot match those keys.
+	var tokenHashes []string
+	if s.cache != nil {
+		sessions, err := s.repo.ListUserSessions(ctx, userID)
+		if err == nil {
+			for _, sess := range sessions {
+				tokenHashes = append(tokenHashes, sess.TokenHash)
+			}
+		}
+	}
+
 	// Revoke in database
 	if err := s.Service.RevokeAllUserSessions(ctx, userID); err != nil {
 		return err
 	}
 
-	// Invalidate all user sessions from cache
+	// Invalidate each session's cache entry by its actual key
 	if s.cache != nil {
-		if err := s.cache.InvalidateUserSessions(ctx, userID.String()); err != nil {
-			s.logger.Warn("failed to invalidate user sessions cache",
-				slog.String("user_id", userID.String()),
-				slog.Any("error",err))
+		for _, hash := range tokenHashes {
+			cacheKey := cache.SessionKey(hash)
+			if err := s.cache.Delete(ctx, cacheKey); err != nil {
+				s.logger.Warn("failed to invalidate session cache entry",
+					slog.String("user_id", userID.String()),
+					slog.Any("error", err))
+			}
 		}
 	}
 

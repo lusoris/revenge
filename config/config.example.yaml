@@ -104,6 +104,8 @@ cache:
   enabled: false
   url: ""                   # redis://[:password@]host:port[/db]
   # url: "redis://localhost:6379"
+  l1_max_size: 10000        # Max entries in the in-process (otter) L1 cache
+  l1_ttl: 5m                # TTL for L1 cache entries
 
 # ==============================================================================
 # Search (Typesense)
