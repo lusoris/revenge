@@ -85,7 +85,7 @@ INSERT INTO public.user_totp_secrets (
     enabled
 ) VALUES (
     $1, $2, false
-) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at
+) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at, last_used_code
 `
 
 type CreateTOTPSecretParams struct {
@@ -105,6 +105,7 @@ func (q *Queries) CreateTOTPSecret(ctx context.Context, arg CreateTOTPSecretPara
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastUsedCode,
 	)
 	return i, err
 }
@@ -429,7 +430,7 @@ func (q *Queries) GetUserMFAStatus(ctx context.Context, userID uuid.UUID) (GetUs
 
 const getUserTOTPSecret = `-- name: GetUserTOTPSecret :one
 
-SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets
+SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at, last_used_code FROM public.user_totp_secrets
 WHERE user_id = $1
 `
 
@@ -448,6 +449,7 @@ func (q *Queries) GetUserTOTPSecret(ctx context.Context, userID uuid.UUID) (User
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastUsedCode,
 	)
 	return i, err
 }
@@ -683,13 +685,19 @@ func (q *Queries) UpdateMFASettingsWebAuthnEnabled(ctx context.Context, arg Upda
 const updateTOTPLastUsed = `-- name: UpdateTOTPLastUsed :exec
 UPDATE public.user_totp_secrets
 SET last_used_at = NOW(),
+    last_used_code = $2,
     updated_at = NOW()
 WHERE user_id = $1
 `
 
-// Update last used timestamp for TOTP
-func (q *Queries) UpdateTOTPLastUsed(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, updateTOTPLastUsed, userID)
+type UpdateTOTPLastUsedParams struct {
+	UserID       uuid.UUID `json:"userId"`
+	LastUsedCode *string   `json:"lastUsedCode"`
+}
+
+// Update last used timestamp and code for TOTP (replay protection)
+func (q *Queries) UpdateTOTPLastUsed(ctx context.Context, arg UpdateTOTPLastUsedParams) error {
+	_, err := q.db.Exec(ctx, updateTOTPLastUsed, arg.UserID, arg.LastUsedCode)
 	return err
 }
 

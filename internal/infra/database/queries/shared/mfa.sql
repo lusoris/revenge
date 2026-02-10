@@ -35,9 +35,10 @@ SET verified_at = NOW(),
 WHERE user_id = $1 AND verified_at IS NULL;
 
 -- name: UpdateTOTPLastUsed :exec
--- Update last used timestamp for TOTP
+-- Update last used timestamp and code for TOTP (replay protection)
 UPDATE public.user_totp_secrets
 SET last_used_at = NOW(),
+    last_used_code = $2,
     updated_at = NOW()
 WHERE user_id = $1;
 

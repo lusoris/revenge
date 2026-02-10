@@ -136,6 +136,14 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 		return false, fmt.Errorf("failed to get TOTP secret: %w", err)
 	}
 
+	// Reject replayed codes (same code used within the validity window)
+	if totpSecret.LastUsedCode != nil && *totpSecret.LastUsedCode == code {
+		s.logger.Warn("TOTP code replay detected",
+			slog.String("user_id", userID.String()),
+		)
+		return false, nil
+	}
+
 	// Decrypt secret
 	secretBase32, err := s.encryptor.DecryptString(totpSecret.EncryptedSecret)
 	if err != nil {
@@ -151,8 +159,11 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 		return false, nil
 	}
 
-	// Update last used timestamp
-	if err := s.queries.UpdateTOTPLastUsed(ctx, userID); err != nil {
+	// Update last used timestamp and code for replay protection
+	if err := s.queries.UpdateTOTPLastUsed(ctx, db.UpdateTOTPLastUsedParams{
+		UserID:       userID,
+		LastUsedCode: &code,
+	}); err != nil {
 		s.logger.Error("failed to update TOTP last used",
 			slog.String("user_id", userID.String()),
 			slog.Any("error",err),
