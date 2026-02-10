@@ -608,12 +608,12 @@ func TestMapPersonCredits(t *testing.T) {
 		ID: 17419,
 		Cast: []PersonCastCredit{
 			{
-				MediaType:   "tv",
-				ID:          1399,
-				Name:        "Breaking Bad",
-				Character:   ptr("Walter White"),
-				PosterPath:  ptr("/bb.jpg"),
-				VoteAverage: 8.9,
+				MediaType:    "tv",
+				ID:           1399,
+				Name:         "Breaking Bad",
+				Character:    ptr("Walter White"),
+				PosterPath:   ptr("/bb.jpg"),
+				VoteAverage:  8.9,
 				FirstAirDate: "2008-01-20",
 				EpisodeCount: &episodeCount,
 			},
