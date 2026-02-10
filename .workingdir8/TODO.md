@@ -309,7 +309,7 @@ Before implementing cache-related fixes, verify against current package document
 - [ ] **5B.1**: Index episodes in Typesense (with series context) ✅ `72056505` — EpisodeDocument (20 fields), EpisodeSearchService, CachedEpisodeSearchService, worker integration, 19 tests
 - [x] **5B.2**: Index seasons in Typesense (named seasons)
 - [x] **5B.3**: Create standalone people collection in Typesense (own pages)
-- [ ] **5B.4**: Add `/search/multi` unified search endpoint
+- [x] **5B.4**: Add `/search/multi` unified search endpoint
 - [x] **7.1**: Extract `requireAdmin()` helper — migrated 42 handlers across 7 files (commit `6523726e`)
 - [x] **7.4**: Create `internal/util/ptr/` generic pointer package — `ptr.To`, `ptr.Value`, `ptr.ValueOr`, etc (commit `3847c32b`)
 - [x] **7.5**: Create `BaseMovieProvider`/`BaseTVShowProvider` embedding structs ✅ `c880e1eb` — base structs + tests, embedded in 10 providers, removed ~85 stub methods
