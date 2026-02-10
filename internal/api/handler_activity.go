@@ -328,7 +328,7 @@ func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
 		}
 
 		if e.UserID != nil {
-			entry.UserId = ogen.NewOptUUID(*e.UserID)
+			entry.UserID = ogen.NewOptUUID(*e.UserID)
 		}
 		if e.Username != nil {
 			entry.Username = ogen.NewOptString(*e.Username)
@@ -337,10 +337,10 @@ func convertActivityEntries(entries []activity.Entry) []ogen.ActivityLogEntry {
 			entry.ResourceType = ogen.NewOptString(*e.ResourceType)
 		}
 		if e.ResourceID != nil {
-			entry.ResourceId = ogen.NewOptUUID(*e.ResourceID)
+			entry.ResourceID = ogen.NewOptUUID(*e.ResourceID)
 		}
 		if e.IPAddress != nil {
-			entry.IpAddress = ogen.NewOptString(e.IPAddress.String())
+			entry.IPAddress = ogen.NewOptString(e.IPAddress.String())
 		}
 		if e.UserAgent != nil {
 			entry.UserAgent = ogen.NewOptString(*e.UserAgent)

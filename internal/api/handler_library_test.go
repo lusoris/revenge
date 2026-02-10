@@ -204,7 +204,7 @@ func TestHandler_GrantLibraryPermission_NotAdmin(t *testing.T) {
 
 	ctx := context.Background()
 	req := &ogen.GrantLibraryPermissionReq{
-		UserId:     uuid.New(),
+		UserID:     uuid.New(),
 		Permission: ogen.GrantLibraryPermissionReqPermission("read"),
 	}
 	params := ogen.GrantLibraryPermissionParams{LibraryId: uuid.New()}

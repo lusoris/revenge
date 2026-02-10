@@ -161,7 +161,7 @@ func (s *AdminOIDCProvider) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "providerType",
+			Name:  "provider_type",
 			Error: err,
 		})
 	}
@@ -689,7 +689,7 @@ func (s *CreateOIDCProviderRequest) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "displayName",
+			Name:  "display_name",
 			Error: err,
 		})
 	}
@@ -707,7 +707,7 @@ func (s *CreateOIDCProviderRequest) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "providerType",
+			Name:  "provider_type",
 			Error: err,
 		})
 	}
@@ -1491,7 +1491,7 @@ func (s *Library) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "latestScan",
+			Name:  "latest_scan",
 			Error: err,
 		})
 	}
@@ -1630,7 +1630,7 @@ func (s *LibraryScan) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "scanType",
+			Name:  "scan_type",
 			Error: err,
 		})
 	}
@@ -3381,7 +3381,7 @@ func (s *PlaybackSession) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "durationSeconds",
+			Name:  "duration_seconds",
 			Error: err,
 		})
 	}
@@ -3403,7 +3403,7 @@ func (s *PlaybackSession) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "audioTracks",
+			Name:  "audio_tracks",
 			Error: err,
 		})
 	}
@@ -3414,7 +3414,7 @@ func (s *PlaybackSession) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "subtitleTracks",
+			Name:  "subtitle_tracks",
 			Error: err,
 		})
 	}
@@ -4712,7 +4712,7 @@ func (s *StartPlaybackRequest) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "mediaType",
+			Name:  "media_type",
 			Error: err,
 		})
 	}
@@ -5283,7 +5283,7 @@ func (s *TriggerLibraryScanReq) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "scanType",
+			Name:  "scan_type",
 			Error: err,
 		})
 	}
@@ -5453,7 +5453,7 @@ func (s *UpdateOIDCProviderRequest) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "displayName",
+			Name:  "display_name",
 			Error: err,
 		})
 	}
@@ -5471,7 +5471,7 @@ func (s *UpdateOIDCProviderRequest) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "providerType",
+			Name:  "provider_type",
 			Error: err,
 		})
 	}
@@ -5540,7 +5540,7 @@ func (s *UpdateWatchProgressReq) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "progressSeconds",
+			Name:  "progress_seconds",
 			Error: err,
 		})
 	}
@@ -5561,7 +5561,7 @@ func (s *UpdateWatchProgressReq) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "durationSeconds",
+			Name:  "duration_seconds",
 			Error: err,
 		})
 	}
