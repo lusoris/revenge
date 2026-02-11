@@ -106,10 +106,21 @@ func NewService(cfg Config, logger *slog.Logger) (*Service, error) {
 	}, nil
 }
 
+// isFullURL returns true if the path is already a complete URL.
+func isFullURL(path string) bool {
+	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
+}
+
 // GetImageURL builds the full URL for an image.
+// If the path is already a full URL (from providers like fanart.tv, Radarr, etc.),
+// it is returned unchanged.
 func (s *Service) GetImageURL(path string, size string) string {
 	if path == "" {
 		return ""
+	}
+	// Full URLs from non-TMDb providers should be passed through as-is.
+	if isFullURL(path) {
+		return path
 	}
 	// Ensure path starts with /
 	if !strings.HasPrefix(path, "/") {

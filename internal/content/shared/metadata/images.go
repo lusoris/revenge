@@ -3,6 +3,7 @@ package metadata
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -69,11 +70,21 @@ func NewImageURLBuilderWithBase(baseURL string) *ImageURLBuilder {
 	}
 }
 
+// isFullURL returns true if the path is already a complete URL.
+func isFullURL(path string) bool {
+	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
+}
+
 // GetURL constructs a full image URL from a path and size.
-// Returns empty string if path is empty.
+// If the path is already a full URL (from providers like fanart.tv, Radarr, etc.),
+// it is returned unchanged. Returns empty string if path is empty.
 func (b *ImageURLBuilder) GetURL(path string, size string) string {
 	if path == "" {
 		return ""
+	}
+	// Full URLs from non-TMDb providers should be passed through as-is.
+	if isFullURL(path) {
+		return path
 	}
 	return fmt.Sprintf("%s/%s%s", b.baseURL, size, path)
 }

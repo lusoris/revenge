@@ -52,6 +52,24 @@ func TestImageURLBuilderGetURL(t *testing.T) {
 			size:     "w500",
 			expected: "",
 		},
+		{
+			name:     "full URL from fanart.tv",
+			path:     "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club-123.jpg",
+			size:     "w500",
+			expected: "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club-123.jpg",
+		},
+		{
+			name:     "full URL from Radarr",
+			path:     "https://artworks.thetvdb.com/banners/movies/12345/posters/poster.jpg",
+			size:     "w342",
+			expected: "https://artworks.thetvdb.com/banners/movies/12345/posters/poster.jpg",
+		},
+		{
+			name:     "full URL http",
+			path:     "http://example.com/image.jpg",
+			size:     "original",
+			expected: "http://example.com/image.jpg",
+		},
 	}
 
 	for _, tt := range tests {
@@ -90,6 +108,13 @@ func TestImageURLBuilderGetPosterURL(t *testing.T) {
 		path := ""
 		result := builder.GetPosterURL(&path, "w500")
 		assert.Nil(t, result)
+	})
+
+	t.Run("with full URL from fanart.tv", func(t *testing.T) {
+		path := "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club.jpg"
+		result := builder.GetPosterURL(&path, "w500")
+		assert.NotNil(t, result)
+		assert.Equal(t, "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club.jpg", *result)
 	})
 }
 

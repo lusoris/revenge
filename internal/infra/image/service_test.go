@@ -88,6 +88,24 @@ func TestService_GetImageURL(t *testing.T) {
 			size:     "w500",
 			expected: "",
 		},
+		{
+			name:     "Full URL from fanart.tv",
+			path:     "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club.jpg",
+			size:     "w500",
+			expected: "https://assets.fanart.tv/fanart/movies/550/movieposter/fight-club.jpg",
+		},
+		{
+			name:     "Full URL from Radarr",
+			path:     "https://artworks.thetvdb.com/banners/poster.jpg",
+			size:     "w342",
+			expected: "https://artworks.thetvdb.com/banners/poster.jpg",
+		},
+		{
+			name:     "Full URL http",
+			path:     "http://example.com/image.jpg",
+			size:     "original",
+			expected: "http://example.com/image.jpg",
+		},
 	}
 
 	for _, tt := range tests {
