@@ -5,13 +5,13 @@ package movie
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
 
 	contentmovie "github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/metadata"
-	"github.com/lusoris/revenge/internal/util"
 )
 
 // Adapter wraps the shared metadata service for movie-specific operations.
@@ -72,7 +72,7 @@ func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie, opts
 		}
 	}
 
-	meta, err := a.service.GetMovieMetadata(ctx, *mov.TMDbID, languages)
+	meta, err := a.service.GetMovieMetadata(ctx, fmt.Sprintf("%d", *mov.TMDbID), languages)
 	if err != nil {
 		return fmt.Errorf("get movie metadata: %w", err)
 	}
@@ -82,7 +82,7 @@ func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie, opts
 	a.service.EnrichMovieRatings(ctx, meta)
 
 	// Get release dates for age ratings
-	releaseDates, err := a.service.GetMovieReleaseDates(ctx, *mov.TMDbID)
+	releaseDates, err := a.service.GetMovieReleaseDates(ctx, fmt.Sprintf("%d", *mov.TMDbID))
 	if err != nil {
 		// Continue without release dates
 		releaseDates = nil
@@ -95,8 +95,8 @@ func (a *Adapter) EnrichMovie(ctx context.Context, mov *contentmovie.Movie, opts
 }
 
 // GetMovieCredits retrieves movie credits using the shared service.
-func (a *Adapter) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]contentmovie.MovieCredit, error) {
-	credits, err := a.service.GetMovieCredits(ctx, util.SafeIntToInt32(tmdbID))
+func (a *Adapter) GetMovieCredits(ctx context.Context, movieID uuid.UUID, providerID string) ([]contentmovie.MovieCredit, error) {
+	credits, err := a.service.GetMovieCredits(ctx, providerID)
 	if err != nil {
 		return nil, fmt.Errorf("get movie credits: %w", err)
 	}
@@ -105,8 +105,8 @@ func (a *Adapter) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID
 }
 
 // GetMovieGenres retrieves movie genres using the shared service.
-func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]contentmovie.MovieGenre, error) {
-	meta, err := a.service.GetMovieMetadata(ctx, util.SafeIntToInt32(tmdbID), []string{a.languages[0]})
+func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, providerID string) ([]contentmovie.MovieGenre, error) {
+	meta, err := a.service.GetMovieMetadata(ctx, providerID, []string{a.languages[0]})
 	if err != nil {
 		return nil, fmt.Errorf("get movie metadata for genres: %w", err)
 	}
@@ -126,7 +126,7 @@ func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID 
 
 // GetMovieByTMDbID retrieves a movie by TMDb ID.
 func (a *Adapter) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*contentmovie.Movie, error) {
-	meta, err := a.service.GetMovieMetadata(ctx, util.SafeIntToInt32(tmdbID), a.languages)
+	meta, err := a.service.GetMovieMetadata(ctx, strconv.Itoa(tmdbID), a.languages)
 	if err != nil {
 		return nil, fmt.Errorf("get movie metadata: %w", err)
 	}
@@ -140,7 +140,7 @@ func (a *Adapter) GetMovieByTMDbID(ctx context.Context, tmdbID int) (*contentmov
 
 // GetMovieImages retrieves movie images using the shared service.
 func (a *Adapter) GetMovieImages(ctx context.Context, tmdbID int) (*metadata.Images, error) {
-	return a.service.GetMovieImages(ctx, util.SafeIntToInt32(tmdbID))
+	return a.service.GetMovieImages(ctx, strconv.Itoa(tmdbID))
 }
 
 // GetImageURL constructs an image URL.

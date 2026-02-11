@@ -14,34 +14,34 @@ import (
 type Service interface {
 	// Movie operations
 	SearchMovie(ctx context.Context, query string, opts SearchOptions) ([]MovieSearchResult, error)
-	GetMovieMetadata(ctx context.Context, tmdbID int32, languages []string) (*MovieMetadata, error)
-	GetMovieCredits(ctx context.Context, tmdbID int32) (*Credits, error)
-	GetMovieImages(ctx context.Context, tmdbID int32) (*Images, error)
-	GetMovieReleaseDates(ctx context.Context, tmdbID int32) ([]ReleaseDate, error)
-	GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
-	GetSimilarMovies(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
-	GetMovieRecommendations(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error)
+	GetMovieMetadata(ctx context.Context, id string, languages []string) (*MovieMetadata, error)
+	GetMovieCredits(ctx context.Context, id string) (*Credits, error)
+	GetMovieImages(ctx context.Context, id string) (*Images, error)
+	GetMovieReleaseDates(ctx context.Context, id string) ([]ReleaseDate, error)
+	GetMovieExternalIDs(ctx context.Context, id string) (*ExternalIDs, error)
+	GetSimilarMovies(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error)
+	GetMovieRecommendations(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error)
 
 	// TV Show operations
 	SearchTVShow(ctx context.Context, query string, opts SearchOptions) ([]TVShowSearchResult, error)
-	GetTVShowMetadata(ctx context.Context, tmdbID int32, languages []string) (*TVShowMetadata, error)
-	GetTVShowCredits(ctx context.Context, tmdbID int32) (*Credits, error)
-	GetTVShowImages(ctx context.Context, tmdbID int32) (*Images, error)
-	GetTVShowContentRatings(ctx context.Context, tmdbID int32) ([]ContentRating, error)
-	GetTVShowExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error)
-	GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum int, languages []string) (*SeasonMetadata, error)
-	GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum int) (*Images, error)
-	GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error)
-	GetEpisodeImages(ctx context.Context, tmdbID int32, seasonNum, episodeNum int) (*Images, error)
+	GetTVShowMetadata(ctx context.Context, id string, languages []string) (*TVShowMetadata, error)
+	GetTVShowCredits(ctx context.Context, id string) (*Credits, error)
+	GetTVShowImages(ctx context.Context, id string) (*Images, error)
+	GetTVShowContentRatings(ctx context.Context, id string) ([]ContentRating, error)
+	GetTVShowExternalIDs(ctx context.Context, id string) (*ExternalIDs, error)
+	GetSeasonMetadata(ctx context.Context, id string, seasonNum int, languages []string) (*SeasonMetadata, error)
+	GetSeasonImages(ctx context.Context, id string, seasonNum int) (*Images, error)
+	GetEpisodeMetadata(ctx context.Context, id string, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error)
+	GetEpisodeImages(ctx context.Context, id string, seasonNum, episodeNum int) (*Images, error)
 
 	// Person operations
 	SearchPerson(ctx context.Context, query string, opts SearchOptions) ([]PersonSearchResult, error)
-	GetPersonMetadata(ctx context.Context, tmdbID int32, languages []string) (*PersonMetadata, error)
-	GetPersonCredits(ctx context.Context, tmdbID int32) (*PersonCredits, error)
-	GetPersonImages(ctx context.Context, tmdbID int32) (*Images, error)
+	GetPersonMetadata(ctx context.Context, id string, languages []string) (*PersonMetadata, error)
+	GetPersonCredits(ctx context.Context, id string) (*PersonCredits, error)
+	GetPersonImages(ctx context.Context, id string) (*Images, error)
 
 	// Collection operations
-	GetCollectionMetadata(ctx context.Context, tmdbID int32, languages []string) (*CollectionMetadata, error)
+	GetCollectionMetadata(ctx context.Context, id string, languages []string) (*CollectionMetadata, error)
 
 	// Image operations
 	GetImageURL(path string, size ImageSize) string
@@ -222,7 +222,7 @@ func (s *service) SearchMovie(ctx context.Context, query string, opts SearchOpti
 }
 
 // GetMovieMetadata retrieves movie metadata.
-func (s *service) GetMovieMetadata(ctx context.Context, tmdbID int32, languages []string) (*MovieMetadata, error) {
+func (s *service) GetMovieMetadata(ctx context.Context, id string, languages []string) (*MovieMetadata, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -234,8 +234,6 @@ func (s *service) GetMovieMetadata(ctx context.Context, tmdbID int32, languages 
 	if len(languages) == 0 {
 		languages = s.config.DefaultLanguages
 	}
-
-	id := fmt.Sprintf("%d", tmdbID)
 	var result *MovieMetadata
 	var aggErr AggregateError
 
@@ -271,7 +269,7 @@ func (s *service) GetMovieMetadata(ctx context.Context, tmdbID int32, languages 
 }
 
 // GetMovieCredits retrieves movie credits.
-func (s *service) GetMovieCredits(ctx context.Context, tmdbID int32) (*Credits, error) {
+func (s *service) GetMovieCredits(ctx context.Context, id string) (*Credits, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -280,12 +278,11 @@ func (s *service) GetMovieCredits(ctx context.Context, tmdbID int32) (*Credits, 
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieCredits(ctx, id)
 }
 
 // GetMovieImages retrieves movie images.
-func (s *service) GetMovieImages(ctx context.Context, tmdbID int32) (*Images, error) {
+func (s *service) GetMovieImages(ctx context.Context, id string) (*Images, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -294,12 +291,11 @@ func (s *service) GetMovieImages(ctx context.Context, tmdbID int32) (*Images, er
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieImages(ctx, id)
 }
 
 // GetMovieReleaseDates retrieves movie release dates.
-func (s *service) GetMovieReleaseDates(ctx context.Context, tmdbID int32) ([]ReleaseDate, error) {
+func (s *service) GetMovieReleaseDates(ctx context.Context, id string) ([]ReleaseDate, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -308,12 +304,11 @@ func (s *service) GetMovieReleaseDates(ctx context.Context, tmdbID int32) ([]Rel
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieReleaseDates(ctx, id)
 }
 
 // GetMovieExternalIDs retrieves movie external IDs.
-func (s *service) GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error) {
+func (s *service) GetMovieExternalIDs(ctx context.Context, id string) (*ExternalIDs, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -322,12 +317,11 @@ func (s *service) GetMovieExternalIDs(ctx context.Context, tmdbID int32) (*Exter
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieExternalIDs(ctx, id)
 }
 
 // GetSimilarMovies retrieves movies similar to the given movie.
-func (s *service) GetSimilarMovies(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error) {
+func (s *service) GetSimilarMovies(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -340,12 +334,11 @@ func (s *service) GetSimilarMovies(ctx context.Context, tmdbID int32, opts Searc
 		opts.Language = s.getDefaultLanguage()
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetSimilarMovies(ctx, id, opts)
 }
 
 // GetMovieRecommendations retrieves recommended movies based on the given movie.
-func (s *service) GetMovieRecommendations(ctx context.Context, tmdbID int32, opts SearchOptions) ([]MovieSearchResult, int, error) {
+func (s *service) GetMovieRecommendations(ctx context.Context, id string, opts SearchOptions) ([]MovieSearchResult, int, error) {
 	s.mu.RLock()
 	providers := s.movieProviders
 	s.mu.RUnlock()
@@ -358,7 +351,6 @@ func (s *service) GetMovieRecommendations(ctx context.Context, tmdbID int32, opt
 		opts.Language = s.getDefaultLanguage()
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetMovieRecommendations(ctx, id, opts)
 }
 
@@ -401,7 +393,7 @@ func (s *service) SearchTVShow(ctx context.Context, query string, opts SearchOpt
 }
 
 // GetTVShowMetadata retrieves TV show metadata.
-func (s *service) GetTVShowMetadata(ctx context.Context, tmdbID int32, languages []string) (*TVShowMetadata, error) {
+func (s *service) GetTVShowMetadata(ctx context.Context, id string, languages []string) (*TVShowMetadata, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -413,8 +405,6 @@ func (s *service) GetTVShowMetadata(ctx context.Context, tmdbID int32, languages
 	if len(languages) == 0 {
 		languages = s.config.DefaultLanguages
 	}
-
-	id := fmt.Sprintf("%d", tmdbID)
 	var result *TVShowMetadata
 	var aggErr AggregateError
 
@@ -448,7 +438,7 @@ func (s *service) GetTVShowMetadata(ctx context.Context, tmdbID int32, languages
 }
 
 // GetTVShowCredits retrieves TV show credits.
-func (s *service) GetTVShowCredits(ctx context.Context, tmdbID int32) (*Credits, error) {
+func (s *service) GetTVShowCredits(ctx context.Context, id string) (*Credits, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -457,12 +447,11 @@ func (s *service) GetTVShowCredits(ctx context.Context, tmdbID int32) (*Credits,
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetTVShowCredits(ctx, id)
 }
 
 // GetTVShowImages retrieves TV show images.
-func (s *service) GetTVShowImages(ctx context.Context, tmdbID int32) (*Images, error) {
+func (s *service) GetTVShowImages(ctx context.Context, id string) (*Images, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -471,12 +460,11 @@ func (s *service) GetTVShowImages(ctx context.Context, tmdbID int32) (*Images, e
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetTVShowImages(ctx, id)
 }
 
 // GetTVShowContentRatings retrieves TV show content ratings.
-func (s *service) GetTVShowContentRatings(ctx context.Context, tmdbID int32) ([]ContentRating, error) {
+func (s *service) GetTVShowContentRatings(ctx context.Context, id string) ([]ContentRating, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -485,12 +473,11 @@ func (s *service) GetTVShowContentRatings(ctx context.Context, tmdbID int32) ([]
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetTVShowContentRatings(ctx, id)
 }
 
 // GetTVShowExternalIDs retrieves TV show external IDs.
-func (s *service) GetTVShowExternalIDs(ctx context.Context, tmdbID int32) (*ExternalIDs, error) {
+func (s *service) GetTVShowExternalIDs(ctx context.Context, id string) (*ExternalIDs, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -499,12 +486,11 @@ func (s *service) GetTVShowExternalIDs(ctx context.Context, tmdbID int32) (*Exte
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetTVShowExternalIDs(ctx, id)
 }
 
 // GetSeasonMetadata retrieves season metadata.
-func (s *service) GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum int, languages []string) (*SeasonMetadata, error) {
+func (s *service) GetSeasonMetadata(ctx context.Context, id string, seasonNum int, languages []string) (*SeasonMetadata, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -516,8 +502,6 @@ func (s *service) GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum
 	if len(languages) == 0 {
 		languages = s.config.DefaultLanguages
 	}
-
-	id := fmt.Sprintf("%d", tmdbID)
 	var result *SeasonMetadata
 	var aggErr AggregateError
 
@@ -550,7 +534,7 @@ func (s *service) GetSeasonMetadata(ctx context.Context, tmdbID int32, seasonNum
 }
 
 // GetSeasonImages retrieves images for a season.
-func (s *service) GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum int) (*Images, error) {
+func (s *service) GetSeasonImages(ctx context.Context, id string, seasonNum int) (*Images, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -559,7 +543,6 @@ func (s *service) GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum i
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	for _, p := range providers {
 		images, err := p.GetSeasonImages(ctx, id, seasonNum)
 		if err != nil {
@@ -572,7 +555,7 @@ func (s *service) GetSeasonImages(ctx context.Context, tmdbID int32, seasonNum i
 }
 
 // GetEpisodeMetadata retrieves episode metadata.
-func (s *service) GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error) {
+func (s *service) GetEpisodeMetadata(ctx context.Context, id string, seasonNum, episodeNum int, languages []string) (*EpisodeMetadata, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -584,8 +567,6 @@ func (s *service) GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNu
 	if len(languages) == 0 {
 		languages = s.config.DefaultLanguages
 	}
-
-	id := fmt.Sprintf("%d", tmdbID)
 	var result *EpisodeMetadata
 	var aggErr AggregateError
 
@@ -618,7 +599,7 @@ func (s *service) GetEpisodeMetadata(ctx context.Context, tmdbID int32, seasonNu
 }
 
 // GetEpisodeImages retrieves images for an episode.
-func (s *service) GetEpisodeImages(ctx context.Context, tmdbID int32, seasonNum, episodeNum int) (*Images, error) {
+func (s *service) GetEpisodeImages(ctx context.Context, id string, seasonNum, episodeNum int) (*Images, error) {
 	s.mu.RLock()
 	providers := s.tvProviders
 	s.mu.RUnlock()
@@ -627,7 +608,6 @@ func (s *service) GetEpisodeImages(ctx context.Context, tmdbID int32, seasonNum,
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	for _, p := range providers {
 		images, err := p.GetEpisodeImages(ctx, id, seasonNum, episodeNum)
 		if err != nil {
@@ -678,7 +658,7 @@ func (s *service) SearchPerson(ctx context.Context, query string, opts SearchOpt
 }
 
 // GetPersonMetadata retrieves person metadata.
-func (s *service) GetPersonMetadata(ctx context.Context, tmdbID int32, languages []string) (*PersonMetadata, error) {
+func (s *service) GetPersonMetadata(ctx context.Context, id string, languages []string) (*PersonMetadata, error) {
 	s.mu.RLock()
 	providers := s.personProviders
 	s.mu.RUnlock()
@@ -690,8 +670,6 @@ func (s *service) GetPersonMetadata(ctx context.Context, tmdbID int32, languages
 	if len(languages) == 0 {
 		languages = s.config.DefaultLanguages
 	}
-
-	id := fmt.Sprintf("%d", tmdbID)
 	var result *PersonMetadata
 	var aggErr AggregateError
 
@@ -723,7 +701,7 @@ func (s *service) GetPersonMetadata(ctx context.Context, tmdbID int32, languages
 }
 
 // GetPersonCredits retrieves person credits.
-func (s *service) GetPersonCredits(ctx context.Context, tmdbID int32) (*PersonCredits, error) {
+func (s *service) GetPersonCredits(ctx context.Context, id string) (*PersonCredits, error) {
 	s.mu.RLock()
 	providers := s.personProviders
 	s.mu.RUnlock()
@@ -732,12 +710,11 @@ func (s *service) GetPersonCredits(ctx context.Context, tmdbID int32) (*PersonCr
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetPersonCredits(ctx, id)
 }
 
 // GetPersonImages retrieves person images.
-func (s *service) GetPersonImages(ctx context.Context, tmdbID int32) (*Images, error) {
+func (s *service) GetPersonImages(ctx context.Context, id string) (*Images, error) {
 	s.mu.RLock()
 	providers := s.personProviders
 	s.mu.RUnlock()
@@ -746,12 +723,11 @@ func (s *service) GetPersonImages(ctx context.Context, tmdbID int32) (*Images, e
 		return nil, ErrNoProviders
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetPersonImages(ctx, id)
 }
 
 // GetCollectionMetadata retrieves collection metadata.
-func (s *service) GetCollectionMetadata(ctx context.Context, tmdbID int32, languages []string) (*CollectionMetadata, error) {
+func (s *service) GetCollectionMetadata(ctx context.Context, id string, languages []string) (*CollectionMetadata, error) {
 	s.mu.RLock()
 	providers := s.collectionProviders
 	s.mu.RUnlock()
@@ -764,7 +740,6 @@ func (s *service) GetCollectionMetadata(ctx context.Context, tmdbID int32, langu
 		languages = s.config.DefaultLanguages
 	}
 
-	id := fmt.Sprintf("%d", tmdbID)
 	return providers[0].GetCollection(ctx, id, languages[0])
 }
 

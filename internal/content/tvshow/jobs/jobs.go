@@ -269,7 +269,7 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 				SeriesID:     series.ID,
 				SeasonNumber: util.SafeIntToInt32(*seasonNum),
 			}
-			if err := w.metadataProvider.EnrichSeason(ctx, tmpSeason, *series.TMDbID); err == nil {
+			if err := w.metadataProvider.EnrichSeason(ctx, tmpSeason, fmt.Sprintf("%d", *series.TMDbID)); err == nil {
 				seasonParams.TMDbID = tmpSeason.TMDbID
 				seasonParams.Name = tmpSeason.Name
 				seasonParams.Overview = tmpSeason.Overview
@@ -313,7 +313,7 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 				SeasonNumber:  util.SafeIntToInt32(*seasonNum),
 				EpisodeNumber: util.SafeIntToInt32(*episodeNum),
 			}
-			if err := w.metadataProvider.EnrichEpisode(ctx, tmpEpisode, *series.TMDbID); err == nil {
+			if err := w.metadataProvider.EnrichEpisode(ctx, tmpEpisode, fmt.Sprintf("%d", *series.TMDbID)); err == nil {
 				episodeParams.TMDbID = tmpEpisode.TMDbID
 				episodeParams.Title = tmpEpisode.Title
 				episodeParams.Overview = tmpEpisode.Overview

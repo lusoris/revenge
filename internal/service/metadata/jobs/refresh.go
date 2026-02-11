@@ -66,10 +66,10 @@ func (RefreshEpisodeArgs) Kind() string {
 
 // RefreshPersonArgs are the arguments for refreshing person metadata.
 type RefreshPersonArgs struct {
-	PersonID  uuid.UUID `json:"person_id"`
-	TMDbID    int32     `json:"tmdb_id"`
-	Force     bool      `json:"force"`
-	Languages []string  `json:"languages,omitempty"`
+	PersonID   uuid.UUID `json:"person_id"`
+	ProviderID string    `json:"provider_id"`
+	Force      bool      `json:"force"`
+	Languages  []string  `json:"languages,omitempty"`
 }
 
 // Kind returns the unique job kind for River.

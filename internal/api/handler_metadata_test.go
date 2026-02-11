@@ -37,31 +37,31 @@ func (m *mockMetadataService) SearchMovie(_ context.Context, _ string, _ metadat
 	return m.searchMovieResults, m.searchMovieErr
 }
 
-func (m *mockMetadataService) GetMovieMetadata(_ context.Context, _ int32, _ []string) (*metadata.MovieMetadata, error) {
+func (m *mockMetadataService) GetMovieMetadata(_ context.Context, _ string, _ []string) (*metadata.MovieMetadata, error) {
 	return m.movieMetadata, m.movieMetadataErr
 }
 
-func (m *mockMetadataService) GetMovieCredits(_ context.Context, _ int32) (*metadata.Credits, error) {
+func (m *mockMetadataService) GetMovieCredits(_ context.Context, _ string) (*metadata.Credits, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetMovieImages(_ context.Context, _ int32) (*metadata.Images, error) {
+func (m *mockMetadataService) GetMovieImages(_ context.Context, _ string) (*metadata.Images, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetMovieReleaseDates(_ context.Context, _ int32) ([]metadata.ReleaseDate, error) {
+func (m *mockMetadataService) GetMovieReleaseDates(_ context.Context, _ string) ([]metadata.ReleaseDate, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetMovieExternalIDs(_ context.Context, _ int32) (*metadata.ExternalIDs, error) {
+func (m *mockMetadataService) GetMovieExternalIDs(_ context.Context, _ string) (*metadata.ExternalIDs, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetSimilarMovies(_ context.Context, _ int32, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
+func (m *mockMetadataService) GetSimilarMovies(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
 	return nil, 0, nil
 }
 
-func (m *mockMetadataService) GetMovieRecommendations(_ context.Context, _ int32, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
+func (m *mockMetadataService) GetMovieRecommendations(_ context.Context, _ string, _ metadata.SearchOptions) ([]metadata.MovieSearchResult, int, error) {
 	return nil, 0, nil
 }
 
@@ -69,39 +69,39 @@ func (m *mockMetadataService) SearchTVShow(_ context.Context, _ string, _ metada
 	return m.searchTVShowResults, m.searchTVShowErr
 }
 
-func (m *mockMetadataService) GetTVShowMetadata(_ context.Context, _ int32, _ []string) (*metadata.TVShowMetadata, error) {
+func (m *mockMetadataService) GetTVShowMetadata(_ context.Context, _ string, _ []string) (*metadata.TVShowMetadata, error) {
 	return m.tvShowMetadata, m.tvShowMetadataErr
 }
 
-func (m *mockMetadataService) GetTVShowCredits(_ context.Context, _ int32) (*metadata.Credits, error) {
+func (m *mockMetadataService) GetTVShowCredits(_ context.Context, _ string) (*metadata.Credits, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetTVShowImages(_ context.Context, _ int32) (*metadata.Images, error) {
+func (m *mockMetadataService) GetTVShowImages(_ context.Context, _ string) (*metadata.Images, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetTVShowContentRatings(_ context.Context, _ int32) ([]metadata.ContentRating, error) {
+func (m *mockMetadataService) GetTVShowContentRatings(_ context.Context, _ string) ([]metadata.ContentRating, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetTVShowExternalIDs(_ context.Context, _ int32) (*metadata.ExternalIDs, error) {
+func (m *mockMetadataService) GetTVShowExternalIDs(_ context.Context, _ string) (*metadata.ExternalIDs, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetSeasonMetadata(_ context.Context, _ int32, _ int, _ []string) (*metadata.SeasonMetadata, error) {
+func (m *mockMetadataService) GetSeasonMetadata(_ context.Context, _ string, _ int, _ []string) (*metadata.SeasonMetadata, error) {
 	return m.seasonMetadata, m.seasonMetadataErr
 }
 
-func (m *mockMetadataService) GetSeasonImages(_ context.Context, _ int32, _ int) (*metadata.Images, error) {
+func (m *mockMetadataService) GetSeasonImages(_ context.Context, _ string, _ int) (*metadata.Images, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetEpisodeMetadata(_ context.Context, _ int32, _, _ int, _ []string) (*metadata.EpisodeMetadata, error) {
+func (m *mockMetadataService) GetEpisodeMetadata(_ context.Context, _ string, _, _ int, _ []string) (*metadata.EpisodeMetadata, error) {
 	return m.episodeMetadata, m.episodeMetadataErr
 }
 
-func (m *mockMetadataService) GetEpisodeImages(_ context.Context, _ int32, _, _ int) (*metadata.Images, error) {
+func (m *mockMetadataService) GetEpisodeImages(_ context.Context, _ string, _, _ int) (*metadata.Images, error) {
 	return nil, nil
 }
 
@@ -109,19 +109,19 @@ func (m *mockMetadataService) SearchPerson(_ context.Context, _ string, _ metada
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetPersonMetadata(_ context.Context, _ int32, _ []string) (*metadata.PersonMetadata, error) {
+func (m *mockMetadataService) GetPersonMetadata(_ context.Context, _ string, _ []string) (*metadata.PersonMetadata, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetPersonCredits(_ context.Context, _ int32) (*metadata.PersonCredits, error) {
+func (m *mockMetadataService) GetPersonCredits(_ context.Context, _ string) (*metadata.PersonCredits, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetPersonImages(_ context.Context, _ int32) (*metadata.Images, error) {
+func (m *mockMetadataService) GetPersonImages(_ context.Context, _ string) (*metadata.Images, error) {
 	return nil, nil
 }
 
-func (m *mockMetadataService) GetCollectionMetadata(_ context.Context, _ int32, _ []string) (*metadata.CollectionMetadata, error) {
+func (m *mockMetadataService) GetCollectionMetadata(_ context.Context, _ string, _ []string) (*metadata.CollectionMetadata, error) {
 	return m.collectionMetadata, m.collectionMetadataErr
 }
 

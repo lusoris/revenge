@@ -212,7 +212,7 @@ func (w *RefreshPersonWorker) Timeout(job *river.Job[RefreshPersonArgs]) time.Du
 func (w *RefreshPersonWorker) Work(ctx context.Context, job *river.Job[RefreshPersonArgs]) error {
 	w.logger.Warn("person metadata refresh not yet implemented — job accepted but no-op",
 		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
-		slog.Int("tmdb_id", int(job.Args.TMDbID)),
+		slog.String("provider_id", job.Args.ProviderID),
 	)
 	return nil
 }

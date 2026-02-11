@@ -25,19 +25,19 @@ type MetadataProvider interface {
 	EnrichSeries(ctx context.Context, series *Series, opts ...MetadataRefreshOptions) error
 
 	// EnrichSeason enriches a season with full metadata.
-	EnrichSeason(ctx context.Context, season *Season, seriesTMDbID int32, opts ...MetadataRefreshOptions) error
+	EnrichSeason(ctx context.Context, season *Season, seriesProviderID string, opts ...MetadataRefreshOptions) error
 
 	// EnrichEpisode enriches an episode with full metadata.
-	EnrichEpisode(ctx context.Context, episode *Episode, seriesTMDbID int32, opts ...MetadataRefreshOptions) error
+	EnrichEpisode(ctx context.Context, episode *Episode, seriesProviderID string, opts ...MetadataRefreshOptions) error
 
 	// GetSeriesCredits retrieves series credits (cast and crew).
-	GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]SeriesCredit, error)
+	GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, providerID string) ([]SeriesCredit, error)
 
 	// GetSeriesGenres retrieves series genres.
-	GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]SeriesGenre, error)
+	GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, providerID string) ([]SeriesGenre, error)
 
 	// GetSeriesNetworks retrieves series networks.
-	GetSeriesNetworks(ctx context.Context, tmdbID int) ([]Network, error)
+	GetSeriesNetworks(ctx context.Context, providerID string) ([]Network, error)
 
 	// ClearCache clears any cached metadata.
 	ClearCache()

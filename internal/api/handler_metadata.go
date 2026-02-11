@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/service/metadata"
-	"github.com/lusoris/revenge/internal/util"
 )
 
 // SearchMoviesMetadata searches for movies via metadata provider.
@@ -109,7 +109,7 @@ func (h *Handler) SearchMoviesMetadata(ctx context.Context, params ogen.SearchMo
 // GetMovieMetadata gets detailed movie info from TMDb.
 func (h *Handler) GetMovieMetadata(ctx context.Context, params ogen.GetMovieMetadataParams) (ogen.GetMovieMetadataRes, error) {
 	// Get movie details from shared metadata service
-	movieMeta, err := h.metadataService.GetMovieMetadata(ctx, util.SafeIntToInt32(params.TmdbId), nil)
+	movieMeta, err := h.metadataService.GetMovieMetadata(ctx, strconv.Itoa(params.TmdbId), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetMovieMetadataNotFound{}, nil
@@ -205,7 +205,7 @@ func (h *Handler) GetProxiedImage(ctx context.Context, params ogen.GetProxiedIma
 // GetCollectionMetadata gets detailed collection info from TMDb.
 func (h *Handler) GetCollectionMetadata(ctx context.Context, params ogen.GetCollectionMetadataParams) (ogen.GetCollectionMetadataRes, error) {
 	// Get collection details from shared metadata service
-	collection, err := h.metadataService.GetCollectionMetadata(ctx, util.SafeIntToInt32(params.TmdbId), nil)
+	collection, err := h.metadataService.GetCollectionMetadata(ctx, strconv.Itoa(params.TmdbId), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetCollectionMetadataNotFound{}, nil
@@ -384,7 +384,7 @@ func (h *Handler) SearchTVShowsMetadata(ctx context.Context, params ogen.SearchT
 // GetTVShowMetadata gets detailed TV show info from TMDb.
 func (h *Handler) GetTVShowMetadata(ctx context.Context, params ogen.GetTVShowMetadataParams) (ogen.GetTVShowMetadataRes, error) {
 	// Get TV show details from shared metadata service
-	tvMeta, err := h.metadataService.GetTVShowMetadata(ctx, util.SafeIntToInt32(params.TmdbId), nil)
+	tvMeta, err := h.metadataService.GetTVShowMetadata(ctx, strconv.Itoa(params.TmdbId), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetTVShowMetadataNotFound{}, nil
@@ -522,7 +522,7 @@ func (h *Handler) GetTVShowMetadata(ctx context.Context, params ogen.GetTVShowMe
 // GetSeasonMetadata gets detailed season info from TMDb.
 func (h *Handler) GetSeasonMetadata(ctx context.Context, params ogen.GetSeasonMetadataParams) (ogen.GetSeasonMetadataRes, error) {
 	// Get season details from shared metadata service
-	seasonMeta, err := h.metadataService.GetSeasonMetadata(ctx, util.SafeIntToInt32(params.TmdbId), int(params.SeasonNumber), nil)
+	seasonMeta, err := h.metadataService.GetSeasonMetadata(ctx, strconv.Itoa(params.TmdbId), int(params.SeasonNumber), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetSeasonMetadataNotFound{}, nil
@@ -601,7 +601,7 @@ func (h *Handler) GetSeasonMetadata(ctx context.Context, params ogen.GetSeasonMe
 // GetEpisodeMetadata gets detailed episode info from TMDb.
 func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisodeMetadataParams) (ogen.GetEpisodeMetadataRes, error) {
 	// Get episode details from shared metadata service
-	episodeMeta, err := h.metadataService.GetEpisodeMetadata(ctx, util.SafeIntToInt32(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber), nil)
+	episodeMeta, err := h.metadataService.GetEpisodeMetadata(ctx, strconv.Itoa(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetEpisodeMetadataNotFound{}, nil
@@ -701,7 +701,7 @@ func (h *Handler) GetEpisodeMetadata(ctx context.Context, params ogen.GetEpisode
 // GetMovieMetadataCredits gets movie credits from TMDb.
 func (h *Handler) GetMovieMetadataCredits(ctx context.Context, params ogen.GetMovieMetadataCreditsParams) (ogen.GetMovieMetadataCreditsRes, error) {
 	// Get movie credits from shared metadata service
-	credits, err := h.metadataService.GetMovieCredits(ctx, util.SafeIntToInt32(params.TmdbId))
+	credits, err := h.metadataService.GetMovieCredits(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetMovieMetadataCreditsNotFound{}, nil
@@ -772,7 +772,7 @@ func (h *Handler) GetMovieMetadataCredits(ctx context.Context, params ogen.GetMo
 
 // GetMovieMetadataImages gets movie images from metadata provider.
 func (h *Handler) GetMovieMetadataImages(ctx context.Context, params ogen.GetMovieMetadataImagesParams) (ogen.GetMovieMetadataImagesRes, error) {
-	images, err := h.metadataService.GetMovieImages(ctx, util.SafeIntToInt32(params.TmdbId))
+	images, err := h.metadataService.GetMovieImages(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetMovieMetadataImagesNotFound{}, nil
@@ -795,7 +795,7 @@ func (h *Handler) GetSimilarMoviesMetadata(ctx context.Context, params ogen.GetS
 		limit = int(params.Limit.Value)
 	}
 
-	results, total, err := h.metadataService.GetSimilarMovies(ctx, util.SafeIntToInt32(params.TmdbId), metadata.SearchOptions{})
+	results, total, err := h.metadataService.GetSimilarMovies(ctx, strconv.Itoa(params.TmdbId), metadata.SearchOptions{})
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetSimilarMoviesMetadataNotFound{}, nil
@@ -814,7 +814,7 @@ func (h *Handler) GetMovieRecommendationsMetadata(ctx context.Context, params og
 		limit = int(params.Limit.Value)
 	}
 
-	results, total, err := h.metadataService.GetMovieRecommendations(ctx, util.SafeIntToInt32(params.TmdbId), metadata.SearchOptions{})
+	results, total, err := h.metadataService.GetMovieRecommendations(ctx, strconv.Itoa(params.TmdbId), metadata.SearchOptions{})
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetMovieRecommendationsMetadataNotFound{}, nil
@@ -828,7 +828,7 @@ func (h *Handler) GetMovieRecommendationsMetadata(ctx context.Context, params og
 
 // GetMovieExternalIDs gets movie external IDs.
 func (h *Handler) GetMovieExternalIDs(ctx context.Context, params ogen.GetMovieExternalIDsParams) (ogen.GetMovieExternalIDsRes, error) {
-	ids, err := h.metadataService.GetMovieExternalIDs(ctx, util.SafeIntToInt32(params.TmdbId))
+	ids, err := h.metadataService.GetMovieExternalIDs(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetMovieExternalIDsNotFound{}, nil
@@ -846,7 +846,7 @@ func (h *Handler) GetMovieExternalIDs(ctx context.Context, params ogen.GetMovieE
 
 // GetTVShowMetadataCredits gets TV show credits from metadata provider.
 func (h *Handler) GetTVShowMetadataCredits(ctx context.Context, params ogen.GetTVShowMetadataCreditsParams) (ogen.GetTVShowMetadataCreditsRes, error) {
-	credits, err := h.metadataService.GetTVShowCredits(ctx, util.SafeIntToInt32(params.TmdbId))
+	credits, err := h.metadataService.GetTVShowCredits(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetTVShowMetadataCreditsNotFound{}, nil
@@ -864,7 +864,7 @@ func (h *Handler) GetTVShowMetadataCredits(ctx context.Context, params ogen.GetT
 
 // GetTVShowMetadataImages gets TV show images from metadata provider.
 func (h *Handler) GetTVShowMetadataImages(ctx context.Context, params ogen.GetTVShowMetadataImagesParams) (ogen.GetTVShowMetadataImagesRes, error) {
-	images, err := h.metadataService.GetTVShowImages(ctx, util.SafeIntToInt32(params.TmdbId))
+	images, err := h.metadataService.GetTVShowImages(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetTVShowMetadataImagesNotFound{}, nil
@@ -882,7 +882,7 @@ func (h *Handler) GetTVShowMetadataImages(ctx context.Context, params ogen.GetTV
 
 // GetTVShowContentRatings gets TV show content ratings.
 func (h *Handler) GetTVShowContentRatings(ctx context.Context, params ogen.GetTVShowContentRatingsParams) (ogen.GetTVShowContentRatingsRes, error) {
-	ratings, err := h.metadataService.GetTVShowContentRatings(ctx, util.SafeIntToInt32(params.TmdbId))
+	ratings, err := h.metadataService.GetTVShowContentRatings(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetTVShowContentRatingsNotFound{}, nil
@@ -906,7 +906,7 @@ func (h *Handler) GetTVShowContentRatings(ctx context.Context, params ogen.GetTV
 
 // GetTVShowExternalIDs gets TV show external IDs.
 func (h *Handler) GetTVShowExternalIDs(ctx context.Context, params ogen.GetTVShowExternalIDsParams) (ogen.GetTVShowExternalIDsRes, error) {
-	ids, err := h.metadataService.GetTVShowExternalIDs(ctx, util.SafeIntToInt32(params.TmdbId))
+	ids, err := h.metadataService.GetTVShowExternalIDs(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetTVShowExternalIDsNotFound{}, nil
@@ -924,7 +924,7 @@ func (h *Handler) GetTVShowExternalIDs(ctx context.Context, params ogen.GetTVSho
 
 // GetSeasonMetadataImages gets season images from metadata provider.
 func (h *Handler) GetSeasonMetadataImages(ctx context.Context, params ogen.GetSeasonMetadataImagesParams) (ogen.GetSeasonMetadataImagesRes, error) {
-	images, err := h.metadataService.GetSeasonImages(ctx, util.SafeIntToInt32(params.TmdbId), int(params.SeasonNumber))
+	images, err := h.metadataService.GetSeasonImages(ctx, strconv.Itoa(params.TmdbId), int(params.SeasonNumber))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetSeasonMetadataImagesNotFound{}, nil
@@ -942,7 +942,7 @@ func (h *Handler) GetSeasonMetadataImages(ctx context.Context, params ogen.GetSe
 
 // GetEpisodeMetadataImages gets episode images from metadata provider.
 func (h *Handler) GetEpisodeMetadataImages(ctx context.Context, params ogen.GetEpisodeMetadataImagesParams) (ogen.GetEpisodeMetadataImagesRes, error) {
-	images, err := h.metadataService.GetEpisodeImages(ctx, util.SafeIntToInt32(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber))
+	images, err := h.metadataService.GetEpisodeImages(ctx, strconv.Itoa(params.TmdbId), int(params.SeasonNumber), int(params.EpisodeNumber))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetEpisodeMetadataImagesNotFound{}, nil
@@ -1046,7 +1046,7 @@ func (h *Handler) SearchPersonMetadata(ctx context.Context, params ogen.SearchPe
 
 // GetPersonMetadata gets person details from metadata provider.
 func (h *Handler) GetPersonMetadata(ctx context.Context, params ogen.GetPersonMetadataParams) (ogen.GetPersonMetadataRes, error) {
-	person, err := h.metadataService.GetPersonMetadata(ctx, util.SafeIntToInt32(params.TmdbId), nil)
+	person, err := h.metadataService.GetPersonMetadata(ctx, strconv.Itoa(params.TmdbId), nil)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetPersonMetadataNotFound{}, nil
@@ -1103,7 +1103,7 @@ func (h *Handler) GetPersonMetadata(ctx context.Context, params ogen.GetPersonMe
 
 // GetPersonMetadataCredits gets person credits from metadata provider.
 func (h *Handler) GetPersonMetadataCredits(ctx context.Context, params ogen.GetPersonMetadataCreditsParams) (ogen.GetPersonMetadataCreditsRes, error) {
-	credits, err := h.metadataService.GetPersonCredits(ctx, util.SafeIntToInt32(params.TmdbId))
+	credits, err := h.metadataService.GetPersonCredits(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetPersonMetadataCreditsNotFound{}, nil
@@ -1143,7 +1143,7 @@ func (h *Handler) GetPersonMetadataCredits(ctx context.Context, params ogen.GetP
 
 // GetPersonMetadataImages gets person images from metadata provider.
 func (h *Handler) GetPersonMetadataImages(ctx context.Context, params ogen.GetPersonMetadataImagesParams) (ogen.GetPersonMetadataImagesRes, error) {
-	images, err := h.metadataService.GetPersonImages(ctx, util.SafeIntToInt32(params.TmdbId))
+	images, err := h.metadataService.GetPersonImages(ctx, strconv.Itoa(params.TmdbId))
 	if err != nil {
 		if errors.Is(err, metadata.ErrNoProviders) || errors.Is(err, metadata.ErrNotFound) {
 			return &ogen.GetPersonMetadataImagesNotFound{}, nil

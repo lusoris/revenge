@@ -346,7 +346,7 @@ func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, o
 
 	// Update credits if TMDbID is available
 	if mov.TMDbID != nil {
-		credits, err := s.metadataProvider.GetMovieCredits(ctx, mov.ID, int(*mov.TMDbID))
+		credits, err := s.metadataProvider.GetMovieCredits(ctx, mov.ID, fmt.Sprintf("%d", *mov.TMDbID))
 		if err == nil && len(credits) > 0 {
 			// Delete existing credits and create new ones
 			_ = s.repo.DeleteMovieCredits(ctx, mov.ID)
@@ -366,7 +366,7 @@ func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, o
 		}
 
 		// Update genres
-		genres, err := s.metadataProvider.GetMovieGenres(ctx, mov.ID, int(*mov.TMDbID))
+		genres, err := s.metadataProvider.GetMovieGenres(ctx, mov.ID, fmt.Sprintf("%d", *mov.TMDbID))
 		if err == nil && len(genres) > 0 {
 			_ = s.repo.DeleteMovieGenres(ctx, mov.ID)
 			for _, genre := range genres {

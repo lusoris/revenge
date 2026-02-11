@@ -31,24 +31,16 @@ as a metadata/image provider instead of being provider-agnostic. The Provider
 interfaces (provider.go) are well-designed, but the Service layer, database
 schema, and API surface re-introduce TMDb-specific coupling.
 
-## Issue 1: Image System Hardcoded to TMDb (HIGH)
+## Issue 1: Image System Hardcoded to TMDb (HIGH) — FIXED (commit 603c026c)
 **Problem**: The image proxy endpoint (`/api/v1/images/{type}/{size}/{path}`)
-only works with TMDb. Three independent copies of TMDb image size constants
-exist across the codebase. The `ImageProvider` interface exists and fanart.tv
-implements it, but the infra image `Service` and content-level `ImageURLBuilder`
-bypass the interface entirely and always construct TMDb URLs. Fanart.tv returns
-full URLs — piping them through `GetImageURL()` produces broken double-prefixed
-URLs like `image.tmdb.org/t/p/w500/https://...`.
+only works with TMDb. Fanart.tv returns full URLs — piping them through
+`GetImageURL()` produced broken double-prefixed URLs.
 
-**Files affected**:
-- `internal/infra/image/service.go` — hardcoded BaseURL + TMDb size constants
-- `internal/content/shared/metadata/images.go` — duplicate TMDb constants + `NewImageURLBuilder()` hardcodes TMDb URL
-- `internal/service/metadata/provider.go` — third copy of TMDb `ImageSize` constants
-- `internal/service/metadata/providers/tmdb/client.go` — fourth `ImageBaseURL` constant
-
-**Fix**: Consolidate into one `ImageURLBuilder` that delegates to the registered
-`ImageProvider`. For providers returning full URLs (fanart.tv), pass through
-unchanged. Remove the three duplicate constant sets.
+**Fix applied**: `GetURL()` and all size-specific methods in `images.go` now
+detect full URLs (http/https prefix) and pass through unchanged. `GetImageURL()`
+in `image/service.go` does the same via `isFullURL()` helper. Tests added for
+fanart.tv, Radarr, and http URLs.
+**Status**: FIXED
 
 ## Issue 2: Genre System Uses `tmdb_genre_id` as Universal Key (HIGH)
 **Problem**: Genre IDs from TMDb (28=Action, 35=Comedy) are used as the sole
@@ -70,25 +62,24 @@ deduplication key everywhere. Non-TMDb providers must fake TMDb IDs:
 `genre_external_ids` junction table for provider-specific ID mappings. Requires
 DB migration + touching ~30 files.
 
-## Issue 3: Metadata Service Interface Takes `tmdbID int32` (CRITICAL)
-**Problem**: The `Service` interface in `service/metadata/service.go` accepts
-`tmdbID int32` as the lookup parameter for every method (~20 methods). This
-forces every consumer to have a TMDb ID before fetching metadata. The
-underlying `Provider` interface correctly uses `id string`, but the Service
-layer re-narrows it to TMDb-specific `int32`.
+## Issue 3: Metadata Service Interface Takes `tmdbID int32` (CRITICAL) — FIXED
+**Problem**: The `Service` interface accepted `tmdbID int32` for all ~20 methods,
+forcing TMDb-specific coupling. Provider interfaces already used `id string`.
 
-Non-TMDb providers (TVmaze, AniList, Kitsu) can only serve as enrichment
-sources, never as primary providers.
-
-**Files affected**:
-- `internal/service/metadata/service.go` — all 20+ interface methods + implementations
-- `internal/content/movie/metadata_provider.go` — param named `tmdbID`
-- `internal/content/tvshow/metadata_provider.go` — `EnrichSeason(ctx, season, seriesTMDbID int32)`
-- All metadata adapters that call the service
-
-**Fix**: Change Service interface to accept `(provider ProviderID, id string)`
-or a generic `ExternalRef{Provider, ID}` struct. Keep tmdb_id columns in DB but
-don't make them the only lookup path.
+**Fix applied**: Changed all Service interface methods from `tmdbID int32` to
+`id string`. Removed `id := fmt.Sprintf("%d", tmdbID)` conversions from all
+implementations. Updated all callers:
+- `internal/service/metadata/service.go` — interface + 20 implementations
+- `internal/api/handler_metadata.go` — 19 handler calls now use `strconv.Itoa()`
+- `internal/content/movie/metadata_provider.go` — `tmdbID int` → `providerID string`
+- `internal/content/tvshow/metadata_provider.go` — `seriesTMDbID int32` → `seriesProviderID string`
+- `internal/service/metadata/adapters/movie/adapter.go` — updated all method sigs
+- `internal/service/metadata/adapters/tvshow/adapter.go` — updated all method sigs
+- `internal/content/movie/service.go`, `library_service.go`, `library_matcher.go`
+- `internal/content/tvshow/service.go`, `jobs/jobs.go`
+- `internal/service/metadata/jobs/queue.go`, `refresh.go`, `workers.go`
+- All test mocks updated across 5 test files
+**Status**: FIXED
 
 ## Issue 4: API Endpoints Use `{tmdbId}` Path Parameter (HIGH)
 **Problem**: All 19 `/api/v1/metadata/*` endpoints use `{tmdbId}` in the path,
@@ -103,17 +94,13 @@ TV/person/collection endpoints (19 total).
 parameter (defaulting to `tmdb` for backwards compat). Or use
 `/api/v1/metadata/movie/{provider}:{id}` URI format.
 
-## Issue 5: Image Paths Stored as TMDb-Relative Fragments (MEDIUM)
-**Problem**: `poster_path`, `backdrop_path`, `profile_path`, `still_path`
-columns store TMDb-relative paths (e.g. `/abc123.jpg`), not full URLs. These
-only work when prefixed with `image.tmdb.org/t/p/{size}`. But Radarr and
-fanart.tv store full URLs in the same columns — inconsistent format in DB.
+## Issue 5: Image Paths Stored as TMDb-Relative Fragments (MEDIUM) — FIXED (with #1)
+**Problem**: TMDb-relative paths vs full URLs from Radarr/fanart.tv in the
+same DB columns.
 
-**Files affected**: All DB image columns across movies, tvshows, seasons,
-episodes, credits tables + all adapters that persist paths.
-
-**Fix**: Either always store full URLs at write time, or store paths + an
-`image_source` field and resolve at read time.
+**Fix applied**: Covered by Issue #1 fix — `GetURL()` and `GetImageURL()` now
+detect full URLs and pass through unchanged. Both storage formats work.
+**Status**: FIXED
 
 ## Issue 6: External IDs Not Normalized (MEDIUM)
 **Problem**: `tmdb_id` is a top-level field on Movie, Series, Episode, Network
@@ -128,13 +115,12 @@ from a non-TMDb provider.
 **Fix**: Add an `external_ids` junction table or JSONB column for arbitrary
 provider→ID mappings. Make `tmdb_id` nullable on networks.
 
-## Issue 7: Refresh Jobs Tied to TMDb ID (LOW)
-**Problem**: Metadata refresh job payloads include `TMDbID int32`, tying the
-job queue to TMDb.
+## Issue 7: Refresh Jobs Tied to TMDb ID (LOW) — FIXED (with #3)
+**Problem**: `RefreshPersonArgs` had `TMDbID int32` in job payloads.
 
-**Files**: `service/metadata/jobs/refresh.go`, `workers.go`
-
-**Fix**: Use `ExternalRef{Provider, ID}` in job payloads instead.
+**Fix applied**: Changed to `ProviderID string` in `refresh.go`, `queue.go`,
+and `workers.go`.
+**Status**: FIXED
 
 ---
 

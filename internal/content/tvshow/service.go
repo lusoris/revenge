@@ -598,7 +598,7 @@ func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID, opt
 
 	// Update credits if TMDbID is available
 	if series.TMDbID != nil {
-		credits, err := s.metadataProvider.GetSeriesCredits(ctx, series.ID, int(*series.TMDbID))
+		credits, err := s.metadataProvider.GetSeriesCredits(ctx, series.ID, fmt.Sprintf("%d", *series.TMDbID))
 		if err == nil && len(credits) > 0 {
 			_ = s.repo.DeleteSeriesCredits(ctx, series.ID)
 			for _, credit := range credits {
@@ -617,7 +617,7 @@ func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID, opt
 		}
 
 		// Update genres
-		genres, err := s.metadataProvider.GetSeriesGenres(ctx, series.ID, int(*series.TMDbID))
+		genres, err := s.metadataProvider.GetSeriesGenres(ctx, series.ID, fmt.Sprintf("%d", *series.TMDbID))
 		if err == nil && len(genres) > 0 {
 			_ = s.repo.DeleteSeriesGenres(ctx, series.ID)
 			for _, genre := range genres {
@@ -652,7 +652,7 @@ func (s *tvService) RefreshSeasonMetadata(ctx context.Context, id uuid.UUID, opt
 	}
 
 	// Enrich with latest metadata from TMDb, passing options through
-	if err := s.metadataProvider.EnrichSeason(ctx, season, *series.TMDbID, opts...); err != nil {
+	if err := s.metadataProvider.EnrichSeason(ctx, season, fmt.Sprintf("%d", *series.TMDbID), opts...); err != nil {
 		return fmt.Errorf("enrich season: %w", err)
 	}
 
@@ -690,7 +690,7 @@ func (s *tvService) RefreshEpisodeMetadata(ctx context.Context, id uuid.UUID, op
 	}
 
 	// Enrich with latest metadata from TMDb, passing options through
-	if err := s.metadataProvider.EnrichEpisode(ctx, episode, *series.TMDbID, opts...); err != nil {
+	if err := s.metadataProvider.EnrichEpisode(ctx, episode, fmt.Sprintf("%d", *series.TMDbID), opts...); err != nil {
 		return fmt.Errorf("enrich episode: %w", err)
 	}
 

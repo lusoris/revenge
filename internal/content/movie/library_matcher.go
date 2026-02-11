@@ -205,7 +205,7 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 
 	// Fetch and save credits if available
 	if tmdbMovie.TMDbID != nil {
-		credits, err := m.metadataService.GetMovieCredits(ctx, newMovie.ID, int(*tmdbMovie.TMDbID))
+		credits, err := m.metadataService.GetMovieCredits(ctx, newMovie.ID, fmt.Sprintf("%d", *tmdbMovie.TMDbID))
 		if err == nil && len(credits) > 0 {
 			for _, credit := range credits {
 				creditParams := CreateMovieCreditParams{
@@ -227,7 +227,7 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 
 	// Fetch and save genres if available
 	if tmdbMovie.TMDbID != nil {
-		genres, err := m.metadataService.GetMovieGenres(ctx, newMovie.ID, int(*tmdbMovie.TMDbID))
+		genres, err := m.metadataService.GetMovieGenres(ctx, newMovie.ID, fmt.Sprintf("%d", *tmdbMovie.TMDbID))
 		if err == nil && len(genres) > 0 {
 			for _, genre := range genres {
 				// Ignore errors for individual genres

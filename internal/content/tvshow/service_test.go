@@ -980,34 +980,34 @@ func (m *MockMetadataProvider) EnrichSeries(ctx context.Context, series *Series,
 	return args.Error(0)
 }
 
-func (m *MockMetadataProvider) EnrichSeason(ctx context.Context, season *Season, seriesTMDbID int32, opts ...MetadataRefreshOptions) error {
-	args := m.Called(ctx, season, seriesTMDbID, opts)
+func (m *MockMetadataProvider) EnrichSeason(ctx context.Context, season *Season, seriesProviderID string, opts ...MetadataRefreshOptions) error {
+	args := m.Called(ctx, season, seriesProviderID, opts)
 	return args.Error(0)
 }
 
-func (m *MockMetadataProvider) EnrichEpisode(ctx context.Context, episode *Episode, seriesTMDbID int32, opts ...MetadataRefreshOptions) error {
-	args := m.Called(ctx, episode, seriesTMDbID, opts)
+func (m *MockMetadataProvider) EnrichEpisode(ctx context.Context, episode *Episode, seriesProviderID string, opts ...MetadataRefreshOptions) error {
+	args := m.Called(ctx, episode, seriesProviderID, opts)
 	return args.Error(0)
 }
 
-func (m *MockMetadataProvider) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]SeriesCredit, error) {
-	args := m.Called(ctx, seriesID, tmdbID)
+func (m *MockMetadataProvider) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, providerID string) ([]SeriesCredit, error) {
+	args := m.Called(ctx, seriesID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]SeriesCredit), args.Error(1)
 }
 
-func (m *MockMetadataProvider) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]SeriesGenre, error) {
-	args := m.Called(ctx, seriesID, tmdbID)
+func (m *MockMetadataProvider) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, providerID string) ([]SeriesGenre, error) {
+	args := m.Called(ctx, seriesID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]SeriesGenre), args.Error(1)
 }
 
-func (m *MockMetadataProvider) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]Network, error) {
-	args := m.Called(ctx, tmdbID)
+func (m *MockMetadataProvider) GetSeriesNetworks(ctx context.Context, providerID string) ([]Network, error) {
+	args := m.Called(ctx, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}

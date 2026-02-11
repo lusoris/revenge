@@ -80,12 +80,12 @@ func (q *Queue) EnqueueRefreshEpisode(ctx context.Context, seriesID, seasonID, e
 }
 
 // EnqueueRefreshPerson enqueues a person metadata refresh job.
-func (q *Queue) EnqueueRefreshPerson(ctx context.Context, personID uuid.UUID, tmdbID int32, force bool, languages []string) error {
+func (q *Queue) EnqueueRefreshPerson(ctx context.Context, personID uuid.UUID, providerID string, force bool, languages []string) error {
 	_, err := q.client.Insert(ctx, RefreshPersonArgs{
-		PersonID:  personID,
-		TMDbID:    tmdbID,
-		Force:     force,
-		Languages: languages,
+		PersonID:   personID,
+		ProviderID: providerID,
+		Force:      force,
+		Languages:  languages,
 	}, nil)
 	return err
 }

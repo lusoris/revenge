@@ -33,16 +33,16 @@ func (m *MockMetadataProvider) EnrichMovie(ctx context.Context, mov *Movie, opts
 	return args.Error(0)
 }
 
-func (m *MockMetadataProvider) GetMovieCredits(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieCredit, error) {
-	args := m.Called(ctx, movieID, tmdbID)
+func (m *MockMetadataProvider) GetMovieCredits(ctx context.Context, movieID uuid.UUID, providerID string) ([]MovieCredit, error) {
+	args := m.Called(ctx, movieID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]MovieCredit), args.Error(1)
 }
 
-func (m *MockMetadataProvider) GetMovieGenres(ctx context.Context, movieID uuid.UUID, tmdbID int) ([]MovieGenre, error) {
-	args := m.Called(ctx, movieID, tmdbID)
+func (m *MockMetadataProvider) GetMovieGenres(ctx context.Context, movieID uuid.UUID, providerID string) ([]MovieGenre, error) {
+	args := m.Called(ctx, movieID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}

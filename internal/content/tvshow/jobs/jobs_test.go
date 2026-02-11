@@ -1259,34 +1259,34 @@ func (m *mockMetadataProvider) EnrichSeries(ctx context.Context, series *tvshow.
 	return args.Error(0)
 }
 
-func (m *mockMetadataProvider) EnrichSeason(ctx context.Context, season *tvshow.Season, seriesTMDbID int32, opts ...tvshow.MetadataRefreshOptions) error {
-	args := m.Called(ctx, season, seriesTMDbID, opts)
+func (m *mockMetadataProvider) EnrichSeason(ctx context.Context, season *tvshow.Season, seriesProviderID string, opts ...tvshow.MetadataRefreshOptions) error {
+	args := m.Called(ctx, season, seriesProviderID, opts)
 	return args.Error(0)
 }
 
-func (m *mockMetadataProvider) EnrichEpisode(ctx context.Context, episode *tvshow.Episode, seriesTMDbID int32, opts ...tvshow.MetadataRefreshOptions) error {
-	args := m.Called(ctx, episode, seriesTMDbID, opts)
+func (m *mockMetadataProvider) EnrichEpisode(ctx context.Context, episode *tvshow.Episode, seriesProviderID string, opts ...tvshow.MetadataRefreshOptions) error {
+	args := m.Called(ctx, episode, seriesProviderID, opts)
 	return args.Error(0)
 }
 
-func (m *mockMetadataProvider) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]tvshow.SeriesCredit, error) {
-	args := m.Called(ctx, seriesID, tmdbID)
+func (m *mockMetadataProvider) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, providerID string) ([]tvshow.SeriesCredit, error) {
+	args := m.Called(ctx, seriesID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]tvshow.SeriesCredit), args.Error(1)
 }
 
-func (m *mockMetadataProvider) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]tvshow.SeriesGenre, error) {
-	args := m.Called(ctx, seriesID, tmdbID)
+func (m *mockMetadataProvider) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, providerID string) ([]tvshow.SeriesGenre, error) {
+	args := m.Called(ctx, seriesID, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]tvshow.SeriesGenre), args.Error(1)
 }
 
-func (m *mockMetadataProvider) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]tvshow.Network, error) {
-	args := m.Called(ctx, tmdbID)
+func (m *mockMetadataProvider) GetSeriesNetworks(ctx context.Context, providerID string) ([]tvshow.Network, error) {
+	args := m.Called(ctx, providerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}

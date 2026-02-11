@@ -154,7 +154,7 @@ func (s *LibraryService) RefreshMovie(ctx context.Context, movieID uuid.UUID) er
 		return fmt.Errorf("movie has no TMDb ID")
 	}
 
-	tmdbID := int(*existingMovie.TMDbID)
+	tmdbID := fmt.Sprintf("%d", *existingMovie.TMDbID)
 
 	// Fetch fresh metadata from TMDb
 	if err := s.metadataService.EnrichMovie(ctx, existingMovie); err != nil {

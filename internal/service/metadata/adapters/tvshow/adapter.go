@@ -72,7 +72,7 @@ func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series
 		}
 	}
 
-	meta, err := a.service.GetTVShowMetadata(ctx, *series.TMDbID, languages)
+	meta, err := a.service.GetTVShowMetadata(ctx, fmt.Sprintf("%d", *series.TMDbID), languages)
 	if err != nil {
 		return fmt.Errorf("get series metadata: %w", err)
 	}
@@ -82,7 +82,7 @@ func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series
 	a.service.EnrichTVShowRatings(ctx, meta)
 
 	// Get content ratings for age ratings
-	contentRatings, err := a.service.GetTVShowContentRatings(ctx, *series.TMDbID)
+	contentRatings, err := a.service.GetTVShowContentRatings(ctx, fmt.Sprintf("%d", *series.TMDbID))
 	if err != nil {
 		// Continue without content ratings
 		contentRatings = nil
@@ -95,7 +95,7 @@ func (a *Adapter) EnrichSeries(ctx context.Context, series *contenttvshow.Series
 }
 
 // EnrichSeason enriches a season with metadata from the shared service.
-func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season, seriesTMDbID int32, opts ...contenttvshow.MetadataRefreshOptions) error {
+func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season, seriesProviderID string, opts ...contenttvshow.MetadataRefreshOptions) error {
 	// Determine languages and force from options
 	languages := a.languages
 	if len(opts) > 0 {
@@ -107,7 +107,7 @@ func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season
 		}
 	}
 
-	meta, err := a.service.GetSeasonMetadata(ctx, seriesTMDbID, int(season.SeasonNumber), languages)
+	meta, err := a.service.GetSeasonMetadata(ctx, seriesProviderID, int(season.SeasonNumber), languages)
 	if err != nil {
 		return fmt.Errorf("get season metadata: %w", err)
 	}
@@ -117,7 +117,7 @@ func (a *Adapter) EnrichSeason(ctx context.Context, season *contenttvshow.Season
 }
 
 // EnrichEpisode enriches an episode with metadata from the shared service.
-func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Episode, seriesTMDbID int32, opts ...contenttvshow.MetadataRefreshOptions) error {
+func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Episode, seriesProviderID string, opts ...contenttvshow.MetadataRefreshOptions) error {
 	// Determine languages and force from options
 	languages := a.languages
 	if len(opts) > 0 {
@@ -129,7 +129,7 @@ func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Epis
 		}
 	}
 
-	meta, err := a.service.GetEpisodeMetadata(ctx, seriesTMDbID, int(episode.SeasonNumber), int(episode.EpisodeNumber), languages)
+	meta, err := a.service.GetEpisodeMetadata(ctx, seriesProviderID, int(episode.SeasonNumber), int(episode.EpisodeNumber), languages)
 	if err != nil {
 		return fmt.Errorf("get episode metadata: %w", err)
 	}
@@ -139,8 +139,8 @@ func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Epis
 }
 
 // GetSeriesCredits retrieves series credits using the shared service.
-func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesCredit, error) {
-	credits, err := a.service.GetTVShowCredits(ctx, util.SafeIntToInt32(tmdbID))
+func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, providerID string) ([]contenttvshow.SeriesCredit, error) {
+	credits, err := a.service.GetTVShowCredits(ctx, providerID)
 	if err != nil {
 		return nil, fmt.Errorf("get series credits: %w", err)
 	}
@@ -149,8 +149,8 @@ func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdb
 }
 
 // GetSeriesGenres retrieves series genres using the shared service.
-func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesGenre, error) {
-	meta, err := a.service.GetTVShowMetadata(ctx, util.SafeIntToInt32(tmdbID), []string{a.languages[0]})
+func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, providerID string) ([]contenttvshow.SeriesGenre, error) {
+	meta, err := a.service.GetTVShowMetadata(ctx, providerID, []string{a.languages[0]})
 	if err != nil {
 		return nil, fmt.Errorf("get series metadata for genres: %w", err)
 	}
@@ -169,8 +169,8 @@ func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbI
 }
 
 // GetSeriesNetworks retrieves series networks using the shared service.
-func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contenttvshow.Network, error) {
-	meta, err := a.service.GetTVShowMetadata(ctx, util.SafeIntToInt32(tmdbID), []string{a.languages[0]})
+func (a *Adapter) GetSeriesNetworks(ctx context.Context, providerID string) ([]contenttvshow.Network, error) {
+	meta, err := a.service.GetTVShowMetadata(ctx, providerID, []string{a.languages[0]})
 	if err != nil {
 		return nil, fmt.Errorf("get series metadata for networks: %w", err)
 	}
