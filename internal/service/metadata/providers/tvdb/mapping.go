@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapTVSearchResult converts a TVDb search result to metadata type.
@@ -36,7 +37,7 @@ func mapTVSearchResult(r *SearchResult) metadata.TVShowSearchResult {
 
 // mapTVShowMetadata converts a TVDb series response to metadata type.
 func mapTVShowMetadata(r *SeriesResponse) *metadata.TVShowMetadata {
-	tvdbID := int32(r.ID)
+	tvdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.TVShowMetadata{
 		ProviderID:       strconv.Itoa(r.ID),
 		Provider:         metadata.ProviderTVDb,
@@ -141,7 +142,7 @@ func mapTVShowMetadata(r *SeriesResponse) *metadata.TVShowMetadata {
 			result.IMDbID = &remote.ID
 		case RemoteIDTypeTMDb:
 			if id, err := strconv.Atoi(remote.ID); err == nil {
-				tmdbID := int32(id)
+				tmdbID := util.SafeIntToInt32(id)
 				result.TMDbID = &tmdbID
 			}
 		}
@@ -165,7 +166,7 @@ func mapTVShowMetadata(r *SeriesResponse) *metadata.TVShowMetadata {
 
 // mapSeasonMetadata converts a TVDb season response to metadata type.
 func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadata {
-	tvdbID := int32(r.ID)
+	tvdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.SeasonMetadata{
 		ProviderID:   strconv.Itoa(r.ID),
 		Provider:     metadata.ProviderTVDb,
@@ -197,7 +198,7 @@ func mapSeasonMetadata(r *SeasonResponse, showID string) *metadata.SeasonMetadat
 
 // mapEpisodeMetadata converts a TVDb episode response to metadata type.
 func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMetadata {
-	tvdbID := int32(r.ID)
+	tvdbID := util.SafeIntToInt32(r.ID)
 	result := &metadata.EpisodeMetadata{
 		ProviderID:     strconv.Itoa(r.ID),
 		Provider:       metadata.ProviderTVDb,
@@ -216,7 +217,7 @@ func mapEpisodeMetadata(r *EpisodeResponse, showID string) *metadata.EpisodeMeta
 	}
 
 	if r.Runtime != nil && *r.Runtime > 0 {
-		runtime := int32(*r.Runtime)
+		runtime := util.SafeIntToInt32(*r.Runtime)
 		result.Runtime = &runtime
 	}
 
@@ -314,7 +315,7 @@ func mapPersonMetadata(r *PersonResponse, lang string) *metadata.PersonMetadata 
 			result.IMDbID = &remote.ID
 		case RemoteIDTypeTMDb:
 			if id, err := strconv.Atoi(remote.ID); err == nil {
-				tmdbID := int32(id)
+				tmdbID := util.SafeIntToInt32(id)
 				result.TMDbID = &tmdbID
 			}
 		}
@@ -465,7 +466,7 @@ func mapRemoteIDsToExternalIDs(remoteIDs []RemoteIDResponse, tvdbID int32) *meta
 			result.IMDbID = &remote.ID
 		case RemoteIDTypeTMDb:
 			if id, err := strconv.Atoi(remote.ID); err == nil {
-				tmdbID := int32(id)
+				tmdbID := util.SafeIntToInt32(id)
 				result.TMDbID = &tmdbID
 			}
 		}

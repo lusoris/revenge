@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/assert"
@@ -133,11 +132,6 @@ func (m *mockRepository) GetRecentActions(ctx context.Context, limit int32) ([]A
 	return nil, nil
 }
 
-// mockLeaderElection implements the methods used from raft.LeaderElection.
-// Since LeaderElection is a concrete struct (not an interface), we use the real
-// nil-pointer behavior for testing non-leader and nil scenarios, and create a
-// helper that constructs the worker differently.
-
 // newTestJob creates a river.Job for testing cleanup workers.
 func newTestJob(id int64, args ActivityCleanupArgs) *river.Job[ActivityCleanupArgs] {
 	return &river.Job[ActivityCleanupArgs]{
@@ -182,24 +176,21 @@ func TestNewActivityCleanupWorker(t *testing.T) {
 	svc := newTestServiceWithMock(t, repo)
 	logger := logging.NewTestLogger()
 
-	worker := NewActivityCleanupWorker(nil, svc, logger)
+	worker := NewActivityCleanupWorker(svc, logger)
 
 	require.NotNil(t, worker)
-	assert.Nil(t, worker.leaderElection)
 	assert.NotNil(t, worker.service)
 	assert.NotNil(t, worker.logger)
 }
 
-func TestNewActivityCleanupWorker_WithLeaderElection(t *testing.T) {
+func TestNewActivityCleanupWorker_WithDependencies(t *testing.T) {
 	t.Parallel()
 
-	// LeaderElection with nil raft still works (single-node mode)
 	repo := &mockRepository{}
 	svc := newTestServiceWithMock(t, repo)
 	logger := logging.NewTestLogger()
 
-	// nil leader election means single-node mode
-	worker := NewActivityCleanupWorker(nil, svc, logger)
+	worker := NewActivityCleanupWorker(svc, logger)
 
 	require.NotNil(t, worker)
 }
@@ -212,7 +203,7 @@ func TestActivityCleanupWorker_Timeout(t *testing.T) {
 	t.Parallel()
 	repo := &mockRepository{}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(1, ActivityCleanupArgs{RetentionDays: 90})
 	timeout := worker.Timeout(job)
@@ -224,7 +215,7 @@ func TestActivityCleanupWorker_Timeout(t *testing.T) {
 // Work Tests
 // ============================================================================
 
-func TestActivityCleanupWorker_Work_NilLeaderElection(t *testing.T) {
+func TestActivityCleanupWorker_Work_Success(t *testing.T) {
 	t.Parallel()
 
 	var deletedCalled bool
@@ -235,13 +226,13 @@ func TestActivityCleanupWorker_Work_NilLeaderElection(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(1, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
 
 	require.NoError(t, err)
-	assert.True(t, deletedCalled, "DeleteOld should be called when leaderElection is nil")
+	assert.True(t, deletedCalled, "DeleteOld should be called")
 }
 
 func TestActivityCleanupWorker_Work_DefaultRetentionDays(t *testing.T) {
@@ -255,7 +246,7 @@ func TestActivityCleanupWorker_Work_DefaultRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	// RetentionDays <= 0 should default to 90
 	job := newTestJob(2, ActivityCleanupArgs{RetentionDays: 0})
@@ -279,7 +270,7 @@ func TestActivityCleanupWorker_Work_NegativeRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	// Negative retention days should also default to 90
 	job := newTestJob(3, ActivityCleanupArgs{RetentionDays: -5})
@@ -302,7 +293,7 @@ func TestActivityCleanupWorker_Work_CustomRetentionDays(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(4, ActivityCleanupArgs{RetentionDays: 60})
 	before := time.Now()
@@ -329,7 +320,7 @@ func TestActivityCleanupWorker_Work_DryRun(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(5, ActivityCleanupArgs{
 		RetentionDays: 30,
@@ -351,7 +342,7 @@ func TestActivityCleanupWorker_Work_DryRunError(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(6, ActivityCleanupArgs{
 		RetentionDays: 30,
@@ -372,7 +363,7 @@ func TestActivityCleanupWorker_Work_DeleteError(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	job := newTestJob(7, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
@@ -384,13 +375,6 @@ func TestActivityCleanupWorker_Work_DeleteError(t *testing.T) {
 func TestActivityCleanupWorker_Work_NotLeader(t *testing.T) {
 	t.Parallel()
 
-	// Create a LeaderElection with nil raft - IsLeader() returns true for nil
-	// We need to test the non-leader path. Since LeaderElection is a concrete struct,
-	// we construct one with a nil raft field -- IsLeader returns true when raft is nil.
-	// To test the "not leader" branch, we need a non-nil LeaderElection with
-	// a non-nil raft. Since we can't easily construct a real raft, we test the
-	// nil case (which acts as leader) and verify the code path works.
-
 	var deleteCalled bool
 	repo := &mockRepository{
 		deleteOldFn: func(ctx context.Context, olderThan time.Time) (int64, error) {
@@ -400,33 +384,9 @@ func TestActivityCleanupWorker_Work_NotLeader(t *testing.T) {
 	}
 	svc := newTestServiceWithMock(t, repo)
 
-	// When leaderElection is nil, the worker should proceed (single-node mode)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	// River handles leader election; worker always executes
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 	job := newTestJob(8, ActivityCleanupArgs{RetentionDays: 30})
-	err := worker.Work(context.Background(), job)
-
-	require.NoError(t, err)
-	assert.True(t, deleteCalled)
-}
-
-func TestActivityCleanupWorker_Work_LeaderElectionNilRaft(t *testing.T) {
-	t.Parallel()
-
-	// A zero-value LeaderElection (raft field is nil) considers itself leader
-	le := &raft.LeaderElection{}
-	assert.True(t, le.IsLeader(), "nil raft should be considered leader (single-node)")
-
-	var deleteCalled bool
-	repo := &mockRepository{
-		deleteOldFn: func(ctx context.Context, olderThan time.Time) (int64, error) {
-			deleteCalled = true
-			return 5, nil
-		},
-	}
-	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(le, svc, logging.NewTestLogger())
-
-	job := newTestJob(9, ActivityCleanupArgs{RetentionDays: 30})
 	err := worker.Work(context.Background(), job)
 
 	require.NoError(t, err)
@@ -444,7 +404,7 @@ func TestActivityCleanupWorker_Work_DryRunDefaultRetention(t *testing.T) {
 		},
 	}
 	svc := newTestServiceWithMock(t, repo)
-	worker := NewActivityCleanupWorker(nil, svc, logging.NewTestLogger())
+	worker := NewActivityCleanupWorker(svc, logging.NewTestLogger())
 
 	// DryRun with 0 retention days should default to 90
 	job := newTestJob(10, ActivityCleanupArgs{

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Ensure Provider implements all interfaces.
@@ -182,7 +183,7 @@ func (p *Provider) GetMovieExternalIDs(ctx context.Context, id string) (*metadat
 		return nil, err
 	}
 
-	return mapExternalIDs(resp, int32(tmdbID)), nil
+	return mapExternalIDs(resp, util.SafeIntToInt32(tmdbID)), nil
 }
 
 // GetSimilarMovies retrieves movies similar to the given movie.
@@ -327,7 +328,7 @@ func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metada
 		return nil, err
 	}
 
-	return mapExternalIDs(resp, int32(tmdbID)), nil
+	return mapExternalIDs(resp, util.SafeIntToInt32(tmdbID)), nil
 }
 
 // GetSeason retrieves season details.
@@ -492,7 +493,7 @@ func (p *Provider) GetPersonExternalIDs(ctx context.Context, id string) (*metada
 		return nil, err
 	}
 
-	return mapExternalIDs(resp, int32(tmdbID)), nil
+	return mapExternalIDs(resp, util.SafeIntToInt32(tmdbID)), nil
 }
 
 // GetImageURL constructs a full image URL.

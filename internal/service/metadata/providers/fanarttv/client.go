@@ -75,7 +75,7 @@ func NewClient(config Config) (*Client, error) {
 		config.Timeout = 15 * time.Second
 	}
 
-	l1, err := cache.NewL1Cache[string, any](5000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](5000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create fanarttv cache: %w", err)
 	}
@@ -84,7 +84,13 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &Client{
 		httpClient:  client,
@@ -187,4 +193,11 @@ func (c *Client) GetTVShowImages(ctx context.Context, tvdbID string) (*TVShowRes
 
 	c.setCache(cacheKey, &result)
 	return &result, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

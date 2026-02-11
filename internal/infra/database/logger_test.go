@@ -81,9 +81,10 @@ func TestQueryLoggerLog(t *testing.T) {
 
 func TestTracerConfig(t *testing.T) {
 	logger := slog.Default()
-	tracer := TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
+	tracer, queryLogger := TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
 
 	require.NotNil(t, tracer)
+	require.NotNil(t, queryLogger)
 	assert.Implements(t, (*interface{})(nil), tracer)
 }
 

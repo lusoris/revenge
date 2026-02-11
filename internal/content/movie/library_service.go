@@ -130,6 +130,7 @@ func (s *LibraryService) createMovieFile(ctx context.Context, movieFile *MovieFi
 		MovieID:     movieFile.MovieID,
 		FilePath:    movieFile.FilePath,
 		FileSize:    movieFile.FileSize,
+		FileName:    movieFile.FileName,
 		Container:   movieFile.Container,
 		Resolution:  movieFile.Resolution,
 		VideoCodec:  movieFile.VideoCodec,

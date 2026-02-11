@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Ensure Provider implements required interfaces.
@@ -222,7 +223,7 @@ func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, epi
 				AirDate:       parseAirdate(ep.Airdate),
 			}
 			if ep.Runtime != nil {
-				rt := int32(*ep.Runtime)
+				rt := util.SafeIntToInt32(*ep.Runtime)
 				em.Runtime = &rt
 			}
 			if ep.Rating.Average != nil {

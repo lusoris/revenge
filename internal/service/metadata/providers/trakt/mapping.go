@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapMovieToSearchResult converts a Trakt Movie to MovieSearchResult.
@@ -68,7 +69,7 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		md.TrailerURL = &m.Trailer
 	}
 	if m.Runtime > 0 {
-		rt := int32(m.Runtime)
+		rt := util.SafeIntToInt32(m.Runtime)
 		md.Runtime = &rt
 	}
 
@@ -77,11 +78,11 @@ func mapMovieToMetadata(m *Movie) *metadata.MovieMetadata {
 		md.IMDbID = &m.IDs.IMDb
 	}
 	if m.IDs.TMDb > 0 {
-		tmdbID := int32(m.IDs.TMDb)
+		tmdbID := util.SafeIntToInt32(m.IDs.TMDb)
 		md.TMDbID = &tmdbID
 	}
 	if m.IDs.TVDb > 0 {
-		tvdbID := int32(m.IDs.TVDb)
+		tvdbID := util.SafeIntToInt32(m.IDs.TVDb)
 		md.TVDbID = &tvdbID
 	}
 
@@ -185,11 +186,11 @@ func mapShowToMetadata(s *Show) *metadata.TVShowMetadata {
 		md.IMDbID = &s.IDs.IMDb
 	}
 	if s.IDs.TMDb > 0 {
-		tmdbID := int32(s.IDs.TMDb)
+		tmdbID := util.SafeIntToInt32(s.IDs.TMDb)
 		md.TMDbID = &tmdbID
 	}
 	if s.IDs.TVDb > 0 {
-		tvdbID := int32(s.IDs.TVDb)
+		tvdbID := util.SafeIntToInt32(s.IDs.TVDb)
 		md.TVDbID = &tvdbID
 	}
 
@@ -275,7 +276,7 @@ func mapEpisodesToSummaries(episodes []Episode) []metadata.EpisodeSummary {
 			es.Overview = &ep.Overview
 		}
 		if ep.Runtime > 0 {
-			rt := int32(ep.Runtime)
+			rt := util.SafeIntToInt32(ep.Runtime)
 			es.Runtime = &rt
 		}
 		result = append(result, es)
@@ -351,11 +352,11 @@ func mapExternalIDs(ids IDs) *metadata.ExternalIDs {
 		ext.IMDbID = &ids.IMDb
 	}
 	if ids.TMDb > 0 {
-		tmdbID := int32(ids.TMDb)
+		tmdbID := util.SafeIntToInt32(ids.TMDb)
 		ext.TMDbID = &tmdbID
 	}
 	if ids.TVDb > 0 {
-		tvdbID := int32(ids.TVDb)
+		tvdbID := util.SafeIntToInt32(ids.TVDb)
 		ext.TVDbID = &tvdbID
 	}
 	return ext

@@ -36,6 +36,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.41.1
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.7
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.22.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.96.0
 	github.com/casbin/casbin/v2 v2.135.0
 	github.com/coreos/go-oidc/v3 v3.17.0
@@ -166,6 +167,7 @@ require (
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.57.1 // indirect
+	github.com/redis/rueidis/rueidisotel v1.0.71 // indirect
 	github.com/refraction-networking/utls v1.8.1 // indirect
 	github.com/riverqueue/river/riverdriver v0.30.2 // indirect
 	github.com/riverqueue/river/rivershared v0.30.2 // indirect

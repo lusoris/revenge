@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapMovieMetadata converts an OMDb response to MovieMetadata.
@@ -203,7 +204,7 @@ func parseRuntime(s string) *int32 {
 		return nil
 	}
 	if mins, err := strconv.Atoi(s); err == nil {
-		v := int32(mins)
+		v := util.SafeIntToInt32(mins)
 		return &v
 	}
 	return nil

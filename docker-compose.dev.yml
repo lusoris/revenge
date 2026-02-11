@@ -23,6 +23,13 @@ services:
       - REVENGE_SEARCH_ENABLED=true
       - REVENGE_SEARCH_URL=http://typesense:8108
       - REVENGE_SEARCH_API_KEY=dev_api_key
+      # Rate limiting - production-realistic values
+      # (A page load = 5-10 API calls, user browsing = burst of requests)
+      - REVENGE_SERVER_RATE_LIMIT_ENABLED=true
+      - REVENGE_SERVER_RATE_LIMIT_GLOBAL_REQUESTS_PER_SECOND=100
+      - REVENGE_SERVER_RATE_LIMIT_GLOBAL_BURST=500
+      - REVENGE_SERVER_RATE_LIMIT_AUTH_REQUESTS_PER_SECOND=5
+      - REVENGE_SERVER_RATE_LIMIT_AUTH_BURST=20
     volumes:
       # ./:/app - Disabled for Docker-based testing (overwrites binary)
       - revenge-data:/data
@@ -113,6 +120,7 @@ services:
 
   # Dragonfly (Redis-compatible, REQUIRED)
   # Pure cache mode: LFRU eviction, no persistence
+  # NOTE: --cluster_mode=emulated is required for rueidis client compatibility
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
     container_name: revenge-dragonfly-dev
@@ -120,13 +128,13 @@ services:
       memlock: -1  # Required for Dragonfly memory management
     command:
       - dragonfly
+      - --cluster_mode=emulated     # Required for rueidis client compatibility
       - --cache_mode=true           # LFRU eviction when approaching maxmemory
       - --maxmemory=1G              # 1GB cache (headroom within 1.5GB container)
       - --proactor_threads=2        # Match allocated CPUs
       - --dbfilename=               # Disable RDB snapshots (pure cache)
       - --logtostderr=true
-    ports:
-      - "6379:6379"
+    # No ports exposed - only accessible within Docker network
     volumes:
       - dragonfly-data:/data
     healthcheck:
@@ -227,7 +235,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./deploy/grafana/provisioning/dashboards/revenge.json:/var/lib/grafana/dashboards/revenge.json:ro
+      - ./deploy/grafana/provisioning/dashboards:/var/lib/grafana/dashboards:ro
       - grafana-data:/var/lib/grafana
     depends_on:
       - prometheus

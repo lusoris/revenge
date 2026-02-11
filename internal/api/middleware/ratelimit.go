@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ogen-go/ogen/middleware"
 	"log/slog"
+
+	"github.com/ogen-go/ogen/middleware"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
@@ -199,6 +200,7 @@ func (rl *RateLimiter) Middleware() middleware.Middleware {
 			}
 		}
 
+		observability.RecordRateLimitHit(req.OperationName, "allowed")
 		return next(req)
 	}
 }

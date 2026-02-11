@@ -11,6 +11,7 @@ import (
 
 	contenttvshow "github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Adapter wraps the shared metadata service for TV show-specific operations.
@@ -139,7 +140,7 @@ func (a *Adapter) EnrichEpisode(ctx context.Context, episode *contenttvshow.Epis
 
 // GetSeriesCredits retrieves series credits using the shared service.
 func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesCredit, error) {
-	credits, err := a.service.GetTVShowCredits(ctx, int32(tmdbID))
+	credits, err := a.service.GetTVShowCredits(ctx, util.SafeIntToInt32(tmdbID))
 	if err != nil {
 		return nil, fmt.Errorf("get series credits: %w", err)
 	}
@@ -149,7 +150,7 @@ func (a *Adapter) GetSeriesCredits(ctx context.Context, seriesID uuid.UUID, tmdb
 
 // GetSeriesGenres retrieves series genres using the shared service.
 func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbID int) ([]contenttvshow.SeriesGenre, error) {
-	meta, err := a.service.GetTVShowMetadata(ctx, int32(tmdbID), []string{a.languages[0]})
+	meta, err := a.service.GetTVShowMetadata(ctx, util.SafeIntToInt32(tmdbID), []string{a.languages[0]})
 	if err != nil {
 		return nil, fmt.Errorf("get series metadata for genres: %w", err)
 	}
@@ -159,7 +160,7 @@ func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbI
 		genres[i] = contenttvshow.SeriesGenre{
 			ID:          uuid.Must(uuid.NewV7()),
 			SeriesID:    seriesID,
-			TMDbGenreID: int32(g.ID),
+			TMDbGenreID: util.SafeIntToInt32(g.ID),
 			Name:        g.Name,
 		}
 	}
@@ -169,7 +170,7 @@ func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, tmdbI
 
 // GetSeriesNetworks retrieves series networks using the shared service.
 func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contenttvshow.Network, error) {
-	meta, err := a.service.GetTVShowMetadata(ctx, int32(tmdbID), []string{a.languages[0]})
+	meta, err := a.service.GetTVShowMetadata(ctx, util.SafeIntToInt32(tmdbID), []string{a.languages[0]})
 	if err != nil {
 		return nil, fmt.Errorf("get series metadata for networks: %w", err)
 	}
@@ -178,7 +179,7 @@ func (a *Adapter) GetSeriesNetworks(ctx context.Context, tmdbID int) ([]contentt
 	for i, n := range meta.Networks {
 		networks[i] = contenttvshow.Network{
 			ID:            uuid.Must(uuid.NewV7()),
-			TMDbID:        int32(n.ID),
+			TMDbID:        util.SafeIntToInt32(n.ID),
 			Name:          n.Name,
 			LogoPath:      n.LogoPath,
 			OriginCountry: ptrString(n.OriginCountry),
@@ -210,7 +211,7 @@ func mapSearchResultToSeries(r *metadata.TVShowSearchResult) *contenttvshow.Seri
 		series.VoteAverage = &va
 	}
 	if r.VoteCount > 0 {
-		vc := int32(r.VoteCount)
+		vc := util.SafeIntToInt32(r.VoteCount)
 		series.VoteCount = &vc
 	}
 	if r.Popularity > 0 {
@@ -240,8 +241,8 @@ func mapMetadataToSeries(series *contenttvshow.Series, meta *metadata.TVShowMeta
 	series.Type = ptrString(meta.Type)
 	series.FirstAirDate = meta.FirstAirDate
 	series.LastAirDate = meta.LastAirDate
-	series.TotalSeasons = int32(meta.NumberOfSeasons)
-	series.TotalEpisodes = int32(meta.NumberOfEpisodes)
+	series.TotalSeasons = util.SafeIntToInt32(meta.NumberOfSeasons)
+	series.TotalEpisodes = util.SafeIntToInt32(meta.NumberOfEpisodes)
 	series.PosterPath = meta.PosterPath
 	series.BackdropPath = meta.BackdropPath
 	series.Homepage = meta.Homepage
@@ -256,7 +257,7 @@ func mapMetadataToSeries(series *contenttvshow.Series, meta *metadata.TVShowMeta
 		series.VoteAverage = &va
 	}
 	if meta.VoteCount > 0 {
-		vc := int32(meta.VoteCount)
+		vc := util.SafeIntToInt32(meta.VoteCount)
 		series.VoteCount = &vc
 	}
 	if meta.Popularity > 0 {
@@ -317,7 +318,7 @@ func mapSeasonMetadataToSeason(season *contenttvshow.Season, meta *metadata.Seas
 	season.Overview = meta.Overview
 	season.PosterPath = meta.PosterPath
 	season.AirDate = meta.AirDate
-	season.EpisodeCount = int32(len(meta.Episodes))
+	season.EpisodeCount = util.SafeIntToInt32(len(meta.Episodes))
 	season.TMDbID = meta.TMDbID
 
 	if meta.VoteAverage > 0 {
@@ -357,7 +358,7 @@ func mapEpisodeMetadataToEpisode(episode *contenttvshow.Episode, meta *metadata.
 		episode.VoteAverage = &va
 	}
 	if meta.VoteCount > 0 {
-		vc := int32(meta.VoteCount)
+		vc := util.SafeIntToInt32(meta.VoteCount)
 		episode.VoteCount = &vc
 	}
 
@@ -459,6 +460,6 @@ func ptrInt32(i *int) *int32 {
 	if i == nil {
 		return nil
 	}
-	v := int32(*i)
+	v := util.SafeIntToInt32(*i)
 	return &v
 }

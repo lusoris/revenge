@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapMediaToTVShowSearchResult converts an AniList Media to TVShowSearchResult.
@@ -176,7 +177,7 @@ func mapMediaToTVShowMetadata(m *Media) *metadata.TVShowMetadata {
 
 	// Map MAL ID as external ID
 	if m.IDMal != nil {
-		malID := int32(*m.IDMal)
+		malID := util.SafeIntToInt32(*m.IDMal)
 		externalIDs := findExternalIDs(m)
 		externalIDs.TMDbID = nil // We don't have TMDb mapping from AniList
 		_ = malID               // stored via ExternalIDs in provider interface

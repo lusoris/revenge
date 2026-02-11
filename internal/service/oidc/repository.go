@@ -112,6 +112,7 @@ type State struct {
 	ID           uuid.UUID  `json:"id"`
 	State        string     `json:"state"`
 	CodeVerifier *string    `json:"-"` // PKCE verifier - never expose
+	Nonce        *string    `json:"-"` // OIDC nonce - never expose
 	ProviderID   uuid.UUID  `json:"providerId"`
 	UserID       *uuid.UUID `json:"userId,omitempty"` // For linking flow
 	RedirectURL  *string    `json:"redirectUrl,omitempty"`
@@ -196,6 +197,7 @@ type UpdateUserLinkRequest struct {
 type CreateStateRequest struct {
 	State        string
 	CodeVerifier *string
+	Nonce        *string
 	ProviderID   uuid.UUID
 	UserID       *uuid.UUID
 	RedirectURL  *string

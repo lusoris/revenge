@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/errors"
 )
 
@@ -126,4 +127,30 @@ func UnavailableError(message string) *APIError {
 // TimeoutError creates a 504 Gateway Timeout error.
 func TimeoutError(message string) *APIError {
 	return NewAPIError(http.StatusGatewayTimeout, message, errors.ErrTimeout)
+}
+
+// OgenNotFound creates an ogen.Error with 404 NotFound status and a message.
+// Use this to return properly populated NotFound responses from handlers.
+// Example: return (*ogen.GetMovieNotFound)(OgenNotFound("Movie not found")), nil
+func OgenNotFound(message string) *ogen.Error {
+	return &ogen.Error{
+		Code:    http.StatusNotFound,
+		Message: message,
+	}
+}
+
+// OgenBadRequest creates an ogen.Error with 400 BadRequest status and a message.
+func OgenBadRequest(message string) *ogen.Error {
+	return &ogen.Error{
+		Code:    http.StatusBadRequest,
+		Message: message,
+	}
+}
+
+// OgenForbidden creates an ogen.Error with 403 Forbidden status and a message.
+func OgenForbidden(message string) *ogen.Error {
+	return &ogen.Error{
+		Code:    http.StatusForbidden,
+		Message: message,
+	}
 }

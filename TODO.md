@@ -23,6 +23,23 @@ Design docs exist (SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte) but zer
 
 ## Recently Completed
 
+### Cache Lifecycle, Retry Filtering & Observability Hardening (2026-02-08)
+- otter L1 cache: fixed TTL bug (ttl<=0 → ttl<0), added L1Option system (WithExpiryAccessing, WithOnDeletion)
+- Added ExpiryAccessing to all 15 provider/integration caches (read-on-access refreshes TTL)
+- Added Close() to all 14 provider/integration clients (prevents otter goroutine leaks)
+- Added OnDeletion callback in transcode pipeline (kills evicted FFmpeg processes)
+- Added SetCommonRetryCondition to all 17 HTTP clients (skip retries on 4xx, retry only 5xx/network)
+- Replaced rueidis.NewClient with rueidisotel.NewClient for OTel instrumentation
+- S3: use s3manager.Uploader for automatic multipart on large files
+- Raft: merged raft-log.db + raft-stable.db into single raft.db
+- Typesense: replaced manual URL parsing with net/url.Parse, added 5s connection timeout
+- vips: added StartupConfig with ConcurrencyLevel and MaxCacheSize
+- AdminListUsers: fixed error codes (400→403 with descriptive messages)
+- Deprecated JobsQueueSize metric (dead code, replaced by river_queue_size)
+- Cleanup job: added MaxAttempts:5 (was global default 25)
+- Fixed argon2id test params (p=4→p=2 to match production)
+- Fixed misleading cache module comment
+
 ### Cookie Auth + CSRF Protection (2026-02-07)
 - Cookie-based auth middleware: extracts HttpOnly access token cookie → injects as Bearer header
 - CSRF double-submit cookie pattern with `X-CSRF-Token` header validation

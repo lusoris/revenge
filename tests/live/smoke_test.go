@@ -698,7 +698,7 @@ func TestLive_Chain_MFA(t *testing.T) {
 	var totpSecret string
 	t.Run("setup_totp", func(t *testing.T) {
 		status, body := doJSON(t, "POST", "/api/v1/mfa/totp/setup", creds.accessToken, map[string]string{
-			"accountName": creds.email,
+			"account_name": creds.email,
 		})
 		if status == 200 {
 			totpSecret, _ = body["secret"].(string)
@@ -1097,13 +1097,13 @@ func TestLive_Chain_LibraryManagement(t *testing.T) {
 		assert.Equal(t, 403, status, "non-admin should not create libraries")
 	})
 
-	// Trigger library scan (requires scanType in body)
+	// Trigger library scan (requires scan_type in body)
 	t.Run("trigger_scan", func(t *testing.T) {
 		if libraryID == "" {
 			t.Skip("no library")
 		}
 		resp := doRequest(t, "POST", "/api/v1/libraries/"+libraryID+"/scan", tok, map[string]string{
-			"scanType": "full",
+			"scan_type": "full",
 		})
 		defer resp.Body.Close()
 		// Should accept the scan request (even if the path doesn't exist on disk)
@@ -1398,13 +1398,13 @@ func TestLive_Chain_AdminJourney(t *testing.T) {
 			"library creation should succeed (got %d)", status)
 	})
 
-	// Trigger scan (requires scanType in body)
+	// Trigger scan (requires scan_type in body)
 	t.Run("trigger_scan", func(t *testing.T) {
 		if libraryID == "" {
 			t.Skip("no library")
 		}
 		resp := doRequest(t, "POST", "/api/v1/libraries/"+libraryID+"/scan", tok, map[string]string{
-			"scanType": "full",
+			"scan_type": "full",
 		})
 		defer resp.Body.Close()
 		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 202 || resp.StatusCode == 204,
@@ -1553,7 +1553,6 @@ func TestLive_TVShowDetailSubresources(t *testing.T) {
 
 	// These return 404 because they verify the show exists first
 	notFoundSubresources := []string{
-		"/watch-stats",
 		"/next-episode",
 	}
 
@@ -1572,6 +1571,7 @@ func TestLive_TVShowDetailSubresources(t *testing.T) {
 		"/crew",
 		"/genres",
 		"/networks",
+		"/watch-stats",
 	}
 
 	for _, sub := range emptyListSubresources {
@@ -1918,7 +1918,7 @@ func TestLive_LibraryGranular(t *testing.T) {
 	// Grant permission to regular user
 	t.Run("grant_permission", func(t *testing.T) {
 		resp := doRequest(t, "POST", "/api/v1/libraries/"+libraryID+"/permissions", tok, map[string]interface{}{
-			"userId":     regular.userID,
+			"user_id":    regular.userID,
 			"permission": "view",
 		})
 		defer resp.Body.Close()
@@ -2180,11 +2180,11 @@ func TestLive_OIDCAdminCRUD(t *testing.T) {
 	var providerID string
 	t.Run("create_provider", func(t *testing.T) {
 		status, body := doJSON(t, "POST", "/api/v1/admin/oidc/providers", tok, map[string]interface{}{
-			"name":         "test-oidc",
-			"displayName":  "Test OIDC Provider",
-			"clientId":     "test-client-id",
-			"clientSecret": "test-client-secret",
-			"issuerUrl":    "https://accounts.google.com",
+			"name":          "test-oidc",
+			"display_name":  "Test OIDC Provider",
+			"client_id":     "test-client-id",
+			"client_secret": "test-client-secret",
+			"issuer_url":    "https://accounts.google.com",
 		})
 		if status == 201 || status == 200 {
 			providerID, _ = body["id"].(string)

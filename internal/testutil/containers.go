@@ -188,9 +188,12 @@ func NewDragonflyContainer(t *testing.T) *DragonflyContainer {
 	ctx := context.Background()
 
 	// Create Dragonfly container request
+	// NOTE: --cluster_mode=emulated is required for rueidis client compatibility
+	// rueidis auto-detects cluster mode and needs emulated mode for single-node Dragonfly
 	req := testcontainers.ContainerRequest{
 		Image:        "docker.io/dragonflydb/dragonfly:latest",
 		ExposedPorts: []string{"6379/tcp"},
+		Cmd:          []string{"--cluster_mode=emulated", "--maxmemory=256mb"},
 		WaitingFor: wait.ForAll(
 			wait.ForLog("accepting connections").
 				WithStartupTimeout(60*time.Second),

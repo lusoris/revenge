@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"strings"
+	"net/url"
 	"time"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -37,46 +37,37 @@ func NewClient(cfg *config.Config, logger *slog.Logger) (*Client, error) {
 		}, nil
 	}
 
-	// Parse search URL to extract host, port, and protocol
-	url := strings.TrimSpace(cfg.Search.URL)
-	if url == "" {
+	// Parse search URL using net/url for robust handling
+	rawURL := cfg.Search.URL
+	if rawURL == "" {
 		return nil, fmt.Errorf("search URL is required when search is enabled")
 	}
 
-	// Parse URL components
-	protocol := "http"
-	var host string
-	port := "8108"
-
-	// Simple URL parsing
-	if strings.HasPrefix(url, "https://") {
-		protocol = "https"
-		url = strings.TrimPrefix(url, "https://")
-	} else if strings.HasPrefix(url, "http://") {
-		protocol = "http"
-		url = strings.TrimPrefix(url, "http://")
+	parsed, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, fmt.Errorf("invalid search URL %q: %w", rawURL, err)
 	}
 
-	// Extract host:port
-	if strings.Contains(url, ":") {
-		parts := strings.Split(url, ":")
-		host = parts[0]
-		port = parts[1]
-	} else {
-		host = url
+	// Ensure scheme is set
+	if parsed.Scheme == "" {
+		parsed.Scheme = "http"
+	}
+
+	// Ensure port is set
+	serverURL := parsed.String()
+	if parsed.Port() == "" {
+		serverURL = fmt.Sprintf("%s://%s:8108", parsed.Scheme, parsed.Hostname())
 	}
 
 	logger.Info("initializing typesense client",
-		"host", host,
-		"port", port,
-		"protocol", protocol,
+		"url", serverURL,
 	)
 
-	// Create Typesense client
-	// Note: Remove circuit breaker for now as it might be causing timeout issues
+	// Create Typesense client with connection timeout
 	client := typesense.NewClient(
-		typesense.WithServer(protocol+"://"+host+":"+port),
+		typesense.WithServer(serverURL),
 		typesense.WithAPIKey(cfg.Search.APIKey),
+		typesense.WithConnectionTimeout(5*time.Second),
 	)
 
 	return &Client{

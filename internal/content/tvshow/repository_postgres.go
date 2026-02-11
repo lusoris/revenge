@@ -737,6 +737,14 @@ func (r *postgresRepository) ListEpisodeFilesByEpisode(ctx context.Context, epis
 }
 
 func (r *postgresRepository) CreateEpisodeFile(ctx context.Context, params CreateEpisodeFileParams) (*EpisodeFile, error) {
+	audioLangs := params.AudioLanguages
+	if audioLangs == nil {
+		audioLangs = []string{}
+	}
+	subtitleLangs := params.SubtitleLanguages
+	if subtitleLangs == nil {
+		subtitleLangs = []string{}
+	}
 	dbFile, err := r.queries.CreateEpisodeFile(ctx, tvshowdb.CreateEpisodeFileParams{
 		EpisodeID:         params.EpisodeID,
 		FilePath:          params.FilePath,
@@ -749,8 +757,8 @@ func (r *postgresRepository) CreateEpisodeFile(ctx context.Context, params Creat
 		AudioCodec:        params.AudioCodec,
 		BitrateKbps:       params.BitrateKbps,
 		DurationSeconds:   stringToPgNumeric(params.DurationSeconds),
-		AudioLanguages:    params.AudioLanguages,
-		SubtitleLanguages: params.SubtitleLanguages,
+		AudioLanguages:    audioLangs,
+		SubtitleLanguages: subtitleLangs,
 		SonarrFileID:      params.SonarrFileID,
 	})
 	if err != nil {

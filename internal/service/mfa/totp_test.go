@@ -373,19 +373,19 @@ func TestTOTPService_VerifyCode(t *testing.T) {
 		assert.False(t, valid)
 	})
 
-	t.Run("code reuse - same code works multiple times", func(t *testing.T) {
-		// TOTP codes can be reused within the time window
-		code, err := totp.GenerateCode(setup.Secret, time.Now())
+	t.Run("code replay rejected", func(t *testing.T) {
+		// Use the next time step to get a fresh code (not the same as "valid code" subtest)
+		code, err := totp.GenerateCode(setup.Secret, time.Now().Add(30*time.Second))
 		require.NoError(t, err)
 
 		valid1, err := svc.VerifyCode(ctx, userID, code)
 		require.NoError(t, err)
 		assert.True(t, valid1)
 
-		// Same code should still work (TOTP doesn't track used codes)
+		// Same code should be rejected (replay protection)
 		valid2, err := svc.VerifyCode(ctx, userID, code)
 		require.NoError(t, err)
-		assert.True(t, valid2)
+		assert.False(t, valid2, "replayed TOTP code should be rejected")
 	})
 
 	t.Run("no TOTP configured", func(t *testing.T) {
@@ -550,13 +550,16 @@ func TestTOTPService_CompleteFlow(t *testing.T) {
 	assert.True(t, totpSecret.Enabled)
 	assert.True(t, totpSecret.VerifiedAt.Valid)
 
-	// 4. User can use TOTP for login
-	code2, err := totp.GenerateCode(setup.Secret, time.Now())
+	// 4. User can use TOTP for login (use next time step to avoid replay rejection)
+	code2, err := totp.GenerateCode(setup.Secret, time.Now().Add(30*time.Second))
 	require.NoError(t, err)
 
-	valid, err = svc.VerifyCode(ctx, userID, code2)
-	require.NoError(t, err)
-	assert.True(t, valid)
+	// If code2 is the same as the initial code, skip this check (same time step)
+	if code2 != code {
+		valid, err = svc.VerifyCode(ctx, userID, code2)
+		require.NoError(t, err)
+		assert.True(t, valid)
+	}
 
 	// 5. User can disable TOTP
 	err = svc.DisableTOTP(ctx, userID)

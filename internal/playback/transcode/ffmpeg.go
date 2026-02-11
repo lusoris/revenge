@@ -55,7 +55,7 @@ func BuildVideoOnlyCommand(ffmpegPath, inputFile, segmentDir string, pd ProfileD
 		outputPlaylist,
 	)
 
-	return exec.Command(ffmpegPath, args...)
+	return exec.Command(ffmpegPath, args...) // #nosec G204 -- ffmpegPath from validated config
 }
 
 // BuildAudioRenditionCommand builds an FFmpeg command that outputs audio-only HLS segments
@@ -96,7 +96,7 @@ func BuildAudioRenditionCommand(ffmpegPath, inputFile, segmentDir string, trackI
 		outputPlaylist,
 	)
 
-	return exec.Command(ffmpegPath, args...)
+	return exec.Command(ffmpegPath, args...) // #nosec G204 -- ffmpegPath from validated config
 }
 
 // BuildSubtitleExtractCommand builds an FFmpeg command to extract subtitles to WebVTT.
@@ -110,7 +110,7 @@ func BuildSubtitleExtractCommand(ffmpegPath, inputFile, outputFile string, track
 		outputFile,
 	}
 
-	return exec.Command(ffmpegPath, args...)
+	return exec.Command(ffmpegPath, args...) // #nosec G204 -- ffmpegPath from validated config
 }
 
 // CommandArgs returns the argument list for an exec.Cmd (for testing/logging).

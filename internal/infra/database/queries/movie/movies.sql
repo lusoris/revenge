@@ -287,6 +287,7 @@ INSERT INTO
         movie_id,
         file_path,
         file_size,
+        file_name,
         resolution,
         quality_profile,
         video_codec,
@@ -309,7 +310,8 @@ VALUES (
         $9,
         $10,
         $11,
-        $12
+        $12,
+        $13
     ) RETURNING *;
 
 -- name: GetMovieFile :one

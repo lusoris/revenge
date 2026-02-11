@@ -41,6 +41,9 @@ func NewNamedCache(client *Client, l1MaxSize int, l1TTL time.Duration, name stri
 }
 
 // Get retrieves a value from cache (L1 first, then L2).
+// L2 reads use DoCache() for server-assisted client-side caching (RESP3).
+// When a key is modified in Dragonfly/Redis, the server automatically pushes
+// invalidation to all connected rueidis clients.
 func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 	start := time.Now()
 	defer func() {
@@ -54,17 +57,20 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 	}
 	observability.RecordCacheMiss(c.name, "l1")
 
-	// L1 miss - try L2 (rueidis)
+	// L1 miss - try L2 (rueidis) with server-assisted client-side caching
 	if c.client == nil || c.client.rueidisClient == nil {
 		observability.RecordCacheMiss(c.name, "l2")
 		return nil, fmt.Errorf("cache miss: key not found in L1 and L2 unavailable")
 	}
 
-	cmd := c.client.rueidisClient.B().Get().Key(key).Build()
-	resp := c.client.rueidisClient.Do(ctx, cmd)
+	cmd := c.client.rueidisClient.B().Get().Key(key).Cache()
+	resp := c.client.rueidisClient.DoCache(ctx, cmd, c.l1TTL)
 
 	if err := resp.Error(); err != nil {
 		observability.RecordCacheMiss(c.name, "l2")
+		if rueidis.IsRedisNil(err) {
+			return nil, fmt.Errorf("cache miss: key %q not found", key)
+		}
 		return nil, fmt.Errorf("L2 cache get failed: %w", err)
 	}
 

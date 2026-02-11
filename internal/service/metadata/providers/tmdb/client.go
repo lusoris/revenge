@@ -3,12 +3,14 @@ package tmdb
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -72,6 +74,7 @@ func DefaultConfig() Config {
 // Client is the TMDb API client with rate limiting and caching.
 type Client struct {
 	httpClient  *req.Client
+	imgClient   *req.Client
 	apiKey      string
 	accessToken string
 	rateLimiter *rate.Limiter
@@ -98,7 +101,7 @@ func NewClient(config Config) (*Client, error) {
 		config.RetryCount = 3
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create tmdb cache: %w", err)
 	}
@@ -107,14 +110,63 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(config.RetryCount).
-		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			// Determine media type from URL path
+			mediaType := "unknown"
+			path := resp.Request.RawURL
+			switch {
+			case strings.Contains(path, "/movie"):
+				mediaType = "movie"
+			case strings.Contains(path, "/tv"), strings.Contains(path, "/season"), strings.Contains(path, "/episode"):
+				mediaType = "tvshow"
+			case strings.Contains(path, "/person"):
+				mediaType = "person"
+			case strings.Contains(path, "/search"):
+				mediaType = "search"
+			}
+
+			// Determine status
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("tmdb")
+				}
+			}
+
+			// Record metrics
+			duration := resp.TotalTime().Seconds()
+			observability.RecordMetadataFetch("tmdb", mediaType, status, duration)
+			return nil
+		})
 
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
 	}
 
+	// Dedicated client for image CDN downloads (different host, no auth headers).
+	imgClient := req.C().
+		SetTimeout(config.Timeout).
+		SetCommonRetryCount(2).
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
+
 	return &Client{
 		httpClient:  client,
+		imgClient:   imgClient,
 		apiKey:      config.APIKey,
 		accessToken: config.AccessToken,
 		rateLimiter: rate.NewLimiter(config.RateLimit, config.Burst),
@@ -1234,8 +1286,7 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 
 	url := c.GetImageURL(path, size)
 
-	// Use separate client for image CDN
-	resp, err := req.C().R().
+	resp, err := c.imgClient.R().
 		SetContext(ctx).
 		Get(url)
 
@@ -1253,4 +1304,11 @@ func (c *Client) DownloadImage(ctx context.Context, path string, size string) ([
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
 	c.clearCache()
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

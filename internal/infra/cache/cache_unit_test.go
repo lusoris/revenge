@@ -1010,9 +1010,9 @@ func TestCache_Get_L2Hit(t *testing.T) {
 	c, mockClient := newMockL2Cache(t, ctrl)
 	ctx := context.Background()
 
-	// Key not in L1 -- should go to L2
+	// Key not in L1 -- should go to L2 via DoCache
 	mockClient.EXPECT().
-		Do(gomock.Any(), mock.Match("GET", "l2-key")).
+		DoCache(gomock.Any(), mock.Match("GET", "l2-key"), gomock.Any()).
 		Return(mock.Result(mock.RedisBlobString("l2-value")))
 
 	val, err := c.Get(ctx, "l2-key")
@@ -1032,10 +1032,25 @@ func TestCache_Get_L2Error(t *testing.T) {
 	ctx := context.Background()
 
 	mockClient.EXPECT().
-		Do(gomock.Any(), mock.Match("GET", "err-key")).
+		DoCache(gomock.Any(), mock.Match("GET", "err-key"), gomock.Any()).
 		Return(mock.ErrorResult(rueidis.Nil))
 
 	_, err := c.Get(ctx, "err-key")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "cache miss")
+}
+
+// TestCache_Get_L2RealError tests the L2 path with a real (non-nil) error.
+func TestCache_Get_L2RealError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	c, mockClient := newMockL2Cache(t, ctrl)
+	ctx := context.Background()
+
+	mockClient.EXPECT().
+		DoCache(gomock.Any(), mock.Match("GET", "fail-key"), gomock.Any()).
+		Return(mock.ErrorResult(fmt.Errorf("connection refused")))
+
+	_, err := c.Get(ctx, "fail-key")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "L2 cache get failed")
 }

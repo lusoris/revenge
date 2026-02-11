@@ -7,7 +7,6 @@ import (
 	"time"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 )
 
@@ -37,19 +36,18 @@ func (ActivityCleanupArgs) InsertOpts() river.InsertOpts {
 }
 
 // ActivityCleanupWorker performs periodic activity log cleanup.
+// Leader election is handled by River's built-in leader election.
 type ActivityCleanupWorker struct {
 	river.WorkerDefaults[ActivityCleanupArgs]
-	leaderElection *raft.LeaderElection
-	service        *Service
-	logger         *slog.Logger
+	service *Service
+	logger  *slog.Logger
 }
 
 // NewActivityCleanupWorker creates a new activity cleanup worker.
-func NewActivityCleanupWorker(leaderElection *raft.LeaderElection, service *Service, logger *slog.Logger) *ActivityCleanupWorker {
+func NewActivityCleanupWorker(service *Service, logger *slog.Logger) *ActivityCleanupWorker {
 	return &ActivityCleanupWorker{
-		leaderElection: leaderElection,
-		service:        service,
-		logger:         logger.With("component", "activity-cleanup"),
+		service: service,
+		logger:  logger.With("component", "activity-cleanup"),
 	}
 }
 
@@ -59,23 +57,14 @@ func (w *ActivityCleanupWorker) Timeout(job *river.Job[ActivityCleanupArgs]) tim
 }
 
 // Work executes the activity cleanup job.
+// Leader election is handled by River's periodic job scheduler.
 func (w *ActivityCleanupWorker) Work(ctx context.Context, job *river.Job[ActivityCleanupArgs]) error {
 	args := job.Args
-
-	// Check if this node is the leader (only leader should run cleanup jobs)
-	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
-		w.logger.Info("skipping activity cleanup job: not the leader node",
-			slog.Int64("job_id", job.ID),
-			slog.String("leader", w.leaderElection.LeaderAddr()),
-		)
-		return nil
-	}
 
 	w.logger.Info("starting activity cleanup job",
 		slog.Int64("job_id", job.ID),
 		slog.Int("retention_days", args.RetentionDays),
 		slog.Bool("dry_run", args.DryRun),
-		slog.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
 	)
 
 	// Validate arguments

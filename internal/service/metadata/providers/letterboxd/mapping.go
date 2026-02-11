@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapFilmSummaryToSearchResult converts a Letterboxd FilmSummary to a MovieSearchResult.
@@ -77,7 +78,7 @@ func mapFilmToMetadata(f *Film) metadata.MovieMetadata {
 	}
 
 	if f.RunTime > 0 {
-		runtime := int32(f.RunTime)
+		runtime := util.SafeIntToInt32(f.RunTime)
 		m.Runtime = &runtime
 	}
 
@@ -142,7 +143,7 @@ func mapFilmToMetadata(f *Film) metadata.MovieMetadata {
 		m.IMDbID = &imdbID
 	}
 	if tmdbID > 0 {
-		id32 := int32(tmdbID)
+		id32 := util.SafeIntToInt32(tmdbID)
 		m.TMDbID = &id32
 	}
 

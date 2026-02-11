@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/redis/rueidis"
+	"github.com/redis/rueidis/rueidisotel"
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/config"
@@ -105,11 +106,13 @@ func NewClient(cfg *config.Config, logger *slog.Logger) (*Client, error) {
 	opts.BlockingPoolSize = DefaultBlockingPoolSize
 	opts.ConnWriteTimeout = DefaultWriteTimeout
 
-	// Disable auto-pipelining for more predictable behavior
+	// Keep auto-pipelining enabled for better throughput with pipelined commands
 	opts.DisableAutoPipelining = false
 
-	// Create the rueidis client
-	rueidisClient, err := rueidis.NewClient(opts)
+	// Create the rueidis client with OpenTelemetry instrumentation.
+	// rueidisotel wraps the client to emit OTel metrics for cache hits/misses,
+	// command duration, and connection pool stats automatically.
+	rueidisClient, err := rueidisotel.NewClient(opts)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create rueidis client: %w", err)
 	}
