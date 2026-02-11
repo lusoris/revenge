@@ -19,8 +19,9 @@ func TestGetEnabledProfiles(t *testing.T) {
 func TestGetEnabledProfiles_UnknownSkipped(t *testing.T) {
 	profiles := GetEnabledProfiles([]string{"original", "4k", "nonexistent"})
 
-	require.Len(t, profiles, 1)
+	require.Len(t, profiles, 2)
 	assert.Equal(t, "original", profiles[0].Name)
+	assert.Equal(t, "4k", profiles[1].Name)
 }
 
 func TestGetEnabledProfiles_Empty(t *testing.T) {

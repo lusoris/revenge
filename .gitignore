@@ -126,3 +126,4 @@ node_modules/
 *-preview/
 errors.cov
 ogen
+.workingdir11/

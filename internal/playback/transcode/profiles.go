@@ -3,7 +3,7 @@ package transcode
 
 // QualityProfile defines a target encoding quality for HLS streaming.
 type QualityProfile struct {
-	Name         string // "original", "1080p", "720p", "480p"
+	Name         string // "original", "4k", "1080p", "720p", "480p"
 	MaxWidth     int    // 0 = no limit (original)
 	MaxHeight    int    // 0 = no limit (original)
 	VideoBitrate int    // kbps (0 = copy)
@@ -22,6 +22,15 @@ var DefaultProfiles = map[string]QualityProfile{
 		AudioBitrate: 0,
 		VideoCodec:   "copy",
 		AudioCodec:   "copy",
+	},
+	"4k": {
+		Name:         "4k",
+		MaxWidth:     3840,
+		MaxHeight:    2160,
+		VideoBitrate: 15000,
+		AudioBitrate: 256,
+		VideoCodec:   "libx264",
+		AudioCodec:   "aac",
 	},
 	"1080p": {
 		Name:         "1080p",

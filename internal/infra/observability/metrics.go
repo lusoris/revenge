@@ -349,7 +349,7 @@ func RecordTranscodingEnd(codec, resolution string, duration float64) {
 func InitMetrics() {
 	// Playback
 	for _, mt := range []string{"movie", "episode"} {
-		for _, q := range []string{"original", "1080p", "720p", "480p"} {
+		for _, q := range []string{"original", "4k", "1080p", "720p", "480p", "direct"} {
 			PlaybackStartTotal.WithLabelValues(mt, q)
 		}
 		PlaybackDuration.WithLabelValues(mt)
@@ -357,7 +357,7 @@ func InitMetrics() {
 
 	// Transcoding
 	for _, codec := range []string{"libx264", "copy"} {
-		for _, res := range []string{"original", "1080p", "720p", "480p"} {
+		for _, res := range []string{"original", "4k", "1080p", "720p", "480p"} {
 			TranscodingDuration.WithLabelValues(codec, res)
 		}
 	}

@@ -13,11 +13,7 @@ ORDER BY name ASC;
 
 -- name: AddSeriesGenre :exec
 INSERT INTO
-    tvshow.series_genres (
-        series_id,
-        slug,
-        name
-    )
+    tvshow.series_genres (series_id, slug, name)
 VALUES ($1, $2, $3) ON CONFLICT (series_id, slug) DO NOTHING;
 
 -- name: DeleteSeriesGenres :exec

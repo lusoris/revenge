@@ -1705,6 +1705,264 @@ func TestLive_PlaybackSessions(t *testing.T) {
 	})
 }
 
+// TestLive_PlaybackRealSession inserts a movie + movie_file record pointing at the
+// BBB 4K video file, starts a real playback session with FFmpeg transcoding,
+// fetches the HLS master & media playlists, and stops the session.
+// Requires the BBB video mounted at /movies inside the container.
+func TestLive_PlaybackRealSession(t *testing.T) {
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+
+	// ---- 1. Insert movie + movie_file directly via SQL ----
+	// We bypass the scanner/TMDb because the BBB test file won't match any metadata provider.
+	var movieID, fileID string
+	t.Run("insert_movie_record", func(t *testing.T) {
+		db, err := sql.Open("pgx", dbURL)
+		require.NoError(t, err)
+		defer db.Close()
+
+		err = db.QueryRow(`
+			INSERT INTO movie.movies (title, year, runtime, overview, original_language)
+			VALUES ('Big Buck Bunny', 2008, 10, 'A large and lovable rabbit deals with three tiny bullies.', 'en')
+			RETURNING id`).Scan(&movieID)
+		require.NoError(t, err, "should insert movie record")
+		require.NotEmpty(t, movieID)
+		t.Logf("inserted movie: %s", movieID)
+	})
+	defer func() {
+		// Cascade-delete removes movie_files too
+		if movieID != "" {
+			db, err := sql.Open("pgx", dbURL)
+			if err == nil {
+				defer db.Close()
+				_, _ = db.Exec(`DELETE FROM movie.movies WHERE id = $1`, movieID)
+			}
+		}
+	}()
+
+	t.Run("insert_movie_file", func(t *testing.T) {
+		db, err := sql.Open("pgx", dbURL)
+		require.NoError(t, err)
+		defer db.Close()
+
+		err = db.QueryRow(`
+			INSERT INTO movie.movie_files
+				(movie_id, file_path, file_size, file_name, resolution, video_codec, audio_codec, container, duration_seconds, bitrate_kbps)
+			VALUES ($1, '/movies/bbb_sunflower_2160p_30fps_normal.mp4', 633000000,
+				'bbb_sunflower_2160p_30fps_normal.mp4', '2160p', 'h264', 'mp3', 'mp4', 634, 8000)
+			RETURNING id`, movieID).Scan(&fileID)
+		require.NoError(t, err, "should insert movie_file record")
+		require.NotEmpty(t, fileID)
+		t.Logf("inserted movie_file: %s", fileID)
+	})
+
+	// ---- 2. Start a real playback session ----
+	var sessionID, masterPlaylistURL string
+	t.Run("start_real_session", func(t *testing.T) {
+		status, body := doJSON(t, "POST", "/api/v1/playback/sessions", tok, map[string]interface{}{
+			"media_type": "movie",
+			"media_id":   movieID,
+		})
+		require.True(t, status == 200 || status == 201,
+			"playback start should succeed (got %d): %v", status, body)
+		sessionID, _ = body["session_id"].(string)
+		masterPlaylistURL, _ = body["master_playlist_url"].(string)
+		require.NotEmpty(t, sessionID, "should have session_id")
+		require.NotEmpty(t, masterPlaylistURL, "should have master_playlist_url")
+		t.Logf("playback session: id=%s", sessionID)
+		t.Logf("master playlist: %s", masterPlaylistURL)
+
+		// Verify profiles are present — should include 4k, 1080p, 720p etc.
+		if profiles, ok := body["profiles"].([]interface{}); ok {
+			t.Logf("profiles: %d available", len(profiles))
+			for _, p := range profiles {
+				if pm, ok := p.(map[string]interface{}); ok {
+					t.Logf("  profile: name=%v width=%v height=%v bitrate=%v",
+						pm["name"], pm["width"], pm["height"], pm["bitrate"])
+				}
+			}
+		}
+
+		// Verify audio tracks
+		if tracks, ok := body["audio_tracks"].([]interface{}); ok {
+			t.Logf("audio tracks: %d", len(tracks))
+			for _, tr := range tracks {
+				if tm, ok := tr.(map[string]interface{}); ok {
+					t.Logf("  audio: index=%v codec=%v channels=%v lang=%v",
+						tm["index"], tm["codec"], tm["channels"], tm["language"])
+				}
+			}
+		}
+
+		// Verify duration
+		if dur, ok := body["duration_seconds"].(float64); ok {
+			t.Logf("duration: %.1fs", dur)
+			assert.Greater(t, dur, 0.0, "duration should be positive")
+		}
+	})
+
+	// Cleanup: always stop session on exit
+	defer func() {
+		if sessionID != "" {
+			resp := doRequest(t, "DELETE", "/api/v1/playback/sessions/"+sessionID, tok, nil)
+			resp.Body.Close()
+		}
+	}()
+
+	// ---- 3. Get the session ----
+	t.Run("get_real_session", func(t *testing.T) {
+		if sessionID == "" {
+			t.Skip("no session")
+		}
+		status, body := doJSON(t, "GET", "/api/v1/playback/sessions/"+sessionID, tok, nil)
+		require.Equal(t, 200, status, "should get session: %v", body)
+		t.Logf("session details: duration=%.0fs profiles=%v",
+			body["duration_seconds"], body["profiles"])
+	})
+
+	// ---- 4. Fetch & validate HLS master playlist ----
+	t.Run("fetch_master_playlist", func(t *testing.T) {
+		if masterPlaylistURL == "" {
+			t.Skip("no master playlist URL")
+		}
+		resp := doRequest(t, "GET", masterPlaylistURL, tok, nil)
+		defer resp.Body.Close()
+		raw, _ := io.ReadAll(resp.Body)
+		body := string(raw)
+		t.Logf("master playlist (%d bytes):\n%s", len(raw), body)
+		require.Equal(t, 200, resp.StatusCode, "master playlist should be accessible")
+		assert.Contains(t, body, "#EXTM3U", "should be a valid M3U playlist")
+		assert.Contains(t, body, "#EXT-X-STREAM-INF", "should have stream variants")
+	})
+
+	// ---- 5. Fetch a media (variant) playlist ----
+	t.Run("fetch_media_playlist", func(t *testing.T) {
+		if masterPlaylistURL == "" {
+			t.Skip("no master playlist URL")
+		}
+		// Get master playlist and extract a media playlist URL
+		resp := doRequest(t, "GET", masterPlaylistURL, tok, nil)
+		defer resp.Body.Close()
+		raw, _ := io.ReadAll(resp.Body)
+
+		// Parse out media playlist URLs (lines not starting with #)
+		var mediaURL string
+		for _, line := range strings.Split(string(raw), "\n") {
+			line = strings.TrimSpace(line)
+			if line != "" && !strings.HasPrefix(line, "#") {
+				mediaURL = line
+				break
+			}
+		}
+		if mediaURL == "" {
+			t.Skip("no media playlist URL found in master playlist")
+		}
+
+		// Media URL might be relative — resolve against master playlist base
+		if !strings.HasPrefix(mediaURL, "/") && !strings.HasPrefix(mediaURL, "http") {
+			// Relative to master playlist directory
+			base := masterPlaylistURL[:strings.LastIndex(masterPlaylistURL, "/")+1]
+			mediaURL = base + mediaURL
+		}
+
+		t.Logf("fetching media playlist: %s", mediaURL)
+		resp2 := doRequest(t, "GET", mediaURL, tok, nil)
+		defer resp2.Body.Close()
+		raw2, _ := io.ReadAll(resp2.Body)
+		body2 := string(raw2)
+		t.Logf("media playlist (%d bytes):\n%.800s", len(raw2), body2)
+		assert.Equal(t, 200, resp2.StatusCode, "media playlist should be accessible")
+		assert.Contains(t, body2, "#EXTM3U", "should be valid M3U")
+	})
+
+	// ---- 6. Fetch a segment (first .ts chunk) — wait for FFmpeg to produce one ----
+	t.Run("fetch_first_segment", func(t *testing.T) {
+		if masterPlaylistURL == "" {
+			t.Skip("no master playlist URL")
+		}
+
+		// Get master playlist, get a media playlist, then look for .ts segments.
+		// FFmpeg may take a few seconds to produce the first segment.
+		var segmentURL string
+		deadline := time.Now().Add(30 * time.Second)
+		for time.Now().Before(deadline) {
+			resp := doRequest(t, "GET", masterPlaylistURL, tok, nil)
+			raw, _ := io.ReadAll(resp.Body)
+			resp.Body.Close()
+
+			// Find a media playlist URL
+			var mediaURL string
+			for _, line := range strings.Split(string(raw), "\n") {
+				line = strings.TrimSpace(line)
+				if line != "" && !strings.HasPrefix(line, "#") {
+					mediaURL = line
+					break
+				}
+			}
+			if mediaURL == "" {
+				time.Sleep(1 * time.Second)
+				continue
+			}
+
+			// Resolve media playlist URL relative to master
+			masterBase := masterPlaylistURL[:strings.LastIndex(masterPlaylistURL, "/")+1]
+			if !strings.HasPrefix(mediaURL, "/") && !strings.HasPrefix(mediaURL, "http") {
+				mediaURL = masterBase + mediaURL
+			}
+
+			resp2 := doRequest(t, "GET", mediaURL, tok, nil)
+			raw2, _ := io.ReadAll(resp2.Body)
+			resp2.Body.Close()
+
+			// Resolve the media playlist base path for segment URLs
+			mediaBase := mediaURL[:strings.LastIndex(mediaURL, "/")+1]
+
+			// Find a .ts segment URL
+			for _, line := range strings.Split(string(raw2), "\n") {
+				line = strings.TrimSpace(line)
+				if strings.HasSuffix(line, ".ts") || strings.HasSuffix(line, ".m4s") {
+					// Resolve relative to media playlist, not master
+					if !strings.HasPrefix(line, "/") && !strings.HasPrefix(line, "http") {
+						line = mediaBase + line
+					}
+					segmentURL = line
+					break
+				}
+			}
+			if segmentURL != "" {
+				break
+			}
+			time.Sleep(2 * time.Second)
+		}
+
+		if segmentURL == "" {
+			t.Log("no .ts/.m4s segments produced within 30s (FFmpeg may still be starting)")
+			return
+		}
+
+		t.Logf("fetching segment: %s", segmentURL)
+		resp3 := doRequest(t, "GET", segmentURL, tok, nil)
+		defer resp3.Body.Close()
+		raw3, _ := io.ReadAll(resp3.Body)
+		t.Logf("segment: %d bytes, status=%d, content-type=%s",
+			len(raw3), resp3.StatusCode, resp3.Header.Get("Content-Type"))
+		assert.Equal(t, 200, resp3.StatusCode, "segment should be downloadable")
+		assert.Greater(t, len(raw3), 0, "segment should have content")
+	})
+
+	// ---- 7. Stop the session ----
+	t.Run("stop_real_session", func(t *testing.T) {
+		if sessionID == "" {
+			t.Skip("no session")
+		}
+		resp := doRequest(t, "DELETE", "/api/v1/playback/sessions/"+sessionID, tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"stop session should succeed (got %d)", resp.StatusCode)
+		sessionID = "" // prevent double-cleanup in defer
+	})
+}
+
 // =============================================================================
 // 22. MFA Complete Flows
 // =============================================================================

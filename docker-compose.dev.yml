@@ -36,6 +36,7 @@ services:
       - revenge-config:/config
       - revenge-cache:/cache
       - ./testdata/media:/media:ro
+      - ./.workingdir11:/movies:ro
     depends_on:
       postgres:
         condition: service_healthy

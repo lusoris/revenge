@@ -40,19 +40,25 @@ func TestMovieLibraryScanArgs_Fields(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name          string
-		args          MovieLibraryScanArgs
-		expectedPaths []string
-		expectedForce bool
+		name            string
+		args            MovieLibraryScanArgs
+		expectedScanID  string
+		expectedLibID   string
+		expectedPaths   []string
+		expectedForce   bool
 	}{
 		{
-			name: "multiple paths with force",
+			name: "multiple paths with force and IDs",
 			args: MovieLibraryScanArgs{
-				Paths: []string{"/movies", "/media/films"},
-				Force: true,
+				ScanID:    "scan-123",
+				LibraryID: "lib-456",
+				Paths:     []string{"/movies", "/media/films"},
+				Force:     true,
 			},
-			expectedPaths: []string{"/movies", "/media/films"},
-			expectedForce: true,
+			expectedScanID: "scan-123",
+			expectedLibID:  "lib-456",
+			expectedPaths:  []string{"/movies", "/media/films"},
+			expectedForce:  true,
 		},
 		{
 			name: "single path without force",
@@ -83,6 +89,8 @@ func TestMovieLibraryScanArgs_Fields(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+			assert.Equal(t, tt.expectedScanID, tt.args.ScanID)
+			assert.Equal(t, tt.expectedLibID, tt.args.LibraryID)
 			assert.Equal(t, tt.expectedPaths, tt.args.Paths)
 			assert.Equal(t, tt.expectedForce, tt.args.Force)
 		})
@@ -104,10 +112,11 @@ func TestNewMovieLibraryScanWorker(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewMovieLibraryScanWorker(nil, logger)
+	worker := NewMovieLibraryScanWorker(nil, nil, logger)
 
 	assert.NotNil(t, worker)
 	assert.Nil(t, worker.libraryService)
+	assert.Nil(t, worker.scanStatusService)
 	assert.NotNil(t, worker.logger)
 }
 
@@ -115,9 +124,10 @@ func TestNewMovieLibraryScanWorker_WithNilLogger(t *testing.T) {
 	t.Parallel()
 
 	// Passing nil logger should still create worker (won't panic on construction).
-	worker := NewMovieLibraryScanWorker(nil, nil)
+	worker := NewMovieLibraryScanWorker(nil, nil, nil)
 	assert.NotNil(t, worker)
 	assert.Nil(t, worker.libraryService)
+	assert.Nil(t, worker.scanStatusService)
 	assert.Nil(t, worker.logger)
 }
 
@@ -129,7 +139,7 @@ func TestMovieLibraryScanWorker_Kind(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewMovieLibraryScanWorker(nil, logger)
+	worker := NewMovieLibraryScanWorker(nil, nil, logger)
 
 	assert.Equal(t, MovieLibraryScanJobKind, worker.Kind())
 	assert.Equal(t, "movie_library_scan", worker.Kind())
@@ -138,7 +148,7 @@ func TestMovieLibraryScanWorker_Kind(t *testing.T) {
 func TestMovieLibraryScanWorker_Kind_MatchesArgs(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
+	worker := NewMovieLibraryScanWorker(nil, nil, logging.NewTestLogger())
 	args := MovieLibraryScanArgs{}
 
 	// Worker kind and args kind must match for River to route jobs correctly.
@@ -152,7 +162,7 @@ func TestMovieLibraryScanWorker_Kind_MatchesArgs(t *testing.T) {
 func TestMovieLibraryScanWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
+	worker := NewMovieLibraryScanWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -168,7 +178,7 @@ func TestMovieLibraryScanWorker_Timeout(t *testing.T) {
 func TestMovieLibraryScanWorker_Timeout_ConsistentAcrossCalls(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
+	worker := NewMovieLibraryScanWorker(nil, nil, logging.NewTestLogger())
 
 	job1 := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -190,7 +200,7 @@ func TestMovieLibraryScanWorker_Timeout_ConsistentAcrossCalls(t *testing.T) {
 func TestMovieLibraryScanWorker_Work_NilLibraryService(t *testing.T) {
 	t.Parallel()
 
-	worker := NewMovieLibraryScanWorker(nil, logging.NewTestLogger())
+	worker := NewMovieLibraryScanWorker(nil, nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},
@@ -211,7 +221,7 @@ func TestMovieLibraryScanWorker_Work_EmptyLibrary(t *testing.T) {
 	t.Parallel()
 
 	// Create a real LibraryService with an empty temp directory.
-	// The scanner will find no video files, so ScanLibrary returns
+	// The scanner will find no video files, so ScanLibraryWithPaths returns
 	// a summary with 0 files and no errors, exercising the full
 	// success path of the Work method.
 	tempDir := t.TempDir()
@@ -220,7 +230,7 @@ func TestMovieLibraryScanWorker_Work_EmptyLibrary(t *testing.T) {
 		Paths: []string{tempDir},
 	}
 	libSvc := movie.NewLibraryService(nil, nil, libConfig, nil)
-	worker := NewMovieLibraryScanWorker(libSvc, logging.NewTestLogger())
+	worker := NewMovieLibraryScanWorker(libSvc, nil, logging.NewTestLogger())
 
 	job := &river.Job[MovieLibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: MovieLibraryScanJobKind},

@@ -16,7 +16,7 @@ func TestRegisterWorkers(t *testing.T) {
 	workers := river.NewWorkers()
 
 	metadataRefreshWorker := NewMovieMetadataRefreshWorker(nil, nil, logger)
-	libraryScanWorker := NewMovieLibraryScanWorker(nil, logger)
+	libraryScanWorker := NewMovieLibraryScanWorker(nil, nil, logger)
 	fileMatchWorker := NewMovieFileMatchWorker(nil, logger)
 	searchIndexWorker := NewMovieSearchIndexWorker(nil, nil, logger)
 
@@ -31,7 +31,7 @@ func TestRegisterWorkers_ReturnsNil(t *testing.T) {
 	workers := river.NewWorkers()
 
 	metadataRefreshWorker := NewMovieMetadataRefreshWorker(nil, nil, logger)
-	libraryScanWorker := NewMovieLibraryScanWorker(nil, logger)
+	libraryScanWorker := NewMovieLibraryScanWorker(nil, nil, logger)
 	fileMatchWorker := NewMovieFileMatchWorker(nil, logger)
 	searchIndexWorker := NewMovieSearchIndexWorker(nil, nil, logger)
 

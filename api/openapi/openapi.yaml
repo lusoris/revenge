@@ -11382,7 +11382,7 @@ components:
           items:
             $ref: '#/components/schemas/PlaybackAudioTrack'
           description: |
-            Available audio tracks. Each track is a separate HLS rendition  -- 
+            Available audio tracks. Each track is a separate HLS rendition  --
             the player downloads only the active track's segments, so switching
             is instant without restarting the stream.
         subtitle_tracks:

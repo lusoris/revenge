@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/govalues/decimal"
 	"github.com/lusoris/revenge/internal/content/shared/matcher"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/govalues/decimal"
 )
 
 // Matcher handles matching scanned files to movies

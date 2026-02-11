@@ -5,11 +5,13 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"sync"
 	"time"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/riverqueue/river"
+	"golang.org/x/sync/errgroup"
 )
 
 // Stat key constants used as server_stats.stat_key values.
@@ -106,8 +108,12 @@ type statEntry struct {
 	value int64
 }
 
-// collectStats runs all aggregate queries and returns the results.
+// collectStats runs all aggregate queries concurrently and returns the results.
 func (w *StatsAggregationWorker) collectStats(ctx context.Context) ([]statEntry, error) {
+	if w.queries == nil {
+		panic("stats_worker: queries is nil")
+	}
+
 	type queryFunc func(context.Context) (int64, error)
 
 	// Map each stat key to its aggregate query.
@@ -127,13 +133,26 @@ func (w *StatsAggregationWorker) collectStats(ctx context.Context) ([]statEntry,
 		{StatEpisodeWatchSeconds, w.queries.SumEpisodeWatchDurationSeconds},
 	}
 
+	var mu sync.Mutex
 	results := make([]statEntry, 0, len(queries))
+
+	g, gctx := errgroup.WithContext(ctx)
 	for _, q := range queries {
-		val, err := q.fn(ctx)
-		if err != nil {
-			return nil, fmt.Errorf("query %s: %w", q.key, err)
-		}
-		results = append(results, statEntry{key: q.key, value: val})
+		q := q // capture loop variable
+		g.Go(func() error {
+			val, err := q.fn(gctx)
+			if err != nil {
+				return fmt.Errorf("query %s: %w", q.key, err)
+			}
+			mu.Lock()
+			results = append(results, statEntry{key: q.key, value: val})
+			mu.Unlock()
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return nil, err
 	}
 
 	return results, nil

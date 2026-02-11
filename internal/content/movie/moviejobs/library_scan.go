@@ -5,20 +5,24 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/riverqueue/river"
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/observability"
+	"github.com/lusoris/revenge/internal/service/library"
 )
 
 const MovieLibraryScanJobKind = "movie_library_scan"
 
 // MovieLibraryScanArgs are the arguments for the movie library scan job.
 type MovieLibraryScanArgs struct {
-	Paths []string `json:"paths"`
-	Force bool     `json:"force"`
+	ScanID    string   `json:"scan_id"`
+	LibraryID string   `json:"library_id"`
+	Paths     []string `json:"paths"`
+	Force     bool     `json:"force"`
 }
 
 // Kind returns the job kind for the movie library scan job.
@@ -37,18 +41,21 @@ func (MovieLibraryScanArgs) InsertOpts() river.InsertOpts {
 // MovieLibraryScanWorker is a worker that scans movie libraries.
 type MovieLibraryScanWorker struct {
 	river.WorkerDefaults[MovieLibraryScanArgs]
-	libraryService *movie.LibraryService
-	logger         *slog.Logger
+	libraryService     *movie.LibraryService
+	scanStatusService  *library.Service
+	logger             *slog.Logger
 }
 
 // NewMovieLibraryScanWorker creates a new movie library scan worker.
 func NewMovieLibraryScanWorker(
 	libraryService *movie.LibraryService,
+	scanStatusService *library.Service,
 	logger *slog.Logger,
 ) *MovieLibraryScanWorker {
 	return &MovieLibraryScanWorker{
-		libraryService: libraryService,
-		logger:         logger,
+		libraryService:    libraryService,
+		scanStatusService: scanStatusService,
+		logger:            logger,
 	}
 }
 
@@ -68,18 +75,54 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 	scanStart := time.Now()
 
 	w.logger.Info("starting movie library scan",
+		slog.String("scan_id", args.ScanID),
+		slog.String("library_id", args.LibraryID),
 		slog.Any("paths", args.Paths),
 		slog.Bool("force", args.Force),
 	)
 
-	// Call library service to scan the library
-	summary, err := w.libraryService.ScanLibrary(ctx)
-	if err != nil {
+	// Mark scan as running if we have a scan ID and status service.
+	var scanID uuid.UUID
+	hasScanID := false
+	if args.ScanID != "" && w.scanStatusService != nil {
+		var err error
+		scanID, err = uuid.Parse(args.ScanID)
+		if err == nil {
+			hasScanID = true
+			if _, err := w.scanStatusService.StartScan(ctx, scanID); err != nil {
+				w.logger.Warn("failed to mark scan as running",
+					slog.String("scan_id", args.ScanID),
+					slog.Any("error", err),
+				)
+			}
+		}
+	}
+
+	// Use paths from the job args (from the library record), not from startup config.
+	var summary *movie.ScanSummary
+	var scanErr error
+	if len(args.Paths) > 0 {
+		summary, scanErr = w.libraryService.ScanLibraryWithPaths(ctx, args.Paths)
+	} else {
+		summary, scanErr = w.libraryService.ScanLibrary(ctx)
+	}
+
+	if scanErr != nil {
 		w.logger.Error("library scan failed",
-			slog.Any("error",err),
+			slog.Any("error", scanErr),
 		)
 		observability.LibraryScanErrorsTotal.WithLabelValues("movies", "fatal").Inc()
-		return fmt.Errorf("library scan failed: %w", err)
+
+		// Mark scan as failed.
+		if hasScanID {
+			if _, err := w.scanStatusService.FailScan(ctx, scanID, scanErr.Error()); err != nil {
+				w.logger.Warn("failed to mark scan as failed",
+					slog.String("scan_id", args.ScanID),
+					slog.Any("error", err),
+				)
+			}
+		}
+		return fmt.Errorf("library scan failed: %w", scanErr)
 	}
 
 	observability.LibraryScanDuration.WithLabelValues("movies").Observe(time.Since(scanStart).Seconds())
@@ -88,8 +131,25 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 		observability.LibraryScanErrorsTotal.WithLabelValues("movies", "scan").Add(float64(len(summary.Errors)))
 	}
 
+	// Mark scan as completed.
+	if hasScanID {
+		progress := &library.ScanProgress{
+			ItemsScanned: int32(summary.TotalFiles),
+			ItemsAdded:   int32(summary.NewMovies),
+			ItemsUpdated: int32(summary.ExistingMovies),
+			ErrorsCount:  int32(len(summary.Errors)),
+		}
+		if _, err := w.scanStatusService.CompleteScan(ctx, scanID, progress); err != nil {
+			w.logger.Warn("failed to mark scan as completed",
+				slog.String("scan_id", args.ScanID),
+				slog.Any("error", err),
+			)
+		}
+	}
+
 	// Log summary
 	w.logger.Info("library scan completed",
+		slog.String("scan_id", args.ScanID),
 		slog.Int("total_files", summary.TotalFiles),
 		slog.Int("matched_files", summary.MatchedFiles),
 		slog.Int("unmatched_files", summary.UnmatchedFiles),
@@ -107,7 +167,7 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 			break
 		}
 		w.logger.Warn("scan error",
-			slog.Any("error",scanErr),
+			slog.Any("error", scanErr),
 		)
 	}
 

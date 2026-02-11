@@ -12,6 +12,7 @@ import (
 	"github.com/go-faster/jx"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/validate"
 )
@@ -324,6 +325,25 @@ func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibra
 			Code:    500,
 			Message: "Failed to trigger library scan",
 		}, nil
+	}
+
+	// Enqueue the River job to actually perform the scan.
+	if h.riverClient != nil {
+		lib, libErr := h.libraryService.Get(ctx, params.LibraryId)
+		if libErr == nil {
+			_, insertErr := h.riverClient.Insert(ctx, moviejobs.MovieLibraryScanArgs{
+				ScanID:    scan.ID.String(),
+				LibraryID: params.LibraryId.String(),
+				Paths:     lib.Paths,
+				Force:     scanType == "full",
+			}, nil)
+			if insertErr != nil {
+				h.logger.Error("failed to enqueue scan job",
+					slog.String("scan_id", scan.ID.String()),
+					slog.Any("error", insertErr),
+				)
+			}
+		}
 	}
 
 	return convertLibraryScanToOgen(scan), nil

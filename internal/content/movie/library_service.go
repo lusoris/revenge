@@ -53,10 +53,25 @@ func NewLibraryService(
 	}
 }
 
-// ScanLibrary scans all library paths and matches files to movies
+// ScanLibrary scans the library paths configured at startup.
 func (s *LibraryService) ScanLibrary(ctx context.Context) (*ScanSummary, error) {
+	return s.scanPaths(ctx, s.scanner)
+}
+
+// ScanLibraryWithPaths scans the given paths instead of the default config paths.
+// This is used by the River job worker to scan paths from the library record.
+func (s *LibraryService) ScanLibraryWithPaths(ctx context.Context, paths []string) (*ScanSummary, error) {
+	if len(paths) == 0 {
+		return &ScanSummary{}, nil
+	}
+	scanner := NewScanner(paths)
+	return s.scanPaths(ctx, scanner)
+}
+
+// scanPaths runs a scan using the provided scanner and processes results.
+func (s *LibraryService) scanPaths(ctx context.Context, scanner *Scanner) (*ScanSummary, error) {
 	// Scan file system
-	scanResults, err := s.scanner.Scan(ctx)
+	scanResults, err := scanner.Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("scan failed: %w", err)
 	}
