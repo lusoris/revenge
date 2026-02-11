@@ -1,758 +1,701 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
+  "description": "Search, authentication, metadata providers, and library scanning",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 1,
-  "links": [],
+  "graphTooltip": 2,
+  "links": [
+    { "asDropdown": true, "icon": "external link", "includeVars": true, "keepTime": true, "tags": ["revenge"], "targetBlank": false, "title": "Revenge Dashboards", "type": "dashboards" }
+  ],
   "panels": [
     {
       "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 104,
-      "title": "Search (Typesense)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 3000,
+      "title": "🔍 Search (Typesense)",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
+          "color": { "mode": "thresholds" },
+          "decimals": 1,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 100 }
+            ]
           },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 500,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(revenge_search_query_duration_seconds_bucket[$__rate_interval])) by (le)) * 1000",
+          "legendFormat": "p95",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Search p95 Latency",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 1,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "red", "value": 200 }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 501,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_search_queries_total[$__rate_interval]))",
+          "legendFormat": "QPS",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Search QPS",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
           "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "hue",
+            "lineWidth": 0,
+            "stacking": { "group": "A", "mode": "normal" }
           },
           "unit": "ops"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "id": 13,
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 1 },
+      "id": 502,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
         {
-          "expr": "sum(rate(revenge_search_queries_total[5m])) by (type)",
+          "expr": "sum(rate(revenge_search_queries_total[$__rate_interval])) by (type)",
           "legendFormat": "{{type}}",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
-      "title": "Search Queries Rate",
+      "title": "Search Queries by Type",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
           "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true,
+            "thresholdsStyle": { "mode": "area" }
+          },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.05 },
+              { "color": "red", "value": 0.1 }
+            ]
           },
           "unit": "s"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 9
-      },
-      "id": 14,
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 5 },
+      "id": 503,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean",
-            "max"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum(rate(revenge_search_query_duration_seconds_bucket[5m])) by (le, type))",
+          "expr": "histogram_quantile(0.50, sum(rate(revenge_search_query_duration_seconds_bucket[$__rate_interval])) by (le, type))",
           "legendFormat": "p50 {{type}}",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         },
         {
-          "expr": "histogram_quantile(0.95, sum(rate(revenge_search_query_duration_seconds_bucket[5m])) by (le, type))",
+          "expr": "histogram_quantile(0.95, sum(rate(revenge_search_query_duration_seconds_bucket[$__rate_interval])) by (le, type))",
           "legendFormat": "p95 {{type}}",
           "refId": "B",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(revenge_search_query_duration_seconds_bucket[$__rate_interval])) by (le, type))",
+          "legendFormat": "p99 {{type}}",
+          "refId": "C",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
-      "title": "Search Query Latency",
+      "title": "Search Query Latency by Type",
       "type": "timeseries"
     },
+
     {
       "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 17
-      },
-      "id": 105,
-      "title": "Auth & Sessions",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 11 },
+      "id": 3001,
+      "title": "🔐 Auth & Sessions",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
-          },
-          "unit": "ops"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 18
-      },
-      "id": 15,
-      "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_auth_attempts_total[5m])) by (method, status)",
-          "legendFormat": "{{method}} {{status}}",
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
-        }
-      ],
-      "title": "Auth Attempts Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
-          },
-          "unit": "ops"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 26
-      },
-      "id": 16,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "right",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_ratelimit_hits_total{action=\"blocked\"}[5m])) by (limiter)",
-          "legendFormat": "{{limiter}}",
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
-        }
-      ],
-      "title": "Rate Limit Blocked (by endpoint)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 2,
-            "fillOpacity": 30
-          },
-          "unit": "ops"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "blocked"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "allowed"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 34
-      },
-      "id": 26,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": [
-            "sum"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_ratelimit_hits_total[5m])) by (action)",
-          "legendFormat": "{{action}}",
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
-        }
-      ],
-      "title": "Rate Limit Summary",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "thresholds": {
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 100
-              },
-              {
-                "color": "red",
-                "value": 500
-              }
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 100 },
+              { "color": "red", "value": 500 }
             ]
-          }
+          },
+          "unit": "short",
+          "decimals": 0
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 42
-      },
-      "id": 17,
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 12 },
+      "id": 600,
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
         "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
       "targets": [
         {
           "expr": "revenge_sessions_active_total",
-          "legendFormat": "Active Sessions",
+          "legendFormat": "Active",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
       "title": "Active Sessions",
       "type": "stat"
     },
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 50
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          },
+          "unit": "reqps",
+          "decimals": 1
+        },
+        "overrides": []
       },
-      "id": 106,
-      "title": "Library Scanner",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 12 },
+      "id": 601,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_auth_attempts_total{status=\"failure\"}[$__rate_interval])) or vector(0)",
+          "legendFormat": "Failed/s",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Failed Auth/s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "stacking": { "group": "A", "mode": "none" },
+            "spanNulls": true
+          },
+          "unit": "ops"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": ".*success.*" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": ".*failure.*" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } },
+              { "id": "custom.fillOpacity", "value": 40 }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 12 },
+      "id": 602,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_auth_attempts_total[$__rate_interval])) by (method, status)",
+          "legendFormat": "{{method}} {{status}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Auth Attempts by Method & Status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 16 },
+      "id": 603,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_ratelimit_hits_total{action=\"blocked\"}[$__rate_interval])) by (limiter)",
+          "legendFormat": "{{limiter}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Rate Limit Blocks by Endpoint",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "id": 3002,
+      "title": "🎬 Metadata Providers",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
+          "color": { "mode": "thresholds" },
+          "decimals": 1,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "red", "value": 2 }
+            ]
           },
           "unit": "s"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 51
-      },
-      "id": 18,
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 23 },
+      "id": 700,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean",
-            "max"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
       },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(revenge_library_scan_duration_seconds_bucket[5m])) by (le, library_id))",
-          "legendFormat": "p95 {{library_id}}",
+          "expr": "histogram_quantile(0.95, sum(rate(revenge_metadata_fetch_duration_seconds_bucket[$__rate_interval])) by (le))",
+          "legendFormat": "p95",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
-      "title": "Scan Duration (p95)",
+      "title": "Fetch p95 Latency",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "decimals": 1,
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.1 },
+              { "color": "red", "value": 1 }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 23 },
+      "id": 701,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_metadata_rate_limited_total[$__rate_interval])) or vector(0)",
+          "legendFormat": "Rate Limited/s",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Rate Limited/s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "stacking": { "group": "A", "mode": "none" },
+            "spanNulls": true
+          },
+          "unit": "ops"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": ".*error.*" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": ".*success.*" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 23 },
+      "id": 702,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_metadata_fetch_total[$__rate_interval])) by (provider, status)",
+          "legendFormat": "{{provider}} {{status}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Metadata Fetch Rate by Provider",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
           "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true,
+            "thresholdsStyle": { "mode": "area" }
+          },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "red", "value": 2 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 27 },
+      "id": 703,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(revenge_metadata_fetch_duration_seconds_bucket[$__rate_interval])) by (le, provider))",
+          "legendFormat": "p50 {{provider}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(revenge_metadata_fetch_duration_seconds_bucket[$__rate_interval])) by (le, provider))",
+          "legendFormat": "p95 {{provider}}",
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Metadata Fetch Latency by Provider",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 31 },
+      "id": 704,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(revenge_metadata_rate_limited_total[$__rate_interval])) by (provider)",
+          "legendFormat": "{{provider}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Metadata API Rate Limiting",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
+      "id": 3003,
+      "title": "📚 Library Scanner",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "stacking": { "group": "A", "mode": "none" },
+            "spanNulls": true
           },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 59
-      },
-      "id": 19,
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 38 },
+      "id": 800,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
         {
-          "expr": "sum(rate(revenge_library_files_scanned_total[5m])) by (library_id)",
+          "expr": "sum(rate(revenge_library_files_scanned_total[$__rate_interval])) by (library_id)",
           "legendFormat": "{{library_id}}",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
       "title": "Files Scanned Rate",
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
+          "color": { "mode": "palette-classic" },
           "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true,
+            "thresholdsStyle": { "mode": "area" }
+          },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 30 },
+              { "color": "red", "value": 120 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 38 },
+      "id": 801,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(revenge_library_scan_duration_seconds_bucket[$__rate_interval])) by (le, library_id))",
+          "legendFormat": "p95 {{library_id}}",
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
+        }
+      ],
+      "title": "Scan Duration (p95)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true
           },
           "unit": "short"
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 67
-      },
-      "id": 20,
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 38 },
+      "id": 802,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "mean"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"], "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "targets": [
         {
-          "expr": "sum(rate(revenge_library_scan_errors_total[5m])) by (library_id, error_type)",
+          "expr": "sum(rate(revenge_library_scan_errors_total[$__rate_interval])) by (library_id, error_type)",
           "legendFormat": "{{library_id}} {{error_type}}",
           "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          }
+          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
         }
       ],
       "title": "Scan Errors Rate",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 72 },
-      "id": 300,
-      "title": "Metadata Providers",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 1, "fillOpacity": 10 },
-          "unit": "ops"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 73 },
-      "id": 301,
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"] },
-        "tooltip": { "mode": "multi" }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_metadata_fetch_total[5m])) by (provider, status)",
-          "legendFormat": "{{provider}} {{status}}",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Metadata Fetch Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 1, "fillOpacity": 10 },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 73 },
-      "id": 302,
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] },
-        "tooltip": { "mode": "multi" }
-      },
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(revenge_metadata_fetch_duration_seconds_bucket[5m])) by (le, provider))",
-          "legendFormat": "{{provider}} p95",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Metadata Fetch Latency (p95)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 1, "fillOpacity": 10 },
-          "unit": "ops"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 73 },
-      "id": 303,
-      "options": {
-        "legend": { "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "multi" }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_metadata_rate_limited_total[5m])) by (provider)",
-          "legendFormat": "{{provider}}",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Metadata Rate Limited",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 81 },
-      "id": 310,
-      "title": "Playback & Streaming",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 10 },
-              { "color": "red", "value": 50 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 82 },
-      "id": 311,
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "orientation": "auto",
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "expr": "revenge_playback_sessions_active",
-          "legendFormat": "Active",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Active Streams",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 5 },
-              { "color": "red", "value": 10 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 82 },
-      "id": 312,
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"] },
-        "orientation": "auto",
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "expr": "revenge_transcoding_sessions_active",
-          "legendFormat": "Active",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Active Transcodes",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "lineWidth": 1, "fillOpacity": 10 },
-          "unit": "ops"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 82 },
-      "id": 313,
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "sum"] },
-        "tooltip": { "mode": "multi" }
-      },
-      "targets": [
-        {
-          "expr": "sum(rate(revenge_playback_start_total[5m])) by (media_type, quality)",
-          "legendFormat": "{{media_type}} {{quality}}",
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" }
-        }
-      ],
-      "title": "Playback Starts",
-      "type": "timeseries"
     }
   ],
+  "refresh": "30s",
   "schemaVersion": 39,
-  "tags": [
-    "revenge"
-  ],
-  "templating": {
-    "list": []
+  "tags": ["revenge"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d"]
   },
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
-  "timepicker": {},
   "timezone": "browser",
-  "title": "Revenge 3 - Features",
+  "title": "Revenge — Features",
   "uid": "revenge-features",
   "version": 1
 }
