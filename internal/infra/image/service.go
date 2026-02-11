@@ -289,14 +289,40 @@ func (s *Service) getDefaultSize(imageType string) string {
 	}
 }
 
-func (s *Service) getCachePath(imageType, path, size string) string {
+func (s *Service) getCachePath(imageType, path, size string) (string, error) {
 	// Sanitize path to prevent directory traversal
 	cleanPath := filepath.Clean(strings.TrimPrefix(path, "/"))
-	return filepath.Join(s.config.CacheDir, imageType, size, cleanPath)
+
+	// Reject any path component that attempts traversal
+	for _, part := range strings.Split(cleanPath, string(filepath.Separator)) {
+		if part == ".." || part == "." || part == "" {
+			return "", fmt.Errorf("invalid image path: %q", path)
+		}
+	}
+
+	candidate := filepath.Join(s.config.CacheDir, imageType, size, cleanPath)
+
+	// Verify resolved path stays within CacheDir
+	absCandidate, err := filepath.Abs(candidate)
+	if err != nil {
+		return "", fmt.Errorf("invalid cache path: %w", err)
+	}
+	absCache, err := filepath.Abs(s.config.CacheDir)
+	if err != nil {
+		return "", fmt.Errorf("invalid cache dir: %w", err)
+	}
+	if !strings.HasPrefix(absCandidate, absCache+string(filepath.Separator)) {
+		return "", fmt.Errorf("path traversal detected in image path: %q", path)
+	}
+
+	return absCandidate, nil
 }
 
 func (s *Service) getFromCache(imageType, path, size string) ([]byte, string, error) {
-	cachePath := s.getCachePath(imageType, path, size)
+	cachePath, err := s.getCachePath(imageType, path, size)
+	if err != nil {
+		return nil, "", err
+	}
 
 	// Check if file exists and is not expired
 	info, err := os.Stat(cachePath)
@@ -322,7 +348,10 @@ func (s *Service) getFromCache(imageType, path, size string) ([]byte, string, er
 }
 
 func (s *Service) saveToCache(imageType, path, size string, data []byte, contentType string) error {
-	cachePath := s.getCachePath(imageType, path, size)
+	cachePath, err := s.getCachePath(imageType, path, size)
+	if err != nil {
+		return err
+	}
 
 	// Create directory
 	dir := filepath.Dir(cachePath)

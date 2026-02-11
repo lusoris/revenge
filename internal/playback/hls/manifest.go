@@ -157,9 +157,10 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 	}
 
 	// Poll for the playlist file to appear (FFmpeg may still be starting)
+	// Use the validated absolute path for file operations
 	var content []byte
 	for i := 0; i < 100; i++ {
-		content, err = os.ReadFile(playlistPath) //nolint:gosec // path validated above with traversal check
+		content, err = os.ReadFile(absPath) //nolint:gosec // path validated above with traversal check
 		if err == nil && len(content) > 0 {
 			return string(content), nil
 		}
@@ -167,9 +168,9 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 	}
 
 	if err != nil {
-		return "", fmt.Errorf("media playlist not available at %s: %w", playlistPath, err)
+		return "", fmt.Errorf("media playlist not available at %s: %w", absPath, err)
 	}
-	return "", fmt.Errorf("media playlist empty at %s", playlistPath)
+	return "", fmt.Errorf("media playlist empty at %s", absPath)
 }
 
 // SegmentPath returns the filesystem path for a segment file.
