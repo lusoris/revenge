@@ -69,7 +69,8 @@ func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 	}
 
 	// Attach query tracer for metrics and slow query logging
-	poolConfig.ConnConfig.Tracer = TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
+	// Use LogLevelWarn to only log slow queries (>100ms) and errors, reducing log spam
+	poolConfig.ConnConfig.Tracer = TracerConfig(logger, tracelog.LogLevelWarn, 100*time.Millisecond)
 
 	logger.Info("connecting to database",
 		slog.String("database", poolConfig.ConnConfig.Database),

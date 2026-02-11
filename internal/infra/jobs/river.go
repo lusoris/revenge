@@ -60,6 +60,12 @@ func NewClient(pool *pgxpool.Pool, workers *river.Workers, config *Config, logge
 		logger = slog.Default()
 	}
 
+	// Create a leveled logger for River that only logs WARN+ to reduce polling spam
+	riverLogger := slog.New(&leveledHandler{
+		handler:  logger.Handler(),
+		minLevel: slog.LevelWarn,
+	})
+
 	riverConfig := &river.Config{
 		Queues:               config.Queues,
 		FetchCooldown:        config.FetchCooldown,
@@ -68,7 +74,7 @@ func NewClient(pool *pgxpool.Pool, workers *river.Workers, config *Config, logge
 		MaxAttempts:          config.MaxAttempts,
 		PeriodicJobs:         config.PeriodicJobs,
 		Workers:              workers,
-		Logger:               logger,
+		Logger:               riverLogger,
 	}
 
 	riverClient, err := river.NewClient(riverpgxv5.New(pool), riverConfig)
@@ -192,4 +198,27 @@ func (c *Client) Subscribe(kinds ...river.EventKind) (<-chan *river.Event, func(
 // RiverClient returns the underlying River client for advanced usage.
 func (c *Client) RiverClient() *river.Client[pgx.Tx] {
 	return c.client
+}
+
+// leveledHandler wraps an slog.Handler to filter logs below a minimum level.
+// Used to reduce River's verbose polling logs.
+type leveledHandler struct {
+	handler  slog.Handler
+	minLevel slog.Level
+}
+
+func (h *leveledHandler) Enabled(_ context.Context, level slog.Level) bool {
+	return level >= h.minLevel
+}
+
+func (h *leveledHandler) Handle(ctx context.Context, r slog.Record) error {
+	return h.handler.Handle(ctx, r)
+}
+
+func (h *leveledHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &leveledHandler{handler: h.handler.WithAttrs(attrs), minLevel: h.minLevel}
+}
+
+func (h *leveledHandler) WithGroup(name string) slog.Handler {
+	return &leveledHandler{handler: h.handler.WithGroup(name), minLevel: h.minLevel}
 }
