@@ -434,11 +434,11 @@ func (c *EpisodeCredit) IsCrew() bool {
 
 // SeriesGenre represents a genre associated with a series.
 type SeriesGenre struct {
-	ID          uuid.UUID
-	SeriesID    uuid.UUID
-	TMDbGenreID int32
-	Name        string
-	CreatedAt   time.Time
+	ID        uuid.UUID
+	SeriesID  uuid.UUID
+	Slug      string
+	Name      string
+	CreatedAt time.Time
 }
 
 // Network represents a TV network or streaming service.

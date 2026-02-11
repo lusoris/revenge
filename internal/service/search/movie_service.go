@@ -556,13 +556,13 @@ func (s *MovieSearchService) movieToDocument(m *movie.Movie, genres []movie.Movi
 	// Genres
 	if len(genres) > 0 {
 		genreNames := make([]string, len(genres))
-		genreIDs := make([]int32, len(genres))
+		genreSlugs := make([]string, len(genres))
 		for i, g := range genres {
 			genreNames[i] = g.Name
-			genreIDs[i] = g.TMDbGenreID
+			genreSlugs[i] = g.Slug
 		}
 		doc.Genres = genreNames
-		doc.GenreIDs = genreIDs
+		doc.GenreSlugs = genreSlugs
 	}
 
 	// Credits - extract cast and directors
@@ -680,8 +680,8 @@ func parseMovieDocument(data map[string]interface{}) MovieDocument {
 	if v, ok := data["directors"].([]interface{}); ok {
 		doc.Directors = toStringSlice(v)
 	}
-	if v, ok := data["genre_ids"].([]interface{}); ok {
-		doc.GenreIDs = toInt32Slice(v)
+	if v, ok := data["genre_slugs"].([]interface{}); ok {
+		doc.GenreSlugs = toStringSlice(v)
 	}
 
 	return doc

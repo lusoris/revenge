@@ -150,11 +150,11 @@ func (r *postgresRepository) ListRecentlyAddedSeries(ctx context.Context, limit,
 	return result, nil
 }
 
-func (r *postgresRepository) ListSeriesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error) {
+func (r *postgresRepository) ListSeriesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Series, error) {
 	dbSeries, err := r.queries.ListSeriesByGenre(ctx, tvshowdb.ListSeriesByGenreParams{
-		TmdbGenreID: tmdbGenreID,
-		Limit:       limit,
-		Offset:      offset,
+		Slug:   slug,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list series by genre: %w", err)
@@ -918,11 +918,11 @@ func (r *postgresRepository) DeleteEpisodeCredits(ctx context.Context, episodeID
 // Genres Operations
 // =============================================================================
 
-func (r *postgresRepository) AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, tmdbGenreID int32, name string) error {
+func (r *postgresRepository) AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, slug, name string) error {
 	return r.queries.AddSeriesGenre(ctx, tvshowdb.AddSeriesGenreParams{
-		SeriesID:    seriesID,
-		TmdbGenreID: tmdbGenreID,
-		Name:        name,
+		SeriesID: seriesID,
+		Slug:     slug,
+		Name:     name,
 	})
 }
 
@@ -935,11 +935,11 @@ func (r *postgresRepository) ListSeriesGenres(ctx context.Context, seriesID uuid
 	result := make([]SeriesGenre, len(dbGenres))
 	for i, g := range dbGenres {
 		result[i] = SeriesGenre{
-			ID:          g.ID,
-			SeriesID:    g.SeriesID,
-			TMDbGenreID: g.TmdbGenreID,
-			Name:        g.Name,
-			CreatedAt:   g.CreatedAt,
+			ID:        g.ID,
+			SeriesID:  g.SeriesID,
+			Slug:      g.Slug,
+			Name:      g.Name,
+			CreatedAt: g.CreatedAt,
 		}
 	}
 	return result, nil
@@ -953,9 +953,9 @@ func (r *postgresRepository) ListDistinctSeriesGenres(ctx context.Context) ([]co
 	genres := make([]content.GenreSummary, len(rows))
 	for i, row := range rows {
 		genres[i] = content.GenreSummary{
-			TMDbGenreID: row.TmdbGenreID,
-			Name:        row.Name,
-			ItemCount:   row.ItemCount,
+			Slug:      row.Slug,
+			Name:      row.Name,
+			ItemCount: row.ItemCount,
 		}
 	}
 	return genres, nil

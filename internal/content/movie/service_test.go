@@ -457,8 +457,8 @@ func TestService_GetMovieGenres(t *testing.T) {
 	ctx := context.Background()
 	movieID := uuid.Must(uuid.NewV7())
 	genres := []MovieGenre{
-		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
-		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 53, Name: "Thriller"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Slug: "drama", Name: "Drama"},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Slug: "thriller", Name: "Thriller"},
 	}
 
 	repo.On("ListMovieGenres", ctx, movieID).Return(genres, nil)
@@ -475,9 +475,9 @@ func TestService_GetMoviesByGenre(t *testing.T) {
 	ctx := context.Background()
 	movies := []Movie{*newTestMovie()}
 
-	repo.On("ListMoviesByGenre", ctx, int32(18), int32(10), int32(0)).Return(movies, nil)
+	repo.On("ListMoviesByGenre", ctx, "drama", int32(10), int32(0)).Return(movies, nil)
 
-	result, err := svc.GetMoviesByGenre(ctx, 18, 10, 0)
+	result, err := svc.GetMoviesByGenre(ctx, "drama", 10, 0)
 	require.NoError(t, err)
 	assert.Len(t, result, 1)
 	repo.AssertExpectations(t)

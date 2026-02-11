@@ -226,11 +226,11 @@ func movieCollectionToOgen(c *movie.MovieCollection) *ogen.MovieCollection {
 // movieGenreToOgen converts a movie genre domain type to ogen MovieGenre.
 func movieGenreToOgen(g *movie.MovieGenre) *ogen.MovieGenre {
 	return &ogen.MovieGenre{
-		ID:          ogen.NewOptUUID(g.ID),
-		MovieID:     ogen.NewOptUUID(g.MovieID),
-		TmdbGenreID: ogen.NewOptInt(int(g.TMDbGenreID)),
-		Name:        ogen.NewOptString(g.Name),
-		CreatedAt:   ogen.NewOptDateTime(g.CreatedAt),
+		ID:        ogen.NewOptUUID(g.ID),
+		MovieID:   ogen.NewOptUUID(g.MovieID),
+		Slug:      ogen.NewOptString(g.Slug),
+		Name:      ogen.NewOptString(g.Name),
+		CreatedAt: ogen.NewOptDateTime(g.CreatedAt),
 	}
 }
 

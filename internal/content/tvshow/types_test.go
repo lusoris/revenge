@@ -736,16 +736,16 @@ func TestNetwork(t *testing.T) {
 
 func TestSeriesGenre(t *testing.T) {
 	genre := SeriesGenre{
-		ID:          uuid.Must(uuid.NewV7()),
-		SeriesID:    uuid.Must(uuid.NewV7()),
-		TMDbGenreID: 18,
-		Name:        "Drama",
-		CreatedAt:   time.Now(),
+		ID:        uuid.Must(uuid.NewV7()),
+		SeriesID:  uuid.Must(uuid.NewV7()),
+		Slug:      "drama",
+		Name:      "Drama",
+		CreatedAt: time.Now(),
 	}
 
 	assert.NotEqual(t, uuid.Nil, genre.ID)
 	assert.NotEqual(t, uuid.Nil, genre.SeriesID)
-	assert.Equal(t, int32(18), genre.TMDbGenreID)
+	assert.Equal(t, "drama", genre.Slug)
 	assert.Equal(t, "Drama", genre.Name)
 	assert.False(t, genre.CreatedAt.IsZero())
 }

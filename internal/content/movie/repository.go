@@ -55,11 +55,11 @@ type Repository interface {
 	GetCollectionForMovie(ctx context.Context, movieID uuid.UUID) (*MovieCollection, error)
 
 	// Genres
-	AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error
+	AddMovieGenre(ctx context.Context, movieID uuid.UUID, slug, name string) error
 	ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
 	ListDistinctMovieGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteMovieGenres(ctx context.Context, movieID uuid.UUID) error
-	ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
+	ListMoviesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Movie, error)
 
 	// Watch Progress
 	CreateOrUpdateWatchProgress(ctx context.Context, params CreateWatchProgressParams) (*MovieWatched, error)

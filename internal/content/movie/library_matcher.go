@@ -231,7 +231,7 @@ func (m *Matcher) createMovieFromTMDb(ctx context.Context, tmdbMovie *Movie) (*M
 		if err == nil && len(genres) > 0 {
 			for _, genre := range genres {
 				// Ignore errors for individual genres
-				_ = m.repo.AddMovieGenre(ctx, newMovie.ID, genre.TMDbGenreID, genre.Name)
+				_ = m.repo.AddMovieGenre(ctx, newMovie.ID, genre.Slug, genre.Name)
 			}
 		}
 	}

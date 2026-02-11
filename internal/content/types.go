@@ -12,7 +12,7 @@ type ExternalRating struct {
 // GenreSummary represents a distinct genre with the count of items tagged with it.
 // Used by listing endpoints that aggregate genres across content.
 type GenreSummary struct {
-	TMDbGenreID int32  `json:"tmdb_genre_id"`
-	Name        string `json:"name"`
-	ItemCount   int64  `json:"item_count"`
+	Slug      string `json:"slug"`
+	Name      string `json:"name"`
+	ItemCount int64  `json:"item_count"`
 }

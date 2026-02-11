@@ -232,11 +232,10 @@ type MovieFile struct {
 type MovieGenre struct {
 	ID      uuid.UUID `json:"id"`
 	MovieID uuid.UUID `json:"movieId"`
-	// TMDb genre ID (28=Action, 35=Comedy, etc.)
-	TmdbGenreID int32 `json:"tmdbGenreId"`
 	// Genre name for display (Action, Comedy, Drama, etc.)
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"createdAt"`
+	Slug      string    `json:"slug"`
 }
 
 // User watch history and progress tracking for movies
@@ -704,11 +703,11 @@ type TvshowSeriesCredit struct {
 }
 
 type TvshowSeriesGenre struct {
-	ID          uuid.UUID `json:"id"`
-	SeriesID    uuid.UUID `json:"seriesId"`
-	TmdbGenreID int32     `json:"tmdbGenreId"`
-	Name        string    `json:"name"`
-	CreatedAt   time.Time `json:"createdAt"`
+	ID        uuid.UUID `json:"id"`
+	SeriesID  uuid.UUID `json:"seriesId"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+	Slug      string    `json:"slug"`
 }
 
 type TvshowSeriesNetwork struct {

@@ -269,11 +269,11 @@ type MovieCollection struct {
 
 // MovieGenre represents a genre associated with a movie
 type MovieGenre struct {
-	ID          uuid.UUID
-	MovieID     uuid.UUID
-	TMDbGenreID int32
-	Name        string
-	CreatedAt   time.Time
+	ID        uuid.UUID
+	MovieID   uuid.UUID
+	Slug      string
+	Name      string
+	CreatedAt time.Time
 }
 
 // MovieWatched represents watch progress for a user

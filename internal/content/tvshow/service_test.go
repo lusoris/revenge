@@ -78,8 +78,8 @@ func (m *MockRepository) ListRecentlyAddedSeries(ctx context.Context, limit, off
 	return args.Get(0).([]Series), args.Error(1)
 }
 
-func (m *MockRepository) ListSeriesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error) {
-	args := m.Called(ctx, tmdbGenreID, limit, offset)
+func (m *MockRepository) ListSeriesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Series, error) {
+	args := m.Called(ctx, slug, limit, offset)
 	return args.Get(0).([]Series), args.Error(1)
 }
 
@@ -393,8 +393,8 @@ func (m *MockRepository) DeleteEpisodeCredits(ctx context.Context, episodeID uui
 }
 
 // Genre operations
-func (m *MockRepository) AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, tmdbGenreID int32, name string) error {
-	args := m.Called(ctx, seriesID, tmdbGenreID, name)
+func (m *MockRepository) AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, slug string, name string) error {
+	args := m.Called(ctx, seriesID, slug, name)
 	return args.Error(0)
 }
 
@@ -1229,9 +1229,9 @@ func TestListByGenre(t *testing.T) {
 		{ID: uuid.Must(uuid.NewV7()), Title: "Drama Show"},
 	}
 
-	repo.On("ListSeriesByGenre", ctx, int32(18), int32(10), int32(0)).Return(expected, nil)
+	repo.On("ListSeriesByGenre", ctx, "drama", int32(10), int32(0)).Return(expected, nil)
 
-	result, err := svc.ListByGenre(ctx, 18, 10, 0)
+	result, err := svc.ListByGenre(ctx, "drama", 10, 0)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, result)
 	repo.AssertExpectations(t)
@@ -2210,8 +2210,8 @@ func TestGetSeriesGenres(t *testing.T) {
 
 	seriesID := uuid.Must(uuid.NewV7())
 	expected := []SeriesGenre{
-		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, TMDbGenreID: 18, Name: "Drama"},
-		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, TMDbGenreID: 80, Name: "Crime"},
+		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, Slug: "drama", Name: "Drama"},
+		{ID: uuid.Must(uuid.NewV7()), SeriesID: seriesID, Slug: "crime", Name: "Crime"},
 	}
 
 	repo.On("ListSeriesGenres", ctx, seriesID).Return(expected, nil)
@@ -2599,11 +2599,11 @@ func TestRefreshSeriesMetadata_Success(t *testing.T) {
 
 	// Genres
 	genres := []SeriesGenre{
-		{SeriesID: seriesID, TMDbGenreID: 18, Name: "Drama"},
+		{SeriesID: seriesID, Slug: "drama", Name: "Drama"},
 	}
 	provider.On("GetSeriesGenres", ctx, seriesID, "1396").Return(genres, nil)
 	repo.On("DeleteSeriesGenres", ctx, seriesID).Return(nil)
-	repo.On("AddSeriesGenre", ctx, seriesID, int32(18), "Drama").Return(nil)
+	repo.On("AddSeriesGenre", ctx, seriesID, "drama", "Drama").Return(nil)
 
 	err := svc.RefreshSeriesMetadata(ctx, seriesID)
 	assert.NoError(t, err)

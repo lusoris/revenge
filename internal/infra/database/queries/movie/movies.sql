@@ -566,8 +566,8 @@ LIMIT 1;
 -- Movie Genres Operations
 -- name: AddMovieGenre :exec
 INSERT INTO
-    movie.movie_genres (movie_id, tmdb_genre_id, name)
-VALUES ($1, $2, $3) ON CONFLICT (movie_id, tmdb_genre_id) DO NOTHING;
+    movie.movie_genres (movie_id, slug, name)
+VALUES ($1, $2, $3) ON CONFLICT (movie_id, slug) DO NOTHING;
 
 -- name: ListMovieGenres :many
 SELECT *
@@ -577,9 +577,9 @@ WHERE
 ORDER BY name ASC;
 
 -- name: ListDistinctMovieGenres :many
-SELECT tmdb_genre_id, name, COUNT(DISTINCT movie_id)::bigint AS item_count
+SELECT slug, name, COUNT(DISTINCT movie_id)::bigint AS item_count
 FROM movie.movie_genres
-GROUP BY tmdb_genre_id, name
+GROUP BY slug, name
 ORDER BY name ASC;
 
 -- name: DeleteMovieGenres :exec
@@ -590,7 +590,7 @@ SELECT m.*
 FROM movie.movies m
     JOIN movie.movie_genres mg ON m.id = mg.movie_id
 WHERE
-    mg.tmdb_genre_id = $1
+    mg.slug = $1
     AND m.deleted_at IS NULL
 ORDER BY m.vote_average DESC NULLS LAST, m.title ASC
 LIMIT $2

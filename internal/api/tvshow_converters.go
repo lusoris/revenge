@@ -245,11 +245,11 @@ func seriesCreditToOgen(c *tvshow.SeriesCredit) *ogen.TVSeriesCredit {
 // seriesGenreToOgen converts a series genre domain type to ogen TVGenre.
 func seriesGenreToOgen(g *tvshow.SeriesGenre) *ogen.TVGenre {
 	return &ogen.TVGenre{
-		ID:          ogen.NewOptUUID(g.ID),
-		SeriesID:    ogen.NewOptUUID(g.SeriesID),
-		TmdbGenreID: ogen.NewOptInt(int(g.TMDbGenreID)),
-		Name:        ogen.NewOptString(g.Name),
-		CreatedAt:   ogen.NewOptDateTime(g.CreatedAt),
+		ID:        ogen.NewOptUUID(g.ID),
+		SeriesID:  ogen.NewOptUUID(g.SeriesID),
+		Slug:      ogen.NewOptString(g.Slug),
+		Name:      ogen.NewOptString(g.Name),
+		CreatedAt: ogen.NewOptDateTime(g.CreatedAt),
 	}
 }
 

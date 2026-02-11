@@ -891,9 +891,9 @@ func TestRepo_Genres(t *testing.T) {
 	series := createTestSeries(t, repo, "Genre Show")
 
 	// Add genres
-	err := repo.AddSeriesGenre(ctx, series.ID, 18, "Drama")
+	err := repo.AddSeriesGenre(ctx, series.ID, "drama", "Drama")
 	require.NoError(t, err)
-	err = repo.AddSeriesGenre(ctx, series.ID, 80, "Crime")
+	err = repo.AddSeriesGenre(ctx, series.ID, "crime", "Crime")
 	require.NoError(t, err)
 
 	// List genres for series
@@ -903,9 +903,9 @@ func TestRepo_Genres(t *testing.T) {
 
 	// Add genres to another series for distinct test
 	series2 := createTestSeries(t, repo, "Another Genre Show")
-	err = repo.AddSeriesGenre(ctx, series2.ID, 18, "Drama") // same genre
+	err = repo.AddSeriesGenre(ctx, series2.ID, "drama", "Drama") // same genre
 	require.NoError(t, err)
-	err = repo.AddSeriesGenre(ctx, series2.ID, 10765, "Sci-Fi & Fantasy")
+	err = repo.AddSeriesGenre(ctx, series2.ID, "sci-fi-fantasy", "Sci-Fi & Fantasy")
 	require.NoError(t, err)
 
 	// List distinct genres across all series
@@ -928,10 +928,10 @@ func TestRepo_ListSeriesByGenre(t *testing.T) {
 
 	s1 := createTestSeries(t, repo, "Drama Show 1")
 	s2 := createTestSeries(t, repo, "Drama Show 2")
-	_ = repo.AddSeriesGenre(ctx, s1.ID, 18, "Drama")
-	_ = repo.AddSeriesGenre(ctx, s2.ID, 18, "Drama")
+	_ = repo.AddSeriesGenre(ctx, s1.ID, "drama", "Drama")
+	_ = repo.AddSeriesGenre(ctx, s2.ID, "drama", "Drama")
 
-	list, err := repo.ListSeriesByGenre(ctx, 18, 10, 0)
+	list, err := repo.ListSeriesByGenre(ctx, "drama", 10, 0)
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, len(list), 2)
 }
@@ -1252,7 +1252,7 @@ func TestRepo_CascadeDelete_SeriesDeletesEverything(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = repo.AddSeriesGenre(ctx, series.ID, 18, "Drama")
+	err = repo.AddSeriesGenre(ctx, series.ID, "drama", "Drama")
 	require.NoError(t, err)
 
 	tmdbNetID := rand.Int32N(9000000) + 1000000 //nolint:gosec

@@ -115,10 +115,10 @@ func (a *Adapter) GetMovieGenres(ctx context.Context, movieID uuid.UUID, provide
 	genres := make([]contentmovie.MovieGenre, len(meta.Genres))
 	for i, g := range meta.Genres {
 		genres[i] = contentmovie.MovieGenre{
-			ID:          uuid.Must(uuid.NewV7()),
-			MovieID:     movieID,
-			TMDbGenreID: util.SafeIntToInt32(g.ID),
-			Name:        g.Name,
+			ID:      uuid.Must(uuid.NewV7()),
+			MovieID: movieID,
+			Slug:    util.Slugify(g.Name),
+			Name:    g.Name,
 		}
 	}
 

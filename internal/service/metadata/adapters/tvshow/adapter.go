@@ -158,10 +158,10 @@ func (a *Adapter) GetSeriesGenres(ctx context.Context, seriesID uuid.UUID, provi
 	genres := make([]contenttvshow.SeriesGenre, len(meta.Genres))
 	for i, g := range meta.Genres {
 		genres[i] = contenttvshow.SeriesGenre{
-			ID:          uuid.Must(uuid.NewV7()),
-			SeriesID:    seriesID,
-			TMDbGenreID: util.SafeIntToInt32(g.ID),
-			Name:        g.Name,
+			ID:       uuid.Must(uuid.NewV7()),
+			SeriesID: seriesID,
+			Slug:     util.Slugify(g.Name),
+			Name:     g.Name,
 		}
 	}
 

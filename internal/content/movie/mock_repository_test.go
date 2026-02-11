@@ -25,17 +25,17 @@ func (_m *MockMovieRepository) EXPECT() *MockMovieRepository_Expecter {
 	return &MockMovieRepository_Expecter{mock: &_m.Mock}
 }
 
-// AddMovieGenre provides a mock function with given fields: ctx, movieID, tmdbGenreID, name
-func (_m *MockMovieRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error {
-	ret := _m.Called(ctx, movieID, tmdbGenreID, name)
+// AddMovieGenre provides a mock function with given fields: ctx, movieID, slug, name
+func (_m *MockMovieRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, slug string, name string) error {
+	ret := _m.Called(ctx, movieID, slug, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for AddMovieGenre")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, int32, string) error); ok {
-		r0 = rf(ctx, movieID, tmdbGenreID, name)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string) error); ok {
+		r0 = rf(ctx, movieID, slug, name)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -51,15 +51,15 @@ type MockMovieRepository_AddMovieGenre_Call struct {
 // AddMovieGenre is a helper method to define mock.On call
 //   - ctx context.Context
 //   - movieID uuid.UUID
-//   - tmdbGenreID int32
+//   - slug string
 //   - name string
-func (_e *MockMovieRepository_Expecter) AddMovieGenre(ctx interface{}, movieID interface{}, tmdbGenreID interface{}, name interface{}) *MockMovieRepository_AddMovieGenre_Call {
-	return &MockMovieRepository_AddMovieGenre_Call{Call: _e.mock.On("AddMovieGenre", ctx, movieID, tmdbGenreID, name)}
+func (_e *MockMovieRepository_Expecter) AddMovieGenre(ctx interface{}, movieID interface{}, slug interface{}, name interface{}) *MockMovieRepository_AddMovieGenre_Call {
+	return &MockMovieRepository_AddMovieGenre_Call{Call: _e.mock.On("AddMovieGenre", ctx, movieID, slug, name)}
 }
 
-func (_c *MockMovieRepository_AddMovieGenre_Call) Run(run func(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string)) *MockMovieRepository_AddMovieGenre_Call {
+func (_c *MockMovieRepository_AddMovieGenre_Call) Run(run func(ctx context.Context, movieID uuid.UUID, slug string, name string)) *MockMovieRepository_AddMovieGenre_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(int32), args[3].(string))
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(string), args[3].(string))
 	})
 	return _c
 }
@@ -2066,9 +2066,9 @@ func (_c *MockMovieRepository_ListMoviesByCollection_Call) RunAndReturn(run func
 	return _c
 }
 
-// ListMoviesByGenre provides a mock function with given fields: ctx, tmdbGenreID, limit, offset
-func (_m *MockMovieRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit int32, offset int32) ([]Movie, error) {
-	ret := _m.Called(ctx, tmdbGenreID, limit, offset)
+// ListMoviesByGenre provides a mock function with given fields: ctx, slug, limit, offset
+func (_m *MockMovieRepository) ListMoviesByGenre(ctx context.Context, slug string, limit int32, offset int32) ([]Movie, error) {
+	ret := _m.Called(ctx, slug, limit, offset)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListMoviesByGenre")
@@ -2076,19 +2076,19 @@ func (_m *MockMovieRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreI
 
 	var r0 []Movie
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) ([]Movie, error)); ok {
-		return rf(ctx, tmdbGenreID, limit, offset)
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) ([]Movie, error)); ok {
+		return rf(ctx, slug, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32, int32) []Movie); ok {
-		r0 = rf(ctx, tmdbGenreID, limit, offset)
+	if rf, ok := ret.Get(0).(func(context.Context, string, int32, int32) []Movie); ok {
+		r0 = rf(ctx, slug, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]Movie)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, int32, int32, int32) error); ok {
-		r1 = rf(ctx, tmdbGenreID, limit, offset)
+	if rf, ok := ret.Get(1).(func(context.Context, string, int32, int32) error); ok {
+		r1 = rf(ctx, slug, limit, offset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -2103,16 +2103,16 @@ type MockMovieRepository_ListMoviesByGenre_Call struct {
 
 // ListMoviesByGenre is a helper method to define mock.On call
 //   - ctx context.Context
-//   - tmdbGenreID int32
+//   - slug string
 //   - limit int32
 //   - offset int32
-func (_e *MockMovieRepository_Expecter) ListMoviesByGenre(ctx interface{}, tmdbGenreID interface{}, limit interface{}, offset interface{}) *MockMovieRepository_ListMoviesByGenre_Call {
-	return &MockMovieRepository_ListMoviesByGenre_Call{Call: _e.mock.On("ListMoviesByGenre", ctx, tmdbGenreID, limit, offset)}
+func (_e *MockMovieRepository_Expecter) ListMoviesByGenre(ctx interface{}, slug interface{}, limit interface{}, offset interface{}) *MockMovieRepository_ListMoviesByGenre_Call {
+	return &MockMovieRepository_ListMoviesByGenre_Call{Call: _e.mock.On("ListMoviesByGenre", ctx, slug, limit, offset)}
 }
 
-func (_c *MockMovieRepository_ListMoviesByGenre_Call) Run(run func(ctx context.Context, tmdbGenreID int32, limit int32, offset int32)) *MockMovieRepository_ListMoviesByGenre_Call {
+func (_c *MockMovieRepository_ListMoviesByGenre_Call) Run(run func(ctx context.Context, slug string, limit int32, offset int32)) *MockMovieRepository_ListMoviesByGenre_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32), args[2].(int32), args[3].(int32))
+		run(args[0].(context.Context), args[1].(string), args[2].(int32), args[3].(int32))
 	})
 	return _c
 }

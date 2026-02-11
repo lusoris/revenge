@@ -15,20 +15,20 @@ const addSeriesGenre = `-- name: AddSeriesGenre :exec
 INSERT INTO
     tvshow.series_genres (
         series_id,
-        tmdb_genre_id,
+        slug,
         name
     )
-VALUES ($1, $2, $3) ON CONFLICT (series_id, tmdb_genre_id) DO NOTHING
+VALUES ($1, $2, $3) ON CONFLICT (series_id, slug) DO NOTHING
 `
 
 type AddSeriesGenreParams struct {
-	SeriesID    uuid.UUID `json:"seriesId"`
-	TmdbGenreID int32     `json:"tmdbGenreId"`
-	Name        string    `json:"name"`
+	SeriesID uuid.UUID `json:"seriesId"`
+	Slug     string    `json:"slug"`
+	Name     string    `json:"name"`
 }
 
 func (q *Queries) AddSeriesGenre(ctx context.Context, arg AddSeriesGenreParams) error {
-	_, err := q.db.Exec(ctx, addSeriesGenre, arg.SeriesID, arg.TmdbGenreID, arg.Name)
+	_, err := q.db.Exec(ctx, addSeriesGenre, arg.SeriesID, arg.Slug, arg.Name)
 	return err
 }
 
@@ -42,16 +42,16 @@ func (q *Queries) DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) er
 }
 
 const listDistinctSeriesGenres = `-- name: ListDistinctSeriesGenres :many
-SELECT tmdb_genre_id, name, COUNT(DISTINCT series_id)::bigint AS item_count
+SELECT slug, name, COUNT(DISTINCT series_id)::bigint AS item_count
 FROM tvshow.series_genres
-GROUP BY tmdb_genre_id, name
+GROUP BY slug, name
 ORDER BY name ASC
 `
 
 type ListDistinctSeriesGenresRow struct {
-	TmdbGenreID int32  `json:"tmdbGenreId"`
-	Name        string `json:"name"`
-	ItemCount   int64  `json:"itemCount"`
+	Slug      string `json:"slug"`
+	Name      string `json:"name"`
+	ItemCount int64  `json:"itemCount"`
 }
 
 func (q *Queries) ListDistinctSeriesGenres(ctx context.Context) ([]ListDistinctSeriesGenresRow, error) {
@@ -63,7 +63,7 @@ func (q *Queries) ListDistinctSeriesGenres(ctx context.Context) ([]ListDistinctS
 	items := []ListDistinctSeriesGenresRow{}
 	for rows.Next() {
 		var i ListDistinctSeriesGenresRow
-		if err := rows.Scan(&i.TmdbGenreID, &i.Name, &i.ItemCount); err != nil {
+		if err := rows.Scan(&i.Slug, &i.Name, &i.ItemCount); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -79,7 +79,7 @@ SELECT s.id, s.tmdb_id, s.tvdb_id, s.imdb_id, s.sonarr_id, s.title, s.tagline, s
 FROM tvshow.series s
     JOIN tvshow.series_genres sg ON s.id = sg.series_id
 WHERE
-    sg.tmdb_genre_id = $1
+    sg.slug = $1
 ORDER BY s.popularity DESC NULLS LAST
 LIMIT $2
 OFFSET
@@ -87,13 +87,13 @@ OFFSET
 `
 
 type ListSeriesByGenreParams struct {
-	TmdbGenreID int32 `json:"tmdbGenreId"`
-	Limit       int32 `json:"limit"`
-	Offset      int32 `json:"offset"`
+	Slug   string `json:"slug"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
 }
 
 func (q *Queries) ListSeriesByGenre(ctx context.Context, arg ListSeriesByGenreParams) ([]TvshowSeries, error) {
-	rows, err := q.db.Query(ctx, listSeriesByGenre, arg.TmdbGenreID, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listSeriesByGenre, arg.Slug, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func (q *Queries) ListSeriesByGenre(ctx context.Context, arg ListSeriesByGenrePa
 }
 
 const listSeriesGenres = `-- name: ListSeriesGenres :many
-SELECT id, series_id, tmdb_genre_id, name, created_at
+SELECT id, series_id, name, created_at, slug
 FROM tvshow.series_genres
 WHERE
     series_id = $1
@@ -164,9 +164,9 @@ func (q *Queries) ListSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]T
 		if err := rows.Scan(
 			&i.ID,
 			&i.SeriesID,
-			&i.TmdbGenreID,
 			&i.Name,
 			&i.CreatedAt,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}

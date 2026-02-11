@@ -855,11 +855,11 @@ func dbCreditToCredit(dbCredit moviedb.MovieCredit) *MovieCredit {
 // dbGenreToGenre converts a database movie genre to a domain movie genre
 func dbGenreToGenre(dbGenre moviedb.MovieGenre) *MovieGenre {
 	return &MovieGenre{
-		ID:          dbGenre.ID,
-		MovieID:     dbGenre.MovieID,
-		TMDbGenreID: dbGenre.TmdbGenreID,
-		Name:        dbGenre.Name,
-		CreatedAt:   dbGenre.CreatedAt,
+		ID:        dbGenre.ID,
+		MovieID:   dbGenre.MovieID,
+		Slug:      dbGenre.Slug,
+		Name:      dbGenre.Name,
+		CreatedAt: dbGenre.CreatedAt,
 	}
 }
 
@@ -884,11 +884,11 @@ func dbMovieFileToMovieFile(dbFile moviedb.MovieFile) *MovieFile {
 	}
 }
 
-func (r *postgresRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, tmdbGenreID int32, name string) error {
+func (r *postgresRepository) AddMovieGenre(ctx context.Context, movieID uuid.UUID, slug, name string) error {
 	return r.queries.AddMovieGenre(ctx, moviedb.AddMovieGenreParams{
-		MovieID:     movieID,
-		TmdbGenreID: tmdbGenreID,
-		Name:        name,
+		MovieID: movieID,
+		Slug:    slug,
+		Name:    name,
 	})
 }
 
@@ -912,9 +912,9 @@ func (r *postgresRepository) ListDistinctMovieGenres(ctx context.Context) ([]con
 	genres := make([]content.GenreSummary, len(rows))
 	for i, r := range rows {
 		genres[i] = content.GenreSummary{
-			TMDbGenreID: r.TmdbGenreID,
-			Name:        r.Name,
-			ItemCount:   r.ItemCount,
+			Slug:      r.Slug,
+			Name:      r.Name,
+			ItemCount: r.ItemCount,
 		}
 	}
 	return genres, nil
@@ -924,11 +924,11 @@ func (r *postgresRepository) DeleteMovieGenres(ctx context.Context, movieID uuid
 	return r.queries.DeleteMovieGenres(ctx, movieID)
 }
 
-func (r *postgresRepository) ListMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
+func (r *postgresRepository) ListMoviesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Movie, error) {
 	dbMovies, err := r.queries.ListMoviesByGenre(ctx, moviedb.ListMoviesByGenreParams{
-		TmdbGenreID: tmdbGenreID,
-		Limit:       limit,
-		Offset:      offset,
+		Slug:   slug,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to list movies by genre: %w", err)

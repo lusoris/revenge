@@ -29,7 +29,7 @@ type TVShowDocument struct {
 	VoteCount        int32    `json:"vote_count"`        // Vote count
 	Popularity       float64  `json:"popularity"`        // TMDb popularity (sortable)
 	Genres           []string `json:"genres"`            // Genre names (facet + filter)
-	GenreIDs         []int32  `json:"genre_ids"`         // Genre IDs
+	GenreSlugs       []string `json:"genre_slugs"`        // Genre slugs (facet + filter)
 	Cast             []string `json:"cast"`              // Cast member names (searchable)
 	Networks         []string `json:"networks"`          // Network names (searchable + facet)
 	TotalSeasons     int32    `json:"total_seasons"`     // Number of seasons
@@ -81,7 +81,7 @@ func TVShowCollectionSchema() *api.CollectionSchema {
 
 			// Genres (array, facetable, filterable)
 			{Name: "genres", Type: "string[]", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "genre_ids", Type: "int32[]", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "genre_slugs", Type: "string[]", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
 
 			// Credits and networks (searchable)
 			{Name: "cast", Type: "string[]", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},

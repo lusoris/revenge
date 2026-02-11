@@ -10944,8 +10944,8 @@ func (s *Genre) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *Genre) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("tmdb_genre_id")
-		e.Int(s.TmdbGenreID)
+		e.FieldStart("slug")
+		e.Str(s.Slug)
 	}
 	{
 		e.FieldStart("name")
@@ -10962,7 +10962,7 @@ func (s *Genre) encodeFields(e *jx.Encoder) {
 }
 
 var jsonFieldsNameOfGenre = [4]string{
-	0: "tmdb_genre_id",
+	0: "slug",
 	1: "name",
 	2: "movie_count",
 	3: "tvshow_count",
@@ -10977,17 +10977,17 @@ func (s *Genre) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "tmdb_genre_id":
+		case "slug":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int()
-				s.TmdbGenreID = int(v)
+				v, err := d.Str()
+				s.Slug = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tmdb_genre_id\"")
+				return errors.Wrap(err, "decode field \"slug\"")
 			}
 		case "name":
 			requiredBitSet[0] |= 1 << 1
@@ -26831,9 +26831,9 @@ func (s *MovieGenre) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.TmdbGenreID.Set {
-			e.FieldStart("tmdb_genre_id")
-			s.TmdbGenreID.Encode(e)
+		if s.Slug.Set {
+			e.FieldStart("slug")
+			s.Slug.Encode(e)
 		}
 	}
 	{
@@ -26853,7 +26853,7 @@ func (s *MovieGenre) encodeFields(e *jx.Encoder) {
 var jsonFieldsNameOfMovieGenre = [5]string{
 	0: "id",
 	1: "movie_id",
-	2: "tmdb_genre_id",
+	2: "slug",
 	3: "name",
 	4: "created_at",
 }
@@ -26886,15 +26886,15 @@ func (s *MovieGenre) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"movie_id\"")
 			}
-		case "tmdb_genre_id":
+		case "slug":
 			if err := func() error {
-				s.TmdbGenreID.Reset()
-				if err := s.TmdbGenreID.Decode(d); err != nil {
+				s.Slug.Reset()
+				if err := s.Slug.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tmdb_genre_id\"")
+				return errors.Wrap(err, "decode field \"slug\"")
 			}
 		case "name":
 			if err := func() error {
@@ -44460,9 +44460,9 @@ func (s *TVGenre) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.TmdbGenreID.Set {
-			e.FieldStart("tmdb_genre_id")
-			s.TmdbGenreID.Encode(e)
+		if s.Slug.Set {
+			e.FieldStart("slug")
+			s.Slug.Encode(e)
 		}
 	}
 	{
@@ -44482,7 +44482,7 @@ func (s *TVGenre) encodeFields(e *jx.Encoder) {
 var jsonFieldsNameOfTVGenre = [5]string{
 	0: "id",
 	1: "series_id",
-	2: "tmdb_genre_id",
+	2: "slug",
 	3: "name",
 	4: "created_at",
 }
@@ -44515,15 +44515,15 @@ func (s *TVGenre) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"series_id\"")
 			}
-		case "tmdb_genre_id":
+		case "slug":
 			if err := func() error {
-				s.TmdbGenreID.Reset()
-				if err := s.TmdbGenreID.Decode(d); err != nil {
+				s.Slug.Reset()
+				if err := s.Slug.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"tmdb_genre_id\"")
+				return errors.Wrap(err, "decode field \"slug\"")
 			}
 		case "name":
 			if err := func() error {

@@ -506,15 +506,15 @@ func TestHandler_ListGenres_Success(t *testing.T) {
 
 	movieSvc := &mockMovieService{
 		genres: []content.GenreSummary{
-			{TMDbGenreID: 28, Name: "Action", ItemCount: 10},
-			{TMDbGenreID: 18, Name: "Drama", ItemCount: 25},
-			{TMDbGenreID: 35, Name: "Comedy", ItemCount: 5},
+			{Slug: "action", Name: "Action", ItemCount: 10},
+			{Slug: "drama", Name: "Drama", ItemCount: 25},
+			{Slug: "comedy", Name: "Comedy", ItemCount: 5},
 		},
 	}
 	tvSvc := &mockTVService{
 		genres: []content.GenreSummary{
-			{TMDbGenreID: 18, Name: "Drama", ItemCount: 15},
-			{TMDbGenreID: 10765, Name: "Sci-Fi & Fantasy", ItemCount: 8},
+			{Slug: "drama", Name: "Drama", ItemCount: 15},
+			{Slug: "sci-fi-fantasy", Name: "Sci-Fi & Fantasy", ItemCount: 8},
 		},
 	}
 
@@ -541,7 +541,7 @@ func TestHandler_ListGenres_Success(t *testing.T) {
 
 	// Verify Drama is merged: 25 movies + 15 TV shows
 	drama := (*genres)[2]
-	assert.Equal(t, 28, (*genres)[0].TmdbGenreID) // Action TMDb ID
+	assert.Equal(t, "action", (*genres)[0].Slug) // Action slug
 	assert.Equal(t, int64(25), drama.MovieCount)
 	assert.Equal(t, int64(15), drama.TvshowCount)
 
@@ -596,7 +596,7 @@ func TestHandler_ListGenres_TVShowError(t *testing.T) {
 	handler := &Handler{
 		logger: logging.NewTestLogger(),
 		movieHandler: movie.NewHandler(&mockMovieService{
-			genres: []content.GenreSummary{{TMDbGenreID: 28, Name: "Action", ItemCount: 5}},
+			genres: []content.GenreSummary{{Slug: "action", Name: "Action", ItemCount: 5}},
 		}, nil),
 		tvshowService: &mockTVService{err: errors.New("tv db error")},
 	}

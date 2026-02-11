@@ -191,6 +191,7 @@ func (m *Mapper) ToGenres(ss *Series, seriesID uuid.UUID) []tvshow.SeriesGenre {
 			ID:        uuid.Must(uuid.NewV7()),
 			SeriesID:  seriesID,
 			Name:      g,
+			Slug:      util.Slugify(g),
 			CreatedAt: time.Now(),
 		}
 	}

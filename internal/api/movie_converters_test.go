@@ -281,12 +281,12 @@ func TestMovieGenreToOgen(t *testing.T) {
 	g := &movie.MovieGenre{
 		ID:          uuid.Must(uuid.NewV7()),
 		MovieID:     uuid.Must(uuid.NewV7()),
-		TMDbGenreID: 28,
+		Slug:        "action",
 		Name:        "Action",
 	}
 	o := movieGenreToOgen(g)
 	assert.Equal(t, "Action", o.Name.Value)
-	assert.Equal(t, 28, o.TmdbGenreID.Value)
+	assert.Equal(t, "action", o.Slug.Value)
 }
 
 // ============================================================================

@@ -176,8 +176,8 @@ func TestSeriesToDocument(t *testing.T) {
 	}
 
 	genres := []tvshow.SeriesGenre{
-		{TMDbGenreID: 18, Name: "Drama"},
-		{TMDbGenreID: 80, Name: "Crime"},
+		{Slug: "drama", Name: "Drama"},
+		{Slug: "crime", Name: "Crime"},
 	}
 
 	credits := []tvshow.SeriesCredit{
@@ -214,7 +214,7 @@ func TestSeriesToDocument(t *testing.T) {
 
 	// Verify genres
 	assert.Equal(t, []string{"Drama", "Crime"}, doc.Genres)
-	assert.Equal(t, []int32{18, 80}, doc.GenreIDs)
+	assert.Equal(t, []string{"drama", "crime"}, doc.GenreSlugs)
 
 	// Verify credits (only cast)
 	assert.Equal(t, []string{"Bryan Cranston", "Aaron Paul"}, doc.Cast)
@@ -303,7 +303,7 @@ func TestSeriesToDocumentWithEmptyCredits(t *testing.T) {
 
 	assert.Equal(t, seriesID.String(), doc.ID)
 	assert.Empty(t, doc.Genres)
-	assert.Empty(t, doc.GenreIDs)
+	assert.Empty(t, doc.GenreSlugs)
 	assert.Empty(t, doc.Cast)
 	assert.Empty(t, doc.Networks)
 }
@@ -385,6 +385,7 @@ func TestParseTVShowDocument(t *testing.T) {
 		"cast":              []interface{}{"Bryan Cranston", "Aaron Paul"},
 		"networks":          []interface{}{"AMC"},
 		"genre_ids":         []interface{}{float64(18), float64(80)},
+		"genre_slugs":       []interface{}{"drama", "crime"},
 	}
 
 	doc := parseTVShowDocument(data)
@@ -413,7 +414,7 @@ func TestParseTVShowDocument(t *testing.T) {
 	assert.Equal(t, []string{"Drama", "Crime"}, doc.Genres)
 	assert.Equal(t, []string{"Bryan Cranston", "Aaron Paul"}, doc.Cast)
 	assert.Equal(t, []string{"AMC"}, doc.Networks)
-	assert.Equal(t, []int32{18, 80}, doc.GenreIDs)
+	assert.Equal(t, []string{"drama", "crime"}, doc.GenreSlugs)
 }
 
 func TestParseTVShowDocumentEmpty(t *testing.T) {

@@ -169,8 +169,8 @@ func (m *MockService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]
 	return args.Get(0).([]MovieGenre), args.Error(1)
 }
 
-func (m *MockService) GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
-	args := m.Called(ctx, tmdbGenreID, limit, offset)
+func (m *MockService) GetMoviesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Movie, error) {
+	args := m.Called(ctx, slug, limit, offset)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
@@ -537,7 +537,7 @@ func TestHandler_GetMovieGenres(t *testing.T) {
 		ctx := context.Background()
 		movieID := uuid.Must(uuid.NewV7())
 		genres := []MovieGenre{
-			{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, TMDbGenreID: 18, Name: "Drama"},
+			{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Slug: "drama", Name: "Drama"},
 		}
 
 		svc.On("GetMovieGenres", ctx, movieID).Return(genres, nil)
@@ -571,9 +571,9 @@ func TestHandler_GetMoviesByGenre(t *testing.T) {
 		Offset: 0,
 	}
 
-	svc.On("GetMoviesByGenre", ctx, int32(28), int32(20), int32(0)).Return(movies, nil)
+	svc.On("GetMoviesByGenre", ctx, "action", int32(20), int32(0)).Return(movies, nil)
 
-	result, err := h.GetMoviesByGenre(ctx, 28, params)
+	result, err := h.GetMoviesByGenre(ctx, "action", params)
 	require.NoError(t, err)
 	assert.Len(t, result, 2)
 	svc.AssertExpectations(t)
@@ -585,8 +585,8 @@ func TestHandler_ListDistinctGenres(t *testing.T) {
 		h := newTestHandler(svc)
 		ctx := context.Background()
 		genres := []content.GenreSummary{
-			{TMDbGenreID: 28, Name: "Action", ItemCount: 15},
-			{TMDbGenreID: 18, Name: "Drama", ItemCount: 30},
+			{Slug: "action", Name: "Action", ItemCount: 15},
+			{Slug: "drama", Name: "Drama", ItemCount: 30},
 		}
 
 		svc.On("ListDistinctGenres", ctx).Return(genres, nil)

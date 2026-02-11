@@ -16,19 +16,19 @@ import (
 
 const addMovieGenre = `-- name: AddMovieGenre :exec
 INSERT INTO
-    movie.movie_genres (movie_id, tmdb_genre_id, name)
-VALUES ($1, $2, $3) ON CONFLICT (movie_id, tmdb_genre_id) DO NOTHING
+    movie.movie_genres (movie_id, slug, name)
+VALUES ($1, $2, $3) ON CONFLICT (movie_id, slug) DO NOTHING
 `
 
 type AddMovieGenreParams struct {
-	MovieID     uuid.UUID `json:"movieId"`
-	TmdbGenreID int32     `json:"tmdbGenreId"`
-	Name        string    `json:"name"`
+	MovieID uuid.UUID `json:"movieId"`
+	Slug    string    `json:"slug"`
+	Name    string    `json:"name"`
 }
 
 // Movie Genres Operations
 func (q *Queries) AddMovieGenre(ctx context.Context, arg AddMovieGenreParams) error {
-	_, err := q.db.Exec(ctx, addMovieGenre, arg.MovieID, arg.TmdbGenreID, arg.Name)
+	_, err := q.db.Exec(ctx, addMovieGenre, arg.MovieID, arg.Slug, arg.Name)
 	return err
 }
 
@@ -1146,16 +1146,16 @@ func (q *Queries) ListContinueWatching(ctx context.Context, arg ListContinueWatc
 }
 
 const listDistinctMovieGenres = `-- name: ListDistinctMovieGenres :many
-SELECT tmdb_genre_id, name, COUNT(DISTINCT movie_id)::bigint AS item_count
+SELECT slug, name, COUNT(DISTINCT movie_id)::bigint AS item_count
 FROM movie.movie_genres
-GROUP BY tmdb_genre_id, name
+GROUP BY slug, name
 ORDER BY name ASC
 `
 
 type ListDistinctMovieGenresRow struct {
-	TmdbGenreID int32  `json:"tmdbGenreId"`
-	Name        string `json:"name"`
-	ItemCount   int64  `json:"itemCount"`
+	Slug      string `json:"slug"`
+	Name      string `json:"name"`
+	ItemCount int64  `json:"itemCount"`
 }
 
 func (q *Queries) ListDistinctMovieGenres(ctx context.Context) ([]ListDistinctMovieGenresRow, error) {
@@ -1167,7 +1167,7 @@ func (q *Queries) ListDistinctMovieGenres(ctx context.Context) ([]ListDistinctMo
 	items := []ListDistinctMovieGenresRow{}
 	for rows.Next() {
 		var i ListDistinctMovieGenresRow
-		if err := rows.Scan(&i.TmdbGenreID, &i.Name, &i.ItemCount); err != nil {
+		if err := rows.Scan(&i.Slug, &i.Name, &i.ItemCount); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -1346,7 +1346,7 @@ func (q *Queries) ListMovieFilesByMovieID(ctx context.Context, movieID uuid.UUID
 }
 
 const listMovieGenres = `-- name: ListMovieGenres :many
-SELECT id, movie_id, tmdb_genre_id, name, created_at
+SELECT id, movie_id, name, created_at, slug
 FROM movie.movie_genres
 WHERE
     movie_id = $1
@@ -1365,9 +1365,9 @@ func (q *Queries) ListMovieGenres(ctx context.Context, movieID uuid.UUID) ([]Mov
 		if err := rows.Scan(
 			&i.ID,
 			&i.MovieID,
-			&i.TmdbGenreID,
 			&i.Name,
 			&i.CreatedAt,
+			&i.Slug,
 		); err != nil {
 			return nil, err
 		}
@@ -1516,7 +1516,7 @@ SELECT m.id, m.tmdb_id, m.imdb_id, m.title, m.original_title, m.year, m.release_
 FROM movie.movies m
     JOIN movie.movie_genres mg ON m.id = mg.movie_id
 WHERE
-    mg.tmdb_genre_id = $1
+    mg.slug = $1
     AND m.deleted_at IS NULL
 ORDER BY m.vote_average DESC NULLS LAST, m.title ASC
 LIMIT $2
@@ -1525,13 +1525,13 @@ OFFSET
 `
 
 type ListMoviesByGenreParams struct {
-	TmdbGenreID int32 `json:"tmdbGenreId"`
-	Limit       int32 `json:"limit"`
-	Offset      int32 `json:"offset"`
+	Slug   string `json:"slug"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
 }
 
 func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenreParams) ([]Movie, error) {
-	rows, err := q.db.Query(ctx, listMoviesByGenre, arg.TmdbGenreID, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listMoviesByGenre, arg.Slug, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

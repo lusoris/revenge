@@ -39,7 +39,7 @@ type Service interface {
 
 	// Genres
 	GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
-	GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error)
+	GetMoviesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Movie, error)
 	ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error)
 
 	// Watch progress
@@ -231,8 +231,8 @@ func (s *movieService) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([
 }
 
 // GetMoviesByGenre returns movies filtered by genre
-func (s *movieService) GetMoviesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Movie, error) {
-	return s.repo.ListMoviesByGenre(ctx, tmdbGenreID, limit, offset)
+func (s *movieService) GetMoviesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Movie, error) {
+	return s.repo.ListMoviesByGenre(ctx, slug, limit, offset)
 }
 
 // ListDistinctGenres returns all distinct movie genres with item counts.
@@ -370,7 +370,7 @@ func (s *movieService) RefreshMovieMetadata(ctx context.Context, id uuid.UUID, o
 		if err == nil && len(genres) > 0 {
 			_ = s.repo.DeleteMovieGenres(ctx, mov.ID)
 			for _, genre := range genres {
-				_ = s.repo.AddMovieGenre(ctx, mov.ID, genre.TMDbGenreID, genre.Name)
+				_ = s.repo.AddMovieGenre(ctx, mov.ID, genre.Slug, genre.Name)
 			}
 		}
 	}

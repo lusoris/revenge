@@ -505,13 +505,13 @@ func (s *TVShowSearchService) seriesToDocument(series *tvshow.Series, genres []t
 	// Genres
 	if len(genres) > 0 {
 		genreNames := make([]string, len(genres))
-		genreIDs := make([]int32, len(genres))
+		genreSlugs := make([]string, len(genres))
 		for i, g := range genres {
 			genreNames[i] = g.Name
-			genreIDs[i] = g.TMDbGenreID
+			genreSlugs[i] = g.Slug
 		}
 		doc.Genres = genreNames
-		doc.GenreIDs = genreIDs
+		doc.GenreSlugs = genreSlugs
 	}
 
 	// Credits - extract cast names
@@ -621,8 +621,8 @@ func parseTVShowDocument(data map[string]interface{}) TVShowDocument {
 	if v, ok := data["networks"].([]interface{}); ok {
 		doc.Networks = toStringSlice(v)
 	}
-	if v, ok := data["genre_ids"].([]interface{}); ok {
-		doc.GenreIDs = toInt32Slice(v)
+	if v, ok := data["genre_slugs"].([]interface{}); ok {
+		doc.GenreSlugs = toStringSlice(v)
 	}
 
 	return doc

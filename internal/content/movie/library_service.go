@@ -226,7 +226,7 @@ func (s *LibraryService) RefreshMovie(ctx context.Context, movieID uuid.UUID) er
 
 		// Add new genres
 		for _, genre := range genres {
-			if err := s.repo.AddMovieGenre(ctx, movieID, genre.TMDbGenreID, genre.Name); err != nil {
+			if err := s.repo.AddMovieGenre(ctx, movieID, genre.Slug, genre.Name); err != nil {
 				// Log but continue with other genres
 				continue
 			}

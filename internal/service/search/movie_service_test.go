@@ -126,8 +126,8 @@ func TestMovieToDocument(t *testing.T) {
 	}
 
 	genres := []movie.MovieGenre{
-		{TMDbGenreID: 28, Name: "Action"},
-		{TMDbGenreID: 878, Name: "Science Fiction"},
+		{Slug: "action", Name: "Action"},
+		{Slug: "science-fiction", Name: "Science Fiction"},
 	}
 
 	directorJob := "Director"
@@ -170,7 +170,7 @@ func TestMovieToDocument(t *testing.T) {
 
 	// Verify genres
 	assert.Equal(t, []string{"Action", "Science Fiction"}, doc.Genres)
-	assert.Equal(t, []int32{28, 878}, doc.GenreIDs)
+	assert.Equal(t, []string{"action", "science-fiction"}, doc.GenreSlugs)
 
 	// Verify credits
 	assert.Equal(t, []string{"Keanu Reeves", "Laurence Fishburne"}, doc.Cast)
@@ -267,6 +267,7 @@ func TestParseMovieDocument(t *testing.T) {
 		"cast":              []interface{}{"Keanu Reeves", "Laurence Fishburne"},
 		"directors":         []interface{}{"Lana Wachowski", "Lilly Wachowski"},
 		"genre_ids":         []interface{}{float64(28), float64(878)},
+		"genre_slugs":       []interface{}{"action", "science-fiction"},
 	}
 
 	doc := parseMovieDocument(data)
@@ -295,7 +296,7 @@ func TestParseMovieDocument(t *testing.T) {
 	assert.Equal(t, []string{"Action", "Science Fiction"}, doc.Genres)
 	assert.Equal(t, []string{"Keanu Reeves", "Laurence Fishburne"}, doc.Cast)
 	assert.Equal(t, []string{"Lana Wachowski", "Lilly Wachowski"}, doc.Directors)
-	assert.Equal(t, []int32{28, 878}, doc.GenreIDs)
+	assert.Equal(t, []string{"action", "science-fiction"}, doc.GenreSlugs)
 }
 
 func TestParseMovieDocumentEmpty(t *testing.T) {
@@ -549,7 +550,7 @@ func TestMovieToDocumentWithEmptyCredits(t *testing.T) {
 
 	assert.Equal(t, movieID.String(), doc.ID)
 	assert.Empty(t, doc.Genres)
-	assert.Empty(t, doc.GenreIDs)
+	assert.Empty(t, doc.GenreSlugs)
 	assert.Empty(t, doc.Cast)
 	assert.Empty(t, doc.Directors)
 }

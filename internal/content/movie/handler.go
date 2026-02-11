@@ -121,9 +121,9 @@ func (h *Handler) GetMovieGenres(ctx context.Context, id string) ([]MovieGenre, 
 	return h.service.GetMovieGenres(ctx, movieID)
 }
 
-// GetMoviesByGenre handles GET /api/v1/movies/genre/:genreId
-func (h *Handler) GetMoviesByGenre(ctx context.Context, genreID int32, params PaginationParams) ([]Movie, error) {
-	return h.service.GetMoviesByGenre(ctx, genreID, params.Limit, params.Offset)
+// GetMoviesByGenre handles GET /api/v1/movies/genre/:slug
+func (h *Handler) GetMoviesByGenre(ctx context.Context, slug string, params PaginationParams) ([]Movie, error) {
+	return h.service.GetMoviesByGenre(ctx, slug, params.Limit, params.Offset)
 }
 
 // ListDistinctGenres returns all distinct movie genres with item counts.

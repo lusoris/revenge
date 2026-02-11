@@ -272,7 +272,7 @@ func (s *SyncService) addMovie(ctx context.Context, rm Movie) error {
 
 	// Add genres
 	for _, genreName := range rm.Genres {
-		if err := s.movieRepo.AddMovieGenre(ctx, created.ID, 0, genreName); err != nil {
+		if err := s.movieRepo.AddMovieGenre(ctx, created.ID, util.Slugify(genreName), genreName); err != nil {
 			s.logger.Warn("failed to add genre", "movie_id", created.ID, "genre", genreName, "error", err)
 		}
 	}

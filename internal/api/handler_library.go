@@ -746,29 +746,29 @@ func (h *Handler) ListGenres(ctx context.Context) (ogen.ListGenresRes, error) {
 		return &ogen.Error{Code: 500, Message: "Failed to list genres"}, nil
 	}
 
-	// Merge by TMDb genre ID: same genre can appear in both movies and TV shows
+	// Merge by slug: same genre can appear in both movies and TV shows
 	type merged struct {
 		name        string
 		movieCount  int64
 		tvshowCount int64
 	}
-	byID := make(map[int32]*merged, len(movieGenres)+len(tvGenres))
+	bySlug := make(map[string]*merged, len(movieGenres)+len(tvGenres))
 	for _, g := range movieGenres {
-		byID[g.TMDbGenreID] = &merged{name: g.Name, movieCount: g.ItemCount}
+		bySlug[g.Slug] = &merged{name: g.Name, movieCount: g.ItemCount}
 	}
 	for _, g := range tvGenres {
-		if m, ok := byID[g.TMDbGenreID]; ok {
+		if m, ok := bySlug[g.Slug]; ok {
 			m.tvshowCount = g.ItemCount
 		} else {
-			byID[g.TMDbGenreID] = &merged{name: g.Name, tvshowCount: g.ItemCount}
+			bySlug[g.Slug] = &merged{name: g.Name, tvshowCount: g.ItemCount}
 		}
 	}
 
 	// Build sorted result
-	result := make([]ogen.Genre, 0, len(byID))
-	for id, m := range byID {
+	result := make([]ogen.Genre, 0, len(bySlug))
+	for slug, m := range bySlug {
 		result = append(result, ogen.Genre{
-			TmdbGenreID: int(id),
+			Slug:        slug,
 			Name:        m.name,
 			MovieCount:  m.movieCount,
 			TvshowCount: m.tvshowCount,

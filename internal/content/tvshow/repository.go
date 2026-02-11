@@ -20,7 +20,6 @@ type Repository interface {
 	SearchSeriesByTitle(ctx context.Context, query string, limit, offset int32) ([]Series, error)
 	SearchSeriesByTitleAnyLanguage(ctx context.Context, query string, limit, offset int32) ([]Series, error)
 	ListRecentlyAddedSeries(ctx context.Context, limit, offset int32) ([]Series, error)
-	ListSeriesByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error)
 	ListSeriesByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error)
 	ListSeriesByStatus(ctx context.Context, status string, limit, offset int32) ([]Series, error)
 	CreateSeries(ctx context.Context, params CreateSeriesParams) (*Series, error)
@@ -82,10 +81,11 @@ type Repository interface {
 	DeleteEpisodeCredits(ctx context.Context, episodeID uuid.UUID) error
 
 	// Genres
-	AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, tmdbGenreID int32, name string) error
+	AddSeriesGenre(ctx context.Context, seriesID uuid.UUID, slug, name string) error
 	ListSeriesGenres(ctx context.Context, seriesID uuid.UUID) ([]SeriesGenre, error)
 	ListDistinctSeriesGenres(ctx context.Context) ([]content.GenreSummary, error)
 	DeleteSeriesGenres(ctx context.Context, seriesID uuid.UUID) error
+	ListSeriesByGenre(ctx context.Context, slug string, limit, offset int32) ([]Series, error)
 
 	// Networks
 	CreateNetwork(ctx context.Context, params CreateNetworkParams) (*Network, error)

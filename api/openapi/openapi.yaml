@@ -7132,15 +7132,15 @@ components:
       type: object
       description: A distinct genre with per-content-type item counts.
       required:
-        - tmdb_genre_id
+        - slug
         - name
         - movie_count
         - tvshow_count
       properties:
-        tmdb_genre_id:
-          type: integer
-          description: TMDb genre ID
-          example: 28
+        slug:
+          type: string
+          description: URL-friendly genre identifier
+          example: "action"
         name:
           type: string
           description: Genre name
@@ -7163,9 +7163,9 @@ components:
         movie_id:
           type: string
           format: uuid
-        tmdb_genre_id:
-          type: integer
-          description: TMDb genre ID
+        slug:
+          type: string
+          description: URL-friendly genre identifier
         name:
           type: string
           description: Genre name
@@ -7870,9 +7870,9 @@ components:
         series_id:
           type: string
           format: uuid
-        tmdb_genre_id:
-          type: integer
-          description: TMDb genre ID
+        slug:
+          type: string
+          description: URL-friendly genre identifier
         name:
           type: string
           description: Genre name

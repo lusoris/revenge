@@ -3682,8 +3682,8 @@ func (*GenerateBackupCodesOK) generateBackupCodesRes() {}
 // A distinct genre with per-content-type item counts.
 // Ref: #/components/schemas/Genre
 type Genre struct {
-	// TMDb genre ID.
-	TmdbGenreID int `json:"tmdb_genre_id"`
+	// URL-friendly genre identifier.
+	Slug string `json:"slug"`
 	// Genre name.
 	Name string `json:"name"`
 	// Number of movies with this genre.
@@ -3692,9 +3692,9 @@ type Genre struct {
 	TvshowCount int64 `json:"tvshow_count"`
 }
 
-// GetTmdbGenreID returns the value of TmdbGenreID.
-func (s *Genre) GetTmdbGenreID() int {
-	return s.TmdbGenreID
+// GetSlug returns the value of Slug.
+func (s *Genre) GetSlug() string {
+	return s.Slug
 }
 
 // GetName returns the value of Name.
@@ -3712,9 +3712,9 @@ func (s *Genre) GetTvshowCount() int64 {
 	return s.TvshowCount
 }
 
-// SetTmdbGenreID sets the value of TmdbGenreID.
-func (s *Genre) SetTmdbGenreID(val int) {
-	s.TmdbGenreID = val
+// SetSlug sets the value of Slug.
+func (s *Genre) SetSlug(val string) {
+	s.Slug = val
 }
 
 // SetName sets the value of Name.
@@ -9400,8 +9400,8 @@ func (s *MovieFile) SetUpdatedAt(val OptDateTime) {
 type MovieGenre struct {
 	ID      OptUUID `json:"id"`
 	MovieID OptUUID `json:"movie_id"`
-	// TMDb genre ID.
-	TmdbGenreID OptInt `json:"tmdb_genre_id"`
+	// URL-friendly genre identifier.
+	Slug OptString `json:"slug"`
 	// Genre name.
 	Name      OptString   `json:"name"`
 	CreatedAt OptDateTime `json:"created_at"`
@@ -9417,9 +9417,9 @@ func (s *MovieGenre) GetMovieID() OptUUID {
 	return s.MovieID
 }
 
-// GetTmdbGenreID returns the value of TmdbGenreID.
-func (s *MovieGenre) GetTmdbGenreID() OptInt {
-	return s.TmdbGenreID
+// GetSlug returns the value of Slug.
+func (s *MovieGenre) GetSlug() OptString {
+	return s.Slug
 }
 
 // GetName returns the value of Name.
@@ -9442,9 +9442,9 @@ func (s *MovieGenre) SetMovieID(val OptUUID) {
 	s.MovieID = val
 }
 
-// SetTmdbGenreID sets the value of TmdbGenreID.
-func (s *MovieGenre) SetTmdbGenreID(val OptInt) {
-	s.TmdbGenreID = val
+// SetSlug sets the value of Slug.
+func (s *MovieGenre) SetSlug(val OptString) {
+	s.Slug = val
 }
 
 // SetName sets the value of Name.
@@ -19692,8 +19692,8 @@ func (s *TVEpisodeFile) SetUpdatedAt(val OptDateTime) {
 type TVGenre struct {
 	ID       OptUUID `json:"id"`
 	SeriesID OptUUID `json:"series_id"`
-	// TMDb genre ID.
-	TmdbGenreID OptInt `json:"tmdb_genre_id"`
+	// URL-friendly genre identifier.
+	Slug OptString `json:"slug"`
 	// Genre name.
 	Name      OptString   `json:"name"`
 	CreatedAt OptDateTime `json:"created_at"`
@@ -19709,9 +19709,9 @@ func (s *TVGenre) GetSeriesID() OptUUID {
 	return s.SeriesID
 }
 
-// GetTmdbGenreID returns the value of TmdbGenreID.
-func (s *TVGenre) GetTmdbGenreID() OptInt {
-	return s.TmdbGenreID
+// GetSlug returns the value of Slug.
+func (s *TVGenre) GetSlug() OptString {
+	return s.Slug
 }
 
 // GetName returns the value of Name.
@@ -19734,9 +19734,9 @@ func (s *TVGenre) SetSeriesID(val OptUUID) {
 	s.SeriesID = val
 }
 
-// SetTmdbGenreID sets the value of TmdbGenreID.
-func (s *TVGenre) SetTmdbGenreID(val OptInt) {
-	s.TmdbGenreID = val
+// SetSlug sets the value of Slug.
+func (s *TVGenre) SetSlug(val OptString) {
+	s.Slug = val
 }
 
 // SetName sets the value of Name.

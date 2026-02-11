@@ -557,7 +557,7 @@ func TestMovieWithRelations(t *testing.T) {
 			CreatedAt:      now,
 		},
 		Genres: []movie.MovieGenre{
-			{Name: "Action", TMDbGenreID: 28},
+			{Name: "Action", Slug: "action"},
 		},
 		Credits: []movie.MovieCredit{
 			{CreditType: "cast", Name: "Actor"},

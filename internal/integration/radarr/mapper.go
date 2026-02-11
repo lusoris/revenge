@@ -195,8 +195,8 @@ func (m *Mapper) ToGenres(rm *Movie, movieID uuid.UUID) []movie.MovieGenre {
 		genres[i] = movie.MovieGenre{
 			ID:      uuid.Must(uuid.NewV7()),
 			MovieID: movieID,
-			Name:    g,
-			// TMDbGenreID would need to be looked up separately
+			Name:      g,
+			Slug:      util.Slugify(g),
 			CreatedAt: time.Now(),
 		}
 	}

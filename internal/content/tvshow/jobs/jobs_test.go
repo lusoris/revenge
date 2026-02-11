@@ -881,8 +881,8 @@ func (m *mockService) ListRecentlyAdded(ctx context.Context, limit, offset int32
 	return args.Get(0).([]tvshow.Series), args.Get(1).(int64), args.Error(2)
 }
 
-func (m *mockService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]tvshow.Series, error) {
-	args := m.Called(ctx, tmdbGenreID, limit, offset)
+func (m *mockService) ListByGenre(ctx context.Context, slug string, limit, offset int32) ([]tvshow.Series, error) {
+	args := m.Called(ctx, slug, limit, offset)
 	return args.Get(0).([]tvshow.Series), args.Error(1)
 }
 

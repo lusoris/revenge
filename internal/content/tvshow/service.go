@@ -19,7 +19,7 @@ type Service interface {
 	CountSeries(ctx context.Context) (int64, error)
 	SearchSeries(ctx context.Context, query string, limit, offset int32) ([]Series, error)
 	ListRecentlyAdded(ctx context.Context, limit, offset int32) ([]Series, int64, error)
-	ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error)
+	ListByGenre(ctx context.Context, slug string, limit, offset int32) ([]Series, error)
 	ListByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error)
 	ListByStatus(ctx context.Context, status string, limit, offset int32) ([]Series, error)
 	CreateSeries(ctx context.Context, params CreateSeriesParams) (*Series, error)
@@ -149,8 +149,8 @@ func (s *tvService) ListRecentlyAdded(ctx context.Context, limit, offset int32) 
 	return series, count, nil
 }
 
-func (s *tvService) ListByGenre(ctx context.Context, tmdbGenreID int32, limit, offset int32) ([]Series, error) {
-	return s.repo.ListSeriesByGenre(ctx, tmdbGenreID, limit, offset)
+func (s *tvService) ListByGenre(ctx context.Context, slug string, limit, offset int32) ([]Series, error) {
+	return s.repo.ListSeriesByGenre(ctx, slug, limit, offset)
 }
 
 func (s *tvService) ListByNetwork(ctx context.Context, networkID uuid.UUID, limit, offset int32) ([]Series, error) {
@@ -621,7 +621,7 @@ func (s *tvService) RefreshSeriesMetadata(ctx context.Context, id uuid.UUID, opt
 		if err == nil && len(genres) > 0 {
 			_ = s.repo.DeleteSeriesGenres(ctx, series.ID)
 			for _, genre := range genres {
-				_ = s.repo.AddSeriesGenre(ctx, series.ID, genre.TMDbGenreID, genre.Name)
+				_ = s.repo.AddSeriesGenre(ctx, series.ID, genre.Slug, genre.Name)
 			}
 		}
 	}

@@ -496,9 +496,9 @@ func TestRepo_Genres(t *testing.T) {
 	m := createTestMovie(t, repo, "Genre Test Movie")
 
 	// Add genres
-	err := repo.AddMovieGenre(ctx, m.ID, 28, "Action")
+	err := repo.AddMovieGenre(ctx, m.ID, "action", "Action")
 	require.NoError(t, err)
-	err = repo.AddMovieGenre(ctx, m.ID, 878, "Science Fiction")
+	err = repo.AddMovieGenre(ctx, m.ID, "science-fiction", "Science Fiction")
 	require.NoError(t, err)
 
 	// List genres for movie
@@ -519,7 +519,7 @@ func TestRepo_Genres(t *testing.T) {
 	assert.GreaterOrEqual(t, len(distinct), 2)
 
 	// List movies by genre
-	genreMovies, err := repo.ListMoviesByGenre(ctx, 28, 10, 0)
+	genreMovies, err := repo.ListMoviesByGenre(ctx, "action", 10, 0)
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(genreMovies), 1)
 	assert.Equal(t, m.ID, genreMovies[0].ID)
