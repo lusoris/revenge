@@ -357,15 +357,15 @@ func InitMetrics() {
 
 	// Transcoding
 	for _, codec := range []string{"libx264", "copy"} {
-		for _, res := range []string{"original", "4k", "1080p", "720p", "480p"} {
+		for _, res := range []string{"original", "4k", "1080p", "720p", "480p", "unknown"} {
 			TranscodingDuration.WithLabelValues(codec, res)
 		}
 	}
 
 	// Metadata providers
 	for _, p := range []string{"tmdb", "omdb", "trakt", "tvdb"} {
-		for _, t := range []string{"movie", "series"} {
-			for _, s := range []string{"success", "error"} {
+		for _, t := range []string{"movie", "tvshow", "person", "search", "unknown"} {
+			for _, s := range []string{"success", "error", "rate_limited"} {
 				MetadataFetchTotal.WithLabelValues(p, t, s)
 			}
 			MetadataFetchDuration.WithLabelValues(p, t)
@@ -379,27 +379,27 @@ func InitMetrics() {
 	LibraryScanErrorsTotal.WithLabelValues("movies", "scan")
 
 	// Search
-	for _, t := range []string{"movie", "multi"} {
+	for _, t := range []string{"search", "autocomplete"} {
 		SearchQueriesTotal.WithLabelValues(t)
 		SearchQueryDuration.WithLabelValues(t)
 	}
 
 	// Auth
-	for _, m := range []string{"password", "api_key", "oidc"} {
+	for _, m := range []string{"login", "register", "verify_email"} {
 		for _, s := range []string{"success", "failure"} {
 			AuthAttemptsTotal.WithLabelValues(m, s)
 		}
 	}
 
 	// Rate limiting
-	for _, l := range []string{"ip", "user", "api"} {
+	for _, l := range []string{"global", "auth"} {
 		for _, a := range []string{"allowed", "blocked"} {
 			RateLimitHitsTotal.WithLabelValues(l, a)
 		}
 	}
 
 	// Cache (must match the cache name in cache.NewNamedCache)
-	for _, c := range []string{"default"} {
+	for _, c := range []string{"default", "webauthn"} {
 		for _, layer := range []string{"l1", "l2"} {
 			CacheHitsTotal.WithLabelValues(c, layer)
 			CacheMissesTotal.WithLabelValues(c, layer)

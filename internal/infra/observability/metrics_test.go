@@ -136,8 +136,8 @@ func TestRecordMetrics(t *testing.T) {
 
 	t.Run("RecordAuthAttempt", func(t *testing.T) {
 		// Should not panic
-		RecordAuthAttempt("password", "success")
-		RecordAuthAttempt("password", "failure")
+		RecordAuthAttempt("login", "success")
+		RecordAuthAttempt("login", "failure")
 	})
 
 	t.Run("RecordRateLimitHit", func(t *testing.T) {

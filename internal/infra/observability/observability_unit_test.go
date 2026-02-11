@@ -383,9 +383,9 @@ func TestRecordJobCompleted_Unit(t *testing.T) {
 
 func TestRecordAuthAttempt_Unit(t *testing.T) {
 	assert.NotPanics(t, func() {
-		RecordAuthAttempt("password", "success")
-		RecordAuthAttempt("api_key", "failure")
-		RecordAuthAttempt("oidc", "success")
+		RecordAuthAttempt("login", "success")
+		RecordAuthAttempt("register", "failure")
+		RecordAuthAttempt("verify_email", "success")
 	})
 }
 

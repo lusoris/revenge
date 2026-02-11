@@ -18,6 +18,8 @@ import (
 
 // RedisRateLimiterConfig contains Redis-based rate limiting configuration.
 type RedisRateLimiterConfig struct {
+	// Name is the rate limiter category name used for metrics labels
+	Name string
 	// Enabled controls whether rate limiting is active
 	Enabled bool
 	// RequestsPerSecond is the number of requests allowed per second per IP
@@ -36,6 +38,7 @@ type RedisRateLimiterConfig struct {
 // DefaultRedisRateLimiterConfig returns sensible defaults for Redis rate limiting.
 func DefaultRedisRateLimiterConfig() RedisRateLimiterConfig {
 	return RedisRateLimiterConfig{
+		Name:              "global",
 		Enabled:           true,
 		RequestsPerSecond: 10,
 		Burst:             20,
@@ -48,6 +51,7 @@ func DefaultRedisRateLimiterConfig() RedisRateLimiterConfig {
 // AuthRedisRateLimiterConfig returns stricter rate limits for auth endpoints.
 func AuthRedisRateLimiterConfig() RedisRateLimiterConfig {
 	return RedisRateLimiterConfig{
+		Name:              "auth",
 		Enabled:           true,
 		RequestsPerSecond: 1, // 1 request per second
 		Burst:             5, // Allow burst of 5
@@ -86,6 +90,7 @@ func NewRedisRateLimiter(config RedisRateLimiterConfig, client rueidis.Client, l
 
 	// Create fallback in-memory limiter
 	fallbackConfig := RateLimitConfig{
+		Name:              config.Name,
 		Enabled:           config.Enabled,
 		RequestsPerSecond: config.RequestsPerSecond,
 		Burst:             config.Burst,
@@ -260,7 +265,7 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 		}
 
 		if !allowed {
-			observability.RecordRateLimitHit(req.OperationName, "blocked")
+			observability.RecordRateLimitHit(rl.config.Name, "blocked")
 			rl.logger.Warn("Rate limit exceeded",
 				slog.String("ip", clientIP),
 				slog.String("operation", req.OperationName),
@@ -274,7 +279,7 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 			}
 		}
 
-		observability.RecordRateLimitHit(req.OperationName, "allowed")
+		observability.RecordRateLimitHit(rl.config.Name, "allowed")
 		return next(req)
 	}
 }

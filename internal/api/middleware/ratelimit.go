@@ -16,6 +16,8 @@ import (
 
 // RateLimitConfig contains rate limiting configuration.
 type RateLimitConfig struct {
+	// Name is the rate limiter category name used for metrics labels
+	Name string
 	// Enabled controls whether rate limiting is active
 	Enabled bool
 	// RequestsPerSecond is the number of requests allowed per second per IP
@@ -34,6 +36,7 @@ type RateLimitConfig struct {
 // DefaultRateLimitConfig returns sensible defaults for rate limiting.
 func DefaultRateLimitConfig() RateLimitConfig {
 	return RateLimitConfig{
+		Name:              "global",
 		Enabled:           true,
 		RequestsPerSecond: 10,
 		Burst:             20,
@@ -46,6 +49,7 @@ func DefaultRateLimitConfig() RateLimitConfig {
 // AuthRateLimitConfig returns stricter rate limits for auth endpoints.
 func AuthRateLimitConfig() RateLimitConfig {
 	return RateLimitConfig{
+		Name:              "auth",
 		Enabled:           true,
 		RequestsPerSecond: 1, // 1 request per second
 		Burst:             5, // Allow burst of 5
@@ -186,7 +190,7 @@ func (rl *RateLimiter) Middleware() middleware.Middleware {
 
 		// Check if request is allowed
 		if !limiter.Allow() {
-			observability.RecordRateLimitHit(req.OperationName, "blocked")
+			observability.RecordRateLimitHit(rl.config.Name, "blocked")
 			rl.logger.Warn("Rate limit exceeded",
 				slog.String("ip", clientIP),
 				slog.String("operation", req.OperationName),
@@ -200,7 +204,7 @@ func (rl *RateLimiter) Middleware() middleware.Middleware {
 			}
 		}
 
-		observability.RecordRateLimitHit(req.OperationName, "allowed")
+		observability.RecordRateLimitHit(rl.config.Name, "allowed")
 		return next(req)
 	}
 }
