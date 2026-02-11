@@ -148,7 +148,7 @@ func TestPipelineManager_StopAllForSession_AudioRenditions(t *testing.T) {
 	for i := range 4 {
 		key := processKey(sessionID, "audio/"+itoa(i))
 		cmd := newSleepCmd()
-		_, startErr := pm.startProcess(cmd, key, sessionID, "audio/"+itoa(i), false)
+		_, startErr := pm.startProcess(cmd, key, sessionID, "audio/"+itoa(i), "copy", false)
 		require.NoError(t, startErr)
 	}
 
@@ -181,7 +181,7 @@ func TestPipelineManager_TranscodeMetric(t *testing.T) {
 	// Start a "true" process marked as transcode to verify metric codepath
 	cmd := newTrueCmd()
 	key := processKey(sessionID, "720p")
-	proc, err := pm.startProcess(cmd, key, sessionID, "720p", true)
+	proc, err := pm.startProcess(cmd, key, sessionID, "720p", "libx264", true)
 	require.NoError(t, err)
 	require.NotNil(t, proc)
 	assert.True(t, proc.IsTranscode)
@@ -200,7 +200,7 @@ func TestPipelineManager_TranscodeMetric_Original(t *testing.T) {
 
 	cmd := newTrueCmd()
 	key := processKey(sessionID, "original")
-	proc, err := pm.startProcess(cmd, key, sessionID, "original", true)
+	proc, err := pm.startProcess(cmd, key, sessionID, "original", "libx264", true)
 	require.NoError(t, err)
 
 	<-proc.Done
@@ -216,7 +216,7 @@ func TestPipelineManager_TranscodeMetric_1080p(t *testing.T) {
 
 	cmd := newTrueCmd()
 	key := processKey(sessionID, "1080p")
-	proc, err := pm.startProcess(cmd, key, sessionID, "1080p", true)
+	proc, err := pm.startProcess(cmd, key, sessionID, "1080p", "libx264", true)
 	require.NoError(t, err)
 
 	<-proc.Done
@@ -232,7 +232,7 @@ func TestPipelineManager_TranscodeMetric_480p(t *testing.T) {
 
 	cmd := newTrueCmd()
 	key := processKey(sessionID, "480p")
-	proc, err := pm.startProcess(cmd, key, sessionID, "480p", true)
+	proc, err := pm.startProcess(cmd, key, sessionID, "480p", "libx264", true)
 	require.NoError(t, err)
 
 	<-proc.Done

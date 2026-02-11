@@ -130,7 +130,7 @@ func TestPipelineManager_StartAndStopProcess(t *testing.T) {
 	cmd := exec.Command("sleep", "60")
 	key := processKey(sessionID, "test-profile")
 
-	proc, err := pm.startProcess(cmd, key, sessionID, "test-profile", false)
+	proc, err := pm.startProcess(cmd, key, sessionID, "test-profile", "copy", false)
 	require.NoError(t, err)
 	require.NotNil(t, proc)
 
@@ -167,7 +167,7 @@ func TestPipelineManager_StartProcess_CommandFails(t *testing.T) {
 	cmd := exec.Command("/nonexistent/binary/that/does/not/exist")
 	key := processKey(sessionID, "fail")
 
-	proc, err := pm.startProcess(cmd, key, sessionID, "fail", false)
+	proc, err := pm.startProcess(cmd, key, sessionID, "fail", "copy", false)
 	assert.Error(t, err, "should fail when command cannot start")
 	assert.Nil(t, proc)
 	assert.Contains(t, err.Error(), "failed to start FFmpeg")
@@ -184,7 +184,7 @@ func TestPipelineManager_StartProcess_CompletesSuccessfully(t *testing.T) {
 	cmd := exec.Command("true")
 	key := processKey(sessionID, "quick")
 
-	proc, err := pm.startProcess(cmd, key, sessionID, "quick", true)
+	proc, err := pm.startProcess(cmd, key, sessionID, "quick", "libx264", true)
 	require.NoError(t, err)
 	require.NotNil(t, proc)
 
@@ -210,7 +210,7 @@ func TestPipelineManager_StopProcess_AlreadyExited(t *testing.T) {
 	cmd := exec.Command("true")
 	key := processKey(sessionID, "exited")
 
-	proc, err := pm.startProcess(cmd, key, sessionID, "exited", false)
+	proc, err := pm.startProcess(cmd, key, sessionID, "exited", "copy", false)
 	require.NoError(t, err)
 
 	// Wait for process to exit naturally
@@ -231,12 +231,12 @@ func TestPipelineManager_StopAllForSession_WithProcesses(t *testing.T) {
 	// Start two processes for the same session in "original" and "720p" profiles
 	cmd1 := exec.Command("sleep", "60")
 	key1 := processKey(sessionID, "original")
-	_, err = pm.startProcess(cmd1, key1, sessionID, "original", false)
+	_, err = pm.startProcess(cmd1, key1, sessionID, "original", "copy", false)
 	require.NoError(t, err)
 
 	cmd2 := exec.Command("sleep", "60")
 	key2 := processKey(sessionID, "720p")
-	_, err = pm.startProcess(cmd2, key2, sessionID, "720p", false)
+	_, err = pm.startProcess(cmd2, key2, sessionID, "720p", "copy", false)
 	require.NoError(t, err)
 
 	// Both should exist

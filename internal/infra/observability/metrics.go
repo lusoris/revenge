@@ -342,3 +342,72 @@ func RecordTranscodingEnd(codec, resolution string, duration float64) {
 	TranscodingSessionsActive.Dec()
 	TranscodingDuration.WithLabelValues(codec, resolution).Observe(duration)
 }
+
+// InitMetrics pre-initialises Vec metrics with common label combinations so
+// they appear in /metrics with a zero value even before any real traffic.
+// This prevents Grafana panels from showing "No data".
+func InitMetrics() {
+	// Playback
+	for _, mt := range []string{"movie", "episode"} {
+		for _, q := range []string{"original", "1080p", "720p", "480p"} {
+			PlaybackStartTotal.WithLabelValues(mt, q)
+		}
+		PlaybackDuration.WithLabelValues(mt)
+	}
+
+	// Transcoding
+	for _, codec := range []string{"libx264", "copy"} {
+		for _, res := range []string{"original", "1080p", "720p", "480p"} {
+			TranscodingDuration.WithLabelValues(codec, res)
+		}
+	}
+
+	// Metadata providers
+	for _, p := range []string{"tmdb", "omdb", "trakt", "tvdb"} {
+		for _, t := range []string{"movie", "series"} {
+			for _, s := range []string{"success", "error"} {
+				MetadataFetchTotal.WithLabelValues(p, t, s)
+			}
+			MetadataFetchDuration.WithLabelValues(p, t)
+		}
+		MetadataRateLimitedTotal.WithLabelValues(p)
+	}
+
+	// Library scanner (use a placeholder library_id "0")
+	LibraryScanDuration.WithLabelValues("0")
+	LibraryFilesScanned.WithLabelValues("0")
+	LibraryScanErrorsTotal.WithLabelValues("0", "scan")
+
+	// Search
+	for _, t := range []string{"movie", "multi"} {
+		SearchQueriesTotal.WithLabelValues(t)
+		SearchQueryDuration.WithLabelValues(t)
+	}
+
+	// Auth
+	for _, m := range []string{"password", "api_key", "oidc"} {
+		for _, s := range []string{"success", "failure"} {
+			AuthAttemptsTotal.WithLabelValues(m, s)
+		}
+	}
+
+	// Rate limiting
+	for _, l := range []string{"ip", "user", "api"} {
+		for _, a := range []string{"allowed", "blocked"} {
+			RateLimitHitsTotal.WithLabelValues(l, a)
+		}
+	}
+
+	// Cache (common cache names)
+	for _, c := range []string{"movies", "metadata", "images"} {
+		for _, layer := range []string{"l1", "l2"} {
+			CacheHitsTotal.WithLabelValues(c, layer)
+			CacheMissesTotal.WithLabelValues(c, layer)
+		}
+	}
+
+	// DB query errors (common operations)
+	for _, op := range []string{"select", "insert", "update", "delete"} {
+		DBQueryErrorsTotal.WithLabelValues(op)
+	}
+}

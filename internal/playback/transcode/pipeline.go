@@ -22,6 +22,7 @@ type FFmpegProcess struct {
 	Cmd         *exec.Cmd
 	SessionID   uuid.UUID
 	Profile     string
+	Codec       string // video codec used (e.g. "libx264", "copy")
 	Done        chan struct{}
 	Err         error
 	StartTime   time.Time
@@ -86,7 +87,7 @@ func (pm *PipelineManager) StartVideoSegmenting(ctx context.Context, sessionID u
 
 	cmd := BuildVideoOnlyCommand(pm.ffmpegPath, filePath, profileDir, pd, pm.segmentDuration, seekSeconds)
 
-	return pm.startProcess(cmd, key, sessionID, pd.Name, pd.NeedsTranscode)
+	return pm.startProcess(cmd, key, sessionID, pd.Name, pd.VideoCodec, pd.NeedsTranscode)
 }
 
 // StartAudioRendition launches an FFmpeg process to output audio-only HLS segments
@@ -103,14 +104,15 @@ func (pm *PipelineManager) StartAudioRendition(ctx context.Context, sessionID uu
 
 	cmd := BuildAudioRenditionCommand(pm.ffmpegPath, filePath, audioDir, trackIndex, codec, bitrate, pm.segmentDuration, seekSeconds)
 
-	return pm.startProcess(cmd, key, sessionID, renditionName, codec != "copy")
+	return pm.startProcess(cmd, key, sessionID, renditionName, codec, codec != "copy")
 }
 
-func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uuid.UUID, name string, isTranscode bool) (*FFmpegProcess, error) {
+func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uuid.UUID, name, codec string, isTranscode bool) (*FFmpegProcess, error) {
 	proc := &FFmpegProcess{
 		Cmd:         cmd,
 		SessionID:   sessionID,
 		Profile:     name,
+		Codec:       codec,
 		Done:        make(chan struct{}),
 		StartTime:   time.Now(),
 		IsTranscode: isTranscode,
@@ -152,7 +154,7 @@ func (pm *PipelineManager) startProcess(cmd *exec.Cmd, key string, sessionID uui
 			} else if proc.Profile == "original" {
 				resolution = "original"
 			}
-			observability.RecordTranscodingEnd("h264", resolution, duration)
+			observability.RecordTranscodingEnd(proc.Codec, resolution, duration)
 		}
 
 		if proc.Err != nil {
