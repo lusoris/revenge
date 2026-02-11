@@ -9367,14 +9367,14 @@ func (s *Server) handleGetCollectionRequest(args [1]string, argsEscaped bool, w 
 // Fetch detailed collection information from TMDb by collection ID.
 // Returns collection metadata including all movies in the collection.
 //
-// GET /api/v1/metadata/collection/{tmdbId}
+// GET /api/v1/metadata/collection/{id}
 func (s *Server) handleGetCollectionMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCollectionMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/collection/{tmdbId}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/collection/{id}"),
 	}
 
 	// Start a span for this request.
@@ -9526,9 +9526,9 @@ func (s *Server) handleGetCollectionMetadataRequest(args [1]string, argsEscaped 
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -10423,14 +10423,14 @@ func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w
 // Fetch detailed episode information from TMDb.
 // Returns episode metadata including guest stars and crew.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}
 func (s *Server) handleGetEpisodeMetadataRequest(args [3]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getEpisodeMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}"),
 	}
 
 	// Start a span for this request.
@@ -10582,9 +10582,9 @@ func (s *Server) handleGetEpisodeMetadataRequest(args [3]string, argsEscaped boo
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "seasonNumber",
 					In:   "path",
@@ -10648,14 +10648,14 @@ func (s *Server) handleGetEpisodeMetadataRequest(args [3]string, argsEscaped boo
 //
 // Fetch all available images (stills) for a TV episode from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images
 func (s *Server) handleGetEpisodeMetadataImagesRequest(args [3]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getEpisodeMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images"),
 	}
 
 	// Start a span for this request.
@@ -10807,9 +10807,9 @@ func (s *Server) handleGetEpisodeMetadataImagesRequest(args [3]string, argsEscap
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "seasonNumber",
 					In:   "path",
@@ -12315,14 +12315,14 @@ func (s *Server) handleGetMovieCrewRequest(args [1]string, argsEscaped bool, w h
 //
 // Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
 //
-// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+// GET /api/v1/metadata/movie/{id}/external-ids
 func (s *Server) handleGetMovieExternalIDsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieExternalIDs"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}/external-ids"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}/external-ids"),
 	}
 
 	// Start a span for this request.
@@ -12474,9 +12474,9 @@ func (s *Server) handleGetMovieExternalIDsRequest(args [1]string, argsEscaped bo
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -12967,14 +12967,14 @@ func (s *Server) handleGetMovieGenresRequest(args [1]string, argsEscaped bool, w
 // Fetch detailed movie information from TMDb by TMDb ID.
 // Returns full metadata including cast, crew, and images.
 //
-// GET /api/v1/metadata/movie/{tmdbId}
+// GET /api/v1/metadata/movie/{id}
 func (s *Server) handleGetMovieMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}"),
 	}
 
 	// Start a span for this request.
@@ -13126,9 +13126,9 @@ func (s *Server) handleGetMovieMetadataRequest(args [1]string, argsEscaped bool,
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -13184,14 +13184,14 @@ func (s *Server) handleGetMovieMetadataRequest(args [1]string, argsEscaped bool,
 //
 // Fetch cast and crew credits for a movie from TMDb.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/credits
+// GET /api/v1/metadata/movie/{id}/credits
 func (s *Server) handleGetMovieMetadataCreditsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}/credits"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}/credits"),
 	}
 
 	// Start a span for this request.
@@ -13343,9 +13343,9 @@ func (s *Server) handleGetMovieMetadataCreditsRequest(args [1]string, argsEscape
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -13401,14 +13401,14 @@ func (s *Server) handleGetMovieMetadataCreditsRequest(args [1]string, argsEscape
 //
 // Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/images
+// GET /api/v1/metadata/movie/{id}/images
 func (s *Server) handleGetMovieMetadataImagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}/images"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}/images"),
 	}
 
 	// Start a span for this request.
@@ -13560,9 +13560,9 @@ func (s *Server) handleGetMovieMetadataImagesRequest(args [1]string, argsEscaped
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "language",
 					In:   "query",
@@ -13622,14 +13622,14 @@ func (s *Server) handleGetMovieMetadataImagesRequest(args [1]string, argsEscaped
 //
 // Fetch recommended movies from TMDb based on user ratings and viewing patterns.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+// GET /api/v1/metadata/movie/{id}/recommendations
 func (s *Server) handleGetMovieRecommendationsMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieRecommendationsMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}/recommendations"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}/recommendations"),
 	}
 
 	// Start a span for this request.
@@ -13781,9 +13781,9 @@ func (s *Server) handleGetMovieRecommendationsMetadataRequest(args [1]string, ar
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "limit",
 					In:   "query",
@@ -13843,14 +13843,14 @@ func (s *Server) handleGetMovieRecommendationsMetadataRequest(args [1]string, ar
 //
 // Fetch detailed information about a person (actor, director, etc.) from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}
+// GET /api/v1/metadata/person/{id}
 func (s *Server) handleGetPersonMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{tmdbId}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{id}"),
 	}
 
 	// Start a span for this request.
@@ -14002,9 +14002,9 @@ func (s *Server) handleGetPersonMetadataRequest(args [1]string, argsEscaped bool
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -14060,14 +14060,14 @@ func (s *Server) handleGetPersonMetadataRequest(args [1]string, argsEscaped bool
 //
 // Fetch filmography (cast and crew credits) for a person from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}/credits
+// GET /api/v1/metadata/person/{id}/credits
 func (s *Server) handleGetPersonMetadataCreditsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{tmdbId}/credits"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{id}/credits"),
 	}
 
 	// Start a span for this request.
@@ -14219,9 +14219,9 @@ func (s *Server) handleGetPersonMetadataCreditsRequest(args [1]string, argsEscap
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -14277,14 +14277,14 @@ func (s *Server) handleGetPersonMetadataCreditsRequest(args [1]string, argsEscap
 //
 // Fetch all available profile images for a person from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}/images
+// GET /api/v1/metadata/person/{id}/images
 func (s *Server) handleGetPersonMetadataImagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{tmdbId}/images"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/person/{id}/images"),
 	}
 
 	// Start a span for this request.
@@ -14436,9 +14436,9 @@ func (s *Server) handleGetPersonMetadataImagesRequest(args [1]string, argsEscape
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -16537,14 +16537,14 @@ func (s *Server) handleGetSearchFacetsRequest(args [0]string, argsEscaped bool, 
 // Fetch detailed season information from TMDb.
 // Returns season metadata including episodes overview.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}
 func (s *Server) handleGetSeasonMetadataRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSeasonMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}"),
 	}
 
 	// Start a span for this request.
@@ -16696,9 +16696,9 @@ func (s *Server) handleGetSeasonMetadataRequest(args [2]string, argsEscaped bool
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "seasonNumber",
 					In:   "path",
@@ -16758,14 +16758,14 @@ func (s *Server) handleGetSeasonMetadataRequest(args [2]string, argsEscaped bool
 //
 // Fetch all available images (posters) for a TV season from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/images
 func (s *Server) handleGetSeasonMetadataImagesRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSeasonMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/images"),
 	}
 
 	// Start a span for this request.
@@ -16917,9 +16917,9 @@ func (s *Server) handleGetSeasonMetadataImagesRequest(args [2]string, argsEscape
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "seasonNumber",
 					In:   "path",
@@ -17417,14 +17417,14 @@ func (s *Server) handleGetSimilarMoviesRequest(args [1]string, argsEscaped bool,
 //
 // Fetch a list of similar movies from TMDb based on genres and keywords.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/similar
+// GET /api/v1/metadata/movie/{id}/similar
 func (s *Server) handleGetSimilarMoviesMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSimilarMoviesMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{tmdbId}/similar"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/movie/{id}/similar"),
 	}
 
 	// Start a span for this request.
@@ -17576,9 +17576,9 @@ func (s *Server) handleGetSimilarMoviesMetadataRequest(args [1]string, argsEscap
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "limit",
 					In:   "query",
@@ -19517,14 +19517,14 @@ func (s *Server) handleGetTVShowCastRequest(args [1]string, argsEscaped bool, w 
 //
 // Fetch content ratings (age classifications) for a TV show across different countries.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+// GET /api/v1/metadata/tv/{id}/content-ratings
 func (s *Server) handleGetTVShowContentRatingsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowContentRatings"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/content-ratings"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/content-ratings"),
 	}
 
 	// Start a span for this request.
@@ -19676,9 +19676,9 @@ func (s *Server) handleGetTVShowContentRatingsRequest(args [1]string, argsEscape
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -20176,14 +20176,14 @@ func (s *Server) handleGetTVShowEpisodesRequest(args [1]string, argsEscaped bool
 //
 // Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
 //
-// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+// GET /api/v1/metadata/tv/{id}/external-ids
 func (s *Server) handleGetTVShowExternalIDsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowExternalIDs"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/external-ids"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/external-ids"),
 	}
 
 	// Start a span for this request.
@@ -20335,9 +20335,9 @@ func (s *Server) handleGetTVShowExternalIDsRequest(args [1]string, argsEscaped b
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -20611,14 +20611,14 @@ func (s *Server) handleGetTVShowGenresRequest(args [1]string, argsEscaped bool, 
 // Fetch detailed TV show information from TMDb by TV show ID.
 // Returns comprehensive metadata including seasons overview.
 //
-// GET /api/v1/metadata/tv/{tmdbId}
+// GET /api/v1/metadata/tv/{id}
 func (s *Server) handleGetTVShowMetadataRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}"),
 	}
 
 	// Start a span for this request.
@@ -20770,9 +20770,9 @@ func (s *Server) handleGetTVShowMetadataRequest(args [1]string, argsEscaped bool
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -20828,14 +20828,14 @@ func (s *Server) handleGetTVShowMetadataRequest(args [1]string, argsEscaped bool
 //
 // Fetch aggregate cast and crew credits for a TV show from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/credits
+// GET /api/v1/metadata/tv/{id}/credits
 func (s *Server) handleGetTVShowMetadataCreditsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/credits"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/credits"),
 	}
 
 	// Start a span for this request.
@@ -20987,9 +20987,9 @@ func (s *Server) handleGetTVShowMetadataCreditsRequest(args [1]string, argsEscap
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 			},
 			Raw: r,
 		}
@@ -21045,14 +21045,14 @@ func (s *Server) handleGetTVShowMetadataCreditsRequest(args [1]string, argsEscap
 //
 // Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/images
+// GET /api/v1/metadata/tv/{id}/images
 func (s *Server) handleGetTVShowMetadataImagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{tmdbId}/images"),
+		semconv.HTTPRouteKey.String("/api/v1/metadata/tv/{id}/images"),
 	}
 
 	// Start a span for this request.
@@ -21204,9 +21204,9 @@ func (s *Server) handleGetTVShowMetadataImagesRequest(args [1]string, argsEscape
 			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
-					Name: "tmdbId",
+					Name: "id",
 					In:   "path",
-				}: params.TmdbId,
+				}: params.ID,
 				{
 					Name: "language",
 					In:   "query",

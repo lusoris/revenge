@@ -290,7 +290,7 @@ func TestHandler_GetMovieMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetMovieMetadata(context.Background(), ogen.GetMovieMetadataParams{
-		TmdbId: 12345,
+		ID: "12345",
 	})
 	require.NoError(t, err)
 
@@ -314,7 +314,7 @@ func TestHandler_GetMovieMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetMovieMetadata(context.Background(), ogen.GetMovieMetadataParams{
-		TmdbId: 99999,
+		ID: "99999",
 	})
 	require.NoError(t, err)
 
@@ -331,7 +331,7 @@ func TestHandler_GetMovieMetadata_Error(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	_, err := handler.GetMovieMetadata(context.Background(), ogen.GetMovieMetadataParams{
-		TmdbId: 12345,
+		ID: "12345",
 	})
 	assert.Error(t, err)
 }
@@ -369,7 +369,7 @@ func TestHandler_GetCollectionMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetCollectionMetadata(context.Background(), ogen.GetCollectionMetadataParams{
-		TmdbId: 1000,
+		ID: "1000",
 	})
 	require.NoError(t, err)
 
@@ -392,7 +392,7 @@ func TestHandler_GetCollectionMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetCollectionMetadata(context.Background(), ogen.GetCollectionMetadataParams{
-		TmdbId: 99999,
+		ID: "99999",
 	})
 	require.NoError(t, err)
 
@@ -494,7 +494,7 @@ func TestHandler_GetTVShowMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetTVShowMetadata(context.Background(), ogen.GetTVShowMetadataParams{
-		TmdbId: 5000,
+		ID: "5000",
 	})
 	require.NoError(t, err)
 
@@ -523,7 +523,7 @@ func TestHandler_GetTVShowMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetTVShowMetadata(context.Background(), ogen.GetTVShowMetadataParams{
-		TmdbId: 99999,
+		ID: "99999",
 	})
 	require.NoError(t, err)
 
@@ -567,7 +567,7 @@ func TestHandler_GetSeasonMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetSeasonMetadata(context.Background(), ogen.GetSeasonMetadataParams{
-		TmdbId:       5000,
+		ID: "5000",
 		SeasonNumber: 2,
 	})
 	require.NoError(t, err)
@@ -591,7 +591,7 @@ func TestHandler_GetSeasonMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetSeasonMetadata(context.Background(), ogen.GetSeasonMetadataParams{
-		TmdbId:       5000,
+		ID: "5000",
 		SeasonNumber: 99,
 	})
 	require.NoError(t, err)
@@ -644,7 +644,7 @@ func TestHandler_GetEpisodeMetadata_Success(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		TmdbId:        5000,
+		ID: "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 3,
 	})
@@ -673,7 +673,7 @@ func TestHandler_GetEpisodeMetadata_NotFound(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	result, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		TmdbId:        5000,
+		ID: "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 99,
 	})
@@ -692,7 +692,7 @@ func TestHandler_GetEpisodeMetadata_Error(t *testing.T) {
 	handler := newMetadataTestHandler(mock)
 
 	_, err := handler.GetEpisodeMetadata(context.Background(), ogen.GetEpisodeMetadataParams{
-		TmdbId:        5000,
+		ID: "5000",
 		SeasonNumber:  1,
 		EpisodeNumber: 1,
 	})

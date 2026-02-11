@@ -294,7 +294,7 @@ type Handler interface {
 	// Fetch detailed collection information from TMDb by collection ID.
 	// Returns collection metadata including all movies in the collection.
 	//
-	// GET /api/v1/metadata/collection/{tmdbId}
+	// GET /api/v1/metadata/collection/{id}
 	GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error)
 	// GetCollectionMovies implements getCollectionMovies operation.
 	//
@@ -325,13 +325,13 @@ type Handler interface {
 	// Fetch detailed episode information from TMDb.
 	// Returns episode metadata including guest stars and crew.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}
 	GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error)
 	// GetEpisodeMetadataImages implements getEpisodeMetadataImages operation.
 	//
 	// Fetch all available images (stills) for a TV episode from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images
 	GetEpisodeMetadataImages(ctx context.Context, params GetEpisodeMetadataImagesParams) (GetEpisodeMetadataImagesRes, error)
 	// GetLibrary implements getLibrary operation.
 	//
@@ -381,7 +381,7 @@ type Handler interface {
 	//
 	// Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+	// GET /api/v1/metadata/movie/{id}/external-ids
 	GetMovieExternalIDs(ctx context.Context, params GetMovieExternalIDsParams) (GetMovieExternalIDsRes, error)
 	// GetMovieFiles implements getMovieFiles operation.
 	//
@@ -400,43 +400,43 @@ type Handler interface {
 	// Fetch detailed movie information from TMDb by TMDb ID.
 	// Returns full metadata including cast, crew, and images.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}
+	// GET /api/v1/metadata/movie/{id}
 	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
 	// GetMovieMetadataCredits implements getMovieMetadataCredits operation.
 	//
 	// Fetch cast and crew credits for a movie from TMDb.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/credits
+	// GET /api/v1/metadata/movie/{id}/credits
 	GetMovieMetadataCredits(ctx context.Context, params GetMovieMetadataCreditsParams) (GetMovieMetadataCreditsRes, error)
 	// GetMovieMetadataImages implements getMovieMetadataImages operation.
 	//
 	// Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/images
+	// GET /api/v1/metadata/movie/{id}/images
 	GetMovieMetadataImages(ctx context.Context, params GetMovieMetadataImagesParams) (GetMovieMetadataImagesRes, error)
 	// GetMovieRecommendationsMetadata implements getMovieRecommendationsMetadata operation.
 	//
 	// Fetch recommended movies from TMDb based on user ratings and viewing patterns.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+	// GET /api/v1/metadata/movie/{id}/recommendations
 	GetMovieRecommendationsMetadata(ctx context.Context, params GetMovieRecommendationsMetadataParams) (GetMovieRecommendationsMetadataRes, error)
 	// GetPersonMetadata implements getPersonMetadata operation.
 	//
 	// Fetch detailed information about a person (actor, director, etc.) from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}
+	// GET /api/v1/metadata/person/{id}
 	GetPersonMetadata(ctx context.Context, params GetPersonMetadataParams) (GetPersonMetadataRes, error)
 	// GetPersonMetadataCredits implements getPersonMetadataCredits operation.
 	//
 	// Fetch filmography (cast and crew credits) for a person from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}/credits
+	// GET /api/v1/metadata/person/{id}/credits
 	GetPersonMetadataCredits(ctx context.Context, params GetPersonMetadataCreditsParams) (GetPersonMetadataCreditsRes, error)
 	// GetPersonMetadataImages implements getPersonMetadataImages operation.
 	//
 	// Fetch all available profile images for a person from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}/images
+	// GET /api/v1/metadata/person/{id}/images
 	GetPersonMetadataImages(ctx context.Context, params GetPersonMetadataImagesParams) (GetPersonMetadataImagesRes, error)
 	// GetPlaybackSession implements getPlaybackSession operation.
 	//
@@ -507,13 +507,13 @@ type Handler interface {
 	// Fetch detailed season information from TMDb.
 	// Returns season metadata including episodes overview.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}
 	GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error)
 	// GetSeasonMetadataImages implements getSeasonMetadataImages operation.
 	//
 	// Fetch all available images (posters) for a TV season from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/images
 	GetSeasonMetadataImages(ctx context.Context, params GetSeasonMetadataImagesParams) (GetSeasonMetadataImagesRes, error)
 	// GetServerSetting implements getServerSetting operation.
 	//
@@ -531,7 +531,7 @@ type Handler interface {
 	//
 	// Fetch a list of similar movies from TMDb based on genres and keywords.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/similar
+	// GET /api/v1/metadata/movie/{id}/similar
 	GetSimilarMoviesMetadata(ctx context.Context, params GetSimilarMoviesMetadataParams) (GetSimilarMoviesMetadataRes, error)
 	// GetStartup implements getStartup operation.
 	//
@@ -593,7 +593,7 @@ type Handler interface {
 	//
 	// Fetch content ratings (age classifications) for a TV show across different countries.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+	// GET /api/v1/metadata/tv/{id}/content-ratings
 	GetTVShowContentRatings(ctx context.Context, params GetTVShowContentRatingsParams) (GetTVShowContentRatingsRes, error)
 	// GetTVShowCrew implements getTVShowCrew operation.
 	//
@@ -611,7 +611,7 @@ type Handler interface {
 	//
 	// Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+	// GET /api/v1/metadata/tv/{id}/external-ids
 	GetTVShowExternalIDs(ctx context.Context, params GetTVShowExternalIDsParams) (GetTVShowExternalIDsRes, error)
 	// GetTVShowGenres implements getTVShowGenres operation.
 	//
@@ -624,19 +624,19 @@ type Handler interface {
 	// Fetch detailed TV show information from TMDb by TV show ID.
 	// Returns comprehensive metadata including seasons overview.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}
+	// GET /api/v1/metadata/tv/{id}
 	GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error)
 	// GetTVShowMetadataCredits implements getTVShowMetadataCredits operation.
 	//
 	// Fetch aggregate cast and crew credits for a TV show from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/credits
+	// GET /api/v1/metadata/tv/{id}/credits
 	GetTVShowMetadataCredits(ctx context.Context, params GetTVShowMetadataCreditsParams) (GetTVShowMetadataCreditsRes, error)
 	// GetTVShowMetadataImages implements getTVShowMetadataImages operation.
 	//
 	// Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/images
+	// GET /api/v1/metadata/tv/{id}/images
 	GetTVShowMetadataImages(ctx context.Context, params GetTVShowMetadataImagesParams) (GetTVShowMetadataImagesRes, error)
 	// GetTVShowNetworks implements getTVShowNetworks operation.
 	//

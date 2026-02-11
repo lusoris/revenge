@@ -2071,7 +2071,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}/credits:
+  /api/v1/metadata/movie/{id}/credits:
     get:
       summary: Get movie credits from metadata provider
       description: |
@@ -2083,13 +2083,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 550
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "550"
       responses:
         '200':
           description: Movie credits
@@ -2104,7 +2104,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}/images:
+  /api/v1/metadata/movie/{id}/images:
     get:
       summary: Get movie images from metadata provider
       description: |
@@ -2116,13 +2116,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 550
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "550"
         - name: language
           in: query
           required: false
@@ -2144,7 +2144,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}/similar:
+  /api/v1/metadata/movie/{id}/similar:
     get:
       summary: Get similar movies from metadata provider
       description: |
@@ -2156,13 +2156,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 550
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "550"
         - name: limit
           in: query
           required: false
@@ -2186,7 +2186,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}/recommendations:
+  /api/v1/metadata/movie/{id}/recommendations:
     get:
       summary: Get movie recommendations from metadata provider
       description: |
@@ -2198,13 +2198,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 550
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "550"
         - name: limit
           in: query
           required: false
@@ -2228,7 +2228,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}/external-ids:
+  /api/v1/metadata/movie/{id}/external-ids:
     get:
       summary: Get movie external IDs
       description: |
@@ -2240,13 +2240,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 550
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "550"
       responses:
         '200':
           description: External IDs
@@ -2261,7 +2261,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/credits:
+  /api/v1/metadata/tv/{id}/credits:
     get:
       summary: Get TV show credits from metadata provider
       description: |
@@ -2273,13 +2273,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
       responses:
         '200':
           description: TV show credits
@@ -2294,7 +2294,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/images:
+  /api/v1/metadata/tv/{id}/images:
     get:
       summary: Get TV show images from metadata provider
       description: |
@@ -2306,13 +2306,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         - name: language
           in: query
           required: false
@@ -2334,7 +2334,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/content-ratings:
+  /api/v1/metadata/tv/{id}/content-ratings:
     get:
       summary: Get TV show content ratings
       description: |
@@ -2346,13 +2346,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
       responses:
         '200':
           description: Content ratings
@@ -2367,7 +2367,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/external-ids:
+  /api/v1/metadata/tv/{id}/external-ids:
     get:
       summary: Get TV show external IDs
       description: |
@@ -2379,13 +2379,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
       responses:
         '200':
           description: External IDs
@@ -2400,7 +2400,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images:
+  /api/v1/metadata/tv/{id}/season/{seasonNumber}/images:
     get:
       summary: Get season images from metadata provider
       description: |
@@ -2412,13 +2412,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         - name: seasonNumber
           in: path
           required: true
@@ -2447,7 +2447,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images:
+  /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images:
     get:
       summary: Get episode images from metadata provider
       description: |
@@ -2459,13 +2459,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         - name: seasonNumber
           in: path
           required: true
@@ -2559,7 +2559,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/person/{tmdbId}:
+  /api/v1/metadata/person/{id}:
     get:
       summary: Get person details from metadata provider
       description: |
@@ -2571,13 +2571,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb person ID
-          example: 287
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "287"
       responses:
         '200':
           description: Person details
@@ -2592,7 +2592,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/person/{tmdbId}/credits:
+  /api/v1/metadata/person/{id}/credits:
     get:
       summary: Get person credits from metadata provider
       description: |
@@ -2604,13 +2604,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb person ID
-          example: 287
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "287"
       responses:
         '200':
           description: Person credits
@@ -2625,7 +2625,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/person/{tmdbId}/images:
+  /api/v1/metadata/person/{id}/images:
     get:
       summary: Get person images from metadata provider
       description: |
@@ -2637,13 +2637,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb person ID
-          example: 287
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "287"
       responses:
         '200':
           description: Person images
@@ -3142,7 +3142,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/movie/{tmdbId}:
+  /api/v1/metadata/movie/{id}:
     get:
       summary: Get movie details from TMDb
       description: |
@@ -3155,13 +3155,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb movie ID
-          example: 603
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "603"
       responses:
         '200':
           description: Movie metadata from TMDb
@@ -3176,7 +3176,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/collection/{tmdbId}:
+  /api/v1/metadata/collection/{id}:
     get:
       summary: Get collection details from TMDb
       description: |
@@ -3189,13 +3189,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb collection ID
-          example: 86311
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "86311"
       responses:
         '200':
           description: Collection metadata from TMDb
@@ -3276,7 +3276,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}:
+  /api/v1/metadata/tv/{id}:
     get:
       summary: Get TV show details from TMDb
       description: |
@@ -3289,13 +3289,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
       responses:
         '200':
           description: TV show metadata from TMDb
@@ -3310,7 +3310,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}:
+  /api/v1/metadata/tv/{id}/season/{seasonNumber}:
     get:
       summary: Get season details from TMDb
       description: |
@@ -3323,13 +3323,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         - name: seasonNumber
           in: path
           required: true
@@ -3351,7 +3351,7 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}:
+  /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}:
     get:
       summary: Get episode details from TMDb
       description: |
@@ -3364,13 +3364,13 @@ paths:
         - bearerAuth: []
         - apiKeyAuth: []
       parameters:
-        - name: tmdbId
+        - name: id
           in: path
           required: true
           schema:
-            type: integer
-          description: TMDb TV show ID
-          example: 1396
+            type: string
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         - name: seasonNumber
           in: path
           required: true
@@ -7061,7 +7061,7 @@ components:
           format: uuid
         tmdb_person_id:
           type: integer
-          description: TMDb person ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Person name
@@ -7105,7 +7105,7 @@ components:
         tmdb_collection_id:
           type: integer
           nullable: true
-          description: TMDb collection ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Collection name
@@ -7826,7 +7826,7 @@ components:
           format: uuid
         tmdb_person_id:
           type: integer
-          description: TMDb person ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Person name
@@ -8164,7 +8164,7 @@ components:
           description: Movie ID
         tmdb_id:
           type: integer
-          description: TMDb movie ID
+          description: Metadata provider ID (e.g. TMDb ID)
         imdb_id:
           type: string
           description: IMDb ID
@@ -8606,7 +8606,7 @@ components:
       properties:
         id:
           type: string
-          description: TMDb person ID as string
+          description: Metadata provider ID (e.g. TMDb ID) as string
         tmdb_id:
           type: integer
         name:
@@ -8658,8 +8658,8 @@ components:
       properties:
         tmdb_id:
           type: integer
-          description: TMDb movie ID
-          example: 603
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "603"
         title:
           type: string
           description: Movie title
@@ -8706,8 +8706,8 @@ components:
       properties:
         tmdb_id:
           type: integer
-          description: TMDb movie ID
-          example: 603
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "603"
         imdb_id:
           type: string
           nullable: true
@@ -8795,7 +8795,7 @@ components:
       properties:
         id:
           type: integer
-          description: TMDb person ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Actor name
@@ -8817,7 +8817,7 @@ components:
       properties:
         id:
           type: integer
-          description: TMDb person ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Crew member name
@@ -8838,7 +8838,7 @@ components:
       properties:
         id:
           type: integer
-          description: TMDb collection ID
+          description: Metadata provider ID (e.g. TMDb ID)
         name:
           type: string
           description: Collection name
@@ -8865,7 +8865,7 @@ components:
       properties:
         id:
           type: integer
-          description: TMDb movie ID
+          description: Metadata provider ID (e.g. TMDb ID)
         title:
           type: string
           description: Movie title
@@ -8919,8 +8919,8 @@ components:
       properties:
         tmdb_id:
           type: integer
-          description: TMDb TV show ID
-          example: 1396
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         name:
           type: string
           description: TV show name
@@ -8963,8 +8963,8 @@ components:
       properties:
         tmdb_id:
           type: integer
-          description: TMDb TV show ID
-          example: 1396
+          description: Metadata provider ID (e.g. TMDb ID)
+          example: "1396"
         imdb_id:
           type: string
           nullable: true
@@ -9092,7 +9092,7 @@ components:
           description: TMDb season ID
         tmdb_show_id:
           type: integer
-          description: TMDb TV show ID
+          description: Metadata provider ID (e.g. TMDb ID)
         season_number:
           type: integer
           description: Season number
@@ -9154,7 +9154,7 @@ components:
           description: TMDb episode ID
         tmdb_show_id:
           type: integer
-          description: TMDb TV show ID
+          description: Metadata provider ID (e.g. TMDb ID)
         season_number:
           type: integer
         episode_number:
@@ -9213,7 +9213,7 @@ components:
       properties:
         tmdb_id:
           type: integer
-          description: TMDb movie ID
+          description: Metadata provider ID (e.g. TMDb ID)
         title:
           type: string
           description: Movie title

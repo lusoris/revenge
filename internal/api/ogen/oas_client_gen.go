@@ -314,7 +314,7 @@ type Invoker interface {
 	// Fetch detailed collection information from TMDb by collection ID.
 	// Returns collection metadata including all movies in the collection.
 	//
-	// GET /api/v1/metadata/collection/{tmdbId}
+	// GET /api/v1/metadata/collection/{id}
 	GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error)
 	// GetCollectionMovies invokes getCollectionMovies operation.
 	//
@@ -345,13 +345,13 @@ type Invoker interface {
 	// Fetch detailed episode information from TMDb.
 	// Returns episode metadata including guest stars and crew.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}
 	GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error)
 	// GetEpisodeMetadataImages invokes getEpisodeMetadataImages operation.
 	//
 	// Fetch all available images (stills) for a TV episode from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images
 	GetEpisodeMetadataImages(ctx context.Context, params GetEpisodeMetadataImagesParams) (GetEpisodeMetadataImagesRes, error)
 	// GetLibrary invokes getLibrary operation.
 	//
@@ -401,7 +401,7 @@ type Invoker interface {
 	//
 	// Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+	// GET /api/v1/metadata/movie/{id}/external-ids
 	GetMovieExternalIDs(ctx context.Context, params GetMovieExternalIDsParams) (GetMovieExternalIDsRes, error)
 	// GetMovieFiles invokes getMovieFiles operation.
 	//
@@ -420,43 +420,43 @@ type Invoker interface {
 	// Fetch detailed movie information from TMDb by TMDb ID.
 	// Returns full metadata including cast, crew, and images.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}
+	// GET /api/v1/metadata/movie/{id}
 	GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error)
 	// GetMovieMetadataCredits invokes getMovieMetadataCredits operation.
 	//
 	// Fetch cast and crew credits for a movie from TMDb.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/credits
+	// GET /api/v1/metadata/movie/{id}/credits
 	GetMovieMetadataCredits(ctx context.Context, params GetMovieMetadataCreditsParams) (GetMovieMetadataCreditsRes, error)
 	// GetMovieMetadataImages invokes getMovieMetadataImages operation.
 	//
 	// Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/images
+	// GET /api/v1/metadata/movie/{id}/images
 	GetMovieMetadataImages(ctx context.Context, params GetMovieMetadataImagesParams) (GetMovieMetadataImagesRes, error)
 	// GetMovieRecommendationsMetadata invokes getMovieRecommendationsMetadata operation.
 	//
 	// Fetch recommended movies from TMDb based on user ratings and viewing patterns.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+	// GET /api/v1/metadata/movie/{id}/recommendations
 	GetMovieRecommendationsMetadata(ctx context.Context, params GetMovieRecommendationsMetadataParams) (GetMovieRecommendationsMetadataRes, error)
 	// GetPersonMetadata invokes getPersonMetadata operation.
 	//
 	// Fetch detailed information about a person (actor, director, etc.) from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}
+	// GET /api/v1/metadata/person/{id}
 	GetPersonMetadata(ctx context.Context, params GetPersonMetadataParams) (GetPersonMetadataRes, error)
 	// GetPersonMetadataCredits invokes getPersonMetadataCredits operation.
 	//
 	// Fetch filmography (cast and crew credits) for a person from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}/credits
+	// GET /api/v1/metadata/person/{id}/credits
 	GetPersonMetadataCredits(ctx context.Context, params GetPersonMetadataCreditsParams) (GetPersonMetadataCreditsRes, error)
 	// GetPersonMetadataImages invokes getPersonMetadataImages operation.
 	//
 	// Fetch all available profile images for a person from TMDb.
 	//
-	// GET /api/v1/metadata/person/{tmdbId}/images
+	// GET /api/v1/metadata/person/{id}/images
 	GetPersonMetadataImages(ctx context.Context, params GetPersonMetadataImagesParams) (GetPersonMetadataImagesRes, error)
 	// GetPlaybackSession invokes getPlaybackSession operation.
 	//
@@ -527,13 +527,13 @@ type Invoker interface {
 	// Fetch detailed season information from TMDb.
 	// Returns season metadata including episodes overview.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}
 	GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error)
 	// GetSeasonMetadataImages invokes getSeasonMetadataImages operation.
 	//
 	// Fetch all available images (posters) for a TV season from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+	// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/images
 	GetSeasonMetadataImages(ctx context.Context, params GetSeasonMetadataImagesParams) (GetSeasonMetadataImagesRes, error)
 	// GetServerSetting invokes getServerSetting operation.
 	//
@@ -551,7 +551,7 @@ type Invoker interface {
 	//
 	// Fetch a list of similar movies from TMDb based on genres and keywords.
 	//
-	// GET /api/v1/metadata/movie/{tmdbId}/similar
+	// GET /api/v1/metadata/movie/{id}/similar
 	GetSimilarMoviesMetadata(ctx context.Context, params GetSimilarMoviesMetadataParams) (GetSimilarMoviesMetadataRes, error)
 	// GetStartup invokes getStartup operation.
 	//
@@ -613,7 +613,7 @@ type Invoker interface {
 	//
 	// Fetch content ratings (age classifications) for a TV show across different countries.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+	// GET /api/v1/metadata/tv/{id}/content-ratings
 	GetTVShowContentRatings(ctx context.Context, params GetTVShowContentRatingsParams) (GetTVShowContentRatingsRes, error)
 	// GetTVShowCrew invokes getTVShowCrew operation.
 	//
@@ -631,7 +631,7 @@ type Invoker interface {
 	//
 	// Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+	// GET /api/v1/metadata/tv/{id}/external-ids
 	GetTVShowExternalIDs(ctx context.Context, params GetTVShowExternalIDsParams) (GetTVShowExternalIDsRes, error)
 	// GetTVShowGenres invokes getTVShowGenres operation.
 	//
@@ -644,19 +644,19 @@ type Invoker interface {
 	// Fetch detailed TV show information from TMDb by TV show ID.
 	// Returns comprehensive metadata including seasons overview.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}
+	// GET /api/v1/metadata/tv/{id}
 	GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error)
 	// GetTVShowMetadataCredits invokes getTVShowMetadataCredits operation.
 	//
 	// Fetch aggregate cast and crew credits for a TV show from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/credits
+	// GET /api/v1/metadata/tv/{id}/credits
 	GetTVShowMetadataCredits(ctx context.Context, params GetTVShowMetadataCreditsParams) (GetTVShowMetadataCreditsRes, error)
 	// GetTVShowMetadataImages invokes getTVShowMetadataImages operation.
 	//
 	// Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
 	//
-	// GET /api/v1/metadata/tv/{tmdbId}/images
+	// GET /api/v1/metadata/tv/{id}/images
 	GetTVShowMetadataImages(ctx context.Context, params GetTVShowMetadataImagesParams) (GetTVShowMetadataImagesRes, error)
 	// GetTVShowNetworks invokes getTVShowNetworks operation.
 	//
@@ -6916,7 +6916,7 @@ func (c *Client) sendGetCollection(ctx context.Context, params GetCollectionPara
 // Fetch detailed collection information from TMDb by collection ID.
 // Returns collection metadata including all movies in the collection.
 //
-// GET /api/v1/metadata/collection/{tmdbId}
+// GET /api/v1/metadata/collection/{id}
 func (c *Client) GetCollectionMetadata(ctx context.Context, params GetCollectionMetadataParams) (GetCollectionMetadataRes, error) {
 	res, err := c.sendGetCollectionMetadata(ctx, params)
 	return res, err
@@ -6926,7 +6926,7 @@ func (c *Client) sendGetCollectionMetadata(ctx context.Context, params GetCollec
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCollectionMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/collection/{tmdbId}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/collection/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6962,14 +6962,14 @@ func (c *Client) sendGetCollectionMetadata(ctx context.Context, params GetCollec
 	var pathParts [2]string
 	pathParts[0] = "/api/v1/metadata/collection/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -7565,7 +7565,7 @@ func (c *Client) sendGetCurrentUser(ctx context.Context) (res GetCurrentUserRes,
 // Fetch detailed episode information from TMDb.
 // Returns episode metadata including guest stars and crew.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}
 func (c *Client) GetEpisodeMetadata(ctx context.Context, params GetEpisodeMetadataParams) (GetEpisodeMetadataRes, error) {
 	res, err := c.sendGetEpisodeMetadata(ctx, params)
 	return res, err
@@ -7575,7 +7575,7 @@ func (c *Client) sendGetEpisodeMetadata(ctx context.Context, params GetEpisodeMe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getEpisodeMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7611,14 +7611,14 @@ func (c *Client) sendGetEpisodeMetadata(ctx context.Context, params GetEpisodeMe
 	var pathParts [6]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -7739,7 +7739,7 @@ func (c *Client) sendGetEpisodeMetadata(ctx context.Context, params GetEpisodeMe
 //
 // Fetch all available images (stills) for a TV episode from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images
 func (c *Client) GetEpisodeMetadataImages(ctx context.Context, params GetEpisodeMetadataImagesParams) (GetEpisodeMetadataImagesRes, error) {
 	res, err := c.sendGetEpisodeMetadataImages(ctx, params)
 	return res, err
@@ -7749,7 +7749,7 @@ func (c *Client) sendGetEpisodeMetadataImages(ctx context.Context, params GetEpi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getEpisodeMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7785,14 +7785,14 @@ func (c *Client) sendGetEpisodeMetadataImages(ctx context.Context, params GetEpi
 	var pathParts [7]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -8887,7 +8887,7 @@ func (c *Client) sendGetMovieCrew(ctx context.Context, params GetMovieCrewParams
 //
 // Fetch external database IDs for a movie (IMDb, TVDb, Wikidata, social media).
 //
-// GET /api/v1/metadata/movie/{tmdbId}/external-ids
+// GET /api/v1/metadata/movie/{id}/external-ids
 func (c *Client) GetMovieExternalIDs(ctx context.Context, params GetMovieExternalIDsParams) (GetMovieExternalIDsRes, error) {
 	res, err := c.sendGetMovieExternalIDs(ctx, params)
 	return res, err
@@ -8897,7 +8897,7 @@ func (c *Client) sendGetMovieExternalIDs(ctx context.Context, params GetMovieExt
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieExternalIDs"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}/external-ids"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}/external-ids"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8933,14 +8933,14 @@ func (c *Client) sendGetMovieExternalIDs(ctx context.Context, params GetMovieExt
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -9299,7 +9299,7 @@ func (c *Client) sendGetMovieGenres(ctx context.Context, params GetMovieGenresPa
 // Fetch detailed movie information from TMDb by TMDb ID.
 // Returns full metadata including cast, crew, and images.
 //
-// GET /api/v1/metadata/movie/{tmdbId}
+// GET /api/v1/metadata/movie/{id}
 func (c *Client) GetMovieMetadata(ctx context.Context, params GetMovieMetadataParams) (GetMovieMetadataRes, error) {
 	res, err := c.sendGetMovieMetadata(ctx, params)
 	return res, err
@@ -9309,7 +9309,7 @@ func (c *Client) sendGetMovieMetadata(ctx context.Context, params GetMovieMetada
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9345,14 +9345,14 @@ func (c *Client) sendGetMovieMetadata(ctx context.Context, params GetMovieMetada
 	var pathParts [2]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -9435,7 +9435,7 @@ func (c *Client) sendGetMovieMetadata(ctx context.Context, params GetMovieMetada
 //
 // Fetch cast and crew credits for a movie from TMDb.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/credits
+// GET /api/v1/metadata/movie/{id}/credits
 func (c *Client) GetMovieMetadataCredits(ctx context.Context, params GetMovieMetadataCreditsParams) (GetMovieMetadataCreditsRes, error) {
 	res, err := c.sendGetMovieMetadataCredits(ctx, params)
 	return res, err
@@ -9445,7 +9445,7 @@ func (c *Client) sendGetMovieMetadataCredits(ctx context.Context, params GetMovi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}/credits"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}/credits"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9481,14 +9481,14 @@ func (c *Client) sendGetMovieMetadataCredits(ctx context.Context, params GetMovi
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -9572,7 +9572,7 @@ func (c *Client) sendGetMovieMetadataCredits(ctx context.Context, params GetMovi
 //
 // Fetch all available images (posters, backdrops, logos) for a movie from TMDb.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/images
+// GET /api/v1/metadata/movie/{id}/images
 func (c *Client) GetMovieMetadataImages(ctx context.Context, params GetMovieMetadataImagesParams) (GetMovieMetadataImagesRes, error) {
 	res, err := c.sendGetMovieMetadataImages(ctx, params)
 	return res, err
@@ -9582,7 +9582,7 @@ func (c *Client) sendGetMovieMetadataImages(ctx context.Context, params GetMovie
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}/images"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}/images"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9618,14 +9618,14 @@ func (c *Client) sendGetMovieMetadataImages(ctx context.Context, params GetMovie
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -9730,7 +9730,7 @@ func (c *Client) sendGetMovieMetadataImages(ctx context.Context, params GetMovie
 //
 // Fetch recommended movies from TMDb based on user ratings and viewing patterns.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/recommendations
+// GET /api/v1/metadata/movie/{id}/recommendations
 func (c *Client) GetMovieRecommendationsMetadata(ctx context.Context, params GetMovieRecommendationsMetadataParams) (GetMovieRecommendationsMetadataRes, error) {
 	res, err := c.sendGetMovieRecommendationsMetadata(ctx, params)
 	return res, err
@@ -9740,7 +9740,7 @@ func (c *Client) sendGetMovieRecommendationsMetadata(ctx context.Context, params
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMovieRecommendationsMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}/recommendations"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}/recommendations"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9776,14 +9776,14 @@ func (c *Client) sendGetMovieRecommendationsMetadata(ctx context.Context, params
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -9888,7 +9888,7 @@ func (c *Client) sendGetMovieRecommendationsMetadata(ctx context.Context, params
 //
 // Fetch detailed information about a person (actor, director, etc.) from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}
+// GET /api/v1/metadata/person/{id}
 func (c *Client) GetPersonMetadata(ctx context.Context, params GetPersonMetadataParams) (GetPersonMetadataRes, error) {
 	res, err := c.sendGetPersonMetadata(ctx, params)
 	return res, err
@@ -9898,7 +9898,7 @@ func (c *Client) sendGetPersonMetadata(ctx context.Context, params GetPersonMeta
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/person/{tmdbId}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/person/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9934,14 +9934,14 @@ func (c *Client) sendGetPersonMetadata(ctx context.Context, params GetPersonMeta
 	var pathParts [2]string
 	pathParts[0] = "/api/v1/metadata/person/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -10024,7 +10024,7 @@ func (c *Client) sendGetPersonMetadata(ctx context.Context, params GetPersonMeta
 //
 // Fetch filmography (cast and crew credits) for a person from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}/credits
+// GET /api/v1/metadata/person/{id}/credits
 func (c *Client) GetPersonMetadataCredits(ctx context.Context, params GetPersonMetadataCreditsParams) (GetPersonMetadataCreditsRes, error) {
 	res, err := c.sendGetPersonMetadataCredits(ctx, params)
 	return res, err
@@ -10034,7 +10034,7 @@ func (c *Client) sendGetPersonMetadataCredits(ctx context.Context, params GetPer
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/person/{tmdbId}/credits"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/person/{id}/credits"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10070,14 +10070,14 @@ func (c *Client) sendGetPersonMetadataCredits(ctx context.Context, params GetPer
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/person/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -10161,7 +10161,7 @@ func (c *Client) sendGetPersonMetadataCredits(ctx context.Context, params GetPer
 //
 // Fetch all available profile images for a person from TMDb.
 //
-// GET /api/v1/metadata/person/{tmdbId}/images
+// GET /api/v1/metadata/person/{id}/images
 func (c *Client) GetPersonMetadataImages(ctx context.Context, params GetPersonMetadataImagesParams) (GetPersonMetadataImagesRes, error) {
 	res, err := c.sendGetPersonMetadataImages(ctx, params)
 	return res, err
@@ -10171,7 +10171,7 @@ func (c *Client) sendGetPersonMetadataImages(ctx context.Context, params GetPers
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPersonMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/person/{tmdbId}/images"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/person/{id}/images"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10207,14 +10207,14 @@ func (c *Client) sendGetPersonMetadataImages(ctx context.Context, params GetPers
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/person/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -11695,7 +11695,7 @@ func (c *Client) sendGetSearchFacets(ctx context.Context) (res GetSearchFacetsRe
 // Fetch detailed season information from TMDb.
 // Returns season metadata including episodes overview.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}
 func (c *Client) GetSeasonMetadata(ctx context.Context, params GetSeasonMetadataParams) (GetSeasonMetadataRes, error) {
 	res, err := c.sendGetSeasonMetadata(ctx, params)
 	return res, err
@@ -11705,7 +11705,7 @@ func (c *Client) sendGetSeasonMetadata(ctx context.Context, params GetSeasonMeta
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSeasonMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11741,14 +11741,14 @@ func (c *Client) sendGetSeasonMetadata(ctx context.Context, params GetSeasonMeta
 	var pathParts [4]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -11850,7 +11850,7 @@ func (c *Client) sendGetSeasonMetadata(ctx context.Context, params GetSeasonMeta
 //
 // Fetch all available images (posters) for a TV season from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images
+// GET /api/v1/metadata/tv/{id}/season/{seasonNumber}/images
 func (c *Client) GetSeasonMetadataImages(ctx context.Context, params GetSeasonMetadataImagesParams) (GetSeasonMetadataImagesRes, error) {
 	res, err := c.sendGetSeasonMetadataImages(ctx, params)
 	return res, err
@@ -11860,7 +11860,7 @@ func (c *Client) sendGetSeasonMetadataImages(ctx context.Context, params GetSeas
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSeasonMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/season/{seasonNumber}/images"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11896,14 +11896,14 @@ func (c *Client) sendGetSeasonMetadataImages(ctx context.Context, params GetSeas
 	var pathParts [5]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -12300,7 +12300,7 @@ func (c *Client) sendGetSimilarMovies(ctx context.Context, params GetSimilarMovi
 //
 // Fetch a list of similar movies from TMDb based on genres and keywords.
 //
-// GET /api/v1/metadata/movie/{tmdbId}/similar
+// GET /api/v1/metadata/movie/{id}/similar
 func (c *Client) GetSimilarMoviesMetadata(ctx context.Context, params GetSimilarMoviesMetadataParams) (GetSimilarMoviesMetadataRes, error) {
 	res, err := c.sendGetSimilarMoviesMetadata(ctx, params)
 	return res, err
@@ -12310,7 +12310,7 @@ func (c *Client) sendGetSimilarMoviesMetadata(ctx context.Context, params GetSim
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSimilarMoviesMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{tmdbId}/similar"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/movie/{id}/similar"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12346,14 +12346,14 @@ func (c *Client) sendGetSimilarMoviesMetadata(ctx context.Context, params GetSim
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/movie/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -13666,7 +13666,7 @@ func (c *Client) sendGetTVShowCast(ctx context.Context, params GetTVShowCastPara
 //
 // Fetch content ratings (age classifications) for a TV show across different countries.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/content-ratings
+// GET /api/v1/metadata/tv/{id}/content-ratings
 func (c *Client) GetTVShowContentRatings(ctx context.Context, params GetTVShowContentRatingsParams) (GetTVShowContentRatingsRes, error) {
 	res, err := c.sendGetTVShowContentRatings(ctx, params)
 	return res, err
@@ -13676,7 +13676,7 @@ func (c *Client) sendGetTVShowContentRatings(ctx context.Context, params GetTVSh
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowContentRatings"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/content-ratings"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/content-ratings"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13712,14 +13712,14 @@ func (c *Client) sendGetTVShowContentRatings(ctx context.Context, params GetTVSh
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -14115,7 +14115,7 @@ func (c *Client) sendGetTVShowEpisodes(ctx context.Context, params GetTVShowEpis
 //
 // Fetch external database IDs for a TV show (IMDb, TVDb, Wikidata, social media).
 //
-// GET /api/v1/metadata/tv/{tmdbId}/external-ids
+// GET /api/v1/metadata/tv/{id}/external-ids
 func (c *Client) GetTVShowExternalIDs(ctx context.Context, params GetTVShowExternalIDsParams) (GetTVShowExternalIDsRes, error) {
 	res, err := c.sendGetTVShowExternalIDs(ctx, params)
 	return res, err
@@ -14125,7 +14125,7 @@ func (c *Client) sendGetTVShowExternalIDs(ctx context.Context, params GetTVShowE
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowExternalIDs"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/external-ids"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/external-ids"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14161,14 +14161,14 @@ func (c *Client) sendGetTVShowExternalIDs(ctx context.Context, params GetTVShowE
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -14390,7 +14390,7 @@ func (c *Client) sendGetTVShowGenres(ctx context.Context, params GetTVShowGenres
 // Fetch detailed TV show information from TMDb by TV show ID.
 // Returns comprehensive metadata including seasons overview.
 //
-// GET /api/v1/metadata/tv/{tmdbId}
+// GET /api/v1/metadata/tv/{id}
 func (c *Client) GetTVShowMetadata(ctx context.Context, params GetTVShowMetadataParams) (GetTVShowMetadataRes, error) {
 	res, err := c.sendGetTVShowMetadata(ctx, params)
 	return res, err
@@ -14400,7 +14400,7 @@ func (c *Client) sendGetTVShowMetadata(ctx context.Context, params GetTVShowMeta
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadata"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14436,14 +14436,14 @@ func (c *Client) sendGetTVShowMetadata(ctx context.Context, params GetTVShowMeta
 	var pathParts [2]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -14526,7 +14526,7 @@ func (c *Client) sendGetTVShowMetadata(ctx context.Context, params GetTVShowMeta
 //
 // Fetch aggregate cast and crew credits for a TV show from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/credits
+// GET /api/v1/metadata/tv/{id}/credits
 func (c *Client) GetTVShowMetadataCredits(ctx context.Context, params GetTVShowMetadataCreditsParams) (GetTVShowMetadataCreditsRes, error) {
 	res, err := c.sendGetTVShowMetadataCredits(ctx, params)
 	return res, err
@@ -14536,7 +14536,7 @@ func (c *Client) sendGetTVShowMetadataCredits(ctx context.Context, params GetTVS
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadataCredits"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/credits"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/credits"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14572,14 +14572,14 @@ func (c *Client) sendGetTVShowMetadataCredits(ctx context.Context, params GetTVS
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -14663,7 +14663,7 @@ func (c *Client) sendGetTVShowMetadataCredits(ctx context.Context, params GetTVS
 //
 // Fetch all available images (posters, backdrops, logos) for a TV show from TMDb.
 //
-// GET /api/v1/metadata/tv/{tmdbId}/images
+// GET /api/v1/metadata/tv/{id}/images
 func (c *Client) GetTVShowMetadataImages(ctx context.Context, params GetTVShowMetadataImagesParams) (GetTVShowMetadataImagesRes, error) {
 	res, err := c.sendGetTVShowMetadataImages(ctx, params)
 	return res, err
@@ -14673,7 +14673,7 @@ func (c *Client) sendGetTVShowMetadataImages(ctx context.Context, params GetTVSh
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTVShowMetadataImages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{tmdbId}/images"),
+		semconv.URLTemplateKey.String("/api/v1/metadata/tv/{id}/images"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14709,14 +14709,14 @@ func (c *Client) sendGetTVShowMetadataImages(ctx context.Context, params GetTVSh
 	var pathParts [3]string
 	pathParts[0] = "/api/v1/metadata/tv/"
 	{
-		// Encode "tmdbId" parameter.
+		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "tmdbId",
+			Param:   "id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.IntToString(params.TmdbId))
+			return e.EncodeValue(conv.StringToString(params.ID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}

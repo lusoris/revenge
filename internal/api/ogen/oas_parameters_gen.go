@@ -1753,23 +1753,23 @@ func decodeGetCollectionParams(args [1]string, argsEscaped bool, r *http.Request
 
 // GetCollectionMetadataParams is parameters of getCollectionMetadata operation.
 type GetCollectionMetadataParams struct {
-	// TMDb collection ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetCollectionMetadataParams(packed middleware.Parameters) (params GetCollectionMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetCollectionMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetCollectionMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -1781,7 +1781,7 @@ func decodeGetCollectionMetadataParams(args [1]string, argsEscaped bool, r *http
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -1793,12 +1793,12 @@ func decodeGetCollectionMetadataParams(args [1]string, argsEscaped bool, r *http
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -1809,7 +1809,7 @@ func decodeGetCollectionMetadataParams(args [1]string, argsEscaped bool, r *http
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -1979,8 +1979,8 @@ func decodeGetContinueWatchingParams(args [0]string, argsEscaped bool, r *http.R
 
 // GetEpisodeMetadataParams is parameters of getEpisodeMetadata operation.
 type GetEpisodeMetadataParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Season number.
 	SeasonNumber int
 	// Episode number.
@@ -1990,10 +1990,10 @@ type GetEpisodeMetadataParams struct {
 func unpackGetEpisodeMetadataParams(packed middleware.Parameters) (params GetEpisodeMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -2013,7 +2013,7 @@ func unpackGetEpisodeMetadataParams(packed middleware.Parameters) (params GetEpi
 }
 
 func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Request) (params GetEpisodeMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -2025,7 +2025,7 @@ func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Re
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -2037,12 +2037,12 @@ func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Re
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -2053,7 +2053,7 @@ func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Re
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -2153,8 +2153,8 @@ func decodeGetEpisodeMetadataParams(args [3]string, argsEscaped bool, r *http.Re
 
 // GetEpisodeMetadataImagesParams is parameters of getEpisodeMetadataImages operation.
 type GetEpisodeMetadataImagesParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Season number.
 	SeasonNumber int
 	// Episode number.
@@ -2166,10 +2166,10 @@ type GetEpisodeMetadataImagesParams struct {
 func unpackGetEpisodeMetadataImagesParams(packed middleware.Parameters) (params GetEpisodeMetadataImagesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -2199,7 +2199,7 @@ func unpackGetEpisodeMetadataImagesParams(packed middleware.Parameters) (params 
 
 func decodeGetEpisodeMetadataImagesParams(args [3]string, argsEscaped bool, r *http.Request) (params GetEpisodeMetadataImagesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -2211,7 +2211,7 @@ func decodeGetEpisodeMetadataImagesParams(args [3]string, argsEscaped bool, r *h
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -2223,12 +2223,12 @@ func decodeGetEpisodeMetadataImagesParams(args [3]string, argsEscaped bool, r *h
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -2239,7 +2239,7 @@ func decodeGetEpisodeMetadataImagesParams(args [3]string, argsEscaped bool, r *h
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3036,23 +3036,23 @@ func decodeGetMovieCrewParams(args [1]string, argsEscaped bool, r *http.Request)
 
 // GetMovieExternalIDsParams is parameters of getMovieExternalIDs operation.
 type GetMovieExternalIDsParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetMovieExternalIDsParams(packed middleware.Parameters) (params GetMovieExternalIDsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetMovieExternalIDsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieExternalIDsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3064,7 +3064,7 @@ func decodeGetMovieExternalIDsParams(args [1]string, argsEscaped bool, r *http.R
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3076,12 +3076,12 @@ func decodeGetMovieExternalIDsParams(args [1]string, argsEscaped bool, r *http.R
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3092,7 +3092,7 @@ func decodeGetMovieExternalIDsParams(args [1]string, argsEscaped bool, r *http.R
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3234,23 +3234,23 @@ func decodeGetMovieGenresParams(args [1]string, argsEscaped bool, r *http.Reques
 
 // GetMovieMetadataParams is parameters of getMovieMetadata operation.
 type GetMovieMetadataParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetMovieMetadataParams(packed middleware.Parameters) (params GetMovieMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3262,7 +3262,7 @@ func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Requ
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3274,12 +3274,12 @@ func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Requ
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3290,7 +3290,7 @@ func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Requ
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3300,23 +3300,23 @@ func decodeGetMovieMetadataParams(args [1]string, argsEscaped bool, r *http.Requ
 
 // GetMovieMetadataCreditsParams is parameters of getMovieMetadataCredits operation.
 type GetMovieMetadataCreditsParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetMovieMetadataCreditsParams(packed middleware.Parameters) (params GetMovieMetadataCreditsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataCreditsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3328,7 +3328,7 @@ func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *ht
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3340,12 +3340,12 @@ func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *ht
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3356,7 +3356,7 @@ func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *ht
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3366,8 +3366,8 @@ func decodeGetMovieMetadataCreditsParams(args [1]string, argsEscaped bool, r *ht
 
 // GetMovieMetadataImagesParams is parameters of getMovieMetadataImages operation.
 type GetMovieMetadataImagesParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// ISO 639-1 language filter (e.g. en, de).
 	Language OptString `json:",omitempty,omitzero"`
 }
@@ -3375,10 +3375,10 @@ type GetMovieMetadataImagesParams struct {
 func unpackGetMovieMetadataImagesParams(packed middleware.Parameters) (params GetMovieMetadataImagesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -3394,7 +3394,7 @@ func unpackGetMovieMetadataImagesParams(packed middleware.Parameters) (params Ge
 
 func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieMetadataImagesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3406,7 +3406,7 @@ func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *htt
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3418,12 +3418,12 @@ func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *htt
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3434,7 +3434,7 @@ func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *htt
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3485,8 +3485,8 @@ func decodeGetMovieMetadataImagesParams(args [1]string, argsEscaped bool, r *htt
 
 // GetMovieRecommendationsMetadataParams is parameters of getMovieRecommendationsMetadata operation.
 type GetMovieRecommendationsMetadataParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Maximum number of results.
 	Limit OptInt `json:",omitempty,omitzero"`
 }
@@ -3494,10 +3494,10 @@ type GetMovieRecommendationsMetadataParams struct {
 func unpackGetMovieRecommendationsMetadataParams(packed middleware.Parameters) (params GetMovieRecommendationsMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -3513,7 +3513,7 @@ func unpackGetMovieRecommendationsMetadataParams(packed middleware.Parameters) (
 
 func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetMovieRecommendationsMetadataParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3525,7 +3525,7 @@ func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped boo
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3537,12 +3537,12 @@ func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped boo
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3553,7 +3553,7 @@ func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped boo
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3634,23 +3634,23 @@ func decodeGetMovieRecommendationsMetadataParams(args [1]string, argsEscaped boo
 
 // GetPersonMetadataParams is parameters of getPersonMetadata operation.
 type GetPersonMetadataParams struct {
-	// TMDb person ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetPersonMetadataParams(packed middleware.Parameters) (params GetPersonMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3662,7 +3662,7 @@ func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3674,12 +3674,12 @@ func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3690,7 +3690,7 @@ func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3700,23 +3700,23 @@ func decodeGetPersonMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 
 // GetPersonMetadataCreditsParams is parameters of getPersonMetadataCredits operation.
 type GetPersonMetadataCreditsParams struct {
-	// TMDb person ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetPersonMetadataCreditsParams(packed middleware.Parameters) (params GetPersonMetadataCreditsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataCreditsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3728,7 +3728,7 @@ func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3740,12 +3740,12 @@ func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3756,7 +3756,7 @@ func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3766,23 +3766,23 @@ func decodeGetPersonMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 
 // GetPersonMetadataImagesParams is parameters of getPersonMetadataImages operation.
 type GetPersonMetadataImagesParams struct {
-	// TMDb person ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetPersonMetadataImagesParams(packed middleware.Parameters) (params GetPersonMetadataImagesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetPersonMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPersonMetadataImagesParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -3794,7 +3794,7 @@ func decodeGetPersonMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -3806,12 +3806,12 @@ func decodeGetPersonMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -3822,7 +3822,7 @@ func decodeGetPersonMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -5058,8 +5058,8 @@ func decodeGetRoleParams(args [1]string, argsEscaped bool, r *http.Request) (par
 
 // GetSeasonMetadataParams is parameters of getSeasonMetadata operation.
 type GetSeasonMetadataParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Season number.
 	SeasonNumber int
 }
@@ -5067,10 +5067,10 @@ type GetSeasonMetadataParams struct {
 func unpackGetSeasonMetadataParams(packed middleware.Parameters) (params GetSeasonMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -5083,7 +5083,7 @@ func unpackGetSeasonMetadataParams(packed middleware.Parameters) (params GetSeas
 }
 
 func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Request) (params GetSeasonMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -5095,7 +5095,7 @@ func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Req
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -5107,12 +5107,12 @@ func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Req
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -5123,7 +5123,7 @@ func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Req
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -5178,8 +5178,8 @@ func decodeGetSeasonMetadataParams(args [2]string, argsEscaped bool, r *http.Req
 
 // GetSeasonMetadataImagesParams is parameters of getSeasonMetadataImages operation.
 type GetSeasonMetadataImagesParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Season number.
 	SeasonNumber int
 	// ISO 639-1 language filter.
@@ -5189,10 +5189,10 @@ type GetSeasonMetadataImagesParams struct {
 func unpackGetSeasonMetadataImagesParams(packed middleware.Parameters) (params GetSeasonMetadataImagesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -5215,7 +5215,7 @@ func unpackGetSeasonMetadataImagesParams(packed middleware.Parameters) (params G
 
 func decodeGetSeasonMetadataImagesParams(args [2]string, argsEscaped bool, r *http.Request) (params GetSeasonMetadataImagesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -5227,7 +5227,7 @@ func decodeGetSeasonMetadataImagesParams(args [2]string, argsEscaped bool, r *ht
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -5239,12 +5239,12 @@ func decodeGetSeasonMetadataImagesParams(args [2]string, argsEscaped bool, r *ht
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -5255,7 +5255,7 @@ func decodeGetSeasonMetadataImagesParams(args [2]string, argsEscaped bool, r *ht
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -5483,8 +5483,8 @@ func decodeGetSimilarMoviesParams(args [1]string, argsEscaped bool, r *http.Requ
 
 // GetSimilarMoviesMetadataParams is parameters of getSimilarMoviesMetadata operation.
 type GetSimilarMoviesMetadataParams struct {
-	// TMDb movie ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// Maximum number of results.
 	Limit OptInt `json:",omitempty,omitzero"`
 }
@@ -5492,10 +5492,10 @@ type GetSimilarMoviesMetadataParams struct {
 func unpackGetSimilarMoviesMetadataParams(packed middleware.Parameters) (params GetSimilarMoviesMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -5511,7 +5511,7 @@ func unpackGetSimilarMoviesMetadataParams(packed middleware.Parameters) (params 
 
 func decodeGetSimilarMoviesMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetSimilarMoviesMetadataParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -5523,7 +5523,7 @@ func decodeGetSimilarMoviesMetadataParams(args [1]string, argsEscaped bool, r *h
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -5535,12 +5535,12 @@ func decodeGetSimilarMoviesMetadataParams(args [1]string, argsEscaped bool, r *h
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -5551,7 +5551,7 @@ func decodeGetSimilarMoviesMetadataParams(args [1]string, argsEscaped bool, r *h
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -6351,23 +6351,23 @@ func decodeGetTVShowCastParams(args [1]string, argsEscaped bool, r *http.Request
 
 // GetTVShowContentRatingsParams is parameters of getTVShowContentRatings operation.
 type GetTVShowContentRatingsParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetTVShowContentRatingsParams(packed middleware.Parameters) (params GetTVShowContentRatingsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetTVShowContentRatingsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowContentRatingsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -6379,7 +6379,7 @@ func decodeGetTVShowContentRatingsParams(args [1]string, argsEscaped bool, r *ht
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -6391,12 +6391,12 @@ func decodeGetTVShowContentRatingsParams(args [1]string, argsEscaped bool, r *ht
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -6407,7 +6407,7 @@ func decodeGetTVShowContentRatingsParams(args [1]string, argsEscaped bool, r *ht
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -6712,23 +6712,23 @@ func decodeGetTVShowEpisodesParams(args [1]string, argsEscaped bool, r *http.Req
 
 // GetTVShowExternalIDsParams is parameters of getTVShowExternalIDs operation.
 type GetTVShowExternalIDsParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetTVShowExternalIDsParams(packed middleware.Parameters) (params GetTVShowExternalIDsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetTVShowExternalIDsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowExternalIDsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -6740,7 +6740,7 @@ func decodeGetTVShowExternalIDsParams(args [1]string, argsEscaped bool, r *http.
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -6752,12 +6752,12 @@ func decodeGetTVShowExternalIDsParams(args [1]string, argsEscaped bool, r *http.
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -6768,7 +6768,7 @@ func decodeGetTVShowExternalIDsParams(args [1]string, argsEscaped bool, r *http.
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -6844,23 +6844,23 @@ func decodeGetTVShowGenresParams(args [1]string, argsEscaped bool, r *http.Reque
 
 // GetTVShowMetadataParams is parameters of getTVShowMetadata operation.
 type GetTVShowMetadataParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetTVShowMetadataParams(packed middleware.Parameters) (params GetTVShowMetadataParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -6872,7 +6872,7 @@ func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -6884,12 +6884,12 @@ func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -6900,7 +6900,7 @@ func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -6910,23 +6910,23 @@ func decodeGetTVShowMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 
 // GetTVShowMetadataCreditsParams is parameters of getTVShowMetadataCredits operation.
 type GetTVShowMetadataCreditsParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 }
 
 func unpackGetTVShowMetadataCreditsParams(packed middleware.Parameters) (params GetTVShowMetadataCreditsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	return params
 }
 
 func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataCreditsParams, _ error) {
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -6938,7 +6938,7 @@ func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -6950,12 +6950,12 @@ func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -6966,7 +6966,7 @@ func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}
@@ -6976,8 +6976,8 @@ func decodeGetTVShowMetadataCreditsParams(args [1]string, argsEscaped bool, r *h
 
 // GetTVShowMetadataImagesParams is parameters of getTVShowMetadataImages operation.
 type GetTVShowMetadataImagesParams struct {
-	// TMDb TV show ID.
-	TmdbId int
+	// Metadata provider ID (e.g. TMDb ID).
+	ID string
 	// ISO 639-1 language filter.
 	Language OptString `json:",omitempty,omitzero"`
 }
@@ -6985,10 +6985,10 @@ type GetTVShowMetadataImagesParams struct {
 func unpackGetTVShowMetadataImagesParams(packed middleware.Parameters) (params GetTVShowMetadataImagesParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 		}
-		params.TmdbId = packed[key].(int)
+		params.ID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -7004,7 +7004,7 @@ func unpackGetTVShowMetadataImagesParams(packed middleware.Parameters) (params G
 
 func decodeGetTVShowMetadataImagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetTVShowMetadataImagesParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: tmdbId.
+	// Decode path: id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -7016,7 +7016,7 @@ func decodeGetTVShowMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "tmdbId",
+				Param:   "id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -7028,12 +7028,12 @@ func decodeGetTVShowMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 					return err
 				}
 
-				c, err := conv.ToInt(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
 
-				params.TmdbId = c
+				params.ID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -7044,7 +7044,7 @@ func decodeGetTVShowMetadataImagesParams(args [1]string, argsEscaped bool, r *ht
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "tmdbId",
+			Name: "id",
 			In:   "path",
 			Err:  err,
 		}

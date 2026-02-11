@@ -5838,7 +5838,7 @@ func (*MarkTVEpisodeWatchedUnauthorized) markTVEpisodeWatchedRes() {}
 
 // Ref: #/components/schemas/MetadataCastMember
 type MetadataCastMember struct {
-	// TMDb person ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	ID OptInt `json:"id"`
 	// Actor name.
 	Name OptString `json:"name"`
@@ -5902,7 +5902,7 @@ func (s *MetadataCastMember) SetProfilePath(val OptNilString) {
 
 // Ref: #/components/schemas/MetadataCollection
 type MetadataCollection struct {
-	// TMDb collection ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	ID OptInt `json:"id"`
 	// Collection name.
 	Name OptString `json:"name"`
@@ -5979,7 +5979,7 @@ func (*MetadataCollection) getCollectionMetadataRes() {}
 // A movie that is part of a collection.
 // Ref: #/components/schemas/MetadataCollectionPart
 type MetadataCollectionPart struct {
-	// TMDb movie ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	ID OptInt `json:"id"`
 	// Movie title.
 	Title OptString `json:"title"`
@@ -6181,7 +6181,7 @@ func (*MetadataCredits) getTVShowMetadataCreditsRes() {}
 
 // Ref: #/components/schemas/MetadataCrewMember
 type MetadataCrewMember struct {
-	// TMDb person ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	ID OptInt `json:"id"`
 	// Crew member name.
 	Name OptString `json:"name"`
@@ -6246,7 +6246,7 @@ func (s *MetadataCrewMember) SetProfilePath(val OptNilString) {
 type MetadataEpisode struct {
 	// TMDb episode ID.
 	ID OptInt `json:"id"`
-	// TMDb TV show ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbShowID    OptInt `json:"tmdb_show_id"`
 	SeasonNumber  OptInt `json:"season_number"`
 	EpisodeNumber OptInt `json:"episode_number"`
@@ -7028,7 +7028,7 @@ func (s *MetadataMediaReferenceMediaType) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/MetadataMovie
 type MetadataMovie struct {
-	// TMDb movie ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// IMDb ID.
 	ImdbID OptNilString `json:"imdb_id"`
@@ -7670,7 +7670,7 @@ func (*MetadataProviderList) listMetadataProvidersRes() {}
 
 // Ref: #/components/schemas/MetadataSearchResult
 type MetadataSearchResult struct {
-	// TMDb movie ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// Movie title.
 	Title OptString `json:"title"`
@@ -7851,7 +7851,7 @@ func (*MetadataSearchResults) searchMoviesMetadataRes()            {}
 type MetadataSeason struct {
 	// TMDb season ID.
 	ID OptInt `json:"id"`
-	// TMDb TV show ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbShowID OptInt `json:"tmdb_show_id"`
 	// Season number.
 	SeasonNumber OptInt `json:"season_number"`
@@ -8032,7 +8032,7 @@ func (s *MetadataSeasonSummary) SetPosterPath(val OptNilString) {
 
 // Ref: #/components/schemas/MetadataTVSearchResult
 type MetadataTVSearchResult struct {
-	// TMDb TV show ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// TV show name.
 	Name OptString `json:"name"`
@@ -8209,7 +8209,7 @@ func (*MetadataTVSearchResults) searchTVShowsMetadataRes() {}
 
 // Ref: #/components/schemas/MetadataTVShow
 type MetadataTVShow struct {
-	// TMDb TV show ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// IMDb ID.
 	ImdbID OptNilString `json:"imdb_id"`
@@ -8786,7 +8786,7 @@ func (*Movie) getMovieRes() {}
 // Ref: #/components/schemas/MovieCollection
 type MovieCollection struct {
 	ID OptUUID `json:"id"`
-	// TMDb collection ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbCollectionID OptNilInt `json:"tmdb_collection_id"`
 	// Collection name.
 	Name OptString `json:"name"`
@@ -8887,7 +8887,7 @@ func (*MovieCollection) getMovieCollectionRes() {}
 type MovieCredit struct {
 	ID      OptUUID `json:"id"`
 	MovieID OptUUID `json:"movie_id"`
-	// TMDb person ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbPersonID OptInt `json:"tmdb_person_id"`
 	// Person name.
 	Name OptString `json:"name"`
@@ -14050,7 +14050,7 @@ func (*PermissionsResponse) listPermissionsRes() {}
 
 // Ref: #/components/schemas/PersonSearchDocument
 type PersonSearchDocument struct {
-	// TMDb person ID as string.
+	// Metadata provider ID (e.g. TMDb ID) as string.
 	ID          OptString `json:"id"`
 	TmdbID      OptInt    `json:"tmdb_id"`
 	Name        OptString `json:"name"`
@@ -16143,7 +16143,7 @@ func (*SearchActivityLogsUnauthorized) searchActivityLogsRes() {}
 type SearchDocument struct {
 	// Movie ID.
 	ID OptUUID `json:"id"`
-	// TMDb movie ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// IMDb ID.
 	ImdbID OptString `json:"imdb_id"`
@@ -17821,7 +17821,7 @@ func (s *SetupTOTPReq) SetAccountName(val string) {
 // A similar movie recommendation from TMDb.
 // Ref: #/components/schemas/SimilarMovie
 type SimilarMovie struct {
-	// TMDb movie ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbID OptInt `json:"tmdb_id"`
 	// Movie title.
 	Title OptString `json:"title"`
@@ -20326,7 +20326,7 @@ func (*TVSeries) getTVShowRes() {}
 type TVSeriesCredit struct {
 	ID       OptUUID `json:"id"`
 	SeriesID OptUUID `json:"series_id"`
-	// TMDb person ID.
+	// Metadata provider ID (e.g. TMDb ID).
 	TmdbPersonID OptInt `json:"tmdb_person_id"`
 	// Person name.
 	Name OptString `json:"name"`

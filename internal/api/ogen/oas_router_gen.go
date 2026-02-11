@@ -1361,7 +1361,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Leaf parameter, slashes are prohibited
 							idx := strings.IndexByte(elem, '/')
 							if idx >= 0 {
@@ -1392,7 +1392,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
 							if idx < 0 {
@@ -1560,7 +1560,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									break
 								}
 
-								// Param: "tmdbId"
+								// Param: "id"
 								// Match until "/"
 								idx := strings.IndexByte(elem, '/')
 								if idx < 0 {
@@ -1746,7 +1746,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
 							if idx < 0 {
@@ -6281,7 +6281,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Leaf parameter, slashes are prohibited
 							idx := strings.IndexByte(elem, '/')
 							if idx >= 0 {
@@ -6298,7 +6298,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = "Get collection details from TMDb"
 									r.operationID = "getCollectionMetadata"
 									r.operationGroup = ""
-									r.pathPattern = "/api/v1/metadata/collection/{tmdbId}"
+									r.pathPattern = "/api/v1/metadata/collection/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -6315,7 +6315,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
 							if idx < 0 {
@@ -6331,7 +6331,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = "Get movie details from TMDb"
 									r.operationID = "getMovieMetadata"
 									r.operationGroup = ""
-									r.pathPattern = "/api/v1/metadata/movie/{tmdbId}"
+									r.pathPattern = "/api/v1/metadata/movie/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -6368,7 +6368,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get movie credits from metadata provider"
 											r.operationID = "getMovieMetadataCredits"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/credits"
+											r.pathPattern = "/api/v1/metadata/movie/{id}/credits"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6393,7 +6393,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get movie external IDs"
 											r.operationID = "getMovieExternalIDs"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/external-ids"
+											r.pathPattern = "/api/v1/metadata/movie/{id}/external-ids"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6418,7 +6418,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get movie images from metadata provider"
 											r.operationID = "getMovieMetadataImages"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/images"
+											r.pathPattern = "/api/v1/metadata/movie/{id}/images"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6443,7 +6443,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get movie recommendations from metadata provider"
 											r.operationID = "getMovieRecommendationsMetadata"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/recommendations"
+											r.pathPattern = "/api/v1/metadata/movie/{id}/recommendations"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6468,7 +6468,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get similar movies from metadata provider"
 											r.operationID = "getSimilarMoviesMetadata"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/movie/{tmdbId}/similar"
+											r.pathPattern = "/api/v1/metadata/movie/{id}/similar"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6501,7 +6501,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									break
 								}
 
-								// Param: "tmdbId"
+								// Param: "id"
 								// Match until "/"
 								idx := strings.IndexByte(elem, '/')
 								if idx < 0 {
@@ -6517,7 +6517,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = "Get person details from metadata provider"
 										r.operationID = "getPersonMetadata"
 										r.operationGroup = ""
-										r.pathPattern = "/api/v1/metadata/person/{tmdbId}"
+										r.pathPattern = "/api/v1/metadata/person/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -6554,7 +6554,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = "Get person credits from metadata provider"
 												r.operationID = "getPersonMetadataCredits"
 												r.operationGroup = ""
-												r.pathPattern = "/api/v1/metadata/person/{tmdbId}/credits"
+												r.pathPattern = "/api/v1/metadata/person/{id}/credits"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -6579,7 +6579,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = "Get person images from metadata provider"
 												r.operationID = "getPersonMetadataImages"
 												r.operationGroup = ""
-												r.pathPattern = "/api/v1/metadata/person/{tmdbId}/images"
+												r.pathPattern = "/api/v1/metadata/person/{id}/images"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -6716,7 +6716,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								break
 							}
 
-							// Param: "tmdbId"
+							// Param: "id"
 							// Match until "/"
 							idx := strings.IndexByte(elem, '/')
 							if idx < 0 {
@@ -6732,7 +6732,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = "Get TV show details from TMDb"
 									r.operationID = "getTVShowMetadata"
 									r.operationGroup = ""
-									r.pathPattern = "/api/v1/metadata/tv/{tmdbId}"
+									r.pathPattern = "/api/v1/metadata/tv/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -6781,7 +6781,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = "Get TV show content ratings"
 												r.operationID = "getTVShowContentRatings"
 												r.operationGroup = ""
-												r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/content-ratings"
+												r.pathPattern = "/api/v1/metadata/tv/{id}/content-ratings"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -6806,7 +6806,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = "Get TV show credits from metadata provider"
 												r.operationID = "getTVShowMetadataCredits"
 												r.operationGroup = ""
-												r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/credits"
+												r.pathPattern = "/api/v1/metadata/tv/{id}/credits"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -6833,7 +6833,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get TV show external IDs"
 											r.operationID = "getTVShowExternalIDs"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/external-ids"
+											r.pathPattern = "/api/v1/metadata/tv/{id}/external-ids"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6858,7 +6858,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get TV show images from metadata provider"
 											r.operationID = "getTVShowMetadataImages"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/images"
+											r.pathPattern = "/api/v1/metadata/tv/{id}/images"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -6891,7 +6891,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = "Get season details from TMDb"
 											r.operationID = "getSeasonMetadata"
 											r.operationGroup = ""
-											r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}"
+											r.pathPattern = "/api/v1/metadata/tv/{id}/season/{seasonNumber}"
 											r.args = args
 											r.count = 2
 											return r, true
@@ -6936,7 +6936,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = "Get episode details from TMDb"
 													r.operationID = "getEpisodeMetadata"
 													r.operationGroup = ""
-													r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}"
+													r.pathPattern = "/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}"
 													r.args = args
 													r.count = 3
 													return r, true
@@ -6961,7 +6961,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 														r.summary = "Get episode images from metadata provider"
 														r.operationID = "getEpisodeMetadataImages"
 														r.operationGroup = ""
-														r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/episode/{episodeNumber}/images"
+														r.pathPattern = "/api/v1/metadata/tv/{id}/season/{seasonNumber}/episode/{episodeNumber}/images"
 														r.args = args
 														r.count = 3
 														return r, true
@@ -6988,7 +6988,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = "Get season images from metadata provider"
 													r.operationID = "getSeasonMetadataImages"
 													r.operationGroup = ""
-													r.pathPattern = "/api/v1/metadata/tv/{tmdbId}/season/{seasonNumber}/images"
+													r.pathPattern = "/api/v1/metadata/tv/{id}/season/{seasonNumber}/images"
 													r.args = args
 													r.count = 2
 													return r, true
