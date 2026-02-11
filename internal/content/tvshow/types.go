@@ -444,7 +444,7 @@ type SeriesGenre struct {
 // Network represents a TV network or streaming service.
 type Network struct {
 	ID            uuid.UUID
-	TMDbID        int32
+	TMDbID        *int32
 	Name          string
 	LogoPath      *string
 	OriginCountry *string

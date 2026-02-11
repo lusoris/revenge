@@ -2243,8 +2243,9 @@ func TestGetSeriesNetworks(t *testing.T) {
 	svc := NewService(repo, nil)
 
 	seriesID := uuid.Must(uuid.NewV7())
+	amcTMDbID := int32(174)
 	expected := []Network{
-		{ID: uuid.Must(uuid.NewV7()), TMDbID: 174, Name: "AMC"},
+		{ID: uuid.Must(uuid.NewV7()), TMDbID: &amcTMDbID, Name: "AMC"},
 	}
 
 	repo.On("ListNetworksBySeries", ctx, seriesID).Return(expected, nil)

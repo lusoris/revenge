@@ -628,7 +628,7 @@ type TvshowEpisodeWatched struct {
 
 type TvshowNetwork struct {
 	ID            uuid.UUID `json:"id"`
-	TmdbID        int32     `json:"tmdbId"`
+	TmdbID        *int32    `json:"tmdbId"`
 	Name          string    `json:"name"`
 	LogoPath      *string   `json:"logoPath"`
 	OriginCountry *string   `json:"originCountry"`

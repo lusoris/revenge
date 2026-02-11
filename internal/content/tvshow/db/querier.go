@@ -48,7 +48,7 @@ type Querier interface {
 	GetEpisodeFileBySonarrID(ctx context.Context, sonarrFileID *int32) (TvshowEpisodeFile, error)
 	GetEpisodeWatchProgress(ctx context.Context, arg GetEpisodeWatchProgressParams) (TvshowEpisodeWatched, error)
 	GetNetwork(ctx context.Context, id uuid.UUID) (TvshowNetwork, error)
-	GetNetworkByTMDbID(ctx context.Context, tmdbID int32) (TvshowNetwork, error)
+	GetNetworkByTMDbID(ctx context.Context, tmdbID *int32) (TvshowNetwork, error)
 	GetNextUnwatchedEpisode(ctx context.Context, arg GetNextUnwatchedEpisodeParams) (TvshowEpisode, error)
 	GetSeason(ctx context.Context, id uuid.UUID) (TvshowSeason, error)
 	GetSeasonByNumber(ctx context.Context, arg GetSeasonByNumberParams) (TvshowSeason, error)

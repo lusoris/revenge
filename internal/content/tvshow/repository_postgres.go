@@ -1008,7 +1008,7 @@ func (r *postgresRepository) GetNetwork(ctx context.Context, id uuid.UUID) (*Net
 }
 
 func (r *postgresRepository) GetNetworkByTMDbID(ctx context.Context, tmdbID int32) (*Network, error) {
-	network, err := r.queries.GetNetworkByTMDbID(ctx, tmdbID)
+	network, err := r.queries.GetNetworkByTMDbID(ctx, &tmdbID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("network not found: %w", err)

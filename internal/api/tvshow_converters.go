@@ -257,11 +257,13 @@ func seriesGenreToOgen(g *tvshow.SeriesGenre) *ogen.TVGenre {
 func networkToOgen(n *tvshow.Network) *ogen.TVNetwork {
 	o := &ogen.TVNetwork{
 		ID:        ogen.NewOptUUID(n.ID),
-		TmdbID:    ogen.NewOptInt(int(n.TMDbID)),
 		Name:      ogen.NewOptString(n.Name),
 		CreatedAt: ogen.NewOptDateTime(n.CreatedAt),
 	}
 
+	if n.TMDbID != nil {
+		o.TmdbID.SetTo(int(*n.TMDbID))
+	}
 	if n.LogoPath != nil {
 		o.LogoPath.SetTo(*n.LogoPath)
 	}

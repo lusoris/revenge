@@ -310,7 +310,7 @@ type CreateEpisodeCreditParams struct {
 
 // CreateNetworkParams contains parameters for creating a network
 type CreateNetworkParams struct {
-	TMDbID        int32
+	TMDbID        *int32
 	Name          string
 	LogoPath      *string
 	OriginCountry *string

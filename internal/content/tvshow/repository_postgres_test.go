@@ -950,7 +950,7 @@ func TestRepo_Networks(t *testing.T) {
 	// Create network
 	tmdbNetID := rand.Int32N(9000000) + 1000000 //nolint:gosec
 	net, err := repo.CreateNetwork(ctx, CreateNetworkParams{
-		TMDbID:        tmdbNetID,
+		TMDbID:        &tmdbNetID,
 		Name:          "AMC",
 		LogoPath:      strPtr("/amc_logo.png"),
 		OriginCountry: strPtr("US"),
@@ -993,7 +993,7 @@ func TestRepo_ListSeriesByNetwork(t *testing.T) {
 
 	tmdbNetID := rand.Int32N(9000000) + 1000000 //nolint:gosec
 	net, err := repo.CreateNetwork(ctx, CreateNetworkParams{
-		TMDbID: tmdbNetID,
+		TMDbID: &tmdbNetID,
 		Name:   "HBO",
 	})
 	require.NoError(t, err)
@@ -1256,7 +1256,7 @@ func TestRepo_CascadeDelete_SeriesDeletesEverything(t *testing.T) {
 	require.NoError(t, err)
 
 	tmdbNetID := rand.Int32N(9000000) + 1000000 //nolint:gosec
-	net, err := repo.CreateNetwork(ctx, CreateNetworkParams{TMDbID: tmdbNetID, Name: "Cascade Net"})
+	net, err := repo.CreateNetwork(ctx, CreateNetworkParams{TMDbID: &tmdbNetID, Name: "Cascade Net"})
 	require.NoError(t, err)
 	err = repo.AddSeriesNetwork(ctx, series.ID, net.ID)
 	require.NoError(t, err)

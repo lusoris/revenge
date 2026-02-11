@@ -717,9 +717,10 @@ func TestEpisodeFile(t *testing.T) {
 }
 
 func TestNetwork(t *testing.T) {
+	tmdbID := int32(174)
 	network := Network{
 		ID:            uuid.Must(uuid.NewV7()),
-		TMDbID:        174,
+		TMDbID:        &tmdbID,
 		Name:          "AMC",
 		LogoPath:      strPtr("/path/to/logo.png"),
 		OriginCountry: strPtr("US"),
@@ -727,7 +728,7 @@ func TestNetwork(t *testing.T) {
 	}
 
 	assert.NotEqual(t, uuid.Nil, network.ID)
-	assert.Equal(t, int32(174), network.TMDbID)
+	assert.Equal(t, int32(174), *network.TMDbID)
 	assert.Equal(t, "AMC", network.Name)
 	assert.Equal(t, "/path/to/logo.png", *network.LogoPath)
 	assert.Equal(t, "US", *network.OriginCountry)

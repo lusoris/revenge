@@ -38,7 +38,7 @@ RETURNING id, tmdb_id, name, logo_path, origin_country, created_at
 `
 
 type CreateNetworkParams struct {
-	TmdbID        int32   `json:"tmdbId"`
+	TmdbID        *int32  `json:"tmdbId"`
 	Name          string  `json:"name"`
 	LogoPath      *string `json:"logoPath"`
 	OriginCountry *string `json:"originCountry"`
@@ -94,7 +94,7 @@ const getNetworkByTMDbID = `-- name: GetNetworkByTMDbID :one
 SELECT id, tmdb_id, name, logo_path, origin_country, created_at FROM tvshow.networks WHERE tmdb_id = $1
 `
 
-func (q *Queries) GetNetworkByTMDbID(ctx context.Context, tmdbID int32) (TvshowNetwork, error) {
+func (q *Queries) GetNetworkByTMDbID(ctx context.Context, tmdbID *int32) (TvshowNetwork, error) {
 	row := q.db.QueryRow(ctx, getNetworkByTMDbID, tmdbID)
 	var i TvshowNetwork
 	err := row.Scan(

@@ -177,9 +177,10 @@ func (a *Adapter) GetSeriesNetworks(ctx context.Context, providerID string) ([]c
 
 	networks := make([]contenttvshow.Network, len(meta.Networks))
 	for i, n := range meta.Networks {
+		tmdbID := util.SafeIntToInt32(n.ID)
 		networks[i] = contenttvshow.Network{
 			ID:            uuid.Must(uuid.NewV7()),
-			TMDbID:        util.SafeIntToInt32(n.ID),
+			TMDbID:        &tmdbID,
 			Name:          n.Name,
 			LogoPath:      n.LogoPath,
 			OriginCountry: ptrString(n.OriginCountry),
