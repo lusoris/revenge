@@ -1964,6 +1964,238 @@ func TestLive_PlaybackRealSession(t *testing.T) {
 }
 
 // =============================================================================
+// 21b. Full-file Playback (consume every segment until EXT-X-ENDLIST)
+// =============================================================================
+
+// TestLive_PlaybackFullFile starts an HLS session for the BBB 4K file and
+// fetches every .ts segment until the media playlist contains #EXT-X-ENDLIST,
+// meaning FFmpeg has finished transcoding the entire file. This is a long
+// test (~10-15 min) that exercises sustained transcoding + serving.
+func TestLive_PlaybackFullFile(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping full-file playback in short mode")
+	}
+
+	admin := ensureAdmin(t)
+	tok := admin.accessToken
+
+	// ---- 1. Insert movie + movie_file ----
+	var movieID, fileID string
+	t.Run("setup_movie", func(t *testing.T) {
+		db, err := sql.Open("pgx", dbURL)
+		require.NoError(t, err)
+		defer db.Close()
+
+		err = db.QueryRow(`
+			INSERT INTO movie.movies (title, year, runtime, overview, original_language)
+			VALUES ('BBB Full Playback', 2008, 10, 'Full-file playback test.', 'en')
+			RETURNING id`).Scan(&movieID)
+		require.NoError(t, err)
+
+		err = db.QueryRow(`
+			INSERT INTO movie.movie_files
+				(movie_id, file_path, file_size, file_name, resolution, video_codec, audio_codec, container, duration_seconds, bitrate_kbps)
+			VALUES ($1, '/movies/bbb_sunflower_2160p_30fps_normal.mp4', 633000000,
+				'bbb_sunflower_2160p_30fps_normal.mp4', '2160p', 'h264', 'mp3', 'mp4', 634, 8000)
+			RETURNING id`, movieID).Scan(&fileID)
+		require.NoError(t, err)
+		t.Logf("movie=%s file=%s", movieID, fileID)
+	})
+	defer func() {
+		if movieID != "" {
+			db, _ := sql.Open("pgx", dbURL)
+			if db != nil {
+				defer db.Close()
+				_, _ = db.Exec(`DELETE FROM movie.movies WHERE id = $1`, movieID)
+			}
+		}
+	}()
+
+	// ---- 2. Start playback ----
+	var sessionID, masterPlaylistURL string
+	t.Run("start_session", func(t *testing.T) {
+		status, body := doJSON(t, "POST", "/api/v1/playback/sessions", tok, map[string]interface{}{
+			"media_type": "movie",
+			"media_id":   movieID,
+		})
+		require.True(t, status == 200 || status == 201, "start failed (%d): %v", status, body)
+		sessionID, _ = body["session_id"].(string)
+		masterPlaylistURL, _ = body["master_playlist_url"].(string)
+		require.NotEmpty(t, sessionID)
+		require.NotEmpty(t, masterPlaylistURL)
+		t.Logf("session=%s", sessionID)
+	})
+	defer func() {
+		if sessionID != "" {
+			resp := doRequest(t, "DELETE", "/api/v1/playback/sessions/"+sessionID, tok, nil)
+			resp.Body.Close()
+		}
+	}()
+
+	// ---- 3. Consume every segment until #EXT-X-ENDLIST ----
+	t.Run("consume_full_stream", func(t *testing.T) {
+		if masterPlaylistURL == "" {
+			t.Skip("no master playlist")
+		}
+
+		// Use a longer-timeout client — FFmpeg can stall the playlist endpoint
+		// while transcoding, especially at 4K.
+		longClient := &http.Client{Timeout: 120 * time.Second}
+		doLongGet := func(url string) (*http.Response, error) {
+			req, err := http.NewRequest("GET", baseURL+url, nil)
+			if err != nil {
+				return nil, err
+			}
+			if !strings.HasPrefix(url, "http") {
+				req, _ = http.NewRequest("GET", baseURL+url, nil)
+			} else {
+				req, _ = http.NewRequest("GET", url, nil)
+			}
+			req.Header.Set("Authorization", "Bearer "+tok)
+			return longClient.Do(req)
+		}
+
+		// Resolve media playlist URL from master.
+		var mediaURL string
+		masterBase := masterPlaylistURL[:strings.LastIndex(masterPlaylistURL, "/")+1]
+		deadline := time.Now().Add(60 * time.Second)
+		for mediaURL == "" && time.Now().Before(deadline) {
+			resp, err := doLongGet(masterPlaylistURL)
+			require.NoError(t, err)
+			raw, _ := io.ReadAll(resp.Body)
+			resp.Body.Close()
+			for _, line := range strings.Split(string(raw), "\n") {
+				line = strings.TrimSpace(line)
+				if line != "" && !strings.HasPrefix(line, "#") {
+					if !strings.HasPrefix(line, "/") && !strings.HasPrefix(line, "http") {
+						line = masterBase + line
+					}
+					mediaURL = line
+					break
+				}
+			}
+			if mediaURL == "" {
+				time.Sleep(1 * time.Second)
+			}
+		}
+		require.NotEmpty(t, mediaURL, "should find media playlist within 60s")
+		t.Logf("media playlist: %s", mediaURL)
+		mediaBase := mediaURL[:strings.LastIndex(mediaURL, "/")+1]
+
+		// Track state across polls.
+		fetched := make(map[string]bool)    // segment URLs already downloaded
+		var totalBytes int64
+		var totalSegments int
+		var totalDuration float64
+		finished := false
+
+		// Poll until #EXT-X-ENDLIST and all segments fetched, timeout 20 min.
+		overallDeadline := time.Now().Add(20 * time.Minute)
+		pollInterval := 3 * time.Second
+
+		for !finished && time.Now().Before(overallDeadline) {
+			resp, err := doLongGet(mediaURL)
+			if err != nil {
+				t.Logf("WARN: media playlist fetch error: %v", err)
+				time.Sleep(pollInterval)
+				continue
+			}
+			raw, _ := io.ReadAll(resp.Body)
+			resp.Body.Close()
+			playlist := string(raw)
+
+			hasEndList := strings.Contains(playlist, "#EXT-X-ENDLIST")
+
+			// Collect all segment URLs from this playlist snapshot.
+			var newSegments []string
+			var nextDuration float64
+			for _, line := range strings.Split(playlist, "\n") {
+				line = strings.TrimSpace(line)
+				if strings.HasPrefix(line, "#EXTINF:") {
+					// Parse duration: #EXTINF:6.006000,
+					durStr := strings.TrimPrefix(line, "#EXTINF:")
+					durStr = strings.TrimRight(durStr, ",")
+					if d := 0.0; true {
+						fmt.Sscanf(durStr, "%f", &d)
+						nextDuration = d
+					}
+					continue
+				}
+				if line == "" || strings.HasPrefix(line, "#") {
+					continue
+				}
+				// This is a segment filename.
+				segURL := line
+				if !strings.HasPrefix(segURL, "/") && !strings.HasPrefix(segURL, "http") {
+					segURL = mediaBase + segURL
+				}
+				if !fetched[segURL] {
+					newSegments = append(newSegments, segURL)
+					totalDuration += nextDuration
+				}
+				nextDuration = 0
+			}
+
+			// Fetch new segments.
+			for _, segURL := range newSegments {
+				resp2, err := doLongGet(segURL)
+				if err != nil {
+					t.Logf("WARN: segment fetch error: %v", err)
+					continue
+				}
+				body, _ := io.ReadAll(resp2.Body)
+				resp2.Body.Close()
+				if resp2.StatusCode != 200 {
+					t.Logf("WARN: segment %s returned %d", segURL, resp2.StatusCode)
+					continue
+				}
+				fetched[segURL] = true
+				totalSegments++
+				totalBytes += int64(len(body))
+			}
+
+			if len(newSegments) > 0 {
+				t.Logf("progress: %d segments, %.1fs duration, %.1f MB downloaded",
+					totalSegments, totalDuration, float64(totalBytes)/(1024*1024))
+			}
+
+			// If we've seen #EXT-X-ENDLIST and fetched everything, we're done.
+			if hasEndList && len(newSegments) == 0 && totalSegments > 0 {
+				finished = true
+				break
+			}
+
+			time.Sleep(pollInterval)
+		}
+
+		require.True(t, finished, "should reach #EXT-X-ENDLIST within 20 min (got %d segments, %.1fs)",
+			totalSegments, totalDuration)
+
+		t.Logf("COMPLETE: %d segments, %.1fs total duration, %.1f MB total",
+			totalSegments, totalDuration, float64(totalBytes)/(1024*1024))
+
+		// The BBB file is ~634s. Allow some tolerance for rounding.
+		assert.Greater(t, totalSegments, 50, "should have many segments for a 10-min file")
+		assert.InDelta(t, 634.0, totalDuration, 15.0,
+			"total EXTINF duration should be ~634s")
+		assert.Greater(t, totalBytes, int64(10*1024*1024),
+			"should have downloaded significant data")
+	})
+
+	// ---- 4. Stop session ----
+	t.Run("stop_session", func(t *testing.T) {
+		if sessionID == "" {
+			t.Skip("no session")
+		}
+		resp := doRequest(t, "DELETE", "/api/v1/playback/sessions/"+sessionID, tok, nil)
+		defer resp.Body.Close()
+		assert.True(t, resp.StatusCode == 200 || resp.StatusCode == 204,
+			"stop should succeed (got %d)", resp.StatusCode)
+		sessionID = ""
+	})
+}
+
+// =============================================================================
 // 22. MFA Complete Flows
 // =============================================================================
 
