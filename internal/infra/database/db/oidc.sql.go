@@ -27,29 +27,49 @@ func (q *Queries) CountUserOIDCLinks(ctx context.Context, userID uuid.UUID) (int
 }
 
 const createOIDCProvider = `-- name: CreateOIDCProvider :one
-INSERT INTO shared.oidc_providers (
-    name,
-    display_name,
-    provider_type,
-    issuer_url,
-    client_id,
-    client_secret_encrypted,
-    authorization_endpoint,
-    token_endpoint,
-    userinfo_endpoint,
-    jwks_uri,
-    end_session_endpoint,
-    scopes,
-    claim_mappings,
-    role_mappings,
-    auto_create_users,
-    update_user_info,
-    allow_linking,
-    is_enabled,
-    is_default
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
-) RETURNING id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
+INSERT INTO
+    shared.oidc_providers (
+        name,
+        display_name,
+        provider_type,
+        issuer_url,
+        client_id,
+        client_secret_encrypted,
+        authorization_endpoint,
+        token_endpoint,
+        userinfo_endpoint,
+        jwks_uri,
+        end_session_endpoint,
+        scopes,
+        claim_mappings,
+        role_mappings,
+        auto_create_users,
+        update_user_info,
+        allow_linking,
+        is_enabled,
+        is_default
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12,
+        $13,
+        $14,
+        $15,
+        $16,
+        $17,
+        $18,
+        $19
+    ) RETURNING id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
 `
 
 type CreateOIDCProviderParams struct {
@@ -127,21 +147,23 @@ func (q *Queries) CreateOIDCProvider(ctx context.Context, arg CreateOIDCProvider
 
 const createOIDCState = `-- name: CreateOIDCState :one
 
-INSERT INTO shared.oidc_states (
-    state,
-    code_verifier,
-    provider_id,
-    user_id,
-    redirect_url,
-    expires_at
-) VALUES (
-    $1, $2, $3, $4, $5, $6
-) RETURNING id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at
+INSERT INTO
+    shared.oidc_states (
+        state,
+        code_verifier,
+        nonce,
+        provider_id,
+        user_id,
+        redirect_url,
+        expires_at
+    )
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at, nonce
 `
 
 type CreateOIDCStateParams struct {
 	State        string      `json:"state"`
 	CodeVerifier *string     `json:"codeVerifier"`
+	Nonce        *string     `json:"nonce"`
 	ProviderID   uuid.UUID   `json:"providerId"`
 	UserID       pgtype.UUID `json:"userId"`
 	RedirectUrl  *string     `json:"redirectUrl"`
@@ -156,6 +178,7 @@ func (q *Queries) CreateOIDCState(ctx context.Context, arg CreateOIDCStateParams
 	row := q.db.QueryRow(ctx, createOIDCState,
 		arg.State,
 		arg.CodeVerifier,
+		arg.Nonce,
 		arg.ProviderID,
 		arg.UserID,
 		arg.RedirectUrl,
@@ -171,26 +194,38 @@ func (q *Queries) CreateOIDCState(ctx context.Context, arg CreateOIDCStateParams
 		&i.RedirectUrl,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.Nonce,
 	)
 	return i, err
 }
 
 const createOIDCUserLink = `-- name: CreateOIDCUserLink :one
 
-INSERT INTO shared.oidc_user_links (
-    user_id,
-    provider_id,
-    subject,
-    email,
-    name,
-    picture_url,
-    access_token_encrypted,
-    refresh_token_encrypted,
-    token_expires_at,
-    last_login_at
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW()
-) RETURNING id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
+INSERT INTO
+    shared.oidc_user_links (
+        user_id,
+        provider_id,
+        subject,
+        email,
+        name,
+        picture_url,
+        access_token_encrypted,
+        refresh_token_encrypted,
+        token_expires_at,
+        last_login_at
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        NOW()
+    ) RETURNING id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
 `
 
 type CreateOIDCUserLinkParams struct {
@@ -294,7 +329,10 @@ func (q *Queries) DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error {
 }
 
 const deleteOIDCUserLinkByUserAndProvider = `-- name: DeleteOIDCUserLinkByUserAndProvider :exec
-DELETE FROM shared.oidc_user_links WHERE user_id = $1 AND provider_id = $2
+DELETE FROM shared.oidc_user_links
+WHERE
+    user_id = $1
+    AND provider_id = $2
 `
 
 type DeleteOIDCUserLinkByUserAndProviderParams struct {
@@ -329,7 +367,11 @@ func (q *Queries) EnableOIDCProvider(ctx context.Context, id uuid.UUID) error {
 }
 
 const getDefaultOIDCProvider = `-- name: GetDefaultOIDCProvider :one
-SELECT id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at FROM shared.oidc_providers WHERE is_default = true AND is_enabled = true
+SELECT id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
+FROM shared.oidc_providers
+WHERE
+    is_default = true
+    AND is_enabled = true
 `
 
 // Gets the default OIDC provider
@@ -434,7 +476,7 @@ func (q *Queries) GetOIDCProviderByName(ctx context.Context, name string) (Share
 }
 
 const getOIDCState = `-- name: GetOIDCState :one
-SELECT id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at FROM shared.oidc_states WHERE state = $1
+SELECT id, state, code_verifier, provider_id, user_id, redirect_url, expires_at, created_at, nonce FROM shared.oidc_states WHERE state = $1
 `
 
 // Gets an OAuth2 state by state token
@@ -450,6 +492,7 @@ func (q *Queries) GetOIDCState(ctx context.Context, state string) (SharedOidcSta
 		&i.RedirectUrl,
 		&i.ExpiresAt,
 		&i.CreatedAt,
+		&i.Nonce,
 	)
 	return i, err
 }
@@ -481,8 +524,11 @@ func (q *Queries) GetOIDCUserLink(ctx context.Context, id uuid.UUID) (SharedOidc
 }
 
 const getOIDCUserLinkBySubject = `-- name: GetOIDCUserLinkBySubject :one
-SELECT id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at FROM shared.oidc_user_links
-WHERE provider_id = $1 AND subject = $2
+SELECT id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
+FROM shared.oidc_user_links
+WHERE
+    provider_id = $1
+    AND subject = $2
 `
 
 type GetOIDCUserLinkBySubjectParams struct {
@@ -513,8 +559,11 @@ func (q *Queries) GetOIDCUserLinkBySubject(ctx context.Context, arg GetOIDCUserL
 }
 
 const getOIDCUserLinkByUserAndProvider = `-- name: GetOIDCUserLinkByUserAndProvider :one
-SELECT id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at FROM shared.oidc_user_links
-WHERE user_id = $1 AND provider_id = $2
+SELECT id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
+FROM shared.oidc_user_links
+WHERE
+    user_id = $1
+    AND provider_id = $2
 `
 
 type GetOIDCUserLinkByUserAndProviderParams struct {
@@ -545,7 +594,11 @@ func (q *Queries) GetOIDCUserLinkByUserAndProvider(ctx context.Context, arg GetO
 }
 
 const listEnabledOIDCProviders = `-- name: ListEnabledOIDCProviders :many
-SELECT id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at FROM shared.oidc_providers WHERE is_enabled = true ORDER BY display_name
+SELECT id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
+FROM shared.oidc_providers
+WHERE
+    is_enabled = true
+ORDER BY display_name
 `
 
 // Lists all enabled OIDC providers
@@ -641,10 +694,14 @@ func (q *Queries) ListOIDCProviders(ctx context.Context) ([]SharedOidcProvider, 
 }
 
 const listUserOIDCLinks = `-- name: ListUserOIDCLinks :many
-SELECT l.id, l.user_id, l.provider_id, l.subject, l.email, l.name, l.picture_url, l.access_token_encrypted, l.refresh_token_encrypted, l.token_expires_at, l.last_login_at, l.created_at, l.updated_at, p.name as provider_name, p.display_name as provider_display_name
+SELECT
+    l.id, l.user_id, l.provider_id, l.subject, l.email, l.name, l.picture_url, l.access_token_encrypted, l.refresh_token_encrypted, l.token_expires_at, l.last_login_at, l.created_at, l.updated_at,
+    p.name as provider_name,
+    p.display_name as provider_display_name
 FROM shared.oidc_user_links l
-JOIN shared.oidc_providers p ON l.provider_id = p.id
-WHERE l.user_id = $1
+    JOIN shared.oidc_providers p ON l.provider_id = p.id
+WHERE
+    l.user_id = $1
 ORDER BY l.created_at
 `
 
@@ -704,7 +761,11 @@ func (q *Queries) ListUserOIDCLinks(ctx context.Context, userID uuid.UUID) ([]Li
 }
 
 const setDefaultOIDCProvider = `-- name: SetDefaultOIDCProvider :exec
-UPDATE shared.oidc_providers SET is_default = false WHERE is_default = true
+UPDATE shared.oidc_providers
+SET
+    is_default = false
+WHERE
+    is_default = true
 `
 
 // Sets a provider as default (clears other defaults first)
@@ -714,27 +775,79 @@ func (q *Queries) SetDefaultOIDCProvider(ctx context.Context) error {
 }
 
 const updateOIDCProvider = `-- name: UpdateOIDCProvider :one
-UPDATE shared.oidc_providers SET
-    display_name = COALESCE($2, display_name),
-    provider_type = COALESCE($3, provider_type),
-    issuer_url = COALESCE($4, issuer_url),
-    client_id = COALESCE($5, client_id),
-    client_secret_encrypted = COALESCE($6, client_secret_encrypted),
-    authorization_endpoint = COALESCE($7, authorization_endpoint),
-    token_endpoint = COALESCE($8, token_endpoint),
-    userinfo_endpoint = COALESCE($9, userinfo_endpoint),
-    jwks_uri = COALESCE($10, jwks_uri),
-    end_session_endpoint = COALESCE($11, end_session_endpoint),
+UPDATE shared.oidc_providers
+SET
+    display_name = COALESCE(
+        $2,
+        display_name
+    ),
+    provider_type = COALESCE(
+        $3,
+        provider_type
+    ),
+    issuer_url = COALESCE(
+        $4,
+        issuer_url
+    ),
+    client_id = COALESCE(
+        $5,
+        client_id
+    ),
+    client_secret_encrypted = COALESCE(
+        $6,
+        client_secret_encrypted
+    ),
+    authorization_endpoint = COALESCE(
+        $7,
+        authorization_endpoint
+    ),
+    token_endpoint = COALESCE(
+        $8,
+        token_endpoint
+    ),
+    userinfo_endpoint = COALESCE(
+        $9,
+        userinfo_endpoint
+    ),
+    jwks_uri = COALESCE(
+        $10,
+        jwks_uri
+    ),
+    end_session_endpoint = COALESCE(
+        $11,
+        end_session_endpoint
+    ),
     scopes = COALESCE($12, scopes),
-    claim_mappings = COALESCE($13, claim_mappings),
-    role_mappings = COALESCE($14, role_mappings),
-    auto_create_users = COALESCE($15, auto_create_users),
-    update_user_info = COALESCE($16, update_user_info),
-    allow_linking = COALESCE($17, allow_linking),
-    is_enabled = COALESCE($18, is_enabled),
-    is_default = COALESCE($19, is_default)
-WHERE id = $1
-RETURNING id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
+    claim_mappings = COALESCE(
+        $13,
+        claim_mappings
+    ),
+    role_mappings = COALESCE(
+        $14,
+        role_mappings
+    ),
+    auto_create_users = COALESCE(
+        $15,
+        auto_create_users
+    ),
+    update_user_info = COALESCE(
+        $16,
+        update_user_info
+    ),
+    allow_linking = COALESCE(
+        $17,
+        allow_linking
+    ),
+    is_enabled = COALESCE(
+        $18,
+        is_enabled
+    ),
+    is_default = COALESCE(
+        $19,
+        is_default
+    )
+WHERE
+    id = $1 RETURNING id, name, display_name, provider_type, issuer_url, client_id, client_secret_encrypted, authorization_endpoint, token_endpoint, userinfo_endpoint, jwks_uri, end_session_endpoint, scopes, claim_mappings, role_mappings, auto_create_users, update_user_info, allow_linking, is_enabled, is_default, created_at, updated_at
 `
 
 type UpdateOIDCProviderParams struct {
@@ -811,16 +924,32 @@ func (q *Queries) UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProvider
 }
 
 const updateOIDCUserLink = `-- name: UpdateOIDCUserLink :one
-UPDATE shared.oidc_user_links SET
+UPDATE shared.oidc_user_links
+SET
     email = COALESCE($2, email),
     name = COALESCE($3, name),
-    picture_url = COALESCE($4, picture_url),
-    access_token_encrypted = COALESCE($5, access_token_encrypted),
-    refresh_token_encrypted = COALESCE($6, refresh_token_encrypted),
-    token_expires_at = COALESCE($7, token_expires_at),
-    last_login_at = COALESCE($8, last_login_at)
-WHERE id = $1
-RETURNING id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
+    picture_url = COALESCE(
+        $4,
+        picture_url
+    ),
+    access_token_encrypted = COALESCE(
+        $5,
+        access_token_encrypted
+    ),
+    refresh_token_encrypted = COALESCE(
+        $6,
+        refresh_token_encrypted
+    ),
+    token_expires_at = COALESCE(
+        $7,
+        token_expires_at
+    ),
+    last_login_at = COALESCE(
+        $8,
+        last_login_at
+    )
+WHERE
+    id = $1 RETURNING id, user_id, provider_id, subject, email, name, picture_url, access_token_encrypted, refresh_token_encrypted, token_expires_at, last_login_at, created_at, updated_at
 `
 
 type UpdateOIDCUserLinkParams struct {
@@ -866,7 +995,11 @@ func (q *Queries) UpdateOIDCUserLink(ctx context.Context, arg UpdateOIDCUserLink
 }
 
 const updateOIDCUserLinkLastLogin = `-- name: UpdateOIDCUserLinkLastLogin :exec
-UPDATE shared.oidc_user_links SET last_login_at = NOW() WHERE id = $1
+UPDATE shared.oidc_user_links
+SET
+    last_login_at = NOW()
+WHERE
+    id = $1
 `
 
 // Updates the last login timestamp

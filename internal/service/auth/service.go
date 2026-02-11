@@ -22,7 +22,7 @@ import (
 // When a user doesn't exist, we compare against this hash to ensure constant-time behavior.
 // This prevents username enumeration via timing analysis.
 // Hash of: "dummy-password-for-timing-attack-mitigation"
-const dummyPasswordHash = "$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xXw$DXkAY76TwLxFcMyqpMQQowtoWwhHfcs5Da9lFIid0Bg"
+const dummyPasswordHash = "$argon2id$v=19$m=65536,t=1,p=24$tQMNjFt979tvL7ho1P6xXw$DXkAY76TwLxFcMyqpMQQowtoWwhHfcs5Da9lFIid0Bg" // #nosec G101 -- dummy hash for constant-time comparison, not a credential
 
 // Service implements auth business logic
 type Service struct {

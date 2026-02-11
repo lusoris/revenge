@@ -136,6 +136,7 @@ type CreateMovieFileParams struct {
 	MovieID           uuid.UUID
 	FilePath          string
 	FileSize          int64
+	FileName          string
 	Resolution        *string
 	QualityProfile    *string
 	VideoCodec        *string

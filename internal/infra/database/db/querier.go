@@ -421,8 +421,8 @@ type Querier interface {
 	UpdateServerSetting(ctx context.Context, arg UpdateServerSettingParams) (SharedServerSetting, error)
 	UpdateSessionActivity(ctx context.Context, id uuid.UUID) error
 	UpdateSessionActivityByTokenHash(ctx context.Context, tokenHash string) error
-	// Update last used timestamp for TOTP
-	UpdateTOTPLastUsed(ctx context.Context, userID uuid.UUID) error
+	// Update last used timestamp and code for TOTP (replay protection)
+	UpdateTOTPLastUsed(ctx context.Context, arg UpdateTOTPLastUsedParams) error
 	// Update TOTP secret (for re-enrollment)
 	UpdateTOTPSecret(ctx context.Context, arg UpdateTOTPSecretParams) error
 	// Update user fields

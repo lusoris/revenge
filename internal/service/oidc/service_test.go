@@ -571,7 +571,7 @@ func TestService_BuildOAuth2Config(t *testing.T) {
 		TokenEndpoint:         &tokenURL,
 	}
 
-	config := svc.buildOAuth2Config(provider)
+	config := svc.buildOAuth2Config(provider, nil)
 	assert.Equal(t, "test-client", config.ClientID)
 	assert.Equal(t, "https://example.com/auth", config.Endpoint.AuthURL)
 	assert.Equal(t, "https://example.com/token", config.Endpoint.TokenURL)

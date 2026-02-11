@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/util"
 	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
@@ -468,7 +469,7 @@ func (s *TVShowSearchService) seriesToDocument(series *tvshow.Series, genres []t
 	}
 	if series.FirstAirDate != nil {
 		doc.FirstAirDate = series.FirstAirDate.Unix()
-		doc.Year = int32(series.FirstAirDate.Year())
+		doc.Year = util.SafeIntToInt32(series.FirstAirDate.Year())
 	}
 	if series.Overview != nil {
 		doc.Overview = *series.Overview

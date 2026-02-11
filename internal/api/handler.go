@@ -30,6 +30,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/internal/util"
 	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
@@ -881,8 +882,8 @@ func (h *Handler) UploadAvatar(ctx context.Context, req *ogen.UploadAvatarReq) (
 		FileName:      file.Name,
 		FileSizeBytes: file.Size,
 		MimeType:      contentType,
-		Width:         int32(width),
-		Height:        int32(height),
+		Width:         util.SafeIntToInt32(width),
+		Height:        util.SafeIntToInt32(height),
 	}
 
 	// Upload avatar via service (using the new reader since original was consumed)

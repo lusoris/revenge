@@ -324,15 +324,15 @@ func (s *SyncService) syncSeasonsAndEpisodes(ctx context.Context, sonarrSeriesID
 	for seasonNum, episodes := range episodesBySeason {
 		var seasonID uuid.UUID
 
-		if existingSeasonID, exists := seasonMap[int32(seasonNum)]; exists {
+		if existingSeasonID, exists := seasonMap[util.SafeIntToInt32(seasonNum)]; exists {
 			seasonID = existingSeasonID
 		} else {
 			// Create new season
 			seasonParams := tvshow.CreateSeasonParams{
 				SeriesID:     seriesID,
-				SeasonNumber: int32(seasonNum),
+				SeasonNumber: util.SafeIntToInt32(seasonNum),
 				Name:         fmt.Sprintf("Season %d", seasonNum),
-				EpisodeCount: int32(len(episodes)),
+				EpisodeCount: util.SafeIntToInt32(len(episodes)),
 			}
 			if seasonNum == 0 {
 				seasonParams.Name = "Specials"
@@ -376,7 +376,7 @@ func (s *SyncService) syncEpisodes(ctx context.Context, sonarrEpisodes []Episode
 
 		episode := s.mapper.ToEpisode(&se, seriesID, seasonID)
 
-		if existingEpisodeID, exists := episodeMap[int32(se.EpisodeNumber)]; exists {
+		if existingEpisodeID, exists := episodeMap[util.SafeIntToInt32(se.EpisodeNumber)]; exists {
 			// Update existing episode
 			episode.ID = existingEpisodeID
 			updateParams := s.episodeToUpdateParams(episode)

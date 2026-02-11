@@ -8,7 +8,6 @@ import (
 	"log/slog"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 )
 
@@ -38,19 +37,18 @@ func (LibraryScanCleanupArgs) InsertOpts() river.InsertOpts {
 }
 
 // LibraryScanCleanupWorker performs periodic library scan history cleanup.
+// Leader election is handled by River's built-in leader election.
 type LibraryScanCleanupWorker struct {
 	river.WorkerDefaults[LibraryScanCleanupArgs]
-	leaderElection *raft.LeaderElection
-	repo           Repository
-	logger         *slog.Logger
+	repo   Repository
+	logger *slog.Logger
 }
 
 // NewLibraryScanCleanupWorker creates a new library scan cleanup worker.
-func NewLibraryScanCleanupWorker(leaderElection *raft.LeaderElection, repo Repository, logger *slog.Logger) *LibraryScanCleanupWorker {
+func NewLibraryScanCleanupWorker(repo Repository, logger *slog.Logger) *LibraryScanCleanupWorker {
 	return &LibraryScanCleanupWorker{
-		leaderElection: leaderElection,
-		repo:           repo,
-		logger:         logger.With("component", "library-scan-cleanup"),
+		repo:   repo,
+		logger: logger.With("component", "library-scan-cleanup"),
 	}
 }
 
@@ -60,23 +58,14 @@ func (w *LibraryScanCleanupWorker) Timeout(job *river.Job[LibraryScanCleanupArgs
 }
 
 // Work executes the library scan cleanup job.
+// Leader election is handled by River's periodic job scheduler.
 func (w *LibraryScanCleanupWorker) Work(ctx context.Context, job *river.Job[LibraryScanCleanupArgs]) error {
 	args := job.Args
-
-	// Check if this node is the leader (only leader should run cleanup jobs)
-	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
-		w.logger.Info("skipping library scan cleanup job: not the leader node",
-			slog.Int64("job_id", job.ID),
-			slog.String("leader", w.leaderElection.LeaderAddr()),
-		)
-		return nil
-	}
 
 	w.logger.Info("starting library scan cleanup job",
 		slog.Int64("job_id", job.ID),
 		slog.Int("retention_days", args.RetentionDays),
 		slog.Bool("dry_run", args.DryRun),
-		slog.Bool("is_leader", w.leaderElection == nil || w.leaderElection.IsLeader()),
 	)
 
 	// Validate arguments

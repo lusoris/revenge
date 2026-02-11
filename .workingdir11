@@ -1,0 +1,26 @@
+# Bugs Found During Live Test Development
+
+## Bug 1: Empty 404 Response Bodies (FIXED)
+**File**: `internal/api/movie_handlers.go`, `internal/api/tvshow_handlers.go`
+**Issue**: Handlers returned empty ogen `NotFound` structs like `&ogen.GetMovieNotFound{}`
+**Result**: API returned `{"code":0,"message":""}` instead of `{"code":404,"message":"Movie not found"}`
+**Fix**: Added `OgenNotFound()` helper in `internal/api/errors.go` and updated 32+ handlers to return properly populated error responses
+**Status**: FIXED (this session)
+
+## Bug 2: CreateMovieFile SQL Missing file_name (FIXED - commit d3885a7f)
+**File**: `internal/infra/database/queries/movie/movies.sql`
+**Issue**: INSERT statement was missing the `file_name` column which has NOT NULL constraint
+**Status**: FIXED
+
+## Bug 3: CreateEpisodeFile nil arrays (FIXED - commit bc4f0e5c)
+**File**: `internal/content/tvshow/repository_postgres.go`
+**Issue**: Passing nil slices for audio_languages/subtitle_languages caused postgres errors
+**Status**: FIXED (defaulting to []string{})
+
+## Bug 4: GetSeriesWatchStats NULL SUM (FIXED - commit bc4f0e5c)
+**File**: `internal/infra/database/queries/tvshow/watch_progress.sql`
+**Issue**: SUM(watch_count) returns NULL when no rows, causing scan errors
+**Status**: FIXED (COALESCE(..., 0)::bigint)
+
+---
+Last updated: 2026-02-10

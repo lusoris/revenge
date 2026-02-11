@@ -54,23 +54,22 @@ func TestStatKeyConstants_Values(t *testing.T) {
 
 func TestNewStatsAggregationWorker(t *testing.T) {
 	logger := logging.NewTestLogger()
-	worker := NewStatsAggregationWorker(nil, &db.Queries{}, logger)
+	worker := NewStatsAggregationWorker(&db.Queries{}, logger)
 	require.NotNil(t, worker)
-	assert.Nil(t, worker.leaderElection)
 	assert.NotNil(t, worker.queries)
 	assert.NotNil(t, worker.logger)
 }
 
 func TestStatsAggregationWorker_Timeout(t *testing.T) {
 	logger := logging.NewTestLogger()
-	worker := NewStatsAggregationWorker(nil, &db.Queries{}, logger)
+	worker := NewStatsAggregationWorker(&db.Queries{}, logger)
 	timeout := worker.Timeout(&river.Job[StatsAggregationArgs]{})
 	assert.Equal(t, 2*time.Minute, timeout)
 }
 
 func TestStatsAggregationWorker_Work_NilQueriesPanics(t *testing.T) {
 	logger := logging.NewTestLogger()
-	worker := NewStatsAggregationWorker(nil, nil, logger)
+	worker := NewStatsAggregationWorker(nil, logger)
 	job := &river.Job[StatsAggregationArgs]{
 		JobRow: &rivertype.JobRow{ID: 1},
 	}
@@ -86,7 +85,7 @@ func TestModule_NotNil(t *testing.T) {
 func TestRegisterStatsAggregationWorker(t *testing.T) {
 	logger := logging.NewTestLogger()
 	workers := river.NewWorkers()
-	worker := NewStatsAggregationWorker(nil, &db.Queries{}, logger)
+	worker := NewStatsAggregationWorker(&db.Queries{}, logger)
 	registerStatsAggregationWorker(workers, worker)
 }
 
@@ -96,7 +95,7 @@ func TestStatsAggregationArgs_ImplementsJobArgs(t *testing.T) {
 
 func TestStatsAggregationWorker_ImplementsWorker(t *testing.T) {
 	logger := logging.NewTestLogger()
-	worker := NewStatsAggregationWorker(nil, &db.Queries{}, logger)
+	worker := NewStatsAggregationWorker(&db.Queries{}, logger)
 	var _ river.Worker[StatsAggregationArgs] = worker
 }
 

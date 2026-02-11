@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Ensure Provider implements interfaces.
@@ -192,7 +193,7 @@ func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metada
 		return nil, err
 	}
 
-	return mapRemoteIDsToExternalIDs(resp.RemoteIDs, int32(tvdbID)), nil
+	return mapRemoteIDsToExternalIDs(resp.RemoteIDs, util.SafeIntToInt32(tvdbID)), nil
 }
 
 // GetSeason retrieves season details.
@@ -389,7 +390,7 @@ func (p *Provider) GetPersonExternalIDs(ctx context.Context, id string) (*metada
 		return nil, err
 	}
 
-	tvdbID32 := int32(tvdbID)
+	tvdbID32 := util.SafeIntToInt32(tvdbID)
 	result := &metadata.ExternalIDs{
 		TVDbID: &tvdbID32,
 	}
@@ -400,7 +401,7 @@ func (p *Provider) GetPersonExternalIDs(ctx context.Context, id string) (*metada
 			result.IMDbID = &remote.ID
 		case RemoteIDTypeTMDb:
 			if id, err := strconv.Atoi(remote.ID); err == nil {
-				tmdbID := int32(id)
+				tmdbID := util.SafeIntToInt32(id)
 				result.TMDbID = &tmdbID
 			}
 		}

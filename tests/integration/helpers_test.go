@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -46,7 +47,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
@@ -55,11 +55,12 @@ import (
 
 // TestServer represents a running test server instance.
 type TestServer struct {
-	App        *fxtest.App
-	BaseURL    string
-	HTTPClient *http.Client
-	DB         *testutil.PostgreSQLContainer
-	AppPool    *pgxpool.Pool // DI-managed database pool (for health tests)
+	App         *fxtest.App
+	BaseURL     string
+	HTTPClient  *http.Client
+	DB          *testutil.PostgreSQLContainer
+	AppPool     *pgxpool.Pool  // DI-managed database pool (for health tests)
+	RBACService *rbac.Service // RBAC service for policy reload after direct DB changes
 }
 
 // setupServer starts a test server with all dependencies.
@@ -101,6 +102,7 @@ func setupServer(t *testing.T) *TestServer {
 
 	// Capture the DI-managed pool for health tests
 	var appPool *pgxpool.Pool
+	var rbacService *rbac.Service
 
 	// Create fx app for testing
 	// Mirrors app.Module but replaces config.Module with fx.Supply(cfg)
@@ -172,8 +174,9 @@ func setupServer(t *testing.T) *TestServer {
 		// HTTP API Server (ogen-generated)
 		api.Module,
 
-		// Extract DI-managed pool for test use (e.g. health tests)
+		// Extract DI-managed services for test use
 		fx.Populate(&appPool),
+		fx.Populate(&rbacService),
 	)
 
 	// Start app
@@ -189,8 +192,9 @@ func setupServer(t *testing.T) *TestServer {
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-		DB:      pgContainer,
-		AppPool: appPool,
+		DB:          pgContainer,
+		AppPool:     appPool,
+		RBACService: rbacService,
 	}
 }
 

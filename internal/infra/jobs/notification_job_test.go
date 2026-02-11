@@ -30,6 +30,8 @@ func TestNotificationArgs_InsertOpts(t *testing.T) {
 
 	assert.Equal(t, QueueHigh, opts.Queue)
 	assert.Equal(t, 5, opts.MaxAttempts)
+	assert.True(t, opts.UniqueOpts.ByArgs, "should deduplicate by args")
+	assert.Equal(t, 1*time.Hour, opts.UniqueOpts.ByPeriod, "should deduplicate within 1 hour")
 }
 
 func TestNotificationArgs_ToEvent(t *testing.T) {

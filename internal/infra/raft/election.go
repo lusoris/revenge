@@ -21,8 +21,10 @@ import (
 // LeaderElection manages Raft-based leader election for a cluster.
 // Only the leader should execute periodic cleanup jobs to prevent duplicates.
 type LeaderElection struct {
-	raft   *raft.Raft
-	logger *slog.Logger
+	raft      *raft.Raft
+	logger    *slog.Logger
+	boltStore *raftboltdb.BoltStore
+	transport *raft.NetworkTransport
 }
 
 // Config holds configuration for Raft leader election.
@@ -72,33 +74,32 @@ func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error)
 		return nil, fmt.Errorf("failed to resolve bind address: %w", err)
 	}
 
-	transport, err := raft.NewTCPTransport(cfg.BindAddr, addr, 3, 10*time.Second, os.Stderr)
+	logWriter := newSlogWriter(logger)
+
+	transport, err := raft.NewTCPTransport(cfg.BindAddr, addr, 3, 10*time.Second, logWriter)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create transport: %w", err)
 	}
 
 	// Create the snapshot store
-	snapshots, err := raft.NewFileSnapshotStore(cfg.DataDir, 2, os.Stderr)
+	snapshots, err := raft.NewFileSnapshotStore(cfg.DataDir, 2, logWriter)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create snapshot store: %w", err)
 	}
 
-	// Create the log store and stable store using BoltDB
-	logStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft-log.db"))
+	// Create the log store and stable store using a single BoltDB file.
+	// raft-boltdb uses separate internal buckets for log vs stable data,
+	// so a single file is safe and reduces file descriptor usage.
+	boltStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft.db"))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create log store: %w", err)
-	}
-
-	stableStore, err := raftboltdb.NewBoltStore(filepath.Join(cfg.DataDir, "raft-stable.db"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create stable store: %w", err)
+		return nil, fmt.Errorf("failed to create bolt store: %w", err)
 	}
 
 	// Create FSM (simple no-op for leader election only)
 	fsm := &simpleFSM{}
 
 	// Instantiate the Raft system
-	ra, err := raft.NewRaft(config, fsm, logStore, stableStore, snapshots, transport)
+	ra, err := raft.NewRaft(config, fsm, boltStore, boltStore, snapshots, transport)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create raft instance: %w", err)
 	}
@@ -121,8 +122,10 @@ func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error)
 	}
 
 	return &LeaderElection{
-		raft:   ra,
-		logger: logger.With("component", "raft"),
+		raft:      ra,
+		logger:    logger.With("component", "raft"),
+		boltStore: boltStore,
+		transport: transport,
 	}, nil
 }
 
@@ -166,13 +169,118 @@ func (le *LeaderElection) State() string {
 	}
 }
 
-// Close shuts down the Raft instance gracefully.
+// Close shuts down the Raft instance gracefully and releases all resources.
 func (le *LeaderElection) Close() error {
 	if le == nil || le.raft == nil {
 		return nil
 	}
 	le.logger.Info("Shutting down Raft")
-	return le.raft.Shutdown().Error()
+	if err := le.raft.Shutdown().Error(); err != nil {
+		return err
+	}
+	if le.transport != nil {
+		if err := le.transport.Close(); err != nil {
+			le.logger.Warn("Failed to close Raft transport", slog.Any("error", err))
+		}
+	}
+	if le.boltStore != nil {
+		if err := le.boltStore.Close(); err != nil {
+			le.logger.Warn("Failed to close Raft bolt store", slog.Any("error", err))
+		}
+	}
+	return nil
+}
+
+// AddVoter adds a new node to the Raft cluster as a voter.
+// Must be called on the leader node. The joining node should already be
+// running and listening on the specified address.
+func (le *LeaderElection) AddVoter(nodeID, addr string) error {
+	if le == nil || le.raft == nil {
+		return fmt.Errorf("raft is not initialized")
+	}
+	if le.raft.State() != raft.Leader {
+		return fmt.Errorf("not the leader, cannot add voter")
+	}
+
+	le.logger.Info("Adding voter to Raft cluster",
+		slog.String("node_id", nodeID),
+		slog.String("address", addr),
+	)
+
+	future := le.raft.AddVoter(
+		raft.ServerID(nodeID),
+		raft.ServerAddress(addr),
+		0, // prevIndex=0 lets Raft handle log index
+		30*time.Second,
+	)
+	if err := future.Error(); err != nil {
+		return fmt.Errorf("failed to add voter %s: %w", nodeID, err)
+	}
+
+	le.logger.Info("Voter added to Raft cluster",
+		slog.String("node_id", nodeID),
+		slog.String("address", addr),
+	)
+	return nil
+}
+
+// RemoveServer removes a node from the Raft cluster.
+// Must be called on the leader node.
+func (le *LeaderElection) RemoveServer(nodeID string) error {
+	if le == nil || le.raft == nil {
+		return fmt.Errorf("raft is not initialized")
+	}
+	if le.raft.State() != raft.Leader {
+		return fmt.Errorf("not the leader, cannot remove server")
+	}
+
+	le.logger.Info("Removing server from Raft cluster",
+		slog.String("node_id", nodeID),
+	)
+
+	future := le.raft.RemoveServer(
+		raft.ServerID(nodeID),
+		0, // prevIndex=0 lets Raft handle log index
+		30*time.Second,
+	)
+	if err := future.Error(); err != nil {
+		return fmt.Errorf("failed to remove server %s: %w", nodeID, err)
+	}
+
+	le.logger.Info("Server removed from Raft cluster",
+		slog.String("node_id", nodeID),
+	)
+	return nil
+}
+
+// ClusterMember represents a node in the Raft cluster.
+type ClusterMember struct {
+	ID      string `json:"id"`
+	Address string `json:"address"`
+	Voter   bool   `json:"voter"`
+}
+
+// GetClusterMembers returns the current Raft cluster configuration.
+func (le *LeaderElection) GetClusterMembers() ([]ClusterMember, error) {
+	if le == nil || le.raft == nil {
+		return []ClusterMember{{ID: "single-node", Address: "local", Voter: true}}, nil
+	}
+
+	future := le.raft.GetConfiguration()
+	if err := future.Error(); err != nil {
+		return nil, fmt.Errorf("failed to get cluster configuration: %w", err)
+	}
+
+	servers := future.Configuration().Servers
+	members := make([]ClusterMember, 0, len(servers))
+	for _, server := range servers {
+		members = append(members, ClusterMember{
+			ID:      string(server.ID),
+			Address: string(server.Address),
+			Voter:   server.Suffrage == raft.Voter,
+		})
+	}
+	return members, nil
 }
 
 // simpleFSM is a minimal FSM implementation for leader election.
@@ -219,23 +327,34 @@ func newHCLogAdapter(logger *slog.Logger) hclog.Logger {
 }
 
 func (h *hcLogAdapter) Log(level hclog.Level, msg string, args ...interface{}) {
+	attrs := hclogArgsToAttrs(args)
 	switch level {
 	case hclog.Trace, hclog.Debug:
-		h.logger.Debug(msg)
+		h.logger.Debug(msg, attrs...)
 	case hclog.Info:
-		h.logger.Info(msg)
+		h.logger.Info(msg, attrs...)
 	case hclog.Warn:
-		h.logger.Warn(msg)
+		h.logger.Warn(msg, attrs...)
 	case hclog.Error:
-		h.logger.Error(msg)
+		h.logger.Error(msg, attrs...)
 	}
 }
 
-func (h *hcLogAdapter) Trace(msg string, args ...interface{}) { h.logger.Debug(msg) }
-func (h *hcLogAdapter) Debug(msg string, args ...interface{}) { h.logger.Debug(msg) }
-func (h *hcLogAdapter) Info(msg string, args ...interface{})  { h.logger.Info(msg) }
-func (h *hcLogAdapter) Warn(msg string, args ...interface{})  { h.logger.Warn(msg) }
-func (h *hcLogAdapter) Error(msg string, args ...interface{}) { h.logger.Error(msg) }
+func (h *hcLogAdapter) Trace(msg string, args ...interface{}) {
+	h.logger.Debug(msg, hclogArgsToAttrs(args)...)
+}
+func (h *hcLogAdapter) Debug(msg string, args ...interface{}) {
+	h.logger.Debug(msg, hclogArgsToAttrs(args)...)
+}
+func (h *hcLogAdapter) Info(msg string, args ...interface{}) {
+	h.logger.Info(msg, hclogArgsToAttrs(args)...)
+}
+func (h *hcLogAdapter) Warn(msg string, args ...interface{}) {
+	h.logger.Warn(msg, hclogArgsToAttrs(args)...)
+}
+func (h *hcLogAdapter) Error(msg string, args ...interface{}) {
+	h.logger.Error(msg, hclogArgsToAttrs(args)...)
+}
 
 func (h *hcLogAdapter) IsTrace() bool { return h.level <= hclog.Trace }
 func (h *hcLogAdapter) IsDebug() bool { return h.level <= hclog.Debug }
@@ -254,5 +373,45 @@ func (h *hcLogAdapter) StandardLogger(opts *hclog.StandardLoggerOptions) *log.Lo
 	return log.New(os.Stderr, "", log.LstdFlags)
 }
 func (h *hcLogAdapter) StandardWriter(opts *hclog.StandardLoggerOptions) io.Writer {
-	return os.Stderr
+	return newSlogWriter(h.logger)
+}
+
+// hclogArgsToAttrs converts hashicorp/go-hclog key-value pairs to slog attributes.
+// go-hclog passes args as alternating key, value pairs: "key1", val1, "key2", val2, ...
+func hclogArgsToAttrs(args []interface{}) []any {
+	if len(args) == 0 {
+		return nil
+	}
+	attrs := make([]any, 0, len(args))
+	for i := 0; i+1 < len(args); i += 2 {
+		key, ok := args[i].(string)
+		if !ok {
+			key = fmt.Sprintf("%v", args[i])
+		}
+		attrs = append(attrs, slog.Any(key, args[i+1]))
+	}
+	// Handle odd number of args (trailing key without value)
+	if len(args)%2 != 0 {
+		attrs = append(attrs, slog.Any("EXTRA_VALUE_AT_END", args[len(args)-1]))
+	}
+	return attrs
+}
+
+// slogWriter adapts slog.Logger to io.Writer for Raft transport and snapshot logging.
+type slogWriter struct {
+	logger *slog.Logger
+}
+
+func newSlogWriter(logger *slog.Logger) io.Writer {
+	return &slogWriter{logger: logger.With("component", "raft-transport")}
+}
+
+func (w *slogWriter) Write(p []byte) (n int, err error) {
+	msg := string(p)
+	// Trim trailing newline
+	if len(msg) > 0 && msg[len(msg)-1] == '\n' {
+		msg = msg[:len(msg)-1]
+	}
+	w.logger.Debug(msg)
+	return len(p), nil
 }

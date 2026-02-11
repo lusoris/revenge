@@ -3,6 +3,7 @@ package metadata
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/imroc/req/v3"
 )
@@ -144,14 +145,29 @@ func (b *ImageURLBuilder) GetStillURL(path *string, size string) *string {
 
 // ImageDownloader handles downloading images from metadata providers.
 type ImageDownloader struct {
-	client      *BaseClient
-	urlBuilder  *ImageURLBuilder
+	client     *BaseClient
+	imgClient  *req.Client
+	urlBuilder *ImageURLBuilder
 }
 
 // NewImageDownloader creates a new ImageDownloader.
 func NewImageDownloader(client *BaseClient) *ImageDownloader {
+	// Use a dedicated HTTP client for image downloads (different host than API).
+	// Configured once instead of creating a throwaway req.C() per request.
+	imgClient := req.C().
+		SetTimeout(30 * time.Second).
+		SetCommonRetryCount(2).
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
+
 	return &ImageDownloader{
 		client:     client,
+		imgClient:  imgClient,
 		urlBuilder: NewImageURLBuilder(),
 	}
 }
@@ -168,8 +184,7 @@ func (d *ImageDownloader) Download(ctx context.Context, path string, size string
 
 	url := d.urlBuilder.GetURL(path, size)
 
-	// Use a separate resty client for image downloads since they go to a different host
-	resp, err := req.C().R().
+	resp, err := d.imgClient.R().
 		SetContext(ctx).
 		Get(url)
 

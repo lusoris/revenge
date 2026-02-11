@@ -48,9 +48,15 @@ func NewClient(config Config) *Client {
 		SetCommonHeader("X-Api-Key", config.APIKey).
 		SetCommonHeader("Content-Type", "application/json").
 		SetCommonRetryCount(3).
-		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
-	l1, err := cache.NewL1Cache[string, any](1000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](1000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		// Fallback: create with defaults if configuration fails.
 		l1, _ = cache.NewL1Cache[string, any](0, 0)
@@ -632,6 +638,13 @@ func (c *Client) LookupMovieByIMDbID(ctx context.Context, imdbID string) (*Movie
 // ClearCache clears all cached data.
 func (c *Client) ClearCache() {
 	c.cache.Clear()
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }
 
 // IsHealthy checks if Radarr is reachable and healthy.

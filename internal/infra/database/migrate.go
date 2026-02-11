@@ -11,6 +11,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/jackc/pgx/v5/stdlib" // Register pgx driver
 	"github.com/lusoris/revenge/internal/errors"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 //go:embed migrations/shared/*.sql
@@ -33,6 +34,15 @@ func MigrateUp(databaseURL string, logger *slog.Logger) error {
 		slog.Uint64("current_version", uint64(version)),
 		slog.Bool("dirty", dirty),
 	)
+
+	if dirty {
+		logger.Warn("database is in dirty state, forcing version reset",
+			slog.Uint64("version", uint64(version)),
+		)
+		if err := m.Force(util.SafeUintToInt(version)); err != nil {
+			return errors.Wrap(err, "failed to force migration version")
+		}
+	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return errors.Wrap(err, "failed to run migrations")
@@ -67,6 +77,15 @@ func MigrateDown(databaseURL string, logger *slog.Logger) error {
 		slog.Uint64("current_version", uint64(version)),
 		slog.Bool("dirty", dirty),
 	)
+
+	if dirty {
+		logger.Warn("database is in dirty state, forcing version reset before rollback",
+			slog.Uint64("version", uint64(version)),
+		)
+		if err := m.Force(util.SafeUintToInt(version)); err != nil {
+			return errors.Wrap(err, "failed to force migration version")
+		}
+	}
 
 	if err := m.Steps(-1); err != nil {
 		return errors.Wrap(err, "failed to rollback migration")
@@ -118,6 +137,15 @@ func MigrateTo(databaseURL string, version uint, logger *slog.Logger) error {
 		slog.Uint64("target_version", uint64(version)),
 		slog.Bool("dirty", dirty),
 	)
+
+	if dirty {
+		logger.Warn("database is in dirty state, forcing version reset before targeted migration",
+			slog.Uint64("version", uint64(currentVersion)),
+		)
+		if err := m.Force(util.SafeUintToInt(currentVersion)); err != nil {
+			return errors.Wrap(err, "failed to force migration version")
+		}
+	}
 
 	if err := m.Migrate(version); err != nil && err != migrate.ErrNoChange {
 		return errors.Wrap(err, fmt.Sprintf("failed to migrate to version %d", version))

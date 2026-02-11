@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapAnimeToTVShowSearchResult converts a title dump match to a TVShowSearchResult.
@@ -239,7 +240,7 @@ func mapEpisodes(a *AnimeResponse, seasonNum int) []metadata.EpisodeSummary {
 		}
 
 		if ep.Length > 0 {
-			rt := int32(ep.Length)
+			rt := util.SafeIntToInt32(ep.Length)
 			es.Runtime = &rt
 		}
 
@@ -288,7 +289,7 @@ func mapEpisodeToMetadata(ep Episode, showID string) *metadata.EpisodeMetadata {
 	}
 
 	if ep.Length > 0 {
-		rt := int32(ep.Length)
+		rt := util.SafeIntToInt32(ep.Length)
 		em.Runtime = &rt
 	}
 

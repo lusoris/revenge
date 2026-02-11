@@ -15,6 +15,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content"
 	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // postgresRepository implements the Repository interface using PostgreSQL
@@ -274,7 +275,7 @@ func pgNumericToInt32Ptr(n pgtype.Numeric) *int32 {
 	if err != nil || !i64.Valid {
 		return nil
 	}
-	i32 := int32(i64.Int64)
+	i32 := util.SafeInt64ToInt32(i64.Int64)
 	return &i32
 }
 
@@ -575,6 +576,7 @@ func (r *postgresRepository) CreateMovieFile(ctx context.Context, params CreateM
 		MovieID:           params.MovieID,
 		FilePath:          params.FilePath,
 		FileSize:          params.FileSize,
+		FileName:          params.FileName,
 		Resolution:        params.Resolution,
 		QualityProfile:    params.QualityProfile,
 		VideoCodec:        params.VideoCodec,

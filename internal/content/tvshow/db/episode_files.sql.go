@@ -13,20 +13,39 @@ import (
 )
 
 const createEpisodeFile = `-- name: CreateEpisodeFile :one
-INSERT INTO tvshow.episode_files (
-    episode_id, file_path, file_name, file_size,
-    container, resolution, quality_profile,
-    video_codec, audio_codec, bitrate_kbps, duration_seconds,
-    audio_languages, subtitle_languages,
-    sonarr_file_id
-) VALUES (
-    $1, $2, $3, $4,
-    $5, $6, $7,
-    $8, $9, $10, $11,
-    $12, $13,
-    $14
-)
-RETURNING id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at
+INSERT INTO
+    tvshow.episode_files (
+        episode_id,
+        file_path,
+        file_name,
+        file_size,
+        container,
+        resolution,
+        quality_profile,
+        video_codec,
+        audio_codec,
+        bitrate_kbps,
+        duration_seconds,
+        audio_languages,
+        subtitle_languages,
+        sonarr_file_id
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12,
+        $13,
+        $14
+    ) RETURNING id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at
 `
 
 type CreateEpisodeFileParams struct {
@@ -192,8 +211,10 @@ func (q *Queries) GetEpisodeFileBySonarrID(ctx context.Context, sonarrFileID *in
 }
 
 const listEpisodeFilesByEpisode = `-- name: ListEpisodeFilesByEpisode :many
-SELECT id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at FROM tvshow.episode_files
-WHERE episode_id = $1
+SELECT id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at
+FROM tvshow.episode_files
+WHERE
+    episode_id = $1
 ORDER BY created_at ASC
 `
 
@@ -236,22 +257,62 @@ func (q *Queries) ListEpisodeFilesByEpisode(ctx context.Context, episodeID uuid.
 }
 
 const updateEpisodeFile = `-- name: UpdateEpisodeFile :one
-UPDATE tvshow.episode_files SET
-    file_path = COALESCE($1, file_path),
-    file_name = COALESCE($2, file_name),
-    file_size = COALESCE($3, file_size),
-    container = COALESCE($4, container),
-    resolution = COALESCE($5, resolution),
-    quality_profile = COALESCE($6, quality_profile),
-    video_codec = COALESCE($7, video_codec),
-    audio_codec = COALESCE($8, audio_codec),
-    bitrate_kbps = COALESCE($9, bitrate_kbps),
-    duration_seconds = COALESCE($10, duration_seconds),
-    audio_languages = COALESCE($11, audio_languages),
-    subtitle_languages = COALESCE($12, subtitle_languages),
-    sonarr_file_id = COALESCE($13, sonarr_file_id)
-WHERE id = $14
-RETURNING id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at
+UPDATE tvshow.episode_files
+SET
+    file_path = COALESCE(
+        $1,
+        file_path
+    ),
+    file_name = COALESCE(
+        $2,
+        file_name
+    ),
+    file_size = COALESCE(
+        $3,
+        file_size
+    ),
+    container = COALESCE(
+        $4,
+        container
+    ),
+    resolution = COALESCE(
+        $5,
+        resolution
+    ),
+    quality_profile = COALESCE(
+        $6,
+        quality_profile
+    ),
+    video_codec = COALESCE(
+        $7,
+        video_codec
+    ),
+    audio_codec = COALESCE(
+        $8,
+        audio_codec
+    ),
+    bitrate_kbps = COALESCE(
+        $9,
+        bitrate_kbps
+    ),
+    duration_seconds = COALESCE(
+        $10,
+        duration_seconds
+    ),
+    audio_languages = COALESCE(
+        $11,
+        audio_languages
+    ),
+    subtitle_languages = COALESCE(
+        $12,
+        subtitle_languages
+    ),
+    sonarr_file_id = COALESCE(
+        $13,
+        sonarr_file_id
+    )
+WHERE
+    id = $14 RETURNING id, episode_id, file_path, file_name, file_size, container, resolution, quality_profile, video_codec, audio_codec, bitrate_kbps, duration_seconds, audio_languages, subtitle_languages, sonarr_file_id, created_at, updated_at
 `
 
 type UpdateEpisodeFileParams struct {

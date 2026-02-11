@@ -48,8 +48,11 @@ func (q *Queries) ClearTrustedDevices(ctx context.Context, userID uuid.UUID) err
 }
 
 const countUnusedBackupCodes = `-- name: CountUnusedBackupCodes :one
-SELECT COUNT(*) FROM public.mfa_backup_codes
-WHERE user_id = $1 AND used_at IS NULL
+SELECT COUNT(*)
+FROM public.mfa_backup_codes
+WHERE
+    user_id = $1
+    AND used_at IS NULL
 `
 
 // Count unused backup codes for a user
@@ -61,8 +64,7 @@ func (q *Queries) CountUnusedBackupCodes(ctx context.Context, userID uuid.UUID) 
 }
 
 const countWebAuthnCredentials = `-- name: CountWebAuthnCredentials :one
-SELECT COUNT(*) FROM public.webauthn_credentials
-WHERE user_id = $1
+SELECT COUNT(*) FROM public.webauthn_credentials WHERE user_id = $1
 `
 
 // Count WebAuthn credentials for a user
@@ -79,13 +81,13 @@ type CreateBackupCodesParams struct {
 }
 
 const createTOTPSecret = `-- name: CreateTOTPSecret :one
-INSERT INTO public.user_totp_secrets (
-    user_id,
-    encrypted_secret,
-    enabled
-) VALUES (
-    $1, $2, false
-) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at
+INSERT INTO
+    public.user_totp_secrets (
+        user_id,
+        encrypted_secret,
+        enabled
+    )
+VALUES ($1, $2, false) RETURNING user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at, last_used_code
 `
 
 type CreateTOTPSecretParams struct {
@@ -105,23 +107,33 @@ func (q *Queries) CreateTOTPSecret(ctx context.Context, arg CreateTOTPSecretPara
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastUsedCode,
 	)
 	return i, err
 }
 
 const createUserMFASettings = `-- name: CreateUserMFASettings :one
-INSERT INTO public.user_mfa_settings (
-    user_id,
-    totp_enabled,
-    webauthn_enabled,
-    backup_codes_generated,
-    require_mfa,
-    remember_device_enabled,
-    remember_device_duration_days,
-    trusted_devices
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-) RETURNING user_id, totp_enabled, webauthn_enabled, backup_codes_generated, require_mfa, remember_device_enabled, remember_device_duration_days, trusted_devices, created_at, updated_at
+INSERT INTO
+    public.user_mfa_settings (
+        user_id,
+        totp_enabled,
+        webauthn_enabled,
+        backup_codes_generated,
+        require_mfa,
+        remember_device_enabled,
+        remember_device_duration_days,
+        trusted_devices
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8
+    ) RETURNING user_id, totp_enabled, webauthn_enabled, backup_codes_generated, require_mfa, remember_device_enabled, remember_device_duration_days, trusted_devices, created_at, updated_at
 `
 
 type CreateUserMFASettingsParams struct {
@@ -164,21 +176,33 @@ func (q *Queries) CreateUserMFASettings(ctx context.Context, arg CreateUserMFASe
 }
 
 const createWebAuthnCredential = `-- name: CreateWebAuthnCredential :one
-INSERT INTO public.webauthn_credentials (
-    user_id,
-    credential_id,
-    public_key,
-    attestation_type,
-    transports,
-    backup_eligible,
-    backup_state,
-    user_present,
-    user_verified,
-    aaguid,
-    name
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
-) RETURNING id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at
+INSERT INTO
+    public.webauthn_credentials (
+        user_id,
+        credential_id,
+        public_key,
+        attestation_type,
+        transports,
+        backup_eligible,
+        backup_state,
+        user_present,
+        user_verified,
+        aaguid,
+        name
+    )
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11
+    ) RETURNING id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at
 `
 
 type CreateWebAuthnCredentialParams struct {
@@ -233,8 +257,7 @@ func (q *Queries) CreateWebAuthnCredential(ctx context.Context, arg CreateWebAut
 }
 
 const deleteAllBackupCodes = `-- name: DeleteAllBackupCodes :exec
-DELETE FROM public.mfa_backup_codes
-WHERE user_id = $1
+DELETE FROM public.mfa_backup_codes WHERE user_id = $1
 `
 
 // Delete all backup codes for a user (when regenerating)
@@ -244,8 +267,7 @@ func (q *Queries) DeleteAllBackupCodes(ctx context.Context, userID uuid.UUID) er
 }
 
 const deleteTOTPSecret = `-- name: DeleteTOTPSecret :exec
-DELETE FROM public.user_totp_secrets
-WHERE user_id = $1
+DELETE FROM public.user_totp_secrets WHERE user_id = $1
 `
 
 // Delete TOTP secret for a user
@@ -255,8 +277,7 @@ func (q *Queries) DeleteTOTPSecret(ctx context.Context, userID uuid.UUID) error 
 }
 
 const deleteUserMFASettings = `-- name: DeleteUserMFASettings :exec
-DELETE FROM public.user_mfa_settings
-WHERE user_id = $1
+DELETE FROM public.user_mfa_settings WHERE user_id = $1
 `
 
 // Delete MFA settings for a user
@@ -267,7 +288,9 @@ func (q *Queries) DeleteUserMFASettings(ctx context.Context, userID uuid.UUID) e
 
 const deleteWebAuthnCredential = `-- name: DeleteWebAuthnCredential :exec
 DELETE FROM public.webauthn_credentials
-WHERE id = $1 AND user_id = $2
+WHERE
+    id = $1
+    AND user_id = $2
 `
 
 type DeleteWebAuthnCredentialParams struct {
@@ -283,9 +306,11 @@ func (q *Queries) DeleteWebAuthnCredential(ctx context.Context, arg DeleteWebAut
 
 const disableTOTP = `-- name: DisableTOTP :exec
 UPDATE public.user_totp_secrets
-SET enabled = false,
+SET
+    enabled = false,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 // Disable TOTP for a user
@@ -296,9 +321,11 @@ func (q *Queries) DisableTOTP(ctx context.Context, userID uuid.UUID) error {
 
 const enableTOTP = `-- name: EnableTOTP :exec
 UPDATE public.user_totp_secrets
-SET enabled = true,
+SET
+    enabled = true,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 // Enable TOTP for a user (after verification)
@@ -308,8 +335,12 @@ func (q *Queries) EnableTOTP(ctx context.Context, userID uuid.UUID) error {
 }
 
 const getBackupCodeByHash = `-- name: GetBackupCodeByHash :one
-SELECT id, user_id, code_hash, used_at, used_from_ip, created_at FROM public.mfa_backup_codes
-WHERE user_id = $1 AND code_hash = $2 AND used_at IS NULL
+SELECT id, user_id, code_hash, used_at, used_from_ip, created_at
+FROM public.mfa_backup_codes
+WHERE
+    user_id = $1
+    AND code_hash = $2
+    AND used_at IS NULL
 `
 
 type GetBackupCodeByHashParams struct {
@@ -333,8 +364,11 @@ func (q *Queries) GetBackupCodeByHash(ctx context.Context, arg GetBackupCodeByHa
 }
 
 const getUnusedBackupCodes = `-- name: GetUnusedBackupCodes :many
-SELECT id, user_id, code_hash, used_at, used_from_ip, created_at FROM public.mfa_backup_codes
-WHERE user_id = $1 AND used_at IS NULL
+SELECT id, user_id, code_hash, used_at, used_from_ip, created_at
+FROM public.mfa_backup_codes
+WHERE
+    user_id = $1
+    AND used_at IS NULL
 ORDER BY created_at DESC
 `
 
@@ -368,8 +402,7 @@ func (q *Queries) GetUnusedBackupCodes(ctx context.Context, userID uuid.UUID) ([
 
 const getUserMFASettings = `-- name: GetUserMFASettings :one
 
-SELECT user_id, totp_enabled, webauthn_enabled, backup_codes_generated, require_mfa, remember_device_enabled, remember_device_duration_days, trusted_devices, created_at, updated_at FROM public.user_mfa_settings
-WHERE user_id = $1
+SELECT user_id, totp_enabled, webauthn_enabled, backup_codes_generated, require_mfa, remember_device_enabled, remember_device_duration_days, trusted_devices, created_at, updated_at FROM public.user_mfa_settings WHERE user_id = $1
 `
 
 // ============================================================================
@@ -429,8 +462,7 @@ func (q *Queries) GetUserMFAStatus(ctx context.Context, userID uuid.UUID) (GetUs
 
 const getUserTOTPSecret = `-- name: GetUserTOTPSecret :one
 
-SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at FROM public.user_totp_secrets
-WHERE user_id = $1
+SELECT user_id, encrypted_secret, verified_at, enabled, last_used_at, created_at, updated_at, last_used_code FROM public.user_totp_secrets WHERE user_id = $1
 `
 
 // ============================================================================
@@ -448,13 +480,13 @@ func (q *Queries) GetUserTOTPSecret(ctx context.Context, userID uuid.UUID) (User
 		&i.LastUsedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.LastUsedCode,
 	)
 	return i, err
 }
 
 const getWebAuthnCredential = `-- name: GetWebAuthnCredential :one
-SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials
-WHERE id = $1
+SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials WHERE id = $1
 `
 
 // Get a specific WebAuthn credential by ID
@@ -483,8 +515,7 @@ func (q *Queries) GetWebAuthnCredential(ctx context.Context, id uuid.UUID) (Weba
 }
 
 const getWebAuthnCredentialByCredentialID = `-- name: GetWebAuthnCredentialByCredentialID :one
-SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials
-WHERE credential_id = $1
+SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials WHERE credential_id = $1
 `
 
 // Get a WebAuthn credential by its credential ID
@@ -514,10 +545,20 @@ func (q *Queries) GetWebAuthnCredentialByCredentialID(ctx context.Context, crede
 
 const hasAnyMFAMethod = `-- name: HasAnyMFAMethod :one
 SELECT (
-    EXISTS(SELECT 1 FROM public.user_totp_secrets WHERE user_totp_secrets.user_id = $1 AND enabled = true)
-    OR
-    EXISTS(SELECT 1 FROM public.webauthn_credentials WHERE webauthn_credentials.user_id = $1)
-) as has_mfa
+        EXISTS (
+            SELECT 1
+            FROM public.user_totp_secrets
+            WHERE
+                user_totp_secrets.user_id = $1
+                AND enabled = true
+        )
+        OR EXISTS (
+            SELECT 1
+            FROM public.webauthn_credentials
+            WHERE
+                webauthn_credentials.user_id = $1
+        )
+    ) as has_mfa
 `
 
 // Check if user has any MFA method enabled
@@ -530,9 +571,13 @@ func (q *Queries) HasAnyMFAMethod(ctx context.Context, userID uuid.UUID) (*bool,
 
 const listWebAuthnCredentials = `-- name: ListWebAuthnCredentials :many
 
-SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at FROM public.webauthn_credentials
-WHERE user_id = $1
-ORDER BY last_used_at DESC NULLS LAST, created_at DESC
+SELECT id, user_id, credential_id, public_key, sign_count, clone_detected, aaguid, attestation_type, transports, backup_eligible, backup_state, user_present, user_verified, name, created_at, last_used_at
+FROM public.webauthn_credentials
+WHERE
+    user_id = $1
+ORDER BY
+    last_used_at DESC NULLS LAST,
+    created_at DESC
 `
 
 // ============================================================================
@@ -578,8 +623,10 @@ func (q *Queries) ListWebAuthnCredentials(ctx context.Context, userID uuid.UUID)
 
 const markWebAuthnCloneDetected = `-- name: MarkWebAuthnCloneDetected :exec
 UPDATE public.webauthn_credentials
-SET clone_detected = true
-WHERE credential_id = $1
+SET
+    clone_detected = true
+WHERE
+    credential_id = $1
 `
 
 // Mark a credential as potentially cloned
@@ -590,9 +637,11 @@ func (q *Queries) MarkWebAuthnCloneDetected(ctx context.Context, credentialID []
 
 const updateMFASettingsBackupCodesGenerated = `-- name: UpdateMFASettingsBackupCodesGenerated :exec
 UPDATE public.user_mfa_settings
-SET backup_codes_generated = $2,
+SET
+    backup_codes_generated = $2,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateMFASettingsBackupCodesGeneratedParams struct {
@@ -608,10 +657,12 @@ func (q *Queries) UpdateMFASettingsBackupCodesGenerated(ctx context.Context, arg
 
 const updateMFASettingsRememberDevice = `-- name: UpdateMFASettingsRememberDevice :exec
 UPDATE public.user_mfa_settings
-SET remember_device_enabled = $2,
+SET
+    remember_device_enabled = $2,
     remember_device_duration_days = $3,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateMFASettingsRememberDeviceParams struct {
@@ -628,9 +679,11 @@ func (q *Queries) UpdateMFASettingsRememberDevice(ctx context.Context, arg Updat
 
 const updateMFASettingsRequireMFA = `-- name: UpdateMFASettingsRequireMFA :exec
 UPDATE public.user_mfa_settings
-SET require_mfa = $2,
+SET
+    require_mfa = $2,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateMFASettingsRequireMFAParams struct {
@@ -646,9 +699,11 @@ func (q *Queries) UpdateMFASettingsRequireMFA(ctx context.Context, arg UpdateMFA
 
 const updateMFASettingsTOTPEnabled = `-- name: UpdateMFASettingsTOTPEnabled :exec
 UPDATE public.user_mfa_settings
-SET totp_enabled = $2,
+SET
+    totp_enabled = $2,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateMFASettingsTOTPEnabledParams struct {
@@ -664,9 +719,11 @@ func (q *Queries) UpdateMFASettingsTOTPEnabled(ctx context.Context, arg UpdateMF
 
 const updateMFASettingsWebAuthnEnabled = `-- name: UpdateMFASettingsWebAuthnEnabled :exec
 UPDATE public.user_mfa_settings
-SET webauthn_enabled = $2,
+SET
+    webauthn_enabled = $2,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateMFASettingsWebAuthnEnabledParams struct {
@@ -682,24 +739,34 @@ func (q *Queries) UpdateMFASettingsWebAuthnEnabled(ctx context.Context, arg Upda
 
 const updateTOTPLastUsed = `-- name: UpdateTOTPLastUsed :exec
 UPDATE public.user_totp_secrets
-SET last_used_at = NOW(),
+SET
+    last_used_at = NOW(),
+    last_used_code = $2,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
-// Update last used timestamp for TOTP
-func (q *Queries) UpdateTOTPLastUsed(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, updateTOTPLastUsed, userID)
+type UpdateTOTPLastUsedParams struct {
+	UserID       uuid.UUID `json:"userId"`
+	LastUsedCode *string   `json:"lastUsedCode"`
+}
+
+// Update last used timestamp and code for TOTP (replay protection)
+func (q *Queries) UpdateTOTPLastUsed(ctx context.Context, arg UpdateTOTPLastUsedParams) error {
+	_, err := q.db.Exec(ctx, updateTOTPLastUsed, arg.UserID, arg.LastUsedCode)
 	return err
 }
 
 const updateTOTPSecret = `-- name: UpdateTOTPSecret :exec
 UPDATE public.user_totp_secrets
-SET encrypted_secret = $2,
+SET
+    encrypted_secret = $2,
     verified_at = NULL,
     enabled = false,
     updated_at = NOW()
-WHERE user_id = $1
+WHERE
+    user_id = $1
 `
 
 type UpdateTOTPSecretParams struct {
@@ -715,9 +782,11 @@ func (q *Queries) UpdateTOTPSecret(ctx context.Context, arg UpdateTOTPSecretPara
 
 const updateWebAuthnCounter = `-- name: UpdateWebAuthnCounter :exec
 UPDATE public.webauthn_credentials
-SET sign_count = $2,
+SET
+    sign_count = $2,
     last_used_at = NOW()
-WHERE credential_id = $1
+WHERE
+    credential_id = $1
 `
 
 type UpdateWebAuthnCounterParams struct {
@@ -732,9 +801,7 @@ func (q *Queries) UpdateWebAuthnCounter(ctx context.Context, arg UpdateWebAuthnC
 }
 
 const updateWebAuthnCredentialName = `-- name: UpdateWebAuthnCredentialName :exec
-UPDATE public.webauthn_credentials
-SET name = $2
-WHERE id = $1
+UPDATE public.webauthn_credentials SET name = $2 WHERE id = $1
 `
 
 type UpdateWebAuthnCredentialNameParams struct {
@@ -750,9 +817,13 @@ func (q *Queries) UpdateWebAuthnCredentialName(ctx context.Context, arg UpdateWe
 
 const useBackupCode = `-- name: UseBackupCode :exec
 UPDATE public.mfa_backup_codes
-SET used_at = NOW(),
+SET
+    used_at = NOW(),
     used_from_ip = $3
-WHERE id = $1 AND user_id = $2 AND used_at IS NULL
+WHERE
+    id = $1
+    AND user_id = $2
+    AND used_at IS NULL
 `
 
 type UseBackupCodeParams struct {
@@ -769,10 +840,13 @@ func (q *Queries) UseBackupCode(ctx context.Context, arg UseBackupCodeParams) er
 
 const verifyTOTPSecret = `-- name: VerifyTOTPSecret :exec
 UPDATE public.user_totp_secrets
-SET verified_at = NOW(),
+SET
+    verified_at = NOW(),
     enabled = true,
     updated_at = NOW()
-WHERE user_id = $1 AND verified_at IS NULL
+WHERE
+    user_id = $1
+    AND verified_at IS NULL
 `
 
 // Mark TOTP as verified and enabled

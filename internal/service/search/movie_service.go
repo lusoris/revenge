@@ -143,6 +143,10 @@ func (s *MovieSearchService) BulkIndexMovies(ctx context.Context, movies []Movie
 	}
 
 	s.logger.Info("bulk indexed movies", "success", successCount, "errors", errorCount)
+
+	if errorCount > 0 {
+		return fmt.Errorf("bulk index completed with %d errors out of %d documents", errorCount, successCount+errorCount)
+	}
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // mapAnimeToTVShowSearchResult converts a Kitsu anime to TVShowSearchResult.
@@ -182,7 +183,7 @@ func mapAnimeToTVShowMetadata(res *SingleResponse[AnimeAttributes]) *metadata.TV
 				// MAL ID — no direct field
 			case strings.Contains(site, "thetvdb"):
 				if tvdbID, err := strconv.Atoi(extID); err == nil {
-					id := int32(tvdbID)
+					id := util.SafeIntToInt32(tvdbID)
 					m.TVDbID = &id
 				}
 			}
@@ -217,7 +218,7 @@ func mapEpisodesToSummary(episodes *ListResponse[EpisodeAttributes], seasonNum i
 			es.EpisodeNumber = *a.Number
 		}
 		if a.Length != nil {
-			rt := int32(*a.Length)
+			rt := util.SafeIntToInt32(*a.Length)
 			es.Runtime = &rt
 		}
 		if a.Synopsis != "" {
@@ -254,7 +255,7 @@ func mapEpisodeToMetadata(ep ResourceObject[EpisodeAttributes], animeID string) 
 		em.EpisodeNumber = *a.Number
 	}
 	if a.Length != nil {
-		rt := int32(*a.Length)
+		rt := util.SafeIntToInt32(*a.Length)
 		em.Runtime = &rt
 	}
 	if a.Synopsis != "" {
@@ -312,7 +313,7 @@ func mapMappingsToExternalIDs(mappings *ListResponse[MappingAttributes]) *metada
 		switch {
 		case strings.Contains(a.ExternalSite, "thetvdb"):
 			if tvdbID, err := strconv.Atoi(a.ExternalID); err == nil {
-				id := int32(tvdbID)
+				id := util.SafeIntToInt32(tvdbID)
 				ids.TVDbID = &id
 			}
 		case strings.Contains(a.ExternalSite, "anilist"):

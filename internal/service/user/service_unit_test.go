@@ -67,7 +67,7 @@ func makeTestUser(id uuid.UUID, username, email string) *db.SharedUser {
 		ID:           id,
 		Username:     username,
 		Email:        email,
-		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=4$test$hash",
+		PasswordHash: "$argon2id$v=19$m=65536,t=3,p=2$test$hash",
 		DisplayName:  &displayName,
 		IsActive:     &isActive,
 		IsAdmin:      &isAdmin,

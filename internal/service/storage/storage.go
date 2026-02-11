@@ -71,7 +71,7 @@ func (s *LocalStorage) Store(ctx context.Context, key string, reader io.Reader, 
 	}
 
 	// Create file
-	file, err := os.Create(fullPath)
+	file, err := os.Create(fullPath) // #nosec G304 -- path sanitized by sanitizeKey above
 	if err != nil {
 		return "", fmt.Errorf("failed to create file: %w", err)
 	}
@@ -101,7 +101,7 @@ func (s *LocalStorage) Get(ctx context.Context, key string) (io.ReadCloser, erro
 	key = sanitizeKey(key)
 	fullPath := filepath.Join(s.basePath, key)
 
-	file, err := os.Open(fullPath)
+	file, err := os.Open(fullPath) // #nosec G304 -- path sanitized by sanitizeKey above
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("file not found: %s", key)

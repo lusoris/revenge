@@ -9,7 +9,6 @@ import (
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/email"
 )
@@ -51,6 +50,6 @@ var Module = fx.Module("auth",
 
 // provideAuthCleanupWorker creates the auth token cleanup worker.
 // The auth.Repository satisfies the jobs.AuthCleanupRepository interface.
-func provideAuthCleanupWorker(leaderElection *raft.LeaderElection, repo Repository, logger *slog.Logger) *infrajobs.CleanupWorker {
-	return infrajobs.NewCleanupWorker(leaderElection, repo, logger)
+func provideAuthCleanupWorker(repo Repository, logger *slog.Logger) *infrajobs.CleanupWorker {
+	return infrajobs.NewCleanupWorker(repo, logger)
 }

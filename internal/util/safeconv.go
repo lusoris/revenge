@@ -56,3 +56,11 @@ func SafeIntToUint(v int) uint {
 	}
 	return uint(v) // #nosec G115 -- bounds checked above
 }
+
+// SafeUintToInt converts uint to int, capping at math.MaxInt
+func SafeUintToInt(v uint) int {
+	if v > uint(math.MaxInt) {
+		return math.MaxInt
+	}
+	return int(v) // #nosec G115 -- bounds checked above
+}

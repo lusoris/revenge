@@ -28,6 +28,11 @@ type TOTPService struct {
 	issuer    string // Application name shown in authenticator apps
 }
 
+// Errors for TOTP operations
+var (
+	ErrTOTPAlreadyVerified = errors.New("TOTP already verified, disable before re-enrolling")
+)
+
 // NewTOTPService creates a new TOTP service
 func NewTOTPService(
 	queries *db.Queries,
@@ -93,9 +98,14 @@ func (s *TOTPService) GenerateSecret(ctx context.Context, userID uuid.UUID, acco
 
 	// Store encrypted secret in database (upsert: update if exists, create if not)
 	// Note: nonce is prepended to encrypted_secret by AES-256-GCM, no separate storage needed
-	_, existsErr := s.queries.GetUserTOTPSecret(ctx, userID)
+	existing, existsErr := s.queries.GetUserTOTPSecret(ctx, userID)
 	if existsErr == nil {
-		// User has existing secret, update it (re-enrollment)
+		// User has existing verified secret — require disable first to prevent
+		// an attacker with session access from silently re-enrolling TOTP.
+		if existing.VerifiedAt.Valid {
+			return nil, ErrTOTPAlreadyVerified
+		}
+		// Unverified secret — allow overwrite (re-enrollment before verification)
 		err = s.queries.UpdateTOTPSecret(ctx, db.UpdateTOTPSecretParams{
 			UserID:          userID,
 			EncryptedSecret: encryptedSecret,
@@ -136,6 +146,14 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 		return false, fmt.Errorf("failed to get TOTP secret: %w", err)
 	}
 
+	// Reject replayed codes (same code used within the validity window)
+	if totpSecret.LastUsedCode != nil && *totpSecret.LastUsedCode == code {
+		s.logger.Warn("TOTP code replay detected",
+			slog.String("user_id", userID.String()),
+		)
+		return false, nil
+	}
+
 	// Decrypt secret
 	secretBase32, err := s.encryptor.DecryptString(totpSecret.EncryptedSecret)
 	if err != nil {
@@ -151,8 +169,11 @@ func (s *TOTPService) VerifyCode(ctx context.Context, userID uuid.UUID, code str
 		return false, nil
 	}
 
-	// Update last used timestamp
-	if err := s.queries.UpdateTOTPLastUsed(ctx, userID); err != nil {
+	// Update last used timestamp and code for replay protection
+	if err := s.queries.UpdateTOTPLastUsed(ctx, db.UpdateTOTPLastUsedParams{
+		UserID:       userID,
+		LastUsedCode: &code,
+	}); err != nil {
 		s.logger.Error("failed to update TOTP last used",
 			slog.String("user_id", userID.String()),
 			slog.Any("error",err),

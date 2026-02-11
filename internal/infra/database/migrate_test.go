@@ -206,6 +206,82 @@ func TestMigrateVersionOnFreshDatabase(t *testing.T) {
 	assert.False(t, dirty)
 }
 
+// TestMigrateUpRecoversDirtyState tests that MigrateUp recovers from a dirty state.
+func TestMigrateUpRecoversDirtyState(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping embedded-postgres test in short mode")
+	}
+
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
+
+	logger := testLogger()
+
+	// First, migrate up to create the schema_migrations table
+	err := MigrateTo(testURL, 1, logger)
+	require.NoError(t, err)
+
+	// Simulate a dirty state by updating schema_migrations directly
+	db, err := sql.Open("pgx", testURL)
+	require.NoError(t, err)
+	defer func() { _ = db.Close() }()
+
+	_, err = db.Exec("UPDATE schema_migrations SET dirty = true")
+	require.NoError(t, err)
+
+	// Verify it's dirty
+	version, dirty, err := MigrateVersion(testURL)
+	require.NoError(t, err)
+	assert.True(t, dirty, "Database should be dirty")
+	assert.Equal(t, uint(1), version)
+
+	// MigrateUp should recover from dirty state
+	err = MigrateUp(testURL, logger)
+	require.NoError(t, err, "MigrateUp should recover from dirty state")
+
+	// Verify it's no longer dirty
+	version, dirty, err = MigrateVersion(testURL)
+	require.NoError(t, err)
+	assert.False(t, dirty, "Database should no longer be dirty after recovery")
+	assert.Greater(t, version, uint(1), "Version should have advanced")
+}
+
+// TestMigrateDownRecoversDirtyState tests that MigrateDown recovers from a dirty state.
+func TestMigrateDownRecoversDirtyState(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping embedded-postgres test in short mode")
+	}
+
+	testURL, cleanup := freshTestDBURL(t)
+	defer cleanup()
+
+	logger := testLogger()
+
+	// Migrate up fully first
+	err := MigrateUp(testURL, logger)
+	require.NoError(t, err)
+
+	versionBefore, _, err := MigrateVersion(testURL)
+	require.NoError(t, err)
+
+	// Simulate dirty state
+	db, err := sql.Open("pgx", testURL)
+	require.NoError(t, err)
+	defer func() { _ = db.Close() }()
+
+	_, err = db.Exec("UPDATE schema_migrations SET dirty = true")
+	require.NoError(t, err)
+
+	// MigrateDown should recover from dirty state and roll back
+	err = MigrateDown(testURL, logger)
+	require.NoError(t, err, "MigrateDown should recover from dirty state")
+
+	versionAfter, dirty, err := MigrateVersion(testURL)
+	require.NoError(t, err)
+	assert.False(t, dirty)
+	assert.Less(t, versionAfter, versionBefore)
+}
+
 // TestMigrateInvalidURL tests migration functions with invalid URL.
 func TestMigrateInvalidURL(t *testing.T) {
 	logger := testLogger()

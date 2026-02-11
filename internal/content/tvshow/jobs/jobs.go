@@ -19,6 +19,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow/adapters"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
+	"github.com/lusoris/revenge/internal/util"
 	"github.com/riverqueue/river"
 )
 
@@ -252,12 +253,12 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 	}
 
 	// Find or create season
-	season, err := w.service.GetSeasonByNumber(ctx, series.ID, int32(*seasonNum))
+	season, err := w.service.GetSeasonByNumber(ctx, series.ID, util.SafeIntToInt32(*seasonNum))
 	if err != nil {
 		// Create season
 		seasonParams := tvshow.CreateSeasonParams{
 			SeriesID:     series.ID,
-			SeasonNumber: int32(*seasonNum),
+			SeasonNumber: util.SafeIntToInt32(*seasonNum),
 			Name:         fmt.Sprintf("Season %d", *seasonNum),
 			EpisodeCount: 0,
 		}
@@ -266,7 +267,7 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 		if series.TMDbID != nil {
 			tmpSeason := &tvshow.Season{
 				SeriesID:     series.ID,
-				SeasonNumber: int32(*seasonNum),
+				SeasonNumber: util.SafeIntToInt32(*seasonNum),
 			}
 			if err := w.metadataProvider.EnrichSeason(ctx, tmpSeason, *series.TMDbID); err == nil {
 				seasonParams.TMDbID = tmpSeason.TMDbID
@@ -288,14 +289,14 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 	}
 
 	// Find or create episode
-	episode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(*seasonNum), int32(*episodeNum))
+	episode, err := w.service.GetEpisodeByNumber(ctx, series.ID, util.SafeIntToInt32(*seasonNum), util.SafeIntToInt32(*episodeNum))
 	if err != nil {
 		// Create episode
 		episodeParams := tvshow.CreateEpisodeParams{
 			SeriesID:      series.ID,
 			SeasonID:      season.ID,
-			SeasonNumber:  int32(*seasonNum),
-			EpisodeNumber: int32(*episodeNum),
+			SeasonNumber:  util.SafeIntToInt32(*seasonNum),
+			EpisodeNumber: util.SafeIntToInt32(*episodeNum),
 			Title:         fmt.Sprintf("Episode %d", *episodeNum),
 		}
 
@@ -309,8 +310,8 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 			tmpEpisode := &tvshow.Episode{
 				SeriesID:      series.ID,
 				SeasonID:      season.ID,
-				SeasonNumber:  int32(*seasonNum),
-				EpisodeNumber: int32(*episodeNum),
+				SeasonNumber:  util.SafeIntToInt32(*seasonNum),
+				EpisodeNumber: util.SafeIntToInt32(*episodeNum),
 			}
 			if err := w.metadataProvider.EnrichEpisode(ctx, tmpEpisode, *series.TMDbID); err == nil {
 				episodeParams.TMDbID = tmpEpisode.TMDbID
@@ -351,8 +352,8 @@ func (w *LibraryScanWorker) processFile(ctx context.Context, sr scanner.ScanResu
 	w.logger.Info("processed tv show file",
 		slog.String("file_path", sr.FilePath),
 		slog.String("series", series.Title),
-		slog.Any("season", int32(*seasonNum)),
-		slog.Any("episode", int32(*episodeNum)),
+		slog.Any("season", util.SafeIntToInt32(*seasonNum)),
+		slog.Any("episode", util.SafeIntToInt32(*episodeNum)),
 	)
 
 	return nil
@@ -677,7 +678,7 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 	}
 
 	// Find or create season
-	season, err := w.service.GetSeasonByNumber(ctx, series.ID, int32(seasonNum))
+	season, err := w.service.GetSeasonByNumber(ctx, series.ID, util.SafeIntToInt32(seasonNum))
 	if err != nil {
 		if !args.AutoCreate {
 			return fmt.Errorf("season %d not found for series %s", seasonNum, series.Title)
@@ -685,7 +686,7 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 
 		seasonParams := tvshow.CreateSeasonParams{
 			SeriesID:     series.ID,
-			SeasonNumber: int32(seasonNum),
+			SeasonNumber: util.SafeIntToInt32(seasonNum),
 			Name:         fmt.Sprintf("Season %d", seasonNum),
 			EpisodeCount: 0,
 		}
@@ -697,7 +698,7 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 	}
 
 	// Find or create episode
-	episode, err := w.service.GetEpisodeByNumber(ctx, series.ID, int32(seasonNum), int32(episodeNum))
+	episode, err := w.service.GetEpisodeByNumber(ctx, series.ID, util.SafeIntToInt32(seasonNum), util.SafeIntToInt32(episodeNum))
 	if err != nil {
 		if !args.AutoCreate {
 			return fmt.Errorf("episode S%02dE%02d not found for series %s", seasonNum, episodeNum, series.Title)
@@ -706,8 +707,8 @@ func (w *FileMatchWorker) Work(ctx context.Context, job *river.Job[FileMatchArgs
 		episodeParams := tvshow.CreateEpisodeParams{
 			SeriesID:      series.ID,
 			SeasonID:      season.ID,
-			SeasonNumber:  int32(seasonNum),
-			EpisodeNumber: int32(episodeNum),
+			SeasonNumber:  util.SafeIntToInt32(seasonNum),
+			EpisodeNumber: util.SafeIntToInt32(episodeNum),
 			Title:         fmt.Sprintf("Episode %d", episodeNum),
 		}
 

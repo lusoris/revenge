@@ -200,7 +200,7 @@ SELECT
             ew.is_completed = FALSE
             AND ew.progress_seconds > 0
     ) as in_progress_count,
-    SUM(ew.watch_count) as total_watches,
+    COALESCE(SUM(ew.watch_count), 0)::bigint as total_watches,
     (
         SELECT COUNT(*)
         FROM tvshow.episodes ep

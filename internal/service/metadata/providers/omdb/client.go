@@ -3,12 +3,14 @@ package omdb
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
 	"golang.org/x/time/rate"
 
 	"github.com/lusoris/revenge/internal/infra/cache"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 const (
@@ -71,7 +73,7 @@ func NewClient(config Config) (*Client, error) {
 		config.Timeout = 10 * time.Second
 	}
 
-	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](10000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create omdb cache: %w", err)
 	}
@@ -80,7 +82,30 @@ func NewClient(config Config) (*Client, error) {
 		SetBaseURL(BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(2).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		}).
+		OnAfterResponse(func(_ *req.Client, resp *req.Response) error {
+			// OMDB returns type in query param or response
+			mediaType := "movie" // OMDB is primarily movie-focused
+			if strings.Contains(resp.Request.RawURL, "type=series") {
+				mediaType = "tvshow"
+			}
+			status := "success"
+			if resp.IsErrorState() {
+				status = "error"
+				if resp.StatusCode == 429 {
+					status = "rate_limited"
+					observability.RecordMetadataRateLimited("omdb")
+				}
+			}
+			observability.RecordMetadataFetch("omdb", mediaType, status, resp.TotalTime().Seconds())
+			return nil
+		})
 
 	return &Client{
 		httpClient:  client,
@@ -227,4 +252,11 @@ func (c *Client) Search(ctx context.Context, query string, year string, mediaTyp
 
 	c.setCache(cacheKey, &result)
 	return &result, nil
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

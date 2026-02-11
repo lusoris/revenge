@@ -13,10 +13,10 @@ const (
 	CookieAccessToken = "revenge_access_token"
 
 	// CookieRefreshToken is the name of the HttpOnly cookie for the refresh token.
-	CookieRefreshToken = "revenge_refresh_token"
+	CookieRefreshToken = "revenge_refresh_token" // #nosec G101 -- cookie name, not a credential
 
 	// CookieCSRFToken is the name of the non-HttpOnly cookie for CSRF double-submit.
-	CookieCSRFToken = "revenge_csrf"
+	CookieCSRFToken = "revenge_csrf" // #nosec G101 -- cookie name, not a credential
 
 	// HeaderCSRF must match the CSRF cookie value on state-changing requests.
 	HeaderCSRF = "X-CSRF-Token"

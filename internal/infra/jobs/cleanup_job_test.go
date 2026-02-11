@@ -66,7 +66,7 @@ func TestNewCleanupWorker(t *testing.T) {
 	t.Run("with logger and repo", func(t *testing.T) {
 		logger := slog.Default()
 		repo := &mockAuthCleanupRepo{}
-		worker := NewCleanupWorker(nil, repo, logger)
+		worker := NewCleanupWorker(repo, logger)
 
 		assert.NotNil(t, worker)
 		assert.NotNil(t, worker.logger)
@@ -75,7 +75,7 @@ func TestNewCleanupWorker(t *testing.T) {
 	})
 
 	t.Run("with nil logger", func(t *testing.T) {
-		worker := NewCleanupWorker(nil, nil, nil)
+		worker := NewCleanupWorker(nil, nil)
 
 		assert.NotNil(t, worker)
 		assert.NotNil(t, worker.logger)
@@ -84,7 +84,7 @@ func TestNewCleanupWorker(t *testing.T) {
 
 // TestCleanupWorker_Timeout tests the timeout value.
 func TestCleanupWorker_Timeout(t *testing.T) {
-	worker := NewCleanupWorker(nil, nil, slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 	job := &river.Job[CleanupArgs]{
 		JobRow: &rivertype.JobRow{ID: 1},
 	}
@@ -93,7 +93,7 @@ func TestCleanupWorker_Timeout(t *testing.T) {
 
 // TestCleanupWorker_ValidateArgs tests argument validation.
 func TestCleanupWorker_ValidateArgs(t *testing.T) {
-	worker := NewCleanupWorker(nil, nil, slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 
 	tests := []struct {
 		name    string
@@ -174,7 +174,7 @@ func TestCleanupWorker_ValidateArgs(t *testing.T) {
 // TestCleanupWorker_Work_ExpiredTokens tests cleanup of expired tokens.
 func TestCleanupWorker_Work_ExpiredTokens(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	repo.On("DeleteExpiredAuthTokens", mock.Anything).Return(nil)
 
@@ -194,7 +194,7 @@ func TestCleanupWorker_Work_ExpiredTokens(t *testing.T) {
 // TestCleanupWorker_Work_RevokedTokens tests cleanup of revoked tokens.
 func TestCleanupWorker_Work_RevokedTokens(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	repo.On("DeleteRevokedAuthTokens", mock.Anything).Return(nil)
 
@@ -214,7 +214,7 @@ func TestCleanupWorker_Work_RevokedTokens(t *testing.T) {
 // TestCleanupWorker_Work_PasswordResets tests cleanup of password reset tokens.
 func TestCleanupWorker_Work_PasswordResets(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	repo.On("DeleteExpiredPasswordResetTokens", mock.Anything).Return(nil)
 	repo.On("DeleteUsedPasswordResetTokens", mock.Anything).Return(nil)
@@ -235,7 +235,7 @@ func TestCleanupWorker_Work_PasswordResets(t *testing.T) {
 // TestCleanupWorker_Work_EmailVerifications tests cleanup of email verification tokens.
 func TestCleanupWorker_Work_EmailVerifications(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	repo.On("DeleteExpiredEmailVerificationTokens", mock.Anything).Return(nil)
 	repo.On("DeleteVerifiedEmailTokens", mock.Anything).Return(nil)
@@ -256,7 +256,7 @@ func TestCleanupWorker_Work_EmailVerifications(t *testing.T) {
 // TestCleanupWorker_Work_FailedLogins tests cleanup of failed login attempts.
 func TestCleanupWorker_Work_FailedLogins(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	repo.On("DeleteOldFailedLoginAttempts", mock.Anything).Return(nil)
 
@@ -276,7 +276,7 @@ func TestCleanupWorker_Work_FailedLogins(t *testing.T) {
 // TestCleanupWorker_Work_All tests cleanup of all targets.
 func TestCleanupWorker_Work_All(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	// All 7 repo methods should be called
 	repo.On("DeleteExpiredAuthTokens", mock.Anything).Return(nil)
@@ -303,7 +303,7 @@ func TestCleanupWorker_Work_All(t *testing.T) {
 // TestCleanupWorker_Work_RepoError tests error propagation from repository.
 func TestCleanupWorker_Work_RepoError(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	dbErr := errors.New("database connection lost")
 	repo.On("DeleteExpiredAuthTokens", mock.Anything).Return(dbErr)
@@ -325,7 +325,7 @@ func TestCleanupWorker_Work_RepoError(t *testing.T) {
 // TestCleanupWorker_Work_AllPartialError tests that "all" continues on partial errors.
 func TestCleanupWorker_Work_AllPartialError(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 
 	// Some succeed, some fail
 	repo.On("DeleteExpiredAuthTokens", mock.Anything).Return(nil)
@@ -354,7 +354,7 @@ func TestCleanupWorker_Work_AllPartialError(t *testing.T) {
 // TestCleanupWorker_Work_DryRun tests dry run mode skips actual cleanup.
 func TestCleanupWorker_Work_DryRun(t *testing.T) {
 	repo := &mockAuthCleanupRepo{}
-	worker := NewCleanupWorker(nil, repo, slog.Default())
+	worker := NewCleanupWorker(repo, slog.Default())
 	// No repo methods should be called in dry run
 
 	job := &river.Job[CleanupArgs]{
@@ -373,7 +373,7 @@ func TestCleanupWorker_Work_DryRun(t *testing.T) {
 
 // TestCleanupWorker_Work_InvalidArgs tests that invalid args return an error.
 func TestCleanupWorker_Work_InvalidArgs(t *testing.T) {
-	worker := NewCleanupWorker(nil, nil, slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 
 	job := &river.Job[CleanupArgs]{
 		JobRow: &rivertype.JobRow{ID: 10},
@@ -391,7 +391,7 @@ func TestCleanupWorker_Work_InvalidArgs(t *testing.T) {
 
 // TestCleanupWorker_Work_UnknownTarget tests that unknown target types return an error.
 func TestCleanupWorker_Work_UnknownTarget(t *testing.T) {
-	worker := NewCleanupWorker(nil, nil, slog.Default())
+	worker := NewCleanupWorker(nil, slog.Default())
 
 	job := &river.Job[CleanupArgs]{
 		JobRow: &rivertype.JobRow{ID: 11},

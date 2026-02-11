@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/lusoris/revenge/internal/infra/raft"
 	"github.com/riverqueue/river"
 )
 
@@ -58,27 +57,28 @@ func (CleanupArgs) Kind() string {
 // Cleanup runs on the low-priority queue since it's maintenance work.
 func (CleanupArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: QueueLow,
+		Queue:       QueueLow,
+		MaxAttempts: 5, // Cleanup is idempotent; limit retries to avoid noise
 	}
 }
 
 // CleanupWorker performs periodic cleanup operations.
+// Leader election is handled by River's built-in leader election via the
+// river_leader table — periodic jobs only run on the River-elected leader.
 type CleanupWorker struct {
 	river.WorkerDefaults[CleanupArgs]
-	leaderElection *raft.LeaderElection
-	authRepo       AuthCleanupRepository
-	logger         *slog.Logger
+	authRepo AuthCleanupRepository
+	logger   *slog.Logger
 }
 
 // NewCleanupWorker creates a new cleanup worker.
-func NewCleanupWorker(leaderElection *raft.LeaderElection, authRepo AuthCleanupRepository, logger *slog.Logger) *CleanupWorker {
+func NewCleanupWorker(authRepo AuthCleanupRepository, logger *slog.Logger) *CleanupWorker {
 	if logger == nil {
 		logger = slog.Default()
 	}
 	return &CleanupWorker{
-		leaderElection: leaderElection,
-		authRepo:       authRepo,
-		logger:         logger,
+		authRepo: authRepo,
+		logger:   logger,
 	}
 }
 
@@ -88,25 +88,16 @@ func (w *CleanupWorker) Timeout(job *river.Job[CleanupArgs]) time.Duration {
 }
 
 // Work executes the cleanup job.
+// Leader election is handled by River's periodic job scheduler — this worker
+// is only invoked on the River-elected leader node.
 func (w *CleanupWorker) Work(ctx context.Context, job *river.Job[CleanupArgs]) error {
 	args := job.Args
-
-	// Check if this node is the leader (only leader should run cleanup jobs)
-	if w.leaderElection != nil && !w.leaderElection.IsLeader() {
-		w.logger.Info("skipping cleanup job: not the leader node",
-			"job_id", job.ID,
-			"target_type", args.TargetType,
-			"leader", w.leaderElection.LeaderAddr(),
-		)
-		return nil
-	}
 
 	w.logger.Info("starting cleanup job",
 		"job_id", job.ID,
 		"target_type", args.TargetType,
 		"older_than", args.OlderThan,
 		"dry_run", args.DryRun,
-		"is_leader", w.leaderElection == nil || w.leaderElection.IsLeader(),
 	)
 
 	// Validate arguments

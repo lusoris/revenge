@@ -90,13 +90,19 @@ func NewBaseClient(config ClientConfig) *BaseClient {
 		SetBaseURL(config.BaseURL).
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(config.RetryCount).
-		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second)
+		SetCommonRetryBackoffInterval(1*time.Second, 10*time.Second).
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	if config.ProxyURL != "" {
 		client.SetProxyURL(config.ProxyURL)
 	}
 
-	l1, err := cache.NewL1Cache[string, any](config.CacheMaxSize, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](config.CacheMaxSize, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		// Fallback: create with defaults if custom config fails
 		l1, _ = cache.NewL1Cache[string, any](cache.DefaultL1MaxSize, cache.DefaultL1TTL)

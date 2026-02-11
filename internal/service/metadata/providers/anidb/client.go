@@ -104,7 +104,7 @@ func NewClient(config Config) (*Client, error) {
 		config.Timeout = 30 * time.Second
 	}
 
-	l1, err := cache.NewL1Cache[string, any](5000, config.CacheTTL)
+	l1, err := cache.NewL1Cache[string, any](5000, config.CacheTTL, cache.WithExpiryAccessing[string, any]())
 	if err != nil {
 		return nil, fmt.Errorf("create anidb cache: %w", err)
 	}
@@ -114,7 +114,13 @@ func NewClient(config Config) (*Client, error) {
 		SetTimeout(config.Timeout).
 		SetCommonRetryCount(1).
 		SetCommonRetryBackoffInterval(3*time.Second, 10*time.Second).
-		SetCommonHeader("Accept", "application/xml")
+		SetCommonHeader("Accept", "application/xml").
+		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+			if err != nil {
+				return true
+			}
+			return resp.StatusCode >= 500
+		})
 
 	return &Client{
 		httpClient:    client,
@@ -321,4 +327,11 @@ func parseTitleDump(r io.Reader) ([]TitleDumpEntry, error) {
 	}
 
 	return entries, scanner.Err()
+}
+
+// Close stops the cache's background goroutines.
+func (c *Client) Close() {
+	if c.cache != nil {
+		c.cache.Close()
+	}
 }

@@ -8,6 +8,7 @@ import (
 
 	"log/slog"
 
+	"github.com/davidbyttow/govips/v2/vips"
 	openapidoc "github.com/lusoris/revenge/api/openapi"
 	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
@@ -377,6 +378,8 @@ func NewServer(p ServerParams) (*Server, error) {
 			if server.redisGlobalLimiter != nil {
 				server.redisGlobalLimiter.Stop()
 			}
+			// Shutdown libvips if it was initialized
+			vips.Shutdown()
 			return httpServer.Shutdown(ctx)
 		},
 	})
