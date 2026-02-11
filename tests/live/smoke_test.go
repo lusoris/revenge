@@ -1968,9 +1968,10 @@ func TestLive_PlaybackRealSession(t *testing.T) {
 // =============================================================================
 
 // TestLive_PlaybackFullFile starts an HLS session for the BBB 4K file and
-// fetches every .ts segment until the media playlist contains #EXT-X-ENDLIST,
-// meaning FFmpeg has finished transcoding the entire file. This is a long
-// test (~10-15 min) that exercises sustained transcoding + serving.
+// simulates a real player: buffers ~30s of segments, then consumes them at 1x
+// speed (sleeping for each segment's EXTINF duration) while fetching ahead.
+// This tests sustained transcoding, segment serving, and session management
+// across the full ~10.5 min video. Expect ~11 min wall time.
 func TestLive_PlaybackFullFile(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping full-file playback in short mode")
@@ -2082,104 +2083,170 @@ func TestLive_PlaybackFullFile(t *testing.T) {
 		t.Logf("media playlist: %s", mediaURL)
 		mediaBase := mediaURL[:strings.LastIndex(mediaURL, "/")+1]
 
-		// Track state across polls.
-		fetched := make(map[string]bool)    // segment URLs already downloaded
+		// Simulate a real HLS player:
+		//  1) Buffer phase: fetch up to bufferTarget seconds of segments before "playing"
+		//  2) Playback phase: consume one segment at a time, sleeping for its EXTINF
+		//     duration (1x speed), while fetching the next segment in the background.
+		//
+		// This keeps the session alive for the full video duration and tests that the
+		// server sustains FFmpeg transcoding, segment serving, and session management
+		// across 10+ minutes of continuous playback.
+
+		type segment struct {
+			url      string
+			duration float64 // seconds, from EXTINF
+		}
+
+		const bufferTarget = 30.0 // seconds of content to buffer before "playing"
+
+		fetched := make(map[string]bool)
 		var totalBytes int64
 		var totalSegments int
-		var totalDuration float64
+		var totalDuration float64 // total EXTINF duration fetched
+		var playedDuration float64 // total EXTINF duration "played" (slept through)
 		finished := false
 
-		// Poll until #EXT-X-ENDLIST and all segments fetched, timeout 20 min.
 		overallDeadline := time.Now().Add(20 * time.Minute)
-		pollInterval := 3 * time.Second
+		playbackStart := time.Now()
 
-		for !finished && time.Now().Before(overallDeadline) {
-			resp, err := doLongGet(mediaURL)
-			if err != nil {
-				t.Logf("WARN: media playlist fetch error: %v", err)
-				time.Sleep(pollInterval)
-				continue
-			}
-			raw, _ := io.ReadAll(resp.Body)
-			resp.Body.Close()
-			playlist := string(raw)
-
-			hasEndList := strings.Contains(playlist, "#EXT-X-ENDLIST")
-
-			// Collect all segment URLs from this playlist snapshot.
-			var newSegments []string
-			var nextDuration float64
+		// parsePlaylist returns new (unfetched) segments from a playlist snapshot.
+		parsePlaylist := func(playlist string) (segs []segment, endList bool) {
+			endList = strings.Contains(playlist, "#EXT-X-ENDLIST")
+			var nextDur float64
 			for _, line := range strings.Split(playlist, "\n") {
 				line = strings.TrimSpace(line)
 				if strings.HasPrefix(line, "#EXTINF:") {
-					// Parse duration: #EXTINF:6.006000,
 					durStr := strings.TrimPrefix(line, "#EXTINF:")
 					durStr = strings.TrimRight(durStr, ",")
-					if d := 0.0; true {
-						fmt.Sscanf(durStr, "%f", &d)
-						nextDuration = d
-					}
+					fmt.Sscanf(durStr, "%f", &nextDur)
 					continue
 				}
 				if line == "" || strings.HasPrefix(line, "#") {
 					continue
 				}
-				// This is a segment filename.
 				segURL := line
 				if !strings.HasPrefix(segURL, "/") && !strings.HasPrefix(segURL, "http") {
 					segURL = mediaBase + segURL
 				}
 				if !fetched[segURL] {
-					newSegments = append(newSegments, segURL)
-					totalDuration += nextDuration
+					segs = append(segs, segment{url: segURL, duration: nextDur})
 				}
-				nextDuration = 0
+				nextDur = 0
+			}
+			return
+		}
+
+		// fetchSegment downloads a segment and updates counters.
+		fetchSegment := func(seg segment) bool {
+			resp2, err := doLongGet(seg.url)
+			if err != nil {
+				t.Logf("WARN: segment fetch error: %v", err)
+				return false
+			}
+			body, _ := io.ReadAll(resp2.Body)
+			resp2.Body.Close()
+			if resp2.StatusCode != 200 {
+				t.Logf("WARN: segment %s returned %d", seg.url, resp2.StatusCode)
+				return false
+			}
+			fetched[seg.url] = true
+			totalSegments++
+			totalBytes += int64(len(body))
+			totalDuration += seg.duration
+			return true
+		}
+
+		// ---- Buffer + playback loop ----
+		var buffered []segment // segments fetched but not yet "played"
+		var bufferedDuration float64
+		buffering := true
+		sawEndList := false
+
+		for !finished && time.Now().Before(overallDeadline) {
+			// Poll playlist for new segments.
+			resp, err := doLongGet(mediaURL)
+			if err != nil {
+				t.Logf("WARN: playlist poll error: %v", err)
+				time.Sleep(2 * time.Second)
+				continue
+			}
+			raw, _ := io.ReadAll(resp.Body)
+			resp.Body.Close()
+
+			newSegs, endList := parsePlaylist(string(raw))
+			if endList {
+				sawEndList = true
 			}
 
-			// Fetch new segments.
-			for _, segURL := range newSegments {
-				resp2, err := doLongGet(segURL)
-				if err != nil {
-					t.Logf("WARN: segment fetch error: %v", err)
+			// Fetch new segments into the buffer.
+			for _, seg := range newSegs {
+				if fetchSegment(seg) {
+					buffered = append(buffered, seg)
+					bufferedDuration += seg.duration
+				}
+			}
+
+			// Buffer phase: keep filling until we have enough, or stream is done.
+			if buffering {
+				if bufferedDuration >= bufferTarget || sawEndList {
+					buffering = false
+					playbackStart = time.Now()
+					t.Logf("buffered %.1fs (%d segments, %.1f MB) — starting playback",
+						bufferedDuration, len(buffered), float64(totalBytes)/(1024*1024))
+				} else {
+					time.Sleep(2 * time.Second)
 					continue
 				}
-				body, _ := io.ReadAll(resp2.Body)
-				resp2.Body.Close()
-				if resp2.StatusCode != 200 {
-					t.Logf("WARN: segment %s returned %d", segURL, resp2.StatusCode)
-					continue
+			}
+
+			// Playback phase: "play" buffered segments at 1x speed.
+			for len(buffered) > 0 {
+				seg := buffered[0]
+				buffered = buffered[1:]
+				bufferedDuration -= seg.duration
+				playedDuration += seg.duration
+
+				// Log progress every ~60s of playback.
+				if int(playedDuration)%60 < int(seg.duration)+1 {
+					elapsed := time.Since(playbackStart).Seconds()
+					t.Logf("playing: %.0fs/634s | %d segs | %.1f MB | buffer=%.1fs | wall=%.0fs",
+						playedDuration, totalSegments, float64(totalBytes)/(1024*1024),
+						bufferedDuration, elapsed)
 				}
-				fetched[segURL] = true
-				totalSegments++
-				totalBytes += int64(len(body))
+
+				// Sleep for segment duration to simulate real-time playback.
+				time.Sleep(time.Duration(seg.duration * float64(time.Second)))
 			}
 
-			if len(newSegments) > 0 {
-				t.Logf("progress: %d segments, %.1fs duration, %.1f MB downloaded",
-					totalSegments, totalDuration, float64(totalBytes)/(1024*1024))
-			}
-
-			// If we've seen #EXT-X-ENDLIST and fetched everything, we're done.
-			if hasEndList && len(newSegments) == 0 && totalSegments > 0 {
+			// If we've played everything and stream is done, finish.
+			if sawEndList && len(buffered) == 0 {
 				finished = true
 				break
 			}
 
-			time.Sleep(pollInterval)
+			// Buffer ran dry — refill.
+			time.Sleep(1 * time.Second)
 		}
 
-		require.True(t, finished, "should reach #EXT-X-ENDLIST within 20 min (got %d segments, %.1fs)",
+		elapsed := time.Since(playbackStart)
+
+		require.True(t, finished, "should play to #EXT-X-ENDLIST within 20 min (got %d segments, %.1fs)",
 			totalSegments, totalDuration)
 
-		t.Logf("COMPLETE: %d segments, %.1fs total duration, %.1f MB total",
-			totalSegments, totalDuration, float64(totalBytes)/(1024*1024))
+		t.Logf("COMPLETE: %d segments | %.1fs played | %.1f MB | wall time %s",
+			totalSegments, playedDuration, float64(totalBytes)/(1024*1024), elapsed.Round(time.Second))
 
-		// The BBB file is ~634s. Allow some tolerance for rounding.
+		// The BBB file is ~634s. Playback should take roughly that long.
 		assert.Greater(t, totalSegments, 50, "should have many segments for a 10-min file")
 		assert.InDelta(t, 634.0, totalDuration, 15.0,
 			"total EXTINF duration should be ~634s")
+		assert.InDelta(t, 634.0, playedDuration, 15.0,
+			"played duration should be ~634s")
 		assert.Greater(t, totalBytes, int64(10*1024*1024),
 			"should have downloaded significant data")
+		// Wall time should be close to video duration (within 60s tolerance).
+		assert.InDelta(t, 634.0, elapsed.Seconds(), 60.0,
+			"wall time should be ~634s for real-time playback")
 	})
 
 	// ---- 4. Stop session ----
