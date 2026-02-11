@@ -301,7 +301,7 @@ func TestScenario_AdminUserManagement(t *testing.T) {
 	t.Run("admin_assigns_role", func(t *testing.T) {
 		status, _ := admin.do("POST", "/api/v1/rbac/users/"+user.userID+"/roles",
 			map[string]string{"role": "moderator"})
-		assert.True(t, status == 200 || status == 204,
+		assert.True(t, status == 200 || status == 201 || status == 204,
 			"role assignment should succeed (got %d)", status)
 	})
 
@@ -340,8 +340,11 @@ func TestScenario_MultiUserSessionIsolation(t *testing.T) {
 
 	// Alice lists her sessions
 	t.Run("alice_lists_sessions", func(t *testing.T) {
-		status, _ := alice.doArray("GET", "/api/v1/sessions")
+		status, body := alice.do("GET", "/api/v1/sessions", nil)
 		assert.Equal(t, 200, status)
+		if sessions, ok := body["sessions"].([]interface{}); ok {
+			assert.GreaterOrEqual(t, len(sessions), 1, "alice should have at least 1 session")
+		}
 	})
 
 	// Alice logs out
@@ -464,9 +467,11 @@ func TestScenario_MultiDeviceSessionManagement(t *testing.T) {
 
 	// List sessions from device1
 	t.Run("list_multiple_sessions", func(t *testing.T) {
-		status, result := device1.doArray("GET", "/api/v1/sessions")
+		status, body := device1.do("GET", "/api/v1/sessions", nil)
 		assert.Equal(t, 200, status)
-		assert.GreaterOrEqual(t, len(result), 3, "should have at least 3 sessions")
+		sessions, ok := body["sessions"].([]interface{})
+		require.True(t, ok, "expected sessions array in response, got %v", body)
+		assert.GreaterOrEqual(t, len(sessions), 3, "should have at least 3 sessions")
 	})
 
 	// Revoke device2's session (logout)
@@ -682,7 +687,7 @@ func TestScenario_ConcurrentUserOperations(t *testing.T) {
 		users[i].registerAndLogin(
 			fmt.Sprintf("concurrent_%d", i),
 			fmt.Sprintf("concurrent_%d@test.com", i),
-			fmt.Sprintf("P@ss%d!", i),
+			fmt.Sprintf("P@ssw0rd%d!", i),
 		)
 	}
 

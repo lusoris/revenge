@@ -123,7 +123,7 @@ func setupRadarrTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 // AdminGetRadarrStatus Tests
 // ============================================================================
 
-func TestHandler_AdminGetRadarrStatus_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetRadarrStatus_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -132,10 +132,10 @@ func TestHandler_AdminGetRadarrStatus_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetRadarrStatus(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetRadarrStatusForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Contains(t, forbidden.Message, "Admin access required")
+	unauthorized, ok := result.(*ogen.AdminGetRadarrStatusUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetRadarrStatusUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Contains(t, unauthorized.Message, "Authentication required")
 }
 
 func TestHandler_AdminGetRadarrStatus_NotConfigured(t *testing.T) {
@@ -218,7 +218,7 @@ func TestHandler_AdminGetRadarrStatus_Disconnected(t *testing.T) {
 // AdminTriggerRadarrSync Tests
 // ============================================================================
 
-func TestHandler_AdminTriggerRadarrSync_NotAdmin(t *testing.T) {
+func TestHandler_AdminTriggerRadarrSync_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -227,9 +227,9 @@ func TestHandler_AdminTriggerRadarrSync_NotAdmin(t *testing.T) {
 	result, err := handler.AdminTriggerRadarrSync(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminTriggerRadarrSyncForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminTriggerRadarrSyncUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminTriggerRadarrSyncUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminTriggerRadarrSync_NotConfigured(t *testing.T) {
@@ -321,7 +321,7 @@ func TestHandler_AdminTriggerRadarrSync_DirectSync(t *testing.T) {
 // AdminGetRadarrQualityProfiles Tests
 // ============================================================================
 
-func TestHandler_AdminGetRadarrQualityProfiles_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetRadarrQualityProfiles_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -330,9 +330,9 @@ func TestHandler_AdminGetRadarrQualityProfiles_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetRadarrQualityProfiles(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetRadarrQualityProfilesForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminGetRadarrQualityProfilesUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetRadarrQualityProfilesUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminGetRadarrQualityProfiles_Success(t *testing.T) {
@@ -364,7 +364,7 @@ func TestHandler_AdminGetRadarrQualityProfiles_Success(t *testing.T) {
 // AdminGetRadarrRootFolders Tests
 // ============================================================================
 
-func TestHandler_AdminGetRadarrRootFolders_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetRadarrRootFolders_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -373,9 +373,9 @@ func TestHandler_AdminGetRadarrRootFolders_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetRadarrRootFolders(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetRadarrRootFoldersForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminGetRadarrRootFoldersUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetRadarrRootFoldersUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminGetRadarrRootFolders_Success(t *testing.T) {

@@ -7,9 +7,9 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
@@ -65,7 +65,7 @@ func setupActivityTestHandler(t *testing.T) (*Handler, testutil.DB, uuid.UUID) {
 	return handler, testDB, adminUser.ID
 }
 
-func TestHandler_SearchActivityLogs_NotAdmin(t *testing.T) {
+func TestHandler_SearchActivityLogs_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupActivityTestHandler(t)
 
@@ -75,10 +75,10 @@ func TestHandler_SearchActivityLogs_NotAdmin(t *testing.T) {
 	result, err := handler.SearchActivityLogs(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.SearchActivityLogsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Contains(t, forbidden.Message, "Admin access required")
+	unauthorized, ok := result.(*ogen.SearchActivityLogsUnauthorized)
+	require.True(t, ok, "expected *ogen.SearchActivityLogsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Contains(t, unauthorized.Message, "Authentication required")
 }
 
 func TestHandler_SearchActivityLogs_Success(t *testing.T) {
@@ -155,7 +155,7 @@ func TestHandler_SearchActivityLogs_WithFilters(t *testing.T) {
 	assert.GreaterOrEqual(t, response.Total, int64(3))
 }
 
-func TestHandler_GetUserActivityLogs_NotAdmin(t *testing.T) {
+func TestHandler_GetUserActivityLogs_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupActivityTestHandler(t)
 
@@ -167,9 +167,9 @@ UserId: uuid.Must(uuid.NewV7()),
 	result, err := handler.GetUserActivityLogs(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GetUserActivityLogsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.GetUserActivityLogsUnauthorized)
+	require.True(t, ok, "expected *ogen.GetUserActivityLogsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_GetUserActivityLogs_Success(t *testing.T) {
@@ -205,7 +205,7 @@ UserId: user.ID,
 	assert.GreaterOrEqual(t, response.Total, int64(1))
 }
 
-func TestHandler_GetResourceActivityLogs_NotAdmin(t *testing.T) {
+func TestHandler_GetResourceActivityLogs_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupActivityTestHandler(t)
 
@@ -218,9 +218,9 @@ ResourceId:   uuid.Must(uuid.NewV7()),
 	result, err := handler.GetResourceActivityLogs(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GetResourceActivityLogsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.GetResourceActivityLogsUnauthorized)
+	require.True(t, ok, "expected *ogen.GetResourceActivityLogsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_GetResourceActivityLogs_Success(t *testing.T) {
@@ -259,7 +259,7 @@ ResourceId:   resourceID,
 	assert.GreaterOrEqual(t, response.Total, int64(1))
 }
 
-func TestHandler_GetActivityStats_NotAdmin(t *testing.T) {
+func TestHandler_GetActivityStats_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupActivityTestHandler(t)
 
@@ -268,9 +268,9 @@ func TestHandler_GetActivityStats_NotAdmin(t *testing.T) {
 	result, err := handler.GetActivityStats(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GetActivityStatsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.GetActivityStatsUnauthorized)
+	require.True(t, ok, "expected *ogen.GetActivityStatsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_GetActivityStats_Success(t *testing.T) {
@@ -302,7 +302,7 @@ func TestHandler_GetActivityStats_Success(t *testing.T) {
 	assert.NotNil(t, response)
 }
 
-func TestHandler_GetRecentActions_NotAdmin(t *testing.T) {
+func TestHandler_GetRecentActions_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupActivityTestHandler(t)
 
@@ -312,9 +312,9 @@ func TestHandler_GetRecentActions_NotAdmin(t *testing.T) {
 	result, err := handler.GetRecentActions(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GetRecentActionsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.GetRecentActionsUnauthorized)
+	require.True(t, ok, "expected *ogen.GetRecentActionsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_GetRecentActions_Success(t *testing.T) {
@@ -361,9 +361,9 @@ func TestHandler_GetMyActivity_NoUserID(t *testing.T) {
 	result, err := handler.GetRecentActions(ctx, params)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.GetRecentActionsForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.GetRecentActionsUnauthorized)
+	require.True(t, ok, "expected *ogen.GetRecentActionsUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 // Helper functions

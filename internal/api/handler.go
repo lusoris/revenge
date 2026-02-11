@@ -707,11 +707,15 @@ func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams
 		return &ogen.GetUserByIdNotFound{}, nil
 	}
 
-	// Check profile visibility (own profile always visible)
+	// Check profile visibility (own profile always visible, admins can view any profile)
 	currentUserID, _ := GetUserID(ctx)
 	isOwnProfile := currentUserID == params.UserId
+	isAdmin := false
+	if h.rbacService != nil {
+		isAdmin, _ = h.rbacService.HasRole(ctx, currentUserID, "admin")
+	}
 
-	if !isOwnProfile {
+	if !isOwnProfile && !isAdmin {
 		prefs, err := h.userService.GetUserPreferences(ctx, params.UserId)
 		if err == nil {
 			if prefs.ProfileVisibility != nil {
@@ -990,6 +994,20 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 	}
 
 	h.logger.Info("Login successful", slog.String("user_id", loginResp.User.ID.String()))
+
+	// Create a session record for device/session management tracking
+	if h.sessionService != nil {
+		_, _, err := h.sessionService.CreateSession(ctx, loginResp.User.ID, session.DeviceInfo{
+			DeviceName: deviceName,
+			UserAgent:  userAgent,
+			IPAddress:  ipAddr,
+		}, []string{"read", "write"})
+		if err != nil {
+			h.logger.Warn("failed to create session record on login",
+				slog.String("user_id", loginResp.User.ID.String()),
+				slog.Any("error", err))
+		}
+	}
 
 	// Set auth cookies if cookie auth is enabled
 	if h.cfg.Server.CookieAuth.Enabled {
