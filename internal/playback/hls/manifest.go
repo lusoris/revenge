@@ -133,8 +133,9 @@ func estimateBandwidth(pd transcode.ProfileDecision, sourceVideoBps, sourceAudio
 
 // ReadMediaPlaylist reads the FFmpeg-generated media playlist from disk.
 // If the file doesn't exist yet (FFmpeg still starting), it polls with retries.
+// The caller MUST validate profile against path traversal before calling this function.
 func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
-	playlistPath := filepath.Join(segmentDir, profile, "index.m3u8")
+	playlistPath := filepath.Join(segmentDir, profile, "index.m3u8") // #nosec G304 -- profile is validated by caller (isSafePathComponent)
 
 	// Poll for the playlist file to appear (FFmpeg may still be starting)
 	var content []byte

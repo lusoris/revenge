@@ -101,19 +101,23 @@ func ClearAuthCookies(w http.ResponseWriter, cfg config.CookieAuthConfig) {
 	}
 	for _, name := range []string{CookieAccessToken, CookieCSRFToken} {
 		http.SetCookie(w, &http.Cookie{
-			Name:   name,
-			Value:  "",
-			Path:   path,
-			Domain: cfg.Domain,
-			MaxAge: -1,
+			Name:     name,
+			Value:    "",
+			Path:     path,
+			Domain:   cfg.Domain,
+			MaxAge:   -1,
+			HttpOnly: true,
+			Secure:   cfg.Secure,
 		})
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:   CookieRefreshToken,
-		Value:  "",
-		Path:   "/api/v1/auth",
-		Domain: cfg.Domain,
-		MaxAge: -1,
+		Name:     CookieRefreshToken,
+		Value:    "",
+		Path:     "/api/v1/auth",
+		Domain:   cfg.Domain,
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   cfg.Secure,
 	})
 }
 
