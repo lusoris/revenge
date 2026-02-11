@@ -81,11 +81,45 @@ func TestQueryLoggerLog(t *testing.T) {
 
 func TestTracerConfig(t *testing.T) {
 	logger := slog.Default()
-	tracer, queryLogger := TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
+	tracer, queryTracer := TracerConfig(logger, tracelog.LogLevelInfo, 100*time.Millisecond)
 
 	require.NotNil(t, tracer)
-	require.NotNil(t, queryLogger)
-	assert.Implements(t, (*interface{})(nil), tracer)
+	require.NotNil(t, queryTracer)
+}
+
+func TestExtractOperation(t *testing.T) {
+	tests := []struct {
+		sql  string
+		want string
+	}{
+		{"SELECT * FROM users", "select"},
+		{"INSERT INTO users VALUES (1)", "insert"},
+		{"UPDATE users SET name='x'", "update"},
+		{"DELETE FROM users WHERE id=1", "delete"},
+		{"BEGIN", "begin"},
+		{"COMMIT", "commit"},
+		{"ROLLBACK", "rollback"},
+		{"-- name: GetMovie :one\nSELECT * FROM movies", "select"},
+		{"-- name: CreateUser :exec\nINSERT INTO users", "insert"},
+		{"", "query"},
+		{"UNKNOWN STATEMENT", "query"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.sql, func(t *testing.T) {
+			got := extractOperation(tt.sql)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestNewQueryTracer(t *testing.T) {
+	logger := slog.Default()
+	tracer := NewQueryTracer(logger, 100*time.Millisecond)
+
+	require.NotNil(t, tracer)
+	assert.Equal(t, logger, tracer.logger)
+	assert.Equal(t, 100*time.Millisecond, tracer.slowQueryThreshold)
 }
 
 func TestFormatDuration(t *testing.T) {

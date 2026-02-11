@@ -407,8 +407,9 @@ func InitMetrics() {
 		CacheSize.WithLabelValues(c)
 	}
 
-	// DB query errors (common operations)
+	// DB query metrics (common operations)
 	for _, op := range []string{"select", "insert", "update", "delete"} {
+		DBQueryDuration.WithLabelValues(op)
 		DBQueryErrorsTotal.WithLabelValues(op)
 	}
 }
