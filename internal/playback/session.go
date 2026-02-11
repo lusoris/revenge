@@ -70,6 +70,9 @@ func (m *SessionManager) Get(id uuid.UUID) (*Session, bool) {
 
 // Touch updates the last-accessed timestamp, keeping the session alive.
 func (m *SessionManager) Touch(id uuid.UUID) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
 	session, ok := m.cache.Get(id)
 	if !ok {
 		return false
