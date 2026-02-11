@@ -168,6 +168,16 @@ func (h *StreamHandler) serveMasterPlaylist(w http.ResponseWriter, _ *http.Reque
 }
 
 func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Request, session *playback.Session, profile string) {
+	// Validate profile to prevent path traversal (CWE-22).
+	// Profile may contain a single slash for audio renditions (e.g. "audio/0"),
+	// but each component must be safe.
+	for _, part := range strings.Split(profile, "/") {
+		if !isSafePathComponent(part) {
+			http.Error(w, "invalid profile", http.StatusBadRequest)
+			return
+		}
+	}
+
 	cacheKey := session.ID.String() + ":" + profile
 
 	// Check media playlist cache (1s TTL)
@@ -219,6 +229,10 @@ func (h *StreamHandler) serveAudioRendition(w http.ResponseWriter, r *http.Reque
 		h.serveMediaPlaylist(w, r, session, "audio/"+trackStr)
 	} else if strings.HasPrefix(file, "seg-") && strings.HasSuffix(file, ".ts") {
 		// Audio rendition segment — zero-copy serve
+		if !isSafePathComponent(file) {
+			http.Error(w, "invalid path", http.StatusBadRequest)
+			return
+		}
 		segPath := AudioRenditionSegmentPath(session.SegmentDir, trackIndex, file)
 		w.Header().Set("Content-Type", "video/mp2t")
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
@@ -229,6 +243,12 @@ func (h *StreamHandler) serveAudioRendition(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *StreamHandler) serveSegment(w http.ResponseWriter, r *http.Request, session *playback.Session, profile, segmentFile string) {
+	// Validate path components to prevent path traversal (CWE-22)
+	if !isSafePathComponent(profile) || !isSafePathComponent(segmentFile) {
+		http.Error(w, "invalid path", http.StatusBadRequest)
+		return
+	}
+
 	segPath := SegmentPath(session.SegmentDir, profile, segmentFile)
 
 	w.Header().Set("Content-Type", "video/mp2t")
@@ -272,6 +292,18 @@ func subtitleDisplayName(st playback.SubtitleTrackInfo) string {
 		return st.Language
 	}
 	return "Track " + strconv.Itoa(st.Index)
+}
+
+// isSafePathComponent validates that a path component does not contain
+// directory traversal sequences or path separators (CWE-22).
+func isSafePathComponent(s string) bool {
+	if s == "" || s == "." || s == ".." {
+		return false
+	}
+	if strings.Contains(s, "/") || strings.Contains(s, "\\") || strings.Contains(s, "..") {
+		return false
+	}
+	return true
 }
 
 // Close shuts down caches.
