@@ -102,13 +102,14 @@ func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg stri
 }
 
 // TracerConfig creates a pgx.Tracer configuration for query logging.
-func TracerConfig(logger *slog.Logger, logLevel tracelog.LogLevel, slowQueryThreshold time.Duration) pgx.QueryTracer {
+// Returns the tracer and the underlying QueryLogger for lifecycle control.
+func TracerConfig(logger *slog.Logger, logLevel tracelog.LogLevel, slowQueryThreshold time.Duration) (pgx.QueryTracer, *QueryLogger) {
 	queryLogger := NewQueryLogger(logger, slowQueryThreshold)
 	tracer := &tracelog.TraceLog{
 		Logger:   queryLogger,
 		LogLevel: logLevel,
 	}
-	return tracer
+	return tracer, queryLogger
 }
 
 // FormatDuration formats a duration for logging.

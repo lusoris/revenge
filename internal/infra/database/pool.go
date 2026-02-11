@@ -70,7 +70,8 @@ func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 
 	// Attach query tracer for metrics and slow query logging
 	// Use LogLevelWarn to only log slow queries (>100ms) and errors, reducing log spam
-	poolConfig.ConnConfig.Tracer = TracerConfig(logger, tracelog.LogLevelWarn, 100*time.Millisecond)
+	tracer, _ := TracerConfig(logger, tracelog.LogLevelWarn, 100*time.Millisecond)
+	poolConfig.ConnConfig.Tracer = tracer
 
 	logger.Info("connecting to database",
 		slog.String("database", poolConfig.ConnConfig.Database),
@@ -79,17 +80,19 @@ func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 		slog.Int("min_conns", int(poolConfig.MinConns)),
 	)
 
-	// Create context with timeout for pool creation
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+	// Use background context for pool creation - the pool manages connection
+	// lifecycles internally. Using a limited context here would cancel
+	// background MinConns connections when the context times out.
+	pool, err := pgxpool.NewWithConfig(context.Background(), poolConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create connection pool")
 	}
 
-	// Verify connection
-	if err := pool.Ping(ctx); err != nil {
+	// Verify connection with a timeout - this ensures at least one connection
+	// is established before returning.
+	pingCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := pool.Ping(pingCtx); err != nil {
 		pool.Close()
 		return nil, errors.Wrap(err, "failed to ping database")
 	}
