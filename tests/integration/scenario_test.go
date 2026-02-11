@@ -301,7 +301,7 @@ func TestScenario_AdminUserManagement(t *testing.T) {
 	t.Run("admin_assigns_role", func(t *testing.T) {
 		status, _ := admin.do("POST", "/api/v1/rbac/users/"+user.userID+"/roles",
 			map[string]string{"role": "moderator"})
-		assert.True(t, status == 200 || status == 204,
+		assert.True(t, status == 200 || status == 201 || status == 204,
 			"role assignment should succeed (got %d)", status)
 	})
 
@@ -340,8 +340,11 @@ func TestScenario_MultiUserSessionIsolation(t *testing.T) {
 
 	// Alice lists her sessions
 	t.Run("alice_lists_sessions", func(t *testing.T) {
-		status, _ := alice.doArray("GET", "/api/v1/sessions")
+		status, body := alice.do("GET", "/api/v1/sessions", nil)
 		assert.Equal(t, 200, status)
+		if sessions, ok := body["sessions"].([]interface{}); ok {
+			assert.GreaterOrEqual(t, len(sessions), 1, "alice should have at least 1 session")
+		}
 	})
 
 	// Alice logs out

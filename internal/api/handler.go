@@ -995,6 +995,20 @@ func (h *Handler) Login(ctx context.Context, req *ogen.LoginRequest) (ogen.Login
 
 	h.logger.Info("Login successful", slog.String("user_id", loginResp.User.ID.String()))
 
+	// Create a session record for device/session management tracking
+	if h.sessionService != nil {
+		_, _, err := h.sessionService.CreateSession(ctx, loginResp.User.ID, session.DeviceInfo{
+			DeviceName: deviceName,
+			UserAgent:  userAgent,
+			IPAddress:  ipAddr,
+		}, []string{"read", "write"})
+		if err != nil {
+			h.logger.Warn("failed to create session record on login",
+				slog.String("user_id", loginResp.User.ID.String()),
+				slog.Any("error", err))
+		}
+	}
+
 	// Set auth cookies if cookie auth is enabled
 	if h.cfg.Server.CookieAuth.Enabled {
 		if w, ok := middleware.GetResponseWriter(ctx); ok {
