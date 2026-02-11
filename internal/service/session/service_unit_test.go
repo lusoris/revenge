@@ -420,6 +420,7 @@ func TestCachedService_RevokeAllUserSessions_WithCache(t *testing.T) {
 	err = cached.RevokeAllUserSessions(context.Background(), userID)
 	require.NoError(t, err)
 
+	assert.Equal(t, 1, repo.getCallCount("CountActiveUserSessions"))
 	assert.Equal(t, 1, repo.getCallCount("RevokeAllUserSessions"))
 }
 
@@ -442,6 +443,7 @@ func TestCachedService_RevokeAllUserSessions_WithoutCache(t *testing.T) {
 	err := cached.RevokeAllUserSessions(context.Background(), userID)
 	require.NoError(t, err)
 
+	assert.Equal(t, 1, repo.getCallCount("CountActiveUserSessions"))
 	assert.Equal(t, 1, repo.getCallCount("RevokeAllUserSessions"))
 }
 

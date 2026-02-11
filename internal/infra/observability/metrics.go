@@ -373,10 +373,10 @@ func InitMetrics() {
 		MetadataRateLimitedTotal.WithLabelValues(p)
 	}
 
-	// Library scanner (use a placeholder library_id "0")
-	LibraryScanDuration.WithLabelValues("0")
-	LibraryFilesScanned.WithLabelValues("0")
-	LibraryScanErrorsTotal.WithLabelValues("0", "scan")
+	// Library scanner
+	LibraryScanDuration.WithLabelValues("movies")
+	LibraryFilesScanned.WithLabelValues("movies")
+	LibraryScanErrorsTotal.WithLabelValues("movies", "scan")
 
 	// Search
 	for _, t := range []string{"movie", "multi"} {
@@ -398,12 +398,13 @@ func InitMetrics() {
 		}
 	}
 
-	// Cache (common cache names)
-	for _, c := range []string{"movies", "metadata", "images"} {
+	// Cache (must match the cache name in cache.NewNamedCache)
+	for _, c := range []string{"default"} {
 		for _, layer := range []string{"l1", "l2"} {
 			CacheHitsTotal.WithLabelValues(c, layer)
 			CacheMissesTotal.WithLabelValues(c, layer)
 		}
+		CacheSize.WithLabelValues(c)
 	}
 
 	// DB query errors (common operations)

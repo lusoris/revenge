@@ -220,10 +220,19 @@ func (s *Service) RevokeSession(ctx context.Context, sessionID uuid.UUID) error 
 
 // RevokeAllUserSessions revokes all sessions for a user (logout everywhere)
 func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) error {
+	// Count active sessions before revoking so we can decrement the gauge
+	count, err := s.repo.CountActiveUserSessions(ctx, userID)
+	if err != nil {
+		s.logger.Warn("Failed to count active sessions before revoke-all",
+			slog.String("user_id", userID.String()), slog.Any("error", err))
+	}
+
 	reason := "User logout all"
 	if err := s.repo.RevokeAllUserSessions(ctx, userID, &reason); err != nil {
 		return fmt.Errorf("failed to revoke all user sessions: %w", err)
 	}
+
+	observability.ActiveSessions.Sub(float64(count))
 
 	s.logger.Info("All user sessions revoked", slog.String("user_id", userID.String()))
 	return nil
@@ -231,9 +240,20 @@ func (s *Service) RevokeAllUserSessions(ctx context.Context, userID uuid.UUID) e
 
 // RevokeAllUserSessionsExcept revokes all sessions except the current one
 func (s *Service) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, currentSessionID uuid.UUID) error {
+	// Count active sessions before revoking (subtract 1 for the kept session)
+	count, err := s.repo.CountActiveUserSessions(ctx, userID)
+	if err != nil {
+		s.logger.Warn("Failed to count active sessions before revoke-all-except",
+			slog.String("user_id", userID.String()), slog.Any("error", err))
+	}
+
 	reason := "User logout all others"
 	if err := s.repo.RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, &reason); err != nil {
 		return fmt.Errorf("failed to revoke other user sessions: %w", err)
+	}
+
+	if count > 1 {
+		observability.ActiveSessions.Sub(float64(count - 1))
 	}
 
 	s.logger.Info("Other user sessions revoked",

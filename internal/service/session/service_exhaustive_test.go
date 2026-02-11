@@ -470,6 +470,11 @@ func TestService_RevokeAllUserSessions_ErrorFromRepository(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(2), nil).
+		Once()
+
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
 		RevokeAllUserSessions(ctx, userID, mock.AnythingOfType("*string")).
@@ -487,6 +492,11 @@ func TestService_RevokeAllUserSessions_UserWithNoSessions(t *testing.T) {
 	svc, mockRepo := setupMockService(t)
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
+
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(0), nil).
+		Once()
 
 	// Should succeed even if user has no sessions
 	mockRepo.EXPECT().
@@ -507,6 +517,11 @@ func TestService_RevokeAllUserSessionsExcept_ErrorFromRepository(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	currentSessionID := uuid.Must(uuid.NewV7())
+
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(3), nil).
+		Once()
 
 	expectedErr := fmt.Errorf("database error")
 	mockRepo.EXPECT().
@@ -855,6 +870,11 @@ func TestService_RevokeAllUserSessionsExcept_Success(t *testing.T) {
 	ctx := context.Background()
 	userID := uuid.Must(uuid.NewV7())
 	currentSessionID := uuid.Must(uuid.NewV7())
+
+	mockRepo.EXPECT().
+		CountActiveUserSessions(ctx, userID).
+		Return(int64(3), nil).
+		Once()
 
 	mockRepo.EXPECT().
 		RevokeAllUserSessionsExcept(ctx, userID, currentSessionID, mock.AnythingOfType("*string")).
