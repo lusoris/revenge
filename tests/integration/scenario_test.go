@@ -140,6 +140,10 @@ func (c *scenarioClient) makeAdmin() {
 	_, err = c.ts.AppPool.Exec(context.Background(),
 		"UPDATE shared.users SET is_admin = true WHERE id = $1", c.userID)
 	require.NoError(c.t, err)
+
+	// Reload RBAC policy so casbin sees the new role immediately
+	err = c.ts.RBACService.LoadPolicy(context.Background())
+	require.NoError(c.t, err)
 }
 
 // ============================================================================
