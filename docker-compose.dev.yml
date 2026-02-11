@@ -134,7 +134,8 @@ services:
       - --proactor_threads=2        # Match allocated CPUs
       - --dbfilename=               # Disable RDB snapshots (pure cache)
       - --logtostderr=true
-    # No ports exposed - only accessible within Docker network
+    ports:
+      - "6379:6379"
     volumes:
       - dragonfly-data:/data
     healthcheck:
