@@ -60,7 +60,7 @@ func (m *mockSonarrService) LookupSeries(_ context.Context, _ string) ([]sonarr.
 // AdminGetSonarrStatus Tests
 // ============================================================================
 
-func TestHandler_AdminGetSonarrStatus_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetSonarrStatus_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -69,10 +69,10 @@ func TestHandler_AdminGetSonarrStatus_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetSonarrStatus(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetSonarrStatusForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
-	assert.Contains(t, forbidden.Message, "Admin access required")
+	unauthorized, ok := result.(*ogen.AdminGetSonarrStatusUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetSonarrStatusUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
+	assert.Contains(t, unauthorized.Message, "Authentication required")
 }
 
 func TestHandler_AdminGetSonarrStatus_NotConfigured(t *testing.T) {
@@ -159,7 +159,7 @@ func TestHandler_AdminGetSonarrStatus_Disconnected(t *testing.T) {
 // AdminTriggerSonarrSync Tests
 // ============================================================================
 
-func TestHandler_AdminTriggerSonarrSync_NotAdmin(t *testing.T) {
+func TestHandler_AdminTriggerSonarrSync_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -168,9 +168,9 @@ func TestHandler_AdminTriggerSonarrSync_NotAdmin(t *testing.T) {
 	result, err := handler.AdminTriggerSonarrSync(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminTriggerSonarrSyncForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminTriggerSonarrSyncUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminTriggerSonarrSyncUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminTriggerSonarrSync_NotConfigured(t *testing.T) {
@@ -262,7 +262,7 @@ func TestHandler_AdminTriggerSonarrSync_DirectSync(t *testing.T) {
 // AdminGetSonarrQualityProfiles Tests
 // ============================================================================
 
-func TestHandler_AdminGetSonarrQualityProfiles_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetSonarrQualityProfiles_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -271,9 +271,9 @@ func TestHandler_AdminGetSonarrQualityProfiles_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetSonarrQualityProfiles(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetSonarrQualityProfilesForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminGetSonarrQualityProfilesUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetSonarrQualityProfilesUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminGetSonarrQualityProfiles_Success(t *testing.T) {
@@ -305,7 +305,7 @@ func TestHandler_AdminGetSonarrQualityProfiles_Success(t *testing.T) {
 // AdminGetSonarrRootFolders Tests
 // ============================================================================
 
-func TestHandler_AdminGetSonarrRootFolders_NotAdmin(t *testing.T) {
+func TestHandler_AdminGetSonarrRootFolders_Unauthenticated(t *testing.T) {
 	t.Parallel()
 	handler, _, _ := setupRadarrTestHandler(t)
 
@@ -314,9 +314,9 @@ func TestHandler_AdminGetSonarrRootFolders_NotAdmin(t *testing.T) {
 	result, err := handler.AdminGetSonarrRootFolders(ctx)
 	require.NoError(t, err)
 
-	forbidden, ok := result.(*ogen.AdminGetSonarrRootFoldersForbidden)
-	require.True(t, ok)
-	assert.Equal(t, 403, forbidden.Code)
+	unauthorized, ok := result.(*ogen.AdminGetSonarrRootFoldersUnauthorized)
+	require.True(t, ok, "expected *ogen.AdminGetSonarrRootFoldersUnauthorized, got %T", result)
+	assert.Equal(t, 401, unauthorized.Code)
 }
 
 func TestHandler_AdminGetSonarrRootFolders_Success(t *testing.T) {
