@@ -707,11 +707,15 @@ func (h *Handler) GetUserById(ctx context.Context, params ogen.GetUserByIdParams
 		return &ogen.GetUserByIdNotFound{}, nil
 	}
 
-	// Check profile visibility (own profile always visible)
+	// Check profile visibility (own profile always visible, admins can view any profile)
 	currentUserID, _ := GetUserID(ctx)
 	isOwnProfile := currentUserID == params.UserId
+	isAdmin := false
+	if h.rbacService != nil {
+		isAdmin, _ = h.rbacService.HasRole(ctx, currentUserID, "admin")
+	}
 
-	if !isOwnProfile {
+	if !isOwnProfile && !isAdmin {
 		prefs, err := h.userService.GetUserPreferences(ctx, params.UserId)
 		if err == nil {
 			if prefs.ProfileVisibility != nil {

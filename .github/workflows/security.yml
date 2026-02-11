@@ -17,7 +17,6 @@ permissions:
 env:
   GO_VERSION: "1.25"
   GOEXPERIMENT: greenteagc,jsonv2
-  GOFLAGS: -buildvcs=false
 
 jobs:
   codeql:
@@ -47,9 +46,13 @@ jobs:
           languages: go
           queries: security-extended,security-and-quality
       - uses: github/codeql-action/autobuild@v4
+        env:
+          GOFLAGS: -buildvcs=false
       - uses: github/codeql-action/analyze@v4
         with:
           category: "/language:go"
+        env:
+          GOFLAGS: -buildvcs=false
 
   trivy-repo:
     name: Trivy Repo Scan
@@ -106,7 +109,7 @@ jobs:
       - name: Install system dependencies
         run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev tar zstd
       - uses: actions/checkout@v6
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             /go/pkg/mod

@@ -464,9 +464,11 @@ func TestScenario_MultiDeviceSessionManagement(t *testing.T) {
 
 	// List sessions from device1
 	t.Run("list_multiple_sessions", func(t *testing.T) {
-		status, result := device1.doArray("GET", "/api/v1/sessions")
+		status, body := device1.do("GET", "/api/v1/sessions", nil)
 		assert.Equal(t, 200, status)
-		assert.GreaterOrEqual(t, len(result), 3, "should have at least 3 sessions")
+		sessions, ok := body["sessions"].([]interface{})
+		require.True(t, ok, "expected sessions array in response, got %v", body)
+		assert.GreaterOrEqual(t, len(sessions), 3, "should have at least 3 sessions")
 	})
 
 	// Revoke device2's session (logout)
@@ -682,7 +684,7 @@ func TestScenario_ConcurrentUserOperations(t *testing.T) {
 		users[i].registerAndLogin(
 			fmt.Sprintf("concurrent_%d", i),
 			fmt.Sprintf("concurrent_%d@test.com", i),
-			fmt.Sprintf("P@ss%d!", i),
+			fmt.Sprintf("P@ssw0rd%d!", i),
 		)
 	}
 
