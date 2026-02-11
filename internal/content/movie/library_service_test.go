@@ -99,8 +99,8 @@ func TestLibraryService_ScanLibrary(t *testing.T) {
 
 		// Mock Metadata Enrich
 		metadata.On("EnrichMovie", ctx, mock.AnythingOfType("*movie.Movie")).Return(nil)
-		metadata.On("GetMovieCredits", ctx, mock.Anything, 603).Return([]MovieCredit{}, nil)
-		metadata.On("GetMovieGenres", ctx, mock.Anything, 603).Return([]MovieGenre{}, nil)
+		metadata.On("GetMovieCredits", ctx, mock.Anything, "603").Return([]MovieCredit{}, nil)
+		metadata.On("GetMovieGenres", ctx, mock.Anything, "603").Return([]MovieGenre{}, nil)
 
 		// Mock Repository
 		// 1. Create Movie
@@ -193,8 +193,8 @@ func TestLibraryService_RefreshMovie(t *testing.T) {
 
 	repo.On("GetMovie", ctx, movieID).Return(movie, nil)
 	metadata.On("EnrichMovie", ctx, movie).Return(nil)
-	metadata.On("GetMovieCredits", ctx, movieID, 603).Return([]MovieCredit{}, nil)
-	metadata.On("GetMovieGenres", ctx, movieID, 603).Return([]MovieGenre{}, nil)
+	metadata.On("GetMovieCredits", ctx, movieID, "603").Return([]MovieCredit{}, nil)
+	metadata.On("GetMovieGenres", ctx, movieID, "603").Return([]MovieGenre{}, nil)
 	repo.On("UpdateMovie", ctx, mock.AnythingOfType("UpdateMovieParams")).Return(movie, nil)
 
 	err := svc.RefreshMovie(ctx, movieID)

@@ -12,6 +12,7 @@ import (
 
 	contentmovie "github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/util"
 )
 
 // Adapter wraps the shared metadata service for movie-specific operations.

@@ -474,7 +474,7 @@ func (h *Handler) GetSimilarMovies(ctx context.Context, params ogen.GetSimilarMo
 	}
 
 	// Get similar movies from shared metadata service
-	similar, totalResults, err := h.metadataService.GetSimilarMovies(ctx, *m.TMDbID, metadata.SearchOptions{})
+	similar, totalResults, err := h.metadataService.GetSimilarMovies(ctx, fmt.Sprintf("%d", *m.TMDbID), metadata.SearchOptions{})
 	if err != nil {
 		return nil, err
 	}

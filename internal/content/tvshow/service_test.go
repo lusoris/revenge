@@ -3,6 +3,7 @@ package tvshow
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"testing"
 	"time"
@@ -2592,7 +2593,7 @@ func TestRefreshSeriesMetadata_Success(t *testing.T) {
 	credits := []SeriesCredit{
 		{SeriesID: seriesID, TMDbPersonID: 17419, Name: "Bryan Cranston", CreditType: "cast"},
 	}
-	provider.On("GetSeriesCredits", ctx, seriesID, int(1396)).Return(credits, nil)
+	provider.On("GetSeriesCredits", ctx, seriesID, "1396").Return(credits, nil)
 	repo.On("DeleteSeriesCredits", ctx, seriesID).Return(nil)
 	repo.On("CreateSeriesCredit", ctx, mock.AnythingOfType("CreateSeriesCreditParams")).Return(&SeriesCredit{}, nil)
 
@@ -2600,7 +2601,7 @@ func TestRefreshSeriesMetadata_Success(t *testing.T) {
 	genres := []SeriesGenre{
 		{SeriesID: seriesID, TMDbGenreID: 18, Name: "Drama"},
 	}
-	provider.On("GetSeriesGenres", ctx, seriesID, int(1396)).Return(genres, nil)
+	provider.On("GetSeriesGenres", ctx, seriesID, "1396").Return(genres, nil)
 	repo.On("DeleteSeriesGenres", ctx, seriesID).Return(nil)
 	repo.On("AddSeriesGenre", ctx, seriesID, int32(18), "Drama").Return(nil)
 
@@ -2710,7 +2711,7 @@ func TestRefreshSeasonMetadata_Success(t *testing.T) {
 
 	repo.On("GetSeason", ctx, seasonID).Return(season, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichSeason", ctx, season, tmdbID, []MetadataRefreshOptions(nil)).Return(nil)
+	provider.On("EnrichSeason", ctx, season, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(nil)
 	repo.On("UpdateSeason", ctx, mock.AnythingOfType("UpdateSeasonParams")).Return(season, nil)
 
 	err := svc.RefreshSeasonMetadata(ctx, seasonID)
@@ -2787,7 +2788,7 @@ func TestRefreshSeasonMetadata_EnrichFails(t *testing.T) {
 
 	repo.On("GetSeason", ctx, seasonID).Return(season, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichSeason", ctx, season, tmdbID, []MetadataRefreshOptions(nil)).Return(errors.New("API error"))
+	provider.On("EnrichSeason", ctx, season, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(errors.New("API error"))
 
 	err := svc.RefreshSeasonMetadata(ctx, seasonID)
 	assert.Error(t, err)
@@ -2820,7 +2821,7 @@ func TestRefreshEpisodeMetadata_Success(t *testing.T) {
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichEpisode", ctx, episode, tmdbID, []MetadataRefreshOptions(nil)).Return(nil)
+	provider.On("EnrichEpisode", ctx, episode, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(nil)
 	repo.On("UpdateEpisode", ctx, mock.AnythingOfType("UpdateEpisodeParams")).Return(episode, nil)
 
 	err := svc.RefreshEpisodeMetadata(ctx, episodeID)
@@ -2897,7 +2898,7 @@ func TestRefreshEpisodeMetadata_EnrichFails(t *testing.T) {
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichEpisode", ctx, episode, tmdbID, []MetadataRefreshOptions(nil)).Return(errors.New("API error"))
+	provider.On("EnrichEpisode", ctx, episode, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(errors.New("API error"))
 
 	err := svc.RefreshEpisodeMetadata(ctx, episodeID)
 	assert.Error(t, err)
@@ -2920,7 +2921,7 @@ func TestRefreshEpisodeMetadata_UpdateFails(t *testing.T) {
 
 	repo.On("GetEpisode", ctx, episodeID).Return(episode, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichEpisode", ctx, episode, tmdbID, []MetadataRefreshOptions(nil)).Return(nil)
+	provider.On("EnrichEpisode", ctx, episode, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(nil)
 	repo.On("UpdateEpisode", ctx, mock.AnythingOfType("UpdateEpisodeParams")).Return(nil, errors.New("update failed"))
 
 	err := svc.RefreshEpisodeMetadata(ctx, episodeID)
@@ -3074,7 +3075,7 @@ func TestRefreshSeasonMetadata_UpdateFails(t *testing.T) {
 
 	repo.On("GetSeason", ctx, seasonID).Return(season, nil)
 	repo.On("GetSeries", ctx, seriesID).Return(series, nil)
-	provider.On("EnrichSeason", ctx, season, tmdbID, []MetadataRefreshOptions(nil)).Return(nil)
+	provider.On("EnrichSeason", ctx, season, fmt.Sprintf("%d", tmdbID), []MetadataRefreshOptions(nil)).Return(nil)
 	repo.On("UpdateSeason", ctx, mock.AnythingOfType("UpdateSeasonParams")).Return(nil, errors.New("update failed"))
 
 	err := svc.RefreshSeasonMetadata(ctx, seasonID)

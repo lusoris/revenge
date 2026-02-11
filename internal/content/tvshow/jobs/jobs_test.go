@@ -3,6 +3,7 @@ package jobs
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -2693,13 +2694,13 @@ func TestProcessFile_NoMatch_CreateFromTMDb(t *testing.T) {
 		TMDbID: &tmdbID,
 	}, nil)
 	svc.On("GetSeasonByNumber", mock.Anything, seriesID, int32(1)).Return(nil, errors.New("not found"))
-	mdp.On("EnrichSeason", mock.Anything, mock.Anything, tmdbID, mock.Anything).Return(nil)
+	mdp.On("EnrichSeason", mock.Anything, mock.Anything, fmt.Sprintf("%d", tmdbID), mock.Anything).Return(nil)
 	svc.On("CreateSeason", mock.Anything, mock.Anything).Return(&tvshow.Season{
 		ID:       seasonID,
 		SeriesID: seriesID,
 	}, nil)
 	svc.On("GetEpisodeByNumber", mock.Anything, seriesID, int32(1), int32(1)).Return(nil, errors.New("not found"))
-	mdp.On("EnrichEpisode", mock.Anything, mock.Anything, tmdbID, mock.Anything).Return(nil)
+	mdp.On("EnrichEpisode", mock.Anything, mock.Anything, fmt.Sprintf("%d", tmdbID), mock.Anything).Return(nil)
 	svc.On("CreateEpisode", mock.Anything, mock.Anything).Return(&tvshow.Episode{
 		ID:       episodeID,
 		SeasonID: seasonID,
