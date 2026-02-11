@@ -134,13 +134,32 @@ func estimateBandwidth(pd transcode.ProfileDecision, sourceVideoBps, sourceAudio
 // ReadMediaPlaylist reads the FFmpeg-generated media playlist from disk.
 // If the file doesn't exist yet (FFmpeg still starting), it polls with retries.
 func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
+	// Validate profile to prevent path traversal (CWE-22)
+	for _, part := range strings.Split(profile, "/") {
+		if part == "" || part == "." || part == ".." || strings.ContainsAny(part, "/\\") {
+			return "", fmt.Errorf("invalid profile: %q", profile)
+		}
+	}
+
 	playlistPath := filepath.Join(segmentDir, profile, "index.m3u8")
+
+	// Ensure resolved path stays within segmentDir
+	absPath, err := filepath.Abs(playlistPath)
+	if err != nil {
+		return "", fmt.Errorf("invalid playlist path: %w", err)
+	}
+	absDir, err := filepath.Abs(segmentDir)
+	if err != nil {
+		return "", fmt.Errorf("invalid segment dir: %w", err)
+	}
+	if !strings.HasPrefix(absPath, absDir+string(filepath.Separator)) {
+		return "", fmt.Errorf("path traversal detected in profile: %q", profile)
+	}
 
 	// Poll for the playlist file to appear (FFmpeg may still be starting)
 	var content []byte
-	var err error
 	for i := 0; i < 100; i++ {
-		content, err = os.ReadFile(playlistPath) // #nosec G304 -- path constructed from internal transcode output dir
+		content, err = os.ReadFile(playlistPath) //nolint:gosec // path validated above with traversal check
 		if err == nil && len(content) > 0 {
 			return string(content), nil
 		}
@@ -154,7 +173,11 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 }
 
 // SegmentPath returns the filesystem path for a segment file.
+// It validates that profile and segmentFile do not contain path traversal sequences.
 func SegmentPath(segmentDir, profile, segmentFile string) string {
+	// Caller should validate, but defense-in-depth: clean components
+	profile = filepath.Base(profile)
+	segmentFile = filepath.Base(segmentFile)
 	return filepath.Join(segmentDir, profile, segmentFile)
 }
 
