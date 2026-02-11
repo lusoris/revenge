@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/api/sse"
 	"github.com/lusoris/revenge/internal/content/movie"
@@ -46,7 +47,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/service/user"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lusoris/revenge/internal/testutil"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
