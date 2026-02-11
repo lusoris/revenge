@@ -158,7 +158,6 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 
 	// Poll for the playlist file to appear (FFmpeg may still be starting)
 	var content []byte
-	var err error
 	for i := 0; i < 100; i++ {
 		content, err = os.ReadFile(playlistPath) //nolint:gosec // path validated above with traversal check
 		if err == nil && len(content) > 0 {
