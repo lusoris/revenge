@@ -12,8 +12,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/errors"
-	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/observability"
 )
 
 // Service handles session management operations
