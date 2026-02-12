@@ -38,7 +38,12 @@ func (RadarrSyncJobArgs) Kind() string {
 // Radarr sync runs on the high-priority queue for responsive integration.
 func (RadarrSyncJobArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueHigh,
+		Queue:       infrajobs.QueueHigh,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 5 * time.Minute,
+		},
 	}
 }
 
@@ -139,7 +144,8 @@ func (RadarrWebhookJobArgs) Kind() string {
 // Webhooks run on the high-priority queue for responsive user experience.
 func (RadarrWebhookJobArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueHigh,
+		Queue:       infrajobs.QueueHigh,
+		MaxAttempts: 5,
 	}
 }
 

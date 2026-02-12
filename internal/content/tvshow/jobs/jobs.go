@@ -18,6 +18,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/content/tvshow/adapters"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/search"
 	"github.com/lusoris/revenge/internal/util"
 	"github.com/riverqueue/river"
@@ -62,26 +63,33 @@ func (LibraryScanArgs) Kind() string {
 // Library scans run on the bulk queue since they're resource-intensive batch operations.
 func (LibraryScanArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueBulk,
+		Queue:       infrajobs.QueueBulk,
+		MaxAttempts: 3,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 10 * time.Minute,
+		},
 	}
 }
 
 // LibraryScanWorker scans TV show library directories.
 type LibraryScanWorker struct {
 	river.WorkerDefaults[LibraryScanArgs]
-	service          tvshow.Service
-	metadataProvider tvshow.MetadataProvider
-	jobClient        *infrajobs.Client
-	logger           *slog.Logger
+	service             tvshow.Service
+	metadataProvider    tvshow.MetadataProvider
+	jobClient           *infrajobs.Client
+	notificationService notification.Service
+	logger              *slog.Logger
 }
 
 // NewLibraryScanWorker creates a new library scan worker.
-func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, jobClient *infrajobs.Client, logger *slog.Logger) *LibraryScanWorker {
+func NewLibraryScanWorker(service tvshow.Service, metadataProvider tvshow.MetadataProvider, jobClient *infrajobs.Client, notificationService notification.Service, logger *slog.Logger) *LibraryScanWorker {
 	return &LibraryScanWorker{
-		service:          service,
-		metadataProvider: metadataProvider,
-		jobClient:        jobClient,
-		logger:           logger.With("component", "tvshow_library_scan"),
+		service:             service,
+		metadataProvider:    metadataProvider,
+		jobClient:           jobClient,
+		notificationService: notificationService,
+		logger:              logger.With("component", "tvshow_library_scan"),
 	}
 }
 
@@ -98,6 +106,17 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		slog.Bool("force", job.Args.Force),
 		slog.Bool("auto_create", job.Args.AutoCreate),
 	)
+
+	// Dispatch library scan started notification.
+	if w.notificationService != nil {
+		var libIDStr string
+		if job.Args.LibraryID != nil {
+			libIDStr = job.Args.LibraryID.String()
+		}
+		_ = w.notificationService.Dispatch(ctx, notification.NewEvent(notification.EventLibraryScanStarted).
+			WithData("library_id", libIDStr).
+			WithData("library_type", "tvshow"))
+	}
 
 	result := &sharedjobs.JobResult{Success: true}
 	start := time.Now()
@@ -196,6 +215,30 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 		slog.Int("items_processed", result.ItemsProcessed),
 		slog.Int("items_skipped", itemsSkipped),
 	)
+
+	// Dispatch library scan completed notification.
+	if w.notificationService != nil {
+		var libIDStr string
+		if job.Args.LibraryID != nil {
+			libIDStr = job.Args.LibraryID.String()
+		}
+		_ = w.notificationService.Dispatch(ctx, notification.NewEvent(notification.EventLibraryScanDone).
+			WithData("library_id", libIDStr).
+			WithData("library_type", "tvshow").
+			WithData("items_processed", result.ItemsProcessed).
+			WithData("scan_duration", result.Duration.String()))
+	}
+
+	// Enqueue a search reindex job so newly processed shows are searchable.
+	if w.jobClient != nil && result.ItemsProcessed > 0 {
+		if _, err := w.jobClient.Insert(ctx, SearchIndexArgs{
+			FullReindex: true,
+		}, nil); err != nil {
+			w.logger.Warn("failed to enqueue search reindex after library scan",
+				slog.Any("error", err),
+			)
+		}
+	}
 
 	return nil
 }
@@ -389,6 +432,19 @@ func (MetadataRefreshArgs) Kind() string {
 	return KindMetadataRefresh
 }
 
+// InsertOpts returns the default insert options for TV show metadata refresh jobs.
+// Metadata refreshes hit external APIs — limit retries to avoid hammering.
+func (MetadataRefreshArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:       infrajobs.QueueDefault,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 30 * time.Minute,
+		},
+	}
+}
+
 // MetadataRefreshWorker refreshes TV show metadata from external sources.
 type MetadataRefreshWorker struct {
 	river.WorkerDefaults[MetadataRefreshArgs]
@@ -540,6 +596,15 @@ type FileMatchArgs struct {
 // Kind returns the job kind identifier.
 func (FileMatchArgs) Kind() string {
 	return KindFileMatch
+}
+
+// InsertOpts returns the default insert options for TV show file match jobs.
+// File matching is deterministic — limit retries to avoid wasting resources.
+func (FileMatchArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:       infrajobs.QueueDefault,
+		MaxAttempts: 3,
+	}
 }
 
 // FileMatchWorker matches scanned files to TV show episodes.
@@ -771,7 +836,12 @@ func (SearchIndexArgs) Kind() string {
 // Search indexing runs on the bulk queue since it's batch-heavy.
 func (SearchIndexArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueBulk,
+		Queue:       infrajobs.QueueBulk,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 5 * time.Minute,
+		},
 	}
 }
 
@@ -1044,6 +1114,18 @@ type SeriesRefreshArgs struct {
 // Kind returns the job kind identifier.
 func (SeriesRefreshArgs) Kind() string {
 	return KindSeriesRefresh
+}
+
+// InsertOpts returns the default insert options for series refresh jobs.
+func (SeriesRefreshArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:       infrajobs.QueueDefault,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 30 * time.Minute,
+		},
+	}
 }
 
 // SeriesRefreshWorker refreshes a single series from TMDb.

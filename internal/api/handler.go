@@ -24,6 +24,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/metadata"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/search"
@@ -65,6 +66,7 @@ type Handler struct {
 	sonarrService   sonarrService        // Optional: Sonarr sync service
 	riverClient     riverClient          // Optional: River job queue client
 	playbackService *playback.Service    // Optional: HLS streaming service
+	notificationService notification.Service // Optional: Notification dispatcher
 }
 
 // riverClient is an interface for the River job queue client.

@@ -38,7 +38,12 @@ func (SonarrSyncJobArgs) Kind() string {
 // Sonarr sync runs on the high-priority queue for responsive integration.
 func (SonarrSyncJobArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueHigh,
+		Queue:       infrajobs.QueueHigh,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 5 * time.Minute,
+		},
 	}
 }
 
@@ -141,7 +146,8 @@ func (SonarrWebhookJobArgs) Kind() string {
 // Webhooks run on the high-priority queue for responsive user experience.
 func (SonarrWebhookJobArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueHigh,
+		Queue:       infrajobs.QueueHigh,
+		MaxAttempts: 5,
 	}
 }
 

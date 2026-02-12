@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"log/slog"
 
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
@@ -467,4 +468,72 @@ func (s *CachedService) listMoviesCacheKey(filters ListFilters) string {
 	// Hash the key to keep it short
 	hash := sha256.Sum256([]byte(key))
 	return cache.KeyPrefixMovie + "list:" + hex.EncodeToString(hash[:8])
+}
+
+// GetMovieFiles returns files for a movie with caching (5 min TTL).
+// This is called on every playback start to locate the media file.
+func (s *CachedService) GetMovieFiles(ctx context.Context, movieID uuid.UUID) ([]MovieFile, error) {
+	if s.cache == nil {
+		return s.Service.GetMovieFiles(ctx, movieID)
+	}
+
+	cacheKey := cache.MovieFilesKey(movieID.String())
+
+	// Try cache first
+	var files []MovieFile
+	if err := s.cache.GetJSON(ctx, cacheKey, &files); err == nil {
+		s.logger.Debug("movie files cache hit", slog.String("movie_id", movieID.String()))
+		return files, nil
+	}
+
+	// Cache miss - load from database
+	result, err := s.Service.GetMovieFiles(ctx, movieID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Cache the result async
+	go func() {
+		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieTTL); setErr != nil {
+			s.logger.Warn("failed to cache movie files", slog.Any("error", setErr))
+		}
+	}()
+
+	return result, nil
+}
+
+// ListDistinctGenres returns all distinct movie genres with caching (10 min TTL).
+// Genre lists are near-static and frequently requested for filter UIs.
+func (s *CachedService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	if s.cache == nil {
+		return s.Service.ListDistinctGenres(ctx)
+	}
+
+	cacheKey := cache.KeyPrefixMovieGenres + "distinct"
+
+	// Try cache first
+	var genres []content.GenreSummary
+	if err := s.cache.GetJSON(ctx, cacheKey, &genres); err == nil {
+		s.logger.Debug("movie distinct genres cache hit")
+		return genres, nil
+	}
+
+	// Cache miss - load from database
+	result, err := s.Service.ListDistinctGenres(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Cache the result async
+	go func() {
+		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.MovieMetaTTL); setErr != nil {
+			s.logger.Warn("failed to cache distinct movie genres", slog.Any("error", setErr))
+		}
+	}()
+
+	return result, nil
 }

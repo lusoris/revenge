@@ -2,13 +2,13 @@ package moviejobs
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/riverqueue/river"
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )
 
 const MovieFileMatchJobKind = "movie_file_match"
@@ -22,6 +22,15 @@ type MovieFileMatchArgs struct {
 // Kind returns the job kind for the movie file match job.
 func (MovieFileMatchArgs) Kind() string {
 	return MovieFileMatchJobKind
+}
+
+// InsertOpts returns the default insert options for movie file match jobs.
+// File matching is deterministic — limit retries to avoid wasting resources.
+func (MovieFileMatchArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:       infrajobs.QueueDefault,
+		MaxAttempts: 3,
+	}
 }
 
 // MovieFileMatchWorker is a worker that matches movie files to movies.
@@ -90,11 +99,13 @@ func (w *MovieFileMatchWorker) Work(ctx context.Context, job *river.Job[MovieFil
 			slog.Bool("created_new_movie", result.CreatedNewMovie),
 		)
 	} else {
-		w.logger.Warn("file could not be matched",
+		w.logger.Warn("file could not be matched — skipping (not a retryable error)",
 			slog.String("file_path", args.FilePath),
 			slog.String("match_type", string(result.MatchType)),
 		)
-		return errors.New("file could not be matched to any movie")
+		// Return nil: unmatched files are a valid outcome, not a job failure.
+		// Retrying won't change the result since the file simply doesn't match.
+		return nil
 	}
 
 	return nil

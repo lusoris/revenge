@@ -185,3 +185,82 @@ func (s *CachedService) InvalidateSessionCache(ctx context.Context, tokenHash st
 	}
 	return s.cache.InvalidateSession(ctx, tokenHash)
 }
+
+// RefreshSession refreshes session tokens and invalidates the old session's cache entry.
+// Without this override, the old token's cached entry would remain valid until TTL expiry,
+// allowing use of a revoked session token.
+func (s *CachedService) RefreshSession(ctx context.Context, refreshToken string) (string, string, error) {
+	// Get old session's token hash BEFORE refresh so we can invalidate its cache entry.
+	refreshTokenHash := s.hashToken(refreshToken)
+	oldSession, _ := s.repo.GetSessionByRefreshTokenHash(ctx, refreshTokenHash)
+
+	// Perform the actual refresh (creates new session, revokes old).
+	newToken, newRefreshToken, err := s.Service.RefreshSession(ctx, refreshToken)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Invalidate old session cache entry.
+	if s.cache != nil && oldSession != nil {
+		cacheKey := cache.SessionKey(oldSession.TokenHash)
+		if delErr := s.cache.Delete(ctx, cacheKey); delErr != nil {
+			s.logger.Warn("failed to invalidate old session cache on refresh",
+				slog.String("session_id", oldSession.ID.String()),
+				slog.Any("error", delErr))
+		}
+	}
+
+	// Write-through: cache the new session.
+	if s.cache != nil {
+		newTokenHash := s.hashToken(newToken)
+		cacheKey := cache.SessionKey(newTokenHash)
+		newSession, getErr := s.repo.GetSessionByTokenHash(ctx, newTokenHash)
+		if getErr == nil && newSession != nil {
+			go func() {
+				cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+				defer cancel()
+				if setErr := s.cache.SetJSON(cacheCtx, cacheKey, newSession, s.cacheTTL); setErr != nil {
+					s.logger.Warn("failed to cache refreshed session", slog.Any("error", setErr))
+				}
+			}()
+		}
+	}
+
+	return newToken, newRefreshToken, nil
+}
+
+// RevokeAllUserSessionsExcept revokes all sessions except the current one and invalidates cache.
+// Without this override, revoked sessions would remain in cache until TTL expiry.
+func (s *CachedService) RevokeAllUserSessionsExcept(ctx context.Context, userID uuid.UUID, currentSessionID uuid.UUID) error {
+	// Collect token hashes BEFORE revoking so we can invalidate the correct cache keys.
+	var tokenHashes []string
+	if s.cache != nil {
+		sessions, err := s.repo.ListUserSessions(ctx, userID)
+		if err == nil {
+			for _, sess := range sessions {
+				if sess.ID != currentSessionID {
+					tokenHashes = append(tokenHashes, sess.TokenHash)
+				}
+			}
+		}
+	}
+
+	// Revoke in database.
+	if err := s.Service.RevokeAllUserSessionsExcept(ctx, userID, currentSessionID); err != nil {
+		return err
+	}
+
+	// Invalidate each revoked session's cache entry.
+	if s.cache != nil {
+		for _, hash := range tokenHashes {
+			cacheKey := cache.SessionKey(hash)
+			if err := s.cache.Delete(ctx, cacheKey); err != nil {
+				s.logger.Warn("failed to invalidate session cache entry",
+					slog.String("user_id", userID.String()),
+					slog.Any("error", err))
+			}
+		}
+	}
+
+	return nil
+}

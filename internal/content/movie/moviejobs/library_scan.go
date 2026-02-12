@@ -14,6 +14,7 @@ import (
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/notification"
 )
 
 const MovieLibraryScanJobKind = "movie_library_scan"
@@ -35,28 +36,39 @@ func (MovieLibraryScanArgs) Kind() string {
 // Library scans run on the bulk queue since they're resource-intensive batch operations.
 func (MovieLibraryScanArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueBulk,
+		Queue:       infrajobs.QueueBulk,
+		MaxAttempts: 3,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 10 * time.Minute,
+		},
 	}
 }
 
 // MovieLibraryScanWorker is a worker that scans movie libraries.
 type MovieLibraryScanWorker struct {
 	river.WorkerDefaults[MovieLibraryScanArgs]
-	libraryService     *movie.LibraryService
-	scanStatusService  *library.Service
-	logger             *slog.Logger
+	libraryService      *movie.LibraryService
+	scanStatusService   *library.Service
+	jobClient           *infrajobs.Client
+	notificationService notification.Service
+	logger              *slog.Logger
 }
 
 // NewMovieLibraryScanWorker creates a new movie library scan worker.
 func NewMovieLibraryScanWorker(
 	libraryService *movie.LibraryService,
 	scanStatusService *library.Service,
+	jobClient *infrajobs.Client,
+	notificationService notification.Service,
 	logger *slog.Logger,
 ) *MovieLibraryScanWorker {
 	return &MovieLibraryScanWorker{
-		libraryService:    libraryService,
-		scanStatusService: scanStatusService,
-		logger:            logger,
+		libraryService:      libraryService,
+		scanStatusService:   scanStatusService,
+		jobClient:           jobClient,
+		notificationService: notificationService,
+		logger:              logger,
 	}
 }
 
@@ -81,6 +93,14 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 		slog.Any("paths", args.Paths),
 		slog.Bool("force", args.Force),
 	)
+
+	// Dispatch library scan started notification.
+	if w.notificationService != nil {
+		_ = w.notificationService.Dispatch(ctx, notification.NewEvent(notification.EventLibraryScanStarted).
+			WithData("library_id", args.LibraryID).
+			WithData("scan_id", args.ScanID).
+			WithData("library_type", "movie"))
+	}
 
 	// Mark scan as running if we have a scan ID and status service.
 	var scanID uuid.UUID
@@ -143,6 +163,28 @@ func (w *MovieLibraryScanWorker) Work(ctx context.Context, job *river.Job[MovieL
 		if _, err := w.scanStatusService.CompleteScan(ctx, scanID, progress); err != nil {
 			w.logger.Warn("failed to mark scan as completed",
 				slog.String("scan_id", args.ScanID),
+				slog.Any("error", err),
+			)
+		}
+	}
+
+	// Dispatch library scan completed notification.
+	if w.notificationService != nil {
+		_ = w.notificationService.Dispatch(ctx, notification.NewEvent(notification.EventLibraryScanDone).
+			WithData("library_id", args.LibraryID).
+			WithData("scan_id", args.ScanID).
+			WithData("library_type", "movie").
+			WithData("total_files", summary.TotalFiles).
+			WithData("new_movies", summary.NewMovies).
+			WithData("scan_duration", time.Since(scanStart).String()))
+	}
+
+	// Enqueue a search reindex job so newly added movies are searchable.
+	if w.jobClient != nil && summary.NewMovies > 0 {
+		if _, err := w.jobClient.Insert(ctx, MovieSearchIndexArgs{
+			Operation: SearchIndexOperationReindex,
+		}, nil); err != nil {
+			w.logger.Warn("failed to enqueue search reindex after library scan",
 				slog.Any("error", err),
 			)
 		}

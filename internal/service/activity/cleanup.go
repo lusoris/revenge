@@ -31,7 +31,8 @@ func (ActivityCleanupArgs) Kind() string {
 // Cleanup runs on the low-priority queue since it's maintenance work.
 func (ActivityCleanupArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueLow,
+		Queue:       infrajobs.QueueLow,
+		MaxAttempts: 3,
 	}
 }
 

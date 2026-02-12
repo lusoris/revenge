@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/lusoris/revenge/internal/content"
 	"github.com/lusoris/revenge/internal/infra/cache"
 )
 
@@ -572,4 +573,38 @@ func (s *CachedService) listSeriesCacheKey(filters SeriesListFilters) string {
 
 	hash := sha256.Sum256([]byte(key))
 	return cache.KeyPrefixTVShowList + hex.EncodeToString(hash[:8])
+}
+
+// ListDistinctGenres returns all distinct TV show genres with caching (10 min TTL).
+// Genre lists are near-static and frequently requested for filter UIs.
+func (s *CachedService) ListDistinctGenres(ctx context.Context) ([]content.GenreSummary, error) {
+	if s.cache == nil {
+		return s.Service.ListDistinctGenres(ctx)
+	}
+
+	cacheKey := cache.KeyPrefixTVShowGenres + "distinct"
+
+	// Try cache first
+	var genres []content.GenreSummary
+	if err := s.cache.GetJSON(ctx, cacheKey, &genres); err == nil {
+		s.logger.Debug("tvshow distinct genres cache hit")
+		return genres, nil
+	}
+
+	// Cache miss - load from database
+	result, err := s.Service.ListDistinctGenres(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Cache the result async
+	go func() {
+		cacheCtx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+		if setErr := s.cache.SetJSON(cacheCtx, cacheKey, result, cache.TVShowMetaTTL); setErr != nil {
+			s.logger.Warn("failed to cache distinct tvshow genres", slog.Any("error", setErr))
+		}
+	}()
+
+	return result, nil
 }

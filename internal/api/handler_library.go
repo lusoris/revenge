@@ -13,6 +13,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/content/movie/moviejobs"
+	tvshowjobs "github.com/lusoris/revenge/internal/content/tvshow/jobs"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/validate"
 )
@@ -331,17 +332,34 @@ func (h *Handler) TriggerLibraryScan(ctx context.Context, req *ogen.TriggerLibra
 	if h.riverClient != nil {
 		lib, libErr := h.libraryService.Get(ctx, params.LibraryId)
 		if libErr == nil {
-			_, insertErr := h.riverClient.Insert(ctx, moviejobs.MovieLibraryScanArgs{
-				ScanID:    scan.ID.String(),
-				LibraryID: params.LibraryId.String(),
-				Paths:     lib.Paths,
-				Force:     scanType == "full",
-			}, nil)
-			if insertErr != nil {
-				h.logger.Error("failed to enqueue scan job",
-					slog.String("scan_id", scan.ID.String()),
-					slog.Any("error", insertErr),
-				)
+			switch lib.Type {
+			case library.LibraryTypeTVShow:
+				libID := params.LibraryId
+				_, insertErr := h.riverClient.Insert(ctx, tvshowjobs.LibraryScanArgs{
+					Paths:      lib.Paths,
+					Force:      scanType == "full",
+					LibraryID:  &libID,
+					AutoCreate: true,
+				}, nil)
+				if insertErr != nil {
+					h.logger.Error("failed to enqueue tvshow scan job",
+						slog.String("scan_id", scan.ID.String()),
+						slog.Any("error", insertErr),
+					)
+				}
+			default: // movie (and any future types fall back to movie scan)
+				_, insertErr := h.riverClient.Insert(ctx, moviejobs.MovieLibraryScanArgs{
+					ScanID:    scan.ID.String(),
+					LibraryID: params.LibraryId.String(),
+					Paths:     lib.Paths,
+					Force:     scanType == "full",
+				}, nil)
+				if insertErr != nil {
+					h.logger.Error("failed to enqueue movie scan job",
+						slog.String("scan_id", scan.ID.String()),
+						slog.Any("error", insertErr),
+					)
+				}
 			}
 		}
 	}

@@ -209,12 +209,13 @@ func (w *RefreshPersonWorker) Timeout(job *river.Job[RefreshPersonArgs]) time.Du
 }
 
 // Work executes the person metadata refresh job.
+// Person service is not yet implemented — cancel the job so it doesn't retry.
 func (w *RefreshPersonWorker) Work(ctx context.Context, job *river.Job[RefreshPersonArgs]) error {
-	w.logger.Warn("person metadata refresh not yet implemented — job accepted but no-op",
+	w.logger.Warn("person metadata refresh not yet implemented — cancelling job",
 		slog.String("job_id", fmt.Sprintf("%d", job.ID)),
 		slog.String("provider_id", job.Args.ProviderID),
 	)
-	return nil
+	return river.JobCancel(fmt.Errorf("person metadata refresh not yet implemented"))
 }
 
 // =============================================================================

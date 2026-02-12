@@ -10,6 +10,7 @@ import (
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/search"
 )
 
@@ -36,6 +37,18 @@ type MovieSearchIndexArgs struct {
 // Kind returns the unique job kind for River.
 func (MovieSearchIndexArgs) Kind() string {
 	return "movie_search_index"
+}
+
+// InsertOpts returns the default insert options for movie search index jobs.
+func (MovieSearchIndexArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:       infrajobs.QueueDefault,
+		MaxAttempts: 5,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 5 * time.Minute,
+		},
+	}
 }
 
 // MovieSearchIndexWorker handles search index operations for movies.

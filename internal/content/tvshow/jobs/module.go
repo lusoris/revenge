@@ -8,6 +8,7 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/search"
 )
 
@@ -33,12 +34,13 @@ type WorkerProviderParams struct {
 	EpisodeSearchService *search.EpisodeSearchService `optional:"true"`
 	SeasonSearchService  *search.SeasonSearchService  `optional:"true"`
 	JobClient            *infrajobs.Client
+	NotificationService  notification.Service
 	Logger               *slog.Logger
 }
 
 // provideLibraryScanWorker creates a library scan worker with optional metadata provider.
 func provideLibraryScanWorker(p WorkerProviderParams) *LibraryScanWorker {
-	return NewLibraryScanWorker(p.Service, p.MetadataProvider, p.JobClient, p.Logger)
+	return NewLibraryScanWorker(p.Service, p.MetadataProvider, p.JobClient, p.NotificationService, p.Logger)
 }
 
 // provideMetadataRefreshWorker creates a metadata refresh worker.

@@ -13,11 +13,11 @@ import (
 	"log/slog"
 	"net/url"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/google/uuid"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"golang.org/x/oauth2"
 )
 
@@ -61,16 +61,24 @@ type Service struct {
 	logger        *slog.Logger
 	callbackURL   string
 	encryptKey    []byte // For encrypting client secrets and tokens
-	providerCache sync.Map // issuerURL -> *oidc.Provider
+	providerCache *cache.L1Cache[string, *oidc.Provider]
 }
 
 // NewService creates a new OIDC service
 func NewService(repo Repository, logger *slog.Logger, callbackURL string, encryptKey []byte) *Service {
+	// Provider cache: max 50 providers, 1h TTL.
+	// OIDC provider objects contain endpoint metadata from .well-known/openid-configuration;
+	// they rarely change so a 1h TTL is appropriate.
+	provCache, err := cache.NewL1Cache[string, *oidc.Provider](50, time.Hour)
+	if err != nil {
+		logger.Warn("failed to create OIDC provider cache, falling back to uncached", slog.Any("error", err))
+	}
 	return &Service{
-		repo:        repo,
-		logger:      logger,
-		callbackURL: callbackURL,
-		encryptKey:  encryptKey,
+		repo:          repo,
+		logger:        logger,
+		callbackURL:   callbackURL,
+		encryptKey:    encryptKey,
+		providerCache: provCache,
 	}
 }
 
@@ -501,8 +509,8 @@ func (s *Service) ListUserLinks(ctx context.Context, userID uuid.UUID) ([]UserLi
 // getOrCreateOIDCProvider returns a cached OIDC provider or creates a new one.
 // Caching avoids repeated HTTP calls to the issuer's .well-known/openid-configuration endpoint.
 func (s *Service) getOrCreateOIDCProvider(ctx context.Context, issuerURL string) (*oidc.Provider, error) {
-	if cached, ok := s.providerCache.Load(issuerURL); ok {
-		if p, valid := cached.(*oidc.Provider); valid {
+	if s.providerCache != nil {
+		if p, ok := s.providerCache.Get(issuerURL); ok {
 			return p, nil
 		}
 	}
@@ -512,7 +520,9 @@ func (s *Service) getOrCreateOIDCProvider(ctx context.Context, issuerURL string)
 		return nil, err
 	}
 
-	s.providerCache.Store(issuerURL, provider)
+	if s.providerCache != nil {
+		s.providerCache.Set(issuerURL, provider)
+	}
 	return provider, nil
 }
 

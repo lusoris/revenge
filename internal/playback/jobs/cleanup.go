@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"time"
 
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/playback"
 	"github.com/lusoris/revenge/internal/playback/transcode"
 	"github.com/riverqueue/river"
@@ -24,7 +25,8 @@ func (CleanupArgs) Kind() string {
 // InsertOpts returns the default insert options.
 func (CleanupArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: "low",
+		Queue:       infrajobs.QueueLow,
+		MaxAttempts: 3,
 		UniqueOpts: river.UniqueOpts{
 			ByPeriod: 5 * time.Minute,
 		},

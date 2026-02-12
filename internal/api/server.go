@@ -31,6 +31,7 @@ import (
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/metadata"
 	"github.com/lusoris/revenge/internal/service/mfa"
+	"github.com/lusoris/revenge/internal/service/notification"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/search"
@@ -107,6 +108,7 @@ type ServerParams struct {
 	RadarrService *radarr.SyncService `optional:"true"`
 	SonarrService *sonarr.SyncService `optional:"true"`
 	RiverClient   *jobs.Client        `optional:"true"`
+	NotificationService notification.Service `optional:"true"`
 	Lifecycle     fx.Lifecycle
 }
 
@@ -162,6 +164,9 @@ func NewServer(p ServerParams) (*Server, error) {
 	}
 	if p.RiverClient != nil {
 		handler.riverClient = p.RiverClient
+	}
+	if p.NotificationService != nil {
+		handler.notificationService = p.NotificationService
 	}
 
 	// Create ogen server, optionally with rate limiting middleware

@@ -42,7 +42,8 @@ func (StatsAggregationArgs) Kind() string {
 // InsertOpts returns the default insert options for stats aggregation jobs.
 func (StatsAggregationArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
-		Queue: infrajobs.QueueLow,
+		Queue:       infrajobs.QueueLow,
+		MaxAttempts: 3,
 	}
 }
 
@@ -111,7 +112,7 @@ type statEntry struct {
 // collectStats runs all aggregate queries concurrently and returns the results.
 func (w *StatsAggregationWorker) collectStats(ctx context.Context) ([]statEntry, error) {
 	if w.queries == nil {
-		panic("stats_worker: queries is nil")
+		return nil, fmt.Errorf("stats_worker: queries is nil (dependency not injected)")
 	}
 
 	type queryFunc func(context.Context) (int64, error)
