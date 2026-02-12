@@ -1,7 +1,7 @@
 # BUG-008: OIDC service uses sync.Map instead of L1Cache
 
-**Severity:** MEDIUM  
-**Category:** Cache  
+**Severity:** MEDIUM
+**Category:** Cache
 **Status:** RESOLVED
 
 ## Description

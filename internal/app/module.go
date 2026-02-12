@@ -60,7 +60,7 @@ var Module = fx.Module("app",
 
 	// Periodic Jobs (provided before jobs.Module resolves the River client)
 	fx.Provide(providePeriodicJobs),
-	fx.Invoke(registerActivityCleanupWorker, registerLibraryCleanupWorker),
+	fx.Invoke(registerActivityCleanupWorker, registerLibraryCleanupWorker, registerPeriodicLibraryScanWorker),
 
 	// Bridge: metadata jobs Queue → movie.MetadataQueue interface
 	fx.Provide(func(q *metadatajobs.Queue) movie.MetadataQueue { return q }),

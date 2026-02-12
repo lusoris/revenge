@@ -6,7 +6,7 @@
 - [x] 1.2 Add `InsertOpts()` with `MaxAttempts` + `UniqueOpts` to ALL job args types that lack them
   - [x] `metadata/jobs/refresh.go`: RefreshMovieArgs, RefreshTVShowArgs, RefreshSeasonArgs, RefreshEpisodeArgs, RefreshPersonArgs, EnrichContentArgs, DownloadImageArgs
   - [x] `moviejobs/file_match.go`: MovieFileMatchArgs
-  - [x] `moviejobs/search_index.go`: MovieSearchIndexArgs  
+  - [x] `moviejobs/search_index.go`: MovieSearchIndexArgs
   - [x] `tvshow/jobs/jobs.go`: MetadataRefreshArgs, FileMatchArgs, SeriesRefreshArgs
   - [x] `radarr/jobs.go`: RadarrSyncJobArgs, RadarrWebhookJobArgs (add MaxAttempts + UniqueOpts)
   - [x] `sonarr/jobs.go`: SonarrSyncJobArgs, SonarrWebhookJobArgs (add MaxAttempts + UniqueOpts)
@@ -29,7 +29,7 @@
 
 ## Phase 3: Cache Coverage (Priority: HIGH)
 
-- [x] 3.1 Fix OIDC `sync.Map` → `L1Cache` (violates project rules)  
+- [x] 3.1 Fix OIDC `sync.Map` → `L1Cache` (violates project rules)
 - [x] 3.2 Fix session CachedService: override `RefreshSession` + `RevokeAllUserSessionsExcept`
 - [ ] 3.3 Cache `ValidateKey` in API Keys service (requires interface extraction — deferred)
 - [x] 3.4 Cache `GetMovieFiles` (called on every playback)
@@ -38,12 +38,12 @@
 ## Phase 4: Code Deduplication (Priority: MEDIUM)
 
 - [ ] 4.1 Create `internal/integration/arrbase` shared package (types, client base)
-- [ ] 4.2 Create generic `CacheAside[T]` helper function
+- [x] 4.2 Create generic `CacheAside[T]` helper function
 - [ ] 4.3 Create `setOpt*` helpers for ogen optional field mapping
 
 ## Phase 5: Additional Features (Priority: LOW)
 
-- [ ] 5.1 Add periodic library scan job (configurable schedule)
+- [x] 5.1 Add periodic library scan job (configurable schedule)
 - [ ] 5.2 Add notification agent configuration from config/DB
 - [ ] 5.3 Add playback heartbeat endpoint
-- [ ] 5.4 Update stale DownloadImageWorker comment
+- [x] 5.4 Update stale DownloadImageWorker comment

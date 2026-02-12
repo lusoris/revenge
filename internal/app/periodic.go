@@ -21,7 +21,7 @@ func providePeriodicJobs(cfg *config.Config) []*river.PeriodicJob {
 		retentionDays = 90
 	}
 
-	return []*river.PeriodicJob{
+	periodicJobs := []*river.PeriodicJob{
 		// Auth cleanup: remove expired tokens, password resets, etc. (daily)
 		river.NewPeriodicJob(
 			river.PeriodicInterval(24*time.Hour),
@@ -74,6 +74,20 @@ func providePeriodicJobs(cfg *config.Config) []*river.PeriodicJob {
 			&river.PeriodicJobOpts{ID: "stats_aggregation_hourly", RunOnStart: true},
 		),
 	}
+
+	// Periodic library scan: auto-scan all enabled libraries on a schedule.
+	// Only enabled when ScanInterval > 0 (default "0s" = disabled).
+	if cfg.Movie.Library.ScanInterval > 0 {
+		periodicJobs = append(periodicJobs, river.NewPeriodicJob(
+			river.PeriodicInterval(cfg.Movie.Library.ScanInterval),
+			func() (river.JobArgs, *river.InsertOpts) {
+				return library.PeriodicLibraryScanArgs{}, nil
+			},
+			&river.PeriodicJobOpts{ID: "periodic_library_scan"},
+		))
+	}
+
+	return periodicJobs
 }
 
 // registerActivityCleanupWorker registers the activity cleanup worker with River.
@@ -83,5 +97,10 @@ func registerActivityCleanupWorker(workers *river.Workers, worker *activity.Acti
 
 // registerLibraryCleanupWorker registers the library scan cleanup worker with River.
 func registerLibraryCleanupWorker(workers *river.Workers, worker *library.LibraryScanCleanupWorker) {
+	river.AddWorker(workers, worker)
+}
+
+// registerPeriodicLibraryScanWorker registers the periodic library scan worker with River.
+func registerPeriodicLibraryScanWorker(workers *river.Workers, worker *library.PeriodicLibraryScanWorker) {
 	river.AddWorker(workers, worker)
 }

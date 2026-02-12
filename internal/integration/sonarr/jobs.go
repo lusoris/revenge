@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/riverqueue/river"
 	"log/slog"
+
+	"github.com/riverqueue/river"
 
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 )

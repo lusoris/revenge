@@ -1,8 +1,8 @@
 # BUG-001: 23 of 27 River job types use global MaxAttempts=25
 **Status: RESOLVED**
 
-**Severity:** HIGH  
-**Category:** River Jobs  
+**Severity:** HIGH
+**Category:** River Jobs
 **Status:** RESOLVED
 
 ## Description

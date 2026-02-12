@@ -1,8 +1,8 @@
 # BUG-006: No CompletedJobRetention — river_job table grows unbounded
 **Status: RESOLVED**
 
-**Severity:** MEDIUM  
-**Category:** River Jobs  
+**Severity:** MEDIUM
+**Category:** River Jobs
 **Status:** RESOLVED
 
 ## Description

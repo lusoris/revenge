@@ -1,8 +1,8 @@
 # BUG-005: playback_cleanup uses hardcoded "low" instead of QueueLow constant
 **Status: RESOLVED**
 
-**Severity:** LOW  
-**Category:** River Jobs  
+**Severity:** LOW
+**Category:** River Jobs
 **Status:** RESOLVED
 
 ## Description

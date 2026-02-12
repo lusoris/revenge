@@ -1,9 +1,9 @@
 # BUG-002: movie_file_match retries 25x on deterministic failure
 **Status: RESOLVED**
 
-**Severity:** HIGH  
-**Category:** River Jobs  
-**Status:** RESOLVED  
+**Severity:** HIGH
+**Category:** River Jobs
+**Status:** RESOLVED
 
 ## Description
 

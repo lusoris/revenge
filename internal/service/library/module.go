@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
+	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"go.uber.org/fx"
 )
@@ -14,6 +15,7 @@ var Module = fx.Module("library",
 		newRepository,
 		newService,
 		NewLibraryScanCleanupWorker,
+		newPeriodicLibraryScanWorker,
 	),
 )
 
@@ -25,4 +27,9 @@ func newRepository(queries *db.Queries) Repository {
 // newService creates a new library service with activity logger.
 func newService(repo Repository, logger *slog.Logger, activityLogger activity.Logger) *Service {
 	return NewService(repo, logger, activityLogger)
+}
+
+// newPeriodicLibraryScanWorker creates the periodic scan worker using the infra jobs client.
+func newPeriodicLibraryScanWorker(repo Repository, client *infrajobs.Client, logger *slog.Logger) *PeriodicLibraryScanWorker {
+	return NewPeriodicLibraryScanWorker(repo, client, logger)
 }

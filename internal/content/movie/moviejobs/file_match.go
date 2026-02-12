@@ -4,8 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/riverqueue/river"
 	"log/slog"
+
+	"github.com/riverqueue/river"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"

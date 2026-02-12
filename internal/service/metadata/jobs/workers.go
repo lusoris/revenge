@@ -294,11 +294,11 @@ func (w *EnrichContentWorker) Work(ctx context.Context, job *river.Job[EnrichCon
 }
 
 // =============================================================================
-// Image Download Worker (stub — will use image service when available)
+// Image Download Worker
 // =============================================================================
 
 // DownloadImageWorker handles metadata_download_image jobs.
-// Currently a stub — will be implemented when integrated with the image service.
+// It downloads images via the image service and stores them locally.
 type DownloadImageWorker struct {
 	river.WorkerDefaults[DownloadImageArgs]
 	imageService *image.Service

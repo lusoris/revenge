@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"log/slog"
+
 	"github.com/google/uuid"
 	"github.com/riverqueue/river"
-	"log/slog"
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	infrajobs "github.com/lusoris/revenge/internal/infra/jobs"

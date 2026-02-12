@@ -1,7 +1,7 @@
 # BUG-007: Notification system fully built but never called
 
-**Severity:** HIGH  
-**Category:** Flow Integration  
+**Severity:** HIGH
+**Category:** Flow Integration
 **Status:** RESOLVED (scan start/done events wired in movie + tvshow workers)
 
 ## Description

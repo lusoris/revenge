@@ -1,7 +1,7 @@
 # BUG-009: Session CachedService missing overrides for RefreshSession and RevokeAllUserSessionsExcept
 
-**Severity:** MEDIUM  
-**Category:** Cache  
+**Severity:** MEDIUM
+**Category:** Cache
 **Status:** RESOLVED
 
 ## Description

@@ -1,8 +1,8 @@
 # BUG-003: stats_aggregation worker panics when queries is nil
 **Status: RESOLVED**
 
-**Severity:** HIGH  
-**Category:** River Jobs  
+**Severity:** HIGH
+**Category:** River Jobs
 **Status:** RESOLVED
 
 ## Description

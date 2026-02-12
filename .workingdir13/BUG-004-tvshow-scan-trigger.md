@@ -1,8 +1,8 @@
 # BUG-004: TriggerLibraryScan only enqueues movie scan jobs
 **Status: RESOLVED**
 
-**Severity:** HIGH  
-**Category:** Flow Integration  
+**Severity:** HIGH
+**Category:** Flow Integration
 **Status:** RESOLVED
 
 ## Description
