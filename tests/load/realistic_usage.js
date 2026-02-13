@@ -21,7 +21,6 @@ const profileName = __ENV.PROFILE || 'smoke';
 const profile = PROFILES[profileName] || PROFILES.smoke;
 
 export const options = {
-    stages: profile.stages,
     thresholds: {
         http_req_duration: ['p(95)<1000', 'p(99)<3000'],
         http_req_failed: ['rate<0.05'],

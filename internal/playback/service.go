@@ -163,6 +163,29 @@ func (s *Service) GetSession(sessionID uuid.UUID) (*Session, bool) {
 	return s.sessions.Get(sessionID)
 }
 
+// HeartbeatSession keeps a playback session alive and optionally updates the
+// playback position. Returns the updated session or false if the session doesn't exist.
+func (s *Service) HeartbeatSession(sessionID uuid.UUID, positionSeconds *int) (*Session, bool) {
+	s.sessions.mu.Lock()
+	defer s.sessions.mu.Unlock()
+
+	session, ok := s.sessions.cache.Get(sessionID)
+	if !ok {
+		return nil, false
+	}
+
+	now := time.Now()
+	session.LastAccessedAt = now
+	session.ExpiresAt = now.Add(s.sessions.timeout)
+
+	if positionSeconds != nil {
+		session.StartPosition = *positionSeconds
+	}
+
+	s.sessions.cache.Set(sessionID, session)
+	return session, true
+}
+
 // StopSession terminates a playback session and cleans up resources.
 func (s *Service) StopSession(sessionID uuid.UUID) error {
 	sess := s.sessions.Delete(sessionID)

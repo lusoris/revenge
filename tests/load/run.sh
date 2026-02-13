@@ -12,12 +12,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Validate test
 case "$TEST" in
-    all_endpoints|realistic_usage|auth_stress)
+    all_endpoints|realistic_usage|auth_stress|playback_load|api_key_load|write_operations)
         TEST_FILE="${SCRIPT_DIR}/${TEST}.js"
         ;;
     *)
         echo "Unknown test: $TEST"
-        echo "Available: all_endpoints, realistic_usage, auth_stress"
+        echo "Available: all_endpoints, realistic_usage, auth_stress, playback_load, api_key_load, write_operations"
         exit 1
         ;;
 esac

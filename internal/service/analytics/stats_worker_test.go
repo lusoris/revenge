@@ -67,15 +67,15 @@ func TestStatsAggregationWorker_Timeout(t *testing.T) {
 	assert.Equal(t, 2*time.Minute, timeout)
 }
 
-func TestStatsAggregationWorker_Work_NilQueriesPanics(t *testing.T) {
+func TestStatsAggregationWorker_Work_NilQueriesReturnsError(t *testing.T) {
 	logger := logging.NewTestLogger()
 	worker := NewStatsAggregationWorker(nil, logger)
 	job := &river.Job[StatsAggregationArgs]{
 		JobRow: &rivertype.JobRow{ID: 1},
 	}
-	assert.Panics(t, func() {
-		_ = worker.Work(context.Background(), job)
-	})
+	err := worker.Work(context.Background(), job)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "queries is nil")
 }
 
 func TestModule_NotNil(t *testing.T) {

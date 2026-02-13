@@ -47,7 +47,7 @@ type Handler struct {
 	authService     *auth.Service
 	sessionService  *session.Service
 	rbacService     *rbac.Service
-	apikeyService   *apikeys.Service
+	apikeyService   apikeys.Service
 	oidcService     *oidc.Service
 	activityService *activity.Service
 	libraryService  *library.Service

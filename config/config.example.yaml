@@ -381,3 +381,47 @@ legacy:
   privacy:
     require_pin: true         # Require PIN to access content
     audit_all_access: true    # Log every access for audit trail
+
+# ==============================================================================
+# Notifications
+# ==============================================================================
+# Configure notification agents to receive events about content, users, etc.
+# Multiple agents of each type are supported. Agents are only created when
+# enabled: true.
+#
+# notifications:
+#   webhooks:
+#     - enabled: true
+#       name: "my-webhook"
+#       url: "https://example.com/webhook"
+#       method: "POST"               # POST (default), PUT, PATCH
+#       content_type: "application/json"
+#       headers:
+#         X-Custom-Header: "value"
+#       event_types: []               # Empty = all events
+#       event_categories: ["content", "library"]  # Filter by category
+#
+#   discord:
+#     - enabled: true
+#       name: "media-alerts"
+#       webhook_url: "https://discord.com/api/webhooks/..."
+#       username: "Revenge"           # Override bot username
+#       avatar_url: ""                # Override bot avatar
+#       event_categories: ["content"]
+#
+#   gotify:
+#     - enabled: true
+#       name: "gotify-push"
+#       server_url: "https://gotify.example.com"
+#       app_token: "your-app-token"
+#       default_priority: 5           # 0-10
+#       event_categories: ["system"]
+#
+#   ntfy:
+#     - enabled: true
+#       name: "ntfy-push"
+#       server_url: "https://ntfy.sh"
+#       topic: "revenge-notifications"
+#       access_token: ""              # Optional auth token
+#       default_priority: 3           # 1-5
+#       event_types: ["movie.added", "library.scan_done"]

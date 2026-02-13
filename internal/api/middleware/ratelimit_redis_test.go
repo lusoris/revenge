@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/redis/rueidis"
 	"github.com/redis/rueidis/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
-	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 func TestNewRedisRateLimiter(t *testing.T) {
@@ -48,8 +48,13 @@ func TestRedisRateLimiter_AuthConfig(t *testing.T) {
 	assert.Equal(t, float64(1), config.RequestsPerSecond)
 	assert.Equal(t, 5, config.Burst)
 	assert.Equal(t, "ratelimit:auth:", config.KeyPrefix)
-	assert.Contains(t, config.Operations, "LoginUser")
-	assert.Contains(t, config.Operations, "VerifyMFA")
+	assert.Contains(t, config.Operations, "Login")
+	assert.Contains(t, config.Operations, "VerifyTOTP")
+	assert.Contains(t, config.Operations, "ForgotPassword")
+	assert.Contains(t, config.Operations, "ResetPassword")
+	assert.Contains(t, config.Operations, "VerifyEmail")
+	assert.Contains(t, config.Operations, "BeginWebAuthnLogin")
+	assert.Contains(t, config.Operations, "FinishWebAuthnLogin")
 }
 
 func TestRedisRateLimiter_ShouldLimit(t *testing.T) {

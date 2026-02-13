@@ -366,7 +366,7 @@ func TestNewLibraryScanWorker(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewLibraryScanWorker(nil, nil, nil, logger)
+	worker := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 
 	assert.NotNil(t, worker)
 	assert.Nil(t, worker.service)
@@ -433,7 +433,7 @@ func TestLibraryScanWorker_Timeout(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewLibraryScanWorker(nil, nil, nil, logger)
+	worker := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 
 	timeout := worker.Timeout(&river.Job[LibraryScanArgs]{})
 	assert.Equal(t, 30*time.Minute, timeout)
@@ -487,7 +487,7 @@ func TestLibraryScanWorker_Work_EmptyPaths(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewLibraryScanWorker(nil, nil, nil, logger)
+	worker := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 1, Kind: KindLibraryScan},
@@ -506,7 +506,7 @@ func TestLibraryScanWorker_Work_NilPaths(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewLibraryScanWorker(nil, nil, nil, logger)
+	worker := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 2, Kind: KindLibraryScan},
@@ -525,7 +525,7 @@ func TestLibraryScanWorker_Work_NonexistentPaths(t *testing.T) {
 	t.Parallel()
 
 	logger := logging.NewTestLogger()
-	worker := NewLibraryScanWorker(nil, nil, nil, logger)
+	worker := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 
 	job := &river.Job[LibraryScanArgs]{
 		JobRow: &rivertype.JobRow{ID: 3, Kind: KindLibraryScan},
@@ -2549,7 +2549,7 @@ func TestProcessFile_EmptyTitle(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	sr := scanner.ScanResult{
 		FilePath:    "/tmp/test.mkv",
@@ -2571,7 +2571,7 @@ func TestProcessFile_NoSeasonEpisode(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	sr := scanner.ScanResult{
 		FilePath:    "/tmp/test.mkv",
@@ -2590,7 +2590,7 @@ func TestProcessFile_SearchSeriesError(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	sr := scanner.ScanResult{
 		FilePath:    "/tmp/test.mkv",
@@ -2616,7 +2616,7 @@ func TestProcessFile_ExactMatch_ExistingEpisode(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -2664,7 +2664,7 @@ func TestProcessFile_NoMatch_CreateFromTMDb(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -2723,7 +2723,7 @@ func TestProcessFile_TMDbNotFound(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	sr := scanner.ScanResult{
 		FilePath:    "/tmp/test.mkv",
@@ -2751,7 +2751,7 @@ func TestProcessFile_CreateSeriesFails(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	tmdbID := int32(500)
 
@@ -2785,7 +2785,7 @@ func TestProcessFile_CreateSeasonFails(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 
@@ -2817,7 +2817,7 @@ func TestProcessFile_CreateEpisodeFails(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -2853,7 +2853,7 @@ func TestProcessFile_CreateEpisodeFileFails(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -2895,7 +2895,7 @@ func TestProcessFile_WithEpisodeTitle(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	seriesID := uuid.Must(uuid.NewV7())
 	seasonID := uuid.Must(uuid.NewV7())
@@ -2948,7 +2948,7 @@ func TestLibraryScanWorker_Work_ScanError(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	// Use a non-existent path to trigger scan error
 	job := &river.Job[LibraryScanArgs]{
@@ -2969,7 +2969,7 @@ func TestLibraryScanWorker_Work_WithMediaFiles_NoAutoCreate(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	// Create a temp dir with a parseable media file
 	dir := t.TempDir()
@@ -3002,7 +3002,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_AlreadyMatched(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	dir := t.TempDir()
 	filePath := dir + "/Show.S01E01.mkv"
@@ -3038,7 +3038,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFile(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	dir := t.TempDir()
 	filePath := dir + "/Good.Show.S01E01.mkv"
@@ -3091,7 +3091,7 @@ func TestLibraryScanWorker_Work_WithAutoCreate_ProcessFileFails(t *testing.T) {
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
 	mdp := new(mockMetadataProvider)
-	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, mdp, &infrajobs.Client{}, nil, logger)
 
 	dir := t.TempDir()
 	filePath := dir + "/Bad.Show.S01E01.mkv"
@@ -3125,7 +3125,7 @@ func TestLibraryScanWorker_Work_ForceRescan(t *testing.T) {
 
 	logger := logging.NewTestLogger()
 	svc := new(mockService)
-	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, logger)
+	worker := NewLibraryScanWorker(svc, nil, &infrajobs.Client{}, nil, logger)
 
 	dir := t.TempDir()
 	filePath := dir + "/Force.Show.S01E01.mkv"
@@ -3167,7 +3167,7 @@ func TestRegisterWorkers(t *testing.T) {
 	logger := logging.NewTestLogger()
 	workers := river.NewWorkers()
 
-	libraryScan := NewLibraryScanWorker(nil, nil, nil, logger)
+	libraryScan := NewLibraryScanWorker(nil, nil, nil, nil, logger)
 	metadataRefresh := NewMetadataRefreshWorker(nil, nil, logger)
 	fileMatch := NewFileMatchWorker(nil, nil, logger)
 	searchIndex := NewSearchIndexWorker(nil, nil, nil, nil, logger)

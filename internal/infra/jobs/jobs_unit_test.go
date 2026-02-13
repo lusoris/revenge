@@ -552,7 +552,7 @@ func TestDefaultConfig_Values(t *testing.T) {
 	assert.Equal(t, 100*time.Millisecond, cfg.FetchCooldown)
 	assert.Equal(t, 500*time.Millisecond, cfg.FetchPollInterval)
 	assert.Equal(t, 1*time.Hour, cfg.RescueStuckJobsAfter)
-	assert.Equal(t, 25, cfg.MaxAttempts)
+	assert.Equal(t, 5, cfg.MaxAttempts)
 }
 
 // --- Config struct ---

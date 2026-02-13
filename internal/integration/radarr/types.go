@@ -2,11 +2,33 @@
 // Radarr is a PRIMARY metadata provider for movies in the Revenge media system.
 package radarr
 
-import "time"
+import (
+	"time"
+
+	"github.com/lusoris/revenge/internal/integration/arrbase"
+)
+
+// Type aliases for shared arr types.
+// These allow existing code to reference radarr.MediaInfo etc. transparently.
+type (
+	MediaInfo       = arrbase.MediaInfo
+	Quality         = arrbase.Quality
+	QualityInfo     = arrbase.QualityInfo
+	QualityRevision = arrbase.QualityRevision
+	Language        = arrbase.Language
+	Image           = arrbase.Image
+	QualityItem     = arrbase.QualityItem
+	FormatItem      = arrbase.FormatItem
+	QualityProfile  = arrbase.QualityProfile
+	RootFolder      = arrbase.RootFolder
+	UnmappedFolder  = arrbase.UnmappedFolder
+	SystemStatus    = arrbase.SystemStatus
+	Tag             = arrbase.Tag
+	WebhookRelease  = arrbase.WebhookRelease
+)
 
 // Movie represents a movie in Radarr.
-type Movie struct {
-	ID                    int              `json:"id"`
+type Movie struct {	ID                    int              `json:"id"`
 	Title                 string           `json:"title"`
 	OriginalTitle         string           `json:"originalTitle,omitempty"`
 	OriginalLanguage      Language         `json:"originalLanguage,omitempty"`
@@ -66,54 +88,7 @@ type MovieFile struct {
 	Edition             string         `json:"edition,omitempty"`
 }
 
-// MediaInfo contains technical information about the media file.
-type MediaInfo struct {
-	AudioBitrate          int      `json:"audioBitrate,omitempty"`
-	AudioChannels         float64  `json:"audioChannels,omitempty"`
-	AudioCodec            string   `json:"audioCodec,omitempty"`
-	AudioLanguages        string   `json:"audioLanguages,omitempty"`
-	AudioStreamCount      int      `json:"audioStreamCount,omitempty"`
-	VideoBitDepth         int      `json:"videoBitDepth,omitempty"`
-	VideoBitrate          int      `json:"videoBitrate,omitempty"`
-	VideoCodec            string   `json:"videoCodec,omitempty"`
-	VideoFps              float64  `json:"videoFps,omitempty"`
-	VideoDynamicRange     string   `json:"videoDynamicRange,omitempty"`
-	VideoDynamicRangeType string   `json:"videoDynamicRangeType,omitempty"`
-	Resolution            string   `json:"resolution,omitempty"`
-	RunTime               string   `json:"runTime,omitempty"`
-	ScanType              string   `json:"scanType,omitempty"`
-	Subtitles             string   `json:"subtitles,omitempty"`
-}
-
-// Quality represents quality information.
-type Quality struct {
-	Quality  QualityInfo  `json:"quality,omitempty"`
-	Revision QualityRevision `json:"revision,omitempty"`
-}
-
-// QualityInfo contains quality details.
-type QualityInfo struct {
-	ID         int    `json:"id"`
-	Name       string `json:"name,omitempty"`
-	Source     string `json:"source,omitempty"`
-	Resolution int    `json:"resolution,omitempty"`
-	Modifier   string `json:"modifier,omitempty"`
-}
-
-// QualityRevision contains quality revision info.
-type QualityRevision struct {
-	Version  int  `json:"version"`
-	Real     int  `json:"real"`
-	IsRepack bool `json:"isRepack"`
-}
-
-// Language represents a language.
-type Language struct {
-	ID   int    `json:"id"`
-	Name string `json:"name,omitempty"`
-}
-
-// AlternateTitle represents an alternate title.
+// AlternateTitle represents an alternate title (Radarr-specific fields).
 type AlternateTitle struct {
 	SourceType      string `json:"sourceType,omitempty"`
 	MovieMetadataID int    `json:"movieMetadataId,omitempty"`
@@ -121,14 +96,7 @@ type AlternateTitle struct {
 	CleanTitle      string `json:"cleanTitle,omitempty"`
 }
 
-// Image represents a movie image.
-type Image struct {
-	CoverType string `json:"coverType,omitempty"`
-	URL       string `json:"url,omitempty"`
-	RemoteURL string `json:"remoteUrl,omitempty"`
-}
-
-// Ratings contains rating information.
+// Ratings contains rating information (Radarr-specific).
 type Ratings struct {
 	IMDb           *Rating `json:"imdb,omitempty"`
 	TMDb           *Rating `json:"tmdb,omitempty"`
@@ -157,82 +125,7 @@ type Statistics struct {
 	ReleaseGroups  []string `json:"releaseGroups,omitempty"`
 }
 
-// QualityProfile represents a quality profile.
-type QualityProfile struct {
-	ID                    int              `json:"id"`
-	Name                  string           `json:"name"`
-	UpgradeAllowed        bool             `json:"upgradeAllowed"`
-	Cutoff                int              `json:"cutoff"`
-	Items                 []QualityItem    `json:"items,omitempty"`
-	MinFormatScore        int              `json:"minFormatScore"`
-	CutoffFormatScore     int              `json:"cutoffFormatScore"`
-	FormatItems           []FormatItem     `json:"formatItems,omitempty"`
-	Language              *Language        `json:"language,omitempty"`
-}
 
-// QualityItem represents a quality item in a profile.
-type QualityItem struct {
-	ID      int          `json:"id,omitempty"`
-	Name    string       `json:"name,omitempty"`
-	Quality *QualityInfo `json:"quality,omitempty"`
-	Items   []QualityItem `json:"items,omitempty"`
-	Allowed bool         `json:"allowed"`
-}
-
-// FormatItem represents a custom format item.
-type FormatItem struct {
-	Format int `json:"format"`
-	Name   string `json:"name,omitempty"`
-	Score  int    `json:"score"`
-}
-
-// RootFolder represents a root folder.
-type RootFolder struct {
-	ID              int    `json:"id"`
-	Path            string `json:"path"`
-	Accessible      bool   `json:"accessible"`
-	FreeSpace       int64  `json:"freeSpace,omitempty"`
-	UnmappedFolders []UnmappedFolder `json:"unmappedFolders,omitempty"`
-}
-
-// UnmappedFolder represents an unmapped folder.
-type UnmappedFolder struct {
-	Name         string `json:"name,omitempty"`
-	Path         string `json:"path,omitempty"`
-	RelativePath string `json:"relativePath,omitempty"`
-}
-
-// SystemStatus represents Radarr system status.
-type SystemStatus struct {
-	AppName                string `json:"appName,omitempty"`
-	InstanceName           string `json:"instanceName,omitempty"`
-	Version                string `json:"version,omitempty"`
-	BuildTime              string `json:"buildTime,omitempty"`
-	IsDebug                bool   `json:"isDebug"`
-	IsProduction           bool   `json:"isProduction"`
-	IsAdmin                bool   `json:"isAdmin"`
-	IsUserInteractive      bool   `json:"isUserInteractive"`
-	StartupPath            string `json:"startupPath,omitempty"`
-	AppData                string `json:"appData,omitempty"`
-	OsName                 string `json:"osName,omitempty"`
-	OsVersion              string `json:"osVersion,omitempty"`
-	IsDocker               bool   `json:"isDocker"`
-	IsLinux                bool   `json:"isLinux"`
-	IsOsx                  bool   `json:"isOsx"`
-	IsWindows              bool   `json:"isWindows"`
-	IsNetCore              bool   `json:"isNetCore"`
-	RuntimeVersion         string `json:"runtimeVersion,omitempty"`
-	RuntimeName            string `json:"runtimeName,omitempty"`
-	StartTime              string `json:"startTime,omitempty"`
-	PackageVersion         string `json:"packageVersion,omitempty"`
-	PackageAuthor          string `json:"packageAuthor,omitempty"`
-	PackageUpdateMechanism string `json:"packageUpdateMechanism,omitempty"`
-	Branch                 string `json:"branch,omitempty"`
-	Authentication         string `json:"authentication,omitempty"`
-	SqliteVersion          string `json:"sqliteVersion,omitempty"`
-	MigrationVersion       int    `json:"migrationVersion,omitempty"`
-	URLBase                string `json:"urlBase,omitempty"`
-}
 
 // Command represents a command to execute in Radarr.
 type Command struct {
@@ -316,12 +209,6 @@ type HistoryResponse struct {
 	Records       []HistoryRecord `json:"records,omitempty"`
 }
 
-// Tag represents a tag.
-type Tag struct {
-	ID    int    `json:"id"`
-	Label string `json:"label"`
-}
-
 // AddMovieRequest represents a request to add a movie.
 type AddMovieRequest struct {
 	Title               string   `json:"title"`
@@ -400,18 +287,6 @@ type WebhookMovieFile struct {
 	Size           int64      `json:"size,omitempty"`
 	DateAdded      *time.Time `json:"dateAdded,omitempty"`
 	MediaInfo      *MediaInfo `json:"mediaInfo,omitempty"`
-}
-
-// WebhookRelease represents release info in a webhook.
-type WebhookRelease struct {
-	Quality          string   `json:"quality,omitempty"`
-	QualityVersion   int      `json:"qualityVersion,omitempty"`
-	ReleaseGroup     string   `json:"releaseGroup,omitempty"`
-	ReleaseTitle     string   `json:"releaseTitle,omitempty"`
-	Indexer          string   `json:"indexer,omitempty"`
-	Size             int64    `json:"size,omitempty"`
-	CustomFormatScore int     `json:"customFormatScore,omitempty"`
-	CustomFormats    []string `json:"customFormats,omitempty"`
 }
 
 // Webhook event types.

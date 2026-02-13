@@ -34,20 +34,23 @@ var (
 	ErrInvalidScope     = errors.New("invalid scope")
 )
 
-// Service implements API keys business logic
-type Service struct {
+// Ensure serviceImpl implements Service interface.
+var _ Service = (*serviceImpl)(nil)
+
+// serviceImpl implements the Service interface with API keys business logic.
+type serviceImpl struct {
 	repo           Repository
 	logger         *slog.Logger
 	maxKeysPerUser int
 	defaultExpiry  time.Duration // 0 = never expire
 }
 
-// NewService creates a new API keys service
-func NewService(repo Repository, logger *slog.Logger, maxKeysPerUser int, defaultExpiry time.Duration) *Service {
+// NewService creates a new API keys service.
+func NewService(repo Repository, logger *slog.Logger, maxKeysPerUser int, defaultExpiry time.Duration) *serviceImpl {
 	if maxKeysPerUser <= 0 {
 		maxKeysPerUser = DefaultMaxKeysPerUser
 	}
-	return &Service{
+	return &serviceImpl{
 		repo:           repo,
 		logger:         logger,
 		maxKeysPerUser: maxKeysPerUser,
@@ -55,8 +58,8 @@ func NewService(repo Repository, logger *slog.Logger, maxKeysPerUser int, defaul
 	}
 }
 
-// CreateKey generates a new API key for a user
-func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*CreateKeyResponse, error) {
+// CreateKey generates a new API key for a user.
+func (s *serviceImpl) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*CreateKeyResponse, error) {
 	// Check max keys per user
 	count, err := s.repo.CountUserAPIKeys(ctx, userID)
 	if err != nil {
@@ -126,8 +129,8 @@ func (s *Service) CreateKey(ctx context.Context, userID uuid.UUID, req CreateKey
 	}, nil
 }
 
-// GetKey retrieves an API key by ID (without raw key)
-func (s *Service) GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error) {
+// GetKey retrieves an API key by ID (without raw key).
+func (s *serviceImpl) GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error) {
 	dbKey, err := s.repo.GetAPIKey(ctx, keyID)
 	if err != nil {
 		return nil, ErrKeyNotFound
@@ -137,8 +140,8 @@ func (s *Service) GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error) 
 	return &key, nil
 }
 
-// ListUserKeys lists active API keys for a user
-func (s *Service) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error) {
+// ListUserKeys lists active API keys for a user.
+func (s *serviceImpl) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error) {
 	dbKeys, err := s.repo.ListActiveUserAPIKeys(ctx, userID)
 	if err != nil {
 		s.logger.Error("failed to list user API keys",
@@ -156,8 +159,8 @@ func (s *Service) ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey,
 	return keys, nil
 }
 
-// ValidateKey validates a raw API key and returns the associated key data
-func (s *Service) ValidateKey(ctx context.Context, rawKey string) (*APIKey, error) {
+// ValidateKey validates a raw API key and returns the associated key data.
+func (s *serviceImpl) ValidateKey(ctx context.Context, rawKey string) (*APIKey, error) {
 	// Check key format
 	if !s.isValidKeyFormat(rawKey) {
 		return nil, ErrInvalidKeyFormat
@@ -199,13 +202,13 @@ func (s *Service) ValidateKey(ctx context.Context, rawKey string) (*APIKey, erro
 	return &key, nil
 }
 
-// RevokeKey revokes an API key
-func (s *Service) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
+// RevokeKey revokes an API key.
+func (s *serviceImpl) RevokeKey(ctx context.Context, keyID uuid.UUID) error {
 	return s.repo.RevokeAPIKey(ctx, keyID)
 }
 
-// CheckScope checks if an API key has a required scope
-func (s *Service) CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error) {
+// CheckScope checks if an API key has a required scope.
+func (s *serviceImpl) CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error) {
 	key, err := s.GetKey(ctx, keyID)
 	if err != nil {
 		return false, err
@@ -220,8 +223,8 @@ func (s *Service) CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope
 	return false, nil
 }
 
-// UpdateScopes updates the scopes of an API key
-func (s *Service) UpdateScopes(ctx context.Context, keyID uuid.UUID, scopes []string) error {
+// UpdateScopes updates the scopes of an API key.
+func (s *serviceImpl) UpdateScopes(ctx context.Context, keyID uuid.UUID, scopes []string) error {
 	if err := s.validateScopes(scopes); err != nil {
 		return err
 	}
@@ -229,8 +232,8 @@ func (s *Service) UpdateScopes(ctx context.Context, keyID uuid.UUID, scopes []st
 	return s.repo.UpdateAPIKeyScopes(ctx, keyID, scopes)
 }
 
-// CleanupExpiredKeys deletes expired and inactive keys
-func (s *Service) CleanupExpiredKeys(ctx context.Context) error {
+// CleanupExpiredKeys deletes expired and inactive keys.
+func (s *serviceImpl) CleanupExpiredKeys(ctx context.Context) error {
 	return s.repo.DeleteExpiredAPIKeys(ctx)
 }
 
@@ -239,7 +242,7 @@ func (s *Service) CleanupExpiredKeys(ctx context.Context) error {
 // ============================================================================
 
 // generateKey generates a random API key with format: rv_<64 hex chars>
-func (s *Service) generateKey() (rawKey, keyHash, keyPrefix string, err error) {
+func (s *serviceImpl) generateKey() (rawKey, keyHash, keyPrefix string, err error) {
 	// Generate random bytes
 	randomBytes := make([]byte, KeyLength)
 	if _, err := rand.Read(randomBytes); err != nil {
@@ -262,13 +265,13 @@ func (s *Service) generateKey() (rawKey, keyHash, keyPrefix string, err error) {
 }
 
 // hashKey creates a SHA-256 hash of the key
-func (s *Service) hashKey(rawKey string) string {
+func (s *serviceImpl) hashKey(rawKey string) string {
 	hash := sha256.Sum256([]byte(rawKey))
 	return hex.EncodeToString(hash[:])
 }
 
 // isValidKeyFormat checks if a key has the correct format
-func (s *Service) isValidKeyFormat(key string) bool {
+func (s *serviceImpl) isValidKeyFormat(key string) bool {
 	// Must have prefix
 	if len(key) < len(KeyPrefix) {
 		return false
@@ -285,7 +288,7 @@ func (s *Service) isValidKeyFormat(key string) bool {
 }
 
 // validateScopes validates API key scopes
-func (s *Service) validateScopes(scopes []string) error {
+func (s *serviceImpl) validateScopes(scopes []string) error {
 	validScopes := map[string]bool{
 		"read":  true,
 		"write": true,
@@ -302,7 +305,7 @@ func (s *Service) validateScopes(scopes []string) error {
 }
 
 // dbKeyToAPIKey converts a database key to an API key
-func (s *Service) dbKeyToAPIKey(dbKey db.SharedApiKey) APIKey {
+func (s *serviceImpl) dbKeyToAPIKey(dbKey db.SharedApiKey) APIKey {
 	var expiresAt *time.Time
 	if dbKey.ExpiresAt.Valid {
 		expiresAt = &dbKey.ExpiresAt.Time

@@ -21,7 +21,7 @@ func TestDefaultConfig(t *testing.T) {
 	assert.Contains(t, cfg.Queues, river.QueueDefault)
 	assert.Equal(t, 100, cfg.Queues[river.QueueDefault].MaxWorkers)
 	assert.Equal(t, 100*time.Millisecond, cfg.FetchCooldown)
-	assert.Equal(t, 25, cfg.MaxAttempts)
+	assert.Equal(t, 5, cfg.MaxAttempts)
 }
 
 // TestNewClient_NilPool tests client creation with nil pool.

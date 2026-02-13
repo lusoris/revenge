@@ -58,7 +58,7 @@ func BenchmarkRateLimiter_ShouldLimit_SpecificOps(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		rl.shouldLimit("LoginUser")
+		rl.shouldLimit("Login")
 	}
 }
 

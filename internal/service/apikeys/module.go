@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/lusoris/revenge/internal/config"
-	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"go.uber.org/fx"
 )
 
@@ -14,10 +14,17 @@ import (
 var Module = fx.Module("apikeys",
 	fx.Provide(
 		NewRepositoryPg,
-		NewService,
+		provideService,
 		provideConfig,
 	),
 )
+
+// provideService creates the API keys service wrapped with caching.
+// Cache may be nil if caching is disabled — CachedService handles nil gracefully.
+func provideService(repo Repository, c *cache.Cache, logger *slog.Logger, maxKeysPerUser int, defaultExpiry time.Duration) Service {
+	base := NewService(repo, logger, maxKeysPerUser, defaultExpiry)
+	return NewCachedService(base, repo, c, logger)
+}
 
 // provideConfig extracts API keys configuration
 func provideConfig(cfg *config.Config) (int, time.Duration) {
@@ -26,21 +33,4 @@ func provideConfig(cfg *config.Config) (int, time.Duration) {
 	var defaultExpiry time.Duration = 0 // Never expire
 
 	return maxKeysPerUser, defaultExpiry
-}
-
-// Params for the service constructor via fx
-type Params struct {
-	fx.In
-
-	Queries        *db.Queries
-	Logger         *slog.Logger
-	MaxKeysPerUser int           `name:"apikeys_max_per_user"`
-	DefaultExpiry  time.Duration `name:"apikeys_default_expiry"`
-}
-
-// Result for providing the service via fx
-type Result struct {
-	fx.Out
-
-	Service *Service
 }

@@ -53,3 +53,24 @@ type CreateKeyResponse struct {
 	Key    APIKey
 	RawKey string // Only returned on creation!
 }
+
+// Service defines the API keys service interface.
+// All consumers should depend on this interface, not the concrete implementation.
+type Service interface {
+	// CreateKey generates a new API key for a user.
+	CreateKey(ctx context.Context, userID uuid.UUID, req CreateKeyRequest) (*CreateKeyResponse, error)
+	// GetKey retrieves an API key by ID (without raw key).
+	GetKey(ctx context.Context, keyID uuid.UUID) (*APIKey, error)
+	// ListUserKeys lists active API keys for a user.
+	ListUserKeys(ctx context.Context, userID uuid.UUID) ([]APIKey, error)
+	// ValidateKey validates a raw API key and returns the associated key data.
+	ValidateKey(ctx context.Context, rawKey string) (*APIKey, error)
+	// RevokeKey revokes an API key.
+	RevokeKey(ctx context.Context, keyID uuid.UUID) error
+	// CheckScope checks if an API key has a required scope.
+	CheckScope(ctx context.Context, keyID uuid.UUID, requiredScope string) (bool, error)
+	// UpdateScopes updates the scopes of an API key.
+	UpdateScopes(ctx context.Context, keyID uuid.UUID, scopes []string) error
+	// CleanupExpiredKeys deletes expired and inactive keys.
+	CleanupExpiredKeys(ctx context.Context) error
+}

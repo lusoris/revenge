@@ -5,7 +5,7 @@ import { check, group, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter, Rate, Trend } from 'k6/metrics';
 import { API_BASE, PROFILES, TEST_USER } from './config.js';
-import { randomString, sleepWithJitter } from './helpers.js';
+import { randomString, sleepWithJitter, vuIP } from './helpers.js';
 
 // Metrics
 const loginAttempts = new Counter('auth_login_attempts');
@@ -32,7 +32,7 @@ export function setup() {
     const res = http.post(
         `${API_BASE}/auth/login`,
         JSON.stringify(TEST_USER),
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': '10.255.255.254' } }
     );
 
     if (res.status !== 200) {
@@ -72,10 +72,12 @@ function testLogin() {
         const start = Date.now();
 
         // Successful login
+        const xffHeaders = { 'Content-Type': 'application/json', 'X-Forwarded-For': vuIP() };
+
         let res = http.post(
             `${API_BASE}/auth/login`,
             JSON.stringify(TEST_USER),
-            { headers: { 'Content-Type': 'application/json' }, tags: { name: 'login' } }
+            { headers: xffHeaders, tags: { name: 'login' } }
         );
 
         loginAttempts.add(1);
@@ -104,7 +106,7 @@ function testLogin() {
             const badRes = http.post(
                 `${API_BASE}/auth/login`,
                 JSON.stringify({ username: 'nonexistent', password: 'wrong' }),
-                { headers: { 'Content-Type': 'application/json' }, tags: { name: 'login_invalid' } }
+                { headers: xffHeaders, tags: { name: 'login_invalid' } }
             );
 
             check(badRes, {
@@ -116,11 +118,13 @@ function testLogin() {
 
 function testRefresh(data) {
     group('Token Refresh', () => {
+        const xffHeaders = { 'Content-Type': 'application/json', 'X-Forwarded-For': vuIP() };
+
         // First login to get fresh tokens
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
             JSON.stringify(TEST_USER),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: xffHeaders }
         );
 
         if (loginRes.status !== 200) {
@@ -136,7 +140,7 @@ function testRefresh(data) {
         const res = http.post(
             `${API_BASE}/auth/refresh`,
             JSON.stringify({ refresh_token: tokens.refresh_token }),
-            { headers: { 'Content-Type': 'application/json' }, tags: { name: 'refresh' } }
+            { headers: xffHeaders, tags: { name: 'refresh' } }
         );
 
         refreshAttempts.add(1);
@@ -158,7 +162,7 @@ function testRefresh(data) {
             const badRes = http.post(
                 `${API_BASE}/auth/refresh`,
                 JSON.stringify({ refresh_token: 'invalid-token-' + randomString(16) }),
-                { headers: { 'Content-Type': 'application/json' }, tags: { name: 'refresh_invalid' } }
+                { headers: xffHeaders, tags: { name: 'refresh_invalid' } }
             );
 
             check(badRes, {
@@ -170,11 +174,12 @@ function testRefresh(data) {
 
 function testSessionOps() {
     group('Session Operations', () => {
+        const ip = vuIP();
         // Login first
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
             JSON.stringify(TEST_USER),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': ip } }
         );
 
         if (loginRes.status !== 200) return;
@@ -183,6 +188,7 @@ function testSessionOps() {
         const headers = {
             'Authorization': `Bearer ${tokens.access_token}`,
             'Content-Type': 'application/json',
+            'X-Forwarded-For': ip,
         };
 
         sleep(sleepWithJitter(0.1));
@@ -205,11 +211,12 @@ function testSessionOps() {
 
 function testMFAStatus() {
     group('MFA Status Check', () => {
+        const ip = vuIP();
         // Login first
         const loginRes = http.post(
             `${API_BASE}/auth/login`,
             JSON.stringify(TEST_USER),
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': ip } }
         );
 
         if (loginRes.status !== 200) return;
@@ -218,6 +225,7 @@ function testMFAStatus() {
         const headers = {
             'Authorization': `Bearer ${tokens.access_token}`,
             'Content-Type': 'application/json',
+            'X-Forwarded-For': ip,
         };
 
         // Check MFA status

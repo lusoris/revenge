@@ -57,11 +57,13 @@ func AuthRedisRateLimiterConfig() RedisRateLimiterConfig {
 		Burst:             5, // Allow burst of 5
 		WindowSize:        time.Second,
 		Operations: []string{
-			"LoginUser",
-			"VerifyMFA",
-			"RequestPasswordReset",
+			"Login",
+			"VerifyTOTP",
+			"ForgotPassword",
 			"ResetPassword",
 			"VerifyEmail",
+			"BeginWebAuthnLogin",
+			"FinishWebAuthnLogin",
 		},
 		KeyPrefix: "ratelimit:auth:",
 	}

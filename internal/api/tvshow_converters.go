@@ -16,68 +16,28 @@ func seriesToOgen(s *tvshow.Series) *ogen.TVSeries {
 		UpdatedAt:    ogen.NewOptDateTime(s.UpdatedAt),
 	}
 
-	if s.TMDbID != nil {
-		o.TmdbID.SetTo(int(*s.TMDbID))
-	}
-	if s.TVDbID != nil {
-		o.TvdbID.SetTo(int(*s.TVDbID))
-	}
-	if s.IMDbID != nil {
-		o.ImdbID.SetTo(*s.IMDbID)
-	}
-	if s.SonarrID != nil {
-		o.SonarrID.SetTo(int(*s.SonarrID))
-	}
-	if s.OriginalTitle != nil {
-		o.OriginalTitle.SetTo(*s.OriginalTitle)
-	}
+	setOptConv(&o.TmdbID, s.TMDbID, int32ToInt)
+	setOptConv(&o.TvdbID, s.TVDbID, int32ToInt)
+	setOpt(&o.ImdbID, s.IMDbID)
+	setOptConv(&o.SonarrID, s.SonarrID, int32ToInt)
+	setOpt(&o.OriginalTitle, s.OriginalTitle)
 	if s.OriginalLanguage != "" {
 		o.OriginalLanguage.SetTo(s.OriginalLanguage)
 	}
-	if s.Tagline != nil {
-		o.Tagline.SetTo(*s.Tagline)
-	}
-	if s.Overview != nil {
-		o.Overview.SetTo(*s.Overview)
-	}
-	if s.Status != nil {
-		o.Status.SetTo(*s.Status)
-	}
-	if s.Type != nil {
-		o.Type.SetTo(*s.Type)
-	}
-	if s.FirstAirDate != nil {
-		o.FirstAirDate.SetTo(*s.FirstAirDate)
-	}
-	if s.LastAirDate != nil {
-		o.LastAirDate.SetTo(*s.LastAirDate)
-	}
-	if s.VoteAverage != nil {
-		f, _ := s.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
-	if s.VoteCount != nil {
-		o.VoteCount.SetTo(int(*s.VoteCount))
-	}
-	if s.Popularity != nil {
-		f, _ := s.Popularity.Float64()
-		o.Popularity.SetTo(float32(f))
-	}
-	if s.PosterPath != nil {
-		o.PosterPath.SetTo(*s.PosterPath)
-	}
-	if s.BackdropPath != nil {
-		o.BackdropPath.SetTo(*s.BackdropPath)
-	}
-	if s.TrailerURL != nil {
-		o.TrailerURL.SetTo(*s.TrailerURL)
-	}
-	if s.Homepage != nil {
-		o.Homepage.SetTo(*s.Homepage)
-	}
-	if s.MetadataUpdatedAt != nil {
-		o.MetadataUpdatedAt.SetTo(*s.MetadataUpdatedAt)
-	}
+	setOpt(&o.Tagline, s.Tagline)
+	setOpt(&o.Overview, s.Overview)
+	setOpt(&o.Status, s.Status)
+	setOpt(&o.Type, s.Type)
+	setOpt(&o.FirstAirDate, s.FirstAirDate)
+	setOpt(&o.LastAirDate, s.LastAirDate)
+	setOptDecimalFloat32(&o.VoteAverage, s.VoteAverage)
+	setOptConv(&o.VoteCount, s.VoteCount, int32ToInt)
+	setOptDecimalFloat32(&o.Popularity, s.Popularity)
+	setOpt(&o.PosterPath, s.PosterPath)
+	setOpt(&o.BackdropPath, s.BackdropPath)
+	setOpt(&o.TrailerURL, s.TrailerURL)
+	setOpt(&o.Homepage, s.Homepage)
+	setOpt(&o.MetadataUpdatedAt, s.MetadataUpdatedAt)
 
 	o.ExternalRatings = externalRatingsToOgen(s.ExternalRatings)
 
@@ -96,22 +56,11 @@ func seasonToOgen(s *tvshow.Season) *ogen.TVSeason {
 		UpdatedAt:    ogen.NewOptDateTime(s.UpdatedAt),
 	}
 
-	if s.TMDbID != nil {
-		o.TmdbID.SetTo(int(*s.TMDbID))
-	}
-	if s.Overview != nil {
-		o.Overview.SetTo(*s.Overview)
-	}
-	if s.PosterPath != nil {
-		o.PosterPath.SetTo(*s.PosterPath)
-	}
-	if s.AirDate != nil {
-		o.AirDate.SetTo(*s.AirDate)
-	}
-	if s.VoteAverage != nil {
-		f, _ := s.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
+	setOptConv(&o.TmdbID, s.TMDbID, int32ToInt)
+	setOpt(&o.Overview, s.Overview)
+	setOpt(&o.PosterPath, s.PosterPath)
+	setOpt(&o.AirDate, s.AirDate)
+	setOptDecimalFloat32(&o.VoteAverage, s.VoteAverage)
 
 	return o
 }
@@ -129,37 +78,16 @@ func episodeToOgen(e *tvshow.Episode) *ogen.TVEpisode {
 		UpdatedAt:     ogen.NewOptDateTime(e.UpdatedAt),
 	}
 
-	if e.TMDbID != nil {
-		o.TmdbID.SetTo(int(*e.TMDbID))
-	}
-	if e.TVDbID != nil {
-		o.TvdbID.SetTo(int(*e.TVDbID))
-	}
-	if e.IMDbID != nil {
-		o.ImdbID.SetTo(*e.IMDbID)
-	}
-	if e.Overview != nil {
-		o.Overview.SetTo(*e.Overview)
-	}
-	if e.AirDate != nil {
-		o.AirDate.SetTo(*e.AirDate)
-	}
-	if e.Runtime != nil {
-		o.Runtime.SetTo(int(*e.Runtime))
-	}
-	if e.VoteAverage != nil {
-		f, _ := e.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
-	if e.VoteCount != nil {
-		o.VoteCount.SetTo(int(*e.VoteCount))
-	}
-	if e.StillPath != nil {
-		o.StillPath.SetTo(*e.StillPath)
-	}
-	if e.ProductionCode != nil {
-		o.ProductionCode.SetTo(*e.ProductionCode)
-	}
+	setOptConv(&o.TmdbID, e.TMDbID, int32ToInt)
+	setOptConv(&o.TvdbID, e.TVDbID, int32ToInt)
+	setOpt(&o.ImdbID, e.IMDbID)
+	setOpt(&o.Overview, e.Overview)
+	setOpt(&o.AirDate, e.AirDate)
+	setOptConv(&o.Runtime, e.Runtime, int32ToInt)
+	setOptDecimalFloat32(&o.VoteAverage, e.VoteAverage)
+	setOptConv(&o.VoteCount, e.VoteCount, int32ToInt)
+	setOpt(&o.StillPath, e.StillPath)
+	setOpt(&o.ProductionCode, e.ProductionCode)
 
 	return o
 }
@@ -176,24 +104,12 @@ func episodeFileToOgen(f *tvshow.EpisodeFile) *ogen.TVEpisodeFile {
 		UpdatedAt: ogen.NewOptDateTime(f.UpdatedAt),
 	}
 
-	if f.Container != nil {
-		o.Container.SetTo(*f.Container)
-	}
-	if f.Resolution != nil {
-		o.Resolution.SetTo(*f.Resolution)
-	}
-	if f.QualityProfile != nil {
-		o.QualityProfile.SetTo(*f.QualityProfile)
-	}
-	if f.VideoCodec != nil {
-		o.VideoCodec.SetTo(*f.VideoCodec)
-	}
-	if f.AudioCodec != nil {
-		o.AudioCodec.SetTo(*f.AudioCodec)
-	}
-	if f.BitrateKbps != nil {
-		o.BitrateKbps.SetTo(int(*f.BitrateKbps))
-	}
+	setOpt(&o.Container, f.Container)
+	setOpt(&o.Resolution, f.Resolution)
+	setOpt(&o.QualityProfile, f.QualityProfile)
+	setOpt(&o.VideoCodec, f.VideoCodec)
+	setOpt(&o.AudioCodec, f.AudioCodec)
+	setOptConv(&o.BitrateKbps, f.BitrateKbps, int32ToInt)
 	if f.DurationSeconds != nil {
 		d, _ := f.DurationSeconds.Float64()
 		o.DurationSeconds.SetTo(int(d))
@@ -204,9 +120,7 @@ func episodeFileToOgen(f *tvshow.EpisodeFile) *ogen.TVEpisodeFile {
 	if len(f.SubtitleLanguages) > 0 {
 		o.SubtitleLanguages = f.SubtitleLanguages
 	}
-	if f.SonarrFileID != nil {
-		o.SonarrFileID.SetTo(int(*f.SonarrFileID))
-	}
+	setOptConv(&o.SonarrFileID, f.SonarrFileID, int32ToInt)
 
 	return o
 }
@@ -223,21 +137,11 @@ func seriesCreditToOgen(c *tvshow.SeriesCredit) *ogen.TVSeriesCredit {
 		UpdatedAt:    ogen.NewOptDateTime(c.UpdatedAt),
 	}
 
-	if c.Character != nil {
-		o.Character.SetTo(*c.Character)
-	}
-	if c.Job != nil {
-		o.Job.SetTo(*c.Job)
-	}
-	if c.Department != nil {
-		o.Department.SetTo(*c.Department)
-	}
-	if c.CastOrder != nil {
-		o.CastOrder.SetTo(int(*c.CastOrder))
-	}
-	if c.ProfilePath != nil {
-		o.ProfilePath.SetTo(*c.ProfilePath)
-	}
+	setOpt(&o.Character, c.Character)
+	setOpt(&o.Job, c.Job)
+	setOpt(&o.Department, c.Department)
+	setOptConv(&o.CastOrder, c.CastOrder, int32ToInt)
+	setOpt(&o.ProfilePath, c.ProfilePath)
 
 	return o
 }
@@ -261,15 +165,9 @@ func networkToOgen(n *tvshow.Network) *ogen.TVNetwork {
 		CreatedAt: ogen.NewOptDateTime(n.CreatedAt),
 	}
 
-	if n.TMDbID != nil {
-		o.TmdbID.SetTo(int(*n.TMDbID))
-	}
-	if n.LogoPath != nil {
-		o.LogoPath.SetTo(*n.LogoPath)
-	}
-	if n.OriginCountry != nil {
-		o.OriginCountry.SetTo(*n.OriginCountry)
-	}
+	setOptConv(&o.TmdbID, n.TMDbID, int32ToInt)
+	setOpt(&o.LogoPath, n.LogoPath)
+	setOpt(&o.OriginCountry, n.OriginCountry)
 
 	return o
 }
@@ -304,9 +202,7 @@ func tvContinueWatchingItemToOgen(item *tvshow.ContinueWatchingItem) *ogen.TVCon
 	if item.Series != nil {
 		o.SeriesID.SetTo(item.Series.ID)
 		o.SeriesTitle.SetTo(item.Series.Title)
-		if item.Series.PosterPath != nil {
-			o.SeriesPosterPath.SetTo(*item.Series.PosterPath)
-		}
+		setOpt(&o.SeriesPosterPath, item.Series.PosterPath)
 	}
 
 	// Calculate progress percent
@@ -331,27 +227,13 @@ func episodeWithSeriesInfoToOgen(e *tvshow.EpisodeWithSeriesInfo) *ogen.EpisodeW
 		CreatedAt:     ogen.NewOptDateTime(e.CreatedAt),
 	}
 
-	if e.SeriesPosterPath != nil {
-		o.SeriesPosterPath.SetTo(*e.SeriesPosterPath)
-	}
-	if e.TMDbID != nil {
-		o.TmdbID.SetTo(int(*e.TMDbID))
-	}
-	if e.TVDbID != nil {
-		o.TvdbID.SetTo(int(*e.TVDbID))
-	}
-	if e.Overview != nil {
-		o.Overview.SetTo(*e.Overview)
-	}
-	if e.AirDate != nil {
-		o.AirDate.SetTo(*e.AirDate)
-	}
-	if e.Runtime != nil {
-		o.Runtime.SetTo(int(*e.Runtime))
-	}
-	if e.StillPath != nil {
-		o.StillPath.SetTo(*e.StillPath)
-	}
+	setOpt(&o.SeriesPosterPath, e.SeriesPosterPath)
+	setOptConv(&o.TmdbID, e.TMDbID, int32ToInt)
+	setOptConv(&o.TvdbID, e.TVDbID, int32ToInt)
+	setOpt(&o.Overview, e.Overview)
+	setOpt(&o.AirDate, e.AirDate)
+	setOptConv(&o.Runtime, e.Runtime, int32ToInt)
+	setOpt(&o.StillPath, e.StillPath)
 
 	return o
 }

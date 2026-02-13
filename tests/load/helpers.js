@@ -1,10 +1,33 @@
 // tests/load/helpers.js - Shared helper functions for k6 load tests
 import { check } from 'k6';
+import exec from 'k6/execution';
 import http from 'k6/http';
 import { API_BASE, TEST_USER } from './config.js';
 
 // Cache tokens to avoid excessive logins
 let cachedTokens = {};
+
+/**
+ * Generate a unique synthetic IP per VU.
+ * Maps VU ID (1-based) to a 10.x.y.z address so each VU
+ * is treated as a distinct client by the rate limiter.
+ * @returns {string} IP like "10.0.0.1"
+ */
+export function vuIP() {
+    const id = exec.vu.idInTest || 1;
+    const a = (id >> 16) & 0xff;
+    const b = (id >> 8) & 0xff;
+    const c = id & 0xff;
+    return `10.${a}.${b}.${c}`;
+}
+
+/**
+ * Return an X-Forwarded-For header for the current VU.
+ * Merge into any headers object to simulate distinct client IPs.
+ */
+export function forwardedHeaders(extra = {}) {
+    return { 'X-Forwarded-For': vuIP(), ...extra };
+}
 
 /**
  * Login and get access token
@@ -24,7 +47,7 @@ export function login(user = TEST_USER) {
             password: user.password,
         }),
         {
-            headers: { 'Content-Type': 'application/json' },
+            headers: forwardedHeaders({ 'Content-Type': 'application/json' }),
             tags: { name: 'auth_login' },
         }
     );
@@ -60,6 +83,7 @@ export function authHeaders(token) {
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
+        'X-Forwarded-For': vuIP(),
     };
 }
 
@@ -204,4 +228,68 @@ export function weightedRandom(items) {
         }
     }
     return items[items.length - 1];
+}
+
+/**
+ * Login and return full token response (access + refresh tokens)
+ * @param {Object} user - User credentials {username, password}
+ * @returns {Object} {access_token, refresh_token} or null
+ */
+export function loginFull(user = TEST_USER) {
+    const res = http.post(
+        `${API_BASE}/auth/login`,
+        JSON.stringify({
+            username: user.username,
+            password: user.password,
+        }),
+        {
+            headers: forwardedHeaders({ 'Content-Type': 'application/json' }),
+            tags: { name: 'auth_login' },
+        }
+    );
+
+    if (res.status !== 200) {
+        console.error(`Login failed for ${user.username}: ${res.status}`);
+        return null;
+    }
+
+    return JSON.parse(res.body);
+}
+
+/**
+ * Make request authenticated with an API key
+ * @param {string} method - HTTP method (GET, POST, PUT, DELETE)
+ * @param {string} path - API path
+ * @param {string} apiKey - Raw API key
+ * @param {Object} body - Optional request body
+ * @param {Object} params - Additional params
+ */
+export function apiKeyRequest(method, path, apiKey, body = null, params = {}) {
+    const headers = {
+        'X-API-Key': apiKey,
+        'Content-Type': 'application/json',
+        'X-Forwarded-For': vuIP(),
+    };
+    const url = `${API_BASE}${path}`;
+    const opts = { headers, tags: { name: path, ...params.tags }, ...params };
+
+    switch (method.toUpperCase()) {
+        case 'GET':
+            return http.get(url, opts);
+        case 'POST':
+            return http.post(url, body ? JSON.stringify(body) : null, opts);
+        case 'PUT':
+            return http.put(url, body ? JSON.stringify(body) : null, opts);
+        case 'DELETE':
+            return http.del(url, null, opts);
+        default:
+            return http.get(url, opts);
+    }
+}
+
+/**
+ * Generate a random integer in [min, max]
+ */
+export function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

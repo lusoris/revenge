@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/lusoris/revenge/internal/api/ogen"
+	"github.com/lusoris/revenge/internal/crypto"
 	"github.com/lusoris/revenge/internal/errors"
 )
 
@@ -74,6 +75,8 @@ func ToAPIError(err error) *APIError {
 		return NewAPIError(http.StatusBadRequest, "Bad request", err)
 	case errors.Is(err, errors.ErrUnavailable):
 		return NewAPIError(http.StatusServiceUnavailable, "Service unavailable", err)
+	case errors.Is(err, crypto.ErrHasherBusy):
+		return NewAPIError(http.StatusServiceUnavailable, "Server busy, try again later", err)
 	case errors.Is(err, errors.ErrTimeout):
 		return NewAPIError(http.StatusGatewayTimeout, "Request timeout", err)
 	default:

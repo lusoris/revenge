@@ -63,6 +63,9 @@ type Config struct {
 
 	// Metadata provider configuration
 	Metadata MetadataConfig `koanf:"metadata"`
+
+	// Notifications configuration
+	Notifications NotificationsConfig `koanf:"notifications"`
 }
 
 // ActivityConfig holds activity log configuration.
@@ -690,6 +693,81 @@ type TranscodeConfig struct {
 
 	// Profiles lists the enabled quality profile names.
 	Profiles []string `koanf:"profiles"`
+}
+
+// NotificationsConfig holds notification agent configuration.
+type NotificationsConfig struct {
+	// Webhooks holds webhook notification agent configurations.
+	Webhooks []WebhookNotificationConfig `koanf:"webhooks"`
+
+	// Discord holds Discord notification agent configurations.
+	Discord []DiscordNotificationConfig `koanf:"discord"`
+
+	// Email holds email notification agent configurations.
+	Email []EmailNotificationConfig `koanf:"email"`
+
+	// Gotify holds Gotify notification agent configurations.
+	Gotify []GotifyNotificationConfig `koanf:"gotify"`
+
+	// Ntfy holds ntfy notification agent configurations.
+	Ntfy []NtfyNotificationConfig `koanf:"ntfy"`
+}
+
+// WebhookNotificationConfig holds configuration for a webhook notification agent.
+type WebhookNotificationConfig struct {
+	Enabled         bool              `koanf:"enabled"`
+	Name            string            `koanf:"name"`
+	URL             string            `koanf:"url"`
+	Method          string            `koanf:"method"`
+	Headers         map[string]string `koanf:"headers"`
+	ContentType     string            `koanf:"content_type"`
+	EventTypes      []string          `koanf:"event_types"`
+	EventCategories []string          `koanf:"event_categories"`
+}
+
+// DiscordNotificationConfig holds configuration for a Discord notification agent.
+type DiscordNotificationConfig struct {
+	Enabled         bool     `koanf:"enabled"`
+	Name            string   `koanf:"name"`
+	WebhookURL      string   `koanf:"webhook_url"`
+	Username        string   `koanf:"username"`
+	AvatarURL       string   `koanf:"avatar_url"`
+	EventTypes      []string `koanf:"event_types"`
+	EventCategories []string `koanf:"event_categories"`
+}
+
+// EmailNotificationConfig holds configuration for an email notification agent.
+type EmailNotificationConfig struct {
+	Enabled         bool     `koanf:"enabled"`
+	Name            string   `koanf:"name"`
+	Recipients      []string `koanf:"recipients"`
+	FromAddress     string   `koanf:"from_address"`
+	FromName        string   `koanf:"from_name"`
+	EventTypes      []string `koanf:"event_types"`
+	EventCategories []string `koanf:"event_categories"`
+}
+
+// GotifyNotificationConfig holds configuration for a Gotify notification agent.
+type GotifyNotificationConfig struct {
+	Enabled         bool     `koanf:"enabled"`
+	Name            string   `koanf:"name"`
+	ServerURL       string   `koanf:"server_url"`
+	AppToken        string   `koanf:"app_token"`
+	DefaultPriority int      `koanf:"default_priority"`
+	EventTypes      []string `koanf:"event_types"`
+	EventCategories []string `koanf:"event_categories"`
+}
+
+// NtfyNotificationConfig holds configuration for an ntfy notification agent.
+type NtfyNotificationConfig struct {
+	Enabled         bool     `koanf:"enabled"`
+	Name            string   `koanf:"name"`
+	ServerURL       string   `koanf:"server_url"`
+	Topic           string   `koanf:"topic"`
+	AccessToken     string   `koanf:"access_token"`
+	DefaultPriority int      `koanf:"default_priority"`
+	EventTypes      []string `koanf:"event_types"`
+	EventCategories []string `koanf:"event_categories"`
 }
 
 // GetRadarrConfig returns the Radarr configuration.

@@ -37,65 +37,29 @@ func movieToOgen(m *movie.Movie) *ogen.Movie {
 	if m.TMDbID != nil {
 		o.TmdbID.SetTo(int(*m.TMDbID))
 	}
-	if m.IMDbID != nil {
-		o.ImdbID.SetTo(*m.IMDbID)
-	}
-	if m.OriginalTitle != nil {
-		o.OriginalTitle.SetTo(*m.OriginalTitle)
-	}
-	if m.Year != nil {
-		o.Year.SetTo(int(*m.Year))
-	}
-	if m.ReleaseDate != nil {
-		o.ReleaseDate.SetTo(*m.ReleaseDate)
-	}
-	if m.Runtime != nil {
-		o.Runtime.SetTo(int(*m.Runtime))
-	}
-	if m.Overview != nil {
-		o.Overview.SetTo(*m.Overview)
-	}
-	if m.Tagline != nil {
-		o.Tagline.SetTo(*m.Tagline)
-	}
-	if m.Status != nil {
-		o.Status.SetTo(*m.Status)
-	}
-	if m.OriginalLanguage != nil {
-		o.OriginalLanguage.SetTo(*m.OriginalLanguage)
-	}
-	if m.PosterPath != nil {
-		o.PosterPath.SetTo(*m.PosterPath)
-	}
-	if m.BackdropPath != nil {
-		o.BackdropPath.SetTo(*m.BackdropPath)
-	}
-	if m.TrailerURL != nil {
-		o.TrailerURL.SetTo(*m.TrailerURL)
-	}
-	if m.VoteAverage != nil {
-		f, _ := m.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
-	if m.VoteCount != nil {
-		o.VoteCount.SetTo(int(*m.VoteCount))
-	}
-	if m.Popularity != nil {
-		f, _ := m.Popularity.Float64()
-		o.Popularity.SetTo(float32(f))
-	}
+	setOpt(&o.ImdbID, m.IMDbID)
+	setOpt(&o.OriginalTitle, m.OriginalTitle)
+	setOptConv(&o.Year, m.Year, int32ToInt)
+	setOpt(&o.ReleaseDate, m.ReleaseDate)
+	setOptConv(&o.Runtime, m.Runtime, int32ToInt)
+	setOpt(&o.Overview, m.Overview)
+	setOpt(&o.Tagline, m.Tagline)
+	setOpt(&o.Status, m.Status)
+	setOpt(&o.OriginalLanguage, m.OriginalLanguage)
+	setOpt(&o.PosterPath, m.PosterPath)
+	setOpt(&o.BackdropPath, m.BackdropPath)
+	setOpt(&o.TrailerURL, m.TrailerURL)
+	setOptDecimalFloat32(&o.VoteAverage, m.VoteAverage)
+	setOptConv(&o.VoteCount, m.VoteCount, int32ToInt)
+	setOptDecimalFloat32(&o.Popularity, m.Popularity)
 	if m.Budget != nil {
 		o.Budget.SetTo(int64(*m.Budget))
 	}
 	if m.Revenue != nil {
 		o.Revenue.SetTo(int64(*m.Revenue))
 	}
-	if m.MetadataUpdatedAt != nil {
-		o.MetadataUpdatedAt.SetTo(*m.MetadataUpdatedAt)
-	}
-	if m.RadarrID != nil {
-		o.RadarrID.SetTo(int(*m.RadarrID))
-	}
+	setOpt(&o.MetadataUpdatedAt, m.MetadataUpdatedAt)
+	setOptConv(&o.RadarrID, m.RadarrID, int32ToInt)
 
 	o.ExternalRatings = externalRatingsToOgen(m.ExternalRatings)
 
@@ -129,40 +93,21 @@ func movieFileToOgen(f *movie.MovieFile) *ogen.MovieFile {
 	if f.Container != nil {
 		o.Container.SetTo(*f.Container)
 	}
-	if f.DurationSeconds != nil {
-		o.DurationSeconds.SetTo(int(*f.DurationSeconds))
-	}
-	if f.BitrateKbps != nil {
-		o.BitrateKbps.SetTo(int(*f.BitrateKbps))
-	}
-	if f.Framerate != nil {
-		fr, _ := f.Framerate.Float64()
-		o.Framerate.SetTo(float32(fr))
-	}
-	if f.DynamicRange != nil {
-		o.DynamicRange.SetTo(*f.DynamicRange)
-	}
-	if f.ColorSpace != nil {
-		o.ColorSpace.SetTo(*f.ColorSpace)
-	}
-	if f.AudioChannels != nil {
-		o.AudioChannels.SetTo(*f.AudioChannels)
-	}
+	setOptConv(&o.DurationSeconds, f.DurationSeconds, int32ToInt)
+	setOptConv(&o.BitrateKbps, f.BitrateKbps, int32ToInt)
+	setOptDecimalFloat32(&o.Framerate, f.Framerate)
+	setOpt(&o.DynamicRange, f.DynamicRange)
+	setOpt(&o.ColorSpace, f.ColorSpace)
+	setOpt(&o.AudioChannels, f.AudioChannels)
 	if len(f.AudioLanguages) > 0 {
 		o.AudioLanguages = f.AudioLanguages
 	}
 	if len(f.SubtitleLanguages) > 0 {
 		o.SubtitleLanguages = f.SubtitleLanguages
 	}
-	if f.RadarrFileID != nil {
-		o.RadarrFileID.SetTo(int(*f.RadarrFileID))
-	}
-	if f.LastScannedAt != nil {
-		o.LastScannedAt.SetTo(*f.LastScannedAt)
-	}
-	if f.IsMonitored != nil {
-		o.IsMonitored.SetTo(*f.IsMonitored)
-	}
+	setOptConv(&o.RadarrFileID, f.RadarrFileID, int32ToInt)
+	setOpt(&o.LastScannedAt, f.LastScannedAt)
+	setOpt(&o.IsMonitored, f.IsMonitored)
 
 	return o
 }
@@ -179,21 +124,11 @@ func movieCreditToOgen(c *movie.MovieCredit) *ogen.MovieCredit {
 		UpdatedAt:    ogen.NewOptDateTime(c.UpdatedAt),
 	}
 
-	if c.Character != nil {
-		o.Character.SetTo(*c.Character)
-	}
-	if c.Job != nil {
-		o.Job.SetTo(*c.Job)
-	}
-	if c.Department != nil {
-		o.Department.SetTo(*c.Department)
-	}
-	if c.CastOrder != nil {
-		o.CastOrder.SetTo(int(*c.CastOrder))
-	}
-	if c.ProfilePath != nil {
-		o.ProfilePath.SetTo(*c.ProfilePath)
-	}
+	setOpt(&o.Character, c.Character)
+	setOpt(&o.Job, c.Job)
+	setOpt(&o.Department, c.Department)
+	setOptConv(&o.CastOrder, c.CastOrder, int32ToInt)
+	setOpt(&o.ProfilePath, c.ProfilePath)
 
 	return o
 }
@@ -207,18 +142,10 @@ func movieCollectionToOgen(c *movie.MovieCollection) *ogen.MovieCollection {
 		UpdatedAt: ogen.NewOptDateTime(c.UpdatedAt),
 	}
 
-	if c.TMDbCollectionID != nil {
-		o.TmdbCollectionID.SetTo(int(*c.TMDbCollectionID))
-	}
-	if c.Overview != nil {
-		o.Overview.SetTo(*c.Overview)
-	}
-	if c.PosterPath != nil {
-		o.PosterPath.SetTo(*c.PosterPath)
-	}
-	if c.BackdropPath != nil {
-		o.BackdropPath.SetTo(*c.BackdropPath)
-	}
+	setOptConv(&o.TmdbCollectionID, c.TMDbCollectionID, int32ToInt)
+	setOpt(&o.Overview, c.Overview)
+	setOpt(&o.PosterPath, c.PosterPath)
+	setOpt(&o.BackdropPath, c.BackdropPath)
 
 	return o
 }
@@ -249,9 +176,7 @@ func movieWatchedToOgen(w *movie.MovieWatched) *ogen.MovieWatched {
 		UpdatedAt:       ogen.NewOptDateTime(w.UpdatedAt),
 	}
 
-	if w.ProgressPercent != nil {
-		o.ProgressPercent.SetTo(int(*w.ProgressPercent))
-	}
+	setOptConv(&o.ProgressPercent, w.ProgressPercent, int32ToInt)
 
 	return o
 }
@@ -270,71 +195,31 @@ func continueWatchingItemToOgen(item *movie.ContinueWatchingItem) ogen.ContinueW
 	}
 
 	// Copy all movie fields
-	if item.TMDbID != nil {
-		o.TmdbID.SetTo(int(*item.TMDbID))
-	}
-	if item.IMDbID != nil {
-		o.ImdbID.SetTo(*item.IMDbID)
-	}
-	if item.OriginalTitle != nil {
-		o.OriginalTitle.SetTo(*item.OriginalTitle)
-	}
-	if item.Year != nil {
-		o.Year.SetTo(int(*item.Year))
-	}
-	if item.ReleaseDate != nil {
-		o.ReleaseDate.SetTo(*item.ReleaseDate)
-	}
-	if item.Runtime != nil {
-		o.Runtime.SetTo(int(*item.Runtime))
-	}
-	if item.Overview != nil {
-		o.Overview.SetTo(*item.Overview)
-	}
-	if item.Tagline != nil {
-		o.Tagline.SetTo(*item.Tagline)
-	}
-	if item.Status != nil {
-		o.Status.SetTo(*item.Status)
-	}
-	if item.OriginalLanguage != nil {
-		o.OriginalLanguage.SetTo(*item.OriginalLanguage)
-	}
-	if item.PosterPath != nil {
-		o.PosterPath.SetTo(*item.PosterPath)
-	}
-	if item.BackdropPath != nil {
-		o.BackdropPath.SetTo(*item.BackdropPath)
-	}
-	if item.TrailerURL != nil {
-		o.TrailerURL.SetTo(*item.TrailerURL)
-	}
-	if item.VoteAverage != nil {
-		f, _ := item.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
-	if item.VoteCount != nil {
-		o.VoteCount.SetTo(int(*item.VoteCount))
-	}
-	if item.Popularity != nil {
-		f, _ := item.Popularity.Float64()
-		o.Popularity.SetTo(float32(f))
-	}
+	setOptConv(&o.TmdbID, item.TMDbID, int32ToInt)
+	setOpt(&o.ImdbID, item.IMDbID)
+	setOpt(&o.OriginalTitle, item.OriginalTitle)
+	setOptConv(&o.Year, item.Year, int32ToInt)
+	setOpt(&o.ReleaseDate, item.ReleaseDate)
+	setOptConv(&o.Runtime, item.Runtime, int32ToInt)
+	setOpt(&o.Overview, item.Overview)
+	setOpt(&o.Tagline, item.Tagline)
+	setOpt(&o.Status, item.Status)
+	setOpt(&o.OriginalLanguage, item.OriginalLanguage)
+	setOpt(&o.PosterPath, item.PosterPath)
+	setOpt(&o.BackdropPath, item.BackdropPath)
+	setOpt(&o.TrailerURL, item.TrailerURL)
+	setOptDecimalFloat32(&o.VoteAverage, item.VoteAverage)
+	setOptConv(&o.VoteCount, item.VoteCount, int32ToInt)
+	setOptDecimalFloat32(&o.Popularity, item.Popularity)
 	if item.Budget != nil {
 		o.Budget.SetTo(int64(*item.Budget))
 	}
 	if item.Revenue != nil {
 		o.Revenue.SetTo(int64(*item.Revenue))
 	}
-	if item.MetadataUpdatedAt != nil {
-		o.MetadataUpdatedAt.SetTo(*item.MetadataUpdatedAt)
-	}
-	if item.RadarrID != nil {
-		o.RadarrID.SetTo(int(*item.RadarrID))
-	}
-	if item.ProgressPercent != nil {
-		o.ProgressPercent.SetTo(int(*item.ProgressPercent))
-	}
+	setOpt(&o.MetadataUpdatedAt, item.MetadataUpdatedAt)
+	setOptConv(&o.RadarrID, item.RadarrID, int32ToInt)
+	setOptConv(&o.ProgressPercent, item.ProgressPercent, int32ToInt)
 
 	o.ExternalRatings = externalRatingsToOgen(item.ExternalRatings)
 
@@ -354,68 +239,30 @@ func watchedMovieItemToOgen(item *movie.WatchedMovieItem) ogen.WatchedMovieItem 
 	}
 
 	// Copy all movie fields
-	if item.TMDbID != nil {
-		o.TmdbID.SetTo(int(*item.TMDbID))
-	}
-	if item.IMDbID != nil {
-		o.ImdbID.SetTo(*item.IMDbID)
-	}
-	if item.OriginalTitle != nil {
-		o.OriginalTitle.SetTo(*item.OriginalTitle)
-	}
-	if item.Year != nil {
-		o.Year.SetTo(int(*item.Year))
-	}
-	if item.ReleaseDate != nil {
-		o.ReleaseDate.SetTo(*item.ReleaseDate)
-	}
-	if item.Runtime != nil {
-		o.Runtime.SetTo(int(*item.Runtime))
-	}
-	if item.Overview != nil {
-		o.Overview.SetTo(*item.Overview)
-	}
-	if item.Tagline != nil {
-		o.Tagline.SetTo(*item.Tagline)
-	}
-	if item.Status != nil {
-		o.Status.SetTo(*item.Status)
-	}
-	if item.OriginalLanguage != nil {
-		o.OriginalLanguage.SetTo(*item.OriginalLanguage)
-	}
-	if item.PosterPath != nil {
-		o.PosterPath.SetTo(*item.PosterPath)
-	}
-	if item.BackdropPath != nil {
-		o.BackdropPath.SetTo(*item.BackdropPath)
-	}
-	if item.TrailerURL != nil {
-		o.TrailerURL.SetTo(*item.TrailerURL)
-	}
-	if item.VoteAverage != nil {
-		f, _ := item.VoteAverage.Float64()
-		o.VoteAverage.SetTo(float32(f))
-	}
-	if item.VoteCount != nil {
-		o.VoteCount.SetTo(int(*item.VoteCount))
-	}
-	if item.Popularity != nil {
-		f, _ := item.Popularity.Float64()
-		o.Popularity.SetTo(float32(f))
-	}
+	setOptConv(&o.TmdbID, item.TMDbID, int32ToInt)
+	setOpt(&o.ImdbID, item.IMDbID)
+	setOpt(&o.OriginalTitle, item.OriginalTitle)
+	setOptConv(&o.Year, item.Year, int32ToInt)
+	setOpt(&o.ReleaseDate, item.ReleaseDate)
+	setOptConv(&o.Runtime, item.Runtime, int32ToInt)
+	setOpt(&o.Overview, item.Overview)
+	setOpt(&o.Tagline, item.Tagline)
+	setOpt(&o.Status, item.Status)
+	setOpt(&o.OriginalLanguage, item.OriginalLanguage)
+	setOpt(&o.PosterPath, item.PosterPath)
+	setOpt(&o.BackdropPath, item.BackdropPath)
+	setOpt(&o.TrailerURL, item.TrailerURL)
+	setOptDecimalFloat32(&o.VoteAverage, item.VoteAverage)
+	setOptConv(&o.VoteCount, item.VoteCount, int32ToInt)
+	setOptDecimalFloat32(&o.Popularity, item.Popularity)
 	if item.Budget != nil {
 		o.Budget.SetTo(int64(*item.Budget))
 	}
 	if item.Revenue != nil {
 		o.Revenue.SetTo(int64(*item.Revenue))
 	}
-	if item.MetadataUpdatedAt != nil {
-		o.MetadataUpdatedAt.SetTo(*item.MetadataUpdatedAt)
-	}
-	if item.RadarrID != nil {
-		o.RadarrID.SetTo(int(*item.RadarrID))
-	}
+	setOpt(&o.MetadataUpdatedAt, item.MetadataUpdatedAt)
+	setOptConv(&o.RadarrID, item.RadarrID, int32ToInt)
 
 	o.ExternalRatings = externalRatingsToOgen(item.ExternalRatings)
 
@@ -429,9 +276,7 @@ func userMovieStatsToOgen(stats *movie.UserMovieStats) *ogen.UserMovieStats {
 		InProgressCount: ogen.NewOptInt64(stats.InProgressCount),
 	}
 
-	if stats.TotalWatches != nil {
-		o.TotalWatches.SetTo(*stats.TotalWatches)
-	}
+	setOpt(&o.TotalWatches, stats.TotalWatches)
 
 	return o
 }

@@ -84,7 +84,7 @@ type LoginResponse struct {
 // Register creates a new user account
 func (s *Service) Register(ctx context.Context, req RegisterRequest) (*db.SharedUser, error) {
 	// Hash password using Argon2id (per AUTH.md)
-	passwordHash, err := s.hasher.HashPassword(req.Password)
+	passwordHash, err := s.hasher.HashPasswordContext(ctx, req.Password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -250,7 +250,7 @@ func (s *Service) RegisterFromOIDC(ctx context.Context, req RegisterFromOIDCRequ
 	}
 
 	// Hash the random password
-	passwordHash, err := s.hasher.HashPassword(randomPassword)
+	passwordHash, err := s.hasher.HashPasswordContext(ctx, randomPassword)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -332,7 +332,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 
 	// ALWAYS verify password (even if user not found) for timing attack mitigation
 	// This ensures login timing is constant regardless of username validity
-	match, err := s.hasher.VerifyPassword(password, hashToCompare)
+	match, err := s.hasher.VerifyPasswordContext(ctx, password, hashToCompare)
 	if err != nil {
 		return nil, fmt.Errorf("password verification failed: %w", err)
 	}
@@ -585,7 +585,7 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 	}
 
 	// Verify old password
-	match, err := s.hasher.VerifyPassword(oldPassword, user.PasswordHash)
+	match, err := s.hasher.VerifyPasswordContext(ctx, oldPassword, user.PasswordHash)
 	if err != nil {
 		return fmt.Errorf("password verification failed: %w", err)
 	}
@@ -594,7 +594,7 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassw
 	}
 
 	// Hash new password
-	newPasswordHash, err := s.hasher.HashPassword(newPassword)
+	newPasswordHash, err := s.hasher.HashPasswordContext(ctx, newPassword)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
@@ -705,7 +705,7 @@ func (s *Service) ResetPassword(ctx context.Context, token, newPassword string) 
 	}
 
 	// Hash new password
-	newPasswordHash, err := s.hasher.HashPassword(newPassword)
+	newPasswordHash, err := s.hasher.HashPasswordContext(ctx, newPassword)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}

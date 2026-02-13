@@ -6514,6 +6514,47 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
+  /api/v1/playback/sessions/{sessionId}/heartbeat:
+    post:
+      operationId: heartbeatPlaybackSession
+      summary: Send playback heartbeat
+      description: |
+        Sends a heartbeat to keep the playback session alive and optionally
+        report the current playback position. Sessions expire after a timeout
+        if no heartbeat is received.
+      tags:
+        - playback
+      security:
+        - bearerAuth: []
+        - apiKeyAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position_seconds:
+                  type: integer
+                  description: Current playback position in seconds
+                  example: 120
+      responses:
+        '204':
+          description: Heartbeat accepted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
 components:
   schemas:
     # Auth schemas

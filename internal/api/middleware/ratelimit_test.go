@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/lusoris/revenge/internal/infra/logging"
 )
 
 func TestNewRateLimiter(t *testing.T) {
@@ -41,11 +41,13 @@ func TestRateLimiter_AuthConfig(t *testing.T) {
 	assert.True(t, config.Enabled)
 	assert.Equal(t, float64(1), config.RequestsPerSecond)
 	assert.Equal(t, 5, config.Burst)
-	assert.Contains(t, config.Operations, "LoginUser")
-	assert.Contains(t, config.Operations, "VerifyMFA")
-	assert.Contains(t, config.Operations, "RequestPasswordReset")
+	assert.Contains(t, config.Operations, "Login")
+	assert.Contains(t, config.Operations, "VerifyTOTP")
+	assert.Contains(t, config.Operations, "ForgotPassword")
 	assert.Contains(t, config.Operations, "ResetPassword")
 	assert.Contains(t, config.Operations, "VerifyEmail")
+	assert.Contains(t, config.Operations, "BeginWebAuthnLogin")
+	assert.Contains(t, config.Operations, "FinishWebAuthnLogin")
 }
 
 func TestRateLimiter_ShouldLimit(t *testing.T) {

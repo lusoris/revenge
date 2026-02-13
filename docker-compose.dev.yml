@@ -1,6 +1,6 @@
 # Development docker-compose with all required services
 # PostgreSQL 18+, Dragonfly, Typesense
-# Tuned for dev/small-prod (~5GB total memory across all services)
+# Tuned for dev/small-prod (~14GB total memory across all services)
 
 services:
   revenge:
@@ -48,7 +48,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 8G
 
   # PostgreSQL 18+ (REQUIRED)
   # Tuned for moderate writes (library scans) + heavy reads (API serving)

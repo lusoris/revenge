@@ -54,11 +54,13 @@ func AuthRateLimitConfig() RateLimitConfig {
 		RequestsPerSecond: 1, // 1 request per second
 		Burst:             5, // Allow burst of 5
 		Operations: []string{
-			"LoginUser",
-			"VerifyMFA",
-			"RequestPasswordReset",
+			"Login",
+			"VerifyTOTP",
+			"ForgotPassword",
 			"ResetPassword",
 			"VerifyEmail",
+			"BeginWebAuthnLogin",
+			"FinishWebAuthnLogin",
 		},
 		CleanupInterval: 5 * time.Minute,
 		TTL:             10 * time.Minute,

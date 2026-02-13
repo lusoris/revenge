@@ -127,3 +127,4 @@ node_modules/
 errors.cov
 ogen
 .workingdir11/
+tests/load/results/

@@ -77,7 +77,7 @@ type ServerParams struct {
 	AuthService     *auth.Service
 	SessionService  *session.Service
 	RBACService     *rbac.Service
-	APIKeyService   *apikeys.Service
+	APIKeyService   apikeys.Service
 	OIDCService     *oidc.Service
 	ActivityService *activity.Service
 	LibraryService  *library.Service
@@ -310,6 +310,11 @@ func NewServer(p ServerParams) (*Server, error) {
 	mux.Handle("GET /api/docs", docsHandler)
 	if p.StreamHandler != nil {
 		mux.Handle("/api/v1/playback/stream/", p.StreamHandler)
+	}
+	// Playback heartbeat — registered outside ogen to avoid full code regeneration.
+	// Auth is handled via the same cookie/bearer middleware chain applied to all routes.
+	if p.PlaybackService != nil {
+		mux.Handle("POST /api/v1/playback/sessions/{sessionId}/heartbeat", handler.heartbeatHandler())
 	}
 	if p.SSEHandler != nil {
 		mux.Handle("GET /api/v1/events", p.SSEHandler)

@@ -59,6 +59,10 @@ const (
 	KeyPrefixSearchAutocomplete = "search:autocomplete:"
 	KeyPrefixImage            = "image:"
 	KeyPrefixContinueWatching = "user:continue:"
+
+	// API key cache keys
+	KeyPrefixAPIKey       = "apikey:"
+	KeyPrefixAPIKeyByUser = "apikey:user:"
 )
 
 // DefaultTTLs for different cache types.
@@ -122,6 +126,11 @@ const (
 
 	// TVShowSeasonTTL is the TTL for season/episode data.
 	TVShowSeasonTTL = 5 * time.Minute
+
+	// APIKeyTTL is the TTL for validated API key cache entries.
+	// Short TTL to limit exposure if a key is revoked.
+	// Every ValidateKey call is on the auth hot path.
+	APIKeyTTL = 30 * time.Second
 )
 
 // SessionKey returns the cache key for a session by token hash.
@@ -132,6 +141,16 @@ func SessionKey(tokenHash string) string {
 // SessionByUserKey returns the cache key for sessions by user ID.
 func SessionByUserKey(userID string) string {
 	return KeyPrefixSessionByUser + userID
+}
+
+// APIKeyByHashKey returns the cache key for an API key by its SHA-256 hash.
+func APIKeyByHashKey(keyHash string) string {
+	return KeyPrefixAPIKey + keyHash
+}
+
+// APIKeyByUserKey returns the cache key prefix for a user's API keys.
+func APIKeyByUserKey(userID string) string {
+	return KeyPrefixAPIKeyByUser + userID
 }
 
 // RBACEnforceKey returns the cache key for an RBAC enforcement result.

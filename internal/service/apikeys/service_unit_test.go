@@ -31,7 +31,7 @@ func makeTestAPIKey(id, userID uuid.UUID, name string, scopes []string, isActive
 	}
 }
 
-func setupAPIKeysService(repo apikeys.Repository) *apikeys.Service {
+func setupAPIKeysService(repo apikeys.Repository) apikeys.Service {
 	logger := logging.NewTestLogger()
 	return apikeys.NewService(repo, logger, 10, 0)
 }

@@ -2,9 +2,13 @@ package api
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"strings"
 
 	"log/slog"
 
+	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/playback"
 )
@@ -185,4 +189,70 @@ func sessionToOgen(sess *playback.Session) *ogen.PlaybackSession {
 		CreatedAt:         resp.CreatedAt,
 		ExpiresAt:         resp.ExpiresAt,
 	}
+}
+
+// heartbeatRequest is the optional JSON body for the heartbeat endpoint.
+type heartbeatRequest struct {
+	PositionSeconds *int `json:"position_seconds,omitempty"`
+}
+
+// heartbeatHandler returns an http.Handler for the playback heartbeat endpoint.
+// This is registered outside ogen to avoid full code regeneration.
+//
+// POST /api/v1/playback/sessions/{sessionId}/heartbeat
+func (h *Handler) heartbeatHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Validate auth via bearer token
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			http.Error(w, `{"code":401,"message":"Authentication required"}`, http.StatusUnauthorized)
+			return
+		}
+
+		if h.tokenManager == nil {
+			http.Error(w, `{"code":401,"message":"Authentication not configured"}`, http.StatusUnauthorized)
+			return
+		}
+
+		token := strings.TrimPrefix(authHeader, "Bearer ")
+
+		claims, err := h.tokenManager.ValidateAccessToken(token)
+		if err != nil {
+			http.Error(w, `{"code":401,"message":"Invalid or expired token"}`, http.StatusUnauthorized)
+			return
+		}
+
+		// Parse session ID from path
+		sessionIDStr := r.PathValue("sessionId")
+		sessionID, err := uuid.Parse(sessionIDStr)
+		if err != nil {
+			http.Error(w, `{"code":400,"message":"Invalid session ID"}`, http.StatusBadRequest)
+			return
+		}
+
+		// Parse optional request body
+		var req heartbeatRequest
+		if r.Body != nil && r.ContentLength > 0 {
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				http.Error(w, `{"code":400,"message":"Invalid request body"}`, http.StatusBadRequest)
+				return
+			}
+		}
+
+		// Send heartbeat
+		sess, ok := h.playbackService.HeartbeatSession(sessionID, req.PositionSeconds)
+		if !ok {
+			http.Error(w, `{"code":404,"message":"Session not found"}`, http.StatusNotFound)
+			return
+		}
+
+		h.logger.Debug("playback heartbeat",
+			slog.String("session_id", sessionID.String()),
+			slog.String("user_id", claims.UserID.String()),
+		)
+
+		// Return 204 No Content (heartbeat accepted)
+		_ = sess // session returned for future use (e.g., returning updated expiry)
+		w.WriteHeader(http.StatusNoContent)
+	})
 }
