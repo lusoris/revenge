@@ -321,7 +321,7 @@ func TestRepo_MovieFiles_CRUD(t *testing.T) {
 		VideoCodec:        new("HEVC"),
 		AudioCodec:        new("TrueHD Atmos"),
 		Container:         new("mkv"),
-		BitrateKbps:       i32Ptr(35000),
+		BitrateKbps:       new(int32(35000)),
 		AudioLanguages:    []string{"eng", "fra"},
 		SubtitleLanguages: []string{"eng", "deu"},
 	})
@@ -374,7 +374,7 @@ func TestRepo_Credits(t *testing.T) {
 		Name:         "Leonardo DiCaprio",
 		CreditType:   "cast",
 		Character:    new("Cobb"),
-		CastOrder:    i32Ptr(0),
+		CastOrder:    new(int32(0)),
 		ProfilePath:  new("/leo.jpg"),
 	})
 	require.NoError(t, err)
@@ -457,9 +457,9 @@ func TestRepo_Collections(t *testing.T) {
 	m1 := createTestMovie(t, repo, "Batman Begins")
 	m2 := createTestMovie(t, repo, "The Dark Knight")
 
-	err = repo.AddMovieToCollection(ctx, coll.ID, m1.ID, i32Ptr(1))
+	err = repo.AddMovieToCollection(ctx, coll.ID, m1.ID, new(int32(1)))
 	require.NoError(t, err)
-	err = repo.AddMovieToCollection(ctx, coll.ID, m2.ID, i32Ptr(2))
+	err = repo.AddMovieToCollection(ctx, coll.ID, m2.ID, new(int32(2)))
 	require.NoError(t, err)
 
 	// List movies in collection
