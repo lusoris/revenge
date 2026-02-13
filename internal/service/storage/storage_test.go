@@ -16,10 +16,7 @@ import (
 )
 
 func TestLocalStorage_Store(t *testing.T) {
-	// Create temp directory for test
-	tmpDir, err := os.MkdirTemp("", "storage-test-*")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpDir)
+	tmpDir := t.TempDir()
 
 	cfg := config.AvatarConfig{
 		StoragePath: tmpDir,

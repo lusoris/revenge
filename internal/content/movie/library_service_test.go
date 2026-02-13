@@ -53,12 +53,10 @@ func (m *MockMetadataProvider) ClearCache() {
 
 func TestLibraryService_ScanLibrary(t *testing.T) {
 	// Setup temporary directory with a dummy movie file
-	tempDir, err := os.MkdirTemp("", "library_test")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	tempDir := t.TempDir()
 
 	movieFile := filepath.Join(tempDir, "The Matrix (1999).mkv")
-	err = os.WriteFile(movieFile, []byte("dummy content"), 0644)
+	err := os.WriteFile(movieFile, []byte("dummy content"), 0644)
 	require.NoError(t, err)
 
 	t.Run("New movie found", func(t *testing.T) {
