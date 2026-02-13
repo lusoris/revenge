@@ -261,7 +261,8 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 	}
 
 	// Check if error carries its own status code (e.g. rate limit 429)
-	if sc, ok := errors.AsType[statusCoder](err); ok {
+	var sc statusCoder
+	if errors.As(err, &sc) {
 		code := sc.StatusCode()
 		h.logger.Warn("Request error", slog.Int("status", code), slog.Any("error", err))
 		return &ogen.ErrorStatusCode{

@@ -34,7 +34,7 @@ jobs:
           key: go-lint-${{ hashFiles('**/go.sum') }}
           restore-keys: go-lint-
       - name: Install golangci-lint
-        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.8.0
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.9.0
       - run: golangci-lint run --timeout=5m
       - run: go vet ./...
 
