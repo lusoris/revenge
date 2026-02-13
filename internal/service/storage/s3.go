@@ -181,7 +181,7 @@ func isNotFoundError(err error) bool {
 	if err == nil {
 		return false
 	}
-	var noSuchKey *types.NoSuchKey
-	var notFound *types.NotFound
-	return errors.As(err, &noSuchKey) || errors.As(err, &notFound)
+	_, noSuchKey := errors.AsType[*types.NoSuchKey](err)
+	_, notFound := errors.AsType[*types.NotFound](err)
+	return noSuchKey || notFound
 }

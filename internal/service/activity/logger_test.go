@@ -65,7 +65,7 @@ func TestServiceLogger(t *testing.T) {
 			ResourceID:   resourceID,
 			IPAddress:    ip,
 			UserAgent:    "TestAgent/1.0",
-			Metadata: map[string]interface{}{
+			Metadata: map[string]any{
 				"device": "desktop",
 			},
 		})

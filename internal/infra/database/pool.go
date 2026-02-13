@@ -103,9 +103,9 @@ func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 }
 
 // Stats returns human-readable pool statistics.
-func Stats(pool *pgxpool.Pool) map[string]interface{} {
+func Stats(pool *pgxpool.Pool) map[string]any {
 	stat := pool.Stat()
-	return map[string]interface{}{
+	return map[string]any{
 		"acquire_count":              stat.AcquireCount(),
 		"acquire_duration_ms":        stat.AcquireDuration().Milliseconds(),
 		"acquired_conns":             stat.AcquiredConns(),

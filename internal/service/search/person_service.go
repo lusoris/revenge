@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -148,7 +147,7 @@ func (s *PersonSearchService) BulkIndexPersons(ctx context.Context, people []Per
 		return nil
 	}
 
-	documents := make([]interface{}, 0, len(people))
+	documents := make([]any, 0, len(people))
 	for _, p := range people {
 		documents = append(documents, personToDocument(p))
 	}
@@ -287,8 +286,8 @@ func (s *PersonSearchService) AutocompletePersons(ctx context.Context, query str
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	result, err := s.client.Search(ctx, PersonCollectionName, searchParams)
@@ -334,10 +333,7 @@ func (s *PersonSearchService) ReindexAll(ctx context.Context, people []PersonAgg
 	totalIndexed := 0
 
 	for i := 0; i < len(people); i += batchSize {
-		end := i + batchSize
-		if end > len(people) {
-			end = len(people)
-		}
+		end := min(i+batchSize, len(people))
 
 		batch := people[i:end]
 		if err := s.BulkIndexPersons(ctx, batch); err != nil {
@@ -413,7 +409,7 @@ func personToDocument(p PersonAggregate) PersonDocument {
 }
 
 // parsePersonDocument converts a raw Typesense document map to a PersonDocument.
-func parsePersonDocument(data map[string]interface{}) PersonDocument {
+func parsePersonDocument(data map[string]any) PersonDocument {
 	doc := PersonDocument{}
 
 	if v, ok := data["id"].(string); ok {
@@ -428,13 +424,13 @@ func parsePersonDocument(data map[string]interface{}) PersonDocument {
 	if v, ok := data["profile_path"].(string); ok {
 		doc.ProfilePath = v
 	}
-	if v, ok := data["known_for"].([]interface{}); ok {
+	if v, ok := data["known_for"].([]any); ok {
 		doc.KnownFor = toStringSlice(v)
 	}
-	if v, ok := data["characters"].([]interface{}); ok {
+	if v, ok := data["characters"].([]any); ok {
 		doc.Characters = toStringSlice(v)
 	}
-	if v, ok := data["departments"].([]interface{}); ok {
+	if v, ok := data["departments"].([]any); ok {
 		doc.Departments = toStringSlice(v)
 	}
 	if v, ok := data["movie_count"].(float64); ok {

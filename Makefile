@@ -9,8 +9,8 @@ BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT}"
 
-# Go 1.25 experimental features
-export GOEXPERIMENT=greenteagc,jsonv2
+# Go 1.26 experimental features
+export GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
 
 # Database configuration (override with environment variables)
 DB_HOST?=localhost

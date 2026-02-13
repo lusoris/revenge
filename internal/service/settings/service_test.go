@@ -12,7 +12,6 @@ import (
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/testutil"
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 func TestMain(m *testing.M) {
@@ -117,7 +116,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err := repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting1",
 		Value:     []byte(`"value1"`),
-		Category:  ptr.To("cat1"),
+		Category:  new("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -125,7 +124,7 @@ func TestService_ListServerSettingsByCategory(t *testing.T) {
 	_, err = repo.UpsertServerSetting(ctx, db.UpsertServerSettingParams{
 		Key:       "cat1.setting2",
 		Value:     []byte(`"value2"`),
-		Category:  ptr.To("cat1"),
+		Category:  new("cat1"),
 		DataType:  "string",
 		UpdatedBy: updatedBy,
 	})
@@ -228,7 +227,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user1",
 		Value:    []byte(`"value1"`),
-		Category: ptr.To("cat1"),
+		Category: new("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)
@@ -236,7 +235,7 @@ func TestService_ListUserSettingsByCategory(t *testing.T) {
 		UserID:   userID,
 		Key:      "cat1.user2",
 		Value:    []byte(`"value2"`),
-		Category: ptr.To("cat1"),
+		Category: new("cat1"),
 		DataType: "string",
 	})
 	require.NoError(t, err)
@@ -252,7 +251,7 @@ func TestService_SetUserSettingsBulk(t *testing.T) {
 	ctx := context.Background()
 	userID := createTestUser(t, testDB)
 
-	settings := map[string]interface{}{
+	settings := map[string]any{
 		"bulk.setting1": "value1",
 		"bulk.setting2": 42,
 		"bulk.setting3": true,
@@ -308,15 +307,15 @@ func TestService_DataTypes(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		value interface{}
+		value any
 	}{
 		{"string", "hello world"},
 		{"int", 42},
 		{"float", 3.14},
 		{"bool_true", true},
 		{"bool_false", false},
-		{"array", []interface{}{"a", "b", "c"}},
-		{"object", map[string]interface{}{"nested": "value"}},
+		{"array", []any{"a", "b", "c"}},
+		{"object", map[string]any{"nested": "value"}},
 	}
 
 	for _, tt := range tests {

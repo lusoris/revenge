@@ -95,10 +95,7 @@ func scaleQueueWorkers(queues map[string]river.QueueConfig, maxWorkers int) {
 
 	// Scale each queue proportionally, ensuring at least 1 worker per queue
 	for name, qc := range queues {
-		scaled := (qc.MaxWorkers * maxWorkers) / totalDefault
-		if scaled < 1 {
-			scaled = 1
-		}
+		scaled := max((qc.MaxWorkers*maxWorkers)/totalDefault, 1)
 		qc.MaxWorkers = scaled
 		queues[name] = qc
 	}

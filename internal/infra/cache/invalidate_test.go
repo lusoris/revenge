@@ -433,7 +433,7 @@ func TestCacheAside(t *testing.T) {
 	}
 
 	loaderCalled := 0
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		loaderCalled++
 		return &Movie{ID: "movie-1", Title: "Test Movie"}, nil
 	}
@@ -464,7 +464,7 @@ func TestCacheAside_LoaderError(t *testing.T) {
 
 	ctx := context.Background()
 
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		return nil, assert.AnError
 	}
 

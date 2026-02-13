@@ -427,7 +427,7 @@ func (s *Service) Login(ctx context.Context, username, password string, ipAddres
 		ResourceID:   user.ID,
 		IPAddress:    activityIP,
 		UserAgent:    ptrToString(userAgent),
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"device_name": ptrToString(deviceName),
 		},
 	})
@@ -558,7 +558,7 @@ func (s *Service) CreateSessionForUser(ctx context.Context, userID uuid.UUID, ip
 		ResourceID:   user.ID,
 		IPAddress:    activityIP,
 		UserAgent:    ptrToString(userAgent),
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"device_name": ptrToString(deviceName),
 			"oidc_login":  true,
 		},

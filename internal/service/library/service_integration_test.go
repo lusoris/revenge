@@ -67,7 +67,7 @@ func TestServiceIntegration_Create(t *testing.T) {
 			Type:    LibraryTypeMusic,
 			Paths:   []string{"/media/music"},
 			Enabled: true,
-			ScannerConfig: map[string]interface{}{
+			ScannerConfig: map[string]any{
 				"skip_hidden": true,
 				"depth":       float64(5),
 			},
@@ -223,7 +223,7 @@ func TestServiceIntegration_Update_Errors(t *testing.T) {
 
 	// Update non-existent library
 	_, err = svc.Update(ctx, uuid.Must(uuid.NewV7()), &LibraryUpdate{
-		Name: stringPtr("ghost"),
+		Name: new("ghost"),
 	})
 	assert.ErrorIs(t, err, ErrNotFound)
 }
@@ -565,7 +565,7 @@ func TestServiceIntegration_ListScans(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create several scans
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		scan, err := svc.TriggerScan(ctx, lib.ID, ScanTypeFull)
 		require.NoError(t, err)
 		// Complete each so the next can be triggered

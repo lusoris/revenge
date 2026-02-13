@@ -17,25 +17,25 @@ func TestParseMovieFilename(t *testing.T) {
 			name:          "Title (YEAR).ext",
 			filename:      "The Matrix (1999).mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Title.YEAR.ext",
 			filename:      "The.Matrix.1999.mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Title with quality markers",
 			filename:      "The.Matrix.1999.1080p.BluRay.x264-GROUP.mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Title with spaces and quality",
 			filename:      "The Matrix 1999 2160p UHD BluRay x265.mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Title without year",
@@ -47,25 +47,25 @@ func TestParseMovieFilename(t *testing.T) {
 			name:          "Title with underscore separators",
 			filename:      "The_Matrix_(1999).mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Complex title with multiple parentheses",
 			filename:      "The Matrix Reloaded (2003) (1080p).mkv",
 			expectedTitle: "The Matrix Reloaded",
-			expectedYear:  intPtr(2003),
+			expectedYear:  new(2003),
 		},
 		{
 			name:          "Title with REMUX",
 			filename:      "The.Matrix.1999.UHD.BluRay.2160p.TrueHD.Atmos.7.1.DV.HEVC.REMUX-FraMeSToR.mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Title with edition markers",
 			filename:      "Blade Runner (1982) (Final Cut) (1080p BluRay x265 HEVC 10bit AAC 5.1).mkv",
 			expectedTitle: "Blade Runner",
-			expectedYear:  intPtr(1982),
+			expectedYear:  new(1982),
 		},
 		{
 			name:          "Invalid year (too old)",
@@ -84,7 +84,7 @@ func TestParseMovieFilename(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			title, year := parseMovieFilename(tt.filename)
-			
+
 			assert.Equal(t, tt.expectedTitle, title, "Title mismatch")
 			if tt.expectedYear == nil {
 				assert.Nil(t, year, "Expected nil year")
@@ -251,26 +251,26 @@ func TestScanner_ParseMovieFilename_EdgeCases(t *testing.T) {
 			name:          "Year at end without parentheses",
 			filename:      "The Matrix 1999.mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Multiple years (take first)",
 			filename:      "The Matrix (1999) Reloaded (2003).mkv",
 			expectedTitle: "The Matrix",
-			expectedYear:  intPtr(1999),
+			expectedYear:  new(1999),
 		},
 		{
 			name:          "Year-like numbers that aren't years",
 			filename:      "2001 A Space Odyssey (1968).mkv",
 			expectedTitle: "2001 A Space Odyssey",
-			expectedYear:  intPtr(1968),
+			expectedYear:  new(1968),
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			title, year := parseMovieFilename(tt.filename)
-			
+
 			assert.Equal(t, tt.expectedTitle, title, "Title mismatch")
 			if tt.expectedYear == nil {
 				assert.Nil(t, year, "Expected nil year")
@@ -283,6 +283,8 @@ func TestScanner_ParseMovieFilename_EdgeCases(t *testing.T) {
 }
 
 // Helper function
+//
+//go:fix inline
 func intPtr(i int) *int {
-	return &i
+	return new(i)
 }

@@ -14,7 +14,7 @@ import (
 //	if err := fetchUser(id); err != nil {
 //	    return errors.Wrapf(err, "failed to fetch user %s", id)
 //	}
-func Wrapf(err error, format string, args ...interface{}) error {
+func Wrapf(err error, format string, args ...any) error {
 	if err == nil {
 		return nil
 	}
@@ -44,7 +44,7 @@ func WithStack(err error) error {
 //	if user == nil {
 //	    return errors.WrapSentinel(ErrNotFound, "user", id)
 //	}
-func WrapSentinel(sentinel error, resource string, id interface{}) error {
+func WrapSentinel(sentinel error, resource string, id any) error {
 	return errors.Wrapf(sentinel, "%s %v", resource, id)
 }
 

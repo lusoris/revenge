@@ -173,7 +173,7 @@ func TestTOTPAlgorithm_CodeFormat(t *testing.T) {
 	secretBase32 := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(secret)
 
 	// Generate multiple codes to test format
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		code, err := totp.GenerateCode(secretBase32, time.Now())
 		require.NoError(t, err)
 

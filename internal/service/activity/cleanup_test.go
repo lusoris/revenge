@@ -435,15 +435,15 @@ func TestService_Log_WithMockRepo(t *testing.T) {
 		{
 			name: "success with all fields",
 			req: LogRequest{
-				UserID:       ptrUUID(uuid.Must(uuid.NewV7())),
-				Username:     ptrStr("testuser"),
+				UserID:       new(uuid.Must(uuid.NewV7())),
+				Username:     new("testuser"),
 				Action:       ActionUserLogin,
-				ResourceType: ptrStr(ResourceTypeUser),
-				ResourceID:   ptrUUID(uuid.Must(uuid.NewV7())),
-				Changes:      map[string]interface{}{"field": "value"},
-				Metadata:     map[string]interface{}{"key": "data"},
-				IPAddress:    ptrIP(net.ParseIP("10.0.0.1")),
-				UserAgent:    ptrStr("TestAgent/1.0"),
+				ResourceType: new(ResourceTypeUser),
+				ResourceID:   new(uuid.Must(uuid.NewV7())),
+				Changes:      map[string]any{"field": "value"},
+				Metadata:     map[string]any{"key": "data"},
+				IPAddress:    new(net.ParseIP("10.0.0.1")),
+				UserAgent:    new("TestAgent/1.0"),
 				Success:      true,
 			},
 			repoErr: nil,
@@ -472,7 +472,7 @@ func TestService_Log_WithMockRepo(t *testing.T) {
 			req: LogRequest{
 				Action:       ActionUserLogin,
 				Success:      false,
-				ErrorMessage: ptrStr("invalid credentials"),
+				ErrorMessage: new("invalid credentials"),
 			},
 			repoErr: nil,
 			wantErr: false,
@@ -529,7 +529,7 @@ func TestService_LogWithContext_WithMockRepo(t *testing.T) {
 		ActionUserUpdate,
 		ResourceTypeUser,
 		resourceID,
-		map[string]interface{}{"field": "new_value"},
+		map[string]any{"field": "new_value"},
 		ip,
 		"Mozilla/5.0",
 	)
@@ -537,9 +537,9 @@ func TestService_LogWithContext_WithMockRepo(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, capturedEntry)
 	assert.Equal(t, &userID, capturedEntry.UserID)
-	assert.Equal(t, ptrStr("testuser"), capturedEntry.Username)
+	assert.Equal(t, new("testuser"), capturedEntry.Username)
 	assert.Equal(t, ActionUserUpdate, capturedEntry.Action)
-	assert.Equal(t, ptrStr(ResourceTypeUser), capturedEntry.ResourceType)
+	assert.Equal(t, new(ResourceTypeUser), capturedEntry.ResourceType)
 	assert.Equal(t, &resourceID, capturedEntry.ResourceID)
 	assert.True(t, capturedEntry.Success)
 }
@@ -574,7 +574,7 @@ func TestService_LogFailure_WithMockRepo(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, capturedEntry)
 	assert.False(t, capturedEntry.Success)
-	assert.Equal(t, ptrStr("invalid password"), capturedEntry.ErrorMessage)
+	assert.Equal(t, new("invalid password"), capturedEntry.ErrorMessage)
 	assert.Equal(t, &userID, capturedEntry.UserID)
 }
 
@@ -1072,8 +1072,8 @@ func TestServiceLogger_LogAction_WithMockRepo(t *testing.T) {
 			Action:       ActionUserCreate,
 			ResourceType: ResourceTypeUser,
 			ResourceID:   resourceID,
-			Changes:      map[string]interface{}{"username": "newuser"},
-			Metadata:     map[string]interface{}{"source": "api"},
+			Changes:      map[string]any{"username": "newuser"},
+			Metadata:     map[string]any{"source": "api"},
 			IPAddress:    ip,
 			UserAgent:    "AdminPanel/1.0",
 		})
@@ -1168,7 +1168,7 @@ func TestServiceLogger_LogFailure_WithMockRepo(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, capturedEntry)
 		assert.False(t, capturedEntry.Success)
-		assert.Equal(t, ptrStr("brute force detected"), capturedEntry.ErrorMessage)
+		assert.Equal(t, new("brute force detected"), capturedEntry.ErrorMessage)
 	})
 
 	t.Run("nil optional fields", func(t *testing.T) {
@@ -1306,14 +1306,17 @@ func TestErrNotFound(t *testing.T) {
 // Helpers
 // ============================================================================
 
+//go:fix inline
 func ptrStr(s string) *string {
-	return &s
+	return new(s)
 }
 
+//go:fix inline
 func ptrUUID(u uuid.UUID) *uuid.UUID {
-	return &u
+	return new(u)
 }
 
+//go:fix inline
 func ptrIP(ip net.IP) *net.IP {
-	return &ip
+	return new(ip)
 }

@@ -62,7 +62,7 @@ func BenchmarkL1Cache_Concurrent(b *testing.B) {
 
 	value := []byte("benchmark-value-data")
 	// Pre-populate
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		c.Set(fmt.Sprintf("key-%d", i), value)
 	}
 
@@ -108,7 +108,7 @@ func BenchmarkCache_SetGet_L1Only(b *testing.B) {
 
 	b.Run("Concurrent_Mixed", func(b *testing.B) {
 		// Pre-populate
-		for i := 0; i < 500; i++ {
+		for i := range 500 {
 			_ = cache.Set(ctx, fmt.Sprintf("movie:%d", i), value, 5*time.Minute)
 		}
 		b.ResetTimer()

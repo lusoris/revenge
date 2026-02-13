@@ -3,6 +3,7 @@ package middleware
 
 import (
 	"net/http"
+	"slices"
 	"time"
 
 	"log/slog"
@@ -137,13 +138,7 @@ func (rl *RateLimiter) shouldLimit(operationName string) bool {
 	}
 
 	// Check if operation is in the list
-	for _, op := range rl.config.Operations {
-		if op == operationName {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(rl.config.Operations, operationName)
 }
 
 // getClientIP extracts the client IP from the request.

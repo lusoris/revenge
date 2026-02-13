@@ -225,10 +225,10 @@ func TestRepositoryPG_CreateAuthToken(t *testing.T) {
 		UserID:            user.ID,
 		TokenHash:         "hash_abc123",
 		TokenType:         "refresh",
-		DeviceName:        stringPtr("Chrome Browser"),
-		DeviceFingerprint: stringPtr("fingerprint123"),
+		DeviceName:        new("Chrome Browser"),
+		DeviceFingerprint: new("fingerprint123"),
 		IPAddress:         &ipAddr,
-		UserAgent:         stringPtr("Mozilla/5.0"),
+		UserAgent:         new("Mozilla/5.0"),
 		ExpiresAt:         time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -277,7 +277,7 @@ func TestRepositoryPG_GetAuthTokensByUserID(t *testing.T) {
 	user := createTestUser(t, testDB, "usertokens", "usertokens@example.com")
 
 	// Create multiple tokens
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 			UserID:    user.ID,
 			TokenHash: "hash_user_" + string(rune('a'+i)),
@@ -382,7 +382,7 @@ func TestRepositoryPG_RevokeAllUserAuthTokens(t *testing.T) {
 	user := createTestUser(t, testDB, "revokeall", "revokeall@example.com")
 
 	// Create multiple tokens
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 			UserID:    user.ID,
 			TokenHash: "hash_revokeall_" + string(rune('a'+i)),
@@ -410,7 +410,7 @@ func TestRepositoryPG_RevokeAllUserAuthTokensExcept(t *testing.T) {
 
 	// Create multiple tokens
 	var keepToken AuthToken
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		token, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 			UserID:    user.ID,
 			TokenHash: "hash_except_" + string(rune('a'+i)),
@@ -441,7 +441,7 @@ func TestRepositoryPG_CountActiveAuthTokensByUser(t *testing.T) {
 	user := createTestUser(t, testDB, "countactive", "countactive@example.com")
 
 	// Create 3 active and 2 revoked tokens
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		token, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 			UserID:    user.ID,
 			TokenHash: "hash_count_" + string(rune('a'+i)),
@@ -543,7 +543,7 @@ func TestRepositoryPG_CreatePasswordResetToken(t *testing.T) {
 		UserID:    user.ID,
 		TokenHash: "reset_hash_123",
 		IPAddress: &ipAddr,
-		UserAgent: stringPtr("Mozilla/5.0"),
+		UserAgent: new("Mozilla/5.0"),
 		ExpiresAt: time.Now().Add(1 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -616,7 +616,7 @@ func TestRepositoryPG_InvalidateUserPasswordResetTokens(t *testing.T) {
 	user := createTestUser(t, testDB, "invalidate", "invalidate@example.com")
 
 	// Create multiple reset tokens
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreatePasswordResetToken(ctx, CreatePasswordResetTokenParams{
 			UserID:    user.ID,
 			TokenHash: "reset_inv_" + string(rune('a'+i)),
@@ -719,7 +719,7 @@ func TestRepositoryPG_CreateEmailVerificationToken(t *testing.T) {
 		TokenHash: "verify_hash_123",
 		Email:     user.Email,
 		IPAddress: &ipAddr,
-		UserAgent: stringPtr("Mozilla/5.0"),
+		UserAgent: new("Mozilla/5.0"),
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -794,7 +794,7 @@ func TestRepositoryPG_InvalidateUserEmailVerificationTokens(t *testing.T) {
 	user := createTestUser(t, testDB, "invverify", "invverify@example.com")
 
 	// Create multiple verification tokens
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
 			UserID:    user.ID,
 			TokenHash: "verify_inv_" + string(rune('a'+i)),
@@ -860,7 +860,7 @@ func TestRepositoryPG_InvalidateEmailVerificationTokensByEmail(t *testing.T) {
 	user2 := createTestUser(t, testDB, "invbyemail2", "invbyemail2@example.com")
 
 	// Create tokens for user1's email
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
 			UserID:    user1.ID,
 			TokenHash: "verify_byemail_u1_" + string(rune('a'+i)),
@@ -871,7 +871,7 @@ func TestRepositoryPG_InvalidateEmailVerificationTokensByEmail(t *testing.T) {
 	}
 
 	// Create tokens for user2's email
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		_, err := repo.CreateEmailVerificationToken(ctx, CreateEmailVerificationTokenParams{
 			UserID:    user2.ID,
 			TokenHash: "verify_byemail_u2_" + string(rune('a'+i)),
@@ -997,7 +997,7 @@ func TestRepositoryPG_RecordFailedLoginAttempt_Multiple(t *testing.T) {
 	ctx := context.Background()
 
 	// Record multiple failed attempts
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		err := repo.RecordFailedLoginAttempt(ctx, "bruteforce", "10.0.0.1")
 		require.NoError(t, err)
 	}
@@ -1025,7 +1025,7 @@ func TestRepositoryPG_CountFailedLoginAttemptsByUsername(t *testing.T) {
 
 	t.Run("counts only recent attempts", func(t *testing.T) {
 		// Record some attempts now
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			err := repo.RecordFailedLoginAttempt(ctx, "countuser", "192.168.1.50")
 			require.NoError(t, err)
 		}
@@ -1111,7 +1111,7 @@ func TestRepositoryPG_ClearFailedLoginAttemptsByUsername(t *testing.T) {
 	ctx := context.Background()
 
 	// Record multiple failed attempts for the user
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		err := repo.RecordFailedLoginAttempt(ctx, "clearuser", "10.0.0."+string(rune('1'+i)))
 		require.NoError(t, err)
 	}
@@ -1216,7 +1216,7 @@ func TestRepositoryPG_GetAuthTokensByDeviceFingerprint(t *testing.T) {
 
 	fingerprint := "fp-abc-123"
 	// Create tokens with matching fingerprint
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		_, err := repo.CreateAuthToken(ctx, CreateAuthTokenParams{
 			UserID:            user.ID,
 			TokenHash:         "hash_fp_match_" + string(rune('a'+i)),
@@ -1247,6 +1247,8 @@ func TestRepositoryPG_GetAuthTokensByDeviceFingerprint(t *testing.T) {
 }
 
 // Helper function
+//
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }

@@ -21,28 +21,28 @@ func TestMovieFileParser_Parse(t *testing.T) {
 			name:         "title with year in brackets",
 			filename:     "The Matrix (1999).mkv",
 			wantTitle:    "The Matrix",
-			wantYear:     intPtr(1999),
+			wantYear:     new(1999),
 			wantMetadata: true,
 		},
 		{
 			name:         "title with year and quality markers",
 			filename:     "Inception.2010.1080p.BluRay.x264.mkv",
 			wantTitle:    "Inception",
-			wantYear:     intPtr(2010),
+			wantYear:     new(2010),
 			wantMetadata: true,
 		},
 		{
 			name:         "title with dots",
 			filename:     "The.Dark.Knight.2008.BluRay.mkv",
 			wantTitle:    "The Dark Knight",
-			wantYear:     intPtr(2008),
+			wantYear:     new(2008),
 			wantMetadata: true,
 		},
 		{
 			name:         "title with underscores",
 			filename:     "Avatar_2009_1080p.mp4",
 			wantTitle:    "Avatar",
-			wantYear:     intPtr(2009),
+			wantYear:     new(2009),
 			wantMetadata: true,
 		},
 		{
@@ -63,21 +63,21 @@ func TestMovieFileParser_Parse(t *testing.T) {
 			name:         "complex release name",
 			filename:     "Interstellar.2014.2160p.UHD.BluRay.REMUX.HDR.HEVC.Atmos-FGT.mkv",
 			wantTitle:    "Interstellar",
-			wantYear:     intPtr(2014),
+			wantYear:     new(2014),
 			wantMetadata: true,
 		},
 		{
 			name:         "year in brackets with spaces",
 			filename:     "The Godfather ( 1972 ).mkv",
 			wantTitle:    "The Godfather",
-			wantYear:     intPtr(1972),
+			wantYear:     new(1972),
 			wantMetadata: true,
 		},
 		{
 			name:         "movie with multi-part title",
 			filename:     "Lord.of.the.Rings.The.Return.of.the.King.2003.Extended.mkv",
 			wantTitle:    "Lord of the Rings The Return of the King",
-			wantYear:     intPtr(2003),
+			wantYear:     new(2003),
 			wantMetadata: true,
 		},
 	}
@@ -127,6 +127,7 @@ func TestMovieFileParser_ContentType(t *testing.T) {
 	assert.Equal(t, "movie", parser.ContentType())
 }
 
+//go:fix inline
 func intPtr(i int) *int {
-	return &i
+	return new(i)
 }

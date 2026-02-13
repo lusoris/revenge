@@ -47,8 +47,8 @@ func TestService_CreateSession(t *testing.T) {
 
 	ipAddr := netip.MustParseAddr("192.168.1.1")
 	deviceInfo := DeviceInfo{
-		DeviceName: stringPtr("Test Device"),
-		UserAgent:  stringPtr("Mozilla/5.0"),
+		DeviceName: new("Test Device"),
+		UserAgent:  new("Mozilla/5.0"),
 		IPAddress:  &ipAddr,
 	}
 
@@ -177,7 +177,7 @@ func TestService_ListUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create multiple sessions
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 	}
@@ -220,7 +220,7 @@ func TestService_RevokeAllUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	var tokens []string
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
@@ -249,7 +249,7 @@ func TestService_RevokeAllUserSessionsExcept(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	var tokens []string
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
@@ -313,8 +313,8 @@ func TestService_SessionToInfo(t *testing.T) {
 		UserID:         userID,
 		TokenHash:      "test_hash",
 		IpAddress:      ipAddr,
-		DeviceName:     stringPtr("Test Device"),
-		UserAgent:      stringPtr("Mozilla/5.0"),
+		DeviceName:     new("Test Device"),
+		UserAgent:      new("Mozilla/5.0"),
 		CreatedAt:      time.Now(),
 		LastActivityAt: time.Now(),
 		ExpiresAt:      time.Now().Add(24 * time.Hour),
@@ -345,9 +345,9 @@ func TestService_RevokeAllUserSessionsExcept_Integration_CurrentSessionSurvives(
 
 	// Create 5 sessions
 	tokens := make([]string, 5)
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{
-			DeviceName: stringPtr(fmt.Sprintf("Device %d", i)),
+			DeviceName: new(fmt.Sprintf("Device %d", i)),
 		}, []string{"read"})
 		require.NoError(t, err)
 		tokens[i] = token
@@ -396,7 +396,7 @@ func TestService_CountActiveUserSessions_AfterCreateRevokeCleanupCycle(t *testin
 
 	// Create 3 sessions
 	var tokens []string
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		token, _, err := service.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, token)
@@ -557,7 +557,7 @@ func TestService_CreateSession_MaxPerUserBoundary(t *testing.T) {
 	deviceInfo := DeviceInfo{}
 
 	// Create exactly maxPerUser sessions
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, _, err := service.CreateSession(ctx, userID, deviceInfo, []string{"read"})
 		require.NoError(t, err)
 	}
@@ -586,8 +586,8 @@ func TestService_RefreshSession_Integration_PreservesDeviceInfo(t *testing.T) {
 
 	ipAddr := netip.MustParseAddr("10.0.0.42")
 	deviceInfo := DeviceInfo{
-		DeviceName: stringPtr("Firefox on Linux"),
-		UserAgent:  stringPtr("Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"),
+		DeviceName: new("Firefox on Linux"),
+		UserAgent:  new("Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"),
 		IPAddress:  &ipAddr,
 	}
 
@@ -687,7 +687,7 @@ func TestService_CachedService_Integration_RevokeAllInvalidatesCache(t *testing.
 
 	// Create 3 sessions
 	tokens := make([]string, 3)
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		token, _, err := cachedSvc.CreateSession(ctx, userID, DeviceInfo{}, []string{"read"})
 		require.NoError(t, err)
 		tokens[i] = token
@@ -722,8 +722,8 @@ func TestService_ListUserSessions_Integration_SessionInfoFields(t *testing.T) {
 
 	ipAddr := netip.MustParseAddr("172.16.0.1")
 	_, _, err := service.CreateSession(ctx, userID, DeviceInfo{
-		DeviceName: stringPtr("Chrome on MacOS"),
-		UserAgent:  stringPtr("Chrome/120"),
+		DeviceName: new("Chrome on MacOS"),
+		UserAgent:  new("Chrome/120"),
 		IPAddress:  &ipAddr,
 	}, []string{"read", "write"})
 	require.NoError(t, err)

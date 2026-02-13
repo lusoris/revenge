@@ -88,8 +88,8 @@ func extractOperation(sql string) string {
 	// Skip sqlc comment prefix (e.g., "-- name: GetMovie :one\n")
 	sqlToCheck := sql
 	if strings.HasPrefix(sql, "-- ") {
-		if idx := strings.Index(sql, "\n"); idx != -1 {
-			sqlToCheck = strings.TrimSpace(sql[idx+1:])
+		if _, after, ok := strings.Cut(sql, "\n"); ok {
+			sqlToCheck = strings.TrimSpace(after)
 		}
 	}
 
@@ -117,7 +117,7 @@ func NewQueryLogger(logger *slog.Logger, slowQueryThreshold time.Duration) *Quer
 }
 
 // Log implements pgx tracelog.Logger interface.
-func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]interface{}) {
+func (l *QueryLogger) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]any) {
 	var slogLevel slog.Level
 	switch level {
 	case tracelog.LogLevelTrace:

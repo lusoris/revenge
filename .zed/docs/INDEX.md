@@ -24,7 +24,7 @@
 
 1. **Installation**: Follow [SETUP.md](SETUP.md)
    - Install Zed on your platform
-   - Install required tools (Go 1.25.6, Python 3.12+, Node 20+)
+   - Install required tools (Go 1.26.0, Python 3.12+, Node 20+)
    - Configure formatters and LSPs
 
 2. **Learn Shortcuts**: Check [KEYBINDINGS.md](KEYBINDINGS.md)
@@ -68,7 +68,7 @@
 - **Formatter**: gofmt (via gopls)
 - **Setup**: [SETUP.md - Go](SETUP.md#go-gopls)
 - **Troubleshooting**: [TROUBLESHOOTING.md - gopls](TROUBLESHOOTING.md#gopls-not-starting)
-- **Required Version**: Go 1.25.6+
+- **Required Version**: Go 1.26.0+
 
 ### Python Development (Scripts)
 - **LSP**: ruff-lsp

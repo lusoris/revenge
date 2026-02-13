@@ -64,7 +64,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Parse category filters
 	var categories []notification.EventCategory
 	if cats := r.URL.Query().Get("categories"); cats != "" {
-		for _, c := range strings.Split(cats, ",") {
+		for c := range strings.SplitSeq(cats, ",") {
 			c = strings.TrimSpace(c)
 			if c != "" {
 				categories = append(categories, notification.EventCategory(c))

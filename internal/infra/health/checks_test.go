@@ -77,7 +77,7 @@ func TestCheckResult_Fields(t *testing.T) {
 		Name:    "test",
 		Status:  StatusHealthy,
 		Message: "test message",
-		Details: map[string]interface{}{
+		Details: map[string]any{
 			"key": "value",
 		},
 	}
@@ -110,13 +110,11 @@ func TestCheckCache_Concurrent(t *testing.T) {
 	ctx := context.Background()
 
 	var wg sync.WaitGroup
-	for i := 0; i < 100; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range 100 {
+		wg.Go(func() {
 			result := CheckCache(ctx, nil)
 			assert.Equal(t, StatusDegraded, result.Status)
-		}()
+		})
 	}
 	wg.Wait()
 }
@@ -125,13 +123,11 @@ func TestCheckJobs_Concurrent(t *testing.T) {
 	ctx := context.Background()
 
 	var wg sync.WaitGroup
-	for i := 0; i < 100; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range 100 {
+		wg.Go(func() {
 			result := CheckJobs(ctx, nil)
 			assert.Equal(t, StatusDegraded, result.Status)
-		}()
+		})
 	}
 	wg.Wait()
 }

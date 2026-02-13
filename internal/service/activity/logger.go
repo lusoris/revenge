@@ -26,8 +26,8 @@ type LogActionRequest struct {
 	Action       string
 	ResourceType string
 	ResourceID   uuid.UUID
-	Changes      map[string]interface{}
-	Metadata     map[string]interface{}
+	Changes      map[string]any
+	Metadata     map[string]any
 	IPAddress    net.IP
 	UserAgent    string
 }

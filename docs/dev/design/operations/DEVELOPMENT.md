@@ -2,7 +2,7 @@
 
 <!-- DESIGN: operations -->
 
-**Go**: 1.25+ with `GOEXPERIMENT=greenteagc,jsonv2`
+**Go**: 1.26+ with `GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret`
 **Build**: Makefile (`make help` for all targets)
 
 > Development environment setup, build commands, and tooling
@@ -11,7 +11,7 @@
 
 ## Prerequisites
 
-- Go 1.25+
+- Go 1.26+
 - Docker (for dev services + integration tests)
 - Make
 
@@ -104,7 +104,7 @@ make build && ./bin/revenge
 ## Environment Variables
 
 ```bash
-GOEXPERIMENT=greenteagc,jsonv2    # Required (set in Makefile)
+GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret    # Required (set in Makefile)
 DATABASE_URL=postgres://revenge:revenge_dev_pass@localhost:5432/revenge?sslmode=disable
 ```
 

@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestParseDate(t *testing.T) {
 	tests := []struct {
@@ -163,10 +164,10 @@ func TestMapMovieToMetadata(t *testing.T) {
 	assert.Equal(t, "Released", result.Status)
 	assert.Equal(t, 8.4, result.VoteAverage)
 
-	assert.Equal(t, ptr("Mischief. Mayhem. Soap."), result.Tagline)
-	assert.Equal(t, ptr("An insomniac office worker..."), result.Overview)
-	assert.Equal(t, ptr("https://homepage.url"), result.Homepage)
-	assert.Equal(t, ptr("https://trailer.url"), result.TrailerURL)
+	assert.Equal(t, new("Mischief. Mayhem. Soap."), result.Tagline)
+	assert.Equal(t, new("An insomniac office worker..."), result.Overview)
+	assert.Equal(t, new("https://homepage.url"), result.Homepage)
+	assert.Equal(t, new("https://trailer.url"), result.TrailerURL)
 
 	require.NotNil(t, result.Runtime)
 	assert.Equal(t, int32(139), *result.Runtime)
@@ -210,15 +211,15 @@ func TestMapMovieToMetadata_EmptyOptionals(t *testing.T) {
 func TestMapShowToSearchResult(t *testing.T) {
 	aired := time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)
 	s := &Show{
-		Title:    "Breaking Bad",
-		Year:     2008,
-		IDs:      IDs{Trakt: 1388},
-		Overview: "A chemistry teacher...",
-		Language: "en",
-		Country:  "us",
-		Rating:   8.9,
-		Votes:    12000,
-		Genres:   []string{"drama", "crime"},
+		Title:      "Breaking Bad",
+		Year:       2008,
+		IDs:        IDs{Trakt: 1388},
+		Overview:   "A chemistry teacher...",
+		Language:   "en",
+		Country:    "us",
+		Rating:     8.9,
+		Votes:      12000,
+		Genres:     []string{"drama", "crime"},
 		FirstAired: &aired,
 	}
 
@@ -242,20 +243,20 @@ func TestMapShowToSearchResult_Nil(t *testing.T) {
 func TestMapShowToMetadata(t *testing.T) {
 	aired := time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)
 	s := &Show{
-		Title:    "Breaking Bad",
-		Year:     2008,
-		IDs:      IDs{Trakt: 1388, IMDb: "tt0903747", TMDb: 1396, TVDb: 73255},
-		Overview: "A chemistry teacher...",
-		Homepage: "https://homepage.url",
-		Trailer:  "https://trailer.url",
-		Runtime:  47,
-		Network:  "AMC",
-		Country:  "us",
-		Status:   "ended",
-		Rating:   8.9,
-		Votes:    12000,
-		Language: "en",
-		Genres:   []string{"drama"},
+		Title:      "Breaking Bad",
+		Year:       2008,
+		IDs:        IDs{Trakt: 1388, IMDb: "tt0903747", TMDb: 1396, TVDb: 73255},
+		Overview:   "A chemistry teacher...",
+		Homepage:   "https://homepage.url",
+		Trailer:    "https://trailer.url",
+		Runtime:    47,
+		Network:    "AMC",
+		Country:    "us",
+		Status:     "ended",
+		Rating:     8.9,
+		Votes:      12000,
+		Language:   "en",
+		Genres:     []string{"drama"},
 		FirstAired: &aired,
 	}
 
@@ -269,9 +270,9 @@ func TestMapShowToMetadata(t *testing.T) {
 	assert.False(t, result.InProduction)
 	assert.Equal(t, []int{47}, result.EpisodeRuntime)
 
-	assert.Equal(t, ptr("A chemistry teacher..."), result.Overview)
-	assert.Equal(t, ptr("https://homepage.url"), result.Homepage)
-	assert.Equal(t, ptr("https://trailer.url"), result.TrailerURL)
+	assert.Equal(t, new("A chemistry teacher..."), result.Overview)
+	assert.Equal(t, new("https://homepage.url"), result.Homepage)
+	assert.Equal(t, new("https://trailer.url"), result.TrailerURL)
 
 	require.NotNil(t, result.FirstAirDate)
 	assert.Equal(t, []string{"US"}, result.OriginCountries)

@@ -40,7 +40,7 @@ Feature suggestions are welcome! Please:
 ## Development Setup
 
 ```bash
-# Prerequisites: Go 1.25+, Docker & Docker Compose
+# Prerequisites: Go 1.26+, Docker & Docker Compose
 
 # Clone your fork
 git clone https://github.com/YOUR_USERNAME/revenge.git

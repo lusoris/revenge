@@ -65,7 +65,7 @@ func TestStatsAfterQueries(t *testing.T) {
 
 	ctx := context.Background()
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		var result int
 		err := pool.QueryRow(ctx, "SELECT 1").Scan(&result)
 		require.NoError(t, err)
@@ -416,13 +416,13 @@ func TestConcurrentHealthChecks(t *testing.T) {
 	const numChecks = 20
 	errChan := make(chan error, numChecks)
 
-	for i := 0; i < numChecks; i++ {
+	for range numChecks {
 		go func() {
 			errChan <- Health(ctx, pool)
 		}()
 	}
 
-	for i := 0; i < numChecks; i++ {
+	for range numChecks {
 		err := <-errChan
 		assert.NoError(t, err, "Concurrent health check should succeed")
 	}

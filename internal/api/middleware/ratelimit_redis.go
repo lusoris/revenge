@@ -4,6 +4,7 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -133,7 +134,7 @@ func (rl *RedisRateLimiter) healthCheck() {
 		if !wasHealthy && rl.healthy {
 			rl.logger.Info("Redis connection restored, using distributed rate limiting")
 		} else if wasHealthy && !rl.healthy {
-			rl.logger.Warn("Redis connection lost, falling back to in-memory rate limiting", slog.Any("error",err))
+			rl.logger.Warn("Redis connection lost, falling back to in-memory rate limiting", slog.Any("error", err))
 		}
 		rl.mu.Unlock()
 	}
@@ -158,13 +159,7 @@ func (rl *RedisRateLimiter) shouldLimit(operationName string) bool {
 	}
 
 	// Check if operation is in the list
-	for _, op := range rl.config.Operations {
-		if op == operationName {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(rl.config.Operations, operationName)
 }
 
 // slidingWindowScript is a Lua script for sliding window rate limiting.
@@ -207,10 +202,9 @@ func (rl *RedisRateLimiter) allow(ctx context.Context, ip string) (bool, error) 
 	now := time.Now().UnixMilli()
 	windowMs := rl.config.WindowSize.Milliseconds()
 	limit := rl.config.Burst
-	expireSec := int64(rl.config.WindowSize.Seconds() * 2) // Double window for safety
-	if expireSec < 1 {
-		expireSec = 1
-	}
+	expireSec := max(
+		// Double window for safety
+		int64(rl.config.WindowSize.Seconds()*2), 1)
 
 	// Execute the Lua script via EVALSHA (falls back to EVAL on cache miss)
 	result := slidingWindowScript.Exec(ctx, rl.client,
@@ -261,7 +255,7 @@ func (rl *RedisRateLimiter) Middleware() middleware.Middleware {
 			// On Redis error, log and use fallback
 			rl.logger.Warn("Redis rate limit check failed, using fallback",
 				slog.String("ip", clientIP),
-				slog.Any("error",err),
+				slog.Any("error", err),
 			)
 			return rl.fallback.Middleware()(req, next)
 		}

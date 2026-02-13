@@ -10,8 +10,10 @@ package ptr
 //	    Year:     ptr.To(2010),
 //	    Director: ptr.To("Christopher Nolan"),
 //	}
+//
+//go:fix inline
 func To[T any](v T) *T {
-	return &v
+	return new(v)
 }
 
 // Value returns the value pointed to by p, or the zero value if p is nil.

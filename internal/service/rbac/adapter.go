@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
@@ -142,17 +143,18 @@ func (a *Adapter) AddPolicy(sec string, ptype string, rule []string) error {
 func (a *Adapter) RemovePolicy(sec string, ptype string, rule []string) error {
 	ctx := context.Background()
 
-	query := fmt.Sprintf("DELETE FROM %s WHERE ptype = $1", a.tableName)
-	args := []interface{}{ptype}
+	var query strings.Builder
+	query.WriteString(fmt.Sprintf("DELETE FROM %s WHERE ptype = $1", a.tableName))
+	args := []any{ptype}
 
 	for i, v := range rule {
 		if v != "" {
-			query += fmt.Sprintf(" AND v%d = $%d", i, i+2)
+			query.WriteString(fmt.Sprintf(" AND v%d = $%d", i, i+2))
 			args = append(args, v)
 		}
 	}
 
-	result, err := a.pool.Exec(ctx, query, args...)
+	result, err := a.pool.Exec(ctx, query.String(), args...)
 	if err != nil {
 		return fmt.Errorf("failed to remove policy: %w", err)
 	}
@@ -168,17 +170,18 @@ func (a *Adapter) RemovePolicy(sec string, ptype string, rule []string) error {
 func (a *Adapter) RemoveFilteredPolicy(sec string, ptype string, fieldIndex int, fieldValues ...string) error {
 	ctx := context.Background()
 
-	query := fmt.Sprintf("DELETE FROM %s WHERE ptype = $1", a.tableName)
-	args := []interface{}{ptype}
+	var query strings.Builder
+	query.WriteString(fmt.Sprintf("DELETE FROM %s WHERE ptype = $1", a.tableName))
+	args := []any{ptype}
 
 	for i, v := range fieldValues {
 		if v != "" {
-			query += fmt.Sprintf(" AND v%d = $%d", fieldIndex+i, i+2)
+			query.WriteString(fmt.Sprintf(" AND v%d = $%d", fieldIndex+i, i+2))
 			args = append(args, v)
 		}
 	}
 
-	_, err := a.pool.Exec(ctx, query, args...)
+	_, err := a.pool.Exec(ctx, query.String(), args...)
 	if err != nil {
 		return fmt.Errorf("failed to remove filtered policy: %w", err)
 	}

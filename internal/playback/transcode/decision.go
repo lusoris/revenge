@@ -31,8 +31,8 @@ type ProfileDecision struct {
 	Name           string
 	Width          int
 	Height         int
-	VideoBitrate   int    // kbps (0 = copy)
-	AudioBitrate   int    // kbps (0 = copy)
+	VideoBitrate   int // kbps (0 = copy)
+	AudioBitrate   int // kbps (0 = copy)
 	NeedsTranscode bool
 	VideoCodec     string // "copy" or "libx264"
 	AudioCodec     string // "copy" or "aac"
@@ -142,10 +142,7 @@ func analyzeProfile(p QualityProfile, info *movie.MediaInfo, canRemuxVideo, canR
 func estimateOriginalBitrate(info *movie.MediaInfo) int {
 	if info.VideoBitrateKbps > 0 {
 		// Use source bitrate but cap at reasonable levels for H.264
-		bitrate := int(info.VideoBitrateKbps)
-		if bitrate > 20000 {
-			bitrate = 20000
-		}
+		bitrate := min(int(info.VideoBitrateKbps), 20000)
 		return bitrate
 	}
 

@@ -155,12 +155,12 @@ func TestUserToDocument_Minimal(t *testing.T) {
 func TestParseUserDocument(t *testing.T) {
 	tests := []struct {
 		name     string
-		data     map[string]interface{}
+		data     map[string]any
 		expected UserDocument
 	}{
 		{
 			name: "full document",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":            "550e8400-e29b-41d4-a716-446655440000",
 				"username":      "johndoe",
 				"email":         "john@example.com",
@@ -185,12 +185,12 @@ func TestParseUserDocument(t *testing.T) {
 		},
 		{
 			name:     "empty document",
-			data:     map[string]interface{}{},
+			data:     map[string]any{},
 			expected: UserDocument{},
 		},
 		{
 			name: "partial document",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "abc123",
 				"username": "partial",
 				"is_admin": true,

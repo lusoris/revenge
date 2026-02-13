@@ -69,7 +69,7 @@ func (s *Service) LogWithContext(
 	action string,
 	resourceType string,
 	resourceID uuid.UUID,
-	changes map[string]interface{},
+	changes map[string]any,
 	ipAddress net.IP,
 	userAgent string,
 ) error {

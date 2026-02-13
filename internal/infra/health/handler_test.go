@@ -209,7 +209,7 @@ func TestResponse_Structure(t *testing.T) {
 				Message: "connected",
 			},
 		},
-		Details: map[string]interface{}{
+		Details: map[string]any{
 			"version": "1.0.0",
 		},
 	}

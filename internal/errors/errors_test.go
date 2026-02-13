@@ -75,10 +75,9 @@ func TestErrorf(t *testing.T) {
 		assert.Equal(t, "failed to process item 42", err.Error())
 	})
 
-	t.Run("format with wrapping using %w", func(t *testing.T) {
+	t.Run("format with wrapping using Wrap", func(t *testing.T) {
 		baseErr := errors.New("base error")
-		//nolint:govet // go-faster/errors.Errorf does support %w
-		err := errors.Errorf("wrapped: %w", baseErr)
+		err := errors.Wrap(baseErr, "wrapped")
 
 		require.NotNil(t, err)
 		assert.True(t, errors.Is(err, baseErr))
@@ -87,8 +86,7 @@ func TestErrorf(t *testing.T) {
 	})
 
 	t.Run("format with sentinel error wrapping", func(t *testing.T) {
-		//nolint:govet // go-faster/errors.Errorf does support %w
-		err := errors.Errorf("resource not found: %w", errors.ErrNotFound)
+		err := errors.Wrap(errors.ErrNotFound, "resource not found")
 
 		require.NotNil(t, err)
 		assert.True(t, errors.Is(err, errors.ErrNotFound))
@@ -157,6 +155,27 @@ func TestAs(t *testing.T) {
 	})
 }
 
+func TestAsType(t *testing.T) {
+	t.Run("custom error type found", func(t *testing.T) {
+		customErr := &customError{code: 404, msg: "not found"}
+		wrappedErr := errors.Wrap(customErr, "wrapped")
+
+		target, ok := errors.AsType[*customError](wrappedErr)
+
+		assert.True(t, ok)
+		require.NotNil(t, target)
+		assert.Equal(t, 404, target.code)
+		assert.Equal(t, "not found", target.msg)
+	})
+
+	t.Run("custom error type not found", func(t *testing.T) {
+		baseErr := errors.New("simple error")
+
+		_, ok := errors.AsType[*customError](baseErr)
+		assert.False(t, ok)
+	})
+}
+
 func TestUnwrap(t *testing.T) {
 	t.Run("unwrap wrapped error", func(t *testing.T) {
 		baseErr := errors.New("base")
@@ -198,8 +217,8 @@ func TestErrorChaining(t *testing.T) {
 	baseErr := errors.ErrNotFound
 	err1 := errors.Wrap(baseErr, "database query failed")
 	err2 := errors.Wrap(err1, "user service error")
-	//nolint:govet // go-faster/errors.Errorf does support %w
-	err3 := errors.Errorf("API handler failed: %w", err2)
+	//nolint:govet // go-faster/errors supports %w but Go vet doesn't know that
+	err3 := errors.Wrap(err2, "API handler failed")
 
 	// Should be able to detect sentinel error through all layers
 	assert.True(t, errors.Is(err3, errors.ErrNotFound))

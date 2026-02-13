@@ -237,7 +237,7 @@
   "terminal": {
     "working_directory": "current_project_directory",
     "env": {
-      "GOEXPERIMENT": "greenteagc,jsonv2"
+      "GOEXPERIMENT": "jsonv2,goroutineleakprofile,simd,runtimesecret"
     },
     "detect_venv": {
       "on": {

@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestParseDate(t *testing.T) {
 	tests := []struct {
@@ -74,8 +75,8 @@ func TestMapMovieSearchResult(t *testing.T) {
 		OriginalLanguage: "en",
 		Overview:         "A ticking-Loss bomb insomniac...",
 		ReleaseDate:      "1999-10-15",
-		PosterPath:       ptr("/poster.jpg"),
-		BackdropPath:     ptr("/backdrop.jpg"),
+		PosterPath:       new("/poster.jpg"),
+		BackdropPath:     new("/backdrop.jpg"),
 		VoteAverage:      8.4,
 		VoteCount:        25000,
 		Popularity:       60.5,
@@ -92,8 +93,8 @@ func TestMapMovieSearchResult(t *testing.T) {
 	assert.Equal(t, "Fight Club", result.OriginalTitle)
 	assert.Equal(t, "en", result.OriginalLanguage)
 	assert.Equal(t, "A ticking-Loss bomb insomniac...", result.Overview)
-	assert.Equal(t, ptr("/poster.jpg"), result.PosterPath)
-	assert.Equal(t, ptr("/backdrop.jpg"), result.BackdropPath)
+	assert.Equal(t, new("/poster.jpg"), result.PosterPath)
+	assert.Equal(t, new("/backdrop.jpg"), result.BackdropPath)
 	assert.Equal(t, 8.4, result.VoteAverage)
 	assert.Equal(t, 25000, result.VoteCount)
 	assert.Equal(t, 60.5, result.Popularity)
@@ -144,12 +145,12 @@ func TestMapMovieMetadata(t *testing.T) {
 	revenue := int64(100853753)
 	input := &MovieResponse{
 		ID:               550,
-		IMDbID:           ptr("tt0137523"),
+		IMDbID:           new("tt0137523"),
 		Title:            "Fight Club",
 		OriginalTitle:    "Fight Club",
 		OriginalLanguage: "en",
-		Overview:         ptr("An insomniac office worker..."),
-		Tagline:          ptr("Mischief. Mayhem. Soap."),
+		Overview:         new("An insomniac office worker..."),
+		Tagline:          new("Mischief. Mayhem. Soap."),
 		ReleaseDate:      "1999-10-15",
 		Runtime:          &runtime,
 		Budget:           &budget,
@@ -159,12 +160,12 @@ func TestMapMovieMetadata(t *testing.T) {
 		VoteCount:        25000,
 		Popularity:       60.5,
 		Adult:            false,
-		PosterPath:       ptr("/poster.jpg"),
-		BackdropPath:     ptr("/backdrop.jpg"),
-		Homepage:         ptr("https://fightclub.example.com"),
+		PosterPath:       new("/poster.jpg"),
+		BackdropPath:     new("/backdrop.jpg"),
+		Homepage:         new("https://fightclub.example.com"),
 		Genres:           []GenreResponse{{ID: 18, Name: "Drama"}, {ID: 53, Name: "Thriller"}},
 		ProductionCompanies: []CompanyResponse{
-			{ID: 508, Name: "Regency Enterprises", LogoPath: ptr("/logo.png"), OriginCountry: "US"},
+			{ID: 508, Name: "Regency Enterprises", LogoPath: new("/logo.png"), OriginCountry: "US"},
 		},
 		ProductionCountries: []CountryResponse{
 			{ISO3166_1: "US", Name: "United States"},
@@ -175,8 +176,8 @@ func TestMapMovieMetadata(t *testing.T) {
 		BelongsToCollection: &CollectionRefResponse{
 			ID:           123,
 			Name:         "Fight Club Collection",
-			PosterPath:   ptr("/col_poster.jpg"),
-			BackdropPath: ptr("/col_backdrop.jpg"),
+			PosterPath:   new("/col_poster.jpg"),
+			BackdropPath: new("/col_backdrop.jpg"),
 		},
 		Videos: &VideosResponse{
 			Results: []VideoResponse{
@@ -191,19 +192,19 @@ func TestMapMovieMetadata(t *testing.T) {
 	assert.Equal(t, metadata.ProviderTMDb, result.Provider)
 	require.NotNil(t, result.TMDbID)
 	assert.Equal(t, int32(550), *result.TMDbID)
-	assert.Equal(t, ptr("tt0137523"), result.IMDbID)
+	assert.Equal(t, new("tt0137523"), result.IMDbID)
 	assert.Equal(t, "Fight Club", result.Title)
 	assert.Equal(t, "Fight Club", result.OriginalTitle)
 	assert.Equal(t, "en", result.OriginalLanguage)
-	assert.Equal(t, ptr("Mischief. Mayhem. Soap."), result.Tagline)
-	assert.Equal(t, ptr("An insomniac office worker..."), result.Overview)
+	assert.Equal(t, new("Mischief. Mayhem. Soap."), result.Tagline)
+	assert.Equal(t, new("An insomniac office worker..."), result.Overview)
 	assert.Equal(t, "Released", result.Status)
 	assert.Equal(t, 8.4, result.VoteAverage)
 	assert.Equal(t, 25000, result.VoteCount)
 	assert.Equal(t, 60.5, result.Popularity)
 	assert.False(t, result.Adult)
-	assert.Equal(t, ptr("/poster.jpg"), result.PosterPath)
-	assert.Equal(t, ptr("/backdrop.jpg"), result.BackdropPath)
+	assert.Equal(t, new("/poster.jpg"), result.PosterPath)
+	assert.Equal(t, new("/backdrop.jpg"), result.BackdropPath)
 
 	// Release date
 	require.NotNil(t, result.ReleaseDate)
@@ -299,8 +300,8 @@ func TestMapTVSearchResult(t *testing.T) {
 		OriginalLanguage: "en",
 		Overview:         "A high school chemistry teacher...",
 		FirstAirDate:     "2008-01-20",
-		PosterPath:       ptr("/poster.jpg"),
-		BackdropPath:     ptr("/backdrop.jpg"),
+		PosterPath:       new("/poster.jpg"),
+		BackdropPath:     new("/backdrop.jpg"),
 		VoteAverage:      8.9,
 		VoteCount:        12000,
 		Popularity:       120.3,
@@ -330,8 +331,8 @@ func TestMapTVShowMetadata(t *testing.T) {
 		Name:             "Breaking Bad",
 		OriginalName:     "Breaking Bad",
 		OriginalLanguage: "en",
-		Overview:         ptr("A high school chemistry teacher..."),
-		Tagline:          ptr("All Hail the King"),
+		Overview:         new("A high school chemistry teacher..."),
+		Tagline:          new("All Hail the King"),
 		Status:           "Ended",
 		Type:             "Scripted",
 		FirstAirDate:     "2008-01-20",
@@ -343,11 +344,11 @@ func TestMapTVShowMetadata(t *testing.T) {
 		VoteAverage:      8.9,
 		VoteCount:        12000,
 		Popularity:       120.3,
-		PosterPath:       ptr("/poster.jpg"),
-		BackdropPath:     ptr("/backdrop.jpg"),
-		Homepage:         ptr("https://breakingbad.example.com"),
+		PosterPath:       new("/poster.jpg"),
+		BackdropPath:     new("/backdrop.jpg"),
+		Homepage:         new("https://breakingbad.example.com"),
 		Genres:           []GenreResponse{{ID: 18, Name: "Drama"}, {ID: 80, Name: "Crime"}},
-		Networks:         []NetworkResponse{{ID: 174, Name: "AMC", LogoPath: ptr("/amc.png"), OriginCountry: "US"}},
+		Networks:         []NetworkResponse{{ID: 174, Name: "AMC", LogoPath: new("/amc.png"), OriginCountry: "US"}},
 		CreatedBy:        []CreatorResponse{{ID: 66633, Name: "Vince Gilligan", Gender: 2, CreditID: "cr1"}},
 		OriginCountry:    []string{"US"},
 		SpokenLanguages:  []LanguageResponse{{ISO639_1: "en", Name: "English", EnglishName: "English"}},
@@ -413,21 +414,21 @@ func TestMapSeasonMetadata(t *testing.T) {
 	input := &SeasonResponse{
 		ID:           3572,
 		Name:         "Season 1",
-		Overview:     ptr("The first season..."),
+		Overview:     new("The first season..."),
 		SeasonNumber: 1,
 		AirDate:      "2008-01-20",
-		PosterPath:   ptr("/season1.jpg"),
+		PosterPath:   new("/season1.jpg"),
 		VoteAverage:  8.3,
 		Episodes: []EpisodeSummaryResponse{
 			{
 				ID:            62085,
 				Name:          "Pilot",
-				Overview:      ptr("Walter White, a high school chemistry teacher..."),
+				Overview:      new("Walter White, a high school chemistry teacher..."),
 				SeasonNumber:  1,
 				EpisodeNumber: 1,
 				AirDate:       "2008-01-20",
 				Runtime:       &runtime45,
-				StillPath:     ptr("/still1.jpg"),
+				StillPath:     new("/still1.jpg"),
 				VoteAverage:   8.5,
 				VoteCount:     500,
 			},
@@ -472,16 +473,16 @@ func TestMapEpisodeMetadata(t *testing.T) {
 	input := &EpisodeResponse{
 		ID:            62085,
 		Name:          "Pilot",
-		Overview:      ptr("Walter White..."),
+		Overview:      new("Walter White..."),
 		SeasonNumber:  1,
 		EpisodeNumber: 1,
 		AirDate:       "2008-01-20",
 		Runtime:       &runtime47,
-		StillPath:     ptr("/still.jpg"),
+		StillPath:     new("/still.jpg"),
 		VoteAverage:   8.5,
 		VoteCount:     500,
 		GuestStars: []CastResponse{
-			{ID: 101, Name: "John Doe", Character: "DEA Agent", Order: 0, CreditID: "cr1", Gender: 2, ProfilePath: ptr("/john.jpg")},
+			{ID: 101, Name: "John Doe", Character: "DEA Agent", Order: 0, CreditID: "cr1", Gender: 2, ProfilePath: new("/john.jpg")},
 		},
 		Crew: []CrewResponse{
 			{ID: 202, Name: "Vince Gilligan", Job: "Director", Department: "Directing", CreditID: "cr2", Gender: 2},
@@ -519,12 +520,12 @@ func TestMapPersonSearchResult(t *testing.T) {
 	input := &PersonSearchResponse{
 		ID:          17419,
 		Name:        "Bryan Cranston",
-		ProfilePath: ptr("/bryan.jpg"),
+		ProfilePath: new("/bryan.jpg"),
 		Popularity:  40.5,
 		Adult:       false,
 		KnownFor: []KnownForResponse{
-			{MediaType: "tv", ID: 1399, Name: "Breaking Bad", PosterPath: ptr("/bb.jpg")},
-			{MediaType: "movie", ID: 550, Title: "Fight Club", PosterPath: ptr("/fc.jpg")},
+			{MediaType: "tv", ID: 1399, Name: "Breaking Bad", PosterPath: new("/bb.jpg")},
+			{MediaType: "movie", ID: 550, Title: "Fight Club", PosterPath: new("/fc.jpg")},
 		},
 	}
 
@@ -533,7 +534,7 @@ func TestMapPersonSearchResult(t *testing.T) {
 	assert.Equal(t, "17419", result.ProviderID)
 	assert.Equal(t, metadata.ProviderTMDb, result.Provider)
 	assert.Equal(t, "Bryan Cranston", result.Name)
-	assert.Equal(t, ptr("/bryan.jpg"), result.ProfilePath)
+	assert.Equal(t, new("/bryan.jpg"), result.ProfilePath)
 	assert.False(t, result.Adult)
 
 	require.Len(t, result.KnownFor, 2)
@@ -548,16 +549,16 @@ func TestMapPersonMetadata(t *testing.T) {
 		ID:           17419,
 		Name:         "Bryan Cranston",
 		AlsoKnownAs:  []string{"Bryan Lee Cranston"},
-		Biography:    ptr("Bryan Lee Cranston is an American actor..."),
-		Birthday:     ptr("1956-03-07"),
+		Biography:    new("Bryan Lee Cranston is an American actor..."),
+		Birthday:     new("1956-03-07"),
 		Deathday:     nil,
 		Gender:       2,
-		PlaceOfBirth: ptr("Canoga Park, California"),
-		ProfilePath:  ptr("/bryan.jpg"),
-		Homepage:     ptr("https://example.com"),
+		PlaceOfBirth: new("Canoga Park, California"),
+		ProfilePath:  new("/bryan.jpg"),
+		Homepage:     new("https://example.com"),
 		Popularity:   40.5,
 		Adult:        false,
-		IMDbID:       ptr("nm0186505"),
+		IMDbID:       new("nm0186505"),
 		KnownForDept: "Acting",
 	}
 
@@ -580,8 +581,8 @@ func TestMapPersonMetadata_WithDeathday(t *testing.T) {
 	input := &PersonResponse{
 		ID:       12345,
 		Name:     "Test Person",
-		Birthday: ptr("1950-01-01"),
-		Deathday: ptr("2020-12-31"),
+		Birthday: new("1950-01-01"),
+		Deathday: new("2020-12-31"),
 	}
 
 	result := mapPersonMetadata(input)
@@ -594,8 +595,8 @@ func TestMapPersonMetadata_EmptyBirthdayDeathday(t *testing.T) {
 	input := &PersonResponse{
 		ID:       12345,
 		Name:     "Test",
-		Birthday: ptr(""),
-		Deathday: ptr(""),
+		Birthday: new(""),
+		Deathday: new(""),
 	}
 	result := mapPersonMetadata(input)
 	assert.Nil(t, result.Birthday)
@@ -611,8 +612,8 @@ func TestMapPersonCredits(t *testing.T) {
 				MediaType:    "tv",
 				ID:           1399,
 				Name:         "Breaking Bad",
-				Character:    ptr("Walter White"),
-				PosterPath:   ptr("/bb.jpg"),
+				Character:    new("Walter White"),
+				PosterPath:   new("/bb.jpg"),
 				VoteAverage:  8.9,
 				FirstAirDate: "2008-01-20",
 				EpisodeCount: &episodeCount,
@@ -621,7 +622,7 @@ func TestMapPersonCredits(t *testing.T) {
 				MediaType:   "movie",
 				ID:          550,
 				Title:       "Fight Club",
-				Character:   ptr("Tyler Durden"),
+				Character:   new("Tyler Durden"),
 				ReleaseDate: "1999-10-15",
 			},
 		},
@@ -630,16 +631,16 @@ func TestMapPersonCredits(t *testing.T) {
 				MediaType:   "movie",
 				ID:          999,
 				Title:       "Some Movie",
-				Job:         ptr("Director"),
-				Department:  ptr("Directing"),
+				Job:         new("Director"),
+				Department:  new("Directing"),
 				ReleaseDate: "2020-01-01",
 			},
 			{
 				MediaType:    "tv",
 				ID:           2000,
 				Name:         "Some Show",
-				Job:          ptr("Producer"),
-				Department:   ptr("Production"),
+				Job:          new("Producer"),
+				Department:   new("Production"),
 				FirstAirDate: "2018-06-01",
 			},
 		},
@@ -676,7 +677,7 @@ func TestMapCredits(t *testing.T) {
 	input := &CreditsResponse{
 		ID: 550,
 		Cast: []CastResponse{
-			{ID: 1, Name: "Brad Pitt", Character: "Tyler Durden", Order: 0, CreditID: "cr1", Gender: 2, ProfilePath: ptr("/brad.jpg")},
+			{ID: 1, Name: "Brad Pitt", Character: "Tyler Durden", Order: 0, CreditID: "cr1", Gender: 2, ProfilePath: new("/brad.jpg")},
 			{ID: 2, Name: "Edward Norton", Character: "Narrator", Order: 1, CreditID: "cr2", Gender: 2},
 		},
 		Crew: []CrewResponse{
@@ -691,7 +692,7 @@ func TestMapCredits(t *testing.T) {
 	assert.Equal(t, "Brad Pitt", result.Cast[0].Name)
 	assert.Equal(t, "Tyler Durden", result.Cast[0].Character)
 	assert.Equal(t, 0, result.Cast[0].Order)
-	assert.Equal(t, ptr("cr1"), result.Cast[0].CreditID)
+	assert.Equal(t, new("cr1"), result.Cast[0].CreditID)
 
 	require.Len(t, result.Crew, 1)
 	assert.Equal(t, "3", result.Crew[0].ProviderID)
@@ -703,7 +704,7 @@ func TestMapImages(t *testing.T) {
 	input := &ImagesResponse{
 		ID: 550,
 		Posters: []ImageResponse{
-			{FilePath: "/poster1.jpg", AspectRatio: 0.667, Width: 500, Height: 750, VoteAverage: 5.3, VoteCount: 10, ISO639_1: ptr("en")},
+			{FilePath: "/poster1.jpg", AspectRatio: 0.667, Width: 500, Height: 750, VoteAverage: 5.3, VoteCount: 10, ISO639_1: new("en")},
 		},
 		Backdrops: []ImageResponse{
 			{FilePath: "/backdrop1.jpg", AspectRatio: 1.778, Width: 1920, Height: 1080},
@@ -722,7 +723,7 @@ func TestMapImages(t *testing.T) {
 	assert.Equal(t, "/poster1.jpg", result.Posters[0].FilePath)
 	assert.Equal(t, 500, result.Posters[0].Width)
 	assert.Equal(t, 750, result.Posters[0].Height)
-	assert.Equal(t, ptr("en"), result.Posters[0].Language)
+	assert.Equal(t, new("en"), result.Posters[0].Language)
 
 	require.Len(t, result.Backdrops, 1)
 	assert.Equal(t, "/backdrop1.jpg", result.Backdrops[0].FilePath)
@@ -755,7 +756,7 @@ func TestMapImage(t *testing.T) {
 		Height:      800,
 		VoteAverage: 5.5,
 		VoteCount:   42,
-		ISO639_1:    ptr("de"),
+		ISO639_1:    new("de"),
 	}
 
 	result := mapImage(input)
@@ -766,7 +767,7 @@ func TestMapImage(t *testing.T) {
 	assert.Equal(t, 800, result.Height)
 	assert.Equal(t, 5.5, result.VoteAverage)
 	assert.Equal(t, 42, result.VoteCount)
-	assert.Equal(t, ptr("de"), result.Language)
+	assert.Equal(t, new("de"), result.Language)
 }
 
 func TestMapReleaseDates(t *testing.T) {
@@ -874,45 +875,45 @@ func TestMapTranslations(t *testing.T) {
 func TestMapExternalIDs(t *testing.T) {
 	input := &ExternalIDsResponse{
 		ID:          550,
-		IMDbID:      ptr("tt0137523"),
-		TVDbID:      ptr(73255),
-		WikidataID:  ptr("Q190050"),
-		FacebookID:  ptr("FightClub"),
-		InstagramID: ptr("fightclub"),
-		TwitterID:   ptr("fightclub"),
-		TikTokID:    ptr("fightclub"),
-		YouTubeID:   ptr("UC123"),
-		FreebaseID:  ptr("/en/fight_club"),
-		FreebaseMID: ptr("/m/0bth"),
-		TVRageID:    ptr(7926),
+		IMDbID:      new("tt0137523"),
+		TVDbID:      new(73255),
+		WikidataID:  new("Q190050"),
+		FacebookID:  new("FightClub"),
+		InstagramID: new("fightclub"),
+		TwitterID:   new("fightclub"),
+		TikTokID:    new("fightclub"),
+		YouTubeID:   new("UC123"),
+		FreebaseID:  new("/en/fight_club"),
+		FreebaseMID: new("/m/0bth"),
+		TVRageID:    new(7926),
 	}
 
 	result := mapExternalIDs(input, 550)
 
 	require.NotNil(t, result.TMDbID)
 	assert.Equal(t, int32(550), *result.TMDbID)
-	assert.Equal(t, ptr("tt0137523"), result.IMDbID)
+	assert.Equal(t, new("tt0137523"), result.IMDbID)
 	require.NotNil(t, result.TVDbID)
 	assert.Equal(t, int32(73255), *result.TVDbID)
 	require.NotNil(t, result.TVRageID)
 	assert.Equal(t, int32(7926), *result.TVRageID)
-	assert.Equal(t, ptr("Q190050"), result.WikidataID)
-	assert.Equal(t, ptr("FightClub"), result.FacebookID)
-	assert.Equal(t, ptr("fightclub"), result.InstagramID)
-	assert.Equal(t, ptr("fightclub"), result.TwitterID)
-	assert.Equal(t, ptr("fightclub"), result.TikTokID)
-	assert.Equal(t, ptr("UC123"), result.YouTubeID)
-	assert.Equal(t, ptr("/en/fight_club"), result.FreebaseID)
-	assert.Equal(t, ptr("/m/0bth"), result.FreebaseMID)
+	assert.Equal(t, new("Q190050"), result.WikidataID)
+	assert.Equal(t, new("FightClub"), result.FacebookID)
+	assert.Equal(t, new("fightclub"), result.InstagramID)
+	assert.Equal(t, new("fightclub"), result.TwitterID)
+	assert.Equal(t, new("fightclub"), result.TikTokID)
+	assert.Equal(t, new("UC123"), result.YouTubeID)
+	assert.Equal(t, new("/en/fight_club"), result.FreebaseID)
+	assert.Equal(t, new("/m/0bth"), result.FreebaseMID)
 }
 
 func TestMapExternalIDs_NilOptionalFields(t *testing.T) {
 	input := &ExternalIDsResponse{
 		ID:     550,
-		IMDbID: ptr("tt0137523"),
+		IMDbID: new("tt0137523"),
 	}
 	result := mapExternalIDs(input, 550)
-	assert.Equal(t, ptr("tt0137523"), result.IMDbID)
+	assert.Equal(t, new("tt0137523"), result.IMDbID)
 	assert.Nil(t, result.TVDbID)
 	assert.Nil(t, result.TVRageID)
 }
@@ -920,8 +921,8 @@ func TestMapExternalIDs_NilOptionalFields(t *testing.T) {
 func TestMapExternalIDs_ZeroTVDbID(t *testing.T) {
 	input := &ExternalIDsResponse{
 		ID:       550,
-		TVDbID:   ptr(0),
-		TVRageID: ptr(0),
+		TVDbID:   new(0),
+		TVRageID: new(0),
 	}
 	result := mapExternalIDs(input, 550)
 	assert.Nil(t, result.TVDbID)
@@ -932,9 +933,9 @@ func TestMapCollectionMetadata(t *testing.T) {
 	input := &CollectionResponse{
 		ID:           86311,
 		Name:         "Fight Club Collection",
-		Overview:     ptr("A collection of Fight Club movies."),
-		PosterPath:   ptr("/col_poster.jpg"),
-		BackdropPath: ptr("/col_backdrop.jpg"),
+		Overview:     new("A collection of Fight Club movies."),
+		PosterPath:   new("/col_poster.jpg"),
+		BackdropPath: new("/col_backdrop.jpg"),
 		Parts: []MovieSearchResponse{
 			{ID: 550, Title: "Fight Club", ReleaseDate: "1999-10-15"},
 			{ID: 551, Title: "Fight Club 2"},
@@ -946,9 +947,9 @@ func TestMapCollectionMetadata(t *testing.T) {
 	assert.Equal(t, "86311", result.ProviderID)
 	assert.Equal(t, metadata.ProviderTMDb, result.Provider)
 	assert.Equal(t, "Fight Club Collection", result.Name)
-	assert.Equal(t, ptr("A collection of Fight Club movies."), result.Overview)
-	assert.Equal(t, ptr("/col_poster.jpg"), result.PosterPath)
-	assert.Equal(t, ptr("/col_backdrop.jpg"), result.BackdropPath)
+	assert.Equal(t, new("A collection of Fight Club movies."), result.Overview)
+	assert.Equal(t, new("/col_poster.jpg"), result.PosterPath)
+	assert.Equal(t, new("/col_backdrop.jpg"), result.BackdropPath)
 
 	require.Len(t, result.Parts, 2)
 	assert.Equal(t, "550", result.Parts[0].ProviderID)

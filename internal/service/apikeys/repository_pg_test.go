@@ -45,7 +45,7 @@ func TestRepositoryPg_CreateAPIKey(t *testing.T) {
 	key, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 		UserID:      userID,
 		Name:        "Test Key",
-		Description: stringPtr("Test Description"),
+		Description: new("Test Description"),
 		KeyHash:     "test_hash_123",
 		KeyPrefix:   "rv_test",
 		Scopes:      []string{"read", "write"},
@@ -131,7 +131,7 @@ func TestRepositoryPg_ListUserAPIKeys(t *testing.T) {
 
 	// Create multiple keys
 	listBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
 			Name:      fmt.Sprintf("Key %s_%d", listBase[:8], i),
@@ -209,7 +209,7 @@ func TestRepositoryPg_CountUserAPIKeys(t *testing.T) {
 
 	// Create 3 keys (key_prefix max 16 chars)
 	countBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateAPIKey(ctx, db.CreateAPIKeyParams{
 			UserID:    userID,
 			Name:      "Count Key",
@@ -370,6 +370,7 @@ func TestRepositoryPg_DeleteExpiredAPIKeys(t *testing.T) {
 	assert.Equal(t, 0, count)
 }
 
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }

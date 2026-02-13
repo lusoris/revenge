@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestStripHTML(t *testing.T) {
 	tests := []struct {
@@ -34,15 +35,15 @@ func TestParseDate(t *testing.T) {
 		assert.Nil(t, parseDate(nil))
 	})
 	t.Run("empty", func(t *testing.T) {
-		assert.Nil(t, parseDate(ptr("")))
+		assert.Nil(t, parseDate(new("")))
 	})
 	t.Run("valid", func(t *testing.T) {
-		result := parseDate(ptr("2020-01-15"))
+		result := parseDate(new("2020-01-15"))
 		require.NotNil(t, result)
 		assert.Equal(t, time.Date(2020, 1, 15, 0, 0, 0, 0, time.UTC), *result)
 	})
 	t.Run("invalid", func(t *testing.T) {
-		assert.Nil(t, parseDate(ptr("bad")))
+		assert.Nil(t, parseDate(new("bad")))
 	})
 }
 
@@ -57,9 +58,9 @@ func TestParseAirdate(t *testing.T) {
 
 func TestMapGender(t *testing.T) {
 	assert.Equal(t, 0, mapGender(nil))
-	assert.Equal(t, 1, mapGender(ptr("Female")))
-	assert.Equal(t, 2, mapGender(ptr("Male")))
-	assert.Equal(t, 0, mapGender(ptr("Unknown")))
+	assert.Equal(t, 1, mapGender(new("Female")))
+	assert.Equal(t, 2, mapGender(new("Male")))
+	assert.Equal(t, 0, mapGender(new("Unknown")))
 }
 
 func TestMapDepartment(t *testing.T) {
@@ -122,9 +123,9 @@ func TestMapShowToTVShowSearchResult(t *testing.T) {
 		Language:  "English",
 		Status:    "Ended",
 		Genres:    []string{"Drama", "Crime"},
-		Premiered: ptr("2008-01-20"),
-		Summary:   ptr("<p>A chemistry teacher turns to meth.</p>"),
-		Rating:    Rating{Average: ptr(9.2)},
+		Premiered: new("2008-01-20"),
+		Summary:   new("<p>A chemistry teacher turns to meth.</p>"),
+		Rating:    Rating{Average: new(9.2)},
 		Image:     &ImageSet{Original: "https://example.com/bb.jpg"},
 		Network:   &Network{ID: 1, Name: "AMC", Country: &Country{Code: "US"}},
 	}
@@ -155,19 +156,19 @@ func TestMapShowToTVShowMetadata(t *testing.T) {
 			Language:     "English",
 			Status:       "Running",
 			Type:         "Scripted",
-			Summary:      ptr("<p>Summary here.</p>"),
-			Premiered:    ptr("2008-01-20"),
-			Ended:        ptr("2013-09-29"),
-			Runtime:      ptr(60),
-			Rating:       Rating{Average: ptr(9.2)},
+			Summary:      new("<p>Summary here.</p>"),
+			Premiered:    new("2008-01-20"),
+			Ended:        new("2013-09-29"),
+			Runtime:      new(60),
+			Rating:       Rating{Average: new(9.2)},
 			Image:        &ImageSet{Original: "https://example.com/bb.jpg"},
-			OfficialSite: ptr("https://www.amc.com/shows/breaking-bad"),
+			OfficialSite: new("https://www.amc.com/shows/breaking-bad"),
 			Genres:       []string{"Drama"},
 			Network:      &Network{ID: 1, Name: "AMC", Country: &Country{Code: "US"}},
 			Externals: Externals{
-				IMDb:   ptr("tt0903747"),
-				TVDb:   ptr(81189),
-				TVRage: ptr(18164),
+				IMDb:   new("tt0903747"),
+				TVDb:   new(81189),
+				TVRage: new(18164),
 			},
 		}
 		result := mapShowToTVShowMetadata(show)
@@ -208,7 +209,7 @@ func TestMapShowToTVShowMetadata(t *testing.T) {
 	})
 
 	t.Run("averageRuntime fallback", func(t *testing.T) {
-		show := &Show{ID: 3, Name: "Test", AverageRuntime: ptr(45)}
+		show := &Show{ID: 3, Name: "Test", AverageRuntime: new(45)}
 		result := mapShowToTVShowMetadata(show)
 		require.NotNil(t, result)
 		assert.Equal(t, []int{45}, result.EpisodeRuntime)
@@ -226,9 +227,9 @@ func TestMapSeasons(t *testing.T) {
 				ID:           1,
 				Number:       1,
 				Name:         "Season 1",
-				EpisodeOrder: ptr(7),
-				PremiereDate: ptr("2008-01-20"),
-				Summary:      ptr("<p>First season.</p>"),
+				EpisodeOrder: new(7),
+				PremiereDate: new("2008-01-20"),
+				Summary:      new("<p>First season.</p>"),
 				Image:        &ImageSet{Original: "https://example.com/s1.jpg"},
 			},
 			{
@@ -257,18 +258,18 @@ func TestMapEpisodes(t *testing.T) {
 			ID:      1,
 			Name:    "Pilot",
 			Season:  1,
-			Number:  ptr(1),
+			Number:  new(1),
 			Airdate: "2008-01-20",
-			Runtime: ptr(58),
-			Rating:  Rating{Average: ptr(9.0)},
-			Summary: ptr("<b>The beginning.</b>"),
+			Runtime: new(58),
+			Rating:  Rating{Average: new(9.0)},
+			Summary: new("<b>The beginning.</b>"),
 			Image:   &ImageSet{Original: "https://example.com/ep1.jpg"},
 		},
 		{
 			ID:     2,
 			Name:   "S2E1",
 			Season: 2,
-			Number: ptr(1),
+			Number: new(1),
 		},
 	}
 	result := mapEpisodes(episodes, 1)
@@ -288,14 +289,14 @@ func TestMapEpisodes(t *testing.T) {
 func TestMapCast(t *testing.T) {
 	cast := []CastMember{
 		{
-			Person:    Person{ID: 1, Name: "Bryan Cranston", Gender: ptr("Male"), Image: &ImageSet{Original: "https://example.com/bc.jpg"}},
+			Person:    Person{ID: 1, Name: "Bryan Cranston", Gender: new("Male"), Image: &ImageSet{Original: "https://example.com/bc.jpg"}},
 			Character: Character{ID: 10, Name: "Walter White"},
 		},
 	}
 	crew := []CrewMember{
 		{
 			Type:   "Creator",
-			Person: Person{ID: 2, Name: "Vince Gilligan", Gender: ptr("Male")},
+			Person: Person{ID: 2, Name: "Vince Gilligan", Gender: new("Male")},
 		},
 	}
 	result := mapCast(cast, crew)
@@ -378,9 +379,9 @@ func TestMapExternalIDs(t *testing.T) {
 	t.Run("with all IDs", func(t *testing.T) {
 		show := &Show{
 			Externals: Externals{
-				IMDb:   ptr("tt0903747"),
-				TVDb:   ptr(81189),
-				TVRage: ptr(18164),
+				IMDb:   new("tt0903747"),
+				TVDb:   new(81189),
+				TVRage: new(18164),
 			},
 		}
 		result := mapExternalIDs(show)

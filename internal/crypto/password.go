@@ -32,10 +32,7 @@ func maxConcurrentFromParams(params *argon2id.Params) int {
 	if memPerOp == 0 {
 		return runtime.NumCPU()
 	}
-	n := int(defaultMemoryBudget / memPerOp)
-	if n < 1 {
-		n = 1
-	}
+	n := max(int(defaultMemoryBudget/memPerOp), 1)
 	// Also cap to 2×NumCPU — no point queueing more than the CPUs can handle.
 	if cpuCap := 2 * runtime.NumCPU(); n > cpuCap {
 		n = cpuCap
@@ -48,8 +45,8 @@ func maxConcurrentFromParams(params *argon2id.Params) int {
 // load shedding: if all slots are busy, new requests are rejected immediately
 // instead of queuing goroutines that consume memory and cause OOM.
 type PasswordHasher struct {
-	params       *argon2id.Params
-	sem          *semaphore.Weighted
+	params        *argon2id.Params
+	sem           *semaphore.Weighted
 	maxConcurrent int64
 }
 
@@ -59,8 +56,8 @@ func NewPasswordHasher() *PasswordHasher {
 	params := argon2id.DefaultParams
 	n := int64(maxConcurrentFromParams(params))
 	return &PasswordHasher{
-		params:       params,
-		sem:          semaphore.NewWeighted(n),
+		params:        params,
+		sem:           semaphore.NewWeighted(n),
 		maxConcurrent: n,
 	}
 }
@@ -70,8 +67,8 @@ func NewPasswordHasher() *PasswordHasher {
 func NewPasswordHasherWithParams(params *argon2id.Params) *PasswordHasher {
 	n := int64(maxConcurrentFromParams(params))
 	return &PasswordHasher{
-		params:       params,
-		sem:          semaphore.NewWeighted(n),
+		params:        params,
+		sem:           semaphore.NewWeighted(n),
 		maxConcurrent: n,
 	}
 }
@@ -84,8 +81,8 @@ func NewPasswordHasherWithConcurrency(params *argon2id.Params, maxConcurrent int
 	}
 	n := int64(maxConcurrent)
 	return &PasswordHasher{
-		params:       params,
-		sem:          semaphore.NewWeighted(n),
+		params:        params,
+		sem:           semaphore.NewWeighted(n),
 		maxConcurrent: n,
 	}
 }

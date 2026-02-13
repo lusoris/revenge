@@ -78,7 +78,7 @@ type Episode struct {
 	Type    string     `json:"type,omitempty"`
 	Img     string     `json:"img,omitempty"`
 	Date    *time.Time `json:"date,omitempty"`
-	IDs     EpisodeIDs `json:"ids,omitempty"`
+	IDs     EpisodeIDs `json:"ids"`
 }
 
 // EpisodeIDs contains IDs for an episode.

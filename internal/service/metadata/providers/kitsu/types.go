@@ -4,8 +4,8 @@ package kitsu
 type ListResponse[T any] struct {
 	Data     []ResourceObject[T] `json:"data"`
 	Included []IncludedResource  `json:"included,omitempty"`
-	Meta     Meta                `json:"meta,omitempty"`
-	Links    Links               `json:"links,omitempty"`
+	Meta     Meta                `json:"meta"`
+	Links    Links               `json:"links"`
 }
 
 // SingleResponse wraps a single resource (JSON:API format).
@@ -20,7 +20,7 @@ type ResourceObject[T any] struct {
 	Type          string        `json:"type"`
 	Attributes    T             `json:"attributes"`
 	Relationships Relationships `json:"relationships,omitempty"`
-	Links         Links         `json:"links,omitempty"`
+	Links         Links         `json:"links"`
 }
 
 // IncludedResource is a generic included resource (for sideloading).
@@ -28,7 +28,7 @@ type IncludedResource struct {
 	ID         string         `json:"id"`
 	Type       string         `json:"type"`
 	Attributes map[string]any `json:"attributes"`
-	Links      Links          `json:"links,omitempty"`
+	Links      Links          `json:"links"`
 }
 
 // Relationships maps relationship names to relationship data.
@@ -37,7 +37,7 @@ type Relationships map[string]Relationship
 // Relationship is a JSON:API relationship.
 type Relationship struct {
 	Data  *RelationshipData `json:"data,omitempty"`
-	Links Links             `json:"links,omitempty"`
+	Links Links             `json:"links"`
 }
 
 // RelationshipData can be a single or list of resource identifiers.
@@ -67,30 +67,30 @@ type AnimeAttributes struct {
 	Synopsis            string            `json:"synopsis"`
 	Description         string            `json:"description"`
 	CoverImageTopOffset int               `json:"coverImageTopOffset"`
-	Titles              map[string]string `json:"titles"`           // en, en_jp, ja_jp, etc.
+	Titles              map[string]string `json:"titles"` // en, en_jp, ja_jp, etc.
 	CanonicalTitle      string            `json:"canonicalTitle"`
 	AbbreviatedTitles   []string          `json:"abbreviatedTitles"`
-	AverageRating       *string           `json:"averageRating"`    // "82.47" percentage string
+	AverageRating       *string           `json:"averageRating"` // "82.47" percentage string
 	RatingFrequencies   map[string]string `json:"ratingFrequencies"`
 	UserCount           int               `json:"userCount"`
 	FavoritesCount      int               `json:"favoritesCount"`
-	StartDate           *string           `json:"startDate"`        // "1998-04-03"
+	StartDate           *string           `json:"startDate"` // "1998-04-03"
 	EndDate             *string           `json:"endDate"`
 	NextRelease         *string           `json:"nextRelease"`
 	PopularityRank      *int              `json:"popularityRank"`
 	RatingRank          *int              `json:"ratingRank"`
-	AgeRating           *string           `json:"ageRating"`        // G, PG, R, R18
-	AgeRatingGuide      *string           `json:"ageRatingGuide"`   // "17+ (violence & profanity)"
-	Subtype             string            `json:"subtype"`          // TV, movie, OVA, ONA, special, music
-	Status              string            `json:"status"`           // current, finished, tba, unreleased, upcoming
+	AgeRating           *string           `json:"ageRating"`      // G, PG, R, R18
+	AgeRatingGuide      *string           `json:"ageRatingGuide"` // "17+ (violence & profanity)"
+	Subtype             string            `json:"subtype"`        // TV, movie, OVA, ONA, special, music
+	Status              string            `json:"status"`         // current, finished, tba, unreleased, upcoming
 	TBA                 *string           `json:"tba"`
 	PosterImage         *ImageSet         `json:"posterImage"`
 	CoverImage          *ImageSet         `json:"coverImage"`
 	EpisodeCount        *int              `json:"episodeCount"`
-	EpisodeLength       *int              `json:"episodeLength"`    // Length in minutes
-	TotalLength         *int              `json:"totalLength"`      // Total runtime in minutes
+	EpisodeLength       *int              `json:"episodeLength"` // Length in minutes
+	TotalLength         *int              `json:"totalLength"`   // Total runtime in minutes
 	YoutubeVideoID      *string           `json:"youtubeVideoId"`
-	ShowType            *string           `json:"showType"`         // TV, movie, etc.
+	ShowType            *string           `json:"showType"` // TV, movie, etc.
 	NSFW                bool              `json:"nsfw"`
 }
 
@@ -104,8 +104,8 @@ type EpisodeAttributes struct {
 	Number         *int              `json:"number"`
 	RelativeNumber *int              `json:"relativeNumber"`
 	Synopsis       string            `json:"synopsis"`
-	Airdate        *string           `json:"airdate"`  // "1998-04-01"
-	Length         *int              `json:"length"`    // Minutes
+	Airdate        *string           `json:"airdate"` // "1998-04-01"
+	Length         *int              `json:"length"`  // Minutes
 	Thumbnail      *ImageSet         `json:"thumbnail"`
 }
 
@@ -139,10 +139,10 @@ type MappingAttributes struct {
 
 // CastingAttributes contains casting information.
 type CastingAttributes struct {
-	Role       string  `json:"role"`        // e.g., "producer"
+	Role       string  `json:"role"` // e.g., "producer"
 	VoiceActor bool    `json:"voiceActor"`
 	Featured   bool    `json:"featured"`
-	Language   *string `json:"language"`    // e.g., "Japanese", "English"
+	Language   *string `json:"language"` // e.g., "Japanese", "English"
 }
 
 // ImageSet contains Kitsu image URLs at various sizes.

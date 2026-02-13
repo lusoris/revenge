@@ -272,7 +272,7 @@ func TestConcurrentErrorCreation(t *testing.T) {
 	// Test that error creation is safe for concurrent use
 	done := make(chan bool, 100)
 
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		go func(n int) {
 			err := errors.Wrapf(errors.ErrNotFound, "item %d", n)
 			assert.True(t, errors.Is(err, errors.ErrNotFound))
@@ -280,7 +280,7 @@ func TestConcurrentErrorCreation(t *testing.T) {
 		}(i)
 	}
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		<-done
 	}
 }

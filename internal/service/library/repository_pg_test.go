@@ -128,7 +128,7 @@ func TestRepositoryPg_List(t *testing.T) {
 	ctx := context.Background()
 
 	// Create multiple libraries
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		lib := createTestLibrary("list_test_"+string(rune('a'+i)), "movies")
 		require.NoError(t, repo.Create(ctx, lib))
 	}
@@ -168,7 +168,7 @@ func TestRepositoryPg_ListByType(t *testing.T) {
 	ctx := context.Background()
 
 	// Create movies libraries
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		lib := createTestLibrary("movie_"+string(rune('a'+i)), "movies")
 		require.NoError(t, repo.Create(ctx, lib))
 	}
@@ -194,8 +194,8 @@ func TestRepositoryPg_Update(t *testing.T) {
 	require.NoError(t, repo.Create(ctx, lib))
 
 	update := &LibraryUpdate{
-		Name:    stringPtr("updated_name"),
-		Enabled: boolPtr(false),
+		Name:    new("updated_name"),
+		Enabled: new(false),
 	}
 
 	updated, err := repo.Update(ctx, lib.ID, update)
@@ -229,7 +229,7 @@ func TestRepositoryPg_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create libraries
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		lib := createTestLibrary("count_"+string(rune('a'+i)), "movies")
 		require.NoError(t, repo.Create(ctx, lib))
 	}
@@ -245,7 +245,7 @@ func TestRepositoryPg_CountByType(t *testing.T) {
 	ctx := context.Background()
 
 	// Create music libraries
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		lib := createTestLibrary("music_"+string(rune('a'+i)), "music")
 		require.NoError(t, repo.Create(ctx, lib))
 	}
@@ -309,7 +309,7 @@ func TestRepositoryPg_ListScans(t *testing.T) {
 	require.NoError(t, repo.Create(ctx, lib))
 
 	// Create multiple scans
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
@@ -332,7 +332,7 @@ func TestRepositoryPg_CountScans(t *testing.T) {
 	require.NoError(t, repo.Create(ctx, lib))
 
 	// Create scans
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
@@ -356,7 +356,7 @@ func TestRepositoryPg_GetLatestScan(t *testing.T) {
 
 	// Create scans
 	var lastScan *LibraryScan
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
@@ -429,7 +429,7 @@ func TestRepositoryPg_UpdateScanStatus(t *testing.T) {
 	update := &ScanStatusUpdate{
 		Status:       "completed",
 		CompletedAt:  &now,
-		ErrorMessage: stringPtr(""),
+		ErrorMessage: new(""),
 	}
 
 	updated, err := repo.UpdateScanStatus(ctx, scan.ID, update)
@@ -568,7 +568,7 @@ func TestRepositoryPg_GetUserAccessibleLibraries(t *testing.T) {
 	})
 
 	// Create libraries and grant permissions
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		lib := createTestLibrary("access_lib_"+string(rune('a'+i)), "movies")
 		require.NoError(t, repo.Create(ctx, lib))
 
@@ -629,7 +629,7 @@ func TestRepositoryPg_DeleteOldScans(t *testing.T) {
 	require.NoError(t, repo.Create(ctx, lib))
 
 	// Create some scans
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		scan := &LibraryScan{
 			LibraryID: lib.ID,
 			ScanType:  ScanTypeFull,
@@ -681,7 +681,7 @@ func TestRepositoryPg_RevokeUserPermissions(t *testing.T) {
 	})
 
 	// Create libraries and grant permissions
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		lib := createTestLibrary("revoke_all_lib_"+string(rune('a'+i)), "movies")
 		require.NoError(t, repo.Create(ctx, lib))
 
@@ -770,7 +770,7 @@ func TestRepositoryPg_Update_WithScannerConfig(t *testing.T) {
 	require.NoError(t, repo.Create(ctx, lib))
 
 	update := &LibraryUpdate{
-		ScannerConfig: map[string]interface{}{
+		ScannerConfig: map[string]any{
 			"skip_hidden": true,
 			"depth":       float64(5),
 		},
@@ -787,7 +787,7 @@ func TestRepositoryPg_Update_NotFound(t *testing.T) {
 	repo, _ := setupTestRepository(t)
 	ctx := context.Background()
 
-	update := &LibraryUpdate{Name: stringPtr("ghost")}
+	update := &LibraryUpdate{Name: new("ghost")}
 	_, err := repo.Update(ctx, uuid.Must(uuid.NewV7()), update)
 	assert.ErrorIs(t, err, ErrNotFound)
 }
@@ -796,10 +796,12 @@ func TestRepositoryPg_Update_NotFound(t *testing.T) {
 // Helper Functions
 // ============================================================================
 
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }
 
+//go:fix inline
 func boolPtr(b bool) *bool {
-	return &b
+	return new(b)
 }

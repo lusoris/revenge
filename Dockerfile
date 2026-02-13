@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.25-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 # Install build dependencies
 # FFmpeg dev: go-astiav CGO bindings
@@ -27,8 +27,8 @@ ARG VERSION=dev
 ARG BUILD_TIME
 ARG GIT_COMMIT
 
-# Enable Go 1.25 experimental features
-ENV GOEXPERIMENT=greenteagc,jsonv2
+# Enable Go 1.26 experimental features
+ENV GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
 
 # Build binary with stripped symbols
 RUN CGO_ENABLED=1 GOOS=linux go build \

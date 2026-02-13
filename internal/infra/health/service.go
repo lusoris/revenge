@@ -27,10 +27,10 @@ const (
 
 // CheckResult represents the result of a health check.
 type CheckResult struct {
-	Name    string                 `json:"name"`
-	Status  Status                 `json:"status"`
-	Message string                 `json:"message,omitempty"`
-	Details map[string]interface{} `json:"details,omitempty"`
+	Name    string         `json:"name"`
+	Status  Status         `json:"status"`
+	Message string         `json:"message,omitempty"`
+	Details map[string]any `json:"details,omitempty"`
 }
 
 // Service provides health check functionality.
@@ -93,7 +93,7 @@ func (s *Service) Readiness(ctx context.Context) CheckResult {
 			Name:    "readiness",
 			Status:  StatusUnhealthy,
 			Message: "database not ready",
-			Details: map[string]interface{}{
+			Details: map[string]any{
 				"database": dbCheck,
 			},
 		}
@@ -103,7 +103,7 @@ func (s *Service) Readiness(ctx context.Context) CheckResult {
 		Name:    "readiness",
 		Status:  StatusHealthy,
 		Message: "service is ready",
-		Details: map[string]interface{}{
+		Details: map[string]any{
 			"database": dbCheck,
 		},
 	}

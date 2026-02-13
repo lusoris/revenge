@@ -35,13 +35,13 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderKitsu }
-func (p *Provider) Name() string                   { return "Kitsu" }
-func (p *Provider) Priority() int                  { return p.priority }
-func (p *Provider) SupportsMovies() bool           { return false }
-func (p *Provider) SupportsTVShows() bool          { return true }
-func (p *Provider) SupportsPeople() bool           { return false }
-func (p *Provider) ClearCache()                    { p.client.clearCache() }
+func (p *Provider) ID() metadata.ProviderID { return metadata.ProviderKitsu }
+func (p *Provider) Name() string            { return "Kitsu" }
+func (p *Provider) Priority() int           { return p.priority }
+func (p *Provider) SupportsMovies() bool    { return false }
+func (p *Provider) SupportsTVShows() bool   { return true }
+func (p *Provider) SupportsPeople() bool    { return false }
+func (p *Provider) ClearCache()             { p.client.clearCache() }
 
 // SupportsLanguage returns true for Japanese and English content.
 func (p *Provider) SupportsLanguage(lang string) bool {
@@ -56,10 +56,7 @@ func (p *Provider) SupportsLanguage(lang string) bool {
 // --- TVShowProvider ---
 
 func (p *Provider) SearchTVShow(ctx context.Context, query string, opts metadata.SearchOptions) ([]metadata.TVShowSearchResult, error) {
-	page := opts.Page
-	if page < 1 {
-		page = 1
-	}
+	page := max(opts.Page, 1)
 	limit := 20
 	offset := (page - 1) * limit
 
@@ -90,7 +87,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	}
 	return m, nil
 }
-
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	result, err := p.client.GetAnime(ctx, id)
@@ -130,7 +126,6 @@ func (p *Provider) GetTVShowContentRatings(ctx context.Context, id string) ([]me
 	return []metadata.ContentRating{rating}, nil
 }
 
-
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	mappings, err := p.client.GetMappings(ctx, id)
 	if err != nil {
@@ -166,8 +161,6 @@ func (p *Provider) GetSeason(ctx context.Context, showID string, seasonNum int, 
 	return sm, nil
 }
 
-
-
 func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, episodeNum int, _ string) (*metadata.EpisodeMetadata, error) {
 	// Fetch episodes and find the matching one
 	// Kitsu limits to 20 per page, so we may need to offset
@@ -197,5 +190,3 @@ func (p *Provider) GetEpisode(ctx context.Context, showID string, seasonNum, epi
 
 	return nil, metadata.ErrNotFound
 }
-
-

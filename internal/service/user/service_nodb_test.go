@@ -18,7 +18,6 @@ import (
 	"github.com/lusoris/revenge/internal/infra/logging"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // ============================================================================
@@ -633,7 +632,7 @@ func TestNoDB_UpdateUser(t *testing.T) {
 			},
 		}
 		svc := newTestService(repo)
-		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
+		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: new("name")})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "user not found")
 	})
@@ -649,7 +648,7 @@ func TestNoDB_UpdateUser(t *testing.T) {
 			},
 		}
 		svc := newTestService(repo)
-		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
+		_, err := svc.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: new("name")})
 		require.Error(t, err)
 	})
 }
@@ -1027,7 +1026,6 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		t.Parallel()
 		themes := []string{"light", "dark", "system"}
 		for _, theme := range themes {
-			theme := theme
 			t.Run(theme, func(t *testing.T) {
 				t.Parallel()
 				repo := &mockRepo{
@@ -1038,7 +1036,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 				svc := newTestService(repo)
 				result, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 					UserID: userID,
-					Theme:  ptr.To(theme),
+					Theme:  new(theme),
 				})
 				require.NoError(t, err)
 				assert.Equal(t, theme, *result.Theme)
@@ -1051,7 +1049,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		svc := newTestService(&mockRepo{})
 		_, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 			UserID: userID,
-			Theme:  ptr.To("invalid"),
+			Theme:  new("invalid"),
 		})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid theme")
@@ -1061,7 +1059,6 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		t.Parallel()
 		visibilities := []string{"public", "friends", "private"}
 		for _, vis := range visibilities {
-			vis := vis
 			t.Run(vis, func(t *testing.T) {
 				t.Parallel()
 				repo := &mockRepo{
@@ -1072,7 +1069,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 				svc := newTestService(repo)
 				result, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 					UserID:            userID,
-					ProfileVisibility: ptr.To(vis),
+					ProfileVisibility: new(vis),
 				})
 				require.NoError(t, err)
 				assert.Equal(t, vis, *result.ProfileVisibility)
@@ -1085,7 +1082,7 @@ func TestNoDB_UpdateUserPreferences(t *testing.T) {
 		svc := newTestService(&mockRepo{})
 		_, err := svc.UpdateUserPreferences(ctx, UpsertPreferencesParams{
 			UserID:            userID,
-			ProfileVisibility: ptr.To("invalid"),
+			ProfileVisibility: new("invalid"),
 		})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid profile visibility")
@@ -1463,17 +1460,17 @@ func TestNoDB_validatePreferences(t *testing.T) {
 		params  UpsertPreferencesParams
 		wantErr string
 	}{
-		{name: "valid theme light", params: UpsertPreferencesParams{Theme: ptr.To("light")}},
-		{name: "valid theme dark", params: UpsertPreferencesParams{Theme: ptr.To("dark")}},
-		{name: "valid theme system", params: UpsertPreferencesParams{Theme: ptr.To("system")}},
-		{name: "invalid theme", params: UpsertPreferencesParams{Theme: ptr.To("rainbow")}, wantErr: "invalid theme"},
-		{name: "valid visibility public", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("public")}},
-		{name: "valid visibility friends", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("friends")}},
-		{name: "valid visibility private", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("private")}},
-		{name: "invalid visibility", params: UpsertPreferencesParams{ProfileVisibility: ptr.To("hidden")}, wantErr: "invalid profile visibility"},
+		{name: "valid theme light", params: UpsertPreferencesParams{Theme: new("light")}},
+		{name: "valid theme dark", params: UpsertPreferencesParams{Theme: new("dark")}},
+		{name: "valid theme system", params: UpsertPreferencesParams{Theme: new("system")}},
+		{name: "invalid theme", params: UpsertPreferencesParams{Theme: new("rainbow")}, wantErr: "invalid theme"},
+		{name: "valid visibility public", params: UpsertPreferencesParams{ProfileVisibility: new("public")}},
+		{name: "valid visibility friends", params: UpsertPreferencesParams{ProfileVisibility: new("friends")}},
+		{name: "valid visibility private", params: UpsertPreferencesParams{ProfileVisibility: new("private")}},
+		{name: "invalid visibility", params: UpsertPreferencesParams{ProfileVisibility: new("hidden")}, wantErr: "invalid profile visibility"},
 		{name: "nil theme and visibility passes", params: UpsertPreferencesParams{}},
-		{name: "both valid", params: UpsertPreferencesParams{Theme: ptr.To("dark"), ProfileVisibility: ptr.To("public")}},
-		{name: "invalid theme overrides valid visibility", params: UpsertPreferencesParams{Theme: ptr.To("neon"), ProfileVisibility: ptr.To("public")}, wantErr: "invalid theme"},
+		{name: "both valid", params: UpsertPreferencesParams{Theme: new("dark"), ProfileVisibility: new("public")}},
+		{name: "invalid theme overrides valid visibility", params: UpsertPreferencesParams{Theme: new("neon"), ProfileVisibility: new("public")}, wantErr: "invalid theme"},
 	}
 
 	for _, tt := range tests {
@@ -1622,20 +1619,20 @@ func TestNoDB_getDefaultPreferences(t *testing.T) {
 
 	// Validate notification defaults are valid JSON
 	require.NotNil(t, defaults.EmailNotifications)
-	var emailNotif map[string]interface{}
+	var emailNotif map[string]any
 	err := json.Unmarshal(*defaults.EmailNotifications, &emailNotif)
 	require.NoError(t, err)
 	assert.True(t, emailNotif["enabled"].(bool))
 	assert.Equal(t, "instant", emailNotif["frequency"].(string))
 
 	require.NotNil(t, defaults.PushNotifications)
-	var pushNotif map[string]interface{}
+	var pushNotif map[string]any
 	err = json.Unmarshal(*defaults.PushNotifications, &pushNotif)
 	require.NoError(t, err)
 	assert.False(t, pushNotif["enabled"].(bool))
 
 	require.NotNil(t, defaults.DigestNotifications)
-	var digestNotif map[string]interface{}
+	var digestNotif map[string]any
 	err = json.Unmarshal(*defaults.DigestNotifications, &digestNotif)
 	require.NoError(t, err)
 	assert.True(t, digestNotif["enabled"].(bool))
@@ -1890,7 +1887,7 @@ func TestNoDB_CachedService_UpdateUser_RepoError(t *testing.T) {
 	defer testCache.Close()
 	cached := NewCachedService(svc, testCache, logging.NewTestLogger())
 
-	_, err = cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: ptr.To("name")})
+	_, err = cached.UpdateUser(ctx, userID, UpdateUserParams{DisplayName: new("name")})
 	require.Error(t, err)
 }
 

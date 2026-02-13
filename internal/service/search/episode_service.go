@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -57,10 +56,10 @@ func (s *EpisodeSearchService) InitializeCollection(ctx context.Context) error {
 
 // EpisodeWithContext bundles an episode with its parent series info for indexing.
 type EpisodeWithContext struct {
-	Episode         *tvshow.Episode
-	SeriesTitle     string
+	Episode          *tvshow.Episode
+	SeriesTitle      string
 	SeriesPosterPath string
-	HasFile         bool
+	HasFile          bool
 }
 
 // IndexEpisode indexes a single episode in Typesense.
@@ -121,10 +120,10 @@ func (s *EpisodeSearchService) RemoveEpisodesBySeries(ctx context.Context, serie
 
 	filterBy := fmt.Sprintf("series_id:=%s", seriesID.String())
 	searchParams := &api.SearchCollectionParams{
-		Q:        ptr.To("*"),
-		QueryBy:  ptr.To("title"),
+		Q:        new("*"),
+		QueryBy:  new("title"),
 		FilterBy: &filterBy,
-		PerPage:  ptr.To(250),
+		PerPage:  new(250),
 	}
 
 	result, err := s.client.Search(ctx, EpisodeCollectionName, searchParams)
@@ -159,7 +158,7 @@ func (s *EpisodeSearchService) BulkIndexEpisodes(ctx context.Context, episodes [
 		return nil
 	}
 
-	docs := make([]interface{}, len(episodes))
+	docs := make([]any, len(episodes))
 	for i, ep := range episodes {
 		docs[i] = s.episodeToDocument(ep.Episode, ep.SeriesTitle, ep.SeriesPosterPath, ep.HasFile)
 	}
@@ -347,8 +346,8 @@ func (s *EpisodeSearchService) AutocompleteEpisodes(ctx context.Context, query s
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	result, err := s.client.Search(ctx, EpisodeCollectionName, searchParams)
@@ -514,7 +513,7 @@ func (s *EpisodeSearchService) episodeToDocument(ep *tvshow.Episode, seriesTitle
 }
 
 // parseEpisodeDocument parses a map into an EpisodeDocument.
-func parseEpisodeDocument(data map[string]interface{}) EpisodeDocument {
+func parseEpisodeDocument(data map[string]any) EpisodeDocument {
 	doc := EpisodeDocument{}
 
 	if v, ok := data["id"].(string); ok {

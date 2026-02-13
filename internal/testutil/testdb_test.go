@@ -61,7 +61,7 @@ func TestNewTestDB_Parallel(t *testing.T) {
 	}
 
 	// Run multiple tests in parallel to verify isolation
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		t.Run("parallel", func(t *testing.T) {
 			t.Parallel()
 			db := NewTestDB(t)
@@ -133,7 +133,7 @@ func TestNewFastTestDB_Parallel(t *testing.T) {
 	}
 
 	// Run multiple tests in parallel to verify isolation
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		t.Run("parallel", func(t *testing.T) {
 			t.Parallel()
 			db := NewFastTestDB(t)

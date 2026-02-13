@@ -224,7 +224,7 @@ func collectDragonflyStats(client rueidis.Client, logger *slog.Logger) {
 
 	// Keyspace: parse db0 line like "db0:keys=123,expires=45,avg_ttl=6789"
 	if db0, ok := parsed["db0"]; ok {
-		for _, part := range strings.Split(db0, ",") {
+		for part := range strings.SplitSeq(db0, ",") {
 			kv := strings.SplitN(part, "=", 2)
 			if len(kv) == 2 && kv[0] == "keys" {
 				dragonflyTotalKeys.Set(parseFloat(kv[1]))
@@ -236,7 +236,7 @@ func collectDragonflyStats(client rueidis.Client, logger *slog.Logger) {
 // parseRedisInfo parses the output of Redis/Dragonfly INFO into a map.
 func parseRedisInfo(info string) map[string]string {
 	result := make(map[string]string)
-	for _, line := range strings.Split(info, "\n") {
+	for line := range strings.SplitSeq(info, "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue

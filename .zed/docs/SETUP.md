@@ -105,7 +105,7 @@ Project settings are in `.zed/settings.json` and automatically apply when openin
 go install github.com/golang/tools/gopls@latest
 ```
 
-**Version requirement**: Go 1.25.6+
+**Version requirement**: Go 1.26.0+
 
 **Check installation**:
 ```bash

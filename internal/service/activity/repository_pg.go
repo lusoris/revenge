@@ -369,14 +369,14 @@ func dbActivityToEntry(a db.ActivityLog) *Entry {
 	}
 
 	if len(a.Changes) > 0 {
-		var changes map[string]interface{}
+		var changes map[string]any
 		if err := json.Unmarshal(a.Changes, &changes); err == nil {
 			entry.Changes = changes
 		}
 	}
 
 	if len(a.Metadata) > 0 {
-		var metadata map[string]interface{}
+		var metadata map[string]any
 		if err := json.Unmarshal(a.Metadata, &metadata); err == nil {
 			entry.Metadata = metadata
 		}

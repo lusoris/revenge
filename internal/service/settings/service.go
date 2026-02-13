@@ -18,38 +18,38 @@ type Service interface {
 	ListServerSettings(ctx context.Context) ([]ServerSetting, error)
 	ListServerSettingsByCategory(ctx context.Context, category string) ([]ServerSetting, error)
 	ListPublicServerSettings(ctx context.Context) ([]ServerSetting, error)
-	SetServerSetting(ctx context.Context, key string, value interface{}, updatedBy uuid.UUID) (*ServerSetting, error)
+	SetServerSetting(ctx context.Context, key string, value any, updatedBy uuid.UUID) (*ServerSetting, error)
 	DeleteServerSetting(ctx context.Context, key string) error
 
 	// User Settings
 	GetUserSetting(ctx context.Context, userID uuid.UUID, key string) (*UserSetting, error)
 	ListUserSettings(ctx context.Context, userID uuid.UUID) ([]UserSetting, error)
 	ListUserSettingsByCategory(ctx context.Context, userID uuid.UUID, category string) ([]UserSetting, error)
-	SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value interface{}) (*UserSetting, error)
-	SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, settings map[string]interface{}) error
+	SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value any) (*UserSetting, error)
+	SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, settings map[string]any) error
 	DeleteUserSetting(ctx context.Context, userID uuid.UUID, key string) error
 }
 
 // ServerSetting represents a server-wide configuration setting.
 type ServerSetting struct {
-	Key           string      `json:"key"`
-	Value         interface{} `json:"value"`
-	Description   *string     `json:"description,omitempty"`
-	Category      *string     `json:"category,omitempty"`
-	DataType      string      `json:"data_type"`
-	IsSecret      *bool       `json:"is_secret,omitempty"`
-	IsPublic      *bool       `json:"is_public,omitempty"`
-	AllowedValues []string    `json:"allowed_values,omitempty"`
+	Key           string   `json:"key"`
+	Value         any      `json:"value"`
+	Description   *string  `json:"description,omitempty"`
+	Category      *string  `json:"category,omitempty"`
+	DataType      string   `json:"data_type"`
+	IsSecret      *bool    `json:"is_secret,omitempty"`
+	IsPublic      *bool    `json:"is_public,omitempty"`
+	AllowedValues []string `json:"allowed_values,omitempty"`
 }
 
 // UserSetting represents a user-specific configuration setting.
 type UserSetting struct {
-	UserID      uuid.UUID   `json:"user_id"`
-	Key         string      `json:"key"`
-	Value       interface{} `json:"value"`
-	Description *string     `json:"description,omitempty"`
-	Category    *string     `json:"category,omitempty"`
-	DataType    string      `json:"data_type"`
+	UserID      uuid.UUID `json:"user_id"`
+	Key         string    `json:"key"`
+	Value       any       `json:"value"`
+	Description *string   `json:"description,omitempty"`
+	Category    *string   `json:"category,omitempty"`
+	DataType    string    `json:"data_type"`
 }
 
 // service implements the Service interface.
@@ -134,7 +134,7 @@ func (s *service) ListPublicServerSettings(ctx context.Context) ([]ServerSetting
 	return settings, nil
 }
 
-func (s *service) SetServerSetting(ctx context.Context, key string, value interface{}, updatedBy uuid.UUID) (*ServerSetting, error) {
+func (s *service) SetServerSetting(ctx context.Context, key string, value any, updatedBy uuid.UUID) (*ServerSetting, error) {
 	// Marshal value to JSONB
 	jsonValue, err := MarshalValue(value)
 	if err != nil {
@@ -231,7 +231,7 @@ func (s *service) ListUserSettingsByCategory(ctx context.Context, userID uuid.UU
 	return settings, nil
 }
 
-func (s *service) SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value interface{}) (*UserSetting, error) {
+func (s *service) SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value any) (*UserSetting, error) {
 	// Marshal value to JSONB
 	jsonValue, err := MarshalValue(value)
 	if err != nil {
@@ -253,7 +253,7 @@ func (s *service) SetUserSetting(ctx context.Context, userID uuid.UUID, key stri
 	return s.toUserSetting(dbSetting)
 }
 
-func (s *service) SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, settings map[string]interface{}) error {
+func (s *service) SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, settings map[string]any) error {
 	for key, value := range settings {
 		if _, err := s.SetUserSetting(ctx, userID, key, value); err != nil {
 			return fmt.Errorf("failed to set user setting %q: %w", key, err)
@@ -274,7 +274,7 @@ func (s *service) DeleteUserSetting(ctx context.Context, userID uuid.UUID, key s
 // ============================================================================
 
 func (s *service) toServerSetting(dbSetting *db.SharedServerSetting) (*ServerSetting, error) {
-	var value interface{}
+	var value any
 	if err := json.Unmarshal(dbSetting.Value, &value); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal setting value: %w", err)
 	}
@@ -291,7 +291,7 @@ func (s *service) toServerSetting(dbSetting *db.SharedServerSetting) (*ServerSet
 }
 
 func (s *service) toUserSetting(dbSetting *db.SharedUserSetting) (*UserSetting, error) {
-	var value interface{}
+	var value any
 	if err := json.Unmarshal(dbSetting.Value, &value); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal setting value: %w", err)
 	}

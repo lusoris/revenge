@@ -27,8 +27,8 @@ type MediaInfo struct {
 
 // Quality represents quality information (profile + revision).
 type Quality struct {
-	Quality  QualityInfo     `json:"quality,omitempty"`
-	Revision QualityRevision `json:"revision,omitempty"`
+	Quality  QualityInfo     `json:"quality"`
+	Revision QualityRevision `json:"revision"`
 }
 
 // QualityInfo contains quality details.
@@ -158,12 +158,12 @@ type WebhookRelease struct {
 
 // Shared webhook event types common to all arr applications.
 const (
-	EventGrab                       = "Grab"
-	EventDownload                   = "Download"
-	EventRename                     = "Rename"
-	EventHealth                     = "Health"
-	EventHealthRestored             = "HealthRestored"
-	EventApplicationUpdate          = "ApplicationUpdate"
-	EventManualInteractionRequired  = "ManualInteractionRequired"
-	EventTest                       = "Test"
+	EventGrab                      = "Grab"
+	EventDownload                  = "Download"
+	EventRename                    = "Rename"
+	EventHealth                    = "Health"
+	EventHealthRestored            = "HealthRestored"
+	EventApplicationUpdate         = "ApplicationUpdate"
+	EventManualInteractionRequired = "ManualInteractionRequired"
+	EventTest                      = "Test"
 )

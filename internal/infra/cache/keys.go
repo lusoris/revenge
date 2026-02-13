@@ -15,10 +15,10 @@ const (
 	KeyPrefixSessionByUser = "session:user:"
 
 	// RBAC cache keys
-	KeyPrefixRBACPolicy     = "rbac:policy:"
-	KeyPrefixRBACEnforce    = "rbac:enforce:"
-	KeyPrefixRBACUserRoles  = "rbac:roles:"
-	KeyPrefixRBACUserPerms  = "rbac:perms:"
+	KeyPrefixRBACPolicy    = "rbac:policy:"
+	KeyPrefixRBACEnforce   = "rbac:enforce:"
+	KeyPrefixRBACUserRoles = "rbac:roles:"
+	KeyPrefixRBACUserPerms = "rbac:perms:"
 
 	// Settings cache keys
 	KeyPrefixServerSetting = "settings:server:"
@@ -30,35 +30,35 @@ const (
 	KeyPrefixUserEmail  = "user:email:"
 
 	// Content cache keys
-	KeyPrefixMovie            = "movie:"
-	KeyPrefixMovieCast        = "movie:cast:"
-	KeyPrefixMovieCrew        = "movie:crew:"
-	KeyPrefixMovieGenres      = "movie:genres:"
-	KeyPrefixMovieFiles       = "movie:files:"
-	KeyPrefixMovieList        = "movie:list:"
-	KeyPrefixMovieRecent      = "movie:recent"
-	KeyPrefixMovieTopRated    = "movie:toprated"
-	KeyPrefixMovieMeta        = "movie:meta:"
+	KeyPrefixMovie         = "movie:"
+	KeyPrefixMovieCast     = "movie:cast:"
+	KeyPrefixMovieCrew     = "movie:crew:"
+	KeyPrefixMovieGenres   = "movie:genres:"
+	KeyPrefixMovieFiles    = "movie:files:"
+	KeyPrefixMovieList     = "movie:list:"
+	KeyPrefixMovieRecent   = "movie:recent"
+	KeyPrefixMovieTopRated = "movie:toprated"
+	KeyPrefixMovieMeta     = "movie:meta:"
 
 	// TV show cache keys
-	KeyPrefixTVShow          = "tvshow:"
-	KeyPrefixTVShowCast      = "tvshow:cast:"
-	KeyPrefixTVShowCrew      = "tvshow:crew:"
-	KeyPrefixTVShowGenres    = "tvshow:genres:"
-	KeyPrefixTVShowNetworks  = "tvshow:networks:"
-	KeyPrefixTVShowList      = "tvshow:list:"
-	KeyPrefixTVShowRecent    = "tvshow:recent"
-	KeyPrefixTVShowSeasons   = "tvshow:seasons:"
-	KeyPrefixTVShowEpisodes  = "tvshow:episodes:"
+	KeyPrefixTVShow         = "tvshow:"
+	KeyPrefixTVShowCast     = "tvshow:cast:"
+	KeyPrefixTVShowCrew     = "tvshow:crew:"
+	KeyPrefixTVShowGenres   = "tvshow:genres:"
+	KeyPrefixTVShowNetworks = "tvshow:networks:"
+	KeyPrefixTVShowList     = "tvshow:list:"
+	KeyPrefixTVShowRecent   = "tvshow:recent"
+	KeyPrefixTVShowSeasons  = "tvshow:seasons:"
+	KeyPrefixTVShowEpisodes = "tvshow:episodes:"
 
-	KeyPrefixLibrary          = "library:"
-	KeyPrefixLibraryStats     = "library:stats:"
-	KeyPrefixSearch           = "search:"
-	KeyPrefixSearchMovies     = "search:movies:"
-	KeyPrefixSearchTVShows    = "search:tvshows:"
+	KeyPrefixLibrary            = "library:"
+	KeyPrefixLibraryStats       = "library:stats:"
+	KeyPrefixSearch             = "search:"
+	KeyPrefixSearchMovies       = "search:movies:"
+	KeyPrefixSearchTVShows      = "search:tvshows:"
 	KeyPrefixSearchAutocomplete = "search:autocomplete:"
-	KeyPrefixImage            = "image:"
-	KeyPrefixContinueWatching = "user:continue:"
+	KeyPrefixImage              = "image:"
+	KeyPrefixContinueWatching   = "user:continue:"
 
 	// API key cache keys
 	KeyPrefixAPIKey       = "apikey:"
@@ -315,7 +315,7 @@ func ContinueWatchingKey(userID string, limit int32) string {
 
 // CacheAside is a helper that implements the cache-aside pattern.
 // It first checks the cache, and on miss, calls the loader function.
-func (c *Cache) CacheAside(ctx context.Context, key string, ttl time.Duration, loader func() (interface{}, error), dest interface{}) error {
+func (c *Cache) CacheAside(ctx context.Context, key string, ttl time.Duration, loader func() (any, error), dest any) error {
 	// Try cache first
 	err := c.GetJSON(ctx, key, dest)
 	if err == nil {

@@ -196,14 +196,14 @@ func TestPersonToDocumentCapsKnownForAt20(t *testing.T) {
 }
 
 func TestParsePersonDocument(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"id":            "287",
 		"tmdb_id":       float64(287),
 		"name":          "Brad Pitt",
 		"profile_path":  "/profile.jpg",
-		"known_for":     []interface{}{"Fight Club", "Se7en"},
-		"characters":    []interface{}{"Tyler Durden", "David Mills"},
-		"departments":   []interface{}{"Acting", "Production"},
+		"known_for":     []any{"Fight Club", "Se7en"},
+		"characters":    []any{"Tyler Durden", "David Mills"},
+		"departments":   []any{"Acting", "Production"},
 		"movie_count":   float64(45),
 		"tvshow_count":  float64(3),
 		"total_credits": float64(48),
@@ -224,7 +224,7 @@ func TestParsePersonDocument(t *testing.T) {
 }
 
 func TestParsePersonDocumentEmpty(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	doc := parsePersonDocument(data)
 
 	assert.Empty(t, doc.ID)
@@ -236,12 +236,12 @@ func TestParsePersonDocumentEmpty(t *testing.T) {
 func TestParsePersonDocumentPartialData(t *testing.T) {
 	tests := []struct {
 		name   string
-		data   map[string]interface{}
+		data   map[string]any
 		verify func(t *testing.T, doc PersonDocument)
 	}{
 		{
 			name: "only id and name",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":   "123",
 				"name": "Jane Doe",
 			},
@@ -254,7 +254,7 @@ func TestParsePersonDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with nil values",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":           "456",
 				"name":         "John Doe",
 				"known_for":    nil,

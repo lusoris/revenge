@@ -15,8 +15,8 @@ permissions:
   actions: read
 
 env:
-  GO_VERSION: "1.25"
-  GOEXPERIMENT: greenteagc,jsonv2
+  GO_VERSION: "1.26"
+  GOEXPERIMENT: jsonv2,goroutineleakprofile,simd,runtimesecret
 
 jobs:
   codeql:
@@ -104,7 +104,7 @@ jobs:
     name: govulncheck
     runs-on: ubuntu-latest
     container:
-      image: golang:1.25-alpine
+      image: golang:1.26-alpine
     steps:
       - name: Install system dependencies
         run: apk add --no-cache git gcc musl-dev pkgconfig ffmpeg-dev vips-dev tar zstd
@@ -118,9 +118,7 @@ jobs:
           restore-keys: go-vuln-
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - name: Run govulncheck
-        run: govulncheck ./...
-        env:
-          GOEXPERIMENT: greenteagc  # exclude jsonv2: govulncheck panics on it (golang/go#74846)
+        run: govulncheck ./...  # govulncheck+jsonv2 panic fixed in Go 1.26 (golang/go#73871)
 
   dependency-review:
     name: Dependency Review

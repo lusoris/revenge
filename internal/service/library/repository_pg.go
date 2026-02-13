@@ -430,7 +430,7 @@ func dbLibraryToLibrary(lib db.Library) *Library {
 	}
 
 	if len(lib.ScannerConfig) > 0 {
-		var config map[string]interface{}
+		var config map[string]any
 		if err := json.Unmarshal(lib.ScannerConfig, &config); err == nil {
 			result.ScannerConfig = config
 		}

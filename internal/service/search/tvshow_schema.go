@@ -2,8 +2,6 @@ package search
 
 import (
 	"github.com/typesense/typesense-go/v2/typesense/api"
-
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // TVShowCollectionName is the name of the TV shows collection in Typesense.
@@ -29,7 +27,7 @@ type TVShowDocument struct {
 	VoteCount        int32    `json:"vote_count"`        // Vote count
 	Popularity       float64  `json:"popularity"`        // TMDb popularity (sortable)
 	Genres           []string `json:"genres"`            // Genre names (facet + filter)
-	GenreSlugs       []string `json:"genre_slugs"`        // Genre slugs (facet + filter)
+	GenreSlugs       []string `json:"genre_slugs"`       // Genre slugs (facet + filter)
 	Cast             []string `json:"cast"`              // Cast member names (searchable)
 	Networks         []string `json:"networks"`          // Network names (searchable + facet)
 	TotalSeasons     int32    `json:"total_seasons"`     // Number of seasons
@@ -43,60 +41,60 @@ type TVShowDocument struct {
 func TVShowCollectionSchema() *api.CollectionSchema {
 	return &api.CollectionSchema{
 		Name:                TVShowCollectionName,
-		EnableNestedFields:  ptr.To(false),
+		EnableNestedFields:  new(false),
 		TokenSeparators:     &[]string{"-", "_"},
 		SymbolsToIndex:      &[]string{"&"},
-		DefaultSortingField: ptr.To("popularity"),
+		DefaultSortingField: new("popularity"),
 		Fields: []api.Field{
 			// ID field (primary key)
 			{Name: "id", Type: "string"},
 
 			// External IDs
-			{Name: "tmdb_id", Type: "int32", Facet: ptr.To(false), Index: ptr.To(true)},
-			{Name: "tvdb_id", Type: "int32", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "imdb_id", Type: "string", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "tmdb_id", Type: "int32", Facet: new(false), Index: new(true)},
+			{Name: "tvdb_id", Type: "int32", Facet: new(false), Index: new(true), Optional: new(true)},
+			{Name: "imdb_id", Type: "string", Facet: new(false), Index: new(true), Optional: new(true)},
 
 			// Title fields (searchable with infix for partial matching)
-			{Name: "title", Type: "string", Facet: ptr.To(false), Index: ptr.To(true), Infix: ptr.To(true)},
-			{Name: "original_title", Type: "string", Facet: ptr.To(false), Index: ptr.To(true), Infix: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "title", Type: "string", Facet: new(false), Index: new(true), Infix: new(true)},
+			{Name: "original_title", Type: "string", Facet: new(false), Index: new(true), Infix: new(true), Optional: new(true)},
 
 			// Year and dates
-			{Name: "year", Type: "int32", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "first_air_date", Type: "int64", Facet: ptr.To(false), Index: ptr.To(true), Sort: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "year", Type: "int32", Facet: new(true), Index: new(true), Optional: new(true)},
+			{Name: "first_air_date", Type: "int64", Facet: new(false), Index: new(true), Sort: new(true), Optional: new(true)},
 
 			// Show details
-			{Name: "overview", Type: "string", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "status", Type: "string", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "type", Type: "string", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "original_language", Type: "string", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "overview", Type: "string", Facet: new(false), Index: new(true), Optional: new(true)},
+			{Name: "status", Type: "string", Facet: new(true), Index: new(true), Optional: new(true)},
+			{Name: "type", Type: "string", Facet: new(true), Index: new(true), Optional: new(true)},
+			{Name: "original_language", Type: "string", Facet: new(true), Index: new(true), Optional: new(true)},
 
 			// Images
-			{Name: "poster_path", Type: "string", Facet: ptr.To(false), Index: ptr.To(false), Optional: ptr.To(true)},
-			{Name: "backdrop_path", Type: "string", Facet: ptr.To(false), Index: ptr.To(false), Optional: ptr.To(true)},
+			{Name: "poster_path", Type: "string", Facet: new(false), Index: new(false), Optional: new(true)},
+			{Name: "backdrop_path", Type: "string", Facet: new(false), Index: new(false), Optional: new(true)},
 
 			// Ratings and popularity (sortable)
-			{Name: "vote_average", Type: "float", Facet: ptr.To(false), Index: ptr.To(true), Sort: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "vote_count", Type: "int32", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "popularity", Type: "float", Facet: ptr.To(false), Index: ptr.To(true), Sort: ptr.To(true)},
+			{Name: "vote_average", Type: "float", Facet: new(false), Index: new(true), Sort: new(true), Optional: new(true)},
+			{Name: "vote_count", Type: "int32", Facet: new(false), Index: new(true), Optional: new(true)},
+			{Name: "popularity", Type: "float", Facet: new(false), Index: new(true), Sort: new(true)},
 
 			// Genres (array, facetable, filterable)
-			{Name: "genres", Type: "string[]", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "genre_slugs", Type: "string[]", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "genres", Type: "string[]", Facet: new(true), Index: new(true), Optional: new(true)},
+			{Name: "genre_slugs", Type: "string[]", Facet: new(true), Index: new(true), Optional: new(true)},
 
 			// Credits and networks (searchable)
-			{Name: "cast", Type: "string[]", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "networks", Type: "string[]", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "cast", Type: "string[]", Facet: new(false), Index: new(true), Optional: new(true)},
+			{Name: "networks", Type: "string[]", Facet: new(true), Index: new(true), Optional: new(true)},
 
 			// Counts
-			{Name: "total_seasons", Type: "int32", Facet: ptr.To(false), Index: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "total_episodes", Type: "int32", Facet: ptr.To(false), Index: ptr.To(true), Sort: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "total_seasons", Type: "int32", Facet: new(false), Index: new(true), Optional: new(true)},
+			{Name: "total_episodes", Type: "int32", Facet: new(false), Index: new(true), Sort: new(true), Optional: new(true)},
 
 			// Library status
-			{Name: "has_file", Type: "bool", Facet: ptr.To(true), Index: ptr.To(true), Optional: ptr.To(true)},
+			{Name: "has_file", Type: "bool", Facet: new(true), Index: new(true), Optional: new(true)},
 
 			// Timestamps
-			{Name: "created_at", Type: "int64", Facet: ptr.To(false), Index: ptr.To(false), Optional: ptr.To(true)},
-			{Name: "updated_at", Type: "int64", Facet: ptr.To(false), Index: ptr.To(false), Optional: ptr.To(true)},
+			{Name: "created_at", Type: "int64", Facet: new(false), Index: new(false), Optional: new(true)},
+			{Name: "updated_at", Type: "int64", Facet: new(false), Index: new(false), Optional: new(true)},
 		},
 	}
 }

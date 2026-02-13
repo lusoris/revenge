@@ -13,9 +13,9 @@
 
 Multi-stage build (Dockerfile):
 
-**Builder stage** (`golang:1.25-alpine`):
+**Builder stage** (`golang:1.26-alpine`):
 - Build deps: git, make, gcc, musl-dev, pkgconfig, ffmpeg-dev, vips-dev
-- CGO_ENABLED=1, GOEXPERIMENT=greenteagc,jsonv2
+- CGO_ENABLED=1, GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
 - Output: stripped binary (`-w -s`)
 
 **Runtime stage** (`alpine:latest`):

@@ -176,7 +176,7 @@ func TestPasswordHasher_ConcurrencySemaphore(t *testing.T) {
 	var busyCount atomic.Int32
 
 	wg.Add(numGoroutines)
-	for i := 0; i < numGoroutines; i++ {
+	for range numGoroutines {
 		go func() {
 			defer wg.Done()
 			cur := inFlight.Add(1)

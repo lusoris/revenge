@@ -27,31 +27,31 @@ func TestQueryLoggerLog(t *testing.T) {
 		name  string
 		level tracelog.LogLevel
 		msg   string
-		data  map[string]interface{}
+		data  map[string]any
 	}{
 		{
 			name:  "trace level",
 			level: tracelog.LogLevelTrace,
 			msg:   "trace message",
-			data:  map[string]interface{}{"key": "value"},
+			data:  map[string]any{"key": "value"},
 		},
 		{
 			name:  "debug level",
 			level: tracelog.LogLevelDebug,
 			msg:   "debug message",
-			data:  map[string]interface{}{"key": "value"},
+			data:  map[string]any{"key": "value"},
 		},
 		{
 			name:  "info level",
 			level: tracelog.LogLevelInfo,
 			msg:   "info message",
-			data:  map[string]interface{}{"key": "value"},
+			data:  map[string]any{"key": "value"},
 		},
 		{
 			name:  "slow query detection",
 			level: tracelog.LogLevelInfo,
 			msg:   "query completed",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"sql":  "SELECT * FROM users",
 				"time": 200 * time.Millisecond,
 			},
@@ -60,7 +60,7 @@ func TestQueryLoggerLog(t *testing.T) {
 			name:  "fast query",
 			level: tracelog.LogLevelInfo,
 			msg:   "query completed",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"sql":  "SELECT 1",
 				"time": 50 * time.Millisecond,
 			},

@@ -8,13 +8,13 @@ import (
 
 	"log/slog"
 
-	"github.com/go-faster/errors"
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/api/ogen"
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/content/tvshow"
+	"github.com/lusoris/revenge/internal/errors"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/image"
@@ -215,8 +215,7 @@ type statusCoder interface {
 func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode {
 	// Handle ogen framework errors (security, params, request decode)
 	// These have proper HTTP codes via ogenerrors.ErrorCode().
-	var secErr *ogenerrors.SecurityError
-	if errors.As(err, &secErr) {
+	if secErr, ok := errors.AsType[*ogenerrors.SecurityError](err); ok {
 		code := secErr.Code()
 		h.logger.Debug("Security check failed",
 			slog.String("operation", secErr.OperationName()),
@@ -231,8 +230,7 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 		}
 	}
 
-	var decodeParamsErr *ogenerrors.DecodeParamsError
-	if errors.As(err, &decodeParamsErr) {
+	if decodeParamsErr, ok := errors.AsType[*ogenerrors.DecodeParamsError](err); ok {
 		code := decodeParamsErr.Code()
 		h.logger.Warn("Invalid request parameters",
 			slog.String("operation", decodeParamsErr.OperationName()),
@@ -247,8 +245,7 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 		}
 	}
 
-	var decodeReqErr *ogenerrors.DecodeRequestError
-	if errors.As(err, &decodeReqErr) {
+	if decodeReqErr, ok := errors.AsType[*ogenerrors.DecodeRequestError](err); ok {
 		code := decodeReqErr.Code()
 		h.logger.Warn("Invalid request body",
 			slog.String("operation", decodeReqErr.OperationName()),
@@ -264,8 +261,7 @@ func (h *Handler) NewError(ctx context.Context, err error) *ogen.ErrorStatusCode
 	}
 
 	// Check if error carries its own status code (e.g. rate limit 429)
-	var sc statusCoder
-	if errors.As(err, &sc) {
+	if sc, ok := errors.AsType[statusCoder](err); ok {
 		code := sc.StatusCode()
 		h.logger.Warn("Request error", slog.Int("status", code), slog.Any("error", err))
 		return &ogen.ErrorStatusCode{

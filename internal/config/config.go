@@ -781,8 +781,8 @@ func (c *Config) GetSonarrConfig() SonarrConfig {
 }
 
 // Defaults returns a map of default configuration values.
-func Defaults() map[string]interface{} {
-	return map[string]interface{}{
+func Defaults() map[string]any {
+	return map[string]any{
 		// Server defaults
 		"server.host":             "0.0.0.0",
 		"server.port":             8096,
@@ -800,10 +800,10 @@ func Defaults() map[string]interface{} {
 		"database.health_check_period": "30s",
 
 		// Cache defaults
-		"cache.url":          "",
-		"cache.enabled":      false,
-		"cache.l1_max_size":  10000,
-		"cache.l1_ttl":       "5m",
+		"cache.url":         "",
+		"cache.enabled":     false,
+		"cache.l1_max_size": 10000,
+		"cache.l1_ttl":      "5m",
 
 		// CORS defaults
 		"server.cors.allowed_origins":   []string{"*"},
@@ -819,11 +819,11 @@ func Defaults() map[string]interface{} {
 		"server.rate_limit.auth.burst":                 10,
 
 		// Movie defaults
-		"movie.tmdb.api_key":    "",
-		"movie.tmdb.rate_limit": 40,
-		"movie.tmdb.cache_ttl":  "5m",
-		"movie.tmdb.proxy_url":  "",
-		"movie.library.paths":   []string{},
+		"movie.tmdb.api_key":          "",
+		"movie.tmdb.rate_limit":       40,
+		"movie.tmdb.cache_ttl":        "5m",
+		"movie.tmdb.proxy_url":        "",
+		"movie.library.paths":         []string{},
 		"movie.library.scan_interval": "0s", // Disabled by default
 
 		// Metadata provider defaults
@@ -882,20 +882,20 @@ func Defaults() map[string]interface{} {
 		"integrations.radarr.sync_interval": 300, // 5 minutes
 
 		// Email defaults
-		"email.enabled":          false,
-		"email.provider":         "smtp",
-		"email.from_address":     "",
-		"email.from_name":        "Revenge Media Server",
-		"email.base_url":         "http://localhost:8096",
-		"email.smtp.host":        "",
-		"email.smtp.port":        587,
-		"email.smtp.username":    "",
-		"email.smtp.password":    "",
-		"email.smtp.use_tls":     false,
+		"email.enabled":           false,
+		"email.provider":          "smtp",
+		"email.from_address":      "",
+		"email.from_name":         "Revenge Media Server",
+		"email.base_url":          "http://localhost:8096",
+		"email.smtp.host":         "",
+		"email.smtp.port":         587,
+		"email.smtp.username":     "",
+		"email.smtp.password":     "",
+		"email.smtp.use_tls":      false,
 		"email.smtp.use_starttls": true,
-		"email.smtp.skip_verify": false,
-		"email.smtp.timeout":     "30s",
-		"email.sendgrid.api_key": "",
+		"email.smtp.skip_verify":  false,
+		"email.smtp.timeout":      "30s",
+		"email.sendgrid.api_key":  "",
 
 		// Avatar defaults
 		"avatar.storage_path":   "/data/avatars",
@@ -903,29 +903,29 @@ func Defaults() map[string]interface{} {
 		"avatar.allowed_types":  []string{"image/jpeg", "image/png", "image/webp"},
 
 		// Storage defaults
-		"storage.backend":            "local", // Use local storage by default
-		"storage.local.path":         "/data/storage",
-		"storage.s3.region":          "us-east-1",
-		"storage.s3.bucket":          "",
-		"storage.s3.endpoint":        "",
-		"storage.s3.access_key_id":   "",
+		"storage.backend":              "local", // Use local storage by default
+		"storage.local.path":           "/data/storage",
+		"storage.s3.region":            "us-east-1",
+		"storage.s3.bucket":            "",
+		"storage.s3.endpoint":          "",
+		"storage.s3.access_key_id":     "",
 		"storage.s3.secret_access_key": "",
-		"storage.s3.use_path_style":  false,
+		"storage.s3.use_path_style":    false,
 
 		// Activity defaults
 		"activity.retention_days": 90, // 90 days default retention
 
 		// Playback defaults
-		"playback.enabled":                      true,
-		"playback.segment_dir":                  "/tmp/revenge-segments",
-		"playback.segment_duration":             6,
-		"playback.max_concurrent_sessions":      10,
-		"playback.session_timeout":              "30m",
-		"playback.ffmpeg_path":                  "ffmpeg",
-		"playback.transcode.enabled":            true,
-		"playback.transcode.hw_accel":           "none",
-		"playback.transcode.hw_accel_device":    "",
-		"playback.transcode.profiles":           []string{"original", "1080p", "720p", "480p"},
+		"playback.enabled":                   true,
+		"playback.segment_dir":               "/tmp/revenge-segments",
+		"playback.segment_duration":          6,
+		"playback.max_concurrent_sessions":   10,
+		"playback.session_timeout":           "30m",
+		"playback.ffmpeg_path":               "ffmpeg",
+		"playback.transcode.enabled":         true,
+		"playback.transcode.hw_accel":        "none",
+		"playback.transcode.hw_accel_device": "",
+		"playback.transcode.profiles":        []string{"original", "1080p", "720p", "480p"},
 
 		// Raft defaults (disabled by default for single-node deployments)
 		"raft.enabled":   false,

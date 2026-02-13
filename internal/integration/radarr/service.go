@@ -26,7 +26,7 @@ type SyncService struct {
 // SyncStatus represents the current sync status.
 type SyncStatus struct {
 	IsRunning     bool      `json:"is_running"`
-	LastSync      time.Time `json:"last_sync,omitempty"`
+	LastSync      time.Time `json:"last_sync"`
 	LastSyncError string    `json:"last_sync_error,omitempty"`
 	MoviesAdded   int       `json:"movies_added"`
 	MoviesUpdated int       `json:"movies_updated"`
@@ -36,11 +36,11 @@ type SyncStatus struct {
 
 // SyncResult contains the result of a sync operation.
 type SyncResult struct {
-	MoviesAdded   int       `json:"movies_added"`
-	MoviesUpdated int       `json:"movies_updated"`
-	MoviesRemoved int       `json:"movies_removed"`
-	MoviesSkipped int       `json:"movies_skipped"`
-	Errors        []string  `json:"errors,omitempty"`
+	MoviesAdded   int           `json:"movies_added"`
+	MoviesUpdated int           `json:"movies_updated"`
+	MoviesRemoved int           `json:"movies_removed"`
+	MoviesSkipped int           `json:"movies_skipped"`
+	Errors        []string      `json:"errors,omitempty"`
 	Duration      time.Duration `json:"duration"`
 }
 

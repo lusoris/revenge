@@ -78,8 +78,8 @@ type Client struct {
 	apiKey      string
 	accessToken string
 	rateLimiter *rate.Limiter
-	cache    *cache.L1Cache[string, any]
-	cacheTTL time.Duration
+	cache       *cache.L1Cache[string, any]
+	cacheTTL    time.Duration
 }
 
 // NewClient creates a new TMDb client.
@@ -215,14 +215,14 @@ func (c *Client) clearCache() {
 
 // cacheKey generates a cache key from components.
 func cacheKey(parts ...any) string {
-	key := ""
+	var key strings.Builder
 	for i, part := range parts {
 		if i > 0 {
-			key += ":"
+			key.WriteString(":")
 		}
-		key += fmt.Sprintf("%v", part)
+		key.WriteString(fmt.Sprintf("%v", part))
 	}
-	return key
+	return key.String()
 }
 
 // parseError converts API response to error.

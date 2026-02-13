@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -120,10 +119,10 @@ func (s *SeasonSearchService) RemoveSeasonsBySeries(ctx context.Context, seriesI
 
 	filterBy := fmt.Sprintf("series_id:=%s", seriesID.String())
 	searchParams := &api.SearchCollectionParams{
-		Q:        ptr.To("*"),
-		QueryBy:  ptr.To("name"),
+		Q:        new("*"),
+		QueryBy:  new("name"),
 		FilterBy: &filterBy,
-		PerPage:  ptr.To(250),
+		PerPage:  new(250),
 	}
 
 	result, err := s.client.Search(ctx, SeasonCollectionName, searchParams)
@@ -158,7 +157,7 @@ func (s *SeasonSearchService) BulkIndexSeasons(ctx context.Context, seasons []Se
 		return nil
 	}
 
-	docs := make([]interface{}, len(seasons))
+	docs := make([]any, len(seasons))
 	for i, season := range seasons {
 		docs[i] = s.seasonToDocument(season.Season, season.SeriesTitle, season.SeriesPosterPath)
 	}
@@ -346,8 +345,8 @@ func (s *SeasonSearchService) AutocompleteSeasons(ctx context.Context, query str
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	result, err := s.client.Search(ctx, SeasonCollectionName, searchParams)
@@ -492,7 +491,7 @@ func (s *SeasonSearchService) seasonToDocument(season *tvshow.Season, seriesTitl
 }
 
 // parseSeasonDocument parses a map into a SeasonDocument.
-func parseSeasonDocument(data map[string]interface{}) SeasonDocument {
+func parseSeasonDocument(data map[string]any) SeasonDocument {
 	doc := SeasonDocument{}
 
 	if v, ok := data["id"].(string); ok {

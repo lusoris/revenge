@@ -10,19 +10,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 func newTestMovie() *Movie {
 	return &Movie{
 		ID:        uuid.Must(uuid.NewV7()),
-		TMDbID:    ptr.To(int32(550)),
-		IMDbID:    ptr.To("tt0137523"),
+		TMDbID:    new(int32(550)),
+		IMDbID:    new("tt0137523"),
 		Title:     "Fight Club",
-		Year:      ptr.To(int32(1999)),
-		Runtime:   ptr.To(int32(139)),
-		Overview:  ptr.To("A depressed man suffering from insomnia meets a strange soap salesman."),
+		Year:      new(int32(1999)),
+		Runtime:   new(int32(139)),
+		Overview:  new("A depressed man suffering from insomnia meets a strange soap salesman."),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -165,8 +163,8 @@ func TestService_CreateMovie(t *testing.T) {
 		movie := newTestMovie()
 		params := CreateMovieParams{
 			Title:  "Fight Club",
-			TMDbID: ptr.To(int32(550)),
-			Year:   ptr.To(int32(1999)),
+			TMDbID: new(int32(550)),
+			Year:   new(int32(1999)),
 		}
 
 		repo.On("CreateMovie", ctx, params).Return(movie, nil)
@@ -386,7 +384,7 @@ func TestService_GetMovieCrew(t *testing.T) {
 	ctx := context.Background()
 	movieID := uuid.Must(uuid.NewV7())
 	crew := []MovieCredit{
-		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: ptr.To("Director")},
+		{ID: uuid.Must(uuid.NewV7()), MovieID: movieID, Name: "David Fincher", CreditType: "crew", Job: new("Director")},
 	}
 
 	repo.On("ListMovieCrew", ctx, movieID, int32(10), int32(0)).Return(crew, nil)
@@ -661,7 +659,7 @@ func TestService_GetContinueWatching(t *testing.T) {
 			Movie:           Movie{ID: uuid.Must(uuid.NewV7()), Title: "Fight Club"},
 			ProgressSeconds: 3000,
 			DurationSeconds: 8340,
-			ProgressPercent: ptr.To(int32(36)),
+			ProgressPercent: new(int32(36)),
 			LastWatchedAt:   time.Now(),
 		},
 	}
@@ -703,7 +701,7 @@ func TestService_GetUserStats(t *testing.T) {
 	stats := &UserMovieStats{
 		WatchedCount:    42,
 		InProgressCount: 5,
-		TotalWatches:    ptr.To(int64(50)),
+		TotalWatches:    new(int64(50)),
 	}
 
 	repo.On("GetUserMovieStats", ctx, userID).Return(stats, nil)

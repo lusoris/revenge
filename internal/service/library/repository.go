@@ -3,6 +3,7 @@ package library
 
 import (
 	"context"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
@@ -48,31 +49,31 @@ type Repository interface {
 
 // Library represents a media library.
 type Library struct {
-	ID                 uuid.UUID              `json:"id"`
-	Name               string                 `json:"name"`
-	Type               string                 `json:"type"`
-	Paths              []string               `json:"paths"`
-	Enabled            bool                   `json:"enabled"`
-	ScanOnStartup      bool                   `json:"scan_on_startup"`
-	RealtimeMonitoring bool                   `json:"realtime_monitoring"`
-	MetadataProvider   *string                `json:"metadata_provider,omitempty"`
-	PreferredLanguage  string                 `json:"preferred_language"`
-	ScannerConfig      map[string]interface{} `json:"scanner_config,omitempty"`
-	CreatedAt          time.Time              `json:"created_at"`
-	UpdatedAt          time.Time              `json:"updated_at"`
+	ID                 uuid.UUID      `json:"id"`
+	Name               string         `json:"name"`
+	Type               string         `json:"type"`
+	Paths              []string       `json:"paths"`
+	Enabled            bool           `json:"enabled"`
+	ScanOnStartup      bool           `json:"scan_on_startup"`
+	RealtimeMonitoring bool           `json:"realtime_monitoring"`
+	MetadataProvider   *string        `json:"metadata_provider,omitempty"`
+	PreferredLanguage  string         `json:"preferred_language"`
+	ScannerConfig      map[string]any `json:"scanner_config,omitempty"`
+	CreatedAt          time.Time      `json:"created_at"`
+	UpdatedAt          time.Time      `json:"updated_at"`
 }
 
 // LibraryUpdate represents fields that can be updated on a library.
 type LibraryUpdate struct {
-	Name               *string                `json:"name,omitempty"`
-	Type               *string                `json:"type,omitempty"`
-	Paths              []string               `json:"paths,omitempty"`
-	Enabled            *bool                  `json:"enabled,omitempty"`
-	ScanOnStartup      *bool                  `json:"scan_on_startup,omitempty"`
-	RealtimeMonitoring *bool                  `json:"realtime_monitoring,omitempty"`
-	MetadataProvider   *string                `json:"metadata_provider,omitempty"`
-	PreferredLanguage  *string                `json:"preferred_language,omitempty"`
-	ScannerConfig      map[string]interface{} `json:"scanner_config,omitempty"`
+	Name               *string        `json:"name,omitempty"`
+	Type               *string        `json:"type,omitempty"`
+	Paths              []string       `json:"paths,omitempty"`
+	Enabled            *bool          `json:"enabled,omitempty"`
+	ScanOnStartup      *bool          `json:"scan_on_startup,omitempty"`
+	RealtimeMonitoring *bool          `json:"realtime_monitoring,omitempty"`
+	MetadataProvider   *string        `json:"metadata_provider,omitempty"`
+	PreferredLanguage  *string        `json:"preferred_language,omitempty"`
+	ScannerConfig      map[string]any `json:"scanner_config,omitempty"`
 }
 
 // LibraryScan represents a library scan job.
@@ -191,30 +192,15 @@ func ValidPermissions() []string {
 
 // IsValidLibraryType checks if the given type is valid.
 func IsValidLibraryType(t string) bool {
-	for _, valid := range ValidLibraryTypes() {
-		if t == valid {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(ValidLibraryTypes(), t)
 }
 
 // IsValidScanType checks if the given scan type is valid.
 func IsValidScanType(t string) bool {
-	for _, valid := range ValidScanTypes() {
-		if t == valid {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(ValidScanTypes(), t)
 }
 
 // IsValidPermission checks if the given permission is valid.
 func IsValidPermission(p string) bool {
-	for _, valid := range ValidPermissions() {
-		if p == valid {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(ValidPermissions(), p)
 }

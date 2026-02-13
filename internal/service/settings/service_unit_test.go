@@ -326,7 +326,7 @@ func TestUnit_SetUserSettingsBulk(t *testing.T) {
 			Return(makeUserSetting(userID, "bulk.key", "string", []byte(`"value"`)), nil).Times(3)
 
 		svc := settings.NewService(repo)
-		settingsMap := map[string]interface{}{
+		settingsMap := map[string]any{
 			"bulk.key1": "value1",
 			"bulk.key2": 42,
 			"bulk.key3": true,
@@ -346,7 +346,7 @@ func TestUnit_SetUserSettingsBulk(t *testing.T) {
 			Return(nil, errors.New("db error")).Once()
 
 		svc := settings.NewService(repo)
-		settingsMap := map[string]interface{}{
+		settingsMap := map[string]any{
 			"bulk.key1": "value1",
 			"bulk.key2": "value2",
 		}
@@ -393,14 +393,14 @@ func TestUnit_MarshalValue(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		value interface{}
+		value any
 	}{
 		{"string", "test"},
 		{"number", 42},
 		{"float", 3.14},
 		{"bool", true},
 		{"array", []string{"a", "b", "c"}},
-		{"map", map[string]interface{}{"key": "value"}},
+		{"map", map[string]any{"key": "value"}},
 	}
 
 	for _, tt := range tests {
@@ -410,7 +410,7 @@ func TestUnit_MarshalValue(t *testing.T) {
 			assert.NotEmpty(t, result)
 
 			// Verify we can unmarshal it back
-			var unmarshaled interface{}
+			var unmarshaled any
 			err = json.Unmarshal(result, &unmarshaled)
 			require.NoError(t, err)
 		})

@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestParseDate(t *testing.T) {
 	tests := []struct {
@@ -96,7 +97,7 @@ func TestCharacterTypeToDepartment(t *testing.T) {
 
 func TestPtrString(t *testing.T) {
 	assert.Equal(t, "", ptrString(nil))
-	assert.Equal(t, "hello", ptrString(ptr("hello")))
+	assert.Equal(t, "hello", ptrString(new("hello")))
 }
 
 func TestMapTVSearchResult(t *testing.T) {
@@ -104,7 +105,7 @@ func TestMapTVSearchResult(t *testing.T) {
 		TVDbID:       "73255",
 		Name:         "Breaking Bad",
 		Overview:     "A high school chemistry teacher...",
-		ImageURL:     ptr("https://artworks.thetvdb.com/banners/poster.jpg"),
+		ImageURL:     new("https://artworks.thetvdb.com/banners/poster.jpg"),
 		Year:         "2008",
 		FirstAirTime: "2008-01-20",
 	}
@@ -113,7 +114,7 @@ func TestMapTVSearchResult(t *testing.T) {
 	assert.Equal(t, "73255", result.ProviderID)
 	assert.Equal(t, metadata.ProviderTVDb, result.Provider)
 	assert.Equal(t, "Breaking Bad", result.Name)
-	assert.Equal(t, ptr("https://artworks.thetvdb.com/banners/poster.jpg"), result.PosterPath)
+	assert.Equal(t, new("https://artworks.thetvdb.com/banners/poster.jpg"), result.PosterPath)
 	require.NotNil(t, result.Year)
 	assert.Equal(t, 2008, *result.Year)
 	require.NotNil(t, result.FirstAirDate)
@@ -131,7 +132,7 @@ func TestMapTVShowMetadata(t *testing.T) {
 		ID:               73255,
 		Name:             "Breaking Bad",
 		OriginalLanguage: "eng",
-		Overview:         ptr("A high school chemistry teacher..."),
+		Overview:         new("A high school chemistry teacher..."),
 		Score:            85,
 		Status:           &StatusResponse{Name: "Ended", KeepUpdated: false},
 		FirstAired:       "2008-01-20",
@@ -139,7 +140,7 @@ func TestMapTVShowMetadata(t *testing.T) {
 		AverageRuntime:   47,
 		OriginalCountry:  "usa",
 		Genres:           []GenreResponse{{ID: 18, Name: "Drama"}},
-		Networks:         []NetworkResponse{{ID: 174, Name: "AMC", Country: ptr("usa")}},
+		Networks:         []NetworkResponse{{ID: 174, Name: "AMC", Country: new("usa")}},
 		Seasons: []SeasonSummaryResponse{
 			{ID: 1, Number: 1, Name: "Season 1", Type: &SeasonTypeResponse{Type: "default"}, Year: "2008"},
 		},
@@ -206,7 +207,7 @@ func TestMapTVShowMetadata_FallbackImage(t *testing.T) {
 	input := &SeriesResponse{
 		ID:    1,
 		Name:  "Test",
-		Image: ptr("https://main-image.jpg"),
+		Image: new("https://main-image.jpg"),
 	}
 	result := mapTVShowMetadata(input)
 	require.NotNil(t, result.PosterPath)
@@ -229,8 +230,8 @@ func TestMapSeasonMetadata(t *testing.T) {
 		SeriesID: 73255,
 		Number:   1,
 		Name:     "Season 1",
-		Overview: ptr("The first season"),
-		Image:    ptr("https://season1.jpg"),
+		Overview: new("The first season"),
+		Image:    new("https://season1.jpg"),
 		Year:     "2008",
 		Overviews: map[string]string{
 			"deu": "Die erste Staffel",
@@ -247,8 +248,8 @@ func TestMapSeasonMetadata(t *testing.T) {
 	assert.Equal(t, "73255", result.ShowID)
 	assert.Equal(t, 1, result.SeasonNumber)
 	assert.Equal(t, "Season 1", result.Name)
-	assert.Equal(t, ptr("The first season"), result.Overview)
-	assert.Equal(t, ptr("https://season1.jpg"), result.PosterPath)
+	assert.Equal(t, new("The first season"), result.Overview)
+	assert.Equal(t, new("https://season1.jpg"), result.PosterPath)
 	require.NotNil(t, result.AirDate)
 
 	require.Len(t, result.Translations, 2)
@@ -265,10 +266,10 @@ func TestMapEpisodeMetadata(t *testing.T) {
 		Runtime:      &runtime,
 		SeasonNumber: 1,
 		Number:       1,
-		Image:        ptr("https://still.jpg"),
-		Overview:     ptr("Walter White discovers..."),
+		Image:        new("https://still.jpg"),
+		Overview:     new("Walter White discovers..."),
 		Characters: []CharacterResponse{
-			{ID: 10, Name: "Walter White", Type: CharacterTypeActor, PersonName: "Bryan Cranston", Sort: 0, PersonImgURL: ptr("https://bryan.jpg")},
+			{ID: 10, Name: "Walter White", Type: CharacterTypeActor, PersonName: "Bryan Cranston", Sort: 0, PersonImgURL: new("https://bryan.jpg")},
 			{ID: 20, Name: "", Type: CharacterTypeDirector, PersonName: "Vince Gilligan", Sort: 0},
 		},
 		Overviews: map[string]string{"deu": "Walter White entdeckt..."},
@@ -303,24 +304,24 @@ func TestMapPersonSearchResult(t *testing.T) {
 	input := &SearchResult{
 		TVDbID:   "12345",
 		Name:     "Bryan Cranston",
-		ImageURL: ptr("https://image.jpg"),
+		ImageURL: new("https://image.jpg"),
 	}
 	result := mapPersonSearchResult(input)
 
 	assert.Equal(t, "12345", result.ProviderID)
 	assert.Equal(t, metadata.ProviderTVDb, result.Provider)
 	assert.Equal(t, "Bryan Cranston", result.Name)
-	assert.Equal(t, ptr("https://image.jpg"), result.ProfilePath)
+	assert.Equal(t, new("https://image.jpg"), result.ProfilePath)
 }
 
 func TestMapPersonMetadata(t *testing.T) {
 	input := &PersonResponse{
 		ID:         17419,
 		Name:       "Bryan Cranston",
-		Image:      ptr("https://bryan.jpg"),
-		Birth:      ptr("1956-03-07"),
+		Image:      new("https://bryan.jpg"),
+		Birth:      new("1956-03-07"),
 		Death:      nil,
-		BirthPlace: ptr("Canoga Park, California"),
+		BirthPlace: new("Canoga Park, California"),
 		Gender:     2,
 		Score:      50,
 		Aliases:    []AliasResponse{{Name: "Bryan Lee Cranston"}},
@@ -343,7 +344,7 @@ func TestMapPersonMetadata(t *testing.T) {
 	assert.Equal(t, float64(50), result.Popularity)
 	require.NotNil(t, result.Birthday)
 	assert.Nil(t, result.Deathday)
-	assert.Equal(t, ptr("Canoga Park, California"), result.PlaceOfBirth)
+	assert.Equal(t, new("Canoga Park, California"), result.PlaceOfBirth)
 
 	require.Len(t, result.AlsoKnownAs, 1)
 	assert.Equal(t, "Bryan Lee Cranston", result.AlsoKnownAs[0])
@@ -379,7 +380,7 @@ func TestMapPersonCredits(t *testing.T) {
 		ID:   17419,
 		Name: "Bryan Cranston",
 		Characters: []CharacterResponse{
-			{ID: 1, Name: "Walter White", Type: CharacterTypeActor, SeriesID: &seriesID, Image: ptr("https://img.jpg"), PersonName: "Bryan Cranston"},
+			{ID: 1, Name: "Walter White", Type: CharacterTypeActor, SeriesID: &seriesID, Image: new("https://img.jpg"), PersonName: "Bryan Cranston"},
 			{ID: 2, Name: "", Type: CharacterTypeDirector, MovieID: &movieID, PersonName: "Bryan Cranston"},
 		},
 	}
@@ -419,7 +420,7 @@ func TestMapCharactersToCredits(t *testing.T) {
 
 func TestMapArtworksToImages(t *testing.T) {
 	artworks := []ArtworkResponse{
-		{Type: ArtworkTypePoster, Image: "poster.jpg", Width: 680, Height: 1000, Score: 5, Language: ptr("en")},
+		{Type: ArtworkTypePoster, Image: "poster.jpg", Width: 680, Height: 1000, Score: 5, Language: new("en")},
 		{Type: ArtworkTypeBackground, Image: "bg.jpg", Width: 1920, Height: 1080, Score: 8},
 		{Type: ArtworkTypeBanner, Image: "banner.jpg", Width: 758, Height: 140},
 		{Type: ArtworkTypeClearLogo, Image: "logo.jpg", Width: 500, Height: 185},
@@ -432,7 +433,7 @@ func TestMapArtworksToImages(t *testing.T) {
 	require.Len(t, result.Posters, 1)
 	assert.Equal(t, "poster.jpg", result.Posters[0].FilePath)
 	assert.InDelta(t, 0.68, result.Posters[0].AspectRatio, 0.01)
-	assert.Equal(t, ptr("en"), result.Posters[0].Language)
+	assert.Equal(t, new("en"), result.Posters[0].Language)
 
 	require.Len(t, result.Backdrops, 1)
 	assert.Equal(t, "bg.jpg", result.Backdrops[0].FilePath)

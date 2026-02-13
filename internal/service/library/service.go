@@ -54,15 +54,15 @@ func NewService(repo Repository, logger *slog.Logger, activityLogger activity.Lo
 
 // CreateLibraryRequest represents a request to create a library.
 type CreateLibraryRequest struct {
-	Name               string                 `json:"name"`
-	Type               string                 `json:"type"`
-	Paths              []string               `json:"paths"`
-	Enabled            bool                   `json:"enabled"`
-	ScanOnStartup      bool                   `json:"scan_on_startup"`
-	RealtimeMonitoring bool                   `json:"realtime_monitoring"`
-	MetadataProvider   *string                `json:"metadata_provider,omitempty"`
-	PreferredLanguage  string                 `json:"preferred_language"`
-	ScannerConfig      map[string]interface{} `json:"scanner_config,omitempty"`
+	Name               string         `json:"name"`
+	Type               string         `json:"type"`
+	Paths              []string       `json:"paths"`
+	Enabled            bool           `json:"enabled"`
+	ScanOnStartup      bool           `json:"scan_on_startup"`
+	RealtimeMonitoring bool           `json:"realtime_monitoring"`
+	MetadataProvider   *string        `json:"metadata_provider,omitempty"`
+	PreferredLanguage  string         `json:"preferred_language"`
+	ScannerConfig      map[string]any `json:"scanner_config,omitempty"`
 }
 
 // Create creates a new library.
@@ -101,7 +101,7 @@ func (s *Service) Create(ctx context.Context, req CreateLibraryRequest) (*Librar
 	if err := s.repo.Create(ctx, lib); err != nil {
 		s.logger.Error("failed to create library",
 			slog.String("name", req.Name),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (s *Service) Create(ctx context.Context, req CreateLibraryRequest) (*Librar
 		Action:       activity.ActionLibraryCreate,
 		ResourceType: activity.ResourceTypeLibrary,
 		ResourceID:   lib.ID,
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"name":  lib.Name,
 			"type":  lib.Type,
 			"paths": lib.Paths,
@@ -182,7 +182,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, update *LibraryUpdat
 	if err != nil {
 		s.logger.Error("failed to update library",
 			slog.String("id", id.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, err
 	}
@@ -197,7 +197,7 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, update *LibraryUpdat
 		Action:       activity.ActionLibraryUpdate,
 		ResourceType: activity.ResourceTypeLibrary,
 		ResourceID:   lib.ID,
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"name": lib.Name,
 		},
 	})
@@ -214,7 +214,7 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	if err := s.repo.RevokeAllPermissions(ctx, id); err != nil {
 		s.logger.Error("failed to revoke permissions for library",
 			slog.String("id", id.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -222,7 +222,7 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 	if err := s.repo.Delete(ctx, id); err != nil {
 		s.logger.Error("failed to delete library",
 			slog.String("id", id.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -235,7 +235,7 @@ func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
 			Action:       activity.ActionLibraryDelete,
 			ResourceType: activity.ResourceTypeLibrary,
 			ResourceID:   id,
-			Metadata: map[string]interface{}{
+			Metadata: map[string]any{
 				"name": lib.Name,
 			},
 		})
@@ -288,7 +288,7 @@ func (s *Service) TriggerScan(ctx context.Context, libraryID uuid.UUID, scanType
 		s.logger.Error("failed to create scan",
 			slog.String("library_id", libraryID.String()),
 			slog.String("scan_type", scanType),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, err
 	}
@@ -440,7 +440,7 @@ func (s *Service) GrantPermission(ctx context.Context, libraryID, userID uuid.UU
 			slog.String("library_id", libraryID.String()),
 			slog.String("user_id", userID.String()),
 			slog.String("permission", permission),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}
@@ -465,7 +465,7 @@ func (s *Service) RevokePermission(ctx context.Context, libraryID, userID uuid.U
 			slog.String("library_id", libraryID.String()),
 			slog.String("user_id", userID.String()),
 			slog.String("permission", permission),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return err
 	}

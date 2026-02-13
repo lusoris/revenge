@@ -20,15 +20,15 @@ type errDBTX struct {
 	err error
 }
 
-func (e *errDBTX) Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error) {
+func (e *errDBTX) Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
 	return pgconn.CommandTag{}, e.err
 }
 
-func (e *errDBTX) Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error) {
+func (e *errDBTX) Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
 	return nil, e.err
 }
 
-func (e *errDBTX) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
+func (e *errDBTX) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
 	return &errRow{err: e.err}
 }
 
@@ -48,15 +48,15 @@ func (r *errRow) Scan(dest ...any) error {
 // noRowsDBTX is a mock DBTX that returns pgx.ErrNoRows from QueryRow.
 type noRowsDBTX struct{}
 
-func (n *noRowsDBTX) Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error) {
+func (n *noRowsDBTX) Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
 	return pgconn.CommandTag{}, nil
 }
 
-func (n *noRowsDBTX) Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error) {
+func (n *noRowsDBTX) Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
 	return &emptyRows{}, nil
 }
 
-func (n *noRowsDBTX) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
+func (n *noRowsDBTX) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
 	return &errRow{err: pgx.ErrNoRows}
 }
 
@@ -67,30 +67,30 @@ func (n *noRowsDBTX) CopyFrom(ctx context.Context, tableName pgx.Identifier, col
 // emptyRows is a mock pgx.Rows that has no data.
 type emptyRows struct{}
 
-func (r *emptyRows) Close()                                        {}
-func (r *emptyRows) Err() error                                    { return nil }
-func (r *emptyRows) CommandTag() pgconn.CommandTag                 { return pgconn.CommandTag{} }
-func (r *emptyRows) FieldDescriptions() []pgconn.FieldDescription  { return nil }
-func (r *emptyRows) Next() bool                                    { return false }
-func (r *emptyRows) Scan(dest ...any) error                        { return errors.New("no rows") }
-func (r *emptyRows) Values() ([]any, error)                        { return nil, nil }
-func (r *emptyRows) RawValues() [][]byte                           { return nil }
-func (r *emptyRows) Conn() *pgx.Conn                               { return nil }
+func (r *emptyRows) Close()                                       {}
+func (r *emptyRows) Err() error                                   { return nil }
+func (r *emptyRows) CommandTag() pgconn.CommandTag                { return pgconn.CommandTag{} }
+func (r *emptyRows) FieldDescriptions() []pgconn.FieldDescription { return nil }
+func (r *emptyRows) Next() bool                                   { return false }
+func (r *emptyRows) Scan(dest ...any) error                       { return errors.New("no rows") }
+func (r *emptyRows) Values() ([]any, error)                       { return nil, nil }
+func (r *emptyRows) RawValues() [][]byte                          { return nil }
+func (r *emptyRows) Conn() *pgx.Conn                              { return nil }
 
 // successExecDBTX returns successful results for Exec operations.
 type successExecDBTX struct {
 	rowsAffected int64
 }
 
-func (s *successExecDBTX) Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error) {
+func (s *successExecDBTX) Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
 	return pgconn.NewCommandTag("DELETE " + intToStr(s.rowsAffected)), nil
 }
 
-func (s *successExecDBTX) Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error) {
+func (s *successExecDBTX) Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
 	return &emptyRows{}, nil
 }
 
-func (s *successExecDBTX) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
+func (s *successExecDBTX) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
 	return &errRow{err: pgx.ErrNoRows}
 }
 
@@ -142,14 +142,14 @@ func TestRepositoryPg_Create_WithChangesAndMetadata(t *testing.T) {
 
 	entry := &Entry{
 		UserID:       &userID,
-		Username:     ptrStr("testuser"),
+		Username:     new("testuser"),
 		Action:       ActionUserLogin,
-		ResourceType: ptrStr(ResourceTypeUser),
+		ResourceType: new(ResourceTypeUser),
 		ResourceID:   &resourceID,
-		Changes:      map[string]interface{}{"key": "value"},
-		Metadata:     map[string]interface{}{"meta": "data"},
+		Changes:      map[string]any{"key": "value"},
+		Metadata:     map[string]any{"meta": "data"},
 		IPAddress:    &ip,
-		UserAgent:    ptrStr("TestAgent"),
+		UserAgent:    new("TestAgent"),
 		Success:      true,
 	}
 

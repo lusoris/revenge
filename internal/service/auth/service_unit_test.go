@@ -405,12 +405,12 @@ func TestPtrToString(t *testing.T) {
 		},
 		{
 			name:     "non-nil pointer returns value",
-			input:    strPtr("hello"),
+			input:    new("hello"),
 			expected: "hello",
 		},
 		{
 			name:     "empty string pointer returns empty string",
-			input:    strPtr(""),
+			input:    new(""),
 			expected: "",
 		},
 	}
@@ -2194,8 +2194,9 @@ func TestNewServiceForTestingWithEmail(t *testing.T) {
 // Helpers
 // ============================================================================
 
+//go:fix inline
 func strPtr(s string) *string {
-	return &s
+	return new(s)
 }
 
 func testLogger() *slog.Logger {

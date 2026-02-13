@@ -259,27 +259,27 @@ func TestEpisodeToDocumentZeroValues(t *testing.T) {
 }
 
 func TestParseEpisodeDocument(t *testing.T) {
-	data := map[string]interface{}{
-		"id":                "550e8400-e29b-41d4-a716-446655440000",
-		"series_id":         "660e8400-e29b-41d4-a716-446655440000",
-		"season_id":         "770e8400-e29b-41d4-a716-446655440000",
-		"tmdb_id":           float64(62085),
-		"tvdb_id":           float64(349232),
-		"imdb_id":           "tt2301451",
-		"season_number":     float64(1),
-		"episode_number":    float64(1),
-		"title":             "Pilot",
-		"overview":          "A chemistry teacher...",
-		"air_date":          float64(1200787200),
-		"runtime":           float64(58),
-		"vote_average":      float64(9.2),
-		"vote_count":        float64(5000),
-		"still_path":        "/still.jpg",
-		"has_file":          true,
-		"series_title":      "Breaking Bad",
+	data := map[string]any{
+		"id":                 "550e8400-e29b-41d4-a716-446655440000",
+		"series_id":          "660e8400-e29b-41d4-a716-446655440000",
+		"season_id":          "770e8400-e29b-41d4-a716-446655440000",
+		"tmdb_id":            float64(62085),
+		"tvdb_id":            float64(349232),
+		"imdb_id":            "tt2301451",
+		"season_number":      float64(1),
+		"episode_number":     float64(1),
+		"title":              "Pilot",
+		"overview":           "A chemistry teacher...",
+		"air_date":           float64(1200787200),
+		"runtime":            float64(58),
+		"vote_average":       float64(9.2),
+		"vote_count":         float64(5000),
+		"still_path":         "/still.jpg",
+		"has_file":           true,
+		"series_title":       "Breaking Bad",
 		"series_poster_path": "/poster.jpg",
-		"created_at":        float64(1700000000),
-		"updated_at":        float64(1700000000),
+		"created_at":         float64(1700000000),
+		"updated_at":         float64(1700000000),
 	}
 
 	doc := parseEpisodeDocument(data)
@@ -307,7 +307,7 @@ func TestParseEpisodeDocument(t *testing.T) {
 }
 
 func TestParseEpisodeDocumentEmpty(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	doc := parseEpisodeDocument(data)
 
 	assert.Empty(t, doc.ID)
@@ -320,12 +320,12 @@ func TestParseEpisodeDocumentEmpty(t *testing.T) {
 func TestParseEpisodeDocumentPartialData(t *testing.T) {
 	tests := []struct {
 		name   string
-		data   map[string]interface{}
+		data   map[string]any
 		verify func(t *testing.T, doc EpisodeDocument)
 	}{
 		{
 			name: "only id and title",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":    "test-id",
 				"title": "Test Episode",
 			},
@@ -338,7 +338,7 @@ func TestParseEpisodeDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with nil values",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":           "test-id",
 				"title":        "Test Episode",
 				"overview":     nil,
@@ -352,7 +352,7 @@ func TestParseEpisodeDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with boolean fields",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "test-id",
 				"has_file": true,
 			},

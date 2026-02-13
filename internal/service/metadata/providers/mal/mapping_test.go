@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestParseDate(t *testing.T) {
 	tests := []struct {
@@ -153,9 +154,9 @@ func TestMapAnimeToTVShowSearchResult(t *testing.T) {
 				Ja: "カウボーイビバップ",
 			},
 			Synopsis:        "A bounty hunter story in space.",
-			Mean:            ptr(8.78),
+			Mean:            new(8.78),
 			NumScoringUsers: 100000,
-			Popularity:      ptr(42),
+			Popularity:      new(42),
 			StartDate:       "1998-04-03",
 			StartSeason:     &Season{Year: 1998, Season: "spring"},
 			NSFW:            "white",
@@ -226,10 +227,10 @@ func TestMapAnimeToTVShowMetadata(t *testing.T) {
 			Synopsis:               "Humanity fights for survival.",
 			Status:                 "finished_airing",
 			MediaType:              "tv",
-			Mean:                   ptr(8.53),
+			Mean:                   new(8.53),
 			NumEpisodes:            25,
 			AverageEpisodeDuration: 1440, // 24 minutes in seconds
-			Popularity:             ptr(5),
+			Popularity:             new(5),
 			NSFW:                   "gray",
 			StartDate:              "2013-04-07",
 			EndDate:                "2013-09-29",

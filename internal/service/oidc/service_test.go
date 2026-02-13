@@ -153,7 +153,7 @@ func TestService_ListProviders(t *testing.T) {
 	svc, repo, _ := setupTestService(t)
 	ctx := context.Background()
 
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		req := createTestProvider("list_svc_" + string(rune('a'+i)))
 		_, err := repo.CreateProvider(ctx, req)
 		require.NoError(t, err)
@@ -197,8 +197,8 @@ func TestService_UpdateProvider(t *testing.T) {
 	require.NoError(t, err)
 
 	updateReq := UpdateProviderRequest{
-		DisplayName: stringPtr("Updated"),
-		IsEnabled:   boolPtr(false),
+		DisplayName: new("Updated"),
+		IsEnabled:   new(false),
 	}
 
 	updated, err := svc.UpdateProvider(ctx, created.ID, updateReq)
@@ -369,7 +369,7 @@ func TestService_LinkUser(t *testing.T) {
 	provider, err := repo.CreateProvider(ctx, createTestProvider("link_svc"))
 	require.NoError(t, err)
 	provider.AllowLinking = true
-	updateReq := UpdateProviderRequest{AllowLinking: boolPtr(true)}
+	updateReq := UpdateProviderRequest{AllowLinking: new(true)}
 	provider, err = repo.UpdateProvider(ctx, provider.ID, updateReq)
 	require.NoError(t, err)
 
@@ -696,7 +696,7 @@ func TestService_LinkUser_LinkingNotAllowed(t *testing.T) {
 	require.NoError(t, err)
 
 	// Explicitly disable linking
-	updateReq := UpdateProviderRequest{AllowLinking: boolPtr(false)}
+	updateReq := UpdateProviderRequest{AllowLinking: new(false)}
 	provider, err = repo.UpdateProvider(ctx, provider.ID, updateReq)
 	require.NoError(t, err)
 	assert.False(t, provider.AllowLinking)
@@ -729,7 +729,7 @@ func TestService_LinkUser_AlreadyLinked(t *testing.T) {
 
 	provider, err := repo.CreateProvider(ctx, createTestProvider("already_linked"))
 	require.NoError(t, err)
-	updateReq := UpdateProviderRequest{AllowLinking: boolPtr(true)}
+	updateReq := UpdateProviderRequest{AllowLinking: new(true)}
 	provider, err = repo.UpdateProvider(ctx, provider.ID, updateReq)
 	require.NoError(t, err)
 
@@ -763,4 +763,3 @@ func TestService_LinkUser_AlreadyLinked(t *testing.T) {
 	_, err = svc.LinkUser(ctx, user.ID, provider.ID, "sub-already", userInfo, token)
 	assert.ErrorIs(t, err, ErrUserLinkExists)
 }
-

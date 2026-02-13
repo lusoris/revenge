@@ -9,7 +9,6 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // Mapper converts Radarr types to domain types.
@@ -24,16 +23,16 @@ func NewMapper() *Mapper {
 func (m *Mapper) ToMovie(rm *Movie) *movie.Movie {
 	result := &movie.Movie{
 		ID:               uuid.Must(uuid.NewV7()), // Generate new ID for local storage
-		TMDbID:           ptr.To(util.SafeIntToInt32(rm.TMDbID)),
+		TMDbID:           new(util.SafeIntToInt32(rm.TMDbID)),
 		IMDbID:           ptrString(rm.IMDbID),
 		Title:            rm.Title,
 		OriginalTitle:    ptrString(rm.OriginalTitle),
-		Year:             ptr.To(util.SafeIntToInt32(rm.Year)),
-		Runtime:          ptr.To(util.SafeIntToInt32(rm.Runtime)),
+		Year:             new(util.SafeIntToInt32(rm.Year)),
+		Runtime:          new(util.SafeIntToInt32(rm.Runtime)),
 		Overview:         ptrString(rm.Overview),
 		Status:           ptrString(rm.Status),
 		OriginalLanguage: ptrString(rm.OriginalLanguage.Name),
-		RadarrID:         ptr.To(util.SafeIntToInt32(rm.ID)),
+		RadarrID:         new(util.SafeIntToInt32(rm.ID)),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
@@ -51,11 +50,11 @@ func (m *Mapper) ToMovie(rm *Movie) *movie.Movie {
 	if rm.Ratings.TMDb != nil {
 		d, _ := decimal.NewFromFloat64(rm.Ratings.TMDb.Value)
 		result.VoteAverage = &d
-		result.VoteCount = ptr.To(util.SafeIntToInt32(rm.Ratings.TMDb.Votes))
+		result.VoteCount = new(util.SafeIntToInt32(rm.Ratings.TMDb.Votes))
 	} else if rm.Ratings.IMDb != nil {
 		d, _ := decimal.NewFromFloat64(rm.Ratings.IMDb.Value)
 		result.VoteAverage = &d
-		result.VoteCount = ptr.To(util.SafeIntToInt32(rm.Ratings.IMDb.Votes))
+		result.VoteCount = new(util.SafeIntToInt32(rm.Ratings.IMDb.Votes))
 	}
 
 	// Set popularity
@@ -101,7 +100,7 @@ func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile
 		FilePath:     rmf.Path,
 		FileName:     rmf.RelativePath,
 		FileSize:     rmf.Size,
-		RadarrFileID: ptr.To(util.SafeIntToInt32(rmf.ID)),
+		RadarrFileID: new(util.SafeIntToInt32(rmf.ID)),
 		CreatedAt:    rmf.DateAdded,
 		UpdatedAt:    time.Now(),
 	}
@@ -124,7 +123,7 @@ func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile
 			fps, _ := decimal.NewFromFloat64(mi.VideoFps)
 			result.Framerate = &fps
 		}
-		result.BitrateKbps = ptr.To(util.SafeIntToInt32(mi.VideoBitrate / 1000))
+		result.BitrateKbps = new(util.SafeIntToInt32(mi.VideoBitrate / 1000))
 		if mi.AudioChannels > 0 {
 			result.AudioChannels = ptrString(formatAudioChannels(mi.AudioChannels))
 		}
@@ -133,7 +132,7 @@ func (m *Mapper) ToMovieFile(rmf *MovieFile, movieID uuid.UUID) *movie.MovieFile
 		if mi.RunTime != "" {
 			// RunTime is in format "HH:MM:SS" or similar
 			if duration, err := time.ParseDuration(mi.RunTime); err == nil {
-				result.DurationSeconds = ptr.To(util.SafeInt64ToInt32(int64(duration.Seconds())))
+				result.DurationSeconds = new(util.SafeInt64ToInt32(int64(duration.Seconds())))
 			}
 		}
 
@@ -165,7 +164,7 @@ func (m *Mapper) ToMovieCollection(rc *Collection) *movie.MovieCollection {
 
 	result := &movie.MovieCollection{
 		ID:               uuid.Must(uuid.NewV7()),
-		TMDbCollectionID: ptr.To(util.SafeIntToInt32(rc.TMDbID)),
+		TMDbCollectionID: new(util.SafeIntToInt32(rc.TMDbID)),
 		Name:             rc.Name,
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
@@ -193,8 +192,8 @@ func (m *Mapper) ToGenres(rm *Movie, movieID uuid.UUID) []movie.MovieGenre {
 	genres := make([]movie.MovieGenre, len(rm.Genres))
 	for i, g := range rm.Genres {
 		genres[i] = movie.MovieGenre{
-			ID:      uuid.Must(uuid.NewV7()),
-			MovieID: movieID,
+			ID:        uuid.Must(uuid.NewV7()),
+			MovieID:   movieID,
 			Name:      g,
 			Slug:      util.Slugify(g),
 			CreatedAt: time.Now(),

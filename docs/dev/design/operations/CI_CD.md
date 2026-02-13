@@ -95,8 +95,8 @@ Syncs GitHub label definitions from config file.
 All workflows use:
 
 ```
-GO_VERSION: 1.25
-GOEXPERIMENT: greenteagc,jsonv2
+GO_VERSION: 1.26
+GOEXPERIMENT: jsonv2,goroutineleakprofile,simd,runtimesecret
 ```
 
 ## Release Strategy

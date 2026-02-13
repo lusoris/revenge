@@ -69,7 +69,7 @@ func TestService_List_WithLargeLimit(t *testing.T) {
 	resourceType := "resource"
 	userAgent := "Test Agent"
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		req := LogRequest{
 			UserID:       &user.ID,
 			Username:     &user.Username,
@@ -102,7 +102,7 @@ func TestService_List_WithOffset(t *testing.T) {
 	})
 
 	// Log multiple activities
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		req := LogRequest{
 			UserID:   &user.ID,
 			Username: &user.Username,
@@ -131,7 +131,7 @@ func TestService_CleanupOldLogs_BeforeDate(t *testing.T) {
 	})
 
 	// Log some activities
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		req := LogRequest{
 			UserID:   &user.ID,
 			Username: &user.Username,
@@ -161,7 +161,7 @@ func TestRepository_GetByAction(t *testing.T) {
 
 	// Log activities with specific action
 	action := "test.specific.action"
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := LogRequest{
 			UserID:   &user.ID,
 			Username: &user.Username,
@@ -194,7 +194,7 @@ func TestRepository_GetByIP(t *testing.T) {
 	// Log activities from specific IP
 	ip := net.ParseIP("203.0.113.42")
 	userAgent := "Test Agent"
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := LogRequest{
 			UserID:    &user.ID,
 			Username:  &user.Username,
@@ -253,7 +253,7 @@ func TestService_GetRecentActions_LimitAndOffset(t *testing.T) {
 	})
 
 	// Log multiple activities
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		req := LogRequest{
 			UserID:   &user.ID,
 			Username: &user.Username,

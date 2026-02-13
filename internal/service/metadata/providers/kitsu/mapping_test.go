@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestBestImage(t *testing.T) {
 	tests := []struct {
@@ -18,12 +19,12 @@ func TestBestImage(t *testing.T) {
 		want string
 	}{
 		{"nil", nil, ""},
-		{"original first", &ImageSet{Original: ptr("orig"), Large: ptr("lg")}, "orig"},
-		{"large fallback", &ImageSet{Large: ptr("lg")}, "lg"},
-		{"medium fallback", &ImageSet{Medium: ptr("md")}, "md"},
-		{"small fallback", &ImageSet{Small: ptr("sm")}, "sm"},
+		{"original first", &ImageSet{Original: new("orig"), Large: new("lg")}, "orig"},
+		{"large fallback", &ImageSet{Large: new("lg")}, "lg"},
+		{"medium fallback", &ImageSet{Medium: new("md")}, "md"},
+		{"small fallback", &ImageSet{Small: new("sm")}, "sm"},
 		{"empty", &ImageSet{}, ""},
-		{"empty original", &ImageSet{Original: ptr(""), Large: ptr("lg")}, "lg"},
+		{"empty original", &ImageSet{Original: new(""), Large: new("lg")}, "lg"},
 	}
 
 	for _, tt := range tests {
@@ -40,11 +41,11 @@ func TestImageURLs(t *testing.T) {
 
 	t.Run("with URLs", func(t *testing.T) {
 		img := &ImageSet{
-			Original: ptr("orig"),
-			Large:    ptr("lg"),
-			Medium:   ptr(""),
-			Small:    ptr("sm"),
-			Tiny:     ptr("tiny"),
+			Original: new("orig"),
+			Large:    new("lg"),
+			Medium:   new(""),
+			Small:    new("sm"),
+			Tiny:     new("tiny"),
 		}
 		result := imageURLs(img)
 		assert.Equal(t, []string{"orig", "lg", "sm", "tiny"}, result)
@@ -57,17 +58,17 @@ func TestParseDate(t *testing.T) {
 	})
 
 	t.Run("empty", func(t *testing.T) {
-		assert.Nil(t, parseDate(ptr("")))
+		assert.Nil(t, parseDate(new("")))
 	})
 
 	t.Run("valid", func(t *testing.T) {
-		result := parseDate(ptr("1998-04-03"))
+		result := parseDate(new("1998-04-03"))
 		require.NotNil(t, result)
 		assert.Equal(t, time.Date(1998, 4, 3, 0, 0, 0, 0, time.UTC), *result)
 	})
 
 	t.Run("invalid", func(t *testing.T) {
-		assert.Nil(t, parseDate(ptr("bad")))
+		assert.Nil(t, parseDate(new("bad")))
 	})
 }
 
@@ -147,12 +148,12 @@ func TestMapAnimeToTVShowSearchResult(t *testing.T) {
 				CanonicalTitle: "Cowboy Bebop",
 				Titles:         map[string]string{"en": "Cowboy Bebop", "ja_jp": "カウボーイビバップ"},
 				Synopsis:       "A bounty hunter story in space.",
-				AverageRating:  ptr("87.50"),
+				AverageRating:  new("87.50"),
 				UserCount:      50000,
-				StartDate:      ptr("1998-04-03"),
+				StartDate:      new("1998-04-03"),
 				NSFW:           false,
-				PosterImage:    &ImageSet{Original: ptr("https://example.com/poster.jpg")},
-				CoverImage:     &ImageSet{Original: ptr("https://example.com/cover.jpg")},
+				PosterImage:    &ImageSet{Original: new("https://example.com/poster.jpg")},
+				CoverImage:     &ImageSet{Original: new("https://example.com/cover.jpg")},
 			},
 		}
 		result := mapAnimeToTVShowSearchResult(res)
@@ -201,19 +202,19 @@ func TestMapAnimeToTVShowMetadata(t *testing.T) {
 					Slug:           "cowboy-bebop",
 					Titles:         map[string]string{"en": "Cowboy Bebop", "ja_jp": "カウボーイビバップ"},
 					Synopsis:       "A sci-fi western.",
-					AverageRating:  ptr("87.50"),
+					AverageRating:  new("87.50"),
 					UserCount:      50000,
 					Status:         "finished",
 					Subtype:        "TV",
-					StartDate:      ptr("1998-04-03"),
-					EndDate:        ptr("1999-04-24"),
-					EpisodeCount:   ptr(26),
-					EpisodeLength:  ptr(24),
-					AgeRating:      ptr("R"),
+					StartDate:      new("1998-04-03"),
+					EndDate:        new("1999-04-24"),
+					EpisodeCount:   new(26),
+					EpisodeLength:  new(24),
+					AgeRating:      new("R"),
 					NSFW:           false,
-					PosterImage:    &ImageSet{Original: ptr("https://example.com/poster.jpg")},
-					CoverImage:     &ImageSet{Original: ptr("https://example.com/cover.jpg")},
-					YoutubeVideoID: ptr("qig4KOK2R2g"),
+					PosterImage:    &ImageSet{Original: new("https://example.com/poster.jpg")},
+					CoverImage:     &ImageSet{Original: new("https://example.com/cover.jpg")},
+					YoutubeVideoID: new("qig4KOK2R2g"),
 				},
 			},
 			Included: []IncludedResource{
@@ -281,28 +282,28 @@ func TestMapEpisodesToSummary(t *testing.T) {
 					ID: "ep1",
 					Attributes: EpisodeAttributes{
 						CanonicalTitle: "Asteroid Blues",
-						Number:         ptr(1),
-						SeasonNumber:   ptr(1),
-						Length:         ptr(24),
-						Airdate:        ptr("1998-10-24"),
+						Number:         new(1),
+						SeasonNumber:   new(1),
+						Length:         new(24),
+						Airdate:        new("1998-10-24"),
 						Synopsis:       "First episode.",
-						Thumbnail:      &ImageSet{Original: ptr("https://example.com/ep1.jpg")},
+						Thumbnail:      &ImageSet{Original: new("https://example.com/ep1.jpg")},
 					},
 				},
 				{
 					ID: "ep2",
 					Attributes: EpisodeAttributes{
 						CanonicalTitle: "Stray Dog Strut",
-						Number:         ptr(2),
-						SeasonNumber:   ptr(1),
+						Number:         new(2),
+						SeasonNumber:   new(1),
 					},
 				},
 				{
 					ID: "ep-s2",
 					Attributes: EpisodeAttributes{
 						CanonicalTitle: "S2 Ep",
-						Number:         ptr(1),
-						SeasonNumber:   ptr(2),
+						Number:         new(1),
+						SeasonNumber:   new(2),
 					},
 				},
 			},
@@ -327,12 +328,12 @@ func TestMapEpisodeToMetadata(t *testing.T) {
 		ID: "ep42",
 		Attributes: EpisodeAttributes{
 			CanonicalTitle: "Asteroid Blues",
-			Number:         ptr(1),
-			SeasonNumber:   ptr(1),
-			Length:         ptr(24),
-			Airdate:        ptr("1998-10-24"),
+			Number:         new(1),
+			SeasonNumber:   new(1),
+			Length:         new(24),
+			Airdate:        new("1998-10-24"),
 			Synopsis:       "Test synopsis.",
-			Thumbnail:      &ImageSet{Original: ptr("https://example.com/thumb.jpg")},
+			Thumbnail:      &ImageSet{Original: new("https://example.com/thumb.jpg")},
 		},
 	}
 	result := mapEpisodeToMetadata(ep, "anime-123")
@@ -351,7 +352,7 @@ func TestMapEpisodeToMetadata(t *testing.T) {
 	// Default season 1 when no season number
 	ep2 := ResourceObject[EpisodeAttributes]{
 		ID:         "ep2",
-		Attributes: EpisodeAttributes{CanonicalTitle: "Test", Number: ptr(5)},
+		Attributes: EpisodeAttributes{CanonicalTitle: "Test", Number: new(5)},
 	}
 	result2 := mapEpisodeToMetadata(ep2, "anime-1")
 	assert.Equal(t, 1, result2.SeasonNumber)
@@ -366,8 +367,8 @@ func TestMapImages(t *testing.T) {
 		resp := &SingleResponse[AnimeAttributes]{
 			Data: ResourceObject[AnimeAttributes]{
 				Attributes: AnimeAttributes{
-					PosterImage: &ImageSet{Original: ptr("poster"), Large: ptr("poster-lg")},
-					CoverImage:  &ImageSet{Original: ptr("cover")},
+					PosterImage: &ImageSet{Original: new("poster"), Large: new("poster-lg")},
+					CoverImage:  &ImageSet{Original: new("cover")},
 				},
 			},
 		}

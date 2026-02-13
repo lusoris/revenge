@@ -3,6 +3,7 @@ package metadata
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -181,12 +182,12 @@ func (c *BaseClient) GetClient() *req.Client {
 
 // CacheKey generates a cache key from components.
 func CacheKey(parts ...any) string {
-	key := ""
+	var key strings.Builder
 	for i, part := range parts {
 		if i > 0 {
-			key += ":"
+			key.WriteString(":")
 		}
-		key += fmt.Sprintf("%v", part)
+		key.WriteString(fmt.Sprintf("%v", part))
 	}
-	return key
+	return key.String()
 }

@@ -4,6 +4,7 @@ package notification
 
 import (
 	"context"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
@@ -97,13 +98,13 @@ func (e EventType) String() string {
 
 // Event represents a notification event
 type Event struct {
-	ID        uuid.UUID              `json:"id"`
-	Type      EventType              `json:"type"`
-	Timestamp time.Time              `json:"timestamp"`
-	UserID    *uuid.UUID             `json:"user_id,omitempty"`    // User who triggered the event (if applicable)
-	TargetID  *uuid.UUID             `json:"target_id,omitempty"`  // Target resource ID (movie, user, etc.)
-	Data      map[string]any         `json:"data,omitempty"`       // Event-specific data
-	Metadata  map[string]string      `json:"metadata,omitempty"`   // Additional metadata
+	ID        uuid.UUID         `json:"id"`
+	Type      EventType         `json:"type"`
+	Timestamp time.Time         `json:"timestamp"`
+	UserID    *uuid.UUID        `json:"user_id,omitempty"`   // User who triggered the event (if applicable)
+	TargetID  *uuid.UUID        `json:"target_id,omitempty"` // Target resource ID (movie, user, etc.)
+	Data      map[string]any    `json:"data,omitempty"`      // Event-specific data
+	Metadata  map[string]string `json:"metadata,omitempty"`  // Additional metadata
 }
 
 // NewEvent creates a new event with a generated ID and current timestamp
@@ -178,9 +179,9 @@ type Agent interface {
 
 // AgentConfig is the base configuration for all agents
 type AgentConfig struct {
-	Enabled        bool            `json:"enabled"`
-	Name           string          `json:"name"`
-	EventTypes     []EventType     `json:"event_types,omitempty"`      // Empty = all events
+	Enabled         bool            `json:"enabled"`
+	Name            string          `json:"name"`
+	EventTypes      []EventType     `json:"event_types,omitempty"`      // Empty = all events
 	EventCategories []EventCategory `json:"event_categories,omitempty"` // Empty = all categories
 }
 
@@ -196,21 +197,13 @@ func (c *AgentConfig) ShouldSend(eventType EventType) bool {
 	}
 
 	// Check if event type is explicitly listed
-	for _, t := range c.EventTypes {
-		if t == eventType {
-			return true
-		}
+	if slices.Contains(c.EventTypes, eventType) {
+		return true
 	}
 
 	// Check if event category is listed
 	eventCategory := eventType.GetCategory()
-	for _, c := range c.EventCategories {
-		if c == eventCategory {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(c.EventCategories, eventCategory)
 }
 
 // NotificationResult represents the result of a notification send attempt

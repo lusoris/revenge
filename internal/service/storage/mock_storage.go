@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"maps"
 	"sync"
 )
 
@@ -81,8 +82,6 @@ func (s *MockStorage) GetStoredFiles() map[string][]byte {
 	defer s.mu.RUnlock()
 
 	result := make(map[string][]byte)
-	for k, v := range s.files {
-		result[k] = v
-	}
+	maps.Copy(result, s.files)
 	return result
 }

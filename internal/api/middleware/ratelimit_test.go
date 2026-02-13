@@ -281,7 +281,7 @@ func TestRateLimiter_Middleware(t *testing.T) {
 
 		// GetUser should not be limited even with many requests
 		req := createTestRequest("GetUser", "192.168.1.1:1234")
-		for i := 0; i < 10; i++ {
+		for range 10 {
 			resp, err := mw(req, next)
 			require.NoError(t, err)
 			assert.Equal(t, "success", resp.Type)

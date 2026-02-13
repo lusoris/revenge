@@ -34,7 +34,7 @@ func (s *Service) Enforce(ctx context.Context, sub, obj, act string) (bool, erro
 			slog.String("subject", sub),
 			slog.String("object", obj),
 			slog.String("action", act),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return false, fmt.Errorf("failed to enforce policy: %w", err)
 	}
@@ -63,7 +63,7 @@ func (s *Service) AddPolicy(ctx context.Context, sub, obj, act string) error {
 			slog.String("subject", sub),
 			slog.String("object", obj),
 			slog.String("action", act),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to add policy: %w", err)
 	}
@@ -93,7 +93,7 @@ func (s *Service) RemovePolicy(ctx context.Context, sub, obj, act string) error 
 			slog.String("subject", sub),
 			slog.String("object", obj),
 			slog.String("action", act),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to remove policy: %w", err)
 	}
@@ -120,7 +120,7 @@ func (s *Service) RemovePolicy(ctx context.Context, sub, obj, act string) error 
 func (s *Service) GetPolicies(ctx context.Context) ([][]string, error) {
 	policies, err := s.enforcer.GetPolicy()
 	if err != nil {
-		s.logger.Error("failed to get policies", slog.Any("error",err))
+		s.logger.Error("failed to get policies", slog.Any("error", err))
 		return nil, fmt.Errorf("failed to get policies: %w", err)
 	}
 	s.logger.Debug("retrieved policies", slog.Int("count", len(policies)))
@@ -134,7 +134,7 @@ func (s *Service) AssignRole(ctx context.Context, userID uuid.UUID, role string)
 		s.logger.Error("failed to assign role",
 			slog.String("user_id", userID.String()),
 			slog.String("role", role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to assign role: %w", err)
 	}
@@ -156,7 +156,7 @@ func (s *Service) AssignRole(ctx context.Context, userID uuid.UUID, role string)
 		ResourceType: "role",
 		Action:       activity.ActionAdminRoleAssign,
 		ResourceID:   userID,
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"role":    role,
 			"user_id": userID.String(),
 		},
@@ -172,7 +172,7 @@ func (s *Service) RemoveRole(ctx context.Context, userID uuid.UUID, role string)
 		s.logger.Error("failed to remove role",
 			slog.String("user_id", userID.String()),
 			slog.String("role", role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return fmt.Errorf("failed to remove role: %w", err)
 	}
@@ -195,7 +195,7 @@ func (s *Service) RemoveRole(ctx context.Context, userID uuid.UUID, role string)
 		ResourceType: "role",
 		Action:       activity.ActionAdminRoleRevoke,
 		ResourceID:   userID,
-		Metadata: map[string]interface{}{
+		Metadata: map[string]any{
 			"role":    role,
 			"user_id": userID.String(),
 		},
@@ -210,7 +210,7 @@ func (s *Service) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]string,
 	if err != nil {
 		s.logger.Error("failed to get user roles",
 			slog.String("user_id", userID.String()),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to get user roles: %w", err)
 	}
@@ -229,7 +229,7 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]uuid.UUID
 	if err != nil {
 		s.logger.Error("failed to get users for role",
 			slog.String("role", role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return nil, fmt.Errorf("failed to get users for role: %w", err)
 	}
@@ -241,7 +241,7 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]uuid.UUID
 			s.logger.Warn("invalid user ID in role mapping",
 				slog.String("user_str", userStr),
 				slog.String("role", role),
-				slog.Any("error",err),
+				slog.Any("error", err),
 			)
 			continue
 		}
@@ -263,7 +263,7 @@ func (s *Service) HasRole(ctx context.Context, userID uuid.UUID, role string) (b
 		s.logger.Error("failed to check user role",
 			slog.String("user_id", userID.String()),
 			slog.String("role", role),
-			slog.Any("error",err),
+			slog.Any("error", err),
 		)
 		return false, fmt.Errorf("failed to check user role: %w", err)
 	}
@@ -274,7 +274,7 @@ func (s *Service) HasRole(ctx context.Context, userID uuid.UUID, role string) (b
 // LoadPolicy reloads the policy from the database.
 func (s *Service) LoadPolicy(ctx context.Context) error {
 	if err := s.enforcer.LoadPolicy(); err != nil {
-		s.logger.Error("failed to load policy", slog.Any("error",err))
+		s.logger.Error("failed to load policy", slog.Any("error", err))
 		return fmt.Errorf("failed to load policy: %w", err)
 	}
 
@@ -285,7 +285,7 @@ func (s *Service) LoadPolicy(ctx context.Context) error {
 // SavePolicy saves the current policy to the database.
 func (s *Service) SavePolicy(ctx context.Context) error {
 	if err := s.enforcer.SavePolicy(); err != nil {
-		s.logger.Error("failed to save policy", slog.Any("error",err))
+		s.logger.Error("failed to save policy", slog.Any("error", err))
 		return fmt.Errorf("failed to save policy: %w", err)
 	}
 

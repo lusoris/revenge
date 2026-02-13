@@ -1,7 +1,7 @@
 # Claude Code Instructions
 
 **Project**: Revenge - self-hosted media server
-**Stack**: Go 1.25 backend, SvelteKit frontend, PostgreSQL 18, Dragonfly, Typesense
+**Stack**: Go 1.26 backend, SvelteKit frontend, PostgreSQL 18, Dragonfly, Typesense
 
 ---
 
@@ -177,7 +177,7 @@ The user may communicate in German in chat - that's fine. But all artifacts (cod
 
 ## Code Patterns
 
-- **Go 1.25**: Context-first APIs, error wrapping with `%w`, structured logging with slog
+- **Go 1.26**: Context-first APIs, error wrapping with `%w`, structured logging with slog, `errors.AsType` generics
 - **DI**: fx modules for dependency injection
 - **Repos**: Repository pattern with interfaces
 - **Testing**: Table-driven tests, testify assertions, mockery mocks, testcontainers for integration

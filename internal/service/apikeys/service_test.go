@@ -25,7 +25,7 @@ func TestService_CreateKey(t *testing.T) {
 
 	resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:        "Test Key",
-		Description: stringPtr("Test description"),
+		Description: new("Test description"),
 		Scopes:      []string{"read", "write"},
 	})
 	require.NoError(t, err)
@@ -53,7 +53,7 @@ func TestService_CreateKey_MaxKeysExceeded(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create 2 keys (max)
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		_, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 			Name:   "Key",
 			Scopes: []string{"read"},
@@ -168,7 +168,7 @@ func TestService_ListUserKeys(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create 3 keys
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 			Name:   "List Key",
 			Scopes: []string{"read"},
@@ -295,7 +295,7 @@ func TestService_ValidateKey_Expired(t *testing.T) {
 	resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:      "Will Expire",
 		Scopes:    []string{"read"},
-		ExpiresAt: timePtr(time.Now().Add(1 * time.Second)),
+		ExpiresAt: new(time.Now().Add(1 * time.Second)),
 	})
 	require.NoError(t, err)
 
@@ -445,7 +445,7 @@ func TestService_CleanupExpiredKeys(t *testing.T) {
 	resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:      "Cleanup Test",
 		Scopes:    []string{"read"},
-		ExpiresAt: timePtr(time.Now().Add(-1 * time.Hour)),
+		ExpiresAt: new(time.Now().Add(-1 * time.Hour)),
 	})
 	require.NoError(t, err)
 
@@ -464,6 +464,7 @@ func TestService_CleanupExpiredKeys(t *testing.T) {
 	assert.Equal(t, 0, count)
 }
 
+//go:fix inline
 func timePtr(t time.Time) *time.Time {
-	return &t
+	return new(t)
 }

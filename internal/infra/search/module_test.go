@@ -122,13 +122,13 @@ func TestClient_DisabledOperations(t *testing.T) {
 	})
 
 	t.Run("IndexDocument", func(t *testing.T) {
-		_, err := client.IndexDocument(ctx, "test", map[string]interface{}{"id": "1"})
+		_, err := client.IndexDocument(ctx, "test", map[string]any{"id": "1"})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "search is disabled")
 	})
 
 	t.Run("UpdateDocument", func(t *testing.T) {
-		_, err := client.UpdateDocument(ctx, "test", "1", map[string]interface{}{"id": "1"})
+		_, err := client.UpdateDocument(ctx, "test", "1", map[string]any{"id": "1"})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "search is disabled")
 	})

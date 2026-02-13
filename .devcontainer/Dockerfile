@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine
+FROM golang:1.26-alpine
 
 # System deps (runtime + CGO build dependencies)
 RUN apk add --no-cache \
@@ -21,7 +21,7 @@ RUN apk add --no-cache \
 	ffmpeg-dev
 
 # Go dev tools (versions match go.mod / Makefile)
-ENV GOEXPERIMENT=greenteagc,jsonv2
+ENV GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
 RUN go install golang.org/x/tools/gopls@latest \
 	&& go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest \
 	&& go install github.com/air-verse/air@latest \

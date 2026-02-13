@@ -72,7 +72,7 @@ See [docs/dev/design/](docs/dev/design/) for comprehensive design documentation 
 
 | Component   | Technology          | Notes                            |
 |-------------|---------------------|----------------------------------|
-| Language    | Go 1.25+            | `GOEXPERIMENT=greenteagc,jsonv2` |
+| Language    | Go 1.26+            | `GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret` |
 | Database    | PostgreSQL 18+      | sqlc for type-safe queries       |
 | Cache       | Dragonfly + rueidis | Redis-compatible, auto-pipelining|
 | Local Cache | otter v2.x          | W-TinyLFU eviction               |

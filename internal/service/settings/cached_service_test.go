@@ -297,7 +297,7 @@ func TestCachedService_SetUserSettingsBulk_InvalidatesCache(t *testing.T) {
 	require.NoError(t, err)
 
 	// Bulk update - should invalidate cache
-	err = svc.SetUserSettingsBulk(ctx, userID, map[string]interface{}{
+	err = svc.SetUserSettingsBulk(ctx, userID, map[string]any{
 		"bulk.key1": "new1",
 		"bulk.key2": "new2",
 		"bulk.key3": "new3",

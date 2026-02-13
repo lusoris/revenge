@@ -24,9 +24,9 @@ func TestCache_ConcurrentAccess(t *testing.T) {
 	doneChan := make(chan bool, numGoroutines)
 
 	// Concurrent writes and reads
-	for i := 0; i < numGoroutines; i++ {
+	for i := range numGoroutines {
 		go func(id int) {
-			for j := 0; j < numOpsPerGoroutine; j++ {
+			for range numOpsPerGoroutine {
 				key := string(rune('a' + (id % 26)))
 				value := []byte("value")
 
@@ -49,7 +49,7 @@ func TestCache_ConcurrentAccess(t *testing.T) {
 	}
 
 	// Wait for all goroutines
-	for i := 0; i < numGoroutines; i++ {
+	for range numGoroutines {
 		select {
 		case err := <-errChan:
 			t.Fatalf("Concurrent operation failed: %v", err)
@@ -270,7 +270,7 @@ func TestCache_JSONInvalidData(t *testing.T) {
 	require.NoError(t, err)
 
 	// Try to get as JSON
-	var result map[string]interface{}
+	var result map[string]any
 	err = cache.GetJSON(ctx, "invalid", &result)
 	assert.Error(t, err, "Should fail to unmarshal invalid JSON")
 	assert.Contains(t, err.Error(), "unmarshal")

@@ -552,8 +552,8 @@ func TestServiceLogger_LogAction_Short(t *testing.T) {
 			Action:       activity.ActionUserLogin,
 			ResourceType: activity.ResourceTypeUser,
 			ResourceID:   resourceID,
-			Changes:      map[string]interface{}{"field": "value"},
-			Metadata:     map[string]interface{}{"key": "value"},
+			Changes:      map[string]any{"field": "value"},
+			Metadata:     map[string]any{"key": "value"},
 			IPAddress:    ipAddr,
 			UserAgent:    "Mozilla/5.0",
 		})

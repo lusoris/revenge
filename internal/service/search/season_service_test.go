@@ -220,7 +220,7 @@ func TestSeasonToDocumentZeroValues(t *testing.T) {
 }
 
 func TestParseSeasonDocument(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"id":                 "550e8400-e29b-41d4-a716-446655440000",
 		"series_id":          "660e8400-e29b-41d4-a716-446655440000",
 		"tmdb_id":            float64(3572),
@@ -256,7 +256,7 @@ func TestParseSeasonDocument(t *testing.T) {
 }
 
 func TestParseSeasonDocumentEmpty(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	doc := parseSeasonDocument(data)
 
 	assert.Empty(t, doc.ID)
@@ -268,12 +268,12 @@ func TestParseSeasonDocumentEmpty(t *testing.T) {
 func TestParseSeasonDocumentPartialData(t *testing.T) {
 	tests := []struct {
 		name   string
-		data   map[string]interface{}
+		data   map[string]any
 		verify func(t *testing.T, doc SeasonDocument)
 	}{
 		{
 			name: "only id and name",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":   "test-id",
 				"name": "Season 1",
 			},
@@ -286,7 +286,7 @@ func TestParseSeasonDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with nil values",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":           "test-id",
 				"name":         "Season 1",
 				"overview":     nil,

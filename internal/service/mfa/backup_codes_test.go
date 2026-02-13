@@ -38,7 +38,7 @@ func createTestUser(t *testing.T, queries *db.Queries, ctx context.Context) uuid
 func TestGenerateRandomCode(t *testing.T) {
 	// Generate multiple codes
 	codes := make(map[string]bool)
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		code, err := generateRandomCode()
 		require.NoError(t, err)
 

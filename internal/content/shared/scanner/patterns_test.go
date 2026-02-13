@@ -132,22 +132,22 @@ func TestExtractYear(t *testing.T) {
 		{
 			name:     "year in title",
 			input:    "The Matrix 1999",
-			expected: intPtr(1999),
+			expected: new(1999),
 		},
 		{
 			name:     "year with dots",
 			input:    "Inception.2010.1080p",
-			expected: intPtr(2010),
+			expected: new(2010),
 		},
 		{
 			name:     "recent year",
 			input:    "Dune Part Two 2024",
-			expected: intPtr(2024),
+			expected: new(2024),
 		},
 		{
 			name:     "old year",
 			input:    "Metropolis 1927",
-			expected: intPtr(1927),
+			expected: new(1927),
 		},
 		{
 			name:     "no year",
@@ -162,7 +162,7 @@ func TestExtractYear(t *testing.T) {
 		{
 			name:     "year in brackets",
 			input:    "Movie (1999)",
-			expected: intPtr(1999),
+			expected: new(1999),
 		},
 	}
 
@@ -188,12 +188,12 @@ func TestParseYearFromBrackets(t *testing.T) {
 		{
 			name:     "year in brackets",
 			input:    "The Matrix (1999)",
-			expected: intPtr(1999),
+			expected: new(1999),
 		},
 		{
 			name:     "multiple brackets",
 			input:    "Movie (2020) (Extended)",
-			expected: intPtr(2020),
+			expected: new(2020),
 		},
 		{
 			name:     "no brackets",
@@ -312,6 +312,7 @@ func TestExtractSource(t *testing.T) {
 	}
 }
 
+//go:fix inline
 func intPtr(i int) *int {
-	return &i
+	return new(i)
 }

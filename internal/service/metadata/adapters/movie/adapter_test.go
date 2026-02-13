@@ -12,7 +12,8 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestPtrString(t *testing.T) {
 	assert.Nil(t, ptrString(""))
@@ -71,10 +72,10 @@ func TestMapSearchResultToMovie(t *testing.T) {
 			VoteAverage:      9.0,
 			VoteCount:        30000,
 			Popularity:       80.5,
-			PosterPath:       ptr("https://example.com/poster.jpg"),
-			BackdropPath:     ptr("https://example.com/backdrop.jpg"),
+			PosterPath:       new("https://example.com/poster.jpg"),
+			BackdropPath:     new("https://example.com/backdrop.jpg"),
 			ReleaseDate:      &release,
-			Year:             ptr(2008),
+			Year:             new(2008),
 		}
 		mov := mapSearchResultToMovie(r)
 		require.NotNil(t, mov)
@@ -157,8 +158,8 @@ func TestMapMetadataToMovie(t *testing.T) {
 			VoteAverage:      9.0,
 			VoteCount:        30000,
 			Popularity:       80.5,
-			PosterPath:       ptr("https://example.com/poster.jpg"),
-			BackdropPath:     ptr("https://example.com/backdrop.jpg"),
+			PosterPath:       new("https://example.com/poster.jpg"),
+			BackdropPath:     new("https://example.com/backdrop.jpg"),
 			Homepage:         &homepage,
 			IMDbID:           &imdb,
 			TMDbID:           &tmdb,
@@ -230,10 +231,10 @@ func TestMapCreditsToMovieCredits(t *testing.T) {
 	t.Run("cast and crew", func(t *testing.T) {
 		credits := &metadata.Credits{
 			Cast: []metadata.CastMember{
-				{ProviderID: "6193", Name: "Leonardo DiCaprio", Character: "Cobb", Order: 0, ProfilePath: ptr("https://example.com/leo.jpg")},
+				{ProviderID: "6193", Name: "Leonardo DiCaprio", Character: "Cobb", Order: 0, ProfilePath: new("https://example.com/leo.jpg")},
 			},
 			Crew: []metadata.CrewMember{
-				{ProviderID: "525", Name: "Christopher Nolan", Job: "Director", Department: "Directing", ProfilePath: ptr("https://example.com/cn.jpg")},
+				{ProviderID: "525", Name: "Christopher Nolan", Job: "Director", Department: "Directing", ProfilePath: new("https://example.com/cn.jpg")},
 			},
 		}
 

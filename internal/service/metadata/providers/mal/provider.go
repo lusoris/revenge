@@ -36,13 +36,13 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderMAL }
-func (p *Provider) Name() string                   { return "MyAnimeList" }
-func (p *Provider) Priority() int                  { return p.priority }
-func (p *Provider) SupportsMovies() bool           { return false }
-func (p *Provider) SupportsTVShows() bool          { return true }
-func (p *Provider) SupportsPeople() bool           { return false }
-func (p *Provider) ClearCache()                    { p.client.clearCache() }
+func (p *Provider) ID() metadata.ProviderID { return metadata.ProviderMAL }
+func (p *Provider) Name() string            { return "MyAnimeList" }
+func (p *Provider) Priority() int           { return p.priority }
+func (p *Provider) SupportsMovies() bool    { return false }
+func (p *Provider) SupportsTVShows() bool   { return true }
+func (p *Provider) SupportsPeople() bool    { return false }
+func (p *Provider) ClearCache()             { p.client.clearCache() }
 
 // SupportsLanguage returns true for Japanese and English content.
 func (p *Provider) SupportsLanguage(lang string) bool {
@@ -57,10 +57,7 @@ func (p *Provider) SupportsLanguage(lang string) bool {
 // --- TVShowProvider ---
 
 func (p *Provider) SearchTVShow(ctx context.Context, query string, opts metadata.SearchOptions) ([]metadata.TVShowSearchResult, error) {
-	page := opts.Page
-	if page < 1 {
-		page = 1
-	}
+	page := max(opts.Page, 1)
 	limit := 20
 	offset := (page - 1) * limit
 
@@ -96,7 +93,6 @@ func (p *Provider) GetTVShow(ctx context.Context, id string, _ string) (*metadat
 	}
 	return m, nil
 }
-
 
 func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Images, error) {
 	animeID, err := strconv.Atoi(id)
@@ -135,12 +131,4 @@ func (p *Provider) GetTVShowContentRatings(ctx context.Context, id string) ([]me
 	}, nil
 }
 
-
-
 // MAL API v2 does not have per-season or per-episode data.
-
-
-
-
-
-

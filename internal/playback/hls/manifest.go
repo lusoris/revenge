@@ -135,7 +135,7 @@ func estimateBandwidth(pd transcode.ProfileDecision, sourceVideoBps, sourceAudio
 // If the file doesn't exist yet (FFmpeg still starting), it polls with retries.
 func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 	// Validate profile to prevent path traversal (CWE-22)
-	for _, part := range strings.Split(profile, "/") {
+	for part := range strings.SplitSeq(profile, "/") {
 		if part == "" || part == "." || part == ".." || strings.ContainsAny(part, "/\\") {
 			return "", fmt.Errorf("invalid profile: %q", profile)
 		}
@@ -159,7 +159,7 @@ func ReadMediaPlaylist(segmentDir, profile string) (string, error) {
 	// Poll for the playlist file to appear (FFmpeg may still be starting)
 	// Use the validated absolute path for file operations
 	var content []byte
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		content, err = os.ReadFile(absPath) //nolint:gosec // path validated above with traversal check
 		if err == nil && len(content) > 0 {
 			return string(content), nil

@@ -10,8 +10,8 @@ permissions:
   packages: write
 
 env:
-  GO_VERSION: "1.25"
-  GOEXPERIMENT: greenteagc,jsonv2
+  GO_VERSION: "1.26"
+  GOEXPERIMENT: jsonv2,goroutineleakprofile,simd,runtimesecret
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 

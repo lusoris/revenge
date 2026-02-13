@@ -16,7 +16,7 @@ func TestParseReleaseDate(t *testing.T) {
 		{
 			name:     "valid date",
 			input:    "1999-03-31",
-			expected: timePtr(time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)),
+			expected: new(time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)),
 		},
 		{
 			name:     "empty string",
@@ -57,12 +57,12 @@ func TestExtractYearFromDate(t *testing.T) {
 		{
 			name:     "valid date",
 			input:    "1999-03-31",
-			expected: intPtr(1999),
+			expected: new(1999),
 		},
 		{
 			name:     "year only",
 			input:    "2020",
-			expected: intPtr(2020),
+			expected: new(2020),
 		},
 		{
 			name:     "empty string",
@@ -277,10 +277,13 @@ func TestISOToLanguage(t *testing.T) {
 }
 
 // Helper functions
+//
+//go:fix inline
 func intPtr(i int) *int {
-	return &i
+	return new(i)
 }
 
+//go:fix inline
 func timePtr(t time.Time) *time.Time {
-	return &t
+	return new(t)
 }

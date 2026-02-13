@@ -18,10 +18,10 @@ import (
 
 const (
 	// Image sizes supported by TMDb
-	SizePosterSmall   = "w185"
-	SizePosterMedium  = "w342"
-	SizePosterLarge   = "w500"
-	SizePosterXLarge  = "w780"
+	SizePosterSmall    = "w185"
+	SizePosterMedium   = "w342"
+	SizePosterLarge    = "w500"
+	SizePosterXLarge   = "w780"
 	SizePosterOriginal = "original"
 
 	SizeBackdropSmall    = "w300"
@@ -29,9 +29,9 @@ const (
 	SizeBackdropLarge    = "w1280"
 	SizeBackdropOriginal = "original"
 
-	SizeProfileSmall   = "w45"
-	SizeProfileMedium  = "w185"
-	SizeProfileLarge   = "h632"
+	SizeProfileSmall    = "w45"
+	SizeProfileMedium   = "w185"
+	SizeProfileLarge    = "h632"
 	SizeProfileOriginal = "original"
 
 	// Image types
@@ -84,9 +84,9 @@ func NewService(cfg Config, logger *slog.Logger) (*Service, error) {
 	}
 
 	client := req.C().
-		SetTimeout(30 * time.Second).
+		SetTimeout(30*time.Second).
 		SetCommonRetryCount(3).
-		SetCommonRetryFixedInterval(1 * time.Second).
+		SetCommonRetryFixedInterval(1*time.Second).
 		SetCommonRetryCondition(func(resp *req.Response, err error) bool {
 			if err != nil {
 				return true
@@ -186,7 +186,7 @@ func (s *Service) FetchImage(ctx context.Context, imageType, path, size string) 
 	// Cache the image
 	if s.config.CacheDir != "" {
 		if err := s.saveToCache(imageType, path, size, data, contentType); err != nil {
-			s.logger.Warn("Failed to cache image", slog.Any("error",err))
+			s.logger.Warn("Failed to cache image", slog.Any("error", err))
 		}
 	}
 
@@ -246,7 +246,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	data, contentType, err := s.FetchImage(r.Context(), imageType, imagePath, size)
 	if err != nil {
-		s.logger.Error("Failed to fetch image", slog.Any("error",err))
+		s.logger.Error("Failed to fetch image", slog.Any("error", err))
 		http.Error(w, "Image not found", http.StatusNotFound)
 		return
 	}
@@ -263,7 +263,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
 
 	if _, err := w.Write(data); err != nil {
-		s.logger.Error("failed to write image response", slog.Any("error",err))
+		s.logger.Error("failed to write image response", slog.Any("error", err))
 	}
 }
 
@@ -305,7 +305,7 @@ func (s *Service) getCachePath(imageType, path, size string) (string, error) {
 	cleanPath := filepath.Clean(strings.TrimPrefix(path, "/"))
 
 	// Reject any path component that attempts traversal
-	for _, part := range strings.Split(cleanPath, string(filepath.Separator)) {
+	for part := range strings.SplitSeq(cleanPath, string(filepath.Separator)) {
 		if part == ".." || part == "." || part == "" {
 			return "", fmt.Errorf("invalid image path: %q", path)
 		}

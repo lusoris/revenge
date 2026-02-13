@@ -58,8 +58,8 @@ func TestAsyncLogger_LogAction_FieldMapping(t *testing.T) {
 		Action:       ActionUserLogin,
 		ResourceType: ResourceTypeUser,
 		ResourceID:   resourceID,
-		Changes:      map[string]interface{}{"field": "value"},
-		Metadata:     map[string]interface{}{"key": "val"},
+		Changes:      map[string]any{"field": "value"},
+		Metadata:     map[string]any{"key": "val"},
 		IPAddress:    ip,
 		UserAgent:    "test-agent",
 	}

@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestBestTitle(t *testing.T) {
 	tests := []struct {
@@ -17,12 +18,12 @@ func TestBestTitle(t *testing.T) {
 		title MediaTitle
 		want  string
 	}{
-		{"english first", MediaTitle{English: ptr("Attack on Titan"), Romaji: ptr("Shingeki no Kyojin")}, "Attack on Titan"},
-		{"romaji fallback", MediaTitle{Romaji: ptr("Shingeki no Kyojin")}, "Shingeki no Kyojin"},
-		{"userPreferred fallback", MediaTitle{UserPreferred: ptr("AoT")}, "AoT"},
-		{"native fallback", MediaTitle{Native: ptr("進撃の巨人")}, "進撃の巨人"},
+		{"english first", MediaTitle{English: new("Attack on Titan"), Romaji: new("Shingeki no Kyojin")}, "Attack on Titan"},
+		{"romaji fallback", MediaTitle{Romaji: new("Shingeki no Kyojin")}, "Shingeki no Kyojin"},
+		{"userPreferred fallback", MediaTitle{UserPreferred: new("AoT")}, "AoT"},
+		{"native fallback", MediaTitle{Native: new("進撃の巨人")}, "進撃の巨人"},
 		{"empty", MediaTitle{}, ""},
-		{"empty english", MediaTitle{English: ptr(""), Romaji: ptr("Test")}, "Test"},
+		{"empty english", MediaTitle{English: new(""), Romaji: new("Test")}, "Test"},
 	}
 
 	for _, tt := range tests {
@@ -38,11 +39,11 @@ func TestBestCoverImage(t *testing.T) {
 		ci   CoverImage
 		want string
 	}{
-		{"extraLarge first", CoverImage{ExtraLarge: ptr("xl"), Large: ptr("l")}, "xl"},
-		{"large fallback", CoverImage{Large: ptr("l")}, "l"},
-		{"medium fallback", CoverImage{Medium: ptr("m")}, "m"},
+		{"extraLarge first", CoverImage{ExtraLarge: new("xl"), Large: new("l")}, "xl"},
+		{"large fallback", CoverImage{Large: new("l")}, "l"},
+		{"medium fallback", CoverImage{Medium: new("m")}, "m"},
 		{"empty", CoverImage{}, ""},
-		{"empty extraLarge", CoverImage{ExtraLarge: ptr(""), Large: ptr("l")}, "l"},
+		{"empty extraLarge", CoverImage{ExtraLarge: new(""), Large: new("l")}, "l"},
 	}
 
 	for _, tt := range tests {
@@ -58,19 +59,19 @@ func TestFuzzyDateToTime(t *testing.T) {
 	})
 
 	t.Run("year only", func(t *testing.T) {
-		result := fuzzyDateToTime(FuzzyDate{Year: ptr(2020)})
+		result := fuzzyDateToTime(FuzzyDate{Year: new(2020)})
 		require.NotNil(t, result)
 		assert.Equal(t, time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), *result)
 	})
 
 	t.Run("year and month", func(t *testing.T) {
-		result := fuzzyDateToTime(FuzzyDate{Year: ptr(2020), Month: ptr(6)})
+		result := fuzzyDateToTime(FuzzyDate{Year: new(2020), Month: new(6)})
 		require.NotNil(t, result)
 		assert.Equal(t, time.Date(2020, 6, 1, 0, 0, 0, 0, time.UTC), *result)
 	})
 
 	t.Run("full date", func(t *testing.T) {
-		result := fuzzyDateToTime(FuzzyDate{Year: ptr(2020), Month: ptr(6), Day: ptr(15)})
+		result := fuzzyDateToTime(FuzzyDate{Year: new(2020), Month: new(6), Day: new(15)})
 		require.NotNil(t, result)
 		assert.Equal(t, time.Date(2020, 6, 15, 0, 0, 0, 0, time.UTC), *result)
 	})
@@ -120,10 +121,10 @@ func TestMapFormat(t *testing.T) {
 
 func TestMapGender(t *testing.T) {
 	assert.Equal(t, 0, mapGender(nil))
-	assert.Equal(t, 1, mapGender(ptr("Female")))
-	assert.Equal(t, 2, mapGender(ptr("Male")))
-	assert.Equal(t, 3, mapGender(ptr("Non-binary")))
-	assert.Equal(t, 0, mapGender(ptr("Unknown")))
+	assert.Equal(t, 1, mapGender(new("Female")))
+	assert.Equal(t, 2, mapGender(new("Male")))
+	assert.Equal(t, 3, mapGender(new("Non-binary")))
+	assert.Equal(t, 0, mapGender(new("Unknown")))
 }
 
 func TestMapDepartment(t *testing.T) {
@@ -156,14 +157,14 @@ func TestMapDepartment(t *testing.T) {
 
 func TestSafeStr(t *testing.T) {
 	assert.Equal(t, "", safeStr(nil))
-	assert.Equal(t, "hello", safeStr(ptr("hello")))
+	assert.Equal(t, "hello", safeStr(new("hello")))
 }
 
 func TestExtractIMDbID(t *testing.T) {
 	tests := []struct {
-		name  string
-		url   string
-		want  string
+		name string
+		url  string
+		want string
 	}{
 		{"standard URL", "https://www.imdb.com/title/tt1234567/", "tt1234567"},
 		{"no path", "https://www.imdb.com/", ""},
@@ -209,14 +210,14 @@ func TestMapMediaToTVShowSearchResult(t *testing.T) {
 		m := Media{
 			ID:              12345,
 			IsAdult:         false,
-			Title:           MediaTitle{English: ptr("Attack on Titan"), Romaji: ptr("Shingeki no Kyojin"), Native: ptr("進撃の巨人")},
-			CountryOfOrigin: ptr("JP"),
-			Description:     ptr("Humanity fights giants."),
-			AverageScore:    ptr(85),
+			Title:           MediaTitle{English: new("Attack on Titan"), Romaji: new("Shingeki no Kyojin"), Native: new("進撃の巨人")},
+			CountryOfOrigin: new("JP"),
+			Description:     new("Humanity fights giants."),
+			AverageScore:    new(85),
 			Popularity:      1000,
-			StartDate:       FuzzyDate{Year: ptr(2013), Month: ptr(4), Day: ptr(7)},
-			CoverImage:      CoverImage{ExtraLarge: ptr("https://example.com/cover.jpg")},
-			BannerImage:     ptr("https://example.com/banner.jpg"),
+			StartDate:       FuzzyDate{Year: new(2013), Month: new(4), Day: new(7)},
+			CoverImage:      CoverImage{ExtraLarge: new("https://example.com/cover.jpg")},
+			BannerImage:     new("https://example.com/banner.jpg"),
 			Genres:          []string{"Action", "Drama"},
 		}
 		result := mapMediaToTVShowSearchResult(m)
@@ -239,7 +240,7 @@ func TestMapMediaToTVShowSearchResult(t *testing.T) {
 	})
 
 	t.Run("no country - defaults to JP", func(t *testing.T) {
-		m := Media{ID: 1, Title: MediaTitle{Romaji: ptr("Test")}}
+		m := Media{ID: 1, Title: MediaTitle{Romaji: new("Test")}}
 		result := mapMediaToTVShowSearchResult(m)
 		assert.Equal(t, "ja", result.OriginalLanguage)
 		assert.Equal(t, []string{"JP"}, result.OriginCountries)
@@ -248,7 +249,7 @@ func TestMapMediaToTVShowSearchResult(t *testing.T) {
 	t.Run("originalName from native when titles match", func(t *testing.T) {
 		m := Media{
 			ID:    1,
-			Title: MediaTitle{English: ptr("Same"), Romaji: ptr("Same"), Native: ptr("ネイティブ")},
+			Title: MediaTitle{English: new("Same"), Romaji: new("Same"), Native: new("ネイティブ")},
 		}
 		result := mapMediaToTVShowSearchResult(m)
 		assert.Equal(t, "ネイティブ", result.OriginalName)
@@ -264,22 +265,22 @@ func TestMapMediaToTVShowMetadata(t *testing.T) {
 		m := &Media{
 			ID:              12345,
 			IsAdult:         true,
-			Title:           MediaTitle{English: ptr("AoT"), Native: ptr("進撃の巨人")},
-			CountryOfOrigin: ptr("JP"),
-			Description:     ptr("A description."),
+			Title:           MediaTitle{English: new("AoT"), Native: new("進撃の巨人")},
+			CountryOfOrigin: new("JP"),
+			Description:     new("A description."),
 			Status:          "RELEASING",
 			Format:          "TV",
-			Episodes:        ptr(25),
-			Duration:        ptr(24),
-			AverageScore:    ptr(85),
-			MeanScore:       ptr(84),
+			Episodes:        new(25),
+			Duration:        new(24),
+			AverageScore:    new(85),
+			MeanScore:       new(84),
 			Popularity:      5000,
-			StartDate:       FuzzyDate{Year: ptr(2013)},
-			EndDate:         FuzzyDate{Year: ptr(2023)},
-			CoverImage:      CoverImage{Large: ptr("https://example.com/poster.jpg")},
-			BannerImage:     ptr("https://example.com/banner.jpg"),
+			StartDate:       FuzzyDate{Year: new(2013)},
+			EndDate:         FuzzyDate{Year: new(2023)},
+			CoverImage:      CoverImage{Large: new("https://example.com/poster.jpg")},
+			BannerImage:     new("https://example.com/banner.jpg"),
 			SiteURL:         "https://anilist.co/anime/12345",
-			Trailer:         &Trailer{ID: ptr("abc123"), Site: ptr("youtube")},
+			Trailer:         &Trailer{ID: new("abc123"), Site: new("youtube")},
 			Genres:          []string{"Action"},
 			Studios:         StudioConnection{Edges: []StudioEdge{{Node: Studio{ID: 1, Name: "WIT"}}}},
 		}
@@ -316,8 +317,8 @@ func TestMapMediaToTVShowMetadata(t *testing.T) {
 	t.Run("no trailer if not youtube", func(t *testing.T) {
 		m := &Media{
 			ID:      1,
-			Title:   MediaTitle{Romaji: ptr("Test")},
-			Trailer: &Trailer{ID: ptr("abc"), Site: ptr("dailymotion")},
+			Title:   MediaTitle{Romaji: new("Test")},
+			Trailer: &Trailer{ID: new("abc"), Site: new("dailymotion")},
 		}
 		result := mapMediaToTVShowMetadata(m)
 		require.NotNil(t, result)
@@ -337,24 +338,24 @@ func TestMapCredits(t *testing.T) {
 					{
 						Node: Character{
 							ID:     1,
-							Name:   CharacterName{Full: ptr("Eren Yeager")},
-							Gender: ptr("Male"),
+							Name:   CharacterName{Full: new("Eren Yeager")},
+							Gender: new("Male"),
 						},
 						Role: "MAIN",
 						VoiceActors: []Staff{
 							{
 								ID:     100,
-								Name:   StaffName{Full: ptr("Yuki Kaji")},
-								Gender: ptr("Male"),
-								Image:  StaffImage{Large: ptr("https://example.com/va.jpg")},
+								Name:   StaffName{Full: new("Yuki Kaji")},
+								Gender: new("Male"),
+								Image:  StaffImage{Large: new("https://example.com/va.jpg")},
 							},
 						},
 					},
 					{
 						Node: Character{
-							ID:   2,
-							Name: CharacterName{Full: ptr("Levi")},
-							Image: CharacterImage{Large: ptr("https://example.com/char.jpg")},
+							ID:    2,
+							Name:  CharacterName{Full: new("Levi")},
+							Image: CharacterImage{Large: new("https://example.com/char.jpg")},
 						},
 						Role: "SUPPORTING",
 					},
@@ -365,9 +366,9 @@ func TestMapCredits(t *testing.T) {
 					{
 						Node: Staff{
 							ID:     200,
-							Name:   StaffName{Full: ptr("Tetsuro Araki")},
-							Gender: ptr("Male"),
-							Image:  StaffImage{Large: ptr("https://example.com/staff.jpg")},
+							Name:   StaffName{Full: new("Tetsuro Araki")},
+							Gender: new("Male"),
+							Image:  StaffImage{Large: new("https://example.com/staff.jpg")},
 						},
 						Role: "Director",
 					},
@@ -401,8 +402,8 @@ func TestMapImages(t *testing.T) {
 
 	t.Run("with images", func(t *testing.T) {
 		m := &Media{
-			CoverImage:  CoverImage{ExtraLarge: ptr("xl"), Large: ptr("l"), Medium: ptr("m")},
-			BannerImage: ptr("banner"),
+			CoverImage:  CoverImage{ExtraLarge: new("xl"), Large: new("l"), Medium: new("m")},
+			BannerImage: new("banner"),
 		}
 		result := mapImages(m)
 		require.NotNil(t, result)
@@ -424,9 +425,9 @@ func TestFindExternalIDs(t *testing.T) {
 	t.Run("with IMDb link", func(t *testing.T) {
 		m := &Media{
 			ExternalLinks: []ExternalLink{
-				{Site: "IMDb", URL: ptr("https://www.imdb.com/title/tt1234567/")},
-				{Site: "Twitter", URL: ptr("https://twitter.com/test")},
-				{Site: "YouTube", URL: ptr("https://youtube.com/channel/abc")},
+				{Site: "IMDb", URL: new("https://www.imdb.com/title/tt1234567/")},
+				{Site: "Twitter", URL: new("https://twitter.com/test")},
+				{Site: "YouTube", URL: new("https://youtube.com/channel/abc")},
 			},
 		}
 		result := findExternalIDs(m)

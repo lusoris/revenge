@@ -329,7 +329,7 @@ func TestCache_SetJSON_ComplexTypes(t *testing.T) {
 	tests := []struct {
 		name  string
 		key   string
-		value interface{}
+		value any
 	}{
 		{"nil value", "nil", nil},
 		{"string value", "str", "hello"},
@@ -376,7 +376,7 @@ func TestCache_CacheAside_CacheHit(t *testing.T) {
 	require.NoError(t, err)
 
 	loaderCalled := false
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		loaderCalled = true
 		return &Item{ID: "loaded"}, nil
 	}
@@ -398,7 +398,7 @@ func TestCache_CacheAside_CacheMissLoadsAndCaches(t *testing.T) {
 	}
 
 	callCount := 0
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		callCount++
 		return &Item{ID: "from-loader"}, nil
 	}
@@ -425,7 +425,7 @@ func TestCache_CacheAside_LoaderError(t *testing.T) {
 	c := newL1OnlyCache(t)
 	ctx := context.Background()
 
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		return nil, assert.AnError
 	}
 
@@ -802,7 +802,7 @@ func TestCache_CacheAside_LoaderReturnsUnmarshalable(t *testing.T) {
 	ctx := context.Background()
 
 	// Loader returns something that can't be marshaled to JSON
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		return make(chan int), nil
 	}
 
@@ -953,7 +953,7 @@ func TestCache_SetJSON_LargeData(t *testing.T) {
 
 	// Create a reasonably sized JSON payload
 	data := make(map[string]string, 100)
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		data[fmt.Sprintf("key%d", i)] = fmt.Sprintf("value%d", i)
 	}
 
@@ -973,7 +973,7 @@ func TestCache_CacheAside_UnmarshalToDestError(t *testing.T) {
 	ctx := context.Background()
 
 	// Loader returns a string, but dest is *int (will fail unmarshal)
-	loader := func() (interface{}, error) {
+	loader := func() (any, error) {
 		return "not a number", nil
 	}
 

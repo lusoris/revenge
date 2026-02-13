@@ -263,7 +263,7 @@ func (c *Cache) Close() {
 }
 
 // GetJSON retrieves and unmarshals a JSON value from cache.
-func (c *Cache) GetJSON(ctx context.Context, key string, dest interface{}) error {
+func (c *Cache) GetJSON(ctx context.Context, key string, dest any) error {
 	data, err := c.Get(ctx, key)
 	if err != nil {
 		return err
@@ -277,7 +277,7 @@ func (c *Cache) GetJSON(ctx context.Context, key string, dest interface{}) error
 }
 
 // SetJSON marshals and stores a JSON value in cache.
-func (c *Cache) SetJSON(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
+func (c *Cache) SetJSON(ctx context.Context, key string, value any, ttl time.Duration) error {
 	data, err := json.Marshal(value)
 	if err != nil {
 		return fmt.Errorf("failed to marshal value to JSON: %w", err)

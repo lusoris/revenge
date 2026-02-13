@@ -1,7 +1,6 @@
 package search
 
 import (
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -26,20 +25,20 @@ type PersonDocument struct {
 func PersonCollectionSchema() *api.CollectionSchema {
 	return &api.CollectionSchema{
 		Name:                PersonCollectionName,
-		DefaultSortingField: ptr.To("total_credits"),
+		DefaultSortingField: new("total_credits"),
 		TokenSeparators:     &[]string{"-", "_"},
 		SymbolsToIndex:      &[]string{"&"},
 		Fields: []api.Field{
 			{Name: "id", Type: "string"},
 			{Name: "tmdb_id", Type: "int32"},
-			{Name: "name", Type: "string", Infix: ptr.To(true)},
-			{Name: "profile_path", Type: "string", Index: ptr.To(false), Optional: ptr.To(true)},
-			{Name: "known_for", Type: "string[]", Optional: ptr.To(true)},
-			{Name: "characters", Type: "string[]", Optional: ptr.To(true)},
-			{Name: "departments", Type: "string[]", Facet: ptr.To(true), Optional: ptr.To(true)},
-			{Name: "movie_count", Type: "int32", Sort: ptr.To(true)},
-			{Name: "tvshow_count", Type: "int32", Sort: ptr.To(true)},
-			{Name: "total_credits", Type: "int32", Sort: ptr.To(true)},
+			{Name: "name", Type: "string", Infix: new(true)},
+			{Name: "profile_path", Type: "string", Index: new(false), Optional: new(true)},
+			{Name: "known_for", Type: "string[]", Optional: new(true)},
+			{Name: "characters", Type: "string[]", Optional: new(true)},
+			{Name: "departments", Type: "string[]", Facet: new(true), Optional: new(true)},
+			{Name: "movie_count", Type: "int32", Sort: new(true)},
+			{Name: "tvshow_count", Type: "int32", Sort: new(true)},
+			{Name: "total_credits", Type: "int32", Sort: new(true)},
 		},
 	}
 }

@@ -85,8 +85,8 @@ func normalizeForComparison(title string) string {
 	// Remove leading articles
 	articles := []string{"the ", "a ", "an "}
 	for _, article := range articles {
-		if strings.HasPrefix(title, article) {
-			title = strings.TrimPrefix(title, article)
+		if after, ok := strings.CutPrefix(title, article); ok {
+			title = after
 			break
 		}
 	}

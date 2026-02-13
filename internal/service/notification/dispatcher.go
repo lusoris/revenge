@@ -13,8 +13,8 @@ type Dispatcher struct {
 	mu     sync.RWMutex
 	agents map[string]Agent
 	logger *slog.Logger
-	wg     sync.WaitGroup   // Track goroutines for graceful shutdown
-	stopCh chan struct{}    // Signal shutdown to goroutines
+	wg     sync.WaitGroup // Track goroutines for graceful shutdown
+	stopCh chan struct{}  // Signal shutdown to goroutines
 }
 
 // NewDispatcher creates a new notification dispatcher
@@ -116,9 +116,7 @@ func (d *Dispatcher) Dispatch(ctx context.Context, event *Event) error {
 	d.mu.RUnlock()
 
 	// Dispatch asynchronously with goroutine tracking for graceful shutdown
-	d.wg.Add(1)
-	go func() {
-		defer d.wg.Done()
+	d.wg.Go(func() {
 
 		for _, agent := range agents {
 			// Check for shutdown signal before processing each agent
@@ -148,7 +146,7 @@ func (d *Dispatcher) Dispatch(ctx context.Context, event *Event) error {
 
 			cancel()
 		}
-	}()
+	})
 
 	return nil
 }

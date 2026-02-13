@@ -56,13 +56,13 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 
 		// Health check
 		if r.URL.Path == "/health" {
-			json.NewEncoder(w).Encode(map[string]interface{}{"ok": true})
+			json.NewEncoder(w).Encode(map[string]any{"ok": true})
 			return
 		}
 
 		// Collection operations
-		if strings.HasPrefix(r.URL.Path, "/collections/") {
-			path := strings.TrimPrefix(r.URL.Path, "/collections/")
+		if after, ok := strings.CutPrefix(r.URL.Path, "/collections/"); ok {
+			path := after
 			parts := strings.Split(path, "/")
 
 			// GET /collections/{name}
@@ -73,7 +73,7 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 
 			// DELETE /collections/{name}
 			if r.Method == http.MethodDelete && len(parts) == 1 {
-				json.NewEncoder(w).Encode(map[string]interface{}{"name": parts[0]})
+				json.NewEncoder(w).Encode(map[string]any{"name": parts[0]})
 				return
 			}
 
@@ -81,17 +81,17 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 			if len(parts) >= 2 && parts[1] == "documents" {
 				// Search: GET /collections/{name}/documents/search
 				if len(parts) == 3 && parts[2] == "search" && r.Method == http.MethodGet {
-					result := map[string]interface{}{
+					result := map[string]any{
 						"found": 2,
-						"hits": []map[string]interface{}{
+						"hits": []map[string]any{
 							{
-								"document": map[string]interface{}{
+								"document": map[string]any{
 									"id":    "doc-1",
 									"title": "Test Movie 1",
 									"year":  float64(2020),
 								},
 								"text_match": int64(100),
-								"highlights": []map[string]interface{}{
+								"highlights": []map[string]any{
 									{
 										"field":    "title",
 										"snippets": []string{"<mark>Test</mark> Movie 1"},
@@ -99,7 +99,7 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 								},
 							},
 							{
-								"document": map[string]interface{}{
+								"document": map[string]any{
 									"id":    "doc-2",
 									"title": "Test Movie 2",
 									"year":  float64(2021),
@@ -107,10 +107,10 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 								"text_match": int64(80),
 							},
 						},
-						"facet_counts": []map[string]interface{}{
+						"facet_counts": []map[string]any{
 							{
 								"field_name": "genres",
-								"counts": []map[string]interface{}{
+								"counts": []map[string]any{
 									{"value": "Action", "count": 10},
 									{"value": "Drama", "count": 5},
 								},
@@ -124,7 +124,7 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 				// Create doc: POST /collections/{name}/documents (must return 201)
 				if len(parts) == 2 && r.Method == http.MethodPost {
 					w.WriteHeader(http.StatusCreated)
-					json.NewEncoder(w).Encode(map[string]interface{}{"id": "created"})
+					json.NewEncoder(w).Encode(map[string]any{"id": "created"})
 					return
 				}
 
@@ -137,13 +137,13 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 
 				// Update doc: PATCH /collections/{name}/documents/{id}
 				if len(parts) == 3 && r.Method == http.MethodPatch {
-					json.NewEncoder(w).Encode(map[string]interface{}{"id": parts[2]})
+					json.NewEncoder(w).Encode(map[string]any{"id": parts[2]})
 					return
 				}
 
 				// Delete doc: DELETE /collections/{name}/documents/{id}
 				if len(parts) == 3 && r.Method == http.MethodDelete {
-					json.NewEncoder(w).Encode(map[string]interface{}{"id": parts[2]})
+					json.NewEncoder(w).Encode(map[string]any{"id": parts[2]})
 					return
 				}
 			}
@@ -152,7 +152,7 @@ func fakeTypesenseSearchHandler(t *testing.T) http.Handler {
 		// POST /collections - create collection
 		if r.URL.Path == "/collections" && r.Method == http.MethodPost {
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(map[string]interface{}{"name": "created"})
+			json.NewEncoder(w).Encode(map[string]any{"name": "created"})
 			return
 		}
 
@@ -225,19 +225,19 @@ func TestMovieSearchService_UpdateMovie_NotFound_FallsBackToIndex(t *testing.T) 
 		// PATCH (update) - return not found to trigger IndexMovie fallback
 		if r.Method == http.MethodPatch {
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(map[string]interface{}{"message": "not found"})
+			json.NewEncoder(w).Encode(map[string]any{"message": "not found"})
 			return
 		}
 
 		// POST documents (create) - success (must return 201)
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/documents") {
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(map[string]interface{}{"id": "created"})
+			json.NewEncoder(w).Encode(map[string]any{"id": "created"})
 			return
 		}
 
 		// Default - success for collection operations
-		json.NewEncoder(w).Encode(map[string]interface{}{})
+		json.NewEncoder(w).Encode(map[string]any{})
 	})
 
 	server := httptest.NewServer(handler)
@@ -378,14 +378,14 @@ func TestMovieSearchService_Autocomplete_DeduplicatesTitles(t *testing.T) {
 		if strings.Contains(r.URL.Path, "/search") {
 			found := 3
 			hits := []api.SearchResultHit{
-				{Document: &map[string]interface{}{"id": "1", "title": "Same Movie"}},
-				{Document: &map[string]interface{}{"id": "2", "title": "Same Movie"}},
-				{Document: &map[string]interface{}{"id": "3", "title": "Other Movie"}},
+				{Document: &map[string]any{"id": "1", "title": "Same Movie"}},
+				{Document: &map[string]any{"id": "2", "title": "Same Movie"}},
+				{Document: &map[string]any{"id": "3", "title": "Other Movie"}},
 			}
 			json.NewEncoder(w).Encode(api.SearchResult{Found: &found, Hits: &hits})
 			return
 		}
-		json.NewEncoder(w).Encode(map[string]interface{}{})
+		json.NewEncoder(w).Encode(map[string]any{})
 	})
 
 	server := httptest.NewServer(handler)
@@ -711,7 +711,7 @@ func TestMovieSearchService_Search_ErrorFromClient(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "internal error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "internal error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -730,7 +730,7 @@ func TestMovieSearchService_IndexMovie_Error(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -756,7 +756,7 @@ func TestMovieSearchService_RemoveMovie_NotFoundIgnored(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "not found"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "not found"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -775,7 +775,7 @@ func TestMovieSearchService_Autocomplete_Error(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -796,7 +796,7 @@ func TestCachedMovieSearchService_Search_ErrorPassthrough(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -817,7 +817,7 @@ func TestCachedMovieSearchService_Autocomplete_ErrorPassthrough(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -838,7 +838,7 @@ func TestCachedMovieSearchService_GetFacets_ErrorPassthrough(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "error"})
+		json.NewEncoder(w).Encode(map[string]any{"message": "error"})
 	})
 
 	server := httptest.NewServer(handler)
@@ -862,14 +862,14 @@ func TestMovieSearchService_Search_NilFacetValues(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 
 		if strings.Contains(r.URL.Path, "/search") {
-			result := map[string]interface{}{
+			result := map[string]any{
 				"found": 0,
-				"hits":  []interface{}{},
-				"facet_counts": []map[string]interface{}{
+				"hits":  []any{},
+				"facet_counts": []map[string]any{
 					{"field_name": nil, "counts": nil},
 					{
 						"field_name": "genres",
-						"counts": []map[string]interface{}{
+						"counts": []map[string]any{
 							{"value": nil, "count": nil},
 							{"value": "Action", "count": 5},
 						},
@@ -880,7 +880,7 @@ func TestMovieSearchService_Search_NilFacetValues(t *testing.T) {
 			return
 		}
 
-		json.NewEncoder(w).Encode(map[string]interface{}{})
+		json.NewEncoder(w).Encode(map[string]any{})
 	})
 
 	server := httptest.NewServer(handler)

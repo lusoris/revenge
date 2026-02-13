@@ -14,7 +14,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Exact title and year match", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "The Matrix",
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -50,7 +50,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Partial title match, exact year", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "Matrix",
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -70,7 +70,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Fuzzy title match - typo in filename", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "Matrx", // Typo - missing 'i'
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -92,7 +92,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Exact title, year off by one", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "The Matrix",
-			ParsedYear:  intPtr(1998),
+			ParsedYear:  new(1998),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -110,7 +110,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Poor match - different title and year", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "Inception",
-			ParsedYear:  intPtr(2010),
+			ParsedYear:  new(2010),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -131,7 +131,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Title match with high popularity boost", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "The Matrix",
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -149,7 +149,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Low popularity no boost", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "Obscure Movie",
-			ParsedYear:  intPtr(2020),
+			ParsedYear:  new(2020),
 		}
 		releaseDate := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -167,7 +167,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Case insensitive title match", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "the matrix",
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{
@@ -206,7 +206,7 @@ func TestCalculateConfidence(t *testing.T) {
 	t.Run("Confidence never exceeds 1", func(t *testing.T) {
 		result := ScanResult{
 			ParsedTitle: "The Matrix",
-			ParsedYear:  intPtr(1999),
+			ParsedYear:  new(1999),
 		}
 		releaseDate := time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC)
 		tmdbMovie := &Movie{

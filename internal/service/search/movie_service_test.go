@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
 	"github.com/lusoris/revenge/internal/content/movie"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
@@ -239,7 +238,7 @@ func TestMovieToDocumentCastLimit(t *testing.T) {
 }
 
 func TestParseMovieDocument(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"id":                "550e8400-e29b-41d4-a716-446655440000",
 		"tmdb_id":           float64(603),
 		"imdb_id":           "tt0133093",
@@ -263,11 +262,11 @@ func TestParseMovieDocument(t *testing.T) {
 		"library_added_at":  float64(1700000000),
 		"created_at":        float64(1700000000),
 		"updated_at":        float64(1700000000),
-		"genres":            []interface{}{"Action", "Science Fiction"},
-		"cast":              []interface{}{"Keanu Reeves", "Laurence Fishburne"},
-		"directors":         []interface{}{"Lana Wachowski", "Lilly Wachowski"},
-		"genre_ids":         []interface{}{float64(28), float64(878)},
-		"genre_slugs":       []interface{}{"action", "science-fiction"},
+		"genres":            []any{"Action", "Science Fiction"},
+		"cast":              []any{"Keanu Reeves", "Laurence Fishburne"},
+		"directors":         []any{"Lana Wachowski", "Lilly Wachowski"},
+		"genre_ids":         []any{float64(28), float64(878)},
+		"genre_slugs":       []any{"action", "science-fiction"},
 	}
 
 	doc := parseMovieDocument(data)
@@ -300,7 +299,7 @@ func TestParseMovieDocument(t *testing.T) {
 }
 
 func TestParseMovieDocumentEmpty(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	doc := parseMovieDocument(data)
 
 	assert.Empty(t, doc.ID)
@@ -312,22 +311,22 @@ func TestParseMovieDocumentEmpty(t *testing.T) {
 func TestToStringSlice(t *testing.T) {
 	tests := []struct {
 		name     string
-		input    []interface{}
+		input    []any
 		expected []string
 	}{
 		{
 			name:     "valid strings",
-			input:    []interface{}{"a", "b", "c"},
+			input:    []any{"a", "b", "c"},
 			expected: []string{"a", "b", "c"},
 		},
 		{
 			name:     "empty slice",
-			input:    []interface{}{},
+			input:    []any{},
 			expected: []string{},
 		},
 		{
 			name:     "mixed types",
-			input:    []interface{}{"a", 123, "b", nil},
+			input:    []any{"a", 123, "b", nil},
 			expected: []string{"a", "b"},
 		},
 	}
@@ -343,22 +342,22 @@ func TestToStringSlice(t *testing.T) {
 func TestToInt32Slice(t *testing.T) {
 	tests := []struct {
 		name     string
-		input    []interface{}
+		input    []any
 		expected []int32
 	}{
 		{
 			name:     "valid floats",
-			input:    []interface{}{float64(1), float64(2), float64(3)},
+			input:    []any{float64(1), float64(2), float64(3)},
 			expected: []int32{1, 2, 3},
 		},
 		{
 			name:     "empty slice",
-			input:    []interface{}{},
+			input:    []any{},
 			expected: []int32{},
 		},
 		{
 			name:     "mixed types",
-			input:    []interface{}{float64(1), "two", float64(3)},
+			input:    []any{float64(1), "two", float64(3)},
 			expected: []int32{1, 3},
 		},
 	}
@@ -379,12 +378,12 @@ func TestDeref(t *testing.T) {
 
 func TestPtr(t *testing.T) {
 	s := "test"
-	p := ptr.To(s)
+	p := new(s)
 	assert.NotNil(t, p)
 	assert.Equal(t, "test", *p)
 
 	i := 42
-	pi := ptr.To(i)
+	pi := new(i)
 	assert.NotNil(t, pi)
 	assert.Equal(t, 42, *pi)
 }
@@ -441,25 +440,25 @@ func TestSchemaInfixSearch(t *testing.T) {
 // MockTypesenseClient for testing without actual Typesense server
 type MockTypesenseClient struct {
 	Collections map[string]*api.CollectionResponse
-	Documents   map[string]map[string]interface{}
+	Documents   map[string]map[string]any
 }
 
 func NewMockTypesenseClient() *MockTypesenseClient {
 	return &MockTypesenseClient{
 		Collections: make(map[string]*api.CollectionResponse),
-		Documents:   make(map[string]map[string]interface{}),
+		Documents:   make(map[string]map[string]any),
 	}
 }
 
 func TestParseMovieDocumentPartialData(t *testing.T) {
 	tests := []struct {
 		name   string
-		data   map[string]interface{}
+		data   map[string]any
 		verify func(t *testing.T, doc MovieDocument)
 	}{
 		{
 			name: "only id and title",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":    "test-id",
 				"title": "Test Movie",
 			},
@@ -472,7 +471,7 @@ func TestParseMovieDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with nil values",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":        "test-id",
 				"title":     "Test Movie",
 				"year":      nil,
@@ -488,7 +487,7 @@ func TestParseMovieDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with wrong type for year",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":    "test-id",
 				"title": "Test Movie",
 				"year":  "invalid", // string instead of float64
@@ -500,7 +499,7 @@ func TestParseMovieDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with boolean fields",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "test-id",
 				"has_file": true,
 			},
@@ -510,9 +509,9 @@ func TestParseMovieDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with empty genres array",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":     "test-id",
-				"genres": []interface{}{},
+				"genres": []any{},
 			},
 			verify: func(t *testing.T, doc MovieDocument) {
 				assert.Empty(t, doc.Genres)

@@ -12,7 +12,8 @@ import (
 	"github.com/lusoris/revenge/internal/service/metadata"
 )
 
-func ptr[T any](v T) *T { return &v }
+//go:fix inline
+func ptr[T any](v T) *T { return new(v) }
 
 func TestPtrString(t *testing.T) {
 	assert.Nil(t, ptrString(""))
@@ -63,9 +64,9 @@ func TestMapSearchResultToSeries(t *testing.T) {
 			VoteAverage:      9.5,
 			VoteCount:        50000,
 			Popularity:       100.5,
-			PosterPath:       ptr("https://example.com/poster.jpg"),
-			BackdropPath:     ptr("https://example.com/backdrop.jpg"),
-			FirstAirDate:     ptr(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
+			PosterPath:       new("https://example.com/poster.jpg"),
+			BackdropPath:     new("https://example.com/backdrop.jpg"),
+			FirstAirDate:     new(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
 		}
 		series := mapSearchResultToSeries(r)
 		require.NotNil(t, series)
@@ -128,13 +129,13 @@ func TestMapMetadataToSeries(t *testing.T) {
 			Type:             "Scripted",
 			NumberOfSeasons:  5,
 			NumberOfEpisodes: 62,
-			FirstAirDate:     ptr(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
-			LastAirDate:      ptr(time.Date(2013, 9, 29, 0, 0, 0, 0, time.UTC)),
+			FirstAirDate:     new(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
+			LastAirDate:      new(time.Date(2013, 9, 29, 0, 0, 0, 0, time.UTC)),
 			VoteAverage:      9.5,
 			VoteCount:        50000,
 			Popularity:       100.5,
-			PosterPath:       ptr("https://example.com/poster.jpg"),
-			BackdropPath:     ptr("https://example.com/backdrop.jpg"),
+			PosterPath:       new("https://example.com/poster.jpg"),
+			BackdropPath:     new("https://example.com/backdrop.jpg"),
 			Homepage:         &homepage,
 			TrailerURL:       &trailer,
 			IMDbID:           &imdb,
@@ -203,9 +204,9 @@ func TestMapSeasonMetadataToSeason(t *testing.T) {
 		tmdbID := int32(3572)
 		meta := &metadata.SeasonMetadata{
 			Name:        "Season 1",
-			Overview:    ptr("The first season."),
-			PosterPath:  ptr("https://example.com/s1.jpg"),
-			AirDate:     ptr(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
+			Overview:    new("The first season."),
+			PosterPath:  new("https://example.com/s1.jpg"),
+			AirDate:     new(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
 			VoteAverage: 9.2,
 			TMDbID:      &tmdbID,
 			Episodes: []metadata.EpisodeSummary{
@@ -250,10 +251,10 @@ func TestMapEpisodeMetadataToEpisode(t *testing.T) {
 		prodCode := "1ABE79"
 		meta := &metadata.EpisodeMetadata{
 			Name:           "Pilot",
-			Overview:       ptr("Walter White turns to cooking meth."),
-			AirDate:        ptr(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
-			Runtime:        ptr(int32(58)),
-			StillPath:      ptr("https://example.com/ep1.jpg"),
+			Overview:       new("Walter White turns to cooking meth."),
+			AirDate:        new(time.Date(2008, 1, 20, 0, 0, 0, 0, time.UTC)),
+			Runtime:        new(int32(58)),
+			StillPath:      new("https://example.com/ep1.jpg"),
 			ProductionCode: &prodCode,
 			TMDbID:         &tmdbID,
 			IMDbID:         &imdbID,
@@ -301,10 +302,10 @@ func TestMapCreditsToSeriesCredits(t *testing.T) {
 	t.Run("cast and crew", func(t *testing.T) {
 		credits := &metadata.Credits{
 			Cast: []metadata.CastMember{
-				{ProviderID: "17419", Name: "Bryan Cranston", Character: "Walter White", Order: 0, ProfilePath: ptr("https://example.com/bc.jpg")},
+				{ProviderID: "17419", Name: "Bryan Cranston", Character: "Walter White", Order: 0, ProfilePath: new("https://example.com/bc.jpg")},
 			},
 			Crew: []metadata.CrewMember{
-				{ProviderID: "66633", Name: "Vince Gilligan", Job: "Creator", Department: "Writing", ProfilePath: ptr("https://example.com/vg.jpg")},
+				{ProviderID: "66633", Name: "Vince Gilligan", Job: "Creator", Department: "Writing", ProfilePath: new("https://example.com/vg.jpg")},
 			},
 		}
 

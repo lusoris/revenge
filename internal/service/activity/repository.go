@@ -56,19 +56,19 @@ type Repository interface {
 
 // Entry represents a single activity log entry.
 type Entry struct {
-	ID           uuid.UUID              `json:"id"`
-	UserID       *uuid.UUID             `json:"user_id,omitempty"`
-	Username     *string                `json:"username,omitempty"`
-	Action       string                 `json:"action"`
-	ResourceType *string                `json:"resource_type,omitempty"`
-	ResourceID   *uuid.UUID             `json:"resource_id,omitempty"`
-	Changes      map[string]interface{} `json:"changes,omitempty"`
-	Metadata     map[string]interface{} `json:"metadata,omitempty"`
-	IPAddress    *net.IP                `json:"ip_address,omitempty"`
-	UserAgent    *string                `json:"user_agent,omitempty"`
-	Success      bool                   `json:"success"`
-	ErrorMessage *string                `json:"error_message,omitempty"`
-	CreatedAt    time.Time              `json:"created_at"`
+	ID           uuid.UUID      `json:"id"`
+	UserID       *uuid.UUID     `json:"user_id,omitempty"`
+	Username     *string        `json:"username,omitempty"`
+	Action       string         `json:"action"`
+	ResourceType *string        `json:"resource_type,omitempty"`
+	ResourceID   *uuid.UUID     `json:"resource_id,omitempty"`
+	Changes      map[string]any `json:"changes,omitempty"`
+	Metadata     map[string]any `json:"metadata,omitempty"`
+	IPAddress    *net.IP        `json:"ip_address,omitempty"`
+	UserAgent    *string        `json:"user_agent,omitempty"`
+	Success      bool           `json:"success"`
+	ErrorMessage *string        `json:"error_message,omitempty"`
+	CreatedAt    time.Time      `json:"created_at"`
 }
 
 // SearchFilters defines filters for searching activity logs.
@@ -101,17 +101,17 @@ type ActionCount struct {
 
 // LogRequest represents a request to log an activity.
 type LogRequest struct {
-	UserID       *uuid.UUID             `json:"user_id,omitempty"`
-	Username     *string                `json:"username,omitempty"`
-	Action       string                 `json:"action"`
-	ResourceType *string                `json:"resource_type,omitempty"`
-	ResourceID   *uuid.UUID             `json:"resource_id,omitempty"`
-	Changes      map[string]interface{} `json:"changes,omitempty"`
-	Metadata     map[string]interface{} `json:"metadata,omitempty"`
-	IPAddress    *net.IP                `json:"ip_address,omitempty"`
-	UserAgent    *string                `json:"user_agent,omitempty"`
-	Success      bool                   `json:"success"`
-	ErrorMessage *string                `json:"error_message,omitempty"`
+	UserID       *uuid.UUID     `json:"user_id,omitempty"`
+	Username     *string        `json:"username,omitempty"`
+	Action       string         `json:"action"`
+	ResourceType *string        `json:"resource_type,omitempty"`
+	ResourceID   *uuid.UUID     `json:"resource_id,omitempty"`
+	Changes      map[string]any `json:"changes,omitempty"`
+	Metadata     map[string]any `json:"metadata,omitempty"`
+	IPAddress    *net.IP        `json:"ip_address,omitempty"`
+	UserAgent    *string        `json:"user_agent,omitempty"`
+	Success      bool           `json:"success"`
+	ErrorMessage *string        `json:"error_message,omitempty"`
 }
 
 // Common action constants

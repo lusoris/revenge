@@ -62,7 +62,7 @@ func (s *BackupCodesService) GenerateCodes(ctx context.Context, userID uuid.UUID
 	params := make([]db.CreateBackupCodesParams, BackupCodeCount)
 
 	// Generate random codes
-	for i := 0; i < BackupCodeCount; i++ {
+	for i := range BackupCodeCount {
 		code, err := generateRandomCode()
 		if err != nil {
 			return nil, fmt.Errorf("failed to generate code: %w", err)
@@ -152,7 +152,7 @@ func (s *BackupCodesService) VerifyCode(ctx context.Context, userID uuid.UUID, c
 		ipAddr = netip.Addr{}
 		s.logger.Warn("failed to parse client IP",
 			slog.String("client_ip", clientIP),
-			slog.Any("error",err))
+			slog.Any("error", err))
 	}
 
 	err = s.queries.UseBackupCode(ctx, db.UseBackupCodeParams{

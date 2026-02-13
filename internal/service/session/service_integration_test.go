@@ -30,8 +30,8 @@ func setupIntegrationService(t *testing.T) (*Service, testutil.DB) {
 func testDeviceInfo() DeviceInfo {
 	ip := netip.MustParseAddr("192.168.1.1")
 	return DeviceInfo{
-		DeviceName: stringPtr("Test Device"),
-		UserAgent:  stringPtr("TestAgent/1.0"),
+		DeviceName: new("Test Device"),
+		UserAgent:  new("TestAgent/1.0"),
 		IPAddress:  &ip,
 	}
 }
@@ -93,10 +93,10 @@ func TestServiceIntegration_ListUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	// Create multiple sessions
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		ip := netip.MustParseAddr("192.168.1." + string(rune('1'+i)))
 		device := DeviceInfo{
-			DeviceName: stringPtr("Device " + string(rune('A'+i))),
+			DeviceName: new("Device " + string(rune('A'+i))),
 			IPAddress:  &ip,
 		}
 		_, _, err := svc.CreateSession(ctx, userID, device, []string{"read"})
@@ -124,7 +124,7 @@ func TestServiceIntegration_RevokeAllUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	var tokens []string
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 		require.NoError(t, err)
 		tokens = append(tokens, tok)
@@ -159,7 +159,7 @@ func TestServiceIntegration_RevokeAllExceptCurrent(t *testing.T) {
 
 	// Create other sessions
 	var otherTokens []string
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		tok, _, err := svc.CreateSession(ctx, userID, testDeviceInfo(), []string{"read"})
 		require.NoError(t, err)
 		otherTokens = append(otherTokens, tok)

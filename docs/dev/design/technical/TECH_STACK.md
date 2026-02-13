@@ -22,7 +22,7 @@
 > > Complete technology stack powering Revenge
 
 Stack overview:
-- **Backend**: Go 1.25.7 with GOEXPERIMENT=greenteagc,jsonv2
+- **Backend**: Go 1.26.0 with GOEXPERIMENT=jsonv2,goroutineleakprofile,simd,runtimesecret
 - **DI Framework**: fx v1.24.0 for dependency injection and lifecycle management
 - **API Layer**: ogen v1.18.0 for type-safe OpenAPI code generation
 - **Database**: PostgreSQL 18+ with pgx v5.8.0 driver, sqlc v1.30.0 code generation

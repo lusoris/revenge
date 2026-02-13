@@ -17,18 +17,18 @@ import (
 
 // mockService implements settings.Service for unit tests without a database.
 type mockService struct {
-	getServerSettingFn            func(ctx context.Context, key string) (*settings.ServerSetting, error)
-	listServerSettingsFn          func(ctx context.Context) ([]settings.ServerSetting, error)
+	getServerSettingFn             func(ctx context.Context, key string) (*settings.ServerSetting, error)
+	listServerSettingsFn           func(ctx context.Context) ([]settings.ServerSetting, error)
 	listServerSettingsByCategoryFn func(ctx context.Context, category string) ([]settings.ServerSetting, error)
-	listPublicServerSettingsFn    func(ctx context.Context) ([]settings.ServerSetting, error)
-	setServerSettingFn            func(ctx context.Context, key string, value interface{}, updatedBy uuid.UUID) (*settings.ServerSetting, error)
-	deleteServerSettingFn         func(ctx context.Context, key string) error
-	getUserSettingFn              func(ctx context.Context, userID uuid.UUID, key string) (*settings.UserSetting, error)
-	listUserSettingsFn            func(ctx context.Context, userID uuid.UUID) ([]settings.UserSetting, error)
-	listUserSettingsByCategoryFn  func(ctx context.Context, userID uuid.UUID, category string) ([]settings.UserSetting, error)
-	setUserSettingFn              func(ctx context.Context, userID uuid.UUID, key string, value interface{}) (*settings.UserSetting, error)
-	setUserSettingsBulkFn         func(ctx context.Context, userID uuid.UUID, s map[string]interface{}) error
-	deleteUserSettingFn           func(ctx context.Context, userID uuid.UUID, key string) error
+	listPublicServerSettingsFn     func(ctx context.Context) ([]settings.ServerSetting, error)
+	setServerSettingFn             func(ctx context.Context, key string, value any, updatedBy uuid.UUID) (*settings.ServerSetting, error)
+	deleteServerSettingFn          func(ctx context.Context, key string) error
+	getUserSettingFn               func(ctx context.Context, userID uuid.UUID, key string) (*settings.UserSetting, error)
+	listUserSettingsFn             func(ctx context.Context, userID uuid.UUID) ([]settings.UserSetting, error)
+	listUserSettingsByCategoryFn   func(ctx context.Context, userID uuid.UUID, category string) ([]settings.UserSetting, error)
+	setUserSettingFn               func(ctx context.Context, userID uuid.UUID, key string, value any) (*settings.UserSetting, error)
+	setUserSettingsBulkFn          func(ctx context.Context, userID uuid.UUID, s map[string]any) error
+	deleteUserSettingFn            func(ctx context.Context, userID uuid.UUID, key string) error
 }
 
 func (m *mockService) GetServerSetting(ctx context.Context, key string) (*settings.ServerSetting, error) {
@@ -59,7 +59,7 @@ func (m *mockService) ListPublicServerSettings(ctx context.Context) ([]settings.
 	return nil, errors.New("not implemented")
 }
 
-func (m *mockService) SetServerSetting(ctx context.Context, key string, value interface{}, updatedBy uuid.UUID) (*settings.ServerSetting, error) {
+func (m *mockService) SetServerSetting(ctx context.Context, key string, value any, updatedBy uuid.UUID) (*settings.ServerSetting, error) {
 	if m.setServerSettingFn != nil {
 		return m.setServerSettingFn(ctx, key, value, updatedBy)
 	}
@@ -94,14 +94,14 @@ func (m *mockService) ListUserSettingsByCategory(ctx context.Context, userID uui
 	return nil, errors.New("not implemented")
 }
 
-func (m *mockService) SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value interface{}) (*settings.UserSetting, error) {
+func (m *mockService) SetUserSetting(ctx context.Context, userID uuid.UUID, key string, value any) (*settings.UserSetting, error) {
 	if m.setUserSettingFn != nil {
 		return m.setUserSettingFn(ctx, userID, key, value)
 	}
 	return nil, errors.New("not implemented")
 }
 
-func (m *mockService) SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, s map[string]interface{}) error {
+func (m *mockService) SetUserSettingsBulk(ctx context.Context, userID uuid.UUID, s map[string]any) error {
 	if m.setUserSettingsBulkFn != nil {
 		return m.setUserSettingsBulkFn(ctx, userID, s)
 	}
@@ -399,7 +399,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setServerSettingFn: func(_ context.Context, key string, value interface{}, _ uuid.UUID) (*settings.ServerSetting, error) {
+			setServerSettingFn: func(_ context.Context, key string, value any, _ uuid.UUID) (*settings.ServerSetting, error) {
 				return &settings.ServerSetting{Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -416,7 +416,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setServerSettingFn: func(_ context.Context, key string, value interface{}, _ uuid.UUID) (*settings.ServerSetting, error) {
+			setServerSettingFn: func(_ context.Context, key string, value any, _ uuid.UUID) (*settings.ServerSetting, error) {
 				return &settings.ServerSetting{Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -432,7 +432,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setServerSettingFn: func(_ context.Context, _ string, _ interface{}, _ uuid.UUID) (*settings.ServerSetting, error) {
+			setServerSettingFn: func(_ context.Context, _ string, _ any, _ uuid.UUID) (*settings.ServerSetting, error) {
 				return nil, errors.New("write failed")
 			},
 		}
@@ -453,7 +453,7 @@ func TestCachedService_SetServerSetting_Unit(t *testing.T) {
 				calls++
 				return &settings.ServerSetting{Key: key, Value: "value_" + string(rune('0'+calls)), DataType: "string"}, nil
 			},
-			setServerSettingFn: func(_ context.Context, key string, value interface{}, _ uuid.UUID) (*settings.ServerSetting, error) {
+			setServerSettingFn: func(_ context.Context, key string, value any, _ uuid.UUID) (*settings.ServerSetting, error) {
 				return &settings.ServerSetting{Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -616,7 +616,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value interface{}) (*settings.UserSetting, error) {
+			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value any) (*settings.UserSetting, error) {
 				return &settings.UserSetting{UserID: uid, Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -633,7 +633,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value interface{}) (*settings.UserSetting, error) {
+			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value any) (*settings.UserSetting, error) {
 				return &settings.UserSetting{UserID: uid, Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -649,7 +649,7 @@ func TestCachedService_SetUserSetting_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingFn: func(_ context.Context, _ uuid.UUID, _ string, _ interface{}) (*settings.UserSetting, error) {
+			setUserSettingFn: func(_ context.Context, _ uuid.UUID, _ string, _ any) (*settings.UserSetting, error) {
 				return nil, errors.New("upsert failed")
 			},
 		}
@@ -675,7 +675,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]interface{}) error {
+			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]any) error {
 				return nil
 			},
 		}
@@ -683,7 +683,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		c := newTestCache(t)
 		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
-		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
+		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]any{
 			"bulk.key1": "val1",
 			"bulk.key2": "val2",
 		})
@@ -694,14 +694,14 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]interface{}) error {
+			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]any) error {
 				return nil
 			},
 		}
 
 		cached := settings.NewCachedService(svc, nil, logging.NewTestLogger())
 
-		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
+		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]any{
 			"bulk.key1": "val1",
 		})
 		require.NoError(t, err)
@@ -711,7 +711,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		t.Parallel()
 
 		svc := &mockService{
-			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]interface{}) error {
+			setUserSettingsBulkFn: func(_ context.Context, _ uuid.UUID, _ map[string]any) error {
 				return errors.New("bulk failed")
 			},
 		}
@@ -719,7 +719,7 @@ func TestCachedService_SetUserSettingsBulk_Unit(t *testing.T) {
 		c := newTestCache(t)
 		cached := settings.NewCachedService(svc, c, logging.NewTestLogger())
 
-		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]interface{}{
+		err := cached.SetUserSettingsBulk(context.Background(), userID, map[string]any{
 			"fail.key": "val",
 		})
 		require.Error(t, err)
@@ -801,7 +801,7 @@ func TestCachedService_CacheInvalidation_Flows_Unit(t *testing.T) {
 				getCalls++
 				return &settings.ServerSetting{Key: key, Value: "val_" + string(rune('0'+getCalls)), DataType: "string"}, nil
 			},
-			setServerSettingFn: func(_ context.Context, key string, value interface{}, _ uuid.UUID) (*settings.ServerSetting, error) {
+			setServerSettingFn: func(_ context.Context, key string, value any, _ uuid.UUID) (*settings.ServerSetting, error) {
 				return &settings.ServerSetting{Key: key, Value: value, DataType: "string"}, nil
 			},
 		}
@@ -871,7 +871,7 @@ func TestCachedService_CacheInvalidation_Flows_Unit(t *testing.T) {
 				getCalls++
 				return &settings.UserSetting{UserID: uid, Key: key, Value: "val_" + string(rune('0'+getCalls)), DataType: "string"}, nil
 			},
-			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value interface{}) (*settings.UserSetting, error) {
+			setUserSettingFn: func(_ context.Context, uid uuid.UUID, key string, value any) (*settings.UserSetting, error) {
 				return &settings.UserSetting{UserID: uid, Key: key, Value: value, DataType: "string"}, nil
 			},
 		}

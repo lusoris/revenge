@@ -35,8 +35,9 @@ func createTestUser(t *testing.T, testDB testutil.DB) uuid.UUID {
 	return testutil.CreateUser(t, testDB.Pool(), testutil.UniqueUser()).ID
 }
 
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }
 
 func TestRepositoryPG_CreateSession(t *testing.T) {
@@ -50,10 +51,10 @@ func TestRepositoryPG_CreateSession(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "token_hash_123",
-		RefreshTokenHash: stringPtr("refresh_hash_123"),
+		RefreshTokenHash: new("refresh_hash_123"),
 		IPAddress:        &ipAddr,
-		UserAgent:        stringPtr("Mozilla/5.0"),
-		DeviceName:       stringPtr("Chrome Browser"),
+		UserAgent:        new("Mozilla/5.0"),
+		DeviceName:       new("Chrome Browser"),
 		Scopes:           []string{"read", "write"},
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
@@ -72,7 +73,7 @@ func TestRepositoryPG_GetSessionByTokenHash(t *testing.T) {
 	created, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "get_token_123",
-		RefreshTokenHash: stringPtr("refresh_123"),
+		RefreshTokenHash: new("refresh_123"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -93,7 +94,7 @@ func TestRepositoryPG_GetSessionByID(t *testing.T) {
 	created, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "id_test",
-		RefreshTokenHash: stringPtr("refresh_id"),
+		RefreshTokenHash: new("refresh_id"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -135,11 +136,11 @@ func TestRepositoryPG_ListUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	listBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
 			TokenHash:        fmt.Sprintf("list_%s_%d", listBase, i),
-			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_list_%s_%d", listBase, i)),
+			RefreshTokenHash: new(fmt.Sprintf("ref_list_%s_%d", listBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -160,7 +161,7 @@ func TestRepositoryPG_ListAllUserSessions(t *testing.T) {
 	_, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "active",
-		RefreshTokenHash: stringPtr("ref_active"),
+		RefreshTokenHash: new("ref_active"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -168,7 +169,7 @@ func TestRepositoryPG_ListAllUserSessions(t *testing.T) {
 	_, err = repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "expired",
-		RefreshTokenHash: stringPtr("ref_expired"),
+		RefreshTokenHash: new("ref_expired"),
 		ExpiresAt:        time.Now().Add(-24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -186,11 +187,11 @@ func TestRepositoryPG_CountActiveUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	countBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
 			TokenHash:        fmt.Sprintf("count_%s_%d", countBase, i),
-			RefreshTokenHash: stringPtr(fmt.Sprintf("cref_%s_%d", countBase, i)),
+			RefreshTokenHash: new(fmt.Sprintf("cref_%s_%d", countBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -211,7 +212,7 @@ func TestRepositoryPG_UpdateSessionActivity(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "activity_test",
-		RefreshTokenHash: stringPtr("ref_activity"),
+		RefreshTokenHash: new("ref_activity"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -237,7 +238,7 @@ func TestRepositoryPG_UpdateSessionActivityByTokenHash(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "activity_token_test",
-		RefreshTokenHash: stringPtr("ref_activity_token"),
+		RefreshTokenHash: new("ref_activity_token"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -263,7 +264,7 @@ func TestRepositoryPG_RevokeSession(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "revoke_test",
-		RefreshTokenHash: stringPtr("refresh_revoke"),
+		RefreshTokenHash: new("refresh_revoke"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -289,7 +290,7 @@ func TestRepositoryPG_RevokeSessionByTokenHash(t *testing.T) {
 	_, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "revoke_by_token",
-		RefreshTokenHash: stringPtr("refresh_revoke_token"),
+		RefreshTokenHash: new("refresh_revoke_token"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -313,11 +314,11 @@ func TestRepositoryPG_RevokeAllUserSessions(t *testing.T) {
 	userID := createTestUser(t, testDB)
 
 	revokeBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		_, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
 			TokenHash:        fmt.Sprintf("revoke_all_%s_%d", revokeBase, i),
-			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_all_%s_%d", revokeBase, i)),
+			RefreshTokenHash: new(fmt.Sprintf("ref_all_%s_%d", revokeBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -341,11 +342,11 @@ func TestRepositoryPG_RevokeAllUserSessionsExcept(t *testing.T) {
 
 	var keepSession db.SharedSession
 	exceptBase := uuid.Must(uuid.NewV7()).String()
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		s, err := repo.CreateSession(ctx, CreateSessionParams{
 			UserID:           userID,
 			TokenHash:        fmt.Sprintf("except_%s_%d", exceptBase, i),
-			RefreshTokenHash: stringPtr(fmt.Sprintf("ref_except_%s_%d", exceptBase, i)),
+			RefreshTokenHash: new(fmt.Sprintf("ref_except_%s_%d", exceptBase, i)),
 			ExpiresAt:        time.Now().Add(24 * time.Hour),
 		})
 		require.NoError(t, err)
@@ -374,7 +375,7 @@ func TestRepositoryPG_GetInactiveSessions(t *testing.T) {
 	_, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "inactive_test",
-		RefreshTokenHash: stringPtr("ref_inactive"),
+		RefreshTokenHash: new("ref_inactive"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -395,7 +396,7 @@ func TestRepositoryPG_RevokeInactiveSessions(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "revoke_inactive",
-		RefreshTokenHash: stringPtr("ref_revoke_inactive"),
+		RefreshTokenHash: new("ref_revoke_inactive"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)
@@ -445,7 +446,7 @@ func TestRepositoryPG_DeleteRevokedSessions(t *testing.T) {
 	session, err := repo.CreateSession(ctx, CreateSessionParams{
 		UserID:           userID,
 		TokenHash:        "delete_revoked",
-		RefreshTokenHash: stringPtr("ref_delete_revoked"),
+		RefreshTokenHash: new("ref_delete_revoked"),
 		ExpiresAt:        time.Now().Add(24 * time.Hour),
 	})
 	require.NoError(t, err)

@@ -11,7 +11,6 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/observability"
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -119,7 +118,7 @@ func (s *MovieSearchService) BulkIndexMovies(ctx context.Context, movies []Movie
 		return nil
 	}
 
-	docs := make([]interface{}, len(movies))
+	docs := make([]any, len(movies))
 	for i, m := range movies {
 		docs[i] = s.movieToDocument(m.Movie, m.Genres, m.Credits, m.File)
 	}
@@ -183,12 +182,12 @@ type FacetValue struct {
 
 // SearchParams contains parameters for movie search.
 type SearchParams struct {
-	Query       string
-	Page        int
-	PerPage     int
-	SortBy      string
-	FilterBy    string
-	FacetBy     []string
+	Query             string
+	Page              int
+	PerPage           int
+	SortBy            string
+	FilterBy          string
+	FacetBy           []string
 	IncludeHighlights bool
 }
 
@@ -226,10 +225,10 @@ func (s *MovieSearchService) Search(ctx context.Context, params SearchParams) (*
 	perPage := params.PerPage
 
 	searchParams := &api.SearchCollectionParams{
-		Q:        &params.Query,
-		QueryBy:  &queryBy,
-		Page:     &page,
-		PerPage:  &perPage,
+		Q:       &params.Query,
+		QueryBy: &queryBy,
+		Page:    &page,
+		PerPage: &perPage,
 	}
 
 	if params.SortBy != "" {
@@ -339,8 +338,8 @@ func (s *MovieSearchService) Autocomplete(ctx context.Context, query string, lim
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	start := time.Now()
@@ -597,7 +596,7 @@ func (s *MovieSearchService) movieToDocument(m *movie.Movie, genres []movie.Movi
 }
 
 // parseMovieDocument parses a map into a MovieDocument.
-func parseMovieDocument(data map[string]interface{}) MovieDocument {
+func parseMovieDocument(data map[string]any) MovieDocument {
 	doc := MovieDocument{}
 
 	if v, ok := data["id"].(string); ok {
@@ -671,16 +670,16 @@ func parseMovieDocument(data map[string]interface{}) MovieDocument {
 	}
 
 	// Parse string arrays
-	if v, ok := data["genres"].([]interface{}); ok {
+	if v, ok := data["genres"].([]any); ok {
 		doc.Genres = toStringSlice(v)
 	}
-	if v, ok := data["cast"].([]interface{}); ok {
+	if v, ok := data["cast"].([]any); ok {
 		doc.Cast = toStringSlice(v)
 	}
-	if v, ok := data["directors"].([]interface{}); ok {
+	if v, ok := data["directors"].([]any); ok {
 		doc.Directors = toStringSlice(v)
 	}
-	if v, ok := data["genre_slugs"].([]interface{}); ok {
+	if v, ok := data["genre_slugs"].([]any); ok {
 		doc.GenreSlugs = toStringSlice(v)
 	}
 
@@ -688,7 +687,7 @@ func parseMovieDocument(data map[string]interface{}) MovieDocument {
 }
 
 // toStringSlice converts an interface slice to a string slice.
-func toStringSlice(v []interface{}) []string {
+func toStringSlice(v []any) []string {
 	result := make([]string, 0, len(v))
 	for _, item := range v {
 		if s, ok := item.(string); ok {
@@ -699,7 +698,7 @@ func toStringSlice(v []interface{}) []string {
 }
 
 // toInt32Slice converts an interface slice to an int32 slice.
-func toInt32Slice(v []interface{}) []int32 {
+func toInt32Slice(v []any) []int32 {
 	result := make([]int32, 0, len(v))
 	for _, item := range v {
 		if f, ok := item.(float64); ok {

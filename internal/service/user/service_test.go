@@ -15,7 +15,6 @@ import (
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/storage"
 	"github.com/lusoris/revenge/internal/testutil"
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // TestMain is in repository_pg_test.go
@@ -202,13 +201,13 @@ func TestService_ListUsers(t *testing.T) {
 	ctx := context.Background()
 
 	// Create users with is_active=false, is_admin=false (default filter)
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		_, err := svc.CreateUser(ctx, CreateUserParams{
 			Username:     "listuser" + string(rune('0'+i)),
 			Email:        "listuser" + string(rune('0'+i)) + "@example.com",
 			PasswordHash: "password123",
-			IsActive:     ptr.To(false),
-			IsAdmin:      ptr.To(false),
+			IsActive:     new(false),
+			IsAdmin:      new(false),
 		})
 		require.NoError(t, err)
 	}
@@ -546,7 +545,7 @@ func TestService_ListUserAvatars(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create 3 avatars
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, err := svc.UploadAvatar(ctx, created.ID, nil, AvatarMetadata{
 			FileName:      "avatar.png",
 			FileSizeBytes: 1024,
@@ -839,42 +838,42 @@ func TestService_ValidatePreferences(t *testing.T) {
 	}{
 		{
 			name:    "valid theme light",
-			params:  UpsertPreferencesParams{Theme: ptr.To("light")},
+			params:  UpsertPreferencesParams{Theme: new("light")},
 			wantErr: "",
 		},
 		{
 			name:    "valid theme dark",
-			params:  UpsertPreferencesParams{Theme: ptr.To("dark")},
+			params:  UpsertPreferencesParams{Theme: new("dark")},
 			wantErr: "",
 		},
 		{
 			name:    "valid theme system",
-			params:  UpsertPreferencesParams{Theme: ptr.To("system")},
+			params:  UpsertPreferencesParams{Theme: new("system")},
 			wantErr: "",
 		},
 		{
 			name:    "invalid theme",
-			params:  UpsertPreferencesParams{Theme: ptr.To("rainbow")},
+			params:  UpsertPreferencesParams{Theme: new("rainbow")},
 			wantErr: "invalid theme",
 		},
 		{
 			name:    "valid visibility public",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("public")},
+			params:  UpsertPreferencesParams{ProfileVisibility: new("public")},
 			wantErr: "",
 		},
 		{
 			name:    "valid visibility friends",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("friends")},
+			params:  UpsertPreferencesParams{ProfileVisibility: new("friends")},
 			wantErr: "",
 		},
 		{
 			name:    "valid visibility private",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("private")},
+			params:  UpsertPreferencesParams{ProfileVisibility: new("private")},
 			wantErr: "",
 		},
 		{
 			name:    "invalid visibility",
-			params:  UpsertPreferencesParams{ProfileVisibility: ptr.To("hidden")},
+			params:  UpsertPreferencesParams{ProfileVisibility: new("hidden")},
 			wantErr: "invalid profile visibility",
 		},
 	}

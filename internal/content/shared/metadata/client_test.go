@@ -126,7 +126,7 @@ func TestBaseClientRateLimit(t *testing.T) {
 	ctx := context.Background()
 
 	// Should not block with high rate limit
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		err := client.WaitForRateLimit(ctx)
 		require.NoError(t, err)
 	}

@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -133,7 +132,7 @@ func (s *UserSearchService) BulkIndexUsers(ctx context.Context, users []UserDocu
 		return nil
 	}
 
-	documents := make([]interface{}, 0, len(users))
+	documents := make([]any, 0, len(users))
 	for _, u := range users {
 		documents = append(documents, u)
 	}
@@ -272,8 +271,8 @@ func (s *UserSearchService) AutocompleteUsers(ctx context.Context, query string,
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	result, err := s.client.Search(ctx, UserCollectionName, searchParams)
@@ -319,10 +318,7 @@ func (s *UserSearchService) ReindexAll(ctx context.Context, users []UserDocument
 	totalIndexed := 0
 
 	for i := 0; i < len(users); i += batchSize {
-		end := i + batchSize
-		if end > len(users) {
-			end = len(users)
-		}
+		end := min(i+batchSize, len(users))
 
 		batch := users[i:end]
 		if err := s.BulkIndexUsers(ctx, batch); err != nil {
@@ -340,7 +336,7 @@ func (s *UserSearchService) ReindexAll(ctx context.Context, users []UserDocument
 }
 
 // parseUserDocument converts a raw Typesense document map to a UserDocument.
-func parseUserDocument(data map[string]interface{}) UserDocument {
+func parseUserDocument(data map[string]any) UserDocument {
 	doc := UserDocument{}
 
 	if v, ok := data["id"].(string); ok {

@@ -123,7 +123,7 @@ func TestJWTManager_GenerateRefreshToken(t *testing.T) {
 
 	t.Run("generates cryptographically random tokens", func(t *testing.T) {
 		tokens := make(map[string]bool)
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			token, err := manager.GenerateRefreshToken()
 			require.NoError(t, err)
 

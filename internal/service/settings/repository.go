@@ -30,11 +30,11 @@ type Repository interface {
 }
 
 // MarshalValue converts a Go value to JSONB for database storage.
-func MarshalValue(v interface{}) (json.RawMessage, error) {
+func MarshalValue(v any) (json.RawMessage, error) {
 	return json.Marshal(v)
 }
 
 // UnmarshalValue converts JSONB from database to a Go value.
-func UnmarshalValue(data json.RawMessage, v interface{}) error {
+func UnmarshalValue(data json.RawMessage, v any) error {
 	return json.Unmarshal(data, v)
 }

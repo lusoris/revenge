@@ -50,8 +50,8 @@ func (e *ProviderError) Unwrap() error {
 
 // IsProviderError checks if an error is a ProviderError.
 func IsProviderError(err error) bool {
-	var pe *ProviderError
-	return errors.As(err, &pe)
+	_, ok := errors.AsType[*ProviderError](err)
+	return ok
 }
 
 // NewProviderError creates a new ProviderError.

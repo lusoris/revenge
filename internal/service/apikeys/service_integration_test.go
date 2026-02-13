@@ -69,7 +69,7 @@ func TestServiceIntegration_ValidateKey_ExpiredKey(t *testing.T) {
 	resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:      "Expiring Key",
 		Scopes:    []string{"read"},
-		ExpiresAt: timePtr(time.Now().Add(500 * time.Millisecond)),
+		ExpiresAt: new(time.Now().Add(500 * time.Millisecond)),
 	})
 	require.NoError(t, err)
 
@@ -148,7 +148,7 @@ func TestServiceIntegration_CleanupExpiredKeys_OnlyDeletesRevokedExpired(t *test
 	expiredActiveResp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:      "Expired Active Key",
 		Scopes:    []string{"read"},
-		ExpiresAt: timePtr(time.Now().Add(-1 * time.Hour)),
+		ExpiresAt: new(time.Now().Add(-1 * time.Hour)),
 	})
 	require.NoError(t, err)
 
@@ -165,7 +165,7 @@ func TestServiceIntegration_CleanupExpiredKeys_OnlyDeletesRevokedExpired(t *test
 	revokedExpiredResp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:      "Revoked Expired Key",
 		Scopes:    []string{"read"},
-		ExpiresAt: timePtr(time.Now().Add(-1 * time.Hour)),
+		ExpiresAt: new(time.Now().Add(-1 * time.Hour)),
 	})
 	require.NoError(t, err)
 	err = svc.RevokeKey(ctx, revokedExpiredResp.Key.ID)
@@ -215,7 +215,7 @@ func TestServiceIntegration_CountUserAPIKeys_AfterCreateDeleteCycles(t *testing.
 
 	// Create 3 keys
 	var keyIDs []uuid.UUID
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 			Name:   "Count Key",
 			Scopes: []string{"read"},
@@ -547,7 +547,7 @@ func TestServiceIntegration_dbKeyToAPIKey_Fields(t *testing.T) {
 	expiresAt := time.Now().Add(24 * time.Hour)
 	resp, err := svc.CreateKey(ctx, userID, CreateKeyRequest{
 		Name:        "Full Fields Key",
-		Description: stringPtr("A descriptive description"),
+		Description: new("A descriptive description"),
 		Scopes:      []string{"read", "write", "admin"},
 		ExpiresAt:   &expiresAt,
 	})

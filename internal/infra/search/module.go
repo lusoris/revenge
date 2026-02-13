@@ -121,7 +121,7 @@ func (c *Client) ListCollections(ctx context.Context) ([]*api.CollectionResponse
 }
 
 // IndexDocument indexes a single document in a collection.
-func (c *Client) IndexDocument(ctx context.Context, collectionName string, document interface{}) (map[string]interface{}, error) {
+func (c *Client) IndexDocument(ctx context.Context, collectionName string, document any) (map[string]any, error) {
 	if !c.IsEnabled() {
 		return nil, fmt.Errorf("search is disabled")
 	}
@@ -130,7 +130,7 @@ func (c *Client) IndexDocument(ctx context.Context, collectionName string, docum
 }
 
 // UpdateDocument updates an existing document.
-func (c *Client) UpdateDocument(ctx context.Context, collectionName, documentID string, document interface{}) (map[string]interface{}, error) {
+func (c *Client) UpdateDocument(ctx context.Context, collectionName, documentID string, document any) (map[string]any, error) {
 	if !c.IsEnabled() {
 		return nil, fmt.Errorf("search is disabled")
 	}
@@ -139,7 +139,7 @@ func (c *Client) UpdateDocument(ctx context.Context, collectionName, documentID 
 }
 
 // DeleteDocument deletes a document from a collection.
-func (c *Client) DeleteDocument(ctx context.Context, collectionName, documentID string) (map[string]interface{}, error) {
+func (c *Client) DeleteDocument(ctx context.Context, collectionName, documentID string) (map[string]any, error) {
 	if !c.IsEnabled() {
 		return nil, fmt.Errorf("search is disabled")
 	}
@@ -166,7 +166,7 @@ func (c *Client) MultiSearch(ctx context.Context, params *api.MultiSearchParams)
 }
 
 // ImportDocuments bulk imports documents into a collection.
-func (c *Client) ImportDocuments(ctx context.Context, collectionName string, documents []interface{}, action string) ([]*api.ImportDocumentResponse, error) {
+func (c *Client) ImportDocuments(ctx context.Context, collectionName string, documents []any, action string) ([]*api.ImportDocumentResponse, error) {
 	if !c.IsEnabled() {
 		return nil, fmt.Errorf("search is disabled")
 	}
@@ -207,7 +207,7 @@ func registerHooks(lc fx.Lifecycle, client *Client, logger *slog.Logger) {
 
 			// Retry health check on startup with backoff
 			maxRetries := 5
-			for i := 0; i < maxRetries; i++ {
+			for i := range maxRetries {
 				if err := client.HealthCheck(ctx); err != nil {
 					if i < maxRetries-1 {
 						logger.Debug("typesense health check failed, retrying...",

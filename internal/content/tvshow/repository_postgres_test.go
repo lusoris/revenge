@@ -27,8 +27,11 @@ func setupTestRepo(t *testing.T) (Repository, testutil.DB) {
 	return repo, testDB
 }
 
-func i32Ptr(v int32) *int32     { return &v }
-func i64Ptr(v int64) *int64     { return &v }
+//go:fix inline
+func i32Ptr(v int32) *int32 { return new(v) }
+
+//go:fix inline
+func i64Ptr(v int64) *int64 { return new(v) }
 
 func createTestSeries(t *testing.T, repo Repository, title string) *Series {
 	t.Helper()
@@ -37,7 +40,7 @@ func createTestSeries(t *testing.T, repo Repository, title string) *Series {
 		Title:            title,
 		TMDbID:           &tmdbID,
 		OriginalLanguage: "en",
-		Status:           strPtr("Returning Series"),
+		Status:           new("Returning Series"),
 		TotalSeasons:     3,
 		TotalEpisodes:    30,
 	})
@@ -73,9 +76,9 @@ func createTestEpisode(t *testing.T, repo Repository, seriesID, seasonID uuid.UU
 		SeasonNumber:  seasonNum,
 		EpisodeNumber: epNum,
 		Title:         title,
-		Overview:      strPtr("Overview for episode"),
+		Overview:      new("Overview for episode"),
 		Runtime:       &runtime,
-		AirDate:       strPtr("2024-01-15"),
+		AirDate:       new("2024-01-15"),
 	})
 	require.NoError(t, err)
 	require.NotNil(t, e)
@@ -102,23 +105,23 @@ func TestRepo_CreateAndGetSeries(t *testing.T) {
 		TMDbID:           &tmdbID,
 		TVDbID:           &tvdbID,
 		IMDbID:           &imdbID,
-		OriginalTitle:    strPtr("Breaking Bad"),
+		OriginalTitle:    new("Breaking Bad"),
 		OriginalLanguage: "en",
-		Tagline:          strPtr("All Hail the King"),
-		Overview:         strPtr("A chemistry teacher turned meth cook"),
-		Status:           strPtr("Ended"),
-		Type:             strPtr("Scripted"),
-		FirstAirDate:     strPtr("2008-01-20"),
-		LastAirDate:      strPtr("2013-09-29"),
+		Tagline:          new("All Hail the King"),
+		Overview:         new("A chemistry teacher turned meth cook"),
+		Status:           new("Ended"),
+		Type:             new("Scripted"),
+		FirstAirDate:     new("2008-01-20"),
+		LastAirDate:      new("2013-09-29"),
 		VoteAverage:      &voteAvg,
 		VoteCount:        i32Ptr(15000),
 		Popularity:       &popularity,
-		PosterPath:       strPtr("/poster_bb.jpg"),
-		BackdropPath:     strPtr("/backdrop_bb.jpg"),
+		PosterPath:       new("/poster_bb.jpg"),
+		BackdropPath:     new("/backdrop_bb.jpg"),
 		TotalSeasons:     5,
 		TotalEpisodes:    62,
-		TrailerURL:       strPtr("https://youtube.com/watch?v=bb"),
-		Homepage:         strPtr("https://www.amc.com/breakingbad"),
+		TrailerURL:       new("https://youtube.com/watch?v=bb"),
+		Homepage:         new("https://www.amc.com/breakingbad"),
 		TitlesI18n:       map[string]string{"de": "Breaking Bad", "ja": "ブレイキング・バッド"},
 		TaglinesI18n:     map[string]string{"de": "Der König ist da"},
 		OverviewsI18n:    map[string]string{"de": "Ein Chemielehrer wird zum Drogenkoch"},
@@ -211,9 +214,9 @@ func TestRepo_UpdateSeries(t *testing.T) {
 
 	updated, err := repo.UpdateSeries(ctx, UpdateSeriesParams{
 		ID:      s.ID,
-		Title:   strPtr("Updated Series Title"),
-		Status:  strPtr("Ended"),
-		Tagline: strPtr("New tagline"),
+		Title:   new("Updated Series Title"),
+		Status:  new("Ended"),
+		Tagline: new("New tagline"),
 		TitlesI18n: map[string]string{
 			"fr": "Titre Mis à Jour",
 		},
@@ -261,7 +264,7 @@ func TestRepo_ListSeries_Pagination(t *testing.T) {
 	repo, _ := setupTestRepo(t)
 	ctx := context.Background()
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		createTestSeries(t, repo, "Paginated "+string(rune('A'+i)))
 	}
 
@@ -359,10 +362,10 @@ func TestRepo_Seasons_CRUD(t *testing.T) {
 		TMDbID:        i32Ptr(88888),
 		SeasonNumber:  1,
 		Name:          "Season 1",
-		Overview:      strPtr("The first season"),
+		Overview:      new("The first season"),
 		EpisodeCount:  10,
-		AirDate:       strPtr("2024-01-01"),
-		VoteAverage:   strPtr("8.0"),
+		AirDate:       new("2024-01-01"),
+		VoteAverage:   new("8.0"),
 		NamesI18n:     map[string]string{"de": "Staffel 1", "ja": "シーズン1"},
 		OverviewsI18n: map[string]string{"de": "Die erste Staffel"},
 	})
@@ -385,7 +388,7 @@ func TestRepo_Seasons_CRUD(t *testing.T) {
 	// Update
 	updated, err := repo.UpdateSeason(ctx, UpdateSeasonParams{
 		ID:           season.ID,
-		Name:         strPtr("Season One (Updated)"),
+		Name:         new("Season One (Updated)"),
 		EpisodeCount: i32Ptr(12),
 	})
 	require.NoError(t, err)
@@ -494,17 +497,17 @@ func TestRepo_Episodes_CRUD(t *testing.T) {
 		SeasonID:       season.ID,
 		TMDbID:         &tmdbID,
 		TVDbID:         &tvdbID,
-		IMDbID:         strPtr("tt9999999"),
+		IMDbID:         new("tt9999999"),
 		SeasonNumber:   1,
 		EpisodeNumber:  1,
 		Title:          "Pilot",
-		Overview:       strPtr("The beginning of everything"),
-		AirDate:        strPtr("2024-01-15"),
+		Overview:       new("The beginning of everything"),
+		AirDate:        new("2024-01-15"),
 		Runtime:        i32Ptr(58),
-		VoteAverage:    strPtr("9.1"),
+		VoteAverage:    new("9.1"),
 		VoteCount:      i32Ptr(5000),
-		StillPath:      strPtr("/still_pilot.jpg"),
-		ProductionCode: strPtr("101"),
+		StillPath:      new("/still_pilot.jpg"),
+		ProductionCode: new("101"),
 		TitlesI18n:     map[string]string{"de": "Pilotfolge", "ja": "パイロット"},
 		OverviewsI18n:  map[string]string{"de": "Der Anfang von allem"},
 	})
@@ -534,7 +537,7 @@ func TestRepo_Episodes_CRUD(t *testing.T) {
 	// Update
 	updated, err := repo.UpdateEpisode(ctx, UpdateEpisodeParams{
 		ID:      ep.ID,
-		Title:   strPtr("Pilot (Director's Cut)"),
+		Title:   new("Pilot (Director's Cut)"),
 		Runtime: i32Ptr(65),
 	})
 	require.NoError(t, err)
@@ -678,11 +681,11 @@ func TestRepo_EpisodeFiles_CRUD(t *testing.T) {
 		FilePath:          "/tvshows/show/S01E01.mkv",
 		FileName:          "S01E01.mkv",
 		FileSize:          3500000000,
-		Container:         strPtr("mkv"),
-		Resolution:        strPtr("1080p"),
-		QualityProfile:    strPtr("Bluray-1080p"),
-		VideoCodec:        strPtr("h265"),
-		AudioCodec:        strPtr("DTS-HD MA"),
+		Container:         new("mkv"),
+		Resolution:        new("1080p"),
+		QualityProfile:    new("Bluray-1080p"),
+		VideoCodec:        new("h265"),
+		AudioCodec:        new("DTS-HD MA"),
 		BitrateKbps:       i32Ptr(12000),
 		AudioLanguages:    []string{"eng", "jpn"},
 		SubtitleLanguages: []string{"eng", "jpn", "chi"},
@@ -714,7 +717,7 @@ func TestRepo_EpisodeFiles_CRUD(t *testing.T) {
 	// Update
 	updated, err := repo.UpdateEpisodeFile(ctx, UpdateEpisodeFileParams{
 		ID:         f.ID,
-		Resolution: strPtr("2160p"),
+		Resolution: new("2160p"),
 		FileSize:   i64Ptr(7000000000),
 	})
 	require.NoError(t, err)
@@ -742,7 +745,7 @@ func TestRepo_DeleteEpisodeFilesByEpisode(t *testing.T) {
 	season := createTestSeason(t, repo, series.ID, 1)
 	ep := createTestEpisode(t, repo, series.ID, season.ID, 1, 1)
 
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		_, err := repo.CreateEpisodeFile(ctx, CreateEpisodeFileParams{
 			EpisodeID: ep.ID,
 			FilePath:  "/tvshows/deltest/S01E01_v" + string(rune('0'+i)) + ".mkv",
@@ -777,9 +780,9 @@ func TestRepo_SeriesCredits(t *testing.T) {
 		TMDbPersonID: 17419,
 		Name:         "Bryan Cranston",
 		CreditType:   "cast",
-		Character:    strPtr("Walter White"),
+		Character:    new("Walter White"),
 		CastOrder:    i32Ptr(0),
-		ProfilePath:  strPtr("/cranston.jpg"),
+		ProfilePath:  new("/cranston.jpg"),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "Bryan Cranston", cast.Name)
@@ -791,8 +794,8 @@ func TestRepo_SeriesCredits(t *testing.T) {
 		TMDbPersonID: 66633,
 		Name:         "Vince Gilligan",
 		CreditType:   "crew",
-		Job:          strPtr("Creator"),
-		Department:   strPtr("Production"),
+		Job:          new("Creator"),
+		Department:   new("Production"),
 	})
 	require.NoError(t, err)
 
@@ -844,7 +847,7 @@ func TestRepo_EpisodeCredits(t *testing.T) {
 		TMDbPersonID: 11111,
 		Name:         "Guest Star Actor",
 		CreditType:   "guest_star",
-		Character:    strPtr("Special Agent"),
+		Character:    new("Special Agent"),
 		CastOrder:    i32Ptr(0),
 	})
 	require.NoError(t, err)
@@ -856,8 +859,8 @@ func TestRepo_EpisodeCredits(t *testing.T) {
 		TMDbPersonID: 22222,
 		Name:         "Director Name",
 		CreditType:   "crew",
-		Job:          strPtr("Director"),
-		Department:   strPtr("Directing"),
+		Job:          new("Director"),
+		Department:   new("Directing"),
 	})
 	require.NoError(t, err)
 
@@ -952,8 +955,8 @@ func TestRepo_Networks(t *testing.T) {
 	net, err := repo.CreateNetwork(ctx, CreateNetworkParams{
 		TMDbID:        &tmdbNetID,
 		Name:          "AMC",
-		LogoPath:      strPtr("/amc_logo.png"),
-		OriginCountry: strPtr("US"),
+		LogoPath:      new("/amc_logo.png"),
+		OriginCountry: new("US"),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "AMC", net.Name)

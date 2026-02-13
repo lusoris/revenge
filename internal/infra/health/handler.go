@@ -19,10 +19,10 @@ func NewHandler(service *Service) *Handler {
 
 // Response represents the JSON response for health endpoints.
 type Response struct {
-	Status  Status                 `json:"status"`
-	Message string                 `json:"message,omitempty"`
-	Checks  []CheckResult          `json:"checks,omitempty"`
-	Details map[string]interface{} `json:"details,omitempty"`
+	Status  Status         `json:"status"`
+	Message string         `json:"message,omitempty"`
+	Checks  []CheckResult  `json:"checks,omitempty"`
+	Details map[string]any `json:"details,omitempty"`
 }
 
 // HandleLiveness handles GET /health/live requests.

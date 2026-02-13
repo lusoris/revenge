@@ -246,3 +246,7 @@
 - name: "go/1.25"
   color: "00add8"
   description: "Go 1.25 related"
+
+- name: "go/1.26"
+  color: "00add8"
+  description: "Go 1.26 related"

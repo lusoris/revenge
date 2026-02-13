@@ -117,7 +117,7 @@ func NewLeaderElection(cfg Config, logger *slog.Logger) (*LeaderElection, error)
 		}
 		future := ra.BootstrapCluster(configuration)
 		if err := future.Error(); err != nil {
-			logger.Warn("Failed to bootstrap cluster (may already be bootstrapped)", slog.Any("error",err))
+			logger.Warn("Failed to bootstrap cluster (may already be bootstrapped)", slog.Any("error", err))
 		}
 	}
 
@@ -287,7 +287,7 @@ func (le *LeaderElection) GetClusterMembers() ([]ClusterMember, error) {
 // We don't need to maintain any state - just need leader election.
 type simpleFSM struct{}
 
-func (f *simpleFSM) Apply(*raft.Log) interface{} {
+func (f *simpleFSM) Apply(*raft.Log) any {
 	// No state to apply
 	return nil
 }
@@ -326,7 +326,7 @@ func newHCLogAdapter(logger *slog.Logger) hclog.Logger {
 	}
 }
 
-func (h *hcLogAdapter) Log(level hclog.Level, msg string, args ...interface{}) {
+func (h *hcLogAdapter) Log(level hclog.Level, msg string, args ...any) {
 	attrs := hclogArgsToAttrs(args)
 	switch level {
 	case hclog.Trace, hclog.Debug:
@@ -340,19 +340,19 @@ func (h *hcLogAdapter) Log(level hclog.Level, msg string, args ...interface{}) {
 	}
 }
 
-func (h *hcLogAdapter) Trace(msg string, args ...interface{}) {
+func (h *hcLogAdapter) Trace(msg string, args ...any) {
 	h.logger.Debug(msg, hclogArgsToAttrs(args)...)
 }
-func (h *hcLogAdapter) Debug(msg string, args ...interface{}) {
+func (h *hcLogAdapter) Debug(msg string, args ...any) {
 	h.logger.Debug(msg, hclogArgsToAttrs(args)...)
 }
-func (h *hcLogAdapter) Info(msg string, args ...interface{}) {
+func (h *hcLogAdapter) Info(msg string, args ...any) {
 	h.logger.Info(msg, hclogArgsToAttrs(args)...)
 }
-func (h *hcLogAdapter) Warn(msg string, args ...interface{}) {
+func (h *hcLogAdapter) Warn(msg string, args ...any) {
 	h.logger.Warn(msg, hclogArgsToAttrs(args)...)
 }
-func (h *hcLogAdapter) Error(msg string, args ...interface{}) {
+func (h *hcLogAdapter) Error(msg string, args ...any) {
 	h.logger.Error(msg, hclogArgsToAttrs(args)...)
 }
 
@@ -362,13 +362,13 @@ func (h *hcLogAdapter) IsInfo() bool  { return h.level <= hclog.Info }
 func (h *hcLogAdapter) IsWarn() bool  { return h.level <= hclog.Warn }
 func (h *hcLogAdapter) IsError() bool { return h.level <= hclog.Error }
 
-func (h *hcLogAdapter) ImpliedArgs() []interface{}        { return nil }
-func (h *hcLogAdapter) With(args ...interface{}) hclog.Logger { return h }
-func (h *hcLogAdapter) Name() string                      { return "raft" }
-func (h *hcLogAdapter) Named(name string) hclog.Logger    { return h }
+func (h *hcLogAdapter) ImpliedArgs() []any                  { return nil }
+func (h *hcLogAdapter) With(args ...any) hclog.Logger       { return h }
+func (h *hcLogAdapter) Name() string                        { return "raft" }
+func (h *hcLogAdapter) Named(name string) hclog.Logger      { return h }
 func (h *hcLogAdapter) ResetNamed(name string) hclog.Logger { return h }
-func (h *hcLogAdapter) SetLevel(level hclog.Level)        { h.level = level }
-func (h *hcLogAdapter) GetLevel() hclog.Level             { return h.level }
+func (h *hcLogAdapter) SetLevel(level hclog.Level)          { h.level = level }
+func (h *hcLogAdapter) GetLevel() hclog.Level               { return h.level }
 func (h *hcLogAdapter) StandardLogger(opts *hclog.StandardLoggerOptions) *log.Logger {
 	return log.New(os.Stderr, "", log.LstdFlags)
 }
@@ -378,7 +378,7 @@ func (h *hcLogAdapter) StandardWriter(opts *hclog.StandardLoggerOptions) io.Writ
 
 // hclogArgsToAttrs converts hashicorp/go-hclog key-value pairs to slog attributes.
 // go-hclog passes args as alternating key, value pairs: "key1", val1, "key2", val2, ...
-func hclogArgsToAttrs(args []interface{}) []any {
+func hclogArgsToAttrs(args []any) []any {
 	if len(args) == 0 {
 		return nil
 	}

@@ -193,26 +193,26 @@ func TestYearMatch(t *testing.T) {
 	}{
 		{
 			name:     "exact match",
-			year1:    intPtr(2020),
-			year2:    intPtr(2020),
+			year1:    new(2020),
+			year2:    new(2020),
 			expected: 1.0,
 		},
 		{
 			name:     "one year off",
-			year1:    intPtr(2020),
-			year2:    intPtr(2021),
+			year1:    new(2020),
+			year2:    new(2021),
 			expected: 0.5,
 		},
 		{
 			name:     "two years off",
-			year1:    intPtr(2020),
-			year2:    intPtr(2022),
+			year1:    new(2020),
+			year2:    new(2022),
 			expected: 0.0,
 		},
 		{
 			name:     "first year nil",
 			year1:    nil,
-			year2:    intPtr(2020),
+			year2:    new(2020),
 			expected: 0.0,
 		},
 		{
@@ -292,6 +292,7 @@ func TestConfidenceScore(t *testing.T) {
 	})
 }
 
+//go:fix inline
 func intPtr(i int) *int {
-	return &i
+	return new(i)
 }

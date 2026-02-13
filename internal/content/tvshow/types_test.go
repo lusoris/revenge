@@ -58,7 +58,7 @@ func TestSeries_GetTitle(t *testing.T) {
 			name: "Falls back to OriginalTitle",
 			series: &Series{
 				Title:            "Dark",
-				OriginalTitle:    strPtr("Dark Original"),
+				OriginalTitle:    new("Dark Original"),
 				OriginalLanguage: "de",
 				TitlesI18n:       nil,
 			},
@@ -117,7 +117,7 @@ func TestSeries_GetTagline(t *testing.T) {
 		{
 			name: "Returns requested language",
 			series: &Series{
-				Tagline:          strPtr("All Hail the King"),
+				Tagline:          new("All Hail the King"),
 				OriginalLanguage: "en",
 				TaglinesI18n: map[string]string{
 					"en": "All Hail the King",
@@ -130,7 +130,7 @@ func TestSeries_GetTagline(t *testing.T) {
 		{
 			name: "Falls back to English",
 			series: &Series{
-				Tagline:          strPtr("All Hail the King"),
+				Tagline:          new("All Hail the King"),
 				OriginalLanguage: "en",
 				TaglinesI18n: map[string]string{
 					"en": "All Hail the King",
@@ -142,7 +142,7 @@ func TestSeries_GetTagline(t *testing.T) {
 		{
 			name: "Falls back to default Tagline",
 			series: &Series{
-				Tagline:          strPtr("Default Tagline"),
+				Tagline:          new("Default Tagline"),
 				OriginalLanguage: "en",
 			},
 			lang:     "de",
@@ -176,7 +176,7 @@ func TestSeries_GetOverview(t *testing.T) {
 		{
 			name: "Returns requested language",
 			series: &Series{
-				Overview:         strPtr("A chemistry teacher..."),
+				Overview:         new("A chemistry teacher..."),
 				OriginalLanguage: "en",
 				OverviewsI18n: map[string]string{
 					"en": "A chemistry teacher...",
@@ -189,7 +189,7 @@ func TestSeries_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to English",
 			series: &Series{
-				Overview:         strPtr("A chemistry teacher..."),
+				Overview:         new("A chemistry teacher..."),
 				OriginalLanguage: "en",
 				OverviewsI18n: map[string]string{
 					"en": "A chemistry teacher...",
@@ -201,7 +201,7 @@ func TestSeries_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to default Overview",
 			series: &Series{
-				Overview:         strPtr("Default Overview"),
+				Overview:         new("Default Overview"),
 				OriginalLanguage: "en",
 			},
 			lang:     "de",
@@ -234,8 +234,8 @@ func TestSeries_GetAgeRating(t *testing.T) {
 		{"US", "TV", "TV-MA"},
 		{"DE", "FSK", "16"},
 		{"GB", "BBFC", "15"},
-		{"FR", "CSA", ""},  // Country not found
-		{"US", "FSK", ""},  // System not found
+		{"FR", "CSA", ""}, // Country not found
+		{"US", "FSK", ""}, // System not found
 	}
 
 	for _, tt := range tests {
@@ -301,10 +301,10 @@ func TestSeries_IsEnded(t *testing.T) {
 		status   *string
 		expected bool
 	}{
-		{"Ended status", strPtr("Ended"), true},
-		{"Canceled status", strPtr("Canceled"), true},
-		{"Returning Series", strPtr("Returning Series"), false},
-		{"In Production", strPtr("In Production"), false},
+		{"Ended status", new("Ended"), true},
+		{"Canceled status", new("Canceled"), true},
+		{"Returning Series", new("Returning Series"), false},
+		{"In Production", new("In Production"), false},
 		{"Nil status", nil, false},
 	}
 
@@ -374,7 +374,7 @@ func TestSeason_GetOverview(t *testing.T) {
 		{
 			name: "Returns requested language",
 			season: &Season{
-				Overview: strPtr("Season overview"),
+				Overview: new("Season overview"),
 				OverviewsI18n: map[string]string{
 					"en": "Season overview",
 					"de": "Staffelübersicht",
@@ -386,7 +386,7 @@ func TestSeason_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to English",
 			season: &Season{
-				Overview: strPtr("Season overview"),
+				Overview: new("Season overview"),
 				OverviewsI18n: map[string]string{
 					"en": "English season overview",
 				},
@@ -397,15 +397,15 @@ func TestSeason_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to default Overview",
 			season: &Season{
-				Overview: strPtr("Default overview"),
+				Overview: new("Default overview"),
 			},
 			lang:     "de",
 			expected: "Default overview",
 		},
 		{
-			name: "Returns empty for nil overview",
-			season: &Season{},
-			lang:   "de",
+			name:     "Returns empty for nil overview",
+			season:   &Season{},
+			lang:     "de",
 			expected: "",
 		},
 	}
@@ -669,7 +669,7 @@ func TestNextEpisode(t *testing.T) {
 
 	next := NextEpisode{
 		Episode:        episode,
-		IsNewSeason:   true,
+		IsNewSeason:    true,
 		IsSeriesFinale: false,
 	}
 
@@ -680,22 +680,22 @@ func TestNextEpisode(t *testing.T) {
 
 func TestEpisodeFile(t *testing.T) {
 	file := EpisodeFile{
-		ID:             uuid.Must(uuid.NewV7()),
-		EpisodeID:      uuid.Must(uuid.NewV7()),
-		FilePath:       "/media/tv/Breaking Bad/Season 1/Breaking.Bad.S01E01.mkv",
-		FileName:       "Breaking.Bad.S01E01.mkv",
-		FileSize:       1500000000,
-		Container:      strPtr("mkv"),
-		Resolution:     strPtr("1920x1080"),
-		QualityProfile: strPtr("HDTV-1080p"),
-		VideoCodec:     strPtr("h264"),
-		AudioCodec:     strPtr("aac"),
-		BitrateKbps:    int32Ptr(5000),
-		DurationSeconds: decimalPtr(decimal.MustNew(2700, 0)),
+		ID:                uuid.Must(uuid.NewV7()),
+		EpisodeID:         uuid.Must(uuid.NewV7()),
+		FilePath:          "/media/tv/Breaking Bad/Season 1/Breaking.Bad.S01E01.mkv",
+		FileName:          "Breaking.Bad.S01E01.mkv",
+		FileSize:          1500000000,
+		Container:         new("mkv"),
+		Resolution:        new("1920x1080"),
+		QualityProfile:    new("HDTV-1080p"),
+		VideoCodec:        new("h264"),
+		AudioCodec:        new("aac"),
+		BitrateKbps:       int32Ptr(5000),
+		DurationSeconds:   new(decimal.MustNew(2700, 0)),
 		AudioLanguages:    []string{"en"},
 		SubtitleLanguages: []string{"en", "de", "es"},
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
+		CreatedAt:         time.Now(),
+		UpdatedAt:         time.Now(),
 	}
 
 	assert.NotEqual(t, uuid.Nil, file.ID)
@@ -722,8 +722,8 @@ func TestNetwork(t *testing.T) {
 		ID:            uuid.Must(uuid.NewV7()),
 		TMDbID:        &tmdbID,
 		Name:          "AMC",
-		LogoPath:      strPtr("/path/to/logo.png"),
-		OriginCountry: strPtr("US"),
+		LogoPath:      new("/path/to/logo.png"),
+		OriginCountry: new("US"),
 		CreatedAt:     time.Now(),
 	}
 
@@ -773,7 +773,7 @@ func TestSeries_GetTagline_OriginalLanguageFallback(t *testing.T) {
 	t.Parallel()
 
 	series := &Series{
-		Tagline:          strPtr("Default"),
+		Tagline:          new("Default"),
 		OriginalLanguage: "de",
 		TaglinesI18n: map[string]string{
 			"de": "Heil dem König",
@@ -789,7 +789,7 @@ func TestSeries_GetTagline_EmptyI18nValues(t *testing.T) {
 	t.Parallel()
 
 	series := &Series{
-		Tagline:          strPtr("Fallback"),
+		Tagline:          new("Fallback"),
 		OriginalLanguage: "en",
 		TaglinesI18n: map[string]string{
 			"de": "", // empty value should be skipped
@@ -805,7 +805,7 @@ func TestSeries_GetOverview_OriginalLanguageFallback(t *testing.T) {
 	t.Parallel()
 
 	series := &Series{
-		Overview:         strPtr("Default"),
+		Overview:         new("Default"),
 		OriginalLanguage: "ja",
 		OverviewsI18n: map[string]string{
 			"ja": "Japanese overview",
@@ -832,7 +832,7 @@ func TestSeason_GetOverview_OriginalLanguageFallback(t *testing.T) {
 	t.Parallel()
 
 	season := &Season{
-		Overview: strPtr("Default Season Overview"),
+		Overview: new("Default Season Overview"),
 		OverviewsI18n: map[string]string{
 			"ja": "Japanese season overview",
 		},
@@ -867,7 +867,7 @@ func TestEpisode_GetOverview(t *testing.T) {
 		{
 			name: "Returns requested language",
 			episode: &Episode{
-				Overview: strPtr("English overview"),
+				Overview: new("English overview"),
 				OverviewsI18n: map[string]string{
 					"en": "English overview",
 					"de": "German overview",
@@ -879,7 +879,7 @@ func TestEpisode_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to English",
 			episode: &Episode{
-				Overview: strPtr("English overview"),
+				Overview: new("English overview"),
 				OverviewsI18n: map[string]string{
 					"en": "English overview",
 				},
@@ -890,7 +890,7 @@ func TestEpisode_GetOverview(t *testing.T) {
 		{
 			name: "Falls back to default Overview",
 			episode: &Episode{
-				Overview: strPtr("Default episode overview"),
+				Overview: new("Default episode overview"),
 			},
 			lang:     "de",
 			expected: "Default episode overview",
@@ -904,7 +904,7 @@ func TestEpisode_GetOverview(t *testing.T) {
 		{
 			name: "Skips empty i18n values",
 			episode: &Episode{
-				Overview: strPtr("Fallback"),
+				Overview: new("Fallback"),
 				OverviewsI18n: map[string]string{
 					"de": "",
 					"en": "",
@@ -1027,14 +1027,18 @@ func TestContinueWatchingItem_GetLastWatchedFormatted(t *testing.T) {
 }
 
 // Helper functions for creating pointers in tests
+//
+//go:fix inline
 func strPtr(s string) *string {
-	return &s
+	return new(s)
 }
 
+//go:fix inline
 func int32Ptr(i int32) *int32 {
-	return &i
+	return new(i)
 }
 
+//go:fix inline
 func decimalPtr(d decimal.Decimal) *decimal.Decimal {
-	return &d
+	return new(d)
 }

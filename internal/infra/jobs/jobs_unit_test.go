@@ -199,7 +199,7 @@ func TestJobProgress_JSONOmitEmpty(t *testing.T) {
 	require.NoError(t, err)
 
 	// Total and Message have omitempty
-	var parsed map[string]interface{}
+	var parsed map[string]any
 	err = json.Unmarshal(data, &parsed)
 	require.NoError(t, err)
 
@@ -293,13 +293,13 @@ func TestNotificationArgs_JSONRoundTrip(t *testing.T) {
 	ts := time.Now().Truncate(time.Millisecond)
 
 	args := NotificationArgs{
-		EventID:   eventID,
-		EventType: "movie.added",
-		Timestamp: ts,
-		UserID:    &userID,
-		TargetID:  &targetID,
-		Data:      map[string]any{"title": "Test Movie"},
-		Metadata:  map[string]string{"source": "radarr"},
+		EventID:    eventID,
+		EventType:  "movie.added",
+		Timestamp:  ts,
+		UserID:     &userID,
+		TargetID:   &targetID,
+		Data:       map[string]any{"title": "Test Movie"},
+		Metadata:   map[string]string{"source": "radarr"},
 		AgentNames: []string{"discord", "webhook"},
 	}
 

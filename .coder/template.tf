@@ -30,18 +30,18 @@ terraform {
 
 locals {
   # Actual versions from docker-compose files and go.mod
-  go_version      = "1.25.6"
+  go_version      = "1.26.0"
   postgres_image  = "postgres:18-alpine"
   dragonfly_image = "docker.dragonflydb.io/dragonflydb/dragonfly:latest"
   typesense_image = "typesense/typesense:0.25.2"
-  workspace_image = "golang:1.25-alpine"
+  workspace_image = "golang:1.26-alpine"
 
   username     = data.coder_workspace_owner.me.name
   workspace_id = data.coder_workspace.me.id
 
   # Shared env vars matching docker-compose.dev.yml
   app_env = {
-    GOEXPERIMENT           = "greenteagc,jsonv2"
+    GOEXPERIMENT           = "jsonv2,goroutineleakprofile,simd,runtimesecret"
     REVENGE_LOG_LEVEL      = "debug"
     REVENGE_LOG_FORMAT     = "console"
     REVENGE_DATABASE_URL   = "postgres://revenge:revenge_dev_pass@postgres:5432/revenge?sslmode=disable"

@@ -29,45 +29,45 @@ type (
 
 // Series represents a TV series in Sonarr.
 type Series struct {
-	ID                    int              `json:"id"`
-	Title                 string           `json:"title"`
-	AlternateTitles       []AlternateTitle `json:"alternateTitles,omitempty"`
-	SortTitle             string           `json:"sortTitle,omitempty"`
-	Status                string           `json:"status,omitempty"`
-	Ended                 bool             `json:"ended"`
-	Overview              string           `json:"overview,omitempty"`
-	PreviousAiring        *time.Time       `json:"previousAiring,omitempty"`
-	NextAiring            *time.Time       `json:"nextAiring,omitempty"`
-	Network               string           `json:"network,omitempty"`
-	AirTime               string           `json:"airTime,omitempty"`
-	Images                []Image          `json:"images,omitempty"`
-	OriginalLanguage      Language         `json:"originalLanguage,omitempty"`
-	Seasons               []SeasonInfo     `json:"seasons,omitempty"`
-	Year                  int              `json:"year"`
-	Path                  string           `json:"path,omitempty"`
-	QualityProfileID      int              `json:"qualityProfileId"`
-	SeasonFolder          bool             `json:"seasonFolder"`
-	Monitored             bool             `json:"monitored"`
-	MonitorNewItems       string           `json:"monitorNewItems,omitempty"`
-	UseSceneNumbering     bool             `json:"useSceneNumbering"`
-	Runtime               int              `json:"runtime,omitempty"`
-	TVDbID                int              `json:"tvdbId"`
-	TVRageID              int              `json:"tvRageId,omitempty"`
-	TVMazeID              int              `json:"tvMazeId,omitempty"`
-	IMDbID                string           `json:"imdbId,omitempty"`
-	FirstAired            *time.Time       `json:"firstAired,omitempty"`
-	LastAired             *time.Time       `json:"lastAired,omitempty"`
-	SeriesType            string           `json:"seriesType,omitempty"`
-	CleanTitle            string           `json:"cleanTitle,omitempty"`
-	TitleSlug             string           `json:"titleSlug,omitempty"`
-	RootFolderPath        string           `json:"rootFolderPath,omitempty"`
-	Certification         string           `json:"certification,omitempty"`
-	Genres                []string         `json:"genres,omitempty"`
-	Tags                  []int            `json:"tags,omitempty"`
-	Added                 time.Time        `json:"added"`
-	Ratings               Ratings          `json:"ratings,omitempty"`
-	Statistics            *Statistics      `json:"statistics,omitempty"`
-	LanguageProfileID     int              `json:"languageProfileId,omitempty"`
+	ID                int              `json:"id"`
+	Title             string           `json:"title"`
+	AlternateTitles   []AlternateTitle `json:"alternateTitles,omitempty"`
+	SortTitle         string           `json:"sortTitle,omitempty"`
+	Status            string           `json:"status,omitempty"`
+	Ended             bool             `json:"ended"`
+	Overview          string           `json:"overview,omitempty"`
+	PreviousAiring    *time.Time       `json:"previousAiring,omitempty"`
+	NextAiring        *time.Time       `json:"nextAiring,omitempty"`
+	Network           string           `json:"network,omitempty"`
+	AirTime           string           `json:"airTime,omitempty"`
+	Images            []Image          `json:"images,omitempty"`
+	OriginalLanguage  Language         `json:"originalLanguage"`
+	Seasons           []SeasonInfo     `json:"seasons,omitempty"`
+	Year              int              `json:"year"`
+	Path              string           `json:"path,omitempty"`
+	QualityProfileID  int              `json:"qualityProfileId"`
+	SeasonFolder      bool             `json:"seasonFolder"`
+	Monitored         bool             `json:"monitored"`
+	MonitorNewItems   string           `json:"monitorNewItems,omitempty"`
+	UseSceneNumbering bool             `json:"useSceneNumbering"`
+	Runtime           int              `json:"runtime,omitempty"`
+	TVDbID            int              `json:"tvdbId"`
+	TVRageID          int              `json:"tvRageId,omitempty"`
+	TVMazeID          int              `json:"tvMazeId,omitempty"`
+	IMDbID            string           `json:"imdbId,omitempty"`
+	FirstAired        *time.Time       `json:"firstAired,omitempty"`
+	LastAired         *time.Time       `json:"lastAired,omitempty"`
+	SeriesType        string           `json:"seriesType,omitempty"`
+	CleanTitle        string           `json:"cleanTitle,omitempty"`
+	TitleSlug         string           `json:"titleSlug,omitempty"`
+	RootFolderPath    string           `json:"rootFolderPath,omitempty"`
+	Certification     string           `json:"certification,omitempty"`
+	Genres            []string         `json:"genres,omitempty"`
+	Tags              []int            `json:"tags,omitempty"`
+	Added             time.Time        `json:"added"`
+	Ratings           Ratings          `json:"ratings"`
+	Statistics        *Statistics      `json:"statistics,omitempty"`
+	LanguageProfileID int              `json:"languageProfileId,omitempty"`
 }
 
 // SeasonInfo represents season information within a series.
@@ -79,56 +79,55 @@ type SeasonInfo struct {
 
 // Episode represents an episode in Sonarr.
 type Episode struct {
-	ID                       int        `json:"id"`
-	SeriesID                 int        `json:"seriesId"`
-	TVDbID                   int        `json:"tvdbId,omitempty"`
-	EpisodeFileID            int        `json:"episodeFileId,omitempty"`
-	SeasonNumber             int        `json:"seasonNumber"`
-	EpisodeNumber            int        `json:"episodeNumber"`
-	Title                    string     `json:"title,omitempty"`
-	AirDate                  string     `json:"airDate,omitempty"`
-	AirDateUtc               *time.Time `json:"airDateUtc,omitempty"`
-	Overview                 string     `json:"overview,omitempty"`
-	EpisodeFile              *EpisodeFile `json:"episodeFile,omitempty"`
-	HasFile                  bool       `json:"hasFile"`
-	Monitored                bool       `json:"monitored"`
-	AbsoluteEpisodeNumber    int        `json:"absoluteEpisodeNumber,omitempty"`
-	SceneAbsoluteEpisodeNumber int      `json:"sceneAbsoluteEpisodeNumber,omitempty"`
-	SceneSeasonNumber        int        `json:"sceneSeasonNumber,omitempty"`
-	SceneEpisodeNumber       int        `json:"sceneEpisodeNumber,omitempty"`
-	UnverifiedSceneNumbering bool       `json:"unverifiedSceneNumbering,omitempty"`
-	Runtime                  int        `json:"runtime,omitempty"`
-	FinaleType               string     `json:"finaleType,omitempty"`
-	Images                   []Image    `json:"images,omitempty"`
-	Series                   *Series    `json:"series,omitempty"`
+	ID                         int          `json:"id"`
+	SeriesID                   int          `json:"seriesId"`
+	TVDbID                     int          `json:"tvdbId,omitempty"`
+	EpisodeFileID              int          `json:"episodeFileId,omitempty"`
+	SeasonNumber               int          `json:"seasonNumber"`
+	EpisodeNumber              int          `json:"episodeNumber"`
+	Title                      string       `json:"title,omitempty"`
+	AirDate                    string       `json:"airDate,omitempty"`
+	AirDateUtc                 *time.Time   `json:"airDateUtc,omitempty"`
+	Overview                   string       `json:"overview,omitempty"`
+	EpisodeFile                *EpisodeFile `json:"episodeFile,omitempty"`
+	HasFile                    bool         `json:"hasFile"`
+	Monitored                  bool         `json:"monitored"`
+	AbsoluteEpisodeNumber      int          `json:"absoluteEpisodeNumber,omitempty"`
+	SceneAbsoluteEpisodeNumber int          `json:"sceneAbsoluteEpisodeNumber,omitempty"`
+	SceneSeasonNumber          int          `json:"sceneSeasonNumber,omitempty"`
+	SceneEpisodeNumber         int          `json:"sceneEpisodeNumber,omitempty"`
+	UnverifiedSceneNumbering   bool         `json:"unverifiedSceneNumbering,omitempty"`
+	Runtime                    int          `json:"runtime,omitempty"`
+	FinaleType                 string       `json:"finaleType,omitempty"`
+	Images                     []Image      `json:"images,omitempty"`
+	Series                     *Series      `json:"series,omitempty"`
 }
 
 // EpisodeFile represents an episode file in Sonarr.
 type EpisodeFile struct {
-	ID                  int            `json:"id"`
-	SeriesID            int            `json:"seriesId"`
-	SeasonNumber        int            `json:"seasonNumber"`
-	RelativePath        string         `json:"relativePath,omitempty"`
-	Path                string         `json:"path,omitempty"`
-	Size                int64          `json:"size"`
-	DateAdded           time.Time      `json:"dateAdded"`
-	SceneName           string         `json:"sceneName,omitempty"`
-	ReleaseGroup        string         `json:"releaseGroup,omitempty"`
-	Quality             Quality        `json:"quality,omitempty"`
-	MediaInfo           *MediaInfo     `json:"mediaInfo,omitempty"`
-	OriginalFilePath    string         `json:"originalFilePath,omitempty"`
-	QualityCutoffNotMet bool           `json:"qualityCutoffNotMet"`
-	Languages           []Language     `json:"languages,omitempty"`
+	ID                  int        `json:"id"`
+	SeriesID            int        `json:"seriesId"`
+	SeasonNumber        int        `json:"seasonNumber"`
+	RelativePath        string     `json:"relativePath,omitempty"`
+	Path                string     `json:"path,omitempty"`
+	Size                int64      `json:"size"`
+	DateAdded           time.Time  `json:"dateAdded"`
+	SceneName           string     `json:"sceneName,omitempty"`
+	ReleaseGroup        string     `json:"releaseGroup,omitempty"`
+	Quality             Quality    `json:"quality"`
+	MediaInfo           *MediaInfo `json:"mediaInfo,omitempty"`
+	OriginalFilePath    string     `json:"originalFilePath,omitempty"`
+	QualityCutoffNotMet bool       `json:"qualityCutoffNotMet"`
+	Languages           []Language `json:"languages,omitempty"`
 }
-
 
 // AlternateTitle represents an alternate title.
 type AlternateTitle struct {
-	Title           string `json:"title,omitempty"`
-	SeasonNumber    int    `json:"seasonNumber,omitempty"`
-	SceneSeasonNumber int  `json:"sceneSeasonNumber,omitempty"`
-	SceneOrigin     string `json:"sceneOrigin,omitempty"`
-	Comment         string `json:"comment,omitempty"`
+	Title             string `json:"title,omitempty"`
+	SeasonNumber      int    `json:"seasonNumber,omitempty"`
+	SceneSeasonNumber int    `json:"sceneSeasonNumber,omitempty"`
+	SceneOrigin       string `json:"sceneOrigin,omitempty"`
+	Comment           string `json:"comment,omitempty"`
 }
 
 // Ratings contains rating information.
@@ -139,16 +138,14 @@ type Ratings struct {
 
 // Statistics contains series/season statistics.
 type Statistics struct {
-	SeasonCount       int     `json:"seasonCount,omitempty"`
-	EpisodeFileCount  int     `json:"episodeFileCount"`
-	EpisodeCount      int     `json:"episodeCount"`
-	TotalEpisodeCount int     `json:"totalEpisodeCount"`
-	SizeOnDisk        int64   `json:"sizeOnDisk"`
+	SeasonCount       int      `json:"seasonCount,omitempty"`
+	EpisodeFileCount  int      `json:"episodeFileCount"`
+	EpisodeCount      int      `json:"episodeCount"`
+	TotalEpisodeCount int      `json:"totalEpisodeCount"`
+	SizeOnDisk        int64    `json:"sizeOnDisk"`
 	ReleaseGroups     []string `json:"releaseGroups,omitempty"`
-	PercentOfEpisodes float64 `json:"percentOfEpisodes,omitempty"`
+	PercentOfEpisodes float64  `json:"percentOfEpisodes,omitempty"`
 }
-
-
 
 // Command represents a command to execute in Sonarr.
 type Command struct {
@@ -156,10 +153,10 @@ type Command struct {
 	Name                string      `json:"name"`
 	CommandName         string      `json:"commandName,omitempty"`
 	Message             string      `json:"message,omitempty"`
-	Body                CommandBody `json:"body,omitempty"`
+	Body                CommandBody `json:"body"`
 	Priority            string      `json:"priority,omitempty"`
 	Status              string      `json:"status,omitempty"`
-	Queued              time.Time   `json:"queued,omitempty"`
+	Queued              time.Time   `json:"queued"`
 	Started             *time.Time  `json:"started,omitempty"`
 	Ended               *time.Time  `json:"ended,omitempty"`
 	Duration            string      `json:"duration,omitempty"`
@@ -209,18 +206,18 @@ type CalendarEntry struct {
 
 // HistoryRecord represents a history record.
 type HistoryRecord struct {
-	ID                  int        `json:"id"`
-	EpisodeID           int        `json:"episodeId"`
-	SeriesID            int        `json:"seriesId"`
-	SourceTitle         string     `json:"sourceTitle,omitempty"`
-	Languages           []Language `json:"languages,omitempty"`
-	Quality             Quality    `json:"quality,omitempty"`
-	CustomFormats       []any      `json:"customFormats,omitempty"`
-	CustomFormatScore   int        `json:"customFormatScore,omitempty"`
-	QualityCutoffNotMet bool       `json:"qualityCutoffNotMet"`
-	Date                time.Time  `json:"date"`
-	DownloadID          string     `json:"downloadId,omitempty"`
-	EventType           string     `json:"eventType,omitempty"`
+	ID                  int            `json:"id"`
+	EpisodeID           int            `json:"episodeId"`
+	SeriesID            int            `json:"seriesId"`
+	SourceTitle         string         `json:"sourceTitle,omitempty"`
+	Languages           []Language     `json:"languages,omitempty"`
+	Quality             Quality        `json:"quality"`
+	CustomFormats       []any          `json:"customFormats,omitempty"`
+	CustomFormatScore   int            `json:"customFormatScore,omitempty"`
+	QualityCutoffNotMet bool           `json:"qualityCutoffNotMet"`
+	Date                time.Time      `json:"date"`
+	DownloadID          string         `json:"downloadId,omitempty"`
+	EventType           string         `json:"eventType,omitempty"`
 	Data                map[string]any `json:"data,omitempty"`
 }
 
@@ -244,18 +241,18 @@ type AddSeriesRequest struct {
 	SeasonFolder      bool             `json:"seasonFolder"`
 	SeriesType        string           `json:"seriesType,omitempty"`
 	Tags              []int            `json:"tags,omitempty"`
-	AddOptions        AddSeriesOptions `json:"addOptions,omitempty"`
+	AddOptions        AddSeriesOptions `json:"addOptions"`
 	Seasons           []SeasonInfo     `json:"seasons,omitempty"`
 	LanguageProfileID int              `json:"languageProfileId,omitempty"`
 }
 
 // AddSeriesOptions represents options when adding a series.
 type AddSeriesOptions struct {
-	IgnoreEpisodesWithFiles    bool   `json:"ignoreEpisodesWithFiles,omitempty"`
-	IgnoreEpisodesWithoutFiles bool   `json:"ignoreEpisodesWithoutFiles,omitempty"`
-	Monitor                    string `json:"monitor,omitempty"`
-	SearchForMissingEpisodes   bool   `json:"searchForMissingEpisodes"`
-	SearchForCutoffUnmetEpisodes bool `json:"searchForCutoffUnmetEpisodes,omitempty"`
+	IgnoreEpisodesWithFiles      bool   `json:"ignoreEpisodesWithFiles,omitempty"`
+	IgnoreEpisodesWithoutFiles   bool   `json:"ignoreEpisodesWithoutFiles,omitempty"`
+	Monitor                      string `json:"monitor,omitempty"`
+	SearchForMissingEpisodes     bool   `json:"searchForMissingEpisodes"`
+	SearchForCutoffUnmetEpisodes bool   `json:"searchForCutoffUnmetEpisodes,omitempty"`
 }
 
 // WebhookPayload represents a webhook payload from Sonarr.
@@ -273,10 +270,10 @@ type WebhookPayload struct {
 	DownloadID         string               `json:"downloadId,omitempty"`
 	Release            *WebhookRelease      `json:"release,omitempty"`
 	// Health event fields
-	Level     string `json:"level,omitempty"`
-	Message   string `json:"message,omitempty"`
-	Type      string `json:"type,omitempty"`
-	WikiURL   string `json:"wikiUrl,omitempty"`
+	Level   string `json:"level,omitempty"`
+	Message string `json:"message,omitempty"`
+	Type    string `json:"type,omitempty"`
+	WikiURL string `json:"wikiUrl,omitempty"`
 	// Application update fields
 	PreviousVersion string `json:"previousVersion,omitempty"`
 	NewVersion      string `json:"newVersion,omitempty"`
@@ -284,15 +281,15 @@ type WebhookPayload struct {
 
 // WebhookSeries represents series info in a webhook.
 type WebhookSeries struct {
-	ID         int    `json:"id"`
-	Title      string `json:"title,omitempty"`
-	TitleSlug  string `json:"titleSlug,omitempty"`
-	Path       string `json:"path,omitempty"`
-	TVDbID     int    `json:"tvdbId,omitempty"`
-	TVMazeID   int    `json:"tvMazeId,omitempty"`
-	IMDbID     string `json:"imdbId,omitempty"`
-	Type       string `json:"type,omitempty"`
-	Year       int    `json:"year,omitempty"`
+	ID        int    `json:"id"`
+	Title     string `json:"title,omitempty"`
+	TitleSlug string `json:"titleSlug,omitempty"`
+	Path      string `json:"path,omitempty"`
+	TVDbID    int    `json:"tvdbId,omitempty"`
+	TVMazeID  int    `json:"tvMazeId,omitempty"`
+	IMDbID    string `json:"imdbId,omitempty"`
+	Type      string `json:"type,omitempty"`
+	Year      int    `json:"year,omitempty"`
 }
 
 // WebhookEpisode represents episode info in a webhook.
@@ -323,17 +320,17 @@ type WebhookEpisodeFile struct {
 
 // Webhook event types.
 const (
-	EventGrab             = "Grab"
-	EventDownload         = "Download"
-	EventRename           = "Rename"
-	EventSeriesAdd        = "SeriesAdd"
-	EventSeriesDelete     = "SeriesDelete"
-	EventEpisodeFileDelete = "EpisodeFileDelete"
-	EventHealth           = "Health"
-	EventHealthRestored   = "HealthRestored"
-	EventApplicationUpdate = "ApplicationUpdate"
+	EventGrab                      = "Grab"
+	EventDownload                  = "Download"
+	EventRename                    = "Rename"
+	EventSeriesAdd                 = "SeriesAdd"
+	EventSeriesDelete              = "SeriesDelete"
+	EventEpisodeFileDelete         = "EpisodeFileDelete"
+	EventHealth                    = "Health"
+	EventHealthRestored            = "HealthRestored"
+	EventApplicationUpdate         = "ApplicationUpdate"
 	EventManualInteractionRequired = "ManualInteractionRequired"
-	EventTest             = "Test"
+	EventTest                      = "Test"
 )
 
 // Series status values.
@@ -353,14 +350,14 @@ const (
 
 // Monitor options for adding series.
 const (
-	MonitorAll          = "all"
-	MonitorFuture       = "future"
-	MonitorMissing      = "missing"
-	MonitorExisting     = "existing"
-	MonitorPilot        = "pilot"
-	MonitorFirstSeason  = "firstSeason"
-	MonitorLastSeason   = "lastSeason"
-	MonitorMonitorSpecials = "monitorSpecials"
+	MonitorAll               = "all"
+	MonitorFuture            = "future"
+	MonitorMissing           = "missing"
+	MonitorExisting          = "existing"
+	MonitorPilot             = "pilot"
+	MonitorFirstSeason       = "firstSeason"
+	MonitorLastSeason        = "lastSeason"
+	MonitorMonitorSpecials   = "monitorSpecials"
 	MonitorUnmonitorSpecials = "unmonitorSpecials"
-	MonitorNone         = "none"
+	MonitorNone              = "none"
 )

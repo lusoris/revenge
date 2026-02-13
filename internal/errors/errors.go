@@ -2,6 +2,8 @@
 package errors
 
 import (
+	stderrors "errors"
+
 	"github.com/go-faster/errors"
 )
 
@@ -54,7 +56,7 @@ func Wrap(err error, msg string) error {
 
 // Errorf creates a new error with a formatted message.
 // Use %w to wrap an error and preserve the error chain.
-func Errorf(format string, args ...interface{}) error {
+func Errorf(format string, args ...any) error {
 	return errors.Errorf(format, args...)
 }
 
@@ -65,8 +67,20 @@ func Is(err, target error) bool {
 
 // As finds the first error in err's tree that matches target,
 // and if one is found, sets target to that error value and returns true.
-func As(err error, target interface{}) bool {
+func As(err error, target any) bool {
 	return errors.As(err, target)
+}
+
+// AsType is a type-safe alternative to [As] that uses generics.
+// It finds the first error in err's tree that matches type E.
+//
+// Example:
+//
+//	if pe, ok := errors.AsType[*ProviderError](err); ok {
+//	    log.Printf("provider %s failed: %v", pe.Provider, pe.Err)
+//	}
+func AsType[E error](err error) (E, bool) {
+	return stderrors.AsType[E](err)
 }
 
 // Unwrap returns the result of calling the Unwrap method on err,

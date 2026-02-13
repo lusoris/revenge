@@ -755,7 +755,7 @@ func TestService_Login_AccountLockout_Integration(t *testing.T) {
 
 	t.Run("failed attempts are recorded", func(t *testing.T) {
 		// Try to login with wrong password 2 times
-		for i := 0; i < 2; i++ {
+		for range 2 {
 			_, err := svc.Login(ctx, user.Username, "WrongPassword!", &ipAddr, nil, nil, nil)
 			require.Error(t, err)
 			assert.Contains(t, err.Error(), "invalid username or password")
@@ -775,7 +775,7 @@ func TestService_Login_AccountLockout_Integration(t *testing.T) {
 	t.Run("account locks after threshold", func(t *testing.T) {
 		// Clear previous attempts first (successful login above cleared them)
 		// Record 3 failed attempts to reach lockout threshold
-		for i := 0; i < 3; i++ {
+		for range 3 {
 			_, err := svc.Login(ctx, user.Username, "WrongPassword!", &ipAddr, nil, nil, nil)
 			require.Error(t, err)
 			assert.Contains(t, err.Error(), "invalid username or password")
@@ -828,7 +828,7 @@ func TestService_Login_LockoutWithNonexistentUser(t *testing.T) {
 
 	// Try to login with a nonexistent user multiple times with lockout enabled
 	// This should record failed attempts and eventually lock out
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		_, err := svc.Login(ctx, "nonexistent", "password", &ipAddr, nil, nil, nil)
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "invalid username or password")
@@ -871,7 +871,7 @@ func TestService_Login_LockoutIPTracking(t *testing.T) {
 	require.NoError(t, err)
 
 	// Failed login attempts should be tracked by IP
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		_, err := svc.Login(ctx, "iptrackuser", "WrongPassword!", &ipAddr, nil, nil, nil)
 		require.Error(t, err)
 	}
@@ -1033,7 +1033,7 @@ func TestService_LogoutAll_Integration(t *testing.T) {
 	require.NoError(t, err)
 
 	var refreshTokens []string
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		resp, err := svc.Login(ctx, user.Username, password, nil, nil, nil, nil)
 		require.NoError(t, err)
 		refreshTokens = append(refreshTokens, resp.RefreshToken)

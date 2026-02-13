@@ -135,12 +135,12 @@ func (s *Service) UpdateUser(ctx context.Context, userID uuid.UUID, params Updat
 	}
 
 	// Build changes map
-	changes := make(map[string]interface{})
+	changes := make(map[string]any)
 	if params.DisplayName != nil && (oldUser.DisplayName == nil || *params.DisplayName != *oldUser.DisplayName) {
-		changes["display_name"] = map[string]interface{}{"old": oldUser.DisplayName, "new": *params.DisplayName}
+		changes["display_name"] = map[string]any{"old": oldUser.DisplayName, "new": *params.DisplayName}
 	}
 	if params.Email != nil && *params.Email != oldUser.Email {
-		changes["email"] = map[string]interface{}{"old": oldUser.Email, "new": *params.Email}
+		changes["email"] = map[string]any{"old": oldUser.Email, "new": *params.Email}
 	}
 
 	if len(changes) > 0 {

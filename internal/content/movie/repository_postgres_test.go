@@ -36,15 +36,18 @@ func createTestMovie(t *testing.T, repo Repository, title string) *Movie {
 		TMDbID:   &tmdbID,
 		Year:     &year,
 		Overview: &overview,
-		Status:   strPtr("Released"),
+		Status:   new("Released"),
 	})
 	require.NoError(t, err)
 	require.NotNil(t, m)
 	return m
 }
 
-func strPtr(s string) *string   { return &s }
-func i32Ptr(v int32) *int32     { return &v }
+//go:fix inline
+func strPtr(s string) *string { return new(s) }
+
+//go:fix inline
+func i32Ptr(v int32) *int32 { return new(v) }
 
 // ============================================================================
 // Movie CRUD
@@ -74,12 +77,12 @@ func TestRepo_CreateAndGetMovie(t *testing.T) {
 		Runtime:          &runtime,
 		Overview:         &overview,
 		Tagline:          &tagline,
-		Status:           strPtr("Released"),
-		OriginalTitle:    strPtr("Inception"),
-		OriginalLanguage: strPtr("en"),
-		PosterPath:       strPtr("/poster.jpg"),
-		BackdropPath:     strPtr("/backdrop.jpg"),
-		TrailerURL:       strPtr("https://youtube.com/watch?v=abc"),
+		Status:           new("Released"),
+		OriginalTitle:    new("Inception"),
+		OriginalLanguage: new("en"),
+		PosterPath:       new("/poster.jpg"),
+		BackdropPath:     new("/backdrop.jpg"),
+		TrailerURL:       new("https://youtube.com/watch?v=abc"),
 		VoteAverage:      &voteAvg,
 		VoteCount:        &runtime,
 		Popularity:       &popularity,
@@ -220,7 +223,7 @@ func TestRepo_ListMovies_Pagination(t *testing.T) {
 	repo, _ := setupTestRepo(t)
 	ctx := context.Background()
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		createTestMovie(t, repo, "Page"+string(rune('A'+i)))
 	}
 
@@ -319,11 +322,11 @@ func TestRepo_MovieFiles_CRUD(t *testing.T) {
 		FilePath:          "/movies/file_test.mkv",
 		FileSize:          42000000000,
 		FileName:          "file_test.mkv",
-		Resolution:        strPtr("2160p"),
-		QualityProfile:    strPtr("UHD Remux"),
-		VideoCodec:        strPtr("HEVC"),
-		AudioCodec:        strPtr("TrueHD Atmos"),
-		Container:         strPtr("mkv"),
+		Resolution:        new("2160p"),
+		QualityProfile:    new("UHD Remux"),
+		VideoCodec:        new("HEVC"),
+		AudioCodec:        new("TrueHD Atmos"),
+		Container:         new("mkv"),
 		BitrateKbps:       i32Ptr(35000),
 		AudioLanguages:    []string{"eng", "fra"},
 		SubtitleLanguages: []string{"eng", "deu"},
@@ -376,9 +379,9 @@ func TestRepo_Credits(t *testing.T) {
 		TMDbPersonID: 6193,
 		Name:         "Leonardo DiCaprio",
 		CreditType:   "cast",
-		Character:    strPtr("Cobb"),
+		Character:    new("Cobb"),
 		CastOrder:    i32Ptr(0),
-		ProfilePath:  strPtr("/leo.jpg"),
+		ProfilePath:  new("/leo.jpg"),
 	})
 	require.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, cast.ID)
@@ -389,8 +392,8 @@ func TestRepo_Credits(t *testing.T) {
 		TMDbPersonID: 525,
 		Name:         "Christopher Nolan",
 		CreditType:   "crew",
-		Job:          strPtr("Director"),
-		Department:   strPtr("Directing"),
+		Job:          new("Director"),
+		Department:   new("Directing"),
 	})
 	require.NoError(t, err)
 
@@ -440,8 +443,8 @@ func TestRepo_Collections(t *testing.T) {
 	coll, err := repo.CreateMovieCollection(ctx, CreateMovieCollectionParams{
 		TMDbCollectionID: &tmdbCollID,
 		Name:             "The Dark Knight Collection",
-		Overview:         strPtr("Batman trilogy"),
-		PosterPath:       strPtr("/collection.jpg"),
+		Overview:         new("Batman trilogy"),
+		PosterPath:       new("/collection.jpg"),
 	})
 	require.NoError(t, err)
 	assert.NotEqual(t, uuid.Nil, coll.ID)
@@ -735,7 +738,7 @@ func TestRepo_UpdateMovie_PartialFields(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "New Partial Title", updated.Title)
-	assert.Equal(t, *m.Year, *updated.Year)       // unchanged
+	assert.Equal(t, *m.Year, *updated.Year)         // unchanged
 	assert.Equal(t, *m.Overview, *updated.Overview) // unchanged
 }
 
@@ -748,8 +751,8 @@ func TestRepo_CreateMovie_WithI18nAndAgeRatings(t *testing.T) {
 		Title:      "I18n Movie",
 		TitlesI18n: map[string]string{"de": "I18n Film", "fr": "Film I18n", "ja": "I18n映画"},
 		AgeRatings: map[string]map[string]string{
-			"US":  {"rating": "PG-13", "source": "MPAA"},
-			"DE":  {"rating": "FSK 12", "source": "FSK"},
+			"US": {"rating": "PG-13", "source": "MPAA"},
+			"DE": {"rating": "FSK 12", "source": "FSK"},
 		},
 	})
 	require.NoError(t, err)

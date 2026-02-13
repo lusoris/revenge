@@ -15,15 +15,15 @@ import (
 // StreamHandler serves HLS manifests, segments, and subtitles via HTTP.
 // Registered at /api/v1/playback/stream/{sessionId}/...
 type StreamHandler struct {
-	sessions        *playback.SessionManager
-	masterCache     *cache.L1Cache[uuid.UUID, string]   // session → master playlist
-	mediaCache      *cache.L1Cache[string, mediaEntry]   // session:profile → media playlist
-	logger          *slog.Logger
+	sessions    *playback.SessionManager
+	masterCache *cache.L1Cache[uuid.UUID, string]  // session → master playlist
+	mediaCache  *cache.L1Cache[string, mediaEntry] // session:profile → media playlist
+	logger      *slog.Logger
 }
 
 type mediaEntry struct {
-	content   string
-	cachedAt  time.Time
+	content  string
+	cachedAt time.Time
 }
 
 // NewStreamHandler creates a new HLS stream handler.
@@ -66,13 +66,13 @@ func (h *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Parse path: /api/v1/playback/stream/{sessionId}/...
 	path := strings.TrimPrefix(r.URL.Path, "/api/v1/playback/stream/")
-	slashIdx := strings.IndexByte(path, '/')
-	if slashIdx < 0 {
+	before, after, ok := strings.Cut(path, "/")
+	if !ok {
 		http.NotFound(w, r)
 		return
 	}
 
-	sessionID, err := uuid.Parse(path[:slashIdx])
+	sessionID, err := uuid.Parse(before)
 	if err != nil {
 		http.Error(w, "invalid session ID", http.StatusBadRequest)
 		return
@@ -87,7 +87,7 @@ func (h *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Touch session (keep alive) — non-blocking
 	go h.sessions.Touch(sessionID)
 
-	remaining := path[slashIdx+1:]
+	remaining := after
 
 	switch {
 	case remaining == "master.m3u8":
@@ -171,7 +171,7 @@ func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Reques
 	// Validate profile to prevent path traversal (CWE-22).
 	// Profile may contain a single slash for audio renditions (e.g. "audio/0"),
 	// but each component must be safe.
-	for _, part := range strings.Split(profile, "/") {
+	for part := range strings.SplitSeq(profile, "/") {
 		if !isSafePathComponent(part) {
 			http.Error(w, "invalid profile", http.StatusBadRequest)
 			return
@@ -209,14 +209,14 @@ func (h *StreamHandler) serveMediaPlaylist(w http.ResponseWriter, _ *http.Reques
 
 func (h *StreamHandler) serveAudioRendition(w http.ResponseWriter, r *http.Request, session *playback.Session, remaining string) {
 	// remaining = "{track}/index.m3u8" or "{track}/seg-NNNNN.ts"
-	slashPos := strings.IndexByte(remaining, '/')
-	if slashPos < 0 {
+	before, after, ok := strings.Cut(remaining, "/")
+	if !ok {
 		http.NotFound(w, r)
 		return
 	}
 
-	trackStr := remaining[:slashPos]
-	file := remaining[slashPos+1:]
+	trackStr := before
+	file := after
 
 	trackIndex, err := strconv.Atoi(trackStr)
 	if err != nil {

@@ -10,7 +10,7 @@ func TestTo(t *testing.T) {
 	t.Parallel()
 
 	t.Run("int", func(t *testing.T) {
-		p := ptr.To(42)
+		p := new(42)
 		if p == nil {
 			t.Fatal("expected non-nil pointer")
 		}
@@ -20,7 +20,7 @@ func TestTo(t *testing.T) {
 	})
 
 	t.Run("string", func(t *testing.T) {
-		p := ptr.To("hello")
+		p := new("hello")
 		if p == nil {
 			t.Fatal("expected non-nil pointer")
 		}
@@ -31,7 +31,7 @@ func TestTo(t *testing.T) {
 
 	t.Run("struct", func(t *testing.T) {
 		type S struct{ X int }
-		p := ptr.To(S{X: 10})
+		p := new(S{X: 10})
 		if p == nil {
 			t.Fatal("expected non-nil pointer")
 		}
@@ -45,7 +45,7 @@ func TestValue(t *testing.T) {
 	t.Parallel()
 
 	t.Run("non-nil", func(t *testing.T) {
-		p := ptr.To(42)
+		p := new(42)
 		if v := ptr.Value(p); v != 42 {
 			t.Errorf("expected 42, got %d", v)
 		}
@@ -70,7 +70,7 @@ func TestValueOr(t *testing.T) {
 	t.Parallel()
 
 	t.Run("non-nil returns value", func(t *testing.T) {
-		p := ptr.To(42)
+		p := new(42)
 		if v := ptr.ValueOr(p, 100); v != 42 {
 			t.Errorf("expected 42, got %d", v)
 		}
@@ -95,7 +95,7 @@ func TestEqual(t *testing.T) {
 	})
 
 	t.Run("one nil", func(t *testing.T) {
-		a := ptr.To(42)
+		a := new(42)
 		var b *int
 		if ptr.Equal(a, b) {
 			t.Error("expected non-nil and nil to not be equal")
@@ -106,16 +106,16 @@ func TestEqual(t *testing.T) {
 	})
 
 	t.Run("same value", func(t *testing.T) {
-		a := ptr.To(42)
-		b := ptr.To(42)
+		a := new(42)
+		b := new(42)
 		if !ptr.Equal(a, b) {
 			t.Error("expected same values to be equal")
 		}
 	})
 
 	t.Run("different values", func(t *testing.T) {
-		a := ptr.To(42)
-		b := ptr.To(43)
+		a := new(42)
+		b := new(43)
 		if ptr.Equal(a, b) {
 			t.Error("expected different values to not be equal")
 		}
@@ -133,7 +133,7 @@ func TestClone(t *testing.T) {
 	})
 
 	t.Run("clones value", func(t *testing.T) {
-		p := ptr.To(42)
+		p := new(42)
 		c := ptr.Clone(p)
 		if c == nil {
 			t.Fatal("expected non-nil")
@@ -159,9 +159,9 @@ func TestCoalesce(t *testing.T) {
 	})
 
 	t.Run("first non-nil", func(t *testing.T) {
-		a := ptr.To(1)
-		b := ptr.To(2)
-		c := ptr.To(3)
+		a := new(1)
+		b := new(2)
+		c := new(3)
 		if p := ptr.Coalesce(a, b, c); *p != 1 {
 			t.Errorf("expected 1, got %d", *p)
 		}
@@ -169,8 +169,8 @@ func TestCoalesce(t *testing.T) {
 
 	t.Run("middle non-nil", func(t *testing.T) {
 		var a *int
-		b := ptr.To(2)
-		c := ptr.To(3)
+		b := new(2)
+		c := new(3)
 		if p := ptr.Coalesce(a, b, c); *p != 2 {
 			t.Errorf("expected 2, got %d", *p)
 		}
@@ -178,7 +178,7 @@ func TestCoalesce(t *testing.T) {
 
 	t.Run("last non-nil", func(t *testing.T) {
 		var a, b *int
-		c := ptr.To(3)
+		c := new(3)
 		if p := ptr.Coalesce(a, b, c); *p != 3 {
 			t.Errorf("expected 3, got %d", *p)
 		}

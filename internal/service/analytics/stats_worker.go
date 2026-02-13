@@ -139,7 +139,6 @@ func (w *StatsAggregationWorker) collectStats(ctx context.Context) ([]statEntry,
 
 	g, gctx := errgroup.WithContext(ctx)
 	for _, q := range queries {
-		q := q // capture loop variable
 		g.Go(func() error {
 			val, err := q.fn(gctx)
 			if err != nil {

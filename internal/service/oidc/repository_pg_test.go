@@ -121,7 +121,7 @@ func TestRepositoryPg_ListProviders(t *testing.T) {
 	ctx := context.Background()
 
 	// Create multiple providers
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		req := createTestProvider("list_" + string(rune('a'+i)))
 		_, err := repo.CreateProvider(ctx, req)
 		require.NoError(t, err)
@@ -168,8 +168,8 @@ func TestRepositoryPg_UpdateProvider(t *testing.T) {
 	require.NoError(t, err)
 
 	updateReq := UpdateProviderRequest{
-		DisplayName: stringPtr("Updated Display"),
-		IsEnabled:   boolPtr(false),
+		DisplayName: new("Updated Display"),
+		IsEnabled:   new(false),
 	}
 
 	updated, err := repo.UpdateProvider(ctx, created.ID, updateReq)
@@ -288,7 +288,7 @@ func TestRepositoryPg_CreateUserLink(t *testing.T) {
 		UserID:                user.ID,
 		ProviderID:            provider.ID,
 		Subject:               "sub-12345",
-		Email:                 stringPtr("link@example.com"),
+		Email:                 new("link@example.com"),
 		AccessTokenEncrypted:  []byte("encrypted-access"),
 		RefreshTokenEncrypted: []byte("encrypted-refresh"),
 	}
@@ -396,7 +396,7 @@ func TestRepositoryPg_ListUserLinks(t *testing.T) {
 	})
 
 	// Create multiple providers and links
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		provider, err := repo.CreateProvider(ctx, createTestProvider("list_link_"+string(rune('a'+i))))
 		require.NoError(t, err)
 
@@ -443,8 +443,8 @@ func TestRepositoryPg_UpdateUserLink(t *testing.T) {
 	require.NoError(t, err)
 
 	updateReq := UpdateUserLinkRequest{
-		Email: stringPtr("updated@example.com"),
-		Name:  stringPtr("Updated Name"),
+		Email: new("updated@example.com"),
+		Name:  new("Updated Name"),
 	}
 
 	updated, err := repo.UpdateUserLink(ctx, created.ID, updateReq)
@@ -555,7 +555,7 @@ func TestRepositoryPg_CountUserLinks(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create links
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		provider, err := repo.CreateProvider(ctx, createTestProvider("count_link_"+string(rune('a'+i))))
 		require.NoError(t, err)
 
@@ -588,7 +588,7 @@ func TestRepositoryPg_CreateState(t *testing.T) {
 	req := CreateStateRequest{
 		State:        "state-12345",
 		ProviderID:   provider.ID,
-		CodeVerifier: stringPtr("verifier-code"),
+		CodeVerifier: new("verifier-code"),
 		ExpiresAt:    time.Now().Add(10 * time.Minute),
 	}
 
@@ -687,7 +687,7 @@ func TestRepositoryPg_DeleteStatesByProvider(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create multiple states
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		req := CreateStateRequest{
 			State:      "state-multi-" + string(rune('a'+i)),
 			ProviderID: provider.ID,
@@ -709,10 +709,12 @@ func TestRepositoryPg_DeleteStatesByProvider(t *testing.T) {
 // Helper Functions
 // ============================================================================
 
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }
 
+//go:fix inline
 func boolPtr(b bool) *bool {
-	return &b
+	return new(b)
 }

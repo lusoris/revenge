@@ -9,7 +9,6 @@ import (
 
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/lusoris/revenge/internal/util/ptr"
 )
 
 // Mapper converts Sonarr types to domain types.
@@ -24,9 +23,9 @@ func NewMapper() *Mapper {
 func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 	result := &tvshow.Series{
 		ID:               uuid.Must(uuid.NewV7()),
-		TVDbID:           ptr.To(util.SafeIntToInt32(ss.TVDbID)),
+		TVDbID:           new(util.SafeIntToInt32(ss.TVDbID)),
 		IMDbID:           ptrString(ss.IMDbID),
-		SonarrID:         ptr.To(util.SafeIntToInt32(ss.ID)),
+		SonarrID:         new(util.SafeIntToInt32(ss.ID)),
 		Title:            ss.Title,
 		OriginalLanguage: ss.OriginalLanguage.Name,
 		Overview:         ptrString(ss.Overview),
@@ -47,7 +46,7 @@ func (m *Mapper) ToSeries(ss *Series) *tvshow.Series {
 	if ss.Ratings.Value > 0 {
 		d, _ := decimal.NewFromFloat64(ss.Ratings.Value)
 		result.VoteAverage = &d
-		result.VoteCount = ptr.To(util.SafeIntToInt32(ss.Ratings.Votes))
+		result.VoteCount = new(util.SafeIntToInt32(ss.Ratings.Votes))
 	}
 
 	// Set images from Sonarr
@@ -104,13 +103,13 @@ func (m *Mapper) ToEpisode(se *Episode, seriesID, seasonID uuid.UUID) *tvshow.Ep
 		ID:            uuid.Must(uuid.NewV7()),
 		SeriesID:      seriesID,
 		SeasonID:      seasonID,
-		TVDbID:        ptr.To(util.SafeIntToInt32(se.TVDbID)),
+		TVDbID:        new(util.SafeIntToInt32(se.TVDbID)),
 		SeasonNumber:  util.SafeIntToInt32(se.SeasonNumber),
 		EpisodeNumber: util.SafeIntToInt32(se.EpisodeNumber),
 		Title:         se.Title,
 		Overview:      ptrString(se.Overview),
 		AirDate:       se.AirDateUtc,
-		Runtime:       ptr.To(util.SafeIntToInt32(se.Runtime)),
+		Runtime:       new(util.SafeIntToInt32(se.Runtime)),
 		CreatedAt:     time.Now(),
 		UpdatedAt:     time.Now(),
 	}
@@ -138,7 +137,7 @@ func (m *Mapper) ToEpisodeFile(sef *EpisodeFile, episodeID uuid.UUID) *tvshow.Ep
 		FilePath:     sef.Path,
 		FileName:     sef.RelativePath,
 		FileSize:     sef.Size,
-		SonarrFileID: ptr.To(util.SafeIntToInt32(sef.ID)),
+		SonarrFileID: new(util.SafeIntToInt32(sef.ID)),
 		CreatedAt:    sef.DateAdded,
 		UpdatedAt:    time.Now(),
 	}
@@ -159,7 +158,7 @@ func (m *Mapper) ToEpisodeFile(sef *EpisodeFile, episodeID uuid.UUID) *tvshow.Ep
 		mi := sef.MediaInfo
 		result.VideoCodec = ptrString(mi.VideoCodec)
 		result.AudioCodec = ptrString(mi.AudioCodec)
-		result.BitrateKbps = ptr.To(util.SafeIntToInt32(mi.VideoBitrate / 1000))
+		result.BitrateKbps = new(util.SafeIntToInt32(mi.VideoBitrate / 1000))
 
 		// Parse runtime duration
 		if mi.RunTime != "" {

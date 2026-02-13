@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -643,7 +642,7 @@ func TestMapper_ToEpisodeFile_MediaInfoEmptyStrings(t *testing.T) {
 	assert.Nil(t, file.VideoCodec)
 	assert.Nil(t, file.AudioCodec)
 	assert.Equal(t, int32(0), *file.BitrateKbps) // 0/1000 = 0, still gets ptr
-	assert.Nil(t, file.DurationSeconds)           // empty RunTime is not parsed
+	assert.Nil(t, file.DurationSeconds)          // empty RunTime is not parsed
 	assert.Nil(t, file.AudioLanguages)
 	assert.Nil(t, file.SubtitleLanguages)
 }
@@ -677,10 +676,10 @@ func TestMapper_ToEpisodeFile_ContainerExtraction(t *testing.T) {
 		path              string
 		expectedContainer *string
 	}{
-		{"mkv file", "/tv/show/episode.mkv", strPtr("mkv")},
-		{"mp4 file", "/tv/show/episode.mp4", strPtr("mp4")},
-		{"avi file", "/tv/show/episode.avi", strPtr("avi")},
-		{"ts file", "/tv/show/episode.ts", strPtr("ts")},
+		{"mkv file", "/tv/show/episode.mkv", new("mkv")},
+		{"mp4 file", "/tv/show/episode.mp4", new("mp4")},
+		{"avi file", "/tv/show/episode.avi", new("avi")},
+		{"ts file", "/tv/show/episode.ts", new("ts")},
 	}
 
 	for _, tt := range tests {
@@ -762,11 +761,11 @@ func TestMapper_ToGenres_Single(t *testing.T) {
 
 func TestPtr(t *testing.T) {
 	intVal := int32(42)
-	result := ptr.To(intVal)
+	result := new(intVal)
 	assert.Equal(t, intVal, *result)
 
 	strVal := "hello"
-	strResult := ptr.To(strVal)
+	strResult := new(strVal)
 	assert.Equal(t, strVal, *strResult)
 }
 
@@ -776,7 +775,7 @@ func TestPtrString(t *testing.T) {
 		input    string
 		expected *string
 	}{
-		{"non-empty string", "hello", strPtr("hello")},
+		{"non-empty string", "hello", new("hello")},
 		{"empty string", "", nil},
 	}
 
@@ -844,17 +843,17 @@ func TestExtractContainer(t *testing.T) {
 		path     string
 		expected *string
 	}{
-		{"mkv extension", "/path/to/video.mkv", strPtr("mkv")},
-		{"mp4 extension", "/path/to/video.mp4", strPtr("mp4")},
-		{"avi extension", "/path/to/video.avi", strPtr("avi")},
-		{"ts extension", "/path/to/video.ts", strPtr("ts")},
-		{"dots in path", "/path/to/my.show.S01E01.mkv", strPtr("mkv")},
-		{"short path (exactly 4 chars)", "a.mk", strPtr("mk")},
+		{"mkv extension", "/path/to/video.mkv", new("mkv")},
+		{"mp4 extension", "/path/to/video.mp4", new("mp4")},
+		{"avi extension", "/path/to/video.avi", new("avi")},
+		{"ts extension", "/path/to/video.ts", new("ts")},
+		{"dots in path", "/path/to/my.show.S01E01.mkv", new("mkv")},
+		{"short path (exactly 4 chars)", "a.mk", new("mk")},
 		{"too short path (3 chars)", "a.m", nil},
 		{"too short path (2 chars)", "ab", nil},
 		{"empty path", "", nil},
 		{"no extension", "/path/to/noextension", nil},
-		{"path with trailing dot", "/path/to/file.", strPtr("")},
+		{"path with trailing dot", "/path/to/file.", new("")},
 	}
 
 	for _, tt := range tests {
@@ -878,15 +877,15 @@ func TestMapper_ToSeries_AllBranches(t *testing.T) {
 	firstAired := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
 
 	tests := []struct {
-		name            string
-		series          *Series
-		checkPoster     *string
-		checkBackdrop   *string
-		checkType       *string
-		checkVoteAvg    bool
-		checkEpisodes   int32
-		checkIMDb       *string
-		checkOverview   *string
+		name          string
+		series        *Series
+		checkPoster   *string
+		checkBackdrop *string
+		checkType     *string
+		checkVoteAvg  bool
+		checkEpisodes int32
+		checkIMDb     *string
+		checkOverview *string
 	}{
 		{
 			name: "full series with all fields",
@@ -908,13 +907,13 @@ func TestMapper_ToSeries_AllBranches(t *testing.T) {
 				Ratings:    Ratings{Value: 8.5, Votes: 1000},
 				Statistics: &Statistics{TotalEpisodeCount: 24},
 			},
-			checkPoster:   strPtr("https://poster.jpg"),
-			checkBackdrop: strPtr("https://fanart.jpg"),
-			checkType:     strPtr("Animation"),
+			checkPoster:   new("https://poster.jpg"),
+			checkBackdrop: new("https://fanart.jpg"),
+			checkType:     new("Animation"),
 			checkVoteAvg:  true,
 			checkEpisodes: 24,
-			checkIMDb:     strPtr("tt1234567"),
-			checkOverview: strPtr("A great show"),
+			checkIMDb:     new("tt1234567"),
+			checkOverview: new("A great show"),
 		},
 		{
 			name: "minimal series",
@@ -940,8 +939,8 @@ func TestMapper_ToSeries_AllBranches(t *testing.T) {
 					{CoverType: "fanart", URL: "/local/fanart.jpg"},
 				},
 			},
-			checkPoster:   strPtr("/local/poster.jpg"),
-			checkBackdrop: strPtr("/local/fanart.jpg"),
+			checkPoster:   new("/local/poster.jpg"),
+			checkBackdrop: new("/local/fanart.jpg"),
 			checkType:     nil,
 			checkVoteAvg:  false,
 			checkEpisodes: 0,
@@ -953,7 +952,7 @@ func TestMapper_ToSeries_AllBranches(t *testing.T) {
 				Title:      "Daily Show",
 				SeriesType: SeriesTypeDaily,
 			},
-			checkType: strPtr("Talk Show"),
+			checkType: new("Talk Show"),
 		},
 	}
 
@@ -1059,6 +1058,8 @@ func TestMapper_ToEpisodeFile_ZeroResolution(t *testing.T) {
 }
 
 // strPtr is a test helper to create string pointers.
+//
+//go:fix inline
 func strPtr(s string) *string {
-	return &s
+	return new(s)
 }

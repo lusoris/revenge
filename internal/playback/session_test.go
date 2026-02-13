@@ -55,7 +55,7 @@ func TestSessionManager_MaxConcurrentSessions(t *testing.T) {
 	defer sm.Close()
 
 	// Create 2 sessions — should succeed
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		err = sm.Create(&Session{
 			ID:        uuid.New(),
 			UserID:    uuid.New(),

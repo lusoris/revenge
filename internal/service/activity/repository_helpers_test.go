@@ -65,8 +65,8 @@ func TestDbActivityToEntry_AllFields(t *testing.T) {
 	success := true
 	ip := netip.MustParseAddr("192.168.1.1")
 
-	changes, _ := json.Marshal(map[string]interface{}{"field": "value"})
-	metadata, _ := json.Marshal(map[string]interface{}{"key": "data"})
+	changes, _ := json.Marshal(map[string]any{"field": "value"})
+	metadata, _ := json.Marshal(map[string]any{"key": "data"})
 
 	dbLog := db.ActivityLog{
 		ID: uuid.Must(uuid.NewV7()),
@@ -74,8 +74,8 @@ func TestDbActivityToEntry_AllFields(t *testing.T) {
 			Bytes: userID,
 			Valid: true,
 		},
-		Username: &username,
-		Action:   ActionUserLogin,
+		Username:     &username,
+		Action:       ActionUserLogin,
 		ResourceType: &resourceType,
 		ResourceID: pgtype.UUID{
 			Bytes: resourceID,

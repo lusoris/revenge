@@ -11,7 +11,6 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/util"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/typesense/typesense-go/v2/typesense/api"
 )
 
@@ -125,7 +124,7 @@ func (s *TVShowSearchService) BulkIndexSeries(ctx context.Context, shows []TVSho
 		return nil
 	}
 
-	docs := make([]interface{}, len(shows))
+	docs := make([]any, len(shows))
 	for i, show := range shows {
 		docs[i] = s.seriesToDocument(show.Series, show.Genres, show.Credits, show.Networks, show.HasFile)
 	}
@@ -315,8 +314,8 @@ func (s *TVShowSearchService) AutocompleteSeries(ctx context.Context, query stri
 		Q:                   &query,
 		QueryBy:             &queryBy,
 		PerPage:             &perPage,
-		Prefix:              ptr.To("true"),
-		DropTokensThreshold: ptr.To(0),
+		Prefix:              new("true"),
+		DropTokensThreshold: new(0),
 	}
 
 	result, err := s.client.Search(ctx, TVShowCollectionName, searchParams)
@@ -541,7 +540,7 @@ func (s *TVShowSearchService) seriesToDocument(series *tvshow.Series, genres []t
 }
 
 // parseTVShowDocument parses a map into a TVShowDocument.
-func parseTVShowDocument(data map[string]interface{}) TVShowDocument {
+func parseTVShowDocument(data map[string]any) TVShowDocument {
 	doc := TVShowDocument{}
 
 	if v, ok := data["id"].(string); ok {
@@ -612,16 +611,16 @@ func parseTVShowDocument(data map[string]interface{}) TVShowDocument {
 	}
 
 	// Parse string arrays
-	if v, ok := data["genres"].([]interface{}); ok {
+	if v, ok := data["genres"].([]any); ok {
 		doc.Genres = toStringSlice(v)
 	}
-	if v, ok := data["cast"].([]interface{}); ok {
+	if v, ok := data["cast"].([]any); ok {
 		doc.Cast = toStringSlice(v)
 	}
-	if v, ok := data["networks"].([]interface{}); ok {
+	if v, ok := data["networks"].([]any); ok {
 		doc.Networks = toStringSlice(v)
 	}
-	if v, ok := data["genre_slugs"].([]interface{}); ok {
+	if v, ok := data["genre_slugs"].([]any); ok {
 		doc.GenreSlugs = toStringSlice(v)
 	}
 

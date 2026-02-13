@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/govalues/decimal"
 	"github.com/lusoris/revenge/internal/content/tvshow"
-	"github.com/lusoris/revenge/internal/util/ptr"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -183,7 +182,7 @@ func TestSeriesToDocument(t *testing.T) {
 	credits := []tvshow.SeriesCredit{
 		{CreditType: "cast", Name: "Bryan Cranston"},
 		{CreditType: "cast", Name: "Aaron Paul"},
-		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr.To("Creator")},
+		{CreditType: "crew", Name: "Vince Gilligan", Job: new("Creator")},
 	}
 
 	networks := []tvshow.Network{
@@ -322,8 +321,8 @@ func TestSeriesToDocumentWithCrewOnly(t *testing.T) {
 	}
 
 	credits := []tvshow.SeriesCredit{
-		{CreditType: "crew", Name: "Vince Gilligan", Job: ptr.To("Creator")},
-		{CreditType: "crew", Name: "Peter Gould", Job: ptr.To("Writer")},
+		{CreditType: "crew", Name: "Vince Gilligan", Job: new("Creator")},
+		{CreditType: "crew", Name: "Peter Gould", Job: new("Writer")},
 	}
 
 	doc := s.seriesToDocument(series, nil, credits, nil, false)
@@ -358,7 +357,7 @@ func TestSeriesToDocumentWithZeroValues(t *testing.T) {
 }
 
 func TestParseTVShowDocument(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"id":                "550e8400-e29b-41d4-a716-446655440000",
 		"tmdb_id":           float64(1396),
 		"tvdb_id":           float64(81189),
@@ -381,11 +380,11 @@ func TestParseTVShowDocument(t *testing.T) {
 		"total_episodes":    float64(62),
 		"created_at":        float64(1700000000),
 		"updated_at":        float64(1700000000),
-		"genres":            []interface{}{"Drama", "Crime"},
-		"cast":              []interface{}{"Bryan Cranston", "Aaron Paul"},
-		"networks":          []interface{}{"AMC"},
-		"genre_ids":         []interface{}{float64(18), float64(80)},
-		"genre_slugs":       []interface{}{"drama", "crime"},
+		"genres":            []any{"Drama", "Crime"},
+		"cast":              []any{"Bryan Cranston", "Aaron Paul"},
+		"networks":          []any{"AMC"},
+		"genre_ids":         []any{float64(18), float64(80)},
+		"genre_slugs":       []any{"drama", "crime"},
 	}
 
 	doc := parseTVShowDocument(data)
@@ -418,7 +417,7 @@ func TestParseTVShowDocument(t *testing.T) {
 }
 
 func TestParseTVShowDocumentEmpty(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	doc := parseTVShowDocument(data)
 
 	assert.Empty(t, doc.ID)
@@ -430,12 +429,12 @@ func TestParseTVShowDocumentEmpty(t *testing.T) {
 func TestParseTVShowDocumentPartialData(t *testing.T) {
 	tests := []struct {
 		name   string
-		data   map[string]interface{}
+		data   map[string]any
 		verify func(t *testing.T, doc TVShowDocument)
 	}{
 		{
 			name: "only id and title",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":    "test-id",
 				"title": "Test Show",
 			},
@@ -448,7 +447,7 @@ func TestParseTVShowDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with nil values",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "test-id",
 				"title":    "Test Show",
 				"year":     nil,
@@ -465,7 +464,7 @@ func TestParseTVShowDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with boolean fields",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "test-id",
 				"has_file": true,
 			},
@@ -475,10 +474,10 @@ func TestParseTVShowDocumentPartialData(t *testing.T) {
 		},
 		{
 			name: "with empty arrays",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"id":       "test-id",
-				"genres":   []interface{}{},
-				"networks": []interface{}{},
+				"genres":   []any{},
+				"networks": []any{},
 			},
 			verify: func(t *testing.T, doc TVShowDocument) {
 				assert.Empty(t, doc.Genres)

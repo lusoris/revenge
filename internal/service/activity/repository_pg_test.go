@@ -41,8 +41,8 @@ func createTestEntry(userID *uuid.UUID, action string, success bool) *Entry {
 		Action:       action,
 		ResourceType: &resourceType,
 		ResourceID:   &resourceID,
-		Changes:      map[string]interface{}{"field": "value"},
-		Metadata:     map[string]interface{}{"key": "value"},
+		Changes:      map[string]any{"field": "value"},
+		Metadata:     map[string]any{"key": "value"},
 		IPAddress:    &ip,
 		UserAgent:    &userAgent,
 		Success:      success,
@@ -106,7 +106,7 @@ func TestRepositoryPg_List(t *testing.T) {
 	repo, _ := setupTestRepository(t)
 	ctx := context.Background()
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		entry := createTestEntry(nil, "test.action", true)
 		require.NoError(t, repo.Create(ctx, entry))
 	}
@@ -124,7 +124,7 @@ func TestRepositoryPg_Count(t *testing.T) {
 	countBefore, err := repo.Count(ctx)
 	require.NoError(t, err)
 
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		entry := createTestEntry(nil, "test.action", true)
 		require.NoError(t, repo.Create(ctx, entry))
 	}

@@ -234,7 +234,7 @@ func TestNoDB_generateRandomCode(t *testing.T) {
 	t.Run("generates valid hex codes", func(t *testing.T) {
 		t.Parallel()
 		codes := make(map[string]bool)
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			code, err := generateRandomCode()
 			require.NoError(t, err)
 
@@ -602,7 +602,7 @@ func TestNoDB_SessionDataToJSON(t *testing.T) {
 		assert.NotEmpty(t, data)
 
 		// Verify it's valid JSON
-		var raw map[string]interface{}
+		var raw map[string]any
 		err = json.Unmarshal(data, &raw)
 		require.NoError(t, err)
 		assert.Contains(t, raw, "challenge")

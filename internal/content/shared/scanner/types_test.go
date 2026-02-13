@@ -15,7 +15,7 @@ func TestScanResult_GetYear(t *testing.T) {
 		{
 			name:     "valid year",
 			metadata: map[string]any{"year": 1999},
-			expected: intPtr(1999),
+			expected: new(1999),
 		},
 		{
 			name:     "nil metadata",
@@ -57,7 +57,7 @@ func TestScanResult_GetSeason(t *testing.T) {
 		{
 			name:     "valid season",
 			metadata: map[string]any{"season": 1},
-			expected: intPtr(1),
+			expected: new(1),
 		},
 		{
 			name:     "nil metadata",
@@ -94,7 +94,7 @@ func TestScanResult_GetEpisode(t *testing.T) {
 		{
 			name:     "valid episode",
 			metadata: map[string]any{"episode": 5},
-			expected: intPtr(5),
+			expected: new(5),
 		},
 		{
 			name:     "nil metadata",

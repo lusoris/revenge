@@ -180,7 +180,7 @@ func mapMediaToTVShowMetadata(m *Media) *metadata.TVShowMetadata {
 		malID := util.SafeIntToInt32(*m.IDMal)
 		externalIDs := findExternalIDs(m)
 		externalIDs.TMDbID = nil // We don't have TMDb mapping from AniList
-		_ = malID               // stored via ExternalIDs in provider interface
+		_ = malID                // stored via ExternalIDs in provider interface
 	}
 
 	return md
@@ -460,8 +460,8 @@ func safeStr(s *string) string {
 
 func extractIMDbID(url string) string {
 	// URLs like https://www.imdb.com/title/tt1234567/
-	parts := strings.Split(url, "/")
-	for _, p := range parts {
+	parts := strings.SplitSeq(url, "/")
+	for p := range parts {
 		if strings.HasPrefix(p, "tt") {
 			return p
 		}

@@ -28,64 +28,65 @@ type (
 )
 
 // Movie represents a movie in Radarr.
-type Movie struct {	ID                    int              `json:"id"`
-	Title                 string           `json:"title"`
-	OriginalTitle         string           `json:"originalTitle,omitempty"`
-	OriginalLanguage      Language         `json:"originalLanguage,omitempty"`
-	AlternateTitles       []AlternateTitle `json:"alternateTitles,omitempty"`
-	SortTitle             string           `json:"sortTitle,omitempty"`
-	SizeOnDisk            int64            `json:"sizeOnDisk,omitempty"`
-	Status                string           `json:"status,omitempty"`
-	Overview              string           `json:"overview,omitempty"`
-	InCinemas             *time.Time       `json:"inCinemas,omitempty"`
-	PhysicalRelease       *time.Time       `json:"physicalRelease,omitempty"`
-	DigitalRelease        *time.Time       `json:"digitalRelease,omitempty"`
-	Images                []Image          `json:"images,omitempty"`
-	Website               string           `json:"website,omitempty"`
-	Year                  int              `json:"year"`
-	HasFile               bool             `json:"hasFile"`
-	YouTubeTrailerID      string           `json:"youTubeTrailerId,omitempty"`
-	Studio                string           `json:"studio,omitempty"`
-	Path                  string           `json:"path,omitempty"`
-	QualityProfileID      int              `json:"qualityProfileId"`
-	Monitored             bool             `json:"monitored"`
-	MinimumAvailability   string           `json:"minimumAvailability,omitempty"`
-	IsAvailable           bool             `json:"isAvailable"`
-	FolderName            string           `json:"folderName,omitempty"`
-	Runtime               int              `json:"runtime,omitempty"`
-	CleanTitle            string           `json:"cleanTitle,omitempty"`
-	IMDbID                string           `json:"imdbId,omitempty"`
-	TMDbID                int              `json:"tmdbId"`
-	TitleSlug             string           `json:"titleSlug,omitempty"`
-	RootFolderPath        string           `json:"rootFolderPath,omitempty"`
-	Certification         string           `json:"certification,omitempty"`
-	Genres                []string         `json:"genres,omitempty"`
-	Tags                  []int            `json:"tags,omitempty"`
-	Added                 time.Time        `json:"added"`
-	Ratings               Ratings          `json:"ratings,omitempty"`
-	MovieFile             *MovieFile       `json:"movieFile,omitempty"`
-	Collection            *Collection      `json:"collection,omitempty"`
-	Popularity            float64          `json:"popularity,omitempty"`
-	Statistics            *Statistics      `json:"statistics,omitempty"`
+type Movie struct {
+	ID                  int              `json:"id"`
+	Title               string           `json:"title"`
+	OriginalTitle       string           `json:"originalTitle,omitempty"`
+	OriginalLanguage    Language         `json:"originalLanguage"`
+	AlternateTitles     []AlternateTitle `json:"alternateTitles,omitempty"`
+	SortTitle           string           `json:"sortTitle,omitempty"`
+	SizeOnDisk          int64            `json:"sizeOnDisk,omitempty"`
+	Status              string           `json:"status,omitempty"`
+	Overview            string           `json:"overview,omitempty"`
+	InCinemas           *time.Time       `json:"inCinemas,omitempty"`
+	PhysicalRelease     *time.Time       `json:"physicalRelease,omitempty"`
+	DigitalRelease      *time.Time       `json:"digitalRelease,omitempty"`
+	Images              []Image          `json:"images,omitempty"`
+	Website             string           `json:"website,omitempty"`
+	Year                int              `json:"year"`
+	HasFile             bool             `json:"hasFile"`
+	YouTubeTrailerID    string           `json:"youTubeTrailerId,omitempty"`
+	Studio              string           `json:"studio,omitempty"`
+	Path                string           `json:"path,omitempty"`
+	QualityProfileID    int              `json:"qualityProfileId"`
+	Monitored           bool             `json:"monitored"`
+	MinimumAvailability string           `json:"minimumAvailability,omitempty"`
+	IsAvailable         bool             `json:"isAvailable"`
+	FolderName          string           `json:"folderName,omitempty"`
+	Runtime             int              `json:"runtime,omitempty"`
+	CleanTitle          string           `json:"cleanTitle,omitempty"`
+	IMDbID              string           `json:"imdbId,omitempty"`
+	TMDbID              int              `json:"tmdbId"`
+	TitleSlug           string           `json:"titleSlug,omitempty"`
+	RootFolderPath      string           `json:"rootFolderPath,omitempty"`
+	Certification       string           `json:"certification,omitempty"`
+	Genres              []string         `json:"genres,omitempty"`
+	Tags                []int            `json:"tags,omitempty"`
+	Added               time.Time        `json:"added"`
+	Ratings             Ratings          `json:"ratings"`
+	MovieFile           *MovieFile       `json:"movieFile,omitempty"`
+	Collection          *Collection      `json:"collection,omitempty"`
+	Popularity          float64          `json:"popularity,omitempty"`
+	Statistics          *Statistics      `json:"statistics,omitempty"`
 }
 
 // MovieFile represents a movie file in Radarr.
 type MovieFile struct {
-	ID                  int            `json:"id"`
-	MovieID             int            `json:"movieId"`
-	RelativePath        string         `json:"relativePath,omitempty"`
-	Path                string         `json:"path,omitempty"`
-	Size                int64          `json:"size"`
-	DateAdded           time.Time      `json:"dateAdded"`
-	SceneName           string         `json:"sceneName,omitempty"`
-	IndexerFlags        int            `json:"indexerFlags,omitempty"`
-	Quality             Quality        `json:"quality,omitempty"`
-	MediaInfo           *MediaInfo     `json:"mediaInfo,omitempty"`
-	OriginalFilePath    string         `json:"originalFilePath,omitempty"`
-	QualityCutoffNotMet bool           `json:"qualityCutoffNotMet"`
-	Languages           []Language     `json:"languages,omitempty"`
-	ReleaseGroup        string         `json:"releaseGroup,omitempty"`
-	Edition             string         `json:"edition,omitempty"`
+	ID                  int        `json:"id"`
+	MovieID             int        `json:"movieId"`
+	RelativePath        string     `json:"relativePath,omitempty"`
+	Path                string     `json:"path,omitempty"`
+	Size                int64      `json:"size"`
+	DateAdded           time.Time  `json:"dateAdded"`
+	SceneName           string     `json:"sceneName,omitempty"`
+	IndexerFlags        int        `json:"indexerFlags,omitempty"`
+	Quality             Quality    `json:"quality"`
+	MediaInfo           *MediaInfo `json:"mediaInfo,omitempty"`
+	OriginalFilePath    string     `json:"originalFilePath,omitempty"`
+	QualityCutoffNotMet bool       `json:"qualityCutoffNotMet"`
+	Languages           []Language `json:"languages,omitempty"`
+	ReleaseGroup        string     `json:"releaseGroup,omitempty"`
+	Edition             string     `json:"edition,omitempty"`
 }
 
 // AlternateTitle represents an alternate title (Radarr-specific fields).
@@ -120,32 +121,30 @@ type Collection struct {
 
 // Statistics contains movie statistics.
 type Statistics struct {
-	MovieFileCount int   `json:"movieFileCount"`
-	SizeOnDisk     int64 `json:"sizeOnDisk"`
+	MovieFileCount int      `json:"movieFileCount"`
+	SizeOnDisk     int64    `json:"sizeOnDisk"`
 	ReleaseGroups  []string `json:"releaseGroups,omitempty"`
 }
 
-
-
 // Command represents a command to execute in Radarr.
 type Command struct {
-	ID                  int       `json:"id,omitempty"`
-	Name                string    `json:"name"`
-	CommandName         string    `json:"commandName,omitempty"`
-	Message             string    `json:"message,omitempty"`
-	Body                CommandBody `json:"body,omitempty"`
-	Priority            string    `json:"priority,omitempty"`
-	Status              string    `json:"status,omitempty"`
-	Queued              time.Time `json:"queued,omitempty"`
-	Started             *time.Time `json:"started,omitempty"`
-	Ended               *time.Time `json:"ended,omitempty"`
-	Duration            string    `json:"duration,omitempty"`
-	Trigger             string    `json:"trigger,omitempty"`
-	ClientUserAgent     string    `json:"clientUserAgent,omitempty"`
-	StateChangeTime     *time.Time `json:"stateChangeTime,omitempty"`
-	SendUpdatesToClient bool      `json:"sendUpdatesToClient"`
-	UpdateScheduledTask bool      `json:"updateScheduledTask"`
-	LastExecutionTime   *time.Time `json:"lastExecutionTime,omitempty"`
+	ID                  int         `json:"id,omitempty"`
+	Name                string      `json:"name"`
+	CommandName         string      `json:"commandName,omitempty"`
+	Message             string      `json:"message,omitempty"`
+	Body                CommandBody `json:"body"`
+	Priority            string      `json:"priority,omitempty"`
+	Status              string      `json:"status,omitempty"`
+	Queued              time.Time   `json:"queued"`
+	Started             *time.Time  `json:"started,omitempty"`
+	Ended               *time.Time  `json:"ended,omitempty"`
+	Duration            string      `json:"duration,omitempty"`
+	Trigger             string      `json:"trigger,omitempty"`
+	ClientUserAgent     string      `json:"clientUserAgent,omitempty"`
+	StateChangeTime     *time.Time  `json:"stateChangeTime,omitempty"`
+	SendUpdatesToClient bool        `json:"sendUpdatesToClient"`
+	UpdateScheduledTask bool        `json:"updateScheduledTask"`
+	LastExecutionTime   *time.Time  `json:"lastExecutionTime,omitempty"`
 }
 
 // CommandBody contains command body parameters.
@@ -185,17 +184,17 @@ type CalendarEntry struct {
 
 // HistoryRecord represents a history record.
 type HistoryRecord struct {
-	ID                  int        `json:"id"`
-	MovieID             int        `json:"movieId"`
-	SourceTitle         string     `json:"sourceTitle,omitempty"`
-	Languages           []Language `json:"languages,omitempty"`
-	Quality             Quality    `json:"quality,omitempty"`
-	CustomFormats       []any      `json:"customFormats,omitempty"`
-	CustomFormatScore   int        `json:"customFormatScore,omitempty"`
-	QualityCutoffNotMet bool       `json:"qualityCutoffNotMet"`
-	Date                time.Time  `json:"date"`
-	DownloadID          string     `json:"downloadId,omitempty"`
-	EventType           string     `json:"eventType,omitempty"`
+	ID                  int            `json:"id"`
+	MovieID             int            `json:"movieId"`
+	SourceTitle         string         `json:"sourceTitle,omitempty"`
+	Languages           []Language     `json:"languages,omitempty"`
+	Quality             Quality        `json:"quality"`
+	CustomFormats       []any          `json:"customFormats,omitempty"`
+	CustomFormatScore   int            `json:"customFormatScore,omitempty"`
+	QualityCutoffNotMet bool           `json:"qualityCutoffNotMet"`
+	Date                time.Time      `json:"date"`
+	DownloadID          string         `json:"downloadId,omitempty"`
+	EventType           string         `json:"eventType,omitempty"`
 	Data                map[string]any `json:"data,omitempty"`
 }
 
@@ -211,14 +210,14 @@ type HistoryResponse struct {
 
 // AddMovieRequest represents a request to add a movie.
 type AddMovieRequest struct {
-	Title               string   `json:"title"`
-	QualityProfileID    int      `json:"qualityProfileId"`
-	TMDbID              int      `json:"tmdbId"`
-	RootFolderPath      string   `json:"rootFolderPath"`
-	Monitored           bool     `json:"monitored"`
-	MinimumAvailability string   `json:"minimumAvailability,omitempty"`
-	Tags                []int    `json:"tags,omitempty"`
-	AddOptions          AddOptions `json:"addOptions,omitempty"`
+	Title               string     `json:"title"`
+	QualityProfileID    int        `json:"qualityProfileId"`
+	TMDbID              int        `json:"tmdbId"`
+	RootFolderPath      string     `json:"rootFolderPath"`
+	Monitored           bool       `json:"monitored"`
+	MinimumAvailability string     `json:"minimumAvailability,omitempty"`
+	Tags                []int      `json:"tags,omitempty"`
+	AddOptions          AddOptions `json:"addOptions"`
 }
 
 // AddOptions represents options when adding a movie.
@@ -232,39 +231,39 @@ type AddOptions struct {
 
 // WebhookPayload represents a webhook payload from Radarr.
 type WebhookPayload struct {
-	EventType                string         `json:"eventType"`
-	InstanceName             string         `json:"instanceName,omitempty"`
-	ApplicationURL           string         `json:"applicationUrl,omitempty"`
-	Movie                    *WebhookMovie  `json:"movie,omitempty"`
-	RemoteMovie              *WebhookRemoteMovie `json:"remoteMovie,omitempty"`
-	MovieFile                *WebhookMovieFile   `json:"movieFile,omitempty"`
-	DeletedFiles             []WebhookMovieFile  `json:"deletedFiles,omitempty"`
-	IsUpgrade                bool           `json:"isUpgrade,omitempty"`
-	DownloadClient           string         `json:"downloadClient,omitempty"`
-	DownloadClientType       string         `json:"downloadClientType,omitempty"`
-	DownloadID               string         `json:"downloadId,omitempty"`
-	Release                  *WebhookRelease     `json:"release,omitempty"`
+	EventType          string              `json:"eventType"`
+	InstanceName       string              `json:"instanceName,omitempty"`
+	ApplicationURL     string              `json:"applicationUrl,omitempty"`
+	Movie              *WebhookMovie       `json:"movie,omitempty"`
+	RemoteMovie        *WebhookRemoteMovie `json:"remoteMovie,omitempty"`
+	MovieFile          *WebhookMovieFile   `json:"movieFile,omitempty"`
+	DeletedFiles       []WebhookMovieFile  `json:"deletedFiles,omitempty"`
+	IsUpgrade          bool                `json:"isUpgrade,omitempty"`
+	DownloadClient     string              `json:"downloadClient,omitempty"`
+	DownloadClientType string              `json:"downloadClientType,omitempty"`
+	DownloadID         string              `json:"downloadId,omitempty"`
+	Release            *WebhookRelease     `json:"release,omitempty"`
 	// Health event fields
-	Level                    string         `json:"level,omitempty"`
-	Message                  string         `json:"message,omitempty"`
-	Type                     string         `json:"type,omitempty"`
-	WikiURL                  string         `json:"wikiUrl,omitempty"`
+	Level   string `json:"level,omitempty"`
+	Message string `json:"message,omitempty"`
+	Type    string `json:"type,omitempty"`
+	WikiURL string `json:"wikiUrl,omitempty"`
 	// Application update fields
-	PreviousVersion          string         `json:"previousVersion,omitempty"`
-	NewVersion               string         `json:"newVersion,omitempty"`
+	PreviousVersion string `json:"previousVersion,omitempty"`
+	NewVersion      string `json:"newVersion,omitempty"`
 }
 
 // WebhookMovie represents movie info in a webhook.
 type WebhookMovie struct {
-	ID           int    `json:"id"`
-	Title        string `json:"title,omitempty"`
-	Year         int    `json:"year,omitempty"`
-	FilePath     string `json:"filePath,omitempty"`
-	ReleaseDate  string `json:"releaseDate,omitempty"`
-	FolderPath   string `json:"folderPath,omitempty"`
-	TMDbID       int    `json:"tmdbId,omitempty"`
-	IMDbID       string `json:"imdbId,omitempty"`
-	Overview     string `json:"overview,omitempty"`
+	ID          int    `json:"id"`
+	Title       string `json:"title,omitempty"`
+	Year        int    `json:"year,omitempty"`
+	FilePath    string `json:"filePath,omitempty"`
+	ReleaseDate string `json:"releaseDate,omitempty"`
+	FolderPath  string `json:"folderPath,omitempty"`
+	TMDbID      int    `json:"tmdbId,omitempty"`
+	IMDbID      string `json:"imdbId,omitempty"`
+	Overview    string `json:"overview,omitempty"`
 }
 
 // WebhookRemoteMovie represents remote movie info.
@@ -291,14 +290,14 @@ type WebhookMovieFile struct {
 
 // Webhook event types.
 const (
-	EventGrab            = "Grab"
-	EventDownload        = "Download"
-	EventRename          = "Rename"
-	EventMovieDelete     = "MovieDelete"
-	EventMovieFileDelete = "MovieFileDelete"
-	EventHealth          = "Health"
-	EventHealthRestored  = "HealthRestored"
-	EventApplicationUpdate = "ApplicationUpdate"
+	EventGrab                      = "Grab"
+	EventDownload                  = "Download"
+	EventRename                    = "Rename"
+	EventMovieDelete               = "MovieDelete"
+	EventMovieFileDelete           = "MovieFileDelete"
+	EventHealth                    = "Health"
+	EventHealthRestored            = "HealthRestored"
+	EventApplicationUpdate         = "ApplicationUpdate"
 	EventManualInteractionRequired = "ManualInteractionRequired"
-	EventTest            = "Test"
+	EventTest                      = "Test"
 )

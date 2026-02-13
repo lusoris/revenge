@@ -36,13 +36,13 @@ func NewProvider(config Config) (*Provider, error) {
 	}, nil
 }
 
-func (p *Provider) ID() metadata.ProviderID       { return metadata.ProviderAniList }
-func (p *Provider) Name() string                   { return "AniList" }
-func (p *Provider) Priority() int                  { return p.priority }
-func (p *Provider) SupportsMovies() bool           { return false }
-func (p *Provider) SupportsTVShows() bool          { return true }
-func (p *Provider) SupportsPeople() bool           { return false }
-func (p *Provider) ClearCache()                    { p.client.clearCache() }
+func (p *Provider) ID() metadata.ProviderID { return metadata.ProviderAniList }
+func (p *Provider) Name() string            { return "AniList" }
+func (p *Provider) Priority() int           { return p.priority }
+func (p *Provider) SupportsMovies() bool    { return false }
+func (p *Provider) SupportsTVShows() bool   { return true }
+func (p *Provider) SupportsPeople() bool    { return false }
+func (p *Provider) ClearCache()             { p.client.clearCache() }
 
 // SupportsLanguage returns true for Japanese and English content.
 func (p *Provider) SupportsLanguage(lang string) bool {
@@ -57,10 +57,7 @@ func (p *Provider) SupportsLanguage(lang string) bool {
 // --- TVShowProvider ---
 
 func (p *Provider) SearchTVShow(ctx context.Context, query string, opts metadata.SearchOptions) ([]metadata.TVShowSearchResult, error) {
-	page := opts.Page
-	if page < 1 {
-		page = 1
-	}
+	page := max(opts.Page, 1)
 
 	result, err := p.client.SearchAnime(ctx, query, page, 20, opts.IncludeAdult)
 	if err != nil {
@@ -131,8 +128,6 @@ func (p *Provider) GetTVShowImages(ctx context.Context, id string) (*metadata.Im
 	return images, nil
 }
 
-
-
 func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metadata.ExternalIDs, error) {
 	animeID, err := strconv.Atoi(id)
 	if err != nil {
@@ -153,9 +148,3 @@ func (p *Provider) GetTVShowExternalIDs(ctx context.Context, id string) (*metada
 
 // AniList doesn't have per-season/episode data in the same way western TV providers do.
 // Anime typically has a single "season" representing the entire series run.
-
-
-
-
-
-

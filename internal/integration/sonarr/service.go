@@ -15,18 +15,18 @@ import (
 // SyncService handles synchronization between Sonarr and Revenge.
 // It implements the PRIMARY provider pattern from the metadata priority chain.
 type SyncService struct {
-	client      *Client
-	mapper      *Mapper
-	tvshowRepo  tvshow.Repository
-	logger      *slog.Logger
-	syncMu      sync.Mutex
-	syncStatus  SyncStatus
+	client     *Client
+	mapper     *Mapper
+	tvshowRepo tvshow.Repository
+	logger     *slog.Logger
+	syncMu     sync.Mutex
+	syncStatus SyncStatus
 }
 
 // SyncStatus represents the current sync status.
 type SyncStatus struct {
 	IsRunning       bool      `json:"is_running"`
-	LastSync        time.Time `json:"last_sync,omitempty"`
+	LastSync        time.Time `json:"last_sync"`
 	LastSyncError   string    `json:"last_sync_error,omitempty"`
 	SeriesAdded     int       `json:"series_added"`
 	SeriesUpdated   int       `json:"series_updated"`

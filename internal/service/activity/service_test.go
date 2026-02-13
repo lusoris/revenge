@@ -46,7 +46,7 @@ func TestService_Log(t *testing.T) {
 		UserID:       &user.ID,
 		Username:     &user.Username,
 		Action:       ActionUserLogin,
-		ResourceType: stringPtr("user"),
+		ResourceType: new("user"),
 		ResourceID:   &resourceID,
 		IPAddress:    &ip,
 		UserAgent:    &userAgent,
@@ -92,7 +92,7 @@ func TestService_LogWithContext(t *testing.T) {
 		ActionUserUpdate,
 		"user",
 		resourceID,
-		map[string]interface{}{"field": "value"},
+		map[string]any{"field": "value"},
 		ip,
 		"Mozilla/5.0",
 	)
@@ -182,7 +182,7 @@ func TestService_List(t *testing.T) {
 	ctx := context.Background()
 
 	// Create multiple entries
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		req := LogRequest{
 			Action:  "test.list",
 			Success: true,
@@ -202,7 +202,7 @@ func TestService_List_Pagination(t *testing.T) {
 	ctx := context.Background()
 
 	// Create entries
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		req := LogRequest{
 			Action:  "test.pagination",
 			Success: true,
@@ -251,7 +251,7 @@ func TestService_Search_MaxLimit(t *testing.T) {
 	})
 
 	// Create entries
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		req := LogRequest{
 			UserID:  &user.ID,
 			Action:  "test.search",
@@ -278,7 +278,7 @@ func TestService_Search_ByAction(t *testing.T) {
 	action := "test.specific_action"
 
 	// Create entries with specific action
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := LogRequest{
 			Action:  action,
 			Success: true,
@@ -304,11 +304,11 @@ func TestService_Search_BySuccess(t *testing.T) {
 	ctx := context.Background()
 
 	// Create failed entries
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := LogRequest{
 			Action:       "test.failure",
 			Success:      false,
-			ErrorMessage: stringPtr("test error"),
+			ErrorMessage: new("test error"),
 		}
 		require.NoError(t, svc.Log(ctx, req))
 	}
@@ -341,7 +341,7 @@ func TestService_GetUserActivity(t *testing.T) {
 	})
 
 	// Create user activities
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		req := LogRequest{
 			UserID:  &user.ID,
 			Action:  ActionUserUpdate,
@@ -401,7 +401,7 @@ func TestService_GetResourceActivity(t *testing.T) {
 	resourceID := uuid.Must(uuid.NewV7())
 
 	// Create resource activities
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		req := LogRequest{
 			Action:       "document.edit",
 			ResourceType: &resourceType,
@@ -444,11 +444,11 @@ func TestService_GetFailedActivity(t *testing.T) {
 	ctx := context.Background()
 
 	// Create failed entries
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		req := LogRequest{
 			Action:       "test.failed",
 			Success:      false,
-			ErrorMessage: stringPtr("error occurred"),
+			ErrorMessage: new("error occurred"),
 		}
 		require.NoError(t, svc.Log(ctx, req))
 	}
@@ -487,7 +487,7 @@ func TestService_GetStats(t *testing.T) {
 	ctx := context.Background()
 
 	// Create some activities
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		req := LogRequest{
 			Action:  "test.stats",
 			Success: i%2 == 0, // 3 success, 2 failures
@@ -594,6 +594,7 @@ func TestService_CountOldLogs(t *testing.T) {
 // Helper Functions
 // ============================================================================
 
+//go:fix inline
 func stringPtr(s string) *string {
-	return &s
+	return new(s)
 }
