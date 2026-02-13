@@ -45,6 +45,10 @@ func NewNamedCache(client *Client, l1MaxSize int, l1TTL time.Duration, name stri
 // When a key is modified in Dragonfly/Redis, the server automatically pushes
 // invalidation to all connected rueidis clients.
 func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
+	if c == nil {
+		return nil, fmt.Errorf("cache miss: cache not initialized")
+	}
+
 	start := time.Now()
 	defer func() {
 		observability.CacheOperationDuration.WithLabelValues(c.name, "get").Observe(time.Since(start).Seconds())
@@ -91,6 +95,10 @@ func (c *Cache) Get(ctx context.Context, key string) ([]byte, error) {
 // Set stores a value in both L1 and L2 caches.
 // For TTLs shorter than L1's TTL, skips L1 to ensure accurate expiration.
 func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
+	if c == nil {
+		return nil
+	}
+
 	start := time.Now()
 	defer func() {
 		observability.CacheOperationDuration.WithLabelValues(c.name, "set").Observe(time.Since(start).Seconds())
@@ -135,6 +143,10 @@ func (c *Cache) Set(ctx context.Context, key string, value []byte, ttl time.Dura
 
 // Delete removes a value from both L1 and L2 caches.
 func (c *Cache) Delete(ctx context.Context, key string) error {
+	if c == nil {
+		return nil
+	}
+
 	start := time.Now()
 	defer func() {
 		observability.CacheOperationDuration.WithLabelValues(c.name, "delete").Observe(time.Since(start).Seconds())
@@ -157,6 +169,10 @@ func (c *Cache) Delete(ctx context.Context, key string) error {
 
 // Exists checks if a key exists in L1 or L2 cache.
 func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
+	if c == nil {
+		return false, nil
+	}
+
 	// Check L1 first
 	if c.l1.Has(key) {
 		return true, nil
@@ -190,6 +206,10 @@ func (c *Cache) Exists(ctx context.Context, key string) (bool, error) {
 // L2: Uses SCAN (non-blocking, cursor-based) instead of KEYS to avoid
 // blocking Redis on large keyspaces. Matching keys are deleted in batches.
 func (c *Cache) Invalidate(ctx context.Context, pattern string) error {
+	if c == nil {
+		return nil
+	}
+
 	// L1: targeted prefix delete when pattern is "prefix*"
 	if prefix, ok := simpleGlobPrefix(pattern); ok {
 		deleted := c.l1.DeleteByPrefix(prefix)
@@ -257,6 +277,10 @@ func simpleGlobPrefix(pattern string) (string, bool) {
 
 // Close closes both L1 and L2 caches.
 func (c *Cache) Close() {
+	if c == nil {
+		return
+	}
+
 	if c.l1 != nil {
 		c.l1.Close()
 	}
