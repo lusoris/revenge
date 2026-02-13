@@ -2,8 +2,6 @@ package apikeys
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"log/slog"
 
 	"github.com/google/uuid"
@@ -107,11 +105,7 @@ func (s *CachedService) invalidateKeyCache(ctx context.Context, keyHash string) 
 	}
 }
 
-// hashRawKey computes the SHA-256 hash of a raw API key.
-// This is the same algorithm used by serviceImpl.hashKey — duplicated here
-// to avoid exporting the private method. The implementation is trivial (2 lines)
-// and must stay in sync.
+// hashRawKey delegates to the shared hashAPIKey function.
 func hashRawKey(rawKey string) string {
-	hash := sha256.Sum256([]byte(rawKey))
-	return hex.EncodeToString(hash[:])
+	return hashAPIKey(rawKey)
 }

@@ -3,7 +3,6 @@ package apikeys
 import (
 	"context"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -264,10 +263,9 @@ func (s *serviceImpl) generateKey() (rawKey, keyHash, keyPrefix string, err erro
 	return rawKey, keyHash, keyPrefix, nil
 }
 
-// hashKey creates a SHA-256 hash of the key
+// hashKey delegates to the package-level hashAPIKey.
 func (s *serviceImpl) hashKey(rawKey string) string {
-	hash := sha256.Sum256([]byte(rawKey))
-	return hex.EncodeToString(hash[:])
+	return hashAPIKey(rawKey)
 }
 
 // isValidKeyFormat checks if a key has the correct format
